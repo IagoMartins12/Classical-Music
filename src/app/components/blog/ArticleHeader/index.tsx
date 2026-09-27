@@ -3,6 +3,7 @@ import Link from 'next/link';
 import { PiCalendarBlank, PiClock, PiUser } from 'react-icons/pi';
 import { AdminOnly } from '../AdminOnly';
 import { Inline } from '@/app/components/ui/Layout';
+import { Text } from '@/app/components/ui/Text';
 
 interface ArticleHeaderProps {
   article: {
@@ -77,7 +78,9 @@ export function ArticleHeader({ article, isAdmin }: ArticleHeaderProps) {
               <div className="font-medium text-theme-primary">
                 {authorName || 'Anônimo'}
               </div>
-              <div className="text-sm text-theme-tertiary">Autor</div>
+              <Text papel="rotulo" tom="fraco" as="div">
+                Autor
+              </Text>
             </div>
           </Link>
 

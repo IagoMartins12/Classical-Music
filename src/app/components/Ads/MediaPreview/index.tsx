@@ -17,6 +17,7 @@ import {
 import Button from '@/app/components/Common/Button';
 import Image from '@/app/components/SmartImage';
 import { Inline } from '@/app/components/ui/Layout';
+import { Text } from '@/app/components/ui/Text';
 
 interface MediaPreviewProps {
   ad: any;
@@ -134,9 +135,9 @@ export default function MediaPreview({
               <h3 className="font-semibold text-theme-primary">
                 Preview Responsivo
               </h3>
-              <p className="text-sm text-theme-tertiary">
+              <Text papel="rotulo" tom="fraco" as="p">
                 Visualize como aparece em cada dispositivo
-              </p>
+              </Text>
             </div>
           </Inline>
 
@@ -212,9 +213,9 @@ export default function MediaPreview({
               <div className="text-theme-secondary">
                 {currentDimensions.width} × {currentDimensions.height}px
               </div>
-              <div className="text-theme-tertiary text-xs">
+              <Text papel="legenda" tom="fraco" as="div">
                 Proporção: {currentDimensions.aspectRatio}
-              </div>
+              </Text>
             </div>
 
             <div>
@@ -222,9 +223,9 @@ export default function MediaPreview({
                 Posicionamento
               </div>
               <div className="text-theme-secondary">{ad.placement}</div>
-              <div className="text-theme-tertiary text-xs">
+              <Text papel="legenda" tom="fraco" as="div">
                 {ad.targetType} targeting
-              </div>
+              </Text>
             </div>
 
             <div>
@@ -379,10 +380,10 @@ export default function MediaPreview({
               </div>
             )}
             {ad.mediaMetadata?.processedAt && (
-              <div className="mt-1 text-xs text-theme-tertiary">
+              <Text papel="legenda" tom="fraco" as="div" className="mt-1">
                 Processado em:{' '}
                 {new Date(ad.mediaMetadata.processedAt).toLocaleString()}
-              </div>
+              </Text>
             )}
           </div>
         </div>
@@ -393,7 +394,7 @@ export default function MediaPreview({
         <div className="bg-accent-gold/5 border border-accent-gold/20 rounded-lg p-3">
           <div className="flex items-start space-x-2">
             <PiInfo className="w-4 h-4 text-accent-gold mt-0.5 flex-shrink-0" />
-            <div className="text-xs text-theme-secondary">
+            <Text papel="legenda" tom="suave" as="div">
               <div className="font-medium text-theme-primary mb-1">
                 💡 Dicas de otimização
               </div>
@@ -405,7 +406,7 @@ export default function MediaPreview({
                   <li>• Vídeos começam mutados por padrão</li>
                 )}
               </ul>
-            </div>
+            </Text>
           </div>
         </div>
       </div>

@@ -1,5 +1,6 @@
+import { Text } from '@/app/components/ui/Text';
 // app/blog/calendar/components/WeekView.tsx
-'use client';
+('use client');
 
 interface WeekViewProps {
   days: Date[];
@@ -44,9 +45,9 @@ export default function WeekView({
                   : 'bg-theme-elevated'
               }`}
             >
-              <div className="text-sm text-theme-tertiary">
+              <Text papel="rotulo" tom="fraco" as="div">
                 {weekdays[index]}
-              </div>
+              </Text>
               <div
                 className={`text-lg font-bold ${
                   isToday ? 'text-brand-primary' : 'text-theme-primary'

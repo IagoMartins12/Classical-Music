@@ -17,6 +17,7 @@ import {
   matchesGenreSearch,
 } from '@/app/utils/translations/instrumentsGenresTranslation';
 import { Inline } from '@/app/components/ui/Layout';
+import { Text } from '@/app/components/ui/Text';
 
 interface Genre {
   id: string;
@@ -284,13 +285,18 @@ export default function GenreSearchInput({
           {/* Search Header */}
           {searchTerm && (
             <div className="px-4 py-2 border-b border-theme-secondary bg-theme-elevated">
-              <div className="flex items-center text-sm text-theme-secondary">
+              <Text
+                papel="rotulo"
+                tom="suave"
+                as="div"
+                className="flex items-center"
+              >
                 <PiMagnifyingGlass className="w-4 h-4 mr-2" />
                 {t('genre_search_jsx_searching_for')}{' '}
                 <span className="font-medium text-theme-primary ml-1">
                   &quot;{searchTerm}&quot;
                 </span>
-              </div>
+              </Text>
             </div>
           )}
 

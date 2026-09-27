@@ -8,6 +8,7 @@ import { TagList } from '@/app/components/blog/admin/TagList';
 import { AnimatedItem } from '@/app/components/animation/AnimatedComponents';
 import AnimatedMusicalNotesClient from '@/app/components/AnimatedMusicalNotesClient';
 import { getServerSession } from '@/app/libs/api/server-session';
+import { Text } from '@/app/components/ui/Text';
 
 export const metadata: Metadata = {
   title: 'Gerenciar Tags - Blog Admin',
@@ -91,9 +92,14 @@ export default async function TagsAdminPage({ searchParams }: PageProps) {
               <div className="classical-card group hover:shadow-xl transition-all duration-300 cursor-pointer">
                 <div className="flex items-center justify-between p-6">
                   <div>
-                    <p className="text-sm font-medium text-theme-tertiary mb-2">
+                    <Text
+                      papel="rotulo"
+                      tom="fraco"
+                      as="p"
+                      className="font-medium mb-2"
+                    >
                       Total de Tags
-                    </p>
+                    </Text>
                     <p className="text-4xl font-bold text-theme-primary">
                       {stats.totalTags}
                     </p>
@@ -110,9 +116,14 @@ export default async function TagsAdminPage({ searchParams }: PageProps) {
               <div className="classical-card group hover:shadow-xl transition-all duration-300 cursor-pointer">
                 <div className="flex items-center justify-between p-6">
                   <div>
-                    <p className="text-sm font-medium text-theme-tertiary mb-2">
+                    <Text
+                      papel="rotulo"
+                      tom="fraco"
+                      as="p"
+                      className="font-medium mb-2"
+                    >
                       Tags em Uso
-                    </p>
+                    </Text>
                     <p className="text-4xl font-bold text-theme-primary">
                       {stats.tagsWithArticles}
                     </p>
@@ -129,9 +140,14 @@ export default async function TagsAdminPage({ searchParams }: PageProps) {
               <div className="classical-card group hover:shadow-xl transition-all duration-300 cursor-pointer">
                 <div className="flex items-center justify-between p-6">
                   <div>
-                    <p className="text-sm font-medium text-theme-tertiary mb-2">
+                    <Text
+                      papel="rotulo"
+                      tom="fraco"
+                      as="p"
+                      className="font-medium mb-2"
+                    >
                       Média Artigos/Tag
-                    </p>
+                    </Text>
                     <p className="text-4xl font-bold text-theme-primary">
                       {(stats.totalArticles / stats.totalTags || 0).toFixed(1)}
                     </p>

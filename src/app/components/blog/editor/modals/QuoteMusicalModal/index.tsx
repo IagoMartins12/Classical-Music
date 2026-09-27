@@ -12,6 +12,7 @@ import Modal from '@/app/components/Modal';
 import Input from '@/app/components/Common/Inputs';
 import Button from '@/app/components/Common/Button';
 import Checkbox from '@/app/components/Common/Checkbox';
+import { Text } from '@/app/components/ui/Text';
 
 interface QuoteMusicalModalProps {
   editor: Editor;
@@ -234,12 +235,12 @@ export function QuoteMusicalModal({
                       className="cursor-pointer"
                     >
                       <PiUploadSimple className="w-8 h-8 text-theme-tertiary mx-auto mb-2" />
-                      <span className="text-sm text-theme-secondary">
+                      <Text papel="rotulo" tom="suave">
                         {uploading ? 'Enviando...' : 'Clique para fazer upload'}
-                      </span>
-                      <p className="text-xs text-theme-tertiary mt-2">
+                      </Text>
+                      <Text papel="legenda" tom="fraco" as="p" className="mt-2">
                         MP3, WAV ou OGG (máx 10MB)
-                      </p>
+                      </Text>
                     </label>
                   )}
                 </div>
@@ -285,10 +286,15 @@ export function QuoteMusicalModal({
                   background: `linear-gradient(to right, var(--accent-purple) 0%, var(--accent-purple) ${audioVolume}%, #e5e7eb ${audioVolume}%, #e5e7eb 100%)`,
                 }}
               />
-              <div className="flex justify-between text-xs text-theme-tertiary mt-1">
+              <Text
+                papel="legenda"
+                tom="fraco"
+                as="div"
+                className="flex justify-between mt-1"
+              >
                 <span>Silencioso</span>
                 <span>Alto</span>
-              </div>
+              </Text>
             </div>
 
             <div className="p-3 bg-blue-50 border border-blue-200 rounded-lg">

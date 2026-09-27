@@ -14,6 +14,7 @@ import {
 } from 'react-icons/pi';
 import { getScoreGroups } from '@/app/requests/uploads-client';
 import { Inline } from '@/app/components/ui/Layout';
+import { Text } from '@/app/components/ui/Text';
 
 interface ScoreGroup {
   groupIndex: number;
@@ -145,9 +146,9 @@ export default function GroupingSuggestions({
       <div className="bg-theme-secondary/10 rounded-xl p-4 border border-theme-primary/20">
         <Inline gap={3} className="justify-center py-4">
           <div className="w-5 h-5 border-2 border-brand-primary/30 border-t-brand-primary rounded-full animate-spin"></div>
-          <span className="text-theme-secondary text-sm">
+          <Text papel="rotulo" tom="suave">
             Analisando grupos existentes...
-          </span>
+          </Text>
         </Inline>
       </div>
     );
@@ -221,11 +222,11 @@ export default function GroupingSuggestions({
                             <h5 className="font-medium text-sm">
                               {group.groupTitle}
                             </h5>
-                            <p className="text-xs text-theme-tertiary">
+                            <Text papel="legenda" tom="fraco" as="p">
                               {group.scoresCount} partitura
                               {group.scoresCount !== 1 ? 's' : ''} • Índice{' '}
                               {group.groupIndex} • Editável
-                            </p>
+                            </Text>
                           </div>
                         </Inline>
 
@@ -250,9 +251,13 @@ export default function GroupingSuggestions({
               >
                 <PiMusicNotes className="w-4 h-4 text-accent-blue" />
                 <span>Grupos Existentes (IMSLP)</span>
-                <span className="px-2 py-0.5 bg-theme-tertiary/20 text-theme-tertiary rounded-full text-xs">
+                <Text
+                  papel="legenda"
+                  tom="fraco"
+                  className="px-2 py-0.5 bg-theme-tertiary/20 rounded-full"
+                >
                   Apenas referência
-                </span>
+                </Text>
               </Inline>
 
               <div className="grid grid-cols-1 gap-2 mb-4">
@@ -273,11 +278,11 @@ export default function GroupingSuggestions({
                             <h5 className="font-medium text-sm text-theme-tertiary">
                               {group.groupTitle}
                             </h5>
-                            <p className="text-xs text-theme-tertiary">
+                            <Text papel="legenda" tom="fraco" as="p">
                               {group.scoresCount} partitura
                               {group.scoresCount !== 1 ? 's' : ''} • Índice{' '}
                               {group.groupIndex}
-                            </p>
+                            </Text>
                           </div>
                         </Inline>
 
@@ -342,9 +347,9 @@ export default function GroupingSuggestions({
               <h5 className="font-medium text-sm">
                 Definir Título Personalizado
               </h5>
-              <p className="text-xs text-theme-tertiary">
+              <Text papel="legenda" tom="fraco" as="p">
                 Criar um novo grupo com título próprio
-              </p>
+              </Text>
             </div>
           </Inline>
         </button>
@@ -354,7 +359,7 @@ export default function GroupingSuggestions({
       <div className="bg-theme-secondary/10 rounded-lg p-3 border border-theme-primary/20">
         <div className="flex items-start space-x-2">
           <PiInfo className="w-4 h-4 text-theme-tertiary mt-0.5 flex-shrink-0" />
-          <div className="text-xs text-theme-tertiary">
+          <Text papel="legenda" tom="fraco" as="div">
             <p className="font-medium mb-1">
               💡 Como funciona o novo agrupamento:
             </p>
@@ -372,7 +377,7 @@ export default function GroupingSuggestions({
                 próprios grupos
               </p>
             </div>
-          </div>
+          </Text>
         </div>
       </div>
     </div>

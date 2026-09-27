@@ -3,6 +3,7 @@
 import Link from 'next/link';
 import { PiCheckCircle, PiHardDrive, PiWarning, PiX } from 'react-icons/pi';
 import { useBackup } from '@/app/hooks/admin/useBackup';
+import { Text } from '@/app/components/ui/Text';
 
 /**
  * O estado do backup no painel inicial.
@@ -42,10 +43,10 @@ export default function BackupDashboardCard() {
       </div>
 
       {impedimento ? (
-        <p className="text-theme-secondary text-sm flex gap-2">
+        <Text papel="rotulo" tom="suave" as="p" className="flex gap-2">
           <PiWarning className="w-4 h-4 text-accent-amber shrink-0 mt-0.5" />
           {impedimento}
-        </p>
+        </Text>
       ) : ultimo ? (
         <div className="space-y-1">
           <p className="text-theme-primary flex items-center gap-2">
@@ -57,18 +58,20 @@ export default function BackupDashboardCard() {
                     'pt-BR'
                   )}
             </span>
-            <span className="text-theme-tertiary text-sm">verificado</span>
+            <Text papel="rotulo" tom="fraco">
+              verificado
+            </Text>
           </p>
-          <p className="text-theme-secondary text-sm">
+          <Text papel="rotulo" tom="suave" as="p">
             {ultimo.documentCount?.toLocaleString('pt-BR')} documentos ·{' '}
             {backup.data?.arquivos.length ?? 0} arquivo(s) guardado(s)
-          </p>
+          </Text>
         </div>
       ) : (
-        <p className="text-theme-secondary text-sm flex gap-2">
+        <Text papel="rotulo" tom="suave" as="p" className="flex gap-2">
           <PiWarning className="w-4 h-4 text-accent-amber shrink-0 mt-0.5" />
           Nenhum backup verificado ainda.
-        </p>
+        </Text>
       )}
 
       {ultimaFalha && (

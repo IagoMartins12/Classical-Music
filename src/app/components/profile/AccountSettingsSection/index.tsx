@@ -34,6 +34,7 @@ import DeleteAccountModal from '../../DeleteAccountModal';
 import EmailVerificationBanner2 from '../../EmailVerification/EmailVerificationBanner2';
 import { useTranslation } from '@/app/context/TranslationContext';
 import { Inline } from '@/app/components/ui/Layout';
+import { Text } from '@/app/components/ui/Text';
 
 interface AccountSettingsSectionProps {
   user: User;
@@ -308,15 +309,17 @@ const AccountSettingsSection: React.FC<AccountSettingsSectionProps> = ({
           <p className="font-medium text-theme-primary">
             {getLoginTypeLabel()}
           </p>
-          <p className="text-sm text-theme-secondary">
+          <Text papel="rotulo" tom="suave" as="p">
             {getLoginDescription()}
-          </p>
+          </Text>
         </div>
 
         {loginMethod.socialProviders.includes('google') && (
           <Inline gap={2}>
             <FcGoogle className="w-5 h-5" />
-            <span className="text-sm text-theme-secondary">Google</span>
+            <Text papel="rotulo" tom="suave">
+              Google
+            </Text>
           </Inline>
         )}
       </Inline>
@@ -606,9 +609,9 @@ const AccountSettingsSection: React.FC<AccountSettingsSectionProps> = ({
               {passwordData.newPassword && (
                 <div className="mt-2 space-y-2">
                   <div className="flex items-center justify-between">
-                    <span className="text-xs text-theme-secondary">
+                    <Text papel="legenda" tom="suave">
                       {t('account_password_strength')}
-                    </span>
+                    </Text>
                     <span
                       className={`text-xs font-medium ${
                         PASSWORD_STRENGTH_COLORS[passwordValidation.strength]
@@ -619,7 +622,7 @@ const AccountSettingsSection: React.FC<AccountSettingsSectionProps> = ({
                   </div>
 
                   {passwordValidation.suggestions.length > 0 && (
-                    <div className="text-xs text-theme-tertiary">
+                    <Text papel="legenda" tom="fraco" as="div">
                       <p className="mb-1">
                         {t('account_password_suggestions')}
                       </p>
@@ -630,7 +633,7 @@ const AccountSettingsSection: React.FC<AccountSettingsSectionProps> = ({
                           )
                         )}
                       </ul>
-                    </div>
+                    </Text>
                   )}
                 </div>
               )}
@@ -727,9 +730,9 @@ const AccountSettingsSection: React.FC<AccountSettingsSectionProps> = ({
                 <p className="font-medium text-theme-primary">
                   {getUserTypeLabel(user.userType)}
                 </p>
-                <p className="text-sm text-theme-secondary">
+                <Text papel="rotulo" tom="suave" as="p">
                   {t('account_type_description')}
-                </p>
+                </Text>
               </div>
               <div className="w-12 h-12 bg-gradient-to-br from-brand-primary to-brand-secondary rounded-xl flex items-center justify-center">
                 <PiUser className="w-6 h-6 text-theme-primary" />
@@ -836,9 +839,9 @@ const AccountSettingsSection: React.FC<AccountSettingsSectionProps> = ({
               <h4 className="font-medium text-theme-primary mb-1">
                 {t('account_delete_permanent')}
               </h4>
-              <p className="text-sm text-theme-secondary">
+              <Text papel="rotulo" tom="suave" as="p">
                 {t('account_delete_warning')}
-              </p>
+              </Text>
             </div>
 
             <Button

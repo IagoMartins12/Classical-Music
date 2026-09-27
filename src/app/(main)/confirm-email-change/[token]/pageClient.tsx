@@ -22,6 +22,7 @@ import { useFavoritesStore } from '@/app/stores/useFavoritesStore';
 import { useLearningStore } from '@/app/stores/useLearningStore';
 import { useAuth } from '@/app/hooks/useAuth';
 import { useTranslation } from '@/app/context/TranslationContext';
+import { Text } from '@/app/components/ui/Text';
 
 interface ConfirmationResult {
   success: boolean;
@@ -319,13 +320,13 @@ export default function ConfirmEmailChangePage() {
 
           {/* 🆕 NOVO: Instruções para próximo login */}
           <div className="text-center pt-4 border-t border-theme-secondary mt-6">
-            <p className="text-xs text-theme-tertiary">
+            <Text papel="legenda" tom="fraco" as="p">
               {t('pages_token_jsx_p_children_0__próximo_login')}{' '}
               <span className="font-mono text-theme-primary">
                 {result.data?.newEmail}
               </span>{' '}
               {t('pages_token_jsx_span_children_0__para_entrar')}
-            </p>
+            </Text>
           </div>
         </div>
       );
@@ -447,9 +448,9 @@ export default function ConfirmEmailChangePage() {
             <h1 className="text-lg font-bold text-theme-primary classical-title">
               {t('pages_token_jsx_h1_children_0__opus_atlas')}
             </h1>
-            <p className="text-sm text-theme-tertiary">
+            <Text papel="rotulo" tom="fraco" as="p">
               {t('pages_token_jsx_p_children_0__confirmação_mudança_email')}
-            </p>
+            </Text>
           </div>
 
           {renderContent()}
@@ -457,7 +458,7 @@ export default function ConfirmEmailChangePage() {
 
         {/* Footer */}
         <div className="text-center mt-6">
-          <p className="text-xs text-theme-tertiary">
+          <Text papel="legenda" tom="fraco" as="p">
             {t('pages_token_jsx_p_children_0__problemas_contato')}{' '}
             <a
               href="mailto:suporte@opusatlas.com"
@@ -465,7 +466,7 @@ export default function ConfirmEmailChangePage() {
             >
               {t('pages_token_jsx_a_children_0__suporte')}
             </a>
-          </p>
+          </Text>
         </div>
       </div>
     </div>

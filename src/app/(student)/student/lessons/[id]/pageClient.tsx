@@ -40,6 +40,7 @@ import { apiFetch } from '@/app/libs/api/client';
 import { loadStudentLesson } from '@/app/requests/portal/student';
 import { sendStudentLessonNotice } from '@/app/requests/portal/lesson-actions';
 import { Inline } from '@/app/components/ui/Layout';
+import { Text } from '@/app/components/ui/Text';
 
 interface StudentLessonDetailPageClientProps {
   initialData: StudentLessonDetail | null;
@@ -403,9 +404,9 @@ export default function StudentLessonDetailPageClient({
                           {t('recurring_lesson')}
                         </span>
                       </Inline>
-                      <p className="text-sm text-theme-secondary">
+                      <Text papel="rotulo" tom="suave" as="p">
                         {t('recurring_lesson_description')}
-                      </p>
+                      </Text>
                     </div>
                   )}
                 </div>
@@ -484,9 +485,9 @@ export default function StudentLessonDetailPageClient({
                           </span>
                         ))
                       ) : (
-                        <span className="text-theme-tertiary italic text-sm">
+                        <Text papel="rotulo" tom="fraco" className="italic">
                           {t('no_topics')}
-                        </span>
+                        </Text>
                       )}
                     </div>
                   </div>
@@ -506,9 +507,9 @@ export default function StudentLessonDetailPageClient({
                           </span>
                         ))
                       ) : (
-                        <span className="text-theme-tertiary italic text-sm">
+                        <Text papel="rotulo" tom="fraco" className="italic">
                           {t('no_techniques')}
-                        </span>
+                        </Text>
                       )}
                     </div>
                   </div>
@@ -701,9 +702,9 @@ export default function StudentLessonDetailPageClient({
                     <h3 className="font-bold text-theme-primary">
                       {lesson.teacher.name}
                     </h3>
-                    <p className="text-sm text-theme-tertiary">
+                    <Text papel="rotulo" tom="fraco" as="p">
                       {lesson.teacher.email}
-                    </p>
+                    </Text>
                   </div>
                 </Inline>
 
@@ -754,26 +755,26 @@ export default function StudentLessonDetailPageClient({
                     </Inline>
 
                     {lesson.punctuality && (
-                      <p className="text-sm text-theme-secondary">
+                      <Text papel="rotulo" tom="suave" as="p">
                         {t('punctuality')}:{' '}
                         {lesson.punctuality === 'on_time'
                           ? t('on_time')
                           : lesson.punctuality === 'late'
                             ? t('late')
                             : t('early')}
-                      </p>
+                      </Text>
                     )}
 
                     {lesson.engagement && (
-                      <p className="text-sm text-theme-secondary">
+                      <Text papel="rotulo" tom="suave" as="p">
                         {t('engagement')}: {lesson.engagement}/5
-                      </p>
+                      </Text>
                     )}
 
                     {lesson.preparation && (
-                      <p className="text-sm text-theme-secondary">
+                      <Text papel="rotulo" tom="suave" as="p">
                         {t('preparation')}: {lesson.preparation}/5
-                      </p>
+                      </Text>
                     )}
                   </div>
                 </AnimatedCard>
@@ -881,14 +882,24 @@ export default function StudentLessonDetailPageClient({
                               )}
                             </span>
                           </div>
-                          <p className="text-sm text-theme-secondary mt-1">
+                          <Text
+                            papel="rotulo"
+                            tom="suave"
+                            as="p"
+                            className="mt-1"
+                          >
                             {assignment.description}
-                          </p>
+                          </Text>
                           {assignment.dueDate && (
-                            <p className="text-xs text-theme-tertiary mt-1">
+                            <Text
+                              papel="legenda"
+                              tom="fraco"
+                              as="p"
+                              className="mt-1"
+                            >
                               {t('deadline')}:{' '}
                               {formatDateTime(assignment.dueDate)}
-                            </p>
+                            </Text>
                           )}
                         </div>
                       </Link>
@@ -904,7 +915,7 @@ export default function StudentLessonDetailPageClient({
                 <h3 className="text-lg font-bold text-theme-primary classical-title mb-4">
                   {t('study_tips')}
                 </h3>
-                <div className="space-y-3 text-sm text-theme-secondary">
+                <Text papel="rotulo" tom="suave" as="div" className="space-y-3">
                   <div className="flex items-start space-x-2">
                     <PiTarget className="w-4 h-4 text-brand-primary mt-0.5 flex-shrink-0" />
                     <p>{t('practice_objectives')}</p>
@@ -921,7 +932,7 @@ export default function StudentLessonDetailPageClient({
                     <PiBookOpen className="w-4 h-4 text-brand-primary mt-0.5 flex-shrink-0" />
                     <p>{t('explore_composers')}</p>
                   </div>
-                </div>
+                </Text>
               </AnimatedCard>
             </AnimatedItem>
           </div>

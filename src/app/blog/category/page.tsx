@@ -5,6 +5,7 @@ import { PiArrowRight, PiSquaresFour } from 'react-icons/pi';
 import AnimatedMusicalNotesClient from '@/app/components/AnimatedMusicalNotesClient';
 import { listCategories } from '@/app/requests/blog/taxonomy';
 import { tolerarApiForaNoBuild } from '@/app/libs/api/build-tolerance';
+import { Text } from '@/app/components/ui/Text';
 
 export const metadata: Metadata = {
   title: 'Categorias - Blog Opus Atlas',
@@ -109,9 +110,14 @@ export default async function CategoriesPage() {
                   </h3>
 
                   {category.description && (
-                    <p className="text-theme-secondary text-sm mb-4 line-clamp-2">
+                    <Text
+                      papel="rotulo"
+                      tom="suave"
+                      as="p"
+                      className="mb-4 line-clamp-2"
+                    >
                       {category.description}
-                    </p>
+                    </Text>
                   )}
 
                   {/* CTA */}

@@ -8,6 +8,7 @@ import { composerHomeProps } from '../../PopularComposers';
 import { useNavigate } from '@/app/hooks/useNavigate';
 import { useTranslation } from '@/app/context/TranslationContext';
 import { useIsMobile } from '@/app/hooks/useMobile';
+import { Text } from '@/app/components/ui/Text';
 
 interface listComposersProps {
   composers: composerHomeProps[];
@@ -108,10 +109,10 @@ const ListComposers: React.FC<listComposersProps> = ({ composers }) => {
             </button>
 
             {/* Progress info */}
-            <p className="text-theme-tertiary text-sm">
+            <Text papel="rotulo" tom="fraco" as="p">
               {t('more')} {composers.length - visibleCount}{' '}
               {t('composers_avaliable')}
-            </p>
+            </Text>
           </div>
         ) : (
           <div className="space-y-6">
@@ -125,10 +126,10 @@ const ListComposers: React.FC<listComposersProps> = ({ composers }) => {
               <h4 className="text-lg font-bold text-theme-primary classical-title mb-2">
                 {t('all_composers_show')}
               </h4>
-              <p className="text-theme-secondary text-sm mb-4">
+              <Text papel="rotulo" tom="suave" as="p" className="mb-4">
                 {t('composers_explored')} {composers.length}{' '}
                 {t('collection_composers')}
-              </p>
+              </Text>
             </div>
 
             {/* See All Button */}

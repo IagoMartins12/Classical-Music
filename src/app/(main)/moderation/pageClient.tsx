@@ -38,6 +38,7 @@ import { listModerations, resolveModeration } from '@/app/requests/moderation';
 import Checkbox from '@/app/components/Common/Checkbox';
 import { useTranslation } from '@/app/context/TranslationContext';
 import { Inline } from '@/app/components/ui/Layout';
+import { Text } from '@/app/components/ui/Text';
 
 interface ModerationClientProps {
   page: number;
@@ -308,21 +309,21 @@ const ModerationClient = ({
                       onChange={(e) => handleSelectAll(e.target.checked)}
                       className="rounded border-theme-primary"
                     />
-                    <span className="text-sm font-medium text-theme-primary">
+                    <Text papel="rotulo" tom="forte" className="font-medium">
                       {t('moderation_select_all').replace(
                         '{count}',
                         moderations.length.toString()
                       )}
-                    </span>
+                    </Text>
                   </Inline>
 
                   {selectedReports.length > 0 && (
-                    <span className="text-sm text-theme-secondary">
+                    <Text papel="rotulo" tom="suave">
                       {t('moderation_selected_count').replace(
                         '{count}',
                         selectedReports.length.toString()
                       )}
-                    </span>
+                    </Text>
                   )}
                 </Inline>
 
@@ -396,10 +397,10 @@ const ModerationClient = ({
                               priority={moderation.priority || 'normal'}
                               createdAt={moderation.createdAt}
                             />
-                            <span className="text-xs text-theme-tertiary">
+                            <Text papel="legenda" tom="fraco">
                               {moderation.entityType.charAt(0).toUpperCase() +
                                 moderation.entityType.slice(1)}
-                            </span>
+                            </Text>
                           </Inline>
 
                           <Inline gap={2} className="mb-1">
@@ -416,9 +417,14 @@ const ModerationClient = ({
                               )}
                           </Inline>
 
-                          <p className="text-sm text-theme-secondary mb-2">
+                          <Text
+                            papel="rotulo"
+                            tom="suave"
+                            as="p"
+                            className="mb-2"
+                          >
                             {getEntitySubtitle(moderation)}
-                          </p>
+                          </Text>
 
                           <Inline
                             gap={4}
@@ -447,17 +453,22 @@ const ModerationClient = ({
                           </Inline>
 
                           {moderation.description && (
-                            <p className="text-sm text-theme-secondary italic">
+                            <Text
+                              papel="rotulo"
+                              tom="suave"
+                              as="p"
+                              className="italic"
+                            >
                               &quot;{moderation.description}&quot;
-                            </p>
+                            </Text>
                           )}
 
                           {moderation.moderationNotes && (
                             <div className="mt-2 p-2 bg-theme-secondary rounded-lg">
-                              <p className="text-sm text-theme-primary">
+                              <Text papel="rotulo" tom="forte" as="p">
                                 <strong>{t('moderation_notes_label')}</strong>{' '}
                                 {moderation.moderationNotes}
-                              </p>
+                              </Text>
                             </div>
                           )}
                         </div>

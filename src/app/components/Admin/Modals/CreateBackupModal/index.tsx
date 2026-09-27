@@ -13,6 +13,7 @@ import Button from '@/app/components/Common/Button';
 import Select from '@/app/components/Common/Select';
 import Input from '@/app/components/Common/Inputs';
 import { Inline } from '@/app/components/ui/Layout';
+import { Text } from '@/app/components/ui/Text';
 
 interface CreateBackupModalProps {
   isOpen: boolean;
@@ -77,9 +78,9 @@ export default function CreateBackupModal({
               <h2 className="text-xl font-bold text-theme-primary">
                 Criar Backup
               </h2>
-              <p className="text-sm text-theme-tertiary">
+              <Text papel="rotulo" tom="fraco" as="p">
                 Configure um novo backup do sistema
-              </p>
+              </Text>
             </div>
           </Inline>
           <button
@@ -165,9 +166,9 @@ export default function CreateBackupModal({
                 <PiDatabase className="w-5 h-5 text-accent-blue" />
                 <div>
                   <div className="font-medium text-theme-primary">Database</div>
-                  <div className="text-xs text-theme-tertiary">
+                  <Text papel="legenda" tom="fraco" as="div">
                     Dados da aplicação
-                  </div>
+                  </Text>
                 </div>
               </Inline>
 
@@ -190,9 +191,9 @@ export default function CreateBackupModal({
                 <PiHardDrive className="w-5 h-5 text-accent-green" />
                 <div>
                   <div className="font-medium text-theme-primary">Arquivos</div>
-                  <div className="text-xs text-theme-tertiary">
+                  <Text papel="legenda" tom="fraco" as="div">
                     PDFs e uploads
-                  </div>
+                  </Text>
                 </div>
               </Inline>
             </div>

@@ -13,6 +13,7 @@ import {
   PiUsers,
 } from 'react-icons/pi';
 import { AnimatedCard } from '../../animation/AnimatedComponents';
+import { Text } from '@/app/components/ui/Text';
 
 interface UploadStatsProps {
   userId: string;
@@ -66,12 +67,16 @@ const UploadStats = ({ userId, isAdmin }: UploadStatsProps) => {
           <div className="w-10 h-10 bg-gradient-to-br from-brand-primary to-brand-secondary rounded-xl flex items-center justify-center">
             <PiTrendUp className="w-5 h-5 text-theme-primary" />
           </div>
-          <span className="text-xs text-theme-tertiary">Total</span>
+          <Text papel="legenda" tom="fraco">
+            Total
+          </Text>
         </div>
         <div className="text-2xl font-bold text-theme-primary">
           {stats.totalUploads}
         </div>
-        <div className="text-sm text-theme-secondary">Uploads realizados</div>
+        <Text papel="rotulo" tom="suave" as="div">
+          Uploads realizados
+        </Text>
         {stats.monthlyGrowth && (
           <div className="text-xs text-accent-green mt-1">
             +{stats.monthlyGrowth}% este mês
@@ -84,12 +89,16 @@ const UploadStats = ({ userId, isAdmin }: UploadStatsProps) => {
           <div className="w-10 h-10 bg-gradient-to-br from-accent-purple to-accent-blue rounded-xl flex items-center justify-center">
             <PiUser className="w-5 h-5 text-theme-primary" />
           </div>
-          <span className="text-xs text-theme-tertiary">Compositores</span>
+          <Text papel="legenda" tom="fraco">
+            Compositores
+          </Text>
         </div>
         <div className="text-2xl font-bold text-theme-primary">
           {stats.composerCount}
         </div>
-        <div className="text-sm text-theme-secondary">Criados</div>
+        <Text papel="rotulo" tom="suave" as="div">
+          Criados
+        </Text>
         {stats.averageComposerQuality && (
           <div className="text-xs text-accent-blue mt-1">
             {stats.averageComposerQuality.toFixed(1)}% qualidade média
@@ -102,12 +111,16 @@ const UploadStats = ({ userId, isAdmin }: UploadStatsProps) => {
           <div className="w-10 h-10 bg-gradient-to-br from-accent-blue to-accent-green rounded-xl flex items-center justify-center">
             <PiMusicNotes className="w-5 h-5 text-theme-primary" />
           </div>
-          <span className="text-xs text-theme-tertiary">Obras</span>
+          <Text papel="legenda" tom="fraco">
+            Obras
+          </Text>
         </div>
         <div className="text-2xl font-bold text-theme-primary">
           {stats.workCount}
         </div>
-        <div className="text-sm text-theme-secondary">Adicionadas</div>
+        <Text papel="rotulo" tom="suave" as="div">
+          Adicionadas
+        </Text>
         {stats.popularWorkCount && (
           <div className="text-xs text-accent-green mt-1">
             {stats.popularWorkCount} populares
@@ -120,16 +133,20 @@ const UploadStats = ({ userId, isAdmin }: UploadStatsProps) => {
           <div className="w-10 h-10 bg-gradient-to-br from-accent-green to-accent-amber rounded-xl flex items-center justify-center">
             <PiFile className="w-5 h-5 text-theme-primary" />
           </div>
-          <span className="text-xs text-theme-tertiary">Partituras</span>
+          <Text papel="legenda" tom="fraco">
+            Partituras
+          </Text>
         </div>
         <div className="text-2xl font-bold text-theme-primary">
           {stats.scoreCount}
         </div>
-        <div className="text-sm text-theme-secondary">Submetidas</div>
+        <Text papel="rotulo" tom="suave" as="div">
+          Submetidas
+        </Text>
         {stats.totalFileSize && (
-          <div className="text-xs text-theme-tertiary mt-1">
+          <Text papel="legenda" tom="fraco" as="div" className="mt-1">
             {stats.totalFileSize} total
-          </div>
+          </Text>
         )}
       </AnimatedCard>
 
@@ -140,12 +157,16 @@ const UploadStats = ({ userId, isAdmin }: UploadStatsProps) => {
               <div className="w-10 h-10 bg-gradient-to-br from-accent-amber to-accent-red rounded-xl flex items-center justify-center">
                 <PiUsers className="w-5 h-5 text-theme-primary" />
               </div>
-              <span className="text-xs text-theme-tertiary">Usuários</span>
+              <Text papel="legenda" tom="fraco">
+                Usuários
+              </Text>
             </div>
             <div className="text-2xl font-bold text-theme-primary">
               {stats.activeUsers}
             </div>
-            <div className="text-sm text-theme-secondary">Ativos</div>
+            <Text papel="rotulo" tom="suave" as="div">
+              Ativos
+            </Text>
             {stats.newUsersThisMonth && (
               <div className="text-xs text-accent-green mt-1">
                 +{stats.newUsersThisMonth} este mês
@@ -158,12 +179,16 @@ const UploadStats = ({ userId, isAdmin }: UploadStatsProps) => {
               <div className="w-10 h-10 bg-gradient-to-br from-accent-red to-brand-primary rounded-xl flex items-center justify-center">
                 <PiPulse className="w-5 h-5 text-theme-primary" />
               </div>
-              <span className="text-xs text-theme-tertiary">Atividade</span>
+              <Text papel="legenda" tom="fraco">
+                Atividade
+              </Text>
             </div>
             <div className="text-2xl font-bold text-theme-primary">
               {stats.dailyActivity}
             </div>
-            <div className="text-sm text-theme-secondary">Hoje</div>
+            <Text papel="rotulo" tom="suave" as="div">
+              Hoje
+            </Text>
             {stats.weeklyGrowth && (
               <div className="text-xs text-accent-green mt-1">
                 +{stats.weeklyGrowth}% esta semana
@@ -176,12 +201,16 @@ const UploadStats = ({ userId, isAdmin }: UploadStatsProps) => {
               <div className="w-10 h-10 bg-gradient-to-br from-brand-primary to-accent-purple rounded-xl flex items-center justify-center">
                 <PiMedal className="w-5 h-5 text-theme-primary" />
               </div>
-              <span className="text-xs text-theme-tertiary">Qualidade</span>
+              <Text papel="legenda" tom="fraco">
+                Qualidade
+              </Text>
             </div>
             <div className="text-2xl font-bold text-theme-primary">
               {stats.averageQuality}%
             </div>
-            <div className="text-sm text-theme-secondary">Média geral</div>
+            <Text papel="rotulo" tom="suave" as="div">
+              Média geral
+            </Text>
             {stats.highQualityCount && (
               <div className="text-xs text-accent-green mt-1">
                 {stats.highQualityCount} alta qualidade
@@ -194,12 +223,16 @@ const UploadStats = ({ userId, isAdmin }: UploadStatsProps) => {
               <div className="w-10 h-10 bg-gradient-to-br from-accent-purple to-accent-blue rounded-xl flex items-center justify-center">
                 <PiCalendarBlank className="w-5 h-5 text-theme-primary" />
               </div>
-              <span className="text-xs text-theme-tertiary">Pendências</span>
+              <Text papel="legenda" tom="fraco">
+                Pendências
+              </Text>
             </div>
             <div className="text-2xl font-bold text-theme-primary">
               {stats.pendingModerations}
             </div>
-            <div className="text-sm text-theme-secondary">Para moderar</div>
+            <Text papel="rotulo" tom="suave" as="div">
+              Para moderar
+            </Text>
             {stats.urgentModerations && (
               <div className="text-xs text-accent-red mt-1">
                 {stats.urgentModerations} urgentes

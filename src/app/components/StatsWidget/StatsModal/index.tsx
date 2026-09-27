@@ -12,6 +12,7 @@ import {
 } from 'react-icons/pi';
 import { AnimatedCard } from '../../animation/AnimatedComponents';
 import { Inline } from '@/app/components/ui/Layout';
+import { Text } from '@/app/components/ui/Text';
 
 interface StatsModalProps {
   isOpen: boolean;
@@ -202,9 +203,9 @@ export default function StatsModal({
                 </div>
                 <div>
                   <h3 className="font-bold text-theme-primary">{title}</h3>
-                  <p className="text-sm text-theme-tertiary">
+                  <Text papel="rotulo" tom="fraco" as="p">
                     {isLandscape ? 'Modo paisagem ativo' : 'Toque para navegar'}
-                  </p>
+                  </Text>
                 </div>
               </Inline>
 
@@ -254,7 +255,9 @@ export default function StatsModal({
                   className="justify-center py-3 bg-theme-secondary rounded-xl hover:bg-theme-primary transition-colors"
                 >
                   <PiDownloadSimple className="w-4 h-4 text-theme-tertiary" />
-                  <span className="text-sm text-theme-tertiary">Exportar</span>
+                  <Text papel="rotulo" tom="fraco">
+                    Exportar
+                  </Text>
                 </Inline>
 
                 <button

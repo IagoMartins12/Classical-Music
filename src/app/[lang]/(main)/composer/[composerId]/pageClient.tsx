@@ -45,6 +45,7 @@ import ComposerArticlesSection from '@/app/components/ComposerArticlesSection';
 import { useSession } from '@/app/libs/session';
 import { canEditCatalog, canVerifyCatalog } from '@/app/utils/permissions';
 import { Inline } from '@/app/components/ui/Layout';
+import { Text } from '@/app/components/ui/Text';
 
 interface ComposerDetailsClientProps {
   composer: ComposerDetails;
@@ -369,9 +370,13 @@ export default function ComposerDetailsClient({
                         <div className="flex-1 flex-row ">
                           <p className="space-x-2 text-xl text-theme-secondary mt-3">
                             {t('alternative_names_label')}{' '}
-                            <span className="text-sm font-medium text-theme-tertiary ">
+                            <Text
+                              papel="rotulo"
+                              tom="fraco"
+                              className="font-medium"
+                            >
                               {composer.alternativeNames}
-                            </span>
+                            </Text>
                           </p>
                         </div>
                       </div>
@@ -388,9 +393,14 @@ export default function ComposerDetailsClient({
                             <PiCalendarBlank className="w-4 h-4 text-theme-primary" />
                           </div>
                           <div>
-                            <p className="text-sm font-medium text-theme-tertiary">
+                            <Text
+                              papel="rotulo"
+                              tom="fraco"
+                              as="p"
+                              className="font-medium"
+                            >
                               {t('birth_label')}
-                            </p>
+                            </Text>
                             <p className="text-theme-primary font-semibold">
                               {formatDate(composer.birthDate)}
                             </p>
@@ -405,15 +415,24 @@ export default function ComposerDetailsClient({
                             <PiCalendarBlank className="w-4 h-4 text-theme-primary" />
                           </div>
                           <div>
-                            <p className="text-sm font-medium text-theme-tertiary">
+                            <Text
+                              papel="rotulo"
+                              tom="fraco"
+                              as="p"
+                              className="font-medium"
+                            >
                               {t('death_label')}
-                            </p>
+                            </Text>
                             <p className="text-theme-primary font-semibold">
                               {formatDate(composer.deathDate)}
                               {lifeSpan && (
-                                <span className="text-theme-secondary ml-2 text-sm">
+                                <Text
+                                  papel="rotulo"
+                                  tom="suave"
+                                  className="ml-2"
+                                >
                                   ({lifeSpan} {t('years_suffix')})
-                                </span>
+                                </Text>
                               )}
                             </p>
                           </div>
@@ -425,9 +444,14 @@ export default function ComposerDetailsClient({
                               <PiHeart className="w-4 h-4 text-theme-primary" />
                             </div>
                             <div>
-                              <p className="text-sm font-medium text-theme-tertiary">
+                              <Text
+                                papel="rotulo"
+                                tom="fraco"
+                                as="p"
+                                className="font-medium"
+                              >
                                 {t('age_label')}
-                              </p>
+                              </Text>
                               <p className="text-theme-primary font-semibold">
                                 {lifeSpan} {t('years_suffix')}
                                 <span className="text-accent-green ml-2 text-sm">
@@ -445,9 +469,14 @@ export default function ComposerDetailsClient({
                           <PiMapPin className="w-4 h-4 text-theme-primary" />
                         </div>
                         <div>
-                          <p className="text-sm font-medium text-theme-tertiary">
+                          <Text
+                            papel="rotulo"
+                            tom="fraco"
+                            as="p"
+                            className="font-medium"
+                          >
                             {t('epoch_label')}
-                          </p>
+                          </Text>
                           <p className="text-brand-primary font-semibold">
                             {translateEpochWithHook(composer.epochName, t)}
                           </p>
@@ -461,9 +490,14 @@ export default function ComposerDetailsClient({
                             <PiUser className="w-4 h-4 text-theme-primary" />
                           </div>
                           <div>
-                            <p className="text-sm font-medium text-theme-tertiary">
+                            <Text
+                              papel="rotulo"
+                              tom="fraco"
+                              as="p"
+                              className="font-medium"
+                            >
                               {t('primary_role_label')}
-                            </p>
+                            </Text>
                             <p className="text-theme-primary font-semibold">
                               {translateRole(
                                 composer.primaryRoleName,
@@ -480,9 +514,14 @@ export default function ComposerDetailsClient({
                             {nationalityDisplay.flag}
                           </div>
                           <div>
-                            <p className="text-sm font-medium text-theme-tertiary">
+                            <Text
+                              papel="rotulo"
+                              tom="fraco"
+                              as="p"
+                              className="font-medium"
+                            >
                               {t('nationality_label')}
-                            </p>
+                            </Text>
                             <p className="text-theme-primary font-semibold">
                               {nationalityDisplay.countryName}
                             </p>
@@ -496,9 +535,14 @@ export default function ComposerDetailsClient({
                             <PiUser className="w-4 h-4 text-theme-primary" />
                           </div>
                           <div className="flex flex-col ">
-                            <p className="text-sm font-medium text-theme-tertiary">
+                            <Text
+                              papel="rotulo"
+                              tom="fraco"
+                              as="p"
+                              className="font-medium"
+                            >
                               {t('instruments_label')}
-                            </p>
+                            </Text>
                             <p className="text-theme-primary font-semibold break-all">
                               {translateInstruments(composer.instruments)}.
                             </p>
@@ -643,7 +687,7 @@ export default function ComposerDetailsClient({
               {secondaryRoles.length > 5 && (
                 <AnimatedItem direction="up" springType="gentle">
                   <div className="mt-6 p-4 bg-gradient-to-r from-theme-elevated to-interactive-hover rounded-xl border border-theme-primary">
-                    <p className="text-sm text-theme-secondary">
+                    <Text papel="rotulo" tom="suave" as="p">
                       <strong className="text-brand-primary">
                         {composer.name}
                       </strong>{' '}
@@ -652,7 +696,7 @@ export default function ComposerDetailsClient({
                         {secondaryRoles.length} {t('versatility_text_part2')}
                       </strong>{' '}
                       {t('versatility_text_part3')}
-                    </p>
+                    </Text>
                   </div>
                 </AnimatedItem>
               )}
@@ -676,10 +720,15 @@ export default function ComposerDetailsClient({
                     <PiInfo className="w-4 h-4 text-theme-tertiary" />
                   </div>
                   {/* Tooltip */}
-                  <div className="absolute bottom-full right-0 mb-2 px-3 py-2 bg-theme-elevated border border-theme-primary text-theme-primary text-xs rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none whitespace-nowrap z-10 shadow-theme-medium">
+                  <Text
+                    papel="legenda"
+                    tom="forte"
+                    as="div"
+                    className="absolute bottom-full right-0 mb-2 px-3 py-2 bg-theme-elevated border border-theme-primary rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none whitespace-nowrap z-10 shadow-theme-medium"
+                  >
                     {t('biography_ai_tooltip')}
                     <div className="absolute top-full right-3 w-0 h-0 border-l-4 border-r-4 border-t-4 border-transparent border-t-theme-elevated"></div>
-                  </div>
+                  </Text>
                 </div>
               </Inline>
             </AnimatedItem>

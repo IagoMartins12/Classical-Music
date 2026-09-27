@@ -17,6 +17,7 @@ import AnimatedMusicalNotes2 from '../../../components/AnimatedMusicalNotes2';
 import ViewModeToggle from '../../../components/ViewModeToggle';
 import { useTranslation } from '@/app/context/TranslationContext';
 import { Inline } from '@/app/components/ui/Layout';
+import { Text } from '@/app/components/ui/Text';
 
 interface Genre {
   id: string;
@@ -261,7 +262,7 @@ export default function GenresClient({ genres }: GenresClientProps) {
                     <h2 className="text-xl font-bold text-theme-primary classical-title">
                       {t('section_letter_title').replace('{letter}', letter)}
                     </h2>
-                    <p className="text-theme-secondary text-sm">
+                    <Text papel="rotulo" tom="suave" as="p">
                       {genresInGroup.length === 1
                         ? t('section_count_singular').replace(
                             '{count}',
@@ -271,7 +272,7 @@ export default function GenresClient({ genres }: GenresClientProps) {
                             '{count}',
                             genresInGroup.length.toString()
                           )}
-                    </p>
+                    </Text>
                   </div>
                   <div className="ml-4 transition-transform duration-300 group-hover:scale-110">
                     {isSectionCollapsed(letter) ? (

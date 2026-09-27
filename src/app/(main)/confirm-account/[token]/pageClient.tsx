@@ -16,6 +16,7 @@ import Button from '@/app/components/Common/Button';
 import Link from 'next/link';
 import { useOnboardingModal } from '@/app/stores/authStore';
 import { useTranslation } from '@/app/context/TranslationContext';
+import { Text } from '@/app/components/ui/Text';
 
 interface ConfirmationState {
   status: 'loading' | 'success' | 'error' | 'already-confirmed';
@@ -253,7 +254,7 @@ export default function ConfirmAccountPage() {
               </Button>
             </div>
 
-            <div className="mt-8 text-sm text-theme-tertiary">
+            <Text papel="rotulo" tom="fraco" as="div" className="mt-8">
               {!isOpen && (
                 <span>
                   {t(
@@ -261,7 +262,7 @@ export default function ConfirmAccountPage() {
                   )}
                 </span>
               )}
-            </div>
+            </Text>
           </div>
         );
 
@@ -410,7 +411,7 @@ export default function ConfirmAccountPage() {
 
           {/* Footer */}
           <div className="mt-12 pt-8 border-t border-theme-secondary text-center">
-            <p className="text-sm text-theme-tertiary">
+            <Text papel="rotulo" tom="fraco" as="p">
               {t('pages_token_jsx_p_children_0__precisa_ajuda')}{' '}
               <Link
                 href="/support"
@@ -418,7 +419,7 @@ export default function ConfirmAccountPage() {
               >
                 {t('pages_token_jsx_link_children_0__entre_contato')}
               </Link>
-            </p>
+            </Text>
           </div>
         </div>
       </div>

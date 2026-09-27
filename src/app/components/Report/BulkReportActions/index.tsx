@@ -7,6 +7,7 @@ import Button from '@/app/components/Common/Button';
 import { useToast } from '@/app/hooks/useToast';
 import { resolveModerations } from '@/app/requests/moderation';
 import { Inline } from '@/app/components/ui/Layout';
+import { Text } from '@/app/components/ui/Text';
 
 interface BulkReportActionsProps {
   selectedReports: string[];
@@ -50,9 +51,9 @@ export default function BulkReportActions({
   return (
     <div className="fixed bottom-6 left-1/2 transform -translate-x-1/2 bg-theme-elevated border border-theme-primary rounded-2xl p-4 shadow-theme-glow z-50">
       <Inline gap={4}>
-        <div className="text-sm font-medium text-theme-primary">
+        <Text papel="rotulo" tom="forte" as="div" className="font-medium">
           {selectedReports.length} report(s) selecionado(s)
-        </div>
+        </Text>
 
         <Inline gap={2}>
           <Button

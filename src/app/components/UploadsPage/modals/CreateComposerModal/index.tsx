@@ -56,6 +56,7 @@ import {
   translateBiographyText,
 } from '@/app/requests/composer-biography';
 import { Inline } from '@/app/components/ui/Layout';
+import { Text } from '@/app/components/ui/Text';
 
 interface DuplicateCheckState {
   loading: boolean;
@@ -923,11 +924,11 @@ const CreateComposerModal = ({
                     ? t('modal_composer_title_edit')
                     : t('modal_composer_title_create')}
                 </h2>
-                <p className="text-theme-secondary text-sm">
+                <Text papel="rotulo" tom="suave" as="p">
                   {editingComposer
                     ? t('modal_composer_subtitle_edit')
                     : t('modal_composer_subtitle_create')}
-                </p>
+                </Text>
               </div>
             </Inline>
           </div>
@@ -940,9 +941,9 @@ const CreateComposerModal = ({
                 <div className="flex items-center justify-between mb-4">
                   <Inline gap={2}>
                     <PiDatabase className="w-4 h-4 text-theme-tertiary" />
-                    <span className="text-sm font-medium text-theme-primary">
+                    <Text papel="rotulo" tom="forte" className="font-medium">
                       {t('modal_composer_scraping_title')}
-                    </span>
+                    </Text>
                     {isEditingExternalSource && (
                       <Inline
                         gap={1}
@@ -1241,9 +1242,9 @@ const CreateComposerModal = ({
                       }`}
                     />
 
-                    <p className="text-xs text-theme-tertiary mt-1">
+                    <Text papel="legenda" tom="fraco" as="p" className="mt-1">
                       {t('modal_composer_dates_death_note')}
-                    </p>
+                    </Text>
                   </div>
                 </div>
               </AnimatedCard>
@@ -1506,9 +1507,9 @@ const CreateComposerModal = ({
                       placeholder="https://www.youtube.com/watch?v=... ou outro vídeo"
                       leftIcon={<PiPlay />}
                     />
-                    <p className="text-xs text-theme-tertiary mt-1">
+                    <Text papel="legenda" tom="fraco" as="p" className="mt-1">
                       {t('modal_composer_external_video_description')}
-                    </p>
+                    </Text>
                   </div>
                 </div>
               </AnimatedCard>
@@ -1669,9 +1670,9 @@ const CreateComposerModal = ({
                         ? 'Biografia em Português'
                         : 'Biography in English'}
                     </label>
-                    <span className="text-xs text-theme-tertiary">
+                    <Text papel="legenda" tom="fraco">
                       {biographies[biographyTab]?.length || 0} caracteres
-                    </span>
+                    </Text>
                   </div>
 
                   <textarea
@@ -1700,12 +1701,17 @@ const CreateComposerModal = ({
                       <Inline gap={2}>
                         <span className="text-xl">🇧🇷</span>
                         <div>
-                          <p className="text-xs text-theme-tertiary">
+                          <Text papel="legenda" tom="fraco" as="p">
                             Português
-                          </p>
-                          <p className="text-sm font-semibold text-theme-primary">
+                          </Text>
+                          <Text
+                            papel="rotulo"
+                            tom="forte"
+                            as="p"
+                            className="font-semibold"
+                          >
                             {biographies.pt ? 'Preenchida' : 'Vazia'}
-                          </p>
+                          </Text>
                         </div>
                       </Inline>
                       {biographies.pt && (
@@ -1719,10 +1725,17 @@ const CreateComposerModal = ({
                       <Inline gap={2}>
                         <span className="text-xl">🇺🇸</span>
                         <div>
-                          <p className="text-xs text-theme-tertiary">English</p>
-                          <p className="text-sm font-semibold text-theme-primary">
+                          <Text papel="legenda" tom="fraco" as="p">
+                            English
+                          </Text>
+                          <Text
+                            papel="rotulo"
+                            tom="forte"
+                            as="p"
+                            className="font-semibold"
+                          >
                             {biographies.en ? 'Filled' : 'Empty'}
-                          </p>
+                          </Text>
                         </div>
                       </Inline>
                       {biographies.en && (

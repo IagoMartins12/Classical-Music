@@ -3,6 +3,7 @@
 
 import React, { forwardRef, useId, useState, useEffect } from 'react';
 import { PiEye, PiEyeSlash, PiWarningCircle } from 'react-icons/pi';
+import { Text } from '@/app/components/ui/Text';
 
 interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> {
   label?: string;
@@ -134,7 +135,9 @@ const Input = forwardRef<HTMLInputElement, InputProps>(
         )}
 
         {helperText && !error && (
-          <p className="mt-1 text-sm text-theme-tertiary">{helperText}</p>
+          <Text papel="rotulo" tom="fraco" as="p" className="mt-1">
+            {helperText}
+          </Text>
         )}
       </div>
     );

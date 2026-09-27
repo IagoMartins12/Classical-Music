@@ -34,6 +34,7 @@ import LoadingAdminState from '../../Common/LoadingState';
 import EditCampaignModal from '../EditCampaignModal';
 import { cancelCampaignRequest } from '@/app/requests/admin/newsletter';
 import { Inline } from '@/app/components/ui/Layout';
+import { Text } from '@/app/components/ui/Text';
 
 interface FilterState {
   status: string;
@@ -264,7 +265,9 @@ export default function NewsletterCampaignsClient() {
             <AnimatedCard className="classical-card p-6">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm text-theme-tertiary mb-1">Total</p>
+                  <Text papel="rotulo" tom="fraco" as="p" className="mb-1">
+                    Total
+                  </Text>
                   <p className="text-3xl font-bold text-theme-primary">
                     {campaigns.length}
                   </p>
@@ -279,7 +282,9 @@ export default function NewsletterCampaignsClient() {
             <AnimatedCard className="classical-card p-6">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm text-theme-tertiary mb-1">Enviadas</p>
+                  <Text papel="rotulo" tom="fraco" as="p" className="mb-1">
+                    Enviadas
+                  </Text>
                   <p className="text-3xl font-bold text-accent-green">
                     {campaigns.filter((c) => c.status === 'SENT').length}
                   </p>
@@ -294,7 +299,9 @@ export default function NewsletterCampaignsClient() {
             <AnimatedCard className="classical-card p-6">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm text-theme-tertiary mb-1">Agendadas</p>
+                  <Text papel="rotulo" tom="fraco" as="p" className="mb-1">
+                    Agendadas
+                  </Text>
                   <p className="text-3xl font-bold text-accent-purple">
                     {campaigns.filter((c) => c.status === 'SCHEDULED').length}
                   </p>
@@ -309,9 +316,9 @@ export default function NewsletterCampaignsClient() {
             <AnimatedCard className="classical-card p-6">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm text-theme-tertiary mb-1">
+                  <Text papel="rotulo" tom="fraco" as="p" className="mb-1">
                     Prontas p/ Teste
-                  </p>
+                  </Text>
                   <p className="text-3xl font-bold text-accent-purple">
                     {
                       campaigns.filter(
@@ -330,7 +337,9 @@ export default function NewsletterCampaignsClient() {
             <AnimatedCard className="classical-card p-6">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm text-theme-tertiary mb-1">Rascunhos</p>
+                  <Text papel="rotulo" tom="fraco" as="p" className="mb-1">
+                    Rascunhos
+                  </Text>
                   <p className="text-3xl font-bold text-accent-amber">
                     {campaigns.filter((c) => c.status === 'DRAFT').length}
                   </p>
@@ -443,9 +452,9 @@ export default function NewsletterCampaignsClient() {
                             <h3 className="font-medium text-theme-primary">
                               {campaign.name}
                             </h3>
-                            <p className="text-sm text-theme-secondary">
+                            <Text papel="rotulo" tom="suave" as="p">
                               {campaign.subject}
-                            </p>
+                            </Text>
                             <Inline
                               gap={2}
                               className="text-xs text-theme-tertiary mt-1"
@@ -640,7 +649,7 @@ export default function NewsletterCampaignsClient() {
             {/* Pagination */}
             {campaignsPagination && campaignsPagination.pages > 1 && (
               <div className="flex items-center justify-between mt-6">
-                <div className="text-sm text-theme-tertiary">
+                <Text papel="rotulo" tom="fraco" as="div">
                   Mostrando{' '}
                   {(campaignsPagination.page - 1) * campaignsPagination.limit +
                     1}{' '}
@@ -650,7 +659,7 @@ export default function NewsletterCampaignsClient() {
                     campaignsPagination.total
                   )}{' '}
                   de {campaignsPagination.total} campanhas
-                </div>
+                </Text>
                 <Inline gap={2}>
                   <Button
                     variant="ghost"
@@ -662,9 +671,9 @@ export default function NewsletterCampaignsClient() {
                   >
                     Anterior
                   </Button>
-                  <span className="text-sm text-theme-primary">
+                  <Text papel="rotulo" tom="forte">
                     {campaignsPagination.page} de {campaignsPagination.pages}
-                  </span>
+                  </Text>
                   <Button
                     variant="ghost"
                     size="sm"

@@ -24,6 +24,7 @@ import Input from '../../Common/Inputs';
 import TermsAcceptance from '../TermsAcceptance';
 import { useTranslation } from '@/app/hooks/useTranslation';
 import { Language } from '@/app/stores/useLanguageStore';
+import { Text } from '@/app/components/ui/Text';
 interface RegisterStep {
   step: 'form' | 'success' | 'confirmation-sent';
   userData?: {
@@ -571,15 +572,15 @@ const RegisterModal: React.FC = () => {
         {/* Informação adicional - adaptada para Google */}
         <div className="text-center pt-4 border-t border-theme-secondary">
           {registerStep.userData?.registrationMethod === 'google' ? (
-            <p className="text-xs text-theme-tertiary">
+            <Text papel="legenda" tom="fraco" as="p">
               {t('register_success_google_tip')}
-            </p>
+            </Text>
           ) : (
-            <p className="text-xs text-theme-tertiary">
+            <Text papel="legenda" tom="fraco" as="p">
               {t('register_success_email_tip')}
               <br />
               {t('register_success_email_tip_2')}
-            </p>
+            </Text>
           )}
         </div>
       </div>
@@ -621,9 +622,9 @@ const RegisterModal: React.FC = () => {
               disabled={isLoading || isGoogleLoading}
               autoComplete="username"
             />
-            <p className="text-xs text-theme-tertiary mt-1">
+            <Text papel="legenda" tom="fraco" as="p" className="mt-1">
               {t('register_modal_username_hint')}
-            </p>
+            </Text>
           </div>
         </div>
 

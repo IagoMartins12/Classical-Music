@@ -12,6 +12,7 @@ import { useSmartFormChanges } from '@/app/hooks/useFormChanges';
 import { saveVenue } from '@/app/requests/calendar-requests';
 import Image from '@/app/components/SmartImage';
 import { Inline } from '@/app/components/ui/Layout';
+import { Text } from '@/app/components/ui/Text';
 
 interface CreateVenueModalProps {
   isOpen: boolean;
@@ -219,11 +220,11 @@ export default function CreateVenueModal({
             <h2 className="text-xl font-bold text-theme-primary classical-title">
               {isEditing ? 'Editar Local' : 'Novo Local'}
             </h2>
-            <p className="text-sm text-theme-secondary">
+            <Text papel="rotulo" tom="suave" as="p">
               {isEditing
                 ? 'Atualize as informações do local'
                 : 'Adicione um novo local de eventos'}
-            </p>
+            </Text>
           </div>
         </Inline>
       </div>
@@ -380,9 +381,9 @@ export default function CreateVenueModal({
             placeholder="Descreva o local..."
             maxLength={500}
           />
-          <p className="text-theme-tertiary text-xs mt-1">
+          <Text papel="legenda" tom="fraco" as="p" className="mt-1">
             {formData.description.length}/500 caracteres
-          </p>
+          </Text>
         </div>
 
         {/* Logo URL */}
@@ -401,9 +402,9 @@ export default function CreateVenueModal({
           />
           {formData.logoUrl && (
             <div className="mt-3">
-              <p className="text-sm text-theme-secondary mb-2">
+              <Text papel="rotulo" tom="suave" as="p" className="mb-2">
                 Preview do Logo:
-              </p>
+              </Text>
               <div className="relative w-32 h-32 rounded-lg overflow-hidden border border-theme-secondary bg-white p-2">
                 <Image
                   src={formData.logoUrl}
@@ -437,9 +438,9 @@ export default function CreateVenueModal({
           />
           {formData.coverImageUrl && (
             <div className="mt-3">
-              <p className="text-sm text-theme-secondary mb-2">
+              <Text papel="rotulo" tom="suave" as="p" className="mb-2">
                 Preview da Capa:
-              </p>
+              </Text>
               <div className="relative w-full h-48 rounded-lg overflow-hidden border border-theme-secondary">
                 <Image
                   src={formData.coverImageUrl}
@@ -467,7 +468,9 @@ export default function CreateVenueModal({
               }
               className="w-4 h-4 rounded border-theme-secondary"
             />
-            <span className="text-sm text-theme-primary">Local Ativo</span>
+            <Text papel="rotulo" tom="forte">
+              Local Ativo
+            </Text>
           </Inline>
         </div>
       </div>

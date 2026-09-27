@@ -37,6 +37,7 @@ import {
 } from '@/app/utils/phones_and_location/phoneValidation';
 import { useTranslation } from '@/app/context/TranslationContext';
 import { Inline } from '@/app/components/ui/Layout';
+import { Text } from '@/app/components/ui/Text';
 
 interface PersonalInfoSectionProps {
   user: User;
@@ -280,9 +281,9 @@ const PersonalInfoSection: React.FC<PersonalInfoSectionProps> = ({
           <h3 className="text-lg font-semibold text-theme-primary">
             {t('personal_info_title')}
           </h3>
-          <p className="text-sm text-theme-secondary">
+          <Text papel="rotulo" tom="suave" as="p">
             {t('personal_info_description')}
-          </p>
+          </Text>
         </div>
 
         {!isEditing ? (
@@ -340,14 +341,14 @@ const PersonalInfoSection: React.FC<PersonalInfoSectionProps> = ({
           <h4 className="font-medium text-theme-primary">
             {t('personal_info_profile_photo')}
           </h4>
-          <p className="text-sm text-theme-secondary mb-2">
+          <Text papel="rotulo" tom="suave" as="p" className="mb-2">
             {t('personal_info_photo_description')}
-          </p>
-          <p className="text-xs text-theme-tertiary">
+          </Text>
+          <Text papel="legenda" tom="fraco" as="p">
             {user.image
               ? t('personal_info_photo_instruction_change')
               : t('personal_info_photo_instruction_add')}
-          </p>
+          </Text>
         </div>
       </Inline>
 
@@ -396,9 +397,9 @@ const PersonalInfoSection: React.FC<PersonalInfoSectionProps> = ({
             maxLength={500}
           />
         </div>
-        <p className="text-xs text-theme-tertiary mt-1">
+        <Text papel="legenda" tom="fraco" as="p" className="mt-1">
           {formData.bio.length}/500 {t('personal_info_bio_characters')}
-        </p>
+        </Text>
         {errors.bio && (
           <p className="text-xs text-accent-red mt-1">{errors.bio}</p>
         )}
@@ -455,9 +456,9 @@ const PersonalInfoSection: React.FC<PersonalInfoSectionProps> = ({
         />
 
         {!isEditing && !user.city && !user.state && !user.country && (
-          <p className="text-sm text-theme-tertiary mt-2 italic">
+          <Text papel="rotulo" tom="fraco" as="p" className="mt-2 italic">
             {t('personal_info_location_not_set')}
-          </p>
+          </Text>
         )}
       </div>
     </div>

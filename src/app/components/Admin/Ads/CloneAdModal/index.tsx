@@ -18,6 +18,7 @@ import Select from '@/app/components/Common/Select';
 import Checkbox from '@/app/components/Common/Checkbox';
 import { listInstruments } from '@/app/requests/admin/ads';
 import { Inline } from '@/app/components/ui/Layout';
+import { Text } from '@/app/components/ui/Text';
 
 interface CloneAdModalProps {
   ad: any;
@@ -314,9 +315,9 @@ export default function CloneAdModal({
               <h2 className="text-xl font-bold text-theme-primary">
                 Clonar Anúncio
               </h2>
-              <p className="text-sm text-theme-tertiary">
+              <Text papel="rotulo" tom="fraco" as="p">
                 Criar cópia de &quot;{ad.title}&quot;
-              </p>
+              </Text>
             </div>
           </Inline>
         </div>
@@ -330,11 +331,11 @@ export default function CloneAdModal({
                 <h4 className="font-medium text-theme-primary">
                   Mídia será clonada
                 </h4>
-                <p className="text-sm text-theme-secondary mt-1">
+                <Text papel="rotulo" tom="suave" as="p" className="mt-1">
                   📁 A mídia do anúncio original será copiada para uma nova
                   pasta exclusiva do clone. Todas as versões responsivas serão
                   duplicadas automaticamente.
-                </p>
+                </Text>
               </div>
             </div>
           </div>
@@ -348,10 +349,10 @@ export default function CloneAdModal({
                 <h4 className="font-medium text-theme-primary">
                   Sem mídia para clonar
                 </h4>
-                <p className="text-sm text-theme-secondary mt-1">
+                <Text papel="rotulo" tom="suave" as="p" className="mt-1">
                   O anúncio original não possui mídia. Após clonar, você
                   precisará fazer upload de imagem ou vídeo.
-                </p>
+                </Text>
               </div>
             </div>
           </div>
@@ -368,9 +369,9 @@ export default function CloneAdModal({
                 </h4>
 
                 {conflictInfo.summary && (
-                  <p className="text-sm text-theme-secondary mb-3">
+                  <Text papel="rotulo" tom="suave" as="p" className="mb-3">
                     {conflictInfo.summary}
-                  </p>
+                  </Text>
                 )}
 
                 {conflictInfo.conflicts &&
@@ -385,12 +386,17 @@ export default function CloneAdModal({
                             <div className="font-medium text-sm text-accent-red mb-1">
                               {conflict.type.replace(/_/g, ' ')}
                             </div>
-                            <div className="text-xs text-theme-secondary mb-2">
+                            <Text
+                              papel="legenda"
+                              tom="suave"
+                              as="div"
+                              className="mb-2"
+                            >
                               {conflict.message}
-                            </div>
+                            </Text>
 
                             {conflict.conflictingAd && (
-                              <div className="text-xs text-theme-tertiary">
+                              <Text papel="legenda" tom="fraco" as="div">
                                 Anúncio conflitante:{' '}
                                 <strong>{conflict.conflictingAd.title}</strong>
                                 {conflict.conflictingAd.instrumentName && (
@@ -399,7 +405,7 @@ export default function CloneAdModal({
                                     ({conflict.conflictingAd.instrumentName})
                                   </span>
                                 )}
-                              </div>
+                              </Text>
                             )}
 
                             {conflict.affectedFields &&
@@ -690,7 +696,9 @@ export default function CloneAdModal({
                     }
                     className="rounded border-theme-primary"
                   />
-                  <span className="text-sm text-theme-primary">Mobile</span>
+                  <Text papel="rotulo" tom="forte">
+                    Mobile
+                  </Text>
                 </Inline>
                 <Inline as="label" gap={2}>
                   <Checkbox

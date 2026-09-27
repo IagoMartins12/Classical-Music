@@ -40,6 +40,7 @@ import LoadingAdminState from '../../Common/LoadingState';
 import Modal from '@/app/components/Modal';
 import Checkbox from '@/app/components/Common/Checkbox';
 import { Inline } from '@/app/components/ui/Layout';
+import { Text } from '@/app/components/ui/Text';
 
 export default function SystemPerformance() {
   const {
@@ -437,14 +438,14 @@ export default function SystemPerformance() {
                           <h4 className="font-medium text-theme-primary">
                             {alert.title}
                           </h4>
-                          <p className="text-sm text-theme-secondary">
+                          <Text papel="rotulo" tom="suave" as="p">
                             {alert.message}
-                          </p>
+                          </Text>
                         </div>
                       </Inline>
-                      <div className="text-xs text-theme-tertiary">
+                      <Text papel="legenda" tom="fraco" as="div">
                         {AlertUtils.formatAlertTime(alert.timestamp)}
-                      </div>
+                      </Text>
                     </div>
                   ))}
                 </div>
@@ -469,9 +470,9 @@ export default function SystemPerformance() {
             <div className="space-y-6">
               <div>
                 <div className="flex items-center justify-between mb-2">
-                  <span className="text-sm font-medium text-theme-primary">
+                  <Text papel="rotulo" tom="forte" className="font-medium">
                     CPU Usage
-                  </span>
+                  </Text>
                   <Inline gap={2}>
                     <span className="text-sm font-bold text-accent-amber">
                       {metrics
@@ -479,9 +480,9 @@ export default function SystemPerformance() {
                         : 'N/A'}
                     </span>
                     {metrics?.server.cpu.temperature && (
-                      <span className="text-xs text-theme-tertiary">
+                      <Text papel="legenda" tom="fraco">
                         {metrics.server.cpu.temperature}°C
-                      </span>
+                      </Text>
                     )}
                   </Inline>
                 </div>
@@ -491,17 +492,17 @@ export default function SystemPerformance() {
                     style={{ width: `${metrics?.server.cpu.usage || 0}%` }}
                   />
                 </div>
-                <div className="text-xs text-theme-tertiary mt-1">
+                <Text papel="legenda" tom="fraco" as="div" className="mt-1">
                   {metrics?.server.cpu.cores} cores • Load:{' '}
                   {metrics?.server.cpu.load.map((l) => l.toFixed(1)).join(', ')}
-                </div>
+                </Text>
               </div>
 
               <div>
                 <div className="flex items-center justify-between mb-2">
-                  <span className="text-sm font-medium text-theme-primary">
+                  <Text papel="rotulo" tom="forte" className="font-medium">
                     Memory
-                  </span>
+                  </Text>
                   <span className="text-sm font-bold text-accent-blue">
                     {metrics
                       ? `${metrics.server.memory.used}GB / ${metrics.server.memory.total}GB`
@@ -520,9 +521,9 @@ export default function SystemPerformance() {
 
               <div>
                 <div className="flex items-center justify-between mb-2">
-                  <span className="text-sm font-medium text-theme-primary">
+                  <Text papel="rotulo" tom="forte" className="font-medium">
                     Disk Space
-                  </span>
+                  </Text>
                   <span className="text-sm font-bold text-accent-green">
                     {metrics
                       ? `${metrics.server.disk.used}GB / ${metrics.server.disk.total}GB`
@@ -544,20 +545,24 @@ export default function SystemPerformance() {
                   <div className="text-lg font-bold text-accent-purple">
                     {metrics ? formatUptime(metrics.server.uptime) : 'N/A'}
                   </div>
-                  <div className="text-xs text-theme-tertiary">Uptime</div>
+                  <Text papel="legenda" tom="fraco" as="div">
+                    Uptime
+                  </Text>
                 </div>
                 <div className="text-center">
                   <div className="text-lg font-bold text-accent-blue">
                     {metrics?.server.processes || 0}
                   </div>
-                  <div className="text-xs text-theme-tertiary">Processes</div>
+                  <Text papel="legenda" tom="fraco" as="div">
+                    Processes
+                  </Text>
                 </div>
               </div>
 
               <div className="text-center pt-2 border-t border-theme-secondary">
-                <div className="text-sm text-theme-tertiary">
+                <Text papel="rotulo" tom="fraco" as="div">
                   {metrics?.server.platform} • {metrics?.server.hostname}
-                </div>
+                </Text>
               </div>
             </div>
           </AnimatedCard>
@@ -579,47 +584,49 @@ export default function SystemPerformance() {
                   <div className="text-lg font-bold text-accent-blue">
                     {metrics?.database.connections.active || 0}
                   </div>
-                  <div className="text-xs text-theme-tertiary">
+                  <Text papel="legenda" tom="fraco" as="div">
                     Conexões Ativas
-                  </div>
+                  </Text>
                 </div>
                 <div className="text-center p-3 bg-theme-secondary rounded-xl">
                   <div className="text-lg font-bold text-accent-green">
                     {metrics?.database.queries.average.toFixed(1) || 0}ms
                   </div>
-                  <div className="text-xs text-theme-tertiary">Query Média</div>
+                  <Text papel="legenda" tom="fraco" as="div">
+                    Query Média
+                  </Text>
                 </div>
                 <div className="text-center p-3 bg-theme-secondary rounded-xl">
                   <div className="text-lg font-bold text-accent-amber">
                     {metrics?.database.queries.slow || 0}
                   </div>
-                  <div className="text-xs text-theme-tertiary">
+                  <Text papel="legenda" tom="fraco" as="div">
                     Queries Lentas
-                  </div>
+                  </Text>
                 </div>
               </div>
 
               <div className="space-y-3">
                 <div className="flex items-center justify-between p-3 bg-theme-secondary rounded-xl">
-                  <span className="text-sm text-theme-primary">
+                  <Text papel="rotulo" tom="forte">
                     Database Size
-                  </span>
+                  </Text>
                   <span className="font-medium text-theme-primary">
                     {metrics?.database.size.total || 'N/A'}
                   </span>
                 </div>
                 <div className="flex items-center justify-between p-3 bg-theme-secondary rounded-xl">
-                  <span className="text-sm text-theme-primary">
+                  <Text papel="rotulo" tom="forte">
                     Collections
-                  </span>
+                  </Text>
                   <span className="font-medium text-theme-primary">
                     {metrics?.database.size.tables || 0}
                   </span>
                 </div>
                 <div className="flex items-center justify-between p-3 bg-theme-secondary rounded-xl">
-                  <span className="text-sm text-theme-primary">
+                  <Text papel="rotulo" tom="forte">
                     Cache Hit Rate
-                  </span>
+                  </Text>
                   <span className="font-medium text-theme-primary">
                     {metrics?.database.cache.hitRatio.toFixed(1) || 0}%
                   </span>
@@ -632,21 +639,25 @@ export default function SystemPerformance() {
                     <div className="text-lg font-bold text-accent-green">
                       {metrics?.database.performance.reads || 0}
                     </div>
-                    <div className="text-xs text-theme-tertiary">Reads/min</div>
+                    <Text papel="legenda" tom="fraco" as="div">
+                      Reads/min
+                    </Text>
                   </div>
                   <div>
                     <div className="text-lg font-bold text-accent-blue">
                       {metrics?.database.performance.writes || 0}
                     </div>
-                    <div className="text-xs text-theme-tertiary">
+                    <Text papel="legenda" tom="fraco" as="div">
                       Writes/min
-                    </div>
+                    </Text>
                   </div>
                   <div>
                     <div className="text-lg font-bold text-accent-red">
                       {metrics?.database.performance.locks || 0}
                     </div>
-                    <div className="text-xs text-theme-tertiary">Locks</div>
+                    <Text papel="legenda" tom="fraco" as="div">
+                      Locks
+                    </Text>
                   </div>
                 </div>
               </div>
@@ -679,9 +690,9 @@ export default function SystemPerformance() {
                   <p className="text-theme-primary font-medium">
                     Nenhum alerta ativo
                   </p>
-                  <p className="text-sm text-theme-tertiary">
+                  <Text papel="rotulo" tom="fraco" as="p">
                     Sistema funcionando normalmente
-                  </p>
+                  </Text>
                 </div>
               ) : (
                 activeAlerts.slice(0, 5).map((alert) => (
@@ -699,9 +710,14 @@ export default function SystemPerformance() {
                         <h4 className="font-medium text-theme-primary">
                           {alert.title}
                         </h4>
-                        <p className="text-sm text-theme-secondary mt-1">
+                        <Text
+                          papel="rotulo"
+                          tom="suave"
+                          as="p"
+                          className="mt-1"
+                        >
                           {alert.message}
-                        </p>
+                        </Text>
                         <Inline
                           gap={4}
                           className="mt-2 text-xs text-theme-tertiary"
@@ -773,16 +789,16 @@ export default function SystemPerformance() {
                           >
                             {log.level}
                           </span>
-                          <span className="text-xs text-theme-tertiary">
+                          <Text papel="legenda" tom="fraco">
                             {log.service}
-                          </span>
-                          <span className="text-xs text-theme-tertiary">
+                          </Text>
+                          <Text papel="legenda" tom="fraco">
                             {LogUtils.formatLogTime(log.timestamp)}
-                          </span>
+                          </Text>
                         </Inline>
-                        <p className="text-sm text-theme-primary">
+                        <Text papel="rotulo" tom="forte" as="p">
                           {log.message}
-                        </p>
+                        </Text>
                         {log.details && (
                           <details className="mt-2">
                             <summary className="text-xs text-theme-tertiary cursor-pointer hover:text-theme-primary">
@@ -824,42 +840,48 @@ export default function SystemPerformance() {
                 <div className="text-2xl font-bold text-accent-purple">
                   {metrics?.network.requests.current || 0}
                 </div>
-                <div className="text-sm text-theme-tertiary">Requests/min</div>
+                <Text papel="rotulo" tom="fraco" as="div">
+                  Requests/min
+                </Text>
               </div>
 
               <div className="space-y-3">
                 <div className="flex items-center justify-between">
-                  <span className="text-sm text-theme-primary">
+                  <Text papel="rotulo" tom="forte">
                     Latência P50
-                  </span>
+                  </Text>
                   <span className="font-medium text-accent-green">
                     {metrics?.network.latency.p50 || 0}ms
                   </span>
                 </div>
                 <div className="flex items-center justify-between">
-                  <span className="text-sm text-theme-primary">
+                  <Text papel="rotulo" tom="forte">
                     Latência P95
-                  </span>
+                  </Text>
                   <span className="font-medium text-accent-amber">
                     {metrics?.network.latency.p95 || 0}ms
                   </span>
                 </div>
                 <div className="flex items-center justify-between">
-                  <span className="text-sm text-theme-primary">Error Rate</span>
+                  <Text papel="rotulo" tom="forte">
+                    Error Rate
+                  </Text>
                   <span className="font-medium text-accent-red">
                     {metrics?.network.errors.rate.toFixed(2) || 0}%
                   </span>
                 </div>
                 <div className="flex items-center justify-between">
-                  <span className="text-sm text-theme-primary">Bandwidth</span>
+                  <Text papel="rotulo" tom="forte">
+                    Bandwidth
+                  </Text>
                   <span className="font-medium text-accent-blue">
                     {metrics?.network.bandwidth.total.toFixed(1) || 0} Mbps
                   </span>
                 </div>
                 <div className="flex items-center justify-between">
-                  <span className="text-sm text-theme-primary">
+                  <Text papel="rotulo" tom="forte">
                     Connections
-                  </span>
+                  </Text>
                   <span className="font-medium text-accent-purple">
                     {metrics?.network.connections || 0}
                   </span>
@@ -884,24 +906,26 @@ export default function SystemPerformance() {
                 <div className="text-2xl font-bold text-accent-green">
                   {metrics?.cache.application.hitRate.toFixed(1) || 0}%
                 </div>
-                <div className="text-sm text-theme-tertiary">Hit Rate</div>
+                <Text papel="rotulo" tom="fraco" as="div">
+                  Hit Rate
+                </Text>
               </div>
 
               <div className="space-y-3">
                 {metrics?.cache.redis && (
                   <>
                     <div className="flex items-center justify-between">
-                      <span className="text-sm text-theme-primary">
+                      <Text papel="rotulo" tom="forte">
                         Redis Memory
-                      </span>
+                      </Text>
                       <span className="font-medium text-accent-blue">
                         {metrics.cache.redis.memory}MB
                       </span>
                     </div>
                     <div className="flex items-center justify-between">
-                      <span className="text-sm text-theme-primary">
+                      <Text papel="rotulo" tom="forte">
                         Redis Hit Rate
-                      </span>
+                      </Text>
                       <span className="font-medium text-accent-green">
                         {metrics.cache.redis.ratio.toFixed(1)}%
                       </span>
@@ -909,13 +933,17 @@ export default function SystemPerformance() {
                   </>
                 )}
                 <div className="flex items-center justify-between">
-                  <span className="text-sm text-theme-primary">App Cache</span>
+                  <Text papel="rotulo" tom="forte">
+                    App Cache
+                  </Text>
                   <span className="font-medium text-accent-purple">
                     {metrics?.cache.application.size.toFixed(1) || 0}MB
                   </span>
                 </div>
                 <div className="flex items-center justify-between">
-                  <span className="text-sm text-theme-primary">Entries</span>
+                  <Text papel="rotulo" tom="forte">
+                    Entries
+                  </Text>
                   <span className="font-medium text-accent-blue">
                     {metrics?.cache.application.entries.toLocaleString() || 0}
                   </span>
@@ -941,36 +969,42 @@ export default function SystemPerformance() {
                   <div className="text-lg font-bold text-accent-blue">
                     {metrics?.application.users.concurrent || 0}
                   </div>
-                  <div className="text-xs text-theme-tertiary">Online</div>
+                  <Text papel="legenda" tom="fraco" as="div">
+                    Online
+                  </Text>
                 </div>
               </div>
 
               <div className="space-y-3">
                 <div className="flex items-center justify-between">
-                  <span className="text-sm text-theme-primary">
+                  <Text papel="rotulo" tom="forte">
                     Uploads Hoje
-                  </span>
+                  </Text>
                   <span className="font-medium text-accent-purple">
                     {metrics?.application.features.uploads || 0}
                   </span>
                 </div>
                 <div className="flex items-center justify-between">
-                  <span className="text-sm text-theme-primary">Anotações</span>
+                  <Text papel="rotulo" tom="forte">
+                    Anotações
+                  </Text>
                   <span className="font-medium text-accent-blue">
                     {metrics?.application.features.annotations || 0}
                   </span>
                 </div>
 
                 <div className="flex items-center justify-between">
-                  <span className="text-sm text-theme-primary">
+                  <Text papel="rotulo" tom="forte">
                     Taxa de Erro
-                  </span>
+                  </Text>
                   <span className="font-medium text-accent-red">
                     {metrics?.application.errors.rate.toFixed(2) || 0}%
                   </span>
                 </div>
                 <div className="flex items-center justify-between">
-                  <span className="text-sm text-theme-primary">Resp. Time</span>
+                  <Text papel="rotulo" tom="forte">
+                    Resp. Time
+                  </Text>
                   <span className="font-medium text-accent-amber">
                     {metrics?.application.performance.avgResponseTime || 0}ms
                   </span>
@@ -1033,25 +1067,25 @@ export default function SystemPerformance() {
                   <div className="text-2xl font-bold text-accent-blue">
                     {detailedStats.total || 0}
                   </div>
-                  <div className="text-sm text-theme-tertiary">
+                  <Text papel="rotulo" tom="fraco" as="div">
                     Total Requests
-                  </div>
+                  </Text>
                 </div>
                 <div className="text-center">
                   <div className="text-2xl font-bold text-accent-green">
                     {detailedStats.avgDuration?.toFixed(0) || 0}ms
                   </div>
-                  <div className="text-sm text-theme-tertiary">
+                  <Text papel="rotulo" tom="fraco" as="div">
                     Avg Duration
-                  </div>
+                  </Text>
                 </div>
                 <div className="text-center">
                   <div className="text-2xl font-bold text-accent-red">
                     {detailedStats.slowRequests || 0}
                   </div>
-                  <div className="text-sm text-theme-tertiary">
+                  <Text papel="rotulo" tom="fraco" as="div">
                     Slow Requests
-                  </div>
+                  </Text>
                 </div>
               </div>
             </div>

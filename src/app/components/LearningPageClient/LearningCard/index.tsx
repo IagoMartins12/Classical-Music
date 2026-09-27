@@ -35,6 +35,7 @@ import { useAuth } from '@/app/hooks/useAuth';
 import { AnimatedCard, AnimatedItem } from '../../animation/AnimatedComponents';
 import { useTranslation } from '@/app/context/TranslationContext';
 import { Inline } from '@/app/components/ui/Layout';
+import { Text } from '@/app/components/ui/Text';
 
 type DifficultyLevel = 'BEGINNER' | 'INTERMEDIATE' | 'ADVANCED';
 
@@ -104,9 +105,9 @@ const ConfirmDeleteModal = ({
             <h3 className="text-lg font-bold text-theme-primary">
               {t('confirm_removal_title')}
             </h3>
-            <p className="text-sm text-theme-secondary">
+            <Text papel="rotulo" tom="suave" as="p">
               {t('confirm_removal_subtitle')}
-            </p>
+            </Text>
           </div>
         </Inline>
 
@@ -274,14 +275,19 @@ export const LearningCard = ({
                     {item.work?.composer.fullName}
                   </p>
                   {item.work?.opOrCatalog && (
-                    <p className="text-sm text-theme-tertiary">
+                    <Text papel="rotulo" tom="fraco" as="p">
                       {item.work.opOrCatalog}
-                    </p>
+                    </Text>
                   )}
                 </div>
 
                 {/* Compact info */}
-                <div className="flex flex-col sm:flex-row gap-4 sm:gap-0 items-center space-x-3 text-sm text-theme-tertiary">
+                <Text
+                  papel="rotulo"
+                  tom="fraco"
+                  as="div"
+                  className="flex flex-col sm:flex-row gap-4 sm:gap-0 items-center space-x-3"
+                >
                   {/* Stars */}
                   <Inline
                     gap={1}
@@ -369,7 +375,7 @@ export const LearningCard = ({
                       </>
                     )}
                   </Inline>
-                </div>
+                </Text>
 
                 {/* Action buttons */}
                 <div className="flex items-center flex-col sm:flex-row gap-4 sm:gap-0 space-x-2">
@@ -456,9 +462,9 @@ export const LearningCard = ({
               {item.work?.composer.fullName}
             </p>
             {item.work?.opOrCatalog && (
-              <p className="text-sm text-theme-tertiary mt-1">
+              <Text papel="rotulo" tom="fraco" as="p" className="mt-1">
                 {item.work.opOrCatalog}
-              </p>
+              </Text>
             )}
           </div>
           <Inline gap={2}>
@@ -508,14 +514,14 @@ export const LearningCard = ({
                 <h4 className="text-sm font-semibold text-theme-primary">
                   {item.selectedWorkScore.title}
                 </h4>
-                <p className="text-xs text-theme-tertiary">
+                <Text papel="legenda" tom="fraco" as="p">
                   {item.selectedWorkScore.source} •{' '}
                   {item.selectedWorkScore.fileSize}
                   {item.selectedWorkScore.pageCount &&
                     ` • ${item.selectedWorkScore.pageCount} ${t(
                       'pages_label'
                     )}`}
-                </p>
+                </Text>
               </div>
               <Inline
                 as="button"
@@ -535,9 +541,9 @@ export const LearningCard = ({
 
         {/* Stars */}
         <Inline gap={2} className="mb-4">
-          <span className="text-sm font-medium text-theme-tertiary">
+          <Text papel="rotulo" tom="fraco" className="font-medium">
             {isWantToLearn ? t('priority_label_card') : t('mastery_label_card')}
-          </span>
+          </Text>
           <Inline gap={1}>
             {[...Array(5)].map((_, i) =>
               i <
@@ -607,13 +613,13 @@ export const LearningCard = ({
                 <div className="bg-theme-secondary rounded-lg p-3 border-l-4 border-accent-blue">
                   <Inline gap={2} className="mb-1">
                     <PiHeart className="w-4 h-4 text-accent-blue" />
-                    <span className="text-sm font-medium text-theme-secondary">
+                    <Text papel="rotulo" tom="suave" className="font-medium">
                       {t('motivation_section')}
-                    </span>
+                    </Text>
                   </Inline>
-                  <p className="text-sm text-theme-tertiary">
+                  <Text papel="rotulo" tom="fraco" as="p">
                     {wantToLearnItem.motivation}
-                  </p>
+                  </Text>
                 </div>
               )}
 
@@ -621,13 +627,18 @@ export const LearningCard = ({
                 <div className="bg-theme-secondary rounded-lg p-3 border-l-4 border-accent-purple">
                   <Inline gap={2} className="mb-1">
                     <PiBookOpen className="w-4 h-4 text-accent-purple" />
-                    <span className="text-sm font-medium text-theme-secondary">
+                    <Text papel="rotulo" tom="suave" className="font-medium">
                       {t('notes_section')}
-                    </span>
+                    </Text>
                   </Inline>
-                  <p className="text-sm text-theme-tertiary whitespace-pre-wrap">
+                  <Text
+                    papel="rotulo"
+                    tom="fraco"
+                    as="p"
+                    className="whitespace-pre-wrap"
+                  >
                     {wantToLearnItem.notes}
-                  </p>
+                  </Text>
                 </div>
               )}
             </>
@@ -679,13 +690,18 @@ export const LearningCard = ({
                 <div className="bg-theme-secondary rounded-lg p-3 border-l-4 border-accent-red">
                   <Inline gap={2} className="mb-1">
                     <PiTrendUp className="w-4 h-4 text-accent-red" />
-                    <span className="text-sm font-medium text-theme-secondary">
+                    <Text papel="rotulo" tom="suave" className="font-medium">
                       {t('technical_challenges')}
-                    </span>
+                    </Text>
                   </Inline>
-                  <p className="text-sm text-theme-tertiary whitespace-pre-wrap">
+                  <Text
+                    papel="rotulo"
+                    tom="fraco"
+                    as="p"
+                    className="whitespace-pre-wrap"
+                  >
                     {learnedItem.technicalChallenges}
-                  </p>
+                  </Text>
                 </div>
               )}
 
@@ -693,13 +709,18 @@ export const LearningCard = ({
                 <div className="bg-theme-secondary rounded-lg p-3 border-l-4 border-accent-green">
                   <Inline gap={2} className="mb-1">
                     <PiMedal className="w-4 h-4 text-accent-green" />
-                    <span className="text-sm font-medium text-theme-secondary">
+                    <Text papel="rotulo" tom="suave" className="font-medium">
                       {t('musical_insights')}
-                    </span>
+                    </Text>
                   </Inline>
-                  <p className="text-sm text-theme-tertiary whitespace-pre-wrap">
+                  <Text
+                    papel="rotulo"
+                    tom="fraco"
+                    as="p"
+                    className="whitespace-pre-wrap"
+                  >
                     {learnedItem.musicalInsights}
-                  </p>
+                  </Text>
                 </div>
               )}
 
@@ -707,13 +728,18 @@ export const LearningCard = ({
                 <div className="bg-theme-secondary rounded-lg p-3 border-l-4 border-accent-purple">
                   <Inline gap={2} className="mb-1">
                     <PiBookOpen className="w-4 h-4 text-accent-purple" />
-                    <span className="text-sm font-medium text-theme-secondary">
+                    <Text papel="rotulo" tom="suave" className="font-medium">
                       {t('notes_section')}
-                    </span>
+                    </Text>
                   </Inline>
-                  <p className="text-sm text-theme-tertiary whitespace-pre-wrap">
+                  <Text
+                    papel="rotulo"
+                    tom="fraco"
+                    as="p"
+                    className="whitespace-pre-wrap"
+                  >
                     {learnedItem.notes}
-                  </p>
+                  </Text>
                 </div>
               )}
             </>
@@ -722,11 +748,11 @@ export const LearningCard = ({
 
         {/* Footer */}
         <div className="mt-4 pt-4 border-t border-theme-secondary flex items-center justify-between">
-          <span className="text-xs text-theme-tertiary">
+          <Text papel="legenda" tom="fraco">
             {isWantToLearn
               ? `${t('added_at')} ${formatDate(wantToLearnItem.addedAt)}`
               : `${t('learned_at')} ${formatDate(learnedItem.learnedAt)}`}
-          </span>
+          </Text>
           <Inline gap={3}>
             <AnimatedItem hover="scale">
               <Link

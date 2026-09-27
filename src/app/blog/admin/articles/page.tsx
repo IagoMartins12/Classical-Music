@@ -17,6 +17,7 @@ import { ArticleList } from '@/app/components/blog/admin/ArticleList';
 import { AnimatedItem } from '@/app/components/animation/AnimatedComponents';
 import AnimatedMusicalNotesClient from '@/app/components/AnimatedMusicalNotesClient';
 import { getServerSession } from '@/app/libs/api/server-session';
+import { Text } from '@/app/components/ui/Text';
 
 export const metadata: Metadata = {
   title: 'Gerenciar Artigos - Blog Admin',
@@ -101,9 +102,14 @@ export default async function ArticlesAdminPage({ searchParams }: PageProps) {
               <div className="classical-card group hover:shadow-xl transition-all duration-300 cursor-pointer">
                 <div className="flex items-center justify-between p-4">
                   <div>
-                    <p className="text-xs font-medium text-theme-tertiary mb-2">
+                    <Text
+                      papel="legenda"
+                      tom="fraco"
+                      as="p"
+                      className="font-medium mb-2"
+                    >
                       Total
-                    </p>
+                    </Text>
                     <p className="text-2xl font-bold text-theme-primary">
                       {stats.total}
                     </p>
@@ -119,9 +125,14 @@ export default async function ArticlesAdminPage({ searchParams }: PageProps) {
               <div className="classical-card group hover:shadow-xl transition-all duration-300 cursor-pointer">
                 <div className="flex items-center justify-between p-4">
                   <div>
-                    <p className="text-xs font-medium text-theme-tertiary mb-2">
+                    <Text
+                      papel="legenda"
+                      tom="fraco"
+                      as="p"
+                      className="font-medium mb-2"
+                    >
                       Publicados
-                    </p>
+                    </Text>
                     <p className="text-2xl font-bold text-theme-primary">
                       {stats.published}
                     </p>
@@ -137,9 +148,14 @@ export default async function ArticlesAdminPage({ searchParams }: PageProps) {
               <div className="classical-card group hover:shadow-xl transition-all duration-300 cursor-pointer">
                 <div className="flex items-center justify-between p-4">
                   <div>
-                    <p className="text-xs font-medium text-theme-tertiary mb-2">
+                    <Text
+                      papel="legenda"
+                      tom="fraco"
+                      as="p"
+                      className="font-medium mb-2"
+                    >
                       Rascunhos
-                    </p>
+                    </Text>
                     <p className="text-2xl font-bold text-theme-primary">
                       {stats.draft}
                     </p>
@@ -155,9 +171,14 @@ export default async function ArticlesAdminPage({ searchParams }: PageProps) {
               <div className="classical-card group hover:shadow-xl transition-all duration-300 cursor-pointer">
                 <div className="flex items-center justify-between p-4">
                   <div>
-                    <p className="text-xs font-medium text-theme-tertiary mb-2">
+                    <Text
+                      papel="legenda"
+                      tom="fraco"
+                      as="p"
+                      className="font-medium mb-2"
+                    >
                       Visualizações
-                    </p>
+                    </Text>
                     <p className="text-2xl font-bold text-theme-primary">
                       {(stats.totalViews / 1000).toFixed(1)}k
                     </p>

@@ -1,5 +1,6 @@
 import { PiStar, PiStarFill } from 'react-icons/pi';
 import { Inline, Stack } from '@/app/components/ui/Layout';
+import { Text } from '@/app/components/ui/Text';
 
 const StarRating = ({
   value,
@@ -13,9 +14,9 @@ const StarRating = ({
   labels?: string[];
 }) => (
   <Stack gap={2} className="h-full justify-center">
-    <span className="block text-sm font-medium text-theme-secondary">
+    <Text papel="rotulo" tom="suave" className="block font-medium">
       {label}
-    </span>
+    </Text>
     <Inline gap={1}>
       {[1, 2, 3, 4, 5].map((star) => (
         <button
@@ -44,9 +45,9 @@ const StarRating = ({
         </button>
       ))}
       {labels[value - 1] && (
-        <span className="ml-2 text-sm font-medium text-theme-secondary">
+        <Text papel="rotulo" tom="suave" className="ml-2 font-medium">
           {labels[value - 1]}
-        </span>
+        </Text>
       )}
     </Inline>
   </Stack>

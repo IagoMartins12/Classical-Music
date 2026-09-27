@@ -6,6 +6,7 @@ import { PiPlay, PiWarningCircle } from 'react-icons/pi';
 import { AnimatedCard, AnimatedItem } from '../animation/AnimatedComponents';
 import { useTranslation } from '@/app/context/TranslationContext';
 import { Inline } from '@/app/components/ui/Layout';
+import { Text } from '@/app/components/ui/Text';
 
 // Tipos para o vídeo
 export type VideoType = 'youtube' | 'vimeo' | 'direct' | 'invalid';
@@ -199,7 +200,12 @@ const ComposerVideo: React.FC<ComposerVideoProps> = ({
           {renderVideoPlayer()}
 
           {/* Video info/description */}
-          <div className="flex items-start justify-between text-sm text-theme-secondary">
+          <Text
+            papel="rotulo"
+            tom="suave"
+            as="div"
+            className="flex items-start justify-between"
+          >
             <Inline gap={2}>
               <div className="w-2 h-2 bg-accent-green rounded-full animate-pulse"></div>
               <span>
@@ -216,7 +222,7 @@ const ComposerVideo: React.FC<ComposerVideoProps> = ({
             >
               {t('video_watch_original')}
             </a>
-          </div>
+          </Text>
         </div>
       </AnimatedItem>
 

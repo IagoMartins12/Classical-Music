@@ -37,6 +37,7 @@ import MusicalPiecesSection from '@/app/components/TeacherSystem/MusicalPiecesSe
 import Modal from '@/app/components/Modal';
 import { useTranslation } from '@/app/context/TranslationContext';
 import { Inline } from '@/app/components/ui/Layout';
+import { Text } from '@/app/components/ui/Text';
 
 interface AssignmentDetailsPageClientProps {
   initialData: AssignmentDetailsData | null;
@@ -370,9 +371,9 @@ export default function AssignmentDetailsPageClient({
                             {assignment.estimatedTime} {t('minutes')}
                           </span>
                           {assignment.actualTime && (
-                            <span className="text-sm text-theme-tertiary">
+                            <Text papel="rotulo" tom="fraco">
                               (Real: {assignment.actualTime} min)
-                            </span>
+                            </Text>
                           )}
                         </Inline>
                       </div>
@@ -565,11 +566,11 @@ export default function AssignmentDetailsPageClient({
                   </h3>
 
                   {assignment.submissionDate && (
-                    <div className="mb-4 text-sm text-theme-tertiary">
+                    <Text papel="rotulo" tom="fraco" as="div" className="mb-4">
                       {t('submitted_on', {
                         date: formatDateTime(assignment.submissionDate),
                       })}
-                    </div>
+                    </Text>
                   )}
 
                   {/* Student Notes */}
@@ -650,9 +651,9 @@ export default function AssignmentDetailsPageClient({
                                 className="bg-theme-elevated p-2 rounded-lg"
                               >
                                 <PiCheck className="w-4 h-4 text-accent-green" />
-                                <span className="text-sm text-theme-primary">
+                                <Text papel="rotulo" tom="forte">
                                   {milestoneLabels[key] || key}
-                                </span>
+                                </Text>
                               </Inline>
                             );
                           })}
@@ -1035,11 +1036,11 @@ export default function AssignmentDetailsPageClient({
                     <h2 className="text-xl font-bold text-theme-primary classical-title">
                       {t('video_modal_title')}
                     </h2>
-                    <p className="text-theme-secondary text-sm">
+                    <Text papel="rotulo" tom="suave" as="p">
                       {videoSubmission.originalName} •{' '}
                       {formatFileSize(videoSubmission.fileSize)} •{' '}
                       {formatDateTime(videoSubmission.uploadedAt)}
-                    </p>
+                    </Text>
                   </div>
                   <Inline gap={2}>
                     <Inline

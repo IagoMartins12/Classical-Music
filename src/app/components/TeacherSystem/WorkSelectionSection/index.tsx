@@ -23,6 +23,7 @@ import {
   searchWorks,
 } from '@/app/requests/catalog-search';
 import { Inline } from '@/app/components/ui/Layout';
+import { Text } from '@/app/components/ui/Text';
 
 // 🆕 Interface para dados das peças vinculadas
 export interface LessonWork {
@@ -298,9 +299,9 @@ export default function WorkSelectionSection({
               <h3 className="text-lg font-bold text-theme-primary classical-title">
                 Peças Musicais
               </h3>
-              <p className="text-theme-secondary text-sm">
+              <Text papel="rotulo" tom="suave" as="p">
                 Vincule até {maxWorks} peças com suas partituras à aula
-              </p>
+              </Text>
             </div>
           </Inline>
 
@@ -315,13 +316,13 @@ export default function WorkSelectionSection({
             >
               {selectedWorks.length}/{maxWorks}
             </div>
-            <div className="text-xs text-theme-tertiary">
+            <Text papel="legenda" tom="fraco" as="div">
               {selectedWorks.length === 0
                 ? 'Nenhuma peça'
                 : selectedWorks.length === 1
                   ? '1 peça vinculada'
                   : `${selectedWorks.length} peças vinculadas`}
-            </div>
+            </Text>
           </div>
         </div>
 
@@ -356,13 +357,22 @@ export default function WorkSelectionSection({
                             <h5 className="font-medium text-theme-primary truncate">
                               {work.workTitle}
                             </h5>
-                            <span className="text-xs bg-theme-secondary/20 text-theme-secondary px-2 py-0.5 rounded">
+                            <Text
+                              papel="legenda"
+                              tom="suave"
+                              className="bg-theme-secondary/20 px-2 py-0.5 rounded"
+                            >
                               #{index + 1}
-                            </span>
+                            </Text>
                           </Inline>
-                          <p className="text-sm text-theme-tertiary truncate">
+                          <Text
+                            papel="rotulo"
+                            tom="fraco"
+                            as="p"
+                            className="truncate"
+                          >
                             {work.composerName}
-                          </p>
+                          </Text>
 
                           {/* Informações da partitura */}
                           {work.scoreId ? (
@@ -374,14 +384,19 @@ export default function WorkSelectionSection({
                                 <PiCheck className="w-3 h-3" />
                                 <span>Partitura: {work.scoreTitle}</span>
                               </Inline>
-                              <span className="text-xs text-theme-tertiary">
+                              <Text papel="legenda" tom="fraco">
                                 ({work.scoreSource})
-                              </span>
+                              </Text>
                             </Inline>
                           ) : (
-                            <div className="mt-2 text-xs text-theme-tertiary">
+                            <Text
+                              papel="legenda"
+                              tom="fraco"
+                              as="div"
+                              className="mt-2"
+                            >
                               Nenhuma partitura selecionada
-                            </div>
+                            </Text>
                           )}
                         </div>
                       </Inline>
@@ -487,10 +502,10 @@ export default function WorkSelectionSection({
                   />
 
                   {hasWorkSelected && (
-                    <p className="text-xs text-theme-tertiary mt-2">
+                    <Text papel="legenda" tom="fraco" as="p" className="mt-2">
                       💡 O compositor foi selecionado automaticamente baseado na
                       obra escolhida.
-                    </p>
+                    </Text>
                   )}
                 </div>
 
@@ -502,9 +517,9 @@ export default function WorkSelectionSection({
                       <span>Obra *</span>
                       {/* 🆕 Indicador de carregamento das obras do compositor */}
                       {loadingComposerWorks && (
-                        <span className="text-xs text-brand-primary">
+                        <Text papel="legenda" tom="ouro">
                           (Carregando obras...)
-                        </span>
+                        </Text>
                       )}
                     </Inline>
                   </label>
@@ -523,18 +538,18 @@ export default function WorkSelectionSection({
                   {hasComposerSelected &&
                     composerWorks.length > 0 &&
                     !loadingComposerWorks && (
-                      <p className="text-xs text-theme-tertiary mt-2">
+                      <Text papel="legenda" tom="fraco" as="p" className="mt-2">
                         🎼 {composerWorks.length} obra(s) de{' '}
                         {popularComposers.find((c) => c.id === selectedComposer)
                           ?.name || 'compositor selecionado'}{' '}
                         carregadas automaticamente
-                      </p>
+                      </Text>
                     )}
                 </div>
 
                 {/* Botões de ação */}
                 <div className="flex flex-col sm:flex-row gap-4 items-center justify-between pt-2">
-                  <div className="text-xs text-theme-tertiary">
+                  <Text papel="legenda" tom="fraco" as="div">
                     {hasComposerSelected && hasWorkSelected ? (
                       <Inline as="span" gap={1} className="text-accent-green">
                         <PiCheck className="w-3 h-3" />
@@ -551,7 +566,7 @@ export default function WorkSelectionSection({
                     ) : (
                       <span>Selecione um compositor primeiro</span>
                     )}
-                  </div>
+                  </Text>
 
                   <Inline gap={2}>
                     <button
@@ -603,7 +618,7 @@ export default function WorkSelectionSection({
           <div className="bg-theme-secondary/10 rounded-lg p-4">
             <div className="flex items-start space-x-3">
               <PiInfo className="w-5 h-5 text-theme-tertiary mt-0.5 hidden sm:flex" />
-              <div className="text-sm text-theme-secondary">
+              <Text papel="rotulo" tom="suave" as="div">
                 <p className="font-medium mb-1">
                   💡 Como funciona o sistema de peças:
                 </p>
@@ -617,7 +632,7 @@ export default function WorkSelectionSection({
                     As peças vinculadas aparecerão nos relatórios de progresso
                   </li>
                 </ul>
-              </div>
+              </Text>
             </div>
           </div>
         )}

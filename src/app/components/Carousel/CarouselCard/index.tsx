@@ -10,6 +10,7 @@ import VerificationBadge from '../../Verification/VerificationBadge';
 import { useTranslation } from '@/app/context/TranslationContext';
 import { translateEpochWithHook } from '@/app/utils/translations/epochTranslationComposer';
 import { Inline, Stack } from '@/app/components/ui/Layout';
+import { Text } from '@/app/components/ui/Text';
 
 const CarouselCard: React.FC<CarouselCardProps> = ({
   item,
@@ -101,7 +102,12 @@ const CarouselCard: React.FC<CarouselCardProps> = ({
 
               {/* Subtitle with epoch info */}
               {item.epochName && (
-                <p className="text-theme-secondary text-sm mb-3 flex items-center">
+                <Text
+                  papel="rotulo"
+                  tom="suave"
+                  as="p"
+                  className="mb-3 flex items-center"
+                >
                   <PiUser className="w-3 h-3 mr-1 opacity-60" />
 
                   {language === 'en' ? (
@@ -121,16 +127,16 @@ const CarouselCard: React.FC<CarouselCardProps> = ({
                       )}
                     </>
                   )}
-                </p>
+                </Text>
               )}
 
               {/* Action Bar */}
               <div className="flex items-center justify-between pt-4 border-t border-theme-secondary">
                 <Inline gap={2}>
                   <div className="w-2 h-2 bg-brand-primary rounded-full animate-pulse"></div>
-                  <span className="text-xs text-theme-tertiary font-medium">
+                  <Text papel="legenda" tom="fraco" className="font-medium">
                     {t('home_quick_actions_explore')}
-                  </span>
+                  </Text>
                 </Inline>
 
                 {/* Arrow indicator */}

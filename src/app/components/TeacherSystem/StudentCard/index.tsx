@@ -17,6 +17,7 @@ import { AnimatedCard } from '../../animation/AnimatedComponents';
 import { ViewMode } from '../../ViewModeToggle';
 import { TeacherStudentsServerData } from '@/app/(teacher)/teacher/students/pageServer';
 import { Inline } from '@/app/components/ui/Layout';
+import { Text } from '@/app/components/ui/Text';
 
 interface StudentCardTranslations {
   studentSince: string;
@@ -123,9 +124,9 @@ export default function StudentCard({
                 </span>
               )}
             </Inline>
-            <p className="text-sm text-theme-secondary">
+            <Text papel="rotulo" tom="suave" as="p">
               {translations.studentSince} {formatDate(relationship.startDate)}
-            </p>
+            </Text>
           </div>
 
           {/* Stats */}
@@ -152,16 +153,23 @@ export default function StudentCard({
           <div className="w-32 text-center">
             {nextLesson ? (
               <div>
-                <div className="text-sm font-medium text-theme-primary">
+                <Text
+                  papel="rotulo"
+                  tom="forte"
+                  as="div"
+                  className="font-medium"
+                >
                   {translations.nextLesson}
-                </div>
-                <div className="text-xs text-theme-tertiary">
+                </Text>
+                <Text papel="legenda" tom="fraco" as="div">
                   {formatDate(nextLesson.scheduledAt)} {translations.atTime}{' '}
                   {formatTime(nextLesson.scheduledAt)}
-                </div>
+                </Text>
               </div>
             ) : (
-              <div className="text-xs text-theme-tertiary">-</div>
+              <Text papel="legenda" tom="fraco" as="div">
+                -
+              </Text>
             )}
           </div>
 
@@ -235,7 +243,7 @@ export default function StudentCard({
             <h3 className="text-lg font-bold text-theme-primary mb-1">
               {student.name}
             </h3>
-            <div className="space-y-1 text-sm text-theme-secondary">
+            <Text papel="rotulo" tom="suave" as="div" className="space-y-1">
               {student.experienceLevel && (
                 <p>
                   {translations.studentLevel}{' '}
@@ -250,7 +258,7 @@ export default function StudentCard({
               <p>
                 {translations.studentSince} {formatDate(relationship.startDate)}
               </p>
-            </div>
+            </Text>
           </div>
         </Inline>
 
@@ -288,13 +296,18 @@ export default function StudentCard({
         <div className="mb-4 p-3 bg-theme-elevated to-interactive-hover rounded-lg">
           <div className="flex items-center justify-between">
             <div>
-              <div className="text-sm font-medium text-theme-primary mb-1">
+              <Text
+                papel="rotulo"
+                tom="forte"
+                as="div"
+                className="font-medium mb-1"
+              >
                 {translations.nextLesson}
-              </div>
-              <div className="text-xs text-theme-tertiary">
+              </Text>
+              <Text papel="legenda" tom="fraco" as="div">
                 {formatDate(nextLesson.scheduledAt)} {translations.atTime}{' '}
                 {formatTime(nextLesson.scheduledAt)}
-              </div>
+              </Text>
             </div>
             <PiCalendarBlank className="w-4 h-4 text-brand-primary" />
           </div>

@@ -35,6 +35,7 @@ import StatsSkeleton, {
   TopPerformersSkeleton,
 } from '../../Skeletons/StatsSkeleton';
 import { Inline } from '@/app/components/ui/Layout';
+import { Text } from '@/app/components/ui/Text';
 
 const UserTypeTranslations = {
   MUSIC_STUDENT: 'Estudantes',
@@ -320,17 +321,22 @@ export default function UsersAnalytics() {
                       className="p-3 bg-theme-secondary rounded-xl hover:bg-theme-primary/50 transition-all cursor-pointer"
                       onClick={() => handleUserNavigation(user.id)}
                     >
-                      <div className="w-8 h-8 bg-gradient-to-br from-accent-green to-accent-blue rounded-lg flex items-center justify-center text-sm font-bold text-theme-primary">
+                      <Text
+                        papel="rotulo"
+                        tom="forte"
+                        as="div"
+                        className="w-8 h-8 bg-gradient-to-br from-accent-green to-accent-blue rounded-lg flex items-center justify-center font-bold"
+                      >
                         {index + 1}
-                      </div>
+                      </Text>
                       <div className="flex-1 min-w-0">
                         <p className="font-medium text-theme-primary truncate">
                           {user.name}
                         </p>
-                        <p className="text-sm text-theme-tertiary">
+                        <Text papel="rotulo" tom="fraco" as="p">
                           {user.totalUploads} uploads • Score:{' '}
                           {user.uploadScore.toFixed(1)}
-                        </p>
+                        </Text>
                       </div>
                       <Inline gap={1}>
                         <Button
@@ -390,10 +396,15 @@ export default function UsersAnalytics() {
                           }}
                         />
                       </div>
-                      <div className="flex items-center justify-between text-xs text-theme-tertiary">
+                      <Text
+                        papel="legenda"
+                        tom="fraco"
+                        as="div"
+                        className="flex items-center justify-between"
+                      >
                         <span>{type.percentage.toFixed(1)}% do total</span>
                         <span>{type.count} usuários</span>
-                      </div>
+                      </Text>
                     </div>
                   );
                 })}
@@ -413,9 +424,9 @@ export default function UsersAnalytics() {
               <div className="space-y-4">
                 <div className="p-3 bg-theme-secondary rounded-xl">
                   <div className="flex items-center justify-between mb-2">
-                    <span className="text-sm text-theme-tertiary">
+                    <Text papel="rotulo" tom="fraco">
                       Anotações/Usuário
-                    </span>
+                    </Text>
                     <span className="font-bold text-accent-blue">
                       {analytics.engagementMetrics.averageAnnotationsPerUser.toFixed(
                         1
@@ -426,9 +437,9 @@ export default function UsersAnalytics() {
 
                 <div className="p-3 bg-theme-secondary rounded-xl">
                   <div className="flex items-center justify-between mb-2">
-                    <span className="text-sm text-theme-tertiary">
+                    <Text papel="rotulo" tom="fraco">
                       Uploads/Usuário
-                    </span>
+                    </Text>
                     <span className="font-bold text-accent-purple">
                       {analytics.engagementMetrics.averageUploadsPerUser.toFixed(
                         1
@@ -439,9 +450,9 @@ export default function UsersAnalytics() {
 
                 <div className="p-3 bg-theme-secondary rounded-xl">
                   <div className="flex items-center justify-between mb-2">
-                    <span className="text-sm text-theme-tertiary">
+                    <Text papel="rotulo" tom="fraco">
                       Taxa de Atividade
-                    </span>
+                    </Text>
                     <span className="font-bold text-accent-amber">
                       {analytics.activityRate?.toFixed(1) || 0}%
                     </span>
@@ -450,9 +461,9 @@ export default function UsersAnalytics() {
 
                 <div className="p-3 bg-theme-secondary rounded-xl">
                   <div className="flex items-center justify-between mb-2">
-                    <span className="text-sm text-theme-tertiary">
+                    <Text papel="rotulo" tom="fraco">
                       Usuários com Uploads
-                    </span>
+                    </Text>
                     <span className="font-bold text-accent-green">
                       {analytics.contributorsPercentage?.toFixed(1) || 0}%
                     </span>
@@ -481,32 +492,36 @@ export default function UsersAnalytics() {
                   <div className="text-2xl font-bold text-accent-green mb-2">
                     {analytics.activeUsers.today}
                   </div>
-                  <div className="text-sm text-theme-tertiary">Ativos Hoje</div>
+                  <Text papel="rotulo" tom="fraco" as="div">
+                    Ativos Hoje
+                  </Text>
                 </div>
 
                 <div className="text-center p-4 bg-theme-secondary rounded-xl">
                   <div className="text-2xl font-bold text-accent-blue mb-2">
                     {analytics.activeUsers.period}
                   </div>
-                  <div className="text-sm text-theme-tertiary">
+                  <Text papel="rotulo" tom="fraco" as="div">
                     Ativos no Período
-                  </div>
+                  </Text>
                 </div>
 
                 <div className="text-center p-4 bg-theme-secondary rounded-xl">
                   <div className="text-2xl font-bold text-accent-amber mb-2">
                     {analytics.newUsers.period}
                   </div>
-                  <div className="text-sm text-theme-tertiary">
+                  <Text papel="rotulo" tom="fraco" as="div">
                     Novos no Período
-                  </div>
+                  </Text>
                 </div>
 
                 <div className="text-center p-4 bg-theme-secondary rounded-xl">
                   <div className="text-2xl font-bold text-accent-purple mb-2">
                     {formatNumber(analytics.totalUsers)}
                   </div>
-                  <div className="text-sm text-theme-tertiary">Total</div>
+                  <Text papel="rotulo" tom="fraco" as="div">
+                    Total
+                  </Text>
                 </div>
               </div>
             </AnimatedCard>

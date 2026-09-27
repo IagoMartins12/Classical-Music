@@ -40,6 +40,7 @@ import Link from '@/app/components/LocalizedLink';
 
 import { currentSearchParams } from '@/app/utils/currentSearchParams';
 import { Inline } from '@/app/components/ui/Layout';
+import { Text } from '@/app/components/ui/Text';
 
 interface PublicTeachersPageClientProps {
   initialData: PublicTeachersResponse | null;
@@ -242,9 +243,9 @@ export default function PublicTeachersPageClient({
               <div className="text-2xl font-bold text-theme-primary mb-1">
                 {stats.totalTeachers}
               </div>
-              <div className="text-sm text-theme-tertiary">
+              <Text papel="rotulo" tom="fraco" as="div">
                 Professores Cadastrados
-              </div>
+              </Text>
             </AnimatedCard>
 
             <AnimatedCard
@@ -257,9 +258,9 @@ export default function PublicTeachersPageClient({
               <div className="text-2xl font-bold text-theme-primary mb-1">
                 {stats.verifiedTeachers}
               </div>
-              <div className="text-sm text-theme-tertiary">
+              <Text papel="rotulo" tom="fraco" as="div">
                 Perfis Verificados
-              </div>
+              </Text>
             </AnimatedCard>
 
             <AnimatedCard
@@ -272,7 +273,9 @@ export default function PublicTeachersPageClient({
               <div className="text-2xl font-bold text-theme-primary mb-1">
                 {stats.averageRating.toFixed(1)}
               </div>
-              <div className="text-sm text-theme-tertiary">Avaliação Média</div>
+              <Text papel="rotulo" tom="fraco" as="div">
+                Avaliação Média
+              </Text>
             </AnimatedCard>
 
             <AnimatedCard
@@ -285,7 +288,9 @@ export default function PublicTeachersPageClient({
               <div className="text-2xl font-bold text-theme-primary mb-1">
                 {stats.totalActiveStudents}
               </div>
-              <div className="text-sm text-theme-tertiary">Alunos Ativos</div>
+              <Text papel="rotulo" tom="fraco" as="div">
+                Alunos Ativos
+              </Text>
             </AnimatedCard>
           </SequentialGrid>
         </AnimatedItem>
@@ -470,17 +475,17 @@ export default function PublicTeachersPageClient({
                   : `${filteredTeachers.length} Professores Encontrados`}
               </h2>
               {hasActiveFilters && (
-                <p className="text-theme-tertiary text-sm mt-1">
+                <Text papel="rotulo" tom="fraco" as="p" className="mt-1">
                   Filtros aplicados
-                </p>
+                </Text>
               )}
             </div>
 
             {pagination.total > pagination.limit && (
-              <div className="text-sm text-theme-tertiary">
+              <Text papel="rotulo" tom="fraco" as="div">
                 Página {currentFilters.page || 1} de{' '}
                 {Math.ceil(pagination.total / pagination.limit)}
-              </div>
+              </Text>
             )}
           </div>
         </AnimatedItem>
@@ -649,13 +654,13 @@ function TeacherCard({
                 <Inline gap={2} className="mt-1">
                   <Inline gap={1}>
                     <PiStar className="w-4 h-4 text-accent-yellow" />
-                    <span className="text-sm font-medium text-theme-primary">
+                    <Text papel="rotulo" tom="forte" className="font-medium">
                       {teacher.averageRating.toFixed(1)}
-                    </span>
+                    </Text>
                   </Inline>
-                  <span className="text-xs text-theme-tertiary">
+                  <Text papel="legenda" tom="fraco">
                     ({teacher.totalReviews} avaliações)
-                  </span>
+                  </Text>
                 </Inline>
               )}
 
@@ -663,9 +668,9 @@ function TeacherCard({
               {teacher.location && (
                 <Inline gap={1} className="mt-1">
                   <PiMapPin className="w-3 h-3 text-theme-tertiary" />
-                  <span className="text-xs text-theme-tertiary">
+                  <Text papel="legenda" tom="fraco">
                     {teacher.location}
-                  </span>
+                  </Text>
                 </Inline>
               )}
             </div>
@@ -673,13 +678,23 @@ function TeacherCard({
 
           {/* Bio */}
           {teacher.publicBio && (
-            <p className="text-sm text-theme-secondary mb-4 line-clamp-3">
+            <Text
+              papel="rotulo"
+              tom="suave"
+              as="p"
+              className="mb-4 line-clamp-3"
+            >
               {teacher.publicBio}
-            </p>
+            </Text>
           )}
 
           {/* Experience */}
-          <div className="flex items-center justify-between text-xs text-theme-tertiary mb-4">
+          <Text
+            papel="legenda"
+            tom="fraco"
+            as="div"
+            className="flex items-center justify-between mb-4"
+          >
             <Inline gap={1}>
               <PiClock className="w-3 h-3" />
               <span>{teacher.yearsExperience} anos de experiência</span>
@@ -688,24 +703,30 @@ function TeacherCard({
               <PiUsers className="w-3 h-3" />
               <span>{teacher.totalStudents} alunos</span>
             </Inline>
-          </div>
+          </Text>
 
           {/* Specialties */}
           {teacher.specialties.length > 0 && (
             <div className="mb-4">
               <div className="flex flex-wrap gap-1">
                 {teacher.specialties.slice(0, 3).map((specialty, index) => (
-                  <span
+                  <Text
+                    papel="legenda"
+                    tom="ouro"
                     key={index}
-                    className="px-2 py-1 text-xs bg-brand-primary/10 text-brand-primary rounded-full"
+                    className="px-2 py-1 bg-brand-primary/10 rounded-full"
                   >
                     {specialty}
-                  </span>
+                  </Text>
                 ))}
                 {teacher.specialties.length > 3 && (
-                  <span className="px-2 py-1 text-xs bg-theme-secondary text-theme-tertiary rounded-full">
+                  <Text
+                    papel="legenda"
+                    tom="fraco"
+                    className="px-2 py-1 bg-theme-secondary rounded-full"
+                  >
                     +{teacher.specialties.length - 3}
-                  </span>
+                  </Text>
                 )}
               </div>
             </div>

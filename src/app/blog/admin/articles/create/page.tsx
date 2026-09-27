@@ -8,6 +8,7 @@ import { ArticleForm } from '@/app/components/blog/ArticleForm';
 import { PiArrowLeft } from 'react-icons/pi';
 import { createArticle } from '@/app/requests/blog/admin-actions';
 import { listCategories } from '@/app/requests/blog/taxonomy';
+import { Text } from '@/app/components/ui/Text';
 
 export default function CreateArticlePage() {
   const router = useRouter();
@@ -70,10 +71,10 @@ export default function CreateArticlePage() {
           <h1 className="text-3xl font-bold text-theme-primary classical-title">
             Criar Novo Artigo
           </h1>
-          <p className="mt-2 text-sm text-theme-secondary">
+          <Text papel="rotulo" tom="suave" as="p" className="mt-2">
             Preencha as informações abaixo. O artigo será salvo e você será
             redirecionado ao preview para aprovar antes de publicar.
-          </p>
+          </Text>
         </div>
 
         {/* Form */}

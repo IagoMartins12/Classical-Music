@@ -15,6 +15,7 @@ import Button from '@/app/components/Common/Button';
 import Modal from '@/app/components/Modal';
 import { processTemplate } from '@/app/libs/newsletter/emailTemplates';
 import { Inline } from '@/app/components/ui/Layout';
+import { Text } from '@/app/components/ui/Text';
 
 interface TemplatePreviewModalProps {
   isOpen: boolean;
@@ -346,12 +347,12 @@ export default function TemplatePreviewModal({
 
         {/* Footer */}
         <div className="flex items-center justify-between p-6 border-t border-theme-secondary">
-          <div className="text-sm text-theme-tertiary">
+          <Text papel="rotulo" tom="fraco" as="div">
             {deviceMode === 'mobile' && '📱 Visualização Mobile'}
             {deviceMode === 'tablet' && '📟 Visualização Tablet'}
             {deviceMode === 'desktop' && '🖥️ Visualização Desktop'}
             {viewMode !== 'html' && ''}
-          </div>
+          </Text>
 
           <Inline gap={2}>
             <Button variant="ghost" onClick={onClose}>

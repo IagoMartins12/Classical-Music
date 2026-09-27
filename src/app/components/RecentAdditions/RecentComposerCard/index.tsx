@@ -3,6 +3,7 @@ import Link from '@/app/components/LocalizedLink';
 import { useState } from 'react';
 import { PiClock, PiMusicNotes, PiUser } from 'react-icons/pi';
 import { RecentComposerProps } from '..';
+import { Text } from '@/app/components/ui/Text';
 
 const RecentComposerCard = ({
   composer,
@@ -40,10 +41,15 @@ const RecentComposerCard = ({
 
           {/* Time indicator */}
           <div className="absolute top-3 right-3 z-10 opacity-0 group-hover:opacity-100 transition-all duration-300">
-            <div className="bg-theme-elevated/80 border border-theme-primary/20 backdrop-blur-md rounded-full px-2 py-1 text-xs text-theme-tertiary flex items-center gap-1">
+            <Text
+              papel="legenda"
+              tom="fraco"
+              as="div"
+              className="bg-theme-elevated/80 border border-theme-primary/20 backdrop-blur-md rounded-full px-2 py-1 flex items-center gap-1"
+            >
               <PiClock className="w-2.5 h-2.5" />
               {formatTimeAgo(String(composer.createdAt))}
-            </div>
+            </Text>
           </div>
 
           <div className="p-5">
@@ -91,17 +97,22 @@ const RecentComposerCard = ({
                 </h3>
 
                 {composer.fullName !== composer.name && (
-                  <p className="text-sm text-theme-secondary line-clamp-1 mt-0.5">
+                  <Text
+                    papel="rotulo"
+                    tom="suave"
+                    as="p"
+                    className="line-clamp-1 mt-0.5"
+                  >
                     {composer.fullName}
-                  </p>
+                  </Text>
                 )}
 
                 {/* Period */}
                 <div className="flex items-center gap-1 mt-2">
                   <PiMusicNotes className="w-3 h-3 text-theme-tertiary" />
-                  <span className="text-xs text-theme-tertiary font-medium">
+                  <Text papel="legenda" tom="fraco" className="font-medium">
                     {composer.epochName}
-                  </span>
+                  </Text>
                 </div>
               </div>
 

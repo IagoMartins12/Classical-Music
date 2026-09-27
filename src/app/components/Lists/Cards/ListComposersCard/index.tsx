@@ -11,6 +11,7 @@ import VerificationBadge from '@/app/components/Verification/VerificationBadge';
 import { useTranslation } from '@/app/context/TranslationContext';
 import { translateEpochWithHook } from '@/app/utils/translations/epochTranslationComposer';
 import { Stack } from '@/app/components/ui/Layout';
+import { Text } from '@/app/components/ui/Text';
 
 interface listComposersCardsProps {
   composer: composerHomeProps;
@@ -110,9 +111,9 @@ const ListComposersCards: React.FC<listComposersCardsProps> = ({
               <div className="flex items-center justify-between pt-3 border-t border-theme-secondary">
                 <div className="flex items-center space-x-1.5">
                   <div className="w-1.5 h-1.5 bg-brand-primary rounded-full animate-pulse"></div>
-                  <span className="text-xs text-theme-tertiary font-medium">
+                  <Text papel="legenda" tom="fraco" className="font-medium">
                     {t('see_works')}
-                  </span>
+                  </Text>
                 </div>
 
                 {/* Arrow indicator */}

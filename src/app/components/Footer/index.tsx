@@ -32,6 +32,7 @@ import {
 import Button from '../Common/Button';
 import { useTranslation } from '@/app/hooks/useTranslation';
 import { Inline, Stack } from '@/app/components/ui/Layout';
+import { Text } from '@/app/components/ui/Text';
 
 const Footer: React.FC = () => {
   const currentYear = new Date().getFullYear();
@@ -239,9 +240,14 @@ const Footer: React.FC = () => {
                 </span>
               </Link>
 
-              <p className="text-theme-tertiary leading-relaxed text-sm">
+              <Text
+                papel="rotulo"
+                tom="fraco"
+                as="p"
+                className="leading-relaxed"
+              >
                 {t('footer_jsx_p_children_0__composer')}
-              </p>
+              </Text>
 
               {/* Contact Info */}
               <div className="space-y-3">
@@ -355,9 +361,9 @@ const Footer: React.FC = () => {
                     <PiHeart className="w-5 h-5 mr-2 text-brand-primary" />
                     {t('footer_jsx_h3_children_2__music')}
                   </h3>
-                  <p className="text-sm text-theme-tertiary mb-4">
+                  <Text papel="rotulo" tom="fraco" as="p" className="mb-4">
                     {t('footer_jsx_p_children_0__score')}
-                  </p>
+                  </Text>
 
                   {/* 🆕 STATUS AVANÇADO */}
                   {renderNewsletterStatus()}
@@ -420,7 +426,7 @@ const Footer: React.FC = () => {
 
               {/* Privacy note */}
               <div className="mt-4 pt-4 border-t border-theme-secondary/50">
-                <p className="text-xs text-theme-tertiary">
+                <Text papel="legenda" tom="fraco" as="p">
                   {t('footer_jsx_p_children_0__email')}
                   <br />
                   {t('footer_jsx_p_children_2__inscrever_concorda_nossa')}{' '}
@@ -431,7 +437,7 @@ const Footer: React.FC = () => {
                     {t('footer_jsx_link_children_0__política_privacidade')}
                   </Link>
                   .
-                </p>
+                </Text>
               </div>
             </div>
           </div>
@@ -441,12 +447,17 @@ const Footer: React.FC = () => {
         <div className="border-t border-theme-secondary">
           <div className="section-wrap py-6">
             <div className="flex flex-col md:flex-row items-center justify-between space-y-4 md:space-y-0">
-              <div className="text-sm text-theme-tertiary text-center md:text-left">
+              <Text
+                papel="rotulo"
+                tom="fraco"
+                as="div"
+                className="text-center md:text-left"
+              >
                 <p>
                   © {currentYear}{' '}
                   {t('footer_jsx_p_children_2__opus_atlas_todos')}
                 </p>
-              </div>
+              </Text>
 
               <Inline gap={6} className="text-sm text-theme-tertiary">
                 <span className="flex items-center">

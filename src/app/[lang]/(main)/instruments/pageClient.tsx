@@ -29,6 +29,7 @@ import AnimatedMusicalNotes from '../../../components/AnimatedMusicalNotes';
 import Image from '@/app/components/SmartImage';
 import { useTranslation } from '@/app/context/TranslationContext';
 import { Inline } from '@/app/components/ui/Layout';
+import { Text } from '@/app/components/ui/Text';
 
 interface Composer {
   id: string;
@@ -232,9 +233,9 @@ export function InstrumentsPageClient({
                         {instrument.historicalData.category} •{' '}
                         {instrument.historicalData.origin}
                       </p>
-                      <p className="text-theme-tertiary text-sm">
+                      <Text papel="rotulo" tom="fraco" as="p">
                         {instrument.historicalData.inventionPeriod}
-                      </p>
+                      </Text>
                     </div>
                   </Inline>
 
@@ -243,9 +244,9 @@ export function InstrumentsPageClient({
                       <div className="text-2xl font-bold text-brand-primary classical-title">
                         {instrument.stats.totalWorks}
                       </div>
-                      <div className="text-sm text-theme-secondary">
+                      <Text papel="rotulo" tom="suave" as="div">
                         {t('instruments_jsx_div_children_0__obras')}
-                      </div>
+                      </Text>
                     </div>
 
                     <div className="w-8 h-8 bg-interactive-hover rounded-xl flex items-center justify-center transition-all duration-300 group-hover:bg-brand-primary/20">
@@ -293,9 +294,14 @@ export function InstrumentsPageClient({
                                 )}
                               </h3>
                             </Inline>
-                            <p className="text-theme-secondary leading-relaxed text-sm classical-body">
+                            <Text
+                              papel="rotulo"
+                              tom="suave"
+                              as="p"
+                              className="leading-relaxed classical-body"
+                            >
                               {instrument.historicalData.detailedHistory}
-                            </p>
+                            </Text>
                           </div>
                         </div>
 
@@ -408,12 +414,12 @@ export function InstrumentsPageClient({
                                     </div>
                                   </Link>
 
-                                  <div className="text-theme-secondary text-sm">
+                                  <Text papel="rotulo" tom="suave" as="div">
                                     {instrument.topComposers[0].count}{' '}
                                     {t(
                                       'instruments_jsx_span_children_0__obras_minuscula'
                                     )}{' '}
-                                  </div>
+                                  </Text>
                                 </div>
                               </Inline>
                             </div>
@@ -530,9 +536,14 @@ export function InstrumentsPageClient({
                                       key={i}
                                       className="flex items-start space-x-3 p-3 bg-gradient-to-r from-accent-green/5 to-accent-blue/5 border border-accent-green/20 rounded-xl hover:border-accent-green/40 transition-all duration-300 group/item"
                                     >
-                                      <div className="flex items-center justify-center w-7 h-7 bg-gradient-to-br from-accent-green to-accent-blue text-theme-primary rounded-full text-sm font-bold flex-shrink-0 group-hover/item:scale-110 transition-transform duration-300">
+                                      <Text
+                                        papel="rotulo"
+                                        tom="forte"
+                                        as="div"
+                                        className="flex items-center justify-center w-7 h-7 bg-gradient-to-br from-accent-green to-accent-blue rounded-full font-bold flex-shrink-0 group-hover/item:scale-110 transition-transform duration-300"
+                                      >
                                         {i + 1}
-                                      </div>
+                                      </Text>
                                       <div className="text-theme-secondary group-hover/item:text-theme-primary transition-colors duration-300">
                                         {stage}
                                       </div>
@@ -683,12 +694,12 @@ export function InstrumentsPageClient({
                                 'instruments_jsx_h3_children_0__obras_selecionadas'
                               )}
                             </h3>
-                            <p className="text-theme-secondary text-sm">
+                            <Text papel="rotulo" tom="suave" as="p">
                               {instrument.works.length}{' '}
                               {t(
                                 'instruments_jsx_p_children_0__composicoes_disponiveis'
                               )}
-                            </p>
+                            </Text>
                           </div>
                         </Inline>
                         <div
@@ -736,9 +747,14 @@ export function InstrumentsPageClient({
                                             {work.title}
                                           </h4>
                                         </Link>
-                                        <p className="text-theme-secondary text-sm mt-1 classical-subtitle">
+                                        <Text
+                                          papel="rotulo"
+                                          tom="suave"
+                                          as="p"
+                                          className="mt-1 classical-subtitle"
+                                        >
                                           {work.composer.name}
-                                        </p>
+                                        </Text>
                                       </div>
                                       {work.videoUrl && (
                                         <div className="ml-2 w-8 h-8 bg-accent-red/20 hover:bg-accent-red/40 rounded-full flex items-center justify-center transition-all duration-300 group-hover/work:scale-110">
@@ -801,9 +817,14 @@ export function InstrumentsPageClient({
                                           </div>
                                         )}
                                         <div>
-                                          <div className="text-theme-primary text-sm font-medium classical-subtitle">
+                                          <Text
+                                            papel="rotulo"
+                                            tom="forte"
+                                            as="div"
+                                            className="font-medium classical-subtitle"
+                                          >
                                             {work.composer.fullName}
-                                          </div>
+                                          </Text>
                                         </div>
                                       </Link>
                                       <Link

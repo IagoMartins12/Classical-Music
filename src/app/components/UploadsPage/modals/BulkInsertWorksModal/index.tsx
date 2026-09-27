@@ -32,6 +32,7 @@ import {
   type ImportOutcome,
 } from '@/app/requests/external-sources';
 import { Inline, Stack } from '@/app/components/ui/Layout';
+import { Text } from '@/app/components/ui/Text';
 
 /**
  * Obras por chamada de importação. A API aceita até 100 e limita a 5 chamadas
@@ -356,9 +357,9 @@ const BulkInsertWorksModal = ({
                   <h2 className="text-xl font-bold text-theme-primary classical-title">
                     {t('bulk_modal_title')}
                   </h2>
-                  <p className="text-theme-secondary text-sm">
+                  <Text papel="rotulo" tom="suave" as="p">
                     {composer.fullName || composer.name}
-                  </p>
+                  </Text>
                 </div>
               </Inline>
 
@@ -408,7 +409,12 @@ const BulkInsertWorksModal = ({
                     </p>
 
                     <div className="space-y-3">
-                      <div className="text-xs text-theme-tertiary p-3 bg-theme-secondary/10 rounded-lg">
+                      <Text
+                        papel="legenda"
+                        tom="fraco"
+                        as="div"
+                        className="p-3 bg-theme-secondary/10 rounded-lg"
+                      >
                         <Inline gap={2} className="mb-1">
                           <PiInfo className="w-3 h-3" />
                           <span className="font-medium">
@@ -421,7 +427,7 @@ const BulkInsertWorksModal = ({
                           <li>• {t('bulk_step_discover_how_3')}</li>
                           <li>• {t('bulk_step_discover_how_4')}</li>
                         </ul>
-                      </div>
+                      </Text>
 
                       <Button
                         variant="primary"
@@ -456,33 +462,33 @@ const BulkInsertWorksModal = ({
                         <div className="text-2xl font-bold text-theme-primary">
                           {stats.total}
                         </div>
-                        <div className="text-xs text-theme-tertiary">
+                        <Text papel="legenda" tom="fraco" as="div">
                           {t('bulk_stats_total')}
-                        </div>
+                        </Text>
                       </div>
                       <div className="text-center">
                         <div className="text-2xl font-bold text-accent-green">
                           {stats.new}
                         </div>
-                        <div className="text-xs text-theme-tertiary">
+                        <Text papel="legenda" tom="fraco" as="div">
                           {t('bulk_stats_new')}
-                        </div>
+                        </Text>
                       </div>
                       <div className="text-center">
                         <div className="text-2xl font-bold text-accent-amber">
                           {stats.existing}
                         </div>
-                        <div className="text-xs text-theme-tertiary">
+                        <Text papel="legenda" tom="fraco" as="div">
                           {t('bulk_stats_existing')}
-                        </div>
+                        </Text>
                       </div>
                       <div className="text-center">
                         <div className="text-2xl font-bold text-brand-primary">
                           {stats.selected}
                         </div>
-                        <div className="text-xs text-theme-tertiary">
+                        <Text papel="legenda" tom="fraco" as="div">
                           {t('bulk_stats_selected')}
-                        </div>
+                        </Text>
                       </div>
                     </div>
 
@@ -630,14 +636,14 @@ const BulkInsertWorksModal = ({
                         }}
                       />
                     </div>
-                    <div className="text-xs text-theme-tertiary">
+                    <Text papel="legenda" tom="fraco" as="div">
                       {t('bulk_processing_progress', {
                         completed: workProgress.filter(
                           (w) => w.status === 'success' || w.status === 'error'
                         ).length,
                         total: workProgress.length,
                       })}
-                    </div>
+                    </Text>
                   </div>
 
                   {/* Lista de obras com progresso individual */}
@@ -698,11 +704,11 @@ const BulkInsertWorksModal = ({
                             </p>
                             {work.details?.finalTitle &&
                               work.details.finalTitle !== work.title && (
-                                <p className="text-xs text-theme-secondary">
+                                <Text papel="legenda" tom="suave" as="p">
                                   {t('bulk_processing_final_title', {
                                     title: work.details.finalTitle,
                                   })}
-                                </p>
+                                </Text>
                               )}
                           </div>
 
@@ -737,9 +743,9 @@ const BulkInsertWorksModal = ({
                               .length
                           }
                         </div>
-                        <div className="text-xs text-theme-tertiary">
+                        <Text papel="legenda" tom="fraco" as="div">
                           {t('bulk_results_success')}
-                        </div>
+                        </Text>
                       </div>
                       <div className="text-center">
                         <div className="text-2xl font-bold text-accent-red">
@@ -748,9 +754,9 @@ const BulkInsertWorksModal = ({
                               .length
                           }
                         </div>
-                        <div className="text-xs text-theme-tertiary">
+                        <Text papel="legenda" tom="fraco" as="div">
                           {t('bulk_results_errors')}
-                        </div>
+                        </Text>
                       </div>
                       <div className="text-center">
                         <div className="text-2xl font-bold text-accent-amber">
@@ -760,9 +766,9 @@ const BulkInsertWorksModal = ({
                             ).length
                           }
                         </div>
-                        <div className="text-xs text-theme-tertiary">
+                        <Text papel="legenda" tom="fraco" as="div">
                           {t('bulk_results_duplicates')}
-                        </div>
+                        </Text>
                       </div>
                       <div className="text-center">
                         <div className="text-2xl font-bold text-theme-tertiary">
@@ -771,9 +777,9 @@ const BulkInsertWorksModal = ({
                               .length
                           }
                         </div>
-                        <div className="text-xs text-theme-tertiary">
+                        <Text papel="legenda" tom="fraco" as="div">
                           {t('bulk_results_skipped')}
-                        </div>
+                        </Text>
                       </div>
                     </div>
                   </div>
@@ -813,18 +819,18 @@ const BulkInsertWorksModal = ({
                             <h4 className="font-medium text-theme-primary truncate">
                               {result.title}
                             </h4>
-                            <p className="text-xs text-theme-secondary">
+                            <Text papel="legenda" tom="suave" as="p">
                               {result.message.includes('__TURBOPACK')
                                 ? t('bulk_results_error_processing')
                                 : result.message}
-                            </p>
+                            </Text>
                             {result.details?.finalTitle &&
                               result.details.finalTitle !== result.title && (
-                                <p className="text-xs text-brand-primary">
+                                <Text papel="legenda" tom="ouro" as="p">
                                   {t('bulk_processing_final_title', {
                                     title: result.details.finalTitle,
                                   })}
-                                </p>
+                                </Text>
                               )}
                           </div>
                         </Inline>

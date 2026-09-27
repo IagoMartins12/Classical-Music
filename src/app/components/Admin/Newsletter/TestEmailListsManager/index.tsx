@@ -36,6 +36,7 @@ import LoadingAdminState from '../../Common/LoadingState';
 import Select from '@/app/components/Common/Select';
 import Checkbox from '@/app/components/Common/Checkbox';
 import { Inline } from '@/app/components/ui/Layout';
+import { Text } from '@/app/components/ui/Text';
 
 interface CreateEditModalProps {
   isOpen: boolean;
@@ -244,14 +245,14 @@ const CreateEditModal: React.FC<CreateEditModalProps> = ({
               <p className="text-accent-red text-sm mt-1">{errors.emails}</p>
             )}
             {formData.emails.trim() && (
-              <p className="text-theme-tertiary text-sm mt-1">
+              <Text papel="rotulo" tom="fraco" as="p" className="mt-1">
                 {
                   formData.emails
                     .split('\n')
                     .filter((line: string) => line.trim()).length
                 }{' '}
                 email(s)
-              </p>
+              </Text>
             )}
           </div>
 
@@ -300,9 +301,9 @@ const CreateEditModal: React.FC<CreateEditModalProps> = ({
                     }`}
                   />
                 </button>
-                <span className="text-sm text-theme-primary">
+                <Text papel="rotulo" tom="forte">
                   {formData.isActive ? 'Ativa' : 'Inativa'}
-                </span>
+                </Text>
               </Inline>
             </div>
           </div>
@@ -452,9 +453,9 @@ const SendTestModal: React.FC<SendTestModalProps> = ({
                     {list.name}
                   </span>
                 </div>
-                <span className="text-theme-tertiary text-sm">
+                <Text papel="rotulo" tom="fraco">
                   {list.totalEmails} emails
-                </span>
+                </Text>
               </div>
             ))}
           </div>
@@ -564,7 +565,9 @@ const SendTestModal: React.FC<SendTestModalProps> = ({
                 <div className="text-center">
                   <PiUsers className="w-6 h-6 mx-auto mb-2 text-theme-primary" />
                   <div className="font-medium text-theme-primary">Lote</div>
-                  <div className="text-sm text-theme-tertiary">Mais rápido</div>
+                  <Text papel="rotulo" tom="fraco" as="div">
+                    Mais rápido
+                  </Text>
                 </div>
               </label>
 
@@ -593,9 +596,9 @@ const SendTestModal: React.FC<SendTestModalProps> = ({
                   <div className="font-medium text-theme-primary">
                     Individual
                   </div>
-                  <div className="text-sm text-theme-tertiary">
+                  <Text papel="rotulo" tom="fraco" as="div">
                     Mais controle
-                  </div>
+                  </Text>
                 </div>
               </label>
             </div>
@@ -854,9 +857,9 @@ export default function TestEmailListsManager() {
               <AnimatedCard className="classical-card p-6">
                 <div className="flex items-center justify-between">
                   <div>
-                    <p className="text-sm text-theme-tertiary mb-1">
+                    <Text papel="rotulo" tom="fraco" as="p" className="mb-1">
                       Total de Listas
-                    </p>
+                    </Text>
                     <p className="text-3xl font-bold text-theme-primary">
                       {stats.total}
                     </p>
@@ -868,9 +871,9 @@ export default function TestEmailListsManager() {
               <AnimatedCard className="classical-card p-6">
                 <div className="flex items-center justify-between">
                   <div>
-                    <p className="text-sm text-theme-tertiary mb-1">
+                    <Text papel="rotulo" tom="fraco" as="p" className="mb-1">
                       Listas Ativas
-                    </p>
+                    </Text>
                     <p className="text-3xl font-bold text-accent-green">
                       {stats.active}
                     </p>
@@ -882,9 +885,9 @@ export default function TestEmailListsManager() {
               <AnimatedCard className="classical-card p-6">
                 <div className="flex items-center justify-between">
                   <div>
-                    <p className="text-sm text-theme-tertiary mb-1">
+                    <Text papel="rotulo" tom="fraco" as="p" className="mb-1">
                       Total de Emails
-                    </p>
+                    </Text>
                     <p className="text-3xl font-bold text-accent-purple">
                       {stats.totalEmails}
                     </p>
@@ -896,9 +899,9 @@ export default function TestEmailListsManager() {
               <AnimatedCard className="classical-card p-6">
                 <div className="flex items-center justify-between">
                   <div>
-                    <p className="text-sm text-theme-tertiary mb-1">
+                    <Text papel="rotulo" tom="fraco" as="p" className="mb-1">
                       Usos Totais
-                    </p>
+                    </Text>
                     <p className="text-3xl font-bold text-accent-amber">
                       {stats.totalUses}
                     </p>
@@ -991,9 +994,9 @@ export default function TestEmailListsManager() {
                       onChange={(e) => selectAllLists(e.target.checked)}
                       className="mr-2"
                     />
-                    <span className="text-sm text-theme-primary">
+                    <Text papel="rotulo" tom="forte">
                       Selecionar todos ({filteredLists.length})
-                    </span>
+                    </Text>
                   </label>
 
                   {selectedLists.length > 0 && (
@@ -1006,10 +1009,10 @@ export default function TestEmailListsManager() {
                   )}
                 </Inline>
 
-                <p className="text-sm text-theme-tertiary">
+                <Text papel="rotulo" tom="fraco" as="p">
                   {selectedLists.length} de {filteredLists.length}{' '}
                   selecionada(s)
-                </p>
+                </Text>
               </div>
             )}
           </AnimatedCard>
@@ -1053,9 +1056,14 @@ export default function TestEmailListsManager() {
                           </Inline>
 
                           {list.description && (
-                            <p className="text-theme-secondary text-sm mb-3">
+                            <Text
+                              papel="rotulo"
+                              tom="suave"
+                              as="p"
+                              className="mb-3"
+                            >
                               {list.description}
-                            </p>
+                            </Text>
                           )}
 
                           {/* Stats */}

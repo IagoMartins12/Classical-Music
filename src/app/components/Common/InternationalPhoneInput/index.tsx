@@ -15,6 +15,7 @@ import {
   handlePhonePaste,
 } from '@/app/utils/phones_and_location/countryTranslations';
 import { Inline } from '@/app/components/ui/Layout';
+import { Text } from '@/app/components/ui/Text';
 
 export interface InternationalPhoneInputProps {
   value: string;
@@ -327,9 +328,13 @@ const InternationalPhoneInput: React.FC<InternationalPhoneInputProps> = ({
                   <span className="text-lg flex-shrink-0">
                     {currentCountry.flag}
                   </span>
-                  <span className="text-sm font-medium text-theme-primary truncate">
+                  <Text
+                    papel="rotulo"
+                    tom="forte"
+                    className="font-medium truncate"
+                  >
                     {currentCountry.dialCode}
-                  </span>
+                  </Text>
                 </>
               )}
               <PiCaretDown
@@ -348,9 +353,9 @@ const InternationalPhoneInput: React.FC<InternationalPhoneInputProps> = ({
                 {/* 🏷️ Header */}
                 <div className="flex items-center gap-2 px-4 py-3 bg-theme-secondary/10 border-b border-theme-secondary">
                   <PiGlobe className="w-4 h-4 text-brand-primary" />
-                  <span className="text-sm font-medium text-theme-secondary">
+                  <Text papel="rotulo" tom="suave" className="font-medium">
                     Selecionar País
-                  </span>
+                  </Text>
                 </div>
 
                 {/* 🔍 Campo de Busca */}
@@ -374,9 +379,13 @@ const InternationalPhoneInput: React.FC<InternationalPhoneInputProps> = ({
                         filteredCountries.some((c) => c.popular) && (
                           <>
                             <div className="px-4 py-2 bg-brand-primary/5">
-                              <span className="text-xs font-medium text-brand-primary uppercase tracking-wide">
+                              <Text
+                                papel="legenda"
+                                tom="ouro"
+                                className="font-medium uppercase tracking-wide"
+                              >
                                 🏆 Populares
-                              </span>
+                              </Text>
                             </div>
                             {filteredCountries
                               .filter((c) => c.popular)
@@ -392,9 +401,13 @@ const InternationalPhoneInput: React.FC<InternationalPhoneInputProps> = ({
                               ))}
 
                             <div className="px-4 py-2 bg-theme-secondary/5 border-t border-theme-secondary">
-                              <span className="text-xs font-medium text-theme-secondary uppercase tracking-wide">
+                              <Text
+                                papel="legenda"
+                                tom="suave"
+                                className="font-medium uppercase tracking-wide"
+                              >
                                 🌍 Todos os Países
-                              </span>
+                              </Text>
                             </div>
                           </>
                         )}
@@ -416,15 +429,20 @@ const InternationalPhoneInput: React.FC<InternationalPhoneInputProps> = ({
                     // 🚫 Estado Vazio
                     <div className="px-4 py-8 text-center">
                       <PiGlobe className="w-8 h-8 text-theme-tertiary mx-auto mb-2" />
-                      <p className="text-sm text-theme-secondary">
+                      <Text papel="rotulo" tom="suave" as="p">
                         {searchTerm
                           ? `Nenhum país encontrado para "${searchTerm}"`
                           : 'Nenhum país disponível'}
-                      </p>
+                      </Text>
                       {searchTerm && (
-                        <p className="text-xs text-theme-tertiary mt-1">
+                        <Text
+                          papel="legenda"
+                          tom="fraco"
+                          as="p"
+                          className="mt-1"
+                        >
                           Tente buscar por nome, código ou DDD
-                        </p>
+                        </Text>
                       )}
                     </div>
                   )}
@@ -500,9 +518,9 @@ const InternationalPhoneInput: React.FC<InternationalPhoneInputProps> = ({
         {localNumber && currentCountry && (
           <div className="mt-1">
             {localNumber.length !== currentCountry.maxDigits && (
-              <p className="text-xs text-theme-tertiary">
+              <Text papel="legenda" tom="fraco" as="p">
                 {localNumber.length}/{currentCountry.maxDigits} dígitos
-              </p>
+              </Text>
             )}
           </div>
         )}
@@ -535,15 +553,19 @@ const CountryOption: React.FC<{
         <span className="text-lg flex-shrink-0">{country.flag}</span>
         <div className="min-w-0 flex-1">
           <div className="text-sm font-medium truncate">{country.name}</div>
-          <div className="text-xs text-theme-tertiary truncate">
+          <Text papel="legenda" tom="fraco" as="div" className="truncate">
             {country.dialCode} • {country.format} • {country.maxDigits} dígitos
-          </div>
+          </Text>
         </div>
       </Inline>
       {country.popular && (
-        <span className="inline-flex items-center px-2 py-1 rounded-full text-xs bg-brand-primary/10 text-brand-primary flex-shrink-0 ml-2">
+        <Text
+          papel="legenda"
+          tom="ouro"
+          className="inline-flex items-center px-2 py-1 rounded-full bg-brand-primary/10 flex-shrink-0 ml-2"
+        >
           Popular
-        </span>
+        </Text>
       )}
     </div>
   </button>

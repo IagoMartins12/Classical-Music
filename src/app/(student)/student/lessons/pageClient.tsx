@@ -34,6 +34,7 @@ import ViewModeToggle, { ViewMode } from '@/app/components/ViewModeToggle';
 import { useTranslation } from '@/app/context/TranslationContext';
 import Button from '@/app/components/Common/Button';
 import { Inline } from '@/app/components/ui/Layout';
+import { Text } from '@/app/components/ui/Text';
 
 interface StudentLessonsPageClientProps {
   initialData: StudentLessonsData | null;
@@ -375,9 +376,13 @@ export default function StudentLessonsPageClient({
               {statusDisplayInfo.label}
             </span>
             {isToday && (
-              <span className="px-2 py-1 bg-brand-primary/10 text-brand-primary rounded-full text-xs font-medium">
+              <Text
+                papel="legenda"
+                tom="ouro"
+                className="px-2 py-1 bg-brand-primary/10 rounded-full font-medium"
+              >
                 {t('today')}
-              </span>
+              </Text>
             )}
           </div>
 
@@ -387,35 +392,55 @@ export default function StudentLessonsPageClient({
           </h3>
 
           <div className="space-y-2 mb-4">
-            <div className="flex items-center text-sm text-theme-secondary">
+            <Text
+              papel="rotulo"
+              tom="suave"
+              as="div"
+              className="flex items-center"
+            >
               <PiCalendarBlank className="w-4 h-4 mr-2" />
               {formatDateTime(lesson.scheduledAt)}
-            </div>
+            </Text>
 
-            <div className="flex items-center text-sm text-theme-secondary">
+            <Text
+              papel="rotulo"
+              tom="suave"
+              as="div"
+              className="flex items-center"
+            >
               <PiClock className="w-4 h-4 mr-2" />
               {lesson.duration} {t('minutes')}
-            </div>
+            </Text>
 
-            <div className="flex items-center text-sm text-theme-secondary">
+            <Text
+              papel="rotulo"
+              tom="suave"
+              as="div"
+              className="flex items-center"
+            >
               <PiUser className="w-4 h-4 mr-2" />
               {lesson.teacher.name}
-            </div>
+            </Text>
 
             {lesson.location && (
-              <div className="flex items-center text-sm text-theme-secondary">
+              <Text
+                papel="rotulo"
+                tom="suave"
+                as="div"
+                className="flex items-center"
+              >
                 <PiMapPin className="w-4 h-4 mr-2" />
                 {lesson.location}
-              </div>
+              </Text>
             )}
           </div>
 
           {/* Objectives Preview */}
           {lesson.objectives.length > 0 && (
             <div className="mb-4">
-              <div className="text-xs text-theme-tertiary mb-1">
+              <Text papel="legenda" tom="fraco" as="div" className="mb-1">
                 {t('objectives')}:
-              </div>
+              </Text>
               <div className="flex flex-wrap gap-1">
                 {lesson.objectives
                   .slice(0, 2)
@@ -428,9 +453,9 @@ export default function StudentLessonsPageClient({
                     </span>
                   ))}
                 {lesson.objectives.length > 2 && (
-                  <span className="text-xs text-theme-tertiary">
+                  <Text papel="legenda" tom="fraco">
                     +{lesson.objectives.length - 2}
-                  </span>
+                  </Text>
                 )}
               </div>
             </div>
@@ -512,9 +537,13 @@ export default function StudentLessonsPageClient({
                   <PiWarning className="w-4 h-4 text-accent-red" />
                 )}
                 {isToday && (
-                  <span className="px-2 py-1 bg-brand-primary/10 text-brand-primary rounded-full text-xs font-medium">
+                  <Text
+                    papel="legenda"
+                    tom="ouro"
+                    className="px-2 py-1 bg-brand-primary/10 rounded-full font-medium"
+                  >
                     {t('today')}
-                  </span>
+                  </Text>
                 )}
               </Inline>
 
@@ -524,9 +553,9 @@ export default function StudentLessonsPageClient({
                   <h3 className="font-semibold text-theme-primary truncate">
                     {lesson.title}
                   </h3>
-                  <span className="text-sm text-theme-secondary">
+                  <Text papel="rotulo" tom="suave">
                     {lesson.teacher.name}
-                  </span>
+                  </Text>
                 </Inline>
                 <Inline gap={4} className="text-sm text-theme-tertiary">
                   <span>{formatDateTime(lesson.scheduledAt)}</span>
@@ -665,7 +694,9 @@ export default function StudentLessonsPageClient({
                 <div className="text-2xl font-bold text-theme-primary mb-1">
                   {stats.total}
                 </div>
-                <div className="text-sm text-theme-tertiary">{t('total')}</div>
+                <Text papel="rotulo" tom="fraco" as="div">
+                  {t('total')}
+                </Text>
               </AnimatedCard>
 
               <AnimatedCard
@@ -678,9 +709,9 @@ export default function StudentLessonsPageClient({
                 <div className="text-2xl font-bold text-theme-primary mb-1">
                   {stats.scheduled}
                 </div>
-                <div className="text-sm text-theme-tertiary">
+                <Text papel="rotulo" tom="fraco" as="div">
                   {t('scheduled')}
-                </div>
+                </Text>
               </AnimatedCard>
 
               <AnimatedCard
@@ -693,9 +724,9 @@ export default function StudentLessonsPageClient({
                 <div className="text-2xl font-bold text-theme-primary mb-1">
                   {stats.completed}
                 </div>
-                <div className="text-sm text-theme-tertiary">
+                <Text papel="rotulo" tom="fraco" as="div">
                   {t('completed')}
-                </div>
+                </Text>
               </AnimatedCard>
 
               <AnimatedCard
@@ -708,9 +739,9 @@ export default function StudentLessonsPageClient({
                 <div className="text-2xl font-bold text-theme-primary mb-1">
                   {stats.cancelled}
                 </div>
-                <div className="text-sm text-theme-tertiary">
+                <Text papel="rotulo" tom="fraco" as="div">
                   {t('cancelled')}
-                </div>
+                </Text>
               </AnimatedCard>
             </div>
           </div>
@@ -876,13 +907,13 @@ export default function StudentLessonsPageClient({
         {filteredLessons.length !== displayLessons.length && (
           <AnimatedItem direction="up" springType="gentle">
             <div className="mb-6">
-              <p className="text-theme-secondary text-sm">
+              <Text papel="rotulo" tom="suave" as="p">
                 {t('showing_results', {
                   filtered: filteredLessons.length,
                   total: displayLessons.length,
                 })}
                 {searchTerm && ` para "${searchTerm}"`}
-              </p>
+              </Text>
             </div>
           </AnimatedItem>
         )}

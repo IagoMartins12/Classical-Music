@@ -28,6 +28,7 @@ import { toast } from 'react-hot-toast';
 import Modal from '@/app/components/Modal';
 import Select from '@/app/components/Common/Select';
 import { Inline } from '@/app/components/ui/Layout';
+import { Text } from '@/app/components/ui/Text';
 
 interface Article {
   id: string;
@@ -436,9 +437,9 @@ export function ArticleList({
                             </span>
                           ))}
                           {article.categories.length > 2 && (
-                            <span className="text-xs text-theme-tertiary">
+                            <Text papel="legenda" tom="fraco">
                               +{article.categories.length - 2}
-                            </span>
+                            </Text>
                           )}
                         </div>
                       </div>
@@ -503,9 +504,14 @@ export function ArticleList({
 
                     {/* Description */}
                     {article.description && (
-                      <p className="text-sm text-theme-tertiary mb-3 line-clamp-2">
+                      <Text
+                        papel="rotulo"
+                        tom="fraco"
+                        as="p"
+                        className="mb-3 line-clamp-2"
+                      >
                         {article.description}
-                      </p>
+                      </Text>
                     )}
 
                     {/* Meta */}
@@ -597,11 +603,11 @@ export function ArticleList({
           {/* Pagination */}
           {pagination.totalPages > 1 && (
             <div className="flex items-center justify-between">
-              <p className="text-sm text-theme-tertiary">
+              <Text papel="rotulo" tom="fraco" as="p">
                 Mostrando {(pagination.page - 1) * pagination.limit + 1} -{' '}
                 {Math.min(pagination.page * pagination.limit, pagination.total)}{' '}
                 de {pagination.total} artigos
-              </p>
+              </Text>
 
               <Inline gap={2}>
                 {pagination.page > 1 && (

@@ -16,6 +16,7 @@ import { translateEpochWithHook } from '@/app/utils/translations/epochTranslatio
 import { ComposerImslp } from '@/app/[lang]/(main)/composers/pageClient';
 import { useTranslation } from '@/app/context/TranslationContext';
 import { Inline, Stack } from '@/app/components/ui/Layout';
+import { Text } from '@/app/components/ui/Text';
 
 interface composerCardProps {
   composer: ComposerImslp;
@@ -128,30 +129,43 @@ const ComposerCard: React.FC<composerCardProps> = ({ composer }) => {
               </h3>
 
               {/* Full name if different */}
-              <span className="text-sm flex items-center justify-center gap-2 text-theme-secondary mt-1 line-clamp-2">
+              <Text
+                papel="rotulo"
+                tom="suave"
+                className="flex items-center justify-center gap-2 mt-1 line-clamp-2"
+              >
                 {composer.fullName}
                 <VerificationBadge
                   verified={composer.isVerified}
                   variant="icon"
                 />
-              </span>
+              </Text>
             </div>
 
             {/* Dates */}
             {formatDates() && (
-              <div className="flex items-center justify-center text-theme-tertiary text-sm">
+              <Text
+                papel="rotulo"
+                tom="fraco"
+                as="div"
+                className="flex items-center justify-center"
+              >
                 <PiCalendarBlank className="w-3 h-3 mr-1" />
                 {formatDates()}
-              </div>
+              </Text>
             )}
 
             {/* Period info */}
             {composer.epochName && (
               <div className="text-center">
-                <span className="inline-flex items-center px-3 py-1 bg-brand-primary/10 border border-brand-primary/20 text-brand-primary rounded-full text-xs font-medium hover:bg-brand-primary/20 transition-colors duration-300">
+                <Text
+                  papel="legenda"
+                  tom="ouro"
+                  className="inline-flex items-center px-3 py-1 bg-brand-primary/10 border border-brand-primary/20 rounded-full font-medium hover:bg-brand-primary/20 transition-colors duration-300"
+                >
                   <PiMusicNotes className="w-3 h-3 mr-1" />
                   {translateEpochWithHook(composer.epochName, t)}
-                </span>
+                </Text>
               </div>
             )}
 

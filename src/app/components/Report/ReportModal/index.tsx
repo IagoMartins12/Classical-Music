@@ -10,6 +10,7 @@ import { useToast } from '@/app/hooks/useToast';
 import { useTranslation } from '@/app/hooks/useTranslation';
 import { reportContent } from '@/app/requests/moderation';
 import { Inline } from '@/app/components/ui/Layout';
+import { Text } from '@/app/components/ui/Text';
 
 interface ReportModalProps {
   isOpen: boolean;
@@ -147,9 +148,9 @@ export default function ReportModal({
                 <h2 className="text-xl font-bold text-theme-primary">
                   {t('report_modal_titulo')} {getEntityTypeLabel()}
                 </h2>
-                <p className="text-sm text-theme-secondary">
+                <Text papel="rotulo" tom="suave" as="p">
                   &quot;{entityName}&quot;
-                </p>
+                </Text>
               </div>
             </Inline>
           </div>
@@ -183,9 +184,9 @@ export default function ReportModal({
                       <div className="font-medium text-theme-primary">
                         {reason.label}
                       </div>
-                      <div className="text-sm text-theme-secondary">
+                      <Text papel="rotulo" tom="suave" as="div">
                         {reason.description}
-                      </div>
+                      </Text>
                     </div>
                   </label>
                 ))}

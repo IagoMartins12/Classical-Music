@@ -3,6 +3,7 @@
 
 import { PiCalendarBlank, PiClock, PiMapPin } from 'react-icons/pi';
 import { Inline } from '@/app/components/ui/Layout';
+import { Text } from '@/app/components/ui/Text';
 
 interface DayViewProps {
   date: Date;
@@ -64,7 +65,12 @@ export default function DayView({ date, events, onEventClick }: DayViewProps) {
                     {event.title}
                   </h3>
 
-                  <div className="space-y-2 text-sm text-theme-secondary">
+                  <Text
+                    papel="rotulo"
+                    tom="suave"
+                    as="div"
+                    className="space-y-2"
+                  >
                     <Inline gap={2}>
                       <PiClock className="w-4 h-4" />
                       <span>{formatEventTime(event.start, event.end)}</span>
@@ -83,21 +89,23 @@ export default function DayView({ date, events, onEventClick }: DayViewProps) {
                         {event.composers
                           .slice(0, 3)
                           .map((composer: any, index: number) => (
-                            <span
+                            <Text
+                              papel="legenda"
+                              tom="suave"
                               key={index}
-                              className="px-2 py-1 bg-theme-elevated rounded text-xs text-theme-secondary"
+                              className="px-2 py-1 bg-theme-elevated rounded"
                             >
                               {composer.name}
-                            </span>
+                            </Text>
                           ))}
                         {event.composers.length > 3 && (
-                          <span className="text-xs text-theme-tertiary">
+                          <Text papel="legenda" tom="fraco">
                             +{event.composers.length - 3}
-                          </span>
+                          </Text>
                         )}
                       </div>
                     )}
-                  </div>
+                  </Text>
 
                   <div className="flex items-center gap-2 mt-3">
                     <span
@@ -109,9 +117,9 @@ export default function DayView({ date, events, onEventClick }: DayViewProps) {
                     >
                       {event.isFree ? '🎫 Gratuito' : '🎫 Ingresso'}
                     </span>
-                    <span className="text-xs text-theme-tertiary">
+                    <Text papel="legenda" tom="fraco">
                       {getEventTypeLabel(event.type)}
-                    </span>
+                    </Text>
                   </div>
                 </div>
               </div>

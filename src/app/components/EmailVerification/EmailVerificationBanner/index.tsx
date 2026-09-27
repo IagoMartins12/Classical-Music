@@ -12,6 +12,7 @@ import { AnimatedItem } from '../../animation/AnimatedComponents';
 import Button from '../../Common/Button';
 import { useEmailVerification } from '@/app/hooks/useEmailVerification';
 import { Inline } from '@/app/components/ui/Layout';
+import { Text } from '@/app/components/ui/Text';
 
 interface EmailVerificationBannerProps {
   userEmail?: string | null;
@@ -60,11 +61,11 @@ export default function EmailVerificationBanner({
                     </Inline>
                   )}
                 </Inline>
-                <p className="text-xs text-theme-secondary mt-1">
+                <Text papel="legenda" tom="suave" as="p" className="mt-1">
                   Olá{userName ? ` ${userName}` : ''}! Para adicionar
                   compositores e partituras, confirme o email{' '}
                   <strong>{userEmail}</strong>
-                </p>
+                </Text>
               </div>
             </Inline>
 

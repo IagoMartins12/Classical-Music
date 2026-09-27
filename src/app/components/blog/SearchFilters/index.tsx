@@ -6,6 +6,7 @@ import { PiCaretDown, PiCaretUp } from 'react-icons/pi';
 import Checkbox from '../../Common/Checkbox';
 import { listCategories, listTags } from '@/app/requests/blog/taxonomy';
 import { Inline } from '@/app/components/ui/Layout';
+import { Text } from '@/app/components/ui/Text';
 
 interface SearchFiltersProps {
   currentParams: {
@@ -154,9 +155,13 @@ export function SearchFilters({ currentParams }: SearchFiltersProps) {
                 handleFilterChange('tipos', type.value, e.target.checked)
               }
             />
-            <span className="text-sm text-theme-secondary group-hover:text-theme-primary transition-colors">
+            <Text
+              papel="rotulo"
+              tom="suave"
+              className="group-hover:text-theme-primary transition-colors"
+            >
               {type.label}
-            </span>
+            </Text>
           </Inline>
         ))}
       </FilterSection>
@@ -182,9 +187,13 @@ export function SearchFilters({ currentParams }: SearchFiltersProps) {
                 }
                 className="w-4 h-4 rounded border-gray-300 text-brand-primary focus:ring-brand-primary"
               />
-              <span className="text-sm text-theme-secondary group-hover:text-theme-primary transition-colors">
+              <Text
+                papel="rotulo"
+                tom="suave"
+                className="group-hover:text-theme-primary transition-colors"
+              >
                 {category.icon} {category.name}
-              </span>
+              </Text>
             </Inline>
           ))}
         </FilterSection>
@@ -207,12 +216,14 @@ export function SearchFilters({ currentParams }: SearchFiltersProps) {
                 }
                 className="w-4 h-4 rounded border-gray-300 text-brand-primary focus:ring-brand-primary"
               />
-              <span
-                className="text-sm text-theme-secondary group-hover:text-theme-primary transition-colors"
+              <Text
+                papel="rotulo"
+                tom="suave"
+                className="group-hover:text-theme-primary transition-colors"
                 style={{ color: tag.color || undefined }}
               >
                 #{tag.name}
-              </span>
+              </Text>
             </Inline>
           ))}
         </FilterSection>

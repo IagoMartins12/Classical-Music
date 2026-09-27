@@ -6,6 +6,7 @@ import { loadAdminCategory } from '@/app/requests/blog/admin';
 import { CategoryForm } from '@/app/components/blog/admin/CategoryForm';
 import { PiArrowLeft } from 'react-icons/pi';
 import { getServerSession } from '@/app/libs/api/server-session';
+import { Text } from '@/app/components/ui/Text';
 
 interface categoryProps {
   id: string;
@@ -63,9 +64,9 @@ export default async function EditCategoryPage({ params }: PageProps) {
           <h1 className="text-3xl font-bold text-theme-primary classical-title">
             Editar categoria {category.name}
           </h1>
-          <p className="mt-2 text-sm text-theme-secondary">
+          <Text papel="rotulo" tom="suave" as="p" className="mt-2">
             Preencha as informações abaixo para editar a categoria para o blog.
-          </p>
+          </Text>
         </div>
 
         {/* Form */}

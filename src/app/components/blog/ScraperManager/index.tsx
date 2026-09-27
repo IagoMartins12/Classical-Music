@@ -6,6 +6,7 @@ import Button from '@/app/components/Common/Button';
 import { AnimatedCard } from '@/app/components/animation/AnimatedComponents';
 import { getEnabledScrapers } from '@/app/services/scraper-api/scappers/base-scraper.config';
 import EventScraperModal from '../EventScraperModal';
+import { Text } from '@/app/components/ui/Text';
 
 export default function ScraperManager() {
   const [showModal, setShowModal] = useState(false);
@@ -38,13 +39,18 @@ export default function ScraperManager() {
             <h4 className="font-bold text-theme-primary mb-1">
               {scraper.name}
             </h4>
-            <p className="text-sm text-theme-secondary mb-2">
+            <Text papel="rotulo" tom="suave" as="p" className="mb-2">
               {scraper.description}
-            </p>
-            <div className="flex items-center text-xs text-theme-tertiary">
+            </Text>
+            <Text
+              papel="legenda"
+              tom="fraco"
+              as="div"
+              className="flex items-center"
+            >
               <PiMapPin className="w-3 h-3 mr-1" />
               {scraper.venue}
-            </div>
+            </Text>
           </AnimatedCard>
         ))}
       </div>

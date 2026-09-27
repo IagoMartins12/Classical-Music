@@ -15,6 +15,7 @@ import {
 import Input from '../Common/Inputs';
 import { useTranslation } from '@/app/hooks/useTranslation';
 import { Inline } from '@/app/components/ui/Layout';
+import { Text } from '@/app/components/ui/Text';
 
 interface ShareButtonProps {
   url?: string;
@@ -161,9 +162,14 @@ export default function ShareButton({
                 {title}
               </h4>
               {description && (
-                <p className="text-theme-secondary text-xs line-clamp-2">
+                <Text
+                  papel="legenda"
+                  tom="suave"
+                  as="p"
+                  className="line-clamp-2"
+                >
                   {description}
-                </p>
+                </Text>
               )}
             </div>
 

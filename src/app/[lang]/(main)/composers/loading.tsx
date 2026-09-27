@@ -9,6 +9,7 @@ import {
   PiSquaresFour,
 } from 'react-icons/pi';
 import { Inline } from '@/app/components/ui/Layout';
+import { Text } from '@/app/components/ui/Text';
 
 export default function ComposersLoading() {
   return (
@@ -85,13 +86,20 @@ export default function ComposersLoading() {
           <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 pt-4 border-t border-theme-secondary">
             <Inline gap={4}>
               <div className="h-4 w-64 bg-theme-elevated rounded animate-pulse"></div>
-              <div className="flex items-center text-brand-primary text-sm"></div>
+              <Text
+                papel="rotulo"
+                tom="ouro"
+                as="div"
+                className="flex items-center"
+              ></Text>
             </Inline>
 
             <Inline gap={3}>
               {/* View Toggle Skeleton */}
               <Inline gap={3}>
-                <span className="text-sm text-theme-secondary">Vista:</span>
+                <Text papel="rotulo" tom="suave">
+                  Vista:
+                </Text>
                 <div className="bg-theme-secundary border border-theme-primary rounded-lg p-1 flex">
                   <div className="p-2 rounded-md bg-theme-elevated">
                     <PiListBullets className="w-4 h-4 text-theme-tertiary/50" />

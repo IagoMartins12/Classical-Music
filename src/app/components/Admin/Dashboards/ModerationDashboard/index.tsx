@@ -33,6 +33,7 @@ import Button from '@/app/components/Common/Button';
 import Select from '@/app/components/Common/Select';
 import { MetricCard } from '@/app/components/Admin/Charts/AdminCharts';
 import { Inline } from '@/app/components/ui/Layout';
+import { Text } from '@/app/components/ui/Text';
 
 interface ModerationItem {
   id: string;
@@ -371,9 +372,9 @@ export default function ModerationDashboard() {
             <Inline gap={3}>
               {selectedItems.size > 0 && (
                 <Inline gap={2}>
-                  <span className="text-sm text-theme-secondary">
+                  <Text papel="rotulo" tom="suave">
                     {selectedItems.size} selecionados
-                  </span>
+                  </Text>
                   <Button
                     variant="secondary"
                     size="sm"
@@ -527,9 +528,14 @@ export default function ModerationDashboard() {
                             </Inline>
 
                             {item.content.description && (
-                              <p className="text-sm text-theme-secondary mb-3 line-clamp-2">
+                              <Text
+                                papel="rotulo"
+                                tom="suave"
+                                as="p"
+                                className="mb-3 line-clamp-2"
+                              >
                                 {item.content.description}
-                              </p>
+                              </Text>
                             )}
 
                             {item.issues.length > 0 && (
@@ -632,17 +638,22 @@ export default function ModerationDashboard() {
                   key={moderator.id}
                   className="p-3 bg-theme-secondary rounded-xl"
                 >
-                  <div className="w-8 h-8 bg-gradient-to-br from-accent-green to-accent-blue rounded-lg flex items-center justify-center text-sm font-bold text-theme-primary">
+                  <Text
+                    papel="rotulo"
+                    tom="forte"
+                    as="div"
+                    className="w-8 h-8 bg-gradient-to-br from-accent-green to-accent-blue rounded-lg flex items-center justify-center font-bold"
+                  >
                     {index + 1}
-                  </div>
+                  </Text>
                   <div className="flex-1">
                     <p className="font-medium text-theme-primary">
                       {moderator.name}
                     </p>
-                    <p className="text-sm text-theme-tertiary">
+                    <Text papel="rotulo" tom="fraco" as="p">
                       {moderator.processed} processados •{' '}
                       {moderator.accuracy.toFixed(1)}% precisão
-                    </p>
+                    </Text>
                   </div>
                 </Inline>
               ))}
@@ -662,9 +673,9 @@ export default function ModerationDashboard() {
             <div className="space-y-4">
               <div className="p-4 bg-theme-secondary rounded-xl">
                 <div className="flex items-center justify-between mb-2">
-                  <span className="text-sm font-medium text-theme-primary">
+                  <Text papel="rotulo" tom="forte" className="font-medium">
                     Taxa de Aprovação Geral
-                  </span>
+                  </Text>
                   <span className="text-2xl font-bold text-accent-green">
                     {(
                       ((stats?.approved || 0) / (stats?.processed || 1)) *
@@ -690,13 +701,17 @@ export default function ModerationDashboard() {
                   <div className="text-lg font-bold text-accent-blue">
                     {stats?.avgProcessingTime.toFixed(1)}h
                   </div>
-                  <div className="text-xs text-theme-tertiary">Tempo Médio</div>
+                  <Text papel="legenda" tom="fraco" as="div">
+                    Tempo Médio
+                  </Text>
                 </div>
                 <div className="text-center p-3 bg-theme-secondary rounded-xl">
                   <div className="text-lg font-bold text-accent-purple">
                     {stats?.pending || 0}
                   </div>
-                  <div className="text-xs text-theme-tertiary">Na Fila</div>
+                  <Text papel="legenda" tom="fraco" as="div">
+                    Na Fila
+                  </Text>
                 </div>
               </div>
             </div>

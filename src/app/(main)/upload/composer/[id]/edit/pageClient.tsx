@@ -31,6 +31,7 @@ import { useToast } from '@/app/hooks/useToast';
 import { deleteUpload } from '@/app/requests/uploads-client';
 import { useTranslation } from '@/app/context/TranslationContext';
 import { Inline } from '@/app/components/ui/Layout';
+import { Text } from '@/app/components/ui/Text';
 
 interface EditComposerClientProps {
   composer: any;
@@ -309,9 +310,14 @@ const EditComposerClient = ({
                           <PiUser className="w-4 h-4 text-theme-primary" />
                         </div>
                         <div>
-                          <p className="text-sm font-medium text-theme-tertiary">
+                          <Text
+                            papel="rotulo"
+                            tom="fraco"
+                            as="p"
+                            className="font-medium"
+                          >
                             {t('composer_info_name')}
-                          </p>
+                          </Text>
                           <p className="text-theme-primary font-semibold">
                             {composer.name}
                           </p>
@@ -326,9 +332,14 @@ const EditComposerClient = ({
                               <PiUser className="w-4 h-4 text-theme-primary" />
                             </div>
                             <div>
-                              <p className="text-sm font-medium text-theme-tertiary">
+                              <Text
+                                papel="rotulo"
+                                tom="fraco"
+                                as="p"
+                                className="font-medium"
+                              >
                                 {t('composer_info_full_name')}
-                              </p>
+                              </Text>
                               <p className="text-theme-primary font-semibold">
                                 {composer.fullName}
                               </p>
@@ -343,9 +354,14 @@ const EditComposerClient = ({
                             <PiCalendarBlank className="w-4 h-4 text-theme-primary" />
                           </div>
                           <div>
-                            <p className="text-sm font-medium text-theme-tertiary">
+                            <Text
+                              papel="rotulo"
+                              tom="fraco"
+                              as="p"
+                              className="font-medium"
+                            >
                               {t('composer_info_birth')}
-                            </p>
+                            </Text>
                             <p className="text-theme-primary font-semibold">
                               {formatDate(composer.birthDate)}
                             </p>
@@ -360,9 +376,14 @@ const EditComposerClient = ({
                             <PiCalendarBlank className="w-4 h-4 text-theme-primary" />
                           </div>
                           <div>
-                            <p className="text-sm font-medium text-theme-tertiary">
+                            <Text
+                              papel="rotulo"
+                              tom="fraco"
+                              as="p"
+                              className="font-medium"
+                            >
                               {t('composer_info_death')}
-                            </p>
+                            </Text>
                             <p className="text-theme-primary font-semibold">
                               {formatDate(composer.deathDate)}
                             </p>
@@ -376,9 +397,14 @@ const EditComposerClient = ({
                           <PiMapPin className="w-4 h-4 text-theme-primary" />
                         </div>
                         <div>
-                          <p className="text-sm font-medium text-theme-tertiary">
+                          <Text
+                            papel="rotulo"
+                            tom="fraco"
+                            as="p"
+                            className="font-medium"
+                          >
                             {t('composer_info_epoch')}
-                          </p>
+                          </Text>
                           <p className="text-brand-primary font-semibold">
                             {composer.epoch.name}
                           </p>
@@ -391,9 +417,14 @@ const EditComposerClient = ({
                           <PiUser className="w-4 h-4 text-theme-primary" />
                         </div>
                         <div>
-                          <p className="text-sm font-medium text-theme-tertiary">
+                          <Text
+                            papel="rotulo"
+                            tom="fraco"
+                            as="p"
+                            className="font-medium"
+                          >
                             {t('composer_info_primary_role')}
-                          </p>
+                          </Text>
                           <p className="text-theme-primary font-semibold">
                             {composer.primaryRole.name}
                           </p>
@@ -407,9 +438,14 @@ const EditComposerClient = ({
                             {nationalityDisplay.flag}
                           </div>
                           <div>
-                            <p className="text-sm font-medium text-theme-tertiary">
+                            <Text
+                              papel="rotulo"
+                              tom="fraco"
+                              as="p"
+                              className="font-medium"
+                            >
                               {t('composer_info_nationality')}
-                            </p>
+                            </Text>
                             <p className="text-theme-primary font-semibold">
                               {nationalityDisplay.countryName}
                             </p>
@@ -424,9 +460,14 @@ const EditComposerClient = ({
                             <PiUser className="w-4 h-4 text-theme-primary" />
                           </div>
                           <div>
-                            <p className="text-sm font-medium text-theme-tertiary">
+                            <Text
+                              papel="rotulo"
+                              tom="fraco"
+                              as="p"
+                              className="font-medium"
+                            >
                               {t('composer_info_instruments')}
-                            </p>
+                            </Text>
                             <p className="text-theme-primary font-semibold">
                               {composer.instruments}
                             </p>
@@ -559,16 +600,26 @@ const EditComposerClient = ({
                     <div className="w-8 h-8 bg-interactive-hover rounded-full flex items-center justify-center cursor-help">
                       <PiInfo className="w-4 h-4 text-theme-tertiary" />
                     </div>
-                    <div className="absolute bottom-full right-0 mb-2 px-3 py-2 bg-theme-elevated border border-theme-primary text-theme-primary text-xs rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none whitespace-nowrap z-10 shadow-theme-medium">
+                    <Text
+                      papel="legenda"
+                      tom="forte"
+                      as="div"
+                      className="absolute bottom-full right-0 mb-2 px-3 py-2 bg-theme-elevated border border-theme-primary rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none whitespace-nowrap z-10 shadow-theme-medium"
+                    >
                       Biografia cadastrada no sistema
                       <div className="absolute top-full right-3 w-0 h-0 border-l-4 border-r-4 border-t-4 border-transparent border-t-theme-elevated"></div>
-                    </div>
+                    </Text>
                   </div>
                 </Inline>
               </AnimatedItem>
 
               <AnimatedItem direction="up" springType="gentle">
-                <div className="whitespace-pre-line text-theme-secondary leading-relaxed text-base classical-body">
+                <Text
+                  papel="corpo"
+                  tom="suave"
+                  as="div"
+                  className="whitespace-pre-line leading-relaxed classical-body"
+                >
                   {composer.bio
                     .split('\n')
                     .map((paragraph: string, index: number) => (
@@ -576,7 +627,7 @@ const EditComposerClient = ({
                         {paragraph}
                       </p>
                     ))}
-                </div>
+                </Text>
               </AnimatedItem>
             </AnimatedCard>
           )}

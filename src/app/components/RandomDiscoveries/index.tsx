@@ -16,6 +16,7 @@ import SectionTitle from '../Utils/SectionTitle';
 import { translateEpochWithHook } from '@/app/utils/translations/epochTranslationComposer';
 import { useTranslation } from '@/app/context/TranslationContext';
 import { Inline } from '@/app/components/ui/Layout';
+import { Text } from '@/app/components/ui/Text';
 
 interface Composer {
   id: string;
@@ -107,10 +108,14 @@ const DiscoveryComposerCard = ({ composer }: { composer: Composer }) => {
 
               {/* Period info */}
               <div className="flex justify-center">
-                <span className="inline-flex items-center px-2 py-0.5 bg-theme-tertiary/10 border border-theme-tertiary/20 text-theme-tertiary rounded-full text-xs font-medium">
+                <Text
+                  papel="legenda"
+                  tom="fraco"
+                  className="inline-flex items-center px-2 py-0.5 bg-theme-tertiary/10 border border-theme-tertiary/20 rounded-full font-medium"
+                >
                   <PiMusicNotes className="w-2 h-2 mr-1" />
                   {translateEpochWithHook(composer.epochName, t)}
-                </span>
+                </Text>
               </div>
 
               {/* Action indicator */}
@@ -171,15 +176,19 @@ const DiscoveryWorkCard = ({ work }: { work: Work }) => {
               </h3>
 
               {/* Composer */}
-              <p className="text-xs text-theme-secondary line-clamp-1">
+              <Text papel="legenda" tom="suave" as="p" className="line-clamp-1">
                 {work.composerName}
-              </p>
+              </Text>
 
               {/* Details */}
               <div className="flex justify-center flex-wrap gap-1">
-                <span className="inline-flex items-center px-1.5 py-0.5 bg-theme-tertiary/10 border border-theme-tertiary/20 text-theme-tertiary rounded text-xs">
+                <Text
+                  papel="legenda"
+                  tom="fraco"
+                  className="inline-flex items-center px-1.5 py-0.5 bg-theme-tertiary/10 border border-theme-tertiary/20 rounded"
+                >
                   {work.instrumentName}
-                </span>
+                </Text>
                 {work.tone && (
                   <span className="inline-flex items-center px-1.5 py-0.5 bg-purple-500/10 border border-purple-500/20 text-purple-400 rounded text-xs">
                     {work.tone}

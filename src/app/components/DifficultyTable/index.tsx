@@ -11,6 +11,7 @@ import {
 import { DifficultyWork } from '@/app/requests/difficulty-details'; // ✅ Import atualizado
 import { AnimatedItem } from '../animation/AnimatedComponents';
 import { Inline, Stack } from '@/app/components/ui/Layout';
+import { Text } from '@/app/components/ui/Text';
 
 interface DifficultyTableProps {
   works: DifficultyWork[]; // ✅ Tipo atualizado
@@ -73,10 +74,10 @@ export default function DifficultyTable({
               <h3 className="text-lg font-bold text-theme-primary classical-title">
                 Obras por Dificuldade
               </h3>
-              <p className="text-theme-secondary text-sm">
+              <Text papel="rotulo" tom="suave" as="p">
                 {works.length} obra{works.length !== 1 ? 's' : ''} encontrada
                 {works.length !== 1 ? 's' : ''} · Sistema {selectedSystem}
-              </p>
+              </Text>
             </div>
           </div>
         </div>
@@ -153,14 +154,19 @@ export default function DifficultyTable({
                       {work.title}
                     </Link>
                     {work.subtitle && (
-                      <p className="text-sm text-theme-tertiary mt-1 line-clamp-1">
+                      <Text
+                        papel="rotulo"
+                        tom="fraco"
+                        as="p"
+                        className="mt-1 line-clamp-1"
+                      >
                         {work.subtitle}
-                      </p>
+                      </Text>
                     )}
                     {work.opOrCatalog && (
-                      <p className="text-xs text-theme-tertiary mt-1">
+                      <Text papel="legenda" tom="fraco" as="p" className="mt-1">
                         {work.opOrCatalog}
-                      </p>
+                      </Text>
                     )}
                   </div>
                 </td>
@@ -179,9 +185,9 @@ export default function DifficultyTable({
                         {work.composer.fullName || work.composer.name}
                       </Link>
                       {work.compositionYear && (
-                        <p className="text-xs text-theme-tertiary">
+                        <Text papel="legenda" tom="fraco" as="p">
                           {work.compositionYear}
-                        </p>
+                        </Text>
                       )}
                     </div>
                   </div>
@@ -191,9 +197,9 @@ export default function DifficultyTable({
                 <td className="py-4 px-6">
                   <div className="flex items-center">
                     <PiMusicNotes className="w-4 h-4 text-brand-primary mr-2" />
-                    <span className="text-sm text-theme-secondary font-medium">
+                    <Text papel="rotulo" tom="suave" className="font-medium">
                       {work.instrument.name}
-                    </span>
+                    </Text>
                   </div>
                 </td>
 
@@ -215,9 +221,9 @@ export default function DifficultyTable({
                           </Link>
                         ))}
                         {work.workScores.length > 2 && (
-                          <span className="text-xs text-theme-tertiary">
+                          <Text papel="legenda" tom="fraco">
                             +{work.workScores.length - 2} mais
-                          </span>
+                          </Text>
                         )}
                       </>
                     ) : (
@@ -243,9 +249,9 @@ export default function DifficultyTable({
         <div className="absolute inset-0 bg-theme-overlay backdrop-blur-sm flex items-center justify-center">
           <div className="classical-card p-6 text-center">
             <div className="w-8 h-8 border-4 border-brand-primary border-t-transparent rounded-full animate-spin mx-auto mb-3"></div>
-            <p className="text-theme-primary font-medium text-sm">
+            <Text papel="rotulo" tom="forte" as="p" className="font-medium">
               Carregando...
-            </p>
+            </Text>
           </div>
         </div>
       )}

@@ -13,6 +13,7 @@ import { useAuth } from '@/app/hooks/useAuth';
 import { useSessionUpdate } from '@/app/hooks/useSessionUpdate';
 import { useTranslation } from '@/app/context/TranslationContext';
 import { Inline } from '@/app/components/ui/Layout';
+import { Text } from '@/app/components/ui/Text';
 
 interface PrivacySectionProps {
   user: User;
@@ -119,9 +120,9 @@ const PrivacySection: React.FC<PrivacySectionProps> = ({
           <h3 className="text-lg font-semibold text-theme-primary">
             {t('privacy_title')}
           </h3>
-          <p className="text-sm text-theme-secondary">
+          <Text papel="rotulo" tom="suave" as="p">
             {t('privacy_description')}
-          </p>
+          </Text>
         </div>
 
         <Button
@@ -150,9 +151,9 @@ const PrivacySection: React.FC<PrivacySectionProps> = ({
                 <h4 className="font-medium text-theme-primary">
                   {t('privacy_public_profile')}
                 </h4>
-                <p className="text-sm text-theme-secondary">
+                <Text papel="rotulo" tom="suave" as="p">
                   {t('privacy_public_profile_description')}
-                </p>
+                </Text>
               </div>
             </Inline>
 
@@ -172,9 +173,9 @@ const PrivacySection: React.FC<PrivacySectionProps> = ({
                 <h4 className="font-medium text-theme-primary">
                   {t('privacy_show_location')}
                 </h4>
-                <p className="text-sm text-theme-secondary">
+                <Text papel="rotulo" tom="suave" as="p">
                   {t('privacy_show_location_description')}
-                </p>
+                </Text>
               </div>
             </Inline>
 
@@ -186,9 +187,9 @@ const PrivacySection: React.FC<PrivacySectionProps> = ({
           </div>
 
           {!settings.profilePublic && (
-            <p className="text-xs text-theme-tertiary mt-2 ml-8">
+            <Text papel="legenda" tom="fraco" as="p" className="mt-2 ml-8">
               {t('privacy_public_only')}
-            </p>
+            </Text>
           )}
         </div>
 
@@ -201,9 +202,9 @@ const PrivacySection: React.FC<PrivacySectionProps> = ({
                 <h4 className="font-medium text-theme-primary">
                   {t('privacy_show_instruments')}
                 </h4>
-                <p className="text-sm text-theme-secondary">
+                <Text papel="rotulo" tom="suave" as="p">
                   {t('privacy_show_instruments_description')}
-                </p>
+                </Text>
               </div>
             </Inline>
 
@@ -215,9 +216,9 @@ const PrivacySection: React.FC<PrivacySectionProps> = ({
           </div>
 
           {!settings.profilePublic && (
-            <p className="text-xs text-theme-tertiary mt-2 ml-8">
+            <Text papel="legenda" tom="fraco" as="p" className="mt-2 ml-8">
               {t('privacy_public_only')}
-            </p>
+            </Text>
           )}
         </div>
 
@@ -230,9 +231,9 @@ const PrivacySection: React.FC<PrivacySectionProps> = ({
                 <h4 className="font-medium text-theme-primary">
                   {t('privacy_show_activity')}
                 </h4>
-                <p className="text-sm text-theme-secondary">
+                <Text papel="rotulo" tom="suave" as="p">
                   {t('privacy_show_activity_description')}
-                </p>
+                </Text>
               </div>
             </Inline>
 
@@ -244,9 +245,9 @@ const PrivacySection: React.FC<PrivacySectionProps> = ({
           </div>
 
           {!settings.profilePublic && (
-            <p className="text-xs text-theme-tertiary mt-2 ml-8">
+            <Text papel="legenda" tom="fraco" as="p" className="mt-2 ml-8">
               {t('privacy_public_only')}
-            </p>
+            </Text>
           )}
         </div>
       </div>
@@ -256,7 +257,7 @@ const PrivacySection: React.FC<PrivacySectionProps> = ({
         <h4 className="font-medium text-brand-primary mb-2">
           {t('privacy_summary')}
         </h4>
-        <div className="text-sm text-theme-secondary space-y-1">
+        <Text papel="rotulo" tom="suave" as="div" className="space-y-1">
           <p>
             • <strong>{t('privacy_profile')}</strong>{' '}
             {settings.profilePublic
@@ -281,7 +282,7 @@ const PrivacySection: React.FC<PrivacySectionProps> = ({
               ? t('privacy_visible')
               : t('privacy_hidden')}
           </p>
-        </div>
+        </Text>
       </div>
 
       {/* Info Box */}

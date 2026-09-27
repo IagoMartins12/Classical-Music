@@ -17,6 +17,7 @@ import Link from 'next/link';
 import Image from '@/app/components/SmartImage';
 import debounce from 'lodash/debounce';
 import { autocomplete } from '@/app/requests/blog/taxonomy';
+import { Text } from '@/app/components/ui/Text';
 
 interface SearchModalProps {
   isOpen: boolean;
@@ -303,9 +304,9 @@ export function SearchModal({ isOpen, onClose }: SearchModalProps) {
                   <p className="text-theme-tertiary mb-2">
                     Nenhum resultado encontrado para &quot;{query}&quot;
                   </p>
-                  <p className="text-sm text-theme-tertiary">
+                  <Text papel="rotulo" tom="fraco" as="p">
                     Tente usar termos diferentes ou navegue pelas categorias
-                  </p>
+                  </Text>
                 </div>
               )}
           </div>

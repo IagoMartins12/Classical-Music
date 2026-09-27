@@ -34,6 +34,7 @@ import {
   uploadWorkMediaFileRequest,
 } from '@/app/requests/work-media';
 import { Inline } from '@/app/components/ui/Layout';
+import { Text } from '@/app/components/ui/Text';
 
 interface VideoAulaSectionProps {
   work: {
@@ -803,9 +804,9 @@ const VideoAulaSection: React.FC<VideoAulaSectionProps> = ({
                 <h2 className="text-2xl font-bold text-theme-primary classical-title">
                   {t('video_aula_titulo')}
                 </h2>
-                <p className="text-theme-secondary text-sm">
+                <Text papel="rotulo" tom="suave" as="p">
                   {t('video_aula_subtitulo')}
-                </p>
+                </Text>
               </div>
             </Inline>
 
@@ -918,9 +919,9 @@ const VideoAulaSection: React.FC<VideoAulaSectionProps> = ({
                       disabled={isUploading}
                     />
                     {editData.videoAulaFile && (
-                      <p className="text-sm text-theme-secondary mt-1">
+                      <Text papel="rotulo" tom="suave" as="p" className="mt-1">
                         {t('video_aula_arquivo')} {editData.videoAulaFile.name}
-                      </p>
+                      </Text>
                     )}
                   </div>
                 )}
@@ -1009,9 +1010,9 @@ const VideoAulaSection: React.FC<VideoAulaSectionProps> = ({
               <h2 className="text-2xl font-bold text-theme-primary classical-title">
                 {t('video_aula_titulo')}
               </h2>
-              <p className="text-theme-secondary text-sm">
+              <Text papel="rotulo" tom="suave" as="p">
                 {t('video_aula_subtitulo')}
-              </p>
+              </Text>
             </div>
           </Inline>
 
@@ -1165,9 +1166,9 @@ const VideoAulaSection: React.FC<VideoAulaSectionProps> = ({
                     disabled={isUploading}
                   />
                   {editData.videoAulaFile && (
-                    <p className="text-sm text-theme-secondary mt-1">
+                    <Text papel="rotulo" tom="suave" as="p" className="mt-1">
                       {t('video_aula_arquivo')} {editData.videoAulaFile.name}
-                    </p>
+                    </Text>
                   )}
                   {work.videoAulaFile && !editData.videoAulaFile && (
                     <p className="text-sm text-green-400 mt-1">
@@ -1379,12 +1380,17 @@ const VideoAulaSection: React.FC<VideoAulaSectionProps> = ({
               <h4 className="text-theme-primary font-semibold text-lg">
                 {work.videoAulaTitle || `Video Aula: ${work.title}`}
               </h4>
-              <p className="text-theme-secondary text-sm mt-1">
+              <Text papel="rotulo" tom="suave" as="p" className="mt-1">
                 {work.composer.fullName} • {videoInfo.displayType}
-              </p>
+              </Text>
             </div>
 
-            <div className="flex items-center justify-between text-sm text-theme-tertiary flex-wrap gap-2">
+            <Text
+              papel="rotulo"
+              tom="fraco"
+              as="div"
+              className="flex items-center justify-between flex-wrap gap-2"
+            >
               <Inline gap={4}>
                 {work.videoAulaAddedAt && (
                   <Inline gap={1}>
@@ -1414,7 +1420,7 @@ const VideoAulaSection: React.FC<VideoAulaSectionProps> = ({
                   <span>{t('video_aula_download')}</span>
                 </Inline>
               )}
-            </div>
+            </Text>
 
             {!isPlayerVisible && (
               <div className="space-y-2">

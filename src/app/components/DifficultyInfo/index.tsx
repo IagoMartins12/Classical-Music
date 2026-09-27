@@ -5,6 +5,7 @@
 import { PiGraduationCap, PiInfo, PiMedal, PiX } from 'react-icons/pi';
 import { DIFFICULTY_INFO } from '@/app/requests/difficulty-details';
 import { AnimatedItem, AnimatedCard } from '../animation/AnimatedComponents';
+import { Text } from '@/app/components/ui/Text';
 
 interface DifficultyInfoProps {
   onClose: () => void;
@@ -47,15 +48,20 @@ export default function DifficultyInfo({ onClose }: DifficultyInfoProps) {
                 <h4 className="text-lg font-bold text-theme-primary">
                   {DIFFICULTY_INFO.IMSLP.name}
                 </h4>
-                <p className="text-sm text-theme-secondary">
+                <Text papel="rotulo" tom="suave" as="p">
                   Baseado na comunidade IMSLP
-                </p>
+                </Text>
               </div>
             </div>
 
-            <p className="text-theme-secondary mb-4 text-sm leading-relaxed">
+            <Text
+              papel="rotulo"
+              tom="suave"
+              as="p"
+              className="mb-4 leading-relaxed"
+            >
               {DIFFICULTY_INFO.IMSLP.description}
-            </p>
+            </Text>
 
             <div className="space-y-2">
               <h5 className="text-sm font-semibold text-theme-primary mb-3">
@@ -65,17 +71,26 @@ export default function DifficultyInfo({ onClose }: DifficultyInfoProps) {
                 .slice(0, 6)
                 .map(([level, description]) => (
                   <div key={level} className="flex items-start space-x-3">
-                    <span className="inline-flex items-center justify-center w-6 h-6 bg-brand-primary/10 border border-brand-primary/30 text-brand-primary rounded text-xs font-bold">
+                    <Text
+                      papel="legenda"
+                      tom="ouro"
+                      className="inline-flex items-center justify-center w-6 h-6 bg-brand-primary/10 border border-brand-primary/30 rounded font-bold"
+                    >
                       {level}
-                    </span>
-                    <p className="text-xs text-theme-secondary leading-relaxed">
+                    </Text>
+                    <Text
+                      papel="legenda"
+                      tom="suave"
+                      as="p"
+                      className="leading-relaxed"
+                    >
                       {description}
-                    </p>
+                    </Text>
                   </div>
                 ))}
-              <p className="text-xs text-theme-tertiary italic mt-3">
+              <Text papel="legenda" tom="fraco" as="p" className="italic mt-3">
                 Níveis 7-12 são progressivamente mais avançados...
-              </p>
+              </Text>
             </div>
           </div>
         </AnimatedItem>
@@ -91,15 +106,20 @@ export default function DifficultyInfo({ onClose }: DifficultyInfoProps) {
                 <h4 className="text-lg font-bold text-theme-primary">
                   {DIFFICULTY_INFO.RCM.name}
                 </h4>
-                <p className="text-sm text-theme-secondary">
+                <Text papel="rotulo" tom="suave" as="p">
                   Sistema canadense oficial
-                </p>
+                </Text>
               </div>
             </div>
 
-            <p className="text-theme-secondary mb-4 text-sm leading-relaxed">
+            <Text
+              papel="rotulo"
+              tom="suave"
+              as="p"
+              className="mb-4 leading-relaxed"
+            >
               {DIFFICULTY_INFO.RCM.description}
-            </p>
+            </Text>
 
             <div className="space-y-2">
               <h5 className="text-sm font-semibold text-theme-primary mb-3">
@@ -112,14 +132,19 @@ export default function DifficultyInfo({ onClose }: DifficultyInfoProps) {
                     <span className="inline-flex items-center justify-center min-w-[2rem] h-6 bg-accent-purple/10 border border-accent-purple/30 text-accent-purple rounded text-xs font-bold px-1">
                       {level}
                     </span>
-                    <p className="text-xs text-theme-secondary leading-relaxed">
+                    <Text
+                      papel="legenda"
+                      tom="suave"
+                      as="p"
+                      className="leading-relaxed"
+                    >
                       {description}
-                    </p>
+                    </Text>
                   </div>
                 ))}
-              <p className="text-xs text-theme-tertiary italic mt-3">
+              <Text papel="legenda" tom="fraco" as="p" className="italic mt-3">
                 Níveis 7-10 são para estudantes avançados...
-              </p>
+              </Text>
             </div>
           </div>
         </AnimatedItem>
@@ -134,7 +159,12 @@ export default function DifficultyInfo({ onClose }: DifficultyInfoProps) {
               <h5 className="text-sm font-semibold text-brand-primary mb-2">
                 Nossa Base de Dados
               </h5>
-              <p className="text-sm text-theme-secondary leading-relaxed">
+              <Text
+                papel="rotulo"
+                tom="suave"
+                as="p"
+                className="leading-relaxed"
+              >
                 As classificações de dificuldade em nosso site são baseadas no{' '}
                 <strong>
                   International Music Score Library Project (IMSLP)
@@ -143,7 +173,7 @@ export default function DifficultyInfo({ onClose }: DifficultyInfoProps) {
                 público. Utilizamos seus sistemas de classificação, incluindo os
                 níveis IMSLP e as referências RCM, para fornecer orientação
                 precisa sobre a dificuldade técnica das obras.
-              </p>
+              </Text>
             </div>
           </div>
         </div>

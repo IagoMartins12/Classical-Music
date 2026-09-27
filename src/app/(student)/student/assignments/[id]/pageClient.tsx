@@ -43,6 +43,7 @@ import Modal from '@/app/components/Modal';
 import { useAssignmentVideo } from '@/app/hooks/lessonsSystem/useAssignmentVideo';
 import { useTranslation } from '@/app/context/TranslationContext';
 import { Inline } from '@/app/components/ui/Layout';
+import { Text } from '@/app/components/ui/Text';
 
 interface StudentAssignmentDetailsPageClientProps {
   initialData: StudentAssignmentDetailsData | null;
@@ -520,9 +521,9 @@ export default function StudentAssignmentDetailsPageClient({
                 <p className="text-accent-yellow font-medium">
                   {t('student_assignment_details_unsaved_changes_title')}
                 </p>
-                <p className="text-theme-secondary text-sm">
+                <Text papel="rotulo" tom="suave" as="p">
                   {t('student_assignment_details_unsaved_changes_desc')}
-                </p>
+                </Text>
               </div>
             </Inline>
           </AnimatedItem>
@@ -813,9 +814,9 @@ export default function StudentAssignmentDetailsPageClient({
                                 <div className="font-medium text-theme-primary">
                                   {selectedVideo.name}
                                 </div>
-                                <div className="text-sm text-theme-secondary">
+                                <Text papel="rotulo" tom="suave" as="div">
                                   {formatFileSize(selectedVideo.size)}
-                                </div>
+                                </Text>
                               </div>
                             </Inline>
                             <button
@@ -923,9 +924,13 @@ export default function StudentAssignmentDetailsPageClient({
 
                     {assignment.teacherRating && (
                       <Inline gap={2}>
-                        <span className="text-sm font-medium text-theme-tertiary">
+                        <Text
+                          papel="rotulo"
+                          tom="fraco"
+                          className="font-medium"
+                        >
                           {t('student_assignment_details_teacher_rating')}
-                        </span>
+                        </Text>
                         {[1, 2, 3, 4, 5].map((star) =>
                           star <= assignment.teacherRating! ? (
                             <PiStarFill
@@ -1271,9 +1276,9 @@ export default function StudentAssignmentDetailsPageClient({
                       {currentProgress}%
                     </span>
                   </Inline>
-                  <p className="text-sm text-theme-tertiary">
+                  <Text papel="rotulo" tom="fraco" as="p">
                     {t('student_assignment_details_progress_modal_description')}
-                  </p>
+                  </Text>
                 </div>
 
                 <div className="space-y-3 overflow-y-auto">
@@ -1302,12 +1307,12 @@ export default function StudentAssignmentDetailsPageClient({
                           <div className="font-medium text-theme-primary">
                             {t(milestone.labelKey)}
                           </div>
-                          <div className="text-xs text-theme-tertiary">
+                          <Text papel="legenda" tom="fraco" as="div">
                             {t(
                               'student_assignment_details_milestone_progress',
                               { weight: milestone.weight }
                             )}
-                          </div>
+                          </Text>
                         </div>
                         <div className="flex-shrink-0">
                           {isCompleted ? (

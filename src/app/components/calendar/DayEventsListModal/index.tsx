@@ -4,6 +4,7 @@ import Modal from '@/app/components/Modal';
 import { PiClock, PiMapPin, PiMusicNotes } from 'react-icons/pi';
 import { AnimatedItem } from '@/app/components/animation/AnimatedComponents';
 import { Inline } from '@/app/components/ui/Layout';
+import { Text } from '@/app/components/ui/Text';
 
 interface DayEventsListModalProps {
   isOpen: boolean;
@@ -59,10 +60,10 @@ export default function DayEventsListModal({
               year: 'numeric',
             })}
           </p>
-          <div className="mt-2 text-sm text-theme-tertiary">
+          <Text papel="rotulo" tom="fraco" as="div" className="mt-2">
             {sortedEvents.length} evento{sortedEvents.length !== 1 ? 's' : ''}{' '}
             encontrado{sortedEvents.length !== 1 ? 's' : ''}
-          </div>
+          </Text>
         </div>
 
         {/* Lista de Eventos */}
@@ -83,9 +84,9 @@ export default function DayEventsListModal({
                     {/* Horário */}
                     <Inline gap={2} className="mb-2">
                       <PiClock className="w-4 h-4 text-theme-tertiary flex-shrink-0" />
-                      <span className="text-sm font-medium text-theme-secondary">
+                      <Text papel="rotulo" tom="suave" className="font-medium">
                         {formatEventTime(event.start)}
-                      </span>
+                      </Text>
                       {event.isFree && (
                         <span className="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-accent-green/10 border border-accent-green/30 text-accent-green">
                           Gratuito
@@ -116,17 +117,19 @@ export default function DayEventsListModal({
                         {event.composers
                           .slice(0, 3)
                           .map((composer: any, idx: number) => (
-                            <span
+                            <Text
+                              papel="legenda"
+                              tom="fraco"
                               key={idx}
-                              className="px-2 py-0.5 bg-theme-secondary rounded text-xs text-theme-tertiary"
+                              className="px-2 py-0.5 bg-theme-secondary rounded"
                             >
                               {composer.name}
-                            </span>
+                            </Text>
                           ))}
                         {event.composers.length > 3 && (
-                          <span className="text-xs text-theme-tertiary">
+                          <Text papel="legenda" tom="fraco">
                             +{event.composers.length - 3}
-                          </span>
+                          </Text>
                         )}
                       </div>
                     )}

@@ -36,6 +36,7 @@ import { formatChangesForDisplay } from '@/app/utils/historyFormat';
 import { getUploadHistory } from '@/app/requests/uploads-client';
 import { useTranslation } from '@/app/context/TranslationContext';
 import { Inline } from '@/app/components/ui/Layout';
+import { Text } from '@/app/components/ui/Text';
 
 interface HistoryRecord {
   id: string;
@@ -522,12 +523,12 @@ const HistoryClient = ({
                   <h3 className="text-lg font-semibold text-theme-primary">
                     {t('history_filters_title')}
                   </h3>
-                  <p className="text-sm text-theme-tertiary">
+                  <Text papel="rotulo" tom="fraco" as="p">
                     {t('history_records_found').replace(
                       '{count}',
                       totalCount.toString()
                     )}
-                  </p>
+                  </Text>
                 </div>
                 <Inline
                   as="button"
@@ -643,13 +644,17 @@ const HistoryClient = ({
                           <div className="flex items-start justify-between mb-3">
                             <Inline gap={2}>
                               {getActionIcon(record.action, record.changes)}
-                              <span className="text-sm font-medium text-theme-primary">
+                              <Text
+                                papel="rotulo"
+                                tom="forte"
+                                className="font-medium"
+                              >
                                 {getActionLabel(record.action, record.changes)}{' '}
                                 {getEntityLabel(
                                   record.entityType,
                                   record.changes
                                 )}
-                              </span>
+                              </Text>
                               <span
                                 className={`px-2 py-1 rounded-full text-xs font-medium border ${getActionColor(
                                   record.action,
@@ -698,42 +703,52 @@ const HistoryClient = ({
                           <div className="space-y-2">
                             {/* ID apenas para não bulk imports */}
                             {!record.changes?.bulkImport && (
-                              <div className="text-sm text-theme-secondary">
+                              <Text papel="rotulo" tom="suave" as="div">
                                 <span className="font-medium">ID:</span>{' '}
                                 {record.entityId}
-                              </div>
+                              </Text>
                             )}
 
                             {isAdmin && record.user && (
-                              <div className="text-sm text-theme-secondary">
+                              <Text papel="rotulo" tom="suave" as="div">
                                 <span className="font-medium">
                                   {t('history_user_label')}
                                 </span>{' '}
                                 {record.user.firstName || record.user.email}
-                              </div>
+                              </Text>
                             )}
 
                             {record.reason && (
-                              <div className="text-sm text-theme-secondary">
+                              <Text papel="rotulo" tom="suave" as="div">
                                 <span className="font-medium">
                                   {t('history_reason_label')}
                                 </span>{' '}
                                 {record.reason}
-                              </div>
+                              </Text>
                             )}
 
                             {/* Basic changes summary */}
                             {record.changes &&
                               !expandedItems.has(record.id) && (
-                                <div className="text-xs text-theme-tertiary break-words">
+                                <Text
+                                  papel="legenda"
+                                  tom="fraco"
+                                  as="div"
+                                  className="break-words"
+                                >
                                   {formatChangesForDisplay(record.changes)}
-                                </div>
+                                </Text>
                               )}
 
                             {/* Technical details for admins */}
                             {isAdmin && expandedItems.has(record.id) && (
                               <div className="mt-3 pt-3 border-t border-theme-secondary">
-                                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs text-theme-tertiary">
+                                <Text
+                                  papel="legenda"
+                                  tom="fraco"
+                                  as="div"
+                                  className="grid grid-cols-1 md:grid-cols-2 gap-4"
+                                >
                                   {record.ipAddress && (
                                     <Inline gap={2}>
                                       <PiMapPin className="w-3 h-3" />
@@ -755,7 +770,7 @@ const HistoryClient = ({
                                       </span>
                                     </Inline>
                                   )}
-                                </div>
+                                </Text>
                               </div>
                             )}
                           </div>

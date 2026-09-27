@@ -11,6 +11,7 @@ import {
 import { useTranslation } from '@/app/context/TranslationContext';
 import { useBiographyWithLanguage } from '@/app/hooks/useBiographyWithLanguage';
 import { Inline } from '@/app/components/ui/Layout';
+import { Text } from '@/app/components/ui/Text';
 
 interface ComposerBiographyProps {
   composerId: string;
@@ -197,13 +198,18 @@ export default function ComposerBiography({
         {/* Decoração de fundo */}
         <div className="absolute top-0 right-0 w-32 h-32 bg-brand-gradient opacity-5 rounded-full blur-3xl"></div>
 
-        <div className="relative z-10 break-all whitespace-pre-line text-theme-secondary leading-relaxed text-base classical-body">
+        <Text
+          papel="corpo"
+          tom="suave"
+          as="div"
+          className="relative z-10 break-all whitespace-pre-line leading-relaxed classical-body"
+        >
           {displayBio.split('\n').map((paragraph, index) => (
             <p key={index} className="mb-4 animate-fade-in-up">
               {paragraph}
             </p>
           ))}
-        </div>
+        </Text>
 
         {/* Gradient fade no final */}
         <div className="absolute bottom-0 left-0 right-0 h-8 bg-gradient-to-t from-theme-primary to-transparent pointer-events-none"></div>

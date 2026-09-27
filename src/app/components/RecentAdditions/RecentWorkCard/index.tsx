@@ -9,6 +9,7 @@ import {
   PiClock,
   PiMusicNotes,
 } from 'react-icons/pi';
+import { Text } from '@/app/components/ui/Text';
 
 export interface RecentWorkProps {
   id: string;
@@ -100,10 +101,15 @@ const RecentWorkCard = ({ work }: RecentWorkCardProps) => {
 
           {/* Time indicator */}
           <div className="absolute top-3 right-3 z-10 opacity-0 group-hover:opacity-100 transition-all duration-300">
-            <div className="bg-theme-elevated/80 border border-theme-primary/20 backdrop-blur-md rounded-full px-2 py-1 text-xs text-theme-tertiary flex items-center gap-1">
+            <Text
+              papel="legenda"
+              tom="fraco"
+              as="div"
+              className="bg-theme-elevated/80 border border-theme-primary/20 backdrop-blur-md rounded-full px-2 py-1 flex items-center gap-1"
+            >
               <PiClock className="w-2.5 h-2.5" />
               {formatTimeAgo(String(work.createdAt))}
-            </div>
+            </Text>
           </div>
 
           <div className="p-5">
@@ -132,13 +138,23 @@ const RecentWorkCard = ({ work }: RecentWorkCardProps) => {
 
                 {/* Composer name */}
                 {work.composer && (
-                  <p className="text-sm text-theme-secondary line-clamp-1 mb-1">
+                  <Text
+                    papel="rotulo"
+                    tom="suave"
+                    as="p"
+                    className="line-clamp-1 mb-1"
+                  >
                     {work.composer.fullName}
-                  </p>
+                  </Text>
                 )}
 
                 {/* Essential info row */}
-                <div className="flex items-center gap-3 text-xs text-theme-tertiary">
+                <Text
+                  papel="legenda"
+                  tom="fraco"
+                  as="div"
+                  className="flex items-center gap-3"
+                >
                   {/* Epoch */}
                   {work.epoch && (
                     <div className="flex items-center gap-1">
@@ -164,7 +180,7 @@ const RecentWorkCard = ({ work }: RecentWorkCardProps) => {
                       </span>
                     </div>
                   )}
-                </div>
+                </Text>
               </div>
 
               {/* Favorite button */}

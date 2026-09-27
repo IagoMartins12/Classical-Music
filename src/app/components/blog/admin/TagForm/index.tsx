@@ -6,6 +6,7 @@ import { PiFloppyDisk, PiTag, PiWarningCircle, PiX } from 'react-icons/pi';
 import { toast } from 'react-hot-toast';
 import { createTag, updateTag } from '@/app/requests/blog/admin-actions';
 import { Inline } from '@/app/components/ui/Layout';
+import { Text } from '@/app/components/ui/Text';
 
 interface TagFormProps {
   mode: 'create' | 'edit';
@@ -135,9 +136,9 @@ export function TagForm({ mode, tag }: TagFormProps) {
                 <span>{errors.name}</span>
               </Inline>
             )}
-            <p className="text-xs text-theme-tertiary mt-1">
+            <Text papel="legenda" tom="fraco" as="p" className="mt-1">
               {formData.name.length}/30 caracteres
-            </p>
+            </Text>
           </div>
 
           {/* Slug */}
@@ -146,7 +147,9 @@ export function TagForm({ mode, tag }: TagFormProps) {
               Slug (URL) *
             </label>
             <Inline gap={2}>
-              <span className="text-theme-tertiary text-sm">/blog/tag/</span>
+              <Text papel="rotulo" tom="fraco">
+                /blog/tag/
+              </Text>
               <input
                 type="text"
                 value={formData.slug}
@@ -186,9 +189,9 @@ export function TagForm({ mode, tag }: TagFormProps) {
               rows={2}
               maxLength={150}
             />
-            <p className="text-xs text-theme-tertiary mt-1">
+            <Text papel="legenda" tom="fraco" as="p" className="mt-1">
               {formData.description.length}/150 caracteres
-            </p>
+            </Text>
           </div>
 
           {/* Color */}
@@ -234,7 +237,9 @@ export function TagForm({ mode, tag }: TagFormProps) {
           <div className="space-y-4">
             {/* Badge Preview */}
             <div>
-              <p className="text-xs text-theme-tertiary mb-2">Badge:</p>
+              <Text papel="legenda" tom="fraco" as="p" className="mb-2">
+                Badge:
+              </Text>
               <span
                 className="inline-block px-3 py-1 rounded-full text-sm font-medium"
                 style={{
@@ -248,7 +253,9 @@ export function TagForm({ mode, tag }: TagFormProps) {
 
             {/* Card Preview */}
             <div>
-              <p className="text-xs text-theme-tertiary mb-2">Card:</p>
+              <Text papel="legenda" tom="fraco" as="p" className="mb-2">
+                Card:
+              </Text>
               <div className="classical-card p-4 max-w-xs">
                 <Inline gap={3}>
                   <div
@@ -265,9 +272,14 @@ export function TagForm({ mode, tag }: TagFormProps) {
                       #{formData.name || 'tag'}
                     </h4>
                     {formData.description && (
-                      <p className="text-xs text-theme-tertiary line-clamp-1">
+                      <Text
+                        papel="legenda"
+                        tom="fraco"
+                        as="p"
+                        className="line-clamp-1"
+                      >
                         {formData.description}
-                      </p>
+                      </Text>
                     )}
                   </div>
                 </Inline>

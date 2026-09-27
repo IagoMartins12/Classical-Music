@@ -18,6 +18,7 @@ import Select from '@/app/components/Common/Select';
 import Checkbox from '@/app/components/Common/Checkbox';
 import { listInstruments } from '@/app/requests/admin/ads';
 import { Inline } from '@/app/components/ui/Layout';
+import { Text } from '@/app/components/ui/Text';
 
 interface CreateAdModalProps {
   showCreateModal: boolean;
@@ -305,9 +306,9 @@ export default function CreateAdModal({
               <h2 className="text-xl font-bold text-theme-primary">
                 Novo Anúncio
               </h2>
-              <p className="text-sm text-theme-tertiary">
+              <Text papel="rotulo" tom="fraco" as="p">
                 Criar nova campanha publicitária
-              </p>
+              </Text>
             </div>
           </Inline>
         </div>
@@ -318,11 +319,11 @@ export default function CreateAdModal({
             <PiInfo className="w-5 h-5 text-accent-blue mt-0.5" />
             <div>
               <h4 className="font-medium text-theme-primary">Sobre a mídia</h4>
-              <p className="text-sm text-theme-secondary mt-1">
+              <Text papel="rotulo" tom="suave" as="p" className="mt-1">
                 Após criar o anúncio, você precisará fazer upload da imagem ou
                 vídeo. O anúncio ficará como rascunho até que a mídia seja
                 adicionada.
-              </p>
+              </Text>
             </div>
           </div>
         </div>
@@ -336,9 +337,9 @@ export default function CreateAdModal({
                 <h4 className="font-medium text-accent-red">
                   Conflito Detectado
                 </h4>
-                <p className="text-sm text-theme-secondary mt-1">
+                <Text papel="rotulo" tom="suave" as="p" className="mt-1">
                   {conflictInfo}
-                </p>
+                </Text>
               </div>
             </div>
           </div>
@@ -552,9 +553,9 @@ export default function CreateAdModal({
                   className={errors.targetUrl ? 'border-accent-red' : ''}
                 />
                 {formData.linkType === 'whatsapp' && (
-                  <p className="text-xs text-theme-tertiary mt-1">
+                  <Text papel="legenda" tom="fraco" as="p" className="mt-1">
                     Formato: código do país + DDD + número (ex: 5511999999999)
-                  </p>
+                  </Text>
                 )}
                 {errors.targetUrl && (
                   <p className="text-accent-red text-sm mt-1">

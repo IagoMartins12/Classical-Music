@@ -3,6 +3,7 @@
 
 import { Suspense } from 'react';
 import { Inline } from '@/app/components/ui/Layout';
+import { Text } from '@/app/components/ui/Text';
 
 interface SuspenseWrapperProps {
   children: React.ReactNode;
@@ -91,7 +92,9 @@ export const ComponentLoading = () => (
   <div className="flex items-center justify-center p-8">
     <Inline gap={3}>
       <div className="w-5 h-5 border-2 border-brand-primary border-t-transparent rounded-full animate-spin"></div>
-      <span className="text-theme-secondary text-sm">Carregando...</span>
+      <Text papel="rotulo" tom="suave">
+        Carregando...
+      </Text>
     </Inline>
   </div>
 );

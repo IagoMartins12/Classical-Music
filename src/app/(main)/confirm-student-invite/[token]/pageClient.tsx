@@ -17,6 +17,7 @@ import Button from '@/app/components/Common/Button';
 import Link from 'next/link';
 import { toast } from 'react-hot-toast';
 import { useTranslation } from '@/app/context/TranslationContext';
+import { Text } from '@/app/components/ui/Text';
 
 interface ConfirmationState {
   status: 'loading' | 'success' | 'error' | 'already-accepted';
@@ -332,11 +333,11 @@ export default function ConfirmStudentInvitePage() {
               </Button>
             </div>
 
-            <div className="mt-8 text-sm text-theme-tertiary">
+            <Text papel="rotulo" tom="fraco" as="div" className="mt-8">
               <span>
                 {t('pages_token_jsx_span_children_0__redirecionando_perfil')}
               </span>
-            </div>
+            </Text>
           </div>
         );
 
@@ -478,9 +479,9 @@ export default function ConfirmStudentInvitePage() {
                 {t('pages_token_jsx_h1_children_0__opus_atlas')}
               </span>
             </Link>
-            <div className="text-sm text-theme-tertiary mb-4">
+            <Text papel="rotulo" tom="fraco" as="div" className="mb-4">
               {t('pages_token_jsx_div_children_0__convite_de_aluno')}
-            </div>
+            </Text>
           </div>
 
           {/* Content */}
@@ -488,7 +489,7 @@ export default function ConfirmStudentInvitePage() {
 
           {/* Footer */}
           <div className="mt-12 pt-8 border-t border-theme-secondary text-center">
-            <p className="text-sm text-theme-tertiary">
+            <Text papel="rotulo" tom="fraco" as="p">
               {t('pages_token_jsx_p_children_0__precisa_ajuda')}{' '}
               <Link
                 href="/support"
@@ -496,7 +497,7 @@ export default function ConfirmStudentInvitePage() {
               >
                 {t('pages_token_jsx_link_children_0__entre_contato')}
               </Link>
-            </p>
+            </Text>
           </div>
         </div>
       </div>

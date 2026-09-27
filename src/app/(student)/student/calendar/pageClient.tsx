@@ -31,6 +31,7 @@ import { useStudentCalendar } from '@/app/hooks/lessonsSystem/useStudentCalendar
 import Modal from '@/app/components/Modal';
 import { useTranslation } from '@/app/context/TranslationContext';
 import { Inline } from '@/app/components/ui/Layout';
+import { Text } from '@/app/components/ui/Text';
 
 interface StudentCalendarPageClientProps {
   initialData: StudentCalendarData | null;
@@ -690,12 +691,15 @@ function MonthView({
       {/* Header */}
       <div className="grid grid-cols-7 gap-1 mb-2">
         {WEEKDAYS.map((day) => (
-          <div
+          <Text
+            papel="rotulo"
+            tom="fraco"
+            as="div"
             key={day}
-            className="p-3 text-center font-semibold text-theme-tertiary text-sm"
+            className="p-3 text-center font-semibold"
           >
             {day}
-          </div>
+          </Text>
         ))}
       </div>
 
@@ -745,12 +749,12 @@ function MonthView({
                 ))}
 
                 {events.length > 2 && (
-                  <div className="text-xs text-theme-tertiary">
+                  <Text papel="legenda" tom="fraco" as="div">
                     {moreEventsText.replace(
                       '{count}',
                       String(events.length - 2)
                     )}
-                  </div>
+                  </Text>
                 )}
               </div>
             </div>
@@ -797,9 +801,9 @@ function WeekView({
                   : 'bg-theme-secondary/50 border-b border-theme-secondary/30'
               }`}
             >
-              <div className="text-sm text-theme-tertiary">
+              <Text papel="rotulo" tom="fraco" as="div">
                 {WEEKDAYS[index]}
-              </div>
+              </Text>
               <div
                 className={`text-lg font-bold ${
                   isToday ? 'text-brand-primary' : 'text-theme-primary'
@@ -811,9 +815,14 @@ function WeekView({
 
             <div className="space-y-2 p-3 min-h-96">
               {events.length === 0 ? (
-                <div className="text-xs text-theme-tertiary text-center py-6">
+                <Text
+                  papel="legenda"
+                  tom="fraco"
+                  as="div"
+                  className="text-center py-6"
+                >
                   Sem eventos
-                </div>
+                </Text>
               ) : (
                 events.map((event) => (
                   <button
@@ -1145,12 +1154,14 @@ function StudentEventDetailsModal({
                   <div className="flex flex-wrap gap-2">
                     {event.details.skillsWorked.map(
                       (skill: any, index: number) => (
-                        <span
+                        <Text
+                          papel="rotulo"
+                          tom="suave"
                           key={index}
-                          className="px-3 py-1 bg-theme-elevated text-theme-secondary rounded-full text-sm"
+                          className="px-3 py-1 bg-theme-elevated rounded-full"
                         >
                           {skill}
-                        </span>
+                        </Text>
                       )
                     )}
                   </div>
@@ -1253,9 +1264,9 @@ function FeedbackModal({
               <h2 className="text-xl font-bold text-theme-primary classical-title">
                 {t('student_calendar_feedback_modal_title')}
               </h2>
-              <p className="text-theme-tertiary text-sm">
+              <Text papel="rotulo" tom="fraco" as="p">
                 {t('student_calendar_feedback_modal_lesson')} {event.title}
-              </p>
+              </Text>
             </div>
             <button
               onClick={onClose}
@@ -1277,12 +1288,12 @@ function FeedbackModal({
                 className="input-classical-2 w-full h-32 resize-none"
                 maxLength={500}
               />
-              <div className="text-xs text-theme-tertiary mt-1">
+              <Text papel="legenda" tom="fraco" as="div" className="mt-1">
                 {t('student_calendar_feedback_modal_characters', {
                   current: feedbackText.length,
                   max: 500,
                 })}
-              </div>
+              </Text>
             </div>
 
             <Inline gap={3}>

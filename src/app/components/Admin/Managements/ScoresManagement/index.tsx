@@ -45,6 +45,7 @@ import Image from '@/app/components/SmartImage';
 import LoadingAdminState from '../../Common/LoadingState';
 import Input from '@/app/components/Common/Inputs';
 import { Inline } from '@/app/components/ui/Layout';
+import { Text } from '@/app/components/ui/Text';
 
 interface ScoreFilters {
   search: string;
@@ -500,19 +501,34 @@ export default function ScoresManagement() {
                     className="p-4 bg-theme-secondary rounded-xl"
                   >
                     <Inline gap={3} className="mb-3">
-                      <div className="w-8 h-8 bg-gradient-to-br from-accent-amber to-accent-red rounded-lg flex items-center justify-center text-sm font-bold text-theme-primary">
+                      <Text
+                        papel="rotulo"
+                        tom="forte"
+                        as="div"
+                        className="w-8 h-8 bg-gradient-to-br from-accent-amber to-accent-red rounded-lg flex items-center justify-center font-bold"
+                      >
                         {index + 1}
-                      </div>
+                      </Text>
                       <div className="flex-1 min-w-0">
                         <p className="font-medium text-theme-primary truncate">
                           {score.title}
                         </p>
-                        <p className="text-sm text-theme-tertiary truncate">
+                        <Text
+                          papel="rotulo"
+                          tom="fraco"
+                          as="p"
+                          className="truncate"
+                        >
                           {score.workTitle}
-                        </p>
+                        </Text>
                       </div>
                     </Inline>
-                    <div className="flex items-center justify-between text-xs text-theme-secondary">
+                    <Text
+                      papel="legenda"
+                      tom="suave"
+                      as="div"
+                      className="flex items-center justify-between"
+                    >
                       <Inline as="span" gap={1}>
                         <PiEye className="w-3 h-3" />
                         <span>{formatNumber(score.accessCount)}</span>
@@ -523,7 +539,7 @@ export default function ScoresManagement() {
                         leftIcon={<PiEye />}
                         onClick={() => router.push(`/admin/scores/${score.id}`)}
                       />
-                    </div>
+                    </Text>
                   </div>
                 ))}
               </div>
@@ -765,7 +781,12 @@ export default function ScoresManagement() {
                         </div>
                       )}
 
-                      <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm text-theme-secondary">
+                      <Text
+                        papel="rotulo"
+                        tom="suave"
+                        as="div"
+                        className="grid grid-cols-2 md:grid-cols-4 gap-4"
+                      >
                         <Inline gap={1}>
                           <PiEye className="w-4 h-4" />
                           <span>{formatNumber(score.accessCount)} acessos</span>
@@ -790,7 +811,7 @@ export default function ScoresManagement() {
                             )}
                           </span>
                         </Inline>
-                      </div>
+                      </Text>
 
                       {score.uploader && (
                         <Inline
@@ -854,9 +875,9 @@ export default function ScoresManagement() {
             {/* Pagination */}
             {pagination && (
               <div className="flex items-center justify-between mt-6 pt-6 border-t border-theme-secondary">
-                <div className="text-sm text-theme-secondary">
+                <Text papel="rotulo" tom="suave" as="div">
                   Mostrando {scores.length} de {pagination.total} partituras
-                </div>
+                </Text>
                 <Inline gap={2}>
                   <Button
                     variant="ghost"
@@ -871,9 +892,9 @@ export default function ScoresManagement() {
                   >
                     Anterior
                   </Button>
-                  <span className="text-sm text-theme-primary">
+                  <Text papel="rotulo" tom="forte">
                     Página {pagination.page} de {pagination.pages}
-                  </span>
+                  </Text>
                   <Button
                     variant="ghost"
                     size="sm"

@@ -6,6 +6,7 @@ import { PiLightning, PiMedal, PiShield, PiStar, PiX } from 'react-icons/pi';
 import { AnimatedItem } from '../../animation/AnimatedComponents';
 import { markAchievementViewed } from '@/app/requests/achievements';
 import { Inline } from '@/app/components/ui/Layout';
+import { Text } from '@/app/components/ui/Text';
 
 // Interface para achievement
 interface AchievementData {
@@ -251,9 +252,14 @@ function AchievementToast({ achievement, onClose }: AchievementToastProps) {
         </Inline>
 
         {/* Description */}
-        <p className="text-sm text-theme-secondary mb-4 leading-relaxed relative z-10">
+        <Text
+          papel="rotulo"
+          tom="suave"
+          as="p"
+          className="mb-4 leading-relaxed relative z-10"
+        >
           {achievement.description}
-        </p>
+        </Text>
 
         {/* Footer com raridade e XP */}
         <div className="flex items-center justify-between mb-3 relative z-10">
@@ -263,9 +269,9 @@ function AchievementToast({ achievement, onClose }: AchievementToastProps) {
             {config?.label}
           </span>
 
-          <div className="text-sm font-bold text-theme-primary">
+          <Text papel="rotulo" tom="forte" as="div" className="font-bold">
             +{xpReward} XP
-          </div>
+          </Text>
         </div>
 
         {/* Progress Bar */}

@@ -35,6 +35,7 @@ import {
 } from '@/app/requests/portal/shared-reports';
 import dynamic from 'next/dynamic';
 import { Inline } from '@/app/components/ui/Layout';
+import { Text } from '@/app/components/ui/Text';
 
 /**
  * Os gráficos descem à parte — ver `charts.tsx`.
@@ -269,9 +270,9 @@ export default function StudentSharedReportPageClient({
                 <p className="text-lg text-theme-secondary">
                   Relatório criado por {reportData.teacher.name}
                 </p>
-                <p className="text-sm text-theme-tertiary">
+                <Text papel="rotulo" tom="fraco" as="p">
                   {reportData.metadata.periodLabel}
-                </p>
+                </Text>
               </div>
             </Inline>
 
@@ -313,19 +314,23 @@ export default function StudentSharedReportPageClient({
                   <h3 className="text-lg font-bold text-theme-primary">
                     {reportData.teacher.name}
                   </h3>
-                  <p className="text-sm text-theme-tertiary">Seu Professor</p>
+                  <Text papel="rotulo" tom="fraco" as="p">
+                    Seu Professor
+                  </Text>
                 </div>
               </Inline>
 
               {reportData.teacher.specialties.length > 0 && (
                 <div className="flex flex-wrap gap-1">
                   {reportData.teacher.specialties.map((specialty, index) => (
-                    <span
+                    <Text
+                      papel="legenda"
+                      tom="ouro"
                       key={index}
-                      className="px-2 py-1 text-xs bg-brand-primary/10 text-brand-primary rounded-full"
+                      className="px-2 py-1 bg-brand-primary/10 rounded-full"
                     >
                       {specialty}
-                    </span>
+                    </Text>
                   ))}
                 </div>
               )}
@@ -423,9 +428,9 @@ export default function StudentSharedReportPageClient({
                   <div className="text-2xl font-bold text-theme-primary mb-1">
                     {progressData.overview.completedLessons}
                   </div>
-                  <div className="text-sm text-theme-tertiary mb-2">
+                  <Text papel="rotulo" tom="fraco" as="div" className="mb-2">
                     Aulas Concluídas
-                  </div>
+                  </Text>
                   <div className="text-xs text-accent-blue">
                     {progressData.overview.completionRate}% de conclusão
                   </div>
@@ -441,9 +446,9 @@ export default function StudentSharedReportPageClient({
                   <div className="text-2xl font-bold text-theme-primary mb-1">
                     {progressData.overview.totalStudyHours}h
                   </div>
-                  <div className="text-sm text-theme-tertiary mb-2">
+                  <Text papel="rotulo" tom="fraco" as="div" className="mb-2">
                     Horas de Estudo
-                  </div>
+                  </Text>
                   <div className="text-xs text-accent-green">
                     {progressData.overview.attendanceRate}% presença
                   </div>
@@ -459,9 +464,9 @@ export default function StudentSharedReportPageClient({
                   <div className="text-2xl font-bold text-theme-primary mb-1">
                     {progressData.overview.piecesStudied}
                   </div>
-                  <div className="text-sm text-theme-tertiary mb-2">
+                  <Text papel="rotulo" tom="fraco" as="div" className="mb-2">
                     Peças Estudadas
-                  </div>
+                  </Text>
                   <div className="text-xs text-accent-purple">
                     {progressData.overview.favoritePieces} favoritadas
                   </div>
@@ -477,9 +482,9 @@ export default function StudentSharedReportPageClient({
                   <div className="text-2xl font-bold text-theme-primary mb-1">
                     {progressData.overview.currentStreak}
                   </div>
-                  <div className="text-sm text-theme-tertiary mb-2">
+                  <Text papel="rotulo" tom="fraco" as="div" className="mb-2">
                     Sequência Atual
-                  </div>
+                  </Text>
                   <div className="text-xs text-accent-orange">
                     Máximo: {progressData.overview.longestStreak}
                   </div>
@@ -653,14 +658,18 @@ export default function StudentSharedReportPageClient({
                               {comment.student.name}
                             </span>
                             {comment.section && (
-                              <span className="ml-2 px-2 py-0.5 text-xs bg-brand-primary/10 text-brand-primary rounded">
+                              <Text
+                                papel="legenda"
+                                tom="ouro"
+                                className="ml-2 px-2 py-0.5 bg-brand-primary/10 rounded"
+                              >
                                 {comment.section}
-                              </span>
+                              </Text>
                             )}
                           </div>
-                          <span className="text-xs text-theme-tertiary">
+                          <Text papel="legenda" tom="fraco">
                             {comment.createdAt.toLocaleDateString('pt-BR')}
-                          </span>
+                          </Text>
                         </div>
                         <p className="text-theme-secondary">
                           {comment.content}

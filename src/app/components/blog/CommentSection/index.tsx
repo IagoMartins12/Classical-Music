@@ -28,6 +28,7 @@ import {
   updateComment,
 } from '@/app/requests/blog/interactions';
 import { Inline } from '@/app/components/ui/Layout';
+import { Text } from '@/app/components/ui/Text';
 
 interface Comment {
   id: string;
@@ -191,14 +192,16 @@ const CommentItem = memo(
             )}
 
             <div className="flex items-center gap-2 mb-2">
-              <span className="font-semibold text-theme-primary text-sm">
+              <Text papel="rotulo" tom="forte" className="font-semibold">
                 {userName || 'Usuário'}
-              </span>
-              <span className="text-xs text-theme-tertiary">
+              </Text>
+              <Text papel="legenda" tom="fraco">
                 {new Date(comment.createdAt).toLocaleDateString('pt-BR')}
-              </span>
+              </Text>
               {comment.isEdited && (
-                <span className="text-xs text-theme-tertiary">(editado)</span>
+                <Text papel="legenda" tom="fraco">
+                  (editado)
+                </Text>
               )}
             </div>
 
@@ -228,9 +231,14 @@ const CommentItem = memo(
                 </div>
               </div>
             ) : (
-              <p className="text-theme-secondary mb-3 whitespace-pre-wrap text-sm">
+              <Text
+                papel="rotulo"
+                tom="suave"
+                as="p"
+                className="mb-3 whitespace-pre-wrap"
+              >
                 {comment.content}
-              </p>
+              </Text>
             )}
 
             {/* Actions */}
@@ -687,7 +695,9 @@ export function CommentSection({
                   onChange={(e) => setReportReason(e.target.value)}
                   className="w-4 h-4 text-brand-primary"
                 />
-                <span className="text-sm text-theme-primary">{reason}</span>
+                <Text papel="rotulo" tom="forte">
+                  {reason}
+                </Text>
               </Inline>
             ))}
           </div>

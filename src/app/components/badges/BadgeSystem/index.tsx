@@ -16,6 +16,7 @@ import {
 } from 'react-icons/pi';
 import { AnimatedCard, AnimatedItem } from '../../animation/AnimatedComponents';
 import { Inline } from '@/app/components/ui/Layout';
+import { Text } from '@/app/components/ui/Text';
 
 // Tipos de badges
 export type BadgeCategory =
@@ -494,12 +495,12 @@ export function BadgeGrid({
             <PiMedal className="w-5 h-5 text-brand-primary" />
             <h4 className="font-semibold text-theme-primary">{title}</h4>
             <Inline gap={1}>
-              <span className="text-sm text-brand-primary font-bold">
+              <Text papel="rotulo" tom="ouro" className="font-bold">
                 {unlockedBadges.length}
-              </span>
-              <span className="text-sm text-theme-tertiary">
+              </Text>
+              <Text papel="rotulo" tom="fraco">
                 /{badges.length}
-              </span>
+              </Text>
             </Inline>
           </Inline>
         )}

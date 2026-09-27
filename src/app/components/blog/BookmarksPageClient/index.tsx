@@ -8,6 +8,7 @@ import ViewModeToggle, { ViewMode } from '../../ViewModeToggle';
 import { ArticleCard } from '../ArticleCard';
 import { ArticleCardList } from '../ArticleCardList';
 import { loadMyBookmarks } from '@/app/requests/blog/interactions';
+import { Text } from '@/app/components/ui/Text';
 interface Category {
   id: string;
   name: string;
@@ -112,9 +113,9 @@ export function BookmarksPageClient({ categories }: BookmarksPageClientProps) {
               <p className="text-3xl font-bold text-brand-primary">
                 {pagination.total}
               </p>
-              <p className="text-sm text-theme-tertiary">
+              <Text papel="rotulo" tom="fraco" as="p">
                 {pagination.total === 1 ? 'artigo salvo' : 'artigos salvos'}
-              </p>
+              </Text>
             </div>
           </div>
 
@@ -126,9 +127,9 @@ export function BookmarksPageClient({ categories }: BookmarksPageClientProps) {
         <div className="mt-6 pt-6 border-t border-theme-secondary">
           <div className="flex items-center gap-2 mb-3">
             <PiFunnel className="w-4 h-4 text-theme-tertiary" />
-            <span className="text-sm font-medium text-theme-secondary">
+            <Text papel="rotulo" tom="suave" className="font-medium">
               Filtrar por categoria:
-            </span>
+            </Text>
           </div>
 
           <div className="flex flex-wrap gap-2">

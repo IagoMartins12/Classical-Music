@@ -19,6 +19,7 @@ import {
   uploadCategoryImage,
 } from '@/app/requests/blog/admin-actions';
 import { Inline, Stack } from '@/app/components/ui/Layout';
+import { Text } from '@/app/components/ui/Text';
 
 interface CategoryFormProps {
   mode: 'create' | 'edit';
@@ -227,9 +228,9 @@ export function CategoryForm({ mode, category }: CategoryFormProps) {
                 <span>{errors.name}</span>
               </Inline>
             )}
-            <p className="text-xs text-theme-tertiary mt-1">
+            <Text papel="legenda" tom="fraco" as="p" className="mt-1">
               {formData.name.length}/50 caracteres
-            </p>
+            </Text>
           </div>
 
           {/* Slug */}
@@ -238,9 +239,9 @@ export function CategoryForm({ mode, category }: CategoryFormProps) {
               Slug (URL) *
             </label>
             <Inline gap={2}>
-              <span className="text-theme-tertiary text-sm">
+              <Text papel="rotulo" tom="fraco">
                 /blog/category/
-              </span>
+              </Text>
               <input
                 type="text"
                 value={formData.slug}
@@ -260,9 +261,9 @@ export function CategoryForm({ mode, category }: CategoryFormProps) {
                 <span>{errors.slug}</span>
               </Inline>
             )}
-            <p className="text-xs text-theme-tertiary mt-1">
+            <Text papel="legenda" tom="fraco" as="p" className="mt-1">
               Apenas letras minúsculas, números e hífens
-            </p>
+            </Text>
           </div>
 
           {/* Description */}
@@ -283,9 +284,9 @@ export function CategoryForm({ mode, category }: CategoryFormProps) {
               rows={3}
               maxLength={200}
             />
-            <p className="text-xs text-theme-tertiary mt-1">
+            <Text papel="legenda" tom="fraco" as="p" className="mt-1">
               {formData.description.length}/200 caracteres
-            </p>
+            </Text>
           </div>
         </div>
       </div>
@@ -312,13 +313,15 @@ export function CategoryForm({ mode, category }: CategoryFormProps) {
               placeholder="📚"
               maxLength={2}
             />
-            <p className="text-xs text-theme-tertiary mt-1">
+            <Text papel="legenda" tom="fraco" as="p" className="mt-1">
               Use um emoji para representar a categoria
-            </p>
+            </Text>
 
             {formData.icon && (
               <div className="mt-3 p-4 bg-theme-elevated rounded-lg">
-                <p className="text-xs text-theme-tertiary mb-2">Preview:</p>
+                <Text papel="legenda" tom="fraco" as="p" className="mb-2">
+                  Preview:
+                </Text>
                 <Inline gap={3}>
                   <div
                     className="w-12 h-12 rounded-lg flex items-center justify-center text-2xl"
@@ -372,7 +375,9 @@ export function CategoryForm({ mode, category }: CategoryFormProps) {
             )}
 
             <div className="mt-3 p-4 bg-theme-elevated rounded-lg">
-              <p className="text-xs text-theme-tertiary mb-2">Preview:</p>
+              <Text papel="legenda" tom="fraco" as="p" className="mb-2">
+                Preview:
+              </Text>
               <div
                 className="px-4 py-2 rounded-lg inline-block text-sm font-medium"
                 style={{
@@ -392,9 +397,9 @@ export function CategoryForm({ mode, category }: CategoryFormProps) {
           <label className="block text-sm font-medium text-theme-primary mb-2">
             Imagem da Categoria (Opcional)
           </label>
-          <p className="text-xs text-theme-tertiary mb-3">
+          <Text papel="legenda" tom="fraco" as="p" className="mb-3">
             Recomendado: 800x400px, máximo 2MB
-          </p>
+          </Text>
 
           {imagePreview ? (
             <div className="relative">
@@ -423,19 +428,19 @@ export function CategoryForm({ mode, category }: CategoryFormProps) {
               {uploading ? (
                 <Stack gap={2} className="items-center">
                   <div className="w-8 h-8 border-2 border-brand-primary border-t-transparent rounded-full animate-spin"></div>
-                  <p className="text-sm text-theme-secondary">
+                  <Text papel="rotulo" tom="suave" as="p">
                     Enviando imagem...
-                  </p>
+                  </Text>
                 </Stack>
               ) : (
                 <Stack gap={2} className="items-center">
                   <PiUploadSimple className="w-8 h-8 text-theme-tertiary" />
-                  <p className="text-sm text-theme-secondary">
+                  <Text papel="rotulo" tom="suave" as="p">
                     Clique para selecionar uma imagem
-                  </p>
-                  <p className="text-xs text-theme-tertiary">
+                  </Text>
+                  <Text papel="legenda" tom="fraco" as="p">
                     JPG, PNG ou WebP até 2MB
-                  </p>
+                  </Text>
                 </Stack>
               )}
             </div>
@@ -461,9 +466,9 @@ export function CategoryForm({ mode, category }: CategoryFormProps) {
         <div className="flex items-center justify-between">
           <div>
             <p className="font-medium text-theme-primary">Categoria Ativa</p>
-            <p className="text-sm text-theme-tertiary">
+            <Text papel="rotulo" tom="fraco" as="p">
               Categorias inativas não aparecem no blog
-            </p>
+            </Text>
           </div>
 
           <label className="relative inline-flex items-center cursor-pointer">

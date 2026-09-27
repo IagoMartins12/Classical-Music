@@ -18,6 +18,7 @@ import {
   PiTrash,
 } from 'react-icons/pi';
 import { Inline } from '@/app/components/ui/Layout';
+import { Text } from '@/app/components/ui/Text';
 
 export default function AnnotationsPageLoading() {
   return (
@@ -138,7 +139,9 @@ export default function AnnotationsPageLoading() {
 
                 {/* View Mode Toggle Skeleton */}
                 <Inline gap={3}>
-                  <span className="text-sm text-theme-secondary">Vista:</span>
+                  <Text papel="rotulo" tom="suave">
+                    Vista:
+                  </Text>
                   <div className="bg-theme-secondary border border-theme-primary rounded-lg p-1 flex">
                     <div className="p-2 rounded bg-theme-elevated">
                       <PiListBullets className="w-4 h-4 text-theme-tertiary/50" />

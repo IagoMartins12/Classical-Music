@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react';
 import { PiArrowUp } from 'react-icons/pi';
 import { Inline } from '@/app/components/ui/Layout';
+import { Text } from '@/app/components/ui/Text';
 
 export function ProgressBar() {
   const [progress, setProgress] = useState(0);
@@ -92,10 +93,12 @@ export function ProgressBar() {
 
         {/* Labels */}
         <div className="text-center space-y-1">
-          <div className="text-xs text-theme-tertiary">Progresso</div>
-          <div className="text-sm font-medium text-theme-secondary">
+          <Text papel="legenda" tom="fraco" as="div">
+            Progresso
+          </Text>
+          <Text papel="rotulo" tom="suave" as="div" className="font-medium">
             {getProgressText()}
-          </div>
+          </Text>
         </div>
 
         {/* Scroll to Top Button */}

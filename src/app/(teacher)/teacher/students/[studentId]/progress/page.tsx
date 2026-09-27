@@ -5,6 +5,7 @@ import {
   AnimatedCard,
 } from '@/app/components/animation/AnimatedComponents';
 import { getServerLanguageStatic } from '@/app/utils/translations/serverTranslations';
+import { Text } from '@/app/components/ui/Text';
 
 export async function generateMetadata(): Promise<Metadata> {
   const language = await getServerLanguageStatic();
@@ -94,9 +95,13 @@ export default async function TeacherProgressPage({
           hover="none"
           className="classical-card p-10 max-w-3xl mx-auto text-center"
         >
-          <span className="text-sm uppercase tracking-[0.3em] text-theme-tertiary mb-4 inline-block">
+          <Text
+            papel="rotulo"
+            tom="fraco"
+            className="uppercase tracking-[0.3em] mb-4 inline-block"
+          >
             Em breve
-          </span>
+          </Text>
           <h1 className="text-4xl md:text-5xl font-bold text-theme-primary classical-title mb-4">
             Relatório de Progresso
           </h1>

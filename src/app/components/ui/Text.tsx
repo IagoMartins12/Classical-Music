@@ -1,4 +1,4 @@
-import type { ElementType, ReactNode } from 'react';
+import type { AllHTMLAttributes, ElementType, ReactNode, Ref } from 'react';
 import { cx } from './cx';
 
 /**
@@ -57,7 +57,12 @@ const TOM: Record<Tom, string> = {
   atencao: 'text-atencao',
 };
 
-interface TextProps {
+/** Qualquer atributo HTML passa adiante (`id`, `title`, `onClick`, `ref`…). */
+interface TextProps extends Omit<
+  AllHTMLAttributes<HTMLElement>,
+  'className' | 'children' | 'as'
+> {
+  ref?: Ref<HTMLElement>;
   papel?: Papel;
   tom?: Tom;
   /** Números de catálogo, anos, durações: largura fixa alinha a coluna. */
@@ -66,7 +71,7 @@ interface TextProps {
   medida?: boolean;
   as?: ElementType;
   className?: string;
-  children: ReactNode;
+  children?: ReactNode;
 }
 
 export function Text({
@@ -77,11 +82,13 @@ export function Text({
   as,
   className,
   children,
+  ...resto
 }: TextProps) {
   const Tag = as ?? TAG[papel];
 
   return (
     <Tag
+      {...resto}
       className={cx(
         PAPEL[papel],
         tom && TOM[tom],

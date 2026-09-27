@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useRef, useMemo } from 'react';
 import { PiCaretDown, PiCheck, PiMagnifyingGlass, PiX } from 'react-icons/pi';
+import { Text } from '@/app/components/ui/Text';
 
 interface Option {
   id: string;
@@ -135,7 +136,9 @@ export default function MultiSelectWithId({
       >
         <div className="flex-1 flex flex-wrap gap-1 mr-2">
           {selectedLabels.length === 0 ? (
-            <span className="text-theme-secondary text-sm">{placeholder}</span>
+            <Text papel="rotulo" tom="suave">
+              {placeholder}
+            </Text>
           ) : selectedLabels.length <= maxDisplay ? (
             /* ✅ FIX: Mapear diretamente de selectedValues */
             selectedValues.map((id) => {
@@ -143,9 +146,11 @@ export default function MultiSelectWithId({
               if (!option) return null; // ✅ Skip se não encontrar
 
               return (
-                <span
+                <Text
+                  papel="legenda"
+                  tom="ouro"
                   key={id}
-                  className="inline-flex items-center capitalize gap-1 bg-brand-primary/10 text-brand-primary px-2 py-1 rounded-lg text-xs font-medium"
+                  className="inline-flex items-center capitalize gap-1 bg-brand-primary/10 px-2 py-1 rounded-lg font-medium"
                 >
                   {option.label}
                   <button
@@ -156,7 +161,7 @@ export default function MultiSelectWithId({
                   >
                     <PiX className="w-3 h-3" />
                   </button>
-                </span>
+                </Text>
               );
             })
           ) : (
@@ -167,9 +172,11 @@ export default function MultiSelectWithId({
                 if (!option) return null;
 
                 return (
-                  <span
+                  <Text
+                    papel="legenda"
+                    tom="ouro"
                     key={id}
-                    className="inline-flex capitalize items-center gap-1 bg-brand-primary/10 text-brand-primary px-2 py-1 rounded-lg text-xs font-medium"
+                    className="inline-flex capitalize items-center gap-1 bg-brand-primary/10 px-2 py-1 rounded-lg font-medium"
                   >
                     {option.label}
                     <button
@@ -180,12 +187,12 @@ export default function MultiSelectWithId({
                     >
                       <PiX className="w-3 h-3" />
                     </button>
-                  </span>
+                  </Text>
                 );
               })}
-              <span className="text-theme-secondary text-xs">
+              <Text papel="legenda" tom="suave">
                 +{selectedValues.length - maxDisplay} mais
-              </span>
+              </Text>
             </div>
           )}
         </div>
@@ -236,13 +243,13 @@ export default function MultiSelectWithId({
           <div className="max-h-48 overflow-y-auto">
             {filteredOptions.length === 0 ? (
               <div className="px-4 py-8 text-center">
-                <p className="text-sm capitalize text-theme-secondary">
+                <Text papel="rotulo" tom="suave" as="p" className="capitalize">
                   {searchTerm
                     ? `Nenhuma opção encontrada para "${searchTerm}"`
                     : stableExcludeValues.length > 0
                       ? 'Todas as opções disponíveis já foram selecionadas ou excluídas'
                       : 'Nenhuma opção disponível'}
-                </p>
+                </Text>
               </div>
             ) : (
               filteredOptions.map((opt) => {
@@ -274,12 +281,12 @@ export default function MultiSelectWithId({
 
           {selectedValues.length > 0 && (
             <div className="px-4 py-2 border-t border-theme-secondary bg-theme-secondary/5">
-              <p className="text-xs text-theme-secondary">
+              <Text papel="legenda" tom="suave" as="p">
                 {selectedValues.length}{' '}
                 {selectedValues.length === 1
                   ? 'item selecionado'
                   : 'itens selecionados'}
-              </p>
+              </Text>
             </div>
           )}
         </div>

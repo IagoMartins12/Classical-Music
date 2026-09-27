@@ -25,6 +25,7 @@ import { formatDistanceToNow } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
 import Image from '@/app/components/SmartImage';
 import { Inline } from '@/app/components/ui/Layout';
+import { Text } from '@/app/components/ui/Text';
 
 interface LearnedVideoData {
   cloudinaryUrl: string;
@@ -242,11 +243,11 @@ export default function LearnedVideoViewer({
                 <h3 className="text-lg font-bold text-theme-primary mb-1">
                   {learned.work.title}
                 </h3>
-                <p className="text-theme-secondary text-sm mb-2">
+                <Text papel="rotulo" tom="suave" as="p" className="mb-2">
                   {learned.work.composer.name}
                   {learned.work.opOrCatalog && ` - ${learned.work.opOrCatalog}`}
                   {learned.work.tone && ` (${learned.work.tone})`}
-                </p>
+                </Text>
 
                 <Inline gap={4} className="text-xs text-theme-secondary">
                   <Inline as="span" gap={1}>
@@ -359,9 +360,9 @@ export default function LearnedVideoViewer({
                 <div className="space-y-2 text-sm">
                   <div className="flex justify-between">
                     <span className="text-theme-secondary">Nome:</span>
-                    <span className="font-mono text-theme-primary text-xs">
+                    <Text papel="legenda" tom="forte" className="font-mono">
                       {videoData.originalName}
-                    </span>
+                    </Text>
                   </div>
                   <div className="flex justify-between">
                     <span className="text-theme-secondary">Tamanho:</span>
@@ -550,43 +551,68 @@ export default function LearnedVideoViewer({
                   <div className="space-y-3">
                     {learned.notes && (
                       <div>
-                        <p className="text-sm text-theme-secondary mb-1">
+                        <Text
+                          papel="rotulo"
+                          tom="suave"
+                          as="p"
+                          className="mb-1"
+                        >
                           Notas pessoais:
-                        </p>
-                        <p className="text-sm text-theme-primary bg-theme-tertiary p-2 rounded">
+                        </Text>
+                        <Text
+                          papel="rotulo"
+                          tom="forte"
+                          as="p"
+                          className="bg-theme-tertiary p-2 rounded"
+                        >
                           {learned.notes}
-                        </p>
+                        </Text>
                       </div>
                     )}
 
                     {learned.technicalChallenges && (
                       <div>
-                        <p className="text-sm text-theme-secondary mb-1">
+                        <Text
+                          papel="rotulo"
+                          tom="suave"
+                          as="p"
+                          className="mb-1"
+                        >
                           Desafios técnicos:
-                        </p>
-                        <p className="text-sm text-theme-primary">
+                        </Text>
+                        <Text papel="rotulo" tom="forte" as="p">
                           {learned.technicalChallenges}
-                        </p>
+                        </Text>
                       </div>
                     )}
 
                     {learned.musicalInsights && (
                       <div>
-                        <p className="text-sm text-theme-secondary mb-1">
+                        <Text
+                          papel="rotulo"
+                          tom="suave"
+                          as="p"
+                          className="mb-1"
+                        >
                           Insights musicais:
-                        </p>
-                        <p className="text-sm text-theme-primary">
+                        </Text>
+                        <Text papel="rotulo" tom="forte" as="p">
                           {learned.musicalInsights}
-                        </p>
+                        </Text>
                       </div>
                     )}
 
                     {!learned.notes &&
                       !learned.technicalChallenges &&
                       !learned.musicalInsights && (
-                        <p className="text-sm text-theme-tertiary italic">
+                        <Text
+                          papel="rotulo"
+                          tom="fraco"
+                          as="p"
+                          className="italic"
+                        >
                           Nenhuma nota adicionada ainda.
-                        </p>
+                        </Text>
                       )}
                   </div>
                 )}
@@ -599,7 +625,7 @@ export default function LearnedVideoViewer({
         {!isFullscreen && (
           <div className="p-4 border-t border-theme-primary">
             <div className="flex items-center justify-between">
-              <div className="text-sm text-theme-secondary">
+              <Text papel="rotulo" tom="suave" as="div">
                 <Inline as="span" gap={1}>
                   <PiClock className="w-3 h-3" />
                   <span>
@@ -610,7 +636,7 @@ export default function LearnedVideoViewer({
                     })}
                   </span>
                 </Inline>
-              </div>
+              </Text>
 
               <Inline gap={2}>
                 {canDownload && (

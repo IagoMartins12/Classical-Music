@@ -18,6 +18,7 @@ import {
   getCachedCategories,
 } from '@/app/requests/blog/cached-blog-function';
 import { Inline } from '@/app/components/ui/Layout';
+import { Text } from '@/app/components/ui/Text';
 
 // ✅ Revalidação de 5 minutos (fallback para ISR do Next.js)
 export const revalidate = 300;
@@ -141,16 +142,26 @@ export default async function BlogHomePage() {
                 </h3>
 
                 {category.description && (
-                  <p className="text-sm text-theme-secondary mb-3 line-clamp-2">
+                  <Text
+                    papel="rotulo"
+                    tom="suave"
+                    as="p"
+                    className="mb-3 line-clamp-2"
+                  >
                     {category.description}
-                  </p>
+                  </Text>
                 )}
 
                 {/* CTA */}
-                <div className="flex items-center text-brand-primary text-sm font-medium group-hover:translate-x-2 transition-transform">
+                <Text
+                  papel="rotulo"
+                  tom="ouro"
+                  as="div"
+                  className="flex items-center font-medium group-hover:translate-x-2 transition-transform"
+                >
                   <span className="mr-1">Explorar</span>
                   <PiArrowRight className="w-4 h-4" />
-                </div>
+                </Text>
               </div>
             </Link>
           ))}

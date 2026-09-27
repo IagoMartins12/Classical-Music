@@ -37,6 +37,7 @@ import {
 } from '@/app/services/scraper-api/scraper-api.types';
 import { useScrapers } from '@/app/hooks/useScrapers';
 import { Inline } from '@/app/components/ui/Layout';
+import { Text } from '@/app/components/ui/Text';
 
 interface EventWithSelection extends ScrapedEvent {
   id: string;
@@ -409,9 +410,9 @@ export default function EventScraperModal({
                 <h2 className="text-xl font-bold text-theme-primary classical-title">
                   Buscar e Importar Eventos
                 </h2>
-                <p className="text-theme-secondary text-sm">
+                <Text papel="rotulo" tom="suave" as="p">
                   Scrapers de concertos e eventos
-                </p>
+                </Text>
               </div>
             </Inline>
 
@@ -475,13 +476,23 @@ export default function EventScraperModal({
                           <h4 className="font-bold text-theme-primary mb-1">
                             {scraper.name}
                           </h4>
-                          <p className="text-sm text-theme-secondary mb-2">
+                          <Text
+                            papel="rotulo"
+                            tom="suave"
+                            as="p"
+                            className="mb-2"
+                          >
                             {scraper.description}
-                          </p>
-                          <div className="flex items-center text-xs text-theme-tertiary">
+                          </Text>
+                          <Text
+                            papel="legenda"
+                            tom="fraco"
+                            as="div"
+                            className="flex items-center"
+                          >
                             <PiMapPin className="w-3 h-3 mr-1" />
                             {scraper.venue}
-                          </div>
+                          </Text>
                         </div>
                         <div
                           className={`w-5 h-5 rounded-full border-2 flex items-center justify-center ${
@@ -532,13 +543,18 @@ export default function EventScraperModal({
                       style={{ width: `${jobProgress.percentage}%` }}
                     />
                   </div>
-                  <div className="text-xs text-theme-tertiary">
+                  <Text papel="legenda" tom="fraco" as="div">
                     {jobProgress.percentage}% completo
-                  </div>
+                  </Text>
 
                   {/* ✅ INFO DO JOB */}
                   {currentJob && (
-                    <div className="mt-4 text-left text-xs text-theme-tertiary space-y-1">
+                    <Text
+                      papel="legenda"
+                      tom="fraco"
+                      as="div"
+                      className="mt-4 text-left space-y-1"
+                    >
                       <div>
                         Status:{' '}
                         <span className="text-brand-primary font-medium">
@@ -549,7 +565,7 @@ export default function EventScraperModal({
                         Progresso: {currentJob.progress.current}/
                         {currentJob.progress.total}
                       </div>
-                    </div>
+                    </Text>
                   )}
                 </AnimatedCard>
               </div>
@@ -564,29 +580,33 @@ export default function EventScraperModal({
                     <div className="text-2xl font-bold text-theme-primary">
                       {stats.total}
                     </div>
-                    <div className="text-xs text-theme-secondary">Total</div>
+                    <Text papel="legenda" tom="suave" as="div">
+                      Total
+                    </Text>
                   </div>
                   <div className="classical-card-simple p-4 text-center bg-green-50/5">
                     <div className="text-2xl font-bold text-green-500">
                       {stats.new}
                     </div>
-                    <div className="text-xs text-theme-secondary">Novos</div>
+                    <Text papel="legenda" tom="suave" as="div">
+                      Novos
+                    </Text>
                   </div>
                   <div className="classical-card-simple p-4 text-center bg-yellow-50/5">
                     <div className="text-2xl font-bold text-yellow-500">
                       {stats.existing}
                     </div>
-                    <div className="text-xs text-theme-secondary">
+                    <Text papel="legenda" tom="suave" as="div">
                       Já existem
-                    </div>
+                    </Text>
                   </div>
                   <div className="classical-card-simple p-4 text-center bg-blue-50/5">
                     <div className="text-2xl font-bold text-blue-500">
                       {stats.selected}
                     </div>
-                    <div className="text-xs text-theme-secondary">
+                    <Text papel="legenda" tom="suave" as="div">
                       Selecionados
-                    </div>
+                    </Text>
                   </div>
                 </div>
 
@@ -637,9 +657,13 @@ export default function EventScraperModal({
                     >
                       <Inline gap={2}>
                         <PiEye className="w-4 h-4 text-yellow-500" />
-                        <span className="text-sm font-medium text-theme-primary">
+                        <Text
+                          papel="rotulo"
+                          tom="forte"
+                          className="font-medium"
+                        >
                           Ver eventos duplicados ({duplicateEvents.length})
-                        </span>
+                        </Text>
                       </Inline>
                       {showDuplicates ? (
                         <PiCaretUp className="w-5 h-5 text-theme-tertiary" />
@@ -700,14 +724,14 @@ export default function EventScraperModal({
                       }}
                     />
                   </div>
-                  <div className="text-xs text-theme-tertiary">
+                  <Text papel="legenda" tom="fraco" as="div">
                     {
                       eventProgress.filter(
                         (e) => e.status === 'success' || e.status === 'error'
                       ).length
                     }{' '}
                     / {eventProgress.length} concluídos
-                  </div>
+                  </Text>
                 </div>
 
                 <div className=" overflow-y-auto space-y-3">
@@ -798,7 +822,9 @@ export default function EventScraperModal({
                           .length
                       }
                     </div>
-                    <div className="text-xs text-theme-secondary">Sucesso</div>
+                    <Text papel="legenda" tom="suave" as="div">
+                      Sucesso
+                    </Text>
                   </div>
                   <div className="classical-card-simple p-4 text-center bg-red-500/5">
                     <div className="text-2xl font-bold text-red-500">
@@ -807,7 +833,9 @@ export default function EventScraperModal({
                           .length
                       }
                     </div>
-                    <div className="text-xs text-theme-secondary">Erro</div>
+                    <Text papel="legenda" tom="suave" as="div">
+                      Erro
+                    </Text>
                   </div>
                   <div className="classical-card-simple p-4 text-center bg-yellow-500/5">
                     <div className="text-2xl font-bold text-yellow-500">
@@ -818,9 +846,9 @@ export default function EventScraperModal({
                         ).length
                       }
                     </div>
-                    <div className="text-xs text-theme-secondary">
+                    <Text papel="legenda" tom="suave" as="div">
                       Ignorados
-                    </div>
+                    </Text>
                   </div>
                 </div>
 
@@ -848,9 +876,9 @@ export default function EventScraperModal({
                             result.status === 'skipped') && (
                             <PiWarningCircle className="w-4 h-4 text-yellow-500" />
                           )}
-                          <span className="text-sm text-theme-primary">
+                          <Text papel="rotulo" tom="forte">
                             {result.title}
-                          </span>
+                          </Text>
                         </Inline>
                         <span
                           className={`text-xs ${
@@ -939,7 +967,12 @@ const EventCard = ({
           )}
         </div>
 
-        <div className="grid grid-cols-2 gap-2 text-xs text-theme-secondary mb-2">
+        <Text
+          papel="legenda"
+          tom="suave"
+          as="div"
+          className="grid grid-cols-2 gap-2 mb-2"
+        >
           <div className="flex items-center">
             <PiCalendarBlank className="w-3 h-3 mr-1" />
             {new Date(event.startDate).toLocaleDateString('pt-BR')}
@@ -961,17 +994,17 @@ const EventCard = ({
               {event.ticketInfo}
             </div>
           )}
-        </div>
+        </Text>
 
         {event.composerNames.length > 0 && (
-          <div className="text-xs text-theme-tertiary">
+          <Text papel="legenda" tom="fraco" as="div">
             🎼 {event.composerNames.join(', ')}
-          </div>
+          </Text>
         )}
 
-        <p className="text-xs text-theme-tertiary mt-2 line-clamp-2">
+        <Text papel="legenda" tom="fraco" as="p" className="mt-2 line-clamp-2">
           {event.description}
-        </p>
+        </Text>
       </div>
 
       <Inline gap={2} className="flex-shrink-0">

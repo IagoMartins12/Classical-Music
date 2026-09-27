@@ -34,6 +34,7 @@ import { useAdminAnalytics } from '@/app/hooks/admin/useAdminAnalytics';
 import LoadingAdminState from '../../Common/LoadingState';
 import { formatDuration, formatNumber } from '../../Utils';
 import { Inline } from '@/app/components/ui/Layout';
+import { Text } from '@/app/components/ui/Text';
 
 export default function AdminAnalytics() {
   const router = useRouter();
@@ -229,9 +230,9 @@ export default function AdminAnalytics() {
               {analytics.insights.keyMetrics.map((metric, index) => (
                 <div key={index} className="p-4 bg-theme-secondary rounded-xl">
                   <div className="flex items-center justify-between mb-2">
-                    <span className="text-sm font-medium text-theme-primary">
+                    <Text papel="rotulo" tom="forte" className="font-medium">
                       {metric.metric}
-                    </span>
+                    </Text>
                     <span
                       className={`text-xs font-medium ${
                         metric.isPositive
@@ -265,9 +266,9 @@ export default function AdminAnalytics() {
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
                 <div className="p-4 bg-theme-secondary rounded-xl">
                   <div className="flex items-center justify-between mb-2">
-                    <span className="text-sm font-medium text-theme-primary">
+                    <Text papel="rotulo" tom="forte" className="font-medium">
                       Tempo Médio de Sessão
-                    </span>
+                    </Text>
                     <span className="text-xs font-medium text-accent-blue">
                       {(analytics.charts.engagementMetrics.find(
                         (m) => m.metric === 'Tempo Médio de Sessão'
@@ -287,9 +288,9 @@ export default function AdminAnalytics() {
 
                 <div className="p-4 bg-theme-secondary rounded-xl">
                   <div className="flex items-center justify-between mb-2">
-                    <span className="text-sm font-medium text-theme-primary">
+                    <Text papel="rotulo" tom="forte" className="font-medium">
                       Anotações/Dia
-                    </span>
+                    </Text>
                     <span
                       className={`text-xs font-medium ${
                         (analytics.charts.engagementMetrics.find(
@@ -317,9 +318,9 @@ export default function AdminAnalytics() {
 
                 <div className="p-4 bg-theme-secondary rounded-xl">
                   <div className="flex items-center justify-between mb-2">
-                    <span className="text-sm font-medium text-theme-primary">
+                    <Text papel="rotulo" tom="forte" className="font-medium">
                       % Usuários Ativos
-                    </span>
+                    </Text>
                     <span
                       className={`text-xs font-medium ${
                         (analytics.charts.engagementMetrics.find(
@@ -347,9 +348,9 @@ export default function AdminAnalytics() {
 
                 <div className="p-4 bg-theme-secondary rounded-xl">
                   <div className="flex items-center justify-between mb-2">
-                    <span className="text-sm font-medium text-theme-primary">
+                    <Text papel="rotulo" tom="forte" className="font-medium">
                       Anotações/Usuário
-                    </span>
+                    </Text>
                     <span
                       className={`text-xs font-medium ${
                         (analytics.charts.engagementMetrics.find(
@@ -448,16 +449,26 @@ export default function AdminAnalytics() {
                     key={work.id}
                     className="p-3 bg-theme-secondary rounded-xl"
                   >
-                    <div className="w-8 h-8 bg-gradient-to-br from-accent-blue to-accent-purple rounded-lg flex items-center justify-center text-sm font-bold text-theme-primary">
+                    <Text
+                      papel="rotulo"
+                      tom="forte"
+                      as="div"
+                      className="w-8 h-8 bg-gradient-to-br from-accent-blue to-accent-purple rounded-lg flex items-center justify-center font-bold"
+                    >
                       {index + 1}
-                    </div>
+                    </Text>
                     <div className="flex-1 min-w-0">
                       <p className="font-medium text-theme-primary truncate">
                         {work.title}
                       </p>
-                      <p className="text-sm text-theme-tertiary truncate">
+                      <Text
+                        papel="rotulo"
+                        tom="fraco"
+                        as="p"
+                        className="truncate"
+                      >
                         {work.composer}
-                      </p>
+                      </Text>
                       <Inline
                         gap={3}
                         className="text-xs text-theme-secondary mt-1"
@@ -496,9 +507,14 @@ export default function AdminAnalytics() {
                     key={composer.id}
                     className="p-3 bg-theme-secondary rounded-xl"
                   >
-                    <div className="w-8 h-8 bg-gradient-to-br from-accent-green to-accent-blue rounded-lg flex items-center justify-center text-sm font-bold text-theme-primary">
+                    <Text
+                      papel="rotulo"
+                      tom="forte"
+                      as="div"
+                      className="w-8 h-8 bg-gradient-to-br from-accent-green to-accent-blue rounded-lg flex items-center justify-center font-bold"
+                    >
                       {index + 1}
-                    </div>
+                    </Text>
                     <div className="flex-1 min-w-0">
                       <p className="font-medium text-theme-primary truncate">
                         {composer.name}
@@ -543,9 +559,14 @@ export default function AdminAnalytics() {
                     key={user.id}
                     className="p-3 bg-theme-secondary rounded-xl"
                   >
-                    <div className="w-8 h-8 bg-gradient-to-br from-accent-purple to-accent-blue rounded-lg flex items-center justify-center text-sm font-bold text-theme-primary">
+                    <Text
+                      papel="rotulo"
+                      tom="forte"
+                      as="div"
+                      className="w-8 h-8 bg-gradient-to-br from-accent-purple to-accent-blue rounded-lg flex items-center justify-center font-bold"
+                    >
                       {index + 1}
-                    </div>
+                    </Text>
                     <div className="flex-1 min-w-0">
                       <p className="font-medium text-theme-primary truncate">
                         {user.name}
@@ -598,9 +619,14 @@ export default function AdminAnalytics() {
                           <h4 className="font-medium text-theme-primary mb-1">
                             {rec.title}
                           </h4>
-                          <p className="text-theme-secondary text-sm mb-2">
+                          <Text
+                            papel="rotulo"
+                            tom="suave"
+                            as="p"
+                            className="mb-2"
+                          >
                             {rec.description}
-                          </p>
+                          </Text>
                         </div>
                       </div>
                     </div>
@@ -622,10 +648,10 @@ export default function AdminAnalytics() {
               <div className="flex flex-col items-center justify-center">
                 <PiUsers className="w-8 h-8 mb-3 text-accent-blue" />
                 <span className="font-bold mb-2">Gerenciar Usuários</span>
-                <span className="text-sm text-theme-tertiary text-center">
+                <Text papel="rotulo" tom="fraco" className="text-center">
                   {formatNumber(analytics.overview.users.total)} usuários
                   registrados
-                </span>
+                </Text>
               </div>
             </Button>
 
@@ -637,10 +663,10 @@ export default function AdminAnalytics() {
               <div className="flex flex-col items-center justify-center">
                 <PiDatabase className="w-8 h-8 mb-3 text-accent-green" />
                 <span className="font-bold mb-2">Gerenciar Conteúdo</span>
-                <span className="text-sm text-theme-tertiary text-center">
+                <Text papel="rotulo" tom="fraco" className="text-center">
                   {formatNumber(analytics.overview.content.works)} obras
                   catalogadas
-                </span>
+                </Text>
               </div>
             </Button>
 
@@ -653,9 +679,9 @@ export default function AdminAnalytics() {
                 {' '}
                 <PiTrendUp className="w-8 h-8 mb-3 text-accent-purple" />
                 <span className="font-bold mb-2">Insights Avançados</span>
-                <span className="text-sm text-theme-tertiary text-center">
+                <Text papel="rotulo" tom="fraco" className="text-center">
                   Análises e predições
-                </span>
+                </Text>
               </div>
             </Button>
 
@@ -667,10 +693,10 @@ export default function AdminAnalytics() {
               <div className="flex flex-col items-center justify-center">
                 <PiLightning className="w-8 h-8 mb-3 text-accent-amber" />
                 <span className="font-bold mb-2">Sistema</span>
-                <span className="text-sm text-theme-tertiary text-center">
+                <Text papel="rotulo" tom="fraco" className="text-center">
                   Performance {analytics.overview.system.performance.toFixed(1)}
                   %
-                </span>
+                </Text>
               </div>
             </Button>
           </div>

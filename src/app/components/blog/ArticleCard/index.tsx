@@ -3,6 +3,7 @@ import Link from 'next/link';
 import Image from '@/app/components/SmartImage';
 import { PiChatDots, PiClock, PiHeart, PiUser } from 'react-icons/pi';
 import { Inline } from '@/app/components/ui/Layout';
+import { Text } from '@/app/components/ui/Text';
 
 interface ArticleCardProps {
   article: {
@@ -91,9 +92,14 @@ export function ArticleCard({ article }: ArticleCardProps) {
 
         {/* Description */}
         {article.description && (
-          <p className="text-sm text-theme-secondary mb-4 line-clamp-3 flex-1">
+          <Text
+            papel="rotulo"
+            tom="suave"
+            as="p"
+            className="mb-4 line-clamp-3 flex-1"
+          >
             {article.description}
-          </p>
+          </Text>
         )}
 
         {/* Footer */}
@@ -113,9 +119,9 @@ export function ArticleCard({ article }: ArticleCardProps) {
                 <PiUser className="w-3 h-3 text-brand-primary" />
               </div>
             )}
-            <span className="text-xs text-theme-tertiary">
+            <Text papel="legenda" tom="fraco">
               {authorName || 'Anônimo'}
-            </span>
+            </Text>
           </Inline>
 
           {/* Stats */}

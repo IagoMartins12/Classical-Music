@@ -14,6 +14,7 @@ import {
 } from 'react-icons/pi';
 import Button from '../Common/Button';
 import { Inline } from '@/app/components/ui/Layout';
+import { Text } from '@/app/components/ui/Text';
 
 export interface ConfirmModalProps {
   isOpen: boolean;
@@ -133,12 +134,12 @@ export default function ConfirmModal({
             </div>
             <div>
               <h3 className="text-lg font-bold text-theme-primary">{title}</h3>
-              <p className="text-sm text-theme-secondary">
+              <Text papel="rotulo" tom="suave" as="p">
                 {type === 'danger' && 'Esta ação não pode ser desfeita'}
                 {type === 'warning' && 'Verifique antes de continuar'}
                 {type === 'info' && 'Informação importante'}
                 {type === 'question' && 'Confirme sua escolha'}
-              </p>
+              </Text>
             </div>
           </Inline>
 

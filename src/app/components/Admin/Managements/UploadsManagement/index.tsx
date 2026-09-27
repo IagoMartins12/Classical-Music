@@ -44,6 +44,7 @@ import PeriodSelector from '../../Common/PeriodSelector';
 import { getPeriodLabel } from '@/app/utils/adminUtils';
 import { AppRouterInstance } from 'next/dist/shared/lib/app-router-context.shared-runtime';
 import { Inline } from '@/app/components/ui/Layout';
+import { Text } from '@/app/components/ui/Text';
 
 interface UploadFilters {
   search: string;
@@ -128,10 +129,10 @@ const ActivityDetailModal = ({
               <h2 className="text-xl font-bold text-theme-primary">
                 Detalhes da Atividade
               </h2>
-              <p className="text-sm text-theme-tertiary">
+              <Text papel="rotulo" tom="fraco" as="p">
                 {getActionLabel(activity.action)} de{' '}
                 {getEntityTypeLabel(activity.entityType)}
-              </p>
+              </Text>
             </div>
           </Inline>
           <Button
@@ -219,9 +220,9 @@ const ActivityDetailModal = ({
                       {activity.entityDetails.title}
                     </h4>
                     {activity.entityDetails.composer && (
-                      <p className="text-sm text-theme-tertiary">
+                      <Text papel="rotulo" tom="fraco" as="p">
                         Compositor: {activity.entityDetails.composer.name}
-                      </p>
+                      </Text>
                     )}
                   </div>
                 )}
@@ -232,9 +233,9 @@ const ActivityDetailModal = ({
                       {activity.entityDetails.title}
                     </h4>
                     {activity.entityDetails.work && (
-                      <p className="text-sm text-theme-tertiary">
+                      <Text papel="rotulo" tom="fraco" as="p">
                         Obra: {activity.entityDetails.work.title}
-                      </p>
+                      </Text>
                     )}
                   </div>
                 )}
@@ -611,16 +612,21 @@ export default function UploadsManagement() {
                     className="p-4 bg-theme-secondary rounded-xl"
                   >
                     <Inline gap={3} className="mb-3">
-                      <div className="w-8 h-8 bg-gradient-to-br from-accent-purple to-accent-blue rounded-lg flex items-center justify-center text-sm font-bold text-theme-primary">
+                      <Text
+                        papel="rotulo"
+                        tom="forte"
+                        as="div"
+                        className="w-8 h-8 bg-gradient-to-br from-accent-purple to-accent-blue rounded-lg flex items-center justify-center font-bold"
+                      >
                         {index + 1}
-                      </div>
+                      </Text>
                       <div className="flex-1 min-w-0">
                         <p className="font-medium text-theme-primary truncate">
                           {user.userName}
                         </p>
-                        <p className="text-sm text-theme-tertiary">
+                        <Text papel="rotulo" tom="fraco" as="p">
                           {user.count} contribuições
-                        </p>
+                        </Text>
                       </div>
                     </Inline>
                     <div className="flex items-center justify-between">
@@ -690,13 +696,13 @@ export default function UploadsManagement() {
                           >
                             {getActionLabel(activity.action)}
                           </span>
-                          <span className="text-sm text-theme-tertiary">
+                          <Text papel="rotulo" tom="fraco">
                             {getEntityTypeLabel(activity.entityType)}
-                          </span>
+                          </Text>
                         </Inline>
-                        <p className="text-xs text-theme-tertiary">
+                        <Text papel="legenda" tom="fraco" as="p">
                           {new Date(activity.createdAt).toLocaleString('pt-BR')}
-                        </p>
+                        </Text>
                       </div>
                       <Button
                         variant="ghost"
@@ -911,9 +917,13 @@ export default function UploadsManagement() {
                           >
                             {getActionLabel(upload.action)}
                           </span>
-                          <span className="text-sm font-medium text-theme-primary">
+                          <Text
+                            papel="rotulo"
+                            tom="forte"
+                            className="font-medium"
+                          >
                             {getEntityTypeLabel(upload.entityType)}
-                          </span>
+                          </Text>
                         </Inline>
 
                         {upload.entityDetails && (
@@ -993,9 +1003,9 @@ export default function UploadsManagement() {
             {/* Rolagem por cursor: a API continua do último envio mostrado. */}
             {uploads.length > 0 && (
               <div className="flex items-center justify-between mt-6 pt-6 border-t border-theme-secondary">
-                <div className="text-sm text-theme-secondary">
+                <Text papel="rotulo" tom="suave" as="div">
                   Mostrando {pagination.shown} de {pagination.total} uploads
-                </div>
+                </Text>
                 {pagination.hasMore && (
                   <Button
                     variant="ghost"

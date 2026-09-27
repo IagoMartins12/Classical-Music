@@ -45,6 +45,7 @@ import { useToast } from '@/app/hooks/useToast';
 import Select from '@/app/components/Common/Select';
 import { useTranslation } from '@/app/context/TranslationContext';
 import { Inline } from '@/app/components/ui/Layout';
+import { Text } from '@/app/components/ui/Text';
 
 interface StudentProfilePageClientProps {
   initialData: StudentProfileData | null;
@@ -529,9 +530,9 @@ export default function StudentProfilePageClient({
                     <h2 className="text-xl font-bold text-theme-primary classical-title">
                       {t('personal_info')}
                     </h2>
-                    <p className="text-theme-tertiary text-sm">
+                    <Text papel="rotulo" tom="fraco" as="p">
                       {t('personal_info_subtitle')}
-                    </p>
+                    </Text>
                   </div>
                 </Inline>
 
@@ -767,9 +768,9 @@ export default function StudentProfilePageClient({
                     <h2 className="text-xl font-bold text-theme-primary classical-title">
                       {t('study_settings')}
                     </h2>
-                    <p className="text-theme-tertiary text-sm">
+                    <Text papel="rotulo" tom="fraco" as="p">
                       {t('study_settings_subtitle')}
-                    </p>
+                    </Text>
                   </div>
                 </Inline>
 
@@ -1041,9 +1042,9 @@ export default function StudentProfilePageClient({
                     <h2 className="text-xl font-bold text-theme-primary classical-title">
                       {t('musical_preferences')}
                     </h2>
-                    <p className="text-theme-tertiary text-sm">
+                    <Text papel="rotulo" tom="fraco" as="p">
                       {t('musical_preferences_subtitle')}
-                    </p>
+                    </Text>
                   </div>
                 </Inline>
 
@@ -1126,12 +1127,14 @@ export default function StudentProfilePageClient({
                   profile.preferredGenres.length > 0 ? (
                     <div className="grid grid-cols-4 md:grid-cols-8 gap-4">
                       {profile.preferredGenres.map((genre) => (
-                        <span
+                        <Text
+                          papel="rotulo"
+                          tom="ouro"
                           key={genre}
-                          className="px-3 py-1 bg-brand-primary/10 border border-brand-primary/30 text-brand-primary rounded-full text-sm text-center"
+                          className="px-3 py-1 bg-brand-primary/10 border border-brand-primary/30 rounded-full text-center"
                         >
                           {genre}
-                        </span>
+                        </Text>
                       ))}
                     </div>
                   ) : (
@@ -1168,9 +1171,9 @@ export default function StudentProfilePageClient({
                     <h2 className="text-xl font-bold text-theme-primary classical-title">
                       {t('privacy_settings')}
                     </h2>
-                    <p className="text-theme-tertiary text-sm">
+                    <Text papel="rotulo" tom="fraco" as="p">
                       {t('privacy_settings_subtitle')}
-                    </p>
+                    </Text>
                   </div>
                 </Inline>
 
@@ -1223,9 +1226,9 @@ export default function StudentProfilePageClient({
                         <div className="font-medium text-theme-primary">
                           {t('allow_public_progress')}
                         </div>
-                        <div className="text-sm text-theme-tertiary">
+                        <Text papel="rotulo" tom="fraco" as="div">
                           {t('allow_public_progress_description')}
-                        </div>
+                        </Text>
                       </div>
                       <button
                         onClick={() =>
@@ -1256,9 +1259,9 @@ export default function StudentProfilePageClient({
                         <div className="font-medium text-theme-primary">
                           {t('share_progress_teachers')}
                         </div>
-                        <div className="text-sm text-theme-tertiary">
+                        <Text papel="rotulo" tom="fraco" as="div">
                           {t('share_progress_teachers_description')}
-                        </div>
+                        </Text>
                       </div>
                       <button
                         onClick={() =>
@@ -1377,9 +1380,9 @@ export default function StudentProfilePageClient({
                     <h2 className="text-xl font-bold text-theme-primary classical-title">
                       {t('communication_settings')}
                     </h2>
-                    <p className="text-theme-tertiary text-sm">
+                    <Text papel="rotulo" tom="fraco" as="p">
                       {t('communication_settings_subtitle')}
-                    </p>
+                    </Text>
                   </div>
                 </Inline>
 
@@ -1484,9 +1487,9 @@ export default function StudentProfilePageClient({
                     <h2 className="text-xl font-bold text-theme-primary classical-title">
                       {t('my_repertoire')}
                     </h2>
-                    <p className="text-theme-tertiary text-sm">
+                    <Text papel="rotulo" tom="fraco" as="p">
                       {t('my_repertoire_subtitle')}
-                    </p>
+                    </Text>
                   </div>
                 </Inline>
 
@@ -1520,12 +1523,17 @@ export default function StudentProfilePageClient({
                           key={work.workId}
                           className="p-3 bg-theme-secondary/10 rounded-lg border"
                         >
-                          <div className="font-medium text-theme-primary text-sm">
+                          <Text
+                            papel="rotulo"
+                            tom="forte"
+                            as="div"
+                            className="font-medium"
+                          >
                             {work.title}
-                          </div>
-                          <div className="text-xs text-theme-tertiary">
+                          </Text>
+                          <Text papel="legenda" tom="fraco" as="div">
                             {work.composer}
-                          </div>
+                          </Text>
                           {work.difficulty && (
                             <div className="text-xs text-accent-blue mt-1">
                               {work.difficulty}
@@ -1535,10 +1543,10 @@ export default function StudentProfilePageClient({
                       ))}
                       {studyData.wantToLearn.length > 5 && (
                         <div className="text-center">
-                          <span className="text-sm text-theme-tertiary">
+                          <Text papel="rotulo" tom="fraco">
                             +{studyData.wantToLearn.length - 5}{' '}
                             {t('more_works')}
-                          </span>
+                          </Text>
                         </div>
                       )}
                     </div>
@@ -1556,12 +1564,17 @@ export default function StudentProfilePageClient({
                           key={work.workId}
                           className="p-3 bg-theme-secondary/10 rounded-lg border"
                         >
-                          <div className="font-medium text-theme-primary text-sm">
+                          <Text
+                            papel="rotulo"
+                            tom="forte"
+                            as="div"
+                            className="font-medium"
+                          >
                             {work.title}
-                          </div>
-                          <div className="text-xs text-theme-tertiary">
+                          </Text>
+                          <Text papel="legenda" tom="fraco" as="div">
                             {work.composer}
-                          </div>
+                          </Text>
                           <div className="flex items-center justify-between mt-1">
                             <div className="text-xs text-accent-green">
                               {t('mastery')}: {work.mastery}/5
@@ -1576,9 +1589,9 @@ export default function StudentProfilePageClient({
                       ))}
                       {studyData.learned.length > 5 && (
                         <div className="text-center">
-                          <span className="text-sm text-theme-tertiary">
+                          <Text papel="rotulo" tom="fraco">
                             +{studyData.learned.length - 5} {t('more_works')}
-                          </span>
+                          </Text>
                         </div>
                       )}
                     </div>
@@ -1600,12 +1613,17 @@ export default function StudentProfilePageClient({
                           key={annotation.id}
                           className="p-3 bg-theme-secondary/10 rounded-lg bg-theme-elevated"
                         >
-                          <div className="font-medium text-theme-primary text-sm">
+                          <Text
+                            papel="rotulo"
+                            tom="forte"
+                            as="div"
+                            className="font-medium"
+                          >
                             {annotation.title}
-                          </div>
-                          <div className="text-xs text-theme-tertiary">
+                          </Text>
+                          <Text papel="legenda" tom="fraco" as="div">
                             {annotation.workTitle} • {annotation.category}
-                          </div>
+                          </Text>
                         </div>
                       ))}
                     </div>
@@ -1643,13 +1661,18 @@ export default function StudentProfilePageClient({
                             </div>
                           )}
                           <div className="flex-1">
-                            <div className="font-medium text-theme-primary text-sm">
+                            <Text
+                              papel="rotulo"
+                              tom="forte"
+                              as="div"
+                              className="font-medium"
+                            >
                               {teacher.teacherName}
-                            </div>
-                            <div className="text-xs text-theme-tertiary">
+                            </Text>
+                            <Text papel="legenda" tom="fraco" as="div">
                               {teacher.totalLessons} {t('lessons')} •{' '}
                               {teacher.lessonDuration}min
-                            </div>
+                            </Text>
                           </div>
                         </Inline>
                       ))}

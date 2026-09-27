@@ -9,6 +9,7 @@ import {
   PiPlus,
   PiX,
 } from 'react-icons/pi';
+import { Text } from '@/app/components/ui/Text';
 
 interface MultiSelectProps {
   label: string;
@@ -175,12 +176,16 @@ export default function MultiSelect({
         {/* Selected Values Display */}
         <div className="flex-1 flex flex-wrap gap-1 mr-2">
           {selectedValues.length === 0 ? (
-            <span className="text-theme-secondary text-sm">{placeholder}</span>
+            <Text papel="rotulo" tom="suave">
+              {placeholder}
+            </Text>
           ) : selectedValues.length <= maxDisplay ? (
             selectedValues.map((value) => (
-              <span
+              <Text
+                papel="legenda"
+                tom="ouro"
                 key={value}
-                className="inline-flex items-center capitalize gap-1 bg-brand-primary/10 text-brand-primary px-2 py-1 rounded-lg text-xs font-medium"
+                className="inline-flex items-center capitalize gap-1 bg-brand-primary/10 px-2 py-1 rounded-lg font-medium"
               >
                 {value}
                 <button
@@ -191,14 +196,16 @@ export default function MultiSelect({
                 >
                   <PiX className="w-3 h-3" />
                 </button>
-              </span>
+              </Text>
             ))
           ) : (
             <div className="flex items-center gap-2">
               {selectedValues.slice(0, maxDisplay).map((value) => (
-                <span
+                <Text
+                  papel="legenda"
+                  tom="ouro"
                   key={value}
-                  className="inline-flex capitalize items-center gap-1 bg-brand-primary/10 text-brand-primary px-2 py-1 rounded-lg text-xs font-medium"
+                  className="inline-flex capitalize items-center gap-1 bg-brand-primary/10 px-2 py-1 rounded-lg font-medium"
                 >
                   {value}
                   <button
@@ -209,11 +216,11 @@ export default function MultiSelect({
                   >
                     <PiX className="w-3 h-3" />
                   </button>
-                </span>
+                </Text>
               ))}
-              <span className="text-theme-secondary text-xs">
+              <Text papel="legenda" tom="suave">
                 +{selectedValues.length - maxDisplay} mais
-              </span>
+              </Text>
             </div>
           )}
         </div>
@@ -293,13 +300,13 @@ export default function MultiSelect({
             {filteredOptions.length === 0 &&
             (!allowCreate || !searchTerm.trim()) ? (
               <div className="px-4 py-8 text-center">
-                <p className="text-sm capitalize text-theme-secondary">
+                <Text papel="rotulo" tom="suave" as="p" className="capitalize">
                   {searchTerm
                     ? `Nenhuma opção encontrada para "${searchTerm}"`
                     : stableExcludeValues.length > 0
                       ? 'Todas as opções disponíveis já foram selecionadas ou excluídas'
                       : 'Nenhuma opção disponível'}
-                </p>
+                </Text>
               </div>
             ) : (
               filteredOptions.map((option) => {
@@ -328,12 +335,12 @@ export default function MultiSelect({
           {/* Footer with count */}
           {selectedValues.length > 0 && (
             <div className="px-4 py-2 border-t border-theme-secondary bg-theme-secondary/5">
-              <p className="text-xs text-theme-secondary">
+              <Text papel="legenda" tom="suave" as="p">
                 {selectedValues.length}{' '}
                 {selectedValues.length === 1
                   ? 'item selecionado'
                   : 'itens selecionados'}
-              </p>
+              </Text>
             </div>
           )}
         </div>

@@ -24,6 +24,7 @@ import LoadingAdminState from '../../Common/LoadingState';
 import { formatNumber } from '../../Utils';
 import Image from '@/app/components/SmartImage';
 import { getAdminUserDetails } from '@/app/requests/admin/users';
+import { Text } from '@/app/components/ui/Text';
 
 interface UserDetailsModalProps {
   user: AdminUser;
@@ -302,18 +303,28 @@ export default function UserDetailsModal({
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div className="space-y-4">
                       <div>
-                        <p className="text-xs text-theme-tertiary mb-1">
+                        <Text
+                          papel="legenda"
+                          tom="fraco"
+                          as="p"
+                          className="mb-1"
+                        >
                           Nome Completo
-                        </p>
+                        </Text>
                         <p className="text-theme-primary font-medium">
                           {`${detailsData.firstName || ''} ${detailsData.lastName || ''}`.trim() ||
                             'Não informado'}
                         </p>
                       </div>
                       <div>
-                        <p className="text-xs text-theme-tertiary mb-1">
+                        <Text
+                          papel="legenda"
+                          tom="fraco"
+                          as="p"
+                          className="mb-1"
+                        >
                           Username
-                        </p>
+                        </Text>
                         <p className="text-theme-primary font-medium">
                           {detailsData.username
                             ? `@${detailsData.username}`
@@ -321,18 +332,28 @@ export default function UserDetailsModal({
                         </p>
                       </div>
                       <div>
-                        <p className="text-xs text-theme-tertiary mb-1">
+                        <Text
+                          papel="legenda"
+                          tom="fraco"
+                          as="p"
+                          className="mb-1"
+                        >
                           Email
-                        </p>
+                        </Text>
                         <p className="text-theme-primary font-medium break-all">
                           {detailsData.email}
                         </p>
                       </div>
                       {detailsData.phone && (
                         <div>
-                          <p className="text-xs text-theme-tertiary mb-1 flex items-center gap-1">
+                          <Text
+                            papel="legenda"
+                            tom="fraco"
+                            as="p"
+                            className="mb-1 flex items-center gap-1"
+                          >
                             <PiPhone className="w-3 h-3" /> Telefone
-                          </p>
+                          </Text>
                           <p className="text-theme-primary font-medium">
                             {detailsData.phone}
                           </p>
@@ -341,17 +362,27 @@ export default function UserDetailsModal({
                     </div>
                     <div className="space-y-4">
                       <div>
-                        <p className="text-xs text-theme-tertiary mb-1">
+                        <Text
+                          papel="legenda"
+                          tom="fraco"
+                          as="p"
+                          className="mb-1"
+                        >
                           Tipo de Usuário
-                        </p>
+                        </Text>
                         <p className="text-theme-primary font-medium">
                           {formatUserType(detailsData.userType)}
                         </p>
                       </div>
                       <div>
-                        <p className="text-xs text-theme-tertiary mb-1">
+                        <Text
+                          papel="legenda"
+                          tom="fraco"
+                          as="p"
+                          className="mb-1"
+                        >
                           Nível de Experiência
-                        </p>
+                        </Text>
                         <p className="text-theme-primary font-medium">
                           {formatExperienceLevel(detailsData.experienceLevel)}
                         </p>
@@ -360,9 +391,14 @@ export default function UserDetailsModal({
                         detailsData.state ||
                         detailsData.country) && (
                         <div>
-                          <p className="text-xs text-theme-tertiary mb-1 flex items-center gap-1">
+                          <Text
+                            papel="legenda"
+                            tom="fraco"
+                            as="p"
+                            className="mb-1 flex items-center gap-1"
+                          >
                             <PiMapPin className="w-3 h-3" /> Localização
-                          </p>
+                          </Text>
                           <p className="text-theme-primary font-medium">
                             {[
                               detailsData.city,
@@ -376,9 +412,14 @@ export default function UserDetailsModal({
                       )}
                       {detailsData.practiceTimePerWeek && (
                         <div>
-                          <p className="text-xs text-theme-tertiary mb-1">
+                          <Text
+                            papel="legenda"
+                            tom="fraco"
+                            as="p"
+                            className="mb-1"
+                          >
                             Tempo de Prática Semanal
-                          </p>
+                          </Text>
                           <p className="text-theme-primary font-medium">
                             {detailsData.practiceTimePerWeek} minutos
                           </p>
@@ -388,9 +429,9 @@ export default function UserDetailsModal({
                   </div>
                   {detailsData.bio && (
                     <div className="mt-4 pt-4 border-t border-theme-primary">
-                      <p className="text-xs text-theme-tertiary mb-2">
+                      <Text papel="legenda" tom="fraco" as="p" className="mb-2">
                         Biografia
-                      </p>
+                      </Text>
                       <p className="text-theme-primary">{detailsData.bio}</p>
                     </div>
                   )}
@@ -406,9 +447,14 @@ export default function UserDetailsModal({
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                       {detailsData.favoriteComposer && (
                         <div className="p-4 bg-theme-secondary rounded-lg">
-                          <p className="text-xs text-theme-tertiary mb-2">
+                          <Text
+                            papel="legenda"
+                            tom="fraco"
+                            as="p"
+                            className="mb-2"
+                          >
                             Compositor Favorito
-                          </p>
+                          </Text>
                           <div className="flex items-center gap-3">
                             {detailsData.favoriteComposer.portraitUrl && (
                               <Image
@@ -424,9 +470,9 @@ export default function UserDetailsModal({
                                 {detailsData.favoriteComposer.name}
                               </p>
                               {detailsData.favoriteComposer.epochName && (
-                                <p className="text-sm text-theme-tertiary">
+                                <Text papel="rotulo" tom="fraco" as="p">
                                   {detailsData.favoriteComposer.epochName}
-                                </p>
+                                </Text>
                               )}
                             </div>
                           </div>
@@ -434,9 +480,14 @@ export default function UserDetailsModal({
                       )}
                       {detailsData.favoriteEpoch && (
                         <div className="p-4 bg-theme-secondary rounded-lg">
-                          <p className="text-xs text-theme-tertiary mb-2">
+                          <Text
+                            papel="legenda"
+                            tom="fraco"
+                            as="p"
+                            className="mb-2"
+                          >
                             Época Favorita
-                          </p>
+                          </Text>
                           <p className="font-bold text-theme-primary text-lg">
                             {detailsData.favoriteEpoch.name}
                           </p>
@@ -456,9 +507,9 @@ export default function UserDetailsModal({
                       <div className="text-3xl font-bold text-accent-green mb-1">
                         {formatNumber(detailsData.stats.totalAnnotations)}
                       </div>
-                      <div className="text-sm text-theme-tertiary">
+                      <Text papel="rotulo" tom="fraco" as="div">
                         Anotações
-                      </div>
+                      </Text>
                       <div className="text-xs text-accent-green mt-1">
                         {detailsData.stats.helpfulAnnotations} úteis
                       </div>
@@ -467,7 +518,9 @@ export default function UserDetailsModal({
                       <div className="text-3xl font-bold text-accent-purple mb-1">
                         {formatNumber(detailsData.stats.totalUploads)}
                       </div>
-                      <div className="text-sm text-theme-tertiary">Uploads</div>
+                      <Text papel="rotulo" tom="fraco" as="div">
+                        Uploads
+                      </Text>
                       <div className="text-xs text-accent-purple mt-1">
                         Score: {detailsData.stats.uploadScore}
                       </div>
@@ -476,17 +529,17 @@ export default function UserDetailsModal({
                       <div className="text-3xl font-bold text-accent-red mb-1">
                         {formatNumber(detailsData.stats.totalFavorites)}
                       </div>
-                      <div className="text-sm text-theme-tertiary">
+                      <Text papel="rotulo" tom="fraco" as="div">
                         Favoritos
-                      </div>
+                      </Text>
                     </div>
                     <div className="text-center p-4 bg-theme-secondary rounded-lg">
                       <div className="text-3xl font-bold text-accent-blue mb-1">
                         {detailsData.joinedDaysAgo}
                       </div>
-                      <div className="text-sm text-theme-tertiary">
+                      <Text papel="rotulo" tom="fraco" as="div">
                         Dias na plataforma
-                      </div>
+                      </Text>
                     </div>
                   </div>
                 </AnimatedCard>
@@ -523,9 +576,9 @@ export default function UserDetailsModal({
                               {fav.composer.name}
                             </p>
                             {fav.composer.epochName && (
-                              <p className="text-sm text-theme-tertiary">
+                              <Text papel="rotulo" tom="fraco" as="p">
                                 {fav.composer.epochName}
-                              </p>
+                              </Text>
                             )}
                           </div>
                         </div>
@@ -549,9 +602,9 @@ export default function UserDetailsModal({
                           <p className="font-medium text-theme-primary">
                             {fav.work.title}
                           </p>
-                          <p className="text-sm text-theme-tertiary">
+                          <Text papel="rotulo" tom="fraco" as="p">
                             {fav.work.composer.name}
-                          </p>
+                          </Text>
                         </div>
                       ))}
                     </div>
@@ -575,9 +628,9 @@ export default function UserDetailsModal({
                               <p className="font-medium text-theme-primary">
                                 {score.scoreTitle}
                               </p>
-                              <p className="text-sm text-theme-tertiary">
+                              <Text papel="rotulo" tom="fraco" as="p">
                                 {score.work.composer.name} - {score.work.title}
-                              </p>
+                              </Text>
                             </div>
                             {score.personalRating && (
                               <div className="flex items-center gap-1 text-accent-amber">
@@ -627,9 +680,9 @@ export default function UserDetailsModal({
                             <p className="font-medium text-theme-primary">
                               {item.work.title}
                             </p>
-                            <p className="text-sm text-theme-tertiary">
+                            <Text papel="rotulo" tom="fraco" as="p">
                               {item.work.composer.name}
-                            </p>
+                            </Text>
                           </div>
                           <div className="text-sm text-accent-amber font-medium">
                             Prioridade: {item.priority}
@@ -656,9 +709,9 @@ export default function UserDetailsModal({
                             <p className="font-medium text-theme-primary">
                               {item.work.title}
                             </p>
-                            <p className="text-sm text-theme-tertiary">
+                            <Text papel="rotulo" tom="fraco" as="p">
                               {item.work.composer.name}
-                            </p>
+                            </Text>
                           </div>
                           <div className="text-sm text-accent-green font-medium">
                             Maestria: {item.mastery}%
@@ -700,19 +753,19 @@ export default function UserDetailsModal({
                             <p className="font-bold text-theme-primary">
                               {annotation.title}
                             </p>
-                            <p className="text-sm text-theme-tertiary">
+                            <Text papel="rotulo" tom="fraco" as="p">
                               {annotation.work.composer.name} -{' '}
                               {annotation.work.title}
-                            </p>
+                            </Text>
                           </div>
                           <div className="text-accent-green font-medium text-sm">
                             {annotation.helpfulCount} úteis
                           </div>
                         </div>
-                        <p className="text-theme-primary text-sm">
+                        <Text papel="rotulo" tom="forte" as="p">
                           {annotation.content.substring(0, 150)}
                           {annotation.content.length > 150 && '...'}
-                        </p>
+                        </Text>
                       </div>
                     ))}
                   </div>
@@ -749,9 +802,14 @@ export default function UserDetailsModal({
                           )}
                         </div>
                         {inst.instrument.category && (
-                          <p className="text-sm text-theme-tertiary mb-1">
+                          <Text
+                            papel="rotulo"
+                            tom="fraco"
+                            as="p"
+                            className="mb-1"
+                          >
                             {inst.instrument.category}
-                          </p>
+                          </Text>
                         )}
                         <p className="text-sm font-medium text-accent-green">
                           Nível: {formatExperienceLevel(inst.level)}
@@ -799,10 +857,15 @@ export default function UserDetailsModal({
 
                       {detailsData.teacherProfile.students?.length > 0 && (
                         <div>
-                          <p className="text-sm font-medium text-theme-primary mb-3">
+                          <Text
+                            papel="rotulo"
+                            tom="forte"
+                            as="p"
+                            className="font-medium mb-3"
+                          >
                             Alunos ({detailsData.teacherProfile.students.length}
                             )
-                          </p>
+                          </Text>
                           <div className="space-y-2">
                             {detailsData.teacherProfile.students
                               .slice(0, 10)
@@ -815,9 +878,9 @@ export default function UserDetailsModal({
                                     {`${rel.student.user.firstName || ''} ${rel.student.user.lastName || ''}`.trim() ||
                                       'Aluno'}
                                   </p>
-                                  <p className="text-sm text-theme-tertiary">
+                                  <Text papel="rotulo" tom="fraco" as="p">
                                     {rel.student.user.email}
-                                  </p>
+                                  </Text>
                                 </div>
                               ))}
                           </div>
@@ -849,10 +912,15 @@ export default function UserDetailsModal({
                     <div className="space-y-4">
                       {detailsData.studentProfile.teachers?.length > 0 && (
                         <div>
-                          <p className="text-sm font-medium text-theme-primary mb-3">
+                          <Text
+                            papel="rotulo"
+                            tom="forte"
+                            as="p"
+                            className="font-medium mb-3"
+                          >
                             Professores (
                             {detailsData.studentProfile.teachers.length})
-                          </p>
+                          </Text>
                           <div className="space-y-2">
                             {detailsData.studentProfile.teachers.map(
                               (rel: any, idx: number) => (
@@ -864,9 +932,9 @@ export default function UserDetailsModal({
                                     {`${rel.teacher.user.firstName || ''} ${rel.teacher.user.lastName || ''}`.trim() ||
                                       'Professor'}
                                   </p>
-                                  <p className="text-sm text-theme-tertiary">
+                                  <Text papel="rotulo" tom="fraco" as="p">
                                     {rel.teacher.user.email}
-                                  </p>
+                                  </Text>
                                 </div>
                               )
                             )}
@@ -890,9 +958,9 @@ export default function UserDetailsModal({
                     <p className="text-theme-secondary text-lg mb-2">
                       Sem Perfis Especiais
                     </p>
-                    <p className="text-theme-tertiary text-sm">
+                    <Text papel="rotulo" tom="fraco" as="p">
                       Este usuário não possui perfis de professor ou estudante
-                    </p>
+                    </Text>
                   </div>
                 )}
               </div>

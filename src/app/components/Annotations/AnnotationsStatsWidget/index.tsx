@@ -20,6 +20,7 @@ import {
   AnimatedItem,
 } from '@/app/components/animation/AnimatedComponents';
 import { Inline } from '@/app/components/ui/Layout';
+import { Text } from '@/app/components/ui/Text';
 
 interface AnnotationsStatsWidgetProps {
   stats: any;
@@ -137,13 +138,17 @@ export default function AnnotationsStatsWidget({
                       </div>
                       <div className="flex-1">
                         <div className="flex items-center justify-between mb-1">
-                          <span className="text-sm font-medium text-theme-primary">
+                          <Text
+                            papel="rotulo"
+                            tom="forte"
+                            className="font-medium"
+                          >
                             {config?.label || category.category}
-                          </span>
-                          <span className="text-sm text-theme-secondary">
+                          </Text>
+                          <Text papel="rotulo" tom="suave">
                             {category._count.category} ({percentage.toFixed(0)}
                             %)
-                          </span>
+                          </Text>
                         </div>
                         <div className="w-full bg-theme-elevated border border-theme-primary/20 rounded-full h-1.5">
                           <div
@@ -206,13 +211,18 @@ export default function AnnotationsStatsWidget({
                         )}
                       </Inline>
                       <div className="flex-1 min-w-0">
-                        <div className="font-medium text-theme-primary text-sm truncate group-hover:text-brand-primary transition-colors">
+                        <Text
+                          papel="rotulo"
+                          tom="forte"
+                          as="div"
+                          className="font-medium truncate group-hover:text-brand-primary transition-colors"
+                        >
                           {annotation.title}
-                        </div>
-                        <div className="text-xs text-theme-tertiary">
+                        </Text>
+                        <Text papel="legenda" tom="fraco" as="div">
                           {annotation.work.title} -{' '}
                           {annotation.work.composer.name}
-                        </div>
+                        </Text>
                         <Inline
                           gap={3}
                           className="text-xs text-theme-tertiary mt-1"
@@ -262,21 +272,31 @@ export default function AnnotationsStatsWidget({
                   >
                     <div className="flex items-center justify-between">
                       <div className="flex-1 min-w-0">
-                        <div className="font-medium text-theme-primary text-sm truncate group-hover:text-brand-primary transition-colors">
+                        <Text
+                          papel="rotulo"
+                          tom="forte"
+                          as="div"
+                          className="font-medium truncate group-hover:text-brand-primary transition-colors"
+                        >
                           {work.title}
-                        </div>
-                        <div className="text-xs text-theme-tertiary">
+                        </Text>
+                        <Text papel="legenda" tom="fraco" as="div">
                           {work.composer.fullName}
-                        </div>
+                        </Text>
                         {work.opOrCatalog && (
-                          <div className="text-xs text-theme-tertiary">
+                          <Text papel="legenda" tom="fraco" as="div">
                             {work.opOrCatalog}
-                          </div>
+                          </Text>
                         )}
                       </div>
-                      <div className="text-sm font-bold text-brand-primary">
+                      <Text
+                        papel="rotulo"
+                        tom="ouro"
+                        as="div"
+                        className="font-bold"
+                      >
                         {work.annotationsCount}
-                      </div>
+                      </Text>
                     </div>
                   </Link>
                 </AnimatedItem>
@@ -297,7 +317,7 @@ export default function AnnotationsStatsWidget({
             <PiBookOpen className="w-4 h-4" />
             <span>Dicas para Anotar</span>
           </Inline>
-          <div className="space-y-3 text-sm text-theme-secondary">
+          <Text papel="rotulo" tom="suave" as="div" className="space-y-3">
             <p>
               🎯 <strong>Seja específico</strong> - Indique compassos, mãos ou
               seções exatas.
@@ -314,7 +334,7 @@ export default function AnnotationsStatsWidget({
               🌍 <strong>Torne público</strong> - Ajude outros músicos com seu
               conhecimento.
             </p>
-          </div>
+          </Text>
         </div>
       </AnimatedCard>
 
@@ -328,10 +348,10 @@ export default function AnnotationsStatsWidget({
             <h4 className="font-semibold text-theme-primary mb-2">
               Continue Anotando!
             </h4>
-            <p className="text-sm text-theme-secondary mb-4">
+            <Text papel="rotulo" tom="suave" as="p" className="mb-4">
               Você tem apenas {totalAnnotations} anotações. Que tal criar mais
               algumas?
-            </p>
+            </Text>
             <Link
               href="/works"
               className="inline-flex items-center space-x-2 text-sm text-brand-primary hover:text-brand-secondary font-medium transition-colors"

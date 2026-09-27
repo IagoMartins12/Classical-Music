@@ -19,6 +19,7 @@ import {
   MetricCard,
 } from '@/app/components/Admin/Charts/AdminCharts';
 import { Inline } from '@/app/components/ui/Layout';
+import { Text } from '@/app/components/ui/Text';
 
 interface CampaignStatsModalProps {
   campaign: any;
@@ -515,9 +516,9 @@ export function CampaignStatsModal({
                     ).toFixed(1)}
                     %
                   </div>
-                  <div className="text-sm text-theme-tertiary">
+                  <Text papel="rotulo" tom="fraco" as="div">
                     Taxa de Abertura
-                  </div>
+                  </Text>
                   <div
                     className={`text-xs mt-1 ${
                       rates.openRate > 20
@@ -539,9 +540,9 @@ export function CampaignStatsModal({
                     ).toFixed(1)}
                     %
                   </div>
-                  <div className="text-sm text-theme-tertiary">
+                  <Text papel="rotulo" tom="fraco" as="div">
                     Taxa de Clique
-                  </div>
+                  </Text>
                   <div
                     className={`text-xs mt-1 ${
                       rates.clickRate > 2.5
@@ -563,12 +564,12 @@ export function CampaignStatsModal({
                         )
                       : 0}
                   </div>
-                  <div className="text-sm text-theme-tertiary">
+                  <Text papel="rotulo" tom="fraco" as="div">
                     Engajamento Total
-                  </div>
-                  <div className="text-xs text-theme-tertiary mt-1">
+                  </Text>
+                  <Text papel="legenda" tom="fraco" as="div" className="mt-1">
                     Aberturas + Cliques
-                  </div>
+                  </Text>
                 </div>
 
                 <div className="bg-theme-secondary p-4 rounded-lg text-center">
@@ -578,10 +579,12 @@ export function CampaignStatsModal({
                       : 0}
                     %
                   </div>
-                  <div className="text-sm text-theme-tertiary">CTR</div>
-                  <div className="text-xs text-theme-tertiary mt-1">
+                  <Text papel="rotulo" tom="fraco" as="div">
+                    CTR
+                  </Text>
+                  <Text papel="legenda" tom="fraco" as="div" className="mt-1">
                     Click-through Rate
-                  </div>
+                  </Text>
                 </div>
               </div>
 
@@ -681,23 +684,28 @@ export function CampaignStatsModal({
                               <h4 className="font-semibold text-theme-primary">
                                 {event.title}
                               </h4>
-                              <span className="text-xs text-theme-tertiary">
+                              <Text papel="legenda" tom="fraco">
                                 {new Date(event.timestamp).toLocaleString(
                                   'pt-BR'
                                 )}
-                              </span>
+                              </Text>
                             </div>
-                            <p className="text-sm text-theme-secondary">
+                            <Text papel="rotulo" tom="suave" as="p">
                               {event.description}
-                            </p>
+                            </Text>
 
                             {/* Dados específicos baseados no tipo de evento */}
                             {event.type === 'SENT' && (
-                              <div className="mt-2 flex space-x-4 text-xs text-theme-tertiary">
+                              <Text
+                                papel="legenda"
+                                tom="fraco"
+                                as="div"
+                                className="mt-2 flex space-x-4"
+                              >
                                 <span>📧 {stats.sent} enviados</span>
                                 <span>✅ {stats.delivered} entregues</span>
                                 <span>📖 {stats.opened} abertos</span>
-                              </div>
+                              </Text>
                             )}
 
                             {event.type === 'MILESTONE_OPENS' && (
@@ -733,27 +741,27 @@ export function CampaignStatsModal({
                       : 0}{' '}
                     dias
                   </div>
-                  <div className="text-sm text-theme-tertiary">
+                  <Text papel="rotulo" tom="fraco" as="div">
                     Desde o Envio
-                  </div>
+                  </Text>
                 </div>
 
                 <div className="bg-theme-secondary p-4 rounded-lg text-center">
                   <div className="text-lg font-bold text-theme-primary">
                     {timelineData.length}
                   </div>
-                  <div className="text-sm text-theme-tertiary">
+                  <Text papel="rotulo" tom="fraco" as="div">
                     Eventos Registrados
-                  </div>
+                  </Text>
                 </div>
 
                 <div className="bg-theme-secondary p-4 rounded-lg text-center">
                   <div className="text-lg font-bold text-theme-primary">
                     {campaign.sentAt && stats.opened > 0 ? '15min' : 'N/A'}
                   </div>
-                  <div className="text-sm text-theme-tertiary">
+                  <Text papel="rotulo" tom="fraco" as="div">
                     Primeira Abertura
-                  </div>
+                  </Text>
                 </div>
               </div>
             </div>

@@ -30,6 +30,7 @@ import {
 } from '../../../components/animation/AnimatedComponents';
 import { useTranslation } from '@/app/context/TranslationContext';
 import { Inline } from '@/app/components/ui/Layout';
+import { Text } from '@/app/components/ui/Text';
 
 interface PrivacySection {
   id: string;
@@ -273,15 +274,20 @@ export default function PrivacyPage() {
                         <h3 className="text-lg font-semibold classical-title text-theme-primary mb-2">
                           {dataType.title}
                         </h3>
-                        <p className="text-theme-secondary text-sm mb-3">
+                        <Text
+                          papel="rotulo"
+                          tom="suave"
+                          as="p"
+                          className="mb-3"
+                        >
                           {dataType.description}
-                        </p>
-                        <div className="text-xs text-theme-tertiary">
+                        </Text>
+                        <Text papel="legenda" tom="fraco" as="div">
                           <span className="font-medium">
                             {t('privacy_jsx_span_children_0__retenção')}
                           </span>{' '}
                           {dataType.retention}
-                        </div>
+                        </Text>
                       </div>
                     </div>
                   </AnimatedCard>

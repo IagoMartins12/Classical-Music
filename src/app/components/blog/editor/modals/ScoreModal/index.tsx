@@ -13,6 +13,7 @@ import SimpleWorkSearchInput from '@/app/components/SimpleWorkSearchInput';
 import ComposerSearchInputSimple from '@/app/components/ComposerSearchInputSimple';
 import Image from '@/app/components/SmartImage';
 import { workScoresRequest } from '@/app/requests/work-scores';
+import { Text } from '@/app/components/ui/Text';
 
 interface ScoreModalProps {
   editor: Editor;
@@ -112,9 +113,9 @@ export function ScoreModal({ editor, onClose }: ScoreModalProps) {
             </label>
 
             {loading ? (
-              <p className="text-sm text-theme-tertiary">
+              <Text papel="rotulo" tom="fraco" as="p">
                 Carregando partituras...
-              </p>
+              </Text>
             ) : scores.length > 0 ? (
               <div className="space-y-2 max-h-60 overflow-y-auto">
                 {scores.map((score: any) => (
@@ -132,9 +133,9 @@ export function ScoreModal({ editor, onClose }: ScoreModalProps) {
                       <div className="font-medium text-theme-primary">
                         {score.title}
                       </div>
-                      <div className="text-sm text-theme-secondary">
+                      <Text papel="rotulo" tom="suave" as="div">
                         {score.type} • {score.pageCount} páginas
-                      </div>
+                      </Text>
                     </div>
                     <div>
                       <Image
@@ -148,9 +149,9 @@ export function ScoreModal({ editor, onClose }: ScoreModalProps) {
                 ))}
               </div>
             ) : (
-              <p className="text-sm text-theme-secondary">
+              <Text papel="rotulo" tom="suave" as="p">
                 Nenhuma partitura encontrada
-              </p>
+              </Text>
             )}
           </div>
         )}

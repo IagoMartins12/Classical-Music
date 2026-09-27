@@ -32,6 +32,7 @@ import {
 } from '@/app/components/animation/AnimatedComponents';
 import { loadSchoolActivities } from '@/app/requests/portal/school-activities';
 import { Inline } from '@/app/components/ui/Layout';
+import { Text } from '@/app/components/ui/Text';
 
 interface Activity {
   id: string;
@@ -213,21 +214,21 @@ const RecentActivities = ({
 
     if (typeof change === 'object' && 'from' in change && 'to' in change) {
       return (
-        <div className="text-xs text-theme-tertiary mt-1">
+        <Text papel="legenda" tom="fraco" as="div" className="mt-1">
           <span className="font-medium">{firstField}:</span>{' '}
           {String(change.from)} → {String(change.to)}
           {changedFields.length > 1 &&
             ` (+${changedFields.length - 1} alterações)`}
-        </div>
+        </Text>
       );
     }
 
     return (
-      <div className="text-xs text-theme-tertiary mt-1">
+      <Text papel="legenda" tom="fraco" as="div" className="mt-1">
         {changedFields.length === 1
           ? '1 campo alterado'
           : `${changedFields.length} campos alterados`}
-      </div>
+      </Text>
     );
   };
 
@@ -253,7 +254,9 @@ const RecentActivities = ({
               <h3 className="font-bold text-theme-primary">
                 Atividades Recentes
               </h3>
-              <p className="text-xs text-theme-tertiary">Erro ao carregar</p>
+              <Text papel="legenda" tom="fraco" as="p">
+                Erro ao carregar
+              </Text>
             </div>
           </Inline>
           <button
@@ -265,7 +268,9 @@ const RecentActivities = ({
         </div>
 
         <div className="text-center py-4">
-          <p className="text-sm text-theme-secondary">{error}</p>
+          <Text papel="rotulo" tom="suave" as="p">
+            {error}
+          </Text>
           <button
             onClick={fetchRecentActivities}
             className="mt-2 text-sm text-accent-blue hover:text-accent-purple transition-colors"
@@ -288,9 +293,9 @@ const RecentActivities = ({
             <h3 className="font-bold text-theme-primary">
               Atividades Recentes
             </h3>
-            <p className="text-xs text-theme-tertiary">
+            <Text papel="legenda" tom="fraco" as="p">
               {activities.length > 0 ? 'Últimos 7 dias' : 'Nenhuma atividade'}
-            </p>
+            </Text>
           </div>
         </Inline>
 
@@ -323,12 +328,12 @@ const RecentActivities = ({
         {activities.length === 0 ? (
           <div className="text-center py-6">
             <PiPulse className="w-12 h-12 text-theme-tertiary mx-auto mb-2" />
-            <p className="text-sm text-theme-tertiary">
+            <Text papel="rotulo" tom="fraco" as="p">
               Nenhuma atividade nos últimos 7 dias
-            </p>
-            <p className="text-xs text-theme-tertiary mt-1">
+            </Text>
+            <Text papel="legenda" tom="fraco" as="p" className="mt-1">
               Suas ações aparecerão aqui
-            </p>
+            </Text>
           </div>
         ) : (
           activities.map((activity, index) => (
@@ -359,9 +364,9 @@ const RecentActivities = ({
                           >
                             {getActionLabel(activity.action)}
                           </span>
-                          <span className="text-xs text-theme-tertiary">
+                          <Text papel="legenda" tom="fraco">
                             {activity.timeAgo}
-                          </span>
+                          </Text>
                         </Inline>
 
                         <h4 className="text-sm font-medium text-theme-primary line-clamp-1 group-hover:text-brand-primary transition-colors">
@@ -369,9 +374,14 @@ const RecentActivities = ({
                         </h4>
 
                         {activity.description && (
-                          <p className="text-xs text-theme-secondary mt-1 line-clamp-2">
+                          <Text
+                            papel="legenda"
+                            tom="suave"
+                            as="p"
+                            className="mt-1 line-clamp-2"
+                          >
                             {activity.description}
-                          </p>
+                          </Text>
                         )}
 
                         {/* Mostrar mudanças se existirem */}
@@ -380,9 +390,14 @@ const RecentActivities = ({
                         {/* Nome da entidade se existir */}
                         {activity.entityDisplayName &&
                           activity.entityDisplayName !== activity.title && (
-                            <div className="text-xs text-theme-tertiary mt-1">
+                            <Text
+                              papel="legenda"
+                              tom="fraco"
+                              as="div"
+                              className="mt-1"
+                            >
                               {activity.entityDisplayName}
-                            </div>
+                            </Text>
                           )}
                       </div>
 

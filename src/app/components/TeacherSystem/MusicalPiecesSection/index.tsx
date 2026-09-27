@@ -10,6 +10,7 @@ import {
 } from 'react-icons/pi';
 import { AnimatedCard, AnimatedItem } from '../../animation/AnimatedComponents';
 import { Inline } from '@/app/components/ui/Layout';
+import { Text } from '@/app/components/ui/Text';
 
 interface WorkScore {
   id: string;
@@ -90,9 +91,13 @@ export default function MusicalPiecesSection({
                         {workScore.workTitle}
                       </h4>
                       {showIndex && (
-                        <span className="text-xs bg-theme-secondary/20 text-theme-secondary px-2 py-0.5 rounded">
+                        <Text
+                          papel="legenda"
+                          tom="suave"
+                          className="bg-theme-secondary/20 px-2 py-0.5 rounded"
+                        >
                           #{index + 1}
-                        </span>
+                        </Text>
                       )}
                     </Inline>
 
@@ -121,7 +126,12 @@ export default function MusicalPiecesSection({
                       </div>
 
                       {/* Informações da Partitura */}
-                      <div className="text-xs text-theme-tertiary space-y-1">
+                      <Text
+                        papel="legenda"
+                        tom="fraco"
+                        as="div"
+                        className="space-y-1"
+                      >
                         <div>
                           <span className="font-medium">Partitura:</span>{' '}
                           {workScore.title}
@@ -130,7 +140,7 @@ export default function MusicalPiecesSection({
                           <span className="font-medium">Tipo:</span>{' '}
                           {workScore.type}
                         </div>
-                      </div>
+                      </Text>
                     </div>
                   </div>
                 </div>

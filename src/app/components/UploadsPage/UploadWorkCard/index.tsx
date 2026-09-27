@@ -17,6 +17,7 @@ import ConfirmDeleteUploadModal from '../../ConfirmDeleteUploadModal';
 import Link from 'next/link';
 import { useTranslation } from '@/app/context/TranslationContext';
 import { Inline, Stack } from '@/app/components/ui/Layout';
+import { Text } from '@/app/components/ui/Text';
 
 interface UploadWorkCardProps {
   item: UserUpload;
@@ -85,18 +86,26 @@ const UploadWorkCard = ({
 
                 {/* Instrument */}
                 {item.instrumentName && (
-                  <span className="inline-flex items-center text-xs text-theme-tertiary">
+                  <Text
+                    papel="legenda"
+                    tom="fraco"
+                    className="inline-flex items-center"
+                  >
                     <PiMusicNotes className="w-3 h-3 mr-1" />
                     {item.instrumentName}
-                  </span>
+                  </Text>
                 )}
 
                 {/* Epoch */}
                 {item.epochName && (
-                  <span className="inline-flex items-center text-xs text-brand-primary font-medium">
+                  <Text
+                    papel="legenda"
+                    tom="ouro"
+                    className="inline-flex items-center font-medium"
+                  >
                     <PiMusicNotes className="w-3 h-3 mr-1" />
                     {item.epochName}
-                  </span>
+                  </Text>
                 )}
 
                 {/* Status badges */}
@@ -216,9 +225,9 @@ const UploadWorkCard = ({
               {item.instrumentName && (
                 <div className="flex items-center">
                   <PiMusicNotes className="w-4 h-4 text-brand-primary mr-2 flex-shrink-0" />
-                  <span className="text-sm text-theme-secondary">
+                  <Text papel="rotulo" tom="suave">
                     {item.instrumentName}
-                  </span>
+                  </Text>
                 </div>
               )}
 
@@ -226,9 +235,9 @@ const UploadWorkCard = ({
               {item.epochName && (
                 <div className="flex items-center">
                   <PiMusicNotes className="w-4 h-4 text-brand-secondary mr-2 flex-shrink-0" />
-                  <span className="text-sm text-theme-secondary">
+                  <Text papel="rotulo" tom="suave">
                     {item.epochName}
-                  </span>
+                  </Text>
                 </div>
               )}
 
@@ -236,11 +245,11 @@ const UploadWorkCard = ({
               {item.workGenres && item.workGenres.length > 0 && (
                 <div className="flex items-center">
                   <PiBookOpen className="w-4 h-4 text-brand-secondary mr-2 flex-shrink-0" />
-                  <span className="text-sm text-theme-secondary capitalize">
+                  <Text papel="rotulo" tom="suave" className="capitalize">
                     {item.workGenres.slice(0, 2).join(', ')}
                     {item.workGenres.length > 2 &&
                       ` +${item.workGenres.length - 2} mais`}
-                  </span>
+                  </Text>
                 </div>
               )}
             </div>
@@ -248,10 +257,14 @@ const UploadWorkCard = ({
             {/* Badges */}
             <div className="flex flex-wrap gap-2 mb-4">
               {item.epochName && (
-                <span className="inline-flex items-center px-2 py-1 bg-brand-primary/10 border border-brand-primary/30 text-brand-primary rounded-full text-xs font-medium">
+                <Text
+                  papel="legenda"
+                  tom="ouro"
+                  className="inline-flex items-center px-2 py-1 bg-brand-primary/10 border border-brand-primary/30 rounded-full font-medium"
+                >
                   <PiClock className="w-2.5 h-2.5 mr-1" />
                   {item.epochName}
-                </span>
+                </Text>
               )}
 
               {item.isIMSLP && (

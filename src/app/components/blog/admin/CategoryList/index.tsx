@@ -23,6 +23,7 @@ import { toast } from 'react-hot-toast';
 import Modal from '@/app/components/Modal';
 import Button from '@/app/components/Common/Button';
 import { Inline } from '@/app/components/ui/Layout';
+import { Text } from '@/app/components/ui/Text';
 
 interface Category {
   id: string;
@@ -206,14 +207,19 @@ export function CategoryList({
       <div className="classical-card overflow-hidden">
         {/* Table Header */}
         <div className="bg-theme-elevated border-b border-theme-secondary px-6 py-4">
-          <div className="grid grid-cols-12 gap-4 font-semibold text-sm text-theme-tertiary">
+          <Text
+            papel="rotulo"
+            tom="fraco"
+            as="div"
+            className="grid grid-cols-12 gap-4 font-semibold"
+          >
             <div className="col-span-1"></div>
             <div className="col-span-4">Categoria</div>
             <div className="col-span-2">Slug</div>
             <div className="col-span-1 text-center">Artigos</div>
             <div className="col-span-1 text-center">Status</div>
             <div className="col-span-3 text-right">Ações</div>
-          </div>
+          </Text>
         </div>
 
         {categories.map((category, index) => (
@@ -269,9 +275,9 @@ export function CategoryList({
                   {category.name}
                 </h3>
                 {category.description && (
-                  <p className="text-sm text-theme-tertiary truncate">
+                  <Text papel="rotulo" tom="fraco" as="p" className="truncate">
                     {category.description}
-                  </p>
+                  </Text>
                 )}
               </div>
             </Inline>
@@ -283,9 +289,13 @@ export function CategoryList({
             </div>
             {/* Article Count */}
             <div className="col-span-1 text-center">
-              <span className="inline-flex items-center justify-center px-3 py-1 rounded-full bg-theme-elevated text-sm font-medium text-theme-primary">
+              <Text
+                papel="rotulo"
+                tom="forte"
+                className="inline-flex items-center justify-center px-3 py-1 rounded-full bg-theme-elevated font-medium"
+              >
                 {category._count.articles}
-              </span>
+              </Text>
             </div>
             {/* Status */}
             <div className="col-span-1 text-center">

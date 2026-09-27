@@ -10,6 +10,7 @@ import { ArticleCard } from '@/app/components/blog/ArticleCard';
 import { ArticleCardList } from '@/app/components/blog/ArticleCardList';
 import { SearchFilters } from '@/app/components/blog/SearchFilters';
 import { SortSelector } from '@/app/components/blog/SortSelector';
+import { Text } from '@/app/components/ui/Text';
 
 interface Article {
   id: string;
@@ -153,11 +154,11 @@ export function SearchResults({
       <div className="lg:col-span-3">
         {/* Toolbar com Sort e View Mode */}
         <div className="flex items-center justify-between mb-6">
-          <p className="text-sm text-theme-tertiary">
+          <Text papel="rotulo" tom="fraco" as="p">
             Mostrando {(pagination.page - 1) * pagination.limit + 1} -{' '}
             {Math.min(pagination.page * pagination.limit, pagination.total)} de{' '}
             {pagination.total}
-          </p>
+          </Text>
 
           <div className="flex items-center gap-4">
             <SortSelector

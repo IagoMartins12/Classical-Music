@@ -18,6 +18,7 @@ import ConfirmationModal from './ConfirmationModal';
 import { ModelSchema, ModelField } from '@/app/hooks/admin/useDatabaseStudio';
 import { CONFIRMATION_KEYWORD } from './confirmations';
 import { Inline } from '@/app/components/ui/Layout';
+import { Text } from '@/app/components/ui/Text';
 
 interface RecordEditorModalProps {
   isOpen: boolean;
@@ -239,9 +240,9 @@ export default function RecordEditorModal({
               checked={value || false}
               onChange={(e) => handleChange(e.target.checked)}
             />
-            <span className="text-sm text-theme-secondary">
+            <Text papel="rotulo" tom="suave">
               {value ? 'Sim' : 'Não'}
-            </span>
+            </Text>
           </Inline>
         )}
 
@@ -331,11 +332,11 @@ export default function RecordEditorModal({
           </Inline>
         )}
 
-        <p className="text-xs text-theme-tertiary">
+        <Text papel="legenda" tom="fraco" as="p">
           Tipo: {field.type}
           {field.relationTo && ` → ${field.relationTo}`}
           {field.isList && '[]'}
-        </p>
+        </Text>
       </div>
     );
   };
@@ -356,9 +357,9 @@ export default function RecordEditorModal({
                 <h2 className="text-2xl font-bold text-theme-primary">
                   {record ? 'Editar Registro' : 'Novo Registro'}
                 </h2>
-                <p className="text-sm text-theme-secondary mt-1">
+                <Text papel="rotulo" tom="suave" as="p" className="mt-1">
                   {modelName} {record && `• ID: ${record.id}`}
-                </p>
+                </Text>
               </div>
               <button
                 onClick={onClose}
@@ -383,7 +384,7 @@ export default function RecordEditorModal({
 
           {/* Footer */}
           <div className="p-6 border-t border-theme-primary flex items-center justify-between">
-            <div className="text-sm text-theme-tertiary">
+            <Text papel="rotulo" tom="fraco" as="div">
               {Object.keys(errors).length > 0 && (
                 <Inline as="span" gap={2} className="text-accent-red">
                   <PiWarningCircle />
@@ -392,7 +393,7 @@ export default function RecordEditorModal({
                   </span>
                 </Inline>
               )}
-            </div>
+            </Text>
 
             <Inline gap={3}>
               <Button variant="ghost" onClick={onClose}>

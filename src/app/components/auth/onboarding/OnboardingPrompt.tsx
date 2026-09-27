@@ -8,6 +8,7 @@ import { useUser } from '@/app/hooks/userStore';
 import { useTranslation } from '@/app/context/TranslationContext';
 import Button from '../../Common/Button';
 import { Inline } from '@/app/components/ui/Layout';
+import { Text } from '@/app/components/ui/Text';
 
 const OnboardingPrompt = () => {
   const user = useUser();
@@ -41,15 +42,15 @@ const OnboardingPrompt = () => {
           <h4 className="font-semibold text-theme-primary mb-1">
             {t('prompt_title')}
           </h4>
-          <p className="text-sm text-theme-secondary mb-3">
+          <Text papel="rotulo" tom="suave" as="p" className="mb-3">
             {t('prompt_description')}
-          </p>
+          </Text>
 
           <div className="mb-8">
             <div className="flex items-center justify-between mb-4">
-              <span className="text-sm text-theme-tertiary">
+              <Text papel="rotulo" tom="fraco">
                 {t('prompt_step_of')} {step} {t('onboarding_modal_step_of')} 6
-              </span>
+              </Text>
             </div>
 
             <div className="w-full bg-theme-secondary rounded-full h-2">

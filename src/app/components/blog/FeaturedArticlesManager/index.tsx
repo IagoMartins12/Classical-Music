@@ -8,6 +8,7 @@ import {
   reorderFeaturedArticles,
 } from '@/app/requests/blog/admin-actions';
 import { Inline } from '@/app/components/ui/Layout';
+import { Text } from '@/app/components/ui/Text';
 
 interface FeaturedArticle {
   id: string;
@@ -172,9 +173,9 @@ export default function FeaturedArticlesManager({
           <PiStarFill className="w-4 h-4 mr-2 text-yellow-500" />
           Artigos em Destaque
         </h3>
-        <span className="text-xs text-theme-tertiary">
+        <Text papel="legenda" tom="fraco">
           {displayArticles.length} / 5 destaques
-        </span>
+        </Text>
       </div>
 
       {/* Toggle para marcar como destaque */}
@@ -191,9 +192,9 @@ export default function FeaturedArticlesManager({
           disabled={!isFeatured && displayArticles.length >= 5}
         />
         <div className="flex-1">
-          <span className="text-sm font-medium text-theme-primary">
+          <Text papel="rotulo" tom="forte" className="font-medium">
             Marcar como destaque
-          </span>
+          </Text>
           {!isFeatured && displayArticles.length >= 5 && (
             <p className="text-xs text-red-600 mt-1">
               Máximo de 5 destaques atingido. Remova um para adicionar.
@@ -205,9 +206,9 @@ export default function FeaturedArticlesManager({
       {/* Lista de destaques atuais */}
       {displayArticles.length > 0 && (
         <div className="space-y-2">
-          <p className="text-xs font-medium text-theme-tertiary mb-2">
+          <Text papel="legenda" tom="fraco" as="p" className="font-medium mb-2">
             Ordem atual dos destaques:
-          </p>
+          </Text>
           {displayArticles.map((article, index) => {
             const isCurrentArticle =
               article.id === currentArticleId || article.id === 'new-article';
@@ -222,9 +223,13 @@ export default function FeaturedArticlesManager({
                 }`}
               >
                 <Inline gap={3} className="flex-1">
-                  <span className="text-xs font-bold text-theme-tertiary min-w-[20px]">
+                  <Text
+                    papel="legenda"
+                    tom="fraco"
+                    className="font-bold min-w-[20px]"
+                  >
                     #{index + 1}
-                  </span>
+                  </Text>
                   <span
                     className={`text-sm ${isCurrentArticle ? 'font-semibold text-brand-primary' : 'text-theme-secondary'}`}
                   >
@@ -271,9 +276,9 @@ export default function FeaturedArticlesManager({
       )}
 
       {displayArticles.length === 0 && (
-        <p className="text-sm text-theme-tertiary text-center py-4">
+        <Text papel="rotulo" tom="fraco" as="p" className="text-center py-4">
           Nenhum artigo em destaque no momento.
-        </p>
+        </Text>
       )}
     </div>
   );

@@ -13,6 +13,7 @@ import {
   PiX,
 } from 'react-icons/pi';
 import { useTranslation } from '@/app/context/TranslationContext';
+import { Text } from '@/app/components/ui/Text';
 
 interface ScorePreviewProps {
   score: IMSLPScore & {
@@ -265,9 +266,9 @@ const ScorePreview = React.memo(({ score }: ScorePreviewProps) => {
                   {formatRating(score.rating)}
                 </span>
                 {score.ratingsCount && (
-                  <span className="text-theme-tertiary text-xs">
+                  <Text papel="legenda" tom="fraco">
                     ({score.ratingsCount})
-                  </span>
+                  </Text>
                 )}
               </div>
             </div>
@@ -319,23 +320,39 @@ const ScorePreview = React.memo(({ score }: ScorePreviewProps) => {
           <div className="mt-4 pt-4 border-t border-gray-100 dark:border-gray-700 space-y-3">
             {score.copyright && (
               <div>
-                <span className="text-theme-tertiary font-medium block mb-1 text-xs">
+                <Text
+                  papel="legenda"
+                  tom="fraco"
+                  className="font-medium block mb-1"
+                >
                   Copyright
-                </span>
-                <span className="text-theme-secondary text-xs leading-relaxed block">
+                </Text>
+                <Text
+                  papel="legenda"
+                  tom="suave"
+                  className="leading-relaxed block"
+                >
                   {score.copyright}
-                </span>
+                </Text>
               </div>
             )}
 
             {score.notes && (
               <div>
-                <span className="text-theme-tertiary font-medium block mb-1 text-xs">
+                <Text
+                  papel="legenda"
+                  tom="fraco"
+                  className="font-medium block mb-1"
+                >
                   Notas
-                </span>
-                <span className="text-theme-secondary text-xs leading-relaxed block">
+                </Text>
+                <Text
+                  papel="legenda"
+                  tom="suave"
+                  className="leading-relaxed block"
+                >
                   {score.notes}
-                </span>
+                </Text>
               </div>
             )}
           </div>

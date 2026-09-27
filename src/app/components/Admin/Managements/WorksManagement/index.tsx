@@ -47,6 +47,7 @@ import { getPeriodLabel } from '@/app/utils/adminUtils';
 import PeriodSelector from '../../Common/PeriodSelector';
 import LoadingAdminState from '../../Common/LoadingState';
 import { Inline } from '@/app/components/ui/Layout';
+import { Text } from '@/app/components/ui/Text';
 
 interface WorkFilters {
   search: string;
@@ -392,16 +393,26 @@ export default function WorksManagement() {
                         key={work.id}
                         className="p-3 bg-theme-secondary rounded-xl"
                       >
-                        <div className="w-8 h-8 bg-gradient-to-br from-accent-amber to-accent-red rounded-lg flex items-center justify-center text-sm font-bold text-theme-primary">
+                        <Text
+                          papel="rotulo"
+                          tom="forte"
+                          as="div"
+                          className="w-8 h-8 bg-gradient-to-br from-accent-amber to-accent-red rounded-lg flex items-center justify-center font-bold"
+                        >
                           {index + 1}
-                        </div>
+                        </Text>
                         <div className="flex-1 min-w-0">
                           <p className="font-medium text-theme-primary truncate">
                             {work.title}
                           </p>
-                          <p className="text-sm text-theme-tertiary truncate">
+                          <Text
+                            papel="rotulo"
+                            tom="fraco"
+                            as="p"
+                            className="truncate"
+                          >
                             {work.composer} • {work.favoritesCount} favoritos
-                          </p>
+                          </Text>
                         </div>
                         <Button
                           variant="ghost"
@@ -435,17 +446,27 @@ export default function WorksManagement() {
                         key={work.id}
                         className="p-3 bg-theme-secondary rounded-xl"
                       >
-                        <div className="w-8 h-8 bg-gradient-to-br from-accent-blue to-accent-purple rounded-lg flex items-center justify-center text-sm font-bold text-theme-primary">
+                        <Text
+                          papel="rotulo"
+                          tom="forte"
+                          as="div"
+                          className="w-8 h-8 bg-gradient-to-br from-accent-blue to-accent-purple rounded-lg flex items-center justify-center font-bold"
+                        >
                           {index + 1}
-                        </div>
+                        </Text>
                         <div className="flex-1 min-w-0">
                           <p className="font-medium text-theme-primary truncate">
                             {work.title}
                           </p>
-                          <p className="text-sm text-theme-tertiary truncate">
+                          <Text
+                            papel="rotulo"
+                            tom="fraco"
+                            as="p"
+                            className="truncate"
+                          >
                             {work.composer} • {work.wantToLearnCount} querem
                             aprender
-                          </p>
+                          </Text>
                         </div>
                         <Button
                           variant="ghost"
@@ -479,16 +500,26 @@ export default function WorksManagement() {
                         key={work.id}
                         className="p-3 bg-theme-secondary rounded-xl"
                       >
-                        <div className="w-8 h-8 bg-gradient-to-br from-accent-green to-accent-blue rounded-lg flex items-center justify-center text-sm font-bold text-theme-primary">
+                        <Text
+                          papel="rotulo"
+                          tom="forte"
+                          as="div"
+                          className="w-8 h-8 bg-gradient-to-br from-accent-green to-accent-blue rounded-lg flex items-center justify-center font-bold"
+                        >
                           {index + 1}
-                        </div>
+                        </Text>
                         <div className="flex-1 min-w-0">
                           <p className="font-medium text-theme-primary truncate">
                             {work.title}
                           </p>
-                          <p className="text-sm text-theme-tertiary truncate">
+                          <Text
+                            papel="rotulo"
+                            tom="fraco"
+                            as="p"
+                            className="truncate"
+                          >
                             {work.composer} • {work.learnedCount} aprenderam
-                          </p>
+                          </Text>
                         </div>
                         <Button
                           variant="ghost"
@@ -794,9 +825,13 @@ export default function WorksManagement() {
                           {work.title}
                         </h4>
                         {work.opOrCatalog && (
-                          <span className="text-sm text-theme-tertiary bg-theme-primary/20 px-2 py-1 rounded">
+                          <Text
+                            papel="rotulo"
+                            tom="fraco"
+                            className="bg-theme-primary/20 px-2 py-1 rounded"
+                          >
                             {work.opOrCatalog}
-                          </span>
+                          </Text>
                         )}
                         {work.difficultyLevel && (
                           <span
@@ -834,7 +869,12 @@ export default function WorksManagement() {
                         )}
                       </div>
 
-                      <div className="grid grid-cols-2 md:grid-cols-5 gap-4 text-sm text-theme-secondary">
+                      <Text
+                        papel="rotulo"
+                        tom="suave"
+                        as="div"
+                        className="grid grid-cols-2 md:grid-cols-5 gap-4"
+                      >
                         <Inline gap={1}>
                           <PiHeart className="w-4 h-4" />
                           <span
@@ -867,7 +907,7 @@ export default function WorksManagement() {
                           <PiChatCenteredText className="w-4 h-4" />
                           <span>{work.annotationsCount} anotações</span>
                         </Inline>
-                      </div>
+                      </Text>
 
                       {work.uploader && (
                         <Inline
@@ -914,9 +954,9 @@ export default function WorksManagement() {
             {/* Pagination */}
             {pagination && (
               <div className="flex items-center justify-between mt-6 pt-6 border-t border-theme-secondary">
-                <div className="text-sm text-theme-secondary">
+                <Text papel="rotulo" tom="suave" as="div">
                   Mostrando {works.length} de {pagination.total} obras
-                </div>
+                </Text>
                 <Inline gap={2}>
                   <Button
                     variant="ghost"
@@ -931,9 +971,9 @@ export default function WorksManagement() {
                   >
                     Anterior
                   </Button>
-                  <span className="text-sm text-theme-primary">
+                  <Text papel="rotulo" tom="forte">
                     Página {pagination.page} de {pagination.pages}
-                  </span>
+                  </Text>
                   <Button
                     variant="ghost"
                     size="sm"

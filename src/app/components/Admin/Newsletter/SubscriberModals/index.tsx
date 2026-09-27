@@ -12,6 +12,7 @@ import Modal from '@/app/components/Modal';
 import Button from '@/app/components/Common/Button';
 import Input from '@/app/components/Common/Inputs';
 import Select from '@/app/components/Common/Select';
+import { Text } from '@/app/components/ui/Text';
 
 // Modal de Detalhes do Subscriber
 interface SubscriberDetailsModalProps {
@@ -171,18 +172,20 @@ export const SubscriberDetailsModal: React.FC<SubscriberDetailsModalProps> = ({
                 {subscriber.interests && subscriber.interests.length > 0 ? (
                   subscriber.interests.map(
                     (interest: string, index: number) => (
-                      <span
+                      <Text
+                        papel="legenda"
+                        tom="ouro"
                         key={index}
-                        className="px-2 py-1 bg-brand-primary/10 text-brand-primary text-xs rounded-full"
+                        className="px-2 py-1 bg-brand-primary/10 rounded-full"
                       >
                         {interest}
-                      </span>
+                      </Text>
                     )
                   )
                 ) : (
-                  <span className="text-theme-tertiary text-sm">
+                  <Text papel="rotulo" tom="fraco">
                     Nenhum interesse especificado
-                  </span>
+                  </Text>
                 )}
               </div>
             </div>
@@ -528,16 +531,16 @@ export const SendEmailModal: React.FC<SendEmailModalProps> = ({
               required
               className="w-full px-4 py-3 bg-theme-tertiary border border-theme-secondary rounded-lg text-theme-primary placeholder-theme-tertiary focus:outline-none focus:border-brand-primary transition-colors resize-y"
             />
-            <p className="text-xs text-theme-tertiary mt-2">
+            <Text papel="legenda" tom="fraco" as="p" className="mt-2">
               Você pode usar &quot;FirstName&quot; para personalizar o nome do
               destinatário
-            </p>
+            </Text>
           </div>
 
           {/* Preview */}
           <div className="bg-theme-secondary p-4 rounded-lg">
             <h4 className="font-medium text-theme-primary mb-2">Preview:</h4>
-            <div className="text-sm text-theme-secondary">
+            <Text papel="rotulo" tom="suave" as="div">
               <p>
                 <strong>Para:</strong> {subscriber.email}
               </p>
@@ -552,7 +555,7 @@ export const SendEmailModal: React.FC<SendEmailModalProps> = ({
                   ) || 'Conteúdo vazio'}
                 </p>
               </div>
-            </div>
+            </Text>
           </div>
 
           {/* Botões */}

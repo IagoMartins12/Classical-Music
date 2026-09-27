@@ -11,6 +11,7 @@ import ReportPriorityBadge from '../ReportPriorityBadge';
 import Modal from '../../Modal';
 import { getReportHistory } from '@/app/requests/moderation';
 import { Inline } from '@/app/components/ui/Layout';
+import { Text } from '@/app/components/ui/Text';
 
 interface ReportHistoryModalProps {
   isOpen: boolean;
@@ -125,7 +126,9 @@ export default function ReportHistoryModal({
                 <h2 className="text-xl font-bold text-theme-primary">
                   Histórico de Reports
                 </h2>
-                <p className="text-sm text-theme-secondary">{entityName}</p>
+                <Text papel="rotulo" tom="suave" as="p">
+                  {entityName}
+                </Text>
               </div>
             </Inline>
           </div>
@@ -156,12 +159,12 @@ export default function ReportHistoryModal({
                       />
                       {getStatusBadge(report.status)}
                     </Inline>
-                    <div className="text-sm text-theme-tertiary">
+                    <Text papel="rotulo" tom="fraco" as="div">
                       {formatDistanceToNow(new Date(report.createdAt), {
                         addSuffix: true,
                         locale: ptBR,
                       })}
-                    </div>
+                    </Text>
                   </div>
 
                   <div className="mb-3">
@@ -169,9 +172,14 @@ export default function ReportHistoryModal({
                       {getReasonLabel(report.reason)}
                     </h4>
                     {report.description && (
-                      <p className="text-sm text-theme-secondary italic">
+                      <Text
+                        papel="rotulo"
+                        tom="suave"
+                        as="p"
+                        className="italic"
+                      >
                         &quot;{report.description}&quot;
-                      </p>
+                      </Text>
                     )}
                   </div>
 
@@ -195,10 +203,10 @@ export default function ReportHistoryModal({
 
                   {report.moderationNotes && (
                     <div className="mt-3 p-2 bg-theme-elevated rounded border border-theme-primary">
-                      <p className="text-sm text-theme-primary">
+                      <Text papel="rotulo" tom="forte" as="p">
                         <strong>Notas da moderação:</strong>{' '}
                         {report.moderationNotes}
-                      </p>
+                      </Text>
                     </div>
                   )}
                 </div>

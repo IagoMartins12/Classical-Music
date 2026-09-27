@@ -8,6 +8,7 @@ import { useState } from 'react';
 import SectionTitle from '../Utils/SectionTitle';
 import { translateEpochWithHook } from '@/app/utils/translations/epochTranslationComposer';
 import { useTranslation } from '@/app/context/TranslationContext';
+import { Text } from '@/app/components/ui/Text';
 
 interface Epoch {
   id: string;
@@ -149,11 +150,11 @@ const EpochCard = ({ epoch }: { epoch: Epoch }) => {
         <h3 className="text-xl font-bold text-theme-primary classical-title mb-1">
           {translateEpochWithHook(epoch.name, t)}
         </h3>
-        <p className="text-sm text-theme-secondary mb-3">
+        <Text papel="rotulo" tom="suave" as="p" className="mb-3">
           {language === 'pt'
             ? epochData.description.ptBR
             : epochData.description.en}
-        </p>
+        </Text>
       </div>
 
       {/* Opções de navegação - expandidas */}
@@ -242,9 +243,9 @@ const EpochCard = ({ epoch }: { epoch: Epoch }) => {
       {/* Dica de interação */}
       {!isExpanded && (
         <div className=" text-center">
-          <span className="text-xs text-theme-tertiary font-medium opacity-60">
+          <Text papel="legenda" tom="fraco" className="font-medium opacity-60">
             {t('composers_by_epoch_click_navigate')}
-          </span>
+          </Text>
         </div>
       )}
     </div>

@@ -26,6 +26,7 @@ import Button from '@/app/components/Common/Button';
 import Select from '@/app/components/Common/Select';
 import { listAdminActivity } from '@/app/requests/admin/uploads';
 import { Inline } from '@/app/components/ui/Layout';
+import { Text } from '@/app/components/ui/Text';
 
 interface ActivityItem {
   id: string;
@@ -285,14 +286,23 @@ export default function RecentActivity() {
                           )}
 
                           {activity.target && (
-                            <span className="text-xs text-theme-tertiary capitalize">
+                            <Text
+                              papel="legenda"
+                              tom="fraco"
+                              className="capitalize"
+                            >
                               {activity.target.type}
-                            </span>
+                            </Text>
                           )}
                         </Inline>
 
                         {activity.metadata && (
-                          <div className="mt-2 text-xs text-theme-tertiary">
+                          <Text
+                            papel="legenda"
+                            tom="fraco"
+                            as="div"
+                            className="mt-2"
+                          >
                             {activity.metadata.error && (
                               <span className="text-accent-red">
                                 Erro: {activity.metadata.error}
@@ -306,7 +316,7 @@ export default function RecentActivity() {
                                 Duração: {activity.metadata.duration}
                               </span>
                             )}
-                          </div>
+                          </Text>
                         )}
                       </div>
 
@@ -360,13 +370,13 @@ export default function RecentActivity() {
             <h3 className="text-lg font-medium text-theme-primary mb-2">
               Nenhuma atividade encontrada
             </h3>
-            <p className="text-theme-secondary text-sm">
+            <Text papel="rotulo" tom="suave" as="p">
               {filter === 'all'
                 ? 'Ainda não há atividades para mostrar.'
                 : `Não há atividades do tipo "${getActivityTypeLabel(
                     filter
                   )}" recentemente.`}
-            </p>
+            </Text>
           </div>
         )}
       </div>

@@ -26,6 +26,7 @@ import { useSessionUpdate } from '@/app/hooks/useSessionUpdate';
 import { useTranslation } from '@/app/context/TranslationContext';
 import Checkbox from '../../Common/Checkbox';
 import { Inline } from '@/app/components/ui/Layout';
+import { Text } from '@/app/components/ui/Text';
 
 interface Instrument {
   id: string;
@@ -270,9 +271,9 @@ const InstrumentsSection: React.FC<InstrumentsSectionProps> = ({ user }) => {
             <h3 className="text-lg font-semibold text-theme-primary">
               {t('instruments_title')}
             </h3>
-            <p className="text-sm text-theme-secondary">
+            <Text papel="rotulo" tom="suave" as="p">
               {t('instruments_loading')}
-            </p>
+            </Text>
           </div>
         </div>
 
@@ -303,9 +304,9 @@ const InstrumentsSection: React.FC<InstrumentsSectionProps> = ({ user }) => {
           <h3 className="text-lg font-semibold text-theme-primary">
             {t('instruments_title')}
           </h3>
-          <p className="text-sm text-theme-secondary">
+          <Text papel="rotulo" tom="suave" as="p">
             {t('instruments_description')}
-          </p>
+          </Text>
         </div>
 
         {!isEditing ? (
@@ -373,14 +374,23 @@ const InstrumentsSection: React.FC<InstrumentsSectionProps> = ({ user }) => {
                         {instrument.name}
                       </h4>
                       {instrument.category && (
-                        <span className="px-2 py-1 text-xs bg-theme-secondary bg-opacity-50 text-theme-secondary rounded-full">
+                        <Text
+                          papel="legenda"
+                          tom="suave"
+                          className="px-2 py-1 bg-theme-secondary bg-opacity-50 rounded-full"
+                        >
                           {instrument.category}
-                        </span>
+                        </Text>
                       )}
                       {instrument.isPrimary && (
-                        <div className="!px-3 !py-1 text-xs  classical-card text-theme-primary rounded-full">
+                        <Text
+                          papel="legenda"
+                          tom="forte"
+                          as="div"
+                          className="!px-3 !py-1 classical-card rounded-full"
+                        >
                           {t('instruments_primary')}
-                        </div>
+                        </Text>
                       )}
                     </Inline>
 
@@ -424,7 +434,7 @@ const InstrumentsSection: React.FC<InstrumentsSectionProps> = ({ user }) => {
                         </Inline>
                       </div>
                     ) : (
-                      <p className="text-sm text-theme-secondary">
+                      <Text papel="rotulo" tom="suave" as="p">
                         {
                           LEVELS.find((l) => l.value === instrument.level)
                             ?.label
@@ -435,7 +445,7 @@ const InstrumentsSection: React.FC<InstrumentsSectionProps> = ({ user }) => {
                             {new Date(instrument.startedAt).getFullYear()}
                           </span>
                         )}
-                      </p>
+                      </Text>
                     )}
                   </div>
                 </Inline>
@@ -563,9 +573,9 @@ const InstrumentsSection: React.FC<InstrumentsSectionProps> = ({ user }) => {
           {/* Informações adicionais */}
           {isEditing && (
             <div className="mt-4 text-center">
-              <p className="text-xs text-theme-tertiary">
+              <Text papel="legenda" tom="fraco" as="p">
                 {t('instruments_tip')}
-              </p>
+              </Text>
             </div>
           )}
         </div>

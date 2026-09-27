@@ -7,6 +7,7 @@ import Image from '@/app/components/SmartImage';
 import Link from 'next/link';
 import { PiTrash } from 'react-icons/pi';
 import { Inline } from '@/app/components/ui/Layout';
+import { Text } from '@/app/components/ui/Text';
 
 const ComposerCardComponent = (props: any) => {
   const { node, deleteNode } = props;
@@ -126,9 +127,14 @@ const ComposerCardComponent = (props: any) => {
 
           {/* Biografia */}
           {composerBio && (
-            <p className="text-sm text-theme-secondary mb-4 leading-relaxed">
+            <Text
+              papel="rotulo"
+              tom="suave"
+              as="p"
+              className="mb-4 leading-relaxed"
+            >
               {composerBio}
-            </p>
+            </Text>
           )}
 
           {/* Botões */}

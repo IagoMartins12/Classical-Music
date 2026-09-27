@@ -26,6 +26,7 @@ import {
 } from '@/app/libs/newsletter/emailTemplates';
 import Checkbox from '@/app/components/Common/Checkbox';
 import { Inline } from '@/app/components/ui/Layout';
+import { Text } from '@/app/components/ui/Text';
 
 interface CreateCampaignModalProps {
   onClose: () => void;
@@ -336,9 +337,9 @@ export default function CreateCampaignModal({
                       <h4 className="font-medium text-theme-primary">
                         Template Personalizado
                       </h4>
-                      <p className="text-sm text-theme-tertiary">
+                      <Text papel="rotulo" tom="fraco" as="p">
                         Use um template customizado em vez do template built-in
-                      </p>
+                      </Text>
                     </div>
                     <button
                       type="button"
@@ -428,9 +429,14 @@ export default function CreateCampaignModal({
                                   </span>
                                 )}
                               </Inline>
-                              <p className="text-sm text-theme-secondary mb-2">
+                              <Text
+                                papel="rotulo"
+                                tom="suave"
+                                as="p"
+                                className="mb-2"
+                              >
                                 {selectedTemplate.description}
-                              </p>
+                              </Text>
                               <Inline
                                 gap={4}
                                 className="text-xs text-theme-tertiary"
@@ -482,9 +488,9 @@ export default function CreateCampaignModal({
                       }
                       placeholder={selectedTemplate.subject}
                     />
-                    <p className="text-xs text-theme-tertiary mt-1">
+                    <Text papel="legenda" tom="fraco" as="p" className="mt-1">
                       Deixe vazio para usar o assunto padrão do template
-                    </p>
+                    </Text>
                   </div>
                 )}
 
@@ -650,10 +656,10 @@ export default function CreateCampaignModal({
                       }
                       min={new Date().toISOString().slice(0, 16)}
                     />
-                    <p className="text-sm text-theme-tertiary mt-1">
+                    <Text papel="rotulo" tom="fraco" as="p" className="mt-1">
                       A campanha será enviada automaticamente na data e hora
                       especificadas
-                    </p>
+                    </Text>
                   </div>
                 )}
               </div>
@@ -666,10 +672,10 @@ export default function CreateCampaignModal({
                   <h3 className="font-medium text-theme-primary mb-2">
                     Segmentação de Audiência
                   </h3>
-                  <p className="text-sm text-theme-tertiary mb-4">
+                  <Text papel="rotulo" tom="fraco" as="p" className="mb-4">
                     Por padrão, a campanha será enviada para todos os
                     subscribers ativos.
-                  </p>
+                  </Text>
 
                   <div className="space-y-3">
                     <Inline as="label" gap={3}>

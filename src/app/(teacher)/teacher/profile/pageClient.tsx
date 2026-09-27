@@ -46,6 +46,7 @@ import { saveTeacherProfile } from '@/app/requests/portal/profile-actions';
 import Input from '@/app/components/Common/Inputs';
 import { useTranslation } from '@/app/context/TranslationContext';
 import { Inline } from '@/app/components/ui/Layout';
+import { Text } from '@/app/components/ui/Text';
 
 interface TeacherProfilePageClientProps {
   initialData: TeacherProfileData | null;
@@ -553,9 +554,9 @@ export default function TeacherProfilePageClient({
                     <h2 className="text-xl font-bold text-theme-primary classical-title">
                       {t('personal_information')}
                     </h2>
-                    <p className="text-theme-tertiary text-sm">
+                    <Text papel="rotulo" tom="fraco" as="p">
                       {t('personal_description')}
-                    </p>
+                    </Text>
                   </div>
                 </Inline>
 
@@ -819,9 +820,9 @@ export default function TeacherProfilePageClient({
                     <h2 className="text-xl font-bold text-theme-primary classical-title">
                       {t('professional_information')}
                     </h2>
-                    <p className="text-theme-tertiary text-sm">
+                    <Text papel="rotulo" tom="fraco" as="p">
                       {t('professional_description')}
-                    </p>
+                    </Text>
                   </div>
                 </Inline>
 
@@ -1081,9 +1082,9 @@ export default function TeacherProfilePageClient({
                     <h2 className="text-xl font-bold text-theme-primary classical-title">
                       {t('teaching_configuration')}
                     </h2>
-                    <p className="text-theme-tertiary text-sm">
+                    <Text papel="rotulo" tom="fraco" as="p">
                       {t('teaching_description')}
-                    </p>
+                    </Text>
                   </div>
                 </Inline>
 
@@ -1243,9 +1244,9 @@ export default function TeacherProfilePageClient({
                               disabled={saving}
                               className="w-4 h-4 text-brand-primary border-theme-secondary rounded focus:ring-brand-primary disabled:opacity-50"
                             />
-                            <span className="text-theme-primary text-sm">
+                            <Text papel="rotulo" tom="forte">
                               {ageGroup.label}
-                            </span>
+                            </Text>
                           </Inline>
                         ))}
                       </div>
@@ -1280,9 +1281,9 @@ export default function TeacherProfilePageClient({
                               disabled={saving}
                               className="w-4 h-4 text-brand-primary border-theme-secondary rounded focus:ring-brand-primary disabled:opacity-50"
                             />
-                            <span className="text-theme-primary text-sm">
+                            <Text papel="rotulo" tom="forte">
                               {skillLevel.label}
-                            </span>
+                            </Text>
                           </Inline>
                         ))}
                       </div>
@@ -1583,9 +1584,9 @@ export default function TeacherProfilePageClient({
                     <h2 className="text-xl font-bold text-theme-primary classical-title">
                       {t('public_profile')}
                     </h2>
-                    <p className="text-theme-tertiary text-sm">
+                    <Text papel="rotulo" tom="fraco" as="p">
                       {t('public_profile_description')}
-                    </p>
+                    </Text>
                   </div>
                 </Inline>
 
@@ -1628,11 +1629,11 @@ export default function TeacherProfilePageClient({
                         <div className="font-medium text-theme-primary">
                           {t('public_profile')}
                         </div>
-                        <div className="text-sm text-theme-tertiary">
+                        <Text papel="rotulo" tom="fraco" as="div">
                           {publicForm.isPublicProfile
                             ? t('profile_public_visible')
                             : t('profile_private')}
-                        </div>
+                        </Text>
                       </div>
                     </Inline>
                     <label className="relative inline-flex items-center cursor-pointer">
@@ -1670,9 +1671,14 @@ export default function TeacherProfilePageClient({
                         placeholder={t('public_bio_placeholder')}
                         disabled={saving}
                       />
-                      <div className="text-xs text-theme-tertiary mt-1">
+                      <Text
+                        papel="legenda"
+                        tom="fraco"
+                        as="div"
+                        className="mt-1"
+                      >
                         {t('public_bio_note')}
-                      </div>
+                      </Text>
                     </div>
                   )}
 
@@ -1724,11 +1730,11 @@ export default function TeacherProfilePageClient({
                         <div className="font-medium text-theme-primary">
                           {t('profile_status')}
                         </div>
-                        <div className="text-sm text-theme-tertiary">
+                        <Text papel="rotulo" tom="fraco" as="div">
                           {data?.isPublicProfile
                             ? t('profile_public_visible')
                             : t('profile_private')}
-                        </div>
+                        </Text>
                       </div>
                     </Inline>
                     <div
@@ -1762,9 +1768,14 @@ export default function TeacherProfilePageClient({
                             {t('profile_is_public')}
                           </div>
                         </Inline>
-                        <div className="text-sm text-theme-secondary mb-3">
+                        <Text
+                          papel="rotulo"
+                          tom="suave"
+                          as="div"
+                          className="mb-3"
+                        >
                           {t('profile_public_description')}
-                        </div>
+                        </Text>
                         <a
                           href={`/teachers/${teacherProfile.id}`}
                           target="_blank"

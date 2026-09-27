@@ -32,6 +32,7 @@ import NotificationBell from '../../Notification/NotificationBell';
 import { LanguageToggle } from '../../LanguageToggle';
 import { useTranslation } from '@/app/hooks/useTranslation';
 import { Inline } from '@/app/components/ui/Layout';
+import { Text } from '@/app/components/ui/Text';
 
 interface TeacherNavigationProps {
   user: any;
@@ -252,9 +253,14 @@ export default function TeacherNavigation({ user }: TeacherNavigationProps) {
                   <span className="text-xl font-bold gold-shine text-gradient-brand classical-title">
                     {t('brand_name')}
                   </span>
-                  <div className="text-xs text-theme-tertiary font-medium">
+                  <Text
+                    papel="legenda"
+                    tom="fraco"
+                    as="div"
+                    className="font-medium"
+                  >
                     {t('teacher_area')}
-                  </div>
+                  </Text>
                 </div>
               </Link>
             </Inline>
@@ -314,9 +320,14 @@ export default function TeacherNavigation({ user }: TeacherNavigationProps) {
                                       {subItem.label}
                                     </div>
                                     {subItem.description && (
-                                      <div className="text-xs text-theme-tertiary mt-1">
+                                      <Text
+                                        papel="legenda"
+                                        tom="fraco"
+                                        as="div"
+                                        className="mt-1"
+                                      >
                                         {subItem.description}
-                                      </div>
+                                      </Text>
                                     )}
                                   </div>
                                   {subItem.badge && (
@@ -381,15 +392,25 @@ export default function TeacherNavigation({ user }: TeacherNavigationProps) {
                       className="w-8 h-8 rounded-full object-cover border-2 border-brand-primary/20 group-hover:border-brand-primary/50 transition-all"
                     />
                   ) : (
-                    <div className="w-8 h-8 bg-brand-gradient rounded-full flex items-center justify-center text-theme-primary text-sm font-semibold border-2 border-brand-primary/20 group-hover:border-brand-primary/50 transition-all">
+                    <Text
+                      papel="rotulo"
+                      tom="forte"
+                      as="div"
+                      className="w-8 h-8 bg-brand-gradient rounded-full flex items-center justify-center font-semibold border-2 border-brand-primary/20 group-hover:border-brand-primary/50 transition-all"
+                    >
                       {getUserInitials()}
-                    </div>
+                    </Text>
                   )}
 
                   <div className="hidden sm:block text-left">
-                    <p className="text-sm font-medium text-theme-primary truncate max-w-32">
+                    <Text
+                      papel="rotulo"
+                      tom="forte"
+                      as="p"
+                      className="font-medium truncate max-w-32"
+                    >
                       {getUserDisplayName()}
-                    </p>
+                    </Text>
                     {!user.onboardingCompleted && (
                       <p className="text-xs text-accent-amber">
                         {t('profile_complete_prompt')}
@@ -408,13 +429,17 @@ export default function TeacherNavigation({ user }: TeacherNavigationProps) {
                       <p className="font-medium text-theme-primary">
                         {getUserDisplayName()}
                       </p>
-                      <p className="text-sm text-theme-tertiary">
+                      <Text papel="rotulo" tom="fraco" as="p">
                         {user.email}
-                      </p>
+                      </Text>
                       <div className="flex items-center mt-1">
-                        <span className="px-2 py-1 bg-brand-primary/10 text-brand-primary text-xs rounded-full">
+                        <Text
+                          papel="legenda"
+                          tom="ouro"
+                          className="px-2 py-1 bg-brand-primary/10 rounded-full"
+                        >
                           {t('profile_role_teacher')}
-                        </span>
+                        </Text>
                       </div>
                       {!user.onboardingCompleted && (
                         <button
@@ -502,9 +527,9 @@ export default function TeacherNavigation({ user }: TeacherNavigationProps) {
                     <span className="text-lg gold-shine font-bold text-gradient-brand">
                       {t('brand_name')}
                     </span>
-                    <div className="text-xs text-theme-tertiary">
+                    <Text papel="legenda" tom="fraco" as="div">
                       {t('teacher_area')}
-                    </div>
+                    </Text>
                   </div>
                 </div>
                 <button

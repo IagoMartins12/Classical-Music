@@ -38,6 +38,7 @@ import { useAdminReports } from '@/app/hooks/admin/useAdminReports';
 import { toast } from 'react-hot-toast';
 import LoadingAdminState from '../../Common/LoadingState';
 import { Inline } from '@/app/components/ui/Layout';
+import { Text } from '@/app/components/ui/Text';
 
 export default function AdvancedReports() {
   const [activeTab, setActiveTab] = useState('overview');
@@ -381,12 +382,12 @@ export default function AdvancedReports() {
                 <h4 className="font-medium text-accent-blue mb-1">
                   Sobre relatórios PDF
                 </h4>
-                <p className="text-sm text-theme-secondary">
+                <Text papel="rotulo" tom="suave" as="p">
                   Os relatórios PDF são gerados como páginas HTML otimizadas
                   para impressão. Após o download, use{' '}
                   <strong>Ctrl+P → Salvar como PDF</strong> no seu navegador
                   para obter o arquivo PDF final.
-                </p>
+                </Text>
               </div>
             </div>
           </div>
@@ -412,23 +413,29 @@ export default function AdvancedReports() {
                     <h4 className="font-bold text-theme-primary mb-1">
                       {type.name}
                     </h4>
-                    <p className="text-sm text-theme-secondary mb-3">
+                    <Text papel="rotulo" tom="suave" as="p" className="mb-3">
                       {type.description}
-                    </p>
+                    </Text>
 
                     <div className="flex flex-wrap gap-1 mb-4">
                       {type.metrics.slice(0, 3).map((metric, index) => (
-                        <span
+                        <Text
+                          papel="legenda"
+                          tom="suave"
                           key={index}
-                          className="px-2 py-1 bg-theme-primary/10 rounded text-xs text-theme-secondary font-medium"
+                          className="px-2 py-1 bg-theme-primary/10 rounded font-medium"
                         >
                           {metric}
-                        </span>
+                        </Text>
                       ))}
                       {type.metrics.length > 3 && (
-                        <span className="px-2 py-1 bg-theme-primary/10 rounded text-xs text-theme-secondary font-medium">
+                        <Text
+                          papel="legenda"
+                          tom="suave"
+                          className="px-2 py-1 bg-theme-primary/10 rounded font-medium"
+                        >
                           +{type.metrics.length - 3} mais
-                        </span>
+                        </Text>
                       )}
                     </div>
 
@@ -660,9 +667,9 @@ export default function AdvancedReports() {
                   <h4 className="font-medium text-theme-primary">
                     {metric.name}
                   </h4>
-                  <span className="text-xs text-theme-tertiary capitalize">
+                  <Text papel="legenda" tom="fraco" className="capitalize">
                     {metric.category}
-                  </span>
+                  </Text>
                 </div>
               </Inline>
 
@@ -677,17 +684,17 @@ export default function AdvancedReports() {
               </span>
             </div>
 
-            <p className="text-sm text-theme-secondary mb-3">
+            <Text papel="rotulo" tom="suave" as="p" className="mb-3">
               {metric.description}
-            </p>
+            </Text>
 
             {/* 🔄 MOSTRAR VALOR ATUAL SE DISPONÍVEL */}
             {metric.available && metric.currentValue && (
               <div className="mb-3 p-3 bg-theme-secondary rounded-lg">
                 <div className="flex items-center justify-between">
-                  <span className="text-sm font-medium text-theme-primary">
+                  <Text papel="rotulo" tom="forte" className="font-medium">
                     Valor Atual:
-                  </span>
+                  </Text>
                   <span className="text-lg font-bold text-accent-blue">
                     {typeof metric.currentValue === 'number'
                       ? formatNumber(metric.currentValue)
@@ -695,16 +702,16 @@ export default function AdvancedReports() {
                   </span>
                 </div>
                 {metric.lastUpdated && (
-                  <div className="text-xs text-theme-tertiary mt-1">
+                  <Text papel="legenda" tom="fraco" as="div" className="mt-1">
                     Atualizado: {formatDate(metric.lastUpdated)}
-                  </div>
+                  </Text>
                 )}
               </div>
             )}
 
-            <div className="text-xs text-theme-tertiary">
+            <Text papel="legenda" tom="fraco" as="div">
               Tipo: <span className="capitalize">{metric.type}</span>
-            </div>
+            </Text>
           </AnimatedCard>
         ))}
       </div>
@@ -720,20 +727,26 @@ export default function AdvancedReports() {
               <div className="text-2xl font-bold text-accent-blue">
                 {formatNumber(stats.totalUsers)}
               </div>
-              <div className="text-sm text-theme-secondary">Usuários</div>
+              <Text papel="rotulo" tom="suave" as="div">
+                Usuários
+              </Text>
             </div>
             <div className="text-center">
               <div className="text-2xl font-bold text-accent-green">
                 {formatNumber(stats.totalWorks)}
               </div>
-              <div className="text-sm text-theme-secondary">Obras</div>
+              <Text papel="rotulo" tom="suave" as="div">
+                Obras
+              </Text>
             </div>
 
             <div className="text-center">
               <div className="text-2xl font-bold text-accent-orange">
                 {formatNumber(stats.totalAnnotations)}
               </div>
-              <div className="text-sm text-theme-secondary">Anotações</div>
+              <Text papel="rotulo" tom="suave" as="div">
+                Anotações
+              </Text>
             </div>
           </div>
         </AnimatedCard>
@@ -769,7 +782,12 @@ export default function AdvancedReports() {
               Geração automática de relatórios com dados reais da plataforma
             </p>
             {stats && (
-              <div className="mt-4 flex flex-wrap justify-center gap-4 text-sm text-theme-tertiary">
+              <Text
+                papel="rotulo"
+                tom="fraco"
+                as="div"
+                className="mt-4 flex flex-wrap justify-center gap-4"
+              >
                 <span>{formatNumber(stats.totalUsers)} usuários</span>
                 <span>•</span>
                 <span>{formatNumber(stats.totalWorks)} obras</span>
@@ -777,7 +795,7 @@ export default function AdvancedReports() {
                 <span>{formatNumber(stats.totalScores)} partituras</span>
                 <span>•</span>
                 <span>{results.length} relatórios gerados</span>
-              </div>
+              </Text>
             )}
           </div>
         </AnimatedItem>

@@ -11,6 +11,7 @@ import Button from '@/app/components/Common/Button';
 import ComposerSearchInputSimple from '@/app/components/ComposerSearchInputSimple';
 import { findComposerById } from '@/app/requests/catalog-search';
 import { uploadBlogMedia } from '@/app/requests/blog/interactions';
+import { Text } from '@/app/components/ui/Text';
 
 interface TimelineModalProps {
   editor: Editor;
@@ -135,9 +136,9 @@ export function TimelineModal({
             onComposerSelect={handleComposerSelect}
           />
           {composerName && (
-            <p className="text-xs text-theme-tertiary mt-2">
+            <Text papel="legenda" tom="fraco" as="p" className="mt-2">
               ✅ Timeline vinculada a: <strong>{composerName}</strong>
-            </p>
+            </Text>
           )}
         </div>
 
@@ -242,11 +243,11 @@ export function TimelineModal({
                       className="cursor-pointer"
                     >
                       <PiUploadSimple className="w-8 h-8 text-theme-tertiary mx-auto mb-2" />
-                      <span className="text-sm text-theme-secondary">
+                      <Text papel="rotulo" tom="suave">
                         {uploadingIndex === index
                           ? 'Enviando...'
                           : 'Clique para fazer upload'}
-                      </span>
+                      </Text>
                     </label>
                   </div>
                 )}

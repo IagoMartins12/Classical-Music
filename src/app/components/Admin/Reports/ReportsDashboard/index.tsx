@@ -28,6 +28,7 @@ import Button from '@/app/components/Common/Button';
 import Select from '@/app/components/Common/Select';
 import LoadingAdminState from '../../Common/LoadingState';
 import { Inline } from '@/app/components/ui/Layout';
+import { Text } from '@/app/components/ui/Text';
 
 interface ReportStats {
   totalReports: number;
@@ -191,9 +192,9 @@ export default function ReportsDashboard() {
               <div className="text-3xl font-bold text-theme-primary mb-2">
                 {stats?.totalReports || 0}
               </div>
-              <div className="text-sm text-theme-tertiary">
+              <Text papel="rotulo" tom="fraco" as="div">
                 Total de Reports
-              </div>
+              </Text>
             </AnimatedCard>
 
             <AnimatedCard className="classical-card p-6 text-center">
@@ -205,7 +206,9 @@ export default function ReportsDashboard() {
               <div className="text-3xl font-bold text-theme-primary mb-2">
                 {stats?.pendingReports || 0}
               </div>
-              <div className="text-sm text-theme-tertiary">Pendentes</div>
+              <Text papel="rotulo" tom="fraco" as="div">
+                Pendentes
+              </Text>
             </AnimatedCard>
 
             <AnimatedCard className="classical-card p-6 text-center">
@@ -217,7 +220,9 @@ export default function ReportsDashboard() {
               <div className="text-3xl font-bold text-theme-primary mb-2">
                 {stats?.approvedReports || 0}
               </div>
-              <div className="text-sm text-theme-tertiary">Aprovados</div>
+              <Text papel="rotulo" tom="fraco" as="div">
+                Aprovados
+              </Text>
             </AnimatedCard>
 
             <AnimatedCard className="classical-card p-6 text-center">
@@ -229,7 +234,9 @@ export default function ReportsDashboard() {
               <div className="text-3xl font-bold text-theme-primary mb-2">
                 {stats?.rejectedReports || 0}
               </div>
-              <div className="text-sm text-theme-tertiary">Rejeitados</div>
+              <Text papel="rotulo" tom="fraco" as="div">
+                Rejeitados
+              </Text>
             </AnimatedCard>
           </div>
         </AnimatedItem>

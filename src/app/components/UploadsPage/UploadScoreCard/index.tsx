@@ -19,6 +19,7 @@ import type { UserUpload } from '@/app/requests/my-uploads';
 import ConfirmDeleteUploadModal from '../../ConfirmDeleteUploadModal';
 import { useTranslation } from '@/app/context/TranslationContext';
 import { Inline, Stack } from '@/app/components/ui/Layout';
+import { Text } from '@/app/components/ui/Text';
 
 interface UploadScoreCardProps {
   item: UserUpload;
@@ -93,10 +94,14 @@ const UploadScoreCard = ({
                   )}
 
                   {!item.workId && (
-                    <span className="inline-flex items-center text-sm text-theme-tertiary">
+                    <Text
+                      papel="rotulo"
+                      tom="fraco"
+                      className="inline-flex items-center"
+                    >
                       <PiMusicNotes className="w-3 h-3 mr-1" />
                       {t('card_work_not_linked')}
-                    </span>
+                    </Text>
                   )}
 
                   {item.composerId && item.composerName && (
@@ -113,20 +118,24 @@ const UploadScoreCard = ({
                   )}
 
                   {!item.composerId && item.composerName && (
-                    <span className="inline-flex items-center text-xs text-theme-tertiary">
+                    <Text
+                      papel="legenda"
+                      tom="fraco"
+                      className="inline-flex items-center"
+                    >
                       <PiUser className="w-3 h-3 mr-1" />
                       {item.composerName}
-                    </span>
+                    </Text>
                   )}
                 </Inline>
 
                 {/* File info */}
                 <Inline gap={4} className="flex-wrap">
                   {item.fileSize && (
-                    <span className="text-xs text-theme-tertiary">
+                    <Text papel="legenda" tom="fraco">
                       {item.fileSize}
                       {item.pageCount && ` • ${item.pageCount} páginas`}
-                    </span>
+                    </Text>
                   )}
 
                   {/* Status badges */}
@@ -253,9 +262,9 @@ const UploadScoreCard = ({
               ) : (
                 <div className="flex items-center justify-center">
                   <PiMusicNotes className="w-4 h-4 text-theme-tertiary mr-2" />
-                  <span className="text-sm text-theme-tertiary">
+                  <Text papel="rotulo" tom="fraco">
                     {t('card_work_not_linked')}
-                  </span>
+                  </Text>
                 </div>
               )}
 
@@ -266,16 +275,20 @@ const UploadScoreCard = ({
                   onClick={(e) => e.stopPropagation()}
                 >
                   <PiUser className="w-4 h-4 text-theme-tertiary mr-2 group-hover/link:text-accent-blue transition-colors" />
-                  <span className="text-sm text-theme-tertiary group-hover/link:text-accent-blue transition-colors hover:underline">
+                  <Text
+                    papel="rotulo"
+                    tom="fraco"
+                    className="group-hover/link:text-accent-blue transition-colors hover:underline"
+                  >
                     {item.composerName}
-                  </span>
+                  </Text>
                 </Link>
               ) : item.composerName ? (
                 <div className="flex items-center justify-center">
                   <PiUser className="w-4 h-4 text-theme-tertiary mr-2" />
-                  <span className="text-sm text-theme-tertiary">
+                  <Text papel="rotulo" tom="fraco">
                     {item.composerName}
-                  </span>
+                  </Text>
                 </div>
               ) : null}
             </div>
@@ -285,10 +298,10 @@ const UploadScoreCard = ({
               <div className="text-center">
                 <div className="flex items-center justify-center">
                   <PiDownloadSimple className="w-4 h-4 text-brand-primary mr-2" />
-                  <span className="text-sm text-theme-secondary">
+                  <Text papel="rotulo" tom="suave">
                     {item.fileSize}
                     {item.pageCount && ` • ${item.pageCount} páginas`}
-                  </span>
+                  </Text>
                 </div>
               </div>
             )}

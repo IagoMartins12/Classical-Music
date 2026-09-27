@@ -20,6 +20,7 @@ import Input from '../../Common/Inputs';
 import ForgotPasswordModal from '../ForgotPasswordModal';
 import { useTranslation } from '@/app/hooks/useTranslation';
 import { Language } from '@/app/stores/useLanguageStore';
+import { Text } from '@/app/components/ui/Text';
 
 const errorMessages: Record<string, { pt: string; en: string }> = {
   Callback: {
@@ -449,7 +450,7 @@ const LoginModal: React.FC = () => {
 
         {/* Terms */}
         <div className="mt-6 text-center">
-          <p className="text-xs text-theme-tertiary">
+          <Text papel="legenda" tom="fraco" as="p">
             {t('login_modal_terms_text')}{' '}
             <Link href="/terms" className="text-brand-primary hover:underline">
               {t('login_modal_terms_link')}
@@ -461,7 +462,7 @@ const LoginModal: React.FC = () => {
             >
               {t('login_modal_privacy_link')}
             </Link>
-          </p>
+          </Text>
         </div>
       </Modal>
 

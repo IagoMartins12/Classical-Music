@@ -9,6 +9,7 @@ import {
 import { useTranslation } from '@/app/context/TranslationContext';
 import { useComposerBiography } from '@/app/hooks/useComposerBiography';
 import { Inline } from '@/app/components/ui/Layout';
+import { Text } from '@/app/components/ui/Text';
 
 interface ComposerTimeline {
   id: string;
@@ -121,27 +122,41 @@ export function ComposerTimelineCard({
               </span>
             </div>
             {getLifespanDuration(composer) && (
-              <span className="text-xs text-theme-secondary bg-theme-elevated border border-theme-secondary px-2 py-1 rounded-full">
+              <Text
+                papel="legenda"
+                tom="suave"
+                className="bg-theme-elevated border border-theme-secondary px-2 py-1 rounded-full"
+              >
                 {getLifespanDuration(composer)}{' '}
                 {t('timeline_jsx_span_children_0__anos')}
-              </span>
+              </Text>
             )}
           </div>
 
           {/* Bio */}
           {biography && (
             <div className="border-t border-theme-secondary pt-4">
-              <p className="text-theme-secondary text-sm leading-relaxed classical-body">
+              <Text
+                papel="rotulo"
+                tom="suave"
+                as="p"
+                className="leading-relaxed classical-body"
+              >
                 {biography.length > 120
                   ? `${biography.substring(0, 120)}...`
                   : biography}
-              </p>
+              </Text>
             </div>
           )}
 
           {/* CTA */}
           <div className="flex items-center justify-end mt-4 pt-3 border-t border-theme-secondary">
-            <div className="flex items-center text-brand-primary text-sm font-medium group-hover/cta:translate-x-1 transition-transform duration-300">
+            <Text
+              papel="rotulo"
+              tom="ouro"
+              as="div"
+              className="flex items-center font-medium group-hover/cta:translate-x-1 transition-transform duration-300"
+            >
               <span>{t('timeline_jsx_span_children_0__ver_detalhes')}</span>
               <svg
                 className="w-4 h-4 ml-1 group-hover:translate-x-1 transition-transform duration-300"
@@ -156,7 +171,7 @@ export function ComposerTimelineCard({
                   d="M9 5l7 7-7 7"
                 />
               </svg>
-            </div>
+            </Text>
           </div>
         </div>
 

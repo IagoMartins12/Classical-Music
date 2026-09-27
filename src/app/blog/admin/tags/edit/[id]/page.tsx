@@ -6,6 +6,7 @@ import { getServerAccessToken } from '@/app/libs/api/server-session';
 import { loadAdminTag } from '@/app/requests/blog/admin';
 import { PiArrowLeft } from 'react-icons/pi';
 import { getServerSession } from '@/app/libs/api/server-session';
+import { Text } from '@/app/components/ui/Text';
 
 interface idProps {
   id: string;
@@ -61,10 +62,10 @@ export default async function EditTagPage({ params }: PageProps) {
           <h1 className="text-3xl font-bold text-theme-primary classical-title">
             Editar Tag {tag.name}
           </h1>
-          <p className="mt-2 text-sm text-theme-secondary">
+          <Text papel="rotulo" tom="suave" as="p" className="mt-2">
             Preencha as informações abaixo para criar uma editar a tag para o
             blog.
-          </p>
+          </Text>
         </div>
 
         <div>

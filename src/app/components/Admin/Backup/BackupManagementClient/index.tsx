@@ -14,6 +14,7 @@ import {
 } from 'react-icons/pi';
 import { useBackup } from '@/app/hooks/admin/useBackup';
 import type { BackupCollectionConfig } from '@/app/requests/admin/backup';
+import { Text } from '@/app/components/ui/Text';
 
 /** `18234567` → `17,4 MB`. */
 function tamanho(bytes: number | null): string {
@@ -142,10 +143,10 @@ export default function BackupManagementClient() {
           <h1 className="text-2xl font-bold text-theme-primary classical-title">
             Backup do banco
           </h1>
-          <p className="text-theme-secondary text-sm mt-1">
+          <Text papel="rotulo" tom="suave" as="p" className="mt-1">
             O arquivo vai para um bucket privado, é baixado de volta para
             conferência e só então o mais antigo sai.
-          </p>
+          </Text>
         </div>
 
         <div className="flex gap-2">
@@ -176,39 +177,51 @@ export default function BackupManagementClient() {
             <p className="text-theme-primary font-medium">
               O backup não pode rodar ainda
             </p>
-            <p className="text-theme-secondary text-sm mt-1">{impedimento}</p>
+            <Text papel="rotulo" tom="suave" as="p" className="mt-1">
+              {impedimento}
+            </Text>
           </div>
         </div>
       )}
 
       <section className="grid gap-4 md:grid-cols-3">
         <div className="classical-card p-4">
-          <p className="text-theme-tertiary text-xs uppercase tracking-wide">
+          <Text
+            papel="legenda"
+            tom="fraco"
+            as="p"
+            className="uppercase tracking-wide"
+          >
             Último backup verificado
-          </p>
+          </Text>
           <p className="text-theme-primary font-semibold mt-1">
             {backup.ultimoBom ? quando(backup.ultimoBom.verifiedAt) : 'nenhum'}
           </p>
           {backup.ultimoBom && (
-            <p className="text-theme-secondary text-sm">
+            <Text papel="rotulo" tom="suave" as="p">
               {tamanho(backup.ultimoBom.sizeBytes)} ·{' '}
               {backup.ultimoBom.documentCount?.toLocaleString('pt-BR')}{' '}
               documentos
-            </p>
+            </Text>
           )}
         </div>
 
         <div className="classical-card p-4">
-          <p className="text-theme-tertiary text-xs uppercase tracking-wide">
+          <Text
+            papel="legenda"
+            tom="fraco"
+            as="p"
+            className="uppercase tracking-wide"
+          >
             Agendamento
-          </p>
+          </Text>
           <p className="text-theme-primary font-semibold mt-1">
             {backup.data?.agendamento?.schedule?.cron ?? 'manual'}
           </p>
-          <p className="text-theme-secondary text-sm">
+          <Text papel="rotulo" tom="suave" as="p">
             Próxima:{' '}
             {quando(backup.data?.agendamento?.schedule?.nextRunAt ?? null)}
-          </p>
+          </Text>
         </div>
 
         <div className="classical-card p-4">
@@ -223,9 +236,9 @@ export default function BackupManagementClient() {
             onChange={(evento) => setKeep(Number(evento.target.value) || 1)}
             className="mt-1 w-24 rounded-md border border-theme-primary bg-theme-elevated px-3 py-1.5 text-theme-primary"
           />
-          <p className="text-theme-secondary text-sm mt-1">
+          <Text papel="rotulo" tom="suave" as="p" className="mt-1">
             Ao entrar o {keep + 1}º, o mais antigo sai.
-          </p>
+          </Text>
         </div>
       </section>
 
@@ -236,10 +249,10 @@ export default function BackupManagementClient() {
           </h2>
 
           <div className="flex items-center gap-3">
-            <span className="text-theme-secondary text-sm">
+            <Text papel="rotulo" tom="suave">
               {selecionadas.size} coleções ·{' '}
               {totalSelecionado.toLocaleString('pt-BR')} documentos
-            </span>
+            </Text>
             <input
               value={busca}
               onChange={(evento) => setBusca(evento.target.value)}
@@ -268,13 +281,18 @@ export default function BackupManagementClient() {
                 />
 
                 <div className="flex-1 min-w-0">
-                  <p className="text-theme-primary text-sm font-medium truncate">
+                  <Text
+                    papel="rotulo"
+                    tom="forte"
+                    as="p"
+                    className="font-medium truncate"
+                  >
                     {colecao.model}
-                  </p>
-                  <p className="text-theme-tertiary text-xs truncate">
+                  </Text>
+                  <Text papel="legenda" tom="fraco" as="p" className="truncate">
                     {colecao.name} · {colecao.documents.toLocaleString('pt-BR')}{' '}
                     documentos
-                  </p>
+                  </Text>
                 </div>
 
                 {marcada && (
@@ -303,9 +321,9 @@ export default function BackupManagementClient() {
           </h2>
 
           {(backup.data?.arquivos.length ?? 0) === 0 ? (
-            <p className="text-theme-secondary text-sm">
+            <Text papel="rotulo" tom="suave" as="p">
               Nenhum arquivo ainda.
-            </p>
+            </Text>
           ) : (
             <ul className="divide-y divide-theme-secondary">
               {backup.data?.arquivos.map((arquivo) => (
@@ -314,12 +332,17 @@ export default function BackupManagementClient() {
                   className="flex items-center justify-between gap-3 py-2.5"
                 >
                   <div className="min-w-0">
-                    <p className="text-theme-primary text-sm truncate">
+                    <Text
+                      papel="rotulo"
+                      tom="forte"
+                      as="p"
+                      className="truncate"
+                    >
                       {arquivo.key.split('/').pop()}
-                    </p>
-                    <p className="text-theme-tertiary text-xs">
+                    </Text>
+                    <Text papel="legenda" tom="fraco" as="p">
                       {tamanho(arquivo.sizeBytes)} · {quando(arquivo.createdAt)}
-                    </p>
+                    </Text>
                   </div>
 
                   <button
@@ -341,9 +364,9 @@ export default function BackupManagementClient() {
           </h2>
 
           {(backup.data?.execucoes.length ?? 0) === 0 ? (
-            <p className="text-theme-secondary text-sm">
+            <Text papel="rotulo" tom="suave" as="p">
               Nenhuma execução registrada.
-            </p>
+            </Text>
           ) : (
             <ul className="divide-y divide-theme-secondary">
               {backup.data?.execucoes.map((execucao) => (
@@ -357,24 +380,24 @@ export default function BackupManagementClient() {
                   )}
 
                   <div className="min-w-0">
-                    <p className="text-theme-primary text-sm">
+                    <Text papel="rotulo" tom="forte" as="p">
                       {quando(execucao.startedAt)}
                       {execucao.verifiedAt && ' · verificado'}
-                    </p>
+                    </Text>
                     {execucao.error && (
                       <p className="text-accent-red text-xs mt-0.5">
                         {execucao.error}
                       </p>
                     )}
                     {execucao.status === 'ok' && (
-                      <p className="text-theme-tertiary text-xs">
+                      <Text papel="legenda" tom="fraco" as="p">
                         {tamanho(execucao.sizeBytes)} ·{' '}
                         {execucao.documentCount?.toLocaleString('pt-BR')}{' '}
                         documentos
                         {execucao.rotated?.length
                           ? ` · ${execucao.rotated.length} removido(s)`
                           : ''}
-                      </p>
+                      </Text>
                     )}
                   </div>
                 </li>

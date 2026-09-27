@@ -8,6 +8,7 @@ import { CategoryList } from '@/app/components/blog/admin/CategoryList';
 import { AnimatedItem } from '@/app/components/animation/AnimatedComponents';
 import AnimatedMusicalNotesClient from '@/app/components/AnimatedMusicalNotesClient';
 import { getServerSession } from '@/app/libs/api/server-session';
+import { Text } from '@/app/components/ui/Text';
 
 export const metadata: Metadata = {
   title: 'Gerenciar Categorias - Blog Admin',
@@ -81,9 +82,14 @@ export default async function CategoriesAdminPage() {
               <div className="classical-card group hover:shadow-xl transition-all duration-300 cursor-pointer">
                 <div className="flex items-center justify-between p-6">
                   <div>
-                    <p className="text-sm font-medium text-theme-tertiary mb-2">
+                    <Text
+                      papel="rotulo"
+                      tom="fraco"
+                      as="p"
+                      className="font-medium mb-2"
+                    >
                       Total de Categorias
-                    </p>
+                    </Text>
                     <p className="text-4xl font-bold text-theme-primary">
                       {stats.totalCategories}
                     </p>
@@ -100,9 +106,14 @@ export default async function CategoriesAdminPage() {
               <div className="classical-card group hover:shadow-xl transition-all duration-300 cursor-pointer">
                 <div className="flex items-center justify-between p-6">
                   <div>
-                    <p className="text-sm font-medium text-theme-tertiary mb-2">
+                    <Text
+                      papel="rotulo"
+                      tom="fraco"
+                      as="p"
+                      className="font-medium mb-2"
+                    >
                       Categorias Ativas
-                    </p>
+                    </Text>
                     <p className="text-4xl font-bold text-theme-primary">
                       {stats.activeCategories}
                     </p>
@@ -119,9 +130,14 @@ export default async function CategoriesAdminPage() {
               <div className="classical-card group hover:shadow-xl transition-all duration-300 cursor-pointer">
                 <div className="flex items-center justify-between p-6">
                   <div>
-                    <p className="text-sm font-medium text-theme-tertiary mb-2">
+                    <Text
+                      papel="rotulo"
+                      tom="fraco"
+                      as="p"
+                      className="font-medium mb-2"
+                    >
                       Artigos Publicados
-                    </p>
+                    </Text>
                     <p className="text-4xl font-bold text-theme-primary">
                       {stats.totalArticles}
                     </p>

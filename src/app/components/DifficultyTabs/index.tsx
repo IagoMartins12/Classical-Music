@@ -4,6 +4,7 @@
 
 import { PiMusicNotes, PiSquaresFour } from 'react-icons/pi';
 import { AnimatedItem } from '../animation/AnimatedComponents';
+import { Text } from '@/app/components/ui/Text';
 
 interface DifficultyTabsProps {
   instruments: { id: string; name: string; workCount: number }[];
@@ -30,9 +31,9 @@ export default function DifficultyTabs({
           <h3 className="text-lg font-bold text-theme-primary classical-title">
             Filtrar por Instrumento
           </h3>
-          <p className="text-theme-secondary text-sm">
+          <Text papel="rotulo" tom="suave" as="p">
             Selecione um instrumento específico ou veja todas as obras
-          </p>
+          </Text>
         </div>
       </div>
 

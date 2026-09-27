@@ -1,6 +1,7 @@
 // components/ScoreCardSkeleton.tsx - Skeleton para ScoreCard
 import React from 'react';
 import { Inline } from '@/app/components/ui/Layout';
+import { Text } from '@/app/components/ui/Text';
 
 interface ScoreCardSkeletonProps {
   showThumbnail?: boolean;
@@ -150,10 +151,15 @@ export const ScoreLoadingWithProgress = ({
         {/* Progress Bar */}
         {progress > 0 && (
           <div className="space-y-2">
-            <div className="flex items-center justify-between text-sm text-theme-tertiary">
+            <Text
+              papel="rotulo"
+              tom="fraco"
+              as="div"
+              className="flex items-center justify-between"
+            >
               <span>Progresso</span>
               <span>{Math.round(progress)}%</span>
-            </div>
+            </Text>
             <div className="w-full bg-theme-elevated border border-theme-primary/20 rounded-full h-3 overflow-hidden">
               <div
                 className="bg-gradient-to-r from-brand-primary to-brand-secondary h-full rounded-full transition-all duration-500 relative overflow-hidden"

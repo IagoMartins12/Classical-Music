@@ -32,6 +32,7 @@ import { useStudentDashboard } from '@/app/hooks/lessonsSystem/useStudentDashboa
 import RecentActivities from '@/app/components/TeacherSystem/RecentActivities';
 import { useTranslation } from '@/app/context/TranslationContext';
 import { Inline } from '@/app/components/ui/Layout';
+import { Text } from '@/app/components/ui/Text';
 
 interface StudentProfile {
   id: string;
@@ -168,11 +169,11 @@ export default function StudentPageClient({
                 <h3 className="font-semibold text-theme-primary mb-2">
                   {t('student_home_no_teacher_how_it_works')}
                 </h3>
-                <div className="text-sm text-theme-secondary space-y-2">
+                <Text papel="rotulo" tom="suave" as="div" className="space-y-2">
                   <p>1. {t('student_home_no_teacher_step_1')}</p>
                   <p>2. {t('student_home_no_teacher_step_2')}</p>
                   <p>3. {t('student_home_no_teacher_step_3')}</p>
-                </div>
+                </Text>
               </div>
               <div className="flex flex-col sm:flex-row gap-3 justify-center">
                 <Link href="/contact" className="btn-classical-primary">
@@ -277,9 +278,9 @@ export default function StudentPageClient({
                 <div className="text-2xl font-bold text-theme-primary mb-1">
                   {stats.totalLessons}
                 </div>
-                <div className="text-sm text-theme-tertiary">
+                <Text papel="rotulo" tom="fraco" as="div">
                   {t('student_home_stats_total_lessons')}
-                </div>
+                </Text>
                 <div className="text-xs text-accent-green mt-1">
                   {stats.completedLessons} {t('student_home_stats_completed')}
                 </div>
@@ -295,9 +296,9 @@ export default function StudentPageClient({
                 <div className="text-2xl font-bold text-theme-primary mb-1">
                   {stats.upcomingLessons}
                 </div>
-                <div className="text-sm text-theme-tertiary">
+                <Text papel="rotulo" tom="fraco" as="div">
                   {t('student_home_stats_upcoming_lessons')}
-                </div>
+                </Text>
                 <div className="text-xs text-accent-blue mt-1">
                   {todayLessons.length} {t('student_home_stats_today')}
                 </div>
@@ -313,9 +314,9 @@ export default function StudentPageClient({
                 <div className="text-2xl font-bold text-theme-primary mb-1">
                   {formatDuration(stats.totalStudyTime).split(' ')[0]}
                 </div>
-                <div className="text-sm text-theme-tertiary">
+                <Text papel="rotulo" tom="fraco" as="div">
                   {t('student_home_stats_study_hours')}
-                </div>
+                </Text>
                 <div className="text-xs text-accent-green mt-1">
                   {stats.averageAttendance}%{' '}
                   {t('student_home_stats_attendance')}
@@ -332,12 +333,12 @@ export default function StudentPageClient({
                 <div className="text-2xl font-bold text-theme-primary mb-1">
                   {stats.currentStreak}
                 </div>
-                <div className="text-sm text-theme-tertiary">
+                <Text papel="rotulo" tom="fraco" as="div">
                   {t('student_home_stats_current_streak')}
-                </div>
-                <div className="text-xs text-theme-tertiary mt-1">
+                </Text>
+                <Text papel="legenda" tom="fraco" as="div" className="mt-1">
                   {t('student_home_stats_record')} {stats.longestStreak}
-                </div>
+                </Text>
               </AnimatedCard>
             </div>
           </div>
@@ -359,9 +360,9 @@ export default function StudentPageClient({
                       <h2 className="text-xl font-bold text-theme-primary classical-title">
                         {t('student_home_quick_actions_title')}
                       </h2>
-                      <p className="text-theme-tertiary text-sm">
+                      <Text papel="rotulo" tom="fraco" as="p">
                         {t('student_home_quick_actions_subtitle')}
-                      </p>
+                      </Text>
                     </div>
                   </Inline>
                   <button
@@ -390,9 +391,9 @@ export default function StudentPageClient({
                         <div className="font-semibold text-theme-primary group-hover:text-brand-primary transition-colors">
                           {t('student_home_quick_actions_calendar')}
                         </div>
-                        <div className="text-sm text-theme-tertiary">
+                        <Text papel="rotulo" tom="fraco" as="div">
                           {t('student_home_quick_actions_calendar_desc')}
-                        </div>
+                        </Text>
                       </div>
                     </Inline>
                   </Link>
@@ -409,9 +410,9 @@ export default function StudentPageClient({
                         <div className="font-semibold text-theme-primary group-hover:text-brand-primary transition-colors">
                           {t('student_home_quick_actions_progress')}
                         </div>
-                        <div className="text-sm text-theme-tertiary">
+                        <Text papel="rotulo" tom="fraco" as="div">
                           {t('student_home_quick_actions_progress_desc')}
-                        </div>
+                        </Text>
                       </div>
                     </Inline>
                   </Link>
@@ -428,9 +429,9 @@ export default function StudentPageClient({
                         <div className="font-semibold text-theme-primary group-hover:text-brand-primary transition-colors">
                           {t('student_home_quick_actions_explore')}
                         </div>
-                        <div className="text-sm text-theme-tertiary">
+                        <Text papel="rotulo" tom="fraco" as="div">
                           {t('student_home_quick_actions_explore_desc')}
-                        </div>
+                        </Text>
                       </div>
                     </Inline>
                   </Link>
@@ -450,11 +451,11 @@ export default function StudentPageClient({
                       <h2 className="text-xl font-bold text-theme-primary classical-title">
                         {t('student_home_recent_lessons_title')}
                       </h2>
-                      <p className="text-theme-tertiary text-sm">
+                      <Text papel="rotulo" tom="fraco" as="p">
                         {t('student_home_recent_lessons_subtitle', {
                           count: recentLessons.length,
                         })}
-                      </p>
+                      </Text>
                     </div>
                   </Inline>
                   <Link
@@ -523,26 +524,37 @@ export default function StudentPageClient({
                           <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-3 pt-3 border-t border-theme-secondary">
                             {lesson.skillsWorked.length > 0 && (
                               <div>
-                                <div className="text-xs font-medium text-theme-tertiary mb-1">
+                                <Text
+                                  papel="legenda"
+                                  tom="fraco"
+                                  as="div"
+                                  className="font-medium mb-1"
+                                >
                                   {t(
                                     'student_home_recent_lessons_skills_worked'
                                   )}
-                                </div>
+                                </Text>
                                 <div className="flex flex-wrap gap-1">
                                   {lesson.skillsWorked
                                     .slice(0, 3)
                                     .map((skill, skillIndex) => (
-                                      <span
+                                      <Text
+                                        papel="legenda"
+                                        tom="suave"
                                         key={skillIndex}
-                                        className="px-2 py-1 bg-theme-elevated text-theme-secondary rounded text-xs"
+                                        className="px-2 py-1 bg-theme-elevated rounded"
                                       >
                                         {skill}
-                                      </span>
+                                      </Text>
                                     ))}
                                   {lesson.skillsWorked.length > 3 && (
-                                    <span className="px-2 py-1 bg-theme-elevated text-theme-tertiary rounded text-xs">
+                                    <Text
+                                      papel="legenda"
+                                      tom="fraco"
+                                      className="px-2 py-1 bg-theme-elevated rounded"
+                                    >
                                       +{lesson.skillsWorked.length - 3}
-                                    </span>
+                                    </Text>
                                   )}
                                 </div>
                               </div>
@@ -550,11 +562,16 @@ export default function StudentPageClient({
 
                             {lesson.improvements.length > 0 && (
                               <div>
-                                <div className="text-xs font-medium text-theme-tertiary mb-1">
+                                <Text
+                                  papel="legenda"
+                                  tom="fraco"
+                                  as="div"
+                                  className="font-medium mb-1"
+                                >
                                   {t(
                                     'student_home_recent_lessons_improvements'
                                   )}
-                                </div>
+                                </Text>
                                 <div className="flex flex-wrap gap-1">
                                   {lesson.improvements
                                     .slice(0, 2)
@@ -580,12 +597,22 @@ export default function StudentPageClient({
                         {/* Homework */}
                         {lesson.homework && (
                           <div className="mt-3 p-3 bg-gradient-to-r from-theme-elevated to-interactive-hover rounded-lg border border-theme-primary/20">
-                            <div className="text-xs text-theme-tertiary mb-1">
+                            <Text
+                              papel="legenda"
+                              tom="fraco"
+                              as="div"
+                              className="mb-1"
+                            >
                               {t('student_home_recent_lessons_homework')}
-                            </div>
-                            <div className="text-sm text-theme-primary line-clamp-2">
+                            </Text>
+                            <Text
+                              papel="rotulo"
+                              tom="forte"
+                              as="div"
+                              className="line-clamp-2"
+                            >
                               {lesson.homework}
-                            </div>
+                            </Text>
                           </div>
                         )}
                       </div>
@@ -616,9 +643,9 @@ export default function StudentPageClient({
                       <h2 className="text-xl font-bold text-theme-primary classical-title">
                         {t('student_home_studies_title')}
                       </h2>
-                      <p className="text-theme-tertiary text-sm">
+                      <Text papel="rotulo" tom="fraco" as="p">
                         {t('student_home_studies_subtitle')}
-                      </p>
+                      </Text>
                     </div>
                   </Inline>
                   <Link
@@ -649,12 +676,17 @@ export default function StudentPageClient({
                       {studyProgress.currentWorks.slice(0, 4).map((work) => (
                         <Link href={`/work/${work.workId}`} key={work.workId}>
                           <div className="classical-card-2 p-3">
-                            <div className="font-medium text-theme-primary text-sm">
+                            <Text
+                              papel="rotulo"
+                              tom="forte"
+                              as="div"
+                              className="font-medium"
+                            >
                               {work.title}
-                            </div>
-                            <div className="text-xs text-theme-tertiary">
+                            </Text>
+                            <Text papel="legenda" tom="fraco" as="div">
                               {work.composer}
-                            </div>
+                            </Text>
                             {work.selectedScore && (
                               <div className="text-xs text-accent-blue mt-1">
                                 {work.selectedScore.title} (
@@ -665,9 +697,14 @@ export default function StudentPageClient({
                         </Link>
                       ))}
                       {studyProgress.currentWorks.length === 0 && (
-                        <p className="text-sm text-theme-tertiary py-4">
+                        <Text
+                          papel="rotulo"
+                          tom="fraco"
+                          as="p"
+                          className="py-4"
+                        >
                           {t('student_home_studies_current_empty')}
-                        </p>
+                        </Text>
                       )}
                     </div>
                   </div>
@@ -695,12 +732,17 @@ export default function StudentPageClient({
                           >
                             <div className="flex items-center justify-between">
                               <div className="flex-1">
-                                <div className="font-medium text-theme-primary text-sm">
+                                <Text
+                                  papel="rotulo"
+                                  tom="forte"
+                                  as="div"
+                                  className="font-medium"
+                                >
                                   {work.title}
-                                </div>
-                                <div className="text-xs text-theme-tertiary">
+                                </Text>
+                                <Text papel="legenda" tom="fraco" as="div">
                                   {work.composer}
-                                </div>
+                                </Text>
                               </div>
                               <Inline gap={1}>
                                 {work.wouldRecommend && (
@@ -712,9 +754,14 @@ export default function StudentPageClient({
                         </Link>
                       ))}
                       {studyProgress.learnedWorks.length === 0 && (
-                        <p className="text-sm text-theme-tertiary py-4">
+                        <Text
+                          papel="rotulo"
+                          tom="fraco"
+                          as="p"
+                          className="py-4"
+                        >
                           {t('student_home_studies_learned_empty')}
-                        </p>
+                        </Text>
                       )}
                     </div>
                   </div>
@@ -736,11 +783,11 @@ export default function StudentPageClient({
                     <h3 className="font-bold text-theme-primary">
                       {t('student_home_today_title')}
                     </h3>
-                    <p className="text-xs text-theme-tertiary">
+                    <Text papel="legenda" tom="fraco" as="p">
                       {t('student_home_today_subtitle', {
                         count: todayLessons.length,
                       })}
-                    </p>
+                    </Text>
                   </div>
                 </Inline>
 
@@ -750,13 +797,18 @@ export default function StudentPageClient({
                       <Inline gap={3}>
                         <div className="w-2 h-12 bg-brand-primary rounded-full"></div>
                         <div className="flex-1">
-                          <div className="font-medium text-theme-primary text-sm">
+                          <Text
+                            papel="rotulo"
+                            tom="forte"
+                            as="div"
+                            className="font-medium"
+                          >
                             {formatTime(lesson.scheduledAt)}
-                          </div>
-                          <div className="text-xs text-theme-tertiary">
+                          </Text>
+                          <Text papel="legenda" tom="fraco" as="div">
                             {t('student_home_recent_lessons_professor')}{' '}
                             {lesson.teacher.name}
-                          </div>
+                          </Text>
                           <div className="text-xs text-accent-blue">
                             {lesson.duration}min
                           </div>
@@ -774,9 +826,9 @@ export default function StudentPageClient({
                   {todayLessons.length === 0 && (
                     <div className="text-center py-6">
                       <PiCalendarBlank className="w-8 h-8 text-theme-tertiary mx-auto mb-2" />
-                      <p className="text-sm text-theme-tertiary">
+                      <Text papel="rotulo" tom="fraco" as="p">
                         {t('student_home_today_empty')}
-                      </p>
+                      </Text>
                     </div>
                   )}
                 </div>
@@ -803,9 +855,9 @@ export default function StudentPageClient({
                     <h3 className="font-bold text-theme-primary">
                       {t('student_home_upcoming_title')}
                     </h3>
-                    <p className="text-xs text-theme-tertiary">
+                    <Text papel="legenda" tom="fraco" as="p">
                       {t('student_home_upcoming_subtitle')}
-                    </p>
+                    </Text>
                   </div>
                 </Inline>
 
@@ -816,14 +868,19 @@ export default function StudentPageClient({
                       className="flex items-center justify-between py-2 border-b border-theme-secondary last:border-0"
                     >
                       <div>
-                        <div className="text-sm font-medium text-theme-primary">
+                        <Text
+                          papel="rotulo"
+                          tom="forte"
+                          as="div"
+                          className="font-medium"
+                        >
                           {t('student_home_recent_lessons_professor')}{' '}
                           {lesson.teacher.name}
-                        </div>
-                        <div className="text-xs text-theme-tertiary">
+                        </Text>
+                        <Text papel="legenda" tom="fraco" as="div">
                           {formatDate(lesson.scheduledAt)} •{' '}
                           {formatTime(lesson.scheduledAt)}
-                        </div>
+                        </Text>
                       </div>
                       <div className="text-xs text-accent-blue font-medium">
                         {lesson.duration}min
@@ -833,9 +890,9 @@ export default function StudentPageClient({
 
                   {upcomingLessons.length === 0 && (
                     <div className="text-center py-4">
-                      <p className="text-sm text-theme-tertiary">
+                      <Text papel="rotulo" tom="fraco" as="p">
                         {t('student_home_upcoming_empty')}
-                      </p>
+                      </Text>
                     </div>
                   )}
                 </div>
@@ -855,11 +912,11 @@ export default function StudentPageClient({
                         ? t('student_home_teachers_title_singular')
                         : t('student_home_teachers_title_plural')}
                     </h3>
-                    <p className="text-xs text-theme-tertiary">
+                    <Text papel="legenda" tom="fraco" as="p">
                       {t('student_home_teachers_subtitle', {
                         count: teachers.length,
                       })}
-                    </p>
+                    </Text>
                   </div>
                 </Inline>
 
@@ -891,13 +948,18 @@ export default function StudentPageClient({
 
                         {/* Info */}
                         <div className="flex-1">
-                          <div className="font-medium text-theme-primary text-sm">
+                          <Text
+                            papel="rotulo"
+                            tom="forte"
+                            as="div"
+                            className="font-medium"
+                          >
                             {teacher.teacherName}
-                          </div>
-                          <div className="text-xs text-theme-tertiary">
+                          </Text>
+                          <Text papel="legenda" tom="fraco" as="div">
                             {teacher.totalLessonsWithTeacher}{' '}
                             {t('student_home_teachers_lessons_count')}
-                          </div>
+                          </Text>
                           {teacher.nextLessonAt && (
                             <div className="text-xs text-accent-blue">
                               {t('student_home_teachers_next_lesson')}{' '}
@@ -911,9 +973,9 @@ export default function StudentPageClient({
 
                   {teachers.length === 0 && (
                     <div className="text-center py-4">
-                      <p className="text-sm text-theme-tertiary">
+                      <Text papel="rotulo" tom="fraco" as="p">
                         {t('student_home_teachers_empty')}
-                      </p>
+                      </Text>
                     </div>
                   )}
                 </div>

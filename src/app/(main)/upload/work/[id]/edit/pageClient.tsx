@@ -35,6 +35,7 @@ import { useToast } from '@/app/hooks/useToast';
 import { deleteUpload } from '@/app/requests/uploads-client';
 import { useTranslation } from '@/app/context/TranslationContext';
 import { Inline } from '@/app/components/ui/Layout';
+import { Text } from '@/app/components/ui/Text';
 
 interface EditWorkClientProps {
   work: any;
@@ -282,10 +283,14 @@ const EditWorkClient = ({
                           )} rounded-full flex items-center space-x-2 shadow-lg`}
                         >
                           <PiTarget className="w-4 h-4 text-theme-primary" />
-                          <span className="text-theme-primary font-semibold text-sm">
+                          <Text
+                            papel="rotulo"
+                            tom="forte"
+                            className="font-semibold"
+                          >
                             {t('work_difficulty_level')}:{' '}
                             {getDifficultyLabel(work.difficultyLevel)}
-                          </span>
+                          </Text>
                         </div>
                       </Inline>
                     )}
@@ -300,9 +305,14 @@ const EditWorkClient = ({
                           <PiCalendarBlank className="w-4 h-4 text-theme-primary" />
                         </div>
                         <div>
-                          <p className="text-sm font-medium text-theme-tertiary">
+                          <Text
+                            papel="rotulo"
+                            tom="fraco"
+                            as="p"
+                            className="font-medium"
+                          >
                             {t('work_info_composition_year')}
-                          </p>
+                          </Text>
                           <p className="text-theme-primary font-semibold">
                             {work.compositionYear}
                           </p>
@@ -317,9 +327,14 @@ const EditWorkClient = ({
                           <PiClock className="w-4 h-4 text-theme-primary" />
                         </div>
                         <div>
-                          <p className="text-sm font-medium text-theme-tertiary">
+                          <Text
+                            papel="rotulo"
+                            tom="fraco"
+                            as="p"
+                            className="font-medium"
+                          >
                             {t('work_info_duration')}
-                          </p>
+                          </Text>
                           <p className="text-theme-primary font-semibold">
                             {formatDuration(work.mediaDuration)}
                           </p>
@@ -334,9 +349,14 @@ const EditWorkClient = ({
                           <PiMusicNotes className="w-4 h-4 text-theme-primary" />
                         </div>
                         <div>
-                          <p className="text-sm font-medium text-theme-tertiary">
+                          <Text
+                            papel="rotulo"
+                            tom="fraco"
+                            as="p"
+                            className="font-medium"
+                          >
                             {t('work_info_tone')}
-                          </p>
+                          </Text>
                           <p className="text-theme-primary font-semibold">
                             {work.tone}
                           </p>
@@ -351,9 +371,14 @@ const EditWorkClient = ({
                           <PiMetronome className="w-4 h-4 text-theme-primary" />
                         </div>
                         <div>
-                          <p className="text-sm font-medium text-theme-tertiary">
+                          <Text
+                            papel="rotulo"
+                            tom="fraco"
+                            as="p"
+                            className="font-medium"
+                          >
                             {t('work_info_tempo_marking')}
-                          </p>
+                          </Text>
                           <p className="text-theme-primary font-semibold">
                             {work.tempoMarking}
                           </p>
@@ -367,9 +392,14 @@ const EditWorkClient = ({
                         <PiMusicNotes className="w-4 h-4 text-theme-primary" />
                       </div>
                       <div>
-                        <p className="text-sm font-medium text-theme-tertiary">
+                        <Text
+                          papel="rotulo"
+                          tom="fraco"
+                          as="p"
+                          className="font-medium"
+                        >
                           {t('work_info_instrument')}
-                        </p>
+                        </Text>
                         <p className="text-theme-primary font-semibold">
                           {work.instrument.name}
                         </p>
@@ -382,9 +412,14 @@ const EditWorkClient = ({
                         <PiMapPin className="w-4 h-4 text-theme-primary" />
                       </div>
                       <div>
-                        <p className="text-sm font-medium text-theme-tertiary">
+                        <Text
+                          papel="rotulo"
+                          tom="fraco"
+                          as="p"
+                          className="font-medium"
+                        >
                           {t('work_info_epoch')}
-                        </p>
+                        </Text>
                         <p className="text-brand-primary font-semibold">
                           {work.epoch.name}
                         </p>
@@ -397,9 +432,14 @@ const EditWorkClient = ({
                         <PiStack className="w-4 h-4 text-theme-primary" />
                       </div>
                       <div>
-                        <p className="text-sm font-medium text-theme-tertiary">
+                        <Text
+                          papel="rotulo"
+                          tom="fraco"
+                          as="p"
+                          className="font-medium"
+                        >
                           {t('work_info_type')}
-                        </p>
+                        </Text>
                         <p className="text-theme-primary font-semibold">
                           {getWorkTypeLabel(work.workType)}
                         </p>
@@ -481,18 +521,24 @@ const EditWorkClient = ({
                       <div className="space-y-4">
                         {work.categoryNames?.length > 0 && (
                           <div>
-                            <span className="text-sm font-medium text-theme-tertiary block mb-3">
+                            <Text
+                              papel="rotulo"
+                              tom="fraco"
+                              className="font-medium block mb-3"
+                            >
                               {t('work_info_categories')}:
-                            </span>
+                            </Text>
                             <div className="flex flex-wrap gap-2">
                               {work.categoryNames.map(
                                 (categoryName: string, index: number) => (
-                                  <span
+                                  <Text
+                                    papel="rotulo"
+                                    tom="ouro"
                                     key={index}
-                                    className="px-4 py-2 bg-gradient-to-r border border-brand-primary/30 text-brand-primary rounded-full text-sm font-medium"
+                                    className="px-4 py-2 bg-gradient-to-r border border-brand-primary/30 rounded-full font-medium"
                                   >
                                     {categoryName}
-                                  </span>
+                                  </Text>
                                 )
                               )}
                             </div>
@@ -501,9 +547,13 @@ const EditWorkClient = ({
 
                         {work.workGenresArr?.length > 0 && (
                           <div>
-                            <span className="text-sm font-medium text-theme-tertiary block mb-3">
+                            <Text
+                              papel="rotulo"
+                              tom="fraco"
+                              className="font-medium block mb-3"
+                            >
                               {t('work_info_work_types')}:
-                            </span>
+                            </Text>
                             <div className="flex flex-wrap gap-2">
                               {work.workGenresArr.map(
                                 (workGenre: string, index: number) => (
@@ -599,9 +649,14 @@ const EditWorkClient = ({
                         >
                           {work.composer.fullName || work.composer.name}
                         </Link>
-                        <p className="text-theme-secondary text-sm mt-1">
+                        <Text
+                          papel="rotulo"
+                          tom="suave"
+                          as="p"
+                          className="mt-1"
+                        >
                           {work.epoch.name}
-                        </p>
+                        </Text>
                       </div>
                     </div>
                   </div>
@@ -631,9 +686,13 @@ const EditWorkClient = ({
                         <span className="font-medium text-theme-tertiary">
                           {t('work_info_cataloged_on')}:
                         </span>
-                        <span className="text-theme-primary font-semibold text-xs">
+                        <Text
+                          papel="legenda"
+                          tom="forte"
+                          className="font-semibold"
+                        >
                           {new Date(work.createdAt).toLocaleDateString('pt-BR')}
-                        </span>
+                        </Text>
                       </div>
                     </div>
                   </div>

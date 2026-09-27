@@ -36,6 +36,7 @@ import Select from '@/app/components/Common/Select';
 import Input from '@/app/components/Common/Inputs';
 import LoadingAdminState from '../../Common/LoadingState';
 import type { UserListFilters } from '@/app/requests/admin/users';
+import { Text } from '@/app/components/ui/Text';
 
 interface FilterOption {
   value: string;
@@ -467,7 +468,12 @@ export default function UsersList() {
 
             {/* Estatísticas Rápidas */}
             {pagination && (
-              <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2 text-sm text-theme-tertiary mb-4 px-2">
+              <Text
+                papel="rotulo"
+                tom="fraco"
+                as="div"
+                className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2 mb-4 px-2"
+              >
                 <span>
                   Mostrando {users.length} de {formatNumber(pagination.total)}{' '}
                   usuários
@@ -475,7 +481,7 @@ export default function UsersList() {
                 <span>
                   Página {pagination.page} de {pagination.pages}
                 </span>
-              </div>
+              </Text>
             )}
           </div>
         </AnimatedItem>

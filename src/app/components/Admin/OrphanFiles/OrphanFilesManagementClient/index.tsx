@@ -45,6 +45,7 @@ import Button from '@/app/components/Common/Button';
 import { MetricCard } from '@/app/components/Admin/Charts/AdminCharts';
 import { IconType } from 'react-icons';
 import { Inline } from '@/app/components/ui/Layout';
+import { Text } from '@/app/components/ui/Text';
 
 // Tabs atualizadas com Cloudinary
 const CATEGORY_TABS = [
@@ -514,13 +515,18 @@ export default function OrphanFilesManagementClient() {
                   <h3 className="text-xl font-bold text-theme-primary mb-2">
                     Escanear Arquivos Órfãos
                     {activeTab !== 'all' && (
-                      <span className="ml-2 text-base font-normal text-theme-secondary">
+                      <Text
+                        papel="corpo"
+                        tom="suave"
+                        as="span"
+                        className="ml-2 font-normal"
+                      >
                         -{' '}
                         {
                           CATEGORY_TABS.find((t) => t.value === activeTab)
                             ?.label
                         }
-                      </span>
+                      </Text>
                     )}
                   </h3>
                   <p className="text-theme-secondary mb-4">
@@ -643,13 +649,18 @@ export default function OrphanFilesManagementClient() {
                   <h3 className="text-xl font-bold text-theme-primary">
                     Arquivos Órfãos ({totalFilteredFiles})
                     {activeTab !== 'all' && (
-                      <span className="text-base font-normal text-theme-secondary ml-2">
+                      <Text
+                        papel="corpo"
+                        tom="suave"
+                        as="span"
+                        className="font-normal ml-2"
+                      >
                         -{' '}
                         {
                           CATEGORY_TABS.find((t) => t.value === activeTab)
                             ?.label
                         }
-                      </span>
+                      </Text>
                     )}
                   </h3>
 

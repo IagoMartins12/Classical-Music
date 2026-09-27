@@ -39,6 +39,7 @@ import { useRouter } from 'next/navigation';
 import { useTranslation } from '@/app/context/TranslationContext';
 import Button from '@/app/components/Common/Button';
 import { Inline } from '@/app/components/ui/Layout';
+import { Text } from '@/app/components/ui/Text';
 
 interface StudentAssignmentsPageClientProps {
   initialData: StudentAssignmentsData | null;
@@ -396,19 +397,29 @@ export default function StudentAssignmentsPageClient({
             {assignment.title}
           </h3>
 
-          <p className="text-sm text-theme-secondary mb-4 line-clamp-2">
+          <Text papel="rotulo" tom="suave" as="p" className="mb-4 line-clamp-2">
             {assignment.description}
-          </p>
+          </Text>
 
           {/* Meta Info */}
           <div className="space-y-2 mb-4">
-            <div className="flex items-center text-sm text-theme-secondary">
+            <Text
+              papel="rotulo"
+              tom="suave"
+              as="div"
+              className="flex items-center"
+            >
               <PiUser className="w-4 h-4 mr-2" />
               {assignment.lesson.teacher.name}
-            </div>
+            </Text>
 
             {assignment.dueDate && (
-              <div className="flex items-center text-sm text-theme-secondary">
+              <Text
+                papel="rotulo"
+                tom="suave"
+                as="div"
+                className="flex items-center"
+              >
                 <PiCalendarBlank className="w-4 h-4 mr-2" />
                 {t('student_assignments_due_date')}{' '}
                 {formatDate(assignment.dueDate)}
@@ -436,15 +447,20 @@ export default function StudentAssignmentsPageClient({
                       )
                     </span>
                   )}
-              </div>
+              </Text>
             )}
 
             {assignment.estimatedTime && (
-              <div className="flex items-center text-sm text-theme-secondary">
+              <Text
+                papel="rotulo"
+                tom="suave"
+                as="div"
+                className="flex items-center"
+              >
                 <PiClock className="w-4 h-4 mr-2" />
                 {formatTime(assignment.estimatedTime)}{' '}
                 {t('student_assignments_estimated_time')}
-              </div>
+              </Text>
             )}
 
             {/* 🆕 WORK SCORES INFO */}
@@ -464,12 +480,12 @@ export default function StudentAssignmentsPageClient({
             assignment.progress !== undefined && (
               <div className="mb-4">
                 <div className="flex items-center justify-between mb-1">
-                  <span className="text-xs text-theme-tertiary">
+                  <Text papel="legenda" tom="fraco">
                     {t('student_assignments_progress_label')}
-                  </span>
-                  <span className="text-xs text-theme-primary">
+                  </Text>
+                  <Text papel="legenda" tom="forte">
                     {assignment.progress}%
-                  </span>
+                  </Text>
                 </div>
                 <div className="w-full bg-theme-secondary rounded-full h-2">
                   <div
@@ -491,9 +507,9 @@ export default function StudentAssignmentsPageClient({
           {/* Goals Preview */}
           {assignment.practiceGoals.length > 0 && (
             <div className="mb-4">
-              <div className="text-xs text-theme-tertiary mb-1">
+              <Text papel="legenda" tom="fraco" as="div" className="mb-1">
                 {t('student_assignments_objectives')}
-              </div>
+              </Text>
               <div className="flex flex-wrap gap-1">
                 {assignment.practiceGoals.slice(0, 2).map((goal, idx) => (
                   <span
@@ -504,9 +520,9 @@ export default function StudentAssignmentsPageClient({
                   </span>
                 ))}
                 {assignment.practiceGoals.length > 2 && (
-                  <span className="text-xs text-theme-tertiary">
+                  <Text papel="legenda" tom="fraco">
                     +{assignment.practiceGoals.length - 2}
-                  </span>
+                  </Text>
                 )}
               </div>
             </div>
@@ -514,10 +530,10 @@ export default function StudentAssignmentsPageClient({
 
           {/* Action Indicator */}
           <div className="flex items-center justify-between">
-            <div className="text-sm text-theme-tertiary">
+            <Text papel="rotulo" tom="fraco" as="div">
               {t('student_assignments_created_at')}{' '}
               {formatDate(assignment.createdAt)}
-            </div>
+            </Text>
             <Link
               className="text-sm text-brand-primary flex gap-2"
               href={`assignments/${assignment.id}`}
@@ -581,19 +597,29 @@ export default function StudentAssignmentsPageClient({
             {assignment.title}
           </h3>
 
-          <p className="text-sm text-theme-secondary mb-4 line-clamp-2">
+          <Text papel="rotulo" tom="suave" as="p" className="mb-4 line-clamp-2">
             {assignment.description}
-          </p>
+          </Text>
 
           {/* Meta Info */}
           <div className="space-y-2 mb-4">
-            <div className="flex items-center text-sm text-theme-secondary">
+            <Text
+              papel="rotulo"
+              tom="suave"
+              as="div"
+              className="flex items-center"
+            >
               <PiUser className="w-4 h-4 mr-2" />
               {assignment.lesson.teacher.name}
-            </div>
+            </Text>
 
             {assignment.dueDate && (
-              <div className="flex items-center text-sm text-theme-secondary">
+              <Text
+                papel="rotulo"
+                tom="suave"
+                as="div"
+                className="flex items-center"
+              >
                 <PiCalendarBlank className="w-4 h-4 mr-2" />
                 {t('student_assignments_due_date')}{' '}
                 {formatDate(assignment.dueDate)}
@@ -621,15 +647,20 @@ export default function StudentAssignmentsPageClient({
                       )
                     </span>
                   )}
-              </div>
+              </Text>
             )}
 
             {assignment.estimatedTime && (
-              <div className="flex items-center text-sm text-theme-secondary">
+              <Text
+                papel="rotulo"
+                tom="suave"
+                as="div"
+                className="flex items-center"
+              >
                 <PiClock className="w-4 h-4 mr-2" />
                 {formatTime(assignment.estimatedTime)}{' '}
                 {t('student_assignments_estimated_time')}
-              </div>
+              </Text>
             )}
           </div>
 
@@ -638,12 +669,12 @@ export default function StudentAssignmentsPageClient({
             assignment.progress !== undefined && (
               <div className="mb-4">
                 <div className="flex items-center justify-between mb-1">
-                  <span className="text-xs text-theme-tertiary">
+                  <Text papel="legenda" tom="fraco">
                     {t('student_assignments_progress_label')}
-                  </span>
-                  <span className="text-xs text-theme-primary">
+                  </Text>
+                  <Text papel="legenda" tom="forte">
                     {assignment.progress}%
-                  </span>
+                  </Text>
                 </div>
                 <div className="w-full bg-theme-secondary rounded-full h-2">
                   <div
@@ -665,9 +696,9 @@ export default function StudentAssignmentsPageClient({
           {/* Goals Preview */}
           {assignment.practiceGoals.length > 0 && (
             <div className="mb-4">
-              <div className="text-xs text-theme-tertiary mb-1">
+              <Text papel="legenda" tom="fraco" as="div" className="mb-1">
                 {t('student_assignments_objectives')}
-              </div>
+              </Text>
               <div className="flex flex-wrap gap-1">
                 {assignment.practiceGoals
                   .slice(0, 2)
@@ -680,9 +711,9 @@ export default function StudentAssignmentsPageClient({
                     </span>
                   ))}
                 {assignment.practiceGoals.length > 2 && (
-                  <span className="text-xs text-theme-tertiary">
+                  <Text papel="legenda" tom="fraco">
                     +{assignment.practiceGoals.length - 2}
-                  </span>
+                  </Text>
                 )}
               </div>
             </div>
@@ -690,10 +721,10 @@ export default function StudentAssignmentsPageClient({
 
           {/* Action Indicator */}
           <div className="flex items-center justify-between">
-            <div className="text-sm text-theme-tertiary">
+            <Text papel="rotulo" tom="fraco" as="div">
               {t('student_assignments_created_at')}{' '}
               {formatDate(assignment.createdAt)}
-            </div>
+            </Text>
             <Link
               className="text-sm text-brand-primary flex gap-2"
               href={`assignments/${assignment.id}`}
@@ -815,9 +846,9 @@ export default function StudentAssignmentsPageClient({
                 <div className="text-2xl font-bold text-theme-primary mb-1">
                   {displayStats.total}
                 </div>
-                <div className="text-sm text-theme-tertiary">
+                <Text papel="rotulo" tom="fraco" as="div">
                   {t('student_assignments_stats_total')}
-                </div>
+                </Text>
               </AnimatedCard>
 
               <AnimatedCard
@@ -830,9 +861,9 @@ export default function StudentAssignmentsPageClient({
                 <div className="text-2xl font-bold text-theme-primary mb-1">
                   {displayStats.pending}
                 </div>
-                <div className="text-sm text-theme-tertiary">
+                <Text papel="rotulo" tom="fraco" as="div">
                   {t('student_assignments_stats_pending')}
-                </div>
+                </Text>
               </AnimatedCard>
 
               <AnimatedCard
@@ -845,9 +876,9 @@ export default function StudentAssignmentsPageClient({
                 <div className="text-2xl font-bold text-theme-primary mb-1">
                   {displayStats.inProgress}
                 </div>
-                <div className="text-sm text-theme-tertiary">
+                <Text papel="rotulo" tom="fraco" as="div">
                   {t('student_assignments_stats_in_progress')}
-                </div>
+                </Text>
               </AnimatedCard>
 
               <AnimatedCard
@@ -860,9 +891,9 @@ export default function StudentAssignmentsPageClient({
                 <div className="text-2xl font-bold text-theme-primary mb-1">
                   {displayStats.completed}
                 </div>
-                <div className="text-sm text-theme-tertiary">
+                <Text papel="rotulo" tom="fraco" as="div">
                   {t('student_assignments_stats_completed')}
-                </div>
+                </Text>
               </AnimatedCard>
 
               <AnimatedCard
@@ -875,9 +906,9 @@ export default function StudentAssignmentsPageClient({
                 <div className="text-2xl font-bold text-theme-primary mb-1">
                   {displayStats.overdue}
                 </div>
-                <div className="text-sm text-theme-tertiary">
+                <Text papel="rotulo" tom="fraco" as="div">
                   {t('student_assignments_stats_overdue')}
-                </div>
+                </Text>
               </AnimatedCard>
             </div>
           </div>
@@ -1071,7 +1102,7 @@ export default function StudentAssignmentsPageClient({
         {filteredAssignments.length !== displayAssignments.length && (
           <AnimatedItem direction="up" springType="gentle">
             <div className="mb-6">
-              <p className="text-theme-secondary text-sm">
+              <Text papel="rotulo" tom="suave" as="p">
                 {t('student_assignments_results_showing', {
                   filtered: filteredAssignments.length,
                   total: displayAssignments.length,
@@ -1080,7 +1111,7 @@ export default function StudentAssignmentsPageClient({
                   ` ${t('student_assignments_results_for_search', {
                     searchTerm,
                   })}`}
-              </p>
+              </Text>
             </div>
           </AnimatedItem>
         )}

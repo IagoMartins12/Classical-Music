@@ -33,6 +33,7 @@ import FeaturedArticlesManager from '../FeaturedArticlesManager';
 import ComposerSearchInputSimple from '@/app/components/ComposerSearchInputSimple';
 import SimpleWorkSearchInput from '@/app/components/SimpleWorkSearchInput';
 import { Inline } from '@/app/components/ui/Layout';
+import { Text } from '@/app/components/ui/Text';
 
 const articleSchema = z.object({
   title: z.string().min(3, 'Título deve ter pelo menos 3 caracteres'),
@@ -640,7 +641,9 @@ export function ArticleForm({
               Slug (URL) *
             </label>
             <Inline gap={2}>
-              <span className="text-theme-tertiary text-sm">/artigo/</span>
+              <Text papel="rotulo" tom="fraco">
+                /artigo/
+              </Text>
               <input
                 type="text"
                 value={formData.slug}
@@ -723,14 +726,14 @@ export function ArticleForm({
                   className="flex flex-col items-center cursor-pointer"
                 >
                   <PiUploadSimple className="w-12 h-12 text-theme-tertiary mb-4" />
-                  <span className="text-sm text-theme-secondary">
+                  <Text papel="rotulo" tom="suave">
                     {uploadingCover
                       ? 'Enviando...'
                       : 'Clique para fazer upload da capa'}
-                  </span>
-                  <span className="text-xs text-theme-tertiary mt-1">
+                  </Text>
+                  <Text papel="legenda" tom="fraco" className="mt-1">
                     PNG, JPG, WebP até 10MB
-                  </span>
+                  </Text>
                 </label>
               </div>
             )}
@@ -811,7 +814,9 @@ export function ArticleForm({
                   className="input-classical-2 w-20 text-center"
                   placeholder="0"
                 />
-                <span className="text-sm text-theme-secondary">min</span>
+                <Text papel="rotulo" tom="suave">
+                  min
+                </Text>
               </div>
             </div>
           </div>
@@ -962,9 +967,9 @@ export function ArticleForm({
                             ✓ Áudio carregado com sucesso
                           </p>
                           {formData.backgroundMusic?.title && (
-                            <p className="text-xs text-theme-tertiary">
+                            <Text papel="legenda" tom="fraco" as="p">
                               {formData.backgroundMusic.title}
-                            </p>
+                            </Text>
                           )}
                           <label
                             htmlFor="background-audio-upload"
@@ -979,14 +984,19 @@ export function ArticleForm({
                           className="cursor-pointer"
                         >
                           <PiUploadSimple className="w-12 h-12 text-theme-tertiary mx-auto mb-2" />
-                          <span className="text-sm text-theme-secondary">
+                          <Text papel="rotulo" tom="suave">
                             {uploadingAudio
                               ? 'Enviando...'
                               : 'Clique para fazer upload'}
-                          </span>
-                          <p className="text-xs text-theme-tertiary mt-2">
+                          </Text>
+                          <Text
+                            papel="legenda"
+                            tom="fraco"
+                            as="p"
+                            className="mt-2"
+                          >
                             MP3, WAV ou OGG (máx 10MB)
-                          </p>
+                          </Text>
                         </label>
                       )}
                     </div>
@@ -1089,7 +1099,9 @@ export function ArticleForm({
                     }
                     className="w-4 h-4 text-brand-primary border-theme-secondary rounded"
                   />
-                  <span className="text-sm text-theme-secondary">Loop</span>
+                  <Text papel="rotulo" tom="suave">
+                    Loop
+                  </Text>
                 </Inline>
 
                 <Inline as="label" gap={2}>
@@ -1107,7 +1119,9 @@ export function ArticleForm({
                     }
                     className="w-4 h-4 text-brand-primary border-theme-secondary rounded"
                   />
-                  <span className="text-sm text-theme-secondary">Autoplay</span>
+                  <Text papel="rotulo" tom="suave">
+                    Autoplay
+                  </Text>
                 </Inline>
               </Inline>
             </div>
@@ -1178,9 +1192,9 @@ export function ArticleForm({
                         <p className="font-medium text-theme-primary">
                           {composer.name}
                         </p>
-                        <p className="text-xs text-theme-tertiary">
+                        <Text papel="legenda" tom="fraco" as="p">
                           {composer.epochName} • {composer.nationality}
-                        </p>
+                        </Text>
                       </div>
                     </Inline>
                     <button
@@ -1239,9 +1253,9 @@ export function ArticleForm({
                       <p className="font-medium text-theme-primary">
                         {work.title}
                       </p>
-                      <p className="text-xs text-theme-tertiary">
+                      <Text papel="legenda" tom="fraco" as="p">
                         {work.composer?.name} • {work.instrument?.name}
-                      </p>
+                      </Text>
                     </div>
                     <button
                       type="button"
@@ -1314,9 +1328,9 @@ export function ArticleForm({
               placeholder="Título customizado para SEO (deixe vazio para usar o título do artigo)"
               className="input-classical-2 w-full"
             />
-            <p className="mt-1 text-xs text-theme-tertiary">
+            <Text papel="legenda" tom="fraco" as="p" className="mt-1">
               Máximo 60 caracteres recomendado
-            </p>
+            </Text>
           </div>
 
           <div>
@@ -1335,9 +1349,9 @@ export function ArticleForm({
               placeholder="Descrição customizada para SEO (deixe vazio para usar a descrição do artigo)"
               className="input-classical-2 w-full resize-none"
             />
-            <p className="mt-1 text-xs text-theme-tertiary">
+            <Text papel="legenda" tom="fraco" as="p" className="mt-1">
               Máximo 160 caracteres recomendado
-            </p>
+            </Text>
           </div>
 
           <MultiSelect

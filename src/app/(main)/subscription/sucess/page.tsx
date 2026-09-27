@@ -4,6 +4,7 @@ import React from 'react';
 import { useRouter } from 'next/navigation';
 import { PiArrowRight, PiCheck, PiConfetti } from 'react-icons/pi';
 import Button from '@/app/components/Common/Button';
+import { Text } from '@/app/components/ui/Text';
 
 export default function SubscriptionSuccessPage() {
   const router = useRouter();
@@ -104,9 +105,9 @@ export default function SubscriptionSuccessPage() {
             </Button>
           </div>
 
-          <p className="text-sm text-theme-tertiary mt-8">
+          <Text papel="rotulo" tom="fraco" as="p" className="mt-8">
             Bem-vindo ao Opus Atlas! Estamos felizes em tê-lo conosco. 🎵
-          </p>
+          </Text>
         </div>
       </div>
     </div>

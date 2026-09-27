@@ -11,6 +11,7 @@ import {
   PiTwitterLogo,
   PiWhatsappLogo,
 } from 'react-icons/pi';
+import { Text } from '@/app/components/ui/Text';
 
 interface ShareButtonsProps {
   // Permite receber URL e título como props (opcional)
@@ -54,9 +55,9 @@ export function ShareButtons({ url, title }: ShareButtonsProps = {}) {
   if (!mounted) {
     return (
       <div className="flex items-center gap-3">
-        <span className="text-sm text-theme-tertiary font-medium">
+        <Text papel="rotulo" tom="fraco" className="font-medium">
           Compartilhar:
-        </span>
+        </Text>
         <div className="flex items-center gap-2">
           {/* Placeholder com mesma estrutura mas sem URLs dinâmicas */}
           {[...Array(6)].map((_, index) => (
@@ -129,9 +130,9 @@ export function ShareButtons({ url, title }: ShareButtonsProps = {}) {
 
   return (
     <div className="flex items-center gap-3">
-      <span className="text-sm text-theme-tertiary font-medium">
+      <Text papel="rotulo" tom="fraco" className="font-medium">
         Compartilhar:
-      </span>
+      </Text>
 
       {/* Social Share Buttons */}
       <div className="flex items-center gap-2">

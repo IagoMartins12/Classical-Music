@@ -22,6 +22,7 @@ import { Dispatch, SetStateAction, useState } from 'react';
 import Button from '../../Common/Button';
 import Checkbox from '../../Common/Checkbox';
 import { Inline } from '@/app/components/ui/Layout';
+import { Text } from '@/app/components/ui/Text';
 
 interface AddStudentModalProps {
   onClose: () => void;
@@ -278,14 +279,19 @@ const AddStudentModal: React.FC<AddStudentModalProps> = ({
                             <div className="font-semibold text-theme-primary">
                               {student.name}
                             </div>
-                            <div className="text-sm text-theme-tertiary">
+                            <Text papel="rotulo" tom="fraco" as="div">
                               {student.email}
-                            </div>
+                            </Text>
                             {student.location && (
-                              <div className="text-xs text-theme-tertiary flex items-center">
+                              <Text
+                                papel="legenda"
+                                tom="fraco"
+                                as="div"
+                                className="flex items-center"
+                              >
                                 <PiMapPin className="w-3 h-3 mr-1" />
                                 {student.location}
-                              </div>
+                              </Text>
                             )}
                           </div>
                         </Inline>
@@ -351,9 +357,9 @@ const AddStudentModal: React.FC<AddStudentModalProps> = ({
                     <h3 className="font-semibold text-theme-primary mb-2">
                       Buscando aluno…
                     </h3>
-                    <p className="text-theme-tertiary text-sm">
+                    <Text papel="rotulo" tom="fraco" as="p">
                       Procurando usuário com o email informado
-                    </p>
+                    </Text>
                   </div>
                 )}
 
@@ -364,10 +370,10 @@ const AddStudentModal: React.FC<AddStudentModalProps> = ({
                     <h3 className="font-semibold text-theme-primary mb-2">
                       Nenhum aluno encontrado
                     </h3>
-                    <p className="text-theme-tertiary text-sm">
+                    <Text papel="rotulo" tom="fraco" as="p">
                       Verifique se o email está correto ou se o aluno já possui
                       cadastro.
-                    </p>
+                    </Text>
                   </div>
                 )}
 
@@ -378,11 +384,16 @@ const AddStudentModal: React.FC<AddStudentModalProps> = ({
                     <h3 className="font-semibold text-theme-primary mb-2">
                       Como adicionar um aluno
                     </h3>
-                    <div className="text-theme-tertiary text-sm space-y-2">
+                    <Text
+                      papel="rotulo"
+                      tom="fraco"
+                      as="div"
+                      className="space-y-2"
+                    >
                       <p>1. Digite o email completo do aluno</p>
                       <p>2. O aluno precisa estar cadastrado</p>
                       <p>3. Escolha “Adicionar Rápido” ou “Com Plano”</p>
-                    </div>
+                    </Text>
                   </div>
                 )}
               </div>
@@ -607,9 +618,9 @@ const AddStudentModal: React.FC<AddStudentModalProps> = ({
                       {/* Selecionadas */}
                       {studyPlan.currentFocus.length > 0 && (
                         <div className="space-y-2">
-                          <p className="text-sm text-theme-secondary">
+                          <Text papel="rotulo" tom="suave" as="p">
                             Áreas selecionadas:
-                          </p>
+                          </Text>
                           <div className="flex flex-wrap gap-2">
                             {studyPlan.currentFocus.map((focus) => (
                               <span

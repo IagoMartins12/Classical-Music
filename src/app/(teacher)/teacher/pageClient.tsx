@@ -38,6 +38,7 @@ import { translateNivel } from '@/app/utils';
 import RecentActivities from '@/app/components/TeacherSystem/RecentActivities';
 import { useTranslation } from '@/app/context/TranslationContext';
 import { Inline, Stack } from '@/app/components/ui/Layout';
+import { Text } from '@/app/components/ui/Text';
 
 interface TeacherProfile {
   id: string;
@@ -373,9 +374,9 @@ export default function TeacherPageClient({
                         <h2 className="text-xl font-bold text-theme-primary classical-title">
                           {t('your_students_title')}
                         </h2>
-                        <p className="text-theme-tertiary text-sm">
+                        <Text papel="rotulo" tom="fraco" as="p">
                           {activeStudents.length} {t('active_students')}
-                        </p>
+                        </Text>
                       </div>
                     </Inline>
 
@@ -469,10 +470,15 @@ export default function TeacherPageClient({
                           <div className="mt-3 p-3 bg-theme-elevated rounded-lg ">
                             <div className="flex items-center justify-between">
                               <div>
-                                <div className="text-sm font-medium text-theme-primary">
+                                <Text
+                                  papel="rotulo"
+                                  tom="forte"
+                                  as="div"
+                                  className="font-medium"
+                                >
                                   {t('next_lesson')}
-                                </div>
-                                <div className="text-xs text-theme-tertiary">
+                                </Text>
+                                <Text papel="legenda" tom="fraco" as="div">
                                   {formatDate(
                                     studentRel.nextLesson.scheduledAt
                                   )}{' '}
@@ -480,7 +486,7 @@ export default function TeacherPageClient({
                                   {formatTime(
                                     studentRel.nextLesson.scheduledAt
                                   )}
-                                </div>
+                                </Text>
                               </div>
                               <PiClock className="w-4 h-4 text-brand-primary" />
                             </div>
@@ -528,9 +534,9 @@ export default function TeacherPageClient({
                     <h3 className="font-bold text-theme-primary">
                       {t('today_title')}
                     </h3>
-                    <p className="text-xs text-theme-tertiary">
+                    <Text papel="legenda" tom="fraco" as="p">
                       {todayLessons.length} {t('lessons_scheduled')}
-                    </p>
+                    </Text>
                   </div>
                 </Inline>
 
@@ -544,12 +550,17 @@ export default function TeacherPageClient({
                         <Inline gap={3}>
                           <div className="w-2 h-12 bg-brand-primary rounded-full"></div>
                           <div className="flex-1">
-                            <div className="font-medium text-theme-primary text-sm">
+                            <Text
+                              papel="rotulo"
+                              tom="forte"
+                              as="div"
+                              className="font-medium"
+                            >
                               {formatTime(lesson.scheduledAt)}
-                            </div>
-                            <div className="text-xs text-theme-tertiary">
+                            </Text>
+                            <Text papel="legenda" tom="fraco" as="div">
                               {lesson.student?.name}
-                            </div>
+                            </Text>
                             <div className="text-xs text-accent-blue">
                               {lesson.duration}min
                             </div>
@@ -565,9 +576,9 @@ export default function TeacherPageClient({
                   {todayLessons.length === 0 && (
                     <div className="text-center py-6">
                       <PiCalendarBlank className="w-8 h-8 text-theme-tertiary mx-auto mb-2" />
-                      <p className="text-sm text-theme-tertiary">
+                      <Text papel="rotulo" tom="fraco" as="p">
                         {t('no_lessons_today')}
-                      </p>
+                      </Text>
                     </div>
                   )}
                 </div>
@@ -594,10 +605,10 @@ export default function TeacherPageClient({
                     <h3 className="font-bold text-theme-primary">
                       {t('upcoming_lessons')}
                     </h3>
-                    <p className="text-xs text-theme-tertiary">
+                    <Text papel="legenda" tom="fraco" as="p">
                       {t('this_week')} ({upcomingLessonsThisWeek.length}{' '}
                       {upcomingLessonsThisWeek.length === 1 ? 'aula' : 'aulas'})
-                    </p>
+                    </Text>
                   </div>
                 </Inline>
 
@@ -611,12 +622,17 @@ export default function TeacherPageClient({
                         <Inline gap={3}>
                           <div className="w-2 h-12 bg-brand-primary rounded-full"></div>
                           <div className="flex-1">
-                            <div className="font-medium text-theme-primary text-sm">
+                            <Text
+                              papel="rotulo"
+                              tom="forte"
+                              as="div"
+                              className="font-medium"
+                            >
                               {formatTime(lesson.scheduledAt)}
-                            </div>
-                            <div className="text-xs text-theme-tertiary">
+                            </Text>
+                            <Text papel="legenda" tom="fraco" as="div">
                               {lesson.student?.name}
-                            </div>
+                            </Text>
                             <div className="text-xs text-accent-blue">
                               {lesson.duration}min
                             </div>
@@ -631,9 +647,9 @@ export default function TeacherPageClient({
 
                   {upcomingLessonsThisWeek.length === 0 && (
                     <div className="text-center py-4">
-                      <p className="text-sm text-theme-tertiary">
+                      <Text papel="rotulo" tom="fraco" as="p">
                         Nenhuma aula agendada para esta semana
-                      </p>
+                      </Text>
                     </div>
                   )}
                 </div>

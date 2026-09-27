@@ -22,6 +22,7 @@ import { useAuth } from '@/app/hooks/useAuth';
 import { useSessionUpdate } from '@/app/hooks/useSessionUpdate';
 import { useTranslation } from '@/app/context/TranslationContext';
 import { Inline } from '@/app/components/ui/Layout';
+import { Text } from '@/app/components/ui/Text';
 
 interface MusicalPreferencesSectionProps {
   user: User;
@@ -202,9 +203,9 @@ const MusicalPreferencesSection: React.FC<MusicalPreferencesSectionProps> = ({
             <h3 className="text-lg font-semibold text-theme-primary">
               {t('preferences_title')}
             </h3>
-            <p className="text-sm text-theme-secondary">
+            <Text papel="rotulo" tom="suave" as="p">
               {t('preferences_loading')}
-            </p>
+            </Text>
           </div>
         </div>
 
@@ -228,9 +229,9 @@ const MusicalPreferencesSection: React.FC<MusicalPreferencesSectionProps> = ({
           <h3 className="text-lg font-semibold text-theme-primary">
             {t('preferences_title')}
           </h3>
-          <p className="text-sm text-theme-secondary">
+          <Text papel="rotulo" tom="suave" as="p">
             {t('preferences_description')}
-          </p>
+          </Text>
         </div>
 
         {!isEditing ? (
@@ -371,7 +372,7 @@ const MusicalPreferencesSection: React.FC<MusicalPreferencesSectionProps> = ({
           <h4 className="font-medium text-brand-primary mb-2">
             {t('preferences_profile_summary')}
           </h4>
-          <div className="text-sm text-theme-secondary space-y-1">
+          <Text papel="rotulo" tom="suave" as="div" className="space-y-1">
             <p>
               • <strong>{t('preferences_level')}</strong>{' '}
               {
@@ -400,7 +401,7 @@ const MusicalPreferencesSection: React.FC<MusicalPreferencesSectionProps> = ({
                 {getEpochName(formData.favoriteEpochId)}
               </p>
             )}
-          </div>
+          </Text>
         </div>
       )}
     </div>

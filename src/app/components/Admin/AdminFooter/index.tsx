@@ -10,6 +10,7 @@ import {
   PiUsers,
 } from 'react-icons/pi';
 import { Inline } from '@/app/components/ui/Layout';
+import { Text } from '@/app/components/ui/Text';
 
 interface SystemMetric {
   label: string;
@@ -140,9 +141,9 @@ export default function AdminFooter() {
                   <metric.icon
                     className={`w-4 h-4 ${getStatusColor(metric.status)}`}
                   />
-                  <span className="text-sm font-medium text-theme-primary">
+                  <Text papel="rotulo" tom="forte" className="font-medium">
                     {metric.label}:
-                  </span>
+                  </Text>
                   <span
                     className={`text-sm font-bold ${getStatusColor(
                       metric.status
@@ -173,9 +174,9 @@ export default function AdminFooter() {
               <Inline gap={2}>
                 <Inline gap={1}>
                   <div className="w-2 h-2 bg-accent-green rounded-full animate-pulse"></div>
-                  <span className="text-sm text-theme-secondary">
+                  <Text papel="rotulo" tom="suave">
                     Sistema Operacional
-                  </span>
+                  </Text>
                 </Inline>
               </Inline>
             </div>
@@ -185,12 +186,12 @@ export default function AdminFooter() {
           <div className="mt-4 pt-4 border-t border-theme-secondary flex flex-col sm:flex-row sm:items-center sm:justify-between space-y-2 sm:space-y-0">
             {/* Copyright and Version */}
             <div className="flex flex-col sm:flex-row sm:items-center sm:space-x-4 space-y-1 sm:space-y-0">
-              <div className="text-xs text-theme-tertiary">
+              <Text papel="legenda" tom="fraco" as="div">
                 © 2024 Classical Music Platform. Todos os direitos reservados.
-              </div>
-              <div className="text-xs text-theme-tertiary">
+              </Text>
+              <Text papel="legenda" tom="fraco" as="div">
                 Versão 2.1.0 • Admin Panel v1.0
-              </div>
+              </Text>
             </div>
 
             {/* Quick Links */}

@@ -19,6 +19,7 @@ import { useLoginModal } from '@/app/stores/authStore';
 import type { WorkScore } from '@/app/types/catalog';
 import { useToast } from '@/app/hooks/useToast';
 import { Inline } from '@/app/components/ui/Layout';
+import { Text } from '@/app/components/ui/Text';
 
 interface FavoriteWorkScore {
   id: string;
@@ -106,7 +107,9 @@ const FavoriteModal = ({
             <h3 className="text-lg font-semibold text-theme-primary classical-title">
               Personalizar Favorito
             </h3>
-            <p className="text-sm text-theme-secondary mt-1">{scoreTitle}</p>
+            <Text papel="rotulo" tom="suave" as="p" className="mt-1">
+              {scoreTitle}
+            </Text>
           </div>
           <button
             onClick={onClose}
@@ -151,9 +154,9 @@ const FavoriteModal = ({
                 </button>
               ))}
               {personalRating > 0 && (
-                <span className="text-sm text-theme-secondary ml-2">
+                <Text papel="rotulo" tom="suave" className="ml-2">
                   {personalRating} de 5
-                </span>
+                </Text>
               )}
             </Inline>
           </div>
@@ -170,9 +173,14 @@ const FavoriteModal = ({
               className="w-full h-24 px-4 py-3 bg-theme-elevated border border-theme-secondary rounded-xl text-theme-primary placeholder-theme-tertiary resize-none focus:outline-none focus:border-brand-primary focus:shadow-theme-glow transition-all duration-300"
               maxLength={500}
             />
-            <div className="text-xs text-theme-tertiary mt-1 text-right">
+            <Text
+              papel="legenda"
+              tom="fraco"
+              as="div"
+              className="mt-1 text-right"
+            >
               {notes.length}/500
-            </div>
+            </Text>
           </div>
 
           {/* Tags */}
@@ -405,9 +413,9 @@ export default function FavoriteScoreButton({
         {/* Badge de rating pessoal */}
         {isFavorited && favoriteData?.personalRating && size !== 'sm' && (
           <div className="absolute -top-1 -right-1 w-5 h-5 bg-gradient-to-br from-accent-gold to-accent-orange rounded-full flex items-center justify-center">
-            <span className="text-xs font-bold text-theme-primary">
+            <Text papel="legenda" tom="forte" className="font-bold">
               {favoriteData.personalRating}
-            </span>
+            </Text>
           </div>
         )}
 

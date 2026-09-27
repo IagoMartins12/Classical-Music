@@ -22,6 +22,7 @@ import Button from '@/app/components/Common/Button';
 import { AnimatedCard } from '@/app/components/animation/AnimatedComponents';
 import toast from 'react-hot-toast';
 import { Inline } from '@/app/components/ui/Layout';
+import { Text } from '@/app/components/ui/Text';
 
 interface LogsCleanupProps {
   onClose?: () => void;
@@ -245,9 +246,9 @@ export default function LogsCleanup({ onClose }: LogsCleanupProps) {
             </h3>
 
             <Inline gap={2}>
-              <span className="text-sm text-theme-tertiary">
+              <Text papel="rotulo" tom="fraco">
                 {selectedDates.size} de {availableDates.length} selecionadas
-              </span>
+              </Text>
             </Inline>
           </div>
 
@@ -319,13 +320,13 @@ export default function LogsCleanup({ onClose }: LogsCleanupProps) {
                       <p className="font-medium text-theme-primary">
                         {formatDate(date)}
                       </p>
-                      <p className="text-sm text-theme-tertiary">
+                      <Text papel="rotulo" tom="fraco" as="p">
                         {date} - {getEstimatedSize([date])}
-                      </p>
+                      </Text>
                     </div>
                   </Inline>
 
-                  <div className="text-sm text-theme-tertiary">
+                  <Text papel="rotulo" tom="fraco" as="div">
                     {(() => {
                       const today = new Date().toISOString().split('T')[0];
                       const daysDiff = Math.floor(
@@ -337,7 +338,7 @@ export default function LogsCleanup({ onClose }: LogsCleanupProps) {
                       if (daysDiff === 1) return 'Ontem';
                       return `${daysDiff} dias atrás`;
                     })()}
-                  </div>
+                  </Text>
                 </div>
               ))
             )}
@@ -350,10 +351,10 @@ export default function LogsCleanup({ onClose }: LogsCleanupProps) {
                 <p className="font-medium text-accent-blue">
                   {selectedDates.size} arquivo(s) selecionado(s)
                 </p>
-                <p className="text-sm text-theme-tertiary">
+                <Text papel="rotulo" tom="fraco" as="p">
                   Tamanho estimado:{' '}
                   {getEstimatedSize(Array.from(selectedDates))}
-                </p>
+                </Text>
               </div>
 
               <Inline gap={2}>

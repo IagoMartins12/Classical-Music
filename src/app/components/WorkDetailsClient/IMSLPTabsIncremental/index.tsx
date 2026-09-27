@@ -31,6 +31,7 @@ import {
 import { useTranslation } from '@/app/context/TranslationContext';
 import useIsTablet from '@/app/hooks/useIsTablet';
 import { Inline, Stack } from '@/app/components/ui/Layout';
+import { Text } from '@/app/components/ui/Text';
 
 // ✅ INTERFACE UNIFICADA SIMPLIFICADA
 interface MixedScoreData {
@@ -650,12 +651,12 @@ export default function IMSLPTabsIncremental({
                 tipo: getTabLabelTranslated(activeTab).toLowerCase(),
               })}
             </h3>
-            <p className="text-theme-secondary text-sm">
+            <Text papel="rotulo" tom="suave" as="p">
               {t('imslp_tabs_visualizou_todas', {
                 total: activeTabStats.total,
                 tipo: getTabLabelTranslated(activeTab).toLowerCase(),
               })}
-            </p>
+            </Text>
           </div>
         </Stack>
       );
@@ -978,7 +979,12 @@ export default function IMSLPTabsIncremental({
                             ).toLowerCase(),
                           })}
                         </h3>
-                        <p className="text-theme-secondary text-sm mb-4">
+                        <Text
+                          papel="rotulo"
+                          tom="suave"
+                          as="p"
+                          className="mb-4"
+                        >
                           {imslpLoadingMore
                             ? t('imslp_tabs_carregando_mais')
                             : t('imslp_tabs_mostrando_de', {
@@ -988,7 +994,7 @@ export default function IMSLPTabsIncremental({
                                   activeTab
                                 ).toLowerCase(),
                               })}
-                        </p>
+                        </Text>
                       </div>
                       <div className="flex flex-wrap gap-4 justify-center">
                         {renderTabSpecificButtons()}
@@ -1006,14 +1012,19 @@ export default function IMSLPTabsIncremental({
                         <h3 className="text-lg font-semibold text-theme-primary mb-2">
                           {t('imslp_tabs_mais_open_atlas')}
                         </h3>
-                        <p className="text-theme-secondary text-sm mb-4">
+                        <Text
+                          papel="rotulo"
+                          tom="suave"
+                          as="p"
+                          className="mb-4"
+                        >
                           {workScoresLoading
                             ? t('imslp_tabs_carregando_mais')
                             : t('imslp_tabs_mostrando_partituras', {
                                 current: workScores?.length || 0,
                                 total: workScoresTotal,
                               })}
-                        </p>
+                        </Text>
                       </div>
                       <Inline
                         as="button"

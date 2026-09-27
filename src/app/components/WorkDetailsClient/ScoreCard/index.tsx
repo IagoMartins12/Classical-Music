@@ -8,6 +8,7 @@ import { useLearningModalStore } from '@/app/stores/useLearningModalStore';
 import type { WorkScore } from '@/app/types/catalog';
 import { useTranslation } from '@/app/context/TranslationContext';
 import { Inline } from '@/app/components/ui/Layout';
+import { Text } from '@/app/components/ui/Text';
 
 interface ScoreCardProps {
   score: WorkScore;
@@ -231,7 +232,12 @@ const ScoreCard = ({
             {shouldShowThumbnail &&
               (score.editor || score.publisher || score.copyright) && (
                 <div className="mt-4 pt-4 border-t border-theme-secondary">
-                  <div className="space-y-2 text-xs text-theme-tertiary">
+                  <Text
+                    papel="legenda"
+                    tom="fraco"
+                    as="div"
+                    className="space-y-2"
+                  >
                     {score.editor && (
                       <div className="flex flex-col sm:flex-row items-center justify-between gap-2">
                         <span className="font-medium text-theme-secondary w-2/12 sm:w-1/12">
@@ -262,7 +268,7 @@ const ScoreCard = ({
                         </span>
                       </div>
                     )}
-                  </div>
+                  </Text>
                 </div>
               )}
           </div>

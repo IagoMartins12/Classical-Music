@@ -28,6 +28,7 @@ import Button from '@/app/components/Common/Button';
 import Link from 'next/link';
 import LoadingAdminState from '../../Common/LoadingState';
 import { Inline } from '@/app/components/ui/Layout';
+import { Text } from '@/app/components/ui/Text';
 
 interface QuickAction {
   title: string;
@@ -172,17 +173,17 @@ export default function NewsletterDashboardClient() {
               <AnimatedCard className="classical-card p-6">
                 <div className="flex items-center justify-between">
                   <div>
-                    <p className="text-sm text-theme-tertiary mb-1">
+                    <Text papel="rotulo" tom="fraco" as="p" className="mb-1">
                       Total Subscribers
-                    </p>
+                    </Text>
                     <p className="text-3xl font-bold text-theme-primary">
                       {stats.totalSubscribers.toLocaleString()}
                     </p>
                     <div className="flex items-center mt-2">
                       <div className="w-2 h-2 bg-accent-green rounded-full mr-2"></div>
-                      <span className="text-xs text-theme-tertiary">
+                      <Text papel="legenda" tom="fraco">
                         {stats.newSubscribersLast30Days} novos (30d)
-                      </span>
+                      </Text>
                     </div>
                   </div>
                   <div className="w-12 h-12 bg-accent-blue/20 rounded-xl flex items-center justify-center">
@@ -194,17 +195,17 @@ export default function NewsletterDashboardClient() {
               <AnimatedCard className="classical-card p-6">
                 <div className="flex items-center justify-between">
                   <div>
-                    <p className="text-sm text-theme-tertiary mb-1">
+                    <Text papel="rotulo" tom="fraco" as="p" className="mb-1">
                       Subscribers Ativos
-                    </p>
+                    </Text>
                     <p className="text-3xl font-bold text-accent-green">
                       {stats.activeSubscribers.toLocaleString()}
                     </p>
                     <div className="flex items-center mt-2">
                       <div className="w-2 h-2 bg-accent-amber rounded-full mr-2"></div>
-                      <span className="text-xs text-theme-tertiary">
+                      <Text papel="legenda" tom="fraco">
                         {stats.pendingSubscribers} pendentes
-                      </span>
+                      </Text>
                     </div>
                   </div>
                   <div className="w-12 h-12 bg-accent-green/20 rounded-xl flex items-center justify-center">
@@ -216,9 +217,9 @@ export default function NewsletterDashboardClient() {
               <AnimatedCard className="classical-card p-6">
                 <div className="flex items-center justify-between">
                   <div>
-                    <p className="text-sm text-theme-tertiary mb-1">
+                    <Text papel="rotulo" tom="fraco" as="p" className="mb-1">
                       Taxa de Abertura
-                    </p>
+                    </Text>
                     <p className="text-3xl font-bold text-accent-purple">
                       {(stats.avgOpenRate * 100).toFixed(1)}%
                     </p>
@@ -238,17 +239,17 @@ export default function NewsletterDashboardClient() {
               <AnimatedCard className="classical-card p-6">
                 <div className="flex items-center justify-between">
                   <div>
-                    <p className="text-sm text-theme-tertiary mb-1">
+                    <Text papel="rotulo" tom="fraco" as="p" className="mb-1">
                       Taxa de Clique
-                    </p>
+                    </Text>
                     <p className="text-3xl font-bold text-accent-amber">
                       {(stats.avgClickRate * 100).toFixed(1)}%
                     </p>
                     <div className="flex items-center mt-2">
                       <PiCursor className="w-3 h-3 text-accent-amber mr-1" />
-                      <span className="text-xs text-theme-tertiary">
+                      <Text papel="legenda" tom="fraco">
                         CTR médio
-                      </span>
+                      </Text>
                     </div>
                   </div>
                   <div className="w-12 h-12 bg-accent-amber/20 rounded-xl flex items-center justify-center">
@@ -280,9 +281,13 @@ export default function NewsletterDashboardClient() {
                             <action.icon className="w-6 h-6 text-white" />
                           </div>
                           {action.badge && (
-                            <span className="px-2 py-1 bg-brand-primary/10 text-brand-primary text-xs font-medium rounded-full">
+                            <Text
+                              papel="legenda"
+                              tom="ouro"
+                              className="px-2 py-1 bg-brand-primary/10 font-medium rounded-full"
+                            >
                               {action.badge}
-                            </span>
+                            </Text>
                           )}
                         </div>
 
@@ -290,15 +295,19 @@ export default function NewsletterDashboardClient() {
                           <h3 className="text-lg font-semibold text-theme-primary mb-2 group-hover:text-brand-primary transition-colors">
                             {action.title}
                           </h3>
-                          <p className="text-theme-secondary text-sm">
+                          <Text papel="rotulo" tom="suave" as="p">
                             {action.description}
-                          </p>
+                          </Text>
                         </div>
 
                         <div className="mt-4 pt-4 border-t border-theme-secondary">
-                          <span className="text-brand-primary font-medium text-sm group-hover:text-brand-secondary transition-colors">
+                          <Text
+                            papel="rotulo"
+                            tom="ouro"
+                            className="font-medium group-hover:text-brand-secondary transition-colors"
+                          >
                             Acessar →
-                          </span>
+                          </Text>
                         </div>
                       </div>
                     </AnimatedCard>
@@ -342,12 +351,17 @@ export default function NewsletterDashboardClient() {
                             </span>
                           </div>
                           <div>
-                            <p className="font-medium text-theme-primary text-sm">
+                            <Text
+                              papel="rotulo"
+                              tom="forte"
+                              as="p"
+                              className="font-medium"
+                            >
                               {subscriber.firstName || 'Usuário'}
-                            </p>
-                            <p className="text-xs text-theme-tertiary">
+                            </Text>
+                            <Text papel="legenda" tom="fraco" as="p">
                               {subscriber.email}
-                            </p>
+                            </Text>
                           </div>
                         </Inline>
                         <div className="text-right">
@@ -362,11 +376,16 @@ export default function NewsletterDashboardClient() {
                               ? 'Ativo'
                               : 'Pendente'}
                           </div>
-                          <p className="text-xs text-theme-tertiary mt-1">
+                          <Text
+                            papel="legenda"
+                            tom="fraco"
+                            as="p"
+                            className="mt-1"
+                          >
                             {new Date(
                               subscriber.subscribedAt
                             ).toLocaleDateString('pt-BR')}
-                          </p>
+                          </Text>
                         </div>
                       </div>
                     ))}
@@ -409,17 +428,22 @@ export default function NewsletterDashboardClient() {
                           <h4 className="font-medium text-theme-primary text-sm">
                             {campaign.name}
                           </h4>
-                          <span className="text-xs text-theme-tertiary">
+                          <Text papel="legenda" tom="fraco">
                             {campaign.sentAt
                               ? new Date(campaign.sentAt).toLocaleDateString(
                                   'pt-BR'
                                 )
                               : 'Não enviada'}
-                          </span>
+                          </Text>
                         </div>
-                        <p className="text-xs text-theme-tertiary mb-2">
+                        <Text
+                          papel="legenda"
+                          tom="fraco"
+                          as="p"
+                          className="mb-2"
+                        >
                           {campaign.subject}
-                        </p>
+                        </Text>
                         <div className="flex items-center justify-between">
                           <Inline gap={4} className="text-xs">
                             <span className="flex items-center">
@@ -431,9 +455,9 @@ export default function NewsletterDashboardClient() {
                               {(campaign.clickRate * 100).toFixed(1)}%
                             </span>
                           </Inline>
-                          <span className="text-xs text-theme-tertiary">
+                          <Text papel="legenda" tom="fraco">
                             {campaign.emailsSent || 0} enviados
-                          </span>
+                          </Text>
                         </div>
                       </div>
                     ))}

@@ -47,6 +47,7 @@ import Link from '@/app/components/LocalizedLink';
 import { useLoginModal } from '@/app/stores/authStore';
 import Image from '@/app/components/SmartImage';
 import { Inline } from '@/app/components/ui/Layout';
+import { Text } from '@/app/components/ui/Text';
 
 const comparisonData = [
   {
@@ -445,9 +446,13 @@ export default function PricingPage({ pricing }: PricingProps) {
                     }`}
                   >
                     Anual
-                    <span className="absolute -top-2 -right-2 bg-accent-green text-theme-primary text-xs px-2 py-1 rounded-full">
+                    <Text
+                      papel="legenda"
+                      tom="forte"
+                      className="absolute -top-2 -right-2 bg-accent-green px-2 py-1 rounded-full"
+                    >
                       -20%
-                    </span>
+                    </Text>
                   </button>
                 </div>
               </AnimatedItem>
@@ -1007,15 +1012,19 @@ export default function PricingPage({ pricing }: PricingProps) {
                           {plan.title}
                         </h4>
                         {plan.highlight && (
-                          <span className="text-xs  py-1 rounded-full bg-accent-amber text-theme-primary font-semibold">
+                          <Text
+                            papel="legenda"
+                            tom="forte"
+                            className="py-1 rounded-full bg-accent-amber font-semibold"
+                          >
                             {plan.highlight}
-                          </span>
+                          </Text>
                         )}
                       </div>
 
-                      <p className="text-sm text-theme-secondary mt-1">
+                      <Text papel="rotulo" tom="suave" as="p" className="mt-1">
                         {plan.description}
-                      </p>
+                      </Text>
                     </div>
                   </div>
 
@@ -1034,9 +1043,9 @@ export default function PricingPage({ pricing }: PricingProps) {
 
                   {/* Preço */}
                   <div className="pt-4 border-t border-theme-secondary">
-                    <p className="text-sm text-theme-tertiary mb-1">
+                    <Text papel="rotulo" tom="fraco" as="p" className="mb-1">
                       Plano selecionado:
-                    </p>
+                    </Text>
                     <p className="text-lg font-bold text-theme-primary">
                       {selectedPlan.type} –{' '}
                       {selectedPlan.period === BillingPeriod.MONTHLY
@@ -1142,10 +1151,15 @@ export default function PricingPage({ pricing }: PricingProps) {
                   )}
                 </Button>
 
-                <p className="text-xs text-theme-tertiary text-center">
+                <Text
+                  papel="legenda"
+                  tom="fraco"
+                  as="p"
+                  className="text-center"
+                >
                   Você será redirecionado para o Stripe para completar o
                   pagamento com segurança.
-                </p>
+                </Text>
               </div>
             );
           })()}
@@ -1234,9 +1248,13 @@ function PlanCard({
     >
       {badge && (
         <div className="absolute top-4 right-4">
-          <span className="inline-block bg-accent-amber text-theme-primary text-xs px-3 py-1 rounded-full font-semibold">
+          <Text
+            papel="legenda"
+            tom="forte"
+            className="inline-block bg-accent-amber px-3 py-1 rounded-full font-semibold"
+          >
             {badge}
-          </span>
+          </Text>
         </div>
       )}
 
@@ -1309,7 +1327,7 @@ function PlanCard({
       )}
 
       <div className="space-y-4">
-        <p className="text-sm font-semibold text-theme-primary mb-4">
+        <Text papel="rotulo" tom="forte" as="p" className="font-semibold mb-4">
           {price === 0
             ? 'O que está incluído:'
             : name === 'Mentor'
@@ -1317,7 +1335,7 @@ function PlanCard({
               : name === 'Maestro'
                 ? 'Tudo do Free + Plus + Maestro + '
                 : 'Tudo do Free + '}
-        </p>
+        </Text>
         {features.map((feature, index) => (
           <Feature
             key={index}
@@ -1388,7 +1406,9 @@ function ComparisonRow({
       return <PiX className="w-6 h-6 text-theme-tertiary mx-auto" />;
     }
     return (
-      <span className="text-sm text-theme-secondary font-medium">{value}</span>
+      <Text papel="rotulo" tom="suave" className="font-medium">
+        {value}
+      </Text>
     );
   };
 
@@ -1439,7 +1459,9 @@ function BenefitCard({
       <h3 className="text-xl font-bold classical-title text-theme-primary mb-2">
         {title}
       </h3>
-      <p className="text-theme-tertiary text-sm mb-4">{subtitle}</p>
+      <Text papel="rotulo" tom="fraco" as="p" className="mb-4">
+        {subtitle}
+      </Text>
       <div className="space-y-2">
         {benefits.map((benefit, index) => (
           <Inline gap={2} key={index} className="justify-center">
@@ -1448,7 +1470,9 @@ function BenefitCard({
                 highlighted ? 'text-brand-primary' : 'text-accent-green'
               }`}
             />
-            <span className="text-sm text-theme-secondary">{benefit}</span>
+            <Text papel="rotulo" tom="suave">
+              {benefit}
+            </Text>
           </Inline>
         ))}
       </div>
@@ -1524,7 +1548,9 @@ function ComparisonMobile({
         highlight ? 'bg-brand-primary/10' : 'bg-theme-secondary/10'
       }`}
     >
-      <span className="text-sm font-medium text-theme-primary">{label}</span>
+      <Text papel="rotulo" tom="forte" className="font-medium">
+        {label}
+      </Text>
       {render()}
     </div>
   );

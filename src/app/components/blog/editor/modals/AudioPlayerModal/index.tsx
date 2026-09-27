@@ -13,6 +13,7 @@ import ComposerSearchInputSimple from '@/app/components/ComposerSearchInputSimpl
 import SimpleWorkSearchInput from '@/app/components/SimpleWorkSearchInput';
 import { findComposerById, getWorkById } from '@/app/requests/catalog-search';
 import { uploadBlogMedia } from '@/app/requests/blog/interactions';
+import { Text } from '@/app/components/ui/Text';
 
 interface AudioPlayerModalProps {
   editor: Editor;
@@ -219,7 +220,9 @@ export function AudioPlayerModal({
                     <p className="text-sm text-green-700 font-medium">
                       ✓ Áudio carregado com sucesso
                     </p>
-                    <p className="text-xs text-theme-tertiary">{audioTitle}</p>
+                    <Text papel="legenda" tom="fraco" as="p">
+                      {audioTitle}
+                    </Text>
                     <label
                       htmlFor="audio-upload"
                       className="inline-block cursor-pointer text-sm text-brand-primary hover:text-brand-secondary underline"
@@ -230,12 +233,12 @@ export function AudioPlayerModal({
                 ) : (
                   <label htmlFor="audio-upload" className="cursor-pointer">
                     <PiUploadSimple className="w-12 h-12 text-theme-tertiary mx-auto mb-2" />
-                    <span className="text-sm text-theme-secondary">
+                    <Text papel="rotulo" tom="suave">
                       {uploading ? 'Enviando...' : 'Clique para fazer upload'}
-                    </span>
-                    <p className="text-xs text-theme-tertiary mt-2">
+                    </Text>
+                    <Text papel="legenda" tom="fraco" as="p" className="mt-2">
                       MP3, WAV ou OGG (máx 10MB)
-                    </p>
+                    </Text>
                   </label>
                 )}
               </div>

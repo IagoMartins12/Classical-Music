@@ -6,6 +6,7 @@ import { createPortal } from 'react-dom';
 import { AnimatedCard } from '../../animation/AnimatedComponents';
 import { PiTrash, PiWarning } from 'react-icons/pi';
 import { Inline } from '@/app/components/ui/Layout';
+import { Text } from '@/app/components/ui/Text';
 
 export default function ConfirmDeleteEventModal({
   isOpen,
@@ -57,9 +58,9 @@ export default function ConfirmDeleteEventModal({
             <h3 className="text-lg font-bold text-theme-primary">
               Confirmar Exclusão
             </h3>
-            <p className="text-sm text-theme-secondary">
+            <Text papel="rotulo" tom="suave" as="p">
               Esta ação não pode ser desfeita
-            </p>
+            </Text>
           </div>
         </Inline>
 
@@ -68,10 +69,10 @@ export default function ConfirmDeleteEventModal({
             Tem certeza que deseja deletar o evento{' '}
             <strong>&quot;{eventTitle}&quot;</strong>?
           </p>
-          <p className="text-sm text-theme-tertiary mt-2">
+          <Text papel="rotulo" tom="fraco" as="p" className="mt-2">
             Todos os dados relacionados ao evento serão permanentemente
             removidos.
-          </p>
+          </Text>
         </div>
 
         <Inline gap={3} className="justify-end">

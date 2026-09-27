@@ -35,6 +35,7 @@ import {
 } from '../../../components/animation/AnimatedComponents';
 import { useTranslation } from '@/app/context/TranslationContext';
 import { Inline, Stack } from '@/app/components/ui/Layout';
+import { Text } from '@/app/components/ui/Text';
 
 interface SupportCategory {
   id: string;
@@ -681,7 +682,11 @@ export default function SupportPage(): JSX.Element {
                                         <h4 className="text-lg font-semibold classical-title text-theme-primary">
                                           {solution.problem}
                                         </h4>
-                                        <span className="text-sm text-brand-primary hidden md:block font-medium">
+                                        <Text
+                                          papel="rotulo"
+                                          tom="ouro"
+                                          className="hidden md:block font-medium"
+                                        >
                                           {expandedSolution === solution.id
                                             ? t(
                                                 'support_jsx_span_children_0__fechar'
@@ -689,7 +694,7 @@ export default function SupportPage(): JSX.Element {
                                             : t(
                                                 'support_jsx_span_children_0__ver_solução'
                                               )}
-                                        </span>
+                                        </Text>
                                       </Inline>
                                       <p className="text-theme-secondary mt-1 classical-body">
                                         {solution.solution}
@@ -716,12 +721,12 @@ export default function SupportPage(): JSX.Element {
                                                 )}
                                         </span>
                                         {solution.steps && (
-                                          <span className="text-xs text-theme-tertiary">
+                                          <Text papel="legenda" tom="fraco">
                                             📋 {solution.steps.length}{' '}
                                             {t(
                                               'support_jsx_span_children_0__passos'
                                             )}
-                                          </span>
+                                          </Text>
                                         )}
                                       </Inline>
                                     </div>
@@ -735,7 +740,7 @@ export default function SupportPage(): JSX.Element {
                                             : ''
                                         }`}
                                       />
-                                      <span className="text-xs text-theme-tertiary">
+                                      <Text papel="legenda" tom="fraco">
                                         {expandedSolution === solution.id
                                           ? t(
                                               'support_jsx_span_children_0__fechar'
@@ -743,7 +748,7 @@ export default function SupportPage(): JSX.Element {
                                           : t(
                                               'support_jsx_span_children_0__abrir'
                                             )}
-                                      </span>
+                                      </Text>
                                     </Stack>
                                   </div>
                                 </div>

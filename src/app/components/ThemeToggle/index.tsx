@@ -4,6 +4,7 @@
 import { useTheme } from '@/app/stores/themeStore';
 import React from 'react';
 import { PiMoon, PiSun } from 'react-icons/pi';
+import { Text } from '@/app/components/ui/Text';
 
 interface ThemeToggleProps {
   variant?: 'default' | 'compact' | 'navbar';
@@ -60,9 +61,9 @@ export const ThemeToggle: React.FC<ThemeToggleProps> = ({
   return (
     <div className={`flex items-center gap-2 ${className}`}>
       {showLabel && (
-        <span className="text-theme-secondary text-sm font-medium">
+        <Text papel="rotulo" tom="suave" className="font-medium">
           {getThemeLabel()}
-        </span>
+        </Text>
       )}
 
       <button

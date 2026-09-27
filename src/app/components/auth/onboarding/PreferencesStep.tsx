@@ -11,6 +11,7 @@ import { translateEpochWithHook } from '@/app/utils/translations/epochTranslatio
 import Input from '../../Common/Inputs';
 import { findComposers } from '@/app/requests/catalog-search';
 import { Inline } from '@/app/components/ui/Layout';
+import { Text } from '@/app/components/ui/Text';
 
 interface Composer {
   id: string;
@@ -182,9 +183,9 @@ const PreferencesStep: React.FC<PreferencesStepProps> = ({
                   }
                 `}
               >
-                <span className="text-sm font-medium text-theme-primary">
+                <Text papel="rotulo" tom="forte" className="font-medium">
                   {translateEpochWithHook(epoch.name, t)}
-                </span>
+                </Text>
               </button>
             ))}
           </div>
@@ -227,9 +228,9 @@ const PreferencesStep: React.FC<PreferencesStepProps> = ({
                     {selectedComposer.fullName}
                   </p>
                   {selectedComposer.epochName && (
-                    <p className="text-sm text-theme-tertiary">
+                    <Text papel="rotulo" tom="fraco" as="p">
                       {translateEpochWithHook(selectedComposer.epochName, t)}
-                    </p>
+                    </Text>
                   )}
                 </div>
                 <button
@@ -260,13 +261,18 @@ const PreferencesStep: React.FC<PreferencesStepProps> = ({
                     />
                   )}
                   <div>
-                    <p className="text-sm font-medium text-theme-primary">
+                    <Text
+                      papel="rotulo"
+                      tom="forte"
+                      as="p"
+                      className="font-medium"
+                    >
                       {composer.fullName}
-                    </p>
+                    </Text>
                     {composer.epochName && (
-                      <p className="text-xs text-theme-tertiary">
+                      <Text papel="legenda" tom="fraco" as="p">
                         {translateEpochWithHook(composer.epochName, t)}
-                      </p>
+                      </Text>
                     )}
                   </div>
                 </Inline>
@@ -279,9 +285,9 @@ const PreferencesStep: React.FC<PreferencesStepProps> = ({
             <div className="text-center py-4">
               <Inline gap={2} className="justify-center">
                 <PiSpinnerGap className="w-4 h-4 animate-spin text-theme-tertiary" />
-                <span className="text-sm text-theme-tertiary">
+                <Text papel="rotulo" tom="fraco">
                   {t('preferences_step_searching_composers')}
-                </span>
+                </Text>
               </Inline>
             </div>
           )}
@@ -300,17 +306,17 @@ const PreferencesStep: React.FC<PreferencesStepProps> = ({
 
           {/* Indicador de resultados da API */}
           {searchedComposers.length > 0 && (
-            <div className="mt-2 text-xs text-theme-tertiary">
+            <Text papel="legenda" tom="fraco" as="div" className="mt-2">
               {t('preferences_step_api_results_hint')}
-            </div>
+            </Text>
           )}
         </div>
       </div>
 
       <div className="mt-8 text-center">
-        <p className="text-sm text-theme-tertiary">
+        <Text papel="rotulo" tom="fraco" as="p">
           {t('preferences_step_footer')}
-        </p>
+        </Text>
       </div>
     </div>
   );

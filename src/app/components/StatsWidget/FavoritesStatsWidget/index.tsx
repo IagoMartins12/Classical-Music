@@ -27,6 +27,7 @@ import { useAchievementSystem } from '../../../hooks/useAchievements';
 import { useTranslation } from '@/app/context/TranslationContext';
 import { useLanguageStore } from '@/app/stores/useLanguageStore';
 import { Inline } from '@/app/components/ui/Layout';
+import { Text } from '@/app/components/ui/Text';
 
 interface FavoritesStatsWidgetProps {
   className?: string;
@@ -166,9 +167,14 @@ export default function FavoritesStatsWidget({
                       <div className="font-medium text-theme-primary">
                         {badge.name}
                       </div>
-                      <div className="text-sm text-theme-tertiary mb-2">
+                      <Text
+                        papel="rotulo"
+                        tom="fraco"
+                        as="div"
+                        className="mb-2"
+                      >
                         {badge.description}
-                      </div>
+                      </Text>
                       {badge.maxProgress && (
                         <Inline gap={2}>
                           <div className="flex-1 bg-theme-primary rounded-full h-2">
@@ -177,9 +183,9 @@ export default function FavoritesStatsWidget({
                               style={{ width: `${progressPercent}%` }}
                             />
                           </div>
-                          <span className="text-xs text-theme-tertiary">
+                          <Text papel="legenda" tom="fraco">
                             {badge.progress}/{badge.maxProgress}
-                          </span>
+                          </Text>
                         </Inline>
                       )}
                     </div>

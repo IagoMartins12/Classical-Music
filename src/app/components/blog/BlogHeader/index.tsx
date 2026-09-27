@@ -31,6 +31,7 @@ import { SearchModal } from '../SearchModal';
 import { useFavoritesStore } from '@/app/stores/useFavoritesStore';
 import { useLearningStore } from '@/app/stores/useLearningStore';
 import { Inline } from '@/app/components/ui/Layout';
+import { Text } from '@/app/components/ui/Text';
 
 interface NavItem {
   label: string;
@@ -367,9 +368,14 @@ export function BlogHeader() {
                 <span className="text-xl font-bold text-gradient-brand gold-shine classical-title">
                   Opus atlas
                 </span>
-                <div className="text-xs text-theme-tertiary -mt-1 font-medium">
+                <Text
+                  papel="legenda"
+                  tom="fraco"
+                  as="div"
+                  className="-mt-1 font-medium"
+                >
                   Blog Musical
-                </div>
+                </Text>
               </div>
             </Link>
 
@@ -438,9 +444,14 @@ export function BlogHeader() {
                                   {item.label}
                                 </div>
                                 {item.description && (
-                                  <div className="text-xs text-theme-tertiary mt-1">
+                                  <Text
+                                    papel="legenda"
+                                    tom="fraco"
+                                    as="div"
+                                    className="mt-1"
+                                  >
                                     {item.description}
-                                  </div>
+                                  </Text>
                                 )}
                               </Link>
                             ))}
@@ -507,14 +518,24 @@ export function BlogHeader() {
                         className="w-8 h-8 rounded-full object-cover border-2 border-brand-primary"
                       />
                     ) : (
-                      <div className="w-8 h-8 bg-brand-gradient rounded-full flex items-center justify-center text-theme-primary text-sm font-semibold">
+                      <Text
+                        papel="rotulo"
+                        tom="forte"
+                        as="div"
+                        className="w-8 h-8 bg-brand-gradient rounded-full flex items-center justify-center font-semibold"
+                      >
                         {getUserInitials()}
-                      </div>
+                      </Text>
                     )}
                     <div className="text-left max-w-32">
-                      <p className="text-sm font-medium text-theme-primary truncate">
+                      <Text
+                        papel="rotulo"
+                        tom="forte"
+                        as="p"
+                        className="font-medium truncate"
+                      >
                         {getUserDisplayName()}
-                      </p>
+                      </Text>
                     </div>
                   </Inline>
 
@@ -526,9 +547,9 @@ export function BlogHeader() {
                         <p className="font-medium text-theme-primary">
                           {getUserDisplayName()}
                         </p>
-                        <p className="text-sm text-theme-tertiary">
+                        <Text papel="rotulo" tom="fraco" as="p">
                           {user.email}
-                        </p>
+                        </Text>
                       </div>
 
                       {/* Menu Items */}
@@ -797,17 +818,29 @@ export function BlogHeader() {
                                   className="w-8 h-8 rounded-full object-cover border-2 border-brand-primary"
                                 />
                               ) : (
-                                <span className="w-8 h-8 bg-brand-gradient rounded-full flex items-center justify-center text-theme-primary text-sm font-semibold">
+                                <Text
+                                  papel="rotulo"
+                                  tom="forte"
+                                  className="w-8 h-8 bg-brand-gradient rounded-full flex items-center justify-center font-semibold"
+                                >
                                   {getUserInitials()}
-                                </span>
+                                </Text>
                               )}
                               <span>
-                                <span className="block font-medium text-theme-primary text-sm">
+                                <Text
+                                  papel="rotulo"
+                                  tom="forte"
+                                  className="block font-medium"
+                                >
                                   {getUserDisplayName()}
-                                </span>
-                                <span className="block text-xs text-theme-tertiary">
+                                </Text>
+                                <Text
+                                  papel="legenda"
+                                  tom="fraco"
+                                  className="block"
+                                >
                                   Perfil
-                                </span>
+                                </Text>
                               </span>
                             </Inline>
                             <PiCaretRight className="w-5 h-5 text-theme-tertiary" />
@@ -897,9 +930,9 @@ export function BlogHeader() {
                           <p className="font-medium text-theme-primary">
                             {getUserDisplayName()}
                           </p>
-                          <p className="text-sm text-theme-tertiary">
+                          <Text papel="rotulo" tom="fraco" as="p">
                             {user.email}
-                          </p>
+                          </Text>
                         </div>
                       </Inline>
 
@@ -1073,9 +1106,14 @@ export function BlogHeader() {
                           >
                             <div className="font-medium">{item.label}</div>
                             {item.description && (
-                              <div className="text-xs text-theme-tertiary mt-1">
+                              <Text
+                                papel="legenda"
+                                tom="fraco"
+                                as="div"
+                                className="mt-1"
+                              >
                                 {item.description}
-                              </div>
+                              </Text>
                             )}
                           </Link>
                         </li>

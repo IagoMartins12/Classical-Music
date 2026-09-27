@@ -17,6 +17,7 @@ import Button from '@/app/components/Common/Button';
 import { AdminUser } from '@/app/hooks/admin/useAdminUsers';
 import Modal from '@/app/components/Modal';
 import { updateAdminUser } from '@/app/requests/admin/users';
+import { Text } from '@/app/components/ui/Text';
 
 interface UserEditModalProps {
   user: AdminUser;
@@ -238,9 +239,9 @@ export default function UserEditModal({
                       <div className="font-medium text-theme-primary">
                         {option.label}
                       </div>
-                      <div className="text-sm text-theme-tertiary">
+                      <Text papel="rotulo" tom="fraco" as="div">
                         {option.description}
-                      </div>
+                      </Text>
                     </div>
                   </label>
                 );

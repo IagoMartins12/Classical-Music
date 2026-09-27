@@ -13,6 +13,7 @@ import {
 } from '@/app/requests/blog/admin-actions';
 import { listCategories } from '@/app/requests/blog/taxonomy';
 import { Inline } from '@/app/components/ui/Layout';
+import { Text } from '@/app/components/ui/Text';
 
 export default function EditArticlePage() {
   const router = useRouter();
@@ -166,7 +167,9 @@ export default function EditArticlePage() {
             <h1 className="text-3xl font-bold text-theme-primary classical-title">
               Editar Artigo
             </h1>
-            <p className="mt-2 text-sm text-theme-secondary">{article.title}</p>
+            <Text papel="rotulo" tom="suave" as="p" className="mt-2">
+              {article.title}
+            </Text>
           </div>
 
           <Inline

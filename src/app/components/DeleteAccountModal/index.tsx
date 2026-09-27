@@ -25,6 +25,7 @@ import { CascadeInfo } from '@/app/hooks/useAccountManagement';
 import { useTranslation } from '@/app/context/TranslationContext';
 import { useIsMobile } from '@/app/hooks/useMobile';
 import { Inline } from '@/app/components/ui/Layout';
+import { Text } from '@/app/components/ui/Text';
 
 interface DeleteAccountModalProps {
   isOpen: boolean;
@@ -200,9 +201,9 @@ const DeleteAccountModal: React.FC<DeleteAccountModalProps> = ({
               <h3 className="text-xl font-bold text-theme-primary">
                 {t('delete_modal_title')}
               </h3>
-              <p className="text-sm text-theme-secondary">
+              <Text papel="rotulo" tom="suave" as="p">
                 {t('delete_modal_subtitle')}
-              </p>
+              </Text>
             </div>
           </Inline>
 
@@ -325,9 +326,9 @@ const DeleteAccountModal: React.FC<DeleteAccountModalProps> = ({
                             <div className="font-bold text-theme-primary">
                               {item.count}
                             </div>
-                            <div className="text-xs text-theme-secondary">
+                            <Text papel="legenda" tom="suave" as="div">
                               {item.label}
-                            </div>
+                            </Text>
                           </div>
                         );
                       })}
@@ -481,10 +482,10 @@ const DeleteAccountModal: React.FC<DeleteAccountModalProps> = ({
 
               {cascadeInfo && (
                 <div className="text-center p-3 bg-theme-secondary rounded-lg">
-                  <p className="text-sm text-theme-secondary">
+                  <Text papel="rotulo" tom="suave" as="p">
                     <strong>{cascadeInfo.totalItems}</strong>{' '}
                     {t('delete_modal_items_removed')}
-                  </p>
+                  </Text>
                 </div>
               )}
             </div>
@@ -510,11 +511,11 @@ const DeleteAccountModal: React.FC<DeleteAccountModalProps> = ({
                 />
               ))}
             </div>
-            <span className="text-xs text-theme-primary ml-2">
+            <Text papel="legenda" tom="forte" className="ml-2">
               {t('delete_modal_step')}{' '}
               {['warning', 'cascade', 'confirm'].indexOf(currentStep) + 1}{' '}
               {t('delete_modal_of')} 3
-            </span>
+            </Text>
           </Inline>
 
           <Inline gap={3}>

@@ -17,6 +17,7 @@ import { translateEpochWithHook } from '@/app/utils/translations/epochTranslatio
 import { ComposerImslp } from '@/app/[lang]/(main)/composers/pageClient';
 import { useTranslation } from '@/app/context/TranslationContext';
 import { Inline, Stack } from '@/app/components/ui/Layout';
+import { Text } from '@/app/components/ui/Text';
 
 interface composerCardListProps {
   composer: ComposerImslp;
@@ -84,26 +85,38 @@ const ComposerCardList: React.FC<composerCardListProps> = ({ composer }) => {
             </Link>
           </h3>
 
-          <span className="text-sm flex items-center gap-2 text-theme-secondary truncate mt-0.5">
+          <Text
+            papel="rotulo"
+            tom="suave"
+            className="flex items-center gap-2 truncate mt-0.5"
+          >
             {composer.fullName}
             <VerificationBadge verified={composer.isVerified} variant="icon" />
-          </span>
+          </Text>
 
           <Inline gap={4} className="mt-1">
             {/* Period */}
             {composer.epochName && (
-              <span className="inline-flex items-center text-xs text-brand-primary font-medium">
+              <Text
+                papel="legenda"
+                tom="ouro"
+                className="inline-flex items-center font-medium"
+              >
                 <PiMusicNotes className="w-3 h-3 mr-1" />
                 {translateEpochWithHook(composer.epochName, t)}
-              </span>
+              </Text>
             )}
 
             {/* Dates */}
             {formatDates() && (
-              <span className="inline-flex items-center text-xs text-theme-tertiary">
+              <Text
+                papel="legenda"
+                tom="fraco"
+                className="inline-flex items-center"
+              >
                 <PiCalendarBlank className="w-3 h-3 mr-1" />
                 {formatDates()}
-              </span>
+              </Text>
             )}
           </Inline>
         </div>
@@ -155,12 +168,17 @@ const ComposerCardList: React.FC<composerCardListProps> = ({ composer }) => {
       {/* Right section - Action indicator */}
       <Inline gap={3} className="flex-shrink-0">
         {/* Action hint */}
-        <div className="hidden md:flex items-center space-x-2 text-theme-tertiary text-xs">
+        <Text
+          papel="legenda"
+          tom="fraco"
+          as="div"
+          className="hidden md:flex items-center space-x-2"
+        >
           <div className="w-1.5 h-1.5 bg-brand-primary rounded-full animate-pulse"></div>
           <span className="font-medium">
             {t('cardlist_jsx_span_children_0__ver_obras')}
           </span>
-        </div>
+        </Text>
 
         {/* Arrow */}
         <div className="w-8 h-8 border border-theme-primary rounded-full flex items-center justify-center group-hover:border-brand-primary group-hover:bg-brand-primary/10 transition-all duration-300">

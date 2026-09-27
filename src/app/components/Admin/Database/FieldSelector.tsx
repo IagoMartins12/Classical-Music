@@ -9,6 +9,7 @@ import Input from '@/app/components/Common/Inputs';
 import Checkbox from '@/app/components/Common/Checkbox';
 import { ModelSchema, ModelField } from '@/app/hooks/admin/useDatabaseStudio';
 import { Inline } from '@/app/components/ui/Layout';
+import { Text } from '@/app/components/ui/Text';
 
 interface FieldSelectorProps {
   isOpen: boolean;
@@ -190,25 +191,33 @@ export default function FieldSelector({
             <div className="text-2xl font-bold text-brand-primary">
               {stats.total}
             </div>
-            <div className="text-sm text-theme-tertiary">Total</div>
+            <Text papel="rotulo" tom="fraco" as="div">
+              Total
+            </Text>
           </div>
           <div className="classical-card p-4">
             <div className="text-2xl font-bold text-green-500">
               {stats.selected}
             </div>
-            <div className="text-sm text-theme-tertiary">Selecionados</div>
+            <Text papel="rotulo" tom="fraco" as="div">
+              Selecionados
+            </Text>
           </div>
           <div className="classical-card p-4">
             <div className="text-2xl font-bold text-red-500">
               {stats.sensitive}
             </div>
-            <div className="text-sm text-theme-tertiary">Sensíveis</div>
+            <Text papel="rotulo" tom="fraco" as="div">
+              Sensíveis
+            </Text>
           </div>
           <div className="classical-card p-4">
             <div className="text-2xl font-bold text-amber-500">
               {stats.readonly}
             </div>
-            <div className="text-sm text-theme-tertiary">Somente leitura</div>
+            <Text papel="rotulo" tom="fraco" as="div">
+              Somente leitura
+            </Text>
           </div>
         </div>
 
@@ -277,9 +286,9 @@ export default function FieldSelector({
                   checked={showSensitive}
                   onChange={(e) => setShowSensitive(e.target.checked)}
                 />
-                <span className="text-sm text-theme-secondary">
+                <Text papel="rotulo" tom="suave">
                   Mostrar sensíveis
-                </span>
+                </Text>
               </Inline>
             </Inline>
           </div>
@@ -323,12 +332,17 @@ export default function FieldSelector({
                             {badge}
                           </Inline>
                           {fieldInfo && (
-                            <div className="text-xs text-theme-tertiary mt-1">
+                            <Text
+                              papel="legenda"
+                              tom="fraco"
+                              as="div"
+                              className="mt-1"
+                            >
                               {fieldInfo.type}
                               {fieldInfo.isList && '[]'}
                               {fieldInfo.isRequired && ' • Obrigatório'}
                               {fieldInfo.isUnique && ' • Único'}
-                            </div>
+                            </Text>
                           )}
                         </div>
                       </Inline>

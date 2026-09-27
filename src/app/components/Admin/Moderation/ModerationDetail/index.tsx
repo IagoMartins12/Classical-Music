@@ -29,6 +29,7 @@ import Button from '@/app/components/Common/Button';
 import { useAdminModeration } from '@/app/hooks/admin/useAdminModeration';
 import { useToast } from '@/app/hooks/useToast';
 import { Inline } from '@/app/components/ui/Layout';
+import { Text } from '@/app/components/ui/Text';
 
 interface ModerationDetailProps {
   itemId: string;
@@ -323,13 +324,13 @@ export default function ModerationDetail({ itemId }: ModerationDetailProps) {
                         <h5 className="font-medium text-theme-primary">
                           {report.reporter}
                         </h5>
-                        <p className="text-sm text-theme-tertiary">
+                        <Text papel="rotulo" tom="fraco" as="p">
                           {report.reason}
-                        </p>
+                        </Text>
                       </div>
-                      <span className="text-xs text-theme-tertiary">
+                      <Text papel="legenda" tom="fraco">
                         {report.timestamp.toLocaleString('pt-BR')}
-                      </span>
+                      </Text>
                     </div>
                     <p className="text-theme-secondary">{report.description}</p>
                   </div>
@@ -438,9 +439,9 @@ export default function ModerationDetail({ itemId }: ModerationDetailProps) {
                     <p className="font-medium text-theme-primary">
                       {item.uploader.name}
                     </p>
-                    <p className="text-sm text-theme-tertiary">
+                    <Text papel="rotulo" tom="fraco" as="p">
                       {item.uploader.email}
-                    </p>
+                    </Text>
                   </div>
                 </Inline>
 
@@ -488,12 +489,17 @@ export default function ModerationDetail({ itemId }: ModerationDetailProps) {
                 <div className="flex items-start space-x-3">
                   <div className="w-2 h-2 bg-accent-blue rounded-full mt-2"></div>
                   <div>
-                    <p className="text-sm font-medium text-theme-primary">
+                    <Text
+                      papel="rotulo"
+                      tom="forte"
+                      as="p"
+                      className="font-medium"
+                    >
                       Item enviado
-                    </p>
-                    <p className="text-xs text-theme-tertiary">
+                    </Text>
+                    <Text papel="legenda" tom="fraco" as="p">
                       {item.submittedAt.toLocaleString('pt-BR')}
-                    </p>
+                    </Text>
                   </div>
                 </div>
 
@@ -501,12 +507,17 @@ export default function ModerationDetail({ itemId }: ModerationDetailProps) {
                   <div key={report.id} className="flex items-start space-x-3">
                     <div className="w-2 h-2 bg-accent-amber rounded-full mt-2"></div>
                     <div>
-                      <p className="text-sm font-medium text-theme-primary">
+                      <Text
+                        papel="rotulo"
+                        tom="forte"
+                        as="p"
+                        className="font-medium"
+                      >
                         Report recebido
-                      </p>
-                      <p className="text-xs text-theme-tertiary">
+                      </Text>
+                      <Text papel="legenda" tom="fraco" as="p">
                         {report.timestamp.toLocaleString('pt-BR')}
-                      </p>
+                      </Text>
                     </div>
                   </div>
                 ))}
@@ -514,10 +525,17 @@ export default function ModerationDetail({ itemId }: ModerationDetailProps) {
                 <div className="flex items-start space-x-3">
                   <div className="w-2 h-2 bg-accent-green rounded-full mt-2"></div>
                   <div>
-                    <p className="text-sm font-medium text-theme-primary">
+                    <Text
+                      papel="rotulo"
+                      tom="forte"
+                      as="p"
+                      className="font-medium"
+                    >
                       Em revisão
-                    </p>
-                    <p className="text-xs text-theme-tertiary">Agora</p>
+                    </Text>
+                    <Text papel="legenda" tom="fraco" as="p">
+                      Agora
+                    </Text>
                   </div>
                 </div>
               </div>

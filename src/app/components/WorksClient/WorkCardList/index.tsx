@@ -15,6 +15,7 @@ import FavoriteButton from '../../FavoriteButton';
 import VerificationBadge from '../../Verification/VerificationBadge';
 import { useTranslation } from '@/app/context/TranslationContext';
 import { Inline, Stack } from '@/app/components/ui/Layout';
+import { Text } from '@/app/components/ui/Text';
 
 interface workCardListProps {
   work: WorkListItem;
@@ -55,10 +56,14 @@ const WorkCardList: React.FC<workCardListProps> = ({ work }) => {
 
             <div className="flex gap-4 items-center">
               {work.opOrCatalog && (
-                <span className="inline-flex items-center px-2 py-0.5 bg-theme-elevated border border-theme-primary/30 text-theme-secondary rounded-md text-xs font-medium flex-shrink-0">
+                <Text
+                  papel="legenda"
+                  tom="suave"
+                  className="inline-flex items-center px-2 py-0.5 bg-theme-elevated border border-theme-primary/30 rounded-md font-medium flex-shrink-0"
+                >
                   <PiBookOpen className="w-2.5 h-2.5 mr-1" />
                   {work.opOrCatalog}
-                </span>
+                </Text>
               )}
               <Stack
                 gap={2}
@@ -90,15 +95,20 @@ const WorkCardList: React.FC<workCardListProps> = ({ work }) => {
             {work.composer.epochName && (
               <>
                 <span className="text-theme-tertiary">•</span>
-                <span className="text-xs text-brand-primary font-medium">
+                <Text papel="legenda" tom="ouro" className="font-medium">
                   {work.composer.epochName}
-                </span>
+                </Text>
               </>
             )}
           </Inline>
 
           {/* Additional details */}
-          <div className="flex flex-wrap items-center gap-4 text-sm text-theme-tertiary">
+          <Text
+            papel="rotulo"
+            tom="fraco"
+            as="div"
+            className="flex flex-wrap items-center gap-4"
+          >
             {work.instrument?.name && (
               <div className="flex items-center">
                 <PiMusicNotes className="w-3 h-3 mr-1 text-brand-primary" />
@@ -128,19 +138,24 @@ const WorkCardList: React.FC<workCardListProps> = ({ work }) => {
                 </span>
               </div>
             )}
-          </div>
+          </Text>
         </div>
       </Inline>
 
       {/* Right section - Action indicator */}
       <Inline gap={3} className="flex-shrink-0">
         {/* Action hint */}
-        <div className="hidden md:flex items-center space-x-2 text-theme-tertiary text-xs">
+        <Text
+          papel="legenda"
+          tom="fraco"
+          as="div"
+          className="hidden md:flex items-center space-x-2"
+        >
           <div className="w-1.5 h-1.5 bg-brand-primary rounded-full animate-pulse"></div>
           <span className="font-medium">
             {t('cardlist_jsx_span_explore_work')}
           </span>
-        </div>
+        </Text>
 
         {/* Arrow */}
         <div className="w-8 h-8 border border-theme-primary rounded-full flex items-center justify-center group-hover:border-brand-primary group-hover:bg-brand-primary/10 transition-all duration-300">

@@ -42,6 +42,7 @@ import { translateNivel } from '@/app/utils';
 import { useTranslation } from '@/app/context/TranslationContext';
 import { checkLessonConflicts } from '@/app/requests/portal/lesson-actions';
 import { Inline } from '@/app/components/ui/Layout';
+import { Text } from '@/app/components/ui/Text';
 
 interface CreateLessonPageClientProps {
   initialData: CreateLessonData;
@@ -222,13 +223,13 @@ function ConflictModal({
                         <p className="font-medium text-accent-red">
                           {conflict.title}
                         </p>
-                        <p className="text-sm text-theme-tertiary">
+                        <Text papel="rotulo" tom="fraco" as="p">
                           {formatDateTime(conflict.scheduledAt)} •{' '}
                           {conflict.duration}min
-                        </p>
-                        <p className="text-sm text-theme-secondary">
+                        </Text>
+                        <Text papel="rotulo" tom="suave" as="p">
                           {t('student')}: {conflict.studentName}
-                        </p>
+                        </Text>
                       </div>
                       <PiWarningCircle className="w-5 h-5 text-accent-red" />
                     </div>
@@ -276,29 +277,36 @@ function ConflictModal({
                     </span>
                   </div>
 
-                  <div className="text-sm text-theme-secondary">
+                  <Text papel="rotulo" tom="suave" as="div">
                     <p>
                       <strong>{t('week')}</strong>{' '}
                       {formatDate(conflicts.weeklyLimitWarning.weekStart)} a{' '}
                       {formatDate(conflicts.weeklyLimitWarning.weekEnd)}
                     </p>
-                  </div>
+                  </Text>
 
                   {conflicts.weeklyLimitWarning.upcomingLessons.length > 0 && (
                     <div>
-                      <p className="text-sm font-medium text-theme-primary mb-2">
+                      <Text
+                        papel="rotulo"
+                        tom="forte"
+                        as="p"
+                        className="font-medium mb-2"
+                      >
                         {t('scheduled_lessons')}
-                      </p>
+                      </Text>
                       <div className="space-y-1">
                         {conflicts.weeklyLimitWarning.upcomingLessons.map(
                           (lesson) => (
-                            <div
+                            <Text
+                              papel="rotulo"
+                              tom="fraco"
+                              as="div"
                               key={lesson.id}
-                              className="text-sm text-theme-tertiary"
                             >
                               • {lesson.title} -{' '}
                               {formatDateTime(lesson.scheduledAt)}
-                            </div>
+                            </Text>
                           )
                         )}
                       </div>
@@ -985,7 +993,7 @@ export default function CreateLessonPageClient({
                             <div className="font-medium text-theme-primary">
                               {selectedStudent.name}
                             </div>
-                            <div className="text-sm text-theme-tertiary">
+                            <Text papel="rotulo" tom="fraco" as="div">
                               {t('level')}{' '}
                               {translateNivel(selectedStudent.level)} • Duração
                               padrão:{' '}
@@ -993,7 +1001,7 @@ export default function CreateLessonPageClient({
                               Max:{' '}
                               {selectedStudent.relationship.maxLessonsPerWeek}/
                               {t('per_week')}
-                            </div>
+                            </Text>
                           </div>
                         </Inline>
                       </div>
@@ -1231,12 +1239,12 @@ export default function CreateLessonPageClient({
                         <div className="space-y-4 p-6 bg-gradient-to-br from-brand-primary/5 to-brand-secondary/5 border border-brand-primary/20 rounded-lg">
                           <Inline gap={3} className="mb-4">
                             <PiInfo className="w-5 h-5 text-brand-primary" />
-                            <div className="text-sm text-theme-secondary">
+                            <Text papel="rotulo" tom="suave" as="div">
                               <p className="font-medium">
                                 {t('intelligent_recurrence_system')}
                               </p>
                               <p>{t('recurrence_description')}</p>
-                            </div>
+                            </Text>
                           </Inline>
 
                           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -1294,12 +1302,17 @@ export default function CreateLessonPageClient({
                                   {validationErrors.recurrenceEnd}
                                 </p>
                               )}
-                              <p className="text-xs text-theme-tertiary mt-1">
+                              <Text
+                                papel="legenda"
+                                tom="fraco"
+                                as="p"
+                                className="mt-1"
+                              >
                                 {t('maximum_date')}{' '}
                                 {formData.scheduledAt
                                   ? getMaxRecurrenceDate(formData.scheduledAt)
                                   : t('select_date')}
-                              </p>
+                              </Text>
                             </div>
                           </div>
 
@@ -1320,7 +1333,7 @@ export default function CreateLessonPageClient({
                                           : t('lesson')}
                                       </span>
                                     </p>
-                                    <p className="text-sm text-theme-tertiary">
+                                    <Text papel="rotulo" tom="fraco" as="p">
                                       {t('from')}{' '}
                                       {new Date(
                                         formData.scheduledAt
@@ -1329,7 +1342,7 @@ export default function CreateLessonPageClient({
                                       {new Date(
                                         formData.recurrenceEnd
                                       ).toLocaleDateString('pt-BR')}
-                                    </p>
+                                    </Text>
                                   </div>
                                 </Inline>
                               </div>
@@ -1365,9 +1378,9 @@ export default function CreateLessonPageClient({
                         <PiMusicNotes className="w-5 h-5" />
                         <span>{t('musical_works')}</span>
                       </Inline>
-                      <div className="text-sm text-theme-secondary">
+                      <Text papel="rotulo" tom="suave" as="div">
                         {selectedWorks.length}/4 {t('selected_works')}
-                      </div>
+                      </Text>
                     </div>
 
                     <WorkSelectionSection
@@ -1666,9 +1679,9 @@ export default function CreateLessonPageClient({
                         <div className="font-medium text-theme-primary">
                           {selectedStudent.name}
                         </div>
-                        <div className="text-sm text-theme-tertiary">
+                        <Text papel="rotulo" tom="fraco" as="div">
                           {t('level')} {translateNivel(selectedStudent.level)}
-                        </div>
+                        </Text>
                       </div>
                     </Inline>
 
@@ -1736,26 +1749,40 @@ export default function CreateLessonPageClient({
                           <PiMusicNotes className="w-4 h-4 text-accent-blue" />
                         </div>
                         <div className="flex-1 min-w-0">
-                          <p className="font-medium text-theme-primary text-sm truncate">
+                          <Text
+                            papel="rotulo"
+                            tom="forte"
+                            as="p"
+                            className="font-medium truncate"
+                          >
                             {work.workTitle}
-                          </p>
-                          <p className="text-xs text-theme-tertiary truncate">
+                          </Text>
+                          <Text
+                            papel="legenda"
+                            tom="fraco"
+                            as="p"
+                            className="truncate"
+                          >
                             {work.composerName}
-                          </p>
+                          </Text>
                           {work.scoreId && (
                             <p className="text-xs text-accent-green">
                               ✓ {t('with_score')}
                             </p>
                           )}
                         </div>
-                        <span className="text-xs bg-theme-secondary/20 text-theme-secondary px-2 py-1 rounded">
+                        <Text
+                          papel="legenda"
+                          tom="suave"
+                          className="bg-theme-secondary/20 px-2 py-1 rounded"
+                        >
                           #{index + 1}
-                        </span>
+                        </Text>
                       </Inline>
                     ))}
 
                     <div className="mt-3 p-3 bg-brand-primary/5 border border-brand-primary/20 rounded-lg">
-                      <div className="text-xs text-theme-secondary">
+                      <Text papel="legenda" tom="suave" as="div">
                         <div className="flex justify-between">
                           <span>{t('total_works')}</span>
                           <span className="font-medium">{worksIds.length}</span>
@@ -1766,7 +1793,7 @@ export default function CreateLessonPageClient({
                             {workScoreIds.length}
                           </span>
                         </div>
-                      </div>
+                      </Text>
                     </div>
                   </div>
                 </AnimatedCard>
@@ -1779,7 +1806,7 @@ export default function CreateLessonPageClient({
                 <h3 className="text-lg font-bold text-theme-primary classical-title mb-4">
                   {t('tips')}
                 </h3>
-                <div className="space-y-3 text-sm text-theme-secondary">
+                <Text papel="rotulo" tom="suave" as="div" className="space-y-3">
                   <div className="flex items-start space-x-2">
                     <PiTarget className="w-4 h-4 text-brand-primary mt-0.5 flex-shrink-0" />
                     <p>{t('tip_clear_objectives')}</p>
@@ -1804,7 +1831,7 @@ export default function CreateLessonPageClient({
                     <PiWarningCircle className="w-4 h-4 text-accent-red mt-0.5 flex-shrink-0" />
                     <p>{t('tip_required_fields')}</p>
                   </div>
-                </div>
+                </Text>
               </AnimatedCard>
             </AnimatedItem>
           </div>

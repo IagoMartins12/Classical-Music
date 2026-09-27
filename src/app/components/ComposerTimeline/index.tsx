@@ -7,6 +7,7 @@ import { PiClock, PiMusicNotes } from 'react-icons/pi';
 import { useTranslation } from '@/app/context/TranslationContext';
 import { ComposerTimelineCard } from '../ComposerTimelineCard';
 import { Inline } from '@/app/components/ui/Layout';
+import { Text } from '@/app/components/ui/Text';
 
 interface ComposerTimeline {
   id: string;
@@ -184,9 +185,14 @@ export function ComposersTimeline({ composers }: Props) {
           <div className="w-12 h-12 bg-gradient-to-br from-brand-primary to-brand-secondary rounded-2xl flex items-center justify-center mx-auto shadow-theme-glow">
             <PiClock className="w-6 h-6 text-theme-primary" />
           </div>
-          <p className="text-theme-tertiary text-sm mt-3 classical-caption">
+          <Text
+            papel="rotulo"
+            tom="fraco"
+            as="p"
+            className="mt-3 classical-caption"
+          >
             {t('timeline_jsx_p_children_0__fim_linha_tempo')}
-          </p>
+          </Text>
         </div>
       </div>
     </div>

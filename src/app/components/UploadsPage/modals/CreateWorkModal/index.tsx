@@ -61,6 +61,7 @@ import {
   uploadWorkMediaFileRequest,
 } from '@/app/requests/work-media';
 import { Inline } from '@/app/components/ui/Layout';
+import { Text } from '@/app/components/ui/Text';
 
 interface CreateWorkModalProps {
   isOpen: boolean;
@@ -1041,11 +1042,11 @@ const CreateWorkModal = ({
                       ? t('modal_work_title_edit')
                       : t('modal_work_title_create')}
                   </h2>
-                  <p className="text-theme-secondary text-sm">
+                  <Text papel="rotulo" tom="suave" as="p">
                     {editingWork
                       ? t('modal_work_subtitle_edit')
                       : t('modal_work_subtitle_create')}
-                  </p>
+                  </Text>
                 </div>
               </Inline>
             </div>
@@ -1061,9 +1062,9 @@ const CreateWorkModal = ({
                   <div className="flex items-center justify-between mb-4">
                     <Inline gap={2}>
                       <PiDatabase className="w-4 h-4 text-theme-tertiary" />
-                      <span className="text-sm font-medium text-theme-primary">
+                      <Text papel="rotulo" tom="forte" className="font-medium">
                         {t('modal_work_scraping_title')}
-                      </span>
+                      </Text>
                       {isEditingExternalSource && (
                         <Inline gap={1} className="text-xs text-blue-600">
                           <PiLock className="w-3 h-3" />
@@ -1319,9 +1320,9 @@ const CreateWorkModal = ({
                   <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4 md:gap-0 mb-4">
                     <Inline gap={2}>
                       <PiStack className="w-4 h-4 text-theme-tertiary" />
-                      <span className="text-sm font-medium text-theme-primary">
+                      <Text papel="rotulo" tom="forte" className="font-medium">
                         Coleção
-                      </span>
+                      </Text>
                     </Inline>
 
                     <Inline as="label" gap={2} className="cursor-pointer">
@@ -1393,10 +1394,15 @@ const CreateWorkModal = ({
                               <span>Verificando dados da obra pai...</span>
                             </Inline>
                           )}
-                          <p className="text-xs text-theme-tertiary mt-2">
+                          <Text
+                            papel="legenda"
+                            tom="fraco"
+                            as="p"
+                            className="mt-2"
+                          >
                             💡 Busque pela obra principal que contém esta peça
                             como parte ou movimento.
-                          </p>
+                          </Text>
                         </div>
                       ) : (
                         <></>
@@ -1629,9 +1635,9 @@ const CreateWorkModal = ({
                   <div className="flex items-center justify-between mb-4">
                     <Inline gap={2}>
                       <PiMusicNotes className="w-4 h-4 text-theme-tertiary" />
-                      <span className="text-sm font-medium text-theme-primary">
+                      <Text papel="rotulo" tom="forte" className="font-medium">
                         {t('modal_work_media_title')}
-                      </span>
+                      </Text>
                     </Inline>
 
                     <Inline as="label" gap={2} className="cursor-pointer">
@@ -1733,9 +1739,14 @@ const CreateWorkModal = ({
                             </Inline>
                           )}
                           {mediaData.audioFile && (
-                            <p className="text-sm text-theme-secondary mt-1">
+                            <Text
+                              papel="rotulo"
+                              tom="suave"
+                              as="p"
+                              className="mt-1"
+                            >
                               Arquivo: {mediaData.audioFile.name}
-                            </p>
+                            </Text>
                           )}
                         </div>
                       </div>
@@ -1891,9 +1902,14 @@ const CreateWorkModal = ({
                                     </Inline>
                                   )}
                                   {mediaData.videoAulaFile && (
-                                    <p className="text-sm text-theme-secondary mt-1">
+                                    <Text
+                                      papel="rotulo"
+                                      tom="suave"
+                                      as="p"
+                                      className="mt-1"
+                                    >
                                       Arquivo: {mediaData.videoAulaFile.name}
-                                    </p>
+                                    </Text>
                                   )}
                                 </div>
                               )}

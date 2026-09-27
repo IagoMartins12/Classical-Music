@@ -7,6 +7,7 @@ import { NodeViewWrapper } from '@tiptap/react';
 import { useState } from 'react';
 import { PiColumns, PiPlay, PiTrash } from 'react-icons/pi';
 import { Inline } from '@/app/components/ui/Layout';
+import { Text } from '@/app/components/ui/Text';
 
 const VideoComparisonComponent = (props: any) => {
   const { node, deleteNode } = props;
@@ -77,9 +78,9 @@ const VideoComparisonComponent = (props: any) => {
                 <h5 className="font-semibold text-theme-primary">
                   {video1.title}
                 </h5>
-                <p className="text-sm text-theme-secondary">
+                <Text papel="rotulo" tom="suave" as="p">
                   {video1.description}
-                </p>
+                </Text>
               </div>
               <PiPlay className="w-5 h-5 text-accent-red" />
             </div>
@@ -103,9 +104,9 @@ const VideoComparisonComponent = (props: any) => {
                 <h5 className="font-semibold text-theme-primary">
                   {video2.title}
                 </h5>
-                <p className="text-sm text-theme-secondary">
+                <Text papel="rotulo" tom="suave" as="p">
                   {video2.description}
-                </p>
+                </Text>
               </div>
               <PiPlay className="w-5 h-5 text-accent-red" />
             </div>

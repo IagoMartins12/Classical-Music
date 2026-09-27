@@ -16,6 +16,7 @@ import {
 import { useNotifications } from '@/app/hooks/notifications/useNotifications';
 import { NotificationData } from '@/app/types/notification';
 import { Inline } from '@/app/components/ui/Layout';
+import { Text } from '@/app/components/ui/Text';
 
 interface NotificationBellProps {
   userRole: 'teacher' | 'student';
@@ -188,9 +189,13 @@ export default function NotificationBell({
 
         {/* Badge de contagem */}
         {bellAppearance.badgeVisible && (
-          <span className="absolute -top-1 -right-1 w-5 h-5 bg-accent-red text-theme-primary text-xs font-bold rounded-full flex items-center justify-center animate-pulse">
+          <Text
+            papel="legenda"
+            tom="forte"
+            className="absolute -top-1 -right-1 w-5 h-5 bg-accent-red font-bold rounded-full flex items-center justify-center animate-pulse"
+          >
             {bellAppearance.badgeText}
-          </span>
+          </Text>
         )}
 
         {/* Indicator de carregamento */}
@@ -209,11 +214,11 @@ export default function NotificationBell({
                 <h3 className="font-semibold text-theme-primary">
                   Notificações
                 </h3>
-                <p className="text-sm text-theme-tertiary">
+                <Text papel="rotulo" tom="fraco" as="p">
                   {unreadCount > 0
                     ? `${unreadCount} não lidas`
                     : 'Tudo em dia!'}
-                </p>
+                </Text>
               </div>
 
               <Inline gap={2}>
@@ -245,9 +250,9 @@ export default function NotificationBell({
             {loading ? (
               <div className="p-8 text-center">
                 <div className="animate-spin w-6 h-6 border-2 border-brand-primary border-t-transparent rounded-full mx-auto"></div>
-                <p className="text-sm text-theme-tertiary mt-2">
+                <Text papel="rotulo" tom="fraco" as="p" className="mt-2">
                   Carregando...
-                </p>
+                </Text>
               </div>
             ) : recentNotifications.length > 0 ? (
               <div className="divide-y divide-theme-secondary">
@@ -284,15 +289,20 @@ export default function NotificationBell({
                             >
                               {notification.title}
                             </h4>
-                            <p className="text-sm text-theme-tertiary mt-1 line-clamp-2">
+                            <Text
+                              papel="rotulo"
+                              tom="fraco"
+                              as="p"
+                              className="mt-1 line-clamp-2"
+                            >
                               {notification.message}
-                            </p>
+                            </Text>
 
                             {/* Ações */}
                             <div className="flex items-center justify-between mt-3">
-                              <span className="text-xs text-theme-tertiary">
+                              <Text papel="legenda" tom="fraco">
                                 {formatTime(notification.createdAt)}
-                              </span>
+                              </Text>
 
                               <Inline gap={2}>
                                 {notification.actionUrl && (

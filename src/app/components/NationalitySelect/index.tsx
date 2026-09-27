@@ -10,6 +10,7 @@ import {
 } from '@/app/data/nationalities';
 import { useLanguageStore } from '@/app/stores/useLanguageStore';
 import { Inline } from '@/app/components/ui/Layout';
+import { Text } from '@/app/components/ui/Text';
 
 interface NationalitySelectProps {
   value: string;
@@ -162,9 +163,9 @@ export default function NationalitySelect({
           {/* Search header */}
           <div className="flex items-center gap-2 px-4 py-3 bg-theme-secondary/10 border-b border-theme-secondary">
             <PiMagnifyingGlass className="w-4 h-4 text-brand-primary" />
-            <span className="text-sm font-medium text-theme-secondary">
+            <Text papel="rotulo" tom="suave" className="font-medium">
               {searchTerm ? getMessage(searchTerm) : getMessage()}
-            </span>
+            </Text>
           </div>
 
           {/* Nationalities list */}
@@ -189,10 +190,15 @@ export default function NationalitySelect({
                       <div className="text-sm font-medium truncate">
                         {nationality.name}
                       </div>
-                      <div className="text-xs text-theme-secondary truncate mt-0.5">
+                      <Text
+                        papel="legenda"
+                        tom="suave"
+                        as="div"
+                        className="truncate mt-0.5"
+                      >
                         {nationality.countries.slice(0, 2).join(', ')}
                         {nationality.countries.length > 2 && '...'}
-                      </div>
+                      </Text>
                     </div>
 
                     {value === nationality.name && (
@@ -206,15 +212,15 @@ export default function NationalitySelect({
             ) : (
               <div className="px-4 py-8 text-center">
                 <PiGlobe className="w-8 h-8 text-theme-tertiary mx-auto mb-2" />
-                <p className="text-sm text-theme-secondary">
+                <Text papel="rotulo" tom="suave" as="p">
                   {searchTerm
                     ? `Nenhuma nacionalidade encontrada para "${searchTerm}"`
                     : 'Nenhuma nacionalidade disponível'}
-                </p>
+                </Text>
                 {searchTerm && (
-                  <p className="text-xs text-theme-tertiary mt-1">
+                  <Text papel="legenda" tom="fraco" as="p" className="mt-1">
                     Tente uma busca mais geral
-                  </p>
+                  </Text>
                 )}
               </div>
             )}

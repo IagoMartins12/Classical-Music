@@ -40,6 +40,7 @@ import { translateNivel } from '@/app/utils';
 import { useTranslation } from '@/app/context/TranslationContext';
 import Button from '@/app/components/Common/Button';
 import { Inline } from '@/app/components/ui/Layout';
+import { Text } from '@/app/components/ui/Text';
 
 interface CreateAssignmentPageClientProps {
   initialData: CreateAssignmentData;
@@ -513,9 +514,9 @@ export default function CreateAssignmentPageClient({
                             )}
                           </>
                         ) : (
-                          <p className="text-sm text-theme-tertiary">
+                          <Text papel="rotulo" tom="fraco" as="p">
                             {t('validation_no_lessons_for_student')}
-                          </p>
+                          </Text>
                         )}
                       </div>
                     )}
@@ -537,13 +538,18 @@ export default function CreateAssignmentPageClient({
                           }}
                           className="input-classical w-full"
                         />
-                        <p className="text-xs text-theme-tertiary mt-1">
+                        <Text
+                          papel="legenda"
+                          tom="fraco"
+                          as="p"
+                          className="mt-1"
+                        >
                           {
                             initialData.assignmentTypes.find(
                               (t) => t.value === formData.type
                             )?.description
                           }
-                        </p>
+                        </Text>
                       </div>
 
                       <div>
@@ -588,12 +594,12 @@ export default function CreateAssignmentPageClient({
                           {validationErrors.title}
                         </p>
                       )}
-                      <p className="text-xs text-theme-tertiary mt-1">
+                      <Text papel="legenda" tom="fraco" as="p" className="mt-1">
                         {t('character_count', {
                           current: formData.title.length,
                           max: 100,
                         })}
-                      </p>
+                      </Text>
                     </div>
 
                     <div>
@@ -619,12 +625,12 @@ export default function CreateAssignmentPageClient({
                           {validationErrors.description}
                         </p>
                       )}
-                      <p className="text-xs text-theme-tertiary mt-1">
+                      <Text papel="legenda" tom="fraco" as="p" className="mt-1">
                         {t('character_count', {
                           current: formData.description.length,
                           max: 1000,
                         })}
-                      </p>
+                      </Text>
                     </div>
                   </div>
 
@@ -751,9 +757,9 @@ export default function CreateAssignmentPageClient({
                         <PiMusicNotes className="w-5 h-5" />
                         <span>{t('musical_pieces')}</span>
                       </Inline>
-                      <div className="text-sm text-theme-secondary">
+                      <Text papel="rotulo" tom="suave" as="div">
                         {t('pieces_count', { count: selectedWorks.length })}
-                      </div>
+                      </Text>
                     </div>
 
                     <WorkSelectionSection
@@ -1042,17 +1048,22 @@ export default function CreateAssignmentPageClient({
                         <div className="font-medium text-theme-primary">
                           {selectedStudent.name}
                         </div>
-                        <div className="text-sm text-theme-tertiary">
+                        <Text papel="rotulo" tom="fraco" as="div">
                           {t('level')} {translateNivel(selectedStudent.level)}
-                        </div>
+                        </Text>
                       </div>
                     </Inline>
 
                     {filteredLessons.length > 0 && (
                       <div>
-                        <p className="text-sm text-theme-tertiary mb-2">
+                        <Text
+                          papel="rotulo"
+                          tom="fraco"
+                          as="p"
+                          className="mb-2"
+                        >
                           {t('recent_lessons')}
-                        </p>
+                        </Text>
                         <div className="space-y-2">
                           {filteredLessons.slice(0, 3).map((lesson) => (
                             <Link
@@ -1103,26 +1114,40 @@ export default function CreateAssignmentPageClient({
                           <PiMusicNotes className="w-4 h-4 text-accent-blue" />
                         </div>
                         <div className="flex-1 min-w-0">
-                          <p className="font-medium text-theme-primary text-sm truncate">
+                          <Text
+                            papel="rotulo"
+                            tom="forte"
+                            as="p"
+                            className="font-medium truncate"
+                          >
                             {work.workTitle}
-                          </p>
-                          <p className="text-xs text-theme-tertiary truncate">
+                          </Text>
+                          <Text
+                            papel="legenda"
+                            tom="fraco"
+                            as="p"
+                            className="truncate"
+                          >
                             {t('composer')}: {work.composerName}
-                          </p>
+                          </Text>
                           {work.scoreId && (
                             <p className="text-xs text-accent-green">
                               {t('piece_with_score')}
                             </p>
                           )}
                         </div>
-                        <span className="text-xs bg-theme-secondary/20 text-theme-secondary px-2 py-1 rounded">
+                        <Text
+                          papel="legenda"
+                          tom="suave"
+                          className="bg-theme-secondary/20 px-2 py-1 rounded"
+                        >
                           #{index + 1}
-                        </span>
+                        </Text>
                       </Inline>
                     ))}
 
                     <div className="mt-3 p-3 bg-brand-primary/5 border border-brand-primary/20 rounded-lg">
-                      <div className="text-xs text-theme-secondary">
+                      <Text papel="legenda" tom="suave" as="div">
                         <div className="flex justify-between">
                           <span>{t('total_pieces')}</span>
                           <span className="font-medium">{worksIds.length}</span>
@@ -1133,7 +1158,7 @@ export default function CreateAssignmentPageClient({
                             {workScoreIds.length}
                           </span>
                         </div>
-                      </div>
+                      </Text>
                     </div>
                   </div>
                 </AnimatedCard>
@@ -1181,9 +1206,9 @@ export default function CreateAssignmentPageClient({
                             {type.label}
                           </span>
                         </Inline>
-                        <p className="text-xs text-theme-secondary">
+                        <Text papel="legenda" tom="suave" as="p">
                           {type.description}
-                        </p>
+                        </Text>
                       </div>
                     );
                   })}
@@ -1197,7 +1222,7 @@ export default function CreateAssignmentPageClient({
                 <h3 className="text-lg font-bold text-theme-primary classical-title mb-4">
                   {t('tips')}
                 </h3>
-                <div className="space-y-3 text-sm text-theme-secondary">
+                <Text papel="rotulo" tom="suave" as="div" className="space-y-3">
                   <div className="flex items-start space-x-2">
                     <PiTarget className="w-4 h-4 text-brand-primary mt-0.5 flex-shrink-0" />
                     <p>{t('be_specific_goals')}</p>
@@ -1218,7 +1243,7 @@ export default function CreateAssignmentPageClient({
                     <PiWarningCircle className="w-4 h-4 text-accent-red mt-0.5 flex-shrink-0" />
                     <p>{t('fill_required_fields')}</p>
                   </div>
-                </div>
+                </Text>
               </AnimatedCard>
             </AnimatedItem>
           </div>

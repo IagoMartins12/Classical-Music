@@ -19,6 +19,7 @@ import {
 } from '../animation/AnimatedComponents';
 import Select from '../Common/Select';
 import { Inline } from '@/app/components/ui/Layout';
+import { Text } from '@/app/components/ui/Text';
 
 interface DifficultyClientProps {
   difficultyData: DifficultyResponse;
@@ -216,16 +217,16 @@ export default function DifficultyClient({
               <h3 className="text-xl font-bold text-theme-primary classical-title">
                 Buscar por Dificuldade
               </h3>
-              <p className="text-theme-secondary text-sm">
+              <Text papel="rotulo" tom="suave" as="p">
                 Encontre obras adequadas ao seu nível técnico
-              </p>
+              </Text>
             </div>
 
             {/* System Selector */}
             <Inline gap={3}>
-              <span className="text-sm font-medium text-theme-secondary">
+              <Text papel="rotulo" tom="suave" className="font-medium">
                 Sistema:
-              </span>
+              </Text>
               <Select
                 options={difficultyData.systems.map((system) => ({
                   value: system.system,
@@ -302,12 +303,16 @@ export default function DifficultyClient({
           {/* Active Filters */}
           {hasActiveFilters && (
             <div className="flex items-center gap-3 mb-4 flex-wrap pt-4 border-t border-theme-secondary">
-              <span className="text-sm font-medium text-theme-secondary">
+              <Text papel="rotulo" tom="suave" className="font-medium">
                 Filtros ativos:
-              </span>
+              </Text>
 
               {searchParams.search && (
-                <span className="inline-flex items-center gap-2 px-3 py-1 bg-brand-primary/10 border border-brand-primary/30 text-brand-primary rounded-full text-sm">
+                <Text
+                  papel="rotulo"
+                  tom="ouro"
+                  className="inline-flex items-center gap-2 px-3 py-1 bg-brand-primary/10 border border-brand-primary/30 rounded-full"
+                >
                   Busca: &quot;{searchParams.search}&quot;
                   <button
                     onClick={() => updateSearchParams({ search: undefined })}
@@ -315,7 +320,7 @@ export default function DifficultyClient({
                   >
                     <PiX className="w-3 h-3" />
                   </button>
-                </span>
+                </Text>
               )}
 
               <button

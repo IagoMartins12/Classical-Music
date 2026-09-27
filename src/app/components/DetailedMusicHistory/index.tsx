@@ -16,6 +16,7 @@ import {
   PiUser,
 } from 'react-icons/pi';
 import { Inline } from '@/app/components/ui/Layout';
+import { Text } from '@/app/components/ui/Text';
 
 // Interfaces TypeScript
 interface AccordionSectionProps {
@@ -74,15 +75,21 @@ const AccordionSection = memo<AccordionSectionProps>(
                 <h3 className="text-2xl font-bold text-theme-primary classical-title group-hover:text-brand-primary transition-colors duration-200">
                   {title}
                 </h3>
-                <p className="text-theme-tertiary text-sm">{subtitle}</p>
+                <Text papel="rotulo" tom="fraco" as="p">
+                  {subtitle}
+                </Text>
               </div>
             </Inline>
             <Inline gap={2}>
-              <span className="text-theme-tertiary text-sm font-medium hidden sm:block">
+              <Text
+                papel="rotulo"
+                tom="fraco"
+                className="font-medium hidden sm:block"
+              >
                 {isExpanded
                   ? t('detailed_jsx_span_children_0__recolher')
                   : t('detailed_jsx_span_children_0__expandir')}
-              </span>
+              </Text>
               <div
                 className={`w-8 h-8 bg-gradient-to-br ${gradient} rounded-xl flex items-center justify-center transition-transform duration-300 will-change-transform ${
                   isExpanded ? 'rotate-180' : 'rotate-0'
@@ -172,7 +179,9 @@ const TimelineOverview = memo<SectionProps>(({ isExpanded, onToggle }) => {
             >
               {era.years}
             </p>
-            <p className="text-theme-secondary text-sm">{era.sub}</p>
+            <Text papel="rotulo" tom="suave" as="p">
+              {era.sub}
+            </Text>
           </div>
         ))}
       </div>

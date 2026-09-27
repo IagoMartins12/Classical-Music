@@ -31,6 +31,7 @@ import {
   AnimatedItem,
 } from '../../../../components/animation/AnimatedComponents';
 import { Inline } from '@/app/components/ui/Layout';
+import { Text } from '@/app/components/ui/Text';
 
 interface PublicTeacherDetailsPageClientProps {
   teacher: TeacherDetailedProfile;
@@ -204,9 +205,9 @@ export default function PublicTeacherDetailsPageClient({
                           <p className="text-lg font-bold text-theme-primary">
                             {teacher.yearsExperience} anos
                           </p>
-                          <p className="text-sm text-theme-tertiary">
+                          <Text papel="rotulo" tom="fraco" as="p">
                             Experiência
-                          </p>
+                          </Text>
                         </div>
                       </div>
 
@@ -219,7 +220,9 @@ export default function PublicTeacherDetailsPageClient({
                           <p className="text-lg font-bold text-theme-primary">
                             {teacher.totalStudents}
                           </p>
-                          <p className="text-sm text-theme-tertiary">Alunos</p>
+                          <Text papel="rotulo" tom="fraco" as="p">
+                            Alunos
+                          </Text>
                         </div>
                       </div>
 
@@ -233,9 +236,9 @@ export default function PublicTeacherDetailsPageClient({
                             <p className="text-lg font-bold text-theme-primary">
                               {teacher.averageRating.toFixed(1)}
                             </p>
-                            <p className="text-sm text-theme-tertiary">
+                            <Text papel="rotulo" tom="fraco" as="p">
                               Avaliação
-                            </p>
+                            </Text>
                           </div>
                         </div>
                       )}
@@ -249,7 +252,9 @@ export default function PublicTeacherDetailsPageClient({
                           <p className="text-lg font-bold text-theme-primary">
                             {teacher.totalLessons}
                           </p>
-                          <p className="text-sm text-theme-tertiary">Aulas</p>
+                          <Text papel="rotulo" tom="fraco" as="p">
+                            Aulas
+                          </Text>
                         </div>
                       </div>
                     </div>
@@ -265,9 +270,14 @@ export default function PublicTeacherDetailsPageClient({
                             <PiMapPin className="w-4 h-4 text-theme-primary" />
                           </div>
                           <div>
-                            <p className="text-sm font-medium text-theme-tertiary">
+                            <Text
+                              papel="rotulo"
+                              tom="fraco"
+                              as="p"
+                              className="font-medium"
+                            >
                               Localização
-                            </p>
+                            </Text>
                             <p className="text-theme-primary font-semibold">
                               {teacher.location}
                             </p>
@@ -281,9 +291,14 @@ export default function PublicTeacherDetailsPageClient({
                           <PiCalendarBlank className="w-4 h-4 text-theme-primary" />
                         </div>
                         <div>
-                          <p className="text-sm font-medium text-theme-tertiary">
+                          <Text
+                            papel="rotulo"
+                            tom="fraco"
+                            as="p"
+                            className="font-medium"
+                          >
                             Ensina desde
-                          </p>
+                          </Text>
                           <p className="text-theme-primary font-semibold">
                             {new Date(teacher.teachingSince).getFullYear()}
                           </p>
@@ -297,9 +312,14 @@ export default function PublicTeacherDetailsPageClient({
                             <PiTrendUp className="w-4 h-4 text-theme-primary" />
                           </div>
                           <div>
-                            <p className="text-sm font-medium text-theme-tertiary">
+                            <Text
+                              papel="rotulo"
+                              tom="fraco"
+                              as="p"
+                              className="font-medium"
+                            >
                               Taxa de Conclusão
-                            </p>
+                            </Text>
                             <p className="text-theme-primary font-semibold">
                               {(teacher.completionRate * 100).toFixed(0)}%
                             </p>
@@ -313,9 +333,14 @@ export default function PublicTeacherDetailsPageClient({
                           <PiChatCircle className="w-4 h-4 text-theme-primary" />
                         </div>
                         <div>
-                          <p className="text-sm font-medium text-theme-tertiary">
+                          <Text
+                            papel="rotulo"
+                            tom="fraco"
+                            as="p"
+                            className="font-medium"
+                          >
                             Tempo de Resposta
-                          </p>
+                          </Text>
                           <p className="text-theme-primary font-semibold">
                             {teacher.contactPreferences.responseTime}
                           </p>
@@ -418,11 +443,11 @@ export default function PublicTeacherDetailsPageClient({
                               : 'bg-accent-red'
                           }`}
                         ></div>
-                        <p className="text-sm text-theme-secondary">
+                        <Text papel="rotulo" tom="suave" as="p">
                           {teacher.contactPreferences.acceptingStudents
                             ? `Aceitando novos alunos (máx. ${teacher.contactPreferences.maxStudentsPerWeek}/semana)`
                             : 'Não está aceitando novos alunos no momento'}
-                        </p>
+                        </Text>
                       </Inline>
                     </div>
                   </AnimatedItem>
@@ -486,12 +511,16 @@ export default function PublicTeacherDetailsPageClient({
                 <div className="flex flex-wrap gap-3">
                   {teacher.specialties.map((specialty, index) => (
                     <AnimatedItem key={index} hover="scale" springType="bouncy">
-                      <span className="inline-flex items-center px-4 py-2 bg-gradient-to-r from-brand-primary/10 to-brand-secondary/10 border border-brand-primary/30 rounded-full text-sm font-medium text-brand-primary shadow-theme-small hover:shadow-theme-medium transition-all duration-300 hover:scale-105 group">
+                      <Text
+                        papel="rotulo"
+                        tom="ouro"
+                        className="inline-flex items-center px-4 py-2 bg-gradient-to-r from-brand-primary/10 to-brand-secondary/10 border border-brand-primary/30 rounded-full font-medium shadow-theme-small hover:shadow-theme-medium transition-all duration-300 hover:scale-105 group"
+                      >
                         <div className="w-4 h-4 bg-gradient-to-br from-brand-primary to-brand-secondary rounded-full flex items-center justify-center mr-2 group-hover:scale-110 transition-transform duration-300">
                           <PiMusicNotes className="w-3 h-3 text-theme-primary" />
                         </div>
                         {specialty}
-                      </span>
+                      </Text>
                     </AnimatedItem>
                   ))}
 
@@ -689,14 +718,14 @@ export default function PublicTeacherDetailsPageClient({
                   <div className="flex items-start space-x-3">
                     <PiInfo className="w-5 h-5 text-brand-primary mt-1" />
                     <div>
-                      <p className="text-sm text-theme-secondary">
+                      <Text papel="rotulo" tom="suave" as="p">
                         <strong className="text-brand-primary">
                           {teacher.name}
                         </strong>{' '}
                         {teacher.contactPreferences.acceptingStudents
                           ? `está aceitando novos alunos e pode receber até ${teacher.contactPreferences.maxStudentsPerWeek} aulas por semana. Entre em contato para agendar uma aula experimental.`
                           : 'não está aceitando novos alunos no momento, mas você pode entrar em contato para entrar na lista de espera.'}
-                      </p>
+                      </Text>
                     </div>
                   </div>
                 </div>

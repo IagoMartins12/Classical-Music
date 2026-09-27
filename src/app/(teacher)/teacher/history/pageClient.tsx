@@ -35,6 +35,7 @@ import Link from 'next/link';
 import { useTranslation } from '@/app/context/TranslationContext';
 import { loadSchoolActivities } from '@/app/requests/portal/school-activities';
 import { Inline } from '@/app/components/ui/Layout';
+import { Text } from '@/app/components/ui/Text';
 
 interface Activity {
   id: string;
@@ -448,9 +449,9 @@ const TeacherHistoryClient = ({
                   <h3 className="text-lg font-semibold text-theme-primary">
                     {t('filters_title')}
                   </h3>
-                  <p className="text-sm text-theme-tertiary">
+                  <Text papel="rotulo" tom="fraco" as="p">
                     {totalCount} {t('activities_found')}
-                  </p>
+                  </Text>
                 </div>
                 <Inline
                   as="button"
@@ -609,10 +610,14 @@ const TeacherHistoryClient = ({
                         >
                           <div className="flex items-start justify-between mb-3">
                             <Inline gap={2}>
-                              <span className="text-sm font-medium text-theme-primary">
+                              <Text
+                                papel="rotulo"
+                                tom="forte"
+                                className="font-medium"
+                              >
                                 {getActionLabel(activity.action)}
-                              </span>
-                              <span className="text-xs text-theme-tertiary">
+                              </Text>
+                              <Text papel="legenda" tom="fraco">
                                 {formatDistanceToNow(
                                   new Date(activity.createdAt),
                                   {
@@ -620,7 +625,7 @@ const TeacherHistoryClient = ({
                                     locale: ptBR,
                                   }
                                 )}
-                              </span>
+                              </Text>
                             </Inline>
 
                             <Inline gap={2}>
@@ -654,22 +659,22 @@ const TeacherHistoryClient = ({
                             </h3>
 
                             {activity.description && (
-                              <p className="text-sm text-theme-secondary">
+                              <Text papel="rotulo" tom="suave" as="p">
                                 {activity.description}
-                              </p>
+                              </Text>
                             )}
 
                             {activity.entityDisplayName && (
-                              <div className="text-sm text-theme-tertiary">
+                              <Text papel="rotulo" tom="fraco" as="div">
                                 <span className="font-medium">Item:</span>{' '}
                                 {activity.entityDisplayName}
-                              </div>
+                              </Text>
                             )}
 
                             {activity.changesSummary && (
-                              <div className="text-xs text-theme-tertiary">
+                              <Text papel="legenda" tom="fraco" as="div">
                                 {activity.changesSummary}
-                              </div>
+                              </Text>
                             )}
                           </div>
 

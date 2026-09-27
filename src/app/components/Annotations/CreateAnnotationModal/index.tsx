@@ -34,6 +34,7 @@ import Input from '../../Common/Inputs';
 import { useTranslation } from '@/app/hooks/useTranslation';
 import { searchWorks as findWorks } from '@/app/requests/catalog-search';
 import { Inline } from '@/app/components/ui/Layout';
+import { Text } from '@/app/components/ui/Text';
 
 interface CreateAnnotationModalProps {
   isOpen: boolean;
@@ -794,11 +795,11 @@ export default function CreateAnnotationModal({
                 ? t('create_modal_edit_title')
                 : t('create_modal_new_title')}
             </h2>
-            <p className="text-sm text-theme-secondary">
+            <Text papel="rotulo" tom="suave" as="p">
               {isEditing
                 ? t('create_modal_edit_subtitle')
                 : t('create_modal_new_subtitle')}
-            </p>
+            </Text>
           </div>
         </Inline>
       </div>
@@ -813,9 +814,9 @@ export default function CreateAnnotationModal({
                 <h3 className="font-semibold text-theme-primary">
                   {selectedWork.title}
                 </h3>
-                <p className="text-sm text-theme-secondary">
+                <Text papel="rotulo" tom="suave" as="p">
                   {selectedWork.composer.fullName}
-                </p>
+                </Text>
               </div>
             </Inline>
           </div>
@@ -823,9 +824,9 @@ export default function CreateAnnotationModal({
           <div>
             <Inline gap={2} className="mb-3">
               <PiMagnifyingGlass className="w-4 h-4 text-theme-tertiary" />
-              <span className="text-sm font-medium text-theme-primary">
+              <Text papel="rotulo" tom="forte" className="font-medium">
                 {t('create_modal_select_work')}
-              </span>
+              </Text>
             </Inline>
             <div className="relative">
               <Input
@@ -850,13 +851,18 @@ export default function CreateAnnotationModal({
                     onClick={() => handleWorkSelect(work)}
                     className="w-full p-3 text-left hover:bg-interactive-hover border-b border-theme-primary/20 last:border-b-0 transition-colors"
                   >
-                    <div className="font-medium text-theme-primary text-sm">
+                    <Text
+                      papel="rotulo"
+                      tom="forte"
+                      as="div"
+                      className="font-medium"
+                    >
                       {work.title}
-                    </div>
-                    <div className="text-xs text-theme-secondary">
+                    </Text>
+                    <Text papel="legenda" tom="suave" as="div">
                       {work.composer.fullName}
                       {work.opOrCatalog && ` • ${work.opOrCatalog}`}
-                    </div>
+                    </Text>
                   </button>
                 ))}
               </div>
@@ -892,9 +898,9 @@ export default function CreateAnnotationModal({
           {errors.title && (
             <p className="text-red-500 text-sm mt-1">{errors.title}</p>
           )}
-          <p className="text-theme-tertiary text-xs mt-1">
+          <Text papel="legenda" tom="fraco" as="p" className="mt-1">
             {formData.title.length}/100 {t('create_modal_characters')}
-          </p>
+          </Text>
         </div>
 
         {/* Category and Difficulty */}
@@ -1116,9 +1122,9 @@ export default function CreateAnnotationModal({
           {errors.content && (
             <p className="text-red-500 text-sm mt-1">{errors.content}</p>
           )}
-          <p className="text-theme-tertiary text-xs mt-1">
+          <Text papel="legenda" tom="fraco" as="p" className="mt-1">
             {formData.content.length}/2000 {t('create_modal_characters')}
-          </p>
+          </Text>
         </div>
 
         {/* Tags */}
@@ -1176,14 +1182,14 @@ export default function CreateAnnotationModal({
             <div className="mb-3">
               <Inline gap={2} className="mb-2">
                 <PiPlus className="w-4 h-4 text-theme-tertiary" />
-                <span className="text-sm font-medium text-theme-secondary">
+                <Text papel="rotulo" tom="suave" className="font-medium">
                   {t('create_modal_suggested_tags').replace(
                     '{category}',
                     CATEGORY_OPTIONS.find((c) => c.value === formData.category)
                       ?.label || ''
                   )}
                   :
-                </span>
+                </Text>
               </Inline>
               <div className="flex flex-wrap gap-2">
                 {availableSuggestedTags.slice(0, 8).map((tag) => (
@@ -1205,9 +1211,9 @@ export default function CreateAnnotationModal({
           {errors.tags && (
             <p className="text-accent-red text-sm mt-1">{errors.tags}</p>
           )}
-          <p className="text-theme-tertiary text-xs">
+          <Text papel="legenda" tom="fraco" as="p">
             {t('create_modal_max_tags')}
-          </p>
+          </Text>
         </div>
 
         {/* Privacy */}
@@ -1241,11 +1247,11 @@ export default function CreateAnnotationModal({
                   <PiEyeSlash className="w-4 h-4 text-accent-red" />
                 )}
               </Inline>
-              <p className="text-sm text-start text-theme-secondary">
+              <Text papel="rotulo" tom="suave" as="p" className="text-start">
                 {formData.isPublic
                   ? t('create_modal_public_description')
                   : t('create_modal_private_description')}
-              </p>
+              </Text>
             </div>
           </button>
         </Inline>

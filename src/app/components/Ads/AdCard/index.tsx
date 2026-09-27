@@ -5,6 +5,7 @@ import Image from '@/app/components/SmartImage';
 import { useState } from 'react';
 import { PiArrowSquareOut, PiX } from 'react-icons/pi';
 import { Inline } from '@/app/components/ui/Layout';
+import { Text } from '@/app/components/ui/Text';
 
 interface AdCardProps {
   ad: any;
@@ -75,15 +76,20 @@ export default function AdCard({
           </h3>
 
           {ad.description && (
-            <p className="text-sm text-theme-secondary mb-3 line-clamp-2">
+            <Text
+              papel="rotulo"
+              tom="suave"
+              as="p"
+              className="mb-3 line-clamp-2"
+            >
               {ad.description}
-            </p>
+            </Text>
           )}
 
           <div className="flex items-center justify-between">
-            <span className="text-xs text-theme-tertiary">
+            <Text papel="legenda" tom="fraco">
               {ad.advertiserName}
-            </span>
+            </Text>
 
             {ad.ctaText && (
               <Inline

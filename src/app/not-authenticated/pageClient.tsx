@@ -29,6 +29,7 @@ import Footer from '../components/Footer';
 import Navbar from '../components/Navbar';
 import { useTranslation } from '../context/TranslationContext';
 import { Inline } from '@/app/components/ui/Layout';
+import { Text } from '@/app/components/ui/Text';
 
 interface SuggestionCard {
   title: string;
@@ -279,9 +280,9 @@ export default function NotAuthenticated() {
                       <span className="text-2xl font-bold text-gradient-brand classical-title">
                         {t('not_authenticated_jsx_span_children_0__opus_atlas')}
                       </span>
-                      <div className="text-sm text-theme-tertiary">
+                      <Text papel="rotulo" tom="fraco" as="div">
                         {t('not_authenticated_jsx_div_children_0__music')}
-                      </div>
+                      </Text>
                     </div>
                   </Link>
                 </div>
@@ -337,9 +338,14 @@ export default function NotAuthenticated() {
                         <h3 className="text-xl font-bold text-theme-primary mb-2 classical-title group-hover:text-brand-primary transition-colors">
                           {suggestion.title}
                         </h3>
-                        <p className="text-theme-secondary text-sm leading-relaxed">
+                        <Text
+                          papel="rotulo"
+                          tom="suave"
+                          as="p"
+                          className="leading-relaxed"
+                        >
                           {suggestion.description}
-                        </p>
+                        </Text>
                       </Link>
                     ) : (
                       <button
@@ -354,9 +360,14 @@ export default function NotAuthenticated() {
                         <h3 className="text-xl font-bold text-theme-primary mb-2 classical-title group-hover:text-brand-primary transition-colors">
                           {suggestion.title}
                         </h3>
-                        <p className="text-theme-secondary text-sm leading-relaxed">
+                        <Text
+                          papel="rotulo"
+                          tom="suave"
+                          as="p"
+                          className="leading-relaxed"
+                        >
                           {suggestion.description}
-                        </p>
+                        </Text>
                       </button>
                     )}
                   </AnimatedCard>
@@ -394,9 +405,9 @@ export default function NotAuthenticated() {
 
                 {currentArea !== 'admin' && (
                   <div className="mt-8 pt-6 border-t border-theme-secondary">
-                    <p className="text-theme-tertiary text-sm mb-4">
+                    <Text papel="rotulo" tom="fraco" as="p" className="mb-4">
                       {t('not_authenticated_jsx_p_children_0__não_tem_conta')}
-                    </p>
+                    </Text>
                     <div className="flex flex-col sm:flex-row gap-3 justify-center">
                       <button
                         onClick={() => openLogin()}

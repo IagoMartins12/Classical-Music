@@ -27,6 +27,7 @@ import { useAchievementSystem } from '../../../hooks/useAchievements';
 import { useTranslation } from '@/app/context/TranslationContext';
 import { useLanguageStore } from '@/app/stores/useLanguageStore';
 import { Inline } from '@/app/components/ui/Layout';
+import { Text } from '@/app/components/ui/Text';
 
 interface AnnotationsStatsWidgetProps {
   className?: string;
@@ -165,9 +166,14 @@ export default function AnnotationsStatsWidget({
                       <div className="font-medium text-theme-primary">
                         {badge.name}
                       </div>
-                      <div className="text-sm text-theme-tertiary mb-2">
+                      <Text
+                        papel="rotulo"
+                        tom="fraco"
+                        as="div"
+                        className="mb-2"
+                      >
                         {badge.description}
-                      </div>
+                      </Text>
                       {badge.maxProgress && (
                         <Inline gap={2}>
                           <div className="flex-1 bg-theme-primary rounded-full h-2">
@@ -176,9 +182,9 @@ export default function AnnotationsStatsWidget({
                               style={{ width: `${progressPercent}%` }}
                             />
                           </div>
-                          <span className="text-xs text-theme-tertiary">
+                          <Text papel="legenda" tom="fraco">
                             {badge.progress}/{badge.maxProgress}
-                          </span>
+                          </Text>
                         </Inline>
                       )}
                     </div>
@@ -268,33 +274,33 @@ export default function AnnotationsStatsWidget({
               <div className="text-2xl font-bold text-accent-green">
                 {stats.publicAnnotations}
               </div>
-              <div className="text-sm text-theme-secondary">
+              <Text papel="rotulo" tom="suave" as="div">
                 {t('stats_widget_public')}
-              </div>
+              </Text>
             </div>
             <div className="text-center">
               <div className="text-2xl font-bold text-accent-blue">
                 {stats.verifiedAnnotations}
               </div>
-              <div className="text-sm text-theme-secondary">
+              <Text papel="rotulo" tom="suave" as="div">
                 {t('stats_widget_verified')}
-              </div>
+              </Text>
             </div>
             <div className="text-center">
               <div className="text-2xl font-bold text-accent-purple">
                 {stats.helpfulnessRate}%
               </div>
-              <div className="text-sm text-theme-secondary">
+              <Text papel="rotulo" tom="suave" as="div">
                 {t('stats_widget_helpful_rate')}
-              </div>
+              </Text>
             </div>
             <div className="text-center">
               <div className="text-2xl font-bold text-amber-500">
                 {stats.highPerformingCount}
               </div>
-              <div className="text-sm text-theme-secondary">
+              <Text papel="rotulo" tom="suave" as="div">
                 {t('stats_widget_top_annotations')}
-              </div>
+              </Text>
             </div>
           </div>
         </AnimatedCard>

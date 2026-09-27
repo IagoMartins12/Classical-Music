@@ -18,6 +18,7 @@ import Modal from '@/app/components/Modal';
 import Checkbox from '@/app/components/Common/Checkbox';
 import { listInstruments } from '@/app/requests/admin/ads';
 import { Inline } from '@/app/components/ui/Layout';
+import { Text } from '@/app/components/ui/Text';
 
 interface EditAdModalProps {
   ad: any;
@@ -350,7 +351,9 @@ export default function EditAdModal({
               <h2 className="text-xl font-bold text-theme-primary">
                 Editar Anúncio
               </h2>
-              <p className="text-sm text-theme-tertiary">{ad?.title}</p>
+              <Text papel="rotulo" tom="fraco" as="p">
+                {ad?.title}
+              </Text>
             </div>
           </Inline>
         </div>
@@ -361,7 +364,7 @@ export default function EditAdModal({
             <PiInfo className="w-5 h-5 text-accent-blue mt-0.5" />
             <div>
               <h4 className="font-medium text-theme-primary">Sobre a mídia</h4>
-              <p className="text-sm text-theme-secondary mt-1">
+              <Text papel="rotulo" tom="suave" as="p" className="mt-1">
                 {hasMedia ? (
                   <>
                     ✅ Este anúncio possui mídia (imagem/vídeo). Use a opção
@@ -373,7 +376,7 @@ export default function EditAdModal({
                     vídeo para ativá-lo.
                   </>
                 )}
-              </p>
+              </Text>
             </div>
           </div>
         </div>
@@ -387,9 +390,9 @@ export default function EditAdModal({
                 <h4 className="font-medium text-accent-red">
                   Conflito Detectado
                 </h4>
-                <p className="text-sm text-theme-secondary mt-1">
+                <Text papel="rotulo" tom="suave" as="p" className="mt-1">
                   {conflictInfo}
-                </p>
+                </Text>
               </div>
             </div>
           </div>
@@ -408,19 +411,25 @@ export default function EditAdModal({
                   <div className="text-lg font-bold text-accent-blue">
                     {ad.totalImpressions?.toLocaleString() || 0}
                   </div>
-                  <div className="text-sm text-theme-tertiary">Impressões</div>
+                  <Text papel="rotulo" tom="fraco" as="div">
+                    Impressões
+                  </Text>
                 </div>
                 <div>
                   <div className="text-lg font-bold text-accent-green">
                     {ad.totalClicks?.toLocaleString() || 0}
                   </div>
-                  <div className="text-sm text-theme-tertiary">Cliques</div>
+                  <Text papel="rotulo" tom="fraco" as="div">
+                    Cliques
+                  </Text>
                 </div>
                 <div>
                   <div className="text-lg font-bold text-accent-purple">
                     {ad.ctr?.toFixed(2) || 0}%
                   </div>
-                  <div className="text-sm text-theme-tertiary">CTR</div>
+                  <Text papel="rotulo" tom="fraco" as="div">
+                    CTR
+                  </Text>
                 </div>
               </div>
             </div>
@@ -641,9 +650,9 @@ export default function EditAdModal({
                   className={errors.targetUrl ? 'border-accent-red' : ''}
                 />
                 {formData.linkType === 'whatsapp' && (
-                  <p className="text-xs text-theme-tertiary mt-1">
+                  <Text papel="legenda" tom="fraco" as="p" className="mt-1">
                     Formato: código do país + DDD + número (ex: 5511999999999)
-                  </p>
+                  </Text>
                 )}
                 {errors.targetUrl && (
                   <p className="text-accent-red text-sm mt-1">

@@ -35,6 +35,7 @@ import {
 import Input from '@/app/components/Common/Inputs';
 import { useTranslation } from '@/app/context/TranslationContext';
 import { Inline } from '@/app/components/ui/Layout';
+import { Text } from '@/app/components/ui/Text';
 
 interface FAQItem {
   id: string;
@@ -399,9 +400,14 @@ export default function FAQPage(): JSX.Element {
                               <item.icon className="w-6 h-6 text-theme-primary" />
                             </div>
                             <div className="flex-grow">
-                              <div className="text-sm text-brand-primary font-medium mb-1">
+                              <Text
+                                papel="rotulo"
+                                tom="ouro"
+                                as="div"
+                                className="font-medium mb-1"
+                              >
                                 {item.category}
-                              </div>
+                              </Text>
                               <h3 className="text-lg font-semibold text-theme-primary">
                                 {item.question}
                               </h3>

@@ -9,6 +9,7 @@ import {
   PiWarningCircle,
 } from 'react-icons/pi';
 import { Inline } from '@/app/components/ui/Layout';
+import { Text } from '@/app/components/ui/Text';
 
 interface UploadFormValidationProps {
   validation: ValidationResult;
@@ -45,12 +46,12 @@ const UploadFormValidation = ({
           </span>
         </Inline>
         <div className="mt-2 flex items-center justify-between">
-          <span className="text-sm text-theme-secondary">
+          <Text papel="rotulo" tom="suave">
             Qualidade dos dados:{' '}
             <span className={`font-medium ${getQualityColor(dataQuality)}`}>
               {getQualityLabel(dataQuality)} ({dataQuality}%)
             </span>
-          </span>
+          </Text>
           <div className="w-24 h-2 bg-theme-secondary rounded-full">
             <div
               className="h-2 bg-gradient-to-r from-accent-red via-accent-amber to-accent-green rounded-full transition-all duration-500"
@@ -119,12 +120,12 @@ const UploadFormValidation = ({
           </span>
         </Inline>
         <div className="flex items-center justify-between">
-          <span className="text-sm text-theme-secondary">
+          <Text papel="rotulo" tom="suave">
             Pontuação:{' '}
             <span className={`font-medium ${getQualityColor(dataQuality)}`}>
               {getQualityLabel(dataQuality)} ({dataQuality}%)
             </span>
-          </span>
+          </Text>
           <div className="w-32 h-2 bg-theme-secondary rounded-full">
             <div
               className="h-2 bg-gradient-to-r from-accent-red via-accent-amber to-accent-green rounded-full transition-all duration-500"
@@ -132,10 +133,10 @@ const UploadFormValidation = ({
             />
           </div>
         </div>
-        <p className="text-xs text-theme-tertiary mt-2">
+        <Text papel="legenda" tom="fraco" as="p" className="mt-2">
           Dados mais completos melhoram a experiência dos usuários e a
           descoberta de conteúdo.
-        </p>
+        </Text>
       </div>
     </div>
   );

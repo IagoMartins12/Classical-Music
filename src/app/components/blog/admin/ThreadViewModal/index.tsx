@@ -22,6 +22,7 @@ import {
 import Modal from '@/app/components/Modal';
 import Button from '@/app/components/Common/Button';
 import { toast } from 'react-hot-toast';
+import { Text } from '@/app/components/ui/Text';
 
 interface ThreadComment {
   id: string;
@@ -191,14 +192,16 @@ export function ThreadViewModal({
             {/* Header */}
             <div className="flex items-center justify-between mb-2">
               <div className="flex items-center gap-2">
-                <span className="font-semibold text-theme-primary text-sm">
+                <Text papel="rotulo" tom="forte" className="font-semibold">
                   {getUserName(comment.user)}
-                </span>
-                <span className="text-xs text-theme-tertiary">
+                </Text>
+                <Text papel="legenda" tom="fraco">
                   {new Date(comment.createdAt).toLocaleString('pt-BR')}
-                </span>
+                </Text>
                 {comment.isEdited && (
-                  <span className="text-xs text-theme-tertiary">(editado)</span>
+                  <Text papel="legenda" tom="fraco">
+                    (editado)
+                  </Text>
                 )}
               </div>
               <span
@@ -209,15 +212,25 @@ export function ThreadViewModal({
             </div>
 
             {/* Comment text */}
-            <p className="text-theme-secondary text-sm mb-3 whitespace-pre-wrap">
+            <Text
+              papel="rotulo"
+              tom="suave"
+              as="p"
+              className="mb-3 whitespace-pre-wrap"
+            >
               {comment.content}
-            </p>
+            </Text>
 
             {/* Stats */}
-            <div className="flex items-center gap-4 text-xs text-theme-tertiary mb-3">
+            <Text
+              papel="legenda"
+              tom="fraco"
+              as="div"
+              className="flex items-center gap-4 mb-3"
+            >
               <span>{comment._count.likes} curtidas</span>
               <span>{comment.user.email}</span>
-            </div>
+            </Text>
 
             {/* Actions */}
             <div className="flex items-center gap-2">
@@ -265,10 +278,15 @@ export function ThreadViewModal({
             {/* Nested Replies */}
             {comment.replies && comment.replies.length > 0 && (
               <div className="mt-4 border-l-2 border-theme-secondary pl-4">
-                <div className="flex items-center gap-2 mb-3 text-xs text-theme-tertiary">
+                <Text
+                  papel="legenda"
+                  tom="fraco"
+                  as="div"
+                  className="flex items-center gap-2 mb-3"
+                >
                   <PiArrowBendUpLeft className="w-4 h-4" />
                   <span>{comment.replies.length} resposta(s)</span>
-                </div>
+                </Text>
                 {comment.replies.map((reply) =>
                   renderComment(reply, depth + 1)
                 )}
@@ -294,9 +312,9 @@ export function ThreadViewModal({
               <h2 className="text-xl font-bold text-theme-primary mb-1">
                 Visualizar Thread
               </h2>
-              <p className="text-sm text-theme-secondary">
+              <Text papel="rotulo" tom="suave" as="p">
                 Artigo: {articleTitle}
-              </p>
+              </Text>
             </div>
             <div className="bg-blue-50 dark:bg-blue-900/10 border border-blue-200 dark:border-blue-800 rounded-lg p-4">
               <div className="flex items-start gap-3">

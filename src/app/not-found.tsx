@@ -31,6 +31,7 @@ import Footer from './components/Footer';
 import { useTranslation } from '@/app/hooks/useTranslation';
 import { useClientMetadata } from './hooks/useClientMetadata';
 import { BlogHeader } from './components/blog/BlogHeader';
+import { Text } from '@/app/components/ui/Text';
 
 type AreaType = 'main' | 'teacher' | 'student' | 'blog' | 'admin';
 
@@ -137,9 +138,9 @@ export default function NotFound() {
                             <span className="text-2xl font-bold text-gradient-brand classical-title">
                               {t('not_found_jsx_span_children_0__opus_atlas')}
                             </span>
-                            <div className="text-sm text-theme-tertiary">
+                            <Text papel="rotulo" tom="fraco" as="div">
                               {getAreaTitle()}
-                            </div>
+                            </Text>
                           </div>
                         </Link>
                       </div>
@@ -193,9 +194,14 @@ export default function NotFound() {
                             <h3 className="text-xl font-bold text-theme-primary mb-2 classical-title group-hover:text-brand-primary transition-colors">
                               {suggestion.title}
                             </h3>
-                            <p className="text-theme-secondary text-sm leading-relaxed">
+                            <Text
+                              papel="rotulo"
+                              tom="suave"
+                              as="p"
+                              className="leading-relaxed"
+                            >
                               {suggestion.description}
-                            </p>
+                            </Text>
                           </Link>
                         </AnimatedCard>
                       ))}
@@ -443,9 +449,9 @@ export default function NotFound() {
                         <span className="text-2xl font-bold text-gradient-brand classical-title">
                           {t('not_found_jsx_span_children_0__opus_atlas')}
                         </span>
-                        <div className="text-sm text-theme-tertiary">
+                        <Text papel="rotulo" tom="fraco" as="div">
                           {getAreaTitle()}
-                        </div>
+                        </Text>
                       </div>
                     </Link>
                   </div>
@@ -496,9 +502,14 @@ export default function NotFound() {
                         <h3 className="text-xl font-bold text-theme-primary mb-2 classical-title group-hover:text-brand-primary transition-colors">
                           {suggestion.title}
                         </h3>
-                        <p className="text-theme-secondary text-sm leading-relaxed">
+                        <Text
+                          papel="rotulo"
+                          tom="suave"
+                          as="p"
+                          className="leading-relaxed"
+                        >
                           {suggestion.description}
-                        </p>
+                        </Text>
                       </Link>
                     </AnimatedCard>
                   ))}

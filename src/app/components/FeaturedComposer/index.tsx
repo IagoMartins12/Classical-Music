@@ -15,6 +15,7 @@ import VerificationBadge from '../Verification/VerificationBadge';
 import { translateEpochWithHook } from '@/app/utils/translations/epochTranslationComposer';
 import { useTranslation } from '@/app/context/TranslationContext';
 import { useComposerBiography } from '@/app/hooks/useComposerBiography';
+import { Text } from '@/app/components/ui/Text';
 
 interface FeaturedComposerProps {
   composer: {
@@ -160,11 +161,15 @@ const FeaturedComposer: React.FC<FeaturedComposerProps> = ({ composer }) => {
                 )}
 
                 <div className="">
-                  <span className="inline-flex items-center px-4 py-2 classical-card-simple text-theme-primary rounded-2xl text-sm font-semibold shadow-theme-medium">
+                  <Text
+                    papel="rotulo"
+                    tom="forte"
+                    className="inline-flex items-center px-4 py-2 classical-card-simple rounded-2xl font-semibold shadow-theme-medium"
+                  >
                     <PiCalendarBlank className="w-4 h-4 mr-2 text-theme-primary" />
                     {composer.epochName &&
                       translateEpochWithHook(composer.epochName, t)}
-                  </span>
+                  </Text>
                 </div>
               </div>
 

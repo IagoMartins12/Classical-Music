@@ -1,5 +1,6 @@
 // app/learning/components/StatCard.tsx - Com Sistema de Animação
 import { AnimatedCard } from '../../animation/AnimatedComponents';
+import { Text } from '@/app/components/ui/Text';
 
 interface StatCardProps {
   icon: React.ReactNode;
@@ -33,9 +34,13 @@ export const StatCard = ({
         {icon}
       </div>
       <div className="text-2xl font-bold text-theme-primary mb-1">{value}</div>
-      <div className="text-sm text-theme-tertiary">{title}</div>
+      <Text papel="rotulo" tom="fraco" as="div">
+        {title}
+      </Text>
       {subtitle && (
-        <div className="text-xs text-theme-tertiary mt-1">{subtitle}</div>
+        <Text papel="legenda" tom="fraco" as="div" className="mt-1">
+          {subtitle}
+        </Text>
       )}
     </AnimatedCard>
   );

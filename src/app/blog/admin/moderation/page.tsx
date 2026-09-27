@@ -15,6 +15,7 @@ import { ModerationList } from '@/app/components/blog/admin/ModerationList';
 import { AnimatedItem } from '@/app/components/animation/AnimatedComponents';
 import AnimatedMusicalNotesClient from '@/app/components/AnimatedMusicalNotesClient';
 import { getServerSession } from '@/app/libs/api/server-session';
+import { Text } from '@/app/components/ui/Text';
 
 export const metadata: Metadata = {
   title: 'Moderação de Comentários - Blog Admin',
@@ -88,9 +89,14 @@ export default async function ModerationPage({ searchParams }: PageProps) {
               <div className="classical-card group hover:shadow-xl transition-all duration-300 cursor-pointer">
                 <div className="flex items-center justify-between p-4">
                   <div>
-                    <p className="text-xs font-medium text-theme-tertiary mb-2">
+                    <Text
+                      papel="legenda"
+                      tom="fraco"
+                      as="p"
+                      className="font-medium mb-2"
+                    >
                       Total
-                    </p>
+                    </Text>
                     <p className="text-2xl font-bold text-theme-primary">
                       {stats.total}
                     </p>
@@ -106,9 +112,14 @@ export default async function ModerationPage({ searchParams }: PageProps) {
               <div className="classical-card group hover:shadow-xl transition-all duration-300 cursor-pointer">
                 <div className="flex items-center justify-between p-4">
                   <div>
-                    <p className="text-xs font-medium text-theme-tertiary mb-2">
+                    <Text
+                      papel="legenda"
+                      tom="fraco"
+                      as="p"
+                      className="font-medium mb-2"
+                    >
                       Pendentes
-                    </p>
+                    </Text>
                     <p className="text-2xl font-bold text-theme-primary">
                       {stats.pending}
                     </p>
@@ -124,9 +135,14 @@ export default async function ModerationPage({ searchParams }: PageProps) {
               <div className="classical-card group hover:shadow-xl transition-all duration-300 cursor-pointer">
                 <div className="flex items-center justify-between p-4">
                   <div>
-                    <p className="text-xs font-medium text-theme-tertiary mb-2">
+                    <Text
+                      papel="legenda"
+                      tom="fraco"
+                      as="p"
+                      className="font-medium mb-2"
+                    >
                       Denunciados
-                    </p>
+                    </Text>
                     <p className="text-2xl font-bold text-theme-primary">
                       {stats.flagged}
                     </p>
@@ -142,9 +158,14 @@ export default async function ModerationPage({ searchParams }: PageProps) {
               <div className="classical-card group hover:shadow-xl transition-all duration-300 cursor-pointer">
                 <div className="flex items-center justify-between p-4">
                   <div>
-                    <p className="text-xs font-medium text-theme-tertiary mb-2">
+                    <Text
+                      papel="legenda"
+                      tom="fraco"
+                      as="p"
+                      className="font-medium mb-2"
+                    >
                       Respostas
-                    </p>
+                    </Text>
                     <p className="text-2xl font-bold text-theme-primary">
                       {stats.replies}
                     </p>
@@ -160,9 +181,14 @@ export default async function ModerationPage({ searchParams }: PageProps) {
               <div className="classical-card group hover:shadow-xl transition-all duration-300 cursor-pointer">
                 <div className="flex items-center justify-between p-4">
                   <div>
-                    <p className="text-xs font-medium text-theme-tertiary mb-2">
+                    <Text
+                      papel="legenda"
+                      tom="fraco"
+                      as="p"
+                      className="font-medium mb-2"
+                    >
                       Aprovados
-                    </p>
+                    </Text>
                     <p className="text-2xl font-bold text-theme-primary">
                       {stats.approved}
                     </p>
@@ -178,9 +204,14 @@ export default async function ModerationPage({ searchParams }: PageProps) {
               <div className="classical-card group hover:shadow-xl transition-all duration-300 cursor-pointer">
                 <div className="flex items-center justify-between p-4">
                   <div>
-                    <p className="text-xs font-medium text-theme-tertiary mb-2">
+                    <Text
+                      papel="legenda"
+                      tom="fraco"
+                      as="p"
+                      className="font-medium mb-2"
+                    >
                       Rejeitados/Spam
-                    </p>
+                    </Text>
                     <p className="text-2xl font-bold text-theme-primary">
                       {stats.rejected + stats.spam}
                     </p>

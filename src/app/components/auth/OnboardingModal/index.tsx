@@ -24,6 +24,7 @@ import {
 } from '@/app/utils/phones_and_location/phoneValidation';
 import { useTranslation } from '@/app/context/TranslationContext';
 import { Inline } from '@/app/components/ui/Layout';
+import { Text } from '@/app/components/ui/Text';
 
 interface OnboardingOptions {
   instruments: Array<{ id: string; name: string; category: string | null }>;
@@ -326,9 +327,9 @@ const OnboardingModal: React.FC = () => {
               {getStepTitle()}
             </h2>
           </div>
-          <span className="text-sm text-theme-tertiary">
+          <Text papel="rotulo" tom="fraco">
             {step} {t('onboarding_modal_step_of')} 6
-          </span>
+          </Text>
         </div>
 
         <div className="w-full bg-theme-secondary rounded-full h-2">

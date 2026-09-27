@@ -43,6 +43,7 @@ import {
   updateLessonRequest,
 } from '@/app/requests/portal/lesson-actions';
 import { Inline, Stack } from '@/app/components/ui/Layout';
+import { Text } from '@/app/components/ui/Text';
 
 interface TeacherCalendarPageClientProps {
   initialData: TeacherCalendarData;
@@ -690,9 +691,9 @@ export default function TeacherCalendarPageClient({
                       pluralVerb: viewStats.needsAttention !== 1 ? 'm' : '',
                     })}
                   </h4>
-                  <p className="text-sm text-theme-secondary">
+                  <Text papel="rotulo" tom="suave" as="p">
                     {t('attention_alert_message')}
-                  </p>
+                  </Text>
                 </div>
               </Inline>
               <button
@@ -927,29 +928,34 @@ export default function TeacherCalendarPageClient({
                   <h3 className="font-bold text-accent-red mb-2">
                     {t('conflicts_detected')}
                   </h3>
-                  <p className="text-theme-secondary text-sm mb-4">
+                  <Text papel="rotulo" tom="suave" as="p" className="mb-4">
                     {t('conflicts_message', { count: conflicts.length })}
-                  </p>
+                  </Text>
 
                   <div className="space-y-2">
                     {conflicts.slice(0, 3).map((conflict, index) => (
                       <div key={index} className="classical-card-2 p-3">
-                        <div className="font-medium text-theme-primary text-sm">
+                        <Text
+                          papel="rotulo"
+                          tom="forte"
+                          as="div"
+                          className="font-medium"
+                        >
                           {formatDate(conflict.date)}
-                        </div>
-                        <div className="text-xs text-theme-tertiary">
+                        </Text>
+                        <Text papel="legenda" tom="fraco" as="div">
                           {t('conflicting_lessons', {
                             count: conflict.conflicts.length,
                           })}
-                        </div>
+                        </Text>
                       </div>
                     ))}
                   </div>
 
                   {conflicts.length > 3 && (
-                    <p className="text-xs text-theme-tertiary mt-2">
+                    <Text papel="legenda" tom="fraco" as="p" className="mt-2">
                       {t('more_conflicts', { remaining: conflicts.length - 3 })}
-                    </p>
+                    </Text>
                   )}
                 </div>
               </div>
@@ -1142,12 +1148,15 @@ function MonthView({
       {/* Header */}
       <div className="grid grid-cols-7 gap-1 mb-2">
         {WEEKDAYS.map((day) => (
-          <div
+          <Text
+            papel="rotulo"
+            tom="fraco"
+            as="div"
             key={day}
-            className="p-3 text-center font-semibold text-theme-tertiary text-sm"
+            className="p-3 text-center font-semibold"
           >
             {day}
-          </div>
+          </Text>
         ))}
       </div>
 
@@ -1290,9 +1299,14 @@ function WeekView({
 
             <div className="space-y-2 p-3 min-h-96">
               {events.length === 0 ? (
-                <div className="text-xs text-theme-tertiary text-center py-6">
+                <Text
+                  papel="legenda"
+                  tom="fraco"
+                  as="div"
+                  className="text-center py-6"
+                >
                   Sem eventos
-                </div>
+                </Text>
               ) : (
                 events.map((event) => {
                   const statusInfo = getEventStatusInfo(event);
@@ -1551,15 +1565,15 @@ function EventDetailsModal({
                   <h4 className="font-bold text-accent-red text-lg mb-2">
                     {t('lesson_needs_attention')}
                   </h4>
-                  <p className="text-sm text-theme-secondary mb-1">
+                  <Text papel="rotulo" tom="suave" as="p" className="mb-1">
                     {t('lesson_overdue_message', {
                       hours: statusInfo.hoursOverdue,
                       plural: statusInfo.hoursOverdue !== 1 ? 's' : '',
                     })}
-                  </p>
-                  <p className="text-sm text-theme-secondary">
+                  </Text>
+                  <Text papel="rotulo" tom="suave" as="p">
                     {t('update_status_message')}
-                  </p>
+                  </Text>
                 </div>
 
                 {/* 🆕 BOTÕES DE AÇÃO MELHORADOS */}
@@ -1636,9 +1650,9 @@ function EventDetailsModal({
                       <div className="text-theme-primary font-medium">
                         {event.student.name}
                       </div>
-                      <div className="text-sm text-theme-tertiary">
+                      <Text papel="rotulo" tom="fraco" as="div">
                         {t('level')} {event.student.level}
-                      </div>
+                      </Text>
                     </div>
                   </Inline>
                 </div>
@@ -1692,12 +1706,14 @@ function EventDetailsModal({
                 </label>
                 <div className="flex flex-wrap gap-2">
                   {event.details.topics.map((topic, index) => (
-                    <span
+                    <Text
+                      papel="rotulo"
+                      tom="suave"
                       key={index}
-                      className="px-3 py-1 bg-theme-elevated text-theme-secondary rounded-full text-sm"
+                      className="px-3 py-1 bg-theme-elevated rounded-full"
                     >
                       {topic}
-                    </span>
+                    </Text>
                   ))}
                 </div>
               </div>
@@ -1895,9 +1911,9 @@ function DayEventsModal({
                         eventsNeedingAttention.length !== 1 ? 'm' : '',
                     })}
                   </h4>
-                  <p className="text-sm text-theme-secondary">
+                  <Text papel="rotulo" tom="suave" as="p">
                     {t('lessons_overdue_message')}
-                  </p>
+                  </Text>
                 </div>
               </Inline>
             </div>

@@ -35,6 +35,7 @@ import AdminSidebar from '../components/Admin/AdminSidebar';
 import Image from '@/app/components/SmartImage';
 import { useTranslation } from '../context/TranslationContext';
 import { Inline } from '@/app/components/ui/Layout';
+import { Text } from '@/app/components/ui/Text';
 
 interface SuggestionCard {
   title: string;
@@ -450,12 +451,16 @@ export default function AccessDenied() {
                     <p className="font-medium text-theme-primary">
                       {getUserDisplayName()}
                     </p>
-                    <p className="text-sm text-theme-tertiary">
+                    <Text papel="rotulo" tom="fraco" as="p">
                       {session.user.email}
-                    </p>
-                    <span className="inline-block px-2 py-1 bg-brand-primary/10 text-brand-primary text-xs rounded-full mt-1">
+                    </Text>
+                    <Text
+                      papel="legenda"
+                      tom="ouro"
+                      className="inline-block px-2 py-1 bg-brand-primary/10 rounded-full mt-1"
+                    >
                       {getRoleLabel()}
-                    </span>
+                    </Text>
                   </div>
                 </Inline>
               </AnimatedCard>
@@ -485,9 +490,14 @@ export default function AccessDenied() {
                     <h3 className="text-xl font-bold text-theme-primary mb-2 classical-title group-hover:text-brand-primary transition-colors">
                       {suggestion.title}
                     </h3>
-                    <p className="text-theme-secondary text-sm leading-relaxed">
+                    <Text
+                      papel="rotulo"
+                      tom="suave"
+                      as="p"
+                      className="leading-relaxed"
+                    >
                       {suggestion.description}
-                    </p>
+                    </Text>
                   </Link>
                 </AnimatedCard>
               ))}

@@ -6,6 +6,7 @@ import Image from '@/app/components/SmartImage';
 import Link from '@/app/components/LocalizedLink';
 import { PiArrowSquareOut, PiCalendarBlank, PiUser } from 'react-icons/pi';
 import { Inline } from '@/app/components/ui/Layout';
+import { Text } from '@/app/components/ui/Text';
 
 interface Composer {
   id: string;
@@ -91,10 +92,15 @@ export function HistoryComposerCard({ composer }: Props) {
               {composer.fullName}
             </h4>
             {lifespan && (
-              <div className="flex items-center text-theme-tertiary text-xs mt-1">
+              <Text
+                papel="legenda"
+                tom="fraco"
+                as="div"
+                className="flex items-center mt-1"
+              >
                 <PiCalendarBlank className="w-3 h-3 mr-1" />
                 <span>{lifespan}</span>
-              </div>
+              </Text>
             )}
           </div>
 
@@ -106,20 +112,25 @@ export function HistoryComposerCard({ composer }: Props) {
 
         {/* Bio snippet */}
         {biography && (
-          <p className="text-theme-secondary text-xs leading-relaxed line-clamp-2 group-hover:text-theme-primary transition-colors duration-300">
+          <Text
+            papel="legenda"
+            tom="suave"
+            as="p"
+            className="leading-relaxed line-clamp-2 group-hover:text-theme-primary transition-colors duration-300"
+          >
             {biography.length > 150
               ? `${biography.substring(0, 150)}...`
               : biography}
-          </p>
+          </Text>
         )}
 
         {/* Bottom indicator */}
         <div className="flex items-center justify-between mt-3 pt-2 border-t border-theme-secondary">
           <Inline gap={1}>
             <div className="w-1.5 h-1.5 bg-brand-primary rounded-full animate-pulse"></div>
-            <span className="text-xs text-theme-tertiary font-medium">
+            <Text papel="legenda" tom="fraco" className="font-medium">
               Ver detalhes
-            </span>
+            </Text>
           </Inline>
 
           <svg

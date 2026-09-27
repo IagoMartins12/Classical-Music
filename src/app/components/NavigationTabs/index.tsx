@@ -4,6 +4,7 @@
 import { useTranslation } from '@/app/context/TranslationContext';
 import { PiBookOpen, PiClock, PiMusicNotes } from 'react-icons/pi';
 import { Inline } from '@/app/components/ui/Layout';
+import { Text } from '@/app/components/ui/Text';
 
 interface Props {
   activeTab: 'history' | 'timeline';
@@ -130,11 +131,15 @@ export function NavigationTabs({ activeTab, onTabChange }: Props) {
                     {isActive && (
                       <Inline gap={2} className="mt-3">
                         <div className="w-2 h-2 bg-brand-primary rounded-full animate-pulse"></div>
-                        <span className="text-xs font-medium text-brand-primary">
+                        <Text
+                          papel="legenda"
+                          tom="ouro"
+                          className="font-medium"
+                        >
                           {t(
                             'navigation_jsx_span_children_0__visualizacao_atual'
                           )}
-                        </span>
+                        </Text>
                       </Inline>
                     )}
                   </div>

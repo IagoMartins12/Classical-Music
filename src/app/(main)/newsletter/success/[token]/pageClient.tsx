@@ -20,6 +20,7 @@ import {
   FloatingElement,
 } from '../../../../components/animation/AnimatedComponents';
 import { useTranslation } from '@/app/context/TranslationContext';
+import { Text } from '@/app/components/ui/Text';
 
 export default function NewsletterSuccessContent() {
   const searchParams = useSearchParams();
@@ -164,9 +165,9 @@ export default function NewsletterSuccessContent() {
                       <h3 className="font-semibold text-theme-primary mb-2">
                         {t('success_explore_composers_title')}
                       </h3>
-                      <p className="text-sm text-theme-secondary">
+                      <Text papel="rotulo" tom="suave" as="p">
                         {t('success_explore_composers_description')}
-                      </p>
+                      </Text>
                     </Link>
 
                     <Link
@@ -177,9 +178,9 @@ export default function NewsletterSuccessContent() {
                       <h3 className="font-semibold text-theme-primary mb-2">
                         {t('success_works_title')}
                       </h3>
-                      <p className="text-sm text-theme-secondary">
+                      <Text papel="rotulo" tom="suave" as="p">
                         {t('success_works_description')}
-                      </p>
+                      </Text>
                     </Link>
 
                     <Link
@@ -190,9 +191,9 @@ export default function NewsletterSuccessContent() {
                       <h3 className="font-semibold text-theme-primary mb-2">
                         {t('success_home_title')}
                       </h3>
-                      <p className="text-sm text-theme-secondary">
+                      <Text papel="rotulo" tom="suave" as="p">
                         {t('success_home_description')}
-                      </p>
+                      </Text>
                     </Link>
                   </div>
                 </div>

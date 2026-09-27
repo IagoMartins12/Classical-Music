@@ -6,6 +6,7 @@ import { useState, useEffect, useRef, useCallback } from 'react';
 import { PiMagnifyingGlass, PiTrendUp, PiUser, PiX } from 'react-icons/pi';
 import { findComposerById, findComposers } from '@/app/requests/catalog-search';
 import { Inline } from '@/app/components/ui/Layout';
+import { Text } from '@/app/components/ui/Text';
 
 interface Composer {
   id: string;
@@ -275,9 +276,9 @@ export default function ComposerSearchInput({
           {showPopularLabel && (
             <div className="flex items-center gap-2 px-4 py-3 bg-theme-secondary/10 border-b border-theme-secondary">
               <PiTrendUp className="w-4 h-4 text-brand-primary" />
-              <span className="text-sm font-medium text-theme-secondary">
+              <Text papel="rotulo" tom="suave" className="font-medium">
                 {t('composer_search_jsx_popular_label')}
-              </span>
+              </Text>
             </div>
           )}
 
@@ -312,25 +313,39 @@ export default function ComposerSearchInput({
                 >
                   <div className="flex items-center justify-between">
                     <div className="min-w-0 flex-1">
-                      <div className="text-sm font-medium text-theme-primary truncate">
+                      <Text
+                        papel="rotulo"
+                        tom="forte"
+                        as="div"
+                        className="font-medium truncate"
+                      >
                         {composer.name}
-                      </div>
+                      </Text>
                       {composer.fullName &&
                         composer.fullName !== composer.name && (
-                          <div className="text-xs text-theme-secondary truncate mt-0.5">
+                          <Text
+                            papel="legenda"
+                            tom="suave"
+                            as="div"
+                            className="truncate mt-0.5"
+                          >
                             {composer.fullName}
-                          </div>
+                          </Text>
                         )}
                     </div>
 
                     {composer.worksCount && Number(composer.worksCount) > 1 && (
                       <div className="ml-3 flex-shrink-0">
-                        <span className="inline-flex items-center px-2 py-1 rounded-full text-xs bg-theme-secondary/20 text-theme-secondary">
+                        <Text
+                          papel="legenda"
+                          tom="suave"
+                          className="inline-flex items-center px-2 py-1 rounded-full bg-theme-secondary/20"
+                        >
                           {composer.worksCount}{' '}
                           {composer.worksCount === 1
                             ? t('composer_search_jsx_work_singular')
                             : t('composer_search_jsx_work_plural')}
-                        </span>
+                        </Text>
                       </div>
                     )}
                   </div>
@@ -344,17 +359,17 @@ export default function ComposerSearchInput({
             (!displayComposers || displayComposers.length === 0) && (
               <div className="px-4 py-8 text-center">
                 <PiUser className="w-8 h-8 text-theme-tertiary mx-auto mb-2" />
-                <p className="text-sm text-theme-secondary">
+                <Text papel="rotulo" tom="suave" as="p">
                   {searchTerm
                     ? `${t(
                         'composer_search_jsx_no_results_for'
                       )} "${searchTerm}"`
                     : t('composer_search_jsx_no_composers')}
-                </p>
+                </Text>
                 {searchTerm && (
-                  <p className="text-xs text-theme-tertiary mt-1">
+                  <Text papel="legenda" tom="fraco" as="p" className="mt-1">
                     {t('composer_search_jsx_try_broader')}
-                  </p>
+                  </Text>
                 )}
               </div>
             )}

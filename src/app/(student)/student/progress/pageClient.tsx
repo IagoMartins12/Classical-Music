@@ -41,6 +41,7 @@ import Link from 'next/link';
 import { useTranslation } from '@/app/context/TranslationContext';
 import dynamic from 'next/dynamic';
 import { Inline } from '@/app/components/ui/Layout';
+import { Text } from '@/app/components/ui/Text';
 
 /**
  * Os gráficos descem à parte: o `recharts` pesa mais que o resto desta tela
@@ -181,7 +182,7 @@ export default function StudentProgressPageClient({
                 {formatPeriodLabel(currentPeriod)}
               </h2>
               {progressData.period.start && (
-                <span className="text-sm text-theme-tertiary">
+                <Text papel="rotulo" tom="fraco">
                   {new Date(progressData.period.start).toLocaleDateString(
                     'pt-BR'
                   )}{' '}
@@ -189,7 +190,7 @@ export default function StudentProgressPageClient({
                   {new Date(progressData.period.end).toLocaleDateString(
                     'pt-BR'
                   )}{' '}
-                </span>
+                </Text>
               )}
             </Inline>
 
@@ -231,9 +232,9 @@ export default function StudentProgressPageClient({
                   <div className="text-2xl font-bold text-theme-primary">
                     {progressData.stats.completedLessons}
                   </div>
-                  <div className="text-sm text-theme-tertiary">
+                  <Text papel="rotulo" tom="fraco" as="div">
                     {t('completed_lessons')}
-                  </div>
+                  </Text>
                   <div className="text-xs text-accent-blue mt-1">
                     {progressData.stats.attendanceRate?.toFixed(1)}%{' '}
                     {t('attendance_rate')}
@@ -252,9 +253,9 @@ export default function StudentProgressPageClient({
                   <div className="text-2xl font-bold text-theme-primary">
                     {progressData.stats.totalStudyHours}
                   </div>
-                  <div className="text-sm text-theme-tertiary">
+                  <Text papel="rotulo" tom="fraco" as="div">
                     {t('study_time')}
-                  </div>
+                  </Text>
                   <div className="text-xs text-accent-green mt-1">
                     {t('average_per_lesson')}:{' '}
                     {(
@@ -277,9 +278,9 @@ export default function StudentProgressPageClient({
                   <div className="text-2xl font-bold text-theme-primary">
                     {progressData.stats.learnedWorks}
                   </div>
-                  <div className="text-sm text-theme-tertiary">
+                  <Text papel="rotulo" tom="fraco" as="div">
                     {t('learned_works')}
-                  </div>
+                  </Text>
                   <div className="text-xs text-accent-purple mt-1">
                     {progressData.stats.wantToLearnWorks} {t('in_list')}
                   </div>
@@ -300,9 +301,9 @@ export default function StudentProgressPageClient({
                       {getStreakEmoji(progressData.stats.currentStreak)}
                     </span>
                   </div>
-                  <div className="text-sm text-theme-tertiary">
+                  <Text papel="rotulo" tom="fraco" as="div">
                     {t('consecutive_days')}
-                  </div>
+                  </Text>
                   <div className="text-xs text-accent-orange mt-1">
                     {t('record')}: {progressData.stats.longestStreak}
                   </div>
@@ -500,9 +501,9 @@ export default function StudentProgressPageClient({
                             <h4 className="font-bold text-theme-primary text-sm">
                               {teacher.teacherName}
                             </h4>
-                            <p className="text-xs text-theme-tertiary">
+                            <Text papel="legenda" tom="fraco" as="p">
                               {teacher.relationshipDuration}
-                            </p>
+                            </Text>
                           </div>
                         </Inline>
 
@@ -543,17 +544,23 @@ export default function StudentProgressPageClient({
                             {teacher.specialties
                               .slice(0, 2)
                               .map((specialty, idx) => (
-                                <span
+                                <Text
+                                  papel="legenda"
+                                  tom="ouro"
                                   key={idx}
-                                  className="px-2 py-1 text-xs bg-brand-primary/10 text-brand-primary rounded-full"
+                                  className="px-2 py-1 bg-brand-primary/10 rounded-full"
                                 >
                                   {specialty}
-                                </span>
+                                </Text>
                               ))}
                             {teacher.specialties.length > 2 && (
-                              <span className="px-2 py-1 text-xs bg-theme-secondary text-theme-tertiary rounded-full">
+                              <Text
+                                papel="legenda"
+                                tom="fraco"
+                                className="px-2 py-1 bg-theme-secondary rounded-full"
+                              >
                                 +{teacher.specialties.length - 2}
-                              </span>
+                              </Text>
                             )}
                           </div>
                         )}
@@ -593,9 +600,9 @@ export default function StudentProgressPageClient({
                           {achievement.title}
                         </h4>
                       </Inline>
-                      <p className="text-sm text-theme-secondary">
+                      <Text papel="rotulo" tom="suave" as="p">
                         {achievement.description}
-                      </p>
+                      </Text>
                       <div className="text-xs text-accent-green mt-2">
                         {t('achieved_on')}{' '}
                         {achievement.earnedAt.toLocaleDateString('pt-BR')}
@@ -661,9 +668,9 @@ export default function StudentProgressPageClient({
                               <h5 className="font-medium text-theme-primary text-sm">
                                 {work.workTitle}
                               </h5>
-                              <p className="text-xs text-theme-tertiary">
+                              <Text papel="legenda" tom="fraco" as="p">
                                 {work.composer}
-                              </p>
+                              </Text>
                               {work.difficulty && (
                                 <span className="inline-block mt-1 px-2 py-0.5 text-xs bg-accent-blue/10 text-accent-blue rounded">
                                   {work.difficulty}
@@ -672,9 +679,9 @@ export default function StudentProgressPageClient({
                             </div>
                             {work.mastery && (
                               <Inline gap={1} className="ml-3">
-                                <span className="text-xs text-theme-secondary">
+                                <Text papel="legenda" tom="suave">
                                   {work.mastery}/5
-                                </span>
+                                </Text>
                                 <PiStar className="w-3 h-3 text-accent-yellow" />
                               </Inline>
                             )}
@@ -715,9 +722,9 @@ export default function StudentProgressPageClient({
                               <h5 className="font-medium text-theme-primary text-sm">
                                 {work.workTitle}
                               </h5>
-                              <p className="text-xs text-theme-tertiary">
+                              <Text papel="legenda" tom="fraco" as="p">
                                 {work.composer}
-                              </p>
+                              </Text>
                               {work.difficulty && (
                                 <span className="inline-block mt-1 px-2 py-0.5 text-xs bg-accent-blue/10 text-accent-blue rounded">
                                   {work.difficulty}
@@ -725,10 +732,15 @@ export default function StudentProgressPageClient({
                               )}
                             </div>
                           </div>
-                          <div className="text-xs text-theme-secondary mt-2">
+                          <Text
+                            papel="legenda"
+                            tom="suave"
+                            as="div"
+                            className="mt-2"
+                          >
                             {t('added_on')}{' '}
                             {work.addedDate.toLocaleDateString('pt-BR')}
-                          </div>
+                          </Text>
                         </div>
                       </AnimatedItem>
                     ))}

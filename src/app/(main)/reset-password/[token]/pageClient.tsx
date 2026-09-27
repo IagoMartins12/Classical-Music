@@ -22,6 +22,7 @@ import {
   useResetPasswordForm,
 } from '@/app/hooks/usePasswordReset';
 import { useTranslation } from '@/app/context/TranslationContext';
+import { Text } from '@/app/components/ui/Text';
 
 interface ResetPageState {
   step: 'validating' | 'form' | 'success' | 'error';
@@ -185,9 +186,9 @@ export default function ResetPasswordPage() {
           <div className="bg-theme-secondary rounded-xl p-4 mb-6">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm text-theme-tertiary">
+                <Text papel="rotulo" tom="fraco" as="p">
                   {t('reset_for_label')}
-                </p>
+                </Text>
                 <p className="font-medium text-theme-primary">
                   {pageState.tokenData.email}
                 </p>
@@ -200,9 +201,9 @@ export default function ResetPasswordPage() {
                       {timeLeft.text}
                     </span>
                   </div>
-                  <p className="text-xs text-theme-tertiary">
+                  <Text papel="legenda" tom="fraco" as="p">
                     {t('time_remaining_label')}
-                  </p>
+                  </Text>
                 </div>
               )}
             </div>
@@ -400,9 +401,9 @@ export default function ResetPasswordPage() {
         </Button>
       </div>
 
-      <div className="mt-8 text-sm text-theme-tertiary">
+      <Text papel="rotulo" tom="fraco" as="div" className="mt-8">
         {t('success_redirect_message')}
-      </div>
+      </Text>
     </div>
   );
 
@@ -536,7 +537,7 @@ export default function ResetPasswordPage() {
 
           {/* Footer */}
           <div className="mt-12 pt-8 border-t border-theme-secondary text-center">
-            <p className="text-sm text-theme-tertiary">
+            <Text papel="rotulo" tom="fraco" as="p">
               {t('need_help')}{' '}
               <Link
                 href="/support"
@@ -544,7 +545,7 @@ export default function ResetPasswordPage() {
               >
                 {t('contact_support')}
               </Link>
-            </p>
+            </Text>
           </div>
         </div>
       </div>

@@ -31,6 +31,7 @@ import {
   uploadWorkMediaFileRequest,
 } from '@/app/requests/work-media';
 import { Inline } from '@/app/components/ui/Layout';
+import { Text } from '@/app/components/ui/Text';
 
 interface MediaData {
   spotify: {
@@ -618,9 +619,9 @@ const MediaSection: React.FC<MediaSectionProps> = ({
               <h2 className="text-2xl font-bold text-theme-primary classical-title">
                 {t('media_titulo')}
               </h2>
-              <p className="text-theme-secondary text-sm">
+              <Text papel="rotulo" tom="suave" as="p">
                 {t('media_subtitulo')}
-              </p>
+              </Text>
             </div>
           </Inline>
 
@@ -771,17 +772,17 @@ const MediaSection: React.FC<MediaSectionProps> = ({
                   className="w-full p-3 bg-theme-elevated border border-theme-secondary rounded-xl text-theme-primary disabled:opacity-50 disabled:cursor-not-allowed"
                 />
                 {editData.audioFile && (
-                  <p className="text-sm text-theme-secondary mt-1">
+                  <Text papel="rotulo" tom="suave" as="p" className="mt-1">
                     {t('media_novo_arquivo')} {editData.audioFile.name}
-                  </p>
+                  </Text>
                 )}
                 {work.customAudioMetadata &&
                   (work.customAudioMetadata as any)?.title &&
                   !editData.audioFile && (
-                    <p className="text-sm text-theme-secondary mt-1">
+                    <Text papel="rotulo" tom="suave" as="p" className="mt-1">
                       {t('media_arquivo_selecionado')}{' '}
                       {(work.customAudioMetadata as any).title}
-                    </p>
+                    </Text>
                   )}
                 {editData.removeCustomAudio && (
                   <p className="text-sm text-red-400 mt-1">
@@ -838,9 +839,14 @@ const MediaSection: React.FC<MediaSectionProps> = ({
 
               {/* FEEDBACK ADICIONAL */}
               {!hasSearchBeenMade && (
-                <div className="mt-3 text-xs text-theme-tertiary text-center">
+                <Text
+                  papel="legenda"
+                  tom="fraco"
+                  as="div"
+                  className="mt-3 text-center"
+                >
                   💡 {t('media_dica_busca')}
-                </div>
+                </Text>
               )}
             </div>
           </AnimatedCard>

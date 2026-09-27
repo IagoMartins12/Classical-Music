@@ -5,6 +5,7 @@
 import { PiChartBar, PiMedal, PiTrendUp, PiUsers } from 'react-icons/pi';
 import { AnimatedItem, AnimatedCard } from '../animation/AnimatedComponents';
 import { Inline } from '@/app/components/ui/Layout';
+import { Text } from '@/app/components/ui/Text';
 
 interface DifficultyStatsProps {
   stats: {
@@ -45,12 +46,12 @@ export default function DifficultyStats({ stats }: DifficultyStatsProps) {
                 {stats.totalWorks.toLocaleString()}
               </span>
             </div>
-            <p className="text-sm font-medium text-theme-primary">
+            <Text papel="rotulo" tom="forte" as="p" className="font-medium">
               Total de Obras
-            </p>
-            <p className="text-xs text-theme-tertiary">
+            </Text>
+            <Text papel="legenda" tom="fraco" as="p">
               Com dificuldade classificada
-            </p>
+            </Text>
           </div>
         </AnimatedItem>
 
@@ -65,12 +66,12 @@ export default function DifficultyStats({ stats }: DifficultyStatsProps) {
                 {stats.totalInstruments}
               </span>
             </div>
-            <p className="text-sm font-medium text-theme-primary">
+            <Text papel="rotulo" tom="forte" as="p" className="font-medium">
               Instrumentos
-            </p>
-            <p className="text-xs text-theme-tertiary">
+            </Text>
+            <Text papel="legenda" tom="fraco" as="p">
               Com obras classificadas
-            </p>
+            </Text>
           </div>
         </AnimatedItem>
 
@@ -85,10 +86,12 @@ export default function DifficultyStats({ stats }: DifficultyStatsProps) {
                 {stats.averageLevel}
               </span>
             </div>
-            <p className="text-sm font-medium text-theme-primary">
+            <Text papel="rotulo" tom="forte" as="p" className="font-medium">
               Nível Médio
-            </p>
-            <p className="text-xs text-theme-tertiary">Dificuldade geral</p>
+            </Text>
+            <Text papel="legenda" tom="fraco" as="p">
+              Dificuldade geral
+            </Text>
           </div>
         </AnimatedItem>
 
@@ -103,8 +106,12 @@ export default function DifficultyStats({ stats }: DifficultyStatsProps) {
                 {stats.mostCommonLevel}
               </span>
             </div>
-            <p className="text-sm font-medium text-theme-primary">Mais Comum</p>
-            <p className="text-xs text-theme-tertiary">Nível predominante</p>
+            <Text papel="rotulo" tom="forte" as="p" className="font-medium">
+              Mais Comum
+            </Text>
+            <Text papel="legenda" tom="fraco" as="p">
+              Nível predominante
+            </Text>
           </div>
         </AnimatedItem>
       </div>
@@ -123,9 +130,9 @@ export default function DifficultyStats({ stats }: DifficultyStatsProps) {
                 delay={index * 0.1}
               >
                 <div className="flex items-center justify-between">
-                  <span className="text-sm font-medium text-theme-secondary">
+                  <Text papel="rotulo" tom="suave" className="font-medium">
                     {system.system}
-                  </span>
+                  </Text>
                   <Inline gap={3}>
                     <div className="w-32 bg-theme-elevated rounded-full h-2 overflow-hidden">
                       <div
@@ -133,9 +140,13 @@ export default function DifficultyStats({ stats }: DifficultyStatsProps) {
                         style={{ width: `${system.percentage}%` }}
                       />
                     </div>
-                    <span className="text-sm font-semibold text-theme-primary min-w-[3rem] text-right">
+                    <Text
+                      papel="rotulo"
+                      tom="forte"
+                      className="font-semibold min-w-[3rem] text-right"
+                    >
                       {system.count}
-                    </span>
+                    </Text>
                   </Inline>
                 </div>
               </AnimatedItem>

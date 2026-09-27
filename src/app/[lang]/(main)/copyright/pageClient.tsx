@@ -32,6 +32,7 @@ import {
 } from '../../../components/animation/AnimatedComponents';
 import { useTranslation } from '@/app/context/TranslationContext';
 import { Inline } from '@/app/components/ui/Layout';
+import { Text } from '@/app/components/ui/Text';
 
 interface CopyrightSection {
   id: string;
@@ -294,17 +295,17 @@ export default function CopyrightPage() {
                         <h3 className="font-semibold text-theme-primary">
                           {example.composer}
                         </h3>
-                        <p className="text-sm text-theme-tertiary">
+                        <Text papel="rotulo" tom="fraco" as="p">
                           {example.period}
-                        </p>
+                        </Text>
                       </div>
                       <div className="text-right">
                         <div className="text-sm font-medium text-accent-green">
                           {example.status}
                         </div>
-                        <div className="text-xs text-theme-tertiary">
+                        <Text papel="legenda" tom="fraco" as="div">
                           {example.reason}
-                        </div>
+                        </Text>
                       </div>
                     </div>
                   ))}

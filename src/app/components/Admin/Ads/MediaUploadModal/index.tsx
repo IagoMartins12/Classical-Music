@@ -27,6 +27,7 @@ import {
 import ImageNext from 'next/image';
 import { removeAdMedia, uploadAdMedia } from '@/app/requests/admin/ads';
 import { Inline } from '@/app/components/ui/Layout';
+import { Text } from '@/app/components/ui/Text';
 
 interface MediaUploadModalProps {
   ad: any;
@@ -318,7 +319,9 @@ export default function MediaUploadModal({
               <h2 className="text-2xl font-bold text-theme-primary">
                 Gerenciar Mídia
               </h2>
-              <p className="text-sm text-theme-tertiary">{ad.title}</p>
+              <Text papel="rotulo" tom="fraco" as="p">
+                {ad.title}
+              </Text>
             </div>
           </Inline>
 
@@ -372,9 +375,9 @@ export default function MediaUploadModal({
                         {placementDimensions.desktop.width}×
                         {placementDimensions.desktop.height}
                       </div>
-                      <div className="text-xs text-theme-tertiary">
+                      <Text papel="legenda" tom="fraco" as="div">
                         {placementDimensions.desktop.aspectRatio}
-                      </div>
+                      </Text>
                     </div>
                   </div>
 
@@ -390,9 +393,9 @@ export default function MediaUploadModal({
                         {placementDimensions.tablet.width}×
                         {placementDimensions.tablet.height}
                       </div>
-                      <div className="text-xs text-theme-tertiary">
+                      <Text papel="legenda" tom="fraco" as="div">
                         {placementDimensions.tablet.aspectRatio}
-                      </div>
+                      </Text>
                     </div>
                   </div>
 
@@ -408,9 +411,9 @@ export default function MediaUploadModal({
                         {placementDimensions.mobile.width}×
                         {placementDimensions.mobile.height}
                       </div>
-                      <div className="text-xs text-theme-tertiary">
+                      <Text papel="legenda" tom="fraco" as="div">
                         {placementDimensions.mobile.aspectRatio}
-                      </div>
+                      </Text>
                     </div>
                   </div>
                 </div>
@@ -472,10 +475,10 @@ export default function MediaUploadModal({
                       </div>
 
                       {ad.mediaMetadata?.originalDimensions && (
-                        <div className="text-xs text-theme-tertiary">
+                        <Text papel="legenda" tom="fraco" as="div">
                           Original: {ad.mediaMetadata.originalDimensions.width}×
                           {ad.mediaMetadata.originalDimensions.height}
-                        </div>
+                        </Text>
                       )}
                     </div>
                   ) : (
@@ -657,26 +660,36 @@ export default function MediaUploadModal({
                     {/* Informações */}
                     <div className="space-y-3">
                       <div>
-                        <div className="text-sm font-medium text-theme-primary">
+                        <Text
+                          papel="rotulo"
+                          tom="forte"
+                          as="div"
+                          className="font-medium"
+                        >
                           Arquivo
-                        </div>
-                        <div className="text-xs text-theme-tertiary">
+                        </Text>
+                        <Text papel="legenda" tom="fraco" as="div">
                           {filePreview.file.name}
-                        </div>
-                        <div className="text-xs text-theme-tertiary">
+                        </Text>
+                        <Text papel="legenda" tom="fraco" as="div">
                           {(filePreview.file.size / 1024 / 1024).toFixed(2)} MB
-                        </div>
+                        </Text>
                       </div>
 
                       {filePreview.dimensions && (
                         <div>
-                          <div className="text-sm font-medium text-theme-primary">
+                          <Text
+                            papel="rotulo"
+                            tom="forte"
+                            as="div"
+                            className="font-medium"
+                          >
                             Dimensões
-                          </div>
-                          <div className="text-xs text-theme-tertiary">
+                          </Text>
+                          <Text papel="legenda" tom="fraco" as="div">
                             {filePreview.dimensions.width}×
                             {filePreview.dimensions.height}
-                          </div>
+                          </Text>
                         </div>
                       )}
 
@@ -746,9 +759,9 @@ export default function MediaUploadModal({
                       <p className="text-theme-primary font-medium text-lg">
                         Processando...
                       </p>
-                      <p className="text-theme-secondary text-sm">
+                      <Text papel="rotulo" tom="suave" as="p">
                         Criando versões otimizadas para diferentes dispositivos
-                      </p>
+                      </Text>
                     </div>
                   </div>
                 ) : (
@@ -772,7 +785,12 @@ export default function MediaUploadModal({
                       </p>
                     </div>
 
-                    <div className="text-sm text-theme-tertiary space-y-1">
+                    <Text
+                      papel="rotulo"
+                      tom="fraco"
+                      as="div"
+                      className="space-y-1"
+                    >
                       {uploadType === 'image' ? (
                         <>
                           <p>
@@ -799,7 +817,7 @@ export default function MediaUploadModal({
                           </p>
                         </>
                       )}
-                    </div>
+                    </Text>
                   </div>
                 )}
               </div>
@@ -836,11 +854,11 @@ export default function MediaUploadModal({
 
         {/* Footer */}
         <div className="flex justify-between items-center p-6 border-t border-theme-primary">
-          <div className="text-sm text-theme-tertiary">
+          <Text papel="rotulo" tom="fraco" as="div">
             {uploadType === 'image'
               ? 'Imagens são processadas em formato WebP para melhor performance'
               : 'Vídeos são otimizados em MP4 com diferentes qualidades'}
-          </div>
+          </Text>
 
           <div className="flex space-x-3">
             <Button

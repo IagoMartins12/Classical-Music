@@ -12,6 +12,7 @@ import {
 import { useTranslation } from '@/app/context/TranslationContext';
 import Modal from '../../Modal';
 import { Inline } from '@/app/components/ui/Layout';
+import { Text } from '@/app/components/ui/Text';
 
 interface TermsAcceptanceProps {
   accepted: boolean;
@@ -46,7 +47,12 @@ const TermsAcceptance: React.FC<TermsAcceptanceProps> = ({
     title: t('privacy_policy_title'),
     icon: <PiShield className="w-5 h-5 text-brand-primary" />,
     content: (
-      <div className="space-y-6 text-sm text-theme-secondary leading-relaxed">
+      <Text
+        papel="rotulo"
+        tom="suave"
+        as="div"
+        className="space-y-6 leading-relaxed"
+      >
         <div className="rounded-lg p-4">
           <h4 className="font-semibold text-accent-blue mb-2 flex items-center">
             <PiShield className="w-4 h-4 mr-2" />
@@ -129,7 +135,7 @@ const TermsAcceptance: React.FC<TermsAcceptanceProps> = ({
             <strong>{t('privacy_policy_contact_email')}</strong>
           </p>
         </div>
-      </div>
+      </Text>
     ),
   };
 
@@ -137,7 +143,12 @@ const TermsAcceptance: React.FC<TermsAcceptanceProps> = ({
     title: t('terms_of_use_title'),
     icon: <PiFileText className="w-5 h-5 text-brand-primary" />,
     content: (
-      <div className="space-y-6 text-sm text-theme-secondary leading-relaxed">
+      <Text
+        papel="rotulo"
+        tom="suave"
+        as="div"
+        className="space-y-6 leading-relaxed"
+      >
         <div className="bg-theme-elevated rounded-lg p-4">
           <h4 className="font-semibold text-accent-purple mb-2 flex items-center">
             <PiFileText className="w-4 h-4 mr-2" />
@@ -228,7 +239,7 @@ const TermsAcceptance: React.FC<TermsAcceptanceProps> = ({
             {t('terms_of_use_limitations_text')}
           </p>
         </div>
-      </div>
+      </Text>
     ),
   };
 
@@ -253,7 +264,7 @@ const TermsAcceptance: React.FC<TermsAcceptanceProps> = ({
           </div>
 
           <div className="flex-1 flex-nowrap min-w-0">
-            <p className="text-sm text-theme-secondary ">
+            <Text papel="rotulo" tom="suave" as="p">
               {t('terms_acceptance_text')}{' '}
               <button
                 type="button"
@@ -278,7 +289,7 @@ const TermsAcceptance: React.FC<TermsAcceptanceProps> = ({
               >
                 {t('terms_acceptance_privacy_link')}
               </button>{' '}
-            </p>
+            </Text>
           </div>
         </div>
 
@@ -306,9 +317,9 @@ const TermsAcceptance: React.FC<TermsAcceptanceProps> = ({
             <h3 className="text-lg font-semibold text-theme-primary">
               {t('privacy_policy_subtitle')}
             </h3>
-            <p className="text-sm text-theme-tertiary">
+            <Text papel="rotulo" tom="fraco" as="p">
               {t('privacy_policy_last_update')}
-            </p>
+            </Text>
           </div>
         </Inline>
         {privacyContent.content}
@@ -329,9 +340,9 @@ const TermsAcceptance: React.FC<TermsAcceptanceProps> = ({
             <h3 className="text-lg font-semibold text-theme-primary">
               {t('terms_of_use_subtitle')}
             </h3>
-            <p className="text-sm text-theme-tertiary">
+            <Text papel="rotulo" tom="fraco" as="p">
               {t('terms_of_use_last_update')}
-            </p>
+            </Text>
           </div>
         </Inline>
         {termsContent.content}

@@ -11,6 +11,7 @@ import {
 } from 'react-icons/pi';
 import { getWorkById, searchWorks } from '@/app/requests/catalog-search';
 import { Inline } from '@/app/components/ui/Layout';
+import { Text } from '@/app/components/ui/Text';
 
 interface Work {
   id: string;
@@ -313,13 +314,13 @@ const SimpleWorkSearchInput: React.FC<SimpleWorkSearchInputProps> = ({
                 <PiCheck className="w-4 h-4 text-accent-blue" />
               </div>
               <div>
-                <p className="font-medium text-theme-primary text-sm">
+                <Text papel="rotulo" tom="forte" as="p" className="font-medium">
                   {selectedWorkData.title}
-                </p>
-                <p className="text-theme-tertiary text-xs">
+                </Text>
+                <Text papel="legenda" tom="fraco" as="p">
                   {selectedWorkData.composer.fullName ||
                     selectedWorkData.composer.name}
-                </p>
+                </Text>
               </div>
             </Inline>
             {!disabled && (
@@ -371,11 +372,11 @@ const SimpleWorkSearchInput: React.FC<SimpleWorkSearchInputProps> = ({
               {(isLoading || loadingUserSuggestions) && (
                 <div className="p-4 text-center">
                   <PiSpinnerGap className="w-5 h-5 mx-auto animate-spin text-brand-primary mb-2" />
-                  <p className="text-sm text-theme-tertiary">
+                  <Text papel="rotulo" tom="fraco" as="p">
                     {loadingUserSuggestions
                       ? 'Carregando sugestões...'
                       : 'Buscando obras...'}
-                  </p>
+                  </Text>
                 </div>
               )}
 
@@ -383,7 +384,12 @@ const SimpleWorkSearchInput: React.FC<SimpleWorkSearchInputProps> = ({
               {!isLoading && !loadingUserSuggestions && works.length > 0 && (
                 <div className="p-2">
                   {/* 🆕 Header inteligente */}
-                  <div className="px-3 py-2 text-xs font-medium text-theme-tertiary uppercase tracking-wide border-b border-theme-secondary mb-2">
+                  <Text
+                    papel="legenda"
+                    tom="fraco"
+                    as="div"
+                    className="px-3 py-2 font-medium uppercase tracking-wide border-b border-theme-secondary mb-2"
+                  >
                     <div className="flex items-center gap-2">
                       {query.length >= 2 ? (
                         <PiMagnifyingGlass className="w-4 h-4" />
@@ -394,7 +400,7 @@ const SimpleWorkSearchInput: React.FC<SimpleWorkSearchInputProps> = ({
                       )}
                       {getHeaderLabel()}
                     </div>
-                  </div>
+                  </Text>
 
                   {works.map((work, i) => {
                     const isUserWork = isUserSuggestion(work);
@@ -422,18 +428,28 @@ const SimpleWorkSearchInput: React.FC<SimpleWorkSearchInputProps> = ({
                           </div>
                           <div className="flex-1 min-w-0">
                             <Inline gap={2}>
-                              <p className="font-medium text-theme-primary text-sm truncate">
+                              <Text
+                                papel="rotulo"
+                                tom="forte"
+                                as="p"
+                                className="font-medium truncate"
+                              >
                                 {work.title}
-                              </p>
+                              </Text>
                               {isUserWork && (
                                 <span className="text-xs bg-accent-purple/20 text-accent-purple px-1.5 py-0.5 rounded">
                                   Sugerida
                                 </span>
                               )}
                             </Inline>
-                            <p className="text-theme-tertiary text-xs truncate">
+                            <Text
+                              papel="legenda"
+                              tom="fraco"
+                              as="p"
+                              className="truncate"
+                            >
                               {work.composer.fullName || work.composer.name}
-                            </p>
+                            </Text>
                           </div>
                         </Inline>
                       </button>
@@ -463,11 +479,11 @@ const SimpleWorkSearchInput: React.FC<SimpleWorkSearchInputProps> = ({
 
           {/* 🆕 Dica dinâmica */}
           {!isOpen && query.length === 0 && !selectedWorkData && (
-            <div className="mt-2 text-xs text-theme-tertiary">
+            <Text papel="legenda" tom="fraco" as="div" className="mt-2">
               {userSuggestions.length > 0
                 ? ``
                 : '💡 Digite pelo menos 2 caracteres para buscar obras'}
-            </div>
+            </Text>
           )}
         </div>
       )}

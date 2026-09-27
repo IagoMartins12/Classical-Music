@@ -34,6 +34,7 @@ import Image from '@/app/components/SmartImage';
 import ConfirmDeleteModal from '../DeleteAnnotationModal';
 import { useTranslation } from '@/app/hooks/useTranslation';
 import { Inline } from '@/app/components/ui/Layout';
+import { Text } from '@/app/components/ui/Text';
 
 interface AnnotationCardProps {
   annotation: WorkAnnotation;
@@ -249,12 +250,12 @@ export default function AnnotationCard({
               className="bg-theme-elevated/90 rounded-xl px-4 py-2 border border-theme-primary/30"
             >
               <PiSpinnerGap className="w-4 h-4 animate-spin text-brand-primary" />
-              <span className="text-sm font-medium text-theme-primary">
+              <Text papel="rotulo" tom="forte" className="font-medium">
                 {isOptimistic
                   ? t('annotation_card_saving')
                   : t('annotation_card_updating')}
                 ...
-              </span>
+              </Text>
             </Inline>
           </div>
         )}
@@ -309,7 +310,12 @@ export default function AnnotationCard({
                   )}
                 </Inline>
 
-                <div className="flex flex-col md:flex-row items-start md:items-center space-x-4 text-sm text-theme-secondary">
+                <Text
+                  papel="rotulo"
+                  tom="suave"
+                  as="div"
+                  className="flex flex-col md:flex-row items-start md:items-center space-x-4"
+                >
                   <Inline gap={1}>
                     <span className="font-medium">
                       {annotation.user.firstName ||
@@ -331,7 +337,7 @@ export default function AnnotationCard({
                       })}
                     </span>
                   </Inline>
-                </div>
+                </Text>
               </div>
             </div>
 
@@ -427,9 +433,13 @@ export default function AnnotationCard({
             )}
 
             {annotation.pageNumber && (
-              <span className="px-3 py-1 rounded-full text-xs font-medium border bg-theme-primary/10 border-theme-primary/30 text-theme-primary">
+              <Text
+                papel="legenda"
+                tom="forte"
+                className="px-3 py-1 rounded-full font-medium border bg-theme-primary/10 border-theme-primary/30"
+              >
                 {t('user_annotation_card_page')} {annotation.pageNumber}
-              </span>
+              </Text>
             )}
           </div>
 
@@ -470,12 +480,14 @@ export default function AnnotationCard({
           {annotation.tags.length > 0 && (
             <div className="flex flex-wrap gap-2 mb-4">
               {annotation.tags.map((tag, index) => (
-                <span
+                <Text
+                  papel="legenda"
+                  tom="suave"
                   key={index}
-                  className="px-2 py-1 bg-theme-elevated border border-theme-primary/20 rounded-lg text-xs text-theme-secondary"
+                  className="px-2 py-1 bg-theme-elevated border border-theme-primary/20 rounded-lg"
                 >
                   #{tag}
-                </span>
+                </Text>
               ))}
             </div>
           )}
@@ -546,14 +558,14 @@ export default function AnnotationCard({
                   <span>{annotation.helpfulCount}</span>
                 </Inline>
                 {!user && (
-                  <div className="text-xs text-theme-tertiary">
+                  <Text papel="legenda" tom="fraco" as="div">
                     {t('annotation_card_login_to_vote')}
-                  </div>
+                  </Text>
                 )}
                 {isOwner && (
-                  <div className="text-xs text-theme-tertiary">
+                  <Text papel="legenda" tom="fraco" as="div">
                     {t('annotation_card_your_annotation')}
-                  </div>
+                  </Text>
                 )}
               </Inline>
             )}

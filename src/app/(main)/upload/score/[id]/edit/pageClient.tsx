@@ -34,6 +34,7 @@ import { useToast } from '@/app/hooks/useToast';
 import { deleteUpload } from '@/app/requests/uploads-client';
 import { useTranslation } from '@/app/context/TranslationContext';
 import { Inline } from '@/app/components/ui/Layout';
+import { Text } from '@/app/components/ui/Text';
 
 interface EditScoreClientProps {
   score: any;
@@ -276,10 +277,14 @@ const EditScoreClient = ({
                         )} rounded-full flex items-center space-x-2 shadow-lg`}
                       >
                         <PiTag className="w-4 h-4 text-theme-primary" />
-                        <span className="text-theme-primary font-semibold text-sm">
+                        <Text
+                          papel="rotulo"
+                          tom="forte"
+                          className="font-semibold"
+                        >
                           {t('score_info_source')}:{' '}
                           {getSourceLabel(score.source)}
-                        </span>
+                        </Text>
                       </div>
                     </Inline>
                   </div>
@@ -292,9 +297,14 @@ const EditScoreClient = ({
                         <PiStack className="w-4 h-4 text-theme-primary" />
                       </div>
                       <div>
-                        <p className="text-sm font-medium text-theme-tertiary">
+                        <Text
+                          papel="rotulo"
+                          tom="fraco"
+                          as="p"
+                          className="font-medium"
+                        >
                           {t('score_info_type')}
-                        </p>
+                        </Text>
                         <p className="text-theme-primary font-semibold">
                           {getScoreTypeLabel(score.type)}
                         </p>
@@ -307,9 +317,14 @@ const EditScoreClient = ({
                         <PiFile className="w-4 h-4 text-theme-primary" />
                       </div>
                       <div>
-                        <p className="text-sm font-medium text-theme-tertiary">
+                        <Text
+                          papel="rotulo"
+                          tom="fraco"
+                          as="p"
+                          className="font-medium"
+                        >
                           {t('score_info_format')}
-                        </p>
+                        </Text>
                         <p className="text-theme-primary font-semibold">
                           {score.fileFormat || 'PDF'}
                         </p>
@@ -323,9 +338,14 @@ const EditScoreClient = ({
                           <PiDownloadSimple className="w-4 h-4 text-theme-primary" />
                         </div>
                         <div>
-                          <p className="text-sm font-medium text-theme-tertiary">
+                          <Text
+                            papel="rotulo"
+                            tom="fraco"
+                            as="p"
+                            className="font-medium"
+                          >
                             {t('score_info_size')}
-                          </p>
+                          </Text>
                           <p className="text-theme-primary font-semibold">
                             {formatFileSize(score.fileSize)}
                           </p>
@@ -340,9 +360,14 @@ const EditScoreClient = ({
                           <PiFileText className="w-4 h-4 text-theme-primary" />
                         </div>
                         <div>
-                          <p className="text-sm font-medium text-theme-tertiary">
+                          <Text
+                            papel="rotulo"
+                            tom="fraco"
+                            as="p"
+                            className="font-medium"
+                          >
                             {t('score_info_pages')}
-                          </p>
+                          </Text>
                           <p className="text-theme-primary font-semibold">
                             {score.pageCount}
                           </p>
@@ -357,9 +382,14 @@ const EditScoreClient = ({
                           <PiTag className="w-4 h-4 text-theme-primary" />
                         </div>
                         <div>
-                          <p className="text-sm font-medium text-theme-tertiary">
+                          <Text
+                            papel="rotulo"
+                            tom="fraco"
+                            as="p"
+                            className="font-medium"
+                          >
                             {t('score_info_group')}
-                          </p>
+                          </Text>
                           <p className="text-theme-primary font-semibold">
                             {score.groupTitle}
                           </p>
@@ -374,9 +404,14 @@ const EditScoreClient = ({
                           <PiUser className="w-4 h-4 text-theme-primary" />
                         </div>
                         <div>
-                          <p className="text-sm font-medium text-theme-tertiary">
+                          <Text
+                            papel="rotulo"
+                            tom="fraco"
+                            as="p"
+                            className="font-medium"
+                          >
                             {t('score_info_uploaded_by')}
-                          </p>
+                          </Text>
                           <p className="text-theme-primary font-semibold">
                             {score.uploader}
                           </p>
@@ -580,20 +615,28 @@ const EditScoreClient = ({
                           <span className="font-medium text-theme-tertiary">
                             {t('score_info_upload_date')}:
                           </span>
-                          <span className="text-theme-primary font-semibold text-xs">
+                          <Text
+                            papel="legenda"
+                            tom="forte"
+                            className="font-semibold"
+                          >
                             {score.uploadDate}
-                          </span>
+                          </Text>
                         </div>
                       )}
                       <div className="flex items-center justify-between pt-2 border-t border-theme-secondary">
                         <span className="font-medium text-theme-tertiary">
                           {t('work_info_cataloged_on')}:
                         </span>
-                        <span className="text-theme-primary font-semibold text-xs">
+                        <Text
+                          papel="legenda"
+                          tom="forte"
+                          className="font-semibold"
+                        >
                           {new Date(score.createdAt).toLocaleDateString(
                             'pt-BR'
                           )}
-                        </span>
+                        </Text>
                       </div>
                     </div>
                   </div>

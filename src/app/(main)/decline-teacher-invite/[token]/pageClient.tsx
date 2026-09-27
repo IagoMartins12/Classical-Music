@@ -17,6 +17,7 @@ import Button from '@/app/components/Common/Button';
 import Link from 'next/link';
 import { toast } from 'react-hot-toast';
 import { useTranslation } from '@/app/context/TranslationContext';
+import { Text } from '@/app/components/ui/Text';
 
 interface DeclineState {
   status: 'loading' | 'success' | 'error' | 'already-processed';
@@ -193,9 +194,9 @@ export default function DeclineTeacherInvitePage() {
 
           <div className="space-y-4">
             <div className="text-center">
-              <p className="text-theme-tertiary text-sm mb-6">
+              <Text papel="rotulo" tom="fraco" as="p" className="mb-6">
                 {t('pages_token_jsx_p_children_0__decisão_revertida')}
-              </p>
+              </Text>
             </div>
 
             <div className="grid md:grid-cols-2 gap-4">
@@ -295,11 +296,11 @@ export default function DeclineTeacherInvitePage() {
               </Button>
             </div>
 
-            <div className="mt-8 text-sm text-theme-tertiary">
+            <Text papel="rotulo" tom="fraco" as="div" className="mt-8">
               <span>
                 {t('pages_token_jsx_span_children_0__redirecionando_site')}
               </span>
-            </div>
+            </Text>
           </div>
         );
 
@@ -411,9 +412,9 @@ export default function DeclineTeacherInvitePage() {
                 {t('pages_token_jsx_h1_children_0__opus_atlas')}
               </span>
             </Link>
-            <div className="text-sm text-theme-tertiary mb-4">
+            <Text papel="rotulo" tom="fraco" as="div" className="mb-4">
               {t('pages_token_jsx_div_children_0__recusar_convite_professor')}
-            </div>
+            </Text>
           </div>
 
           {/* Content */}
@@ -421,7 +422,7 @@ export default function DeclineTeacherInvitePage() {
 
           {/* Footer */}
           <div className="mt-12 pt-8 border-t border-theme-secondary text-center">
-            <p className="text-sm text-theme-tertiary">
+            <Text papel="rotulo" tom="fraco" as="p">
               {t('pages_token_jsx_p_children_0__precisa_ajuda')}{' '}
               <Link
                 href="/support"
@@ -429,7 +430,7 @@ export default function DeclineTeacherInvitePage() {
               >
                 {t('pages_token_jsx_link_children_0__entre_contato')}
               </Link>
-            </p>
+            </Text>
           </div>
         </div>
       </div>

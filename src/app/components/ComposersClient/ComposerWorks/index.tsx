@@ -54,6 +54,7 @@ import {
   translateCategory,
 } from '@/app/utils/translations/categoryTranslation';
 import { Inline, Stack } from '@/app/components/ui/Layout';
+import { Text } from '@/app/components/ui/Text';
 
 interface ComposerWorksProps {
   composerId: string;
@@ -475,9 +476,9 @@ export default function ComposerWorks({
             <div className="mb-6">
               <Inline gap={2} className="mb-3">
                 <PiStack className="w-4 h-4 text-theme-primary" />
-                <span className="text-sm font-medium text-theme-primary">
+                <Text papel="rotulo" tom="forte" className="font-medium">
                   {t('filter_by_work_type')}
-                </span>
+                </Text>
               </Inline>
 
               <div className="flex flex-wrap gap-2">
@@ -673,12 +674,17 @@ export default function ComposerWorks({
           {/* Filtros ativos */}
           {hasActiveFilters && (
             <div className="flex items-center gap-3 mt-4 flex-wrap">
-              <span className="text-sm font-medium text-theme-secondary">
+              <Text papel="rotulo" tom="suave" className="font-medium">
                 {t('active_filters_label')}
-              </span>
+              </Text>
 
               {searchTerm && (
-                <div className="flex items-center gap-2 px-3 py-1 bg-brand-primary/10 border border-brand-primary/30 text-brand-primary rounded-full text-sm">
+                <Text
+                  papel="rotulo"
+                  tom="ouro"
+                  as="div"
+                  className="flex items-center gap-2 px-3 py-1 bg-brand-primary/10 border border-brand-primary/30 rounded-full"
+                >
                   <span>
                     {t('search_filter_prefix')} &quot;{searchTerm}&quot;
                   </span>
@@ -689,7 +695,7 @@ export default function ComposerWorks({
                   >
                     <PiX className="w-3 h-3" />
                   </button>
-                </div>
+                </Text>
               )}
 
               {selectedWorkType !== 'all' && (
@@ -836,14 +842,23 @@ export default function ComposerWorks({
                                 </span>
 
                                 {work.opOrCatalog && (
-                                  <span className="text-sm !max-w-[15rem]  text-theme-tertiary bg-theme-elevated border border-theme-secondary px-3 py-1 rounded-full">
+                                  <Text
+                                    papel="rotulo"
+                                    tom="fraco"
+                                    className="!max-w-[15rem] bg-theme-elevated border border-theme-secondary px-3 py-1 rounded-full"
+                                  >
                                     {work.opOrCatalog}
-                                  </span>
+                                  </Text>
                                 )}
                               </div>
                             </Inline>
 
-                            <div className="flex flex-col gap-4 text-sm text-theme-secondary">
+                            <Text
+                              papel="rotulo"
+                              tom="suave"
+                              as="div"
+                              className="flex flex-col gap-4"
+                            >
                               {work.instrument?.name && (
                                 <Inline gap={2}>
                                   <PiMusicNotes className="w-4 h-4 text-theme-tertiary" />
@@ -873,7 +888,7 @@ export default function ComposerWorks({
                                   <span>{work.compositionYear}</span>
                                 </Inline>
                               )}
-                            </div>
+                            </Text>
 
                             {/* Gêneros e categorias */}
                             {(work.workGenresArr?.length ||
@@ -949,14 +964,23 @@ export default function ComposerWorks({
                                   </span>
 
                                   {work.opOrCatalog && (
-                                    <span className="ml-3 text-sm text-theme-tertiary bg-theme-elevated border border-theme-secondary px-3 py-1 rounded-full">
+                                    <Text
+                                      papel="rotulo"
+                                      tom="fraco"
+                                      className="ml-3 bg-theme-elevated border border-theme-secondary px-3 py-1 rounded-full"
+                                    >
                                       {work.opOrCatalog}
-                                    </span>
+                                    </Text>
                                   )}
                                 </div>
                               </Inline>
 
-                              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 text-sm text-theme-secondary">
+                              <Text
+                                papel="rotulo"
+                                tom="suave"
+                                as="div"
+                                className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4"
+                              >
                                 {work.instrument?.name && (
                                   <Inline gap={2}>
                                     <PiMusicNotes className="w-4 h-4 text-theme-tertiary" />
@@ -986,7 +1010,7 @@ export default function ComposerWorks({
                                     <span>{work.compositionYear}</span>
                                   </Inline>
                                 )}
-                              </div>
+                              </Text>
 
                               {/* Gêneros e categorias */}
                               {(work.workGenresArr?.length ||

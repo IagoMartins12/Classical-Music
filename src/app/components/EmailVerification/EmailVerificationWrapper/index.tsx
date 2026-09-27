@@ -5,6 +5,7 @@ import { ReactNode } from 'react';
 import EmailVerificationRequired from '../../VerificationsProviders/EmailVerificationRequired';
 import { PiEnvelopeSimple } from 'react-icons/pi';
 import Button from '../../Common/Button';
+import { Text } from '@/app/components/ui/Text';
 
 interface EmailVerifiedWrapperProps {
   children: ReactNode;
@@ -69,9 +70,9 @@ export default function EmailVerifiedWrapper({
               <h4 className="font-semibold text-theme-primary mb-2">
                 Email não verificado
               </h4>
-              <p className="text-sm text-theme-secondary mb-4">
+              <Text papel="rotulo" tom="suave" as="p" className="mb-4">
                 Confirme seu email para usar esta funcionalidade.
-              </p>
+              </Text>
               <Button
                 size="sm"
                 variant="primary"

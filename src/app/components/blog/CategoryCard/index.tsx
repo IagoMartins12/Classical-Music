@@ -2,6 +2,7 @@
 import Link from 'next/link';
 import Image from '@/app/components/SmartImage';
 import { PiArrowRight } from 'react-icons/pi';
+import { Text } from '@/app/components/ui/Text';
 
 interface CategoryCardProps {
   category: {
@@ -42,9 +43,9 @@ export function CategoryCard({
         <h3 className="font-semibold text-theme-primary mb-1 group-hover:text-brand-primary transition-colors">
           {category.name}
         </h3>
-        <p className="text-sm text-theme-tertiary">
+        <Text papel="rotulo" tom="fraco" as="p">
           {category._count.articles} artigos
-        </p>
+        </Text>
       </Link>
     );
   }
@@ -172,16 +173,21 @@ export function CategoryCard({
         </h3>
 
         {category.description && (
-          <p className="text-sm text-theme-secondary mb-3 line-clamp-2">
+          <Text papel="rotulo" tom="suave" as="p" className="mb-3 line-clamp-2">
             {category.description}
-          </p>
+          </Text>
         )}
 
         {/* CTA */}
-        <div className="flex items-center text-brand-primary text-sm font-medium group-hover:translate-x-2 transition-transform">
+        <Text
+          papel="rotulo"
+          tom="ouro"
+          as="div"
+          className="flex items-center font-medium group-hover:translate-x-2 transition-transform"
+        >
           <span className="mr-1">Explorar</span>
           <PiArrowRight className="w-4 h-4" />
-        </div>
+        </Text>
       </div>
     </Link>
   );

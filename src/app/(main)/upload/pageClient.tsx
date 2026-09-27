@@ -48,6 +48,7 @@ import UploadWorkCard from '../../components/UploadsPage/UploadWorkCard';
 import UploadScoreCard from '../../components/UploadsPage/UploadScoreCard';
 import { useTranslation } from '@/app/context/TranslationContext';
 import { Inline } from '@/app/components/ui/Layout';
+import { Text } from '@/app/components/ui/Text';
 
 interface Epoch {
   id: string;
@@ -891,7 +892,7 @@ const UploadsClient = ({
         <AnimatedItem direction="up" springType="gentle">
           <div className="flex justify-between gap-4 my-4">
             <Inline gap={4}>
-              <div className="text-theme-secondary text-sm">
+              <Text papel="rotulo" tom="suave" as="div">
                 <span className="font-medium text-theme-primary">
                   {uploads.length}
                 </span>{' '}
@@ -909,15 +910,20 @@ const UploadsClient = ({
                     <span className="font-medium">{searchTerm}</span>&quot;
                   </span>
                 )}
-              </div>
+              </Text>
 
               {(isPending || isRefreshing) && (
-                <div className="flex items-center text-brand-primary text-sm">
+                <Text
+                  papel="rotulo"
+                  tom="ouro"
+                  as="div"
+                  className="flex items-center"
+                >
                   <LoadingSpinner size="sm" />
                   <span className="ml-2">
                     {isRefreshing ? 'Atualizando...' : t('results_loading')}
                   </span>
-                </div>
+                </Text>
               )}
             </Inline>
 

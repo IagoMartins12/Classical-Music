@@ -31,6 +31,7 @@ import { formatNumber } from '../../Utils';
 import toast from 'react-hot-toast';
 import Input from '@/app/components/Common/Inputs';
 import { Inline } from '@/app/components/ui/Layout';
+import { Text } from '@/app/components/ui/Text';
 
 interface ActivityItem {
   id: string;
@@ -192,16 +193,18 @@ export default function LogsAudit() {
                 <div className="text-2xl font-bold text-accent-blue">
                   {formatNumber(activityPagination.total)}
                 </div>
-                <div className="text-sm text-theme-tertiary">
+                <Text papel="rotulo" tom="fraco" as="div">
                   Total de Atividades
-                </div>
+                </Text>
               </div>
 
               <div className="text-center">
                 <div className="text-2xl font-bold text-theme-primary">
                   {activities.length}
                 </div>
-                <div className="text-sm text-theme-tertiary">Carregadas</div>
+                <Text papel="rotulo" tom="fraco" as="div">
+                  Carregadas
+                </Text>
               </div>
             </Inline>
           </div>
@@ -388,7 +391,7 @@ export default function LogsAudit() {
 
                             {/* 🔧 CORREÇÃO DO ERRO TYPESCRIPT */}
                             {activity.metadata && (
-                              <div className="text-xs text-theme-tertiary">
+                              <Text papel="legenda" tom="fraco" as="div">
                                 {Object.entries(activity.metadata)
                                   .filter(
                                     ([_, value]) =>
@@ -399,7 +402,7 @@ export default function LogsAudit() {
                                       {key}: {String(value)}
                                     </span>
                                   ))}
-                              </div>
+                              </Text>
                             )}
                           </div>
                         </div>

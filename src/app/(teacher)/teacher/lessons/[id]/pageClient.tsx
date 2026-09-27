@@ -48,6 +48,7 @@ import Checkbox from '@/app/components/Common/Checkbox';
 import { useTranslation } from '@/app/context/TranslationContext';
 import { updateLessonRequest } from '@/app/requests/portal/lesson-actions';
 import { Inline } from '@/app/components/ui/Layout';
+import { Text } from '@/app/components/ui/Text';
 
 interface TeacherLessonDetailsPageClientProps {
   lessonData: LessonDetailsData | null;
@@ -1017,12 +1018,12 @@ export default function TeacherLessonDetailsPageClient({
                             {t('recurring_lesson_title')}
                           </span>
                         </Inline>
-                        <p className="text-sm text-theme-secondary">
+                        <Text papel="rotulo" tom="suave" as="p">
                           {t('recurring_lesson_description')}
                           {lesson.parentLessonId
                             ? t('recurring_child_description')
                             : t('recurring_parent_description')}
-                        </p>
+                        </Text>
                       </div>
                     )}
 
@@ -1035,9 +1036,9 @@ export default function TeacherLessonDetailsPageClient({
                             {t('cancelled_lesson_title')}
                           </span>
                         </Inline>
-                        <p className="text-sm text-theme-secondary">
+                        <Text papel="rotulo" tom="suave" as="p">
                           {t('cancelled_lesson_description')}
-                        </p>
+                        </Text>
                       </div>
                     )}
                   </div>
@@ -1087,13 +1088,17 @@ export default function TeacherLessonDetailsPageClient({
                                 <h5 className="font-medium text-theme-primary">
                                   {work.workTitle}
                                 </h5>
-                                <span className="text-xs bg-theme-secondary/20 text-theme-secondary px-2 py-0.5 rounded">
+                                <Text
+                                  papel="legenda"
+                                  tom="suave"
+                                  className="bg-theme-secondary/20 px-2 py-0.5 rounded"
+                                >
                                   #{index + 1}
-                                </span>
+                                </Text>
                               </Inline>
-                              <p className="text-sm text-theme-tertiary">
+                              <Text papel="rotulo" tom="fraco" as="p">
                                 {work.composerName}
-                              </p>
+                              </Text>
                               {work.scoreId && (
                                 <Inline gap={2} className="mt-2">
                                   <Inline
@@ -1103,9 +1108,9 @@ export default function TeacherLessonDetailsPageClient({
                                     <PiCheck className="w-3 h-3" />
                                     <span>Partitura: {work.scoreTitle}</span>
                                   </Inline>
-                                  <span className="text-xs text-theme-tertiary">
+                                  <Text papel="legenda" tom="fraco">
                                     ({work.scoreSource})
-                                  </span>
+                                  </Text>
                                 </Inline>
                               )}
                             </div>
@@ -1373,9 +1378,9 @@ export default function TeacherLessonDetailsPageClient({
                             </span>
                           ))
                         ) : (
-                          <span className="text-theme-tertiary italic text-sm">
+                          <Text papel="rotulo" tom="fraco" className="italic">
                             {t('no_topics_recorded')}
-                          </span>
+                          </Text>
                         )}
                       </div>
                     )}
@@ -1476,9 +1481,9 @@ export default function TeacherLessonDetailsPageClient({
                             </span>
                           ))
                         ) : (
-                          <span className="text-theme-tertiary italic text-sm">
+                          <Text papel="rotulo" tom="fraco" className="italic">
                             {t('no_techniques_recorded')}
-                          </span>
+                          </Text>
                         )}
                       </div>
                     )}
@@ -1704,9 +1709,9 @@ export default function TeacherLessonDetailsPageClient({
                     <p className="text-theme-secondary">
                       {t('level_label')} {translateNivel(lesson.student.level)}
                     </p>
-                    <p className="text-sm text-theme-tertiary">
+                    <Text papel="rotulo" tom="fraco" as="p">
                       {lesson.student.email}
-                    </p>
+                    </Text>
                   </div>
                 </Inline>
 
@@ -1764,26 +1769,40 @@ export default function TeacherLessonDetailsPageClient({
                           <PiMusicNotes className="w-4 h-4 text-accent-blue" />
                         </div>
                         <div className="flex-1 min-w-0">
-                          <p className="font-medium text-theme-primary text-sm truncate">
+                          <Text
+                            papel="rotulo"
+                            tom="forte"
+                            as="p"
+                            className="font-medium truncate"
+                          >
                             {work.workTitle}
-                          </p>
-                          <p className="text-xs text-theme-tertiary truncate">
+                          </Text>
+                          <Text
+                            papel="legenda"
+                            tom="fraco"
+                            as="p"
+                            className="truncate"
+                          >
                             {work.composerName}
-                          </p>
+                          </Text>
                           {work.scoreId && (
                             <p className="text-xs text-accent-green">
                               {t('with_score')}
                             </p>
                           )}
                         </div>
-                        <span className="text-xs bg-theme-secondary/20 text-theme-secondary px-2 py-1 rounded">
+                        <Text
+                          papel="legenda"
+                          tom="suave"
+                          className="bg-theme-secondary/20 px-2 py-1 rounded"
+                        >
                           #{index + 1}
-                        </span>
+                        </Text>
                       </Inline>
                     ))}
 
                     <div className="mt-3 p-3 bg-brand-primary/5 border border-brand-primary/20 rounded-lg">
-                      <div className="text-xs text-theme-secondary">
+                      <Text papel="legenda" tom="suave" as="div">
                         <div className="flex justify-between">
                           <span>{t('total_pieces')}</span>
                           <span className="font-medium">{worksIds.length}</span>
@@ -1794,7 +1813,7 @@ export default function TeacherLessonDetailsPageClient({
                             {workScoreIds.length}
                           </span>
                         </div>
-                      </div>
+                      </Text>
                     </div>
                   </div>
                 </AnimatedCard>
@@ -1891,26 +1910,26 @@ export default function TeacherLessonDetailsPageClient({
                     </Inline>
 
                     {lesson.punctuality && (
-                      <p className="text-sm text-theme-secondary">
+                      <Text papel="rotulo" tom="suave" as="p">
                         {t('punctuality_label')}{' '}
                         {lesson.punctuality === 'on_time'
                           ? t('punctuality_on_time')
                           : lesson.punctuality === 'late'
                             ? t('punctuality_late')
                             : t('punctuality_early')}
-                      </p>
+                      </Text>
                     )}
 
                     {lesson.engagement && (
-                      <p className="text-sm text-theme-secondary">
+                      <Text papel="rotulo" tom="suave" as="p">
                         {t('engagement_label')} {lesson.engagement}/5
-                      </p>
+                      </Text>
                     )}
 
                     {lesson.preparation && (
-                      <p className="text-sm text-theme-secondary">
+                      <Text papel="rotulo" tom="suave" as="p">
                         {t('preparation_label')} {lesson.preparation}/5
-                      </p>
+                      </Text>
                     )}
                   </div>
                 </AnimatedCard>
@@ -1939,7 +1958,7 @@ export default function TeacherLessonDetailsPageClient({
                 <h3 className="text-lg font-bold text-theme-primary classical-title mb-4">
                   {t('tips_title')}
                 </h3>
-                <div className="space-y-3 text-sm text-theme-secondary">
+                <Text papel="rotulo" tom="suave" as="div" className="space-y-3">
                   <div className="flex items-start space-x-2">
                     <PiTarget className="w-4 h-4 text-brand-primary mt-0.5 flex-shrink-0" />
                     <p>{t('tip_define_objectives')}</p>
@@ -1956,7 +1975,7 @@ export default function TeacherLessonDetailsPageClient({
                     <PiCheck className="w-4 h-4 text-brand-primary mt-0.5 flex-shrink-0" />
                     <p>{t('tip_scores_reports')}</p>
                   </div>
-                </div>
+                </Text>
               </AnimatedCard>
             </AnimatedItem>
           </div>

@@ -17,6 +17,7 @@ import {
 import Button from '../../Common/Button';
 import Modal from '../../Modal';
 import { Inline } from '@/app/components/ui/Layout';
+import { Text } from '@/app/components/ui/Text';
 
 interface CoverCropperProps {
   imageUrl: string;
@@ -303,9 +304,9 @@ export default function CoverCropper({
                 {/* Zoom */}
                 <div className="space-y-2">
                   <div className="flex items-center justify-between">
-                    <span className="text-sm font-medium text-theme-secondary">
+                    <Text papel="rotulo" tom="suave" className="font-medium">
                       🔍 Zoom: {Math.round(scale * 100)}%
-                    </span>
+                    </Text>
                     <Inline gap={2}>
                       <button
                         type="button"
@@ -347,9 +348,9 @@ export default function CoverCropper({
 
                 {/* Rotação */}
                 <div className="flex items-center justify-between p-3 bg-theme-classical rounded-lg">
-                  <span className="text-sm font-medium text-theme-secondary">
+                  <Text papel="rotulo" tom="suave" className="font-medium">
                     🔄 Rotação: {rotation}°
-                  </span>
+                  </Text>
                   <Inline
                     as="button"
                     gap={2}
@@ -362,10 +363,15 @@ export default function CoverCropper({
                   </Inline>
                 </div>
 
-                <p className="text-xs text-theme-tertiary text-center">
+                <Text
+                  papel="legenda"
+                  tom="fraco"
+                  as="p"
+                  className="text-center"
+                >
                   💡 <strong>Dica:</strong> Use o grid (regra dos terços) para
                   posicionar elementos importantes
-                </p>
+                </Text>
               </div>
             </div>
           </div>
@@ -418,9 +424,14 @@ export default function CoverCropper({
                 </button>
               </Inline>
 
-              <p className="text-xs text-center text-theme-tertiary mb-3">
+              <Text
+                papel="legenda"
+                tom="fraco"
+                as="p"
+                className="text-center mb-3"
+              >
                 {previewDims.label}
-              </p>
+              </Text>
 
               {/* Preview Canvas */}
               <div className="bg-black rounded-lg overflow-hidden shadow-lg">

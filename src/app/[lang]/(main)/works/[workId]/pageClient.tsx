@@ -61,6 +61,7 @@ import { useSession } from '@/app/libs/session';
 import { canEditCatalog, canVerifyCatalog } from '@/app/utils/permissions';
 import { workScoresRequest } from '@/app/requests/work-scores';
 import { Inline, Stack } from '@/app/components/ui/Layout';
+import { Text } from '@/app/components/ui/Text';
 
 // Interface para dados de áudio processados (mantida igual)
 interface ProcessedAudioData {
@@ -543,9 +544,9 @@ export default function WorkDetailsClient({
                       <h4 className="text-lg font-semibold text-theme-primary mb-2">
                         {t('selection_mode_selecione_partitura')}
                       </h4>
-                      <p className="text-theme-secondary text-sm">
+                      <Text papel="rotulo" tom="suave" as="p">
                         {t('selection_mode_clique_preview')}
-                      </p>
+                      </Text>
                     </div>
                   )}
                 </div>
@@ -747,10 +748,14 @@ export default function WorkDetailsClient({
                           )} rounded-full flex items-center space-x-2 shadow-lg`}
                         >
                           <PiTarget className="w-4 h-4 text-theme-primary" />
-                          <span className="text-theme-primary font-semibold text-sm">
+                          <Text
+                            papel="rotulo"
+                            tom="forte"
+                            className="font-semibold"
+                          >
                             {t('work_details_nivel')}{' '}
                             {getDifficultyLabel(work.difficultyLevel)}
-                          </span>
+                          </Text>
                         </div>
                       </Inline>
                     )}
@@ -789,9 +794,14 @@ export default function WorkDetailsClient({
                           <PiCalendarBlank className="w-4 h-4 text-theme-primary" />
                         </div>
                         <div>
-                          <p className="text-sm font-medium text-theme-tertiary">
+                          <Text
+                            papel="rotulo"
+                            tom="fraco"
+                            as="p"
+                            className="font-medium"
+                          >
                             {t('work_details_ano_composicao')}
-                          </p>
+                          </Text>
                           <p className="text-theme-primary font-semibold">
                             {work.compositionYear}
                           </p>
@@ -806,9 +816,14 @@ export default function WorkDetailsClient({
                           <PiClock className="w-4 h-4 text-theme-primary" />
                         </div>
                         <div>
-                          <p className="text-sm font-medium text-theme-tertiary">
+                          <Text
+                            papel="rotulo"
+                            tom="fraco"
+                            as="p"
+                            className="font-medium"
+                          >
                             {t('work_details_duracao')}
-                          </p>
+                          </Text>
                           <p className="text-theme-primary font-semibold">
                             {formatDuration(work.mediaDuration)}
                           </p>
@@ -823,9 +838,14 @@ export default function WorkDetailsClient({
                           <PiMusicNotes className="w-4 h-4 text-theme-primary" />
                         </div>
                         <div>
-                          <p className="text-sm font-medium text-theme-tertiary">
+                          <Text
+                            papel="rotulo"
+                            tom="fraco"
+                            as="p"
+                            className="font-medium"
+                          >
                             {t('work_details_tom')}
-                          </p>
+                          </Text>
                           <p className="text-theme-primary font-semibold">
                             {getToneLabel(work.tone) || work.tone}
                           </p>
@@ -840,9 +860,14 @@ export default function WorkDetailsClient({
                           <PiMusicNotes className="w-4 h-4 text-theme-primary" />
                         </div>
                         <div>
-                          <p className="text-sm font-medium text-theme-tertiary">
+                          <Text
+                            papel="rotulo"
+                            tom="fraco"
+                            as="p"
+                            className="font-medium"
+                          >
                             {t('work_details_instrumento')}
-                          </p>
+                          </Text>
                           <p className="text-theme-primary font-semibold">
                             {work.instrument.name}
                           </p>
@@ -857,9 +882,14 @@ export default function WorkDetailsClient({
                           <PiMapPin className="w-4 h-4 text-theme-primary" />
                         </div>
                         <div>
-                          <p className="text-sm font-medium text-theme-tertiary">
+                          <Text
+                            papel="rotulo"
+                            tom="fraco"
+                            as="p"
+                            className="font-medium"
+                          >
                             {t('work_details_epoca_estilo')}
-                          </p>
+                          </Text>
                           <p className="text-brand-primary font-semibold">
                             {getEpochLabel(work.epoch.name) || work.epoch.name}
                           </p>
@@ -890,9 +920,14 @@ export default function WorkDetailsClient({
                                 <PiArrowUp className="w-4 h-4 text-theme-primary" />
                               </div>
                               <div className="flex-1">
-                                <p className="text-sm font-medium text-theme-tertiary mb-1">
+                                <Text
+                                  papel="rotulo"
+                                  tom="fraco"
+                                  as="p"
+                                  className="font-medium mb-1"
+                                >
                                   {t('work_details_parte_de_colecao')}
-                                </p>
+                                </Text>
                                 <Link
                                   href={`/works/${work.parentWork.id}`}
                                   className="text-accent-purple hover:text-accent-blue font-semibold transition-colors duration-300 group flex items-center space-x-2"
@@ -900,10 +935,15 @@ export default function WorkDetailsClient({
                                   <span>{work.parentWork.title}</span>
                                   <PiArrowSquareOut className="w-4 h-4 opacity-0 group-hover:opacity-100 transition-opacity" />
                                 </Link>
-                                <p className="text-xs text-theme-tertiary mt-1">
+                                <Text
+                                  papel="legenda"
+                                  tom="fraco"
+                                  as="p"
+                                  className="mt-1"
+                                >
                                   {t('work_details_por')}{' '}
                                   {work.parentWork.composer.fullName}
-                                </p>
+                                </Text>
                               </div>
                             </div>
                           </div>
@@ -917,10 +957,15 @@ export default function WorkDetailsClient({
                                 <PiArrowDown className="w-4 h-4 text-theme-primary" />
                               </div>
                               <div className="flex-1">
-                                <p className="text-sm font-medium text-theme-tertiary mb-3">
+                                <Text
+                                  papel="rotulo"
+                                  tom="fraco"
+                                  as="p"
+                                  className="font-medium mb-3"
+                                >
                                   {t('work_details_possui_obras_relacionadas')}{' '}
                                   ({work.childWorks.length})
-                                </p>
+                                </Text>
                                 <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
                                   {work.childWorks.map((childWork, index) => (
                                     <Link
@@ -934,13 +979,23 @@ export default function WorkDetailsClient({
                                         </span>
                                       </div>
                                       <div className="flex-1 min-w-0">
-                                        <p className="text-theme-primary font-medium text-sm truncate group-hover:text-accent-green transition-colors">
+                                        <Text
+                                          papel="rotulo"
+                                          tom="forte"
+                                          as="p"
+                                          className="font-medium truncate group-hover:text-accent-green transition-colors"
+                                        >
                                           {childWork.title}
-                                        </p>
+                                        </Text>
                                         {childWork.subtitle && (
-                                          <p className="text-theme-tertiary text-xs truncate">
+                                          <Text
+                                            papel="legenda"
+                                            tom="fraco"
+                                            as="p"
+                                            className="truncate"
+                                          >
                                             {childWork.subtitle}
-                                          </p>
+                                          </Text>
                                         )}
                                       </div>
                                       <PiArrowSquareOut className="w-3 h-3 text-theme-tertiary  transition-opacity flex-shrink-0" />
@@ -1041,9 +1096,13 @@ export default function WorkDetailsClient({
                         <div className="space-y-4">
                           {work.categoryNames?.length > 0 && (
                             <div>
-                              <span className="text-sm font-medium text-theme-tertiary block mb-3">
+                              <Text
+                                papel="rotulo"
+                                tom="fraco"
+                                className="font-medium block mb-3"
+                              >
                                 {t('work_details_categorias')}
-                              </span>
+                              </Text>
                               <div className="flex flex-wrap gap-2 gap-y-5">
                                 {work.categoryNames.map(
                                   (categoryName, index) => (
@@ -1052,8 +1111,10 @@ export default function WorkDetailsClient({
                                       hover="none"
                                       springType="bouncy"
                                     >
-                                      <span
-                                        className="px-4 py-2 cursor-pointer bg-gradient-to-r border border-brand-primary/30 text-brand-primary rounded-full text-sm font-medium"
+                                      <Text
+                                        papel="rotulo"
+                                        tom="ouro"
+                                        className="px-4 py-2 cursor-pointer bg-gradient-to-r border border-brand-primary/30 rounded-full font-medium"
                                         onClick={() =>
                                           navigateToUrl(
                                             `works?categoryNames=${categoryName}`
@@ -1061,7 +1122,7 @@ export default function WorkDetailsClient({
                                         }
                                       >
                                         {getCategoryLabel(categoryName)}
-                                      </span>
+                                      </Text>
                                     </AnimatedItem>
                                   )
                                 )}
@@ -1072,9 +1133,13 @@ export default function WorkDetailsClient({
                           {work.workGenresArr &&
                             work.workGenresArr.length > 0 && (
                               <div>
-                                <span className="text-sm font-medium text-theme-tertiary block mb-3">
+                                <Text
+                                  papel="rotulo"
+                                  tom="fraco"
+                                  className="font-medium block mb-3"
+                                >
                                   {t('work_details_tipos_obra')}
-                                </span>
+                                </Text>
                                 <div className="flex flex-wrap gap-2 gap-y-5">
                                   {work.workGenresArr.map(
                                     (workGenre, index) => (
@@ -1247,9 +1312,13 @@ export default function WorkDetailsClient({
                         <span className="font-medium text-theme-tertiary">
                           {t('work_details_catalogado_em')}
                         </span>
-                        <span className="text-theme-primary font-semibold text-xs">
+                        <Text
+                          papel="legenda"
+                          tom="forte"
+                          className="font-semibold"
+                        >
                           {new Date(work.createdAt).toLocaleDateString('pt-BR')}
-                        </span>
+                        </Text>
                       </div>
                     </div>
                   </div>

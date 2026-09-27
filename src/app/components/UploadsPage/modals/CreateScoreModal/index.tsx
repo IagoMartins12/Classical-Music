@@ -55,6 +55,7 @@ import {
   uploadScoreFile,
 } from '@/app/requests/uploads-client';
 import { Inline } from '@/app/components/ui/Layout';
+import { Text } from '@/app/components/ui/Text';
 
 interface CreateScoreModalProps {
   isOpen: boolean;
@@ -680,11 +681,11 @@ const CreateScoreModal = ({
                     ? t('modal_score_title_edit')
                     : t('modal_score_title_create')}
                 </h2>
-                <p className="text-theme-secondary text-sm">
+                <Text papel="rotulo" tom="suave" as="p">
                   {editingScore
                     ? t('modal_score_subtitle_edit')
                     : t('modal_score_subtitle_create')}
-                </p>
+                </Text>
               </div>
             </Inline>
           </div>
@@ -856,9 +857,14 @@ const CreateScoreModal = ({
                                 </span>
                               </Inline>
                               {isLargeFile && (
-                                <div className="mt-2 text-xs text-theme-tertiary">
+                                <Text
+                                  papel="legenda"
+                                  tom="fraco"
+                                  as="div"
+                                  className="mt-2"
+                                >
                                   📄 Arquivos grandes podem levar mais tempo
-                                </div>
+                                </Text>
                               )}
                             </div>
                           )}
@@ -886,9 +892,9 @@ const CreateScoreModal = ({
                                 <PiWarningCircle className="w-4 h-4" />
                                 <span>Preview não disponível</span>
                               </Inline>
-                              <div className="text-xs text-theme-tertiary">
+                              <Text papel="legenda" tom="fraco" as="div">
                                 {thumbnailError}
-                              </div>
+                              </Text>
                             </div>
                           )}
                         </div>
@@ -898,12 +904,22 @@ const CreateScoreModal = ({
                           <p className="text-theme-secondary">
                             Clique aqui ou arraste arquivos para enviar
                           </p>
-                          <p className="text-theme-tertiary text-sm mt-2">
+                          <Text
+                            papel="rotulo"
+                            tom="fraco"
+                            as="p"
+                            className="mt-2"
+                          >
                             PDF, PNG, JPG, GIF, BMP, WEBP (máx. 50MB)
-                          </p>
-                          <p className="text-theme-tertiary text-xs mt-1">
+                          </Text>
+                          <Text
+                            papel="legenda"
+                            tom="fraco"
+                            as="p"
+                            className="mt-1"
+                          >
                             🖼️ Preview automático para PDFs e imagens
-                          </p>
+                          </Text>
                         </div>
                       )}
                     </div>
@@ -1020,15 +1036,15 @@ const CreateScoreModal = ({
                     />
 
                     {shouldDisableComposerFilter && (
-                      <p className="text-xs text-theme-tertiary mt-2">
+                      <Text papel="legenda" tom="fraco" as="p" className="mt-2">
                         💡 {t('modal_score_work_filter_tip')}
-                      </p>
+                      </Text>
                     )}
 
                     {editingScore && (
-                      <p className="text-xs text-theme-tertiary mt-2">
+                      <Text papel="legenda" tom="fraco" as="p" className="mt-2">
                         💡 {t('modal_score_work_edit_tip')}
-                      </p>
+                      </Text>
                     )}
                   </div>
 
@@ -1045,13 +1061,18 @@ const CreateScoreModal = ({
                               <PiCheck className="w-4 h-4 text-accent-blue" />
                             </div>
                             <div>
-                              <p className="font-medium text-theme-primary text-sm">
+                              <Text
+                                papel="rotulo"
+                                tom="forte"
+                                as="p"
+                                className="font-medium"
+                              >
                                 {workData.title}
-                              </p>
-                              <p className="text-theme-tertiary text-xs">
+                              </Text>
+                              <Text papel="legenda" tom="fraco" as="p">
                                 {workData.composer.fullName ||
                                   workData.composer.name}
-                              </p>
+                              </Text>
                             </div>
                           </Inline>
                           <div className="text-theme-tertiary">
@@ -1075,9 +1096,9 @@ const CreateScoreModal = ({
                       />
                     )}
                     {editingScore && workData && (
-                      <p className="text-xs text-theme-tertiary mt-2">
+                      <Text papel="legenda" tom="fraco" as="p" className="mt-2">
                         {t('modal_score_work_edit_locked')}
-                      </p>
+                      </Text>
                     )}
                   </div>
 
@@ -1085,7 +1106,7 @@ const CreateScoreModal = ({
                     <div className="bg-theme-secondary/10 rounded-lg p-3">
                       <div className="flex items-start space-x-2">
                         <PiInfo className="w-4 h-4 text-theme-tertiary mt-0.5" />
-                        <div className="text-xs text-theme-tertiary">
+                        <Text papel="legenda" tom="fraco" as="div">
                           <p className="font-medium mb-1">
                             💡 {t('modal_score_work_suggestions_title')}
                           </p>
@@ -1098,7 +1119,7 @@ const CreateScoreModal = ({
                           ) : (
                             <p>{t('modal_score_work_suggestions_no_works')}</p>
                           )}
-                        </div>
+                        </Text>
                       </div>
                     </div>
                   )}
@@ -1304,10 +1325,10 @@ const CreateScoreModal = ({
                       <PiInfo className="w-4 h-4" />
                       <span>{t('modal_score_grouping_how_title')}</span>
                     </Inline>
-                    <p className="text-sm text-theme-secondary">
+                    <Text papel="rotulo" tom="suave" as="p">
                       {t('modal_score_grouping_how_description')}
-                    </p>
-                    <div className="mt-3 text-xs text-theme-tertiary">
+                    </Text>
+                    <Text papel="legenda" tom="fraco" as="div" className="mt-3">
                       <p>
                         💡{' '}
                         <strong>
@@ -1321,7 +1342,7 @@ const CreateScoreModal = ({
                       <p className="">
                         • {t('modal_score_grouping_example_tip')}
                       </p>
-                    </div>
+                    </Text>
                   </div>
                 </div>
               </AnimatedCard>

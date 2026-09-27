@@ -9,6 +9,7 @@ import { useTranslation } from '@/app/context/TranslationContext';
 import { translateInstrument } from '@/app/utils/translations/instrumentsGenresTranslation';
 import Select from '../../Common/Select';
 import Checkbox from '../../Common/Checkbox';
+import { Text } from '@/app/components/ui/Text';
 
 interface Instrument {
   id: string;
@@ -145,9 +146,13 @@ const InstrumentsStep: React.FC<InstrumentsStepProps> = ({ instruments }) => {
                     {isNotMusicStudent ? (
                       <span className=" py-1 text-end bg-brand-primary  text-theme-primary classical-subtitle rounded-full">
                         {t('instruments_step_instrument_label')}{' '}
-                        <span className="font-medium text-sm pl-2 text-theme-primary">
+                        <Text
+                          papel="rotulo"
+                          tom="forte"
+                          className="font-medium pl-2"
+                        >
                           {translateInstrument(instrument.name, language)}
-                        </span>
+                        </Text>
                       </span>
                     ) : (
                       <></>
@@ -155,18 +160,26 @@ const InstrumentsStep: React.FC<InstrumentsStepProps> = ({ instruments }) => {
                     {instrument.isPrimary && !isNotMusicStudent ? (
                       <span className=" py-1 text-end bg-brand-primary  text-theme-primary classical-subtitle rounded-full">
                         {t('instruments_step_main_instrument_label')}{' '}
-                        <span className="font-medium text-sm pl-2 text-theme-primary">
+                        <Text
+                          papel="rotulo"
+                          tom="forte"
+                          className="font-medium pl-2"
+                        >
                           {translateInstrument(instrument.name, language)}
-                        </span>
+                        </Text>
                       </span>
                     ) : (
                       <>
                         {!isNotMusicStudent && (
                           <span className=" py-1 text-end bg-brand-primary  text-theme-primary classical-subtitle rounded-full">
                             {t('instruments_step_instrument_label')}{' '}
-                            <span className="font-medium text-sm pl-2 text-theme-primary">
+                            <Text
+                              papel="rotulo"
+                              tom="forte"
+                              className="font-medium pl-2"
+                            >
                               {translateInstrument(instrument.name, language)}
-                            </span>
+                            </Text>
                           </span>
                         )}
                       </>
@@ -233,17 +246,17 @@ const InstrumentsStep: React.FC<InstrumentsStepProps> = ({ instruments }) => {
             `}
           >
             <div className="flex items-center justify-between">
-              <span className="text-sm font-medium text-theme-primary">
+              <Text papel="rotulo" tom="forte" className="font-medium">
                 {instrument.displayName}
-              </span>
+              </Text>
               {!isInstrumentSelected(instrument.id) && (
                 <PiPlus className="w-4 h-4 text-brand-primary" />
               )}
             </div>
             {instrument.category && (
-              <span className="text-xs text-theme-tertiary">
+              <Text papel="legenda" tom="fraco">
                 {instrument.category}
-              </span>
+              </Text>
             )}
           </button>
         ))}

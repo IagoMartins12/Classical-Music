@@ -26,6 +26,7 @@ import { toast } from 'react-hot-toast';
 import Button from '@/app/components/Common/Button';
 import { ThreadViewModal } from '../ThreadViewModal';
 import { Inline } from '@/app/components/ui/Layout';
+import { Text } from '@/app/components/ui/Text';
 
 interface Comment {
   id: string;
@@ -255,13 +256,23 @@ export function ModerationList({
                     <div className="flex items-start space-x-2">
                       <PiWarning className="w-5 h-5 text-yellow-600 flex-shrink-0 mt-0.5" />
                       <div className="flex-1">
-                        <p className="text-sm text-theme-primary font-bold">
+                        <Text
+                          papel="rotulo"
+                          tom="forte"
+                          as="p"
+                          className="font-bold"
+                        >
                           Comentário denunciado
-                        </p>
+                        </Text>
                         {comment.flagReason && (
-                          <p className="text-xs text-theme-primary font-medium mt-1">
+                          <Text
+                            papel="legenda"
+                            tom="forte"
+                            as="p"
+                            className="font-medium mt-1"
+                          >
                             Motivo: {comment.flagReason}
-                          </p>
+                          </Text>
                         )}
                       </div>
                     </div>
@@ -293,20 +304,25 @@ export function ModerationList({
                           <h4 className="font-medium text-theme-primary truncate">
                             {getUserName(comment.user)}
                           </h4>
-                          <span className="text-xs text-theme-tertiary">
+                          <Text papel="legenda" tom="fraco">
                             {new Date(comment.createdAt).toLocaleString(
                               'pt-BR'
                             )}
-                          </span>
+                          </Text>
                           {comment.isEdited && (
-                            <span className="text-xs text-theme-tertiary">
+                            <Text papel="legenda" tom="fraco">
                               (editado)
-                            </span>
+                            </Text>
                           )}
                         </Inline>
-                        <p className="text-sm text-theme-tertiary truncate">
+                        <Text
+                          papel="rotulo"
+                          tom="fraco"
+                          as="p"
+                          className="truncate"
+                        >
                           {comment.user.email}
-                        </p>
+                        </Text>
 
                         {/* ✅ MOSTRAR CONTADOR DE RESPOSTAS */}
                         {hasReplies && (
@@ -342,16 +358,21 @@ export function ModerationList({
                   {/* Reply Context */}
                   {comment.parent && (
                     <div className="mb-3 p-3 bg-theme-elevated rounded-lg border-l-4 border-brand-primary">
-                      <p className="text-xs text-theme-tertiary mb-1">
+                      <Text papel="legenda" tom="fraco" as="p" className="mb-1">
                         Respondendo a{' '}
                         {`${comment.parent.user.firstName || ''} ${
                           comment.parent.user.lastName || ''
                         }`.trim()}
                         :
-                      </p>
-                      <p className="text-sm text-theme-secondary italic line-clamp-2">
+                      </Text>
+                      <Text
+                        papel="rotulo"
+                        tom="suave"
+                        as="p"
+                        className="italic line-clamp-2"
+                      >
                         {comment.parent.content}
-                      </p>
+                      </Text>
                     </div>
                   )}
 

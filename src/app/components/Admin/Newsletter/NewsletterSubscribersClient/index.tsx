@@ -40,6 +40,7 @@ import {
   SendEmailModal,
 } from '@/app/components/Admin/Newsletter/SubscriberModals';
 import { Inline } from '@/app/components/ui/Layout';
+import { Text } from '@/app/components/ui/Text';
 
 interface FilterState {
   status: string;
@@ -246,7 +247,9 @@ export default function NewsletterSubscribersClient() {
             <AnimatedCard className="classical-card p-6">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm text-theme-tertiary mb-1">Total</p>
+                  <Text papel="rotulo" tom="fraco" as="p" className="mb-1">
+                    Total
+                  </Text>
                   <p className="text-3xl font-bold text-theme-primary">
                     {formatSubscriberCount(pagination?.total || 0)}
                   </p>
@@ -260,7 +263,9 @@ export default function NewsletterSubscribersClient() {
             <AnimatedCard className="classical-card p-6">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm text-theme-tertiary mb-1">Ativos</p>
+                  <Text papel="rotulo" tom="fraco" as="p" className="mb-1">
+                    Ativos
+                  </Text>
                   <p className="text-3xl font-bold text-accent-green">
                     {subscribers.filter((s) => s.status === 'ACTIVE').length}
                   </p>
@@ -274,7 +279,9 @@ export default function NewsletterSubscribersClient() {
             <AnimatedCard className="classical-card p-6">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm text-theme-tertiary mb-1">Pendentes</p>
+                  <Text papel="rotulo" tom="fraco" as="p" className="mb-1">
+                    Pendentes
+                  </Text>
                   <p className="text-3xl font-bold text-accent-amber">
                     {subscribers.filter((s) => s.status === 'PENDING').length}
                   </p>
@@ -288,7 +295,9 @@ export default function NewsletterSubscribersClient() {
             <AnimatedCard className="classical-card p-6">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm text-theme-tertiary mb-1">Cancelados</p>
+                  <Text papel="rotulo" tom="fraco" as="p" className="mb-1">
+                    Cancelados
+                  </Text>
                   <p className="text-3xl font-bold text-accent-red">
                     {
                       subscribers.filter((s) => s.status === 'UNSUBSCRIBED')
@@ -426,9 +435,9 @@ export default function NewsletterSubscribersClient() {
             {/* Bulk Actions */}
             {selectedSubscribers.length > 0 && (
               <div className="flex items-center gap-2 p-3 bg-brand-primary/10 border border-brand-primary rounded-lg mb-4">
-                <span className="text-sm font-medium text-theme-primary">
+                <Text papel="rotulo" tom="forte" className="font-medium">
                   {selectedSubscribers.length} selecionado(s)
-                </span>
+                </Text>
                 <div className="flex items-center gap-2 ml-auto">
                   <Button
                     variant="ghost"
@@ -547,22 +556,26 @@ export default function NewsletterSubscribersClient() {
                                   : 'Sem nome'}
                               </span>
                               {subscriber.user && (
-                                <span className="px-2 py-1 bg-brand-primary/10 text-brand-primary text-xs rounded-full">
+                                <Text
+                                  papel="legenda"
+                                  tom="ouro"
+                                  className="px-2 py-1 bg-brand-primary/10 rounded-full"
+                                >
                                   Usuário
-                                </span>
+                                </Text>
                               )}
                             </Inline>
-                            <div className="text-sm text-theme-secondary">
+                            <Text papel="rotulo" tom="suave" as="div">
                               {subscriber.email}
-                            </div>
-                            <div className="text-xs text-theme-tertiary">
+                            </Text>
+                            <Text papel="legenda" tom="fraco" as="div">
                               {subscriber.interests.length > 0 && (
                                 <span>
                                   Interesses:{' '}
                                   {subscriber.interests.slice(0, 2).join(', ')}
                                 </span>
                               )}
-                            </div>
+                            </Text>
                           </div>
                         </td>
                         <td className="py-3 px-2">
@@ -579,10 +592,15 @@ export default function NewsletterSubscribersClient() {
                             >
                               {engagement.label}
                             </span>
-                            <div className="text-xs text-theme-tertiary mt-1">
+                            <Text
+                              papel="legenda"
+                              tom="fraco"
+                              as="div"
+                              className="mt-1"
+                            >
                               {subscriber.emailOpenCount || 0} aberturas •{' '}
                               {subscriber.emailClickCount || 0} cliques
-                            </div>
+                            </Text>
                           </div>
                         </td>
                         <td className="py-3 px-2">
@@ -592,9 +610,9 @@ export default function NewsletterSubscribersClient() {
                                 subscriber.subscribedAt
                               ).toLocaleDateString('pt-BR')}
                             </div>
-                            <div className="text-theme-tertiary text-xs">
+                            <Text papel="legenda" tom="fraco" as="div">
                               {subscriber.frequency || 'weekly'}
-                            </div>
+                            </Text>
                           </div>
                         </td>
                         <td className="py-3 px-2">
@@ -661,14 +679,14 @@ export default function NewsletterSubscribersClient() {
             {/* Pagination */}
             {pagination && pagination.pages > 1 && (
               <div className="flex items-center justify-between mt-6">
-                <div className="text-sm text-theme-tertiary">
+                <Text papel="rotulo" tom="fraco" as="div">
                   Mostrando {(pagination.page - 1) * pagination.limit + 1} a{' '}
                   {Math.min(
                     pagination.page * pagination.limit,
                     pagination.total
                   )}{' '}
                   de {pagination.total} subscribers
-                </div>
+                </Text>
                 <Inline gap={2}>
                   <Button
                     variant="ghost"
@@ -680,9 +698,9 @@ export default function NewsletterSubscribersClient() {
                   >
                     Anterior
                   </Button>
-                  <span className="text-sm text-theme-primary">
+                  <Text papel="rotulo" tom="forte">
                     {pagination.page} de {pagination.pages}
-                  </span>
+                  </Text>
                   <Button
                     variant="ghost"
                     size="sm"

@@ -5,6 +5,7 @@ import React from 'react';
 import { GiGrandPiano, GiViolin } from 'react-icons/gi';
 import { PiBook, PiHeart, PiMusicNotes, PiUsers } from 'react-icons/pi';
 import { useTranslation } from '@/app/context/TranslationContext';
+import { Text } from '@/app/components/ui/Text';
 
 const WelcomeStep: React.FC = () => {
   const { t } = useTranslation({ sections: ['components/onboarding'] });
@@ -41,9 +42,9 @@ const WelcomeStep: React.FC = () => {
           <h4 className="font-semibold text-theme-primary mb-2">
             {t('welcome_step_explore_title')}
           </h4>
-          <p className="text-sm text-theme-secondary">
+          <Text papel="rotulo" tom="suave" as="p">
             {t('welcome_step_explore_description')}
-          </p>
+          </Text>
         </div>
 
         <div className="classical-card-2 p-6 text-center">
@@ -53,9 +54,9 @@ const WelcomeStep: React.FC = () => {
           <h4 className="font-semibold text-theme-primary mb-2">
             {t('welcome_step_personalize_title')}
           </h4>
-          <p className="text-sm text-theme-secondary">
+          <Text papel="rotulo" tom="suave" as="p">
             {t('welcome_step_personalize_description')}
-          </p>
+          </Text>
         </div>
 
         <div className="classical-card-2 p-6 text-center">
@@ -65,9 +66,9 @@ const WelcomeStep: React.FC = () => {
           <h4 className="font-semibold text-theme-primary mb-2">
             {t('welcome_step_connect_title')}
           </h4>
-          <p className="text-sm text-theme-secondary">
+          <Text papel="rotulo" tom="suave" as="p">
             {t('welcome_step_connect_description')}
-          </p>
+          </Text>
         </div>
       </div>
     </div>

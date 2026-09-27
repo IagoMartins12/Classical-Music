@@ -34,6 +34,7 @@ import {
   saveCouponRequest,
   toggleCouponRequest,
 } from '@/app/requests/admin/billing';
+import { Text } from '@/app/components/ui/Text';
 
 interface Coupon {
   id: string;
@@ -438,11 +439,11 @@ export default function AdminCouponsPageClient() {
                       formData.type === 'PERCENTAGE' ? '20' : '10.00'
                     }
                   />
-                  <p className="text-xs text-theme-tertiary mt-1">
+                  <Text papel="legenda" tom="fraco" as="p" className="mt-1">
                     {formData.type === 'PERCENTAGE'
                       ? 'Percentual (%)'
                       : 'Valor em reais (R$)'}
-                  </p>
+                  </Text>
                 </div>
 
                 {formData.type === 'PERCENTAGE' && (
@@ -461,7 +462,9 @@ export default function AdminCouponsPageClient() {
                       }
                       placeholder="50.00"
                     />
-                    <p className="text-xs text-theme-tertiary mt-1">Opcional</p>
+                    <Text papel="legenda" tom="fraco" as="p" className="mt-1">
+                      Opcional
+                    </Text>
                   </div>
                 )}
 
@@ -510,9 +513,9 @@ export default function AdminCouponsPageClient() {
                     </Button>
                   ))}
                 </div>
-                <p className="text-xs text-theme-tertiary mt-1">
+                <Text papel="legenda" tom="fraco" as="p" className="mt-1">
                   Deixe vazio para aplicar a todos os planos
-                </p>
+                </Text>
               </div>
 
               {/* Datas */}
@@ -557,9 +560,9 @@ export default function AdminCouponsPageClient() {
                     }
                     placeholder="Ilimitado"
                   />
-                  <p className="text-xs text-theme-tertiary mt-1">
+                  <Text papel="legenda" tom="fraco" as="p" className="mt-1">
                     Deixe vazio para ilimitado
-                  </p>
+                  </Text>
                 </div>
                 <div>
                   <label className="block text-sm font-medium text-theme-secondary mb-2">
@@ -681,7 +684,9 @@ function CouponCard({
             </button>
           </div>
           {coupon.description && (
-            <p className="text-sm text-theme-secondary">{coupon.description}</p>
+            <Text papel="rotulo" tom="suave" as="p">
+              {coupon.description}
+            </Text>
           )}
         </div>
 
@@ -727,13 +732,13 @@ function CouponCard({
             </span>
           </>
         )}
-        <span className="text-sm text-theme-tertiary ml-2">
+        <Text papel="rotulo" tom="fraco" className="ml-2">
           {coupon.type === 'PERCENTAGE'
             ? 'de desconto'
             : coupon.type === 'FIXED'
               ? 'de desconto'
               : 'de trial'}
-        </span>
+        </Text>
       </div>
 
       {/* Info Grid */}
@@ -768,15 +773,19 @@ function CouponCard({
       {/* Planos Aplicáveis */}
       {coupon.applicablePlans.length > 0 && (
         <div className="mb-4">
-          <p className="text-xs text-theme-tertiary mb-2">Planos:</p>
+          <Text papel="legenda" tom="fraco" as="p" className="mb-2">
+            Planos:
+          </Text>
           <div className="flex flex-wrap gap-2">
             {coupon.applicablePlans.map((plan) => (
-              <span
+              <Text
+                papel="legenda"
+                tom="suave"
                 key={plan}
-                className="px-2 py-1 bg-theme-secondary rounded text-xs font-medium text-theme-secondary"
+                className="px-2 py-1 bg-theme-secondary rounded font-medium"
               >
                 {plan}
-              </span>
+              </Text>
             ))}
           </div>
         </div>

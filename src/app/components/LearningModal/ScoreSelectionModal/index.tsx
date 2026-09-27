@@ -27,6 +27,7 @@ import ScoreCard from '../../WorkDetailsClient/ScoreCard';
 import { useTranslation } from '@/app/hooks/useTranslation';
 import Button from '../../Common/Button';
 import { Inline, Stack } from '@/app/components/ui/Layout';
+import { Text } from '@/app/components/ui/Text';
 
 // Interface para dados unificados
 interface MixedScoreData {
@@ -685,13 +686,13 @@ const ScoreSelectionModal = ({
                       <h3 className="text-lg font-semibold text-theme-primary mb-2">
                         {t('more_scores_available')}
                       </h3>
-                      <p className="text-theme-secondary text-sm mb-4">
+                      <Text papel="rotulo" tom="suave" as="p" className="mb-4">
                         {loadingWorkScores
                           ? t('loading_more_scores')
                           : `${t('showing_scores')} ${activeTabStat.loaded} ${t(
                               'of_scores'
                             )} ${activeTabStat.total} ${t('scores_label')}`}
-                      </p>
+                      </Text>
                     </div>
 
                     <div className="flex flex-wrap gap-4 justify-center">
@@ -782,7 +783,7 @@ const ScoreSelectionModal = ({
       {/* Footer */}
       <div className="border-t border-theme-secondary p-4 bg-theme-elevated">
         <div className="flex flex-col sm:flex-row gap-4 sm:gap-0 items-center justify-between">
-          <div className="text-sm text-theme-secondary">
+          <Text papel="rotulo" tom="suave" as="div">
             {currentSelectedScore ? (
               <span>
                 {isEditing ? t('current_score') : t('linked_score')}:{' '}
@@ -791,7 +792,7 @@ const ScoreSelectionModal = ({
             ) : (
               <span>{t('no_score_linked')}</span>
             )}
-          </div>
+          </Text>
 
           <Inline gap={3}>
             <Button onClick={onClose} className="btn-classical-secondary">

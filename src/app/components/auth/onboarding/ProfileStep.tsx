@@ -15,6 +15,7 @@ import LocationSelector, { LocationData } from '../../Common/LocationSelector';
 import ProfileImageUpload from '../../ProfileImageUpload';
 import InternationalPhoneInput from '../../Common/InternationalPhoneInput';
 import { uploadAvatarRequest } from '@/app/requests/account-client';
+import { Text } from '@/app/components/ui/Text';
 
 const ProfileStep: React.FC = () => {
   const [isUploadingImage, setIsUploadingImage] = useState(false);
@@ -171,9 +172,9 @@ const ProfileStep: React.FC = () => {
             showRemove={!!user?.image}
           />
 
-          <p className="text-xs text-theme-tertiary mt-2">
+          <Text papel="legenda" tom="fraco" as="p" className="mt-2">
             {t('profile_step_photo_hint')}
-          </p>
+          </Text>
         </div>
 
         {/* Bio */}
@@ -190,9 +191,9 @@ const ProfileStep: React.FC = () => {
             maxLength={500}
           />
 
-          <p className="text-xs text-theme-tertiary mt-1">
+          <Text papel="legenda" tom="fraco" as="p" className="mt-1">
             {(data.bio || '').length}/500 {t('profile_step_bio_chars')}
-          </p>
+          </Text>
         </div>
 
         {/* Telefone Internacional */}
@@ -212,9 +213,9 @@ const ProfileStep: React.FC = () => {
             <h4 className="text-sm font-medium text-theme-secondary mb-2">
               {t('profile_step_location_label')}
             </h4>
-            <p className="text-xs text-theme-tertiary mb-4">
+            <Text papel="legenda" tom="fraco" as="p" className="mb-4">
               {t('profile_step_location_hint')}
-            </p>
+            </Text>
           </div>
 
           <LocationSelector
@@ -229,10 +230,10 @@ const ProfileStep: React.FC = () => {
       {/* Dicas e informações */}
       <div className="mt-8 space-y-4">
         <div className="classical-card-2 p-4 max-w-lg mx-auto">
-          <p className="text-sm text-theme-secondary">
+          <Text papel="rotulo" tom="suave" as="p">
             <strong>{t('profile_step_tip_title')}</strong>{' '}
             {t('profile_step_tip_text')}
-          </p>
+          </Text>
         </div>
 
         <div className="classical-card-2 p-4 max-w-lg mx-auto bg-brand-primary bg-opacity-5 border border-brand-primary border-opacity-20">

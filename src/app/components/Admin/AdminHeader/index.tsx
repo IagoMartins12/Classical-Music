@@ -18,6 +18,7 @@ import {
   PiUsers,
 } from 'react-icons/pi';
 import { Inline } from '@/app/components/ui/Layout';
+import { Text } from '@/app/components/ui/Text';
 
 interface AdminHeaderProps {
   onMenuClick: () => void;
@@ -100,7 +101,9 @@ export default function AdminHeader({ onMenuClick }: AdminHeaderProps) {
                   <div className="font-bold text-base lg:text-lg">
                     Painel Administrativo
                   </div>
-                  <div className="text-xs text-theme-tertiary">Opus Atlas</div>
+                  <Text papel="legenda" tom="fraco" as="div">
+                    Opus Atlas
+                  </Text>
                 </div>
               </Link>
 
@@ -149,10 +152,17 @@ export default function AdminHeader({ onMenuClick }: AdminHeaderProps) {
                     </span>
                   </div>
                   <div className="hidden lg:block text-left">
-                    <p className="text-sm font-medium text-theme-primary">
+                    <Text
+                      papel="rotulo"
+                      tom="forte"
+                      as="p"
+                      className="font-medium"
+                    >
                       {session.user.firstName || 'Admin'}
-                    </p>
-                    <p className="text-xs text-theme-tertiary">Administrador</p>
+                    </Text>
+                    <Text papel="legenda" tom="fraco" as="p">
+                      Administrador
+                    </Text>
                   </div>
                   <PiCaretDown
                     className={`w-3 h-3 lg:w-4 lg:h-4 text-theme-tertiary transition-transform ${
@@ -165,13 +175,18 @@ export default function AdminHeader({ onMenuClick }: AdminHeaderProps) {
                 {showUserMenu && (
                   <div className="absolute right-0 top-full mt-2 w-48 lg:w-72 bg-theme-elevated border border-theme-primary rounded-xl shadow-2xl py-2 z-50">
                     <div className="px-4 py-3 border-b border-theme-secondary">
-                      <p className="font-medium text-theme-primary text-sm">
+                      <Text
+                        papel="rotulo"
+                        tom="forte"
+                        as="p"
+                        className="font-medium"
+                      >
                         {session.user.firstName || 'Admin'}{' '}
                         {session.user.lastName || ''}
-                      </p>
-                      <p className="text-xs text-theme-tertiary">
+                      </Text>
+                      <Text papel="legenda" tom="fraco" as="p">
                         {session.user.email}
-                      </p>
+                      </Text>
                     </div>
 
                     <Link

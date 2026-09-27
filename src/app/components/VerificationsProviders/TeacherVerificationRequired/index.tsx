@@ -23,6 +23,7 @@ import { useEmailRefreshSimple } from '@/app/hooks/useEmailRefresh';
 import Navbar from '../../Navbar';
 import { Toaster } from 'react-hot-toast';
 import { Inline } from '@/app/components/ui/Layout';
+import { Text } from '@/app/components/ui/Text';
 
 interface TeacherVerificationRequiredProps {
   userEmail?: string | null;
@@ -88,12 +89,12 @@ export default function TeacherVerificationRequired({
                       <strong className="text-brand-primary">Seu Email:</strong>{' '}
                       {userEmail}
                     </p>
-                    <p className="text-theme-secondary text-sm">
+                    <Text papel="rotulo" tom="suave" as="p">
                       Você recebeu um convite para se tornar professor na
                       plataforma Opus Atlas. Para acessar todas as
                       funcionalidades da área do professor, é necessário aceitar
                       o convite que foi enviado para seu email.
-                    </p>
+                    </Text>
                   </div>
                 </div>
               </div>
@@ -168,27 +169,27 @@ export default function TeacherVerificationRequired({
                 <div className="text-left space-y-3">
                   <Inline gap={2}>
                     <div className="w-2 h-2 bg-accent-blue rounded-full"></div>
-                    <span className="text-theme-secondary text-sm">
+                    <Text papel="rotulo" tom="suave">
                       Convite enviado para seu email
-                    </span>
+                    </Text>
                   </Inline>
                   <Inline gap={2}>
                     <div className="w-2 h-2 bg-accent-amber rounded-full"></div>
-                    <span className="text-theme-secondary text-sm">
+                    <Text papel="rotulo" tom="suave">
                       Aguardando sua aceitação
-                    </span>
+                    </Text>
                   </Inline>
                   <Inline gap={2}>
                     <div className="w-2 h-2 bg-theme-tertiary rounded-full"></div>
-                    <span className="text-theme-secondary text-sm">
+                    <Text papel="rotulo" tom="suave">
                       Aprovação do administrador
-                    </span>
+                    </Text>
                   </Inline>
                   <Inline gap={2}>
                     <div className="w-2 h-2 bg-theme-tertiary rounded-full"></div>
-                    <span className="text-theme-secondary text-sm">
+                    <Text papel="rotulo" tom="suave">
                       Acesso completo liberado
-                    </span>
+                    </Text>
                   </Inline>
                 </div>
               </AnimatedCard>
@@ -207,27 +208,27 @@ export default function TeacherVerificationRequired({
                 <div className="text-left space-y-2">
                   <Inline gap={2}>
                     <div className="w-2 h-2 bg-accent-green rounded-full"></div>
-                    <span className="text-theme-secondary text-sm">
+                    <Text papel="rotulo" tom="suave">
                       Gerenciar alunos e aulas
-                    </span>
+                    </Text>
                   </Inline>
                   <Inline gap={2}>
                     <div className="w-2 h-2 bg-accent-green rounded-full"></div>
-                    <span className="text-theme-secondary text-sm">
+                    <Text papel="rotulo" tom="suave">
                       Criar cronogramas personalizados
-                    </span>
+                    </Text>
                   </Inline>
                   <Inline gap={2}>
                     <div className="w-2 h-2 bg-accent-green rounded-full"></div>
-                    <span className="text-theme-secondary text-sm">
+                    <Text papel="rotulo" tom="suave">
                       Acompanhar progresso dos alunos
-                    </span>
+                    </Text>
                   </Inline>
                   <Inline gap={2}>
                     <div className="w-2 h-2 bg-accent-green rounded-full"></div>
-                    <span className="text-theme-secondary text-sm">
+                    <Text papel="rotulo" tom="suave">
                       Sistema completo de avaliação
-                    </span>
+                    </Text>
                   </Inline>
                 </div>
               </AnimatedCard>
@@ -255,9 +256,9 @@ export default function TeacherVerificationRequired({
                   <h4 className="font-medium text-theme-primary text-sm mb-1">
                     Convite Enviado
                   </h4>
-                  <p className="text-xs text-theme-tertiary">
+                  <Text papel="legenda" tom="fraco" as="p">
                     Email com link de aceitação
-                  </p>
+                  </Text>
                 </div>
 
                 <div className="text-center p-4 bg-gradient-to-br from-theme-elevated to-interactive-hover rounded-lg border border-accent-amber/20">
@@ -267,9 +268,9 @@ export default function TeacherVerificationRequired({
                   <h4 className="font-medium text-theme-primary text-sm mb-1">
                     Você Aceita
                   </h4>
-                  <p className="text-xs text-theme-tertiary">
+                  <Text papel="legenda" tom="fraco" as="p">
                     Clique no link do email
-                  </p>
+                  </Text>
                 </div>
 
                 <div className="text-center p-4 bg-gradient-to-br from-theme-elevated to-interactive-hover rounded-lg border border-theme-secondary/20">
@@ -279,9 +280,9 @@ export default function TeacherVerificationRequired({
                   <h4 className="font-medium text-theme-primary text-sm mb-1">
                     Aprovação
                   </h4>
-                  <p className="text-xs text-theme-tertiary">
+                  <Text papel="legenda" tom="fraco" as="p">
                     Admin aprova seu perfil
-                  </p>
+                  </Text>
                 </div>
 
                 <div className="text-center p-4 bg-gradient-to-br from-theme-elevated to-interactive-hover rounded-lg border border-accent-green/20">
@@ -291,9 +292,9 @@ export default function TeacherVerificationRequired({
                   <h4 className="font-medium text-theme-primary text-sm mb-1">
                     Acesso Liberado
                   </h4>
-                  <p className="text-xs text-theme-tertiary">
+                  <Text papel="legenda" tom="fraco" as="p">
                     Professor ativo!
-                  </p>
+                  </Text>
                 </div>
               </div>
             </AnimatedCard>
@@ -311,14 +312,19 @@ export default function TeacherVerificationRequired({
                   <h3 className="text-lg font-bold text-theme-primary mb-3 classical-title">
                     Precisa de ajuda?
                   </h3>
-                  <div className="space-y-2 text-sm text-theme-secondary">
+                  <Text
+                    papel="rotulo"
+                    tom="suave"
+                    as="div"
+                    className="space-y-2"
+                  >
                     <p>• Verifique sua pasta de spam/lixo eletrônico</p>
                     <p>
                       • O email do convite pode ter sido enviado há alguns dias
                     </p>
                     <p>• Entre em contato conosco se não encontrar o email</p>
                     <p>• Nossa equipe estará pronta para ajudar no processo</p>
-                  </div>
+                  </Text>
                   <div className="mt-4">
                     <Link
                       href="/contact"

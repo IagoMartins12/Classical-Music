@@ -39,6 +39,7 @@ import { useRouter } from 'next/navigation';
 import { LanguageToggle } from '../LanguageToggle';
 import { useTranslation } from '@/app/context/TranslationContext';
 import { Inline } from '@/app/components/ui/Layout';
+import { Text } from '@/app/components/ui/Text';
 
 interface NavItem {
   label: string;
@@ -397,9 +398,14 @@ const Navbar: React.FC = () => {
                                 {item.label}
                               </div>
                               {item.description && (
-                                <div className="text-xs text-theme-tertiary mt-1">
+                                <Text
+                                  papel="legenda"
+                                  tom="fraco"
+                                  as="div"
+                                  className="mt-1"
+                                >
                                   {item.description}
-                                </div>
+                                </Text>
                               )}
                             </Link>
                           ))}
@@ -460,15 +466,25 @@ const Navbar: React.FC = () => {
                       className="w-8 h-8 rounded-full object-cover border-2 border-brand-primary bg-theme-secondary"
                     />
                   ) : (
-                    <div className="w-8 h-8 bg-brand-gradient rounded-full flex items-center bg-theme-secondary justify-center text-theme-primary text-sm font-semibold">
+                    <Text
+                      papel="rotulo"
+                      tom="forte"
+                      as="div"
+                      className="w-8 h-8 bg-brand-gradient rounded-full flex items-center bg-theme-secondary justify-center font-semibold"
+                    >
                       {getUserInitials()}
-                    </div>
+                    </Text>
                   )}
 
                   <div className="text-left">
-                    <p className="text-sm font-medium text-theme-primary truncate max-w-32">
+                    <Text
+                      papel="rotulo"
+                      tom="forte"
+                      as="p"
+                      className="font-medium truncate max-w-32"
+                    >
                       {getUserDisplayName()}
-                    </p>
+                    </Text>
                     {!user.onboardingCompleted && (
                       <p className="text-xs text-accent-amber">
                         {t('navbar_configure_seu_perfil')}
@@ -485,16 +501,19 @@ const Navbar: React.FC = () => {
                       <p className="font-medium text-theme-primary">
                         {getUserDisplayName()}
                       </p>
-                      <p className="text-sm text-theme-tertiary">
+                      <Text papel="rotulo" tom="fraco" as="p">
                         {user.email}
-                      </p>
+                      </Text>
                       {!user.onboardingCompleted && (
-                        <div
-                          className="classical-card py-2 px-2 text-xs text-center text-brand-primary my-4 cursor-pointer"
+                        <Text
+                          papel="legenda"
+                          tom="ouro"
+                          as="div"
+                          className="classical-card py-2 px-2 text-center my-4 cursor-pointer"
                           onClick={open}
                         >
                           {t('navbar_clique_aqui_completar')}
-                        </div>
+                        </Text>
                       )}
                     </div>
 
@@ -801,17 +820,27 @@ const Navbar: React.FC = () => {
                                 className="w-8 h-8 rounded-full object-cover border-2 border-brand-primary"
                               />
                             ) : (
-                              <div className="w-8 h-8 bg-brand-gradient rounded-full flex items-center justify-center text-theme-primary text-sm font-semibold">
+                              <Text
+                                papel="rotulo"
+                                tom="forte"
+                                as="div"
+                                className="w-8 h-8 bg-brand-gradient rounded-full flex items-center justify-center font-semibold"
+                              >
                                 {getUserInitials()}
-                              </div>
+                              </Text>
                             )}
                             <div>
-                              <p className="font-medium text-theme-primary text-sm">
+                              <Text
+                                papel="rotulo"
+                                tom="forte"
+                                as="p"
+                                className="font-medium"
+                              >
                                 {getUserDisplayName()}
-                              </p>
-                              <p className="text-xs text-theme-tertiary">
+                              </Text>
+                              <Text papel="legenda" tom="fraco" as="p">
                                 Perfil
-                              </p>
+                              </Text>
                             </div>
                           </Inline>
                           <div className="p-2 text-theme-tertiary hover:text-brand-primary transition-colors">
@@ -922,9 +951,9 @@ const Navbar: React.FC = () => {
                           <p className="font-medium text-theme-primary">
                             {getUserDisplayName()}
                           </p>
-                          <p className="text-sm text-theme-tertiary">
+                          <Text papel="rotulo" tom="fraco" as="p">
                             {user.email}
-                          </p>
+                          </Text>
                         </div>
                       </Inline>
 

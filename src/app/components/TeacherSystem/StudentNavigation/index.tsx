@@ -33,6 +33,7 @@ import NotificationBell from '../../Notification/NotificationBell';
 import { LanguageDropdown, LanguageToggle } from '../../LanguageToggle';
 import { useTranslation } from '@/app/hooks/useTranslation';
 import { Inline } from '@/app/components/ui/Layout';
+import { Text } from '@/app/components/ui/Text';
 
 interface StudentNavigationProps {
   user: any;
@@ -225,9 +226,14 @@ export default function StudentNavigation({ user }: StudentNavigationProps) {
                   <span className="text-xl gold-shine font-bold text-gradient-brand classical-title">
                     {t('brand_name')}
                   </span>
-                  <div className="text-xs text-theme-tertiary font-medium">
+                  <Text
+                    papel="legenda"
+                    tom="fraco"
+                    as="div"
+                    className="font-medium"
+                  >
                     {t('student_area')}
-                  </div>
+                  </Text>
                 </div>
               </Link>
             </Inline>
@@ -286,9 +292,14 @@ export default function StudentNavigation({ user }: StudentNavigationProps) {
                                       {subItem.label}
                                     </div>
                                     {subItem.description && (
-                                      <div className="text-xs text-theme-tertiary mt-1">
+                                      <Text
+                                        papel="legenda"
+                                        tom="fraco"
+                                        as="div"
+                                        className="mt-1"
+                                      >
                                         {subItem.description}
-                                      </div>
+                                      </Text>
                                     )}
                                   </div>
                                   {subItem.badge && (
@@ -352,15 +363,25 @@ export default function StudentNavigation({ user }: StudentNavigationProps) {
                       className="w-8 h-8 rounded-full object-cover border-2 border-accent-green/20 group-hover:border-accent-green/50 transition-all"
                     />
                   ) : (
-                    <div className="w-8 h-8 bg-gradient-to-br from-accent-green to-accent-blue rounded-full flex items-center justify-center text-theme-primary text-sm font-semibold border-2 border-accent-green/20 group-hover:border-accent-green/50 transition-all">
+                    <Text
+                      papel="rotulo"
+                      tom="forte"
+                      as="div"
+                      className="w-8 h-8 bg-gradient-to-br from-accent-green to-accent-blue rounded-full flex items-center justify-center font-semibold border-2 border-accent-green/20 group-hover:border-accent-green/50 transition-all"
+                    >
                       {getUserInitials()}
-                    </div>
+                    </Text>
                   )}
 
                   <div className="hidden sm:block text-left">
-                    <p className="text-sm font-medium text-theme-primary truncate max-w-32">
+                    <Text
+                      papel="rotulo"
+                      tom="forte"
+                      as="p"
+                      className="font-medium truncate max-w-32"
+                    >
                       {getUserDisplayName()}
-                    </p>
+                    </Text>
                     {!user.onboardingCompleted && (
                       <p className="text-xs text-accent-amber">
                         {t('profile_complete_prompt')}
@@ -379,9 +400,9 @@ export default function StudentNavigation({ user }: StudentNavigationProps) {
                       <p className="font-medium text-theme-primary">
                         {getUserDisplayName()}
                       </p>
-                      <p className="text-sm text-theme-tertiary">
+                      <Text papel="rotulo" tom="fraco" as="p">
                         {user.email}
-                      </p>
+                      </Text>
                       <div className="flex items-center mt-1">
                         <span className="px-2 py-1 bg-accent-green/10 text-accent-green text-xs rounded-full">
                           {t('profile_role_student')}
@@ -491,9 +512,9 @@ export default function StudentNavigation({ user }: StudentNavigationProps) {
                     <span className="text-lg gold-shine font-bold text-gradient-brand">
                       {t('brand_name')}
                     </span>
-                    <div className="text-xs text-theme-tertiary">
+                    <Text papel="legenda" tom="fraco" as="div">
                       {t('student_area')}
-                    </div>
+                    </Text>
                   </div>
                 </div>
                 <button

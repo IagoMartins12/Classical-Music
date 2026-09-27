@@ -37,6 +37,7 @@ import Button from '@/app/components/Common/Button';
 import { translateEpochWithHook } from '@/app/utils/translations/epochTranslationComposer';
 import { useTranslation } from '@/app/context/TranslationContext';
 import { Inline, Stack } from '@/app/components/ui/Layout';
+import { Text } from '@/app/components/ui/Text';
 
 // Atualizar tipo para incluir 'scores'
 type FilterTab = 'all' | 'composers' | 'works' | 'scores';
@@ -627,11 +628,15 @@ function ComposerFavoriteCard({
                   </h3>
                 </div>
 
-                <span className="inline-flex items-center px-3 justify-center py-1 mt-1 bg-brand-primary/10 border border-brand-primary/30 text-brand-primary rounded-full text-xs font-medium">
+                <Text
+                  papel="legenda"
+                  tom="ouro"
+                  className="inline-flex items-center px-3 justify-center py-1 mt-1 bg-brand-primary/10 border border-brand-primary/30 rounded-full font-medium"
+                >
                   <PiClock className="w-2.5 h-2.5 mr-1" />
                   {favorite.composer?.epochName &&
                     translateEpochWithHook(favorite.composer.epochName, t)}
-                </span>
+                </Text>
               </div>
 
               <Stack
@@ -706,10 +711,14 @@ function WorkFavoriteCard({ favorite, viewMode, t }: WorkFavoriteCardProps) {
                 </div>
                 <div className="flex gap-4 items-center">
                   {favorite.work?.opOrCatalog && (
-                    <span className="inline-flex items-center px-2 py-0.5 bg-theme-elevated border border-theme-primary/30 text-theme-secondary rounded-md text-xs font-medium flex-shrink-0">
+                    <Text
+                      papel="legenda"
+                      tom="suave"
+                      className="inline-flex items-center px-2 py-0.5 bg-theme-elevated border border-theme-primary/30 rounded-md font-medium flex-shrink-0"
+                    >
                       <PiBookOpen className="w-2.5 h-2.5 mr-1" />
                       {favorite.work?.opOrCatalog}
-                    </span>
+                    </Text>
                   )}
                 </div>
 
@@ -811,9 +820,13 @@ function ScoreFavoriteCard({ favorite, viewMode, t }: ScoreFavoriteCardProps) {
                   {favorite.scoreType}
                 </span>
 
-                <span className="inline-flex items-center px-2 py-0.5 bg-theme-elevated border border-theme-primary/30 text-theme-secondary rounded-md text-xs font-medium">
+                <Text
+                  papel="legenda"
+                  tom="suave"
+                  className="inline-flex items-center px-2 py-0.5 bg-theme-elevated border border-theme-primary/30 rounded-md font-medium"
+                >
                   {favorite.scoreSource}
-                </span>
+                </Text>
               </div>
             </div>
 
@@ -828,9 +841,9 @@ function ScoreFavoriteCard({ favorite, viewMode, t }: ScoreFavoriteCardProps) {
 
               <Inline gap={2}>
                 <PiUser className="w-3 h-3 text-theme-tertiary" />
-                <span className="text-sm text-theme-tertiary">
+                <Text papel="rotulo" tom="fraco">
                   {favorite.work?.composer?.fullName}
-                </span>
+                </Text>
               </Inline>
             </div>
 
@@ -849,9 +862,14 @@ function ScoreFavoriteCard({ favorite, viewMode, t }: ScoreFavoriteCardProps) {
                 )}
 
                 {favorite.notes && (
-                  <p className="text-xs text-theme-secondary line-clamp-2">
+                  <Text
+                    papel="legenda"
+                    tom="suave"
+                    as="p"
+                    className="line-clamp-2"
+                  >
                     {favorite.notes}
-                  </p>
+                  </Text>
                 )}
 
                 {favorite.tags?.length > 0 && (
@@ -859,17 +877,23 @@ function ScoreFavoriteCard({ favorite, viewMode, t }: ScoreFavoriteCardProps) {
                     {favorite.tags
                       .slice(0, 3)
                       .map((tag: string, index: number) => (
-                        <span
+                        <Text
+                          papel="legenda"
+                          tom="ouro"
                           key={index}
-                          className="px-1.5 py-0.5 bg-brand-primary/10 text-brand-primary rounded text-xs"
+                          className="px-1.5 py-0.5 bg-brand-primary/10 rounded"
                         >
                           {tag}
-                        </span>
+                        </Text>
                       ))}
                     {favorite.tags.length > 3 && (
-                      <span className="px-1.5 py-0.5 bg-theme-secondary/20 text-theme-tertiary rounded text-xs">
+                      <Text
+                        papel="legenda"
+                        tom="fraco"
+                        className="px-1.5 py-0.5 bg-theme-secondary/20 rounded"
+                      >
                         +{favorite.tags.length - 3}
-                      </span>
+                      </Text>
                     )}
                   </div>
                 )}

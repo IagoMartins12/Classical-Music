@@ -41,6 +41,7 @@ import { translateEpochWithHook } from '@/app/utils/translations/epochTranslatio
 import Select from '../../../components/Common/Select';
 import { useTranslation } from '@/app/context/TranslationContext';
 import { Stack } from '@/app/components/ui/Layout';
+import { Text } from '@/app/components/ui/Text';
 
 interface WorksClientProps {
   worksData: WorksListResponse;
@@ -181,13 +182,18 @@ const ActiveFilters = memo(
 
     return (
       <div className="flex items-center gap-3 mb-4 flex-wrap pt-4 border-t border-theme-secondary">
-        <span className="text-sm font-medium text-theme-secondary">
+        <Text papel="rotulo" tom="suave" className="font-medium">
           {t('client_jsx_span_active_filters')}
-        </span>
+        </Text>
 
         {searchParams.search && (
           <AnimatedItem hover="scale">
-            <div className="flex items-center gap-2 px-3 py-1 bg-brand-primary/10 border border-brand-primary/30 text-brand-primary rounded-full text-sm">
+            <Text
+              papel="rotulo"
+              tom="ouro"
+              as="div"
+              className="flex items-center gap-2 px-3 py-1 bg-brand-primary/10 border border-brand-primary/30 rounded-full"
+            >
               <span>
                 {t('client_jsx_span_search_filter')} &quot;{searchParams.search}
                 &quot;
@@ -198,7 +204,7 @@ const ActiveFilters = memo(
               >
                 <PiX className="w-3 h-3" />
               </button>
-            </div>
+            </Text>
           </AnimatedItem>
         )}
 
@@ -630,9 +636,9 @@ const WorksClient = memo(
                 <h2 className="text-xl font-bold text-theme-primary classical-title">
                   {t('client_jsx_h3_filters_title')}
                 </h2>
-                <p className="text-theme-secondary text-sm">
+                <Text papel="rotulo" tom="suave" as="p">
                   {t('client_jsx_p_filters_description')}
-                </p>
+                </Text>
               </div>
             </div>
 
@@ -751,9 +757,9 @@ const WorksClient = memo(
 
                     {/* Epoch Filter */}
                     <Stack gap={2} className="gap-1 relative z-[105]">
-                      <span className="text-sm font-medium text-theme-secondary">
+                      <Text papel="rotulo" tom="suave" className="font-medium">
                         {t('client_jsx_label_epoch')}
-                      </span>
+                      </Text>
                       <div className="relative">
                         <PiClock className="absolute left-4 top-1/2 transform -translate-y-1/2 w-4 h-4 text-theme-tertiary" />
                         <Select
@@ -780,9 +786,9 @@ const WorksClient = memo(
 
                     {/* Genre Filter */}
                     <Stack gap={2} className="gap-1 relative z-[115]">
-                      <span className="text-sm font-medium text-theme-secondary">
+                      <Text papel="rotulo" tom="suave" className="font-medium">
                         {t('client_jsx_label_genre')}
-                      </span>
+                      </Text>
                       <GenreSearchInput
                         selectedGenre={selectedGenre}
                         onGenreSelect={handleGenreFilter}

@@ -10,6 +10,7 @@ import {
   searchArticles as searchBlog,
   type SearchQuery,
 } from '@/app/requests/blog/taxonomy';
+import { Text } from '@/app/components/ui/Text';
 
 export const revalidate = 0; // Sem cache para busca
 
@@ -161,9 +162,9 @@ export default async function SearchPage({ searchParams }: PageProps) {
               <div className="space-y-3 mt-6">
                 {suggestions.relatedTags.length > 0 && (
                   <div>
-                    <p className="text-xs text-theme-tertiary mb-2">
+                    <Text papel="legenda" tom="fraco" as="p" className="mb-2">
                       Tags relacionadas:
-                    </p>
+                    </Text>
                     <div className="flex flex-wrap gap-2">
                       {suggestions.relatedTags.map((tag: TagSuggestion) => (
                         <span
@@ -180,9 +181,9 @@ export default async function SearchPage({ searchParams }: PageProps) {
 
                 {suggestions.relatedCategories.length > 0 && (
                   <div>
-                    <p className="text-xs text-theme-tertiary mb-2">
+                    <Text papel="legenda" tom="fraco" as="p" className="mb-2">
                       Categorias relacionadas:
-                    </p>
+                    </Text>
                     <div className="flex flex-wrap gap-2">
                       {suggestions.relatedCategories.map(
                         (category: CategorySuggestion) => (

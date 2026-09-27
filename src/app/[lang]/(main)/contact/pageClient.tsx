@@ -35,6 +35,7 @@ import Select from '@/app/components/Common/Select';
 import { useTranslation } from '@/app/context/TranslationContext';
 import Checkbox from '@/app/components/Common/Checkbox';
 import { Inline } from '@/app/components/ui/Layout';
+import { Text } from '@/app/components/ui/Text';
 
 interface ContactOption {
   icon: React.ComponentType<{ className?: string }>;
@@ -449,9 +450,9 @@ export default function ContactPageClient() {
                       <label className="font-medium text-theme-primary cursor-pointer">
                         {t('contact_jsx_label_children_0__receber_newsletter')}
                       </label>
-                      <p className="text-sm text-theme-tertiary">
+                      <Text papel="rotulo" tom="fraco" as="p">
                         {t('contact_jsx_p_children_0__newsletter_description')}
-                      </p>
+                      </Text>
                     </div>
                   </div>
 

@@ -15,6 +15,7 @@ import {
 } from 'react-icons/pi';
 import { useTranslation } from '@/app/context/TranslationContext';
 import { Inline } from '@/app/components/ui/Layout';
+import { Text } from '@/app/components/ui/Text';
 
 interface LocationData {
   country?: {
@@ -354,9 +355,9 @@ const ElegantSelectWithSearch: React.FC<SelectWithSearchProps> = ({
           {headerLabel && (
             <div className="flex items-center gap-2 px-4 py-3 bg-theme-secondary/10 border-b border-theme-secondary">
               {headerIcon}
-              <span className="text-sm font-medium text-theme-secondary">
+              <Text papel="rotulo" tom="suave" className="font-medium">
                 {headerLabel}
-              </span>
+              </Text>
             </div>
           )}
 
@@ -411,9 +412,14 @@ const ElegantSelectWithSearch: React.FC<SelectWithSearchProps> = ({
                             {option.label}
                           </div>
                           {option.extra && (
-                            <div className="text-xs text-theme-tertiary truncate mt-0.5">
+                            <Text
+                              papel="legenda"
+                              tom="fraco"
+                              as="div"
+                              className="truncate mt-0.5"
+                            >
                               {option.extra}
-                            </div>
+                            </Text>
                           )}
                         </div>
                       </Inline>
@@ -423,16 +429,16 @@ const ElegantSelectWithSearch: React.FC<SelectWithSearchProps> = ({
               ) : (
                 <div className="px-4 py-8 text-center">
                   <PiMapPin className="w-8 h-8 text-theme-tertiary mx-auto mb-2" />
-                  <p className="text-sm text-theme-secondary">
+                  <Text papel="rotulo" tom="suave" as="p">
                     {emptyMessage ||
                       (searchTerm
                         ? `Nenhum resultado encontrado para "${searchTerm}"`
                         : 'Nenhuma opção disponível')}
-                  </p>
+                  </Text>
                   {searchTerm && (
-                    <p className="text-xs text-theme-tertiary mt-1">
+                    <Text papel="legenda" tom="fraco" as="p" className="mt-1">
                       Tente uma busca mais geral
-                    </p>
+                    </Text>
                   )}
                 </div>
               )}
@@ -786,9 +792,9 @@ const LocationSelector: React.FC<LocationSelectorProps> = ({
           isLoading={loadingStates}
         />
         {!value.country && !disabled && (
-          <p className="text-xs text-theme-tertiary mt-1">
+          <Text papel="legenda" tom="fraco" as="p" className="mt-1">
             Selecione um país primeiro
-          </p>
+          </Text>
         )}
       </div>
 
@@ -825,9 +831,9 @@ const LocationSelector: React.FC<LocationSelectorProps> = ({
           isLoading={loadingCities}
         />
         {!value.state && !disabled && (
-          <p className="text-xs text-theme-tertiary mt-1">
+          <Text papel="legenda" tom="fraco" as="p" className="mt-1">
             Selecione um estado primeiro
-          </p>
+          </Text>
         )}
       </div>
 

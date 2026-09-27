@@ -9,6 +9,7 @@ import Input from '@/app/components/Common/Inputs';
 import Button from '@/app/components/Common/Button';
 import Select from '@/app/components/Common/Select';
 import { uploadBlogMedia } from '@/app/requests/blog/interactions';
+import { Text } from '@/app/components/ui/Text';
 
 interface ImageModalProps {
   editor: Editor;
@@ -159,9 +160,9 @@ export function ImageModal({
                 ) : (
                   <label htmlFor="image-upload" className="cursor-pointer">
                     <PiUploadSimple className="w-8 h-8 text-theme-tertiary mx-auto mb-2" />
-                    <span className="text-sm text-theme-secondary">
+                    <Text papel="rotulo" tom="suave">
                       {uploading ? 'Enviando...' : 'Clique para fazer upload'}
-                    </span>
+                    </Text>
                   </label>
                 )}
               </div>

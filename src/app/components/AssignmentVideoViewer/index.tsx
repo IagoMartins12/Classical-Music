@@ -18,6 +18,7 @@ import Modal from '@/app/components/Modal';
 import { formatDistanceToNow } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
 import { Inline } from '@/app/components/ui/Layout';
+import { Text } from '@/app/components/ui/Text';
 
 interface VideoSubmission {
   filename: string;
@@ -317,7 +318,7 @@ export default function AssignmentVideoViewer({
         {!isFullscreen && (
           <div className="p-4 border-t border-theme-primary">
             <div className="flex items-center justify-between">
-              <div className="text-sm text-theme-secondary">
+              <Text papel="rotulo" tom="suave" as="div">
                 <Inline as="span" gap={1}>
                   <PiClock className="w-3 h-3" />
                   <span>
@@ -328,7 +329,7 @@ export default function AssignmentVideoViewer({
                     })}
                   </span>
                 </Inline>
-              </div>
+              </Text>
 
               <Inline gap={2}>
                 {canDownload && (

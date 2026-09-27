@@ -15,6 +15,7 @@ import FavoriteButton from '../../FavoriteButton';
 import VerificationBadge from '../../Verification/VerificationBadge';
 import { useTranslation } from '@/app/context/TranslationContext';
 import { Inline, Stack } from '@/app/components/ui/Layout';
+import { Text } from '@/app/components/ui/Text';
 
 interface workCardProps {
   work: WorkListItem;
@@ -79,9 +80,9 @@ const WorkCard: React.FC<workCardProps> = ({ work, goToWorkPage }) => {
             {work.opOrCatalog && (
               <div className="flex items-center mb-3">
                 <PiBookOpen className="w-3 h-3 text-theme-tertiary mr-2" />
-                <span className="text-sm text-theme-secondary font-medium">
+                <Text papel="rotulo" tom="suave" className="font-medium">
                   {work.opOrCatalog}
-                </span>
+                </Text>
               </div>
             )}
 
@@ -109,9 +110,9 @@ const WorkCard: React.FC<workCardProps> = ({ work, goToWorkPage }) => {
             {work.instrument?.name && (
               <div className="flex items-center">
                 <PiMusicNotes className="w-4 h-4 text-brand-primary mr-2 flex-shrink-0" />
-                <span className="text-sm text-theme-secondary">
+                <Text papel="rotulo" tom="suave">
                   {work.instrument.name}
-                </span>
+                </Text>
               </div>
             )}
 
@@ -119,9 +120,9 @@ const WorkCard: React.FC<workCardProps> = ({ work, goToWorkPage }) => {
             {work.compositionYear && (
               <div className="flex items-center">
                 <PiCalendarBlank className="w-4 h-4 text-accent-green mr-2 flex-shrink-0" />
-                <span className="text-sm text-theme-secondary">
+                <Text papel="rotulo" tom="suave">
                   {work.compositionYear}
-                </span>
+                </Text>
               </div>
             )}
 
@@ -129,9 +130,9 @@ const WorkCard: React.FC<workCardProps> = ({ work, goToWorkPage }) => {
             {work.mediaDuration && (
               <div className="flex items-center">
                 <PiClock className="w-4 h-4 text-accent-purple mr-2 flex-shrink-0" />
-                <span className="text-sm text-theme-secondary">
+                <Text papel="rotulo" tom="suave">
                   {formatDuration(work.mediaDuration)}
-                </span>
+                </Text>
               </div>
             )}
 
@@ -139,9 +140,9 @@ const WorkCard: React.FC<workCardProps> = ({ work, goToWorkPage }) => {
             {work.tone && (
               <div className="flex items-center">
                 <PiMusicNotes className="w-4 h-4 text-brand-secondary mr-2 flex-shrink-0" />
-                <span className="text-sm text-theme-secondary">
+                <Text papel="rotulo" tom="suave">
                   {t('card_jsx_span_key_label')} {work.tone}
-                </span>
+                </Text>
               </div>
             )}
           </div>
@@ -149,10 +150,14 @@ const WorkCard: React.FC<workCardProps> = ({ work, goToWorkPage }) => {
           {/* Badges */}
           <div className="flex flex-wrap gap-2 mb-4">
             {work.epoch && work.epoch.name && (
-              <span className="inline-flex items-center px-2 py-1 bg-brand-primary/10 border border-brand-primary/30 text-brand-primary rounded-full text-xs font-medium">
+              <Text
+                papel="legenda"
+                tom="ouro"
+                className="inline-flex items-center px-2 py-1 bg-brand-primary/10 border border-brand-primary/30 rounded-full font-medium"
+              >
                 <PiClock className="w-2.5 h-2.5 mr-1" />
                 {work.epoch.name}
-              </span>
+              </Text>
             )}
           </div>
 

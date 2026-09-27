@@ -34,6 +34,7 @@ import WorkSelectionSection, {
 import { useTranslation } from '@/app/context/TranslationContext';
 import { getWorkById } from '@/app/requests/catalog-search';
 import { Inline } from '@/app/components/ui/Layout';
+import { Text } from '@/app/components/ui/Text';
 
 interface EditAssignmentPageClientProps {
   initialData: EditAssignmentData | null;
@@ -401,13 +402,18 @@ export default function EditAssignmentPageClient({
                           }
                           className="input-classical w-full"
                         />
-                        <p className="text-xs text-theme-tertiary mt-1">
+                        <Text
+                          papel="legenda"
+                          tom="fraco"
+                          as="p"
+                          className="mt-1"
+                        >
                           {
                             initialData.assignmentTypes.find(
                               (t) => t.value === formData.type
                             )?.description
                           }
-                        </p>
+                        </Text>
                       </div>
 
                       <div>
@@ -569,9 +575,9 @@ export default function EditAssignmentPageClient({
                         <PiMusicNotes className="w-5 h-5" />
                         <span>{t('musical_pieces')}</span>
                       </Inline>
-                      <div className="text-sm text-theme-secondary">
+                      <Text papel="rotulo" tom="suave" as="div">
                         {t('pieces_count', { count: selectedWorks.length })}
-                      </div>
+                      </Text>
                     </div>
 
                     <WorkSelectionSection
@@ -859,9 +865,9 @@ export default function EditAssignmentPageClient({
                       <div className="font-medium text-theme-primary">
                         {assignment.student.name}
                       </div>
-                      <div className="text-sm text-theme-tertiary">
+                      <Text papel="rotulo" tom="fraco" as="div">
                         {t('student')}
-                      </div>
+                      </Text>
                     </div>
                   </Inline>
 
@@ -943,26 +949,40 @@ export default function EditAssignmentPageClient({
                           <PiMusicNotes className="w-4 h-4 text-accent-blue" />
                         </div>
                         <div className="flex-1 min-w-0">
-                          <p className="font-medium text-theme-primary text-sm truncate">
+                          <Text
+                            papel="rotulo"
+                            tom="forte"
+                            as="p"
+                            className="font-medium truncate"
+                          >
                             {work.workTitle}
-                          </p>
-                          <p className="text-xs text-theme-tertiary truncate">
+                          </Text>
+                          <Text
+                            papel="legenda"
+                            tom="fraco"
+                            as="p"
+                            className="truncate"
+                          >
                             {t('composer')}: {work.composerName}
-                          </p>
+                          </Text>
                           {work.scoreId && (
                             <p className="text-xs text-accent-green">
                               {t('piece_with_score')}
                             </p>
                           )}
                         </div>
-                        <span className="text-xs bg-theme-secondary/20 text-theme-secondary px-2 py-1 rounded">
+                        <Text
+                          papel="legenda"
+                          tom="suave"
+                          className="bg-theme-secondary/20 px-2 py-1 rounded"
+                        >
                           #{index + 1}
-                        </span>
+                        </Text>
                       </Inline>
                     ))}
 
                     <div className="mt-3 p-3 bg-theme-elevated rounded-lg">
-                      <div className="text-xs text-theme-secondary">
+                      <Text papel="legenda" tom="suave" as="div">
                         <div className="flex justify-between">
                           <span>{t('total_pieces')}</span>
                           <span className="font-medium">{worksIds.length}</span>
@@ -973,7 +993,7 @@ export default function EditAssignmentPageClient({
                             {workScoreIds.length}
                           </span>
                         </div>
-                      </div>
+                      </Text>
                     </div>
                   </div>
                 </AnimatedCard>
@@ -994,12 +1014,17 @@ export default function EditAssignmentPageClient({
                   <div className="font-medium text-theme-primary">
                     {assignment.lesson.title}
                   </div>
-                  <div className="text-sm text-theme-secondary flex items-center">
+                  <Text
+                    papel="rotulo"
+                    tom="suave"
+                    as="div"
+                    className="flex items-center"
+                  >
                     <PiCalendarBlank className="w-4 h-4 mr-2" />
                     {new Date(assignment.lesson.scheduledAt).toLocaleDateString(
                       'pt-BR'
                     )}
-                  </div>
+                  </Text>
                 </Link>
               </AnimatedCard>
             </AnimatedItem>

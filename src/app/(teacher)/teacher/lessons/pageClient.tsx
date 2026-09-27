@@ -39,6 +39,7 @@ import { useTeacherLessons } from '@/app/hooks/lessonsSystem/useTeacherLessons';
 import { translateNivel } from '@/app/utils';
 import { useTranslation } from '@/app/context/TranslationContext';
 import { Inline } from '@/app/components/ui/Layout';
+import { Text } from '@/app/components/ui/Text';
 
 interface TeacherLessonsPageClientProps {
   initialData: TeacherLessonsData;
@@ -549,17 +550,17 @@ export default function TeacherLessonsPageClient({
                   <div className="font-medium text-theme-primary">
                     {lesson.student.name}
                   </div>
-                  <div className="text-sm text-theme-tertiary">
+                  <Text papel="rotulo" tom="fraco" as="div">
                     {t('level_label')} {translateNivel(lesson.student.level)}
-                  </div>
+                  </Text>
                 </div>
               </Inline>
 
               {/* Lesson Info */}
               {lesson.description && (
-                <p className="text-theme-secondary text-sm mb-3">
+                <Text papel="rotulo" tom="suave" as="p" className="mb-3">
                   {lesson.description}
-                </p>
+                </Text>
               )}
 
               {/* Objectives & Topics */}
@@ -583,10 +584,10 @@ export default function TeacherLessonsPageClient({
                   ))}
                   {(lesson.objectives.length > 3 ||
                     lesson.topics.length > 2) && (
-                    <span className="text-xs text-theme-tertiary">
+                    <Text papel="legenda" tom="fraco">
                       +{lesson.objectives.length + lesson.topics.length - 5}{' '}
                       {t('more')}
-                    </span>
+                    </Text>
                   )}
                 </div>
               )}
@@ -629,10 +630,10 @@ export default function TeacherLessonsPageClient({
                   )}
                 </Inline>
 
-                <div className="text-xs text-theme-tertiary">
+                <Text papel="legenda" tom="fraco" as="div">
                   {lesson.isRecurring && `🔄 ${t('recurring')} • `}
                   {t('created_on')} {formatDate(lesson.createdAt)}
-                </div>
+                </Text>
               </div>
               {/* Alerta para aulas que precisam de atenção */}
               {statusInfo.needsAttention && (
@@ -833,17 +834,17 @@ export default function TeacherLessonsPageClient({
                   <div className="font-medium text-theme-primary">
                     {lesson.student.name}
                   </div>
-                  <div className="text-sm text-theme-tertiary">
+                  <Text papel="rotulo" tom="fraco" as="div">
                     {t('level_label')} {translateNivel(lesson.student.level)}
-                  </div>
+                  </Text>
                 </div>
               </Inline>
 
               {/* Lesson Info */}
               {lesson.description && (
-                <p className="text-theme-secondary text-sm mb-3">
+                <Text papel="rotulo" tom="suave" as="p" className="mb-3">
                   {lesson.description}
-                </p>
+                </Text>
               )}
 
               {/* Objectives & Topics */}
@@ -871,10 +872,10 @@ export default function TeacherLessonsPageClient({
                     ))}
                   {(lesson.objectives.length > 3 ||
                     lesson.topics.length > 2) && (
-                    <span className="text-xs text-theme-tertiary">
+                    <Text papel="legenda" tom="fraco">
                       +{lesson.objectives.length + lesson.topics.length - 5}{' '}
                       {t('more')}
-                    </span>
+                    </Text>
                   )}
                 </div>
               )}
@@ -917,10 +918,10 @@ export default function TeacherLessonsPageClient({
                   )}
                 </Inline>
 
-                <div className="text-xs text-theme-tertiary">
+                <Text papel="legenda" tom="fraco" as="div">
                   {lesson.isRecurring && `🔄 ${t('recurring')} • `}
                   {t('created_on')} {formatDate(lesson.createdAt)}
-                </div>
+                </Text>
               </div>
               {/* Alerta para aulas que precisam de atenção */}
               {statusInfo.needsAttention && (
@@ -1025,9 +1026,9 @@ export default function TeacherLessonsPageClient({
                 <div className="text-2xl font-bold text-theme-primary mb-1">
                   {stats.total}
                 </div>
-                <div className="text-sm text-theme-tertiary">
+                <Text papel="rotulo" tom="fraco" as="div">
                   {t('stats_total')}
-                </div>
+                </Text>
               </AnimatedCard>
 
               <AnimatedCard
@@ -1040,9 +1041,9 @@ export default function TeacherLessonsPageClient({
                 <div className="text-2xl font-bold text-theme-primary mb-1">
                   {stats.scheduled}
                 </div>
-                <div className="text-sm text-theme-tertiary">
+                <Text papel="rotulo" tom="fraco" as="div">
                   {t('stats_scheduled')}
-                </div>
+                </Text>
               </AnimatedCard>
 
               <AnimatedCard
@@ -1055,9 +1056,9 @@ export default function TeacherLessonsPageClient({
                 <div className="text-2xl font-bold text-theme-primary mb-1">
                   {stats.completed}
                 </div>
-                <div className="text-sm text-theme-tertiary">
+                <Text papel="rotulo" tom="fraco" as="div">
                   {t('stats_completed')}
-                </div>
+                </Text>
               </AnimatedCard>
 
               <AnimatedCard
@@ -1070,9 +1071,9 @@ export default function TeacherLessonsPageClient({
                 <div className="text-2xl font-bold text-theme-primary mb-1">
                   {stats.today}
                 </div>
-                <div className="text-sm text-theme-tertiary">
+                <Text papel="rotulo" tom="fraco" as="div">
                   {t('stats_today')}
-                </div>
+                </Text>
               </AnimatedCard>
 
               <AnimatedCard
@@ -1085,9 +1086,9 @@ export default function TeacherLessonsPageClient({
                 <div className="text-2xl font-bold text-theme-primary mb-1">
                   {stats.cancelled}
                 </div>
-                <div className="text-sm text-theme-tertiary">
+                <Text papel="rotulo" tom="fraco" as="div">
                   {t('stats_cancelled')}
-                </div>
+                </Text>
               </AnimatedCard>
             </div>
           </div>

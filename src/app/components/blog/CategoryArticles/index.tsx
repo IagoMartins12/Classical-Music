@@ -8,6 +8,7 @@ import ViewModeToggle, { ViewMode } from '@/app/components/ViewModeToggle';
 import { ArticleCard } from '@/app/components/blog/ArticleCard';
 import { ArticleCardList } from '@/app/components/blog/ArticleCardList';
 import { PiMagnifyingGlass } from 'react-icons/pi';
+import { Text } from '@/app/components/ui/Text';
 
 interface Article {
   id: string;
@@ -90,11 +91,11 @@ export function CategoryArticles({
     <>
       {/* Toolbar */}
       <div className="flex items-center justify-between mb-8">
-        <p className="text-sm text-theme-tertiary">
+        <Text papel="rotulo" tom="fraco" as="p">
           Mostrando {(pagination.page - 1) * pagination.limit + 1} -{' '}
           {Math.min(pagination.page * pagination.limit, pagination.total)} de{' '}
           {pagination.total} artigos
-        </p>
+        </Text>
 
         <ViewModeToggle
           viewMode={viewMode}

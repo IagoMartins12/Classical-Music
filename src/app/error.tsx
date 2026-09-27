@@ -29,6 +29,7 @@ import { useTranslation } from '@/app/hooks/useTranslation';
 import { useClientMetadata } from './hooks/useClientMetadata';
 import { BlogHeader } from './components/blog/BlogHeader';
 import { Inline } from '@/app/components/ui/Layout';
+import { Text } from '@/app/components/ui/Text';
 
 interface ErrorProps {
   error: Error & { digest?: string };
@@ -204,9 +205,9 @@ export default function Error({ error, reset }: ErrorProps) {
                       <span className="text-2xl font-bold text-gradient-brand classical-title">
                         {t('error_jsx_span_children_0__opus_atlas')}
                       </span>
-                      <div className="text-sm text-theme-tertiary">
+                      <Text papel="rotulo" tom="fraco" as="div">
                         {getAreaTitle()}
-                      </div>
+                      </Text>
                     </div>
                   </Link>
                 </div>

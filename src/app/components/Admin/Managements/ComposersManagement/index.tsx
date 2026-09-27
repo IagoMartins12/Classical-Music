@@ -49,6 +49,7 @@ import PeriodSelector from '../../Common/PeriodSelector';
 import LoadingAdminState from '../../Common/LoadingState';
 import { mapStatsToChartData } from '@/app/utils/admin/adminDebug';
 import { Inline } from '@/app/components/ui/Layout';
+import { Text } from '@/app/components/ui/Text';
 
 interface ComposerFilters {
   search: string;
@@ -394,17 +395,22 @@ export default function ComposersManagement() {
                         key={composer.id}
                         className="p-3 bg-theme-secondary rounded-xl"
                       >
-                        <div className="w-8 h-8 bg-gradient-to-br from-accent-red to-accent-amber rounded-lg flex items-center justify-center text-sm font-bold text-theme-primary">
+                        <Text
+                          papel="rotulo"
+                          tom="forte"
+                          as="div"
+                          className="w-8 h-8 bg-gradient-to-br from-accent-red to-accent-amber rounded-lg flex items-center justify-center font-bold"
+                        >
                           {index + 1}
-                        </div>
+                        </Text>
                         <div className="flex-1 min-w-0">
                           <p className="font-medium text-theme-primary truncate">
                             {composer.name}
                           </p>
-                          <p className="text-sm text-theme-tertiary">
+                          <Text papel="rotulo" tom="fraco" as="p">
                             {composer.favoritesCount} favoritos •{' '}
                             {composer.worksCount} obras
-                          </p>
+                          </Text>
                         </div>
                         <Button
                           variant="ghost"
@@ -440,16 +446,21 @@ export default function ComposersManagement() {
                         key={composer.id}
                         className="p-3 bg-theme-secondary rounded-xl"
                       >
-                        <div className="w-8 h-8 bg-gradient-to-br from-accent-blue to-accent-purple rounded-lg flex items-center justify-center text-sm font-bold text-theme-primary">
+                        <Text
+                          papel="rotulo"
+                          tom="forte"
+                          as="div"
+                          className="w-8 h-8 bg-gradient-to-br from-accent-blue to-accent-purple rounded-lg flex items-center justify-center font-bold"
+                        >
                           {index + 1}
-                        </div>
+                        </Text>
                         <div className="flex-1 min-w-0">
                           <p className="font-medium text-theme-primary truncate">
                             {composer.name}
                           </p>
-                          <p className="text-sm text-theme-tertiary">
+                          <Text papel="rotulo" tom="fraco" as="p">
                             {composer.worksCount} obras
-                          </p>
+                          </Text>
                         </div>
                         <Button
                           variant="ghost"
@@ -836,9 +847,9 @@ export default function ComposersManagement() {
 
                       {/* Uploader */}
                       {composer.uploader && (
-                        <div className="text-xs text-theme-tertiary">
+                        <Text papel="legenda" tom="fraco" as="div">
                           Por: {composer.uploader}
-                        </div>
+                        </Text>
                       )}
                     </div>
 

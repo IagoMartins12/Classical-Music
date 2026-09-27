@@ -57,6 +57,7 @@ import {
 } from '@/app/utils/progressMilestones';
 import { useLearnedVideo } from '@/app/hooks/useLearnedVideo';
 import { Inline, Stack } from '@/app/components/ui/Layout';
+import { Text } from '@/app/components/ui/Text';
 
 const LearningModal = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -708,7 +709,9 @@ const LearningModal = () => {
               <h2 className="text-xl font-bold text-theme-primary classical-title">
                 {config?.title}
               </h2>
-              <p className="text-sm text-theme-secondary">{config?.subtitle}</p>
+              <Text papel="rotulo" tom="suave" as="p">
+                {config?.subtitle}
+              </Text>
             </div>
           </Inline>
         </div>
@@ -719,11 +722,13 @@ const LearningModal = () => {
             <PiMusicNotes className="w-5 h-5 text-theme-tertiary" />
             <div>
               <h3 className="font-semibold text-theme-primary">{workTitle}</h3>
-              <p className="text-sm text-theme-secondary">{composerName}</p>
+              <Text papel="rotulo" tom="suave" as="p">
+                {composerName}
+              </Text>
               {instrumentName && (
-                <p className="text-xs text-theme-tertiary">
+                <Text papel="legenda" tom="fraco" as="p">
                   Instrumento: {instrumentName}
-                </p>
+                </Text>
               )}
             </div>
           </Inline>
@@ -1024,10 +1029,10 @@ const LearningModal = () => {
                     <h3 className="font-semibold text-theme-primary">
                       {t('learning_progress_title')}
                     </h3>
-                    <p className="text-sm text-theme-secondary">
+                    <Text papel="rotulo" tom="suave" as="p">
                       {currentProgress}
                       {t('progress_complete')}
-                    </p>
+                    </Text>
                   </div>
                 </Inline>
 
@@ -1038,9 +1043,9 @@ const LearningModal = () => {
                   className="btn-classical-secondary"
                 >
                   <PiPencilLine className="w-4 h-4" />
-                  <span className="text-theme-primary text-sm">
+                  <Text papel="rotulo" tom="forte">
                     {t('mark_progress_button')}
-                  </span>
+                  </Text>
                 </Inline>
               </div>
 
@@ -1074,9 +1079,9 @@ const LearningModal = () => {
                     <h3 className="font-semibold text-theme-primary">
                       {t('performance_video_title')}
                     </h3>
-                    <p className="text-sm text-theme-secondary">
+                    <Text papel="rotulo" tom="suave" as="p">
                       {displayVideo ? t('video_added') : t('no_video_added')}
-                    </p>
+                    </Text>
                   </div>
                 </Inline>
               </div>
@@ -1092,13 +1097,13 @@ const LearningModal = () => {
                           <h4 className="font-semibold text-theme-primary text-sm">
                             {displayVideoName}
                           </h4>
-                          <p className="text-xs text-theme-tertiary">
+                          <Text papel="legenda" tom="fraco" as="p">
                             {displayVideoSize &&
                               formatFileSize(displayVideoSize)}
                             {isVideoPublic
                               ? ` • ${t('public_label')}`
                               : ` • ${t('private_label')}`}
-                          </p>
+                          </Text>
                         </div>
                       </Inline>
                       {currentLearnedItem?.videoUrl && (
@@ -1160,9 +1165,9 @@ const LearningModal = () => {
                         <p className="font-semibold text-theme-primary">
                           {t('add_video_title')}
                         </p>
-                        <p className="text-sm text-theme-secondary">
+                        <Text papel="rotulo" tom="suave" as="p">
                           {t('video_formats_info')}
-                        </p>
+                        </Text>
                       </div>
                     </Stack>
                   </label>
@@ -1211,11 +1216,11 @@ const LearningModal = () => {
                   <h3 className="font-semibold text-theme-primary">
                     {t('study_score_title')}
                   </h3>
-                  <p className="text-sm text-theme-secondary">
+                  <Text papel="rotulo" tom="suave" as="p">
                     {selectedWorkScore
                       ? t('score_linked')
                       : t('no_score_selected')}
-                  </p>
+                  </Text>
                 </div>
               </Inline>
             </div>
@@ -1231,7 +1236,7 @@ const LearningModal = () => {
                       <h4 className="font-semibold text-theme-primary text-sm">
                         {selectedWorkScore.title}
                       </h4>
-                      <p className="text-xs text-theme-tertiary">
+                      <Text papel="legenda" tom="fraco" as="p">
                         {t('source_label')} {selectedWorkScore.source}
                         {selectedWorkScore.fileSize &&
                           ` • ${selectedWorkScore.fileSize}`}
@@ -1241,7 +1246,7 @@ const LearningModal = () => {
                           )}`}
                         {selectedWorkScore.type &&
                           ` • ${selectedWorkScore.type}`}
-                      </p>
+                      </Text>
                     </div>
                   </Inline>
                   <Inline gap={4}>
@@ -1315,11 +1320,11 @@ const LearningModal = () => {
                         ? t('edit_score_button')
                         : t('add_score_button')}
                     </p>
-                    <p className="text-sm text-theme-secondary">
+                    <Text papel="rotulo" tom="suave" as="p">
                       {isInWorkPage
                         ? t('select_score_description')
                         : t('choose_score_description')}
-                    </p>
+                    </Text>
                   </div>
                 </Stack>
               </button>
@@ -1482,9 +1487,9 @@ const LearningModal = () => {
               <h3 className="text-lg font-bold text-theme-primary">
                 {t('transfer_learned_title')}
               </h3>
-              <p className="text-sm text-theme-secondary">
+              <Text papel="rotulo" tom="suave" as="p">
                 {t('transfer_learned_subtitle')}
-              </p>
+              </Text>
             </div>
           </Inline>
 
@@ -1494,13 +1499,13 @@ const LearningModal = () => {
               {t('transfer_learned_description')}
             </p>
 
-            <div className="mt-3 text-sm text-theme-secondary">
+            <Text papel="rotulo" tom="suave" as="div" className="mt-3">
               <ul className="space-y-1">
                 <li>• {t('transfer_priority_mastery')}</li>
                 <li>• {t('transfer_difficulty_notes')}</li>
                 <li>• {t('transfer_score_preserved')}</li>
               </ul>
-            </div>
+            </Text>
           </div>
 
           <div className="flex items-center justify-between ">
@@ -1536,9 +1541,9 @@ const LearningModal = () => {
                 <h3 className="text-xl font-bold text-theme-primary">
                   {t('mark_learning_progress_title')}
                 </h3>
-                <p className="text-sm text-theme-secondary">
+                <Text papel="rotulo" tom="suave" as="p">
                   {t('mark_learning_progress_subtitle')}
-                </p>
+                </Text>
               </div>
             </div>
 
@@ -1563,9 +1568,9 @@ const LearningModal = () => {
                   {currentProgress}%
                 </span>
               </Inline>
-              <p className="text-sm text-theme-tertiary">
+              <Text papel="rotulo" tom="fraco" as="p">
                 {t('click_milestones_instruction')}
-              </p>
+              </Text>
             </div>
 
             {/* Lista de milestones */}
@@ -1595,10 +1600,10 @@ const LearningModal = () => {
                       <div className="font-semibold text-theme-primary">
                         {t(milestone.labelKey)}
                       </div>
-                      <div className="text-sm text-theme-tertiary">
+                      <Text papel="rotulo" tom="fraco" as="div">
                         +{milestone.weight}
                         {t('progress_percentage')}
-                      </div>
+                      </Text>
                     </div>
                     <div className="flex-shrink-0">
                       {isCompleted ? (

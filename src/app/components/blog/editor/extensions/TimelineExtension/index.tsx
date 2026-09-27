@@ -6,6 +6,7 @@ import { useState } from 'react';
 import Image from '@/app/components/SmartImage';
 import { PiClock, PiTrash, PiUser } from 'react-icons/pi';
 import { Inline } from '@/app/components/ui/Layout';
+import { Text } from '@/app/components/ui/Text';
 
 const TimelineComponent = (props: any) => {
   const { node, deleteNode } = props;
@@ -48,7 +49,9 @@ const TimelineComponent = (props: any) => {
         >
           <PiUser className="w-5 h-5 text-brand-primary" />
           <div>
-            <p className="text-sm text-theme-tertiary">Timeline de</p>
+            <Text papel="rotulo" tom="fraco" as="p">
+              Timeline de
+            </Text>
             <p className="font-semibold text-theme-primary">{composerName}</p>
           </div>
         </Inline>
@@ -69,9 +72,14 @@ const TimelineComponent = (props: any) => {
               {/* Conteúdo */}
               <div className="flex-1 pb-8">
                 <div className="classical-card p-6">
-                  <div className="text-sm font-semibold text-brand-primary mb-1">
+                  <Text
+                    papel="rotulo"
+                    tom="ouro"
+                    as="div"
+                    className="font-semibold mb-1"
+                  >
                     {event.date}
-                  </div>
+                  </Text>
                   <h4 className="text-lg font-bold text-theme-primary mb-2">
                     {event.title}
                   </h4>

@@ -1,3 +1,4 @@
+import { Text } from '@/app/components/ui/Text';
 // utils/nationalityFlags.ts - Mapeamento de nacionalidades para bandeiras
 
 interface NationalityFlag {
@@ -596,7 +597,9 @@ export function FlagComponent({
       <span className={`inline-flex items-center space-x-1 ${className}`}>
         <span className={`${sizeClasses[size]} opacity-50`}>🏳️</span>
         {showCountryName && (
-          <span className="text-theme-tertiary text-sm">{nationality}</span>
+          <Text papel="rotulo" tom="fraco">
+            {nationality}
+          </Text>
         )}
       </span>
     );
@@ -610,9 +613,9 @@ export function FlagComponent({
         {flag}
       </span>
       {showCountryName && (
-        <span className="text-theme-primary text-sm font-medium">
+        <Text papel="rotulo" tom="forte" className="font-medium">
           {countryName}
-        </span>
+        </Text>
       )}
     </span>
   );

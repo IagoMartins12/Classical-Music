@@ -17,6 +17,7 @@ import Modal from '@/app/components/Modal';
 import { useNewsletterAdmin } from '@/app/hooks/admin/useNewsletterAdmin';
 import LoadingAdminState from '../../../Common/LoadingState';
 import { Inline } from '@/app/components/ui/Layout';
+import { Text } from '@/app/components/ui/Text';
 
 interface SendTestCampaignModalProps {
   isOpen: boolean;
@@ -286,19 +287,24 @@ export default function SendTestCampaignModal({
                       {list.name}
                     </div>
                     {list.description && (
-                      <div className="text-sm text-theme-tertiary">
+                      <Text papel="rotulo" tom="fraco" as="div">
                         {list.description}
-                      </div>
+                      </Text>
                     )}
                   </div>
                 </Inline>
                 <div className="text-right">
-                  <div className="text-sm font-medium text-theme-primary">
+                  <Text
+                    papel="rotulo"
+                    tom="forte"
+                    as="div"
+                    className="font-medium"
+                  >
                     {list.totalEmails} emails
-                  </div>
-                  <div className="text-xs text-theme-tertiary">
+                  </Text>
+                  <Text papel="legenda" tom="fraco" as="div">
                     {list.timesUsed} usos
-                  </div>
+                  </Text>
                 </div>
               </label>
             ))}
@@ -306,10 +312,10 @@ export default function SendTestCampaignModal({
 
           {selectedLists.length > 0 && (
             <div className="mt-3 p-3 bg-brand-primary/10 border border-brand-primary rounded-lg">
-              <div className="text-sm text-brand-primary">
+              <Text papel="rotulo" tom="ouro" as="div">
                 <strong>Selecionado:</strong> {selectedLists.length} lista(s) •{' '}
                 {totalEmails} email(s) únicos
-              </div>
+              </Text>
             </div>
           )}
         </div>
@@ -399,9 +405,9 @@ export default function SendTestCampaignModal({
               <div className="text-center">
                 <PiUsers className="w-6 h-6 mx-auto mb-2 text-theme-primary" />
                 <div className="font-medium text-theme-primary">Lote</div>
-                <div className="text-sm text-theme-tertiary">
+                <Text papel="rotulo" tom="fraco" as="div">
                   Mais rápido • 1s delay
-                </div>
+                </Text>
               </div>
             </label>
 
@@ -428,9 +434,9 @@ export default function SendTestCampaignModal({
               <div className="text-center">
                 <PiEnvelopeSimple className="w-6 h-6 mx-auto mb-2 text-theme-primary" />
                 <div className="font-medium text-theme-primary">Individual</div>
-                <div className="text-sm text-theme-tertiary">
+                <Text papel="rotulo" tom="fraco" as="div">
                   Mais controle • 3s delay
-                </div>
+                </Text>
               </div>
             </label>
           </div>
@@ -470,9 +476,9 @@ export default function SendTestCampaignModal({
       <div className="w-32 h-1 bg-theme-secondary rounded-full mx-auto overflow-hidden">
         <div className="h-full bg-gradient-to-r from-accent-amber to-accent-red animate-pulse"></div>
       </div>
-      <p className="text-theme-tertiary text-sm mt-4">
+      <Text papel="rotulo" tom="fraco" as="p" className="mt-4">
         Modo: {formData.sendMode === 'bulk' ? 'Lote' : 'Individual'}
-      </p>
+      </Text>
     </div>
   );
 

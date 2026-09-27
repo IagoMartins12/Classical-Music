@@ -4,6 +4,7 @@ import Link from 'next/link';
 import { TagForm } from '@/app/components/blog/admin/TagForm';
 import { PiArrowLeft } from 'react-icons/pi';
 import { getServerSession } from '@/app/libs/api/server-session';
+import { Text } from '@/app/components/ui/Text';
 
 export const metadata: Metadata = {
   title: 'Nova Tag - Blog Admin',
@@ -33,9 +34,9 @@ export default async function CreateTagPage() {
           <h1 className="text-3xl font-bold text-theme-primary classical-title">
             Criar Nova Tag
           </h1>
-          <p className="mt-2 text-sm text-theme-secondary">
+          <Text papel="rotulo" tom="suave" as="p" className="mt-2">
             Preencha as informações abaixo para criar uma nova tag para o blog.
-          </p>
+          </Text>
         </div>
 
         <div className="">

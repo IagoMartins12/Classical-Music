@@ -26,6 +26,7 @@ import Button from '@/app/components/Common/Button';
 import Modal from '@/app/components/Modal';
 import Checkbox from '@/app/components/Common/Checkbox';
 import { Inline } from '@/app/components/ui/Layout';
+import { Text } from '@/app/components/ui/Text';
 
 interface ParentWorkData {
   id: string;
@@ -126,9 +127,9 @@ const ParentWorkConfirmationModal: React.FC<{
               <h2 className="text-xl font-bold text-theme-primary">
                 Informações disponíveis
               </h2>
-              <p className="text-theme-secondary text-sm">
+              <Text papel="rotulo" tom="suave" as="p">
                 Dados úteis encontrados na obra pai
-              </p>
+              </Text>
             </div>
           </Inline>
 
@@ -137,7 +138,7 @@ const ParentWorkConfirmationModal: React.FC<{
             <div className="p-4 classical-card-simple  rounded-lg">
               <div className="flex items-start space-x-3">
                 <PiInfo className="w-5 h-5 text-theme-primary mt-0.5" />
-                <div className="text-sm text-theme-primary">
+                <Text papel="rotulo" tom="forte" as="div">
                   <p className="font-medium mb-2">
                     Deseja aproveitar informações da obra da coleção?
                   </p>
@@ -146,11 +147,11 @@ const ParentWorkConfirmationModal: React.FC<{
                     dados que podem ser úteis para preencher campos vazios desta
                     peça.
                   </p>
-                  <p className="text-xs text-theme-primary">
+                  <Text papel="legenda" tom="forte" as="p">
                     💡 Apenas campos vazios serão preenchidos. Suas informações
                     já digitadas não serão sobrescritas.
-                  </p>
-                </div>
+                  </Text>
+                </Text>
               </div>
             </div>
           </div>
@@ -550,10 +551,10 @@ const ParentWorkSuggestionModal: React.FC<ParentWorkSuggestionModalProps> = ({
                   <h2 className="text-xl font-bold text-theme-primary">
                     Copiar informações da obra pai
                   </h2>
-                  <p className="text-theme-secondary text-sm">
+                  <Text papel="rotulo" tom="suave" as="p">
                     <strong>{parentWorkData.title}</strong> tem informações que
                     podem ser úteis
-                  </p>
+                  </Text>
                 </div>
               </Inline>
             </div>
@@ -600,10 +601,10 @@ const ParentWorkSuggestionModal: React.FC<ParentWorkSuggestionModalProps> = ({
                       Limpar Seleção
                     </Button>
                   </Inline>
-                  <div className="text-sm text-theme-tertiary">
+                  <Text papel="rotulo" tom="fraco" as="div">
                     {selectedFields.size} de {fieldSuggestions.length}{' '}
                     selecionados
-                  </div>
+                  </Text>
                 </div>
 
                 {/* Fields by Category */}
@@ -626,13 +627,13 @@ const ParentWorkSuggestionModal: React.FC<ParentWorkSuggestionModalProps> = ({
                           <h3 className="text-lg font-semibold text-theme-primary">
                             {categoryInfo.title}
                           </h3>
-                          <span className="text-sm text-theme-tertiary">
+                          <Text papel="rotulo" tom="fraco">
                             ({suggestions.length}{' '}
                             {suggestions.length !== 1
                               ? 'disponíveis'
                               : 'disponível'}
                             )
-                          </span>
+                          </Text>
                         </Inline>
 
                         <div className="space-y-3">

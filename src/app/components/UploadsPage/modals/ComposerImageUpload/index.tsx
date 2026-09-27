@@ -14,6 +14,7 @@ import { toast } from 'react-hot-toast';
 import Image from '@/app/components/SmartImage';
 import { uploadComposerImage } from '@/app/requests/uploads-client';
 import { Inline } from '@/app/components/ui/Layout';
+import { Text } from '@/app/components/ui/Text';
 
 interface ComposerImageUploadProps {
   currentImage?: string | null;
@@ -268,9 +269,9 @@ const ComposerImageUpload: React.FC<ComposerImageUploadProps> = ({
             <PiUploadSimple className="w-4 h-4" />
             <span>Selecionar Arquivo</span>
           </Inline>
-          <p className="text-xs text-theme-tertiary mt-2">
+          <Text papel="legenda" tom="fraco" as="p" className="mt-2">
             JPG, PNG, GIF ou WebP. Máximo 5MB.
-          </p>
+          </Text>
         </div>
       ) : (
         /* URL Mode */
@@ -294,9 +295,9 @@ const ComposerImageUpload: React.FC<ComposerImageUploadProps> = ({
               Aplicar
             </button>
           </div>
-          <p className="text-xs text-theme-tertiary text-center">
+          <Text papel="legenda" tom="fraco" as="p" className="text-center">
             Insira a URL completa da imagem
-          </p>
+          </Text>
         </div>
       )}
 

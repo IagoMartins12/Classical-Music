@@ -22,6 +22,7 @@ import { translateEpochWithHook } from '@/app/utils/translations/epochTranslatio
 import { useTranslation } from '@/app/context/TranslationContext';
 import { currentSearchParams } from '@/app/utils/currentSearchParams';
 import { Inline } from '@/app/components/ui/Layout';
+import { Text } from '@/app/components/ui/Text';
 
 export interface ComposerImslp {
   epochName: string;
@@ -201,9 +202,9 @@ export default function ComposersClient({
               <h2 className="text-xl font-bold text-theme-primary classical-title">
                 {t('client_jsx_h3_children_0__busca_filtros')}
               </h2>
-              <p className="text-theme-secondary text-sm">
+              <Text papel="rotulo" tom="suave" as="p">
                 {t('client_jsx_p_children_0__encontre_exatamente')}
-              </p>
+              </Text>
             </div>
           </div>
 
@@ -279,7 +280,7 @@ export default function ComposersClient({
           {/* Filter Status and View Toggle */}
           <div className="flex md:items-center justify-between gap-4 pt-4 border-t border-theme-secondary">
             <Inline gap={4} className="justify-between">
-              <div className="text-theme-secondary text-sm">
+              <Text papel="rotulo" tom="suave" as="div">
                 <span className="font-medium text-theme-primary">
                   {composers.length}
                 </span>{' '}
@@ -308,15 +309,20 @@ export default function ComposersClient({
                     &quot;
                   </span>
                 )}
-              </div>
+              </Text>
 
               {isPending && (
-                <div className="flex items-center text-brand-primary text-sm">
+                <Text
+                  papel="rotulo"
+                  tom="ouro"
+                  as="div"
+                  className="flex items-center"
+                >
                   <LoadingSpinner size="sm" />
                   <span className="ml-2  hidden sm:flex">
                     {t('client_jsx_span_children_0__carregando')}
                   </span>
-                </div>
+                </Text>
               )}
             </Inline>
 

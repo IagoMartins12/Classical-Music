@@ -12,6 +12,7 @@ import {
 } from 'react-icons/pi';
 import { generateArticleAudio } from '@/app/requests/blog/interactions';
 import { Inline } from '@/app/components/ui/Layout';
+import { Text } from '@/app/components/ui/Text';
 
 interface TextToSpeechGoogleProps {
   content: any; // TipTap JSON
@@ -279,10 +280,15 @@ export function TextToSpeechGoogle({
                 background: progressGradient,
               }}
             />
-            <div className="flex justify-between text-xs text-theme-tertiary mt-1">
+            <Text
+              papel="legenda"
+              tom="fraco"
+              as="div"
+              className="flex justify-between mt-1"
+            >
               <span>{formatTime(currentTime)}</span>
               <span>{formatTime(duration)}</span>
-            </div>
+            </Text>
           </div>
 
           {/* Controles */}
@@ -339,9 +345,9 @@ export function TextToSpeechGoogle({
                 background: volumeGradient,
               }}
             />
-            <span className="text-xs text-theme-tertiary w-12 text-right">
+            <Text papel="legenda" tom="fraco" className="w-12 text-right">
               {Math.round(volume * 100)}%
-            </span>
+            </Text>
           </Inline>
         </div>
       ) : (
@@ -368,9 +374,9 @@ export function TextToSpeechGoogle({
 
           {isGenerating && (
             <div className="text-center">
-              <p className="text-xs text-theme-tertiary">
+              <Text papel="legenda" tom="fraco" as="p">
                 Isso pode levar alguns segundos
-              </p>
+              </Text>
             </div>
           )}
         </div>

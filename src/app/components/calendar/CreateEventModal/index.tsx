@@ -13,6 +13,7 @@ import { useSmartFormChanges } from '@/app/hooks/useFormChanges';
 import { saveEvent } from '@/app/requests/calendar-requests';
 import Image from '@/app/components/SmartImage';
 import { Inline } from '@/app/components/ui/Layout';
+import { Text } from '@/app/components/ui/Text';
 
 interface CreateEventModalProps {
   isOpen: boolean;
@@ -297,11 +298,11 @@ export default function CreateEventModal({
             <h2 className="text-xl font-bold text-theme-primary classical-title">
               {isEditing ? 'Editar Evento' : 'Novo Evento'}
             </h2>
-            <p className="text-sm text-theme-secondary">
+            <Text papel="rotulo" tom="suave" as="p">
               {isEditing
                 ? 'Atualize as informações do evento'
                 : 'Adicione um novo evento ao calendário'}
-            </p>
+            </Text>
           </div>
         </Inline>
       </div>
@@ -450,9 +451,9 @@ export default function CreateEventModal({
             placeholder="Descreva o evento..."
             maxLength={500}
           />
-          <p className="text-theme-tertiary text-xs mt-1">
+          <Text papel="legenda" tom="fraco" as="p" className="mt-1">
             {formData.description.length}/500 caracteres
-          </p>
+          </Text>
         </div>
 
         {/* Image URL */}
@@ -471,7 +472,9 @@ export default function CreateEventModal({
           />
           {formData.imageUrl && (
             <div className="mt-3">
-              <p className="text-sm text-theme-secondary mb-2">Preview:</p>
+              <Text papel="rotulo" tom="suave" as="p" className="mb-2">
+                Preview:
+              </Text>
               <div className="relative w-full h-48 rounded-lg overflow-hidden border border-theme-secondary">
                 <Image
                   src={formData.imageUrl}
@@ -515,9 +518,9 @@ export default function CreateEventModal({
                 }
                 className="w-4 h-4 rounded border-theme-secondary"
               />
-              <span className="text-sm text-theme-primary">
+              <Text papel="rotulo" tom="forte">
                 Evento Gratuito
-              </span>
+              </Text>
             </Inline>
           </div>
         </div>

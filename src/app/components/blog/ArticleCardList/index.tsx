@@ -9,6 +9,7 @@ import {
   PiUser,
 } from 'react-icons/pi';
 import { Inline } from '@/app/components/ui/Layout';
+import { Text } from '@/app/components/ui/Text';
 
 interface ArticleCardListProps {
   article: {
@@ -122,9 +123,9 @@ export function ArticleCardList({ article }: ArticleCardListProps) {
                   <PiUser className="w-4 h-4 text-brand-primary" />
                 </div>
               )}
-              <span className="text-sm text-theme-secondary font-medium">
+              <Text papel="rotulo" tom="suave" className="font-medium">
                 {authorName || 'Anônimo'}
-              </span>
+              </Text>
             </Inline>
 
             {/* Date */}

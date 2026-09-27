@@ -4,6 +4,7 @@ import { AnimatedCard } from '../../animation/AnimatedComponents';
 import { PiTrash, PiWarning } from 'react-icons/pi';
 import { useTranslation } from '@/app/hooks/useTranslation';
 import { Inline } from '@/app/components/ui/Layout';
+import { Text } from '@/app/components/ui/Text';
 
 export default function ConfirmDeleteModal({
   isOpen,
@@ -56,9 +57,9 @@ export default function ConfirmDeleteModal({
             <h3 className="text-lg font-bold text-theme-primary">
               {t('delete_modal_confirm_deletion')}
             </h3>
-            <p className="text-sm text-theme-secondary">
+            <Text papel="rotulo" tom="suave" as="p">
               {t('delete_modal_cannot_be_undone')}
-            </p>
+            </Text>
           </div>
         </Inline>
 

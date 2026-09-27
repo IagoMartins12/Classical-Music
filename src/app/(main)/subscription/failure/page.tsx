@@ -4,6 +4,7 @@ import React from 'react';
 import { useRouter } from 'next/navigation';
 import { PiArrowLeft, PiQuestion, PiX } from 'react-icons/pi';
 import Button from '@/app/components/Common/Button';
+import { Text } from '@/app/components/ui/Text';
 
 export default function SubscriptionFailurePage() {
   const router = useRouter();
@@ -76,9 +77,9 @@ export default function SubscriptionFailurePage() {
             </Button>
           </div>
 
-          <p className="text-sm text-theme-tertiary mt-8">
+          <Text papel="rotulo" tom="fraco" as="p" className="mt-8">
             Se o problema persistir, entre em contato com nosso suporte.
-          </p>
+          </Text>
         </div>
       </div>
     </div>

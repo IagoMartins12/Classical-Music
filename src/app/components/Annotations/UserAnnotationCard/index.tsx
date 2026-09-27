@@ -38,6 +38,7 @@ import Image from '@/app/components/SmartImage';
 import ConfirmDeleteModal from '../DeleteAnnotationModal';
 import { useTranslation } from '@/app/context/TranslationContext';
 import { Inline } from '@/app/components/ui/Layout';
+import { Text } from '@/app/components/ui/Text';
 
 interface UserAnnotationCardProps {
   annotation: WorkAnnotation;
@@ -270,11 +271,11 @@ export default function UserAnnotationCard({
               className="bg-theme-elevated/90 rounded-xl px-4 py-2 border border-theme-primary/30"
             >
               <PiSpinnerGap className="w-4 h-4 animate-spin text-brand-primary" />
-              <span className="text-sm font-medium text-theme-primary">
+              <Text papel="rotulo" tom="forte" className="font-medium">
                 {isOptimistic
                   ? t('user_annotation_card_saving_loading')
                   : t('user_annotation_card_updating_loading')}
-              </span>
+              </Text>
             </Inline>
           </div>
         )}
@@ -292,7 +293,7 @@ export default function UserAnnotationCard({
                   <PiSpinnerGap className="w-3 h-3 animate-spin text-accent-blue inline ml-2" />
                 )}
               </h3>
-              <div className="text-xs text-theme-secondary">
+              <Text papel="legenda" tom="suave" as="div">
                 <Link
                   href={`/works/${workInfo.id}`}
                   className="hover:text-brand-primary transition-colors"
@@ -303,7 +304,7 @@ export default function UserAnnotationCard({
                   {' '}
                   - {workInfo.composer.name}
                 </span>
-              </div>
+              </Text>
             </div>
 
             {/* Categoria */}
@@ -326,7 +327,12 @@ export default function UserAnnotationCard({
             </div>
 
             {/* Stats */}
-            <div className="col-span-2 text-xs text-theme-tertiary space-y-1">
+            <Text
+              papel="legenda"
+              tom="fraco"
+              as="div"
+              className="col-span-2 space-y-1"
+            >
               <Inline gap={1}>
                 <PiThumbsUp className="w-3 h-3" />
                 <span>{currentAnnotation.helpfulCount}</span>
@@ -335,7 +341,7 @@ export default function UserAnnotationCard({
                 <PiEye className="w-3 h-3" />
                 <span>{currentAnnotation.viewCount}</span>
               </Inline>
-            </div>
+            </Text>
 
             {/* Actions */}
             <div className="col-span-1 flex justify-end">
@@ -411,11 +417,11 @@ export default function UserAnnotationCard({
                 className="bg-theme-elevated/90 rounded-xl px-4 py-2 border border-theme-primary/30"
               >
                 <PiSpinnerGap className="w-4 h-4 animate-spin text-brand-primary" />
-                <span className="text-sm font-medium text-theme-primary">
+                <Text papel="rotulo" tom="forte" className="font-medium">
                   {isOptimistic
                     ? t('user_annotation_card_saving_loading')
                     : t('user_annotation_card_updating_loading')}
-                </span>
+                </Text>
               </Inline>
             </div>
           )}
@@ -451,16 +457,21 @@ export default function UserAnnotationCard({
 
                 <Inline gap={2}>
                   <PiUser className="w-3 h-3 text-theme-tertiary" />
-                  <span className="text-sm text-theme-tertiary">
+                  <Text papel="rotulo" tom="fraco">
                     {workInfo.composer.fullName}
-                  </span>
+                  </Text>
                 </Inline>
               </div>
 
               {/* Content preview */}
-              <p className="text-theme-secondary text-sm line-clamp-3 mb-3">
+              <Text
+                papel="rotulo"
+                tom="suave"
+                as="p"
+                className="line-clamp-3 mb-3"
+              >
                 {currentAnnotation.content}
-              </p>
+              </Text>
 
               {/* Badges compactos */}
               <div className="flex flex-wrap gap-2 mb-3">
@@ -621,11 +632,11 @@ export default function UserAnnotationCard({
               className="bg-theme-elevated/90 rounded-xl px-4 py-2 border border-theme-primary/30"
             >
               <PiSpinnerGap className="w-4 h-4 animate-spin text-brand-primary" />
-              <span className="text-sm font-medium text-theme-primary">
+              <Text papel="rotulo" tom="forte" className="font-medium">
                 {isOptimistic
                   ? t('user_annotation_card_saving_loading')
                   : t('user_annotation_card_updating_loading')}
-              </span>
+              </Text>
             </Inline>
           </div>
         )}
@@ -789,9 +800,13 @@ export default function UserAnnotationCard({
             )}
 
             {currentAnnotation.pageNumber && (
-              <span className="px-3 py-1 rounded-full text-xs font-medium border bg-theme-primary/10 border-theme-primary/30 text-theme-primary">
+              <Text
+                papel="legenda"
+                tom="forte"
+                className="px-3 py-1 rounded-full font-medium border bg-theme-primary/10 border-theme-primary/30"
+              >
                 {t('user_annotation_card_page')} {currentAnnotation.pageNumber}
-              </span>
+              </Text>
             )}
           </div>
 
@@ -817,12 +832,14 @@ export default function UserAnnotationCard({
           {currentAnnotation.tags.length > 0 && (
             <div className="flex flex-wrap gap-2 mb-4">
               {currentAnnotation.tags.map((tag, index) => (
-                <span
+                <Text
+                  papel="legenda"
+                  tom="suave"
                   key={index}
-                  className="px-2 py-1 bg-theme-elevated border border-theme-primary/20 rounded-lg text-xs text-theme-secondary"
+                  className="px-2 py-1 bg-theme-elevated border border-theme-primary/20 rounded-lg"
                 >
                   #{tag}
-                </span>
+                </Text>
               ))}
             </div>
           )}

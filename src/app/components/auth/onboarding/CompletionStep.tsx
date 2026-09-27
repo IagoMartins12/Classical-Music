@@ -7,6 +7,7 @@ import { GiGrandPiano } from 'react-icons/gi';
 import { PiArrowRight, PiCheck, PiMusicNotes } from 'react-icons/pi';
 import { useTranslation } from '@/app/context/TranslationContext';
 import Button from '../../Common/Button';
+import { Text } from '@/app/components/ui/Text';
 
 interface CompletionStepProps {
   onComplete: () => void;
@@ -89,7 +90,9 @@ const CompletionStep: React.FC<CompletionStepProps> = ({ onComplete }) => {
               <div className="w-5 h-5 bg-accent-green bg-opacity-20 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5">
                 <PiCheck className="w-3 h-3 text-accent-green" />
               </div>
-              <span className="text-sm text-theme-secondary">{feature}</span>
+              <Text papel="rotulo" tom="suave">
+                {feature}
+              </Text>
             </div>
           ))}
         </div>
@@ -107,9 +110,9 @@ const CompletionStep: React.FC<CompletionStepProps> = ({ onComplete }) => {
             <h5 className="font-medium text-theme-primary mb-2">
               {t('completion_step_explore_title')}
             </h5>
-            <p className="text-sm text-theme-secondary">
+            <Text papel="rotulo" tom="suave" as="p">
               {t('completion_step_explore_desc')}
-            </p>
+            </Text>
           </div>
 
           <div className="classical-card-2 p-4">
@@ -117,9 +120,9 @@ const CompletionStep: React.FC<CompletionStepProps> = ({ onComplete }) => {
             <h5 className="font-medium text-theme-primary mb-2">
               {t('completion_step_lists_title')}
             </h5>
-            <p className="text-sm text-theme-secondary">
+            <Text papel="rotulo" tom="suave" as="p">
               {t('completion_step_lists_desc')}
-            </p>
+            </Text>
           </div>
 
           <div className="classical-card-2 p-4">
@@ -127,9 +130,9 @@ const CompletionStep: React.FC<CompletionStepProps> = ({ onComplete }) => {
             <h5 className="font-medium text-theme-primary mb-2">
               {t('completion_step_study_title')}
             </h5>
-            <p className="text-sm text-theme-secondary">
+            <Text papel="rotulo" tom="suave" as="p">
               {t('completion_step_study_desc')}
-            </p>
+            </Text>
           </div>
         </div>
       </div>
@@ -148,9 +151,9 @@ const CompletionStep: React.FC<CompletionStepProps> = ({ onComplete }) => {
       </Button>
 
       <div className="mt-6">
-        <p className="text-sm text-theme-tertiary">
+        <Text papel="rotulo" tom="fraco" as="p">
           {t('completion_step_footer')}
-        </p>
+        </Text>
       </div>
     </div>
   );

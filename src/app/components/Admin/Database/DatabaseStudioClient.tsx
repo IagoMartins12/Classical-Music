@@ -39,6 +39,7 @@ import { useDatabaseStudio } from '@/app/hooks/admin/useDatabaseStudio';
 import { CONFIRMATION_MESSAGES } from './confirmations';
 import { deleteConfirmationPhrase } from '@/app/requests/admin/database';
 import { Inline } from '@/app/components/ui/Layout';
+import { Text } from '@/app/components/ui/Text';
 
 export default function DatabaseStudioClient() {
   const {
@@ -213,9 +214,9 @@ export default function DatabaseStudioClient() {
                       <h2 className="text-lg font-bold text-theme-primary">
                         Database Studio
                       </h2>
-                      <p className="text-xs text-theme-tertiary">
+                      <Text papel="legenda" tom="fraco" as="p">
                         {models.length} tabelas
-                      </p>
+                      </Text>
                     </div>
                   </Inline>
                   <Button
@@ -321,9 +322,13 @@ export default function DatabaseStudioClient() {
                           gap={2}
                           className="px-3 py-2 bg-brand-primary/10 border border-brand-primary/20 rounded-lg"
                         >
-                          <span className="text-sm font-medium text-brand-primary">
+                          <Text
+                            papel="rotulo"
+                            tom="ouro"
+                            className="font-medium"
+                          >
                             {selectedRecords.size} selecionado(s)
-                          </span>
+                          </Text>
                           <Button
                             variant="ghost"
                             size="sm"
@@ -446,9 +451,9 @@ export default function DatabaseStudioClient() {
                   {/* Filtros ativos */}
                   {activeFilterCount > 0 && (
                     <div className="flex items-center flex-wrap gap-2 pt-3 border-t border-theme-primary">
-                      <span className="text-sm font-medium text-theme-tertiary">
+                      <Text papel="rotulo" tom="fraco" className="font-medium">
                         Filtros ativos:
-                      </span>
+                      </Text>
                       {Object.entries(activeFilters).map(([field, value]) => (
                         <Inline
                           gap={2}
@@ -496,9 +501,9 @@ export default function DatabaseStudioClient() {
                             <PiDatabase className="w-4 h-4 text-brand-primary" />
                           </div>
                           <div>
-                            <p className="text-xs text-theme-tertiary">
+                            <Text papel="legenda" tom="fraco" as="p">
                               Total de Campos
-                            </p>
+                            </Text>
                             <p className="text-lg font-bold text-theme-primary">
                               {schemaStats.totalFields}
                             </p>
@@ -512,9 +517,9 @@ export default function DatabaseStudioClient() {
                             <PiEye className="w-4 h-4 text-green-500" />
                           </div>
                           <div>
-                            <p className="text-xs text-theme-tertiary">
+                            <Text papel="legenda" tom="fraco" as="p">
                               Exibíveis
-                            </p>
+                            </Text>
                             <p className="text-lg font-bold text-theme-primary">
                               {schemaStats.displayableFields}
                             </p>
@@ -528,9 +533,9 @@ export default function DatabaseStudioClient() {
                             <PiPencilSimple className="w-4 h-4 text-blue-500" />
                           </div>
                           <div>
-                            <p className="text-xs text-theme-tertiary">
+                            <Text papel="legenda" tom="fraco" as="p">
                               Editáveis
-                            </p>
+                            </Text>
                             <p className="text-lg font-bold text-theme-primary">
                               {schemaStats.editableFields}
                             </p>
@@ -544,9 +549,9 @@ export default function DatabaseStudioClient() {
                             <PiMagnifyingGlass className="w-4 h-4 text-purple-500" />
                           </div>
                           <div>
-                            <p className="text-xs text-theme-tertiary">
+                            <Text papel="legenda" tom="fraco" as="p">
                               Pesquisáveis
-                            </p>
+                            </Text>
                             <p className="text-lg font-bold text-theme-primary">
                               {schemaStats.searchableFields}
                             </p>
@@ -558,11 +563,11 @@ export default function DatabaseStudioClient() {
                         gap={2}
                         className="px-4 py-2 bg-brand-primary/10 rounded-lg"
                       >
-                        <span className="text-sm font-medium text-brand-primary">
+                        <Text papel="rotulo" tom="ouro" className="font-medium">
                           {selectedFields.length === 0
                             ? `Exibindo ${Math.min(100, schemaStats.displayableFields)} campos`
                             : `${selectedFields.length} campos selecionados`}
-                        </span>
+                        </Text>
                       </Inline>
                     </div>
                   </AnimatedCard>
@@ -683,9 +688,14 @@ export default function DatabaseStudioClient() {
                                   />
                                 </td>
                                 <td className="p-3">
-                                  <div className="text-xs text-theme-tertiary font-mono truncate max-w-[100px]">
+                                  <Text
+                                    papel="legenda"
+                                    tom="fraco"
+                                    as="div"
+                                    className="font-mono truncate max-w-[100px]"
+                                  >
                                     {record.id}
-                                  </div>
+                                  </Text>
                                 </td>
                                 {visibleFields.map((fieldName) => {
                                   const field = modelSchema?.fields.find(
@@ -693,14 +703,19 @@ export default function DatabaseStudioClient() {
                                   );
                                   return (
                                     <td key={fieldName} className="p-3">
-                                      <div className="max-w-xs truncate text-sm text-theme-primary">
+                                      <Text
+                                        papel="rotulo"
+                                        tom="forte"
+                                        as="div"
+                                        className="max-w-xs truncate"
+                                      >
                                         {field
                                           ? formatFieldValue(
                                               record[fieldName],
                                               field
                                             )
                                           : String(record[fieldName] || '-')}
-                                      </div>
+                                      </Text>
                                     </td>
                                   );
                                 })}
@@ -733,13 +748,13 @@ export default function DatabaseStudioClient() {
                       <div className="border-t border-theme-primary p-4">
                         <div className="flex items-center justify-between">
                           <Inline gap={4}>
-                            <span className="text-sm text-theme-secondary">
+                            <Text papel="rotulo" tom="suave">
                               {totalRecords} registros no total
-                            </span>
+                            </Text>
                             <Inline gap={2}>
-                              <span className="text-sm text-theme-tertiary">
+                              <Text papel="rotulo" tom="fraco">
                                 Exibir:
-                              </span>
+                              </Text>
                               <Select
                                 value={pageSize.toString()}
                                 onChange={(e) =>
@@ -757,9 +772,9 @@ export default function DatabaseStudioClient() {
                           </Inline>
 
                           <Inline gap={2}>
-                            <span className="text-sm text-theme-secondary">
+                            <Text papel="rotulo" tom="suave">
                               Página {currentPage} de {totalPages}
-                            </span>
+                            </Text>
                             <Inline gap={1}>
                               <Button
                                 variant="ghost"

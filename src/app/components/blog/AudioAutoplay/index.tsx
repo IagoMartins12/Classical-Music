@@ -10,6 +10,7 @@ import {
   PiX,
 } from 'react-icons/pi';
 import { Inline } from '@/app/components/ui/Layout';
+import { Text } from '@/app/components/ui/Text';
 
 interface AudioAutoplayProps {
   audioUrl: string;
@@ -458,9 +459,14 @@ export function AudioAutoplay({
     <div className="classical-card-simple rounded-lg shadow-xl p-4  ">
       {/* Título */}
       <div className="mb-3">
-        <p className="text-sm font-medium text-theme-primary truncate">
+        <Text
+          papel="rotulo"
+          tom="forte"
+          as="p"
+          className="font-medium truncate"
+        >
           {title || 'Música de fundo'}
-        </p>
+        </Text>
       </div>
 
       {/* Controles */}
@@ -503,10 +509,15 @@ export function AudioAutoplay({
               background: `linear-gradient(to right, var(--brand-primary) 0%, var(--brand-primary) ${(currentTime / duration) * 100}%, var(--interactive-disabled) ${(currentTime / duration) * 100}%, var(--interactive-disabled) 100%)`,
             }}
           />
-          <div className="flex justify-between text-xs text-theme-tertiary mt-1">
+          <Text
+            papel="legenda"
+            tom="fraco"
+            as="div"
+            className="flex justify-between mt-1"
+          >
             <span>{formatTime(currentTime)}</span>
             <span>{formatTime(duration)}</span>
-          </div>
+          </Text>
         </div>
 
         {/* Mute */}
@@ -609,9 +620,9 @@ export function AudioAutoplay({
                   d="M5 15l7-7 7 7"
                 />
               </svg>
-              <span className="text-sm font-medium text-theme-primary">
+              <Text papel="rotulo" tom="forte" className="font-medium">
                 {status === 'playing' ? 'Áudio tocando' : 'Áudio pausado'}
-              </span>
+              </Text>
               {status === 'playing' && (
                 <div className="flex space-x-1">
                   <div
@@ -693,9 +704,9 @@ export function AudioAutoplay({
                       style={{ animationDelay: '0.4s' }}
                     />
                   </div>
-                  <span className="text-xs text-theme-secondary">
+                  <Text papel="legenda" tom="suave">
                     Áudio tocando
-                  </span>
+                  </Text>
                 </Inline>
               )}
             </Inline>

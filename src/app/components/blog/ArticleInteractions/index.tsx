@@ -19,6 +19,7 @@ import {
   setArticleLiked,
 } from '@/app/requests/blog/interactions';
 import { Stack } from '@/app/components/ui/Layout';
+import { Text } from '@/app/components/ui/Text';
 
 interface ArticleInteractionsProps {
   articleId: string;
@@ -240,12 +241,12 @@ export function ArticleInteractions({
 
       {!session && (
         <div className="mt-4 pt-4 border-t border-theme-secondary">
-          <p className="text-sm text-theme-tertiary text-center">
+          <Text papel="rotulo" tom="fraco" as="p" className="text-center">
             <Link href="/login" className="text-brand-primary hover:underline">
               Faça login
             </Link>{' '}
             para curtir, comentar e salvar artigos
-          </p>
+          </Text>
         </div>
       )}
     </div>

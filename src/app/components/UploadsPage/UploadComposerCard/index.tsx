@@ -17,6 +17,7 @@ import ConfirmDeleteUploadModal from '../../ConfirmDeleteUploadModal';
 import VerificationBadge from '../../Verification/VerificationBadge';
 import { useTranslation } from '@/app/context/TranslationContext';
 import { Inline, Stack } from '@/app/components/ui/Layout';
+import { Text } from '@/app/components/ui/Text';
 
 interface UploadComposerCardProps {
   item: UserUpload;
@@ -127,18 +128,26 @@ const UploadComposerCard = ({
               <div className="flex flex-wrap items-start md:items-center space-x-4 mt-1">
                 {/* Period */}
                 {item.epochName && (
-                  <span className="inline-flex items-center text-xs text-brand-primary font-medium">
+                  <Text
+                    papel="legenda"
+                    tom="ouro"
+                    className="inline-flex items-center font-medium"
+                  >
                     <PiMusicNotes className="w-3 h-3 mr-1" />
                     {item.epochName}
-                  </span>
+                  </Text>
                 )}
 
                 {/* Date */}
                 {formatDates() && (
-                  <span className="inline-flex items-center text-xs text-theme-tertiary">
+                  <Text
+                    papel="legenda"
+                    tom="fraco"
+                    className="inline-flex items-center"
+                  >
                     <PiCalendarBlank className="w-3 h-3 mr-1" />
                     {formatDates()}
-                  </span>
+                  </Text>
                 )}
 
                 {/* Badge para compositor com obras importáveis */}
@@ -360,10 +369,14 @@ const UploadComposerCard = ({
             {/* Period info */}
             {item.epochName && (
               <div className="text-center">
-                <span className="inline-flex items-center px-3 py-1 bg-brand-primary/10 border border-brand-primary/20 text-brand-primary rounded-full text-xs font-medium hover:bg-brand-primary/20 transition-colors duration-300">
+                <Text
+                  papel="legenda"
+                  tom="ouro"
+                  className="inline-flex items-center px-3 py-1 bg-brand-primary/10 border border-brand-primary/20 rounded-full font-medium hover:bg-brand-primary/20 transition-colors duration-300"
+                >
                   <PiMusicNotes className="w-3 h-3 mr-1" />
                   {item.epochName}
-                </span>
+                </Text>
               </div>
             )}
 

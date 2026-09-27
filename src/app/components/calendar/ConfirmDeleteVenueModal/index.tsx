@@ -6,6 +6,7 @@ import { createPortal } from 'react-dom';
 import { AnimatedCard } from '../../animation/AnimatedComponents';
 import { PiTrash, PiWarning } from 'react-icons/pi';
 import { Inline } from '@/app/components/ui/Layout';
+import { Text } from '@/app/components/ui/Text';
 
 export default function ConfirmDeleteVenueModal({
   isOpen,
@@ -61,11 +62,11 @@ export default function ConfirmDeleteVenueModal({
             <h3 className="text-lg font-bold text-theme-primary">
               {hasEvents ? 'Não é Possível Deletar' : 'Confirmar Exclusão'}
             </h3>
-            <p className="text-sm text-theme-secondary">
+            <Text papel="rotulo" tom="suave" as="p">
               {hasEvents
                 ? 'Este local possui eventos associados'
                 : 'Esta ação não pode ser desfeita'}
-            </p>
+            </Text>
           </div>
         </Inline>
 
@@ -76,10 +77,10 @@ export default function ConfirmDeleteVenueModal({
                 O local <strong>&quot;{venueName}&quot;</strong> possui{' '}
                 <strong>{eventCount} evento(s)</strong> associado(s).
               </p>
-              <p className="text-sm text-theme-tertiary mt-2">
+              <Text papel="rotulo" tom="fraco" as="p" className="mt-2">
                 Para deletar este local, primeiro remova ou transfira todos os
                 eventos associados.
-              </p>
+              </Text>
             </>
           ) : (
             <>
@@ -87,10 +88,10 @@ export default function ConfirmDeleteVenueModal({
                 Tem certeza que deseja deletar o local{' '}
                 <strong>&quot;{venueName}&quot;</strong>?
               </p>
-              <p className="text-sm text-theme-tertiary mt-2">
+              <Text papel="rotulo" tom="fraco" as="p" className="mt-2">
                 Todos os dados relacionados ao local serão permanentemente
                 removidos.
-              </p>
+              </Text>
             </>
           )}
         </div>

@@ -34,6 +34,7 @@ import { useLoginModal } from '@/app/stores/authStore';
 import Input from '../../Common/Inputs';
 import { useTranslation } from '@/app/context/TranslationContext';
 import { Inline } from '@/app/components/ui/Layout';
+import { Text } from '@/app/components/ui/Text';
 
 interface AnnotationsSectionProps {
   workId: string;
@@ -357,7 +358,11 @@ export default function AnnotationsSection({
                   <PiFunnel className="w-4 h-4" />
                   <span>{t('annotations_filtros_avancados')}</span>
                   {hasAdvancedFilters && (
-                    <span className="bg-brand-primary text-theme-primary rounded-full w-5 h-5 flex items-center justify-center text-xs font-bold">
+                    <Text
+                      papel="legenda"
+                      tom="forte"
+                      className="bg-brand-primary rounded-full w-5 h-5 flex items-center justify-center font-bold"
+                    >
                       {
                         Object.entries(communityFilters).filter(
                           ([key, value]) =>
@@ -367,7 +372,7 @@ export default function AnnotationsSection({
                             value !== 'helpful'
                         ).length
                       }
-                    </span>
+                    </Text>
                   )}
                 </button>
               </div>
@@ -433,9 +438,13 @@ export default function AnnotationsSection({
 
                     <Inline gap={1}>
                       {communityFilters.category && (
-                        <span className="bg-brand-primary/10 text-brand-primary px-2 py-1 rounded-lg text-xs">
+                        <Text
+                          papel="legenda"
+                          tom="ouro"
+                          className="bg-brand-primary/10 px-2 py-1 rounded-lg"
+                        >
                           {CATEGORY_CONFIG[communityFilters.category].label}
-                        </span>
+                        </Text>
                       )}
                       {communityFilters.difficulty && (
                         <span className="bg-accent-blue/10 text-accent-blue px-2 py-1 rounded-lg text-xs">

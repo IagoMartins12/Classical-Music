@@ -23,6 +23,7 @@ import {
   setMaintenanceSchedule,
   waitForMaintenanceJob,
 } from '@/app/requests/admin/maintenance';
+import { Text } from '@/app/components/ui/Text';
 
 /**
  * As tarefas agendadas.
@@ -101,10 +102,10 @@ export default function CronClient() {
         <h1 className="text-2xl font-bold text-theme-primary classical-title">
           Tarefas agendadas
         </h1>
-        <p className="text-theme-secondary text-sm mt-1">
+        <Text papel="rotulo" tom="suave" as="p" className="mt-1">
           O horário é {tarefas.data?.timezone ?? '—'}. Sem agendamento, a tarefa
           só roda quando alguém manda.
-        </p>
+        </Text>
       </header>
 
       <div className="space-y-3">
@@ -127,15 +128,25 @@ export default function CronClient() {
                       </span>
                     )}
                   </div>
-                  <p className="text-theme-secondary text-sm mt-1 max-w-2xl">
+                  <Text
+                    papel="rotulo"
+                    tom="suave"
+                    as="p"
+                    className="mt-1 max-w-2xl"
+                  >
                     {tarefa.description}
-                  </p>
-                  <p className="text-theme-tertiary text-xs mt-1 flex items-center gap-1.5">
+                  </Text>
+                  <Text
+                    papel="legenda"
+                    tom="fraco"
+                    as="p"
+                    className="mt-1 flex items-center gap-1.5"
+                  >
                     <PiCalendarBlank className="w-3 h-3" />
                     {cronAtual
                       ? `${cronAtual} · próxima ${quando(tarefa.schedule?.nextRunAt)}`
                       : 'sem agendamento'}
-                  </p>
+                  </Text>
                 </div>
 
                 <button

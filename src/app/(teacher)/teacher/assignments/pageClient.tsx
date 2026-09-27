@@ -46,6 +46,7 @@ import Button from '@/app/components/Common/Button';
 import { useToast } from '@/app/hooks/useToast';
 import { useTranslation } from '@/app/context/TranslationContext';
 import { Inline } from '@/app/components/ui/Layout';
+import { Text } from '@/app/components/ui/Text';
 
 interface TeacherAssignmentsPageClientProps {
   initialData: TeacherAssignmentsData;
@@ -550,20 +551,29 @@ export default function TeacherAssignmentsPageClient({
                     </div>
 
                     {/* Description */}
-                    <p className="text-theme-secondary text-sm mb-4 line-clamp-2">
+                    <Text
+                      papel="rotulo"
+                      tom="suave"
+                      as="p"
+                      className="mb-4 line-clamp-2"
+                    >
                       {assignment.description}
-                    </p>
+                    </Text>
 
                     {/* Progress Bar */}
                     {assignment.progress !== undefined && (
                       <div className="mb-4">
                         <div className="flex items-center justify-between mb-2">
-                          <span className="text-sm text-theme-tertiary">
+                          <Text papel="rotulo" tom="fraco">
                             {t('progress_label')}
-                          </span>
-                          <span className="text-sm font-medium text-theme-primary">
+                          </Text>
+                          <Text
+                            papel="rotulo"
+                            tom="forte"
+                            className="font-medium"
+                          >
                             {assignment.progress}%
-                          </span>
+                          </Text>
                         </div>
                         <div className="w-full bg-theme-secondary rounded-full h-2">
                           <div
@@ -606,7 +616,7 @@ export default function TeacherAssignmentsPageClient({
                         assignment.technicalGoals.length +
                         assignment.musicalGoals.length >
                         3 && (
-                        <span className="text-xs text-theme-tertiary">
+                        <Text papel="legenda" tom="fraco">
                           {t('more_goals', {
                             count:
                               assignment.practiceGoals.length +
@@ -614,7 +624,7 @@ export default function TeacherAssignmentsPageClient({
                               assignment.musicalGoals.length -
                               3,
                           })}
-                        </span>
+                        </Text>
                       )}
                     </div>
 
@@ -795,20 +805,29 @@ export default function TeacherAssignmentsPageClient({
                     </div>
 
                     {/* Description */}
-                    <p className="text-theme-secondary text-sm mb-4 line-clamp-2">
+                    <Text
+                      papel="rotulo"
+                      tom="suave"
+                      as="p"
+                      className="mb-4 line-clamp-2"
+                    >
                       {assignment.description}
-                    </p>
+                    </Text>
 
                     {/* Progress Bar */}
                     {assignment.progress !== undefined && (
                       <div className="mb-4">
                         <div className="flex items-center justify-between mb-2">
-                          <span className="text-sm text-theme-tertiary">
+                          <Text papel="rotulo" tom="fraco">
                             {t('progress_label')}
-                          </span>
-                          <span className="text-sm font-medium text-theme-primary">
+                          </Text>
+                          <Text
+                            papel="rotulo"
+                            tom="forte"
+                            className="font-medium"
+                          >
                             {assignment.progress}%
-                          </span>
+                          </Text>
                         </div>
                         <div className="w-full bg-theme-secondary rounded-full h-2">
                           <div
@@ -851,7 +870,7 @@ export default function TeacherAssignmentsPageClient({
                         assignment.technicalGoals.length +
                         assignment.musicalGoals.length >
                         3 && (
-                        <span className="text-xs text-theme-tertiary">
+                        <Text papel="legenda" tom="fraco">
                           {t('more_goals', {
                             count:
                               assignment.practiceGoals.length +
@@ -859,7 +878,7 @@ export default function TeacherAssignmentsPageClient({
                               assignment.musicalGoals.length -
                               3,
                           })}
-                        </span>
+                        </Text>
                       )}
                     </div>
 
@@ -1860,13 +1879,18 @@ function AssignmentDetailsModal({
                           <PiVideoCamera className="w-5 h-5 text-accent-purple" />
                         </div>
                         <div>
-                          <div className="font-medium text-theme-primary text-sm">
+                          <Text
+                            papel="rotulo"
+                            tom="forte"
+                            as="div"
+                            className="font-medium"
+                          >
                             {videoSubmission.originalName}
-                          </div>
-                          <div className="text-xs text-theme-secondary">
+                          </Text>
+                          <Text papel="legenda" tom="suave" as="div">
                             {formatFileSize(videoSubmission.fileSize)} •{' '}
                             {formatDateTime(videoSubmission.uploadedAt)}
-                          </div>
+                          </Text>
                         </div>
                       </Inline>
                       <Inline
@@ -1931,13 +1955,13 @@ function AssignmentDetailsModal({
                   {assignment.practiceGoals.length +
                     assignment.technicalGoals.length >
                     6 && (
-                    <div className="text-xs text-theme-tertiary mt-2">
+                    <Text papel="legenda" tom="fraco" as="div" className="mt-2">
                       +
                       {assignment.practiceGoals.length +
                         assignment.technicalGoals.length -
                         6}{' '}
                       objetivos adicionais
-                    </div>
+                    </Text>
                   )}
                 </div>
               )}
@@ -1951,20 +1975,25 @@ function AssignmentDetailsModal({
                   <div className="space-y-3">
                     {assignment.studentNotes && (
                       <div className="p-3 bg-theme-secondary/5 rounded-lg border">
-                        <div className="text-sm font-medium text-theme-primary mb-1">
+                        <Text
+                          papel="rotulo"
+                          tom="forte"
+                          as="div"
+                          className="font-medium mb-1"
+                        >
                           Comentários:
-                        </div>
-                        <div className="text-sm text-theme-secondary">
+                        </Text>
+                        <Text papel="rotulo" tom="suave" as="div">
                           {assignment.studentNotes}
-                        </div>
+                        </Text>
                       </div>
                     )}
 
                     {assignment.studentRating && (
                       <Inline gap={2}>
-                        <span className="text-sm text-theme-tertiary">
+                        <Text papel="rotulo" tom="fraco">
                           Avaliação de dificuldade:
-                        </span>
+                        </Text>
                         <Inline gap={1}>
                           {[1, 2, 3, 4, 5].map((star) =>
                             star <= assignment.studentRating! ? (
@@ -1988,9 +2017,9 @@ function AssignmentDetailsModal({
                             )
                           )}
                         </Inline>
-                        <span className="text-sm text-theme-primary">
+                        <Text papel="rotulo" tom="forte">
                           ({assignment.studentRating}/5)
-                        </span>
+                        </Text>
                       </Inline>
                     )}
                   </div>
@@ -2013,9 +2042,9 @@ function AssignmentDetailsModal({
 
                   <div className="flex items-center justify-between">
                     <Inline gap={3}>
-                      <span className="text-sm text-theme-tertiary">
+                      <Text papel="rotulo" tom="fraco">
                         Avaliação:
-                      </span>
+                      </Text>
                       <Inline gap={1}>
                         {[1, 2, 3, 4, 5].map((star) => (
                           <button
@@ -2210,9 +2239,9 @@ function AssignmentDetailsModal({
                       </Inline>
                     ))}
                     {completedMilestones.length > 4 && (
-                      <div className="text-xs text-theme-tertiary">
+                      <Text papel="legenda" tom="fraco" as="div">
                         +{completedMilestones.length - 4} mais...
-                      </div>
+                      </Text>
                     )}
                   </div>
                 </div>

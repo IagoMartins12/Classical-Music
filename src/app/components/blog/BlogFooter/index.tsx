@@ -10,6 +10,7 @@ import {
   PiYoutubeLogo,
 } from 'react-icons/pi';
 import { Inline } from '@/app/components/ui/Layout';
+import { Text } from '@/app/components/ui/Text';
 
 export function BlogFooter() {
   const currentYear = new Date().getFullYear();
@@ -76,13 +77,15 @@ export function BlogFooter() {
                 <h3 className="text-xl font-bold text-gradient-brand">
                   Opus Atlas
                 </h3>
-                <p className="text-xs text-theme-tertiary">Blog Musical</p>
+                <Text papel="legenda" tom="fraco" as="p">
+                  Blog Musical
+                </Text>
               </div>
             </Inline>
-            <p className="text-sm text-theme-secondary leading-relaxed">
+            <Text papel="rotulo" tom="suave" as="p" className="leading-relaxed">
               Explore o fascinante mundo da música clássica através de artigos,
               análises e biografias dos grandes mestres.
-            </p>
+            </Text>
             <Inline gap={3}>
               {socialLinks.map((social) => (
                 <Link
@@ -127,9 +130,9 @@ export function BlogFooter() {
             <h4 className="text-lg font-semibold text-theme-primary mb-2">
               📬 Receba novos artigos no seu email
             </h4>
-            <p className="text-sm text-theme-secondary mb-4">
+            <Text papel="rotulo" tom="suave" as="p" className="mb-4">
               Inscreva-se na nossa newsletter e fique por dentro das novidades
-            </p>
+            </Text>
             <form className="flex flex-col sm:flex-row gap-2 max-w-md mx-auto">
               <input
                 type="email"
@@ -149,7 +152,12 @@ export function BlogFooter() {
 
         {/* Bottom Bar */}
         <div className="pt-8 border-t border-theme-secondary">
-          <div className="flex flex-col md:flex-row items-center justify-between gap-4 text-sm text-theme-tertiary">
+          <Text
+            papel="rotulo"
+            tom="fraco"
+            as="div"
+            className="flex flex-col md:flex-row items-center justify-between gap-4"
+          >
             <p>© {currentYear} Opus Atlas. Todos os direitos reservados.</p>
             <div className="flex items-center gap-6">
               <Link
@@ -171,7 +179,7 @@ export function BlogFooter() {
                 Mapa do Site
               </Link>
             </div>
-          </div>
+          </Text>
         </div>
       </div>
     </footer>

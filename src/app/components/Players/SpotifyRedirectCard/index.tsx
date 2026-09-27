@@ -12,6 +12,7 @@ import { AnimatedItem } from '../../animation/AnimatedComponents';
 import Image from '@/app/components/SmartImage';
 import { useTranslation } from '@/app/context/TranslationContext';
 import { Inline } from '@/app/components/ui/Layout';
+import { Text } from '@/app/components/ui/Text';
 
 interface SpotifyRedirectCardProps {
   spotify: {
@@ -153,9 +154,14 @@ const SpotifyRedirectCard: React.FC<SpotifyRedirectCardProps> = ({
               <div className="space-y-2">
                 {/* 🆕 Artistas com destaque para compositor/intérprete */}
                 <div>
-                  <p className="text-theme-primary font-medium text-sm truncate">
+                  <Text
+                    papel="rotulo"
+                    tom="forte"
+                    as="p"
+                    className="font-medium truncate"
+                  >
                     {artistInfo.display}
-                  </p>
+                  </Text>
 
                   {/* 🆕 Indicador visual se tem intérprete */}
                   {artistInfo.hasInterpreter && (
@@ -164,9 +170,14 @@ const SpotifyRedirectCard: React.FC<SpotifyRedirectCardProps> = ({
                     </p>
                   )}
 
-                  <p className="text-theme-secondary text-xs truncate mt-1">
+                  <Text
+                    papel="legenda"
+                    tom="suave"
+                    as="p"
+                    className="truncate mt-1"
+                  >
                     {spotify.albumName}
-                  </p>
+                  </Text>
                 </div>
 
                 {/* 🆕 Informações adicionais expandidas */}

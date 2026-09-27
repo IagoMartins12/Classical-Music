@@ -15,6 +15,7 @@ import { useTranslation } from '@/app/context/TranslationContext';
 import { getCascadeInfo } from '@/app/requests/uploads-client';
 import Button from '../Common/Button';
 import { Inline } from '@/app/components/ui/Layout';
+import { Text } from '@/app/components/ui/Text';
 
 interface CascadeInfo {
   works?: { id: string; title: string; scoresCount: number }[];
@@ -152,9 +153,9 @@ export default function ConfirmDeleteUploadModal({
             <h3 className="text-lg font-bold text-theme-primary">
               {t('delete_modal_title')}
             </h3>
-            <p className="text-sm text-theme-secondary">
+            <Text papel="rotulo" tom="suave" as="p">
               {t('delete_modal_subtitle')}
-            </p>
+            </Text>
           </div>
         </Inline>
 
@@ -189,9 +190,9 @@ export default function ConfirmDeleteUploadModal({
                   <div className="text-sm font-medium text-accent-amber mb-1">
                     {t('delete_modal_cascade_warning')}
                   </div>
-                  <p className="text-xs text-theme-secondary mb-3">
+                  <Text papel="legenda" tom="suave" as="p" className="mb-3">
                     {t('delete_modal_cascade_description')}
-                  </p>
+                  </Text>
                 </div>
               </div>
 
@@ -208,9 +209,12 @@ export default function ConfirmDeleteUploadModal({
                     </p>
                     <div className="space-y-1  overflow-y-auto bg-theme-secondary/30 rounded p-2">
                       {cascadeInfo.works.slice(0, 4).map((work) => (
-                        <div
+                        <Text
+                          papel="legenda"
+                          tom="fraco"
+                          as="div"
                           key={work.id}
-                          className="text-xs text-theme-tertiary flex justify-between"
+                          className="flex justify-between"
                         >
                           <span>• {work.title}</span>
                           {work.scoresCount > 0 ? (
@@ -219,14 +223,14 @@ export default function ConfirmDeleteUploadModal({
                               {getScoreText(work.scoresCount)}
                             </span>
                           ) : null}
-                        </div>
+                        </Text>
                       ))}
                       {cascadeInfo.works.length > 4 ? (
-                        <div className="text-xs text-theme-tertiary">
+                        <Text papel="legenda" tom="fraco" as="div">
                           {t('delete_modal_and_more_works', {
                             count: cascadeInfo.works.length - 4,
                           })}
-                        </div>
+                        </Text>
                       ) : null}
                     </div>
                   </div>
@@ -244,19 +248,21 @@ export default function ConfirmDeleteUploadModal({
                     </p>
                     <div className="space-y-1 max-h-24 overflow-y-auto bg-theme-secondary/30 rounded p-2">
                       {cascadeInfo.scores.slice(0, 4).map((score) => (
-                        <div
+                        <Text
+                          papel="legenda"
+                          tom="fraco"
+                          as="div"
                           key={score.id}
-                          className="text-xs text-theme-tertiary"
                         >
                           • {score.title}
-                        </div>
+                        </Text>
                       ))}
                       {cascadeInfo.scores.length > 4 ? (
-                        <div className="text-xs text-theme-tertiary">
+                        <Text papel="legenda" tom="fraco" as="div">
                           {t('delete_modal_and_more_scores', {
                             count: cascadeInfo.scores.length - 4,
                           })}
-                        </div>
+                        </Text>
                       ) : null}
                     </div>
                   </div>
@@ -273,9 +279,12 @@ export default function ConfirmDeleteUploadModal({
                     </p>
                     <div className="space-y-1 max-h-20 overflow-y-auto bg-theme-secondary/30 rounded p-2">
                       {cascadeInfo.childWorks.slice(0, 3).map((childWork) => (
-                        <div
+                        <Text
+                          papel="legenda"
+                          tom="fraco"
+                          as="div"
                           key={childWork.id}
-                          className="text-xs text-theme-tertiary flex justify-between"
+                          className="flex justify-between"
                         >
                           <span>• {childWork.title}</span>
                           {childWork.scoresCount > 0 ? (
@@ -284,7 +293,7 @@ export default function ConfirmDeleteUploadModal({
                               {getScoreText(childWork.scoresCount)}
                             </span>
                           ) : null}
-                        </div>
+                        </Text>
                       ))}
                     </div>
                   </div>

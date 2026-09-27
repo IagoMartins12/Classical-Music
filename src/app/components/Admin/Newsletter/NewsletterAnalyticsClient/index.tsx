@@ -22,6 +22,7 @@ import Button from '@/app/components/Common/Button';
 import { useNewsletterAnalytics } from '@/app/hooks/admin/useNewsletterAnalytics';
 import LoadingAdminState from '../../Common/LoadingState';
 import { Inline } from '@/app/components/ui/Layout';
+import { Text } from '@/app/components/ui/Text';
 
 interface MetricCard {
   title: string;
@@ -201,9 +202,9 @@ export default function NewsletterAnalyticsClient() {
               <AnimatedCard key={metric.title} className="classical-card p-6">
                 <div className="flex items-center justify-between">
                   <div>
-                    <p className="text-sm text-theme-tertiary mb-1">
+                    <Text papel="rotulo" tom="fraco" as="p" className="mb-1">
                       {metric.title}
-                    </p>
+                    </Text>
                     <p className="text-3xl font-bold text-theme-primary">
                       {metric.value}
                     </p>
@@ -297,9 +298,9 @@ export default function NewsletterAnalyticsClient() {
                                 <div className="font-medium text-theme-primary">
                                   {campaign.name}
                                 </div>
-                                <div className="text-sm text-theme-tertiary">
+                                <Text papel="rotulo" tom="fraco" as="div">
                                   {campaign.subject}
-                                </div>
+                                </Text>
                               </div>
                             </td>
                             <td className="py-3 px-2 text-theme-primary">

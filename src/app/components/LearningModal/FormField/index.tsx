@@ -1,4 +1,5 @@
 import { Inline } from '@/app/components/ui/Layout';
+import { Text } from '@/app/components/ui/Text';
 const FormField = ({
   label,
   children,
@@ -21,7 +22,9 @@ const FormField = ({
     </Inline>
     {children}
     {description && (
-      <p className="text-xs text-theme-tertiary">{description}</p>
+      <Text papel="legenda" tom="fraco" as="p">
+        {description}
+      </Text>
     )}
   </div>
 );

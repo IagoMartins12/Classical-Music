@@ -14,6 +14,7 @@ import {
 } from 'react-icons/pi';
 import { toast } from 'react-hot-toast';
 import { Inline } from '@/app/components/ui/Layout';
+import { Text } from '@/app/components/ui/Text';
 
 interface Tag {
   id: string;
@@ -162,9 +163,14 @@ export function TagList({ tags: tags }: TagListProps) {
               </h3>
 
               {tag.description && (
-                <p className="text-sm text-theme-tertiary mb-3 line-clamp-2">
+                <Text
+                  papel="rotulo"
+                  tom="fraco"
+                  as="p"
+                  className="mb-3 line-clamp-2"
+                >
                   {tag.description}
-                </p>
+                </Text>
               )}
 
               <div className="flex items-center justify-between text-sm">

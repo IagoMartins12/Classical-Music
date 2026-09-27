@@ -8,6 +8,7 @@ import { ArticleCardList } from '../ArticleCardList';
 import { loadMyLikes } from '@/app/requests/blog/interactions';
 import { PiFunnel, PiMagnifyingGlass } from 'react-icons/pi';
 import Link from 'next/link';
+import { Text } from '@/app/components/ui/Text';
 
 interface Category {
   id: string;
@@ -113,9 +114,9 @@ export function LikedPageClient({ categories }: LikedPageClientProps) {
               <p className="text-3xl font-bold text-brand-primary">
                 {pagination.total}
               </p>
-              <p className="text-sm text-theme-tertiary">
+              <Text papel="rotulo" tom="fraco" as="p">
                 {pagination.total === 1 ? 'artigo curtido' : 'artigos curtidos'}
-              </p>
+              </Text>
             </div>
           </div>
 
@@ -127,9 +128,9 @@ export function LikedPageClient({ categories }: LikedPageClientProps) {
         <div className="mt-6 pt-6 border-t border-theme-secondary">
           <div className="flex items-center gap-2 mb-3">
             <PiFunnel className="w-4 h-4 text-theme-tertiary" />
-            <span className="text-sm font-medium text-theme-secondary">
+            <Text papel="rotulo" tom="suave" className="font-medium">
               Filtrar por categoria:
-            </span>
+            </Text>
           </div>
 
           <div className="flex flex-wrap gap-2">

@@ -17,6 +17,7 @@ import {
 import { HistoryComposerCard } from '../cards/HistoryComposerCard';
 import { useTranslation } from '@/app/context/TranslationContext';
 import { Inline } from '@/app/components/ui/Layout';
+import { Text } from '@/app/components/ui/Text';
 
 interface Composer {
   id: string;
@@ -275,13 +276,15 @@ export function EpochSection({ epoch, index, isReversed = false }: Props) {
                     </Inline>
                     <div className="flex flex-wrap gap-3">
                       {epoch.historicalData.instruments.map((instrument, i) => (
-                        <span
+                        <Text
+                          papel="rotulo"
+                          tom="ouro"
                           key={i}
-                          className="px-4 py-2 bg-gradient-to-r from-brand-primary/10 to-brand-secondary/10 border border-brand-primary/30 text-brand-primary rounded-full text-sm font-medium hover:scale-105 hover:shadow-theme-glow transition-all duration-300 cursor-default"
+                          className="px-4 py-2 bg-gradient-to-r from-brand-primary/10 to-brand-secondary/10 border border-brand-primary/30 rounded-full font-medium hover:scale-105 hover:shadow-theme-glow transition-all duration-300 cursor-default"
                           style={{ animationDelay: `${i * 0.05}s` }}
                         >
                           {instrument}
-                        </span>
+                        </Text>
                       ))}
                     </div>
                   </div>
@@ -303,12 +306,12 @@ export function EpochSection({ epoch, index, isReversed = false }: Props) {
               <h3 className="text-xl font-bold text-theme-primary classical-title">
                 {t('epoch_jsx_h3_children_0__compositores_famosos')}
               </h3>
-              <p className="text-theme-tertiary text-sm">
+              <Text papel="rotulo" tom="fraco" as="p">
                 {epoch.composers.length}{' '}
                 {epoch.composers.length === 1
                   ? t('epoch_jsx_span_children_0__compositor')
                   : t('epoch_jsx_span_children_0__compositores')}
-              </p>
+              </Text>
             </div>
           </Inline>
 

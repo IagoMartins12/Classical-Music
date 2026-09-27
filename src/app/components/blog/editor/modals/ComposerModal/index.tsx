@@ -10,6 +10,7 @@ import Checkbox from '@/app/components/Common/Checkbox';
 import ComposerSearchInputSimple from '@/app/components/ComposerSearchInputSimple';
 import { findComposerById } from '@/app/requests/catalog-search';
 import { Inline } from '@/app/components/ui/Layout';
+import { Text } from '@/app/components/ui/Text';
 
 interface ComposerModalProps {
   editor: Editor;
@@ -146,9 +147,14 @@ export function ComposerModal({ editor, onClose }: ComposerModalProps) {
 
                 {/* Campos Visíveis */}
                 <div className="space-y-2">
-                  <p className="text-sm font-medium text-theme-primary mb-2">
+                  <Text
+                    papel="rotulo"
+                    tom="forte"
+                    as="p"
+                    className="font-medium mb-2"
+                  >
                     Campos Visíveis
-                  </p>
+                  </Text>
 
                   <Checkbox
                     label="Mostrar imagem"
@@ -252,10 +258,15 @@ export function ComposerModal({ editor, onClose }: ComposerModalProps) {
                     {/* Datas */}
                     {showDates &&
                       (composerData.birthDate || composerData.deathDate) && (
-                        <p className="text-sm text-theme-secondary mb-2">
+                        <Text
+                          papel="rotulo"
+                          tom="suave"
+                          as="p"
+                          className="mb-2"
+                        >
                           📅 {composerData.birthDate || '?'} -{' '}
                           {composerData.deathDate || 'Presente'}
-                        </p>
+                        </Text>
                       )}
 
                     {/* Época */}
@@ -267,25 +278,25 @@ export function ComposerModal({ editor, onClose }: ComposerModalProps) {
 
                     {/* ✅ NACIONALIDADE ADICIONADA NO PREVIEW */}
                     {showNationality && composerData.nationality && (
-                      <p className="text-sm text-theme-tertiary mb-2">
+                      <Text papel="rotulo" tom="fraco" as="p" className="mb-2">
                         🌍 {composerData.nationality}
-                      </p>
+                      </Text>
                     )}
 
                     {/* Instrumentação */}
                     {showInstrumentation && composerData.instruments && (
-                      <p className="text-sm text-theme-tertiary mb-3">
+                      <Text papel="rotulo" tom="fraco" as="p" className="mb-3">
                         🎼 {composerData.instruments}
-                      </p>
+                      </Text>
                     )}
 
                     {/* Biografia */}
                     {showBio && composerData.bio && (
-                      <p className="text-sm text-theme-secondary mb-3">
+                      <Text papel="rotulo" tom="suave" as="p" className="mb-3">
                         {bioTruncated
                           ? getTruncatedBio(composerData.bio)
                           : composerData.bio}
-                      </p>
+                      </Text>
                     )}
 
                     {/* Botões */}

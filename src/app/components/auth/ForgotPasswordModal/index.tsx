@@ -14,6 +14,7 @@ import Input from '../../Common/Inputs';
 import Modal from '../../Modal';
 import { legacyAuth } from '@/app/libs/api/compat';
 import { useTranslation } from '@/app/context/TranslationContext';
+import { Text } from '@/app/components/ui/Text';
 
 interface ForgotPasswordModalProps {
   isOpen: boolean;
@@ -203,9 +204,9 @@ const ForgotPasswordModal: React.FC<ForgotPasswordModalProps> = ({
           <h4 className="text-sm font-medium text-theme-primary mb-2">
             {t('forgot_password_modal_security_tip_title')}
           </h4>
-          <p className="text-xs text-theme-tertiary">
+          <Text papel="legenda" tom="fraco" as="p">
             {t('forgot_password_modal_security_tip_text')}
-          </p>
+          </Text>
         </div>
       </div>
     </>

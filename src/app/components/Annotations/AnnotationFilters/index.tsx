@@ -23,6 +23,7 @@ import {
 import { AnimatedCard, AnimatedItem } from '../../animation/AnimatedComponents';
 import { useTranslation } from '@/app/context/TranslationContext';
 import { Inline } from '@/app/components/ui/Layout';
+import { Text } from '@/app/components/ui/Text';
 
 interface AnnotationFiltersProps {
   filters: Filters;
@@ -152,7 +153,11 @@ export default function AnnotationFiltersComponent({
               {t('annotation_filters_titulo')}
             </h3>
             {hasActiveFilters && (
-              <span className="bg-brand-primary/10 text-brand-primary px-2 py-1 rounded-lg text-xs font-medium">
+              <Text
+                papel="legenda"
+                tom="ouro"
+                className="bg-brand-primary/10 px-2 py-1 rounded-lg font-medium"
+              >
                 {
                   Object.entries(localFilters).filter(([key, value]) => {
                     if (key === 'sortBy')
@@ -162,7 +167,7 @@ export default function AnnotationFiltersComponent({
                   }).length
                 }{' '}
                 {t('annotation_filters_ativos')}
-              </span>
+              </Text>
             )}
           </Inline>
           <button
@@ -505,13 +510,18 @@ export default function AnnotationFiltersComponent({
 
         {/* ✅ Dica de uso com traduções */}
         <div className="mt-4 p-3 bg-theme-elevated/50 border border-theme-primary/20 rounded-xl">
-          <div className="flex items-start space-x-2 text-xs text-theme-tertiary">
+          <Text
+            papel="legenda"
+            tom="fraco"
+            as="div"
+            className="flex items-start space-x-2"
+          >
             <PiMagnifyingGlass className="w-3 h-3 mt-0.5 flex-shrink-0" />
             <span>
               <strong>{t('annotation_filters_dica_strong')}: </strong>{' '}
               {t('annotation_filters_dica')}
             </span>
-          </div>
+          </Text>
         </div>
       </div>
     </AnimatedCard>

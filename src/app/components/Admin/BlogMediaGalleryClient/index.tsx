@@ -37,6 +37,7 @@ import Button from '@/app/components/Common/Button';
 import { MetricCard } from '@/app/components/Admin/Charts/AdminCharts';
 import Image from '@/app/components/SmartImage';
 import { Inline } from '@/app/components/ui/Layout';
+import { Text } from '@/app/components/ui/Text';
 
 const CATEGORY_TABS = [
   {
@@ -240,13 +241,18 @@ export default function BlogMediaGalleryClient() {
                   <h3 className="text-xl font-bold text-theme-primary mb-2">
                     Arquivos de Mídia
                     {activeTab !== 'all' && (
-                      <span className="ml-2 text-base font-normal text-theme-secondary">
+                      <Text
+                        papel="corpo"
+                        tom="suave"
+                        as="span"
+                        className="ml-2 font-normal"
+                      >
                         -{' '}
                         {
                           CATEGORY_TABS.find((t) => t.value === activeTab)
                             ?.label
                         }
-                      </span>
+                      </Text>
                     )}
                   </h3>
                   <p className="text-theme-secondary">
@@ -445,13 +451,18 @@ export default function BlogMediaGalleryClient() {
 
                           {/* Info */}
                           <div className="p-2 bg-theme-elevated">
-                            <p className="text-xs font-medium text-theme-primary truncate">
+                            <Text
+                              papel="legenda"
+                              tom="forte"
+                              as="p"
+                              className="font-medium truncate"
+                            >
                               {file.title || file.url.split('/').pop()}
-                            </p>
+                            </Text>
                             <div className="flex items-center justify-between mt-1">
-                              <span className="text-xs text-theme-tertiary">
+                              <Text papel="legenda" tom="fraco">
                                 {file.formattedSize}
-                              </span>
+                              </Text>
                               <Inline gap={1}>
                                 {file.isTemporary && (
                                   <span className="text-xs px-1.5 py-0.5 rounded bg-yellow-100 text-yellow-800">
@@ -552,9 +563,9 @@ export default function BlogMediaGalleryClient() {
                   <h3 className="text-xl font-bold text-theme-primary mb-2">
                     Uso do Arquivo
                   </h3>
-                  <p className="text-sm text-theme-secondary break-all">
+                  <Text papel="rotulo" tom="suave" as="p" className="break-all">
                     {showUsageDetails.url}
-                  </p>
+                  </Text>
                 </div>
                 <button
                   onClick={() => setShowUsageDetails(null)}
@@ -570,21 +581,25 @@ export default function BlogMediaGalleryClient() {
                   <p className="text-2xl font-bold text-brand-primary">
                     {showUsageDetails.usageCount}
                   </p>
-                  <p className="text-xs text-theme-tertiary mt-1">
+                  <Text papel="legenda" tom="fraco" as="p" className="mt-1">
                     Artigos usando
-                  </p>
+                  </Text>
                 </div>
                 <div className="text-center p-4 bg-theme-secondary rounded-lg">
                   <p className="text-2xl font-bold text-green-600">
                     {showUsageDetails.formattedSize}
                   </p>
-                  <p className="text-xs text-theme-tertiary mt-1">Tamanho</p>
+                  <Text papel="legenda" tom="fraco" as="p" className="mt-1">
+                    Tamanho
+                  </Text>
                 </div>
                 <div className="text-center p-4 bg-theme-secondary rounded-lg">
                   <p className="text-2xl font-bold text-purple-600">
                     {showUsageDetails.type}
                   </p>
-                  <p className="text-xs text-theme-tertiary mt-1">Tipo</p>
+                  <Text papel="legenda" tom="fraco" as="p" className="mt-1">
+                    Tipo
+                  </Text>
                 </div>
               </div>
 
@@ -606,12 +621,16 @@ export default function BlogMediaGalleryClient() {
                           {usage.articleTitle}
                         </p>
                         <Inline gap={2}>
-                          <span className="text-xs px-2 py-1 rounded bg-brand-primary/10 text-brand-primary">
+                          <Text
+                            papel="legenda"
+                            tom="ouro"
+                            className="px-2 py-1 rounded bg-brand-primary/10"
+                          >
                             {getUsageTypeLabel(usage.usageType)}
-                          </span>
-                          <span className="text-xs text-theme-tertiary">
+                          </Text>
+                          <Text papel="legenda" tom="fraco">
                             ID: {usage.articleId.slice(0, 8)}...
-                          </span>
+                          </Text>
                         </Inline>
                       </div>
                       <a

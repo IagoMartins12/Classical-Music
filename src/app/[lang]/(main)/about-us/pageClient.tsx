@@ -31,6 +31,7 @@ import {
 import AboutUsButton from '@/app/components/AboutUsButton';
 import { useTranslation } from '@/app/context/TranslationContext';
 import { Inline } from '@/app/components/ui/Layout';
+import { Text } from '@/app/components/ui/Text';
 
 export default function AboutPage() {
   const { t, language } = useTranslation({ sections: ['pages/about-us'] });
@@ -192,17 +193,17 @@ export default function AboutPage() {
                         <div className="text-3xl font-bold text-brand-primary classical-title">
                           {t('about_stats_composers')}
                         </div>
-                        <div className="text-theme-tertiary text-sm">
+                        <Text papel="rotulo" tom="fraco" as="div">
                           {t('about_stats_composers_label')}
-                        </div>
+                        </Text>
                       </div>
                       <div className="text-center">
                         <div className="text-3xl font-bold text-brand-primary classical-title">
                           {t('about_stats_works')}
                         </div>
-                        <div className="text-theme-tertiary text-sm">
+                        <Text papel="rotulo" tom="fraco" as="div">
                           {t('about_stats_works_label')}
-                        </div>
+                        </Text>
                       </div>
                     </div>
 
@@ -213,27 +214,27 @@ export default function AboutPage() {
                       <div className="space-y-3">
                         <Inline gap={3}>
                           <div className="w-2 h-2 bg-brand-primary rounded-full"></div>
-                          <span className="text-theme-secondary text-sm">
+                          <Text papel="rotulo" tom="suave">
                             {t('about_stats_resource_1')}
-                          </span>
+                          </Text>
                         </Inline>
                         <Inline gap={3}>
                           <div className="w-2 h-2 bg-accent-blue rounded-full"></div>
-                          <span className="text-theme-secondary text-sm">
+                          <Text papel="rotulo" tom="suave">
                             {t('about_stats_resource_2')}
-                          </span>
+                          </Text>
                         </Inline>
                         <Inline gap={3}>
                           <div className="w-2 h-2 bg-accent-purple rounded-full"></div>
-                          <span className="text-theme-secondary text-sm">
+                          <Text papel="rotulo" tom="suave">
                             {t('about_stats_resource_3')}
-                          </span>
+                          </Text>
                         </Inline>
                         <Inline gap={3}>
                           <div className="w-2 h-2 bg-accent-green rounded-full"></div>
-                          <span className="text-theme-secondary text-sm">
+                          <Text papel="rotulo" tom="suave">
                             {t('about_stats_resource_4')}
-                          </span>
+                          </Text>
                         </Inline>
                       </div>
                     </div>
@@ -288,9 +289,9 @@ export default function AboutPage() {
             <div className="text-center mb-16">
               <div className="inline-flex items-center px-4 py-2 bg-gradient-to-r from-brand-primary/20 to-brand-secondary/20 border border-brand-primary/30 rounded-full mb-6">
                 <PiHeart className="w-4 h-4 text-brand-primary mr-2" />
-                <span className="text-brand-primary font-medium text-sm">
+                <Text papel="rotulo" tom="ouro" className="font-medium">
                   {t('about_values_badge')}
-                </span>
+                </Text>
               </div>
 
               <h2 className="text-3xl lg:text-4xl font-bold classical-title text-theme-primary mb-6">

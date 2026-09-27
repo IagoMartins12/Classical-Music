@@ -2,6 +2,7 @@
 
 import Link from 'next/link';
 import { PiFileText, PiMusicNotes, PiUser } from 'react-icons/pi';
+import { Text } from '@/app/components/ui/Text';
 
 interface RelatedEntitiesProps {
   composerIds: string[];
@@ -68,9 +69,9 @@ export async function RelatedEntities({
                   <div className="font-medium text-theme-primary group-hover:text-brand-primary transition-colors">
                     {composer.name}
                   </div>
-                  <div className="text-sm text-theme-tertiary">
+                  <Text papel="rotulo" tom="fraco" as="div">
                     {composer.epochName}
-                  </div>
+                  </Text>
                 </Link>
               ))}
             </div>
@@ -94,9 +95,9 @@ export async function RelatedEntities({
                   <div className="font-medium text-theme-primary group-hover:text-brand-primary transition-colors line-clamp-1">
                     {work.title}
                   </div>
-                  <div className="text-sm text-theme-tertiary">
+                  <Text papel="rotulo" tom="fraco" as="div">
                     {work.composer?.name}
-                  </div>
+                  </Text>
                 </Link>
               ))}
             </div>
@@ -120,9 +121,9 @@ export async function RelatedEntities({
                   <div className="font-medium text-theme-primary group-hover:text-brand-primary transition-colors line-clamp-1">
                     {score.title}
                   </div>
-                  <div className="text-sm text-theme-tertiary">
+                  <Text papel="rotulo" tom="fraco" as="div">
                     {score.type}
-                  </div>
+                  </Text>
                 </Link>
               ))}
             </div>

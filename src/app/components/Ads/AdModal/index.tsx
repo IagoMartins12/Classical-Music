@@ -14,6 +14,7 @@ import {
 import { getResponsiveImageUrl } from '@/app/libs/ads/mediaUtils';
 import Image from '@/app/components/SmartImage';
 import { Inline } from '@/app/components/ui/Layout';
+import { Text } from '@/app/components/ui/Text';
 
 interface AdModalProps {
   ad: any;
@@ -261,18 +262,23 @@ export default function AdModal({ ad, onClose, onTrackEvent }: AdModalProps) {
 
           {/* Extended content if available */}
           {ad.content && (
-            <div className="text-center text-theme-secondary mb-6 text-sm leading-relaxed max-w-lg mx-auto">
+            <Text
+              papel="rotulo"
+              tom="suave"
+              as="div"
+              className="text-center mb-6 leading-relaxed max-w-lg mx-auto"
+            >
               <div dangerouslySetInnerHTML={{ __html: ad.content }} />
-            </div>
+            </Text>
           )}
 
           {/* Advertiser info */}
           <div className="text-center mb-8">
             <div className="inline-flex items-center space-x-2 px-4 py-2 bg-theme-secondary/50 rounded-full backdrop-blur">
               <PiMusicNotes className="w-4 h-4 text-brand-primary" />
-              <span className="text-sm font-medium text-theme-primary">
+              <Text papel="rotulo" tom="forte" className="font-medium">
                 {ad.advertiserName}
-              </span>
+              </Text>
               {ad.advertiserWebsite && (
                 <a
                   href={ad.advertiserWebsite}
@@ -353,9 +359,14 @@ export default function AdModal({ ad, onClose, onTrackEvent }: AdModalProps) {
                 }}
               />
             </div>
-            <p className="text-center text-xs text-theme-tertiary mt-2 opacity-60">
+            <Text
+              papel="legenda"
+              tom="fraco"
+              as="p"
+              className="text-center mt-2 opacity-60"
+            >
               Fechará automaticamente
-            </p>
+            </Text>
           </div>
         </div>
 

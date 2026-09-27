@@ -47,6 +47,7 @@ import ShareReportModal, {
 import { shareProgressReport } from '@/app/requests/portal/progress-report';
 import dynamic from 'next/dynamic';
 import { Inline } from '@/app/components/ui/Layout';
+import { Text } from '@/app/components/ui/Text';
 
 /**
  * Os gráficos descem à parte — ver `charts.tsx`.
@@ -279,7 +280,7 @@ export default function TeacherProgressPageClient({
                     {reportData.studentInfo.name} •{' '}
                     {getDifficultyLabel(reportData.studentInfo.level)}
                   </p>
-                  <p className="text-sm text-theme-tertiary">
+                  <Text papel="rotulo" tom="fraco" as="p">
                     {t('data_period', {
                       start:
                         reportData.reportMetadata.periodStart.toLocaleDateString(
@@ -289,7 +290,7 @@ export default function TeacherProgressPageClient({
                         'pt-BR'
                       ),
                     })}
-                  </p>
+                  </Text>
                 </div>
               </Inline>
             </Inline>
@@ -365,9 +366,9 @@ export default function TeacherProgressPageClient({
                 <div className="text-2xl font-bold text-theme-primary mb-1">
                   {reportData.overview.completedLessons}
                 </div>
-                <div className="text-sm text-theme-tertiary mb-2">
+                <Text papel="rotulo" tom="fraco" as="div" className="mb-2">
                   {t('total_lessons')}
-                </div>
+                </Text>
                 <div className="text-xs text-accent-blue">
                   {reportData.overview.completionRate}% {t('completion_rate')}
                 </div>
@@ -383,9 +384,9 @@ export default function TeacherProgressPageClient({
                 <div className="text-2xl font-bold text-theme-primary mb-1">
                   {reportData.overview.totalStudyHours}h
                 </div>
-                <div className="text-sm text-theme-tertiary mb-2">
+                <Text papel="rotulo" tom="fraco" as="div" className="mb-2">
                   {t('study_hours')}
-                </div>
+                </Text>
                 <div className="text-xs text-accent-green">
                   {reportData.overview.attendanceRate}% {t('attendance_rate')}
                 </div>
@@ -401,9 +402,9 @@ export default function TeacherProgressPageClient({
                 <div className="text-2xl font-bold text-theme-primary mb-1">
                   {reportData.overview.piecesStudied}
                 </div>
-                <div className="text-sm text-theme-tertiary mb-2">
+                <Text papel="rotulo" tom="fraco" as="div" className="mb-2">
                   {t('pieces_studied')}
-                </div>
+                </Text>
                 <div className="text-xs text-accent-purple">
                   {reportData.overview.favoritePieces} {t('favorite_pieces')}
                 </div>
@@ -419,9 +420,9 @@ export default function TeacherProgressPageClient({
                 <div className="text-2xl font-bold text-theme-primary mb-1">
                   {reportData.overview.currentStreak}
                 </div>
-                <div className="text-sm text-theme-tertiary mb-2">
+                <Text papel="rotulo" tom="fraco" as="div" className="mb-2">
                   {t('current_streak')}
-                </div>
+                </Text>
                 <div className="text-xs text-accent-orange">
                   Max: {reportData.overview.longestStreak}
                 </div>
@@ -501,18 +502,23 @@ export default function TeacherProgressPageClient({
                               <div className="font-medium text-theme-primary">
                                 {composer.name}
                               </div>
-                              <div className="text-xs text-theme-tertiary">
+                              <Text papel="legenda" tom="fraco" as="div">
                                 {composer.epoch}
-                              </div>
+                              </Text>
                             </div>
                           </Inline>
                           <div className="text-right">
-                            <div className="text-sm font-medium text-theme-primary">
+                            <Text
+                              papel="rotulo"
+                              tom="forte"
+                              as="div"
+                              className="font-medium"
+                            >
                               {composer.studiedCount}/{composer.worksCount}
-                            </div>
-                            <div className="text-xs text-theme-tertiary">
+                            </Text>
+                            <Text papel="legenda" tom="fraco" as="div">
                               {composer.percentage}% estudado
-                            </div>
+                            </Text>
                           </div>
                         </div>
                       ))}
@@ -597,9 +603,9 @@ export default function TeacherProgressPageClient({
                   {reportData.insights.recommendedFocus.map((focus, index) => (
                     <Inline gap={3} key={index}>
                       <div className="w-2 h-2 bg-brand-primary rounded-full"></div>
-                      <span className="text-sm text-theme-primary">
+                      <Text papel="rotulo" tom="forte">
                         {focus}
-                      </span>
+                      </Text>
                     </Inline>
                   ))}
                 </div>
@@ -618,7 +624,9 @@ export default function TeacherProgressPageClient({
                           {index + 1}
                         </span>
                       </div>
-                      <span className="text-sm text-theme-primary">{step}</span>
+                      <Text papel="rotulo" tom="forte">
+                        {step}
+                      </Text>
                     </div>
                   ))}
                 </div>
@@ -630,7 +638,12 @@ export default function TeacherProgressPageClient({
         {/* Report Metadata */}
         <AnimatedItem direction="up" springType="gentle">
           <div className="classical-card p-4 bg-theme-elevated/50 border border-theme-secondary/50">
-            <div className="flex flex-col sm:flex-row items-center justify-between text-sm text-theme-tertiary">
+            <Text
+              papel="rotulo"
+              tom="fraco"
+              as="div"
+              className="flex flex-col sm:flex-row items-center justify-between"
+            >
               <Inline gap={4} className="mb-2 sm:mb-0">
                 <span>
                   {t('report_generated', {
@@ -653,7 +666,7 @@ export default function TeacherProgressPageClient({
                 </span>
               </Inline>
               <div className="text-xs">{t('analysis_disclaimer')}</div>
-            </div>
+            </Text>
           </div>
         </AnimatedItem>
 

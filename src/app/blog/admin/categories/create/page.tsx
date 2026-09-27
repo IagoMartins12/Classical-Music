@@ -3,6 +3,7 @@
 import Link from 'next/link';
 import { CategoryForm } from '@/app/components/blog/admin/CategoryForm';
 import { PiArrowLeft } from 'react-icons/pi';
+import { Text } from '@/app/components/ui/Text';
 
 export default function CreateCategoryPage() {
   return (
@@ -20,10 +21,10 @@ export default function CreateCategoryPage() {
           <h1 className="text-3xl font-bold text-theme-primary classical-title">
             Criar Nova Categoria
           </h1>
-          <p className="mt-2 text-sm text-theme-secondary">
+          <Text papel="rotulo" tom="suave" as="p" className="mt-2">
             Preencha as informações abaixo para criar uma nova categoria para o
             blog.
-          </p>
+          </Text>
         </div>
 
         {/* Form */}

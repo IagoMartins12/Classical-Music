@@ -18,6 +18,7 @@ import {
   Cell,
 } from 'recharts';
 import { Inline } from '@/app/components/ui/Layout';
+import { Text } from '@/app/components/ui/Text';
 
 export interface ChartData {
   name?: string;
@@ -61,7 +62,9 @@ const CustomTooltip = ({ active, payload, label }: any) => {
   if (active && payload && payload.length) {
     return (
       <div className="bg-theme-elevated border border-theme-primary rounded-xl p-3 shadow-2xl">
-        <p className="text-sm font-medium text-theme-primary mb-1">{label}</p>
+        <Text papel="rotulo" tom="forte" as="p" className="font-medium mb-1">
+          {label}
+        </Text>
         {payload.map((entry: any, index: number) => (
           <p key={index} className="text-sm" style={{ color: entry.color }}>
             {entry.name || 'Valor'}:{' '}
@@ -82,15 +85,17 @@ const CustomPieTooltip = ({ active, payload }: any) => {
     const data = payload[0];
     return (
       <div className="bg-theme-elevated border border-theme-primary rounded-xl p-3 shadow-2xl">
-        <p className="text-sm font-medium text-theme-primary">{data.name}</p>
+        <Text papel="rotulo" tom="forte" as="p" className="font-medium">
+          {data.name}
+        </Text>
         <p className="text-sm" style={{ color: data.color }}>
           Quantidade: {data.value.toLocaleString('pt-BR')}
         </p>
-        <p className="text-xs text-theme-tertiary">
+        <Text papel="legenda" tom="fraco" as="p">
           {data.payload.percentage
             ? `${data.payload.percentage.toFixed(1)}%`
             : ''}
-        </p>
+        </Text>
       </div>
     );
   }
@@ -115,7 +120,9 @@ export const TrendAreaChart = ({
               <h3 className="text-lg font-bold text-theme-primary">{title}</h3>
             )}
             {subtitle && (
-              <p className="text-sm text-theme-tertiary">{subtitle}</p>
+              <Text papel="rotulo" tom="fraco" as="p">
+                {subtitle}
+              </Text>
             )}
           </div>
         )}
@@ -134,7 +141,9 @@ export const TrendAreaChart = ({
             <h3 className="text-lg font-bold text-theme-primary">{title}</h3>
           )}
           {subtitle && (
-            <p className="text-sm text-theme-tertiary">{subtitle}</p>
+            <Text papel="rotulo" tom="fraco" as="p">
+              {subtitle}
+            </Text>
           )}
         </div>
       )}
@@ -200,7 +209,9 @@ export const AdminBarChart = ({
               <h3 className="text-lg font-bold text-theme-primary">{title}</h3>
             )}
             {subtitle && (
-              <p className="text-sm text-theme-tertiary">{subtitle}</p>
+              <Text papel="rotulo" tom="fraco" as="p">
+                {subtitle}
+              </Text>
             )}
           </div>
         )}
@@ -225,7 +236,9 @@ export const AdminBarChart = ({
             <h3 className="text-lg font-bold text-theme-primary">{title}</h3>
           )}
           {subtitle && (
-            <p className="text-sm text-theme-tertiary">{subtitle}</p>
+            <Text papel="rotulo" tom="fraco" as="p">
+              {subtitle}
+            </Text>
           )}
         </div>
       )}
@@ -276,7 +289,9 @@ export const AdminPieChart = ({
               <h3 className="text-lg font-bold text-theme-primary">{title}</h3>
             )}
             {subtitle && (
-              <p className="text-sm text-theme-tertiary">{subtitle}</p>
+              <Text papel="rotulo" tom="fraco" as="p">
+                {subtitle}
+              </Text>
             )}
           </div>
         )}
@@ -314,7 +329,9 @@ export const AdminPieChart = ({
               <h3 className="text-lg font-bold text-theme-primary">{title}</h3>
             )}
             {subtitle && (
-              <p className="text-sm text-theme-tertiary">{subtitle}</p>
+              <Text papel="rotulo" tom="fraco" as="p">
+                {subtitle}
+              </Text>
             )}
           </div>
         )}
@@ -333,7 +350,9 @@ export const AdminPieChart = ({
             <h3 className="text-lg font-bold text-theme-primary">{title}</h3>
           )}
           {subtitle && (
-            <p className="text-sm text-theme-tertiary">{subtitle}</p>
+            <Text papel="rotulo" tom="fraco" as="p">
+              {subtitle}
+            </Text>
           )}
         </div>
       )}
@@ -404,7 +423,9 @@ export const MultiLineChart = ({
               <h3 className="text-lg font-bold text-theme-primary">{title}</h3>
             )}
             {subtitle && (
-              <p className="text-sm text-theme-tertiary">{subtitle}</p>
+              <Text papel="rotulo" tom="fraco" as="p">
+                {subtitle}
+              </Text>
             )}
           </div>
         )}
@@ -423,7 +444,9 @@ export const MultiLineChart = ({
             <h3 className="text-lg font-bold text-theme-primary">{title}</h3>
           )}
           {subtitle && (
-            <p className="text-sm text-theme-tertiary">{subtitle}</p>
+            <Text papel="rotulo" tom="fraco" as="p">
+              {subtitle}
+            </Text>
           )}
         </div>
       )}
@@ -483,9 +506,13 @@ export const MetricCard = ({
   <div className="classical-card p-6 relative overflow-hidden">
     <div className="flex items-start justify-between mb-4">
       <div className="flex-1">
-        <p className="text-sm text-theme-tertiary mb-1">{title}</p>
+        <Text papel="rotulo" tom="fraco" as="p" className="mb-1">
+          {title}
+        </Text>
         {subtitle && (
-          <p className="text-xs text-theme-tertiary mb-1">{subtitle}</p>
+          <Text papel="legenda" tom="fraco" as="p" className="mb-1">
+            {subtitle}
+          </Text>
         )}
         <p className="text-3xl font-bold text-theme-primary">
           {typeof value === 'number' ? value.toLocaleString('pt-BR') : value}
@@ -577,7 +604,9 @@ export const HorizontalBarChart = ({
               <h3 className="text-lg font-bold text-theme-primary">{title}</h3>
             )}
             {subtitle && (
-              <p className="text-sm text-theme-tertiary">{subtitle}</p>
+              <Text papel="rotulo" tom="fraco" as="p">
+                {subtitle}
+              </Text>
             )}
           </div>
         )}
@@ -596,7 +625,9 @@ export const HorizontalBarChart = ({
             <h3 className="text-lg font-bold text-theme-primary">{title}</h3>
           )}
           {subtitle && (
-            <p className="text-sm text-theme-tertiary">{subtitle}</p>
+            <Text papel="rotulo" tom="fraco" as="p">
+              {subtitle}
+            </Text>
           )}
         </div>
       )}
@@ -612,9 +643,14 @@ export const HorizontalBarChart = ({
 
           return (
             <Inline gap={3} key={index}>
-              <div className="w-24 text-sm font-medium text-theme-primary truncate">
+              <Text
+                papel="rotulo"
+                tom="forte"
+                as="div"
+                className="w-24 font-medium truncate"
+              >
                 {item.name}
-              </div>
+              </Text>
               <div className="flex-1 bg-theme-secondary rounded-full h-3 overflow-hidden">
                 <div
                   className="h-full rounded-full transition-all duration-1000"
@@ -624,11 +660,16 @@ export const HorizontalBarChart = ({
                   }}
                 />
               </div>
-              <div className="w-16 text-sm font-bold text-theme-primary text-right">
+              <Text
+                papel="rotulo"
+                tom="forte"
+                as="div"
+                className="w-16 font-bold text-right"
+              >
                 {typeof item.value === 'number'
                   ? item.value.toLocaleString('pt-BR')
                   : '0'}
-              </div>
+              </Text>
             </Inline>
           );
         })}

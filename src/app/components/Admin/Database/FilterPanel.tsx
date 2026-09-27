@@ -9,6 +9,7 @@ import Input from '@/app/components/Common/Inputs';
 import Select from '@/app/components/Common/Select';
 import { ModelSchema, ModelField } from '@/app/hooks/admin/useDatabaseStudio';
 import { Inline } from '@/app/components/ui/Layout';
+import { Text } from '@/app/components/ui/Text';
 
 interface FilterPanelProps {
   isOpen: boolean;
@@ -260,12 +261,17 @@ export default function FilterPanel({
                   className="flex items-center justify-between p-3 bg-theme-secondary rounded-lg"
                 >
                   <div className="flex-1">
-                    <div className="font-medium text-theme-primary text-sm">
+                    <Text
+                      papel="rotulo"
+                      tom="forte"
+                      as="div"
+                      className="font-medium"
+                    >
                       {field}
-                    </div>
-                    <div className="text-xs text-theme-tertiary mt-1">
+                    </Text>
+                    <Text papel="legenda" tom="fraco" as="div" className="mt-1">
                       {formatFilterValue(field, value)}
-                    </div>
+                    </Text>
                   </div>
                   <button
                     onClick={() => onRemoveFilter(field)}

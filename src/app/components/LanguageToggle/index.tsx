@@ -4,6 +4,7 @@ import { useLanguageWithRefresh } from '@/app/stores/useLanguageStore';
 import React from 'react';
 import { PiGlobe } from 'react-icons/pi';
 import { Inline } from '@/app/components/ui/Layout';
+import { Text } from '@/app/components/ui/Text';
 
 interface LanguageToggleProps {
   variant?: 'default' | 'compact' | 'navbar' | 'globe';
@@ -148,9 +149,9 @@ export const LanguageToggle: React.FC<LanguageToggleProps> = ({
       {/* Toggle button */}
       <div className={`flex items-center gap-2 ${className}`}>
         {showLabel && (
-          <span className="text-theme-secondary text-sm font-medium">
+          <Text papel="rotulo" tom="suave" className="font-medium">
             {getLanguageLabel()}
-          </span>
+          </Text>
         )}
 
         <button
@@ -249,15 +250,19 @@ export const LanguageDropdown: React.FC<{
         {currentLanguage && (
           <>
             {currentLanguage.flag}
-            <span className="text-sm font-medium text-theme-primary hidden sm:block">
+            <Text
+              papel="rotulo"
+              tom="forte"
+              className="font-medium hidden sm:block"
+            >
               {currentLanguage.name}
               {/* 🆕 Mostrar (Sistema) se aplicável */}
               {showSystemIndicator && !hasUserPreference && (
-                <span className="text-xs text-theme-tertiary ml-1">
+                <Text papel="legenda" tom="fraco" className="ml-1">
                   (Sistema)
-                </span>
+                </Text>
               )}
-            </span>
+            </Text>
           </>
         )}
         <svg

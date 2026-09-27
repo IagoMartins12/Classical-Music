@@ -32,6 +32,7 @@ import {
   PiUser,
   PiUsers,
 } from 'react-icons/pi';
+import { Text } from '@/app/components/ui/Text';
 
 interface SidebarSection {
   title: string;
@@ -387,9 +388,9 @@ export default function AdminSidebar() {
           <h2 className="text-lg font-bold text-theme-primary mb-2">
             Painel Administrativo
           </h2>
-          <p className="text-sm text-theme-tertiary">
+          <Text papel="rotulo" tom="fraco" as="p">
             Gerencie toda a plataforma
-          </p>
+          </Text>
         </div>
 
         {/* Navigation Sections */}

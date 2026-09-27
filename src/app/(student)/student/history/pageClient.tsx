@@ -39,6 +39,7 @@ import { useToast } from '@/app/hooks/useToast';
 import { useTranslation } from '@/app/context/TranslationContext';
 import { loadSchoolActivities } from '@/app/requests/portal/school-activities';
 import { Inline } from '@/app/components/ui/Layout';
+import { Text } from '@/app/components/ui/Text';
 
 interface Activity {
   id: string;
@@ -384,9 +385,9 @@ const StudentHistoryClient = ({
                 <div className="text-2xl font-bold text-theme-primary mb-1">
                   {stats.totalActivities || 0}
                 </div>
-                <div className="text-sm text-theme-tertiary">
+                <Text papel="rotulo" tom="fraco" as="div">
                   {t('student_history_stats_total')}
-                </div>
+                </Text>
               </AnimatedCard>
 
               <AnimatedCard
@@ -399,9 +400,9 @@ const StudentHistoryClient = ({
                 <div className="text-2xl font-bold text-theme-primary mb-1">
                   {stats.breakdown?.byAction?.ASSIGNMENT_SUBMISSION || 0}
                 </div>
-                <div className="text-sm text-theme-tertiary">
+                <Text papel="rotulo" tom="fraco" as="div">
                   {t('student_history_stats_submissions')}
-                </div>
+                </Text>
               </AnimatedCard>
 
               <AnimatedCard
@@ -414,9 +415,9 @@ const StudentHistoryClient = ({
                 <div className="text-2xl font-bold text-theme-primary mb-1">
                   {stats.breakdown?.byAction?.ASSIGNMENT_COMPLETED || 0}
                 </div>
-                <div className="text-sm text-theme-tertiary">
+                <Text papel="rotulo" tom="fraco" as="div">
                   {t('student_history_stats_completed')}
-                </div>
+                </Text>
               </AnimatedCard>
 
               <AnimatedCard
@@ -429,9 +430,9 @@ const StudentHistoryClient = ({
                 <div className="text-2xl font-bold text-theme-primary mb-1">
                   {stats.recentActivity || 0}
                 </div>
-                <div className="text-sm text-theme-tertiary">
+                <Text papel="rotulo" tom="fraco" as="div">
                   {t('student_history_stats_recent')}
-                </div>
+                </Text>
               </AnimatedCard>
             </SequentialGrid>
           </AnimatedItem>
@@ -446,9 +447,9 @@ const StudentHistoryClient = ({
                   <h3 className="text-lg font-semibold text-theme-primary">
                     {t('student_history_filters_title')}
                   </h3>
-                  <p className="text-sm text-theme-tertiary">
+                  <Text papel="rotulo" tom="fraco" as="p">
                     {t('student_history_filters_found', { count: totalCount })}
-                  </p>
+                  </Text>
                 </div>
                 <Inline
                   as="button"
@@ -580,9 +581,9 @@ const StudentHistoryClient = ({
                 <p className="text-theme-secondary">
                   {t('student_history_empty_description')}
                 </p>
-                <p className="text-sm text-theme-tertiary mt-2">
+                <Text papel="rotulo" tom="fraco" as="p" className="mt-2">
                   {t('student_history_empty_hint')}
-                </p>
+                </Text>
               </div>
             ) : (
               <div className="relative">
@@ -614,10 +615,14 @@ const StudentHistoryClient = ({
                         >
                           <div className="flex items-start justify-between mb-3">
                             <Inline gap={2}>
-                              <span className="text-sm font-medium text-theme-primary">
+                              <Text
+                                papel="rotulo"
+                                tom="forte"
+                                className="font-medium"
+                              >
                                 {getActionLabel(activity.action)}
-                              </span>
-                              <span className="text-xs text-theme-tertiary">
+                              </Text>
+                              <Text papel="legenda" tom="fraco">
                                 {formatDistanceToNow(
                                   new Date(activity.createdAt),
                                   {
@@ -625,7 +630,7 @@ const StudentHistoryClient = ({
                                     locale: ptBR,
                                   }
                                 )}
-                              </span>
+                              </Text>
                             </Inline>
 
                             <Inline gap={2}>
@@ -659,24 +664,24 @@ const StudentHistoryClient = ({
                             </h3>
 
                             {activity.description && (
-                              <p className="text-sm text-theme-secondary">
+                              <Text papel="rotulo" tom="suave" as="p">
                                 {activity.description}
-                              </p>
+                              </Text>
                             )}
 
                             {activity.entityDisplayName && (
-                              <div className="text-sm text-theme-tertiary">
+                              <Text papel="rotulo" tom="fraco" as="div">
                                 <span className="font-medium">
                                   {t('student_history_item_label')}
                                 </span>{' '}
                                 {activity.entityDisplayName}
-                              </div>
+                              </Text>
                             )}
 
                             {activity.changesSummary && (
-                              <div className="text-xs text-theme-tertiary">
+                              <Text papel="legenda" tom="fraco" as="div">
                                 {activity.changesSummary}
-                              </div>
+                              </Text>
                             )}
 
                             {/* Metadata específica do aluno */}

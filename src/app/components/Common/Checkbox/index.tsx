@@ -2,6 +2,7 @@
 
 import React, { forwardRef, useState } from 'react';
 import { PiCheck } from 'react-icons/pi';
+import { Text } from '@/app/components/ui/Text';
 
 interface CheckboxProps extends React.InputHTMLAttributes<HTMLInputElement> {
   label?: string;
@@ -81,9 +82,9 @@ const Checkbox = forwardRef<HTMLInputElement, CheckboxProps>(
           </div>
 
           {label && (
-            <span className="ml-2 text-sm text-theme-primary font-semibold">
+            <Text papel="rotulo" tom="forte" className="ml-2 font-semibold">
               {label}
-            </span>
+            </Text>
           )}
         </label>
 

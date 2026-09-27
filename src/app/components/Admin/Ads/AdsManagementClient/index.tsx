@@ -41,6 +41,7 @@ import Input from '@/app/components/Common/Inputs';
 import Image from '@/app/components/SmartImage';
 import LoadingAdminState from '../../Common/LoadingState';
 import { Inline } from '@/app/components/ui/Layout';
+import { Text } from '@/app/components/ui/Text';
 
 interface FilterState {
   status: string;
@@ -273,9 +274,9 @@ export default function AdsManagementClient() {
               <AnimatedCard className="classical-card p-6">
                 <div className="flex items-center justify-between">
                   <div>
-                    <p className="text-sm text-theme-tertiary mb-1">
+                    <Text papel="rotulo" tom="fraco" as="p" className="mb-1">
                       Total de Ads
-                    </p>
+                    </Text>
                     <p className="text-3xl font-bold text-theme-primary">
                       {stats.totalAds}
                     </p>
@@ -289,7 +290,9 @@ export default function AdsManagementClient() {
               <AnimatedCard className="classical-card p-6">
                 <div className="flex items-center justify-between">
                   <div>
-                    <p className="text-sm text-theme-tertiary mb-1">Ativos</p>
+                    <Text papel="rotulo" tom="fraco" as="p" className="mb-1">
+                      Ativos
+                    </Text>
                     <p className="text-3xl font-bold text-accent-green">
                       {stats.activeAds}
                     </p>
@@ -303,9 +306,9 @@ export default function AdsManagementClient() {
               <AnimatedCard className="classical-card p-6">
                 <div className="flex items-center justify-between">
                   <div>
-                    <p className="text-sm text-theme-tertiary mb-1">
+                    <Text papel="rotulo" tom="fraco" as="p" className="mb-1">
                       Impressões (30d)
-                    </p>
+                    </Text>
                     <p className="text-3xl font-bold text-accent-purple">
                       {stats.impressions30d.toLocaleString()}
                     </p>
@@ -319,9 +322,9 @@ export default function AdsManagementClient() {
               <AnimatedCard className="classical-card p-6">
                 <div className="flex items-center justify-between">
                   <div>
-                    <p className="text-sm text-theme-tertiary mb-1">
+                    <Text papel="rotulo" tom="fraco" as="p" className="mb-1">
                       CTR Médio
-                    </p>
+                    </Text>
                     <p className="text-3xl font-bold text-accent-amber">
                       {stats.avgCTR.toFixed(2)}%
                     </p>
@@ -413,9 +416,9 @@ export default function AdsManagementClient() {
             {/* Bulk Actions */}
             {selectedAds.length > 0 && (
               <div className="flex items-center gap-2 p-3 bg-brand-primary/10 border border-brand-primary rounded-lg mb-4">
-                <span className="text-sm font-medium text-theme-primary">
+                <Text papel="rotulo" tom="forte" className="font-medium">
                   {selectedAds.length} selecionado(s)
-                </span>
+                </Text>
                 <div className="flex items-center gap-2 ml-auto">
                   <Button
                     variant="ghost"
@@ -565,9 +568,9 @@ export default function AdsManagementClient() {
                           </span>
                         </td>
                         <td className="py-3 px-2">
-                          <span className="text-sm text-theme-secondary">
+                          <Text papel="rotulo" tom="suave">
                             {getTargetTypeLabel(ad)}
-                          </span>
+                          </Text>
                         </td>
                         <td className="py-3 px-2">
                           <Inline gap={1}>
@@ -692,14 +695,14 @@ export default function AdsManagementClient() {
             {/* Pagination */}
             {pagination && pagination.pages > 1 && (
               <div className="flex items-center justify-between mt-6">
-                <div className="text-sm text-theme-tertiary">
+                <Text papel="rotulo" tom="fraco" as="div">
                   Mostrando {(pagination.page - 1) * pagination.limit + 1} a{' '}
                   {Math.min(
                     pagination.page * pagination.limit,
                     pagination.total
                   )}{' '}
                   de {pagination.total} resultados
-                </div>
+                </Text>
                 <Inline gap={2}>
                   <Button
                     variant="ghost"
@@ -709,9 +712,9 @@ export default function AdsManagementClient() {
                   >
                     Anterior
                   </Button>
-                  <span className="text-sm text-theme-primary">
+                  <Text papel="rotulo" tom="forte">
                     {pagination.page} de {pagination.pages}
-                  </span>
+                  </Text>
                   <Button
                     variant="ghost"
                     size="sm"

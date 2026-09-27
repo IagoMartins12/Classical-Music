@@ -33,6 +33,7 @@ import {
 } from '../../../components/animation/AnimatedComponents';
 import { useTranslation } from '@/app/context/TranslationContext';
 import { Inline, Stack } from '@/app/components/ui/Layout';
+import { Text } from '@/app/components/ui/Text';
 
 interface HelpCategory {
   id: string;
@@ -146,26 +147,39 @@ function GuideCard({ guide, t }: GuideCardProps): JSX.Element {
                 <h4 className="text-lg font-semibold classical-title text-theme-primary">
                   {guide.title}
                 </h4>
-                <span className="text-sm text-brand-primary hidden md:flex font-medium">
+                <Text
+                  papel="rotulo"
+                  tom="ouro"
+                  className="hidden md:flex font-medium"
+                >
                   {isExpanded ? t('help_guide_close') : t('help_guide_open')}
-                </span>
+                </Text>
 
-                <span className="text-sm text-brand-primary block md:hidden font-medium">
+                <Text
+                  papel="rotulo"
+                  tom="ouro"
+                  className="block md:hidden font-medium"
+                >
                   {isExpanded ? (
                     <PiArrowRight className="w-5 h-5 text-brand-primary rotate-90 transition-transform duration-300" />
                   ) : (
                     <PiArrowRight className="w-5 h-5 text-brand-primary transition-transform duration-300" />
                   )}
-                </span>
+                </Text>
               </Inline>
-              <p className="text-theme-secondary text-sm mt-1 classical-body">
+              <Text
+                papel="rotulo"
+                tom="suave"
+                as="p"
+                className="mt-1 classical-body"
+              >
                 {guide.description}
-              </p>
+              </Text>
               <Inline gap={3} className="mt-2">
                 {guide.duration && (
-                  <span className="text-sm text-theme-tertiary">
+                  <Text papel="rotulo" tom="fraco">
                     📖 {guide.duration}
-                  </span>
+                  </Text>
                 )}
                 <span
                   className={`text-xs font-medium px-2 py-1 rounded-full bg-theme-elevated ${getDifficultyColor(
@@ -174,11 +188,11 @@ function GuideCard({ guide, t }: GuideCardProps): JSX.Element {
                 >
                   {t(`help_difficulty_${guide.difficulty}`)}
                 </span>
-                <span className="text-xs hidden md:flex text-theme-tertiary">
+                <Text papel="legenda" tom="fraco" className="hidden md:flex">
                   {guide.type === 'article'
                     ? `📄 ${t('help_type_article')}`
                     : `🎯 ${t('help_type_interactive')}`}
-                </span>
+                </Text>
               </Inline>
             </div>
           </Inline>
@@ -189,9 +203,9 @@ function GuideCard({ guide, t }: GuideCardProps): JSX.Element {
               ) : (
                 <PiArrowRight className="w-5 h-5 text-brand-primary transition-transform duration-300" />
               )}
-              <span className="text-xs text-theme-tertiary">
+              <Text papel="legenda" tom="fraco">
                 {isExpanded ? t('help_guide_close') : t('help_guide_open')}
-              </span>
+              </Text>
             </Stack>
           </div>
         </div>

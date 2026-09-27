@@ -1,5 +1,6 @@
 'use client';
 
+import { Text } from '@/app/components/ui/Text';
 interface MonthViewProps {
   days: Date[];
   currentDate: Date;
@@ -25,12 +26,15 @@ export default function MonthView({
       {/* Header */}
       <div className="grid grid-cols-7 gap-1 mb-2">
         {weekdays.map((day) => (
-          <div
+          <Text
+            papel="rotulo"
+            tom="fraco"
+            as="div"
             key={day}
-            className="p-3 text-center font-semibold text-theme-tertiary text-sm"
+            className="p-3 text-center font-semibold"
           >
             {day}
-          </div>
+          </Text>
         ))}
       </div>
 

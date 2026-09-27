@@ -23,6 +23,7 @@ import { useEmailVerification } from '@/app/hooks/useEmailVerification';
 import { useEmailRefresh } from '@/app/hooks/useEmailRefresh';
 import { useTranslation } from '@/app/context/TranslationContext';
 import { Inline } from '@/app/components/ui/Layout';
+import { Text } from '@/app/components/ui/Text';
 
 interface EmailVerificationRequiredProps {
   userEmail: string;
@@ -88,9 +89,9 @@ export default function EmailVerificationRequired({
                     </strong>{' '}
                     {userEmail}
                   </p>
-                  <p className="text-theme-secondary text-sm">
+                  <Text papel="rotulo" tom="suave" as="p">
                     {t('security_message')}
-                  </p>
+                  </Text>
                 </div>
               </div>
             </div>
@@ -176,27 +177,27 @@ export default function EmailVerificationRequired({
               <div className="text-left space-y-2">
                 <Inline gap={2}>
                   <div className="w-2 h-2 bg-brand-primary rounded-full"></div>
-                  <span className="text-theme-secondary text-sm">
+                  <Text papel="rotulo" tom="suave">
                     {t('current_permission_explore')}
-                  </span>
+                  </Text>
                 </Inline>
                 <Inline gap={2}>
                   <div className="w-2 h-2 bg-brand-primary rounded-full"></div>
-                  <span className="text-theme-secondary text-sm">
+                  <Text papel="rotulo" tom="suave">
                     {t('current_permission_discover')}
-                  </span>
+                  </Text>
                 </Inline>
                 <Inline gap={2}>
                   <div className="w-2 h-2 bg-brand-primary rounded-full"></div>
-                  <span className="text-theme-secondary text-sm">
+                  <Text papel="rotulo" tom="suave">
                     {t('current_permission_favorites')}
-                  </span>
+                  </Text>
                 </Inline>
                 <Inline gap={2}>
                   <div className="w-2 h-2 bg-brand-primary rounded-full"></div>
-                  <span className="text-theme-secondary text-sm">
+                  <Text papel="rotulo" tom="suave">
                     {t('current_permission_profile')}
-                  </span>
+                  </Text>
                 </Inline>
               </div>
             </AnimatedCard>
@@ -217,27 +218,27 @@ export default function EmailVerificationRequired({
               <div className="text-left space-y-2">
                 <Inline gap={2}>
                   <div className="w-2 h-2 bg-accent-amber rounded-full"></div>
-                  <span className="text-theme-secondary text-sm">
+                  <Text papel="rotulo" tom="suave">
                     {t('after_verification_composers')}
-                  </span>
+                  </Text>
                 </Inline>
                 <Inline gap={2}>
                   <div className="w-2 h-2 bg-accent-amber rounded-full"></div>
-                  <span className="text-theme-secondary text-sm">
+                  <Text papel="rotulo" tom="suave">
                     {t('after_verification_scores')}
-                  </span>
+                  </Text>
                 </Inline>
                 <Inline gap={2}>
                   <div className="w-2 h-2 bg-accent-amber rounded-full"></div>
-                  <span className="text-theme-secondary text-sm">
+                  <Text papel="rotulo" tom="suave">
                     {t('after_verification_works')}
-                  </span>
+                  </Text>
                 </Inline>
                 <Inline gap={2}>
                   <div className="w-2 h-2 bg-accent-amber rounded-full"></div>
-                  <span className="text-theme-secondary text-sm">
+                  <Text papel="rotulo" tom="suave">
                     {t('after_verification_full_access')}
-                  </span>
+                  </Text>
                 </Inline>
               </div>
             </AnimatedCard>
@@ -258,12 +259,12 @@ export default function EmailVerificationRequired({
                 <h3 className="text-lg font-bold text-theme-primary mb-3 classical-title">
                   {t('help_title')}
                 </h3>
-                <div className="space-y-2 text-sm text-theme-secondary">
+                <Text papel="rotulo" tom="suave" as="div" className="space-y-2">
                   <p>• {t('help_check_spam')}</p>
                   <p>• {t('help_wait_minutes')}</p>
                   <p>• {t('help_same_browser')}</p>
                   <p>• {t('help_contact_support')}</p>
-                </div>
+                </Text>
               </div>
             </div>
           </AnimatedCard>

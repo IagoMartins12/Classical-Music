@@ -10,6 +10,7 @@ import {
   PiSquare,
 } from 'react-icons/pi';
 import { Inline } from '@/app/components/ui/Layout';
+import { Text } from '@/app/components/ui/Text';
 
 interface TextToSpeechWebAPIProps {
   content: any; // TipTap JSON
@@ -195,9 +196,9 @@ export function TextToSpeechWebAPI({ content }: TextToSpeechWebAPIProps) {
           </div>
           <div>
             <h3 className="font-bold text-theme-primary">Ouvir Artigo</h3>
-            <p className="text-sm text-theme-secondary">
+            <Text papel="rotulo" tom="suave" as="p">
               Leitura automática com síntese de voz
-            </p>
+            </Text>
           </div>
         </Inline>
 
@@ -219,9 +220,9 @@ export function TextToSpeechWebAPI({ content }: TextToSpeechWebAPIProps) {
               style={{ width: `${progress}%` }}
             />
           </div>
-          <p className="text-xs text-theme-tertiary mt-1 text-center">
+          <Text papel="legenda" tom="fraco" as="p" className="mt-1 text-center">
             {progress}% concluído
-          </p>
+          </Text>
         </div>
       )}
 
@@ -329,9 +330,9 @@ export function TextToSpeechWebAPI({ content }: TextToSpeechWebAPIProps) {
         )}
       </Inline>
 
-      <p className="text-xs text-theme-tertiary text-center mt-3">
+      <Text papel="legenda" tom="fraco" as="p" className="text-center mt-3">
         💡 Use fones de ouvido para melhor experiência
-      </p>
+      </Text>
     </div>
   );
 }

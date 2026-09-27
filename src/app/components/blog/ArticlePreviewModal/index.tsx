@@ -4,6 +4,7 @@
 import Image from '@/app/components/SmartImage';
 import { ArticleContent } from '../ArticleContent';
 import Modal from '../../Modal';
+import { Text } from '@/app/components/ui/Text';
 
 interface ArticlePreviewModalProps {
   article: any;
@@ -23,9 +24,9 @@ export default function ArticlePreviewModal({
             <h2 className="text-lg font-bold text-theme-primary">
               Preview do Artigo
             </h2>
-            <p className="text-xs text-theme-tertiary">
+            <Text papel="legenda" tom="fraco" as="p">
               Visualização de como o artigo ficará publicado
-            </p>
+            </Text>
           </div>
         </div>
 
@@ -42,9 +43,14 @@ export default function ArticlePreviewModal({
                 className="w-full h-auto object-cover"
               />
               {article.coverImageCredit && (
-                <p className="text-xs text-theme-tertiary text-center mt-2">
+                <Text
+                  papel="legenda"
+                  tom="fraco"
+                  as="p"
+                  className="text-center mt-2"
+                >
                   Foto: {article.coverImageCredit}
-                </p>
+                </Text>
               )}
             </div>
           )}
@@ -65,23 +71,29 @@ export default function ArticlePreviewModal({
           <div className="flex items-center gap-4 mb-8 pb-6 border-b border-theme-secondary">
             {article.types && article.types.length > 0 && (
               <div className="flex items-center gap-2">
-                <span className="text-xs text-theme-tertiary">Tipo:</span>
-                <span className="text-xs font-medium text-brand-primary">
+                <Text papel="legenda" tom="fraco">
+                  Tipo:
+                </Text>
+                <Text papel="legenda" tom="ouro" className="font-medium">
                   {article.types[0]}
-                </span>
+                </Text>
               </div>
             )}
             {article.readTime && (
               <div className="flex items-center gap-2">
-                <span className="text-xs text-theme-tertiary">Leitura:</span>
-                <span className="text-xs font-medium text-theme-primary">
+                <Text papel="legenda" tom="fraco">
+                  Leitura:
+                </Text>
+                <Text papel="legenda" tom="forte" className="font-medium">
                   {article.readTime} min
-                </span>
+                </Text>
               </div>
             )}
             {article.status && (
               <div className="flex items-center gap-2">
-                <span className="text-xs text-theme-tertiary">Status:</span>
+                <Text papel="legenda" tom="fraco">
+                  Status:
+                </Text>
                 <span
                   className={`text-xs font-medium px-2 py-1 rounded ${
                     article.status === 'PUBLISHED'
@@ -110,12 +122,14 @@ export default function ArticlePreviewModal({
               </h3>
               <div className="flex flex-wrap gap-2">
                 {article.tags.map((tag: string) => (
-                  <span
+                  <Text
+                    papel="legenda"
+                    tom="ouro"
                     key={tag}
-                    className="px-3 py-1 bg-brand-primary/10 text-brand-primary rounded-full text-xs font-medium"
+                    className="px-3 py-1 bg-brand-primary/10 rounded-full font-medium"
                   >
                     #{tag}
-                  </span>
+                  </Text>
                 ))}
               </div>
             </div>
@@ -129,12 +143,14 @@ export default function ArticlePreviewModal({
               </h3>
               <div className="flex flex-wrap gap-2">
                 {article.keywords.map((keyword: string) => (
-                  <span
+                  <Text
+                    papel="legenda"
+                    tom="suave"
                     key={keyword}
-                    className="px-3 py-1 bg-gray-100 dark:bg-gray-800 text-theme-secondary rounded-full text-xs"
+                    className="px-3 py-1 bg-gray-100 dark:bg-gray-800 rounded-full"
                   >
                     {keyword}
-                  </span>
+                  </Text>
                 ))}
               </div>
             </div>

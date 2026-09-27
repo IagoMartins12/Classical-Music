@@ -24,6 +24,7 @@ import { useEmailRefreshSimple } from '@/app/hooks/useEmailRefresh';
 import { Toaster } from 'react-hot-toast';
 import Navbar from '../../Navbar';
 import { Inline } from '@/app/components/ui/Layout';
+import { Text } from '@/app/components/ui/Text';
 
 interface StudentVerificationRequiredProps {
   userEmail?: string | null;
@@ -89,13 +90,13 @@ export default function StudentVerificationRequired({
                       <strong className="text-brand-primary">Seu Email:</strong>{' '}
                       {userEmail}
                     </p>
-                    <p className="text-theme-secondary text-sm">
+                    <Text papel="rotulo" tom="suave" as="p">
                       Você foi adicionado como aluno por um professor da
                       plataforma Opus Atlas. Para acessar sua área do aluno, é
                       necessário que o você aprove seu convite. Isso garante que
                       apenas alunos autorizados tenham acesso às informações
                       pedagógicas.
-                    </p>
+                    </Text>
                   </div>
                 </div>
               </div>
@@ -170,27 +171,27 @@ export default function StudentVerificationRequired({
                 <div className="text-left space-y-3">
                   <Inline gap={2}>
                     <div className="w-2 h-2 bg-accent-green rounded-full"></div>
-                    <span className="text-theme-secondary text-sm">
+                    <Text papel="rotulo" tom="suave">
                       Você foi adicionado pelo professor
-                    </span>
+                    </Text>
                   </Inline>
                   <Inline gap={2}>
                     <div className="w-2 h-2 bg-accent-amber rounded-full"></div>
-                    <span className="text-theme-secondary text-sm">
+                    <Text papel="rotulo" tom="suave">
                       Aguardando aprovação do convite
-                    </span>
+                    </Text>
                   </Inline>
                   <Inline gap={2}>
                     <div className="w-2 h-2 bg-theme-tertiary rounded-full"></div>
-                    <span className="text-theme-secondary text-sm">
+                    <Text papel="rotulo" tom="suave">
                       Acesso à área do aluno
-                    </span>
+                    </Text>
                   </Inline>
                   <Inline gap={2}>
                     <div className="w-2 h-2 bg-theme-tertiary rounded-full"></div>
-                    <span className="text-theme-secondary text-sm">
+                    <Text papel="rotulo" tom="suave">
                       Funcionalidades completas
-                    </span>
+                    </Text>
                   </Inline>
                 </div>
               </AnimatedCard>
@@ -209,27 +210,27 @@ export default function StudentVerificationRequired({
                 <div className="text-left space-y-2">
                   <Inline gap={2}>
                     <div className="w-2 h-2 bg-accent-green rounded-full"></div>
-                    <span className="text-theme-secondary text-sm">
+                    <Text papel="rotulo" tom="suave">
                       Visualizar cronograma de aulas
-                    </span>
+                    </Text>
                   </Inline>
                   <Inline gap={2}>
                     <div className="w-2 h-2 bg-accent-green rounded-full"></div>
-                    <span className="text-theme-secondary text-sm">
+                    <Text papel="rotulo" tom="suave">
                       Acompanhar seu progresso musical
-                    </span>
+                    </Text>
                   </Inline>
                   <Inline gap={2}>
                     <div className="w-2 h-2 bg-accent-green rounded-full"></div>
-                    <span className="text-theme-secondary text-sm">
+                    <Text papel="rotulo" tom="suave">
                       Receber tarefas e feedbacks
-                    </span>
+                    </Text>
                   </Inline>
                   <Inline gap={2}>
                     <div className="w-2 h-2 bg-accent-green rounded-full"></div>
-                    <span className="text-theme-secondary text-sm">
+                    <Text papel="rotulo" tom="suave">
                       Acesso completo à plataforma
-                    </span>
+                    </Text>
                   </Inline>
                 </div>
               </AnimatedCard>
@@ -257,9 +258,9 @@ export default function StudentVerificationRequired({
                   <h4 className="font-medium text-theme-primary text-sm mb-1">
                     Professor Adiciona
                   </h4>
-                  <p className="text-xs text-theme-tertiary">
+                  <Text papel="legenda" tom="fraco" as="p">
                     Você foi cadastrado como aluno
-                  </p>
+                  </Text>
                 </div>
 
                 <div className="text-center p-4 bg-gradient-to-br from-theme-elevated to-interactive-hover rounded-lg border border-accent-amber/20">
@@ -269,9 +270,9 @@ export default function StudentVerificationRequired({
                   <h4 className="font-medium text-theme-primary text-sm mb-1">
                     Convite Pendente
                   </h4>
-                  <p className="text-xs text-theme-tertiary">
+                  <Text papel="legenda" tom="fraco" as="p">
                     Aguardando aprovação
-                  </p>
+                  </Text>
                 </div>
 
                 <div className="text-center p-4 bg-gradient-to-br from-theme-elevated to-interactive-hover rounded-lg border border-theme-secondary/20">
@@ -281,9 +282,9 @@ export default function StudentVerificationRequired({
                   <h4 className="font-medium text-theme-primary text-sm mb-1">
                     Professor Aprova
                   </h4>
-                  <p className="text-xs text-theme-tertiary">
+                  <Text papel="legenda" tom="fraco" as="p">
                     Convite aceito pelo professor
-                  </p>
+                  </Text>
                 </div>
 
                 <div className="text-center p-4 bg-gradient-to-br from-theme-elevated to-interactive-hover rounded-lg border border-accent-blue/20">
@@ -293,7 +294,9 @@ export default function StudentVerificationRequired({
                   <h4 className="font-medium text-theme-primary text-sm mb-1">
                     Acesso Liberado
                   </h4>
-                  <p className="text-xs text-theme-tertiary">Aluno ativo!</p>
+                  <Text papel="legenda" tom="fraco" as="p">
+                    Aluno ativo!
+                  </Text>
                 </div>
               </div>
             </AnimatedCard>
@@ -320,27 +323,27 @@ export default function StudentVerificationRequired({
                   <div className="space-y-2">
                     <Inline gap={2}>
                       <div className="w-2 h-2 bg-brand-primary rounded-full"></div>
-                      <span className="text-theme-secondary text-sm">
+                      <Text papel="rotulo" tom="suave">
                         Explorar compositores e obras
-                      </span>
+                      </Text>
                     </Inline>
                     <Inline gap={2}>
                       <div className="w-2 h-2 bg-brand-primary rounded-full"></div>
-                      <span className="text-theme-secondary text-sm">
+                      <Text papel="rotulo" tom="suave">
                         Descobrir partituras gratuitas
-                      </span>
+                      </Text>
                     </Inline>
                     <Inline gap={2}>
                       <div className="w-2 h-2 bg-brand-primary rounded-full"></div>
-                      <span className="text-theme-secondary text-sm">
+                      <Text papel="rotulo" tom="suave">
                         Criar sua lista de favoritos
-                      </span>
+                      </Text>
                     </Inline>
                     <Inline gap={2}>
                       <div className="w-2 h-2 bg-brand-primary rounded-full"></div>
-                      <span className="text-theme-secondary text-sm">
+                      <Text papel="rotulo" tom="suave">
                         Personalizar seu perfil
-                      </span>
+                      </Text>
                     </Inline>
                   </div>
                 </div>
@@ -352,27 +355,27 @@ export default function StudentVerificationRequired({
                   <div className="space-y-2">
                     <Inline gap={2}>
                       <div className="w-2 h-2 bg-accent-amber rounded-full"></div>
-                      <span className="text-theme-secondary text-sm">
+                      <Text papel="rotulo" tom="suave">
                         Entre em contato com seu professor
-                      </span>
+                      </Text>
                     </Inline>
                     <Inline gap={2}>
                       <div className="w-2 h-2 bg-accent-amber rounded-full"></div>
-                      <span className="text-theme-secondary text-sm">
+                      <Text papel="rotulo" tom="suave">
                         Confirme que ele tem seu email correto
-                      </span>
+                      </Text>
                     </Inline>
                     <Inline gap={2}>
                       <div className="w-2 h-2 bg-accent-amber rounded-full"></div>
-                      <span className="text-theme-secondary text-sm">
+                      <Text papel="rotulo" tom="suave">
                         Peça para ele aprovar seu convite
-                      </span>
+                      </Text>
                     </Inline>
                     <Inline gap={2}>
                       <div className="w-2 h-2 bg-accent-amber rounded-full"></div>
-                      <span className="text-theme-secondary text-sm">
+                      <Text papel="rotulo" tom="suave">
                         Aguarde a notificação de aprovação
-                      </span>
+                      </Text>
                     </Inline>
                   </div>
                 </div>
@@ -392,12 +395,17 @@ export default function StudentVerificationRequired({
                   <h3 className="text-lg font-bold text-theme-primary mb-3 classical-title">
                     Precisa de ajuda?
                   </h3>
-                  <div className="space-y-2 text-sm text-theme-secondary">
+                  <Text
+                    papel="rotulo"
+                    tom="suave"
+                    as="div"
+                    className="space-y-2"
+                  >
                     <p>• O processo depende da aprovação do seu professor</p>
                     <p>• Entre em contato diretamente com ele se possível</p>
                     <p>• Verifique se ele tem o email correto</p>
                     <p>• Nossa equipe pode ajudar em casos especiais</p>
-                  </div>
+                  </Text>
                   <div className="mt-4">
                     <Link
                       href="/contact"

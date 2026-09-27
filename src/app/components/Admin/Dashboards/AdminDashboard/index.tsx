@@ -39,6 +39,7 @@ import {
   formatPercentage,
 } from '../../Utils';
 import { Inline } from '@/app/components/ui/Layout';
+import { Text } from '@/app/components/ui/Text';
 
 // Tipos para melhor type safety
 type TimeFrame = '7d' | '30d' | '90d' | '1y';
@@ -210,9 +211,9 @@ export default function AdminDashboard() {
                 </Button>
               </Inline>
 
-              <div className="text-sm text-theme-tertiary">
+              <Text papel="rotulo" tom="fraco" as="div">
                 Última atualização: {formattedLastUpdated}
-              </div>
+              </Text>
             </div>
           </div>
         </AnimatedItem>
@@ -246,9 +247,9 @@ export default function AdminDashboard() {
                     <div className="text-3xl font-bold text-theme-primary mb-2">
                       {formatNumber(safeGet(stats, 'overview.totalUsers', 0))}
                     </div>
-                    <div className="text-sm text-theme-tertiary mb-2">
+                    <Text papel="rotulo" tom="fraco" as="div" className="mb-2">
                       Usuários Ativos
-                    </div>
+                    </Text>
                     <Inline gap={1} className="justify-center">
                       {(() => {
                         const growthData = formatGrowthRate(
@@ -285,9 +286,9 @@ export default function AdminDashboard() {
                     <div className="text-3xl font-bold text-theme-primary mb-2">
                       {formatNumber(safeGet(stats, 'overview.totalWorks', 0))}
                     </div>
-                    <div className="text-sm text-theme-tertiary mb-2">
+                    <Text papel="rotulo" tom="fraco" as="div" className="mb-2">
                       Obras Catalogadas
-                    </div>
+                    </Text>
                     <Inline gap={1} className="justify-center">
                       {(() => {
                         const growthData = formatGrowthRate(
@@ -326,9 +327,9 @@ export default function AdminDashboard() {
                         safeGet(stats, 'overview.totalAnnotations', 0)
                       )}
                     </div>
-                    <div className="text-sm text-theme-tertiary mb-2">
+                    <Text papel="rotulo" tom="fraco" as="div" className="mb-2">
                       Anotações Criadas
-                    </div>
+                    </Text>
                     <Inline gap={1} className="justify-center">
                       {(() => {
                         const growthData = formatGrowthRate(
@@ -397,21 +398,31 @@ export default function AdminDashboard() {
                           key={user?.id || `active-${index}`}
                           className="p-3 bg-theme-secondary rounded-xl"
                         >
-                          <div className="w-8 h-8 bg-gradient-to-br from-accent-blue to-accent-purple rounded-lg flex items-center justify-center text-sm font-bold text-theme-primary">
+                          <Text
+                            papel="rotulo"
+                            tom="forte"
+                            as="div"
+                            className="w-8 h-8 bg-gradient-to-br from-accent-blue to-accent-purple rounded-lg flex items-center justify-center font-bold"
+                          >
                             {index + 1}
-                          </div>
+                          </Text>
                           <div className="flex-1 min-w-0">
                             <p className="font-medium text-theme-primary truncate">
                               {user?.name || 'Usuário desconhecido'}
                             </p>
                           </div>
                           <div className="text-right">
-                            <p className="text-sm font-medium text-theme-primary">
+                            <Text
+                              papel="rotulo"
+                              tom="forte"
+                              as="p"
+                              className="font-medium"
+                            >
                               {user?.annotationsCount || 0} anotações
-                            </p>
-                            <p className="text-xs text-theme-tertiary">
+                            </Text>
+                            <Text papel="legenda" tom="fraco" as="p">
                               {user?.uploadsCount || 0} uploads
-                            </p>
+                            </Text>
                           </div>
                         </Inline>
                       ))}
@@ -445,24 +456,29 @@ export default function AdminDashboard() {
                           key={user?.id || `contributor-${index}`}
                           className="p-3 bg-theme-secondary rounded-xl"
                         >
-                          <div className="w-8 h-8 bg-gradient-to-br from-accent-green to-accent-blue rounded-lg flex items-center justify-center text-sm font-bold text-theme-primary">
+                          <Text
+                            papel="rotulo"
+                            tom="forte"
+                            as="div"
+                            className="w-8 h-8 bg-gradient-to-br from-accent-green to-accent-blue rounded-lg flex items-center justify-center font-bold"
+                          >
                             {index + 1}
-                          </div>
+                          </Text>
                           <div className="flex-1 min-w-0">
                             <p className="font-medium text-theme-primary truncate">
                               {user?.name || 'Usuário desconhecido'}
                             </p>
-                            <p className="text-sm text-theme-tertiary">
+                            <Text papel="rotulo" tom="fraco" as="p">
                               {user?.uploadsCount || 0} uploads totais
-                            </p>
+                            </Text>
                           </div>
                           <div className="text-right">
                             <p className="text-sm font-medium text-accent-green">
                               Score: {user?.qualityScore || 0}
                             </p>
-                            <p className="text-xs text-theme-tertiary">
+                            <Text papel="legenda" tom="fraco" as="p">
                               {user?.verifiedUploads || 0} verificados
-                            </p>
+                            </Text>
                           </div>
                         </Inline>
                       ))}
@@ -488,25 +504,30 @@ export default function AdminDashboard() {
                           key={user?.id || `annotator-${index}`}
                           className="p-3 bg-theme-secondary rounded-xl"
                         >
-                          <div className="w-8 h-8 bg-gradient-to-br from-accent-amber to-accent-red rounded-lg flex items-center justify-center text-sm font-bold text-theme-primary">
+                          <Text
+                            papel="rotulo"
+                            tom="forte"
+                            as="div"
+                            className="w-8 h-8 bg-gradient-to-br from-accent-amber to-accent-red rounded-lg flex items-center justify-center font-bold"
+                          >
                             {index + 1}
-                          </div>
+                          </Text>
                           <div className="flex-1 min-w-0">
                             <p className="font-medium text-theme-primary truncate">
                               {user?.name || 'Usuário desconhecido'}
                             </p>
-                            <p className="text-sm text-theme-tertiary">
+                            <Text papel="rotulo" tom="fraco" as="p">
                               {user?.annotationsCount || 0} anotações
-                            </p>
+                            </Text>
                           </div>
                           <div className="text-right">
                             <p className="text-sm font-medium text-accent-amber">
                               {formatPercentage(user?.avgHelpfulRatio || 0)}{' '}
                               úteis
                             </p>
-                            <p className="text-xs text-theme-tertiary">
+                            <Text papel="legenda" tom="fraco" as="p">
                               {user?.helpfulAnnotationsCount || 0} ajudaram
-                            </p>
+                            </Text>
                           </div>
                         </Inline>
                       ))}
@@ -536,34 +557,44 @@ export default function AdminDashboard() {
                           key={work?.id || `work-${index}`}
                           className="flex items-start space-x-3 p-3 bg-theme-secondary rounded-xl"
                         >
-                          <div className="w-6 h-6 bg-gradient-to-br from-accent-blue to-accent-purple rounded-lg flex items-center justify-center text-xs font-bold text-theme-primary flex-shrink-0 mt-0.5">
+                          <Text
+                            papel="legenda"
+                            tom="forte"
+                            as="div"
+                            className="w-6 h-6 bg-gradient-to-br from-accent-blue to-accent-purple rounded-lg flex items-center justify-center font-bold flex-shrink-0 mt-0.5"
+                          >
                             {index + 1}
-                          </div>
+                          </Text>
                           <div className="flex-1 min-w-0">
                             <p className="font-medium text-theme-primary truncate">
                               {work?.title || 'Obra desconhecida'}
                             </p>
-                            <p className="text-sm text-theme-tertiary truncate">
+                            <Text
+                              papel="rotulo"
+                              tom="fraco"
+                              as="p"
+                              className="truncate"
+                            >
                               {work?.composer || 'Compositor desconhecido'}
-                            </p>
+                            </Text>
                             <Inline gap={4} className="mt-2">
                               <Inline gap={1}>
                                 <PiHeart className="w-3 h-3 text-accent-red" />
-                                <span className="text-xs text-theme-tertiary">
+                                <Text papel="legenda" tom="fraco">
                                   {work?.favoritesCount || 0}
-                                </span>
+                                </Text>
                               </Inline>
                               <Inline gap={1}>
                                 <PiChatCenteredText className="w-3 h-3 text-accent-blue" />
-                                <span className="text-xs text-theme-tertiary">
+                                <Text papel="legenda" tom="fraco">
                                   {work?.annotationsCount || 0}
-                                </span>
+                                </Text>
                               </Inline>
                               <Inline gap={1}>
                                 <PiFileText className="w-3 h-3 text-accent-green" />
-                                <span className="text-xs text-theme-tertiary">
+                                <Text papel="legenda" tom="fraco">
                                   {work?.scoreCount || 0}
-                                </span>
+                                </Text>
                               </Inline>
                             </Inline>
                           </div>
@@ -591,25 +622,30 @@ export default function AdminDashboard() {
                           key={composer?.id || `composer-${index}`}
                           className="p-3 bg-theme-secondary rounded-xl"
                         >
-                          <div className="w-6 h-6 bg-gradient-to-br from-accent-green to-accent-blue rounded-lg flex items-center justify-center text-xs font-bold text-theme-primary">
+                          <Text
+                            papel="legenda"
+                            tom="forte"
+                            as="div"
+                            className="w-6 h-6 bg-gradient-to-br from-accent-green to-accent-blue rounded-lg flex items-center justify-center font-bold"
+                          >
                             {index + 1}
-                          </div>
+                          </Text>
                           <div className="flex-1 min-w-0">
                             <p className="font-medium text-theme-primary truncate">
                               {composer?.name || 'Compositor desconhecido'}
                             </p>
-                            <p className="text-sm text-theme-tertiary">
+                            <Text papel="rotulo" tom="fraco" as="p">
                               {composer?.worksCount || 0} obras catalogadas
-                            </p>
+                            </Text>
                           </div>
                           <div className="text-right">
                             <p className="text-sm font-medium text-accent-green">
                               {composer?.totalFavorites || 0} favoritos
                             </p>
-                            <p className="text-xs text-theme-tertiary">
+                            <Text papel="legenda" tom="fraco" as="p">
                               {formatNumber(composer?.avgWorksPerUser || 0)}{' '}
                               obras/usuário
-                            </p>
+                            </Text>
                           </div>
                         </Inline>
                       ))}
@@ -637,9 +673,9 @@ export default function AdminDashboard() {
                         <p className="font-medium text-theme-primary">
                           Usuários Ativos Hoje
                         </p>
-                        <p className="text-sm text-theme-tertiary">
+                        <Text papel="rotulo" tom="fraco" as="p">
                           Últimas 24 horas
-                        </p>
+                        </Text>
                       </div>
                       <div className="text-2xl font-bold text-accent-green">
                         {formatNumber(
@@ -652,9 +688,9 @@ export default function AdminDashboard() {
                         <p className="font-medium text-theme-primary">
                           Usuários Semanais
                         </p>
-                        <p className="text-sm text-theme-tertiary">
+                        <Text papel="rotulo" tom="fraco" as="p">
                           Últimos 7 dias
-                        </p>
+                        </Text>
                       </div>
                       <div className="text-2xl font-bold text-accent-blue">
                         {formatNumber(
@@ -667,9 +703,9 @@ export default function AdminDashboard() {
                         <p className="font-medium text-theme-primary">
                           Usuários Mensais
                         </p>
-                        <p className="text-sm text-theme-tertiary">
+                        <Text papel="rotulo" tom="fraco" as="p">
                           Últimos 30 dias
-                        </p>
+                        </Text>
                       </div>
                       <div className="text-2xl font-bold text-accent-purple">
                         {formatNumber(
@@ -698,23 +734,38 @@ export default function AdminDashboard() {
                           key={work?.workId || `studied-${index}`}
                           className="flex items-start space-x-3 p-3 bg-theme-secondary rounded-xl"
                         >
-                          <div className="w-6 h-6 bg-gradient-to-br from-accent-amber to-accent-red rounded-lg flex items-center justify-center text-xs font-bold text-theme-primary flex-shrink-0 mt-0.5">
+                          <Text
+                            papel="legenda"
+                            tom="forte"
+                            as="div"
+                            className="w-6 h-6 bg-gradient-to-br from-accent-amber to-accent-red rounded-lg flex items-center justify-center font-bold flex-shrink-0 mt-0.5"
+                          >
                             {index + 1}
-                          </div>
+                          </Text>
                           <div className="flex-1 min-w-0">
-                            <p className="font-medium text-theme-primary truncate text-sm">
+                            <Text
+                              papel="rotulo"
+                              tom="forte"
+                              as="p"
+                              className="font-medium truncate"
+                            >
                               {work?.title || 'Obra desconhecida'}
-                            </p>
-                            <p className="text-xs text-theme-tertiary truncate">
+                            </Text>
+                            <Text
+                              papel="legenda"
+                              tom="fraco"
+                              as="p"
+                              className="truncate"
+                            >
                               {work?.composer || 'Compositor desconhecido'}
-                            </p>
+                            </Text>
                             <Inline gap={3} className="mt-1">
                               <span className="text-xs text-accent-amber font-medium">
                                 {formatDuration(work?.totalMinutes || 0)}
                               </span>
-                              <span className="text-xs text-theme-tertiary">
+                              <Text papel="legenda" tom="fraco">
                                 {work?.uniqueUsers || 0} usuários
-                              </span>
+                              </Text>
                             </Inline>
                           </div>
                         </div>
@@ -735,9 +786,13 @@ export default function AdminDashboard() {
                   <div className="space-y-4">
                     <div className="p-3 bg-theme-secondary rounded-xl">
                       <div className="flex items-center justify-between mb-2">
-                        <span className="text-sm font-medium text-theme-primary">
+                        <Text
+                          papel="rotulo"
+                          tom="forte"
+                          className="font-medium"
+                        >
                           Sessões por Usuário
-                        </span>
+                        </Text>
                         <span className="text-lg font-bold text-accent-blue">
                           {formatNumber(
                             safeGet(stats, 'engagement.avgSessionsPerUser', 0)
@@ -763,9 +818,13 @@ export default function AdminDashboard() {
 
                     <div className="p-3 bg-theme-secondary rounded-xl">
                       <div className="flex items-center justify-between mb-2">
-                        <span className="text-sm font-medium text-theme-primary">
+                        <Text
+                          papel="rotulo"
+                          tom="forte"
+                          className="font-medium"
+                        >
                           Anotações por Obra
-                        </span>
+                        </Text>
                         <span className="text-lg font-bold text-accent-green">
                           {formatNumber(
                             safeGet(
@@ -817,9 +876,9 @@ export default function AdminDashboard() {
                           safeGet(stats, 'quality.uploadApprovalRate', 0)
                         )}
                       </div>
-                      <div className="text-sm text-theme-tertiary">
+                      <Text papel="rotulo" tom="fraco" as="div">
                         Taxa de Aprovação
-                      </div>
+                      </Text>
                     </div>
 
                     <div className="text-center p-4 bg-theme-secondary rounded-xl">
@@ -828,9 +887,9 @@ export default function AdminDashboard() {
                           1
                         )}
                       </div>
-                      <div className="text-sm text-theme-tertiary">
+                      <Text papel="rotulo" tom="fraco" as="div">
                         Score Médio de Qualidade
-                      </div>
+                      </Text>
                     </div>
                   </div>
                 </AnimatedCard>
@@ -849,9 +908,13 @@ export default function AdminDashboard() {
                     <div className="flex items-center justify-between p-3 bg-theme-secondary rounded-xl">
                       <Inline gap={2}>
                         <PiUsers className="w-4 h-4 text-accent-blue" />
-                        <span className="text-sm font-medium text-theme-primary">
+                        <Text
+                          papel="rotulo"
+                          tom="forte"
+                          className="font-medium"
+                        >
                           Compositores
-                        </span>
+                        </Text>
                       </Inline>
                       <span className="text-lg font-bold text-accent-blue">
                         {formatNumber(
@@ -863,9 +926,13 @@ export default function AdminDashboard() {
                     <div className="flex items-center justify-between p-3 bg-theme-secondary rounded-xl">
                       <Inline gap={2}>
                         <PiMusicNotes className="w-4 h-4 text-accent-green" />
-                        <span className="text-sm font-medium text-theme-primary">
+                        <Text
+                          papel="rotulo"
+                          tom="forte"
+                          className="font-medium"
+                        >
                           Obras
-                        </span>
+                        </Text>
                       </Inline>
                       <span className="text-lg font-bold text-accent-green">
                         {formatNumber(
@@ -877,9 +944,13 @@ export default function AdminDashboard() {
                     <div className="flex items-center justify-between p-3 bg-theme-secondary rounded-xl">
                       <Inline gap={2}>
                         <PiFileText className="w-4 h-4 text-accent-amber" />
-                        <span className="text-sm font-medium text-theme-primary">
+                        <Text
+                          papel="rotulo"
+                          tom="forte"
+                          className="font-medium"
+                        >
                           Partituras
-                        </span>
+                        </Text>
                       </Inline>
                       <span className="text-lg font-bold text-accent-amber">
                         {formatNumber(
@@ -903,9 +974,13 @@ export default function AdminDashboard() {
                   <div className="space-y-4">
                     <div className="p-3 bg-theme-secondary rounded-xl">
                       <div className="flex items-center justify-between mb-2">
-                        <span className="text-sm font-medium text-theme-primary">
+                        <Text
+                          papel="rotulo"
+                          tom="forte"
+                          className="font-medium"
+                        >
                           Compositores com Bio
-                        </span>
+                        </Text>
                         <span className="text-lg font-bold text-accent-purple">
                           {formatNumber(
                             safeGet(
@@ -940,9 +1015,13 @@ export default function AdminDashboard() {
 
                     <div className="p-3 bg-theme-secondary rounded-xl">
                       <div className="flex items-center justify-between mb-2">
-                        <span className="text-sm font-medium text-theme-primary">
+                        <Text
+                          papel="rotulo"
+                          tom="forte"
+                          className="font-medium"
+                        >
                           Obras com Partituras
-                        </span>
+                        </Text>
                         <span className="text-lg font-bold text-accent-green">
                           {formatNumber(
                             safeGet(
@@ -983,9 +1062,9 @@ export default function AdminDashboard() {
                           0
                         ).toFixed(1)}
                       </div>
-                      <div className="text-xs text-theme-tertiary">
+                      <Text papel="legenda" tom="fraco" as="div">
                         Partituras por Obra (média)
-                      </div>
+                      </Text>
                     </div>
                   </div>
                 </AnimatedCard>
@@ -1002,9 +1081,9 @@ export default function AdminDashboard() {
                 >
                   <PiShield className="w-8 h-8 mb-3 text-accent-red" />
                   <span className="font-bold mb-2">Moderação</span>
-                  <span className="text-sm text-theme-tertiary text-center">
+                  <Text papel="rotulo" tom="fraco" className="text-center">
                     Gerenciar uploads e reports pendentes
-                  </span>
+                  </Text>
                 </Button>
 
                 <Button
@@ -1014,9 +1093,9 @@ export default function AdminDashboard() {
                 >
                   <PiUsers className="w-8 h-8 mb-3 text-accent-blue" />
                   <span className="font-bold mb-2">Usuários</span>
-                  <span className="text-sm text-theme-tertiary text-center">
+                  <Text papel="rotulo" tom="fraco" className="text-center">
                     Visualizar e gerenciar usuários
-                  </span>
+                  </Text>
                 </Button>
 
                 <Button
@@ -1026,9 +1105,9 @@ export default function AdminDashboard() {
                 >
                   <PiChartBar className="w-8 h-8 mb-3 text-accent-green" />
                   <span className="font-bold mb-2">Relatórios</span>
-                  <span className="text-sm text-theme-tertiary text-center">
+                  <Text papel="rotulo" tom="fraco" className="text-center">
                     Análises detalhadas e métricas
-                  </span>
+                  </Text>
                 </Button>
               </div>
             </AnimatedItem>

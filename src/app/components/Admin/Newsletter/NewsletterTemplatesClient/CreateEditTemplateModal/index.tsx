@@ -22,6 +22,7 @@ import {
   previewTemplateSync,
 } from '@/app/libs/newsletter/emailTemplates';
 import { Inline } from '@/app/components/ui/Layout';
+import { Text } from '@/app/components/ui/Text';
 
 interface CreateEditTemplateModalProps {
   isOpen: boolean;
@@ -485,9 +486,9 @@ export default function CreateEditTemplateModal({
                       <h4 className="font-medium text-theme-primary">
                         Template Ativo
                       </h4>
-                      <p className="text-sm text-theme-tertiary">
+                      <Text papel="rotulo" tom="fraco" as="p">
                         Templates ativos podem ser usados em campanhas
-                      </p>
+                      </Text>
                     </div>
                     <button
                       type="button"
@@ -511,9 +512,9 @@ export default function CreateEditTemplateModal({
                       <h4 className="font-medium text-theme-primary">
                         Template Padrão
                       </h4>
-                      <p className="text-sm text-theme-tertiary">
+                      <Text papel="rotulo" tom="fraco" as="p">
                         Usado por padrão para este tipo de template
-                      </p>
+                      </Text>
                     </div>
                     <button
                       type="button"

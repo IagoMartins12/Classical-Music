@@ -5,6 +5,7 @@ import Image from '@/app/components/SmartImage';
 import { JSX, useEffect, useState } from 'react';
 import { PiMinus, PiPlus, PiX } from 'react-icons/pi';
 import { Inline } from '@/app/components/ui/Layout';
+import { Text } from '@/app/components/ui/Text';
 
 interface FocusModeModalProps {
   isOpen: boolean;
@@ -77,9 +78,13 @@ export function FocusModeModal({
           >
             <PiMinus className="w-4 h-4 text-theme-primary" />
           </button>
-          <span className="text-sm font-medium text-theme-primary min-w-[3rem] text-center">
+          <Text
+            papel="rotulo"
+            tom="forte"
+            className="font-medium min-w-[3rem] text-center"
+          >
             {fontSize}px
-          </span>
+          </Text>
           <button
             onClick={() => changeFontSize(2)}
             className="p-1 hover:bg-theme-classical rounded-full transition-colors"

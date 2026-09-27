@@ -14,6 +14,7 @@ import {
   PiTrash,
 } from 'react-icons/pi';
 import { Inline } from '@/app/components/ui/Layout';
+import { Text } from '@/app/components/ui/Text';
 
 // Declaração do tipo para YouTube Player API
 declare global {
@@ -250,14 +251,14 @@ const QuoteMusicalComponent = (props: any) => {
                   background: `linear-gradient(to right, var(--accent-purple) 0%, var(--accent-purple) ${volume}%, #e5e7eb ${volume}%, #e5e7eb 100%)`,
                 }}
               />
-              <span className="text-xs text-theme-tertiary w-10 text-right">
+              <Text papel="legenda" tom="fraco" className="w-10 text-right">
                 {volume}%
-              </span>
+              </Text>
             </Inline>
           </Inline>
-          <p className="text-xs text-theme-tertiary mt-2 text-center">
+          <Text papel="legenda" tom="fraco" as="p" className="mt-2 text-center">
             🎵 Música de fundo em loop
-          </p>
+          </Text>
         </div>
 
         {/* Hidden Audio Element (para upload) */}

@@ -10,6 +10,7 @@ import {
 import { AnimatedContainer } from '../../animation/AnimatedComponents';
 import { useTranslation } from '@/app/context/TranslationContext';
 import { Inline } from '@/app/components/ui/Layout';
+import { Text } from '@/app/components/ui/Text';
 
 interface emptyStatesProps {
   emptyState: 'all' | 'works' | 'composers' | 'scores';
@@ -267,7 +268,9 @@ const EmptyStateFavorites: React.FC<emptyStatesProps> = ({
                   <h4 className="font-semibold text-theme-primary text-sm mb-1">
                     {t('empty_tip_to_start')}
                   </h4>
-                  <p className="text-xs text-theme-secondary">{config?.tip}</p>
+                  <Text papel="legenda" tom="suave" as="p">
+                    {config?.tip}
+                  </Text>
                 </div>
               </div>
             </div>

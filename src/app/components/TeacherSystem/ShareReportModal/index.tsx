@@ -20,6 +20,7 @@ import {
 } from 'react-icons/pi';
 import Modal from '@/app/components/Modal';
 import Checkbox from '../../Common/Checkbox';
+import { Text } from '@/app/components/ui/Text';
 
 interface ShareReportModalProps {
   isOpen: boolean;
@@ -257,9 +258,9 @@ export default function ShareReportModal({
               <h3 className="text-lg font-bold text-theme-primary">
                 Seções do Relatório
               </h3>
-              <span className="text-sm text-theme-tertiary">
+              <Text papel="rotulo" tom="fraco">
                 {selectedCount} de {SECTION_OPTIONS.length} selecionadas
-              </span>
+              </Text>
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -294,9 +295,9 @@ export default function ShareReportModal({
                         <div className="font-medium text-theme-primary mb-1">
                           {option.title}
                         </div>
-                        <div className="text-sm text-theme-tertiary">
+                        <Text papel="rotulo" tom="fraco" as="div">
                           {option.description}
-                        </div>
+                        </Text>
                       </div>
 
                       <div
@@ -338,9 +339,9 @@ export default function ShareReportModal({
                 <div className="font-medium text-theme-primary">
                   Permitir Comentários
                 </div>
-                <div className="text-sm text-theme-tertiary">
+                <Text papel="rotulo" tom="fraco" as="div">
                   O aluno poderá deixar comentários no relatório
-                </div>
+                </Text>
               </div>
               <label className="relative inline-flex items-center cursor-pointer">
                 <Checkbox

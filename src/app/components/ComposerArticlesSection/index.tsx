@@ -8,6 +8,7 @@ import { AnimatedCard, AnimatedItem } from '../animation/AnimatedComponents';
 import type { BlogArticlePreview } from '@/app/requests/blog/composer-articles';
 import { useTranslation } from '@/app/hooks/useTranslation';
 import { Inline } from '@/app/components/ui/Layout';
+import { Text } from '@/app/components/ui/Text';
 
 interface ComposerArticlesSectionProps {
   articles: BlogArticlePreview[];
@@ -46,9 +47,9 @@ export default function ComposerArticlesSection({
           </Inline>
 
           {totalCount > 0 && (
-            <div className="text-sm text-theme-tertiary">
+            <Text papel="rotulo" tom="fraco" as="div">
               {totalCount} {totalCount === 1 ? t('article') : t('articles')}
-            </div>
+            </Text>
           )}
         </div>
       </AnimatedItem>

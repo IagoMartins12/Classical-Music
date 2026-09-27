@@ -6,6 +6,7 @@ import { GiGrandPiano, GiGClef } from 'react-icons/gi';
 import { PiArrowsClockwise, PiGlobe, PiMusicNotes } from 'react-icons/pi';
 import Modal from '../Modal';
 import { Inline } from '@/app/components/ui/Layout';
+import { Text } from '@/app/components/ui/Text';
 
 interface TranslationLoadingModalProps {
   isOpen: boolean;
@@ -200,11 +201,11 @@ export function TranslationLoadingModal({
                 // Bandeira dos EUA
                 <span>🇺🇸</span>
               )}
-              <span className="text-theme-secondary text-sm font-medium">
+              <Text papel="rotulo" tom="suave" className="font-medium">
                 {currentLanguage === 'pt'
                   ? 'English → Português'
                   : 'Português → English'}
-              </span>
+              </Text>
             </Inline>
           </Inline>
 
@@ -215,10 +216,15 @@ export function TranslationLoadingModal({
 
           {/* Barra de progresso */}
           <div className="mb-6">
-            <div className="flex items-center justify-between text-xs text-theme-tertiary mb-2">
+            <Text
+              papel="legenda"
+              tom="fraco"
+              as="div"
+              className="flex items-center justify-between mb-2"
+            >
               <span>{currentLanguage === 'pt' ? 'Progresso' : 'Progress'}</span>
               <span>{progress}%</span>
-            </div>
+            </Text>
 
             <div className="w-full h-2 bg-theme-elevated rounded-full overflow-hidden">
               <div
@@ -247,11 +253,11 @@ export function TranslationLoadingModal({
 
           {/* Nota motivacional */}
           <div className="mt-6 p-4 bg-gradient-to-r from-brand-primary/5 to-brand-secondary/5 border-l-4 border-brand-primary rounded-xl">
-            <p className="text-sm text-theme-secondary italic">
+            <Text papel="rotulo" tom="suave" as="p" className="italic">
               {currentLanguage === 'pt'
                 ? '"A música é a linguagem universal da humanidade."'
                 : '"Music is the universal language of mankind."'}
-            </p>
+            </Text>
             <cite className="text-xs text-brand-primary font-medium block mt-1">
               — Henry Wadsworth Longfellow
             </cite>

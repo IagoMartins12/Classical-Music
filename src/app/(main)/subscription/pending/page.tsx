@@ -4,6 +4,7 @@ import React from 'react';
 import { useRouter } from 'next/navigation';
 import { PiClock, PiEnvelopeSimple } from 'react-icons/pi';
 import Button from '@/app/components/Common/Button';
+import { Text } from '@/app/components/ui/Text';
 
 export default function SubscriptionPendingPage() {
   const router = useRouter();
@@ -80,10 +81,10 @@ export default function SubscriptionPendingPage() {
             </Button>
           </div>
 
-          <p className="text-sm text-theme-tertiary mt-8">
+          <Text papel="rotulo" tom="fraco" as="p" className="mt-8">
             Não se preocupe! Você será notificado assim que o pagamento for
             confirmado.
-          </p>
+          </Text>
         </div>
       </div>
     </div>

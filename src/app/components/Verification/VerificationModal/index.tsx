@@ -10,6 +10,7 @@ import { useToast } from '@/app/hooks/useToast';
 import { useTranslation } from '@/app/hooks/useTranslation';
 import { setVerificationRequest } from '@/app/requests/verification';
 import { Inline } from '@/app/components/ui/Layout';
+import { Text } from '@/app/components/ui/Text';
 
 interface VerificationModalProps {
   isOpen: boolean;
@@ -94,7 +95,9 @@ export default function VerificationModal({
                 <h2 className="text-xl font-bold text-theme-primary">
                   {t('verification_modal_titulo')}
                 </h2>
-                <p className="text-sm text-theme-secondary">{composerName}</p>
+                <Text papel="rotulo" tom="suave" as="p">
+                  {composerName}
+                </Text>
               </div>
             </Inline>
           </div>
@@ -103,9 +106,9 @@ export default function VerificationModal({
           <div className="mb-6">
             <div className="p-3 bg-theme-secondary rounded-lg">
               <Inline gap={2}>
-                <span className="text-sm font-medium text-theme-tertiary">
+                <Text papel="rotulo" tom="fraco" className="font-medium">
                   {t('verification_modal_status_atual')}
-                </span>
+                </Text>
                 <span
                   className={`inline-flex items-center space-x-1 px-2 py-1 rounded-full text-xs font-medium ${
                     currentVerificationStatus

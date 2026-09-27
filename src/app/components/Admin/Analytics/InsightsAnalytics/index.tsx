@@ -42,6 +42,7 @@ import toast from 'react-hot-toast';
 import { formatNumber } from '../../Utils';
 import LoadingAdminState from '../../Common/LoadingState';
 import { Inline } from '@/app/components/ui/Layout';
+import { Text } from '@/app/components/ui/Text';
 
 // ===== UTILITY FUNCTIONS (Moved outside component for reusability) =====
 const getSeverityColor = (severity: string) => {
@@ -238,7 +239,9 @@ export default function AdvancedInsightsAnalytics() {
                 >
                   {insights.summary.healthScore}/100
                 </div>
-                <div className="text-sm text-theme-tertiary">System Health</div>
+                <Text papel="rotulo" tom="fraco" as="div">
+                  System Health
+                </Text>
                 <div className="w-20 h-2 bg-theme-secondary rounded-full overflow-hidden mx-auto mt-1">
                   <div
                     className={`h-full rounded-full transition-all duration-1000 ${
@@ -269,26 +272,33 @@ export default function AdvancedInsightsAnalytics() {
                       ? '📉 Atenção'
                       : '➡️ Estável'}
                 </div>
-                <div className="text-sm text-theme-tertiary">
+                <Text papel="rotulo" tom="fraco" as="div">
                   Tendência Geral
-                </div>
+                </Text>
               </div>
 
               <div className="text-center">
                 <div className="text-lg font-bold text-accent-purple mb-2">
                   v{version}
                 </div>
-                <div className="text-sm text-theme-tertiary">AI Engine</div>
+                <Text papel="rotulo" tom="fraco" as="div">
+                  AI Engine
+                </Text>
               </div>
 
               {lastUpdated && (
                 <div className="text-center">
-                  <div className="text-sm text-theme-primary font-medium">
+                  <Text
+                    papel="rotulo"
+                    tom="forte"
+                    as="div"
+                    className="font-medium"
+                  >
                     {new Date(lastUpdated).toLocaleTimeString('pt-BR')}
-                  </div>
-                  <div className="text-xs text-theme-tertiary">
+                  </Text>
+                  <Text papel="legenda" tom="fraco" as="div">
                     {processingTime && `${processingTime}ms`} • Última análise
-                  </div>
+                  </Text>
                 </div>
               )}
             </Inline>
@@ -318,13 +328,13 @@ export default function AdvancedInsightsAnalytics() {
                       <h4 className="font-bold text-accent-red mb-2">
                         {anomaly.metric}
                       </h4>
-                      <p className="text-sm text-theme-secondary mb-2">
+                      <Text papel="rotulo" tom="suave" as="p" className="mb-2">
                         Valor: {formatNumber(anomaly.value)} (desvio:{' '}
                         {anomaly.deviation.toFixed(1)}%)
-                      </p>
-                      <p className="text-xs text-theme-tertiary">
+                      </Text>
+                      <Text papel="legenda" tom="fraco" as="p">
                         {anomaly.possibleCauses[0]}
-                      </p>
+                      </Text>
                     </div>
                   ))}
               </div>
@@ -340,9 +350,9 @@ export default function AdvancedInsightsAnalytics() {
               <div className="text-2xl font-bold text-theme-primary">
                 {insights.riskAssessment.churnRiskUsers.length}
               </div>
-              <div className="text-sm text-theme-tertiary">
+              <Text papel="rotulo" tom="fraco" as="div">
                 Usuários em Risco
-              </div>
+              </Text>
             </AnimatedCard>
 
             <AnimatedCard className="classical-card p-6 text-center">
@@ -354,9 +364,9 @@ export default function AdvancedInsightsAnalytics() {
                   ).length
                 }
               </div>
-              <div className="text-sm text-theme-tertiary">
+              <Text papel="rotulo" tom="fraco" as="div">
                 Oportunidades Alto Impacto
-              </div>
+              </Text>
             </AnimatedCard>
 
             <AnimatedCard className="classical-card p-6 text-center">
@@ -364,9 +374,9 @@ export default function AdvancedInsightsAnalytics() {
               <div className="text-2xl font-bold text-theme-primary">
                 {insights.anomalies.length}
               </div>
-              <div className="text-sm text-theme-tertiary">
+              <Text papel="rotulo" tom="fraco" as="div">
                 Anomalias Detectadas
-              </div>
+              </Text>
             </AnimatedCard>
 
             <AnimatedCard className="classical-card p-6 text-center">
@@ -374,9 +384,9 @@ export default function AdvancedInsightsAnalytics() {
               <div className="text-2xl font-bold text-theme-primary">
                 {insights.educationalEngagement.learningProgressions.length}
               </div>
-              <div className="text-sm text-theme-tertiary">
+              <Text papel="rotulo" tom="fraco" as="div">
                 Padrões de Aprendizado
-              </div>
+              </Text>
             </AnimatedCard>
           </div>
         </AnimatedItem>
@@ -603,17 +613,17 @@ export default function AdvancedInsightsAnalytics() {
                                   ? '⚡ IMPORTANTE'
                                   : '📋 NORMAL'}
                             </span>
-                            <span className="text-xs text-theme-tertiary">
+                            <Text papel="legenda" tom="fraco">
                               ⏱️ {item.timeframe}
-                            </span>
+                            </Text>
                           </Inline>
                           <h4 className="font-medium text-theme-primary mb-1">
                             {item.action}
                           </h4>
-                          <p className="text-sm text-theme-secondary">
+                          <Text papel="rotulo" tom="suave" as="p">
                             <strong>Impacto esperado:</strong>{' '}
                             {item.expectedImpact}
-                          </p>
+                          </Text>
                         </div>
                       </div>
                     </div>
@@ -661,9 +671,14 @@ function OverviewSection({ insights, onRefreshModule, isGenerating }: any) {
                   key={index}
                   className="flex items-start space-x-3 p-4 bg-theme-secondary rounded-xl"
                 >
-                  <div className="w-8 h-8 bg-gradient-to-br from-accent-blue to-accent-purple rounded-full flex items-center justify-center text-xs font-bold text-theme-primary flex-shrink-0 mt-1">
+                  <Text
+                    papel="legenda"
+                    tom="forte"
+                    as="div"
+                    className="w-8 h-8 bg-gradient-to-br from-accent-blue to-accent-purple rounded-full flex items-center justify-center font-bold flex-shrink-0 mt-1"
+                  >
                     {index + 1}
-                  </div>
+                  </Text>
                   <p className="text-theme-primary leading-relaxed">
                     {finding}
                   </p>
@@ -697,9 +712,9 @@ function OverviewSection({ insights, onRefreshModule, isGenerating }: any) {
 
           <div className="space-y-3">
             <div className="flex justify-between items-center">
-              <span className="text-sm text-theme-secondary">
+              <Text papel="rotulo" tom="suave">
                 Taxa de Progressão
-              </span>
+              </Text>
               <span className="font-bold text-accent-green">
                 {insights.educationalEngagement.learningProgressions.length > 0
                   ? `${Math.round(
@@ -714,9 +729,9 @@ function OverviewSection({ insights, onRefreshModule, isGenerating }: any) {
               </span>
             </div>
             <div className="flex justify-between items-center">
-              <span className="text-sm text-theme-secondary">
+              <Text papel="rotulo" tom="suave">
                 Qualidade Anotações
-              </span>
+              </Text>
               <span className="font-bold text-accent-blue">
                 {insights.educationalEngagement.annotationQualityMetrics.avgHelpfulnessScore.toFixed(
                   1
@@ -725,9 +740,9 @@ function OverviewSection({ insights, onRefreshModule, isGenerating }: any) {
               </span>
             </div>
             <div className="flex justify-between items-center">
-              <span className="text-sm text-theme-secondary">
+              <Text papel="rotulo" tom="suave">
                 Top Contribuidores
-              </span>
+              </Text>
               <span className="font-bold text-accent-purple">
                 {
                   insights.educationalEngagement.annotationQualityMetrics
@@ -759,9 +774,9 @@ function OverviewSection({ insights, onRefreshModule, isGenerating }: any) {
 
           <div className="space-y-3">
             <div className="flex justify-between items-center">
-              <span className="text-sm text-theme-secondary">
+              <Text papel="rotulo" tom="suave">
                 Usuários em Risco
-              </span>
+              </Text>
               <span
                 className={`font-bold ${
                   insights.riskAssessment.churnRiskUsers.length > 10
@@ -775,17 +790,17 @@ function OverviewSection({ insights, onRefreshModule, isGenerating }: any) {
               </span>
             </div>
             <div className="flex justify-between items-center">
-              <span className="text-sm text-theme-secondary">
+              <Text papel="rotulo" tom="suave">
                 Riscos de Conteúdo
-              </span>
+              </Text>
               <span className="font-bold text-accent-amber">
                 {insights.riskAssessment.contentRisks.length}
               </span>
             </div>
             <div className="flex justify-between items-center">
-              <span className="text-sm text-theme-secondary">
+              <Text papel="rotulo" tom="suave">
                 Saúde do Sistema
-              </span>
+              </Text>
               <span
                 className={`font-bold ${
                   insights.riskAssessment.systemHealthIndicators.every(
@@ -827,7 +842,9 @@ function OverviewSection({ insights, onRefreshModule, isGenerating }: any) {
 
           <div className="space-y-3">
             <div className="flex justify-between items-center">
-              <span className="text-sm text-theme-secondary">Alto Impacto</span>
+              <Text papel="rotulo" tom="suave">
+                Alto Impacto
+              </Text>
               <span className="font-bold text-accent-purple">
                 {
                   insights.growthOpportunities.filter(
@@ -837,9 +854,9 @@ function OverviewSection({ insights, onRefreshModule, isGenerating }: any) {
               </span>
             </div>
             <div className="flex justify-between items-center">
-              <span className="text-sm text-theme-secondary">
+              <Text papel="rotulo" tom="suave">
                 Rápida Implementação
-              </span>
+              </Text>
               <span className="font-bold text-accent-green">
                 {
                   insights.growthOpportunities.filter(
@@ -849,9 +866,9 @@ function OverviewSection({ insights, onRefreshModule, isGenerating }: any) {
               </span>
             </div>
             <div className="flex justify-between items-center">
-              <span className="text-sm text-theme-secondary">
+              <Text papel="rotulo" tom="suave">
                 ROI Potencial
-              </span>
+              </Text>
               <span className="font-bold text-accent-blue">Alto</span>
             </div>
           </div>
@@ -874,9 +891,9 @@ function OverviewSection({ insights, onRefreshModule, isGenerating }: any) {
             (indicator: any, index: number) => (
               <div key={index} className="p-4 bg-theme-secondary rounded-xl">
                 <div className="flex items-center justify-between mb-2">
-                  <span className="text-sm font-medium text-theme-primary">
+                  <Text papel="rotulo" tom="forte" className="font-medium">
                     {indicator.metric}
-                  </span>
+                  </Text>
                   <span
                     className={`w-3 h-3 rounded-full ${
                       indicator.status === 'healthy'
@@ -890,10 +907,10 @@ function OverviewSection({ insights, onRefreshModule, isGenerating }: any) {
                 <div className="text-xl font-bold text-theme-primary mb-1">
                   {formatNumber(indicator.currentValue)}
                 </div>
-                <div className="text-xs text-theme-tertiary">
+                <Text papel="legenda" tom="fraco" as="div">
                   Ideal: {indicator.healthyRange.min}-
                   {indicator.healthyRange.max}
-                </div>
+                </Text>
               </div>
             )
           )}
@@ -944,23 +961,27 @@ function PredictionsSection({
                   <h3 className="font-bold text-theme-primary mb-1">
                     {prediction.metric}
                   </h3>
-                  <p className="text-sm text-theme-tertiary">
+                  <Text papel="rotulo" tom="fraco" as="p">
                     Previsão para {prediction.timeframe}
-                  </p>
+                  </Text>
                 </div>
                 <TrendIcon className={`w-6 h-6 ${trendColor}`} />
               </div>
 
               <div className="space-y-4">
                 <div className="flex items-center justify-between">
-                  <span className="text-sm text-theme-secondary">Atual</span>
+                  <Text papel="rotulo" tom="suave">
+                    Atual
+                  </Text>
                   <span className="text-2xl font-bold text-theme-primary">
                     {formatNumber(prediction.currentValue)}
                   </span>
                 </div>
 
                 <div className="flex items-center justify-between">
-                  <span className="text-sm text-theme-secondary">Previsto</span>
+                  <Text papel="rotulo" tom="suave">
+                    Previsto
+                  </Text>
                   <span className={`text-2xl font-bold ${trendColor}`}>
                     {formatNumber(prediction.predictedValue)}
                   </span>
@@ -968,9 +989,9 @@ function PredictionsSection({
 
                 <div className="pt-3 border-t border-theme-secondary">
                   <div className="flex items-center justify-between mb-2">
-                    <span className="text-xs text-theme-tertiary">
+                    <Text papel="legenda" tom="fraco">
                       Confiança da IA
-                    </span>
+                    </Text>
                     <span className="text-xs font-medium text-accent-blue">
                       {prediction.confidence.toFixed(1)}%
                     </span>
@@ -984,9 +1005,9 @@ function PredictionsSection({
                 </div>
 
                 <div className="pt-3 border-t border-theme-secondary">
-                  <p className="text-xs text-theme-tertiary mb-2">
+                  <Text papel="legenda" tom="fraco" as="p" className="mb-2">
                     Fatores chave:
-                  </p>
+                  </Text>
                   <div className="space-y-1">
                     {prediction.factors
                       .slice(0, 3)
@@ -1006,9 +1027,9 @@ function PredictionsSection({
                 {prediction.historicalData &&
                   prediction.historicalData.length > 0 && (
                     <div className="pt-3 border-t border-theme-secondary">
-                      <p className="text-xs text-theme-tertiary mb-2">
+                      <Text papel="legenda" tom="fraco" as="p" className="mb-2">
                         Tendência histórica:
-                      </p>
+                      </Text>
                       <div className="flex items-end space-x-1 h-8">
                         {prediction.historicalData.map(
                           (point: any, i: number) => (
@@ -1098,9 +1119,9 @@ function EducationalEngagementSection({
                     <span className="text-sm font-medium text-accent-green">
                       {progression.successRate}% sucesso
                     </span>
-                    <span className="text-sm text-theme-tertiary">
+                    <Text papel="rotulo" tom="fraco">
                       ~{progression.avgTimeToComplete} dias
-                    </span>
+                    </Text>
                   </Inline>
                 </div>
 
@@ -1231,9 +1252,9 @@ function EducationalEngagementSection({
                 )}
                 ⭐
               </div>
-              <div className="text-sm text-theme-tertiary">
+              <Text papel="rotulo" tom="fraco" as="div">
                 Score Médio de Utilidade
-              </div>
+              </Text>
             </div>
 
             <div>
@@ -1248,16 +1269,16 @@ function EducationalEngagementSection({
                       key={index}
                       className="flex items-center justify-between p-2 bg-theme-secondary rounded"
                     >
-                      <span className="text-sm text-theme-primary">
+                      <Text papel="rotulo" tom="forte">
                         {contributor.username}
-                      </span>
+                      </Text>
                       <Inline gap={2}>
                         <span className="text-sm font-bold text-accent-green">
                           {contributor.qualityScore}%
                         </span>
-                        <span className="text-xs text-theme-tertiary">
+                        <Text papel="legenda" tom="fraco">
                           ({contributor.totalAnnotations})
-                        </span>
+                        </Text>
                       </Inline>
                     </div>
                   ))}
@@ -1283,13 +1304,17 @@ function EducationalEngagementSection({
                 <div className="text-xl font-bold text-accent-purple">
                   {educational.studySessionAnalysis.optimalSessionLength}min
                 </div>
-                <div className="text-xs text-theme-tertiary">Sessão Ideal</div>
+                <Text papel="legenda" tom="fraco" as="div">
+                  Sessão Ideal
+                </Text>
               </div>
               <div className="text-center p-3 bg-theme-secondary rounded-xl">
                 <div className="text-lg font-bold text-accent-green">
                   {educational.studySessionAnalysis.peakStudyTimes[0] || 'N/A'}
                 </div>
-                <div className="text-xs text-theme-tertiary">Horário Pico</div>
+                <Text papel="legenda" tom="fraco" as="div">
+                  Horário Pico
+                </Text>
               </div>
             </div>
 
@@ -1302,7 +1327,9 @@ function EducationalEngagementSection({
                   educational.studySessionAnalysis.weeklyPatterns
                 ).map(([day, percentage]: [string, any]) => (
                   <div key={day} className="flex items-center justify-between">
-                    <span className="text-sm text-theme-secondary">{day}</span>
+                    <Text papel="rotulo" tom="suave">
+                      {day}
+                    </Text>
                     <Inline gap={2}>
                       <div className="w-16 h-2 bg-theme-secondary rounded-full overflow-hidden">
                         <div
@@ -1310,9 +1337,9 @@ function EducationalEngagementSection({
                           style={{ width: `${percentage}%` }}
                         />
                       </div>
-                      <span className="text-xs text-theme-tertiary w-8">
+                      <Text papel="legenda" tom="fraco" className="w-8">
                         {percentage}%
-                      </span>
+                      </Text>
                     </Inline>
                   </div>
                 ))}
@@ -1411,12 +1438,17 @@ function UserJourneySection({
                       >
                         {stage.completionRate}%
                       </div>
-                      <div className="text-xs text-theme-tertiary mt-1">
+                      <Text
+                        papel="legenda"
+                        tom="fraco"
+                        as="div"
+                        className="mt-1"
+                      >
                         {stage.stage}
-                      </div>
-                      <div className="text-xs text-theme-tertiary">
+                      </Text>
+                      <Text papel="legenda" tom="fraco" as="div">
                         {stage.avgDuration}d
-                      </div>
+                      </Text>
                     </div>
                     {stageIndex < journey.stages.length - 1 && (
                       <div className="w-8 h-0.5 bg-theme-tertiary"></div>
@@ -1483,13 +1515,13 @@ function UserJourneySection({
             <div key={index} className="p-4 bg-theme-secondary rounded-xl">
               <div className="flex items-center justify-between mb-3">
                 <Inline gap={3}>
-                  <span className="text-sm text-theme-secondary">
+                  <Text papel="rotulo" tom="suave">
                     {funnel.from}
-                  </span>
+                  </Text>
                   <span className="text-theme-tertiary">→</span>
-                  <span className="text-sm font-medium text-theme-primary">
+                  <Text papel="rotulo" tom="forte" className="font-medium">
                     {funnel.to}
-                  </span>
+                  </Text>
                 </Inline>
                 <Inline gap={3}>
                   <span
@@ -1503,9 +1535,9 @@ function UserJourneySection({
                   >
                     {funnel.conversionRate}%
                   </span>
-                  <span className="text-sm text-theme-tertiary">
+                  <Text papel="rotulo" tom="fraco">
                     ~{funnel.timeToConvert}d
-                  </span>
+                  </Text>
                 </Inline>
               </div>
 
@@ -1523,9 +1555,9 @@ function UserJourneySection({
               </div>
 
               <div>
-                <p className="text-xs text-theme-tertiary mb-1">
+                <Text papel="legenda" tom="fraco" as="p" className="mb-1">
                   🚀 Oportunidades de melhoria:
-                </p>
+                </Text>
                 <div className="flex flex-wrap gap-1">
                   {funnel.improvementOpportunities.map(
                     (opportunity: string, i: number) => (
@@ -1569,9 +1601,9 @@ function UserJourneySection({
 
               <div className="space-y-3">
                 <div>
-                  <p className="text-xs text-theme-tertiary mb-1">
+                  <Text papel="legenda" tom="fraco" as="p" className="mb-1">
                     Características:
-                  </p>
+                  </Text>
                   <div className="space-y-1">
                     {segment.characteristics.map((char: string, i: number) => (
                       <Inline
@@ -1602,9 +1634,9 @@ function UserJourneySection({
                 </div>
 
                 <div className="text-center">
-                  <p className="text-xs text-theme-tertiary">
+                  <Text papel="legenda" tom="fraco" as="p">
                     Potencial de crescimento:
-                  </p>
+                  </Text>
                   <p className="text-xs font-medium text-accent-blue">
                     {segment.growthPotential}
                   </p>
@@ -1685,18 +1717,20 @@ function RiskAssessmentSection({
                       <h4 className="font-bold text-theme-primary">
                         {user.username}
                       </h4>
-                      <p className="text-sm text-theme-tertiary">
+                      <Text papel="rotulo" tom="fraco" as="p">
                         Última atividade:{' '}
                         {new Date(user.lastActivity).toLocaleDateString(
                           'pt-BR'
                         )}
-                      </p>
+                      </Text>
                     </div>
                     <div className="text-center">
                       <div className="text-xl font-bold text-accent-red">
                         {user.riskScore}%
                       </div>
-                      <div className="text-xs text-theme-tertiary">Risco</div>
+                      <Text papel="legenda" tom="fraco" as="div">
+                        Risco
+                      </Text>
                     </div>
                   </div>
 
@@ -1788,10 +1822,10 @@ function RiskAssessmentSection({
                   >
                     {formatNumber(indicator.currentValue)}
                   </div>
-                  <div className="text-xs text-theme-tertiary">
+                  <Text papel="legenda" tom="fraco" as="div">
                     Ideal: {indicator.healthyRange.min} -{' '}
                     {indicator.healthyRange.max}
-                  </div>
+                  </Text>
                 </div>
 
                 <Inline gap={2} className="justify-center text-xs">
@@ -1885,10 +1919,15 @@ function GrowthOpportunitiesSection({
                   <h3 className="font-bold text-theme-primary">
                     {opportunity.opportunity}
                   </h3>
-                  <p className="text-sm text-theme-tertiary capitalize">
+                  <Text
+                    papel="rotulo"
+                    tom="fraco"
+                    as="p"
+                    className="capitalize"
+                  >
                     {opportunity.category.replace('_', ' ')} •{' '}
                     {opportunity.timeline}
-                  </p>
+                  </Text>
                 </div>
               </Inline>
               <div className="flex space-x-2">
@@ -2015,7 +2054,9 @@ function MonetizationSection({
           <div className="text-2xl font-bold text-theme-primary">
             {monetization.adPerformance.overallCTR.toFixed(2)}%
           </div>
-          <div className="text-sm text-theme-tertiary">CTR Geral</div>
+          <Text papel="rotulo" tom="fraco" as="div">
+            CTR Geral
+          </Text>
         </AnimatedCard>
 
         <AnimatedCard className="classical-card p-6 text-center">
@@ -2023,7 +2064,9 @@ function MonetizationSection({
           <div className="text-2xl font-bold text-theme-primary">
             ${monetization.adPerformance.revenuePerUser.toFixed(2)}
           </div>
-          <div className="text-sm text-theme-tertiary">Receita por Usuário</div>
+          <Text papel="rotulo" tom="fraco" as="div">
+            Receita por Usuário
+          </Text>
         </AnimatedCard>
 
         <AnimatedCard className="classical-card p-6 text-center">
@@ -2031,9 +2074,9 @@ function MonetizationSection({
           <div className="text-2xl font-bold text-theme-primary">
             {monetization.adPerformance.topPerformingAds.length}
           </div>
-          <div className="text-sm text-theme-tertiary">
+          <Text papel="rotulo" tom="fraco" as="div">
             Anúncios de Alto Desempenho
-          </div>
+          </Text>
         </AnimatedCard>
       </div>
 
@@ -2076,9 +2119,9 @@ function MonetizationSection({
                     </span>
                   </div>
                   <div className="pt-2 border-t border-theme-tertiary">
-                    <p className="text-xs text-theme-tertiary">
+                    <Text papel="legenda" tom="fraco" as="p">
                       Potencial de crescimento:
-                    </p>
+                    </Text>
                     <p className="text-xs font-medium text-accent-purple">
                       {segment.growthPotential}
                     </p>
@@ -2195,9 +2238,13 @@ function BehaviorPatternsSection({
                         ? 'Médio'
                         : 'Baixo'}
                   </span>
-                  <span className="px-2 py-1 rounded-full text-xs font-medium bg-theme-secondary text-theme-tertiary">
+                  <Text
+                    papel="legenda"
+                    tom="fraco"
+                    className="px-2 py-1 rounded-full font-medium bg-theme-secondary"
+                  >
                     {pattern.confidence}% confiança
-                  </span>
+                  </Text>
                 </Inline>
 
                 <p className="text-theme-secondary mb-4">
@@ -2205,10 +2252,10 @@ function BehaviorPatternsSection({
                 </p>
 
                 <div className="bg-theme-secondary p-4 rounded-xl">
-                  <p className="text-sm text-theme-primary">
+                  <Text papel="rotulo" tom="forte" as="p">
                     <strong>🎯 Recomendação IA:</strong>{' '}
                     {pattern.recommendation}
-                  </p>
+                  </Text>
                 </div>
               </div>
 
@@ -2216,10 +2263,12 @@ function BehaviorPatternsSection({
                 <div className="text-3xl font-bold text-accent-blue mb-1">
                   {pattern.prevalence.toFixed(1)}%
                 </div>
-                <div className="text-sm text-theme-tertiary">prevalência</div>
-                <div className="text-xs text-theme-tertiary mt-1">
+                <Text papel="rotulo" tom="fraco" as="div">
+                  prevalência
+                </Text>
+                <Text papel="legenda" tom="fraco" as="div" className="mt-1">
                   {formatNumber(pattern.dataPoints)} dados
-                </div>
+                </Text>
               </div>
             </div>
           </AnimatedCard>
@@ -2280,16 +2329,26 @@ function ContentPerformanceSection({
               .map((item: any, index: number) => (
                 <div key={index} className="p-3 bg-theme-secondary rounded-xl">
                   <div className="flex items-start space-x-3">
-                    <div className="w-8 h-8 bg-gradient-to-br from-accent-green to-accent-blue rounded-lg flex items-center justify-center text-xs font-bold text-theme-primary">
+                    <Text
+                      papel="legenda"
+                      tom="forte"
+                      as="div"
+                      className="w-8 h-8 bg-gradient-to-br from-accent-green to-accent-blue rounded-lg flex items-center justify-center font-bold"
+                    >
                       {index + 1}
-                    </div>
+                    </Text>
                     <div className="flex-1">
                       <p className="font-medium text-theme-primary">
                         {item.name}
                       </p>
-                      <p className="text-xs text-theme-tertiary mb-2 capitalize">
+                      <Text
+                        papel="legenda"
+                        tom="fraco"
+                        as="p"
+                        className="mb-2 capitalize"
+                      >
                         {item.type}
-                      </p>
+                      </Text>
                       <div className="grid grid-cols-2 gap-2 text-xs">
                         <span>❤️ {formatNumber(item.metrics.favorites)}</span>
                         <span>📝 {formatNumber(item.metrics.annotations)}</span>
@@ -2332,9 +2391,9 @@ function ContentPerformanceSection({
                   </h4>
 
                   <div className="mb-3">
-                    <p className="text-xs text-theme-tertiary mb-1">
+                    <Text papel="legenda" tom="fraco" as="p" className="mb-1">
                       ⚠️ Problemas identificados:
-                    </p>
+                    </Text>
                     <div className="space-y-1">
                       {item.issues.map((issue: string, i: number) => (
                         <Inline
@@ -2350,9 +2409,9 @@ function ContentPerformanceSection({
                   </div>
 
                   <div className="mb-3">
-                    <p className="text-xs text-theme-tertiary mb-1">
+                    <Text papel="legenda" tom="fraco" as="p" className="mb-1">
                       💡 Sugestões IA:
-                    </p>
+                    </Text>
                     <div className="space-y-1">
                       {item.suggestions.map((suggestion: string, i: number) => (
                         <Inline
@@ -2395,16 +2454,21 @@ function ContentPerformanceSection({
                 key={index}
                 className="flex items-start space-x-4 p-4 bg-theme-secondary rounded-xl"
               >
-                <div className="w-10 h-10 bg-gradient-to-br from-accent-blue to-accent-purple rounded-lg flex items-center justify-center text-sm font-bold text-theme-primary">
+                <Text
+                  papel="rotulo"
+                  tom="forte"
+                  as="div"
+                  className="w-10 h-10 bg-gradient-to-br from-accent-blue to-accent-purple rounded-lg flex items-center justify-center font-bold"
+                >
                   {rec.priority}
-                </div>
+                </Text>
                 <div className="flex-1">
                   <h4 className="font-medium text-theme-primary mb-1">
                     {rec.recommendation}
                   </h4>
-                  <p className="text-sm text-theme-secondary mb-2">
+                  <Text papel="rotulo" tom="suave" as="p" className="mb-2">
                     {rec.expectedImpact}
-                  </p>
+                  </Text>
                   <span
                     className={`px-2 py-1 rounded-full text-xs font-medium ${
                       rec.effort === 'high'
@@ -2506,9 +2570,9 @@ function AnomaliesSection({ anomalies, onRefreshModule, isGenerating }: any) {
                             : '🔍 Comportamento Incomum'}{' '}
                         - {anomaly.metric}
                       </h3>
-                      <span className="text-sm text-theme-tertiary">
+                      <Text papel="rotulo" tom="fraco">
                         {new Date(anomaly.timestamp).toLocaleString('pt-BR')}
-                      </span>
+                      </Text>
                     </Inline>
 
                     <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-4">
@@ -2516,26 +2580,26 @@ function AnomaliesSection({ anomalies, onRefreshModule, isGenerating }: any) {
                         <div className="text-lg font-bold text-theme-primary">
                           {formatNumber(anomaly.value)}
                         </div>
-                        <div className="text-xs text-theme-tertiary">
+                        <Text papel="legenda" tom="fraco" as="div">
                           Valor Detectado
-                        </div>
+                        </Text>
                       </div>
                       <div className="text-center p-3 bg-theme-secondary rounded-xl">
                         <div className="text-lg font-bold text-accent-blue">
                           {formatNumber(anomaly.expectedRange.min)}-
                           {formatNumber(anomaly.expectedRange.max)}
                         </div>
-                        <div className="text-xs text-theme-tertiary">
+                        <Text papel="legenda" tom="fraco" as="div">
                           Faixa Esperada
-                        </div>
+                        </Text>
                       </div>
                       <div className="text-center p-3 bg-theme-secondary rounded-xl">
                         <div className="text-lg font-bold text-accent-amber">
                           {anomaly.deviation.toFixed(1)}%
                         </div>
-                        <div className="text-xs text-theme-tertiary">
+                        <Text papel="legenda" tom="fraco" as="div">
                           Desvio
-                        </div>
+                        </Text>
                       </div>
                       <div className="text-center p-3 bg-theme-secondary rounded-xl">
                         <div
@@ -2553,16 +2617,16 @@ function AnomaliesSection({ anomalies, onRefreshModule, isGenerating }: any) {
                               ? '⚠️ Atenção'
                               : 'ℹ️ Info'}
                         </div>
-                        <div className="text-xs text-theme-tertiary">
+                        <Text papel="legenda" tom="fraco" as="div">
                           Severidade
-                        </div>
+                        </Text>
                       </div>
                     </div>
 
                     <div>
-                      <p className="text-sm text-theme-secondary mb-2">
+                      <Text papel="rotulo" tom="suave" as="p" className="mb-2">
                         🔍 Possíveis causas identificadas pela IA:
-                      </p>
+                      </Text>
                       <div className="space-y-1">
                         {anomaly.possibleCauses.map(
                           (cause: string, i: number) => (

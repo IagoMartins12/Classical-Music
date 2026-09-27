@@ -10,6 +10,7 @@ import {
   PiMicrophone,
 } from 'react-icons/pi';
 import { useTranslation } from '@/app/context/TranslationContext';
+import { Text } from '@/app/components/ui/Text';
 
 const UserTypeStep: React.FC = () => {
   const { data, updateData } = useOnboardingModal();
@@ -92,9 +93,14 @@ const UserTypeStep: React.FC = () => {
                   <h4 className="font-semibold text-theme-primary mb-2">
                     {type.label}
                   </h4>
-                  <p className="text-sm text-theme-secondary leading-relaxed">
+                  <Text
+                    papel="rotulo"
+                    tom="suave"
+                    as="p"
+                    className="leading-relaxed"
+                  >
                     {type.description}
-                  </p>
+                  </Text>
                 </div>
 
                 {isSelected && (
@@ -119,9 +125,9 @@ const UserTypeStep: React.FC = () => {
       </div>
 
       <div className="mt-6 text-center">
-        <p className="text-sm text-theme-tertiary">
+        <Text papel="rotulo" tom="fraco" as="p">
           {t('user_type_step_footer')}
-        </p>
+        </Text>
       </div>
     </div>
   );

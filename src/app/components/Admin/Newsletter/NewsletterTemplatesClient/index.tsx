@@ -33,6 +33,7 @@ import CreateEditTemplateModal from './CreateEditTemplateModal';
 import TemplatePreviewModal from './TemplatePreviewModal';
 import LoadingAdminState from '../../Common/LoadingState';
 import { Inline } from '@/app/components/ui/Layout';
+import { Text } from '@/app/components/ui/Text';
 
 interface FilterState {
   type: string;
@@ -233,9 +234,9 @@ export default function NewsletterTemplatesClient() {
             <AnimatedCard className="classical-card p-6">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm text-theme-tertiary mb-1">
+                  <Text papel="rotulo" tom="fraco" as="p" className="mb-1">
                     Total de Templates
-                  </p>
+                  </Text>
                   <p className="text-3xl font-bold text-theme-primary">
                     {templates.length}
                   </p>
@@ -249,9 +250,9 @@ export default function NewsletterTemplatesClient() {
             <AnimatedCard className="classical-card p-6">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm text-theme-tertiary mb-1">
+                  <Text papel="rotulo" tom="fraco" as="p" className="mb-1">
                     Templates Ativos
-                  </p>
+                  </Text>
                   <p className="text-3xl font-bold text-accent-green">
                     {templates.filter((t) => t.isActive).length}
                   </p>
@@ -265,9 +266,9 @@ export default function NewsletterTemplatesClient() {
             <AnimatedCard className="classical-card p-6">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm text-theme-tertiary mb-1">
+                  <Text papel="rotulo" tom="fraco" as="p" className="mb-1">
                     Templates Padrão
-                  </p>
+                  </Text>
                   <p className="text-3xl font-bold text-accent-amber">
                     {templates.filter((t) => t.isDefault).length}
                   </p>
@@ -281,7 +282,9 @@ export default function NewsletterTemplatesClient() {
             <AnimatedCard className="classical-card p-6">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm text-theme-tertiary mb-1">Built-in</p>
+                  <Text papel="rotulo" tom="fraco" as="p" className="mb-1">
+                    Built-in
+                  </Text>
                   <p className="text-3xl font-bold text-accent-purple">
                     {builtInTemplates.length}
                   </p>
@@ -322,9 +325,9 @@ export default function NewsletterTemplatesClient() {
                   <h4 className="font-medium text-theme-primary text-sm mb-1">
                     {template.description}
                   </h4>
-                  <p className="text-xs text-theme-tertiary">
+                  <Text papel="legenda" tom="fraco" as="p">
                     {template.variables.length} variáveis disponíveis
-                  </p>
+                  </Text>
                 </div>
               ))}
             </div>
@@ -442,13 +445,18 @@ export default function NewsletterTemplatesClient() {
                           </Inline>
 
                           <div className="mb-3">
-                            <p className="text-theme-primary font-medium text-sm mb-1">
+                            <Text
+                              papel="rotulo"
+                              tom="forte"
+                              as="p"
+                              className="font-medium mb-1"
+                            >
                               Assunto: {template.subject}
-                            </p>
+                            </Text>
                             {template.description && (
-                              <p className="text-theme-secondary text-sm">
+                              <Text papel="rotulo" tom="suave" as="p">
                                 {template.description}
-                              </p>
+                              </Text>
                             )}
                           </div>
 

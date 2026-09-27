@@ -14,6 +14,7 @@ import {
 } from 'react-icons/pi';
 import Link from 'next/link';
 import { Inline } from '@/app/components/ui/Layout';
+import { Text } from '@/app/components/ui/Text';
 
 // Declaração do tipo para YouTube Player API
 declare global {
@@ -301,10 +302,15 @@ const AudioPlayerComponent = (props: any) => {
                     }%, #e5e7eb ${(currentTime / duration) * 100}%, #e5e7eb 100%)`,
                   }}
                 />
-                <div className="flex justify-between text-xs text-theme-tertiary mt-1">
+                <Text
+                  papel="legenda"
+                  tom="fraco"
+                  as="div"
+                  className="flex justify-between mt-1"
+                >
                   <span>{formatTime(currentTime)}</span>
                   <span>{formatTime(duration)}</span>
-                </div>
+                </Text>
               </div>
 
               {/* Volume Control */}

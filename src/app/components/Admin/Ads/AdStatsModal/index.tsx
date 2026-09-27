@@ -16,6 +16,7 @@ import { AdminPieChart, TrendAreaChart } from '../../Charts/AdminCharts';
 import Select from '@/app/components/Common/Select';
 import Modal from '@/app/components/Modal';
 import { Inline } from '@/app/components/ui/Layout';
+import { Text } from '@/app/components/ui/Text';
 
 interface AdStatsModalProps {
   ad: any;
@@ -130,7 +131,9 @@ export default function AdStatsModal({
               <h2 className="text-xl font-bold text-theme-primary">
                 Estatísticas da Publicidade
               </h2>
-              <p className="text-sm text-theme-tertiary">{ad.title}</p>
+              <Text papel="rotulo" tom="fraco" as="p">
+                {ad.title}
+              </Text>
             </div>
           </Inline>
           <Inline gap={2}>
@@ -186,9 +189,9 @@ export default function AdStatsModal({
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
                 <div className="bg-theme-secondary rounded-xl p-4">
                   <div className="flex items-center justify-between mb-2">
-                    <span className="text-sm text-theme-tertiary">
+                    <Text papel="rotulo" tom="fraco">
                       Impressões
-                    </span>
+                    </Text>
                     <PiEye className="w-4 h-4 text-accent-blue" />
                   </div>
                   <div className="text-2xl font-bold text-theme-primary">
@@ -198,7 +201,9 @@ export default function AdStatsModal({
 
                 <div className="bg-theme-secondary rounded-xl p-4">
                   <div className="flex items-center justify-between mb-2">
-                    <span className="text-sm text-theme-tertiary">Cliques</span>
+                    <Text papel="rotulo" tom="fraco">
+                      Cliques
+                    </Text>
                     <PiCursor className="w-4 h-4 text-accent-green" />
                   </div>
                   <div className="text-2xl font-bold text-theme-primary">
@@ -208,7 +213,9 @@ export default function AdStatsModal({
 
                 <div className="bg-theme-secondary rounded-xl p-4">
                   <div className="flex items-center justify-between mb-2">
-                    <span className="text-sm text-theme-tertiary">CTR</span>
+                    <Text papel="rotulo" tom="fraco">
+                      CTR
+                    </Text>
                     <PiTrendUp className="w-4 h-4 text-accent-purple" />
                   </div>
                   <div className="text-2xl font-bold text-theme-primary">
@@ -221,9 +228,9 @@ export default function AdStatsModal({
               {stats.totals?.avgHoverTime > 0 && (
                 <div className="bg-theme-secondary rounded-xl p-4">
                   <div className="flex items-center justify-between mb-2">
-                    <span className="text-sm text-theme-tertiary">
+                    <Text papel="rotulo" tom="fraco">
                       Tempo Médio de Hover
-                    </span>
+                    </Text>
                     <PiClock className="w-4 h-4 text-accent-amber" />
                   </div>
                   <div className="text-2xl font-bold text-theme-primary">
@@ -325,9 +332,13 @@ export default function AdStatsModal({
                                 }}
                               />
                             </div>
-                            <span className="text-sm text-theme-tertiary w-12 text-right">
+                            <Text
+                              papel="rotulo"
+                              tom="fraco"
+                              className="w-12 text-right"
+                            >
                               {formatNumber(country._sum?.impressions)}
-                            </span>
+                            </Text>
                           </Inline>
                         </div>
                       ))}
