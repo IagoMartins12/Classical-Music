@@ -1084,6 +1084,46 @@ body {
   }
 }
 
+/* Diálogo e folha (`components/Modal`). No telefone a folha sobe de baixo,
+   presa à borda — é onde o polegar está; a partir de 640px aparece no centro.
+   240ms na curva do sistema; nada disso com movimento reduzido. O véu não
+   desfoca o fundo: escurecer já separa, e o desfoque custava GPU a cada
+   abertura. */
+.folha-veu {
+  background: var(--bg-overlay);
+  animation: folha-veu var(--t-entrada) var(--saida) both;
+}
+.folha {
+  animation: folha-sobe var(--t-entrada) var(--saida) both;
+}
+@media (min-width: 640px) {
+  .folha {
+    animation-name: folha-aparece;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .folha,
+  .folha-veu {
+    animation: none;
+  }
+}
+@keyframes folha-veu {
+  from {
+    opacity: 0;
+  }
+}
+@keyframes folha-sobe {
+  from {
+    transform: translateY(100%);
+  }
+}
+@keyframes folha-aparece {
+  from {
+    opacity: 0;
+    transform: translateY(8px) scale(0.98);
+  }
+}
+
 /* Modal/Overlay */
 .modal-overlay {
   background: var(--bg-overlay);
