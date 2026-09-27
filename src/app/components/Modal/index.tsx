@@ -47,6 +47,9 @@ const FOCAVEIS =
 
 // Diálogos abertos, do mais antigo ao de cima.
 const pilha: number[] = [];
+// Quando um diálogo acabou de fechar (login → cadastro), o véu do próximo já
+// entra escuro: sem isto, a página piscava clara entre um e outro.
+let ultimoFechamento = 0;
 let contadorDeModais = 0;
 
 // CONTADOR GLOBAL SIMPLES
@@ -221,6 +224,7 @@ const Modal = forwardRef<ModalRef, ModalProps>(
         document.removeEventListener('keydown', aoTeclar);
         const k = pilha.lastIndexOf(idPilha);
         if (k >= 0) pilha.splice(k, 1);
+        ultimoFechamento = performance.now();
         origem?.focus?.({ preventScroll: true });
       };
       // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -230,6 +234,13 @@ const Modal = forwardRef<ModalRef, ModalProps>(
     // Para baixo: fecha (em tela cheia, primeiro volta ao tamanho normal —
     // um arraste só fecharia um formulário longo por um toque errado). Para
     // cima: o modal grande ocupa a tela inteira; o pequeno só cede e volta.
+    const [veuJaEscuro, setVeuJaEscuro] = useState(false);
+    useLayoutEffect(() => {
+      if (isOpen)
+        setVeuJaEscuro(
+          pilha.length > 0 || performance.now() - ultimoFechamento < 200
+        );
+    }, [isOpen]);
     const [arrasto, setArrasto] = useState<number | null>(null);
     const [telaCheia, setTelaCheia] = useState(false);
     const [saindo, setSaindo] = useState(false);
@@ -276,7 +287,7 @@ const Modal = forwardRef<ModalRef, ModalProps>(
         } else {
           setSaindo(true);
           setArrasto(altura);
-          window.setTimeout(() => onClose?.(), 200);
+          window.setTimeout(() => onClose?.(), 300);
           return;
         }
       } else if (subiu && podeExpandir) {
@@ -294,7 +305,7 @@ const Modal = forwardRef<ModalRef, ModalProps>(
         {/* No telefone, a folha presa embaixo; a partir de 640px, no centro. */}
         <div className="fixed inset-0 z-dialogo flex items-end justify-center sm:items-center sm:p-4">
           <div
-            className="folha-veu fixed inset-0"
+            className={`folha-veu fixed inset-0 ${veuJaEscuro ? '!animate-none' : ''}`}
             aria-hidden="true"
             onClick={closeOnOverlayClick ? handleClose : undefined}
           />
@@ -319,7 +330,7 @@ const Modal = forwardRef<ModalRef, ModalProps>(
           ${
             arrasto !== null && !saindo
               ? 'transition-none'
-              : 'transition-[transform,max-height,height,border-radius] duration-[var(--t-entrada)] ease-saida motion-reduce:transition-none'
+              : 'transition-[transform,max-height,height,border-radius] duration-[var(--t-folha)] ease-saida motion-reduce:transition-none'
           }
           ${isLargeModal && !middlePosition ? '' : 'sm:w-11/12'}
           ${maxWidthClasses[maxWidth]} ${setPr ? '!pr-1' : ''} ${className}`}

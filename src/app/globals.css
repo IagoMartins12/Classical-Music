@@ -193,6 +193,9 @@
   --t-toque: 120ms;
   --t-resposta: 180ms;
   --t-entrada: 240ms;
+  /* A folha anda uma distância maior que um menu: com 240ms, abrir o
+     cadastro por cima do login parecia um corte seco. */
+  --t-folha: 320ms;
 
   /* --- Camadas: ver o bloco "Camadas" abaixo do `@theme` (10 a 400). --- */
 
@@ -1086,17 +1089,17 @@ body {
 
 /* Diálogo e folha (`components/Modal`). No telefone a folha sobe de baixo,
    presa à borda — é onde o polegar está; a partir de 640px aparece no centro.
-   240ms na curva do sistema; nada disso com movimento reduzido. O véu não
+   320ms (`--t-folha`) na curva do sistema; nada disso com movimento reduzido. O véu não
    desfoca o fundo: escurecer já separa, e o desfoque custava GPU a cada
    abertura. */
 .folha-veu {
   background: var(--bg-overlay);
-  animation: folha-veu var(--t-entrada) var(--saida) both;
+  animation: folha-veu var(--t-folha) var(--saida) both;
 }
 .folha {
   /* `backwards`, não `both`: terminada a entrada, a animação solta o
      `transform`, e o arraste da alça pode mover a folha. */
-  animation: folha-sobe var(--t-entrada) var(--saida) backwards;
+  animation: folha-sobe var(--t-folha) var(--saida) backwards;
 }
 @media (min-width: 640px) {
   .folha {
