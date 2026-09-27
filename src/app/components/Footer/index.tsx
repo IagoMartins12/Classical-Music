@@ -33,6 +33,7 @@ import Button from '../Common/Button';
 import { useTranslation } from '@/app/hooks/useTranslation';
 import { Inline, Stack } from '@/app/components/ui/Layout';
 import { Text } from '@/app/components/ui/Text';
+import { Card } from '@/app/components/ui/Card';
 
 const Footer: React.FC = () => {
   const currentYear = new Date().getFullYear();
@@ -354,7 +355,7 @@ const Footer: React.FC = () => {
         {/* 🆕 NEWSLETTER SECTION ATUALIZADA */}
         <div className="border-t border-theme-secondary" id="newsletter">
           <div className="section-wrap py-8">
-            <div className="classical-card p-6 bg-gradient-to-r from-brand-primary/5 to-accent-purple/5 border border-brand-primary/20">
+            <Card className="bg-gradient-to-r from-brand-primary/5 to-accent-purple/5 border border-brand-primary/20">
               <div className="flex flex-col lg:flex-row items-start lg:items-center justify-between space-y-6 lg:space-y-0 lg:space-x-8">
                 <div className="flex-1">
                   <h3 className="text-lg font-semibold text-theme-primary flex items-center mb-2">
@@ -439,7 +440,7 @@ const Footer: React.FC = () => {
                   .
                 </Text>
               </div>
-            </div>
+            </Card>
           </div>
         </div>
 

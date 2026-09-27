@@ -3,6 +3,7 @@
 import Link from 'next/link';
 import { PiFileText, PiMusicNotes, PiUser } from 'react-icons/pi';
 import { Text } from '@/app/components/ui/Text';
+import { Card } from '@/app/components/ui/Card';
 
 interface RelatedEntitiesProps {
   composerIds: string[];
@@ -54,7 +55,7 @@ export async function RelatedEntities({
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
         {/* Compositores */}
         {composers.length > 0 && (
-          <div className="classical-card p-6">
+          <Card>
             <h3 className="font-semibold text-theme-primary mb-4 flex items-center gap-2">
               <PiUser className="text-brand-primary" />
               Compositores Mencionados
@@ -75,12 +76,12 @@ export async function RelatedEntities({
                 </Link>
               ))}
             </div>
-          </div>
+          </Card>
         )}
 
         {/* Obras */}
         {works.length > 0 && (
-          <div className="classical-card p-6">
+          <Card>
             <h3 className="font-semibold text-theme-primary mb-4 flex items-center gap-2">
               <PiMusicNotes className="text-brand-primary" />
               Obras Mencionadas
@@ -101,12 +102,12 @@ export async function RelatedEntities({
                 </Link>
               ))}
             </div>
-          </div>
+          </Card>
         )}
 
         {/* Partituras */}
         {scores.length > 0 && (
-          <div className="classical-card p-6">
+          <Card>
             <h3 className="font-semibold text-theme-primary mb-4 flex items-center gap-2">
               <PiFileText className="text-brand-primary" />
               Partituras Relacionadas
@@ -127,7 +128,7 @@ export async function RelatedEntities({
                 </Link>
               ))}
             </div>
-          </div>
+          </Card>
         )}
       </div>
     </div>

@@ -31,6 +31,7 @@ import { Inline } from '@/app/components/ui/Layout';
 import { Text } from '@/app/components/ui/Text';
 import { NomeAcao } from '@/app/components/ui/NomeAcao';
 import { Button } from '@/app/components/ui/Button';
+import { Card } from '@/app/components/ui/Card';
 
 interface Article {
   id: string;
@@ -230,7 +231,7 @@ export function ArticleList({
   return (
     <>
       {/* Search and Filters */}
-      <div className="classical-card p-4 mb-6">
+      <Card densidade="compacta" className="mb-6">
         <div className="space-y-4">
           {/* Search Bar */}
           <Inline gap={2}>
@@ -337,7 +338,7 @@ export function ArticleList({
             </div>
           )}
         </div>
-      </div>
+      </Card>
 
       {/* Articles Grid */}
       {articles.length === 0 ? (

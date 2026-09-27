@@ -15,6 +15,7 @@ import {
 } from 'react-icons/pi';
 import { Inline } from '@/app/components/ui/Layout';
 import { Text } from '@/app/components/ui/Text';
+import { Card } from '@/app/components/ui/Card';
 
 // Declaração do tipo para YouTube Player API
 declare global {
@@ -161,7 +162,10 @@ const QuoteMusicalComponent = (props: any) => {
       onMouseEnter={() => setShowControls(true)}
       onMouseLeave={() => setShowControls(false)}
     >
-      <div className="relative classical-card p-8 border-l-4 border-accent-purple">
+      <Card
+        densidade="larga"
+        className="relative border-l-4 border-accent-purple"
+      >
         {/* Controles de Edição */}
         {showControls && (
           <Inline
@@ -277,7 +281,7 @@ const QuoteMusicalComponent = (props: any) => {
         {mounted && backgroundAudioUrl && backgroundAudioType === 'youtube' && (
           <div ref={playerContainerRef} className="hidden" />
         )}
-      </div>
+      </Card>
     </NodeViewWrapper>
   );
 };

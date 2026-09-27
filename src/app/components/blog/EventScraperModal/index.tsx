@@ -38,6 +38,7 @@ import {
 import { useScrapers } from '@/app/hooks/useScrapers';
 import { Inline } from '@/app/components/ui/Layout';
 import { Text } from '@/app/components/ui/Text';
+import { Card } from '@/app/components/ui/Card';
 
 interface EventWithSelection extends ScrapedEvent {
   id: string;
@@ -576,42 +577,58 @@ export default function EventScraperModal({
               <div className="p-6">
                 {/* Stats */}
                 <div className="grid grid-cols-4 gap-4 mb-6">
-                  <div className="classical-card-simple p-4 text-center">
+                  <Card nivel={2} densidade="compacta" className="text-center">
                     <div className="text-2xl font-bold text-theme-primary">
                       {stats.total}
                     </div>
                     <Text papel="legenda" tom="suave" as="div">
                       Total
                     </Text>
-                  </div>
-                  <div className="classical-card-simple p-4 text-center bg-green-50/5">
+                  </Card>
+                  <Card
+                    nivel={2}
+                    densidade="compacta"
+                    className="text-center bg-green-50/5"
+                  >
                     <div className="text-2xl font-bold text-green-500">
                       {stats.new}
                     </div>
                     <Text papel="legenda" tom="suave" as="div">
                       Novos
                     </Text>
-                  </div>
-                  <div className="classical-card-simple p-4 text-center bg-yellow-50/5">
+                  </Card>
+                  <Card
+                    nivel={2}
+                    densidade="compacta"
+                    className="text-center bg-yellow-50/5"
+                  >
                     <div className="text-2xl font-bold text-yellow-500">
                       {stats.existing}
                     </div>
                     <Text papel="legenda" tom="suave" as="div">
                       Já existem
                     </Text>
-                  </div>
-                  <div className="classical-card-simple p-4 text-center bg-blue-50/5">
+                  </Card>
+                  <Card
+                    nivel={2}
+                    densidade="compacta"
+                    className="text-center bg-blue-50/5"
+                  >
                     <div className="text-2xl font-bold text-blue-500">
                       {stats.selected}
                     </div>
                     <Text papel="legenda" tom="suave" as="div">
                       Selecionados
                     </Text>
-                  </div>
+                  </Card>
                 </div>
 
                 {/* Select All */}
-                <div className="flex items-center justify-between mb-4 classical-card-simple p-4">
+                <Card
+                  nivel={2}
+                  densidade="compacta"
+                  className="flex items-center justify-between mb-4"
+                >
                   <Checkbox
                     label="Selecionar todos os eventos novos"
                     checked={stats.selected === stats.new && stats.new > 0}
@@ -624,7 +641,7 @@ export default function EventScraperModal({
                   >
                     Importar {stats.selected} eventos
                   </Button>
-                </div>
+                </Card>
 
                 {/* Eventos Novos */}
                 <div className="mb-4">
@@ -815,7 +832,11 @@ export default function EventScraperModal({
                 </div>
 
                 <div className="grid grid-cols-3 gap-4 mb-6">
-                  <div className="classical-card-simple p-4 text-center bg-green-500/5">
+                  <Card
+                    nivel={2}
+                    densidade="compacta"
+                    className="text-center bg-green-500/5"
+                  >
                     <div className="text-2xl font-bold text-green-500">
                       {
                         processResults.filter((r) => r.status === 'success')
@@ -825,8 +846,12 @@ export default function EventScraperModal({
                     <Text papel="legenda" tom="suave" as="div">
                       Sucesso
                     </Text>
-                  </div>
-                  <div className="classical-card-simple p-4 text-center bg-red-500/5">
+                  </Card>
+                  <Card
+                    nivel={2}
+                    densidade="compacta"
+                    className="text-center bg-red-500/5"
+                  >
                     <div className="text-2xl font-bold text-red-500">
                       {
                         processResults.filter((r) => r.status === 'error')
@@ -836,8 +861,12 @@ export default function EventScraperModal({
                     <Text papel="legenda" tom="suave" as="div">
                       Erro
                     </Text>
-                  </div>
-                  <div className="classical-card-simple p-4 text-center bg-yellow-500/5">
+                  </Card>
+                  <Card
+                    nivel={2}
+                    densidade="compacta"
+                    className="text-center bg-yellow-500/5"
+                  >
                     <div className="text-2xl font-bold text-yellow-500">
                       {
                         processResults.filter(
@@ -849,7 +878,7 @@ export default function EventScraperModal({
                     <Text papel="legenda" tom="suave" as="div">
                       Ignorados
                     </Text>
-                  </div>
+                  </Card>
                 </div>
 
                 <div className="overflow-x-hidden overflow-y-auto space-y-2">

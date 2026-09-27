@@ -16,6 +16,7 @@ import { useBackup } from '@/app/hooks/admin/useBackup';
 import type { BackupCollectionConfig } from '@/app/requests/admin/backup';
 import { Text } from '@/app/components/ui/Text';
 import { Button } from '@/app/components/ui/Button';
+import { Card } from '@/app/components/ui/Card';
 
 /** `18234567` → `17,4 MB`. */
 function tamanho(bytes: number | null): string {
@@ -176,7 +177,10 @@ export default function BackupManagementClient() {
       </header>
 
       {impedimento && (
-        <div className="classical-card p-4 flex gap-3 border-l-4 border-accent-amber">
+        <Card
+          densidade="compacta"
+          className="flex gap-3 border-l-4 border-accent-amber"
+        >
           <PiWarning className="w-5 h-5 text-accent-amber shrink-0 mt-0.5" />
           <div>
             <p className="text-theme-primary font-medium">
@@ -186,11 +190,11 @@ export default function BackupManagementClient() {
               {impedimento}
             </Text>
           </div>
-        </div>
+        </Card>
       )}
 
       <section className="grid gap-4 md:grid-cols-3">
-        <div className="classical-card p-4">
+        <Card densidade="compacta">
           <Text
             papel="legenda"
             tom="fraco"
@@ -209,9 +213,9 @@ export default function BackupManagementClient() {
               documentos
             </Text>
           )}
-        </div>
+        </Card>
 
-        <div className="classical-card p-4">
+        <Card densidade="compacta">
           <Text
             papel="legenda"
             tom="fraco"
@@ -227,9 +231,9 @@ export default function BackupManagementClient() {
             Próxima:{' '}
             {quando(backup.data?.agendamento?.schedule?.nextRunAt ?? null)}
           </Text>
-        </div>
+        </Card>
 
-        <div className="classical-card p-4">
+        <Card densidade="compacta">
           <label className="text-theme-tertiary text-xs uppercase tracking-wide">
             Arquivos mantidos
           </label>
@@ -244,7 +248,7 @@ export default function BackupManagementClient() {
           <Text papel="rotulo" tom="suave" as="p" className="mt-1">
             Ao entrar o {keep + 1}º, o mais antigo sai.
           </Text>
-        </div>
+        </Card>
       </section>
 
       <section className="classical-card p-4">
@@ -320,7 +324,7 @@ export default function BackupManagementClient() {
       </section>
 
       <section className="grid gap-4 lg:grid-cols-2">
-        <div className="classical-card p-4">
+        <Card densidade="compacta">
           <h2 className="text-lg font-semibold text-theme-primary mb-3">
             Arquivos no bucket
           </h2>
@@ -363,9 +367,9 @@ export default function BackupManagementClient() {
               ))}
             </ul>
           )}
-        </div>
+        </Card>
 
-        <div className="classical-card p-4">
+        <Card densidade="compacta">
           <h2 className="text-lg font-semibold text-theme-primary mb-3">
             Últimas execuções
           </h2>
@@ -411,7 +415,7 @@ export default function BackupManagementClient() {
               ))}
             </ul>
           )}
-        </div>
+        </Card>
       </section>
     </div>
   );

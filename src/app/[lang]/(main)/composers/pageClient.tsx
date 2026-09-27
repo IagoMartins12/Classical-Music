@@ -24,6 +24,7 @@ import { currentSearchParams } from '@/app/utils/currentSearchParams';
 import { Inline } from '@/app/components/ui/Layout';
 import { Text } from '@/app/components/ui/Text';
 import { Button } from '@/app/components/ui/Button';
+import { Card } from '@/app/components/ui/Card';
 
 export interface ComposerImslp {
   epochName: string;
@@ -420,12 +421,12 @@ export default function ComposersClient({
               direction="scale"
               className="absolute inset-0 bg-theme-overlay backdrop-blur-sm flex items-center justify-center z-10 rounded-2xl"
             >
-              <div className="classical-card p-8 text-center">
+              <Card densidade="larga" className="text-center">
                 <LoadingSpinner size="lg" />
                 <p className="text-theme-primary font-medium mt-4">
                   {t('client_jsx_p_children_0__carregando_compositores')}
                 </p>
-              </div>
+              </Card>
             </AnimatedItem>
           )}
         </div>

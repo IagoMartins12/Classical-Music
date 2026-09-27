@@ -12,6 +12,7 @@ import {
 
 import AnimatedMusicalNotes from '../../../components/AnimatedMusicalNotes';
 import { Inline } from '@/app/components/ui/Layout';
+import { Card } from '@/app/components/ui/Card';
 
 const DetailedMusicHistorySkeleton = () => {
   // Dados das seções para o skeleton
@@ -175,7 +176,7 @@ const LoadingMusicHistorySkeleton = () => {
       <div className="section-wrap space-y-12 relative z-10">
         <DetailedMusicHistorySkeleton />
         {/* Navigation Tabs Skeleton */}
-        <div className="classical-card p-8 animate-shimmer">
+        <Card densidade="larga" className="animate-shimmer">
           <div className="text-center mb-8">
             <Inline gap={3} className="justify-center mb-4">
               <div className="w-10 h-10 bg-gradient-to-br from-brand-primary/20 to-brand-secondary/20 rounded-xl"></div>
@@ -203,7 +204,7 @@ const LoadingMusicHistorySkeleton = () => {
               </div>
             ))}
           </div>
-        </div>
+        </Card>
 
         {/* Epoch Sections Skeleton */}
         <div className="space-y-20">
@@ -229,7 +230,7 @@ const LoadingMusicHistorySkeleton = () => {
                 </div>
 
                 {/* Description */}
-                <div className="classical-card p-8 group">
+                <Card densidade="larga" className="group">
                   <Inline gap={3} className="mb-4">
                     <div className="w-8 h-8 bg-gradient-to-br from-accent-blue/20 to-accent-purple/20 rounded-xl"></div>
                     <div className="h-5 w-32 bg-gradient-to-r from-theme-primary/20 to-theme-secondary/20 rounded"></div>
@@ -240,7 +241,7 @@ const LoadingMusicHistorySkeleton = () => {
                     <div className="h-4 bg-theme-elevated rounded w-3/4"></div>
                     <div className="h-4 bg-theme-elevated rounded w-5/6"></div>
                   </div>
-                </div>
+                </Card>
 
                 {/* Details Card */}
                 <div className="classical-card overflow-hidden">
@@ -280,7 +281,7 @@ const LoadingMusicHistorySkeleton = () => {
 
               {/* Composers Section */}
               <div className="flex-1 w-full lg:max-w-md">
-                <div className="classical-card p-6 sticky top-6">
+                <Card className="sticky top-6">
                   <Inline gap={3} className="mb-6">
                     <div className="w-10 h-10 bg-gradient-to-br from-accent-blue/20 to-accent-purple/20 rounded-xl"></div>
                     <div className="space-y-2">
@@ -318,7 +319,7 @@ const LoadingMusicHistorySkeleton = () => {
                       </div>
                     ))}
                   </div>
-                </div>
+                </Card>
               </div>
             </div>
           ))}
@@ -348,7 +349,7 @@ const LoadingMusicHistorySkeleton = () => {
 
               <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
                 {[1, 2].map((card) => (
-                  <div key={card} className="classical-card-simple p-6">
+                  <Card nivel={2} key={card}>
                     <Inline gap={3} className="mb-4">
                       <div className="w-8 h-8 bg-gradient-to-br from-accent-blue/20 to-accent-purple/20 rounded-xl"></div>
                       <div className="h-5 w-32 bg-gradient-to-r from-theme-primary/20 to-theme-secondary/20 rounded"></div>
@@ -358,7 +359,7 @@ const LoadingMusicHistorySkeleton = () => {
                       <div className="h-3 bg-theme-elevated rounded w-4/5"></div>
                       <div className="h-3 bg-theme-elevated rounded w-3/4"></div>
                     </div>
-                  </div>
+                  </Card>
                 ))}
               </div>
             </div>

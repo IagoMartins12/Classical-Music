@@ -4,6 +4,7 @@
 import { GiGrandPiano } from 'react-icons/gi';
 import { PiClipboardText, PiMusicNotes, PiTarget } from 'react-icons/pi';
 import { Inline } from '@/app/components/ui/Layout';
+import { Card } from '@/app/components/ui/Card';
 
 export default function CreateAssignmentLoading() {
   return (
@@ -65,7 +66,7 @@ export default function CreateAssignmentLoading() {
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           {/* Main Form Skeleton */}
           <div className="lg:col-span-2 order-2 lg:order-1">
-            <div className="classical-card p-6 animate-pulse">
+            <Card className="animate-pulse">
               <div className="space-y-8">
                 {/* Basic Info Section */}
                 <div className="space-y-4">
@@ -155,13 +156,13 @@ export default function CreateAssignmentLoading() {
                     <div className="h-4 bg-theme-tertiary/30 rounded w-16"></div>
                   </div>
 
-                  <div className="classical-card-2 p-4">
+                  <Card nivel={2} densidade="compacta">
                     <div className="space-y-3">
                       {Array.from({ length: 2 }).map((_, i) => (
                         <MusicalPieceItemSkeleton key={i} />
                       ))}
                     </div>
-                  </div>
+                  </Card>
                 </div>
 
                 {/* Advanced Options Section */}
@@ -228,13 +229,13 @@ export default function CreateAssignmentLoading() {
                   <div className="h-10 w-32 bg-gradient-to-r from-brand-primary/20 to-brand-secondary/20 border border-brand-primary/30 rounded-lg"></div>
                 </Inline>
               </div>
-            </div>
+            </Card>
           </div>
 
           {/* Sidebar Skeleton */}
           <div className="space-y-6 order-1 lg:order-2">
             {/* Selected Student Info */}
-            <div className="classical-card p-6 animate-pulse">
+            <Card className="animate-pulse">
               <div className="h-5 bg-gradient-to-r from-theme-primary/20 to-theme-secondary/20 rounded w-32 mb-4"></div>
 
               <div className="space-y-4">
@@ -258,10 +259,10 @@ export default function CreateAssignmentLoading() {
                   </div>
                 </div>
               </div>
-            </div>
+            </Card>
 
             {/* Selected Works Summary */}
-            <div className="classical-card p-6 animate-pulse">
+            <Card className="animate-pulse">
               <Inline gap={2} className="mb-4">
                 <PiMusicNotes className="w-5 h-5 text-theme-primary/30" />
                 <div className="h-5 bg-gradient-to-r from-theme-primary/20 to-theme-secondary/20 rounded w-32"></div>
@@ -297,10 +298,10 @@ export default function CreateAssignmentLoading() {
                   </div>
                 </div>
               </div>
-            </div>
+            </Card>
 
             {/* Assignment Type Info */}
-            <div className="classical-card p-6 animate-pulse">
+            <Card className="animate-pulse">
               <div className="h-5 bg-gradient-to-r from-theme-primary/20 to-theme-secondary/20 rounded w-28 mb-4"></div>
 
               <div className="space-y-3">
@@ -308,10 +309,10 @@ export default function CreateAssignmentLoading() {
                   <AssignmentTypeItemSkeleton key={i} isSelected={i === 0} />
                 ))}
               </div>
-            </div>
+            </Card>
 
             {/* Tips */}
-            <div className="classical-card p-6 animate-pulse">
+            <Card className="animate-pulse">
               <div className="h-5 bg-gradient-to-r from-theme-primary/20 to-theme-secondary/20 rounded w-12 mb-4"></div>
               <div className="space-y-3">
                 {Array.from({ length: 4 }).map((_, i) => (
@@ -321,7 +322,7 @@ export default function CreateAssignmentLoading() {
                   </div>
                 ))}
               </div>
-            </div>
+            </Card>
           </div>
         </div>
       </div>

@@ -17,6 +17,7 @@
 import { GiGrandPiano } from 'react-icons/gi';
 import { PiHeadphones, PiMagnifyingGlass, PiMusicNotes } from 'react-icons/pi';
 import { Inline, Stack } from '@/app/components/ui/Layout';
+import { Card } from '@/app/components/ui/Card';
 
 export default function WorksLoading() {
   return (
@@ -61,7 +62,7 @@ export default function WorksLoading() {
         </div>
 
         {/* Search and Filters Skeleton */}
-        <div className="classical-card p-6">
+        <Card>
           <Inline gap={3} className="mb-6">
             <div className="w-10 h-10 bg-gradient-to-br from-accent-blue/20 to-accent-purple/20 rounded-xl"></div>
             <div className="space-y-2">
@@ -100,7 +101,7 @@ export default function WorksLoading() {
               <div className="h-4 w-20 bg-theme-elevated rounded animate-pulse"></div>
             </Inline>
           </div>
-        </div>
+        </Card>
 
         {/* Works Grid Skeleton */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 mb-8">
@@ -110,7 +111,7 @@ export default function WorksLoading() {
         </div>
 
         {/* Pagination Skeleton */}
-        <div className="classical-card p-6">
+        <Card>
           <div className="flex flex-col sm:flex-row items-center justify-between space-y-4 sm:space-y-0">
             {/* Info */}
             <div className="h-4 w-48 bg-theme-elevated rounded animate-pulse"></div>
@@ -133,7 +134,7 @@ export default function WorksLoading() {
               <div className="h-10 w-24 bg-gradient-to-r from-theme-elevated to-interactive-hover border border-theme-secondary rounded-lg animate-pulse"></div>
             </Inline>
           </div>
-        </div>
+        </Card>
       </div>
 
       {/* Floating Elements */}

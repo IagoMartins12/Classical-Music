@@ -62,6 +62,7 @@ import { canEditCatalog, canVerifyCatalog } from '@/app/utils/permissions';
 import { workScoresRequest } from '@/app/requests/work-scores';
 import { Inline, Stack } from '@/app/components/ui/Layout';
 import { Text } from '@/app/components/ui/Text';
+import { Card } from '@/app/components/ui/Card';
 
 // Interface para dados de áudio processados (mantida igual)
 interface ProcessedAudioData {
@@ -1173,7 +1174,7 @@ export default function WorkDetailsClient({
                 <div className="space-y-6">
                   {/* Player de Áudio/Vídeo */}
                   {work.videoUrl && (
-                    <div className="classical-card-simple p-6">
+                    <Card nivel={2}>
                       <Inline gap={3} className="mb-4">
                         <div className="w-8 h-8 bg-gradient-to-br from-accent-red to-accent-purple rounded-xl flex items-center justify-center">
                           <PiHeadphones className="w-4 h-4 text-theme-primary" />
@@ -1225,11 +1226,11 @@ export default function WorkDetailsClient({
                           </svg>
                         </Inline>
                       </div>
-                    </div>
+                    </Card>
                   )}
 
                   {/* Links Externos */}
-                  <div className="classical-card-simple p-6">
+                  <Card nivel={2}>
                     <Inline gap={3} className="mb-4">
                       <div className="w-8 h-8 bg-gradient-to-br from-accent-green to-accent-blue rounded-xl flex items-center justify-center">
                         <PiBookOpen className="w-4 h-4 text-theme-primary" />
@@ -1264,10 +1265,10 @@ export default function WorkDetailsClient({
                         </svg>
                       </Inline>
                     </div>
-                  </div>
+                  </Card>
 
                   {/* ✅ Informações Técnicas - COM TRADUÇÕES */}
-                  <div className="classical-card-simple p-6">
+                  <Card nivel={2}>
                     <Inline gap={3} className="mb-4">
                       <div className="w-8 h-8 bg-gradient-to-br from-accent-purple to-accent-blue rounded-xl flex items-center justify-center">
                         <PiGear className="w-4 h-4 text-theme-primary" />
@@ -1321,7 +1322,7 @@ export default function WorkDetailsClient({
                         </Text>
                       </div>
                     </div>
-                  </div>
+                  </Card>
                 </div>
               </div>
             </div>

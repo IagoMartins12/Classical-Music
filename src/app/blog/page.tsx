@@ -19,6 +19,7 @@ import {
 } from '@/app/requests/blog/cached-blog-function';
 import { Inline } from '@/app/components/ui/Layout';
 import { Text } from '@/app/components/ui/Text';
+import { Card } from '@/app/components/ui/Card';
 
 // ✅ Revalidação de 5 minutos (fallback para ISR do Next.js)
 export const revalidate = 300;
@@ -173,7 +174,7 @@ export default async function BlogHomePage() {
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           {/* Main Content */}
           <div className="lg:col-span-2">
-            <div className="classical-card p-8">
+            <Card densidade="larga">
               <h3 className="text-2xl font-bold text-theme-primary mb-6 flex items-center">
                 <PiTrendUp className="w-6 h-6 mr-3 text-brand-primary" />
                 Destaques da Semana
@@ -189,12 +190,12 @@ export default async function BlogHomePage() {
                   enriquecer sua jornada musical.
                 </p>
               </div>
-            </div>
+            </Card>
           </div>
 
           {/* Sidebar - Most Read */}
           <div className="lg:col-span-1">
-            <div className="classical-card p-6 sticky top-24">
+            <Card className="sticky top-24">
               <h3 className="text-xl font-bold text-theme-primary mb-6 flex items-center">
                 <PiTrendUp className="w-5 h-5 mr-2 text-brand-primary" />
                 Mais Lidos
@@ -223,7 +224,7 @@ export default async function BlogHomePage() {
                   </Link>
                 ))}
               </div>
-            </div>
+            </Card>
           </div>
         </div>
       </section>

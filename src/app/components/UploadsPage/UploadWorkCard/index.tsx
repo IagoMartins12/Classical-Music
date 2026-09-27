@@ -19,6 +19,7 @@ import { useTranslation } from '@/app/context/TranslationContext';
 import { Inline, Stack } from '@/app/components/ui/Layout';
 import { Text } from '@/app/components/ui/Text';
 import { NomeAcao } from '@/app/components/ui/NomeAcao';
+import { Card } from '@/app/components/ui/Card';
 
 interface UploadWorkCardProps {
   item: UserUpload;
@@ -58,7 +59,10 @@ const UploadWorkCard = ({
 
   if (viewMode === 'list') {
     return (
-      <div className="classical-card group relative p-4 hover:shadow-theme-glow transition-all duration-300">
+      <Card
+        densidade="compacta"
+        className="group relative hover:shadow-theme-glow transition-all duration-300"
+      >
         <Link
           href={`/works/${item.id}`}
           className="flex items-center justify-between w-full"
@@ -164,7 +168,7 @@ const UploadWorkCard = ({
             </Inline>
           </Inline>
         </Link>
-      </div>
+      </Card>
     );
   }
 

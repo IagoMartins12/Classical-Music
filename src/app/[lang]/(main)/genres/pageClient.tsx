@@ -20,6 +20,7 @@ import { Inline } from '@/app/components/ui/Layout';
 import { Text } from '@/app/components/ui/Text';
 import { NomeAcao } from '@/app/components/ui/NomeAcao';
 import { Button } from '@/app/components/ui/Button';
+import { Card } from '@/app/components/ui/Card';
 
 interface Genre {
   id: string;
@@ -154,7 +155,7 @@ export default function GenresClient({ genres }: GenresClientProps) {
         </div>
 
         {/* Controls */}
-        <div className="classical-card p-6">
+        <Card>
           <div className="flex items-center justify-between mb-6">
             <Inline
               as="button"
@@ -244,13 +245,13 @@ export default function GenresClient({ genres }: GenresClientProps) {
               onViewModeChange={setViewMode}
             />
           </div>
-        </div>
+        </Card>
 
         {/* Genres Display */}
         {filteredGenres.length > 0 ? (
           <div className="space-y-8">
             {Object.entries(groupedGenres).map(([letter, genresInGroup]) => (
-              <div key={letter} className="classical-card p-6">
+              <Card key={letter}>
                 {/* Section Header - Clicável para expandir/colapsar */}
                 <button
                   onClick={() => toggleSection(letter)}
@@ -372,7 +373,7 @@ export default function GenresClient({ genres }: GenresClientProps) {
                     )}
                   </div>
                 )}
-              </div>
+              </Card>
             ))}
           </div>
         ) : (

@@ -19,6 +19,7 @@ import {
   PiUserMinus,
 } from 'react-icons/pi';
 import { Inline } from '@/app/components/ui/Layout';
+import { Card } from '@/app/components/ui/Card';
 
 export default function StudentLessonDetailsLoading() {
   return (
@@ -114,7 +115,7 @@ export default function StudentLessonDetailsLoading() {
           {/* Left Column - Main Info */}
           <div className="lg:col-span-2 space-y-6">
             {/* Basic Info */}
-            <div className="classical-card p-6 animate-pulse">
+            <Card className="animate-pulse">
               <div className="flex items-center mb-4">
                 <div className="h-5 bg-theme-primary/30 rounded w-40"></div>
               </div>
@@ -148,10 +149,10 @@ export default function StudentLessonDetailsLoading() {
                   <div className="h-3 bg-theme-secondary/30 rounded w-full"></div>
                 </div>
               </div>
-            </div>
+            </Card>
 
             {/* Musical Pieces Section */}
-            <div className="classical-card p-6 animate-pulse">
+            <Card className="animate-pulse">
               <div className="flex items-center justify-between mb-6">
                 <Inline gap={3}>
                   <div className="w-10 h-10 bg-gradient-to-br from-accent-purple/20 to-accent-blue/20 rounded-lg flex items-center justify-center">
@@ -179,10 +180,10 @@ export default function StudentLessonDetailsLoading() {
                   </div>
                 ))}
               </div>
-            </div>
+            </Card>
 
             {/* Objectives */}
-            <div className="classical-card p-6 animate-pulse">
+            <Card className="animate-pulse">
               <div className="flex items-center mb-4">
                 <div className="h-5 bg-theme-primary/30 rounded w-40"></div>
               </div>
@@ -195,10 +196,10 @@ export default function StudentLessonDetailsLoading() {
                   </div>
                 ))}
               </div>
-            </div>
+            </Card>
 
             {/* Topics & Techniques */}
-            <div className="classical-card p-6 animate-pulse">
+            <Card className="animate-pulse">
               <div className="flex items-center mb-4">
                 <div className="h-5 bg-theme-primary/30 rounded w-48"></div>
               </div>
@@ -228,10 +229,10 @@ export default function StudentLessonDetailsLoading() {
                   </div>
                 </div>
               </div>
-            </div>
+            </Card>
 
             {/* Notes Section */}
-            <div className="classical-card p-6 animate-pulse">
+            <Card className="animate-pulse">
               <div className="flex items-center justify-between mb-4">
                 <div className="h-5 bg-theme-primary/30 rounded w-44"></div>
               </div>
@@ -289,13 +290,13 @@ export default function StudentLessonDetailsLoading() {
                   </div>
                 </div>
               </div>
-            </div>
+            </Card>
           </div>
 
           {/* Right Column - Teacher & Info */}
           <div className="space-y-6">
             {/* Teacher Info */}
-            <div className="classical-card p-6 animate-pulse">
+            <Card className="animate-pulse">
               <div className="h-5 bg-theme-primary/30 rounded w-20 mb-4"></div>
 
               <Inline gap={4} className="mb-6">
@@ -321,10 +322,10 @@ export default function StudentLessonDetailsLoading() {
                   <div className="h-3 bg-theme-primary/30 rounded w-12"></div>
                 </div>
               </div>
-            </div>
+            </Card>
 
             {/* Attendance Status */}
-            <div className="classical-card p-6 animate-pulse">
+            <Card className="animate-pulse">
               <div className="h-5 bg-theme-primary/30 rounded w-32 mb-4"></div>
 
               <div className="p-4 bg-accent-green/10 border border-accent-green/30 rounded-lg">
@@ -339,10 +340,10 @@ export default function StudentLessonDetailsLoading() {
                   <div className="h-3 bg-theme-secondary/30 rounded w-20"></div>
                 </div>
               </div>
-            </div>
+            </Card>
 
             {/* Progress Summary */}
-            <div className="classical-card p-6 animate-pulse">
+            <Card className="animate-pulse">
               <div className="h-5 bg-theme-primary/30 rounded w-36 mb-4"></div>
 
               <div className="space-y-4">
@@ -382,10 +383,10 @@ export default function StudentLessonDetailsLoading() {
                   </div>
                 </div>
               </div>
-            </div>
+            </Card>
 
             {/* Assignments */}
-            <div className="classical-card p-6 animate-pulse">
+            <Card className="animate-pulse">
               <div className="h-5 bg-theme-primary/30 rounded w-32 mb-4"></div>
 
               <div className="space-y-3">
@@ -403,10 +404,10 @@ export default function StudentLessonDetailsLoading() {
                   </div>
                 ))}
               </div>
-            </div>
+            </Card>
 
             {/* Tips for Students */}
-            <div className="classical-card p-6 animate-pulse">
+            <Card className="animate-pulse">
               <div className="h-5 bg-theme-primary/30 rounded w-28 mb-4"></div>
               <div className="space-y-3 text-sm">
                 {Array.from({ length: 4 }).map((_, i) => (
@@ -416,7 +417,7 @@ export default function StudentLessonDetailsLoading() {
                   </div>
                 ))}
               </div>
-            </div>
+            </Card>
           </div>
         </div>
       </div>

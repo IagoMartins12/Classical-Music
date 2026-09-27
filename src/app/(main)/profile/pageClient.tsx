@@ -27,6 +27,7 @@ import ProfileSkeleton from './loading';
 import { useTranslation } from '@/app/context/TranslationContext';
 import Button from '@/app/components/Common/Button';
 import { Inline } from '@/app/components/ui/Layout';
+import { Card } from '@/app/components/ui/Card';
 
 interface Tab {
   id: string;
@@ -131,7 +132,7 @@ export default function ProfilePageClient() {
       {!user.onboardingCompleted ? (
         <>
           <div className="text-center py-12">
-            <div className="classical-card-2 p-8 max-w-md mx-auto">
+            <Card nivel={2} densidade="larga" className="max-w-md mx-auto">
               <h2 className="text-xl font-semibold text-theme-primary mb-4">
                 {t('profile_main_access_restricted')}
               </h2>
@@ -141,14 +142,14 @@ export default function ProfilePageClient() {
               <Button onClick={openOnboardingModal} variant="primary">
                 {t('profile_main_open_onboarding')}
               </Button>
-            </div>
+            </Card>
           </div>
         </>
       ) : (
         <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
           {/* Sidebar Navigation */}
           <div className="lg:col-span-1">
-            <div className="classical-card-2 p-4 sticky top-8">
+            <Card nivel={2} densidade="compacta" className="sticky top-8">
               <nav className="space-y-1">
                 {tabs.map((tab) => {
                   const isActive = activeTab === tab.id;
@@ -198,12 +199,12 @@ export default function ProfilePageClient() {
                   <PiCaretRight className="w-4 h-4" />
                 </Inline>
               </div>
-            </div>
+            </Card>
           </div>
 
           {/* Main Content */}
           <div className="lg:col-span-3">
-            <div className="classical-card-2 p-6">
+            <Card nivel={2}>
               {/* Mobile Tab Header */}
               <div className="lg:hidden mb-6 pb-6 border-b border-theme-secondary">
                 <Inline gap={3}>
@@ -218,7 +219,7 @@ export default function ProfilePageClient() {
               {ActiveComponent && (
                 <ActiveComponent user={user} updateUser={updateUser} />
               )}
-            </div>
+            </Card>
           </div>
         </div>
       )}

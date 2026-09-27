@@ -36,6 +36,7 @@ import { Inline } from '@/app/components/ui/Layout';
 import { Text } from '@/app/components/ui/Text';
 import { Field } from '@/app/components/ui/Field';
 import { NomeAcao } from '@/app/components/ui/NomeAcao';
+import { Card } from '@/app/components/ui/Card';
 
 const articleSchema = z.object({
   title: z.string().min(3, 'Título deve ter pelo menos 3 caracteres'),
@@ -905,7 +906,7 @@ export function ArticleForm({
           />
 
           {/* 🔄 MÚSICA DE FUNDO - ATUALIZADA COM UPLOAD */}
-          <div className="classical-card-simple p-4">
+          <Card nivel={2} densidade="compacta">
             <h3 className="text-sm font-medium text-theme-primary mb-4 flex items-center">
               <PiMusicNotes className="w-4 h-4 mr-2 text-brand-primary" />
               Música de Fundo
@@ -1120,7 +1121,7 @@ export function ArticleForm({
                 </Inline>
               </Inline>
             </div>
-          </div>
+          </Card>
         </div>
       )}
 
@@ -1160,7 +1161,7 @@ export function ArticleForm({
           </div>
 
           {/* Compositores */}
-          <div className="classical-card-simple p-4">
+          <Card nivel={2} densidade="compacta">
             <h3 className="text-sm font-medium text-theme-primary mb-4">
               Compositores Vinculados
             </h3>
@@ -1229,10 +1230,10 @@ export function ArticleForm({
                 <span>Adicionar</span>
               </Inline>
             </div>
-          </div>
+          </Card>
 
           {/* Obras */}
-          <div className="classical-card-simple p-4">
+          <Card nivel={2} densidade="compacta">
             <h3 className="text-sm font-medium text-theme-primary mb-4">
               Obras Vinculadas
             </h3>
@@ -1305,7 +1306,7 @@ export function ArticleForm({
                 </Inline>
               </div>
             </div>
-          </div>
+          </Card>
         </div>
       )}
 

@@ -20,6 +20,7 @@ import {
 } from '@/app/requests/blog/interactions';
 import { Stack } from '@/app/components/ui/Layout';
 import { Text } from '@/app/components/ui/Text';
+import { Card } from '@/app/components/ui/Card';
 
 interface ArticleInteractionsProps {
   articleId: string;
@@ -180,7 +181,7 @@ export function ArticleInteractions({
   }
 
   return (
-    <div className="classical-card p-6">
+    <Card>
       <div className="flex items-center justify-between">
         <div className="flex items-center w-full justify-end md:justify-start gap-4">
           {/* Like Button */}
@@ -249,6 +250,6 @@ export function ArticleInteractions({
           </Text>
         </div>
       )}
-    </div>
+    </Card>
   );
 }

@@ -9,6 +9,7 @@ import Modal from '@/app/components/Modal';
 import Input from '@/app/components/Common/Inputs';
 import Button from '@/app/components/Common/Button';
 import Checkbox from '@/app/components/Common/Checkbox';
+import { Card } from '@/app/components/ui/Card';
 
 interface VideoComparisonModalProps {
   editor: Editor;
@@ -77,7 +78,7 @@ export function VideoComparisonModal({
           widhtFull
         />
 
-        <div className="classical-card-simple p-4 bg-theme-secondary">
+        <Card nivel={2} densidade="compacta" className="bg-theme-secondary">
           <h4 className="font-medium text-theme-primary mb-3">Vídeo 1</h4>
 
           <div className="space-y-3">
@@ -112,9 +113,9 @@ export function VideoComparisonModal({
               widhtFull
             />
           </div>
-        </div>
+        </Card>
 
-        <div className="classical-card-simple p-4 bg-theme-secondary">
+        <Card nivel={2} densidade="compacta" className="bg-theme-secondary">
           <h4 className="font-medium text-theme-primary mb-3">Vídeo 2</h4>
 
           <div className="space-y-3">
@@ -149,7 +150,7 @@ export function VideoComparisonModal({
               widhtFull
             />
           </div>
-        </div>
+        </Card>
 
         <div className="space-y-4 border-t border-theme-secondary pt-4">
           <div>

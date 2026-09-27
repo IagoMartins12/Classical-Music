@@ -8,6 +8,7 @@ import { PiArrowRight, PiCheck, PiMusicNotes } from 'react-icons/pi';
 import { useTranslation } from '@/app/context/TranslationContext';
 import Button from '../../Common/Button';
 import { Text } from '@/app/components/ui/Text';
+import { Card } from '@/app/components/ui/Card';
 
 interface CompletionStepProps {
   onComplete: () => void;
@@ -79,7 +80,7 @@ const CompletionStep: React.FC<CompletionStepProps> = ({ onComplete }) => {
       </div>
 
       {/* Profile Summary */}
-      <div className="classical-card-2 p-6 mb-8 max-w-2xl mx-auto text-left">
+      <Card nivel={2} className="mb-8 max-w-2xl mx-auto text-left">
         <h4 className="font-semibold text-theme-primary mb-4 text-center">
           {t('completion_step_features_title')}
         </h4>
@@ -96,7 +97,7 @@ const CompletionStep: React.FC<CompletionStepProps> = ({ onComplete }) => {
             </div>
           ))}
         </div>
-      </div>
+      </Card>
 
       {/* Next Steps */}
       <div className="mb-8">
@@ -105,7 +106,7 @@ const CompletionStep: React.FC<CompletionStepProps> = ({ onComplete }) => {
         </h4>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4 max-w-4xl mx-auto">
-          <div className="classical-card-2 p-4">
+          <Card nivel={2} densidade="compacta">
             <PiMusicNotes className="w-8 h-8 text-accent-blue mx-auto mb-3" />
             <h5 className="font-medium text-theme-primary mb-2">
               {t('completion_step_explore_title')}
@@ -113,9 +114,9 @@ const CompletionStep: React.FC<CompletionStepProps> = ({ onComplete }) => {
             <Text papel="rotulo" tom="suave" as="p">
               {t('completion_step_explore_desc')}
             </Text>
-          </div>
+          </Card>
 
-          <div className="classical-card-2 p-4">
+          <Card nivel={2} densidade="compacta">
             <GiGrandPiano className="w-8 h-8 text-accent-purple mx-auto mb-3" />
             <h5 className="font-medium text-theme-primary mb-2">
               {t('completion_step_lists_title')}
@@ -123,9 +124,9 @@ const CompletionStep: React.FC<CompletionStepProps> = ({ onComplete }) => {
             <Text papel="rotulo" tom="suave" as="p">
               {t('completion_step_lists_desc')}
             </Text>
-          </div>
+          </Card>
 
-          <div className="classical-card-2 p-4">
+          <Card nivel={2} densidade="compacta">
             <PiArrowRight className="w-8 h-8 text-accent-green mx-auto mb-3" />
             <h5 className="font-medium text-theme-primary mb-2">
               {t('completion_step_study_title')}
@@ -133,7 +134,7 @@ const CompletionStep: React.FC<CompletionStepProps> = ({ onComplete }) => {
             <Text papel="rotulo" tom="suave" as="p">
               {t('completion_step_study_desc')}
             </Text>
-          </div>
+          </Card>
         </div>
       </div>
 

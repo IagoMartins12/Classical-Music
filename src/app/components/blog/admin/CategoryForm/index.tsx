@@ -22,6 +22,7 @@ import { Inline, Stack } from '@/app/components/ui/Layout';
 import { Text } from '@/app/components/ui/Text';
 import { Field } from '@/app/components/ui/Field';
 import { NomeAcao } from '@/app/components/ui/NomeAcao';
+import { Card } from '@/app/components/ui/Card';
 
 interface CategoryFormProps {
   mode: 'create' | 'edit';
@@ -203,7 +204,7 @@ export function CategoryForm({ mode, category }: CategoryFormProps) {
   return (
     <form onSubmit={handleSubmit} className="space-y-6">
       {/* Basic Info Card */}
-      <div className="classical-card p-6">
+      <Card>
         <h3 className="text-lg font-semibold text-theme-primary mb-4">
           Informações Básicas
         </h3>
@@ -289,10 +290,10 @@ export function CategoryForm({ mode, category }: CategoryFormProps) {
             </Text>
           </div>
         </div>
-      </div>
+      </Card>
 
       {/* Appearance Card */}
-      <div className="classical-card p-6">
+      <Card>
         <h3 className="text-lg font-semibold text-theme-primary mb-4">
           Aparência
         </h3>
@@ -453,10 +454,10 @@ export function CategoryForm({ mode, category }: CategoryFormProps) {
             disabled={uploading}
           />
         </div>
-      </div>
+      </Card>
 
       {/* Settings Card */}
-      <div className="classical-card p-6">
+      <Card>
         <h3 className="text-lg font-semibold text-theme-primary mb-4">
           Configurações
         </h3>
@@ -481,7 +482,7 @@ export function CategoryForm({ mode, category }: CategoryFormProps) {
             <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-brand-primary/20 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-brand-primary"></div>
           </label>
         </div>
-      </div>
+      </Card>
 
       {/* Actions */}
       <Inline gap={4} className="justify-end">

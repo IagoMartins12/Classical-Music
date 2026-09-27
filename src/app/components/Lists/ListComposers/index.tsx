@@ -10,6 +10,7 @@ import { useTranslation } from '@/app/context/TranslationContext';
 import { useIsMobile } from '@/app/hooks/useMobile';
 import { Text } from '@/app/components/ui/Text';
 import { Button } from '@/app/components/ui/Button';
+import { Card } from '@/app/components/ui/Card';
 
 interface listComposersProps {
   composers: composerHomeProps[];
@@ -69,13 +70,13 @@ const ListComposers: React.FC<listComposersProps> = ({ composers }) => {
                 animationFillMode: 'backwards',
               }}
             >
-              <div className="classical-card p-4 space-y-4">
+              <Card densidade="compacta" className="space-y-4">
                 <div className="aspect-square loading-skeleton rounded-xl"></div>
                 <div className="space-y-2">
                   <div className="h-4 loading-skeleton rounded"></div>
                   <div className="h-3 loading-skeleton rounded w-3/4"></div>
                 </div>
-              </div>
+              </Card>
             </div>
           ))}
       </div>
@@ -118,7 +119,7 @@ const ListComposers: React.FC<listComposersProps> = ({ composers }) => {
         ) : (
           <div className="space-y-6">
             {/* Completion message */}
-            <div className="classical-card p-6 max-w-md mx-auto">
+            <Card className="max-w-md mx-auto">
               <div className="flex items-center justify-center mb-4">
                 <div className="w-12 h-12 bg-gradient-to-br from-accent-green to-brand-primary rounded-full flex items-center justify-center shadow-theme-glow">
                   <PiMusicNotes className="w-6 h-6 text-theme-primary" />
@@ -131,7 +132,7 @@ const ListComposers: React.FC<listComposersProps> = ({ composers }) => {
                 {t('composers_explored')} {composers.length}{' '}
                 {t('collection_composers')}
               </Text>
-            </div>
+            </Card>
 
             {/* See All Button */}
             <Button

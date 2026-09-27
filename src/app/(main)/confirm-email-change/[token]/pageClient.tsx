@@ -23,6 +23,7 @@ import { useLearningStore } from '@/app/stores/useLearningStore';
 import { useAuth } from '@/app/hooks/useAuth';
 import { useTranslation } from '@/app/context/TranslationContext';
 import { Text } from '@/app/components/ui/Text';
+import { Card } from '@/app/components/ui/Card';
 
 interface ConfirmationResult {
   success: boolean;
@@ -437,7 +438,7 @@ export default function ConfirmEmailChangePage() {
   return (
     <div className="min-h-screen bg-theme-background flex items-center justify-center p-4">
       <div className="max-w-xl w-full">
-        <div className="classical-card p-8">
+        <Card densidade="larga">
           {/* Header with logo */}
           <div className="text-center mb-8">
             <div className="flex justify-center mb-4">
@@ -454,7 +455,7 @@ export default function ConfirmEmailChangePage() {
           </div>
 
           {renderContent()}
-        </div>
+        </Card>
 
         {/* Footer */}
         <div className="text-center mt-6">

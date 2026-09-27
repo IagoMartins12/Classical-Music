@@ -35,6 +35,7 @@ import { deleteUpload } from '@/app/requests/uploads-client';
 import { useTranslation } from '@/app/context/TranslationContext';
 import { Inline } from '@/app/components/ui/Layout';
 import { Text } from '@/app/components/ui/Text';
+import { Card } from '@/app/components/ui/Card';
 
 interface EditScoreClientProps {
   score: any;
@@ -528,7 +529,7 @@ const EditScoreClient = ({
                 <div className="space-y-6">
                   {/* Thumbnail da Partitura */}
                   {score.thumbnailUrl && (
-                    <div className="classical-card-simple p-6">
+                    <Card nivel={2}>
                       <Inline gap={3} className="mb-4">
                         <div className="w-8 h-8 bg-gradient-to-br from-accent-purple to-accent-blue rounded-xl flex items-center justify-center">
                           <PiImage className="w-4 h-4 text-theme-primary" />
@@ -556,11 +557,11 @@ const EditScoreClient = ({
                           </div>
                         )}
                       </div>
-                    </div>
+                    </Card>
                   )}
 
                   {/* Informações da Obra */}
-                  <div className="classical-card-simple p-6">
+                  <Card nivel={2}>
                     <Inline gap={3} className="mb-4">
                       <div className="w-8 h-8 bg-gradient-to-br from-brand-primary to-brand-secondary rounded-xl flex items-center justify-center">
                         <PiMusicNotes className="w-4 h-4 text-theme-primary" />
@@ -587,10 +588,10 @@ const EditScoreClient = ({
                         </Link>
                       </div>
                     </div>
-                  </div>
+                  </Card>
 
                   {/* Detalhes Técnicos */}
-                  <div className="classical-card-simple p-6">
+                  <Card nivel={2}>
                     <Inline gap={3} className="mb-4">
                       <div className="w-8 h-8 bg-gradient-to-br from-accent-green to-accent-blue rounded-xl flex items-center justify-center">
                         <PiInfo className="w-4 h-4 text-theme-primary" />
@@ -639,7 +640,7 @@ const EditScoreClient = ({
                         </Text>
                       </div>
                     </div>
-                  </div>
+                  </Card>
                 </div>
               </div>
             </div>

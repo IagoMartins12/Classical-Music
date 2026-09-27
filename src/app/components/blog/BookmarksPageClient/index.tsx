@@ -10,6 +10,7 @@ import { ArticleCardList } from '../ArticleCardList';
 import { loadMyBookmarks } from '@/app/requests/blog/interactions';
 import { Text } from '@/app/components/ui/Text';
 import { Button } from '@/app/components/ui/Button';
+import { Card } from '@/app/components/ui/Card';
 interface Category {
   id: string;
   name: string;
@@ -106,7 +107,7 @@ export function BookmarksPageClient({ categories }: BookmarksPageClientProps) {
   return (
     <>
       {/* Stats & Filters */}
-      <div className="classical-card p-6 mb-8">
+      <Card className="mb-8">
         <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
           {/* Stats */}
           <div className="flex items-center gap-6">
@@ -173,7 +174,7 @@ export function BookmarksPageClient({ categories }: BookmarksPageClientProps) {
             ))}
           </div>
         </div>
-      </div>
+      </Card>
 
       {/* Articles */}
       {articles.length === 0 ? (

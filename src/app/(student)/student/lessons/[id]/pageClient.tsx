@@ -43,6 +43,7 @@ import { Inline } from '@/app/components/ui/Layout';
 import { Text } from '@/app/components/ui/Text';
 import { Field } from '@/app/components/ui/Field';
 import { Button } from '@/app/components/ui/Button';
+import { Card } from '@/app/components/ui/Card';
 
 interface StudentLessonDetailPageClientProps {
   initialData: StudentLessonDetail | null;
@@ -233,7 +234,7 @@ export default function StudentLessonDetailPageClient({
     return (
       <PageContainer showBackground={true}>
         <div className="flex items-center justify-center min-h-screen">
-          <div className="classical-card p-8 text-center max-w-md">
+          <Card densidade="larga" className="text-center max-w-md">
             <div className="w-16 h-16 bg-gradient-to-br from-accent-red to-accent-purple rounded-3xl flex items-center justify-center mx-auto mb-6">
               <PiBookOpen className="w-8 h-8 text-theme-primary" />
             </div>
@@ -263,7 +264,7 @@ export default function StudentLessonDetailPageClient({
                 {t('back_to_lessons')}
               </Link>
             </div>
-          </div>
+          </Card>
         </div>
       </PageContainer>
     );
@@ -273,10 +274,10 @@ export default function StudentLessonDetailPageClient({
     return (
       <PageContainer showBackground={true}>
         <div className="flex items-center justify-center min-h-screen">
-          <div className="classical-card p-8 text-center">
+          <Card densidade="larga" className="text-center">
             <PiArrowsClockwise className="w-8 h-8 animate-spin text-brand-primary mx-auto mb-4" />
             <p className="text-theme-secondary">{t('loading_lesson')}</p>
-          </div>
+          </Card>
         </div>
       </PageContainer>
     );

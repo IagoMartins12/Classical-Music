@@ -35,6 +35,7 @@ import { Text } from '@/app/components/ui/Text';
 import { Field } from '@/app/components/ui/Field';
 import { NomeAcao } from '@/app/components/ui/NomeAcao';
 import { Button } from '@/app/components/ui/Button';
+import { Card } from '@/app/components/ui/Card';
 
 interface StudentCalendarPageClientProps {
   initialData: StudentCalendarData | null;
@@ -318,7 +319,7 @@ export default function StudentCalendarPageClient({
     return (
       <PageContainer showBackground={true}>
         <div className="flex items-center justify-center min-h-screen">
-          <div className="classical-card p-8 text-center max-w-lg">
+          <Card densidade="larga" className="text-center max-w-lg">
             <div className="w-20 h-20 bg-gradient-to-br from-brand-primary to-brand-secondary rounded-3xl flex items-center justify-center mx-auto mb-6">
               <PiUserCheck className="w-10 h-10 text-theme-primary" />
             </div>
@@ -340,7 +341,7 @@ export default function StudentCalendarPageClient({
                 {t('student_calendar_no_teacher_contact')}
               </Link>
             </div>
-          </div>
+          </Card>
         </div>
       </PageContainer>
     );
@@ -356,7 +357,7 @@ export default function StudentCalendarPageClient({
     return (
       <PageContainer showBackground={true}>
         <div className="flex items-center justify-center min-h-screen">
-          <div className="classical-card p-8 text-center max-w-md">
+          <Card densidade="larga" className="text-center max-w-md">
             <div className="w-16 h-16 bg-gradient-to-br from-accent-red to-accent-purple rounded-3xl flex items-center justify-center mx-auto mb-6">
               <PiCalendarBlank className="w-8 h-8 text-theme-primary" />
             </div>
@@ -396,7 +397,7 @@ export default function StudentCalendarPageClient({
                 </Button>
               )}
             </div>
-          </div>
+          </Card>
         </div>
       </PageContainer>
     );

@@ -29,6 +29,7 @@ import Button from '../../Common/Button';
 import { Inline, Stack } from '@/app/components/ui/Layout';
 import { Text } from '@/app/components/ui/Text';
 import { NomeAcao } from '@/app/components/ui/NomeAcao';
+import { Card } from '@/app/components/ui/Card';
 
 // Interface para dados unificados
 interface MixedScoreData {
@@ -730,7 +731,7 @@ const ScoreSelectionModal = ({
                     id="score-preview-mobile"
                     className="lg:hidden animate-fade-in-up scroll-mt-4 border-t border-theme-secondary pt-6"
                   >
-                    <div className="classical-card bg-theme-elevated p-6">
+                    <Card className="bg-theme-elevated">
                       <div className="flex items-center justify-between mb-4">
                         <Inline
                           as="h3"
@@ -749,7 +750,7 @@ const ScoreSelectionModal = ({
                         </button>
                       </div>
                       <ScorePreview score={selectedScore as any} />
-                    </div>
+                    </Card>
                   </div>
                 )}
               </div>

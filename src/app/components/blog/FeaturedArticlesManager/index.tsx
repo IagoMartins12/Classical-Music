@@ -9,6 +9,7 @@ import {
 } from '@/app/requests/blog/admin-actions';
 import { Inline } from '@/app/components/ui/Layout';
 import { Text } from '@/app/components/ui/Text';
+import { Card } from '@/app/components/ui/Card';
 
 interface FeaturedArticle {
   id: string;
@@ -154,7 +155,7 @@ export default function FeaturedArticlesManager({
 
   if (loading) {
     return (
-      <div className="classical-card-simple p-4">
+      <Card nivel={2} densidade="compacta">
         <div className="animate-pulse">
           <div className="h-4 bg-theme-secondary rounded w-1/4 mb-4"></div>
           <div className="space-y-2">
@@ -162,12 +163,12 @@ export default function FeaturedArticlesManager({
             <div className="h-10 bg-theme-secondary rounded"></div>
           </div>
         </div>
-      </div>
+      </Card>
     );
   }
 
   return (
-    <div className="classical-card-simple p-4">
+    <Card nivel={2} densidade="compacta">
       <div className="flex items-center justify-between mb-4">
         <h3 className="text-sm font-medium text-theme-primary flex items-center">
           <PiStarFill className="w-4 h-4 mr-2 text-yellow-500" />
@@ -280,6 +281,6 @@ export default function FeaturedArticlesManager({
           Nenhum artigo em destaque no momento.
         </Text>
       )}
-    </div>
+    </Card>
   );
 }

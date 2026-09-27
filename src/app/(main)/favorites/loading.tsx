@@ -12,6 +12,7 @@ import {
   PiUser,
 } from 'react-icons/pi';
 import { Inline } from '@/app/components/ui/Layout';
+import { Card } from '@/app/components/ui/Card';
 
 export default function FavoritesLoading() {
   return (
@@ -74,7 +75,7 @@ export default function FavoritesLoading() {
         </div>
 
         {/* Controls Skeleton */}
-        <div className="classical-card p-6">
+        <Card>
           <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
             {/* Tabs Skeleton */}
             <div className="flex bg-theme-secondary rounded-xl p-1">
@@ -111,7 +112,7 @@ export default function FavoritesLoading() {
               </Inline>
             </div>
           </div>
-        </div>
+        </Card>
 
         {/* Composers Section Skeleton */}
         <div>
@@ -165,7 +166,7 @@ export default function FavoritesLoading() {
 // Skeleton para Composer Card
 function ComposerCardSkeleton() {
   return (
-    <div className="classical-card p-6 relative animate-pulse">
+    <Card className="relative animate-pulse">
       <div className="flex items-center gap-6">
         {/* Portrait */}
         <div className="relative w-16 h-16">
@@ -202,14 +203,14 @@ function ComposerCardSkeleton() {
           <PiArrowSquareOut className="w-3 h-3 text-theme-tertiary/30" />
         </Inline>
       </div>
-    </div>
+    </Card>
   );
 }
 
 // Skeleton para Work Card
 function WorkCardSkeleton() {
   return (
-    <div className="classical-card p-6 relative animate-pulse">
+    <Card className="relative animate-pulse">
       <div className="flex-1">
         {/* Title and opus */}
         <div className="flex items-start gap-3 mb-1 flex-col">
@@ -248,6 +249,6 @@ function WorkCardSkeleton() {
           <PiArrowSquareOut className="w-3 h-3 text-theme-tertiary/30" />
         </Inline>
       </div>
-    </div>
+    </Card>
   );
 }

@@ -40,6 +40,7 @@ import { useTranslation } from '@/app/context/TranslationContext';
 import { Inline } from '@/app/components/ui/Layout';
 import { Text } from '@/app/components/ui/Text';
 import { Field } from '@/app/components/ui/Field';
+import { Card } from '@/app/components/ui/Card';
 
 interface ModerationClientProps {
   page: number;
@@ -301,7 +302,7 @@ const ModerationClient = ({
         {/* Bulk Selection Header */}
         {moderations.length > 0 && status === 'pending' && (
           <AnimatedItem direction="up" springType="gentle">
-            <div className="classical-card p-4 mb-6">
+            <Card densidade="compacta" className="mb-6">
               <div className="flex items-center justify-between">
                 <Inline gap={4}>
                   <Inline as="label" gap={2} className="cursor-pointer">
@@ -339,7 +340,7 @@ const ModerationClient = ({
                   </Button>
                 </Inline>
               </div>
-            </div>
+            </Card>
           </AnimatedItem>
         )}
 
@@ -588,7 +589,7 @@ const ModerationClient = ({
       {showModal && selectedModeration && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-theme-overlay backdrop-blur-sm">
           <AnimatedItem direction="scale" springType="bouncy">
-            <div className="classical-card p-6 max-w-md w-full">
+            <Card className="max-w-md w-full">
               <div className="text-center">
                 <div className="w-16 h-16 bg-accent-red/20 rounded-full flex items-center justify-center mx-auto mb-4">
                   <PiWarning className="w-8 h-8 text-accent-red" />
@@ -639,7 +640,7 @@ const ModerationClient = ({
                   </Button>
                 </div>
               </div>
-            </div>
+            </Card>
           </AnimatedItem>
         </div>
       )}

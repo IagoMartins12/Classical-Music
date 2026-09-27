@@ -16,6 +16,7 @@ import { useTranslation } from '@/app/context/TranslationContext';
 import { Text } from '@/app/components/ui/Text';
 import { NomeAcao } from '@/app/components/ui/NomeAcao';
 import { Button } from '@/app/components/ui/Button';
+import { Card } from '@/app/components/ui/Card';
 
 interface ScorePreviewProps {
   score: IMSLPScore & {
@@ -152,7 +153,10 @@ const ScorePreview = React.memo(({ score }: ScorePreviewProps) => {
 
   return (
     <>
-      <div className="classical-card-simple border rounded-lg p-6 transition-all duration-300 hover:shadow-lg">
+      <Card
+        nivel={2}
+        className="border rounded-lg transition-all duration-300 hover:shadow-lg"
+      >
         {/* Header com título e badge */}
         <div className="flex items-start justify-between mb-6">
           <div className="flex-1 mr-4">
@@ -377,7 +381,7 @@ const ScorePreview = React.memo(({ score }: ScorePreviewProps) => {
             </Button>
           </div>
         )}
-      </div>
+      </Card>
 
       {/* Modal de Zoom */}
       {score.thumbnailUrl && !imageError && (

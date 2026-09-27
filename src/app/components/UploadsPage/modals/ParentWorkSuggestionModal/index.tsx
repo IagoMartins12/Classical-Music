@@ -27,6 +27,7 @@ import Modal from '@/app/components/Modal';
 import Checkbox from '@/app/components/Common/Checkbox';
 import { Inline } from '@/app/components/ui/Layout';
 import { Text } from '@/app/components/ui/Text';
+import { Card } from '@/app/components/ui/Card';
 
 interface ParentWorkData {
   id: string;
@@ -135,7 +136,7 @@ const ParentWorkConfirmationModal: React.FC<{
 
           {/* Content */}
           <div className="space-y-4">
-            <div className="p-4 classical-card-simple  rounded-lg">
+            <Card nivel={2} densidade="compacta" className="rounded-lg">
               <div className="flex items-start space-x-3">
                 <PiInfo className="w-5 h-5 text-theme-primary mt-0.5" />
                 <Text papel="rotulo" tom="forte" as="div">
@@ -153,7 +154,7 @@ const ParentWorkConfirmationModal: React.FC<{
                   </Text>
                 </Text>
               </div>
-            </div>
+            </Card>
           </div>
 
           {/* Actions */}

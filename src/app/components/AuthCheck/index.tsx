@@ -4,6 +4,7 @@
 import { useLoginModal } from '@/app/stores/authStore';
 import { PiHeart } from 'react-icons/pi';
 import { Button } from '@/app/components/ui/Button';
+import { Card } from '@/app/components/ui/Card';
 
 interface AuthCheckProps {
   title:
@@ -18,7 +19,7 @@ export default function AuthCheck({ title }: AuthCheckProps) {
   const { open } = useLoginModal();
   return (
     <div className=" bg-gradient-primary min-h-[70vh] flex items-center justify-center">
-      <div className="text-center classical-card p-8 max-w-md">
+      <Card densidade="larga" className="text-center max-w-md">
         <PiHeart className="w-16 h-16 text-brand-primary mx-auto mb-4" />
         <h1 className="text-2xl font-bold text-theme-primary mb-2">
           Acesso Necessário
@@ -29,7 +30,7 @@ export default function AuthCheck({ title }: AuthCheckProps) {
         <Button variante="primario" type="submit" onClick={open}>
           Fazer Login
         </Button>
-      </div>
+      </Card>
     </div>
   );
 }

@@ -50,6 +50,7 @@ import { Text } from '@/app/components/ui/Text';
 import { Field } from '@/app/components/ui/Field';
 import { NomeAcao } from '@/app/components/ui/NomeAcao';
 import { Button } from '@/app/components/ui/Button';
+import { Card } from '@/app/components/ui/Card';
 
 interface TeacherProfilePageClientProps {
   initialData: TeacherProfileData | null;
@@ -454,7 +455,7 @@ export default function TeacherProfilePageClient({
     return (
       <PageContainer showBackground={true}>
         <div className="flex items-center justify-center min-h-screen">
-          <div className="classical-card p-8 text-center max-w-md">
+          <Card densidade="larga" className="text-center max-w-md">
             <div className="w-16 h-16 bg-gradient-to-br from-accent-red to-accent-purple rounded-3xl flex items-center justify-center mx-auto mb-6">
               <PiUser className="w-8 h-8 text-theme-primary" />
             </div>
@@ -473,7 +474,7 @@ export default function TeacherProfilePageClient({
               <PiArrowsClockwise className="w-4 h-4" />
               <span>{t('reload_page')}</span>
             </Inline>
-          </div>
+          </Card>
         </div>
       </PageContainer>
     );

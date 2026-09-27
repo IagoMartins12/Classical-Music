@@ -59,6 +59,7 @@ import { useLearnedVideo } from '@/app/hooks/useLearnedVideo';
 import { Inline, Stack } from '@/app/components/ui/Layout';
 import { Text } from '@/app/components/ui/Text';
 import { NomeAcao } from '@/app/components/ui/NomeAcao';
+import { Card } from '@/app/components/ui/Card';
 
 const LearningModal = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -1496,7 +1497,7 @@ const LearningModal = () => {
             </div>
           </Inline>
 
-          <div className="classical-card-simple rounded-xl p-4 mb-6">
+          <Card nivel={2} densidade="compacta" className="rounded-xl mb-6">
             <p className="text-theme-primary">
               <strong>&quot;{workTitle}&quot;</strong>{' '}
               {t('transfer_learned_description')}
@@ -1509,7 +1510,7 @@ const LearningModal = () => {
                 <li>• {t('transfer_score_preserved')}</li>
               </ul>
             </Text>
-          </div>
+          </Card>
 
           <div className="flex items-center justify-between ">
             <Button

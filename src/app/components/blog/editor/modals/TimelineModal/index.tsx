@@ -13,6 +13,7 @@ import { findComposerById } from '@/app/requests/catalog-search';
 import { uploadBlogMedia } from '@/app/requests/blog/interactions';
 import { Text } from '@/app/components/ui/Text';
 import { NomeAcao } from '@/app/components/ui/NomeAcao';
+import { Card } from '@/app/components/ui/Card';
 
 interface TimelineModalProps {
   editor: Editor;
@@ -128,7 +129,11 @@ export function TimelineModal({
     >
       <form onSubmit={handleSubmit} className="space-y-6">
         {/* Compositor vinculado */}
-        <div className="classical-card-simple p-4 bg-blue-50 dark:bg-blue-900/20">
+        <Card
+          nivel={2}
+          densidade="compacta"
+          className="bg-blue-50 dark:bg-blue-900/20"
+        >
           <h4 className="text-sm font-semibold text-theme-primary mb-3">
             Vincular Compositor (opcional)
           </h4>
@@ -141,7 +146,7 @@ export function TimelineModal({
               ✅ Timeline vinculada a: <strong>{composerName}</strong>
             </Text>
           )}
-        </div>
+        </Card>
 
         {/* Eventos */}
         <div className="space-y-4">
@@ -150,7 +155,7 @@ export function TimelineModal({
           </h4>
 
           {events.map((event, index) => (
-            <div key={index} className="classical-card-simple p-4">
+            <Card nivel={2} densidade="compacta" key={index}>
               <div className="flex items-center justify-between mb-3">
                 <h4 className="font-medium text-theme-primary">
                   Evento {index + 1}
@@ -254,7 +259,7 @@ export function TimelineModal({
                   </div>
                 )}
               </div>
-            </div>
+            </Card>
           ))}
         </div>
 

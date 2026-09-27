@@ -17,6 +17,7 @@ import {
   PiUser,
 } from 'react-icons/pi';
 import { Inline } from '@/app/components/ui/Layout';
+import { Card } from '@/app/components/ui/Card';
 
 export default function TeacherStudentDetailLoading() {
   return (
@@ -97,7 +98,7 @@ export default function TeacherStudentDetailLoading() {
           {/* Left Column - 2/3 */}
           <div className="lg:col-span-2 space-y-8">
             {/* Student Info Card Skeleton */}
-            <div className="classical-card p-6 animate-pulse">
+            <Card className="animate-pulse">
               <Inline gap={6} className="mb-6">
                 {/* Avatar */}
                 <div className="w-20 h-20 bg-gradient-to-br from-brand-primary/20 to-brand-secondary/20 border border-brand-primary/30 rounded-full"></div>
@@ -155,7 +156,7 @@ export default function TeacherStudentDetailLoading() {
                   ))}
                 </div>
               </div>
-            </div>
+            </Card>
 
             {/* Progress Stats Skeleton */}
             <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
@@ -171,21 +172,18 @@ export default function TeacherStudentDetailLoading() {
                   icon: <PiPulse className="w-6 h-6 text-theme-inverse/20" />,
                 },
               ].map((item, index) => (
-                <div
-                  key={index}
-                  className="classical-card p-6 text-center animate-pulse"
-                >
+                <Card key={index} className="text-center animate-pulse">
                   <div className="w-12 h-12 bg-gradient-to-br from-brand-primary/20 to-brand-secondary/20 border border-brand-primary/30 rounded-xl mx-auto mb-3 flex items-center justify-center">
                     {item.icon}
                   </div>
                   <div className="h-6 bg-gradient-to-r from-brand-primary/20 to-brand-secondary/20 rounded mb-2"></div>
                   <div className="h-3 bg-theme-elevated rounded"></div>
-                </div>
+                </Card>
               ))}
             </div>
 
             {/* Recent Lessons Skeleton */}
-            <div className="classical-card p-6 animate-pulse">
+            <Card className="animate-pulse">
               <div className="flex items-center justify-between mb-6">
                 <Inline gap={3}>
                   <div className="w-10 h-10 bg-gradient-to-br from-accent-green/20 to-accent-blue/20 rounded-xl flex items-center justify-center">
@@ -201,7 +199,7 @@ export default function TeacherStudentDetailLoading() {
 
               <div className="space-y-4">
                 {Array.from({ length: 4 }).map((_, index) => (
-                  <div key={index} className="classical-card-2 p-4">
+                  <Card nivel={2} densidade="compacta" key={index}>
                     <div className="flex items-start justify-between">
                       <div className="flex-1">
                         <Inline gap={3} className="mb-2">
@@ -231,13 +229,13 @@ export default function TeacherStudentDetailLoading() {
 
                       <div className="w-8 h-8 bg-theme-elevated border border-theme-secondary rounded-lg ml-4"></div>
                     </div>
-                  </div>
+                  </Card>
                 ))}
               </div>
-            </div>
+            </Card>
 
             {/* Teacher Notes Skeleton */}
-            <div className="classical-card p-6 animate-pulse">
+            <Card className="animate-pulse">
               <div className="flex items-center justify-between mb-4">
                 <Inline gap={3}>
                   <div className="w-10 h-10 bg-gradient-to-br from-accent-purple/20 to-accent-red/20 rounded-xl flex items-center justify-center">
@@ -258,13 +256,13 @@ export default function TeacherStudentDetailLoading() {
                   <div className="h-4 bg-theme-primary/20 rounded w-4/6"></div>
                 </div>
               </div>
-            </div>
+            </Card>
           </div>
 
           {/* Right Column - 1/3 */}
           <div className="lg:col-span-1 space-y-6">
             {/* Upcoming Lessons Skeleton */}
-            <div className="classical-card p-6 animate-pulse">
+            <Card className="animate-pulse">
               <Inline gap={3} className="mb-4">
                 <div className="w-8 h-8 bg-gradient-to-br from-accent-blue/20 to-accent-purple/20 rounded-lg flex items-center justify-center">
                   <PiCalendarBlank className="w-4 h-4 text-theme-inverse/20" />
@@ -290,10 +288,10 @@ export default function TeacherStudentDetailLoading() {
                   </div>
                 ))}
               </div>
-            </div>
+            </Card>
 
             {/* Current Assignments Skeleton */}
-            <div className="classical-card p-6 animate-pulse">
+            <Card className="animate-pulse">
               <Inline gap={3} className="mb-4">
                 <div className="w-8 h-8 bg-gradient-to-br from-accent-green/20 to-accent-blue/20 rounded-lg flex items-center justify-center">
                   <PiTarget className="w-4 h-4 text-theme-inverse/20" />
@@ -323,10 +321,10 @@ export default function TeacherStudentDetailLoading() {
                   </div>
                 ))}
               </div>
-            </div>
+            </Card>
 
             {/* Quick Actions Skeleton */}
-            <div className="classical-card p-6 animate-pulse">
+            <Card className="animate-pulse">
               <Inline gap={3} className="mb-4">
                 <div className="w-8 h-8 bg-gradient-to-br from-accent-purple/20 to-accent-red/20 rounded-lg flex items-center justify-center">
                   <PiGear className="w-4 h-4 text-theme-inverse/20" />
@@ -349,7 +347,7 @@ export default function TeacherStudentDetailLoading() {
                   </div>
                 ))}
               </div>
-            </div>
+            </Card>
 
             {/* Refresh Button Skeleton */}
             <Inline

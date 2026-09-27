@@ -44,6 +44,7 @@ import { Stack } from '@/app/components/ui/Layout';
 import { Text } from '@/app/components/ui/Text';
 import { NomeAcao } from '@/app/components/ui/NomeAcao';
 import { Button } from '@/app/components/ui/Button';
+import { Card } from '@/app/components/ui/Card';
 
 interface WorksClientProps {
   worksData: WorksListResponse;
@@ -98,11 +99,11 @@ function useOptimizedSearch(
 const WorksSkeleton = memo(() => (
   <SequentialGrid cols={4} gap={6} delayBetweenItems={0.05} className="">
     {Array.from({ length: 8 }).map((_, i) => (
-      <div key={i} className="classical-card p-6 animate-pulse">
+      <Card key={i} className="animate-pulse">
         <div className="h-4 bg-theme-secondary/20 rounded mb-3"></div>
         <div className="h-3 bg-theme-secondary/20 rounded mb-2"></div>
         <div className="h-3 bg-theme-secondary/20 rounded w-2/3"></div>
-      </div>
+      </Card>
     ))}
   </SequentialGrid>
 ));
@@ -837,12 +838,12 @@ const WorksClient = memo(
             {isPending && (
               <AnimatedItem direction="scale" springType="gentle">
                 <div className="absolute inset-0 bg-theme-overlay backdrop-blur-sm flex items-center justify-center z-[60] rounded-2xl">
-                  <div className="classical-card p-8 text-center">
+                  <Card densidade="larga" className="text-center">
                     <div className="w-12 h-12 border-4 border-brand-primary border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
                     <p className="text-theme-primary font-medium">
                       {t('client_jsx_p_loading_works')}
                     </p>
-                  </div>
+                  </Card>
                 </div>
               </AnimatedItem>
             )}

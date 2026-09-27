@@ -14,6 +14,7 @@ import {
   PiUsers,
 } from 'react-icons/pi';
 import { Inline } from '@/app/components/ui/Layout';
+import { Card } from '@/app/components/ui/Card';
 
 export default function TeacherStudentsLoading() {
   return (
@@ -89,21 +90,18 @@ export default function TeacherStudentsLoading() {
               icon: <PiTrendUp className="w-6 h-6 text-theme-inverse/20" />,
             },
           ].map((item, index) => (
-            <div
-              key={index}
-              className="classical-card p-6 text-center animate-pulse"
-            >
+            <Card key={index} className="text-center animate-pulse">
               <div className="w-12 h-12 bg-gradient-to-br from-brand-primary/20 to-brand-secondary/20 border border-brand-primary/30 rounded-xl mx-auto mb-4 flex items-center justify-center">
                 {item.icon}
               </div>
               <div className="h-8 bg-gradient-to-r from-brand-primary/20 to-brand-secondary/20 rounded-lg mb-2"></div>
               <div className="h-4 bg-theme-elevated rounded"></div>
-            </div>
+            </Card>
           ))}
         </div>
 
         {/* Controls Skeleton */}
-        <div className="classical-card p-6 mb-8 animate-pulse">
+        <Card className="mb-8 animate-pulse">
           <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
             {/* Search and Filters */}
             <div className="flex flex-col sm:flex-row gap-4 flex-1">
@@ -129,7 +127,7 @@ export default function TeacherStudentsLoading() {
             </Inline>
             <div className="h-3 bg-theme-tertiary/30 rounded w-24"></div>
           </div>
-        </div>
+        </Card>
 
         {/* Students Grid Skeleton */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
@@ -139,7 +137,7 @@ export default function TeacherStudentsLoading() {
         </div>
 
         {/* Pagination Skeleton */}
-        <div className="classical-card p-6 animate-pulse">
+        <Card className="animate-pulse">
           <div className="flex flex-col sm:flex-row items-center justify-between space-y-4 sm:space-y-0">
             <div className="h-4 w-48 bg-theme-elevated rounded"></div>
 
@@ -160,7 +158,7 @@ export default function TeacherStudentsLoading() {
 
             <div></div>
           </div>
-        </div>
+        </Card>
       </div>
 
       {/* Floating Particles */}
@@ -174,7 +172,7 @@ export default function TeacherStudentsLoading() {
 // Student Card Skeleton
 function StudentCardSkeleton() {
   return (
-    <div className="classical-card p-6 h-full animate-pulse">
+    <Card className="h-full animate-pulse">
       {/* Avatar */}
       <div className="mb-6 flex justify-center">
         <div className="w-20 h-20 md:w-24 md:h-24 bg-gradient-to-br from-brand-primary/20 to-brand-secondary/20 border border-brand-primary/30 rounded-full"></div>
@@ -246,6 +244,6 @@ function StudentCardSkeleton() {
           <div className="h-4 w-24 bg-theme-tertiary/30 rounded mx-auto"></div>
         </div>
       </div>
-    </div>
+    </Card>
   );
 }

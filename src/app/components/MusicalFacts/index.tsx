@@ -20,6 +20,7 @@ import { translateEpochWithHook } from '@/app/utils/translations/epochTranslatio
 import { useTranslation } from '@/app/context/TranslationContext';
 import { Language } from '@/app/utils/translations/serverTranslations';
 import { Button } from '@/app/components/ui/Button';
+import { Card } from '@/app/components/ui/Card';
 
 interface MusicalFact {
   id: string;
@@ -274,7 +275,7 @@ const MusicalFacts: React.FC<MusicalFactsProps> = ({
           <div className="h-8 bg-gray-200 rounded mb-4"></div>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             {[...Array(4)].map((_, i) => (
-              <div key={i} className="classical-card-simple p-6">
+              <Card nivel={2} key={i}>
                 <div className="flex items-start gap-4">
                   <div className="w-12 h-12 rounded-2xl bg-gray-200"></div>
                   <div className="flex-1">
@@ -284,7 +285,7 @@ const MusicalFacts: React.FC<MusicalFactsProps> = ({
                     <div className="h-3 bg-gray-200 rounded w-1/2"></div>
                   </div>
                 </div>
-              </div>
+              </Card>
             ))}
           </div>
         </div>
@@ -345,7 +346,7 @@ const MusicalFacts: React.FC<MusicalFactsProps> = ({
       {isLoading ? (
         <div className="mt-8 grid grid-cols-1 md:grid-cols-2 gap-6">
           {[...Array(4)].map((_, i) => (
-            <div key={i} className="classical-card-simple p-6">
+            <Card nivel={2} key={i}>
               <div className="flex items-start gap-4">
                 <div className="w-12 h-12 rounded-2xl loading-skeleton"></div>
                 <div className="flex-1">
@@ -355,7 +356,7 @@ const MusicalFacts: React.FC<MusicalFactsProps> = ({
                   <div className="h-3 loading-skeleton rounded w-1/2"></div>
                 </div>
               </div>
-            </div>
+            </Card>
           ))}
         </div>
       ) : (

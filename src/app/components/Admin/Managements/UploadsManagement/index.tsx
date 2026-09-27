@@ -45,6 +45,7 @@ import { getPeriodLabel } from '@/app/utils/adminUtils';
 import { AppRouterInstance } from 'next/dist/shared/lib/app-router-context.shared-runtime';
 import { Inline } from '@/app/components/ui/Layout';
 import { Text } from '@/app/components/ui/Text';
+import { Card } from '@/app/components/ui/Card';
 
 interface UploadFilters {
   search: string;
@@ -506,11 +507,11 @@ export default function UploadsManagement() {
         {statsLoading ? (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
             {[...Array(4)].map((_, i) => (
-              <div key={i} className="classical-card p-6 animate-pulse">
+              <Card key={i} className="animate-pulse">
                 <div className="h-4 bg-theme-secondary rounded mb-2"></div>
                 <div className="h-8 bg-theme-secondary rounded mb-2"></div>
                 <div className="h-3 bg-theme-secondary rounded w-1/2"></div>
-              </div>
+              </Card>
             ))}
           </div>
         ) : stats ? (

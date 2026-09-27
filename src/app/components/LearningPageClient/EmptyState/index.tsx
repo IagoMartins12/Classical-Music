@@ -3,6 +3,7 @@
 import Link from 'next/link';
 import { PiCheckCircle, PiMagnifyingGlass, PiTarget } from 'react-icons/pi';
 import { useTranslation } from '@/app/hooks/useTranslation';
+import { Card } from '@/app/components/ui/Card';
 
 interface EmptyStateProps {
   type: 'want-to-learn' | 'learned' | 'search';
@@ -51,7 +52,7 @@ export const EmptyState = ({
   const currentConfig = config[type];
 
   return (
-    <div className="classical-card p-8 text-center">
+    <Card densidade="larga" className="text-center">
       {currentConfig.icon}
       <h3 className="text-xl font-semibold text-theme-primary mb-2">
         {currentConfig.title}
@@ -60,6 +61,6 @@ export const EmptyState = ({
       <Link href="/works" className="btn-classical-primary">
         {currentConfig.action}
       </Link>
-    </div>
+    </Card>
   );
 };

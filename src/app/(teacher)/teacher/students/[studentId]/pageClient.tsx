@@ -48,6 +48,7 @@ import { Text } from '@/app/components/ui/Text';
 import { Field } from '@/app/components/ui/Field';
 import { NomeAcao } from '@/app/components/ui/NomeAcao';
 import { Button } from '@/app/components/ui/Button';
+import { Card } from '@/app/components/ui/Card';
 
 interface TeacherStudentDetailPageClientProps {
   studentData: StudentDetailData;
@@ -871,7 +872,7 @@ export default function TeacherStudentDetailPageClient({
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   <div className="space-y-4">
-                    <div className="classical-card-2 p-4">
+                    <Card nivel={2} densidade="compacta">
                       <Inline gap={3} className="mb-3">
                         <PiCalendarBlank className="w-5 h-5 text-brand-primary" />
                         <h4 className="font-semibold text-theme-primary">
@@ -899,11 +900,11 @@ export default function TeacherStudentDetailPageClient({
                           </span>
                         </div>
                       </div>
-                    </div>
+                    </Card>
 
                     {relationship.preferredDays &&
                       relationship.preferredDays.length > 0 && (
-                        <div className="classical-card-2 p-4">
+                        <Card nivel={2} densidade="compacta">
                           <Inline gap={3} className="mb-3">
                             <PiCalendarBlank className="w-5 h-5 text-accent-green" />
                             <h4 className="font-semibold text-theme-primary">
@@ -923,14 +924,14 @@ export default function TeacherStudentDetailPageClient({
                               );
                             })}
                           </div>
-                        </div>
+                        </Card>
                       )}
                   </div>
 
                   <div className="space-y-4">
                     {relationship.preferredTimes &&
                       relationship.preferredTimes.length > 0 && (
-                        <div className="classical-card-2 p-4">
+                        <Card nivel={2} densidade="compacta">
                           <Inline gap={3} className="mb-3">
                             <PiClock className="w-5 h-5 text-accent-blue" />
                             <h4 className="font-semibold text-theme-primary">
@@ -947,11 +948,11 @@ export default function TeacherStudentDetailPageClient({
                               </span>
                             ))}
                           </div>
-                        </div>
+                        </Card>
                       )}
 
                     {relationship.learningPlan && (
-                      <div className="classical-card-2 p-4">
+                      <Card nivel={2} densidade="compacta">
                         <Inline gap={3} className="mb-3">
                           <PiBookOpen className="w-5 h-5 text-accent-purple" />
                           <h4 className="font-semibold text-theme-primary">
@@ -966,7 +967,7 @@ export default function TeacherStudentDetailPageClient({
                         >
                           {relationship.learningPlan}
                         </Text>
-                      </div>
+                      </Card>
                     )}
                   </div>
                 </div>
@@ -1068,7 +1069,7 @@ export default function TeacherStudentDetailPageClient({
 
                 <div className="space-y-4">
                   {recentLessons.slice(0, 5).map((lesson) => (
-                    <div key={lesson.id} className="classical-card-2 p-4">
+                    <Card nivel={2} densidade="compacta" key={lesson.id}>
                       <div className="flex items-start justify-between">
                         <div className="flex-1">
                           <Inline gap={3} className="mb-2">
@@ -1158,7 +1159,7 @@ export default function TeacherStudentDetailPageClient({
                           <PiEye className="w-4 h-4 text-theme-tertiary hover:text-brand-primary transition-colors" />
                         </Link>
                       </div>
-                    </div>
+                    </Card>
                   ))}
 
                   {recentLessons.length === 0 && (

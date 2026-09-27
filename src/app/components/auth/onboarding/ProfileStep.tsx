@@ -16,6 +16,7 @@ import ProfileImageUpload from '../../ProfileImageUpload';
 import InternationalPhoneInput from '../../Common/InternationalPhoneInput';
 import { uploadAvatarRequest } from '@/app/requests/account-client';
 import { Text } from '@/app/components/ui/Text';
+import { Card } from '@/app/components/ui/Card';
 
 const ProfileStep: React.FC = () => {
   const [isUploadingImage, setIsUploadingImage] = useState(false);
@@ -229,14 +230,18 @@ const ProfileStep: React.FC = () => {
 
       {/* Dicas e informações */}
       <div className="mt-8 space-y-4">
-        <div className="classical-card-2 p-4 max-w-lg mx-auto">
+        <Card nivel={2} densidade="compacta" className="max-w-lg mx-auto">
           <Text papel="rotulo" tom="suave" as="p">
             <strong>{t('profile_step_tip_title')}</strong>{' '}
             {t('profile_step_tip_text')}
           </Text>
-        </div>
+        </Card>
 
-        <div className="classical-card-2 p-4 max-w-lg mx-auto bg-brand-primary bg-opacity-5 border border-brand-primary border-opacity-20">
+        <Card
+          nivel={2}
+          densidade="compacta"
+          className="max-w-lg mx-auto bg-brand-primary bg-opacity-5 border border-brand-primary border-opacity-20"
+        >
           <h4 className="text-sm font-medium text-brand-primary mb-2">
             {t('profile_step_privacy_title')}
           </h4>
@@ -245,7 +250,7 @@ const ProfileStep: React.FC = () => {
             <li>{t('profile_step_privacy_location')}</li>
             <li>{t('profile_step_privacy_settings')}</li>
           </ul>
-        </div>
+        </Card>
       </div>
     </div>
   );

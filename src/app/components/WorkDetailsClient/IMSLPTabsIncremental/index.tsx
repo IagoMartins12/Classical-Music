@@ -32,6 +32,7 @@ import { useTranslation } from '@/app/context/TranslationContext';
 import useIsTablet from '@/app/hooks/useIsTablet';
 import { Inline, Stack } from '@/app/components/ui/Layout';
 import { Text } from '@/app/components/ui/Text';
+import { Card } from '@/app/components/ui/Card';
 
 // ✅ INTERFACE UNIFICADA SIMPLIFICADA
 interface MixedScoreData {
@@ -1055,7 +1056,7 @@ export default function IMSLPTabsIncremental({
                     id="score-preview"
                     className="lg:sticky lg:top-6 animate-fade-in-up scroll-mt-4"
                   >
-                    <div className="classical-card-2 p-6">
+                    <Card nivel={2}>
                       <div className="flex items-center justify-between mb-4">
                         <Inline
                           as="h3"
@@ -1085,7 +1086,7 @@ export default function IMSLPTabsIncremental({
                           </div>
                         </div>
                       )}
-                    </div>
+                    </Card>
                   </div>
                 )}
               </div>
@@ -1190,7 +1191,7 @@ const ErrorState = React.memo(
 ErrorState.displayName = 'ErrorState';
 
 const EmptyState = React.memo(({ t }: { t: any }) => (
-  <div className="classical-card p-8">
+  <Card densidade="larga">
     <div className="text-center py-16">
       <div className="w-16 h-16 bg-theme-tertiary/20 rounded-2xl flex items-center justify-center mx-auto mb-6">
         <PiMusicNotes className="w-8 h-8 text-theme-tertiary" />
@@ -1202,7 +1203,7 @@ const EmptyState = React.memo(({ t }: { t: any }) => (
         {t('imslp_tabs_nao_encontradas')}
       </p>
     </div>
-  </div>
+  </Card>
 ));
 EmptyState.displayName = 'EmptyState';
 

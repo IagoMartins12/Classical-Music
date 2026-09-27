@@ -19,6 +19,7 @@ import {
 } from 'recharts';
 import { Inline } from '@/app/components/ui/Layout';
 import { Text } from '@/app/components/ui/Text';
+import { Card } from '@/app/components/ui/Card';
 
 export interface ChartData {
   name?: string;
@@ -503,7 +504,7 @@ export const MetricCard = ({
   color?: string;
   subtitle?: string;
 }) => (
-  <div className="classical-card p-6 relative overflow-hidden">
+  <Card className="relative overflow-hidden">
     <div className="flex items-start justify-between mb-4">
       <div className="flex-1">
         <Text papel="rotulo" tom="fraco" as="p" className="mb-1">
@@ -571,7 +572,7 @@ export const MetricCard = ({
         </ResponsiveContainer>
       </div>
     )}
-  </div>
+  </Card>
 );
 
 // 🆕 COMPONENTE DE DEBUG PARA DADOS

@@ -16,6 +16,7 @@ import {
   PiTarget,
 } from 'react-icons/pi';
 import { Inline } from '@/app/components/ui/Layout';
+import { Card } from '@/app/components/ui/Card';
 
 export default function StudentAssignmentDetailsLoading() {
   return (
@@ -99,7 +100,7 @@ export default function StudentAssignmentDetailsLoading() {
           {/* Main Content */}
           <div className="lg:col-span-2 space-y-8">
             {/* Assignment Info */}
-            <div className="classical-card p-6 animate-pulse">
+            <Card className="animate-pulse">
               <div className="h-6 bg-theme-primary/30 rounded w-40 mb-6"></div>
 
               <div className="space-y-6">
@@ -214,10 +215,10 @@ export default function StudentAssignmentDetailsLoading() {
                   </div>
                 </div>
               </div>
-            </div>
+            </Card>
 
             {/* Musical Pieces Section */}
-            <div className="classical-card p-6 animate-pulse">
+            <Card className="animate-pulse">
               <div className="flex items-center justify-between mb-6">
                 <Inline gap={3}>
                   <div className="w-10 h-10 bg-gradient-to-br from-accent-purple/20 to-accent-blue/20 rounded-lg flex items-center justify-center">
@@ -239,10 +240,10 @@ export default function StudentAssignmentDetailsLoading() {
                   </div>
                 ))}
               </div>
-            </div>
+            </Card>
 
             {/* Teacher Feedback */}
-            <div className="classical-card p-6 animate-pulse">
+            <Card className="animate-pulse">
               <div className="h-6 bg-theme-primary/30 rounded w-48 mb-4"></div>
               <div className="space-y-4">
                 <div className="p-4 bg-accent-blue/5 border border-accent-blue/20 rounded-lg">
@@ -264,10 +265,10 @@ export default function StudentAssignmentDetailsLoading() {
                   <div className="h-4 bg-theme-primary/30 rounded w-8"></div>
                 </Inline>
               </div>
-            </div>
+            </Card>
 
             {/* Student Notes */}
-            <div className="classical-card p-6 animate-pulse">
+            <Card className="animate-pulse">
               <div className="h-6 bg-theme-primary/30 rounded w-32 mb-4"></div>
               <div className="space-y-4">
                 <div className="h-24 bg-theme-elevated border border-theme-secondary rounded"></div>
@@ -284,13 +285,13 @@ export default function StudentAssignmentDetailsLoading() {
                   </Inline>
                 </div>
               </div>
-            </div>
+            </Card>
           </div>
 
           {/* Sidebar */}
           <div className="space-y-6">
             {/* Teacher Info */}
-            <div className="classical-card p-6 animate-pulse">
+            <Card className="animate-pulse">
               <div className="h-5 bg-theme-primary/30 rounded w-20 mb-4"></div>
               <Inline gap={3} className="mb-4">
                 <div className="w-12 h-12 bg-gradient-to-br from-brand-primary/20 to-brand-secondary/20 rounded-full"></div>
@@ -299,10 +300,10 @@ export default function StudentAssignmentDetailsLoading() {
                   <div className="h-3 bg-brand-primary/30 rounded w-32"></div>
                 </div>
               </Inline>
-            </div>
+            </Card>
 
             {/* Assignment Info */}
-            <div className="classical-card p-6 animate-pulse">
+            <Card className="animate-pulse">
               <div className="h-5 bg-theme-primary/30 rounded w-24 mb-4"></div>
               <div className="space-y-3 text-sm">
                 <div className="flex justify-between">
@@ -318,10 +319,10 @@ export default function StudentAssignmentDetailsLoading() {
                   <div className="h-3 bg-brand-primary/30 rounded w-32"></div>
                 </div>
               </div>
-            </div>
+            </Card>
 
             {/* Progress Milestones Preview */}
-            <div className="classical-card p-6 animate-pulse">
+            <Card className="animate-pulse">
               <div className="h-5 bg-theme-primary/30 rounded w-20 mb-4"></div>
               <div className="space-y-2">
                 {Array.from({ length: 4 }).map((_, i) => {
@@ -346,7 +347,7 @@ export default function StudentAssignmentDetailsLoading() {
                 })}
                 <div className="h-3 bg-brand-primary/30 rounded w-20"></div>
               </div>
-            </div>
+            </Card>
           </div>
         </div>
       </div>

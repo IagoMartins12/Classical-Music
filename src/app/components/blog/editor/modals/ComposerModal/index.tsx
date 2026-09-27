@@ -11,6 +11,7 @@ import ComposerSearchInputSimple from '@/app/components/ComposerSearchInputSimpl
 import { findComposerById } from '@/app/requests/catalog-search';
 import { Inline } from '@/app/components/ui/Layout';
 import { Text } from '@/app/components/ui/Text';
+import { Card } from '@/app/components/ui/Card';
 
 interface ComposerModalProps {
   editor: Editor;
@@ -219,7 +220,7 @@ export function ComposerModal({ editor, onClose }: ComposerModalProps) {
 
             {/* COLUNA DIREITA - Preview */}
             <div className="space-y-4">
-              <div className="p-4 classical-card rounded-lg">
+              <Card densidade="compacta" className="rounded-lg">
                 <h4 className="font-semibold mb-3">👁️ Preview</h4>
 
                 {/* Preview do Card */}
@@ -331,7 +332,7 @@ export function ComposerModal({ editor, onClose }: ComposerModalProps) {
                     </Inline>
                   </div>
                 </div>
-              </div>
+              </Card>
             </div>
           </div>
         )}

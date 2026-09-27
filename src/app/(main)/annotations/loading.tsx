@@ -19,6 +19,7 @@ import {
 } from 'react-icons/pi';
 import { Inline } from '@/app/components/ui/Layout';
 import { Text } from '@/app/components/ui/Text';
+import { Card } from '@/app/components/ui/Card';
 
 export default function AnnotationsPageLoading() {
   return (
@@ -93,7 +94,7 @@ export default function AnnotationsPageLoading() {
         </div> */}
 
         {/* Controls Skeleton */}
-        <div className="classical-card p-6">
+        <Card>
           <div className="space-y-4">
             {/* Main Controls Row */}
             <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
@@ -154,7 +155,7 @@ export default function AnnotationsPageLoading() {
               </div>
             </div>
           </div>
-        </div>
+        </Card>
 
         {/* Main Content Area Skeleton */}
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
@@ -182,7 +183,7 @@ export default function AnnotationsPageLoading() {
           <div className="lg:col-span-1">
             <div className="sticky top-6 space-y-6">
               {/* Stats Widget Skeleton */}
-              <div className="classical-card-2 p-6 animate-pulse">
+              <Card nivel={2} className="animate-pulse">
                 <Inline gap={2} className="mb-4">
                   <div className="w-4 h-4 bg-theme-tertiary/30 rounded"></div>
                   <div className="h-4 w-32 bg-theme-elevated rounded"></div>
@@ -207,10 +208,10 @@ export default function AnnotationsPageLoading() {
                     </Inline>
                   ))}
                 </div>
-              </div>
+              </Card>
 
               {/* Top Annotations Widget Skeleton */}
-              <div className="classical-card-2 p-6 animate-pulse">
+              <Card nivel={2} className="animate-pulse">
                 <Inline gap={2} className="mb-4">
                   <div className="w-4 h-4 bg-theme-tertiary/30 rounded"></div>
                   <div className="h-4 w-40 bg-theme-elevated rounded"></div>
@@ -234,10 +235,10 @@ export default function AnnotationsPageLoading() {
                     </Inline>
                   ))}
                 </div>
-              </div>
+              </Card>
 
               {/* Tips Widget Skeleton */}
-              <div className="classical-card-2 p-6 animate-pulse">
+              <Card nivel={2} className="animate-pulse">
                 <Inline gap={2} className="mb-4">
                   <div className="w-4 h-4 bg-theme-tertiary/30 rounded"></div>
                   <div className="h-4 w-24 bg-theme-elevated rounded"></div>
@@ -250,7 +251,7 @@ export default function AnnotationsPageLoading() {
                     ></div>
                   ))}
                 </div>
-              </div>
+              </Card>
             </div>
           </div>
         </div>
@@ -268,7 +269,7 @@ export default function AnnotationsPageLoading() {
 // Skeleton para Annotation Card
 function AnnotationCardSkeleton() {
   return (
-    <div className="classical-card p-6 animate-pulse">
+    <Card className="animate-pulse">
       {/* Header */}
       <div className="flex items-start justify-between mb-4">
         <div className="flex-1 space-y-2">
@@ -366,6 +367,6 @@ function AnnotationCardSkeleton() {
           </Inline>
         </Inline>
       </div>
-    </div>
+    </Card>
   );
 }

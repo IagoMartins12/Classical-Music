@@ -24,6 +24,7 @@ import { useEmailRefresh } from '@/app/hooks/useEmailRefresh';
 import { useTranslation } from '@/app/context/TranslationContext';
 import { Inline } from '@/app/components/ui/Layout';
 import { Text } from '@/app/components/ui/Text';
+import { Card } from '@/app/components/ui/Card';
 
 interface EmailVerificationRequiredProps {
   userEmail: string;
@@ -272,14 +273,14 @@ export default function EmailVerificationRequired({
 
         {/* Quote */}
         <AnimatedItem direction="up" springType="gentle">
-          <div className="mt-12 p-6 classical-card-simple max-w-2xl mx-auto">
+          <Card nivel={2} className="mt-12 max-w-2xl mx-auto">
             <blockquote className="text-lg text-theme-secondary italic mb-4 leading-relaxed">
               &quot;{t('quote_text')}&quot;
             </blockquote>
             <cite className="text-brand-primary font-semibold">
               — {t('quote_author')}
             </cite>
-          </div>
+          </Card>
         </AnimatedItem>
       </AnimatedContainer>
 

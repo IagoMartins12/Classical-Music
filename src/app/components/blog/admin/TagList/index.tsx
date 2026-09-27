@@ -15,6 +15,7 @@ import {
 import { toast } from 'react-hot-toast';
 import { Inline } from '@/app/components/ui/Layout';
 import { Text } from '@/app/components/ui/Text';
+import { Card } from '@/app/components/ui/Card';
 
 interface Tag {
   id: string;
@@ -92,7 +93,7 @@ export function TagList({ tags: tags }: TagListProps) {
   return (
     <>
       {/* Search Bar */}
-      <div className="classical-card p-4 mb-6">
+      <Card densidade="compacta" className="mb-6">
         <form onSubmit={handleSearch} className="relative">
           <PiMagnifyingGlass className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-theme-tertiary" />
           <input
@@ -103,14 +104,14 @@ export function TagList({ tags: tags }: TagListProps) {
             className="input-classical w-full pl-10"
           />
         </form>
-      </div>
+      </Card>
 
       {/* Tags Grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
         {filteredTags.map((tag) => (
-          <div
+          <Card
             key={tag.id}
-            className="classical-card p-6 hover:shadow-theme-medium transition-all group"
+            className="hover:shadow-theme-medium transition-all group"
           >
             {/* Tag Header */}
             <div className="flex items-start justify-between mb-4">
@@ -184,7 +185,7 @@ export function TagList({ tags: tags }: TagListProps) {
                 </span>
               </div>
             </div>
-          </div>
+          </Card>
         ))}
       </div>
 

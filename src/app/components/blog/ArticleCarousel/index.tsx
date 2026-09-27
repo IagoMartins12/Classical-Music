@@ -4,6 +4,7 @@
 import { useRef, useState, useEffect } from 'react';
 import { ArticleCard } from '@/app/components/blog/ArticleCard';
 import { PiCaretLeft, PiCaretRight } from 'react-icons/pi';
+import { Card } from '@/app/components/ui/Card';
 
 interface Article {
   id: string;
@@ -109,9 +110,9 @@ export function ArticleCarousel({ articles }: ArticleCarouselProps) {
 
   if (articles.length === 0) {
     return (
-      <div className="classical-card p-8 text-center">
+      <Card densidade="larga" className="text-center">
         <p className="text-theme-secondary">Em breve novos artigos 🎵</p>
-      </div>
+      </Card>
     );
   }
 

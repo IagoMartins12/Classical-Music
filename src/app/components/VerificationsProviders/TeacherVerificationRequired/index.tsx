@@ -24,6 +24,7 @@ import Navbar from '../../Navbar';
 import { Toaster } from 'react-hot-toast';
 import { Inline } from '@/app/components/ui/Layout';
 import { Text } from '@/app/components/ui/Text';
+import { Card } from '@/app/components/ui/Card';
 
 interface TeacherVerificationRequiredProps {
   userEmail?: string | null;
@@ -341,7 +342,7 @@ export default function TeacherVerificationRequired({
 
             {/* Quote */}
             <AnimatedItem direction="up" springType="gentle">
-              <div className="mt-12 p-6 classical-card-simple max-w-2xl mx-auto">
+              <Card nivel={2} className="mt-12 max-w-2xl mx-auto">
                 <blockquote className="text-lg text-theme-secondary italic mb-4 leading-relaxed">
                   &quot;Ensinar é um exercício de imortalidade. De alguma forma
                   continuamos a viver naqueles cujos olhos aprenderam a ver o
@@ -350,7 +351,7 @@ export default function TeacherVerificationRequired({
                 <cite className="text-brand-primary font-semibold">
                   — Rubem Alves
                 </cite>
-              </div>
+              </Card>
             </AnimatedItem>
           </AnimatedContainer>
         </div>

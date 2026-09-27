@@ -30,6 +30,7 @@ import { useClientMetadata } from './hooks/useClientMetadata';
 import { BlogHeader } from './components/blog/BlogHeader';
 import { Inline } from '@/app/components/ui/Layout';
 import { Text } from '@/app/components/ui/Text';
+import { Card } from '@/app/components/ui/Card';
 
 interface ErrorProps {
   error: Error & { digest?: string };
@@ -317,14 +318,14 @@ export default function Error({ error, reset }: ErrorProps) {
 
             {/* Quote */}
             <AnimatedItem direction="up" springType="gentle">
-              <div className="p-6 classical-card-simple max-w-2xl mx-auto">
+              <Card nivel={2} className="max-w-2xl mx-auto">
                 <blockquote className="text-lg text-theme-secondary italic mb-4 leading-relaxed">
                   &quot;{t('error_jsx_blockquote_children_0__music')}&quot;
                 </blockquote>
                 <cite className="text-brand-primary font-semibold">
                   {t('error_jsx_cite_children_0__leonard_bernstein')}
                 </cite>
-              </div>
+              </Card>
             </AnimatedItem>
           </AnimatedContainer>
         </div>

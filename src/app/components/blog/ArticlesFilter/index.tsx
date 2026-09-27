@@ -9,6 +9,7 @@ import { ArticleCard } from '@/app/components/blog/ArticleCard';
 import { ArticleCardList } from '@/app/components/blog/ArticleCardList';
 import { Field } from '@/app/components/ui/Field';
 import { Button } from '@/app/components/ui/Button';
+import { Card } from '@/app/components/ui/Card';
 
 interface Article {
   id: string;
@@ -104,7 +105,7 @@ export function ArticlesFilter({
   return (
     <>
       {/* Filters Bar */}
-      <div className="classical-card p-4 mb-6">
+      <Card densidade="compacta" className="mb-6">
         <div className="space-y-4">
           {/* Search & View Toggle */}
           <div className="flex items-center gap-3">
@@ -187,7 +188,7 @@ export function ArticlesFilter({
             </div>
           )}
         </div>
-      </div>
+      </Card>
 
       {/* Results Info */}
       <div className="flex items-center justify-between mb-6">

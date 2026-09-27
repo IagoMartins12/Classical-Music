@@ -11,6 +11,7 @@ import Select from '../../Common/Select';
 import Checkbox from '../../Common/Checkbox';
 import { Text } from '@/app/components/ui/Text';
 import { NomeAcao } from '@/app/components/ui/NomeAcao';
+import { Card } from '@/app/components/ui/Card';
 
 interface Instrument {
   id: string;
@@ -138,9 +139,11 @@ const InstrumentsStep: React.FC<InstrumentsStepProps> = ({ instruments }) => {
 
           <div className="space-y-3">
             {selectedInstruments.map((instrument) => (
-              <div
+              <Card
+                nivel={2}
+                densidade="compacta"
                 key={instrument.id}
-                className="classical-card-2 p-4 flex items-center justify-between"
+                className="flex items-center justify-between"
               >
                 <div className="flex-1 flex flex-col gap-4">
                   <div className="flex items-center flex-col sm:flex-row space-x-3 mb-2">
@@ -225,7 +228,7 @@ const InstrumentsStep: React.FC<InstrumentsStepProps> = ({ instruments }) => {
                   <PiX className="w-4 h-4" />
                   <NomeAcao acao="fechar" />
                 </button>
-              </div>
+              </Card>
             ))}
           </div>
         </div>

@@ -13,6 +13,7 @@ import {
 } from 'react-icons/pi';
 import { Inline } from '@/app/components/ui/Layout';
 import { Text } from '@/app/components/ui/Text';
+import { Card } from '@/app/components/ui/Card';
 
 export default function LearningPageLoading() {
   return (
@@ -78,7 +79,7 @@ export default function LearningPageLoading() {
         </div> */}
 
         {/* Controls Skeleton */}
-        <div className="classical-card p-6">
+        <Card>
           <div className="space-y-4">
             {/* Main Controls Row */}
             <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
@@ -130,7 +131,7 @@ export default function LearningPageLoading() {
               </div>
             </div>
           </div>
-        </div>
+        </Card>
 
         {/* Want to Learn Section Skeleton */}
         <div>
@@ -184,7 +185,7 @@ export default function LearningPageLoading() {
 // Skeleton para Learning Card
 function LearningCardSkeleton() {
   return (
-    <div className="classical-card p-6 animate-pulse">
+    <Card className="animate-pulse">
       {/* Header */}
       <div className="flex items-start justify-between mb-4">
         <div className="flex-1 space-y-2">
@@ -240,6 +241,6 @@ function LearningCardSkeleton() {
         <div className="h-3 w-24 bg-theme-elevated rounded"></div>
         <div className="h-4 w-20 bg-brand-primary/20 rounded"></div>
       </div>
-    </div>
+    </Card>
   );
 }

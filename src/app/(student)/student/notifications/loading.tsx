@@ -12,6 +12,7 @@ import {
   PiMusicNotes,
 } from 'react-icons/pi';
 import { Inline } from '@/app/components/ui/Layout';
+import { Card } from '@/app/components/ui/Card';
 
 export default function StudentNotificationsLoading() {
   return (
@@ -95,10 +96,7 @@ export default function StudentNotificationsLoading() {
               color: 'from-accent-purple/20 to-accent-green/20',
             },
           ].map((item, index) => (
-            <div
-              key={index}
-              className="classical-card p-6 text-center animate-pulse"
-            >
+            <Card key={index} className="text-center animate-pulse">
               <div
                 className={`w-12 h-12 bg-gradient-to-br ${item.color} rounded-xl flex items-center justify-center mx-auto mb-3`}
               >
@@ -106,12 +104,12 @@ export default function StudentNotificationsLoading() {
               </div>
               <div className="h-6 bg-gradient-to-r from-brand-primary/20 to-brand-secondary/20 rounded mb-2"></div>
               <div className="h-3 bg-theme-elevated rounded"></div>
-            </div>
+            </Card>
           ))}
         </div>
 
         {/* Controls Skeleton */}
-        <div className="classical-card p-6 mb-8 animate-pulse">
+        <Card className="mb-8 animate-pulse">
           <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
             {/* Filters */}
             <div className="flex flex-wrap gap-2">
@@ -139,7 +137,7 @@ export default function StudentNotificationsLoading() {
               </Inline>
             </Inline>
           </div>
-        </div>
+        </Card>
 
         {/* Notifications List Skeleton */}
         <div className="space-y-4">

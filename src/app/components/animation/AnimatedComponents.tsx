@@ -75,8 +75,10 @@ const ANIMATION_CSS = `
 .anim-hover-scale { transition: transform 0.2s ease-out; }
 .anim-hover-scale:hover { transform: scale(1.05); }
 
-.anim-hover-lift { transition: transform 0.2s ease-out, box-shadow 0.2s ease-out; }
-.anim-hover-lift:hover { transform: translateY(-5px) scale(1.02); }
+/* O "sobe" do card do sistema (ui/Card): 3px em 180ms, sem crescer. Com
+   escala de 1,02 o card empurrava visualmente os vizinhos da grade. */
+.anim-hover-lift { transition: transform 180ms cubic-bezier(0.23, 1, 0.32, 1), border-color 180ms cubic-bezier(0.23, 1, 0.32, 1), box-shadow 180ms cubic-bezier(0.23, 1, 0.32, 1); }
+.anim-hover-lift:hover { transform: translateY(-3px); }
 
 .anim-hover-glow { transition: box-shadow 0.2s ease-out; }
 .anim-hover-glow:hover { box-shadow: 0 10px 30px rgba(212, 175, 55, 0.3); }
@@ -94,8 +96,8 @@ const ANIMATION_CSS = `
 }
 
 .anim-seq-grid > .anim-seq-child:hover {
-  transform: translateY(-5px);
-  transition: transform 0.2s ease-out !important;
+  transform: translateY(-3px);
+  transition: transform 180ms cubic-bezier(0.23, 1, 0.32, 1) !important;
 }
 
 /* ── Skeleton ── */
@@ -151,6 +153,13 @@ const ANIMATION_CSS = `
     transform: none !important;
     animation: none !important;
     transition: none !important;
+  }
+
+  /* Quem pede menos movimento não vê o card subir nem crescer sob o cursor. */
+  .anim-hover-scale:hover,
+  .anim-hover-lift:hover,
+  .anim-seq-grid > .anim-seq-child:hover {
+    transform: none !important;
   }
 }
 `;

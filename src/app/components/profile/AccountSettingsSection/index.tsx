@@ -35,6 +35,7 @@ import EmailVerificationBanner2 from '../../EmailVerification/EmailVerificationB
 import { useTranslation } from '@/app/context/TranslationContext';
 import { Inline } from '@/app/components/ui/Layout';
 import { Text } from '@/app/components/ui/Text';
+import { Card } from '@/app/components/ui/Card';
 
 interface AccountSettingsSectionProps {
   user: User;
@@ -338,7 +339,9 @@ const AccountSettingsSection: React.FC<AccountSettingsSectionProps> = ({
             {t('account_auth_method')}
           </h3>
 
-          <div className="classical-card-2 p-4">{renderLoginMethodInfo()}</div>
+          <Card nivel={2} densidade="compacta">
+            {renderLoginMethodInfo()}
+          </Card>
         </div>
       )}
 
@@ -403,7 +406,7 @@ const AccountSettingsSection: React.FC<AccountSettingsSectionProps> = ({
                 )}
               </div>
             ) : (
-              <div className="classical-card-2 p-4 space-y-4">
+              <Card nivel={2} densidade="compacta" className="space-y-4">
                 <div className="bg-accent-amber bg-opacity-10 border border-red-400 rounded-lg p-4">
                   <div className="flex items-start">
                     <PiWarning className="w-5 h-5 text-accent-amber mr-3 mt-0.5 flex-shrink-0" />
@@ -483,7 +486,7 @@ const AccountSettingsSection: React.FC<AccountSettingsSectionProps> = ({
                     {t('personal_info_cancel')}
                   </Button>
                 </div>
-              </div>
+              </Card>
             )}
           </div>
         </div>
@@ -563,7 +566,7 @@ const AccountSettingsSection: React.FC<AccountSettingsSectionProps> = ({
           )}
 
         {isChangingPassword && (
-          <div className="classical-card-2 p-4 space-y-4">
+          <Card nivel={2} densidade="compacta" className="space-y-4">
             {/* Mostrar campo de senha atual apenas se o usuário já tem senha */}
             {loginMethod.hasPassword && (
               <Input
@@ -700,7 +703,7 @@ const AccountSettingsSection: React.FC<AccountSettingsSectionProps> = ({
                 {t('personal_info_cancel')}
               </Button>
             </div>
-          </div>
+          </Card>
         )}
       </div>
 
@@ -724,7 +727,7 @@ const AccountSettingsSection: React.FC<AccountSettingsSectionProps> = ({
         </div>
 
         {!isChangingUserType ? (
-          <div className="classical-card-2 p-4">
+          <Card nivel={2} densidade="compacta">
             <div className="flex items-center justify-between">
               <div>
                 <p className="font-medium text-theme-primary">
@@ -738,9 +741,9 @@ const AccountSettingsSection: React.FC<AccountSettingsSectionProps> = ({
                 <PiUser className="w-6 h-6 text-theme-primary" />
               </div>
             </div>
-          </div>
+          </Card>
         ) : (
-          <div className="classical-card-2 p-4 space-y-4">
+          <Card nivel={2} densidade="compacta" className="space-y-4">
             <div className="bg-accent-blue bg-opacity-10 border border-accent-blue rounded-lg p-4">
               <div className="flex items-start">
                 <PiInfo className="w-5 h-5 text-accent-blue mr-3 mt-0.5 flex-shrink-0" />
@@ -790,7 +793,7 @@ const AccountSettingsSection: React.FC<AccountSettingsSectionProps> = ({
                 {t('personal_info_cancel')}
               </Button>
             </div>
-          </div>
+          </Card>
         )}
       </div>
 
@@ -801,7 +804,7 @@ const AccountSettingsSection: React.FC<AccountSettingsSectionProps> = ({
         </h3>
 
         <div className="grid grid-cols-1 gap-4">
-          <div className="classical-card-2 p-4">
+          <Card nivel={2} densidade="compacta">
             <h4 className="font-medium text-theme-primary mb-2">
               {t('account_status')}
             </h4>
@@ -820,7 +823,7 @@ const AccountSettingsSection: React.FC<AccountSettingsSectionProps> = ({
                 </span>
               )}
             </Inline>
-          </div>
+          </Card>
         </div>
       </div>
 
@@ -833,7 +836,11 @@ const AccountSettingsSection: React.FC<AccountSettingsSectionProps> = ({
           </h3>
         </Inline>
 
-        <div className="classical-card-2 p-4 border border-accent-red bg-accent-red bg-opacity-5">
+        <Card
+          nivel={2}
+          densidade="compacta"
+          className="border border-accent-red bg-accent-red bg-opacity-5"
+        >
           <div className="flex flex-col md:flex-row items-center gap-4 justify-between mb-4">
             <div>
               <h4 className="font-medium text-theme-primary mb-1">
@@ -854,7 +861,7 @@ const AccountSettingsSection: React.FC<AccountSettingsSectionProps> = ({
               {t('account_delete_button')}
             </Button>
           </div>
-        </div>
+        </Card>
       </div>
 
       {/* Delete Account Modal */}

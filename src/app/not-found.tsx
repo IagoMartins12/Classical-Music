@@ -32,6 +32,7 @@ import { useTranslation } from '@/app/hooks/useTranslation';
 import { useClientMetadata } from './hooks/useClientMetadata';
 import { BlogHeader } from './components/blog/BlogHeader';
 import { Text } from '@/app/components/ui/Text';
+import { Card } from '@/app/components/ui/Card';
 
 type AreaType = 'main' | 'teacher' | 'student' | 'blog' | 'admin';
 
@@ -225,7 +226,7 @@ export default function NotFound() {
 
                     {/* Quote */}
                     <AnimatedItem direction="up" springType="gentle">
-                      <div className="p-6 classical-card-simple max-w-2xl mx-auto mb-8">
+                      <Card nivel={2} className="max-w-2xl mx-auto mb-8">
                         <blockquote className="text-lg text-theme-secondary italic mb-4 leading-relaxed">
                           &quot;
                           {t('not_found_jsx_blockquote_children_0__music')}
@@ -236,7 +237,7 @@ export default function NotFound() {
                             'not_found_jsx_cite_children_0__henry_wadsworth_longfellow'
                           )}
                         </cite>
-                      </div>
+                      </Card>
                     </AnimatedItem>
                   </AnimatedContainer>
                 </div>
@@ -547,7 +548,7 @@ export default function NotFound() {
 
                 {/* Quote */}
                 <AnimatedItem direction="up" springType="gentle">
-                  <div className="p-6 classical-card-simple max-w-2xl mx-auto mb-8">
+                  <Card nivel={2} className="max-w-2xl mx-auto mb-8">
                     <blockquote className="text-lg text-theme-secondary italic mb-4 leading-relaxed">
                       &quot;{t('not_found_jsx_blockquote_children_0__music')}
                       &quot;
@@ -557,7 +558,7 @@ export default function NotFound() {
                         'not_found_jsx_cite_children_0__henry_wadsworth_longfellow'
                       )}
                     </cite>
-                  </div>
+                  </Card>
                 </AnimatedItem>
               </AnimatedContainer>
             </div>

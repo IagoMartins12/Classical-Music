@@ -10,6 +10,7 @@ import { PiFunnel, PiMagnifyingGlass } from 'react-icons/pi';
 import Link from 'next/link';
 import { Text } from '@/app/components/ui/Text';
 import { Button } from '@/app/components/ui/Button';
+import { Card } from '@/app/components/ui/Card';
 
 interface Category {
   id: string;
@@ -107,7 +108,7 @@ export function LikedPageClient({ categories }: LikedPageClientProps) {
   return (
     <>
       {/* Stats & Filters */}
-      <div className="classical-card p-6 mb-8">
+      <Card className="mb-8">
         <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
           {/* Stats */}
           <div className="flex items-center gap-6">
@@ -174,7 +175,7 @@ export function LikedPageClient({ categories }: LikedPageClientProps) {
             ))}
           </div>
         </div>
-      </div>
+      </Card>
 
       {/* Articles */}
       {articles.length === 0 ? (

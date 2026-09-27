@@ -25,6 +25,7 @@ import { Inline } from '@/app/components/ui/Layout';
 import { Text } from '@/app/components/ui/Text';
 import { Field } from '@/app/components/ui/Field';
 import { NomeAcao } from '@/app/components/ui/NomeAcao';
+import { Card } from '@/app/components/ui/Card';
 
 interface AddStudentModalProps {
   onClose: () => void;
@@ -255,7 +256,7 @@ const AddStudentModal: React.FC<AddStudentModalProps> = ({
                   </h3>
 
                   {searchResults.map((student) => (
-                    <div key={student.id} className="classical-card-simple p-4">
+                    <Card nivel={2} densidade="compacta" key={student.id}>
                       <div className="flex flex-col gap-4 sm:gap-0 sm:flex-row items-center justify-between">
                         <Inline gap={3} className="w-[95%] sm:w-auto">
                           {/* Avatar */}
@@ -346,7 +347,7 @@ const AddStudentModal: React.FC<AddStudentModalProps> = ({
                           )}
                         </div>
                       </div>
-                    </div>
+                    </Card>
                   ))}
                 </div>
               )}

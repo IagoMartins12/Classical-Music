@@ -43,6 +43,7 @@ import { Inline } from '@/app/components/ui/Layout';
 import { Text } from '@/app/components/ui/Text';
 import { NomeAcao } from '@/app/components/ui/NomeAcao';
 import { Button } from '@/app/components/ui/Button';
+import { Card } from '@/app/components/ui/Card';
 
 interface PublicTeachersPageClientProps {
   initialData: PublicTeachersResponse | null;
@@ -163,7 +164,7 @@ export default function PublicTeachersPageClient({
     return (
       <PageContainer showBackground={true}>
         <div className="flex items-center justify-center min-h-screen">
-          <div className="classical-card p-8 text-center max-w-md">
+          <Card densidade="larga" className="text-center max-w-md">
             <div className="w-16 h-16 bg-gradient-to-br from-accent-red to-accent-purple rounded-3xl flex items-center justify-center mx-auto mb-6">
               <PiWarningCircle className="w-8 h-8 text-theme-primary" />
             </div>
@@ -182,7 +183,7 @@ export default function PublicTeachersPageClient({
               <PiArrowsClockwise className="w-4 h-4" />
               <span>Tentar Novamente</span>
             </Inline>
-          </div>
+          </Card>
         </div>
       </PageContainer>
     );
@@ -192,10 +193,10 @@ export default function PublicTeachersPageClient({
     return (
       <PageContainer showBackground={true}>
         <div className="flex items-center justify-center min-h-screen">
-          <div className="classical-card p-8 text-center">
+          <Card densidade="larga" className="text-center">
             <PiArrowsClockwise className="w-8 h-8 animate-spin text-brand-primary mx-auto mb-4" />
             <p className="text-theme-secondary">Carregando professores...</p>
-          </div>
+          </Card>
         </div>
       </PageContainer>
     );
@@ -600,10 +601,10 @@ export default function PublicTeachersPageClient({
       {/* Loading Overlay */}
       {isLoading && (
         <div className="fixed inset-0 bg-bg-overlay backdrop-blur-sm z-50 flex items-center justify-center">
-          <div className="classical-card p-8 text-center">
+          <Card densidade="larga" className="text-center">
             <PiArrowsClockwise className="w-8 h-8 animate-spin text-brand-primary mx-auto mb-4" />
             <p className="text-theme-secondary">Carregando professores...</p>
-          </div>
+          </Card>
         </div>
       )}
     </PageContainer>

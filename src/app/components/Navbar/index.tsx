@@ -41,6 +41,7 @@ import { useTranslation } from '@/app/context/TranslationContext';
 import { Inline } from '@/app/components/ui/Layout';
 import { Text } from '@/app/components/ui/Text';
 import { NomeAcao } from '@/app/components/ui/NomeAcao';
+import { Card } from '@/app/components/ui/Card';
 
 interface NavItem {
   label: string;
@@ -740,7 +741,7 @@ const Navbar: React.FC = () => {
               buscador. O invólucro acima continua sempre presente, para a
               transição de abertura não mudar. */}
           {mobileMenuUsado && (
-            <div className="classical-card p-4 mt-3 relative">
+            <Card densidade="compacta" className="mt-3 relative">
               {/* Navigation Container with Slide Animation */}
               <div className="relative overflow-hidden">
                 {/* Main Navigation View */}
@@ -1196,7 +1197,7 @@ const Navbar: React.FC = () => {
                   </div>
                 </div>
               </div>
-            </div>
+            </Card>
           )}
         </div>
       </div>

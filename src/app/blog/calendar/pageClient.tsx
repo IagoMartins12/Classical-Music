@@ -23,6 +23,7 @@ import EventScraperModal from '@/app/components/blog/EventScraperModal';
 import DayEventsListModal from '@/app/components/calendar/DayEventsListModal';
 import { loadCalendar } from '@/app/requests/calendar-requests';
 import { Inline } from '@/app/components/ui/Layout';
+import { Card } from '@/app/components/ui/Card';
 
 interface CalendarPageClientProps {
   initialData: CalendarPageData;
@@ -286,7 +287,7 @@ function EventLegend() {
   ];
 
   return (
-    <div className="mt-6 classical-card-simple rounded-lg shadow-md p-6">
+    <Card nivel={2} className="mt-6 rounded-lg shadow-md">
       <h4 className="text-sm font-semibold mb-4 flex items-center">
         <span className="mr-2">🎨</span>
         Legenda de Cores
@@ -305,6 +306,6 @@ function EventLegend() {
           </Inline>
         ))}
       </div>
-    </div>
+    </Card>
   );
 }

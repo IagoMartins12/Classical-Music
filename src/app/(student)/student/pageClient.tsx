@@ -35,6 +35,7 @@ import { Inline } from '@/app/components/ui/Layout';
 import { Text } from '@/app/components/ui/Text';
 import { NomeAcao } from '@/app/components/ui/NomeAcao';
 import { Button } from '@/app/components/ui/Button';
+import { Card } from '@/app/components/ui/Card';
 
 interface StudentProfile {
   id: string;
@@ -156,7 +157,7 @@ export default function StudentPageClient({
     return (
       <PageContainer showBackground={true}>
         <div className="flex items-center justify-center min-h-screen">
-          <div className="classical-card p-8 text-center max-w-lg">
+          <Card densidade="larga" className="text-center max-w-lg">
             <div className="w-20 h-20 bg-gradient-to-br from-brand-primary to-brand-secondary rounded-3xl flex items-center justify-center mx-auto mb-6">
               <PiUserCheck className="w-10 h-10 text-theme-primary" />
             </div>
@@ -186,7 +187,7 @@ export default function StudentPageClient({
                 </Link>
               </div>
             </div>
-          </div>
+          </Card>
         </div>
       </PageContainer>
     );
@@ -202,7 +203,7 @@ export default function StudentPageClient({
     return (
       <PageContainer showBackground={true}>
         <div className="flex items-center justify-center min-h-screen">
-          <div className="classical-card p-8 text-center max-w-md">
+          <Card densidade="larga" className="text-center max-w-md">
             <div className="w-16 h-16 bg-gradient-to-br from-accent-red to-accent-purple rounded-3xl flex items-center justify-center mx-auto mb-6">
               <PiXCircle className="w-8 h-8 text-theme-primary" />
             </div>
@@ -242,7 +243,7 @@ export default function StudentPageClient({
                 </Button>
               )}
             </div>
-          </div>
+          </Card>
         </div>
       </PageContainer>
     );
@@ -483,7 +484,7 @@ export default function StudentPageClient({
                         animationFillMode: 'backwards',
                       }}
                     >
-                      <div className="classical-card-2 p-4 group">
+                      <Card nivel={2} densidade="compacta" className="group">
                         <div className="flex items-start justify-between mb-3">
                           <div className="flex flex-col gap-4 w-full">
                             <div className="flex items-center w-full justify-between">
@@ -620,7 +621,7 @@ export default function StudentPageClient({
                             </Text>
                           </div>
                         )}
-                      </div>
+                      </Card>
                     </AnimatedItem>
                   ))}
 

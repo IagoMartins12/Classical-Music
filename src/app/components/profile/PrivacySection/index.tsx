@@ -14,6 +14,7 @@ import { useSessionUpdate } from '@/app/hooks/useSessionUpdate';
 import { useTranslation } from '@/app/context/TranslationContext';
 import { Inline } from '@/app/components/ui/Layout';
 import { Text } from '@/app/components/ui/Text';
+import { Card } from '@/app/components/ui/Card';
 
 interface PrivacySectionProps {
   user: User;
@@ -139,7 +140,7 @@ const PrivacySection: React.FC<PrivacySectionProps> = ({
       {/* Privacy Settings */}
       <div className="space-y-6">
         {/* Profile Visibility */}
-        <div className="classical-card-2 p-4">
+        <Card nivel={2} densidade="compacta">
           <div className="flex items-center justify-between">
             <Inline gap={3}>
               {settings.profilePublic ? (
@@ -162,10 +163,10 @@ const PrivacySection: React.FC<PrivacySectionProps> = ({
               onChange={() => handleToggle('profilePublic')}
             />
           </div>
-        </div>
+        </Card>
 
         {/* Location Visibility */}
-        <div className="classical-card-2 p-4">
+        <Card nivel={2} densidade="compacta">
           <div className="flex items-center justify-between">
             <Inline gap={3}>
               <PiMapPin className="w-5 h-5 text-brand-primary" />
@@ -191,10 +192,10 @@ const PrivacySection: React.FC<PrivacySectionProps> = ({
               {t('privacy_public_only')}
             </Text>
           )}
-        </div>
+        </Card>
 
         {/* Instruments Visibility */}
-        <div className="classical-card-2 p-4">
+        <Card nivel={2} densidade="compacta">
           <div className="flex items-center justify-between">
             <Inline gap={3}>
               <PiEye className="w-5 h-5 text-brand-primary" />
@@ -220,10 +221,10 @@ const PrivacySection: React.FC<PrivacySectionProps> = ({
               {t('privacy_public_only')}
             </Text>
           )}
-        </div>
+        </Card>
 
         {/* Activity Visibility */}
-        <div className="classical-card-2 p-4">
+        <Card nivel={2} densidade="compacta">
           <div className="flex items-center justify-between">
             <Inline gap={3}>
               <PiEye className="w-5 h-5 text-brand-primary" />
@@ -249,11 +250,15 @@ const PrivacySection: React.FC<PrivacySectionProps> = ({
               {t('privacy_public_only')}
             </Text>
           )}
-        </div>
+        </Card>
       </div>
 
       {/* Privacy Summary */}
-      <div className="classical-card-2 p-4 bg-brand-primary bg-opacity-5 border border-brand-primary border-opacity-30">
+      <Card
+        nivel={2}
+        densidade="compacta"
+        className="bg-brand-primary bg-opacity-5 border border-brand-primary border-opacity-30"
+      >
         <h4 className="font-medium text-brand-primary mb-2">
           {t('privacy_summary')}
         </h4>
@@ -283,10 +288,14 @@ const PrivacySection: React.FC<PrivacySectionProps> = ({
               : t('privacy_hidden')}
           </p>
         </Text>
-      </div>
+      </Card>
 
       {/* Info Box */}
-      <div className="classical-card-2 p-4 bg-theme-secondary bg-opacity-20">
+      <Card
+        nivel={2}
+        densidade="compacta"
+        className="bg-theme-secondary bg-opacity-20"
+      >
         <h4 className="font-medium text-theme-primary mb-2">
           {t('privacy_security_info')}
         </h4>
@@ -297,7 +306,7 @@ const PrivacySection: React.FC<PrivacySectionProps> = ({
           <li>{t('privacy_study_data_private')}</li>
           <li>{t('privacy_auto_save')}</li>
         </ul>
-      </div>
+      </Card>
     </div>
   );
 };

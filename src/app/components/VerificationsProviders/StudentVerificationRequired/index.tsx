@@ -25,6 +25,7 @@ import { Toaster } from 'react-hot-toast';
 import Navbar from '../../Navbar';
 import { Inline } from '@/app/components/ui/Layout';
 import { Text } from '@/app/components/ui/Text';
+import { Card } from '@/app/components/ui/Card';
 
 interface StudentVerificationRequiredProps {
   userEmail?: string | null;
@@ -422,7 +423,7 @@ export default function StudentVerificationRequired({
 
             {/* Quote */}
             <AnimatedItem direction="up" springType="gentle">
-              <div className="mt-12 p-6 classical-card-simple max-w-2xl mx-auto">
+              <Card nivel={2} className="mt-12 max-w-2xl mx-auto">
                 <blockquote className="text-lg text-theme-secondary italic mb-4 leading-relaxed">
                   &quot;A música não é apenas um entretenimento, é um meio de
                   conhecimento que nos ensina sobre nós mesmos e sobre o
@@ -431,7 +432,7 @@ export default function StudentVerificationRequired({
                 <cite className="text-brand-primary font-semibold">
                   — Daniel Barenboim
                 </cite>
-              </div>
+              </Card>
             </AnimatedItem>
           </AnimatedContainer>
         </div>

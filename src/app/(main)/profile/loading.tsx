@@ -1,13 +1,14 @@
 // app/profile/components/ProfileSkeleton.tsx
 import React from 'react';
 import { Inline } from '@/app/components/ui/Layout';
+import { Card } from '@/app/components/ui/Card';
 
 const ProfileSkeleton: React.FC = () => {
   return (
     <div className="grid grid-cols-1 lg:grid-cols-4 gap-8 animate-pulse">
       {/* Sidebar Skeleton */}
       <div className="lg:col-span-1">
-        <div className="classical-card-2 p-4">
+        <Card nivel={2} densidade="compacta">
           <div className="space-y-3">
             {[...Array(5)].map((_, index) => (
               <Inline gap={3} key={index} className="px-3 py-2.5">
@@ -27,12 +28,12 @@ const ProfileSkeleton: React.FC = () => {
               <div className="bg-brand-primary h-2 rounded-full w-1/5" />
             </div>
           </div>
-        </div>
+        </Card>
       </div>
 
       {/* Main Content Skeleton */}
       <div className="lg:col-span-3">
-        <div className="classical-card-2 p-6">
+        <Card nivel={2}>
           {/* Header Skeleton */}
           <div className="flex items-center justify-between mb-6">
             <div>
@@ -99,7 +100,7 @@ const ProfileSkeleton: React.FC = () => {
               </div>
             </div>
           </div>
-        </div>
+        </Card>
       </div>
     </div>
   );

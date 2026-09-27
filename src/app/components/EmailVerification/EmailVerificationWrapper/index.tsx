@@ -6,6 +6,7 @@ import EmailVerificationRequired from '../../VerificationsProviders/EmailVerific
 import { PiEnvelopeSimple } from 'react-icons/pi';
 import Button from '../../Common/Button';
 import { Text } from '@/app/components/ui/Text';
+import { Card } from '@/app/components/ui/Card';
 
 interface EmailVerifiedWrapperProps {
   children: ReactNode;
@@ -65,7 +66,7 @@ export default function EmailVerifiedWrapper({
         <div className={`relative ${className}`}>
           {/* Overlay que desabilita o conteúdo */}
           <div className="absolute inset-0 bg-theme-overlay backdrop-blur-sm rounded-lg z-10 flex items-center justify-center">
-            <div className="classical-card p-6 text-center max-w-sm">
+            <Card className="text-center max-w-sm">
               <PiEnvelopeSimple className="w-8 h-8 text-accent-amber mx-auto mb-3" />
               <h4 className="font-semibold text-theme-primary mb-2">
                 Email não verificado
@@ -80,7 +81,7 @@ export default function EmailVerifiedWrapper({
               >
                 Verificar Agora
               </Button>
-            </div>
+            </Card>
           </div>
 
           {/* Conteúdo original (desabilitado visualmente) */}

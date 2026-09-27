@@ -15,6 +15,7 @@ import {
   PiUsers,
 } from 'react-icons/pi';
 import { Inline } from '@/app/components/ui/Layout';
+import { Card } from '@/app/components/ui/Card';
 
 export default function TeacherDashboardLoading() {
   return (
@@ -90,16 +91,13 @@ export default function TeacherDashboardLoading() {
             },
             { icon: <PiChartBar className="w-6 h-6 text-theme-inverse/20" /> },
           ].map((item, index) => (
-            <div
-              key={index}
-              className="classical-card p-6 text-center animate-pulse"
-            >
+            <Card key={index} className="text-center animate-pulse">
               <div className="w-12 h-12 bg-gradient-to-br from-brand-primary/20 to-brand-secondary/20 border border-brand-primary/30 rounded-xl mx-auto mb-4 flex items-center justify-center">
                 {item.icon}
               </div>
               <div className="h-8 bg-gradient-to-r from-brand-primary/20 to-brand-secondary/20 rounded-lg mb-2"></div>
               <div className="h-4 bg-theme-elevated rounded"></div>
-            </div>
+            </Card>
           ))}
         </div>
 
@@ -108,7 +106,7 @@ export default function TeacherDashboardLoading() {
           {/* Left Column - 2/3 */}
           <div className="lg:col-span-2 order-2 lg:order-1 space-y-8">
             {/* Quick Actions Skeleton */}
-            <div className="classical-card p-6 animate-pulse">
+            <Card className="animate-pulse">
               <Inline gap={3} className="mb-6">
                 <div className="w-10 h-10 bg-gradient-to-br from-accent-green/20 to-accent-blue/20 rounded-xl flex items-center justify-center">
                   <PiClock className="w-5 h-5 text-theme-primary/30" />
@@ -121,17 +119,22 @@ export default function TeacherDashboardLoading() {
 
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                 {Array.from({ length: 3 }).map((_, i) => (
-                  <div key={i} className="classical-card-2 p-4 animate-pulse">
+                  <Card
+                    nivel={2}
+                    densidade="compacta"
+                    key={i}
+                    className="animate-pulse"
+                  >
                     <div className="w-8 h-8 bg-theme-secondary/50 rounded-lg mb-3"></div>
                     <div className="h-5 bg-theme-elevated rounded mb-2"></div>
                     <div className="h-3 bg-theme-secondary/50 rounded w-3/4"></div>
-                  </div>
+                  </Card>
                 ))}
               </div>
-            </div>
+            </Card>
 
             {/* Recent Activities Skeleton */}
-            <div className="classical-card p-6 animate-pulse">
+            <Card className="animate-pulse">
               <Inline gap={3} className="mb-6">
                 <div className="w-10 h-10 rounded-xl flex items-center justify-center">
                   <PiBookOpen className="w-5 h-5 text-theme-primary/30" />
@@ -147,10 +150,10 @@ export default function TeacherDashboardLoading() {
                   <ActivityItemSkeleton key={i} />
                 ))}
               </div>
-            </div>
+            </Card>
 
             {/* Assignments Overview Skeleton */}
-            <div className="classical-card p-6 animate-pulse">
+            <Card className="animate-pulse">
               <Inline gap={3} className="mb-6">
                 <div className="w-10 h-10 rounded-xl flex items-center justify-center">
                   <PiClipboardText className="w-5 h-5 text-theme-primary/30" />
@@ -166,13 +169,13 @@ export default function TeacherDashboardLoading() {
                   <AssignmentItemSkeleton key={i} />
                 ))}
               </div>
-            </div>
+            </Card>
           </div>
 
           {/* Right Column - 1/3 */}
           <div className="lg:col-span-1 order-1 lg:order-2 space-y-6">
             {/* Today's Schedule Skeleton */}
-            <div className="classical-card p-6 animate-pulse">
+            <Card className="animate-pulse">
               <Inline gap={3} className="mb-4">
                 <div className="w-8 h-8 rounded-lg flex items-center justify-center">
                   <PiCalendarBlank className="w-4 h-4 text-theme-primary/30" />
@@ -193,10 +196,10 @@ export default function TeacherDashboardLoading() {
                   </div>
                 ))}
               </div>
-            </div>
+            </Card>
 
             {/* Recent Reviews Skeleton */}
-            <div className="classical-card p-6 animate-pulse">
+            <Card className="animate-pulse">
               <Inline gap={3} className="mb-4">
                 <div className="w-8 h-8 rounded-lg flex items-center justify-center">
                   <PiStar className="w-4 h-4 text-theme-primary/30" />
@@ -209,10 +212,10 @@ export default function TeacherDashboardLoading() {
                   <ReviewItemSkeleton key={i} />
                 ))}
               </div>
-            </div>
+            </Card>
 
             {/* Quick Stats Skeleton */}
-            <div className="classical-card p-6 animate-pulse">
+            <Card className="animate-pulse">
               <Inline gap={3} className="mb-4">
                 <div className="w-8 h-8 rounded-lg flex items-center justify-center">
                   <PiTrendUp className="w-4 h-4 text-theme-primary/30" />
@@ -233,10 +236,10 @@ export default function TeacherDashboardLoading() {
                   </div>
                 ))}
               </div>
-            </div>
+            </Card>
 
             {/* Notifications Skeleton */}
-            <div className="classical-card p-6 animate-pulse">
+            <Card className="animate-pulse">
               <Inline gap={3} className="mb-4">
                 <div className="w-8 h-8 rounded-lg flex items-center justify-center">
                   <PiBell className="w-4 h-4 text-theme-primary/30" />
@@ -249,7 +252,7 @@ export default function TeacherDashboardLoading() {
                   <NotificationItemSkeleton key={i} />
                 ))}
               </div>
-            </div>
+            </Card>
           </div>
         </div>
       </div>
@@ -282,7 +285,7 @@ function ActivityItemSkeleton() {
 // Assignment Item Skeleton
 function AssignmentItemSkeleton() {
   return (
-    <div className="classical-card-2 p-4 animate-pulse">
+    <Card nivel={2} densidade="compacta" className="animate-pulse">
       <div className="flex items-start justify-between mb-3">
         <Inline gap={2}>
           <div className="w-8 h-8 bg-brand-primary/20 rounded-full"></div>
@@ -304,7 +307,7 @@ function AssignmentItemSkeleton() {
           <div className="w-6 h-6 bg-theme-elevated rounded"></div>
         </div>
       </div>
-    </div>
+    </Card>
   );
 }
 

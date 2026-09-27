@@ -18,6 +18,7 @@ import { HistoryComposerCard } from '../cards/HistoryComposerCard';
 import { useTranslation } from '@/app/context/TranslationContext';
 import { Inline } from '@/app/components/ui/Layout';
 import { Text } from '@/app/components/ui/Text';
+import { Card } from '@/app/components/ui/Card';
 
 interface Composer {
   id: string;
@@ -128,7 +129,10 @@ export function EpochSection({ epoch, index, isReversed = false }: Props) {
 
         {/* Description */}
         {epoch.historicalData?.description && (
-          <div className="classical-card p-8 group hover:shadow-theme-glow transition-all duration-500 relative overflow-hidden">
+          <Card
+            densidade="larga"
+            className="group hover:shadow-theme-glow transition-all duration-500 relative overflow-hidden"
+          >
             {/* Decorative element */}
             <div className="absolute top-4 right-4 text-3xl text-brand-primary/5">
               <PiMusicNotes />
@@ -147,7 +151,7 @@ export function EpochSection({ epoch, index, isReversed = false }: Props) {
                 {epoch.historicalData.description}
               </p>
             </div>
-          </div>
+          </Card>
         )}
 
         {/* Expandable Details */}
@@ -297,7 +301,7 @@ export function EpochSection({ epoch, index, isReversed = false }: Props) {
 
       {/* Composers Section */}
       <div className="flex-1 w-full lg:max-w-md">
-        <div className="classical-card p-6 sticky top-6">
+        <Card className="sticky top-6">
           <Inline gap={3} className="mb-6">
             <div className="w-10 h-10 bg-gradient-to-br from-accent-blue to-accent-purple rounded-xl flex items-center justify-center">
               <PiUsers className="w-5 h-5 text-theme-primary" />
@@ -363,7 +367,7 @@ export function EpochSection({ epoch, index, isReversed = false }: Props) {
               </Inline>
             )}
           </div>
-        </div>
+        </Card>
       </div>
     </div>
   );

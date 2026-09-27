@@ -32,6 +32,7 @@ import { useFavoritesStore } from '@/app/stores/useFavoritesStore';
 import { useLearningStore } from '@/app/stores/useLearningStore';
 import { Inline } from '@/app/components/ui/Layout';
 import { Text } from '@/app/components/ui/Text';
+import { Card } from '@/app/components/ui/Card';
 
 interface NavItem {
   label: string;
@@ -730,7 +731,7 @@ export function BlogHeader() {
             ${isMenuOpen ? 'max-h-auto opacity-100 mt-4' : 'max-h-0 opacity-0'}
           `}
           >
-            <div className="classical-card p-4 mt-3 relative">
+            <Card densidade="compacta" className="mt-3 relative">
               <div className="relative overflow-hidden">
                 {/* Main View */}
                 <div
@@ -1122,7 +1123,7 @@ export function BlogHeader() {
                   </div>
                 </div>
               </div>
-            </div>
+            </Card>
           </div>
         </nav>
       </header>

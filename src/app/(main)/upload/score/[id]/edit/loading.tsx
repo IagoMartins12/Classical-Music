@@ -17,6 +17,7 @@ import {
   PiUser,
 } from 'react-icons/pi';
 import { Inline } from '@/app/components/ui/Layout';
+import { Card } from '@/app/components/ui/Card';
 
 export default function EditScoreLoading() {
   return (
@@ -256,7 +257,7 @@ export default function EditScoreLoading() {
               {/* Sidebar com Thumbnail e Obra */}
               <div className="space-y-6">
                 {/* Thumbnail da Partitura */}
-                <div className="classical-card-simple p-6">
+                <Card nivel={2}>
                   <Inline gap={3} className="mb-4">
                     <div className="w-8 h-8 bg-gradient-to-br from-accent-purple/20 to-accent-blue/20 rounded-xl flex items-center justify-center">
                       <PiImage className="w-4 h-4 text-theme-primary/30" />
@@ -269,10 +270,10 @@ export default function EditScoreLoading() {
                       <PiFile className="w-12 h-12 text-theme-tertiary/30 opacity-50" />
                     </div>
                   </div>
-                </div>
+                </Card>
 
                 {/* Informações da Obra */}
-                <div className="classical-card-simple p-6">
+                <Card nivel={2}>
                   <Inline gap={3} className="mb-4">
                     <div className="w-8 h-8 bg-gradient-to-br from-brand-primary/20 to-brand-secondary/20 rounded-xl flex items-center justify-center">
                       <PiMusicNotes className="w-4 h-4 text-theme-primary/30" />
@@ -286,10 +287,10 @@ export default function EditScoreLoading() {
                       <div className="h-4 w-28 bg-theme-elevated rounded"></div>
                     </div>
                   </div>
-                </div>
+                </Card>
 
                 {/* Detalhes Técnicos */}
-                <div className="classical-card-simple p-6">
+                <Card nivel={2}>
                   <Inline gap={3} className="mb-4">
                     <div className="w-8 h-8 bg-gradient-to-br from-accent-green/20 to-accent-blue/20 rounded-xl flex items-center justify-center">
                       <PiInfo className="w-4 h-4 text-theme-primary/30" />
@@ -310,7 +311,7 @@ export default function EditScoreLoading() {
                       <div className="h-3 w-16 bg-theme-primary/20 rounded"></div>
                     </div>
                   </div>
-                </div>
+                </Card>
               </div>
             </div>
           </div>

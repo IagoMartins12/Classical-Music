@@ -8,6 +8,7 @@ import { useState } from 'react';
 import Link from 'next/link';
 import { PiMusicNotes, PiTrash } from 'react-icons/pi';
 import { Inline } from '@/app/components/ui/Layout';
+import { Card } from '@/app/components/ui/Card';
 
 const WorkCardComponent = (props: any) => {
   const { node, deleteNode } = props;
@@ -42,7 +43,7 @@ const WorkCardComponent = (props: any) => {
         </Inline>
       )}
 
-      <div className="classical-card p-6 border-l-4 border-accent-purple">
+      <Card className="border-l-4 border-accent-purple">
         <div className="flex items-start space-x-4">
           <div className="p-3 bg-accent-purple rounded-lg shadow-theme-medium">
             <PiMusicNotes className="w-8 h-8 text-white" />
@@ -76,7 +77,7 @@ const WorkCardComponent = (props: any) => {
             </Inline>
           </div>
         </div>
-      </div>
+      </Card>
     </NodeViewWrapper>
   );
 };

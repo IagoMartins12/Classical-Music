@@ -15,6 +15,7 @@ import {
   PiUserCheck,
 } from 'react-icons/pi';
 import { Inline } from '@/app/components/ui/Layout';
+import { Card } from '@/app/components/ui/Card';
 
 export default function StudentDashboardLoading() {
   return (
@@ -90,17 +91,14 @@ export default function StudentDashboardLoading() {
               icon: <PiTrendUp className="w-6 h-6 text-theme-inverse/20" />,
             },
           ].map((item, index) => (
-            <div
-              key={index}
-              className="classical-card p-6 text-center animate-pulse"
-            >
+            <Card key={index} className="text-center animate-pulse">
               <div className="w-12 h-12 bg-gradient-to-br from-brand-primary/20 to-brand-secondary/20 rounded-xl flex items-center justify-center mx-auto mb-3">
                 {item.icon}
               </div>
               <div className="h-6 bg-gradient-to-r from-brand-primary/20 to-brand-secondary/20 rounded mb-2"></div>
               <div className="h-3 bg-theme-elevated rounded mb-1"></div>
               <div className="h-3 bg-accent-green/20 rounded w-3/4 mx-auto"></div>
-            </div>
+            </Card>
           ))}
         </div>
 
@@ -109,7 +107,7 @@ export default function StudentDashboardLoading() {
           {/* Left Column - 2/3 */}
           <div className="lg:col-span-2 space-y-8">
             {/* Quick Actions Skeleton */}
-            <div className="classical-card p-6 animate-pulse">
+            <Card className="animate-pulse">
               <div className="flex items-center justify-between mb-6">
                 <Inline gap={3}>
                   <div className="w-10 h-10 bg-gradient-to-br from-accent-green/20 to-accent-blue/20 rounded-xl flex items-center justify-center">
@@ -125,7 +123,7 @@ export default function StudentDashboardLoading() {
 
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                 {Array.from({ length: 3 }).map((_, i) => (
-                  <div key={i} className="classical-card-2 p-4">
+                  <Card nivel={2} densidade="compacta" key={i}>
                     <Inline gap={3}>
                       <div className="w-8 h-8 bg-gradient-to-br from-accent-blue/20 to-accent-purple/20 rounded-lg"></div>
                       <div>
@@ -133,13 +131,13 @@ export default function StudentDashboardLoading() {
                         <div className="h-3 bg-theme-tertiary/30 rounded w-32"></div>
                       </div>
                     </Inline>
-                  </div>
+                  </Card>
                 ))}
               </div>
-            </div>
+            </Card>
 
             {/* Recent Lessons Skeleton */}
-            <div className="classical-card p-6 animate-pulse">
+            <Card className="animate-pulse">
               <div className="flex items-center justify-between mb-6">
                 <Inline gap={3}>
                   <div className="w-10 h-10 bg-gradient-to-br from-accent-green/20 to-accent-blue/20 rounded-xl flex items-center justify-center">
@@ -155,7 +153,7 @@ export default function StudentDashboardLoading() {
 
               <div className="space-y-4">
                 {Array.from({ length: 4 }).map((_, index) => (
-                  <div key={index} className="classical-card-2 p-4">
+                  <Card nivel={2} densidade="compacta" key={index}>
                     <div className="flex items-start justify-between mb-3">
                       <div className="flex-1">
                         <div className="h-4 bg-theme-primary/30 rounded w-48 mb-1"></div>
@@ -204,13 +202,13 @@ export default function StudentDashboardLoading() {
                       <div className="h-3 bg-theme-tertiary/30 rounded w-24 mb-1"></div>
                       <div className="h-3 bg-theme-primary/30 rounded w-full"></div>
                     </div>
-                  </div>
+                  </Card>
                 ))}
               </div>
-            </div>
+            </Card>
 
             {/* Study Progress Skeleton */}
-            <div className="classical-card p-6 animate-pulse">
+            <Card className="animate-pulse">
               <div className="flex items-center justify-between mb-6">
                 <Inline gap={3}>
                   <div className="w-10 h-10 bg-gradient-to-br from-brand-primary/20 to-brand-secondary/20 rounded-xl flex items-center justify-center">
@@ -264,13 +262,13 @@ export default function StudentDashboardLoading() {
                   </div>
                 </div>
               </div>
-            </div>
+            </Card>
           </div>
 
           {/* Right Column - 1/3 */}
           <div className="lg:col-span-1 space-y-6">
             {/* Today's Schedule Skeleton */}
-            <div className="classical-card p-6 animate-pulse">
+            <Card className="animate-pulse">
               <Inline gap={3} className="mb-4">
                 <div className="w-8 h-8 bg-gradient-to-br from-accent-blue/20 to-accent-purple/20 rounded-lg flex items-center justify-center">
                   <PiCalendarBlank className="w-4 h-4 text-theme-inverse/20" />
@@ -296,10 +294,10 @@ export default function StudentDashboardLoading() {
                   </div>
                 ))}
               </div>
-            </div>
+            </Card>
 
             {/* Upcoming Lessons Skeleton */}
-            <div className="classical-card p-6 animate-pulse">
+            <Card className="animate-pulse">
               <Inline gap={3} className="mb-4">
                 <div className="w-8 h-8 bg-gradient-to-br from-accent-green/20 to-accent-blue/20 rounded-lg flex items-center justify-center">
                   <PiClock className="w-4 h-4 text-theme-inverse/20" />
@@ -324,10 +322,10 @@ export default function StudentDashboardLoading() {
                   </div>
                 ))}
               </div>
-            </div>
+            </Card>
 
             {/* Teachers Skeleton */}
-            <div className="classical-card p-6 animate-pulse">
+            <Card className="animate-pulse">
               <Inline gap={3} className="mb-4">
                 <div className="w-8 h-8 bg-gradient-to-br from-accent-purple/20 to-accent-red/20 rounded-lg flex items-center justify-center">
                   <PiUserCheck className="w-4 h-4 text-theme-inverse/20" />
@@ -355,7 +353,7 @@ export default function StudentDashboardLoading() {
                   </div>
                 ))}
               </div>
-            </div>
+            </Card>
           </div>
         </div>
       </div>

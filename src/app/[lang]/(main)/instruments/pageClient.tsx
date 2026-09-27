@@ -30,6 +30,7 @@ import Image from '@/app/components/SmartImage';
 import { useTranslation } from '@/app/context/TranslationContext';
 import { Inline } from '@/app/components/ui/Layout';
 import { Text } from '@/app/components/ui/Text';
+import { Card } from '@/app/components/ui/Card';
 
 interface Composer {
   id: string;
@@ -269,20 +270,20 @@ export function InstrumentsPageClient({
                 >
                   <div className="py-4 px-2 md:p-8 space-y-8">
                     {/* Brief Description */}
-                    <div className="classical-card-2 p-6 relative overflow-hidden">
+                    <Card nivel={2} className="relative overflow-hidden">
                       <div className="relative z-10">
                         <p className="text-theme-secondary text-md md:text-lg leading-relaxed classical-body">
                           {instrument.historicalData.description}
                         </p>
                       </div>
-                    </div>
+                    </Card>
 
                     {/* Main Content Grid */}
                     <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
                       {/* Left Column - Historical Info */}
                       <div className="space-y-6">
                         {/* Detailed History */}
-                        <div className="classical-card-2 p-6 relative overflow-hidden">
+                        <Card nivel={2} className="relative overflow-hidden">
                           <div className="relative z-10">
                             <Inline gap={3} className="mb-4">
                               <div className="w-8 h-8 bg-gradient-to-br from-accent-blue to-accent-purple rounded-xl flex items-center justify-center">
@@ -303,10 +304,10 @@ export function InstrumentsPageClient({
                               {instrument.historicalData.detailedHistory}
                             </Text>
                           </div>
-                        </div>
+                        </Card>
 
                         {/* Basic Info */}
-                        <div className="classical-card-2 p-6 relative overflow-hidden">
+                        <Card nivel={2} className="relative overflow-hidden">
                           <div className="relative z-10">
                             <Inline gap={3} className="mb-4">
                               <div className="w-8 h-8 bg-gradient-to-br from-accent-green to-accent-blue rounded-xl flex items-center justify-center">
@@ -362,11 +363,11 @@ export function InstrumentsPageClient({
                               </div>
                             </div>
                           </div>
-                        </div>
+                        </Card>
 
                         {/* Top Composer */}
                         {instrument.topComposers[0] && (
-                          <div className="classical-card-2 p-6 relative overflow-hidden">
+                          <Card nivel={2} className="relative overflow-hidden">
                             <div className="relative z-10">
                               <Inline gap={3} className="mb-4">
                                 <div className="w-8 h-8 bg-gradient-to-br from-brand-primary to-brand-secondary rounded-xl flex items-center justify-center">
@@ -423,7 +424,7 @@ export function InstrumentsPageClient({
                                 </div>
                               </Inline>
                             </div>
-                          </div>
+                          </Card>
                         )}
                       </div>
 

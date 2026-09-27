@@ -21,6 +21,7 @@ import Select from '../Common/Select';
 import { Inline } from '@/app/components/ui/Layout';
 import { Text } from '@/app/components/ui/Text';
 import { NomeAcao } from '@/app/components/ui/NomeAcao';
+import { Card } from '@/app/components/ui/Card';
 
 interface DifficultyClientProps {
   difficultyData: DifficultyResponse;
@@ -374,12 +375,12 @@ export default function DifficultyClient({
         {isPending && (
           <AnimatedItem direction="scale" springType="gentle">
             <div className="fixed inset-0 bg-theme-overlay backdrop-blur-sm flex items-center justify-center z-[300]">
-              <div className="classical-card p-8 text-center">
+              <Card densidade="larga" className="text-center">
                 <div className="w-12 h-12 border-4 border-brand-primary border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
                 <p className="text-theme-primary font-medium">
                   Carregando obras...
                 </p>
-              </div>
+              </Card>
             </div>
           </AnimatedItem>
         )}

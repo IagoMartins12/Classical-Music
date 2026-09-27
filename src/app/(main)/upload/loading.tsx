@@ -17,6 +17,7 @@ import {
   PiUser,
 } from 'react-icons/pi';
 import { Inline, Stack } from '@/app/components/ui/Layout';
+import { Card } from '@/app/components/ui/Card';
 
 export default function UploadsPageLoading() {
   return (
@@ -81,7 +82,7 @@ export default function UploadsPageLoading() {
         </div> */}
 
         {/* Controls Skeleton */}
-        <div className="classical-card p-6">
+        <Card>
           <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
             {/* Create Buttons */}
             <div className="flex flex-wrap gap-2">
@@ -151,7 +152,7 @@ export default function UploadsPageLoading() {
               ></div>
             ))}
           </div>
-        </div>
+        </Card>
 
         {/* Filter Status */}
         <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-6">

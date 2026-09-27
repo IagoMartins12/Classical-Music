@@ -34,11 +34,17 @@ const NIVEL: Record<string, string> = {
   alta: 'sup-alta',
 };
 
-/** `p-6` é o padding mais usado do projeto (939 vezes): é o padrão. */
+/**
+ * `p-6` é o padding mais usado do projeto (939 vezes): é o padrão.
+ *
+ * No telefone todo card desce a `p-4`: numa tela de 360px com margem de 16px,
+ * 32px de padding de cada lado come um quinto da largura. É o que a regra de
+ * 768px do `.classical-card` já fazia; aqui fica no próprio card.
+ */
 const DENSIDADE: Record<Densidade, string> = {
   compacta: 'p-4',
-  media: 'p-6',
-  larga: 'p-8',
+  media: 'p-4 md:p-6',
+  larga: 'p-4 md:p-8',
 };
 
 interface CardProps {

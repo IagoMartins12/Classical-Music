@@ -14,6 +14,7 @@ import { generateArticleAudio } from '@/app/requests/blog/interactions';
 import { Inline } from '@/app/components/ui/Layout';
 import { Text } from '@/app/components/ui/Text';
 import { Button } from '@/app/components/ui/Button';
+import { Card } from '@/app/components/ui/Card';
 
 interface TextToSpeechGoogleProps {
   content: any; // TipTap JSON
@@ -253,7 +254,7 @@ export function TextToSpeechGoogle({
     return <></>;
   }
   return (
-    <div className="classical-card p-6 my-8">
+    <Card className="my-8">
       {/* HEADER */}
       <Inline gap={3} className="mb-4">
         <div className="p-3 bg-gradient-to-br from-brand-primary to-accent-purple rounded-lg shadow-theme-medium">
@@ -384,6 +385,6 @@ export function TextToSpeechGoogle({
           )}
         </div>
       )}
-    </div>
+    </Card>
   );
 }

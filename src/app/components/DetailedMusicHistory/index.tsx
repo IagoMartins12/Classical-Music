@@ -17,6 +17,7 @@ import {
 } from 'react-icons/pi';
 import { Inline } from '@/app/components/ui/Layout';
 import { Text } from '@/app/components/ui/Text';
+import { Card } from '@/app/components/ui/Card';
 
 // Interfaces TypeScript
 interface AccordionSectionProps {
@@ -322,7 +323,10 @@ const RenaissanceSection = memo<SectionProps>(({ isExpanded, onToggle }) => {
         </p>
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
-          <div className="classical-card-simple p-6 group hover:scale-102 transition-all duration-200">
+          <Card
+            nivel={2}
+            className="group hover:scale-102 transition-all duration-200"
+          >
             <Inline gap={3} className="mb-4">
               <div className="w-8 h-8 bg-gradient-to-br from-accent-green to-accent-blue rounded-xl flex items-center justify-center group-hover:scale-105 transition-transform duration-200">
                 <PiUser className="w-4 h-4 text-theme-primary" />
@@ -334,8 +338,11 @@ const RenaissanceSection = memo<SectionProps>(({ isExpanded, onToggle }) => {
             <p className="leading-relaxed">
               {t('detailed_jsx_p_children_0__josquin_des_prez')}
             </p>
-          </div>
-          <div className="classical-card-simple p-6 group hover:scale-102 transition-all duration-200">
+          </Card>
+          <Card
+            nivel={2}
+            className="group hover:scale-102 transition-all duration-200"
+          >
             <Inline gap={3} className="mb-4">
               <div className="w-8 h-8 bg-gradient-to-br from-accent-blue to-accent-purple rounded-xl flex items-center justify-center group-hover:scale-105 transition-transform duration-200">
                 <PiMusicNotes className="w-4 h-4 text-theme-primary" />
@@ -347,7 +354,7 @@ const RenaissanceSection = memo<SectionProps>(({ isExpanded, onToggle }) => {
             <p className="leading-relaxed">
               {t('detailed_jsx_p_children_0__esta_forma_musical')}
             </p>
-          </div>
+          </Card>
         </div>
 
         <div className="bg-gradient-to-r from-accent-green/10 to-accent-blue/10 border-l-4 border-accent-green rounded-xl p-6">
@@ -411,9 +418,10 @@ const BaroqueSection = memo<SectionProps>(({ isExpanded, onToggle }) => {
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
           {composers.map((composer, index) => (
-            <div
+            <Card
+              nivel={2}
               key={index}
-              className="classical-card-simple p-6 group hover:scale-102 transition-all duration-200 will-change-transform"
+              className="group hover:scale-102 transition-all duration-200 will-change-transform"
             >
               <Inline gap={3} className="mb-3">
                 <div
@@ -426,7 +434,7 @@ const BaroqueSection = memo<SectionProps>(({ isExpanded, onToggle }) => {
                 </h4>
               </Inline>
               <p className="text-sm leading-relaxed">{composer.description}</p>
-            </div>
+            </Card>
           ))}
         </div>
 
@@ -491,9 +499,10 @@ const ClassicalSection = memo<SectionProps>(({ isExpanded, onToggle }) => {
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
           {composers.map((composer, index) => (
-            <div
+            <Card
+              nivel={2}
               key={index}
-              className="classical-card-simple p-6 group hover:scale-102 transition-all duration-200 will-change-transform"
+              className="group hover:scale-102 transition-all duration-200 will-change-transform"
             >
               <Inline gap={3} className="mb-3">
                 <div
@@ -506,7 +515,7 @@ const ClassicalSection = memo<SectionProps>(({ isExpanded, onToggle }) => {
                 </h4>
               </Inline>
               <p className="text-sm leading-relaxed">{composer.description}</p>
-            </div>
+            </Card>
           ))}
         </div>
       </div>
@@ -560,9 +569,10 @@ const RomanticSection = memo<SectionProps>(({ isExpanded, onToggle }) => {
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
           {composers.map((composer, index) => (
-            <div
+            <Card
+              nivel={2}
               key={index}
-              className="classical-card-simple p-6 group hover:scale-102 transition-all duration-200 will-change-transform"
+              className="group hover:scale-102 transition-all duration-200 will-change-transform"
             >
               <Inline gap={3} className="mb-3">
                 <div
@@ -575,7 +585,7 @@ const RomanticSection = memo<SectionProps>(({ isExpanded, onToggle }) => {
                 </h4>
               </Inline>
               <p className="text-sm leading-relaxed">{composer.description}</p>
-            </div>
+            </Card>
           ))}
         </div>
       </div>
@@ -619,22 +629,30 @@ const ModernSection = memo<SectionProps>(({ isExpanded, onToggle }) => {
               </span>
             </Inline>
             <div className="space-y-4">
-              <div className="classical-card-simple p-4 group hover:scale-102 transition-all duration-200">
+              <Card
+                nivel={2}
+                densidade="compacta"
+                className="group hover:scale-102 transition-all duration-200"
+              >
                 <p className="text-sm leading-relaxed">
                   <strong className="text-brand-primary">
                     Arnold Schoenberg:
                   </strong>{' '}
                   {t('detailed_jsx_p_children_0__arnold_schoenberg')}
                 </p>
-              </div>
-              <div className="classical-card-simple p-4 group hover:scale-102 transition-all duration-200">
+              </Card>
+              <Card
+                nivel={2}
+                densidade="compacta"
+                className="group hover:scale-102 transition-all duration-200"
+              >
                 <p className="text-sm leading-relaxed">
                   <strong className="text-brand-primary">
                     Claude Debussy:
                   </strong>{' '}
                   {t('detailed_jsx_p_children_0__claude_debussy')}
                 </p>
-              </div>
+              </Card>
             </div>
           </div>
           <div className="space-y-6">
@@ -651,20 +669,28 @@ const ModernSection = memo<SectionProps>(({ isExpanded, onToggle }) => {
               </span>
             </Inline>
             <div className="space-y-4">
-              <div className="classical-card-simple p-4 group hover:scale-102 transition-all duration-200">
+              <Card
+                nivel={2}
+                densidade="compacta"
+                className="group hover:scale-102 transition-all duration-200"
+              >
                 <p className="text-sm leading-relaxed">
                   <strong className="text-brand-primary">Béla Bartók:</strong>{' '}
                   {t('detailed_jsx_p_children_0__bela_bartok')}
                 </p>
-              </div>
-              <div className="classical-card-simple p-4 group hover:scale-102 transition-all duration-200">
+              </Card>
+              <Card
+                nivel={2}
+                densidade="compacta"
+                className="group hover:scale-102 transition-all duration-200"
+              >
                 <p className="text-sm leading-relaxed">
                   <strong className="text-brand-primary">
                     Heitor Villa-Lobos:
                   </strong>{' '}
                   {t('detailed_jsx_p_children_0__heitor_villa_lobos')}
                 </p>
-              </div>
+              </Card>
             </div>
           </div>
         </div>
@@ -713,7 +739,10 @@ const ContemporarySection = memo<SectionProps>(({ isExpanded, onToggle }) => {
         </p>
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
-          <div className="classical-card-simple p-6 group hover:scale-102 transition-all duration-200">
+          <Card
+            nivel={2}
+            className="group hover:scale-102 transition-all duration-200"
+          >
             <Inline gap={3} className="mb-4">
               <div className="w-8 h-8 bg-gradient-to-br from-accent-blue to-accent-green rounded-xl flex items-center justify-center group-hover:scale-105 transition-transform duration-200">
                 <PiClock className="w-4 h-4 text-theme-primary" />
@@ -725,8 +754,11 @@ const ContemporarySection = memo<SectionProps>(({ isExpanded, onToggle }) => {
             <p className="text-sm leading-relaxed">
               {t('detailed_jsx_p_children_0__compositores_como_arvo')}
             </p>
-          </div>
-          <div className="classical-card-simple p-6 group hover:scale-102 transition-all duration-200">
+          </Card>
+          <Card
+            nivel={2}
+            className="group hover:scale-102 transition-all duration-200"
+          >
             <Inline gap={3} className="mb-4">
               <div className="w-8 h-8 bg-gradient-to-br from-accent-green to-accent-blue rounded-xl flex items-center justify-center group-hover:scale-105 transition-transform duration-200">
                 <PiTrendUp className="w-4 h-4 text-theme-primary" />
@@ -738,7 +770,7 @@ const ContemporarySection = memo<SectionProps>(({ isExpanded, onToggle }) => {
             <p className="text-sm leading-relaxed">
               {t('detailed_jsx_p_children_0__computadores_podem_gerar')}
             </p>
-          </div>
+          </Card>
         </div>
 
         <div className="bg-gradient-to-r from-accent-blue/10 to-accent-green/10 border-l-4 border-accent-blue rounded-xl p-6 text-center">
@@ -778,7 +810,10 @@ const PopularMusicSection = memo<SectionProps>(({ isExpanded, onToggle }) => {
         </p>
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
-          <div className="classical-card-simple p-6 group hover:scale-102 transition-all duration-200">
+          <Card
+            nivel={2}
+            className="group hover:scale-102 transition-all duration-200"
+          >
             <Inline gap={3} className="mb-4">
               <div className="w-8 h-8 bg-gradient-to-br from-accent-green to-accent-blue rounded-xl flex items-center justify-center group-hover:scale-105 transition-transform duration-200">
                 <PiUser className="w-4 h-4 text-theme-primary" />
@@ -827,8 +862,11 @@ const PopularMusicSection = memo<SectionProps>(({ isExpanded, onToggle }) => {
                 </span>
               </li>
             </ul>
-          </div>
-          <div className="classical-card-simple p-6 group hover:scale-102 transition-all duration-200">
+          </Card>
+          <Card
+            nivel={2}
+            className="group hover:scale-102 transition-all duration-200"
+          >
             <Inline gap={3} className="mb-4">
               <div className="w-8 h-8 bg-gradient-to-br from-accent-blue to-accent-purple rounded-xl flex items-center justify-center group-hover:scale-105 transition-transform duration-200">
                 <PiMusicNotes className="w-4 h-4 text-theme-primary" />
@@ -869,7 +907,7 @@ const PopularMusicSection = memo<SectionProps>(({ isExpanded, onToggle }) => {
                 </span>
               </li>
             </ul>
-          </div>
+          </Card>
         </div>
 
         <div className="bg-gradient-to-r from-accent-green/10 to-accent-blue/10 border-l-4 border-accent-green rounded-xl p-6">

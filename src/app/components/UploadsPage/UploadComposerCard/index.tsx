@@ -19,6 +19,7 @@ import { useTranslation } from '@/app/context/TranslationContext';
 import { Inline, Stack } from '@/app/components/ui/Layout';
 import { Text } from '@/app/components/ui/Text';
 import { NomeAcao } from '@/app/components/ui/NomeAcao';
+import { Card } from '@/app/components/ui/Card';
 
 interface UploadComposerCardProps {
   item: UserUpload;
@@ -75,7 +76,10 @@ const UploadComposerCard = ({
 
   if (viewMode === 'list') {
     return (
-      <div className="classical-card group relative p-4 hover:shadow-theme-glow transition-all duration-300">
+      <Card
+        densidade="compacta"
+        className="group relative hover:shadow-theme-glow transition-all duration-300"
+      >
         <div className="flex flex-col-reverse md:flex-row gap-2 items-center justify-between w-full">
           {/* Left section - Portrait and basic info */}
           <Inline gap={4} className="self-start md:self-auto flex-1 min-w-0">
@@ -220,7 +224,7 @@ const UploadComposerCard = ({
             </Inline>
           </Inline>
         </div>
-      </div>
+      </Card>
     );
   }
 

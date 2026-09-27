@@ -4,6 +4,7 @@
 import { Suspense } from 'react';
 import { Inline } from '@/app/components/ui/Layout';
 import { Text } from '@/app/components/ui/Text';
+import { Card } from '@/app/components/ui/Card';
 
 interface SuspenseWrapperProps {
   children: React.ReactNode;
@@ -60,10 +61,10 @@ export function withSuspense<T extends object>(
 export const FormPageLoading = () => (
   <div className="min-h-screen bg-theme-background">
     <div className="flex items-center justify-center min-h-[60vh]">
-      <div className="classical-card p-8 text-center">
+      <Card densidade="larga" className="text-center">
         <div className="w-12 h-12 border-2 border-brand-primary border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
         <p className="text-theme-secondary">Carregando página...</p>
-      </div>
+      </Card>
     </div>
   </div>
 );

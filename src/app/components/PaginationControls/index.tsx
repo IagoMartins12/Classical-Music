@@ -5,6 +5,7 @@ import { PiCaretLeft, PiCaretRight, PiDotsThree } from 'react-icons/pi';
 import { useTranslation } from '@/app/hooks/useTranslation';
 import { useCallback } from 'react';
 import { Inline } from '@/app/components/ui/Layout';
+import { Card } from '@/app/components/ui/Card';
 
 interface PaginationControlsProps {
   currentPage: number;
@@ -86,7 +87,7 @@ const PaginationControls: React.FC<PaginationControlsProps> = ({
   const visiblePages = getVisiblePages();
 
   return (
-    <div className="classical-card p-6 mt-6">
+    <Card className="mt-6">
       <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
         {/* Page info */}
         <Inline gap={2} className="text-theme-secondary text-sm">
@@ -208,7 +209,7 @@ const PaginationControls: React.FC<PaginationControlsProps> = ({
           </Inline>
         </div>
       )}
-    </div>
+    </Card>
   );
 };
 

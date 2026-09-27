@@ -14,6 +14,7 @@ import {
   PiX,
 } from 'react-icons/pi';
 import { Inline } from '@/app/components/ui/Layout';
+import { Card } from '@/app/components/ui/Card';
 
 const WEEKDAYS = ['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb'];
 
@@ -94,21 +95,18 @@ export default function StudentCalendarLoading() {
               ),
             },
           ].map((item, index) => (
-            <div
-              key={index}
-              className="classical-card p-6 text-center animate-pulse"
-            >
+            <Card key={index} className="text-center animate-pulse">
               <div className="w-12 h-12 bg-gradient-to-br from-brand-primary/20 to-brand-secondary/20 rounded-xl flex items-center justify-center mx-auto mb-3">
                 {item.icon}
               </div>
               <div className="h-6 bg-gradient-to-r from-brand-primary/20 to-brand-secondary/20 rounded mb-2"></div>
               <div className="h-3 bg-theme-elevated rounded"></div>
-            </div>
+            </Card>
           ))}
         </div>
 
         {/* Calendar Controls Skeleton */}
-        <div className="classical-card p-6 animate-pulse">
+        <Card className="animate-pulse">
           <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
             {/* Navigation */}
             <Inline gap={4}>
@@ -157,10 +155,10 @@ export default function StudentCalendarLoading() {
               <div className="h-10 w-40 bg-gradient-to-r from-theme-elevated to-interactive-hover border border-theme-secondary rounded-lg"></div>
             </Inline>
           </div>
-        </div>
+        </Card>
 
         {/* Calendar Content Skeleton */}
-        <div className="classical-card p-6 animate-pulse">
+        <Card className="animate-pulse">
           {/* Month View Skeleton */}
           <div>
             {/* Header */}
@@ -179,7 +177,7 @@ export default function StudentCalendarLoading() {
               ))}
             </div>
           </div>
-        </div>
+        </Card>
       </div>
 
       {/* Floating Particles */}

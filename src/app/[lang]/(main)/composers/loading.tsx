@@ -10,6 +10,7 @@ import {
 } from 'react-icons/pi';
 import { Inline } from '@/app/components/ui/Layout';
 import { Text } from '@/app/components/ui/Text';
+import { Card } from '@/app/components/ui/Card';
 
 export default function ComposersLoading() {
   return (
@@ -39,7 +40,7 @@ export default function ComposersLoading() {
         </div>
 
         {/* Filters Section */}
-        <div className="classical-card mx-4 p-6">
+        <Card className="mx-4">
           <div className="flex items-center mb-6">
             <div className="space-y-2">
               <div className="h-5 w-32 bg-gradient-to-r from-theme-primary/20 to-theme-secondary/20 rounded animate-pulse"></div>
@@ -111,7 +112,7 @@ export default function ComposersLoading() {
               </Inline>
             </Inline>
           </div>
-        </div>
+        </Card>
 
         {/* Results Section - Simple Grid */}
         <div className="relative mt-6">
@@ -124,7 +125,7 @@ export default function ComposersLoading() {
 
         {/* Pagination Skeleton */}
         <div className="px-4">
-          <div className="classical-card p-6">
+          <Card>
             <div className="flex flex-col sm:flex-row items-center justify-between space-y-4 sm:space-y-0">
               {/* Info */}
               <div className="h-4 w-48 bg-theme-elevated rounded animate-pulse"></div>
@@ -147,7 +148,7 @@ export default function ComposersLoading() {
 
               <div></div>
             </div>
-          </div>
+          </Card>
         </div>
       </div>
 
@@ -162,7 +163,7 @@ export default function ComposersLoading() {
 // Simple skeleton card component
 function ComposerCardSkeleton() {
   return (
-    <div className="classical-card p-6 h-full">
+    <Card className="h-full">
       {/* Portrait */}
       <div className="mb-6 flex justify-center">
         <div className="w-24 h-24 md:w-28 md:h-28 bg-gradient-to-br from-accent-blue/20 to-accent-purple/20 border border-accent-blue/30 rounded-full shadow-theme-medium animate-pulse"></div>
@@ -202,6 +203,6 @@ function ComposerCardSkeleton() {
           <div className="h-4 w-24 bg-theme-tertiary/30 rounded mx-auto animate-pulse"></div>
         </div>
       </div>
-    </div>
+    </Card>
   );
 }

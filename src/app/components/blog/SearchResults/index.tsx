@@ -12,6 +12,7 @@ import { SearchFilters } from '@/app/components/blog/SearchFilters';
 import { SortSelector } from '@/app/components/blog/SortSelector';
 import { Text } from '@/app/components/ui/Text';
 import { Button } from '@/app/components/ui/Button';
+import { Card } from '@/app/components/ui/Card';
 
 interface Article {
   id: string;
@@ -94,7 +95,7 @@ export function SearchResults({
       <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
         {/* Filters Sidebar */}
         <div className="lg:col-span-1">
-          <div className="classical-card p-6 sticky top-24">
+          <Card className="sticky top-24">
             <h3 className="font-semibold text-theme-primary mb-4 flex items-center gap-2">
               <PiFunnel className="text-brand-primary" />
               Filtros
@@ -108,7 +109,7 @@ export function SearchResults({
                 Limpar filtros
               </Link>
             )}
-          </div>
+          </Card>
         </div>
 
         {/* Empty State */}
@@ -134,7 +135,7 @@ export function SearchResults({
     <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
       {/* Filters Sidebar */}
       <div className="lg:col-span-1">
-        <div className="classical-card p-6 sticky top-24">
+        <Card className="sticky top-24">
           <h3 className="font-semibold text-theme-primary mb-4 flex items-center gap-2">
             <PiFunnel className="text-brand-primary" />
             Filtros
@@ -148,7 +149,7 @@ export function SearchResults({
               Limpar filtros
             </Link>
           )}
-        </div>
+        </Card>
       </div>
 
       {/* Results */}

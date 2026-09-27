@@ -12,6 +12,7 @@ import {
 import { Inline } from '@/app/components/ui/Layout';
 import { Text } from '@/app/components/ui/Text';
 import { NomeAcao } from '@/app/components/ui/NomeAcao';
+import { Card } from '@/app/components/ui/Card';
 
 interface AudioAutoplayProps {
   audioUrl: string;
@@ -457,7 +458,7 @@ export function AudioAutoplay({
 
   // ✅ COMPONENTE DO PLAYER
   const AudioPlayer = () => (
-    <div className="classical-card-simple rounded-lg shadow-xl p-4  ">
+    <Card nivel={2} densidade="compacta" className="rounded-lg shadow-xl">
       {/* Título */}
       <div className="mb-3">
         <Text
@@ -534,7 +535,7 @@ export function AudioAutoplay({
           )}
         </button>
       </Inline>
-    </div>
+    </Card>
   );
 
   return (

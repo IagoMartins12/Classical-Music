@@ -49,6 +49,7 @@ import { Inline } from '@/app/components/ui/Layout';
 import { Text } from '@/app/components/ui/Text';
 import { Field } from '@/app/components/ui/Field';
 import { NomeAcao } from '@/app/components/ui/NomeAcao';
+import { Card } from '@/app/components/ui/Card';
 
 interface TeacherAssignmentsPageClientProps {
   initialData: TeacherAssignmentsData;
@@ -970,7 +971,7 @@ export default function TeacherAssignmentsPageClient({
     return (
       <PageContainer showBackground={true}>
         <div className="flex items-center justify-center min-h-screen">
-          <div className="classical-card p-8 text-center max-w-md">
+          <Card densidade="larga" className="text-center max-w-md">
             <div className="w-16 h-16 bg-gradient-to-br from-accent-red to-accent-purple rounded-3xl flex items-center justify-center mx-auto mb-6">
               <PiClipboardText className="w-8 h-8 text-theme-primary" />
             </div>
@@ -1006,7 +1007,7 @@ export default function TeacherAssignmentsPageClient({
                 </button>
               )}
             </div>
-          </div>
+          </Card>
         </div>
       </PageContainer>
     );
@@ -2094,7 +2095,7 @@ function AssignmentDetailsModal({
             {/* Sidebar */}
             <div className="space-y-4">
               {/* Quick Stats */}
-              <div className="classical-card-2 p-4">
+              <Card nivel={2} densidade="compacta">
                 <h3 className="font-bold text-theme-primary mb-3 text-sm">
                   Informações
                 </h3>
@@ -2156,10 +2157,10 @@ function AssignmentDetailsModal({
                     </div>
                   )}
                 </div>
-              </div>
+              </Card>
 
               {/* Quick Actions */}
-              <div className="classical-card-2  p-4">
+              <Card nivel={2} densidade="compacta">
                 <h3 className="font-bold text-theme-primary mb-3 text-sm">
                   Ações Rápidas
                 </h3>
@@ -2217,11 +2218,11 @@ function AssignmentDetailsModal({
                     </Inline>
                   )}
                 </div>
-              </div>
+              </Card>
 
               {/* Progress Overview */}
               {completedMilestones.length > 0 && (
-                <div className="classical-card-2 p-4">
+                <Card nivel={2} densidade="compacta">
                   <h3 className="font-bold text-theme-primary mb-3 text-sm">
                     Conquistas do Aluno
                   </h3>
@@ -2240,7 +2241,7 @@ function AssignmentDetailsModal({
                       </Text>
                     )}
                   </div>
-                </div>
+                </Card>
               )}
             </div>
           </div>

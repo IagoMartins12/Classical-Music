@@ -19,6 +19,7 @@ import {
   PiUser,
 } from 'react-icons/pi';
 import { Inline } from '@/app/components/ui/Layout';
+import { Card } from '@/app/components/ui/Card';
 
 export default function EditWorkLoading() {
   return (
@@ -295,7 +296,7 @@ export default function EditWorkLoading() {
               {/* Sidebar com Foto do Compositor */}
               <div className="space-y-6">
                 {/* Foto do Compositor */}
-                <div className="classical-card-simple p-6">
+                <Card nivel={2}>
                   <Inline gap={3} className="mb-4">
                     <div className="w-8 h-8 bg-gradient-to-br from-brand-primary/20 to-brand-secondary/20 rounded-xl flex items-center justify-center">
                       <PiUser className="w-4 h-4 text-theme-primary/30" />
@@ -313,10 +314,10 @@ export default function EditWorkLoading() {
                       <div className="h-4 w-20 bg-theme-elevated rounded mx-auto"></div>
                     </div>
                   </div>
-                </div>
+                </Card>
 
                 {/* Detalhes Técnicos */}
-                <div className="classical-card-simple p-6">
+                <Card nivel={2}>
                   <Inline gap={3} className="mb-4">
                     <div className="w-8 h-8 bg-gradient-to-br from-accent-purple/20 to-accent-blue/20 rounded-xl flex items-center justify-center">
                       <PiBookOpen className="w-4 h-4 text-theme-primary/30" />
@@ -333,7 +334,7 @@ export default function EditWorkLoading() {
                       <div className="h-3 w-16 bg-theme-primary/20 rounded"></div>
                     </div>
                   </div>
-                </div>
+                </Card>
               </div>
             </div>
           </div>

@@ -11,6 +11,7 @@ import {
   type SearchQuery,
 } from '@/app/requests/blog/taxonomy';
 import { Text } from '@/app/components/ui/Text';
+import { Card } from '@/app/components/ui/Card';
 
 export const revalidate = 0; // Sem cache para busca
 
@@ -134,7 +135,7 @@ export default async function SearchPage({ searchParams }: PageProps) {
 
       {/* Search Header */}
       <div className="section-wrap !pt-0 pb-8">
-        <div className="classical-card p-8">
+        <Card densidade="larga">
           <div className="flex items-center gap-4 mb-6">
             <PiMagnifyingGlass className="w-8 h-8 text-brand-primary" />
             <div className="flex-1">
@@ -202,7 +203,7 @@ export default async function SearchPage({ searchParams }: PageProps) {
                 )}
               </div>
             )}
-        </div>
+        </Card>
       </div>
 
       {/* Filters & Results */}

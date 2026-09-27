@@ -12,6 +12,7 @@ import {
   PiWarningCircle,
 } from 'react-icons/pi';
 import { Inline } from '@/app/components/ui/Layout';
+import { Card } from '@/app/components/ui/Card';
 
 export default function TeacherAssignmentsLoading() {
   return (
@@ -92,21 +93,18 @@ export default function TeacherAssignmentsLoading() {
               ),
             },
           ].map((item, index) => (
-            <div
-              key={index}
-              className="classical-card p-6 text-center animate-pulse"
-            >
+            <Card key={index} className="text-center animate-pulse">
               <div className="w-12 h-12 bg-gradient-to-br from-brand-primary/20 to-brand-secondary/20 border border-brand-primary/30 rounded-xl mx-auto mb-4 flex items-center justify-center">
                 {item.icon}
               </div>
               <div className="h-8 bg-gradient-to-r from-brand-primary/20 to-brand-secondary/20 rounded-lg mb-2"></div>
               <div className="h-4 bg-theme-elevated rounded"></div>
-            </div>
+            </Card>
           ))}
         </div>
 
         {/* Controls Skeleton */}
-        <div className="classical-card p-6 mb-8 animate-pulse">
+        <Card className="mb-8 animate-pulse">
           <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
             {/* Search and Filters */}
             <div className="flex flex-col sm:flex-row gap-4 flex-1">
@@ -124,7 +122,7 @@ export default function TeacherAssignmentsLoading() {
               <div className="h-10 w-32 bg-gradient-to-r from-brand-primary/20 to-brand-secondary/20 border border-brand-primary/30 rounded-lg"></div>
             </div>
           </div>
-        </div>
+        </Card>
 
         {/* Assignments Grid Skeleton */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-6">
@@ -150,7 +148,7 @@ export default function TeacherAssignmentsLoading() {
 // Assignment Card Skeleton
 function AssignmentCardSkeleton() {
   return (
-    <div className="classical-card p-6 h-full animate-pulse">
+    <Card className="h-full animate-pulse">
       {/* Header */}
       <div className="flex items-start justify-between mb-4">
         <Inline gap={3} className="flex-1">
@@ -208,6 +206,6 @@ function AssignmentCardSkeleton() {
           <div className="w-8 h-8 bg-theme-elevated rounded-lg"></div>
         </Inline>
       </div>
-    </div>
+    </Card>
   );
 }

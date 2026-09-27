@@ -14,6 +14,7 @@ import {
   PiTrash,
 } from 'react-icons/pi';
 import { Inline } from '@/app/components/ui/Layout';
+import { Card } from '@/app/components/ui/Card';
 
 export default function HistoryLoading() {
   return (
@@ -38,7 +39,7 @@ export default function HistoryLoading() {
         </div>
 
         {/* Filters Skeleton */}
-        <div className="classical-card p-6 mb-8">
+        <Card className="mb-8">
           <div className="space-y-4">
             {/* Filter Toggle */}
             <div className="flex items-center justify-between">
@@ -74,7 +75,7 @@ export default function HistoryLoading() {
               <div className="h-10 w-20 bg-theme-secondary rounded-lg"></div>
             </div> */}
           </div>
-        </div>
+        </Card>
 
         {/* History Timeline Skeleton */}
         <div className="space-y-6">

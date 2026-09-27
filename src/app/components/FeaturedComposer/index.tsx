@@ -16,6 +16,7 @@ import { translateEpochWithHook } from '@/app/utils/translations/epochTranslatio
 import { useTranslation } from '@/app/context/TranslationContext';
 import { useComposerBiography } from '@/app/hooks/useComposerBiography';
 import { Text } from '@/app/components/ui/Text';
+import { Card } from '@/app/components/ui/Card';
 
 interface FeaturedComposerProps {
   composer: {
@@ -255,7 +256,11 @@ const FeaturedComposer: React.FC<FeaturedComposerProps> = ({ composer }) => {
                   <div className="grid gap-3">
                     {composer.works.map((work) => (
                       <Link href={`/works/${work.id}`} key={work.id}>
-                        <div className="flex items-center justify-between p-4 classical-card-simple hover:scale-[1.02] transition-all duration-300 group/work">
+                        <Card
+                          nivel={2}
+                          densidade="compacta"
+                          className="flex items-center justify-between hover:scale-[1.02] transition-all duration-300 group/work"
+                        >
                           <div className="flex items-center gap-3">
                             <div className="w-2 h-2 bg-brand-primary rounded-full animate-pulse"></div>
                             <span className="text-theme-primary font-medium group-hover/work:text-brand-primary transition-colors">
@@ -265,7 +270,7 @@ const FeaturedComposer: React.FC<FeaturedComposerProps> = ({ composer }) => {
                           <div className="text-theme-tertiary hover:text-brand-primary transition-colors">
                             <PiArrowSquareOut className="w-4 h-4" />
                           </div>
-                        </div>
+                        </Card>
                       </Link>
                     ))}
                   </div>

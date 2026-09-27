@@ -14,6 +14,7 @@ import {
 } from 'react-icons/pi';
 import { AnimatedCard } from '../../animation/AnimatedComponents';
 import { Text } from '@/app/components/ui/Text';
+import { Card } from '@/app/components/ui/Card';
 
 interface UploadStatsProps {
   userId: string;
@@ -48,11 +49,11 @@ const UploadStats = ({ userId, isAdmin }: UploadStatsProps) => {
     return (
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
         {[...Array(4)].map((_, i) => (
-          <div key={i} className="classical-card p-4 animate-pulse">
+          <Card densidade="compacta" key={i} className="animate-pulse">
             <div className="h-12 bg-theme-secondary rounded mb-2"></div>
             <div className="h-8 bg-theme-secondary rounded mb-2"></div>
             <div className="h-4 bg-theme-secondary rounded"></div>
-          </div>
+          </Card>
         ))}
       </div>
     );

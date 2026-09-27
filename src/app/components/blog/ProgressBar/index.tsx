@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react';
 import { PiArrowUp } from 'react-icons/pi';
 import { Inline } from '@/app/components/ui/Layout';
 import { Text } from '@/app/components/ui/Text';
+import { Card } from '@/app/components/ui/Card';
 
 export function ProgressBar() {
   const [progress, setProgress] = useState(0);
@@ -56,7 +57,7 @@ export function ProgressBar() {
 
   return (
     <div className="sticky top-24">
-      <div className="classical-card p-4">
+      <Card densidade="compacta">
         {/* Progress Circle */}
         <div className="relative w-24 h-24 mx-auto mb-4">
           <svg className="w-full h-full -rotate-90">
@@ -124,7 +125,7 @@ export function ProgressBar() {
             </span>
           </div>
         </div>
-      </div>
+      </Card>
     </div>
   );
 }

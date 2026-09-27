@@ -6,6 +6,7 @@ import { GiGrandPiano, GiViolin } from 'react-icons/gi';
 import { PiBook, PiHeart, PiMusicNotes, PiUsers } from 'react-icons/pi';
 import { useTranslation } from '@/app/context/TranslationContext';
 import { Text } from '@/app/components/ui/Text';
+import { Card } from '@/app/components/ui/Card';
 
 const WelcomeStep: React.FC = () => {
   const { t } = useTranslation({ sections: ['components/onboarding'] });
@@ -35,7 +36,7 @@ const WelcomeStep: React.FC = () => {
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-4xl mx-auto">
-        <div className="classical-card-2 p-6 text-center">
+        <Card nivel={2} className="text-center">
           <div className="w-12 h-12 bg-accent-green bg-opacity-20 rounded-full flex items-center justify-center mx-auto mb-4">
             <PiBook className="w-6 h-6 text-accent-green" />
           </div>
@@ -45,9 +46,9 @@ const WelcomeStep: React.FC = () => {
           <Text papel="rotulo" tom="suave" as="p">
             {t('welcome_step_explore_description')}
           </Text>
-        </div>
+        </Card>
 
-        <div className="classical-card-2 p-6 text-center">
+        <Card nivel={2} className="text-center">
           <div className="w-12 h-12 bg-accent-purple bg-opacity-20 rounded-full flex items-center justify-center mx-auto mb-4">
             <PiHeart className="w-6 h-6 text-accent-purple" />
           </div>
@@ -57,9 +58,9 @@ const WelcomeStep: React.FC = () => {
           <Text papel="rotulo" tom="suave" as="p">
             {t('welcome_step_personalize_description')}
           </Text>
-        </div>
+        </Card>
 
-        <div className="classical-card-2 p-6 text-center">
+        <Card nivel={2} className="text-center">
           <div className="w-12 h-12 bg-accent-blue bg-opacity-20 rounded-full flex items-center justify-center mx-auto mb-4">
             <PiUsers className="w-6 h-6 text-accent-blue" />
           </div>
@@ -69,7 +70,7 @@ const WelcomeStep: React.FC = () => {
           <Text papel="rotulo" tom="suave" as="p">
             {t('welcome_step_connect_description')}
           </Text>
-        </div>
+        </Card>
       </div>
     </div>
   );

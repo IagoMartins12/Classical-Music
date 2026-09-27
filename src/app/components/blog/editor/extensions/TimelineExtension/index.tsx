@@ -7,6 +7,7 @@ import Image from '@/app/components/SmartImage';
 import { PiClock, PiTrash, PiUser } from 'react-icons/pi';
 import { Inline } from '@/app/components/ui/Layout';
 import { Text } from '@/app/components/ui/Text';
+import { Card } from '@/app/components/ui/Card';
 
 const TimelineComponent = (props: any) => {
   const { node, deleteNode } = props;
@@ -71,7 +72,7 @@ const TimelineComponent = (props: any) => {
 
               {/* Conteúdo */}
               <div className="flex-1 pb-8">
-                <div className="classical-card p-6">
+                <Card>
                   <Text
                     papel="rotulo"
                     tom="ouro"
@@ -95,7 +96,7 @@ const TimelineComponent = (props: any) => {
                       className="mt-4 rounded-lg w-full shadow-theme-small"
                     />
                   )}
-                </div>
+                </Card>
               </div>
             </div>
           ))}

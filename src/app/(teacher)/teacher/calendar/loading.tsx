@@ -12,6 +12,7 @@ import {
   PiX,
 } from 'react-icons/pi';
 import { Inline } from '@/app/components/ui/Layout';
+import { Card } from '@/app/components/ui/Card';
 
 export default function TeacherCalendarLoading() {
   return (
@@ -93,21 +94,18 @@ export default function TeacherCalendarLoading() {
               icon: <PiWarning className="w-6 h-6 text-theme-inverse/20" />,
             },
           ].map((item, index) => (
-            <div
-              key={index}
-              className="classical-card p-6 text-center animate-pulse"
-            >
+            <Card key={index} className="text-center animate-pulse">
               <div className="w-12 h-12 bg-gradient-to-br from-brand-primary/20 to-brand-secondary/20 border border-brand-primary/30 rounded-xl mx-auto mb-4 flex items-center justify-center">
                 {item.icon}
               </div>
               <div className="h-8 bg-gradient-to-r from-brand-primary/20 to-brand-secondary/20 rounded-lg mb-2"></div>
               <div className="h-4 bg-theme-elevated rounded"></div>
-            </div>
+            </Card>
           ))}
         </div>
 
         {/* Calendar Controls Skeleton */}
-        <div className="classical-card p-6 mb-4 animate-pulse">
+        <Card className="mb-4 animate-pulse">
           <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
             {/* Navigation */}
             <Inline gap={4}>
@@ -132,10 +130,10 @@ export default function TeacherCalendarLoading() {
               <div className="h-10 w-32 bg-gradient-to-r from-brand-primary/20 to-brand-secondary/20 border border-brand-primary/30 rounded-lg"></div>
             </Inline>
           </div>
-        </div>
+        </Card>
 
         {/* Calendar Content Skeleton */}
-        <div className="classical-card p-6 animate-pulse">
+        <Card className="animate-pulse">
           {/* Calendar Header */}
           <div className="grid grid-cols-7 gap-1 mb-2">
             {['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb'].map((day) => (
@@ -151,10 +149,10 @@ export default function TeacherCalendarLoading() {
               <CalendarDaySkeleton key={index} index={index} />
             ))}
           </div>
-        </div>
+        </Card>
 
         {/* Conflicts Warning Skeleton */}
-        <div className="classical-card p-6 border-l-4 border-accent-red animate-pulse">
+        <Card className="border-l-4 border-accent-red animate-pulse">
           <div className="flex items-start space-x-4">
             <div className="w-10 h-10 bg-accent-red/10 rounded-full flex items-center justify-center">
               <PiWarningCircle className="w-5 h-5 text-accent-red/50" />
@@ -173,7 +171,7 @@ export default function TeacherCalendarLoading() {
               </div>
             </div>
           </div>
-        </div>
+        </Card>
       </div>
 
       {/* Floating Particles */}

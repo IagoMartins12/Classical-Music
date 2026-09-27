@@ -9,6 +9,7 @@ import { PiArrowLeft } from 'react-icons/pi';
 import { createArticle } from '@/app/requests/blog/admin-actions';
 import { listCategories } from '@/app/requests/blog/taxonomy';
 import { Text } from '@/app/components/ui/Text';
+import { Card } from '@/app/components/ui/Card';
 
 export default function CreateArticlePage() {
   const router = useRouter();
@@ -78,13 +79,13 @@ export default function CreateArticlePage() {
         </div>
 
         {/* Form */}
-        <div className="classical-card p-6">
+        <Card>
           <ArticleForm
             onSubmit={handleSubmit}
             categories={categories}
             isSubmitting={isSubmitting}
           />
-        </div>
+        </Card>
       </div>
     </div>
   );

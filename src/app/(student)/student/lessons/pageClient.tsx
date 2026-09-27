@@ -35,6 +35,7 @@ import { useTranslation } from '@/app/context/TranslationContext';
 import Button from '@/app/components/Common/Button';
 import { Inline } from '@/app/components/ui/Layout';
 import { Text } from '@/app/components/ui/Text';
+import { Card } from '@/app/components/ui/Card';
 
 interface StudentLessonsPageClientProps {
   initialData: StudentLessonsData | null;
@@ -598,7 +599,7 @@ export default function StudentLessonsPageClient({
     return (
       <PageContainer showBackground={true}>
         <div className="flex items-center justify-center min-h-screen">
-          <div className="classical-card p-8 text-center max-w-md">
+          <Card densidade="larga" className="text-center max-w-md">
             <div className="w-16 h-16 bg-gradient-to-br from-accent-blue to-accent-purple rounded-3xl flex items-center justify-center mx-auto mb-6">
               <PiUser className="w-8 h-8 text-theme-primary" />
             </div>
@@ -611,7 +612,7 @@ export default function StudentLessonsPageClient({
             <Link href="/student" className="btn-classical-primary">
               {t('back_to_dashboard')}
             </Link>
-          </div>
+          </Card>
         </div>
       </PageContainer>
     );
@@ -622,7 +623,7 @@ export default function StudentLessonsPageClient({
     return (
       <PageContainer showBackground={true}>
         <div className="flex items-center justify-center min-h-screen">
-          <div className="classical-card p-8 text-center max-w-md">
+          <Card densidade="larga" className="text-center max-w-md">
             <div className="w-16 h-16 bg-gradient-to-br from-accent-red to-accent-purple rounded-3xl flex items-center justify-center mx-auto mb-6">
               <PiCalendarBlank className="w-8 h-8 text-theme-primary" />
             </div>
@@ -654,7 +655,7 @@ export default function StudentLessonsPageClient({
                 </button>
               )}
             </div>
-          </div>
+          </Card>
         </div>
       </PageContainer>
     );

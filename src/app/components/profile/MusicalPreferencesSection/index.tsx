@@ -23,6 +23,7 @@ import { useSessionUpdate } from '@/app/hooks/useSessionUpdate';
 import { useTranslation } from '@/app/context/TranslationContext';
 import { Inline } from '@/app/components/ui/Layout';
 import { Text } from '@/app/components/ui/Text';
+import { Card } from '@/app/components/ui/Card';
 
 interface MusicalPreferencesSectionProps {
   user: User;
@@ -368,7 +369,11 @@ const MusicalPreferencesSection: React.FC<MusicalPreferencesSectionProps> = ({
 
       {/* Summary Card */}
       {formData.experienceLevel && formData.practiceTimePerWeek > 0 && (
-        <div className="classical-card-2 p-4 bg-brand-primary bg-opacity-5 border border-brand-primary border-opacity-30">
+        <Card
+          nivel={2}
+          densidade="compacta"
+          className="bg-brand-primary bg-opacity-5 border border-brand-primary border-opacity-30"
+        >
           <h4 className="font-medium text-brand-primary mb-2">
             {t('preferences_profile_summary')}
           </h4>
@@ -402,7 +407,7 @@ const MusicalPreferencesSection: React.FC<MusicalPreferencesSectionProps> = ({
               </p>
             )}
           </Text>
-        </div>
+        </Card>
       )}
     </div>
   );

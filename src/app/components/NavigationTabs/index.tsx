@@ -5,6 +5,7 @@ import { useTranslation } from '@/app/context/TranslationContext';
 import { PiBookOpen, PiClock, PiMusicNotes } from 'react-icons/pi';
 import { Inline } from '@/app/components/ui/Layout';
 import { Text } from '@/app/components/ui/Text';
+import { Card } from '@/app/components/ui/Card';
 
 interface Props {
   activeTab: 'history' | 'timeline';
@@ -32,7 +33,10 @@ export function NavigationTabs({ activeTab, onTabChange }: Props) {
   ];
 
   return (
-    <div className="classical-card p-8 animate-fade-in-up relative overflow-hidden">
+    <Card
+      densidade="larga"
+      className="animate-fade-in-up relative overflow-hidden"
+    >
       <div className="relative z-10">
         {/* Header */}
         <div className="text-center mb-8">
@@ -193,6 +197,6 @@ export function NavigationTabs({ activeTab, onTabChange }: Props) {
           ></div>
         </Inline>
       </div>
-    </div>
+    </Card>
   );
 }

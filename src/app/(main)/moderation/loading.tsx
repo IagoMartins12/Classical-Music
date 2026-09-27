@@ -19,6 +19,7 @@ import {
   PiUser,
 } from 'react-icons/pi';
 import { Inline, Stack } from '@/app/components/ui/Layout';
+import { Card } from '@/app/components/ui/Card';
 
 export default function UploadsPageLoading() {
   return (
@@ -72,7 +73,7 @@ export default function UploadsPageLoading() {
               gradient: 'from-accent-red to-brand-primary',
             },
           ].map((item, index) => (
-            <div key={index} className="classical-card p-4 text-center">
+            <Card densidade="compacta" key={index} className="text-center">
               <div
                 className={`w-10 h-10 bg-gradient-to-br ${item.gradient}/20 rounded-xl flex items-center justify-center mb-2 mx-auto`}
               >
@@ -80,12 +81,12 @@ export default function UploadsPageLoading() {
               </div>
               <div className="h-8 bg-gradient-to-r from-theme-primary/20 to-theme-secondary/20 rounded-lg mb-2"></div>
               <div className="h-4 bg-theme-elevated rounded"></div>
-            </div>
+            </Card>
           ))}
         </div>
 
         {/* Controls Skeleton */}
-        <div className="classical-card p-6">
+        <Card>
           <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
             {/* Create Buttons */}
             <div className="flex flex-wrap gap-2">
@@ -155,7 +156,7 @@ export default function UploadsPageLoading() {
               ></div>
             ))}
           </div>
-        </div>
+        </Card>
 
         {/* Filter Status */}
         <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-6">

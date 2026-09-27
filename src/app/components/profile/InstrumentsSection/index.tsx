@@ -27,6 +27,7 @@ import { useTranslation } from '@/app/context/TranslationContext';
 import Checkbox from '../../Common/Checkbox';
 import { Inline } from '@/app/components/ui/Layout';
 import { Text } from '@/app/components/ui/Text';
+import { Card } from '@/app/components/ui/Card';
 
 interface Instrument {
   id: string;
@@ -279,7 +280,12 @@ const InstrumentsSection: React.FC<InstrumentsSectionProps> = ({ user }) => {
 
         <div className="space-y-4">
           {[...Array(2)].map((_, index) => (
-            <div key={index} className="classical-card-2 p-4 animate-pulse">
+            <Card
+              nivel={2}
+              densidade="compacta"
+              key={index}
+              className="animate-pulse"
+            >
               <Inline gap={4}>
                 <div className="w-10 h-10 bg-theme-secondary rounded-full" />
                 <div className="flex-1">
@@ -287,7 +293,7 @@ const InstrumentsSection: React.FC<InstrumentsSectionProps> = ({ user }) => {
                   <div className="h-3 bg-theme-secondary rounded w-16" />
                 </div>
               </Inline>
-            </div>
+            </Card>
           ))}
         </div>
       </div>
@@ -361,7 +367,7 @@ const InstrumentsSection: React.FC<InstrumentsSectionProps> = ({ user }) => {
           </div>
         ) : (
           userInstruments.map((instrument) => (
-            <div key={instrument.id} className="classical-card-2 p-4">
+            <Card nivel={2} densidade="compacta" key={instrument.id}>
               <div className="flex items-center justify-between">
                 <Inline gap={4}>
                   <div className="w-10 h-10 bg-brand-gradient rounded-full flex items-center justify-center">
@@ -460,7 +466,7 @@ const InstrumentsSection: React.FC<InstrumentsSectionProps> = ({ user }) => {
                   </button>
                 )}
               </div>
-            </div>
+            </Card>
           ))
         )}
       </div>
@@ -481,7 +487,7 @@ const InstrumentsSection: React.FC<InstrumentsSectionProps> = ({ user }) => {
                 : t('instruments_add_instrument')}
             </Button>
           ) : (
-            <div className="classical-card-2 p-4 space-y-4">
+            <Card nivel={2} densidade="compacta" className="space-y-4">
               <h4 className="font-medium text-theme-primary">
                 {t('instruments_add_title')}
               </h4>
@@ -567,7 +573,7 @@ const InstrumentsSection: React.FC<InstrumentsSectionProps> = ({ user }) => {
                   {t('instruments_cancel')}
                 </Button>
               </div>
-            </div>
+            </Card>
           )}
 
           {/* Informações adicionais */}

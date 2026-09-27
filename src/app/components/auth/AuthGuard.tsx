@@ -5,6 +5,7 @@ import { useAuth } from '@/app/hooks/useAuth';
 import { useLoginModal } from '@/app/stores/authStore';
 import React from 'react';
 import Button from '../Common/Button';
+import { Card } from '@/app/components/ui/Card';
 
 interface AuthGuardProps {
   children: React.ReactNode;
@@ -39,7 +40,7 @@ const AuthGuard: React.FC<AuthGuardProps> = ({
     if (showLoginPrompt) {
       return (
         <div className="text-center py-12">
-          <div className="classical-card max-w-md mx-auto p-8">
+          <Card densidade="larga" className="max-w-md mx-auto">
             <h3 className="text-xl font-semibold text-theme-primary mb-4">
               Login Necessário
             </h3>
@@ -49,7 +50,7 @@ const AuthGuard: React.FC<AuthGuardProps> = ({
             <Button onClick={openLogin} className="w-full">
               Fazer Login
             </Button>
-          </div>
+          </Card>
         </div>
       );
     }

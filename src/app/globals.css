@@ -407,7 +407,7 @@
     background: var(--sup-2);
     border: 1px solid var(--linha);
     border-radius: var(--r-card);
-    box-shadow: var(--sombra-1);
+    box-shadow: none;
   }
   .sup-alta {
     background: var(--sup-alta);
@@ -552,40 +552,54 @@ body {
   transition: var(--transition-theme);
 }
 
-/* Cards com tema adaptável */
-.classical-card {
-  background: var(--gradient-card);
-  border: 1px solid var(--border-primary);
-  backdrop-filter: blur(12px);
-  border-radius: 1.5rem;
-  /* transition: var(--transition-smooth); */
-}
+/* Cards de classe: os mesmos valores do primitivo `ui/Card`, para os ~800 usos
+   que ainda escrevem a classe (muitos via `AnimatedCard`). `.classical-card` é
+   o nível 1; `-2` e `-simple` são o nível 2, que fica e não flutua: sem
+   sombra, para o card de dentro não empilhar sombra sobre a do de fora.
 
-.classical-card-2 {
-  background: var(--gradient-card-2);
-  border: 1px solid var(--border-secondary);
-  backdrop-filter: blur(8px);
-  border-radius: 1rem;
-  /* transition: var(--transition-smooth); */
-}
+   Opacos e sem `backdrop-filter`: translúcido, o mesmo card mudava de cor
+   conforme o fundo, e o desfoque custava GPU em toda a grade sem ter nada
+   atrás para desfocar.
 
-.classical-card:hover,
-.classical-card-2:hover {
-  border-color: var(--border-accent);
-  box-shadow: var(--shadow-glow);
-  /* transform: translateY(-2px); */
-}
+   Em camada, para o `rounded-lg` ou o `shadow-*` ao lado valerem: fora dela,
+   a classe vencia qualquer utilitário.
 
-.classical-card-simple {
-  background: var(--bg-elevated);
-  border: 1px solid var(--border-secondary);
-  border-radius: 1rem;
-  transition: var(--transition-smooth);
-}
-
-.classical-card-simple:hover {
-  border-color: var(--border-primary);
-  box-shadow: var(--shadow-medium);
+   Realce sob o cursor só em card que leva a algum lugar ou faz algo. Antes
+   todo card acendia a borda, e card parado parecia clicável. */
+@layer components {
+  .classical-card,
+  .classical-card-2,
+  .classical-card-simple {
+    border: 1px solid var(--linha);
+    border-radius: var(--r-card);
+  }
+  .classical-card {
+    background: var(--sup-1);
+    box-shadow: var(--sombra-1);
+  }
+  .classical-card-2,
+  .classical-card-simple {
+    background: var(--sup-2);
+  }
+  :is(.classical-card, .classical-card-2, .classical-card-simple):is(
+    a,
+    button,
+    [role='button'],
+    .cursor-pointer
+  ) {
+    transition:
+      border-color var(--t-resposta) var(--saida),
+      box-shadow var(--t-resposta) var(--saida);
+  }
+  :is(.classical-card, .classical-card-2, .classical-card-simple):is(
+      a,
+      button,
+      [role='button'],
+      .cursor-pointer
+    ):hover {
+    border-color: color-mix(in srgb, var(--ouro) 40%, transparent);
+    box-shadow: var(--sombra-2);
+  }
 }
 
 /* Botões temáticos */
@@ -1331,51 +1345,6 @@ html {
 
 .scrollbar-hide::-webkit-scrollbar {
   display: none;
-}
-
-/* app/globals.css - Adicionar isso */
-
-@keyframes gradient-move {
-  0% {
-    background-position: 0% 50%;
-  }
-  50% {
-    background-position: 100% 50%;
-  }
-  100% {
-    background-position: 0% 50%;
-  }
-}
-
-.opus-atlas-gradient {
-  background: linear-gradient(
-    90deg,
-    #ffffff 0%,
-    #d4af37 25%,
-    #ffd700 50%,
-    #d4af37 75%,
-    #ffffff 100%
-  );
-  background-size: 200% 200%;
-  animation: gradient-move 3s ease infinite;
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
-  display: inline-block;
-}
-
-/* Dark mode: inverter cores */
-[data-theme='dark'] .opus-atlas-gradient {
-  background: linear-gradient(
-    90deg,
-    #d4af37 0%,
-    #ffd700 25%,
-    #ffffff 50%,
-    #ffd700 75%,
-    #d4af37 100%
-  );
-  background-size: 200% 200%;
-  animation: gradient-move 3s ease infinite;
 }
 
 .gold-shine {

@@ -14,6 +14,7 @@ import {
 import { listCategories } from '@/app/requests/blog/taxonomy';
 import { Inline } from '@/app/components/ui/Layout';
 import { Text } from '@/app/components/ui/Text';
+import { Card } from '@/app/components/ui/Card';
 
 export default function EditArticlePage() {
   const router = useRouter();
@@ -136,7 +137,7 @@ export default function EditArticlePage() {
   if (!article) {
     return (
       <div className="flex items-center justify-center min-h-screen bg-theme-primary">
-        <div className="text-center classical-card p-8">
+        <Card densidade="larga" className="text-center">
           <h2 className="text-2xl font-bold text-theme-primary mb-2">
             Artigo não encontrado
           </h2>
@@ -146,7 +147,7 @@ export default function EditArticlePage() {
           >
             Voltar para artigos
           </Link>
-        </div>
+        </Card>
       </div>
     );
   }
@@ -185,14 +186,14 @@ export default function EditArticlePage() {
         </div>
 
         {/* Form */}
-        <div className="classical-card p-6">
+        <Card>
           <ArticleForm
             initialData={article}
             onSubmit={handleSubmit}
             categories={categories}
             isSubmitting={isSubmitting}
           />
-        </div>
+        </Card>
       </div>
     </div>
   );

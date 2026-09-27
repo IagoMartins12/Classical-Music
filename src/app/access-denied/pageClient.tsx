@@ -36,6 +36,7 @@ import Image from '@/app/components/SmartImage';
 import { useTranslation } from '../context/TranslationContext';
 import { Inline } from '@/app/components/ui/Layout';
 import { Text } from '@/app/components/ui/Text';
+import { Card } from '@/app/components/ui/Card';
 
 interface SuggestionCard {
   title: string;
@@ -601,7 +602,7 @@ export default function AccessDenied() {
 
             {/* Quote */}
             <AnimatedItem direction="up" springType="gentle">
-              <div className="p-6 classical-card-simple max-w-2xl mx-auto">
+              <Card nivel={2} className="max-w-2xl mx-auto">
                 <blockquote className="text-lg text-theme-secondary italic mb-4 leading-relaxed">
                   &quot;{t('acess_denied_jsx_blockquote_children_0__music')}
                   &quot;
@@ -609,7 +610,7 @@ export default function AccessDenied() {
                 <cite className="text-brand-primary font-semibold">
                   {t('acess_denied_jsx_cite_children_0__magdalena_martínez')}
                 </cite>
-              </div>
+              </Card>
             </AnimatedItem>
           </AnimatedContainer>
         </div>

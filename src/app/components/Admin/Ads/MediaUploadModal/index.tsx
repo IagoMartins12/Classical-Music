@@ -28,6 +28,7 @@ import ImageNext from 'next/image';
 import { removeAdMedia, uploadAdMedia } from '@/app/requests/admin/ads';
 import { Inline } from '@/app/components/ui/Layout';
 import { Text } from '@/app/components/ui/Text';
+import { Card } from '@/app/components/ui/Card';
 
 interface MediaUploadModalProps {
   ad: any;
@@ -356,7 +357,10 @@ export default function MediaUploadModal({
           {activeTab === 'current' && (
             <div className="space-y-6">
               {/* Info sobre dimensões ideais */}
-              <div className="classical-card p-4 bg-accent-blue/5 border border-accent-blue/20">
+              <Card
+                densidade="compacta"
+                className="bg-accent-blue/5 border border-accent-blue/20"
+              >
                 <h3 className="font-semibold text-theme-primary mb-3 flex items-center">
                   <PiGear className="w-5 h-5 mr-2" />
                   Dimensões para {ad.placement}
@@ -417,12 +421,12 @@ export default function MediaUploadModal({
                     </div>
                   </div>
                 </div>
-              </div>
+              </Card>
 
               {/* Status atual da mídia */}
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 {/* Imagem atual */}
-                <div className="classical-card p-6">
+                <Card>
                   <div className="flex items-center justify-between mb-4">
                     <Inline
                       as="h3"
@@ -489,10 +493,10 @@ export default function MediaUploadModal({
                       </div>
                     </div>
                   )}
-                </div>
+                </Card>
 
                 {/* Vídeo atual */}
-                <div className="classical-card p-6">
+                <Card>
                   <div className="flex items-center justify-between mb-4">
                     <Inline
                       as="h3"
@@ -551,7 +555,7 @@ export default function MediaUploadModal({
                       </div>
                     </div>
                   )}
-                </div>
+                </Card>
               </div>
             </div>
           )}
@@ -623,7 +627,10 @@ export default function MediaUploadModal({
 
               {/* 🆕 Preview do arquivo selecionado - CORRIGIDO */}
               {filePreview && (
-                <div className="classical-card p-4 bg-accent-green/5 border border-accent-green/20">
+                <Card
+                  densidade="compacta"
+                  className="bg-accent-green/5 border border-accent-green/20"
+                >
                   <div className="flex items-center justify-between mb-3">
                     <h4 className="font-medium text-theme-primary">Preview</h4>
                     <Button
@@ -720,7 +727,7 @@ export default function MediaUploadModal({
                       )}
                     </div>
                   </div>
-                </div>
+                </Card>
               )}
 
               {/* Drop zone */}
@@ -823,7 +830,7 @@ export default function MediaUploadModal({
               </div>
 
               {/* Info sobre processamento */}
-              <div className="classical-card p-4 bg-accent-blue/5">
+              <Card densidade="compacta" className="bg-accent-blue/5">
                 <div className="flex items-start space-x-3">
                   <PiInfo className="w-5 h-5 text-accent-blue mt-0.5 flex-shrink-0" />
                   <div>
@@ -847,7 +854,7 @@ export default function MediaUploadModal({
                     </ul>
                   </div>
                 </div>
-              </div>
+              </Card>
             </div>
           )}
         </div>

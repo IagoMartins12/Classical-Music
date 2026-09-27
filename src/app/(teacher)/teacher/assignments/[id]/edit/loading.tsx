@@ -12,6 +12,7 @@ import {
   PiTarget,
 } from 'react-icons/pi';
 import { Inline } from '@/app/components/ui/Layout';
+import { Card } from '@/app/components/ui/Card';
 
 export default function AssignmentDetailsLoading() {
   return (
@@ -80,7 +81,7 @@ export default function AssignmentDetailsLoading() {
           {/* Main Content */}
           <div className="lg:col-span-2 order-2 lg:order-1 space-y-8">
             {/* Assignment Info */}
-            <div className="classical-card p-6 animate-pulse">
+            <Card className="animate-pulse">
               <div className="h-6 bg-gradient-to-r from-theme-primary/20 to-theme-secondary/20 rounded w-48 mb-6"></div>
 
               <div className="space-y-6">
@@ -175,10 +176,10 @@ export default function AssignmentDetailsLoading() {
                   </Inline>
                 </div>
               </div>
-            </div>
+            </Card>
 
             {/* Musical Pieces Section */}
-            <div className="classical-card p-6 animate-pulse">
+            <Card className="animate-pulse">
               <Inline gap={2} className="mb-4">
                 <PiMusicNotes className="w-5 h-5 text-theme-primary/30" />
                 <div className="h-6 bg-gradient-to-r from-theme-primary/20 to-theme-secondary/20 rounded w-48"></div>
@@ -189,10 +190,10 @@ export default function AssignmentDetailsLoading() {
                   <MusicalPieceCardSkeleton key={i} />
                 ))}
               </div>
-            </div>
+            </Card>
 
             {/* Student Submission */}
-            <div className="classical-card p-6 animate-pulse">
+            <Card className="animate-pulse">
               <div className="h-6 bg-gradient-to-r from-theme-primary/20 to-theme-secondary/20 rounded w-36 mb-4"></div>
 
               <div className="h-3 bg-theme-tertiary/30 rounded mb-4 w-48"></div>
@@ -230,10 +231,10 @@ export default function AssignmentDetailsLoading() {
                 <div className="h-4 bg-theme-primary/30 rounded w-32"></div>
                 <div className="h-3 bg-theme-tertiary/30 rounded w-48"></div>
               </div>
-            </div>
+            </Card>
 
             {/* Teacher Feedback */}
-            <div className="classical-card p-6 animate-pulse">
+            <Card className="animate-pulse">
               <div className="flex items-center justify-between mb-4">
                 <div className="h-6 bg-gradient-to-r from-theme-primary/20 to-theme-secondary/20 rounded w-28"></div>
                 <div className="h-8 w-16 bg-theme-elevated border border-theme-secondary rounded-lg"></div>
@@ -267,13 +268,13 @@ export default function AssignmentDetailsLoading() {
                   </Inline>
                 </div>
               </div>
-            </div>
+            </Card>
           </div>
 
           {/* Sidebar */}
           <div className="space-y-6 order-1 lg:order-2">
             {/* Student Info */}
-            <div className="classical-card p-6 animate-pulse">
+            <Card className="animate-pulse">
               <div className="h-5 bg-gradient-to-r from-theme-primary/20 to-theme-secondary/20 rounded w-12 mb-4"></div>
 
               <Inline gap={3} className="mb-4">
@@ -283,19 +284,19 @@ export default function AssignmentDetailsLoading() {
                   <div className="h-3 bg-brand-primary/30 rounded w-20"></div>
                 </div>
               </Inline>
-            </div>
+            </Card>
 
             {/* Quick Actions */}
-            <div className="classical-card p-6 animate-pulse">
+            <Card className="animate-pulse">
               <div className="h-5 bg-gradient-to-r from-theme-primary/20 to-theme-secondary/20 rounded w-12 mb-4"></div>
               <div className="space-y-4">
                 <div className="h-10 bg-gradient-to-r from-accent-green/20 to-accent-green/20 border border-accent-green/30 rounded-lg w-full"></div>
                 <div className="h-10 bg-theme-elevated border border-theme-secondary rounded-lg w-full"></div>
               </div>
-            </div>
+            </Card>
 
             {/* Assignment Info */}
-            <div className="classical-card p-6 animate-pulse">
+            <Card className="animate-pulse">
               <div className="h-5 bg-gradient-to-r from-theme-primary/20 to-theme-secondary/20 rounded w-20 mb-4"></div>
               <div className="space-y-3">
                 <div className="flex justify-between">
@@ -318,7 +319,7 @@ export default function AssignmentDetailsLoading() {
                   <div className="h-3 bg-accent-purple/30 rounded w-20"></div>
                 </div>
               </div>
-            </div>
+            </Card>
           </div>
         </div>
       </div>
@@ -334,7 +335,7 @@ export default function AssignmentDetailsLoading() {
 // Musical Piece Card Skeleton
 function MusicalPieceCardSkeleton() {
   return (
-    <div className="classical-card-2 p-4 animate-pulse">
+    <Card nivel={2} densidade="compacta" className="animate-pulse">
       <div className="flex items-start space-x-3">
         <div className="w-12 h-12 bg-accent-blue/20 rounded-lg flex-shrink-0"></div>
         <div className="flex-1 min-w-0">
@@ -353,6 +354,6 @@ function MusicalPieceCardSkeleton() {
           </div>
         </div>
       </div>
-    </div>
+    </Card>
   );
 }

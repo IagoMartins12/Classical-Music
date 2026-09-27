@@ -31,6 +31,7 @@ import { useTranslation } from '../context/TranslationContext';
 import { Inline } from '@/app/components/ui/Layout';
 import { Text } from '@/app/components/ui/Text';
 import { Button } from '@/app/components/ui/Button';
+import { Card } from '@/app/components/ui/Card';
 
 interface SuggestionCard {
   title: string;
@@ -465,7 +466,7 @@ export default function NotAuthenticated() {
 
               {/* Quote */}
               <AnimatedItem direction="up" springType="gentle">
-                <div className="p-6 classical-card-simple max-w-2xl mx-auto">
+                <Card nivel={2} className="max-w-2xl mx-auto">
                   <blockquote className="text-lg text-theme-secondary italic mb-4 leading-relaxed">
                     &quot;
                     {t('not_authenticated_jsx_blockquote_children_0__music')}
@@ -476,7 +477,7 @@ export default function NotAuthenticated() {
                       'not_authenticated_jsx_cite_children_0__ludwig_van_beethoven'
                     )}
                   </cite>
-                </div>
+                </Card>
               </AnimatedItem>
             </AnimatedContainer>
           </div>

@@ -15,6 +15,7 @@ import {
   PiWarning,
 } from 'react-icons/pi';
 import { Inline } from '@/app/components/ui/Layout';
+import { Card } from '@/app/components/ui/Card';
 
 export default function StudentAssignmentsLoading() {
   return (
@@ -93,21 +94,18 @@ export default function StudentAssignmentsLoading() {
               icon: <PiWarning className="w-6 h-6 text-theme-inverse/20" />,
             },
           ].map((item, index) => (
-            <div
-              key={index}
-              className="classical-card p-6 text-center animate-pulse"
-            >
+            <Card key={index} className="text-center animate-pulse">
               <div className="w-12 h-12 bg-gradient-to-br from-brand-primary/20 to-brand-secondary/20 rounded-xl flex items-center justify-center mx-auto mb-3">
                 {item.icon}
               </div>
               <div className="h-6 bg-gradient-to-r from-brand-primary/20 to-brand-secondary/20 rounded mb-2"></div>
               <div className="h-3 bg-theme-elevated rounded"></div>
-            </div>
+            </Card>
           ))}
         </div>
 
         {/* Search and Filters Skeleton */}
-        <div className="classical-card p-6 mb-8 animate-pulse">
+        <Card className="mb-8 animate-pulse">
           <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
             {/* Search */}
             <div className="relative flex-1 max-w-md">
@@ -154,7 +152,7 @@ export default function StudentAssignmentsLoading() {
               <div className="h-10 bg-gradient-to-r from-theme-elevated to-interactive-hover border border-theme-secondary rounded-lg"></div>
             </div>
           </div>
-        </div>
+        </Card>
 
         {/* Results Info Skeleton */}
         <div className="mb-6 animate-pulse">

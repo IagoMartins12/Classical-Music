@@ -12,6 +12,7 @@ import { DifficultyWork } from '@/app/requests/difficulty-details'; // ✅ Impor
 import { AnimatedItem } from '../animation/AnimatedComponents';
 import { Inline, Stack } from '@/app/components/ui/Layout';
 import { Text } from '@/app/components/ui/Text';
+import { Card } from '@/app/components/ui/Card';
 
 interface DifficultyTableProps {
   works: DifficultyWork[]; // ✅ Tipo atualizado
@@ -247,12 +248,12 @@ export default function DifficultyTable({
 
       {isPending && (
         <div className="absolute inset-0 bg-theme-overlay backdrop-blur-sm flex items-center justify-center">
-          <div className="classical-card p-6 text-center">
+          <Card className="text-center">
             <div className="w-8 h-8 border-4 border-brand-primary border-t-transparent rounded-full animate-spin mx-auto mb-3"></div>
             <Text papel="rotulo" tom="forte" as="p" className="font-medium">
               Carregando...
             </Text>
-          </div>
+          </Card>
         </div>
       )}
     </div>

@@ -10,6 +10,7 @@ import {
   PiUser,
 } from 'react-icons/pi';
 import { Inline } from '@/app/components/ui/Layout';
+import { Card } from '@/app/components/ui/Card';
 
 export default function TeacherNotificationsLoading() {
   return (
@@ -83,21 +84,18 @@ export default function TeacherNotificationsLoading() {
             { icon: <PiFileText className="w-6 h-6 text-theme-inverse/20" /> },
             { icon: <PiUser className="w-6 h-6 text-theme-inverse/20" /> },
           ].map((item, index) => (
-            <div
-              key={index}
-              className="classical-card p-6 text-center animate-pulse"
-            >
+            <Card key={index} className="text-center animate-pulse">
               <div className="w-12 h-12 bg-gradient-to-br from-brand-primary/20 to-brand-secondary/20 border border-brand-primary/30 rounded-xl mx-auto mb-4 flex items-center justify-center">
                 {item.icon}
               </div>
               <div className="h-8 bg-gradient-to-r from-brand-primary/20 to-brand-secondary/20 rounded-lg mb-2"></div>
               <div className="h-4 bg-theme-elevated rounded"></div>
-            </div>
+            </Card>
           ))}
         </div>
 
         {/* Controls Skeleton */}
-        <div className="classical-card p-6 mb-8 animate-pulse">
+        <Card className="mb-8 animate-pulse">
           <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
             {/* Filters */}
             <div className="flex flex-wrap gap-2">
@@ -119,7 +117,7 @@ export default function TeacherNotificationsLoading() {
               <div className="h-10 w-32 bg-gradient-to-r from-theme-elevated to-interactive-hover border border-theme-secondary rounded-lg"></div>
             </Inline>
           </div>
-        </div>
+        </Card>
 
         {/* Notifications List Skeleton */}
         <div className="space-y-4">

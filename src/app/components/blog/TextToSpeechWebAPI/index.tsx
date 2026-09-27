@@ -12,6 +12,7 @@ import {
 import { Inline } from '@/app/components/ui/Layout';
 import { Text } from '@/app/components/ui/Text';
 import { Field } from '@/app/components/ui/Field';
+import { Card } from '@/app/components/ui/Card';
 
 interface TextToSpeechWebAPIProps {
   content: any; // TipTap JSON
@@ -189,7 +190,7 @@ export function TextToSpeechWebAPI({ content }: TextToSpeechWebAPIProps) {
   }
 
   return (
-    <div className="classical-card p-6 my-8">
+    <Card className="my-8">
       <div className="flex items-center justify-between mb-4">
         <Inline gap={3}>
           <div className="p-3 bg-brand-primary rounded-lg">
@@ -331,6 +332,6 @@ export function TextToSpeechWebAPI({ content }: TextToSpeechWebAPIProps) {
       <Text papel="legenda" tom="fraco" as="p" className="text-center mt-3">
         💡 Use fones de ouvido para melhor experiência
       </Text>
-    </div>
+    </Card>
   );
 }

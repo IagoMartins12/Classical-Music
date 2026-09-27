@@ -40,6 +40,7 @@ import { useTranslation } from '@/app/context/TranslationContext';
 import { Inline, Stack } from '@/app/components/ui/Layout';
 import { Text } from '@/app/components/ui/Text';
 import { Button } from '@/app/components/ui/Button';
+import { Card } from '@/app/components/ui/Card';
 
 interface TeacherProfile {
   id: string;
@@ -286,7 +287,7 @@ export default function TeacherPageClient({
     return (
       <PageContainer showBackground={true}>
         <div className="flex items-center justify-center min-h-screen">
-          <div className="classical-card p-8 text-center max-w-md">
+          <Card densidade="larga" className="text-center max-w-md">
             <div className="w-16 h-16 bg-gradient-to-br from-accent-red to-accent-purple rounded-3xl flex items-center justify-center mx-auto mb-6">
               <PiXCircle className="w-8 h-8 text-theme-primary" />
             </div>
@@ -326,7 +327,7 @@ export default function TeacherPageClient({
                 </Button>
               )}
             </Stack>
-          </div>
+          </Card>
         </div>
       </PageContainer>
     );
@@ -415,7 +416,7 @@ export default function TeacherPageClient({
                         animationFillMode: 'backwards',
                       }}
                     >
-                      <div className="classical-card-2 p-4 group">
+                      <Card nivel={2} densidade="compacta" className="group">
                         <div className="flex items-center gap-4">
                           <div className="relative w-12 h-12">
                             {studentRel.student.image ? (
@@ -494,7 +495,7 @@ export default function TeacherPageClient({
                             </div>
                           </div>
                         )}
-                      </div>
+                      </Card>
                     </AnimatedItem>
                   ))}
 

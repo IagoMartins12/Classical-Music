@@ -8,6 +8,7 @@ import { createTag, updateTag } from '@/app/requests/blog/admin-actions';
 import { Inline } from '@/app/components/ui/Layout';
 import { Text } from '@/app/components/ui/Text';
 import { Field } from '@/app/components/ui/Field';
+import { Card } from '@/app/components/ui/Card';
 
 interface TagFormProps {
   mode: 'create' | 'edit';
@@ -110,7 +111,7 @@ export function TagForm({ mode, tag }: TagFormProps) {
   return (
     <form onSubmit={handleSubmit} className="space-y-6">
       {/* Basic Info */}
-      <div className="classical-card p-6">
+      <Card>
         <h3 className="text-lg font-semibold text-theme-primary mb-4">
           Informações da Tag
         </h3>
@@ -228,7 +229,7 @@ export function TagForm({ mode, tag }: TagFormProps) {
         </div>
 
         {/* Preview */}
-        <div className="classical-card-simple mt-8 max-w-fit p-6">
+        <Card nivel={2} className="mt-8 max-w-fit">
           <h3 className="text-lg font-semibold text-theme-primary mb-4">
             Preview
           </h3>
@@ -255,7 +256,7 @@ export function TagForm({ mode, tag }: TagFormProps) {
               <Text papel="legenda" tom="fraco" as="p" className="mb-2">
                 Card:
               </Text>
-              <div className="classical-card p-4 max-w-xs">
+              <Card densidade="compacta" className="max-w-xs">
                 <Inline gap={3}>
                   <div
                     className="w-10 h-10 rounded-full flex items-center justify-center"
@@ -282,10 +283,10 @@ export function TagForm({ mode, tag }: TagFormProps) {
                     )}
                   </div>
                 </Inline>
-              </div>
+              </Card>
             </div>
           </div>
-        </div>
+        </Card>
 
         {/* Actions */}
         <Inline gap={4} className="justify-end">
@@ -318,7 +319,7 @@ export function TagForm({ mode, tag }: TagFormProps) {
             </span>
           </Inline>
         </Inline>
-      </div>
+      </Card>
     </form>
   );
 }

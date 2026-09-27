@@ -10,6 +10,7 @@ import Checkbox from '@/app/components/Common/Checkbox';
 import { ModelSchema, ModelField } from '@/app/hooks/admin/useDatabaseStudio';
 import { Inline } from '@/app/components/ui/Layout';
 import { Text } from '@/app/components/ui/Text';
+import { Card } from '@/app/components/ui/Card';
 
 interface FieldSelectorProps {
   isOpen: boolean;
@@ -187,38 +188,38 @@ export default function FieldSelector({
       <div className="space-y-6">
         {/* Header com estatísticas */}
         <div className="grid grid-cols-4 gap-4">
-          <div className="classical-card p-4">
+          <Card densidade="compacta">
             <div className="text-2xl font-bold text-brand-primary">
               {stats.total}
             </div>
             <Text papel="rotulo" tom="fraco" as="div">
               Total
             </Text>
-          </div>
-          <div className="classical-card p-4">
+          </Card>
+          <Card densidade="compacta">
             <div className="text-2xl font-bold text-green-500">
               {stats.selected}
             </div>
             <Text papel="rotulo" tom="fraco" as="div">
               Selecionados
             </Text>
-          </div>
-          <div className="classical-card p-4">
+          </Card>
+          <Card densidade="compacta">
             <div className="text-2xl font-bold text-red-500">
               {stats.sensitive}
             </div>
             <Text papel="rotulo" tom="fraco" as="div">
               Sensíveis
             </Text>
-          </div>
-          <div className="classical-card p-4">
+          </Card>
+          <Card densidade="compacta">
             <div className="text-2xl font-bold text-amber-500">
               {stats.readonly}
             </div>
             <Text papel="rotulo" tom="fraco" as="div">
               Somente leitura
             </Text>
-          </div>
+          </Card>
         </div>
 
         {/* Controles */}
@@ -295,7 +296,10 @@ export default function FieldSelector({
         </div>
 
         {/* Lista de campos */}
-        <div className="classical-card p-4 max-h-96 overflow-y-auto classical-scrollbar">
+        <Card
+          densidade="compacta"
+          className="max-h-96 overflow-y-auto classical-scrollbar"
+        >
           <div className="space-y-2">
             {filteredFields.length === 0 ? (
               <div className="text-center py-8 text-theme-tertiary">
@@ -355,7 +359,7 @@ export default function FieldSelector({
               })
             )}
           </div>
-        </div>
+        </Card>
 
         {/* Ações rápidas */}
         <div className="flex items-center justify-between">

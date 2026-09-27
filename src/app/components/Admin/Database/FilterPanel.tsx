@@ -11,6 +11,7 @@ import { ModelSchema, ModelField } from '@/app/hooks/admin/useDatabaseStudio';
 import { Inline } from '@/app/components/ui/Layout';
 import { Text } from '@/app/components/ui/Text';
 import { NomeAcao } from '@/app/components/ui/NomeAcao';
+import { Card } from '@/app/components/ui/Card';
 
 interface FilterPanelProps {
   isOpen: boolean;
@@ -240,7 +241,7 @@ export default function FilterPanel({
       <div className="space-y-6">
         {/* Filtros ativos */}
         {Object.keys(activeFilters).length > 0 && (
-          <div className="classical-card p-4">
+          <Card densidade="compacta">
             <div className="flex items-center justify-between mb-3">
               <h3 className="font-semibold text-theme-primary">
                 Filtros Ativos ({Object.keys(activeFilters).length})
@@ -284,11 +285,11 @@ export default function FilterPanel({
                 </div>
               ))}
             </div>
-          </div>
+          </Card>
         )}
 
         {/* Adicionar novo filtro */}
-        <div className="classical-card p-4">
+        <Card densidade="compacta">
           <h3 className="font-semibold text-theme-primary mb-4">
             Adicionar Filtro
           </h3>
@@ -356,7 +357,7 @@ export default function FilterPanel({
               )}
             </div>
           )}
-        </div>
+        </Card>
 
         {/* Ações */}
         <Inline gap={3} className="justify-end">

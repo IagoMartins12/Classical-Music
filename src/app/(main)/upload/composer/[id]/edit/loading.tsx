@@ -13,6 +13,7 @@ import {
   PiUser,
 } from 'react-icons/pi';
 import { Inline } from '@/app/components/ui/Layout';
+import { Card } from '@/app/components/ui/Card';
 
 export default function EditComposerLoading() {
   return (
@@ -217,7 +218,7 @@ export default function EditComposerLoading() {
         </div>
 
         {/* Biografia */}
-        <div className="classical-card p-8">
+        <Card densidade="larga">
           <Inline gap={3} className="mb-6">
             <div className="w-12 h-12 bg-gradient-to-br from-accent-green/20 to-accent-blue/20 rounded-2xl flex items-center justify-center">
               <PiBookOpen className="w-6 h-6 text-theme-primary/30" />
@@ -242,7 +243,7 @@ export default function EditComposerLoading() {
               </div>
             ))}
           </div>
-        </div>
+        </Card>
       </div>
     </div>
   );

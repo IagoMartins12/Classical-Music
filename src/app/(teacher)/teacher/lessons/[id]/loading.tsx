@@ -4,6 +4,7 @@
 import { GiGrandPiano } from 'react-icons/gi';
 import { PiBookOpen, PiCalendarBlank, PiMusicNotes } from 'react-icons/pi';
 import { Inline } from '@/app/components/ui/Layout';
+import { Card } from '@/app/components/ui/Card';
 
 export default function CreateLessonLoading() {
   return (
@@ -65,7 +66,7 @@ export default function CreateLessonLoading() {
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           {/* Main Form Skeleton */}
           <div className="lg:col-span-2 order-2 lg:order-1">
-            <div className="classical-card p-6 animate-pulse">
+            <Card className="animate-pulse">
               <div className="space-y-8">
                 {/* Basic Info Section */}
                 <div className="space-y-4">
@@ -166,13 +167,13 @@ export default function CreateLessonLoading() {
                     <div className="h-4 bg-theme-tertiary/30 rounded w-16"></div>
                   </div>
 
-                  <div className="classical-card-2 p-4">
+                  <Card nivel={2} densidade="compacta">
                     <div className="space-y-3">
                       {Array.from({ length: 2 }).map((_, i) => (
                         <MusicalWorkItemSkeleton key={i} />
                       ))}
                     </div>
-                  </div>
+                  </Card>
                 </div>
 
                 {/* Homework Section */}
@@ -249,13 +250,13 @@ export default function CreateLessonLoading() {
                   <div className="h-10 w-32 bg-gradient-to-r from-brand-primary/20 to-brand-secondary/20 border border-brand-primary/30 rounded-lg"></div>
                 </Inline>
               </div>
-            </div>
+            </Card>
           </div>
 
           {/* Sidebar Skeleton */}
           <div className="space-y-6 order-1 lg:order-2">
             {/* Selected Student Info */}
-            <div className="classical-card p-6 animate-pulse">
+            <Card className="animate-pulse">
               <div className="h-5 bg-gradient-to-r from-theme-primary/20 to-theme-secondary/20 rounded w-32 mb-4"></div>
 
               <div className="space-y-4">
@@ -279,10 +280,10 @@ export default function CreateLessonLoading() {
                   </div>
                 </div>
               </div>
-            </div>
+            </Card>
 
             {/* Quick Templates */}
-            <div className="classical-card p-6 animate-pulse">
+            <Card className="animate-pulse">
               <div className="h-5 bg-gradient-to-r from-theme-primary/20 to-theme-secondary/20 rounded w-28 mb-4"></div>
 
               <div className="space-y-3">
@@ -290,10 +291,10 @@ export default function CreateLessonLoading() {
                   <LessonTemplateSkeleton key={i} />
                 ))}
               </div>
-            </div>
+            </Card>
 
             {/* Recent Lessons */}
-            <div className="classical-card p-6 animate-pulse">
+            <Card className="animate-pulse">
               <div className="h-5 bg-gradient-to-r from-theme-primary/20 to-theme-secondary/20 rounded w-28 mb-4"></div>
 
               <div className="space-y-3">
@@ -301,10 +302,10 @@ export default function CreateLessonLoading() {
                   <RecentLessonSkeleton key={i} />
                 ))}
               </div>
-            </div>
+            </Card>
 
             {/* Tips */}
-            <div className="classical-card p-6 animate-pulse">
+            <Card className="animate-pulse">
               <div className="h-5 bg-gradient-to-r from-theme-primary/20 to-theme-secondary/20 rounded w-12 mb-4"></div>
               <div className="space-y-3">
                 {Array.from({ length: 4 }).map((_, i) => (
@@ -314,7 +315,7 @@ export default function CreateLessonLoading() {
                   </div>
                 ))}
               </div>
-            </div>
+            </Card>
           </div>
         </div>
       </div>

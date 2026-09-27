@@ -19,6 +19,7 @@ import {
   PiUsers,
 } from 'react-icons/pi';
 import { Inline } from '@/app/components/ui/Layout';
+import { Card } from '@/app/components/ui/Card';
 
 export default function StudentProgressLoading() {
   return (
@@ -105,7 +106,7 @@ export default function StudentProgressLoading() {
             },
             { icon: <PiFire className="w-6 h-6 text-theme-inverse/20" /> },
           ].map((item, index) => (
-            <div key={index} className="classical-card p-6 animate-pulse">
+            <Card key={index} className="animate-pulse">
               <div className="flex items-center justify-between">
                 <div>
                   <div className="h-8 bg-theme-primary/30 rounded w-12 mb-1"></div>
@@ -116,7 +117,7 @@ export default function StudentProgressLoading() {
                   {item.icon}
                 </div>
               </div>
-            </div>
+            </Card>
           ))}
         </div>
 
@@ -131,7 +132,7 @@ export default function StudentProgressLoading() {
             },
             { icon: <PiBookOpen className="w-5 h-5 text-theme-inverse/20" /> },
           ].map((item, index) => (
-            <div key={index} className="classical-card p-6 animate-pulse">
+            <Card key={index} className="animate-pulse">
               <div className="flex items-center justify-between mb-4">
                 <div className="h-5 bg-theme-primary/30 rounded w-24"></div>
                 <div className="w-10 h-10 bg-gradient-to-br from-accent-blue/20 to-accent-purple/20 rounded-xl flex items-center justify-center">
@@ -153,14 +154,14 @@ export default function StudentProgressLoading() {
                   <div className="h-3 bg-accent-green/20 rounded w-16 mx-auto"></div>
                 </div>
               </div>
-            </div>
+            </Card>
           ))}
         </div>
 
         {/* Charts Section Skeleton */}
         <div className="grid grid-cols-1 xl:grid-cols-2 gap-8 mb-8">
           {/* Monthly Progress Chart */}
-          <div className="classical-card p-6 animate-pulse">
+          <Card className="animate-pulse">
             <div className="flex items-center justify-between mb-6">
               <div className="h-5 bg-theme-primary/30 rounded w-32"></div>
               <PiChartBar className="w-6 h-6 text-brand-primary/30" />
@@ -174,10 +175,10 @@ export default function StudentProgressLoading() {
                 <div className="h-4 bg-theme-tertiary/20 rounded w-32 mx-auto"></div>
               </div>
             </div>
-          </div>
+          </Card>
 
           {/* Assignment Types Chart */}
-          <div className="classical-card p-6 animate-pulse">
+          <Card className="animate-pulse">
             <div className="flex items-center justify-between mb-6">
               <div className="h-5 bg-theme-primary/30 rounded w-40"></div>
               <PiTarget className="w-6 h-6 text-brand-primary/30" />
@@ -191,11 +192,11 @@ export default function StudentProgressLoading() {
                 <div className="h-4 bg-theme-tertiary/20 rounded w-36 mx-auto"></div>
               </div>
             </div>
-          </div>
+          </Card>
         </div>
 
         {/* Teachers Breakdown Skeleton */}
-        <div className="classical-card p-6 mb-8 animate-pulse">
+        <Card className="mb-8 animate-pulse">
           <div className="flex items-center justify-between mb-6">
             <div className="h-5 bg-theme-primary/30 rounded w-48"></div>
             <PiUsers className="w-6 h-6 text-brand-primary/30" />
@@ -246,10 +247,10 @@ export default function StudentProgressLoading() {
               </div>
             ))}
           </div>
-        </div>
+        </Card>
 
         {/* Achievements Skeleton */}
-        <div className="classical-card p-6 mb-8 animate-pulse">
+        <Card className="mb-8 animate-pulse">
           <div className="flex items-center justify-between mb-6">
             <div className="h-5 bg-theme-primary/30 rounded w-24"></div>
             <PiMedal className="w-6 h-6 text-brand-primary/30" />
@@ -273,10 +274,10 @@ export default function StudentProgressLoading() {
               </div>
             ))}
           </div>
-        </div>
+        </Card>
 
         {/* Recent Works Progress Skeleton */}
-        <div className="classical-card p-6 animate-pulse">
+        <Card className="animate-pulse">
           <div className="flex items-center justify-between mb-6">
             <div className="h-5 bg-theme-primary/30 rounded w-36"></div>
             <div className="h-4 bg-brand-primary/30 rounded w-20"></div>
@@ -339,7 +340,7 @@ export default function StudentProgressLoading() {
               </div>
             </div>
           </div>
-        </div>
+        </Card>
       </div>
 
       {/* Floating Particles */}

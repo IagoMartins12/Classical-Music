@@ -18,6 +18,7 @@ import Link from 'next/link';
 import { toast } from 'react-hot-toast';
 import { useTranslation } from '@/app/context/TranslationContext';
 import { Text } from '@/app/components/ui/Text';
+import { Card } from '@/app/components/ui/Card';
 
 interface ConfirmationState {
   status: 'loading' | 'success' | 'error' | 'already-accepted';
@@ -251,7 +252,11 @@ export default function ConfirmStudentInvitePage() {
 
                 {state.relationship && (
                   <div className="grid md:grid-cols-2 gap-4 mt-6">
-                    <div className="classical-card-simple bg-opacity-10 rounded-lg p-4">
+                    <Card
+                      nivel={2}
+                      densidade="compacta"
+                      className="bg-opacity-10 rounded-lg"
+                    >
                       <h4 className="font-medium text-accent-green mb-2">
                         {t('pages_token_jsx_h4_children_0__seu_plano_estudos')}
                       </h4>
@@ -284,8 +289,12 @@ export default function ConfirmStudentInvitePage() {
                           </li>
                         )}
                       </ul>
-                    </div>
-                    <div className="classical-card-simple bg-opacity-10 rounded-lg p-4">
+                    </Card>
+                    <Card
+                      nivel={2}
+                      densidade="compacta"
+                      className="bg-opacity-10 rounded-lg"
+                    >
                       <h4 className="font-medium text-accent-green mb-2">
                         {t('pages_token_jsx_h4_children_0__próximos_passos')}
                       </h4>
@@ -307,7 +316,7 @@ export default function ConfirmStudentInvitePage() {
                           )}
                         </li>
                       </ul>
-                    </div>
+                    </Card>
                   </div>
                 )}
               </div>

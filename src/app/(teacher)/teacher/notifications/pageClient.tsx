@@ -34,6 +34,7 @@ import Select from '@/app/components/Common/Select';
 import { useTranslation } from '@/app/context/TranslationContext';
 import { Inline } from '@/app/components/ui/Layout';
 import { Button } from '@/app/components/ui/Button';
+import { Card } from '@/app/components/ui/Card';
 
 interface TeacherNotificationsPageClientProps {
   initialNotifications: NotificationData[];
@@ -242,7 +243,7 @@ export default function TeacherNotificationsPageClient({
     return (
       <PageContainer showBackground={true}>
         <div className="flex items-center justify-center min-h-screen">
-          <div className="classical-card p-8 text-center max-w-md">
+          <Card densidade="larga" className="text-center max-w-md">
             <PiWarning className="w-16 h-16 text-accent-red mx-auto mb-4" />
             <h1 className="text-xl font-bold text-theme-primary mb-2">
               {t('error_loading')}
@@ -255,7 +256,7 @@ export default function TeacherNotificationsPageClient({
             >
               {t('try_again')}
             </Button>
-          </div>
+          </Card>
         </div>
       </PageContainer>
     );
@@ -354,7 +355,7 @@ export default function TeacherNotificationsPageClient({
 
         {/* Controls */}
         <AnimatedItem direction="up" springType="gentle">
-          <div className="classical-card p-6 mb-8">
+          <Card className="mb-8">
             <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
               {/* Filters */}
               <div className="flex flex-wrap gap-2">
@@ -414,7 +415,7 @@ export default function TeacherNotificationsPageClient({
                 )}
               </Inline>
             </div>
-          </div>
+          </Card>
         </AnimatedItem>
 
         {/* Notifications List */}

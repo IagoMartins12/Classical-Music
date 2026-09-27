@@ -5,6 +5,7 @@
 import { PiMusicNotes, PiSquaresFour } from 'react-icons/pi';
 import { AnimatedItem } from '../animation/AnimatedComponents';
 import { Text } from '@/app/components/ui/Text';
+import { Card } from '@/app/components/ui/Card';
 
 interface DifficultyTabsProps {
   instruments: { id: string; name: string; workCount: number }[];
@@ -22,7 +23,7 @@ export default function DifficultyTabs({
   const totalWorks = instruments.reduce((sum, inst) => sum + inst.workCount, 0);
 
   return (
-    <div className="classical-card p-6">
+    <Card>
       <div className="flex items-center mb-6">
         <div className="w-10 h-10 bg-gradient-to-br from-accent-blue to-accent-purple rounded-xl flex items-center justify-center mr-3">
           <PiMusicNotes className="w-5 h-5 text-theme-primary" />
@@ -85,6 +86,6 @@ export default function DifficultyTabs({
           </AnimatedItem>
         ))}
       </div>
-    </div>
+    </Card>
   );
 }
