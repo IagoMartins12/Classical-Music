@@ -56,8 +56,8 @@ export default function WorksLoading() {
           </div>
 
           <div className="space-y-4">
-            <div className="h-12 border border-theme-primary rounded-2xl mx-auto max-w-lg animate-pulse"></div>
-            <div className="h-6 border border-theme-secondary rounded-lg mx-auto max-w-2xl animate-pulse"></div>
+            <div className="h-12 rounded-2xl mx-auto max-w-lg animate-pulse"></div>
+            <div className="h-6 rounded-lg mx-auto max-w-2xl animate-pulse"></div>
           </div>
         </Stack>
 
@@ -75,20 +75,20 @@ export default function WorksLoading() {
           <div className="mb-6">
             <div className="relative">
               <PiMagnifyingGlass className="absolute left-4 top-1/2 transform -translate-y-1/2 w-5 h-5" />
-              <div className="h-12 border border-theme-secondary rounded-xl pl-12 pr-12 animate-pulse"></div>
+              <div className="h-12 rounded-xl pl-12 pr-12 animate-pulse"></div>
             </div>
           </div>
 
           {/* Filter Toggle */}
           <div className="flex items-center justify-between mb-4">
-            <div className="h-10 w-32 border border-theme-secondary rounded-lg animate-pulse"></div>
+            <div className="h-10 w-32 rounded-lg animate-pulse"></div>
 
             {/* View Mode Toggle */}
             <Inline gap={3}>
               <div className="h-4 w-12 bg-theme-elevated rounded animate-pulse"></div>
-              <div className="bg-theme-elevated border border-theme-primary rounded-lg p-1 flex">
+              <div className="bg-theme-elevated rounded-lg p-1 flex">
                 <div className="w-8 h-8 bg-theme-elevated rounded-md"></div>
-                <div className="w-8 h-8 border rounded-md"></div>
+                <div className="w-8 h-8 rounded-md"></div>
               </div>
             </Inline>
           </div>
@@ -118,20 +118,18 @@ export default function WorksLoading() {
 
             {/* Pagination controls */}
             <Inline gap={3}>
-              <div className="h-10 w-24 border border-theme-secondary rounded-lg animate-pulse"></div>
+              <div className="h-10 w-24 rounded-lg animate-pulse"></div>
               <div className="flex space-x-1">
                 {Array.from({ length: 5 }, (_, i) => (
                   <div
                     key={i}
                     className={`h-10 w-10 rounded-lg animate-pulse ${
-                      i === 0
-                        ? 'border'
-                        : 'bg-theme-elevated border border-theme-secondary'
+                      i === 0 ? 'border' : 'bg-theme-elevated'
                     }`}
                   ></div>
                 ))}
               </div>
-              <div className="h-10 w-24 border border-theme-secondary rounded-lg animate-pulse"></div>
+              <div className="h-10 w-24 rounded-lg animate-pulse"></div>
             </Inline>
           </div>
         </Card>
@@ -160,8 +158,8 @@ function WorkCardSkeleton() {
 
         {/* Floating action buttons */}
         <Stack gap={2} className="absolute top-4 right-4">
-          <div className="w-8 h-8 border rounded-full"></div>
-          <div className="w-8 h-8 border rounded-full"></div>
+          <div className="w-8 h-8 rounded-full"></div>
+          <div className="w-8 h-8 rounded-full"></div>
         </Stack>
 
         <div className="relative z-10">
@@ -213,14 +211,14 @@ function WorkCardSkeleton() {
 
         {/* Badges */}
         <div className="flex flex-wrap gap-2 mb-4">
-          <div className="h-5 w-16 border rounded-full"></div>
-          <div className="h-5 w-14 border rounded-full"></div>
+          <div className="h-5 w-16 rounded-full"></div>
+          <div className="h-5 w-14 rounded-full"></div>
         </div>
 
         {/* Action Section */}
         <Stack gap={3}>
           {/* Main Action Button */}
-          <div className="h-10 border rounded-xl shadow-theme-small"></div>
+          <div className="h-10 rounded-xl shadow-theme-small"></div>
 
           {/* Secondary Actions */}
           <div className="flex items-center justify-between pt-3 border-t border-theme-secondary">
@@ -228,7 +226,7 @@ function WorkCardSkeleton() {
               <div className="w-1.5 h-1.5 rounded-full"></div>
               <div className="h-3 w-20 bg-theme-elevated rounded"></div>
             </Inline>
-            <div className="w-6 h-6 bg-theme-elevated border rounded-full"></div>
+            <div className="w-6 h-6 bg-theme-elevated rounded-full"></div>
           </div>
         </Stack>
       </div>

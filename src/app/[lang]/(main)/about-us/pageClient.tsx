@@ -95,7 +95,7 @@ export default function AboutPage() {
           <div className="relative section-wrap">
             <div className="text-center max-w-4xl mx-auto">
               <AnimatedItem direction="scale" springType="bouncy">
-                <div className="inline-flex items-center px-6 py-3 border rounded-full mb-8">
+                <div className="inline-flex items-center px-6 py-3 rounded-full mb-8 bg-sup-2">
                   <GiGrandPiano className="w-5 h-5 text-ouro-texto mr-2" />
                   <span className="text-ouro-texto font-medium">
                     {t('about_hero_badge')}
@@ -143,7 +143,7 @@ export default function AboutPage() {
           <div className="section-wrap">
             <div className="grid lg:grid-cols-2 gap-16 items-center">
               <div className="space-y-8">
-                <div className="inline-flex items-center px-4 py-2 border rounded-full">
+                <div className="inline-flex items-center px-4 py-2 rounded-full bg-sup-2">
                   <PiTarget className="w-4 h-4 mr-2" />
                   <span className="font-medium text-sm">
                     {t('about_mission_badge')}
@@ -165,7 +165,7 @@ export default function AboutPage() {
 
                   <AnimatedCard
                     hover="lift"
-                    className="flex items-start space-x-4 p-6 border rounded-2xl"
+                    className="flex items-start space-x-4 p-6 rounded-2xl bg-sup-2"
                   >
                     <div className="w-12 h-12 rounded-xl flex items-center justify-center flex-shrink-0">
                       <PiHeart className="w-6 h-6 text-theme-primary" />
@@ -251,7 +251,7 @@ export default function AboutPage() {
         <AnimatedContainer delay={0.1} staggerSpeed="fast">
           <div className="section-wrap">
             <div className="text-center mb-16">
-              <div className="inline-flex items-center px-4 py-2 border rounded-full mb-6">
+              <div className="inline-flex items-center px-4 py-2 rounded-full mb-6 bg-sup-2">
                 <PiStar className="w-4 h-4 mr-2" />
                 <span className="font-medium text-sm">
                   {t('about_features_badge')}
@@ -287,7 +287,7 @@ export default function AboutPage() {
         <AnimatedContainer delay={0.1} staggerSpeed="normal">
           <div className="section-wrap">
             <div className="text-center mb-16">
-              <div className="inline-flex items-center px-4 py-2 border rounded-full mb-6">
+              <div className="inline-flex items-center px-4 py-2 rounded-full mb-6 bg-sup-2">
                 <PiHeart className="w-4 h-4 text-ouro-texto mr-2" />
                 <Text papel="rotulo" tom="ouro" className="font-medium">
                   {t('about_values_badge')}

@@ -179,7 +179,7 @@ const RichTextEditor = forwardRef<HTMLDivElement, RichTextEditorProps>(
         type="button"
         onClick={onClick}
         disabled={disabled}
-        className="px-3 py-1 text-sm text-theme-tertiary border border-theme-secondary rounded transition-all"
+        className="px-3 py-1 text-sm text-theme-tertiary rounded transition-all bg-sup-2"
       >
         H{level}
       </button>
@@ -210,7 +210,7 @@ const RichTextEditor = forwardRef<HTMLDivElement, RichTextEditorProps>(
         <div className={`rich-text-editor ${error ? 'error' : ''}`}>
           {/* Toolbar */}
           {!isPreview && (
-            <div className="toolbar border border-theme-secondary border-b-0 rounded-t-lg p-3 flex flex-wrap gap-2">
+            <div className="toolbar border-b-0 rounded-t-lg p-3 flex flex-wrap gap-2 bg-sup-2">
               {/* Headings */}
               <div className="flex gap-1">
                 <HeadingButton level={1} onClick={() => insertHeading(1)} />
@@ -300,7 +300,7 @@ const RichTextEditor = forwardRef<HTMLDivElement, RichTextEditorProps>(
           {/* Editor / Preview */}
           {isPreview ? (
             <div
-              className="preview-content border border-theme-secondary rounded-lg p-4 text-theme-primary"
+              className="preview-content rounded-lg p-4 text-theme-primary bg-sup-2"
               style={{ minHeight: height }}
               dangerouslySetInnerHTML={{ __html: value }}
             />
@@ -312,7 +312,7 @@ const RichTextEditor = forwardRef<HTMLDivElement, RichTextEditorProps>(
               onKeyUp={handleKeyUp}
               onMouseUp={updateButtonStates}
               className={`
-              editor-content border border-theme-secondary ${
+              editor-content ${
                 !isPreview ? 'border-t-0' : ''
               } rounded-b-lg p-4 text-theme-primary focus:outline-none focus:ring-2 focus:ring-inset
               ${disabled ? 'cursor-not-allowed opacity-50' : 'cursor-text'}

@@ -689,7 +689,7 @@ export default function EventScraperModal({
 
                     {showDuplicates && (
                       <AnimatedItem direction="down" springType="smooth">
-                        <div className="mt-3  overflow-y-auto space-y-3 border-l-4 border-yellow-500/30 pl-4">
+                        <div className="mt-3 overflow-y-auto space-y-3 pl-4">
                           {duplicateEvents.map((event) => (
                             <AnimatedItem
                               key={event.id}
@@ -1060,7 +1060,7 @@ const EventCard = ({
         {!isDuplicate && (
           <button
             onClick={() => removeEvent(event.id)}
-            className="text-theme-tertiary"
+            className="!text-erro"
             title="Remover"
           >
             <PiTrash className="w-4 h-4" />

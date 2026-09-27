@@ -70,7 +70,7 @@ export const LanguageToggle: React.FC<LanguageToggleProps> = ({
           <PiGlobe
             className={`${getGlobeIconSize()} text-ouro-texto transition-all duration-300`}
           />
-          <div className="absolute -bottom-0.5 -right-0.5 flex items-center justify-center w-3 h-3 bg-theme-elevated rounded-full border border-theme-secondary">
+          <div className="absolute -bottom-0.5 -right-0.5 flex items-center justify-center w-3 h-3 bg-theme-elevated rounded-full">
             <span className="text-xs leading-none">
               {language === 'pt' ? '🇧🇷' : '🇺🇸'}
             </span>
@@ -159,7 +159,7 @@ export const LanguageToggle: React.FC<LanguageToggleProps> = ({
           disabled={isTranslating}
           className={`
             ${getVariantClasses()}
-            relative bg-theme-elevated border border-theme-primary rounded-xl active:scale-95 transition-all duration-300 group disabled:opacity-50 disabled:cursor-not-allowed focus:outline-none focus:ring-2 focus:ring-offset-2
+            relative bg-theme-elevated rounded-xl active:scale-95 transition-all duration-300 group disabled:opacity-50 disabled:cursor-not-allowed focus:outline-none focus:ring-2 focus:ring-offset-2
             ${isTranslating ? 'animate-pulse cursor-wait' : ''}
           `}
           aria-label={`Alterar para ${
@@ -223,7 +223,7 @@ export const LanguageDropdown: React.FC<{
         as="button"
         gap={2}
         onClick={() => setIsOpen(!isOpen)}
-        className="px-3 py-2 bg-theme-elevated border border-theme-primary rounded-lg transition-colors duration-200 disabled:opacity-50"
+        className="px-3 py-2 bg-theme-elevated rounded-lg transition-colors duration-200 disabled:opacity-50"
       >
         <div className="relative">
           <PiGlobe className="w-4 h-4 text-ouro-texto" />
@@ -276,7 +276,7 @@ export const LanguageDropdown: React.FC<{
           />
 
           {/* Dropdown */}
-          <div className="absolute top-full right-0 mt-2 bg-theme-tertiary border border-theme-secondary rounded-lg shadow-xl z-20 overflow-hidden min-w-[140px]">
+          <div className="absolute top-full right-0 mt-2 bg-theme-tertiary rounded-lg shadow-xl z-20 overflow-hidden min-w-[140px]">
             {languages.map((lang) => (
               <button
                 key={lang.code}

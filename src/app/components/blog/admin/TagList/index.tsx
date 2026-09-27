@@ -16,7 +16,7 @@ import { toast } from 'react-hot-toast';
 import { Inline } from '@/app/components/ui/Layout';
 import { Text } from '@/app/components/ui/Text';
 import { Card } from '@/app/components/ui/Card';
-import Modal from '@/app/components/Modal';
+import ConfirmModal from '@/app/components/ConfirmModal';
 
 interface Tag {
   id: string;
@@ -146,7 +146,7 @@ export function TagList({ tags: tags }: TagListProps) {
 
                 <button
                   onClick={() => setDeleteModal(tag.id)}
-                  className="p-2 rounded-lg text-theme-tertiary hover:text-red-500 transition-all"
+                  className="p-2 rounded-lg transition-all !text-erro"
                   title="Deletar"
                   disabled={tag._count.articles > 0}
                 >
@@ -199,60 +199,28 @@ export function TagList({ tags: tags }: TagListProps) {
 
       {/* Delete Modal */}
       {deleteModal && (
-        <Modal
+        <ConfirmModal
           isOpen={true}
           onClose={() => setDeleteModal(null)}
-          maxWidth="md"
-          showCloseButton={false}
+          onConfirm={() => handleDelete(deleteModal)}
+          isLoading={deleting}
+          confirmarBloqueado={
+            (tags.find((t) => t.id === deleteModal)?._count.articles ?? 0) > 0
+          }
+          type="danger"
+          title="Deletar Tag"
+          confirmText="Deletar"
+          message="Tem certeza que deseja deletar esta tag? Esta ação não pode ser desfeita."
         >
-          <div className="flex items-start space-x-4">
-            <div className="w-12 h-12 rounded-full bg-red-500/20 flex items-center justify-center flex-shrink-0">
-              <PiWarningCircle className="w-6 h-6 text-red-500" />
-            </div>
-
-            <div className="flex-1">
-              <h3 className="text-xl font-bold text-theme-primary mb-2">
-                Deletar Tag
-              </h3>
-              <p className="text-theme-secondary mb-4">
-                Tem certeza que deseja deletar esta tag? Esta ação não pode ser
-                desfeita.
-              </p>
-
-              {(tags.find((t) => t.id === deleteModal)?._count.articles ?? 0) >
-                0 && (
-                <div className="mb-4 p-3 bg-red-500/10 border border-red-500/20 rounded-lg">
-                  <p className="text-sm text-red-600">
-                    ⚠️ Esta tag possui{' '}
-                    {tags.find((t) => t.id === deleteModal)?._count.articles}{' '}
-                    artigos. Remova a tag dos artigos primeiro.
-                  </p>
-                </div>
-              )}
-
-              <Inline gap={3}>
-                <button
-                  onClick={() => setDeleteModal(null)}
-                  className="flex-1 px-4 py-2 rounded-lg bg-theme-elevated text-theme-primary transition-all"
-                  disabled={deleting}
-                >
-                  Cancelar
-                </button>
-                <button
-                  onClick={() => handleDelete(deleteModal)}
-                  className="flex-1 px-4 py-2 rounded-lg bg-red-500 hover:bg-red-600 text-white transition-all disabled:opacity-50"
-                  disabled={
-                    deleting ||
-                    (tags.find((t) => t.id === deleteModal)?._count.articles ??
-                      0) > 0
-                  }
-                >
-                  {deleting ? 'Deletando...' : 'Deletar'}
-                </button>
-              </Inline>
-            </div>
-          </div>
-        </Modal>
+          {(tags.find((t) => t.id === deleteModal)?._count.articles ?? 0) >
+            0 && (
+            <p className="t-rotulo rounded-lg bg-sup-2 p-3 text-erro">
+              Esta tag possui{' '}
+              {tags.find((t) => t.id === deleteModal)?._count.articles} artigos.
+              Remova a tag dos artigos primeiro.
+            </p>
+          )}
+        </ConfirmModal>
       )}
     </>
   );

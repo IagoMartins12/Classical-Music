@@ -911,7 +911,7 @@ export default function CreateLessonPageClient({
             <Inline gap={4}>
               <Link
                 href="/teacher/lessons"
-                className="w-10 h-10 rounded-lg bg-theme-elevated border border-theme-secondary transition-all flex items-center justify-center group"
+                className="w-10 h-10 rounded-lg bg-theme-elevated transition-all flex items-center justify-center group"
               >
                 <PiArrowLeft className="w-4 h-4 text-theme-tertiary transition-colors" />
               </Link>
@@ -1085,7 +1085,7 @@ export default function CreateLessonPageClient({
 
                         {conflicts.hasWeeklyLimitExceeded &&
                           !conflicts.hasTimeConflicts && (
-                            <div className=" border border-yellow-400 rounded-lg p-3">
+                            <div className=" rounded-lg p-3 bg-sup-2">
                               <Inline gap={3}>
                                 <PiWarning className="w-4 h-4" />
                                 <div className="text-sm">
@@ -1216,7 +1216,7 @@ export default function CreateLessonPageClient({
                       </Inline>
 
                       {formData.isRecurring && (
-                        <div className="space-y-4 p-6 border rounded-lg">
+                        <div className="space-y-4 p-6 rounded-lg bg-sup-2">
                           <Inline gap={3} className="mb-4">
                             <PiInfo className="w-5 h-5 text-ouro-texto" />
                             <Text papel="rotulo" tom="suave" as="div">
@@ -1296,7 +1296,7 @@ export default function CreateLessonPageClient({
                           {formData.scheduledAt &&
                             formData.recurrenceEnd &&
                             formData.recurrenceType !== 'NONE' && (
-                              <div className="rounded-lg p-4 border">
+                              <div className="rounded-lg p-4 bg-sup-2">
                                 <Inline gap={3}>
                                   <PiCalendarBlank className="w-5 h-5 text-ouro-texto" />
                                   <div>
@@ -1325,7 +1325,7 @@ export default function CreateLessonPageClient({
                             )}
 
                           {/* Renovação fácil info */}
-                          <div className="border rounded-lg p-4">
+                          <div className="rounded-lg p-4 bg-sup-2">
                             <div className="flex items-start space-x-3">
                               <PiCheckCircle className="w-5 h-5 mt-0.5" />
                               <Stack gap={1} className="text-sm">
@@ -1548,7 +1548,7 @@ export default function CreateLessonPageClient({
 
                   {/* Error Display */}
                   {error && (
-                    <div className="border rounded-lg p-4">
+                    <div className="rounded-lg p-4 bg-sup-2">
                       <Inline gap={3}>
                         <PiWarningCircle className="w-5 h-5" />
                         <div>
@@ -1749,7 +1749,7 @@ export default function CreateLessonPageClient({
                       </Inline>
                     ))}
 
-                    <div className="mt-3 p-3 border rounded-lg">
+                    <div className="mt-3 p-3 rounded-lg bg-sup-2">
                       <Text papel="legenda" tom="suave" as="div">
                         <div className="flex justify-between">
                           <span>{t('total_works')}</span>

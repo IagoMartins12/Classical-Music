@@ -139,7 +139,7 @@ const UploadWorkCard = ({
             {item.imslpId && (
               <div
                 rel="noopener noreferrer"
-                className="inline-flex items-center px-2 py-1 border rounded-md text-xs font-medium hover:scale-105 transition-all duration-300"
+                className="inline-flex items-center px-2 py-1 rounded-md text-xs font-medium hover:scale-105 transition-all duration-300 bg-sup-2"
                 onClick={(e) => e.stopPropagation()}
               >
                 IMSLP
@@ -158,7 +158,7 @@ const UploadWorkCard = ({
               <button
                 onClick={handleDeleteClick}
                 disabled={isDeleting}
-                className={`w-8 h-8 rounded-lg bg-theme-secondary text-theme-tertiary transition-colors flex items-center justify-center ${
+                className={`w-8 h-8 rounded-lg bg-theme-secondary transition-colors flex items-center justify-center !text-erro ${
                   isDeleting ? 'opacity-50 cursor-not-allowed' : ''
                 }`}
               >
@@ -197,7 +197,7 @@ const UploadWorkCard = ({
               <button
                 onClick={handleDeleteClick}
                 disabled={isDeleting}
-                className={`w-8 h-8 rounded-lg bg-theme-elevated text-theme-tertiary transition-colors flex items-center justify-center shadow-theme-medium ${
+                className={`w-8 h-8 rounded-lg bg-theme-elevated transition-colors flex items-center justify-center shadow-theme-medium !text-erro ${
                   isDeleting ? 'opacity-50 cursor-not-allowed' : ''
                 }`}
               >
@@ -269,7 +269,7 @@ const UploadWorkCard = ({
                 <Text
                   papel="legenda"
                   tom="ouro"
-                  className="inline-flex items-center px-2 py-1 border rounded-full font-medium"
+                  className="inline-flex items-center px-2 py-1 rounded-full font-medium bg-sup-2"
                 >
                   <PiClock className="w-2.5 h-2.5 mr-1" />
                   {item.epochName}
@@ -277,13 +277,13 @@ const UploadWorkCard = ({
               )}
 
               {item.isIMSLP && (
-                <span className="inline-flex items-center px-2 py-1 border rounded-full text-xs font-medium">
+                <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-sup-2">
                   IMSLP
                 </span>
               )}
 
               {item.verificationStatus === 'verified' && (
-                <span className="inline-flex items-center px-2 py-1 border rounded-full text-xs font-medium">
+                <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-sup-2">
                   <PiShield className="w-2.5 h-2.5 mr-1" />
                   {t('card_verified_badge')}
                 </span>

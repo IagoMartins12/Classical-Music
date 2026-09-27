@@ -36,7 +36,7 @@ const VideoComparisonComponent = (props: any) => {
       onMouseEnter={() => setShowControls(true)}
       onMouseLeave={() => setShowControls(false)}
     >
-      <div className="classical-card overflow-hidden border-l-4">
+      <div className="classical-card overflow-hidden">
         {/* Header */}
         <div className="text-white px-6 py-4">
           <div className="flex items-center justify-between">
@@ -56,7 +56,7 @@ const VideoComparisonComponent = (props: any) => {
             {showControls && (
               <button
                 onClick={handleDelete}
-                className="p-2 bg-white/20 rounded-lg hover:bg-red-700 transition-colors"
+                className="p-2 bg-white/20 rounded-lg hover:bg-red-700 transition-colors !text-erro"
                 title="Remover"
               >
                 <PiTrash className="w-4 h-4" />

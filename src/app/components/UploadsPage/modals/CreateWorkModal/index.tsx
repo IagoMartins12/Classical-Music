@@ -1085,7 +1085,7 @@ const CreateWorkModal = ({
                     />
 
                     {duplicateCheck.loading && (
-                      <div className="mt-2 p-2 bg-blue-50 border border-blue-200 rounded-lg">
+                      <div className="mt-2 p-2 bg-blue-50 rounded-lg">
                         <Inline gap={2}>
                           <PiSpinnerGap className="w-4 h-4 animate-spin text-blue-600" />
                           <span className="text-sm text-blue-800">
@@ -1096,10 +1096,7 @@ const CreateWorkModal = ({
                     )}
 
                     {duplicateCheck.found && (
-                      <Stack
-                        gap={2}
-                        className="mt-2 p-3 bg-red-50 border border-red-200 rounded-lg"
-                      >
+                      <Stack gap={2} className="mt-2 p-3 bg-red-50 rounded-lg">
                         <Inline gap={2}>
                           <PiWarningCircle className="w-4 h-4 text-red-600" />
                           <span className="text-sm font-medium text-red-800">
@@ -1159,7 +1156,7 @@ const CreateWorkModal = ({
                     {scrapingResult && (
                       <Stack
                         gap={2}
-                        className="mt-4 p-3 bg-green-50 border border-green-200 rounded-lg"
+                        className="mt-4 p-3 bg-green-50 rounded-lg"
                       >
                         <Inline gap={2}>
                           <PiCheck className="w-4 h-4 text-green-600" />
@@ -1178,7 +1175,7 @@ const CreateWorkModal = ({
                     )}
 
                     {isEditingExternalSource && (
-                      <div className="mt-3 p-3 bg-blue-50 border border-blue-200 rounded-lg">
+                      <div className="mt-3 p-3 bg-blue-50 rounded-lg">
                         <Inline gap={2}>
                           <PiInfo className="w-4 h-4 text-blue-600" />
                           <span className="text-sm text-blue-800">
@@ -1350,7 +1347,7 @@ const CreateWorkModal = ({
                   {isPartOfCollection && (
                     <Stack className="border-t border-theme-secondary pt-4">
                       {/* Informação sobre compositor */}
-                      <div className="p-3 bg-blue-50 border border-blue-200 rounded-lg">
+                      <div className="p-3 bg-blue-50 rounded-lg">
                         <Inline gap={2}>
                           <PiInfo className="w-4 h-4 text-blue-600" />
                           <span className="text-sm text-blue-800">
@@ -1781,7 +1778,7 @@ const CreateWorkModal = ({
                           </div>
 
                           {mediaData.hasVideoAula && (
-                            <div className="space-y-4 p-4 bg-purple-900/10 border border-purple-700/30 rounded-xl">
+                            <div className="space-y-4 p-4 bg-purple-900/10 rounded-xl">
                               {/* Type and Source */}
                               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                                 <div>

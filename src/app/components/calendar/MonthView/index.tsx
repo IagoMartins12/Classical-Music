@@ -49,7 +49,7 @@ export default function MonthView({
           return (
             <div
               key={index}
-              className={`min-h-24 p-2 border rounded-lg transition-all ${
+              className={`min-h-24 p-2 rounded-lg transition-all bg-sup-2 ${
                 isToday ? '' : isCurrentMonth ? '' : 'opacity-60'
               }`}
             >

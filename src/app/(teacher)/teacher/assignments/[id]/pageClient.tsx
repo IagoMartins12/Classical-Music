@@ -228,7 +228,7 @@ export default function AssignmentDetailsPageClient({
             <Inline gap={4}>
               <Link
                 href="/teacher/assignments"
-                className="w-10 h-10 rounded-lg bg-theme-elevated border border-theme-secondary transition-all flex items-center justify-center group"
+                className="w-10 h-10 rounded-lg bg-theme-elevated transition-all flex items-center justify-center group"
               >
                 <PiArrowLeft className="w-4 h-4 text-theme-tertiary transition-colors" />
               </Link>
@@ -238,7 +238,7 @@ export default function AssignmentDetailsPageClient({
                     {assignment.title}
                   </h1>
                   <span
-                    className={`px-3 py-2 rounded-full text-sm font-medium border ${getStatusColor(
+                    className={`px-3 py-2 rounded-full text-sm font-medium bg-sup-2 ${getStatusColor(
                       assignment
                     )}`}
                   >
@@ -258,7 +258,7 @@ export default function AssignmentDetailsPageClient({
                 <Inline
                   as="span"
                   gap={1}
-                  className="px-3 py-2 rounded-full text-sm font-medium border"
+                  className="px-3 py-2 rounded-full text-sm font-medium bg-sup-2"
                 >
                   <PiVideoCamera className="w-3 h-3" />
                   <span>{t('has_video')}</span>
@@ -311,7 +311,7 @@ export default function AssignmentDetailsPageClient({
                         {t('priority')}
                       </label>
                       <span
-                        className={`px-3 py-1 rounded-full text-sm font-medium border ${
+                        className={`px-3 py-1 rounded-full text-sm font-medium bg-sup-2 ${
                           PRIORITY_COLORS[
                             assignment.priority as keyof typeof PRIORITY_COLORS
                           ]
@@ -498,7 +498,7 @@ export default function AssignmentDetailsPageClient({
                     <div className="p-4 bg-theme-elevated rounded-lg">
                       <div className="flex items-center justify-between">
                         <Inline gap={4}>
-                          <div className="w-12 h-12 border rounded-lg flex items-center justify-center">
+                          <div className="w-12 h-12 rounded-lg flex items-center justify-center">
                             <PiVideoCamera className="w-6 h-6" />
                           </div>
                           <Stack gap={1}>

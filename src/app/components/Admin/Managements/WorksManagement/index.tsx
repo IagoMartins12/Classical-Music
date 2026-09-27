@@ -760,7 +760,7 @@ export default function WorksManagement() {
 
             {/* Bulk Actions */}
             {selectedWorks.size > 0 && (
-              <div className="flex items-center justify-between p-4 border rounded-xl mb-6">
+              <div className="flex items-center justify-between p-4 rounded-xl mb-6 bg-sup-2">
                 <span className="font-medium">
                   {selectedWorks.size} obras selecionadas
                 </span>

@@ -14,7 +14,6 @@ import {
   PiShield,
   PiTrash,
   PiUser,
-  PiWarning,
   PiX,
 } from 'react-icons/pi';
 import { formatDistanceToNow } from 'date-fns';
@@ -41,7 +40,7 @@ import { Inline } from '@/app/components/ui/Layout';
 import { Text } from '@/app/components/ui/Text';
 import { Field } from '@/app/components/ui/Field';
 import { Card } from '@/app/components/ui/Card';
-import Modal from '@/app/components/Modal';
+import ConfirmModal from '@/app/components/ConfirmModal';
 
 interface ModerationClientProps {
   page: number;
@@ -588,63 +587,33 @@ const ModerationClient = ({
 
       {/* Delete Confirmation Modal */}
       {showModal && selectedModeration && (
-        <Modal
+        <ConfirmModal
           isOpen={true}
-          onClose={() => setShowModal(false)}
-          maxWidth="md"
-          showCloseButton={false}
+          onClose={() => {
+            setShowModal(false);
+            setSelectedModeration(null);
+            setModerationNotes('');
+          }}
+          onConfirm={() => handleModeration(selectedModeration.id, 'delete')}
+          isLoading={processingId === selectedModeration.id}
+          type="danger"
+          title={t('moderation_delete_title')}
+          cancelText={t('moderation_delete_cancel')}
+          confirmText={t('moderation_delete_confirm')}
+          message={t('moderation_delete_subtitle').replace(
+            '{title}',
+            getEntityTitle(selectedModeration)
+          )}
         >
-          <div className="text-center">
-            <div className="w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
-              <PiWarning className="w-8 h-8" />
-            </div>
-
-            <h3 className="text-xl font-bold text-theme-primary mb-2">
-              {t('moderation_delete_title')}
-            </h3>
-
-            <p className="text-theme-secondary mb-6">
-              {t('moderation_delete_subtitle').replace(
-                '{title}',
-                getEntityTitle(selectedModeration)
-              )}
-            </p>
-
-            <div className="mb-4">
-              <Field.Area
-                label={t('moderation_delete_notes_label')}
-                classeCampo="resize-none"
-                value={moderationNotes}
-                onChange={(e) => setModerationNotes(e.target.value)}
-                rows={3}
-                placeholder={t('moderation_delete_notes_placeholder')}
-              />
-            </div>
-
-            <div className="flex space-x-3">
-              <Button
-                variant="secondary"
-                onClick={() => {
-                  setShowModal(false);
-                  setSelectedModeration(null);
-                  setModerationNotes('');
-                }}
-              >
-                {t('moderation_delete_cancel')}
-              </Button>
-
-              <Button
-                variant="delete"
-                onClick={() =>
-                  handleModeration(selectedModeration.id, 'delete')
-                }
-                disabled={processingId === selectedModeration.id}
-              >
-                {t('moderation_delete_confirm')}
-              </Button>
-            </div>
-          </div>
-        </Modal>
+          <Field.Area
+            label={t('moderation_delete_notes_label')}
+            classeCampo="resize-none"
+            value={moderationNotes}
+            onChange={(e) => setModerationNotes(e.target.value)}
+            rows={3}
+            placeholder={t('moderation_delete_notes_placeholder')}
+          />
+        </ConfirmModal>
       )}
 
       {/* History Modal */}

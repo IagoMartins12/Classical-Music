@@ -160,7 +160,7 @@ export default function NationalitySelect({
       {isOpen && !disabled && (
         <div
           ref={dropdownRef}
-          className="absolute top-full left-0 right-0 mt-2 bg-theme-elevated border border-theme-secondary rounded-xl shadow-xl z-menu max-h-80 overflow-hidden"
+          className="absolute top-full left-0 right-0 mt-2 bg-theme-elevated rounded-xl shadow-xl z-menu max-h-80 overflow-hidden"
         >
           {/* Search header */}
           <div className="flex items-center gap-2 px-4 py-3 border-b border-theme-secondary">

@@ -1,21 +1,12 @@
 // app/components/uploads/ConfirmDeleteUploadModal.tsx - TRADUZIDO
 import { useEffect, useState } from 'react';
 import { createPortal } from 'react-dom';
-import {
-  PiFileText,
-  PiInfo,
-  PiMusicNotes,
-  PiSpinnerGap,
-  PiTrash,
-  PiUser,
-  PiWarning,
-} from 'react-icons/pi';
+import { PiInfo, PiSpinnerGap, PiWarning } from 'react-icons/pi';
 import { useTranslation } from '@/app/context/TranslationContext';
 import { getCascadeInfo } from '@/app/requests/uploads-client';
-import Button from '../Common/Button';
 import { Stack, Inline } from '@/app/components/ui/Layout';
 import { Text } from '@/app/components/ui/Text';
-import Modal from '@/app/components/Modal';
+import ConfirmModal from '@/app/components/ConfirmModal';
 
 interface CascadeInfo {
   works?: { id: string; title: string; scoresCount: number }[];
@@ -37,21 +28,6 @@ interface ConfirmDeleteUploadModalProps {
   itemType: 'composer' | 'work' | 'score';
   itemId?: string;
 }
-
-const TYPE_CONFIG = {
-  composer: {
-    icon: PiUser,
-    color: '',
-  },
-  work: {
-    icon: PiMusicNotes,
-    color: '',
-  },
-  score: {
-    icon: PiFileText,
-    color: '',
-  },
-};
 
 export default function ConfirmDeleteUploadModal({
   isOpen,
@@ -102,9 +78,6 @@ export default function ConfirmDeleteUploadModal({
 
   if (!mounted || !isOpen) return null;
 
-  const typeConfig = TYPE_CONFIG[itemType];
-  const TypeIcon = typeConfig.icon;
-
   // Corrigido para garantir que sempre retorna boolean
   const hasCascadeItems = Boolean(
     cascadeInfo &&
@@ -129,44 +102,28 @@ export default function ConfirmDeleteUploadModal({
   // };
 
   const modalContent = (
-    <Modal
+    <ConfirmModal
       isOpen={isOpen}
       onClose={onClose}
-      maxWidth="lg"
-      showCloseButton={false}
+      onConfirm={onConfirm}
+      isLoading={isLoading}
+      confirmarBloqueado={loadingCascadeInfo}
+      type="danger"
+      title={t('delete_modal_title')}
+      cancelText={t('delete_modal_cancel')}
+      confirmText={`${t('delete_modal_delete_button', { type: getItemTypeLabel() })}${
+        hasCascadeItems ? ` ${t('delete_modal_plus_related')}` : ''
+      }`}
+      message={t('delete_modal_confirm_text', {
+        article: getItemTypeArticle(),
+        type: getItemTypeLabel(),
+        title: itemTitle,
+      })}
     >
-      <Inline gap={3} className="mb-4">
-        <div className="w-12 h-12 rounded-xl flex items-center justify-center relative">
-          <PiWarning className="w-6 h-6" />
-          {/* Ícone do tipo no canto */}
-          <div
-            className={`absolute -bottom-1 -right-1 w-5 h-5 bg-gradient-to-br ${typeConfig.color} rounded-full flex items-center justify-center`}
-          >
-            <TypeIcon className="w-2.5 h-2.5 text-theme-primary" />
-          </div>
-        </div>
-        <div>
-          <h3 className="text-lg font-bold text-theme-primary">
-            {t('delete_modal_title')}
-          </h3>
-          <Text papel="rotulo" tom="suave" as="p">
-            {t('delete_modal_subtitle')}
-          </Text>
-        </div>
-      </Inline>
-
-      <Stack className="mb-6">
-        <p className="text-theme-secondary">
-          {t('delete_modal_confirm_text', {
-            article: getItemTypeArticle(),
-            type: getItemTypeLabel(),
-            title: itemTitle,
-          })}
-        </p>
-
+      <Stack gap={3}>
         {/* Loading cascade info */}
         {loadingCascadeInfo ? (
-          <Inline gap={2} className="p-3 rounded-lg border">
+          <Inline gap={2} className="p-3 rounded-lg bg-sup-2">
             <PiSpinnerGap className="w-4 h-4 animate-spin" />
             <span className="text-sm">
               {t('delete_modal_checking_related')}
@@ -176,7 +133,7 @@ export default function ConfirmDeleteUploadModal({
 
         {/* Cascade information */}
         {!loadingCascadeInfo && hasCascadeItems ? (
-          <Stack gap={3} className="p-4 rounded-lg border">
+          <Stack gap={3} className="p-4 rounded-lg bg-sup-2">
             <div className="flex items-start space-x-2">
               <PiInfo className="w-4 h-4 mt-0.5 flex-shrink-0" />
               <div>
@@ -288,7 +245,7 @@ export default function ConfirmDeleteUploadModal({
               {/* Total geral */}
               {cascadeInfo?.totalScores !== undefined &&
               cascadeInfo.totalScores >= 0 ? (
-                <div className="pt-2 border-t">
+                <div className="pt-2 border-t border-linha">
                   <p className="text-xs font-medium">
                     {cascadeInfo.totalWorks && cascadeInfo.totalWorks > 0
                       ? t('delete_modal_total_summary_with_works', {
@@ -309,7 +266,7 @@ export default function ConfirmDeleteUploadModal({
         {!loadingCascadeInfo &&
         !hasCascadeItems &&
         (itemType === 'composer' || itemType === 'work') ? (
-          <div className="p-3 rounded-lg border">
+          <div className="p-3 rounded-lg bg-sup-2">
             <Inline gap={2}>
               <PiInfo className="w-4 h-4" />
               <span className="text-sm">
@@ -321,7 +278,7 @@ export default function ConfirmDeleteUploadModal({
 
         {/* Warning for score */}
         {itemType === 'score' ? (
-          <div className="border rounded-lg p-3">
+          <div className="rounded-lg p-3 bg-sup-2">
             <div className="flex items-start space-x-2">
               <PiWarning className="w-4 h-4 mt-0.5 flex-shrink-0" />
               <div className="text-sm">
@@ -336,44 +293,7 @@ export default function ConfirmDeleteUploadModal({
           </div>
         ) : null}
       </Stack>
-
-      <Inline gap={3} className="justify-end">
-        <button
-          onClick={onClose}
-          disabled={isLoading}
-          className="px-4 py-2 rounded-lg border border-theme-secondary text-theme-secondary transition-colors disabled:opacity-50"
-        >
-          {t('delete_modal_cancel')}
-        </button>
-        <Button
-          variant="delete"
-          onClick={onConfirm}
-          leftIcon={<PiTrash />}
-          disabled={isLoading || loadingCascadeInfo}
-        >
-          {isLoading ? (
-            <>
-              <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
-              <span>{t('delete_modal_deleting')}</span>
-            </>
-          ) : (
-            <>
-              <span>
-                {t('delete_modal_delete_button', {
-                  type: getItemTypeLabel(),
-                })}
-                {hasCascadeItems ? (
-                  <span className="text-xs opacity-75">
-                    {' '}
-                    {t('delete_modal_plus_related')}
-                  </span>
-                ) : null}
-              </span>
-            </>
-          )}
-        </Button>
-      </Inline>
-    </Modal>
+    </ConfirmModal>
   );
 
   return createPortal(modalContent, document.body);

@@ -195,7 +195,7 @@ const ScoreCard = ({
             <div className="grid grid-cols-1 md:grid-cols-2 gap-3 text-sm">
               {score.fileSize && (
                 <div className="flex items-center gap-2 text-theme-secondary">
-                  <div className="w-5 h-5 border rounded-lg flex items-center justify-center">
+                  <div className="w-5 h-5 rounded-lg flex items-center justify-center">
                     <PiFileText className="w-3 h-3" />
                   </div>
                   <span>
@@ -208,7 +208,7 @@ const ScoreCard = ({
 
               {shouldShowThumbnail && score.uploader && (
                 <div className="flex items-center gap-2 text-theme-secondary">
-                  <div className="w-5 h-5 border rounded-lg flex items-center justify-center">
+                  <div className="w-5 h-5 rounded-lg flex items-center justify-center">
                     <PiUser className="w-3 h-3" />
                   </div>
                   <span>
@@ -220,7 +220,7 @@ const ScoreCard = ({
 
               {shouldShowThumbnail && score.uploadDate && (
                 <div className="flex items-center gap-2 text-theme-secondary">
-                  <div className="w-5 h-5 border rounded-lg flex items-center justify-center">
+                  <div className="w-5 h-5 rounded-lg flex items-center justify-center">
                     <PiClock className="w-3 h-3 text-theme-primary" />
                   </div>
                   <span>{score.uploadDate}</span>

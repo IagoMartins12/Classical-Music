@@ -203,7 +203,7 @@ const AudioPlayerComponent = (props: any) => {
       onMouseEnter={() => setShowControls(true)}
       onMouseLeave={() => setShowControls(false)}
     >
-      <div className="rounded-lg classical-card-simple border-l-4 shadow-md overflow-hidden">
+      <div className="rounded-lg classical-card-simple shadow-md overflow-hidden">
         {/* Controles de Edição */}
         {showControls && (
           <Inline
@@ -212,7 +212,7 @@ const AudioPlayerComponent = (props: any) => {
           >
             <button
               onClick={handleDelete}
-              className="p-2 text-red-600 hover:bg-red-50 rounded transition-colors"
+              className="p-2 hover:bg-red-50 rounded transition-colors !text-erro"
               title="Remover"
             >
               <PiTrash className="w-4 h-4" />

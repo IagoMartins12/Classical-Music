@@ -182,7 +182,7 @@ export function QuoteMusicalModal({
                 onClick={() => handleTabChange('upload')}
                 className={`flex-1 px-4 py-2 text-sm font-medium transition-colors ${
                   activeTab === 'upload'
-                    ? 'border-b-2 text-ouro-texto'
+                    ? 'border-b-2 text-ouro-texto border-linha'
                     : 'text-theme-tertiary'
                 }`}
               >
@@ -193,7 +193,7 @@ export function QuoteMusicalModal({
                 onClick={() => handleTabChange('youtube')}
                 className={`flex-1 px-4 py-2 text-sm font-medium transition-colors ${
                   activeTab === 'youtube'
-                    ? 'border-b-2 text-ouro-texto'
+                    ? 'border-b-2 text-ouro-texto border-linha'
                     : 'text-theme-tertiary'
                 }`}
               >
@@ -260,7 +260,7 @@ export function QuoteMusicalModal({
                 />
 
                 {youtubeUrl && extractYouTubeId(youtubeUrl) && (
-                  <div className="p-3 bg-green-50 border border-green-200 rounded-lg">
+                  <div className="p-3 bg-green-50 rounded-lg">
                     <p className="text-sm text-green-800">
                       ✓ Link válido do YouTube
                     </p>
@@ -297,7 +297,7 @@ export function QuoteMusicalModal({
               </Text>
             </div>
 
-            <div className="p-3 bg-blue-50 border border-blue-200 rounded-lg">
+            <div className="p-3 bg-blue-50 rounded-lg">
               <p className="text-xs text-blue-800">
                 💡 <strong>Dica:</strong> A música tocará automaticamente em
                 loop quando o leitor visualizar a citação. Apenas o áudio será

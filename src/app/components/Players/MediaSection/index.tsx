@@ -667,14 +667,14 @@ const MediaSection: React.FC<MediaSectionProps> = ({
       {/* MODO DE EDIÇÃO COM VALIDAÇÃO MELHORADA */}
       {showEditMode && canEditMedia && (
         <div className="px-8 pb-6">
-          <AnimatedCard className="bg-blue-900/20 border border-blue-700/30 p-4">
+          <AnimatedCard className="bg-blue-900/20 p-4">
             <h3 className="text-lg font-semibold text-theme-primary mb-4">
               {t('media_adicionar_manual')}
             </h3>
 
             {/* ALERTA MELHORADO - Mais claro sobre a necessidade da busca */}
             {!hasSearchBeenMade && (
-              <div className="mb-4 bg-amber-900/20 border border-amber-700/30 rounded-xl p-4 flex items-start space-x-3">
+              <div className="mb-4 bg-amber-900/20 rounded-xl p-4 flex items-start space-x-3">
                 <PiWarningCircle className="w-5 h-5 text-amber-400 mt-0.5 flex-shrink-0" />
                 <div>
                   <p className="text-amber-300 font-medium">
@@ -729,7 +729,7 @@ const MediaSection: React.FC<MediaSectionProps> = ({
 
                 {/* Mostrar áudio existente com opção de deletar */}
                 {mediaData.customAudio && (
-                  <div className="mb-3 p-3 bg-green-900/20 border border-green-700/30 rounded-lg">
+                  <div className="mb-3 p-3 bg-green-900/20 rounded-lg">
                     <div className="flex items-center justify-between">
                       <Inline gap={2}>
                         <PiDatabase className="w-4 h-4 text-green-400" />
@@ -748,7 +748,7 @@ const MediaSection: React.FC<MediaSectionProps> = ({
                           type="button"
                           onClick={deleteCustomAudio}
                           disabled={isUploading || !hasSearchBeenMade}
-                          className="text-xs px-2 py-1 rounded bg-red-600 text-white hover:bg-red-700 disabled:opacity-50"
+                          className="text-xs px-2 py-1 rounded bg-red-600 hover:bg-red-700 disabled:opacity-50 !text-erro"
                         >
                           <PiTrash className="w-3 h-3" />
                           <span>{t('media_deletar')}</span>
@@ -1101,10 +1101,7 @@ const MediaSection: React.FC<MediaSectionProps> = ({
         {/* Status de Carregamento Global - ATUALIZADO */}
         {isSearching && hasAnyMedia && (
           <AnimatedItem direction="up" delay={0.1}>
-            <Inline
-              gap={3}
-              className="mt-6 bg-blue-900/20 border border-blue-700/30 rounded-xl p-4"
-            >
+            <Inline gap={3} className="mt-6 bg-blue-900/20 rounded-xl p-4">
               <PiArrowsClockwise className="w-5 h-5 text-blue-400 animate-spin" />
               <div className="flex-1">
                 <p className="text-blue-300 text-sm font-medium">
@@ -1121,7 +1118,7 @@ const MediaSection: React.FC<MediaSectionProps> = ({
         {/* Mensagem de Erro */}
         {searchError && hasSearchBeenMade && (
           <AnimatedItem direction="up" delay={0.5}>
-            <div className="mt-6 bg-red-900/20 border border-red-700/30 rounded-xl p-4 flex items-start space-x-3">
+            <div className="mt-6 bg-red-900/20 rounded-xl p-4 flex items-start space-x-3">
               <PiWarningCircle className="w-5 h-5 text-red-400 mt-0.5 flex-shrink-0" />
               <div>
                 <p className="text-red-300 text-sm font-medium">
@@ -1136,7 +1133,7 @@ const MediaSection: React.FC<MediaSectionProps> = ({
         {/* Resumo das Fontes Encontradas */}
         {hasAnyMedia && !isSearching && (
           <AnimatedItem direction="up" delay={0.6}>
-            <div className="mt-6 bg-gradient-to-r from-green-900/10 to-blue-900/10 border border-green-700/20 rounded-xl p-4">
+            <div className="mt-6 bg-gradient-to-r from-green-900/10 to-blue-900/10 rounded-xl p-4 bg-sup-2">
               <Inline gap={4} className="text-sm">
                 <Inline gap={2}>
                   <div className="w-2 h-2 bg-green-400 rounded-full"></div>

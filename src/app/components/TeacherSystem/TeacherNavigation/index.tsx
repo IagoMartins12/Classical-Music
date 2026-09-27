@@ -301,7 +301,7 @@ export default function TeacherNavigation({ user }: TeacherNavigationProps) {
 
                       {/* Desktop Submenu */}
                       {activeSubmenu === item.label && (
-                        <div className="absolute top-full left-0 mt-2 w-80 bg-theme-tertiary rounded-2xl shadow-xl border border-theme-secondary z-50 overflow-hidden">
+                        <div className="absolute top-full left-0 mt-2 w-80 bg-theme-tertiary rounded-2xl shadow-xl z-50 overflow-hidden">
                           <div className="p-2">
                             {item.submenu.map((subItem) => (
                               <Link
@@ -422,7 +422,7 @@ export default function TeacherNavigation({ user }: TeacherNavigationProps) {
 
                 {/* Profile Dropdown */}
                 {isProfileOpen && (
-                  <div className="absolute right-0 top-full mt-2 w-64 bg-theme-secondary backdrop-blur-xl rounded-2xl shadow-xl border border-theme-secondary z-50 p-2">
+                  <div className="absolute right-0 top-full mt-2 w-64 bg-theme-secondary backdrop-blur-xl rounded-2xl shadow-xl z-50 p-2">
                     {/* User Info */}
                     <div className="px-3 py-2 border-b border-theme-secondary mb-2">
                       <p className="font-medium text-theme-primary">
@@ -556,7 +556,7 @@ export default function TeacherNavigation({ user }: TeacherNavigationProps) {
                             w-full flex items-center justify-between px-3 py-2 rounded-lg font-medium transition-all duration-300
                             ${
                               item.active
-                                ? 'text-ouro-texto border'
+                                ? 'text-ouro-texto'
                                 : 'text-theme-secondary'
                             }
                           `}
@@ -600,7 +600,7 @@ export default function TeacherNavigation({ user }: TeacherNavigationProps) {
                           flex items-center space-x-3 px-3 py-2 rounded-lg font-medium transition-all duration-300
                           ${
                             item.active
-                              ? 'text-ouro-texto border'
+                              ? 'text-ouro-texto'
                               : 'text-theme-secondary'
                           }
                         `}

@@ -18,7 +18,7 @@ export default function ComposerList({ composers, onSelect }: Props) {
         {composers.map((composer) => (
           <li
             key={composer.id}
-            className="cursor-pointer p-2 border rounded hover:bg-gray-100"
+            className="cursor-pointer p-2 rounded hover:bg-gray-100"
             onClick={() => onSelect(composer.id)}
           >
             <strong>{composer.name}</strong> — {composer.epoch}

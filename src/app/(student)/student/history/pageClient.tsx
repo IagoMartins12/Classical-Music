@@ -245,17 +245,17 @@ const StudentHistoryClient = ({
     switch (action) {
       case 'ASSIGNMENT_SUBMISSION':
       case 'ASSIGNMENT_COMPLETED':
-        return 'border-l-4 border-l-green-500';
+        return '';
       case 'LESSON_FEEDBACK_GIVEN':
-        return 'border-l-4 border-l-blue-500';
+        return '';
       case 'LESSON_RESCHEDULE_REQUESTED':
-        return 'border-l-4 border-l-orange-500';
+        return '';
       case 'LESSON_ABSENCE_INFORMED':
-        return 'border-l-4 border-l-red-500';
+        return '';
       case 'STUDENT_PROFILE_UPDATED':
-        return 'border-l-4 border-l-purple-500';
+        return '';
       default:
-        return 'border-l-4 border-l-gray-300';
+        return '';
     }
   };
 
@@ -301,10 +301,7 @@ const StudentHistoryClient = ({
     if (changesList.length === 0) return null;
 
     return (
-      <Stack
-        gap={2}
-        className="mt-3 p-3 bg-blue-50 border border-blue-200 rounded-lg"
-      >
+      <Stack gap={2} className="mt-3 p-3 bg-blue-50 rounded-lg">
         <h5 className="text-sm font-medium text-blue-700 flex items-center">
           <PiNotePencil className="w-4 h-4 mr-1" />
           {t('student_history_changes_title')}
@@ -686,7 +683,7 @@ const StudentHistoryClient = ({
                             {activity.metadata && (
                               <div className="mt-2 flex flex-wrap gap-2">
                                 {activity.metadata.submissionType && (
-                                  <span className="px-2 py-1 bg-blue-50 text-blue-700 rounded-full text-xs font-medium border border-blue-200">
+                                  <span className="px-2 py-1 bg-blue-50 text-blue-700 rounded-full text-xs font-medium">
                                     {activity.metadata.submissionType ===
                                     'video'
                                       ? t('student_history_metadata_video')
@@ -697,7 +694,7 @@ const StudentHistoryClient = ({
                                   </span>
                                 )}
                                 {activity.metadata.hasMessage && (
-                                  <span className="px-2 py-1 bg-green-50 text-green-700 rounded-full text-xs font-medium border border-green-200">
+                                  <span className="px-2 py-1 bg-green-50 text-green-700 rounded-full text-xs font-medium">
                                     {t('student_history_metadata_with_message')}
                                   </span>
                                 )}

@@ -211,7 +211,7 @@ export default function ConfirmAccountPage() {
             <p className="text-theme-secondary text-lg mb-6">{state.message}</p>
 
             {state.user && (
-              <Stack gap={2} className="border rounded-xl p-6 mb-8">
+              <Stack gap={2} className="rounded-xl p-6 mb-8 bg-sup-2">
                 <h3 className="text-xl font-semibold">
                   {t('pages_token_jsx_h3_children_0__bem_vindo', {
                     firstName: state.user.firstName,
@@ -279,7 +279,7 @@ export default function ConfirmAccountPage() {
             <p className="text-theme-secondary text-lg mb-6">{state.message}</p>
 
             {state.user && (
-              <Stack gap={2} className="border rounded-xl p-6 mb-8">
+              <Stack gap={2} className="rounded-xl p-6 mb-8 bg-sup-2">
                 <h3 className="text-xl font-semibold">
                   {t('pages_token_jsx_h3_children_0__olá', {
                     firstName: state.user.firstName,
@@ -323,7 +323,7 @@ export default function ConfirmAccountPage() {
             </h1>
             <p className="text-theme-secondary text-lg mb-6">{state.message}</p>
 
-            <Stack gap={3} className="border rounded-xl p-6 mb-8">
+            <Stack gap={3} className="rounded-xl p-6 mb-8 bg-sup-2">
               <div className="flex items-center justify-center">
                 <PiWarningCircle className="w-5 h-5 mr-2" />
                 <span className="font-medium">

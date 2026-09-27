@@ -71,7 +71,7 @@ const CarouselCard: React.FC<CarouselCardProps> = ({
             {/* Period Badge */}
             {item.epochName && (
               <div className="absolute top-4 left-4 opacity-0 group-hover:opacity-100 transition-all duration-300 transform -translate-y-2 group-hover:translate-y-0">
-                <span className="inline-flex items-center px-3 py-1 backdrop-blur-md border rounded-full text-xs font-medium text-white">
+                <span className="inline-flex items-center px-3 py-1 backdrop-blur-md rounded-full text-xs font-medium text-white bg-sup-2">
                   <PiCalendarBlank className="w-3 h-3 mr-1" />
                   {translateEpochWithHook(
                     translateEpochWithHook(item.epochName, t),
@@ -140,7 +140,7 @@ const CarouselCard: React.FC<CarouselCardProps> = ({
                 </Inline>
 
                 {/* Arrow indicator */}
-                <div className="w-6 h-6 border border-theme-primary rounded-full flex items-center justify-center transition-all duration-300">
+                <div className="w-6 h-6 rounded-full flex items-center justify-center transition-all duration-300">
                   <svg
                     className="w-3 h-3 text-theme-primary transition-all duration-300 transform group-hover:translate-x-0.5"
                     fill="none"

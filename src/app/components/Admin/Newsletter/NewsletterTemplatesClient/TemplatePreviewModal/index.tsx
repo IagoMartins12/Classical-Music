@@ -275,7 +275,7 @@ export default function TemplatePreviewModal({
             {viewMode === 'html' && (
               <div className="flex justify-center">
                 <div
-                  className="transition-all duration-300 border border-theme-secondary rounded-lg overflow-hidden shadow-lg"
+                  className="transition-all duration-300 rounded-lg overflow-hidden shadow-lg"
                   style={{
                     width: getDeviceWidth(),
                     maxWidth: getDeviceMaxWidth(),

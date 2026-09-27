@@ -212,7 +212,7 @@ const PreferencesStep: React.FC<PreferencesStepProps> = ({
           </div>
 
           {selectedComposer && (
-            <div className="my-4  classical-card p-3 rounded-lg border ">
+            <div className="my-4 classical-card p-3 rounded-lg ">
               <Inline gap={3}>
                 {selectedComposer.portraitUrl && (
                   <Image

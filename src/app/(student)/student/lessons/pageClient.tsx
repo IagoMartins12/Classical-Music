@@ -371,7 +371,7 @@ export default function StudentLessonsPageClient({
           {/* Status Badge */}
           <div className="flex items-center justify-between mb-4">
             <span
-              className={`px-3 py-1 rounded-full text-xs font-medium border ${statusDisplayInfo.color}`}
+              className={`px-3 py-1 rounded-full text-xs font-medium bg-sup-2 ${statusDisplayInfo.color}`}
             >
               <StatusIcon className="w-3 h-3 inline mr-1" />
               {statusDisplayInfo.label}

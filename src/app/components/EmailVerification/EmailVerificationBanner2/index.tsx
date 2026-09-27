@@ -165,7 +165,7 @@ const EmailVerificationBanner2: React.FC<EmailVerificationBannerProps> = ({
 
       {/* Progress indicator for unverified email */}
       {bannerType === 'warning' && !isEmailVerified && (
-        <div className="mt-4 pt-3 border-t">
+        <div className="mt-4 pt-3 border-t border-linha">
           <div className="flex items-center text-xs">
             <span className={`${textColor} opacity-75`}>
               {t('email_banner_email')} <strong>{user.email}</strong>

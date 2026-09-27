@@ -210,7 +210,7 @@ export default function RecentActivity() {
       </div>
 
       {error && (
-        <div className="mb-4 p-4 border rounded-xl">
+        <div className="mb-4 p-4 rounded-xl bg-sup-2">
           <p className="text-sm">{error}. Exibindo dados em cache.</p>
         </div>
       )}

@@ -457,12 +457,12 @@ export default function TeacherPageClient({
                           </div>
 
                           <Inline gap={2}>
-                            <span className="px-3 py-1 border rounded-full text-xs font-medium">
+                            <span className="px-3 py-1 rounded-full text-xs font-medium bg-sup-2">
                               {t('status_active')}
                             </span>
                             <Link
                               href={`/teacher/students/${studentRel.student.id}`}
-                              className="w-8 h-8 rounded-lg bg-theme-elevated border border-theme-secondary transition-all flex items-center justify-center group/btn"
+                              className="w-8 h-8 rounded-lg bg-theme-elevated transition-all flex items-center justify-center group/btn"
                             >
                               <PiEye className="w-4 h-4 text-theme-tertiary transition-colors" />
                             </Link>

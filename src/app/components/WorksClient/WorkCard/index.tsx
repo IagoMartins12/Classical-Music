@@ -150,7 +150,7 @@ const WorkCard: React.FC<workCardProps> = ({ work, goToWorkPage }) => {
               <Text
                 papel="legenda"
                 tom="ouro"
-                className="inline-flex items-center px-2 py-1 border rounded-full font-medium"
+                className="inline-flex items-center px-2 py-1 rounded-full font-medium bg-sup-2"
               >
                 <PiClock className="w-2.5 h-2.5 mr-1" />
                 {work.epoch.name}
@@ -200,7 +200,7 @@ const WorkCard: React.FC<workCardProps> = ({ work, goToWorkPage }) => {
                     e.stopPropagation();
                     // Quick preview functionality
                   }}
-                  className="w-6 h-6 border border-theme-primary rounded-full flex items-center justify-center transition-all duration-300 hover:scale-110"
+                  className="w-6 h-6 rounded-full flex items-center justify-center transition-all duration-300 hover:scale-110"
                   title={t('card_jsx_button_quick_preview')}
                 >
                   <svg

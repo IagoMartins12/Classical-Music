@@ -342,7 +342,7 @@ const OnboardingModal: React.FC = () => {
 
       {/* 🆕 AVISO DE VALIDAÇÃO DE TELEFONE (se houver erro) */}
       {step === 5 && validationErrors.phone && (
-        <div className="mb-6 p-4 bg-red-50 border border-red-200 rounded-lg flex items-start space-x-3">
+        <div className="mb-6 p-4 bg-red-50 rounded-lg flex items-start space-x-3">
           <PiPhone className="w-5 h-5 text-red-600 flex-shrink-0 mt-0.5" />
           <div>
             <h4 className="text-sm font-medium text-red-800">

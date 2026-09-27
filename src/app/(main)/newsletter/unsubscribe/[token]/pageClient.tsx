@@ -209,7 +209,7 @@ export default function UnsubscribePage() {
                             as="label"
                             gap={3}
                             key={reasonOption.id}
-                            className="p-3 rounded-lg border border-theme-secondary cursor-pointer transition-colors"
+                            className="p-3 rounded-lg cursor-pointer transition-colors bg-sup-2"
                           >
                             <Input
                               type="radio"

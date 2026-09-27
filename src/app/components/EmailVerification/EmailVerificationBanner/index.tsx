@@ -37,7 +37,7 @@ export default function EmailVerificationBanner({
 
   return (
     <AnimatedItem direction="down" springType="gentle">
-      <div className={`bg-gradient-to-r border backdrop-blur-sm ${className}`}>
+      <div className={`bg-gradient-to-r backdrop-blur-sm ${className}`}>
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
           <div className="flex items-center justify-between">
             <Inline gap={3}>

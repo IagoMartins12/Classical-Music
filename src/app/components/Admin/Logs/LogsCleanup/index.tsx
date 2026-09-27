@@ -10,7 +10,6 @@ import {
   PiFunnel,
   PiSpinnerGap,
   PiTrash,
-  PiWarning,
   PiX,
 } from 'react-icons/pi';
 import {
@@ -23,7 +22,7 @@ import { AnimatedCard } from '@/app/components/animation/AnimatedComponents';
 import toast from 'react-hot-toast';
 import { Stack, Inline } from '@/app/components/ui/Layout';
 import { Text } from '@/app/components/ui/Text';
-import Modal from '@/app/components/Modal';
+import ConfirmModal from '@/app/components/ConfirmModal';
 
 interface LogsCleanupProps {
   onClose?: () => void;
@@ -347,7 +346,7 @@ export default function LogsCleanup({ onClose }: LogsCleanupProps) {
 
           {/* Ações para Seleção */}
           {selectedDates.size > 0 && (
-            <div className="flex items-center justify-between p-4 border rounded-xl">
+            <div className="flex items-center justify-between p-4 rounded-xl bg-sup-2">
               <div>
                 <p className="font-medium">
                   {selectedDates.size} arquivo(s) selecionado(s)
@@ -376,12 +375,12 @@ export default function LogsCleanup({ onClose }: LogsCleanupProps) {
                 </Button>
 
                 <Button
-                  variant="primary"
+                  variant="secondary"
                   size="sm"
                   leftIcon={<PiTrash />}
                   onClick={() => setShowConfirmDialog(true)}
                   disabled={!!actionLoading}
-                  className=""
+                  className="!text-erro"
                 >
                   Deletar Selecionados
                 </Button>
@@ -393,58 +392,22 @@ export default function LogsCleanup({ onClose }: LogsCleanupProps) {
 
       {/* Dialog de Confirmação */}
       {showConfirmDialog && (
-        <Modal
+        <ConfirmModal
           isOpen={true}
           onClose={() => setShowConfirmDialog(false)}
-          maxWidth="md"
-          showCloseButton={false}
-        >
-          <div className="text-center">
-            <div className="w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
-              <PiWarning className="w-8 h-8 text-theme-primary" />
-            </div>
-
-            <h3 className="text-xl font-bold text-theme-primary mb-2">
-              Confirmar Exclusão
-            </h3>
-
-            <p className="text-theme-secondary mb-6">
+          onConfirm={handleDeleteSelected}
+          isLoading={actionLoading === 'delete'}
+          type="danger"
+          title="Confirmar Exclusão"
+          confirmText="Deletar"
+          message={
+            <>
               Tem certeza que deseja deletar{' '}
-              <strong>{selectedDates.size}</strong> arquivo(s) de log?
-              <br />
-              <span className="text-sm mt-2 block">
-                Esta ação não pode ser desfeita!
-              </span>
-            </p>
-
-            <Inline gap={3}>
-              <Button
-                variant="secondary"
-                onClick={() => setShowConfirmDialog(false)}
-                disabled={!!actionLoading}
-                className="flex-1"
-              >
-                Cancelar
-              </Button>
-
-              <Button
-                variant="primary"
-                leftIcon={
-                  actionLoading === 'delete' ? (
-                    <PiSpinnerGap className="animate-spin" />
-                  ) : (
-                    <PiTrash />
-                  )
-                }
-                onClick={handleDeleteSelected}
-                disabled={!!actionLoading}
-                className="flex-1"
-              >
-                {actionLoading === 'delete' ? 'Deletando...' : 'Deletar'}
-              </Button>
-            </Inline>
-          </div>
-        </Modal>
+              <strong className="text-texto">{selectedDates.size}</strong>{' '}
+              arquivo(s) de log? Esta ação não pode ser desfeita.
+            </>
+          }
+        />
       )}
     </div>
   );

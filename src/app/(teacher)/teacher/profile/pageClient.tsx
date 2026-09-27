@@ -506,10 +506,7 @@ export default function TeacherProfilePageClient({
         {/* Success Message */}
         {successMessage && (
           <AnimatedItem direction="up" springType="gentle">
-            <AnimatedCard
-              hover="lift"
-              className="classical-card p-4 mb-6 border-l-4"
-            >
+            <AnimatedCard hover="lift" className="classical-card p-4 mb-6">
               <Inline gap={3}>
                 <div className="w-8 h-8 rounded-full flex items-center justify-center">
                   <PiCheck className="w-4 h-4" />
@@ -523,10 +520,7 @@ export default function TeacherProfilePageClient({
         {/* Error Message */}
         {error && (
           <AnimatedItem direction="up" springType="gentle">
-            <AnimatedCard
-              hover="lift"
-              className="classical-card p-4 mb-6 border-l-4"
-            >
+            <AnimatedCard hover="lift" className="classical-card p-4 mb-6">
               <div className="flex items-center justify-between">
                 <Inline gap={3}>
                   <div className="w-8 h-8 rounded-full flex items-center justify-center">
@@ -634,7 +628,7 @@ export default function TeacherProfilePageClient({
                     {phoneError &&
                       phoneValidation.showError &&
                       phoneValidation.error && (
-                        <div className="p-4 bg-red-50 border border-red-200 rounded-lg flex items-start space-x-3 mt-4">
+                        <div className="p-4 bg-red-50 rounded-lg flex items-start space-x-3 mt-4">
                           <PiWarningCircle className="w-5 h-5 text-red-600 flex-shrink-0 mt-0.5" />
                           <div>
                             <h4 className="text-sm font-medium text-red-800">
@@ -1101,7 +1095,7 @@ export default function TeacherProfilePageClient({
                           as="span"
                           gap={2}
                           key={instrument}
-                          className="px-3 py-1 border rounded-full text-sm"
+                          className="px-3 py-1 rounded-full text-sm bg-sup-2"
                         >
                           <span>{instrument}</span>
                           <button
@@ -1131,7 +1125,7 @@ export default function TeacherProfilePageClient({
                             )
                           }
                           disabled={saving}
-                          className="px-3 py-1 bg-theme-elevated border border-theme-secondary text-theme-secondary rounded-full text-sm transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+                          className="px-3 py-1 bg-theme-elevated text-theme-secondary rounded-full text-sm transition-all disabled:opacity-50 disabled:cursor-not-allowed"
                         >
                           + {instrument}
                         </button>
@@ -1149,7 +1143,7 @@ export default function TeacherProfilePageClient({
                           as="span"
                           gap={2}
                           key={specialty}
-                          className="px-3 py-1 border rounded-full text-sm"
+                          className="px-3 py-1 rounded-full text-sm bg-sup-2"
                         >
                           <span>{specialty}</span>
                           <button
@@ -1179,7 +1173,7 @@ export default function TeacherProfilePageClient({
                             )
                           }
                           disabled={saving}
-                          className="px-3 py-1 bg-theme-elevated border border-theme-secondary text-theme-secondary rounded-full text-sm transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+                          className="px-3 py-1 bg-theme-elevated text-theme-secondary rounded-full text-sm transition-all disabled:opacity-50 disabled:cursor-not-allowed"
                         >
                           + {specialty}
                         </button>
@@ -1376,7 +1370,7 @@ export default function TeacherProfilePageClient({
                             {data.instruments.map((instrument) => (
                               <span
                                 key={instrument}
-                                className="px-3 py-1 border rounded-full text-sm"
+                                className="px-3 py-1 rounded-full text-sm bg-sup-2"
                               >
                                 {instrument}
                               </span>
@@ -1400,7 +1394,7 @@ export default function TeacherProfilePageClient({
                             {data.specialties.map((specialty) => (
                               <span
                                 key={specialty}
-                                className="px-3 py-1 border rounded-full text-sm"
+                                className="px-3 py-1 rounded-full text-sm bg-sup-2"
                               >
                                 {specialty}
                               </span>
@@ -1437,7 +1431,7 @@ export default function TeacherProfilePageClient({
                             {data.ageGroups.map((ageGroup) => (
                               <span
                                 key={ageGroup}
-                                className="px-3 py-1 border rounded-full text-sm"
+                                className="px-3 py-1 rounded-full text-sm bg-sup-2"
                               >
                                 {ageGroup}
                               </span>
@@ -1461,7 +1455,7 @@ export default function TeacherProfilePageClient({
                             {data.skillLevels.map((skillLevel) => (
                               <span
                                 key={skillLevel}
-                                className="px-3 py-1 border rounded-full text-sm"
+                                className="px-3 py-1 rounded-full text-sm bg-sup-2"
                               >
                                 {skillLevel}
                               </span>

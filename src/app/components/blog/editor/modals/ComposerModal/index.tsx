@@ -225,7 +225,7 @@ export function ComposerModal({ editor, onClose }: ComposerModalProps) {
 
                 {/* Preview do Card */}
                 <div
-                  className={`rounded-lg border-l-4 shadow-md p-4 ${
+                  className={`rounded-lg shadow-md p-4 bg-sup-2 ${
                     layout === 'horizontal' ? 'flex items-start space-x-4' : ''
                   }`}
                 >

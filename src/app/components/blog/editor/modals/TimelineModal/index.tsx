@@ -163,6 +163,7 @@ export function TimelineModal({
                 </h4>
                 {events.length > 1 && (
                   <Button
+                    className="!text-erro"
                     type="button"
                     variant="ghost"
                     size="sm"
@@ -227,7 +228,7 @@ export function TimelineModal({
                     <button
                       type="button"
                       onClick={() => updateEvent(index, 'image', '')}
-                      className="absolute top-2 right-2 p-2 bg-red-600 text-white rounded-full hover:bg-red-700 transition-colors shadow-theme-medium"
+                      className="absolute top-2 right-2 p-2 bg-red-600 rounded-full hover:bg-red-700 transition-colors shadow-theme-medium !text-erro"
                     >
                       <PiTrash className="w-4 h-4" />
                       <NomeAcao acao="excluir" />

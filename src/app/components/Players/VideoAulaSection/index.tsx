@@ -928,7 +928,8 @@ const VideoAulaSection: React.FC<VideoAulaSectionProps> = ({
 
                 <Inline gap={3} className="pt-4">
                   <Button
-                    variant="primary"
+                    className="!text-erro"
+                    variant="secondary"
                     size="sm"
                     leftIcon={
                       isUploading ? (
@@ -1056,7 +1057,7 @@ const VideoAulaSection: React.FC<VideoAulaSectionProps> = ({
       {/* Modo de edição */}
       {showEditMode && canEditMedia && (
         <div className="px-6 pb-6">
-          <Stack className="bg-purple-900/20 border border-purple-700/30 rounded-xl p-4">
+          <Stack className="bg-purple-900/20 rounded-xl p-4">
             <div className="flex items-center justify-between">
               <h3 className="text-lg font-semibold text-theme-primary">
                 {t('video_aula_editar_titulo')}
@@ -1069,7 +1070,7 @@ const VideoAulaSection: React.FC<VideoAulaSectionProps> = ({
                   leftIcon={<PiTrash />}
                   onClick={deleteVideoAula}
                   disabled={isUploading}
-                  className="text-red-400 hover:text-red-300 hover:bg-red-400/10"
+                  className="hover:bg-red-400/10 !text-erro"
                 >
                   {isUploading
                     ? t('video_aula_deletando')
@@ -1181,7 +1182,8 @@ const VideoAulaSection: React.FC<VideoAulaSectionProps> = ({
 
               <Inline gap={3} className="pt-4">
                 <Button
-                  variant="primary"
+                  className="!text-erro"
+                  variant="secondary"
                   size="sm"
                   leftIcon={
                     isUploading ? (

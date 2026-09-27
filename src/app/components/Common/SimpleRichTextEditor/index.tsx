@@ -150,14 +150,14 @@ const SimpleRichTextEditor = forwardRef<
 
         <div className={`simple-rich-editor ${error ? 'error' : ''}`}>
           {/* Toolbar */}
-          <div className="toolbar border border-theme-secondary border-b-0 rounded-t-lg p-3 flex flex-wrap gap-2">
+          <div className="toolbar border-b-0 rounded-t-lg p-3 flex flex-wrap gap-2 bg-sup-2">
             {/* Headings */}
             <div className="flex gap-1">
               <button
                 type="button"
                 onClick={() => insertHeading(1)}
                 disabled={disabled}
-                className="px-3 py-1 text-sm text-theme-tertiary border border-theme-secondary rounded transition-all"
+                className="px-3 py-1 text-sm text-theme-tertiary rounded transition-all bg-sup-2"
               >
                 H1
               </button>
@@ -165,7 +165,7 @@ const SimpleRichTextEditor = forwardRef<
                 type="button"
                 onClick={() => insertHeading(2)}
                 disabled={disabled}
-                className="px-3 py-1 text-sm text-theme-tertiary border border-theme-secondary rounded transition-all"
+                className="px-3 py-1 text-sm text-theme-tertiary rounded transition-all bg-sup-2"
               >
                 H2
               </button>
@@ -173,7 +173,7 @@ const SimpleRichTextEditor = forwardRef<
                 type="button"
                 onClick={() => insertHeading(3)}
                 disabled={disabled}
-                className="px-3 py-1 text-sm text-theme-tertiary border border-theme-secondary rounded transition-all"
+                className="px-3 py-1 text-sm text-theme-tertiary rounded transition-all bg-sup-2"
               >
                 H3
               </button>
@@ -265,7 +265,7 @@ const SimpleRichTextEditor = forwardRef<
             onKeyUp={handleKeyUp}
             onMouseUp={updateButtonStates}
             className={`
-            editor-content border border-theme-secondary border-t-0 rounded-b-lg p-4 text-theme-primary focus:outline-none focus:ring-2 focus:ring-inset
+            editor-content border-t-0 rounded-b-lg p-4 text-theme-primary focus:outline-none focus:ring-2 focus:ring-inset bg-sup-2
             ${disabled ? 'cursor-not-allowed opacity-50' : 'cursor-text'}
           `}
             style={{

@@ -236,7 +236,7 @@ export function ModerationList({
               >
                 {/* ✅ INDICADOR DE RESPOSTA */}
                 {isReply && (
-                  <div className="bg-theme-tertiary border-l-4  px-4 py-2">
+                  <div className="bg-theme-tertiary px-4 py-2">
                     <Inline gap={2}>
                       <PiArrowBendUpLeft className="w-4 h-4" />
                       <span className="text-sm font-medium">
@@ -355,7 +355,7 @@ export function ModerationList({
                   {comment.parent && (
                     <Stack
                       gap={1}
-                      className="mb-3 p-3 bg-theme-elevated rounded-lg border-l-4"
+                      className="mb-3 p-3 bg-theme-elevated rounded-lg"
                     >
                       <Text papel="legenda" tom="fraco" as="p">
                         Respondendo a{' '}

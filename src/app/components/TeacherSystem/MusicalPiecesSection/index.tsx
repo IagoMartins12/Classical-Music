@@ -77,7 +77,7 @@ export default function MusicalPiecesSection({
           {workScores.map((workScore, index) => (
             <div
               key={workScore.id}
-              className="bg-theme-elevated border border-theme-secondary rounded-lg p-4"
+              className="bg-theme-elevated rounded-lg p-4"
             >
               <div className="flex items-start justify-between">
                 <div className="flex items-start space-x-3 flex-1">

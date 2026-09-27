@@ -79,7 +79,7 @@ const SpotifyRedirectCard: React.FC<SpotifyRedirectCardProps> = ({
 
   return (
     <AnimatedItem hover="none" springType="bouncy">
-      <div className="bg-gradient-to-br from-green-900/20 to-green-800/20 border border-green-700/30 rounded-xl overflow-hidden hover:border-green-600/50 transition-all duration-300 hover:shadow-green-500/20 hover:shadow-lg">
+      <div className="bg-gradient-to-br from-green-900/20 to-green-800/20 rounded-xl overflow-hidden transition-all duration-300 hover:shadow-green-500/20 hover:shadow-lg">
         {/* Header com Logo Spotify */}
         <div className="p-4 border-b border-green-700/30 bg-green-900/10">
           <div className="flex items-center justify-between">
@@ -124,7 +124,7 @@ const SpotifyRedirectCard: React.FC<SpotifyRedirectCardProps> = ({
                     height={80}
                     src={thumbnailUrl}
                     alt={spotify.albumName}
-                    className="w-20 h-20 rounded-lg object-cover shadow-lg border border-green-700/30"
+                    className="w-20 h-20 rounded-lg object-cover shadow-lg"
                     onError={(e) => {
                       console.warn(
                         'Erro ao carregar thumbnail do Spotify:',
@@ -137,13 +137,13 @@ const SpotifyRedirectCard: React.FC<SpotifyRedirectCardProps> = ({
 
                   {/* 🆕 Indicador de qualidade da imagem */}
                   {spotify.thumbnail && (
-                    <div className="absolute -top-1 -right-1 w-4 h-4 bg-[#1db954] rounded-full flex items-center justify-center border border-green-900">
+                    <div className="absolute -top-1 -right-1 w-4 h-4 bg-[#1db954] rounded-full flex items-center justify-center">
                       <div className="w-2 h-2 bg-white rounded-full"></div>
                     </div>
                   )}
                 </div>
               ) : (
-                <div className="w-20 h-20 bg-gradient-to-br from-green-800/50 to-green-700/50 rounded-lg flex items-center justify-center border border-green-700/30">
+                <div className="w-20 h-20 bg-gradient-to-br from-green-800/50 to-green-700/50 rounded-lg flex items-center justify-center">
                   <PiSpotifyLogo className="w-8 h-8 text-green-400" />
                 </div>
               )}
@@ -199,7 +199,7 @@ const SpotifyRedirectCard: React.FC<SpotifyRedirectCardProps> = ({
 
           {/* 🆕 Preview Player (se disponível) - Melhorado */}
           {spotify.previewUrl && (
-            <div className="mt-4 p-3 bg-green-900/10 rounded-lg border border-green-700/20">
+            <div className="mt-4 p-3 bg-green-900/10 rounded-lg">
               <Inline gap={3}>
                 <div className="w-8 h-8 bg-green-600 rounded-full flex items-center justify-center">
                   <PiMusicNotes className="w-4 h-4 text-white" />

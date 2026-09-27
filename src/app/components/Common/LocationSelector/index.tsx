@@ -351,7 +351,7 @@ const ElegantSelectWithSearch: React.FC<SelectWithSearchProps> = ({
       {isOpen && !disabled && (
         <div
           ref={dropdownRef}
-          className="absolute top-full left-0 right-0 mt-2 bg-theme-elevated border border-theme-secondary rounded-xl shadow-2xl max-h-80 overflow-hidden"
+          className="absolute top-full left-0 right-0 mt-2 bg-theme-elevated rounded-xl shadow-2xl max-h-80 overflow-hidden"
           style={{ zIndex: 'var(--z-menu)' }}
         >
           {headerLabel && (

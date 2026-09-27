@@ -846,7 +846,7 @@ const UploadsClient = ({
             {/* Expanded Filters */}
             {showFilters && (
               <AnimatedItem direction="scale" springType="gentle">
-                <div className="bg-theme-secondary rounded-xl p-4 border border-theme-primary mt-4">
+                <div className="bg-theme-secondary rounded-xl p-4 mt-4">
                   <div className="flex items-center justify-between mb-4">
                     <Inline
                       as="h3"
@@ -868,7 +868,7 @@ const UploadsClient = ({
                       {hasActiveFilters && (
                         <button
                           onClick={clearFilters}
-                          className="text-xs text-theme-tertiary transition-colors px-2 py-1 rounded border"
+                          className="text-xs text-theme-tertiary transition-colors px-2 py-1 rounded bg-sup-2"
                         >
                           {t('filters_clear_all')}
                         </button>

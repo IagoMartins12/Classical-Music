@@ -442,7 +442,7 @@ const RegisterModal: React.FC = () => {
         {/* Status de login - não mostrar para usuários Google */}
         {!registerStep.userData?.isLoggedIn &&
           registerStep.userData?.registrationMethod !== 'google' && (
-            <div className="border rounded-lg p-4">
+            <div className="rounded-lg p-4 bg-sup-2">
               <div className="flex items-start">
                 <PiWarning className="w-5 h-5 mr-3 mt-0.5 flex-shrink-0" />
                 <Stack gap={1}>
@@ -459,7 +459,7 @@ const RegisterModal: React.FC = () => {
 
         {/* Informações específicas para Google vs Email */}
         {registerStep.userData?.registrationMethod === 'google' ? (
-          <div className="border rounded-lg p-4">
+          <div className="rounded-lg p-4 bg-sup-2">
             <div className="flex items-start">
               <div>
                 <h4 className="font-medium mb-1">
@@ -478,7 +478,7 @@ const RegisterModal: React.FC = () => {
             </div>
           </div>
         ) : (
-          <div className="border rounded-lg p-4">
+          <div className="rounded-lg p-4 bg-sup-2">
             <div className="flex items-start">
               <div>
                 <h4 className="font-medium mb-1">
@@ -604,7 +604,9 @@ const RegisterModal: React.FC = () => {
 
       <form onSubmit={handleSubmit} className="space-y-6">
         {errors.general && (
-          <div className="p-3 rounded-lg border text-sm">{errors.general}</div>
+          <div className="p-3 rounded-lg text-sm bg-sup-2">
+            {errors.general}
+          </div>
         )}
 
         <div className="grid grid-cols-1 gap-4">

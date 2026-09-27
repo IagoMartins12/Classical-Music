@@ -149,7 +149,7 @@ export default function ReportHistoryModal({
               {reports.map((report) => (
                 <div
                   key={report.id}
-                  className="p-4 bg-theme-secondary rounded-lg border border-theme-primary"
+                  className="p-4 bg-theme-secondary rounded-lg"
                 >
                   <div className="flex items-start justify-between mb-3">
                     <Inline gap={3}>
@@ -202,7 +202,7 @@ export default function ReportHistoryModal({
                   </div>
 
                   {report.moderationNotes && (
-                    <div className="mt-3 p-2 bg-theme-elevated rounded border border-theme-primary">
+                    <div className="mt-3 p-2 bg-theme-elevated rounded">
                       <Text papel="rotulo" tom="forte" as="p">
                         <strong>Notas da moderação:</strong>{' '}
                         {report.moderationNotes}

@@ -37,9 +37,9 @@ const Button: React.FC<ButtonProps> = ({
   const variants = {
     primary: 'btn-classical-primary',
     secondary: 'btn-classical-secondary',
-    delete: `
-      btn-classical-secondary !bg-red-700 text-white font-bold focus:ring-red-500
-    `,
+    // O vermelho do sistema: antes `btn-classical-secondary !bg-red-700`, e o
+    // degradê da classe cobria a cor — o botão de apagar saía neutro.
+    delete: 'btn-classical-delete',
     outline: `
       bg-transparent border-2 border-theme-accent text-ouro-texto
     `,
@@ -47,7 +47,7 @@ const Button: React.FC<ButtonProps> = ({
       bg-transparent text-theme-secondary
     `,
     google: `
-      bg-white text-gray-700 border border-gray-300 hover:bg-gray-50 focus:ring-2 focus:ring-blue-500
+      bg-white text-gray-700 hover:bg-gray-50 focus:ring-2 focus:ring-blue-500
     `,
     success: `
       bg-green-600 text-white hover:bg-green-700 focus:ring-2 focus:ring-green-500

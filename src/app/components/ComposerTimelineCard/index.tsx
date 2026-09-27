@@ -112,7 +112,7 @@ export function ComposerTimelineCard({
           </Inline>
 
           {/* Lifespan */}
-          <div className="flex items-center justify-between mb-4 p-3 border border-theme-primary rounded-xl">
+          <div className="flex items-center justify-between mb-4 p-3 rounded-xl bg-sup-2">
             <div className="flex items-center text-theme-secondary">
               <div className="w-6 h-6 border-theme-primary rounded-lg flex items-center justify-center mr-2">
                 <PiCalendarBlank className="w-4 h-4" />
@@ -125,7 +125,7 @@ export function ComposerTimelineCard({
               <Text
                 papel="legenda"
                 tom="suave"
-                className="bg-theme-elevated border border-theme-secondary px-2 py-1 rounded-full"
+                className="bg-theme-elevated px-2 py-1 rounded-full"
               >
                 {getLifespanDuration(composer)}{' '}
                 {t('timeline_jsx_span_children_0__anos')}

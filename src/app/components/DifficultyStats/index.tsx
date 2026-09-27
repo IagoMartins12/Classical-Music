@@ -37,7 +37,7 @@ export default function DifficultyStats({ stats }: DifficultyStatsProps) {
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
         {/* Total de Obras */}
         <AnimatedItem direction="up" hover="lift">
-          <div className="bg-theme-elevated rounded-xl p-4 border border-theme-secondary">
+          <div className="bg-theme-elevated rounded-xl p-4">
             <div className="flex items-center justify-between mb-3">
               <div className="w-10 h-10 rounded-lg flex items-center justify-center">
                 <PiTrendUp className="w-5 h-5 text-ouro-texto" />
@@ -57,7 +57,7 @@ export default function DifficultyStats({ stats }: DifficultyStatsProps) {
 
         {/* Instrumentos */}
         <AnimatedItem direction="up" hover="lift" delay={0.1}>
-          <div className="bg-theme-elevated rounded-xl p-4 border border-theme-secondary">
+          <div className="bg-theme-elevated rounded-xl p-4">
             <div className="flex items-center justify-between mb-3">
               <div className="w-10 h-10 rounded-lg flex items-center justify-center">
                 <PiUsers className="w-5 h-5" />
@@ -77,7 +77,7 @@ export default function DifficultyStats({ stats }: DifficultyStatsProps) {
 
         {/* Nível Médio */}
         <AnimatedItem direction="up" hover="lift" delay={0.2}>
-          <div className="bg-theme-elevated rounded-xl p-4 border border-theme-secondary">
+          <div className="bg-theme-elevated rounded-xl p-4">
             <div className="flex items-center justify-between mb-3">
               <div className="w-10 h-10 rounded-lg flex items-center justify-center">
                 <PiChartBar className="w-5 h-5" />
@@ -95,7 +95,7 @@ export default function DifficultyStats({ stats }: DifficultyStatsProps) {
 
         {/* Nível Mais Comum */}
         <AnimatedItem direction="up" hover="lift" delay={0.3}>
-          <div className="bg-theme-elevated rounded-xl p-4 border border-theme-secondary">
+          <div className="bg-theme-elevated rounded-xl p-4">
             <div className="flex items-center justify-between mb-3">
               <div className="w-10 h-10 rounded-lg flex items-center justify-center">
                 <PiMedal className="w-5 h-5" />

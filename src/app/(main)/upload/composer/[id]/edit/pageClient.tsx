@@ -560,7 +560,7 @@ const EditComposerClient = ({
                 >
                   <div className="relative group">
                     {composer.portraitUrl && !imageError ? (
-                      <div className="relative w-64 h-80 rounded-2xl overflow-hidden shadow-theme-glow border border-theme-primary group-hover:scale-105 transition-all duration-500">
+                      <div className="relative w-64 h-80 rounded-2xl overflow-hidden shadow-theme-glow group-hover:scale-105 transition-all duration-500">
                         <Image
                           src={composer.portraitUrl}
                           alt={composer.name}
@@ -573,7 +573,7 @@ const EditComposerClient = ({
                         <div className="absolute inset-0 opacity-0 group-hover:opacity-10 transition-opacity duration-500"></div>
                       </div>
                     ) : (
-                      <div className="w-64 h-80 border border-theme-primary rounded-2xl flex items-center justify-center shadow-theme-glow group-hover:scale-105 transition-all duration-500">
+                      <div className="w-64 h-80 rounded-2xl flex items-center justify-center shadow-theme-glow group-hover:scale-105 transition-all duration-500">
                         <div className="text-center text-theme-tertiary">
                           <PiUser className="w-16 h-16 mx-auto mb-4 opacity-50" />
                           <p className="text-sm">{t('composer_no_image')}</p>
@@ -607,7 +607,7 @@ const EditComposerClient = ({
                       papel="legenda"
                       tom="forte"
                       as="div"
-                      className="absolute bottom-full right-0 mb-2 px-3 py-2 bg-theme-elevated border border-theme-primary rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none whitespace-nowrap z-10 shadow-theme-medium"
+                      className="absolute bottom-full right-0 mb-2 px-3 py-2 bg-theme-elevated rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none whitespace-nowrap z-10 shadow-theme-medium"
                     >
                       Biografia cadastrada no sistema
                       <div className="absolute top-full right-3 w-0 h-0 border-l-4 border-r-4 border-t-4 border-transparent"></div>

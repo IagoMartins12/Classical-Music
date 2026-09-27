@@ -277,7 +277,7 @@ export default function FilterPanel({
                   </div>
                   <button
                     onClick={() => onRemoveFilter(field)}
-                    className="p-2 rounded transition-colors"
+                    className="p-2 rounded transition-colors !text-erro"
                   >
                     <PiTrash className="w-4 h-4" />
                     <NomeAcao acao="excluir" />

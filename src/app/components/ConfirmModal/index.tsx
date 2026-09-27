@@ -1,68 +1,48 @@
-// app/components/Common/ConfirmModal.tsx
+// components/ConfirmModal/index.tsx
 'use client';
 
-import { useEffect, useState } from 'react';
-import { createPortal } from 'react-dom';
-import {
-  PiCheck,
-  PiInfo,
-  PiQuestion,
-  PiSpinnerGap,
-  PiTrash,
-  PiWarning,
-} from 'react-icons/pi';
-import Button from '../Common/Button';
-import { Inline } from '@/app/components/ui/Layout';
-import { Text } from '@/app/components/ui/Text';
+import { useState } from 'react';
+import type { ReactNode } from 'react';
+import { PiInfo, PiQuestion, PiTrash, PiWarning } from 'react-icons/pi';
 import Modal from '@/app/components/Modal';
+import { Button } from '@/app/components/ui/Button';
+import { Inline, Stack } from '@/app/components/ui/Layout';
+
+/**
+ * A confirmação do sistema — o único formato de "tem certeza?".
+ *
+ * Um ícone grande, o título, a mensagem, e as ações à direita. Sem ícone
+ * dentro do botão (era um segundo ícone, pequeno, repetindo o grande) e sem a
+ * linha de subtítulo que repetia a mensagem. Cor só onde ela diz algo:
+ * apagar pinta de vermelho o ícone e o botão; o resto fica no ouro.
+ */
 
 export interface ConfirmModalProps {
   isOpen: boolean;
   onClose: () => void;
   onConfirm: () => void | Promise<void>;
   title: string;
-  message: string;
+  message: ReactNode;
   type?: 'danger' | 'warning' | 'info' | 'question';
   confirmText?: string;
   cancelText?: string;
   isLoading?: boolean;
-  children?: React.ReactNode; // Para conteúdo adicional
+  /** Conteúdo a mais entre a mensagem e as ações (lista, aviso). */
+  children?: ReactNode;
+  /** Só avisa: sem botão de confirmar (ex.: local com eventos não se apaga). */
+  semConfirmar?: boolean;
+  /** Bloqueia só o confirmar (ex.: enquanto confere o que vai junto). */
+  confirmarBloqueado?: boolean;
+  /** Botão vermelho mesmo sem ser `danger` (descartar alterações). */
+  acaoPerigosa?: boolean;
 }
 
-const TYPE_CONFIG = {
-  danger: {
-    icon: PiTrash,
-    color: '',
-    bgColor: '',
-    borderColor: '',
-    buttonVariant: 'delete' as const,
-    defaultConfirmText: 'Deletar',
-  },
-  warning: {
-    icon: PiWarning,
-    color: '',
-    bgColor: '',
-    borderColor: '',
-    buttonVariant: 'primary' as const,
-    defaultConfirmText: 'Continuar',
-  },
-  info: {
-    icon: PiInfo,
-    color: '',
-    bgColor: '',
-    borderColor: '',
-    buttonVariant: 'primary' as const,
-    defaultConfirmText: 'OK',
-  },
-  question: {
-    icon: PiQuestion,
-    color: 'text-ouro-texto',
-    bgColor: '',
-    borderColor: '',
-    buttonVariant: 'primary' as const,
-    defaultConfirmText: 'Sim',
-  },
-};
+const TIPO = {
+  danger: { icone: PiTrash, tom: 'text-erro', acao: 'Deletar' },
+  warning: { icone: PiWarning, tom: 'text-ouro-texto', acao: 'Continuar' },
+  info: { icone: PiInfo, tom: 'text-ouro-texto', acao: 'OK' },
+  question: { icone: PiQuestion, tom: 'text-ouro-texto', acao: 'Sim' },
+} as const;
 
 export default function ConfirmModal({
   isOpen,
@@ -75,104 +55,67 @@ export default function ConfirmModal({
   cancelText = 'Cancelar',
   isLoading = false,
   children,
+  semConfirmar = false,
+  confirmarBloqueado = false,
+  acaoPerigosa = type === 'danger',
 }: ConfirmModalProps) {
-  const [mounted, setMounted] = useState(false);
-  const [processing, setProcessing] = useState(false);
+  const [processando, setProcessando] = useState(false);
+  const ocupado = isLoading || processando;
+  const { icone: Icone, tom, acao } = TIPO[type];
 
-  useEffect(() => {
-    setMounted(true);
-  }, []);
-
-  useEffect(() => {
-    if (isOpen) {
-      const originalOverflow = document.body.style.overflow;
-      document.body.style.overflow = 'hidden';
-
-      return () => {
-        document.body.style.overflow = originalOverflow;
-      };
-    }
-  }, [isOpen]);
-
-  const handleConfirm = async () => {
-    setProcessing(true);
+  const confirmar = async () => {
+    setProcessando(true);
     try {
       await onConfirm();
     } finally {
-      setProcessing(false);
+      setProcessando(false);
     }
   };
 
-  if (!mounted || !isOpen) return null;
-
-  const config = TYPE_CONFIG[type];
-  const Icon = config.icon;
-  const finalConfirmText = confirmText || config.defaultConfirmText;
-  const isLoadingState = isLoading || processing;
-
-  const modalContent = (
+  return (
     <Modal
       isOpen={isOpen}
-      onClose={onClose}
+      onClose={() => {
+        if (!ocupado) onClose();
+      }}
+      closeOnOverlayClick={!ocupado}
       maxWidth="md"
       showCloseButton={false}
     >
-      {/* Header */}
-      <Inline gap={3} className="mb-4">
-        <div
-          className={`
-                w-12 h-12 rounded-xl flex items-center justify-center
-                ${config?.bgColor} ${config?.borderColor} border
-              `}
-        >
-          <Icon className={`w-6 h-6 ${config?.color}`} />
-        </div>
-        <div>
-          <h3 className="text-lg font-bold text-theme-primary">{title}</h3>
-          <Text papel="rotulo" tom="suave" as="p">
-            {type === 'danger' && 'Esta ação não pode ser desfeita'}
-            {type === 'warning' && 'Verifique antes de continuar'}
-            {type === 'info' && 'Informação importante'}
-            {type === 'question' && 'Confirme sua escolha'}
-          </Text>
-        </div>
-      </Inline>
+      <Stack gap={6}>
+        <Inline gap={4} alinhar="inicio">
+          <span
+            aria-hidden="true"
+            className={`fundo-sup-2 grid h-12 w-12 shrink-0 place-items-center rounded-full ${tom}`}
+          >
+            <Icone className="h-6 w-6" />
+          </span>
+          <Stack gap={2} className="min-w-0 pt-1">
+            <h2 className="t-subtitulo">{title}</h2>
+            <div className="t-corpo text-texto-suave">{message}</div>
+          </Stack>
+        </Inline>
 
-      {/* Message */}
-      <div className="mb-6">
-        <p className="text-theme-secondary leading-relaxed">{message}</p>
-      </div>
+        {children}
 
-      {/* Additional content */}
-      {children && <div className="mb-6">{children}</div>}
-
-      {/* Actions */}
-      <Inline gap={3} className="justify-end">
-        <Button variant="secondary" onClick={onClose} disabled={isLoadingState}>
-          {cancelText}
-        </Button>
-
-        <Button
-          variant={config?.buttonVariant}
-          onClick={handleConfirm}
-          disabled={isLoadingState}
-          leftIcon={
-            isLoadingState ? (
-              <PiSpinnerGap className="animate-spin" />
-            ) : type === 'danger' ? (
-              <PiTrash />
-            ) : type === 'question' ? (
-              <PiCheck />
-            ) : undefined
-          }
-        >
-          {isLoadingState ? 'Processando...' : finalConfirmText}
-        </Button>
-      </Inline>
+        <Inline gap={3} quebra className="justify-end">
+          <Button variante="secundario" onClick={onClose} disabled={ocupado}>
+            {cancelText}
+          </Button>
+          {!semConfirmar && (
+            <Button
+              variante={acaoPerigosa ? 'perigo' : 'primario'}
+              onClick={confirmar}
+              carregando={ocupado}
+              disabled={confirmarBloqueado}
+            >
+              {confirmText || acao}
+            </Button>
+          )}
+        </Inline>
+      </Stack>
     </Modal>
   );
-
-  return createPortal(modalContent, document.body);
 }
 
 // Hook para usar o modal de confirmação de forma mais simples

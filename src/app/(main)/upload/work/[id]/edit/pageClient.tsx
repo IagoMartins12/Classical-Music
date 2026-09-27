@@ -491,7 +491,7 @@ const EditWorkClient = ({
                           </Inline>
                         )}
                         {work.instrumentation && (
-                          <div className="md:col-span-2 p-3 rounded-xl border border-theme-primary">
+                          <div className="md:col-span-2 p-3 rounded-xl bg-sup-2">
                             <span className="font-medium text-theme-tertiary block mb-1">
                               {t('work_info_instrumentation')}:
                             </span>
@@ -533,7 +533,7 @@ const EditWorkClient = ({
                                     papel="rotulo"
                                     tom="ouro"
                                     key={index}
-                                    className="px-4 py-2 bg-gradient-to-r border rounded-full font-medium"
+                                    className="px-4 py-2 bg-gradient-to-r rounded-full font-medium bg-sup-2"
                                   >
                                     {categoryName}
                                   </Text>
@@ -557,7 +557,7 @@ const EditWorkClient = ({
                                 (workGenre: string, index: number) => (
                                   <span
                                     key={index}
-                                    className="capitalize px-4 py-2 border rounded-full text-sm font-medium"
+                                    className="capitalize px-4 py-2 rounded-full text-sm font-medium bg-sup-2"
                                   >
                                     {workGenre}
                                   </span>
@@ -624,7 +624,7 @@ const EditWorkClient = ({
 
                     <div className="text-center space-y-4">
                       {work.composer.portraitUrl && !imageError ? (
-                        <div className="relative w-32 h-40 mx-auto rounded-xl overflow-hidden shadow-theme-medium border border-theme-primary">
+                        <div className="relative w-32 h-40 mx-auto rounded-xl overflow-hidden shadow-theme-medium">
                           <Image
                             src={work.composer.portraitUrl}
                             alt={work.composer.fullName || work.composer.name}
@@ -635,7 +635,7 @@ const EditWorkClient = ({
                           />
                         </div>
                       ) : (
-                        <div className="w-32 h-40 mx-auto border border-theme-primary rounded-xl flex items-center justify-center">
+                        <div className="w-32 h-40 mx-auto rounded-xl flex items-center justify-center">
                           <PiUser className="w-8 h-8 text-theme-tertiary opacity-50" />
                         </div>
                       )}

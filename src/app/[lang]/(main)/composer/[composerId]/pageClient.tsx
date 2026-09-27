@@ -625,7 +625,7 @@ export default function ComposerDetailsClient({
                 >
                   <div className="relative group">
                     {composer.portraitUrl && !imageError ? (
-                      <div className="relative w-64 h-80 rounded-2xl overflow-hidden shadow-theme-glow border border-theme-primary group-hover:scale-105 transition-all duration-500">
+                      <div className="relative w-64 h-80 rounded-2xl overflow-hidden shadow-theme-glow group-hover:scale-105 transition-all duration-500">
                         <Image
                           src={composer.portraitUrl}
                           alt={composer.name}
@@ -638,7 +638,7 @@ export default function ComposerDetailsClient({
                         <div className="absolute inset-0 opacity-0 group-hover:opacity-10 transition-opacity duration-500"></div>
                       </div>
                     ) : (
-                      <div className="w-64 h-80 border border-theme-primary rounded-2xl flex items-center justify-center shadow-theme-glow group-hover:scale-105 transition-all duration-500">
+                      <div className="w-64 h-80 rounded-2xl flex items-center justify-center shadow-theme-glow group-hover:scale-105 transition-all duration-500">
                         <div className="text-center text-theme-tertiary">
                           <PiUser className="w-16 h-16 mx-auto mb-4 opacity-50" />
                           <p className="text-sm">{t('no_image_available')}</p>
@@ -676,7 +676,7 @@ export default function ComposerDetailsClient({
               <div className="flex flex-wrap gap-3">
                 {secondaryRoles.map((role, index) => (
                   <AnimatedItem key={index} hover="scale" springType="bouncy">
-                    <span className="inline-flex items-center px-4 py-2 border rounded-full text-sm font-medium shadow-theme-small transition-all duration-300 hover:scale-105 group">
+                    <span className="inline-flex items-center px-4 py-2 rounded-full text-sm font-medium shadow-theme-small transition-all duration-300 hover:scale-105 group bg-sup-2">
                       <div className="w-4 h-4 rounded-full flex items-center justify-center mr-2 group-hover:scale-110 transition-transform duration-300">
                         <PiMusicNotes className="w-3 h-3 text-theme-primary" />
                       </div>
@@ -689,7 +689,7 @@ export default function ComposerDetailsClient({
 
               {secondaryRoles.length > 5 && (
                 <AnimatedItem direction="up" springType="gentle">
-                  <div className="mt-6 p-4 rounded-xl border border-theme-primary">
+                  <div className="mt-6 p-4 rounded-xl bg-sup-2">
                     <Text papel="rotulo" tom="suave" as="p">
                       <strong className="text-ouro-texto">
                         {composer.name}
@@ -727,7 +727,7 @@ export default function ComposerDetailsClient({
                     papel="legenda"
                     tom="forte"
                     as="div"
-                    className="absolute bottom-full right-0 mb-2 px-3 py-2 bg-theme-elevated border border-theme-primary rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none whitespace-nowrap z-10 shadow-theme-medium"
+                    className="absolute bottom-full right-0 mb-2 px-3 py-2 bg-theme-elevated rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none whitespace-nowrap z-10 shadow-theme-medium"
                   >
                     {t('biography_ai_tooltip')}
                     <div className="absolute top-full right-3 w-0 h-0 border-l-4 border-r-4 border-t-4 border-transparent"></div>

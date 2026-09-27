@@ -315,7 +315,7 @@ export default function StudentNotificationsPageClient({
                     className={`flex items-center space-x-2 px-3 py-2 rounded-lg transition-all ${
                       filter === filterType
                         ? 'text-theme-primary border'
-                        : 'bg-theme-elevated text-theme-secondary border border-theme-secondary'
+                        : 'bg-theme-elevated text-theme-secondary'
                     }`}
                   >
                     {getFilterIcon(filterType)}
@@ -367,7 +367,7 @@ export default function StudentNotificationsPageClient({
                   <AnimatedCard
                     key={notification.id}
                     hover="lift"
-                    className={`classical-card border-l-4 ${getPriorityColor(
+                    className={`classical-card ${getPriorityColor(
                       notification.priority
                     )} ${notification.status === 'UNREAD' ? 'ring-1' : ''}`}
                   >
@@ -420,7 +420,7 @@ export default function StudentNotificationsPageClient({
                                 </span>
 
                                 {/* Type Badge */}
-                                <span className="px-2 py-1 rounded-full text-xs bg-theme-elevated border border-theme-secondary">
+                                <span className="px-2 py-1 rounded-full text-xs bg-theme-elevated">
                                   {getTypeLabel(notification.type)}
                                 </span>
                               </Inline>

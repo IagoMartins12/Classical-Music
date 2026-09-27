@@ -302,7 +302,7 @@ const EditCampaignModal: React.FC<EditCampaignModalProps> = ({
         </div>
 
         {errors.general && (
-          <div className="border p-4 rounded-lg">
+          <div className="p-4 rounded-lg bg-sup-2">
             <p className="text-sm">{errors.general}</p>
           </div>
         )}

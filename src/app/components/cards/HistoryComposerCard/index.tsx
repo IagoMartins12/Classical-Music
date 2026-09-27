@@ -105,7 +105,7 @@ export function HistoryComposerCard({ composer }: Props) {
           </div>
 
           {/* Link indicator */}
-          <div className="w-6 h-6 border border-theme-secondary rounded-lg flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all duration-300">
+          <div className="w-6 h-6 rounded-lg flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all duration-300">
             <PiArrowSquareOut className="w-3 h-3" />
           </div>
         </Inline>

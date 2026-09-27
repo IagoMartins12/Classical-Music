@@ -64,7 +64,7 @@ export default function ComposerArticlesSection({
             delay={index * 0.1}
           >
             <Link href={`/blog/${article.slug}`}>
-              <div className="group h-full border border-theme-primary rounded-xl overflow-hidden transition-all duration-300 hover:-translate-y-1">
+              <div className="group h-full rounded-xl overflow-hidden transition-all duration-300 hover:-translate-y-1">
                 {/* Cover Image */}
                 {article.coverImage ? (
                   <div className="relative w-full h-48 overflow-hidden">

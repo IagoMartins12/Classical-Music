@@ -129,7 +129,7 @@ const ComposerCardList: React.FC<composerCardListProps> = ({ composer }) => {
             href={composer.wikipediaLink}
             target="_blank"
             rel="noopener noreferrer"
-            className="inline-flex items-center px-2 py-1 border rounded-md text-xs font-medium hover:scale-105 transition-all duration-300 group/link"
+            className="inline-flex items-center px-2 py-1 rounded-md text-xs font-medium hover:scale-105 transition-all duration-300 group/link bg-sup-2"
             onClick={(e) => e.stopPropagation()}
           >
             Wikipedia
@@ -142,7 +142,7 @@ const ComposerCardList: React.FC<composerCardListProps> = ({ composer }) => {
             href={composer.permLinkImslp}
             target="_blank"
             rel="noopener noreferrer"
-            className="inline-flex items-center px-2 py-1 border rounded-md text-xs font-medium hover:scale-105 transition-all duration-300 group/link"
+            className="inline-flex items-center px-2 py-1 rounded-md text-xs font-medium hover:scale-105 transition-all duration-300 group/link bg-sup-2"
             onClick={(e) => e.stopPropagation()}
           >
             IMSLP
@@ -181,7 +181,7 @@ const ComposerCardList: React.FC<composerCardListProps> = ({ composer }) => {
         </Text>
 
         {/* Arrow */}
-        <div className="w-8 h-8 border border-theme-primary rounded-full flex items-center justify-center transition-all duration-300">
+        <div className="w-8 h-8 rounded-full flex items-center justify-center transition-all duration-300">
           <PiCaretRight className="w-4 h-4 text-theme-primary transition-all duration-300 transform group-hover:translate-x-0.5" />
         </div>
       </Inline>

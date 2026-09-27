@@ -182,7 +182,7 @@ const FeaturedComposer: React.FC<FeaturedComposerProps> = ({ composer }) => {
                     href={composer.wikipediaLink}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="inline-flex items-center px-4 py-2 border rounded-xl text-sm font-medium hover:scale-105 transition-all duration-300 group/link"
+                    className="inline-flex items-center px-4 py-2 rounded-xl text-sm font-medium hover:scale-105 transition-all duration-300 group/link bg-sup-2"
                   >
                     Wikipedia
                     <PiArrowSquareOut className="w-3 h-3 ml-2 opacity-60 group-hover/link:opacity-100" />
@@ -193,7 +193,7 @@ const FeaturedComposer: React.FC<FeaturedComposerProps> = ({ composer }) => {
                     href={composer.permLinkImslp}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="inline-flex items-center px-4 py-2 border rounded-xl text-sm font-medium hover:scale-105 transition-all duration-300 group/link"
+                    className="inline-flex items-center px-4 py-2 rounded-xl text-sm font-medium hover:scale-105 transition-all duration-300 group/link bg-sup-2"
                   >
                     IMSLP
                     <PiArrowSquareOut className="w-3 h-3 ml-2 opacity-60 group-hover/link:opacity-100" />

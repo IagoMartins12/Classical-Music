@@ -340,7 +340,7 @@ export default function GenresClient({ genres }: GenresClientProps) {
                             onClick={() =>
                               handleGenreSelect(genre.id, genre.name)
                             }
-                            className="w-full p-4 text-left transition-all duration-300 rounded-lg group animate-fade-in-up border border-transparent"
+                            className="w-full p-4 text-left transition-all duration-300 rounded-lg group animate-fade-in-up bg-sup-2"
                             style={{
                               animationDelay: `${index * 0.02}s`,
                               animationFillMode: 'backwards',

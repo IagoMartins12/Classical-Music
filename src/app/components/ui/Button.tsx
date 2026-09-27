@@ -35,7 +35,7 @@ const VARIANTE: Record<Variante, string> = {
   fantasma:
     'bg-transparent text-texto-suave border-transparent hover:text-texto hover:bg-[var(--interactive-hover)] font-medium',
   perigo:
-    'bg-transparent text-erro border-erro/40 hover:bg-erro/10 font-medium',
+    'bg-erro text-sobre-erro border-transparent font-semibold hover:bg-[color-mix(in_srgb,var(--erro)_86%,var(--texto))]',
 };
 
 const TAMANHO: Record<Tamanho, string> = {

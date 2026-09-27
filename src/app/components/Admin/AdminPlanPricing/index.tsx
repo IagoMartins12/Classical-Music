@@ -191,7 +191,7 @@ export default function AdminPlanPricingPage() {
             </Button>
 
             {/* Info sobre os planos que serão criados */}
-            <div className="mt-8 bg-blue-50 border border-blue-200 rounded-lg p-4 max-w-2xl mx-auto text-left">
+            <div className="mt-8 bg-blue-50 rounded-lg p-4 max-w-2xl mx-auto text-left">
               <div className="flex gap-3">
                 <PiInfo className="w-5 h-5 text-blue-500 flex-shrink-0 mt-0.5" />
                 <div className="text-sm text-blue-900">
@@ -232,7 +232,7 @@ export default function AdminPlanPricingPage() {
             return (
               <div
                 key={plan.id}
-                className="classical-card rounded-xl shadow-sm border overflow-hidden"
+                className="classical-card rounded-xl shadow-sm overflow-hidden"
               >
                 {/* Header */}
                 <div
@@ -413,7 +413,7 @@ export default function AdminPlanPricingPage() {
                   )}
 
                   {/* Actions */}
-                  <div className="flex gap-2 pt-4 border-t">
+                  <div className="flex gap-2 pt-4 border-t border-linha">
                     {isEditing ? (
                       <>
                         <Button
@@ -455,7 +455,7 @@ export default function AdminPlanPricingPage() {
 
       {/* Info Box */}
       {activePlans.length > 0 && (
-        <div className="bg-blue-50 border border-blue-200 rounded-xl p-4 flex gap-3">
+        <div className="bg-blue-50 rounded-xl p-4 flex gap-3">
           <PiInfo className="w-5 h-5 text-blue-500 flex-shrink-0 mt-0.5" />
           <Stack gap={1} className="text-sm text-blue-900">
             <p className="font-semibold">Como funciona:</p>

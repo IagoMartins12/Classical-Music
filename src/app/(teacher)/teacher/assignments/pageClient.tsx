@@ -421,9 +421,7 @@ export default function TeacherAssignmentsPageClient({
         <AnimatedCard
           key={assignment.id}
           hover="lift"
-          className={`classical-card ${
-            statusInfo.needsAttention ? ' border !border-red-400' : ''
-          }`}
+          className={`classical-card ${statusInfo.needsAttention ? ' ' : ''}`}
           delay={index * 0.05}
         >
           {/* Indicativo de atenção necessária */}
@@ -469,7 +467,7 @@ export default function TeacherAssignmentsPageClient({
                           </div>
                           <div className="flex flex-wrap items-center gap-2 ">
                             <span
-                              className={`px-2 py-1 md:px-3 md:py-1 rounded-full text-xs md:text-sm font-medium border flex items-center space-x-1 ${getStatusColor(
+                              className={`px-2 py-1 md:px-3 md:py-1 rounded-full text-xs md:text-sm font-medium flex items-center space-x-1 bg-sup-2 ${getStatusColor(
                                 assignment
                               )}`}
                             >
@@ -478,7 +476,7 @@ export default function TeacherAssignmentsPageClient({
                             </span>
 
                             <span
-                              className={`px-2 py-1 rounded text-xs font-medium border ${
+                              className={`px-2 py-1 rounded text-xs font-medium bg-sup-2 ${
                                 PRIORITY_COLORS[
                                   assignment.priority as keyof typeof PRIORITY_COLORS
                                 ]
@@ -494,7 +492,7 @@ export default function TeacherAssignmentsPageClient({
                             {/* 🆕 WORK SCORE INDICATOR */}
                             {hasScores && (
                               <div
-                                className="w-5 h-5 md:w-6 md:h-6 border rounded-full flex items-center justify-center"
+                                className="w-5 h-5 md:w-6 md:h-6 rounded-full flex items-center justify-center"
                                 title={t('has_scores')}
                               >
                                 <PiMusicNotes className="w-3 h-3" />
@@ -598,7 +596,7 @@ export default function TeacherAssignmentsPageClient({
                           as="span"
                           gap={1}
                           key={idx}
-                          className="px-2 py-1 border rounded text-xs"
+                          className="px-2 py-1 rounded text-xs bg-sup-2"
                         >
                           <PiTarget className="w-3 h-3" />
                           <span>{goal}</span>
@@ -611,7 +609,7 @@ export default function TeacherAssignmentsPageClient({
                             as="span"
                             gap={1}
                             key={idx}
-                            className="px-2 py-1 border rounded text-xs"
+                            className="px-2 py-1 rounded text-xs bg-sup-2"
                           >
                             <PiMusicNotes className="w-3 h-3" />
                             <span>{goal}</span>
@@ -708,9 +706,7 @@ export default function TeacherAssignmentsPageClient({
         <AnimatedCard
           key={assignment.id}
           hover="lift"
-          className={`classical-card ${
-            statusInfo.needsAttention ? ' border !border-red-400' : ''
-          }`}
+          className={`classical-card ${statusInfo.needsAttention ? ' ' : ''}`}
           delay={index * 0.05}
         >
           {/* Indicativo de atenção necessária */}
@@ -782,7 +778,7 @@ export default function TeacherAssignmentsPageClient({
 
                       <div className="flex items-center space-x-2 md:space-x-3">
                         <span
-                          className={`px-2 py-1 md:px-3 md:py-1 rounded-full text-xs md:text-sm font-medium border flex items-center space-x-1 ${getStatusColor(
+                          className={`px-2 py-1 md:px-3 md:py-1 rounded-full text-xs md:text-sm font-medium flex items-center space-x-1 bg-sup-2 ${getStatusColor(
                             assignment
                           )}`}
                         >
@@ -791,7 +787,7 @@ export default function TeacherAssignmentsPageClient({
                         </span>
 
                         <span
-                          className={`px-2 py-1 rounded text-xs font-medium border ${
+                          className={`px-2 py-1 rounded text-xs font-medium bg-sup-2 ${
                             PRIORITY_COLORS[
                               assignment.priority as keyof typeof PRIORITY_COLORS
                             ]
@@ -849,7 +845,7 @@ export default function TeacherAssignmentsPageClient({
                           as="span"
                           gap={1}
                           key={idx}
-                          className="px-2 py-1 border rounded text-xs"
+                          className="px-2 py-1 rounded text-xs bg-sup-2"
                         >
                           <PiTarget className="w-3 h-3" />
                           <span>{goal}</span>
@@ -862,7 +858,7 @@ export default function TeacherAssignmentsPageClient({
                             as="span"
                             gap={1}
                             key={idx}
-                            className="px-2 py-1 border rounded text-xs"
+                            className="px-2 py-1 rounded text-xs bg-sup-2"
                           >
                             <PiMusicNotes className="w-3 h-3" />
                             <span>{goal}</span>
@@ -1103,7 +1099,7 @@ export default function TeacherAssignmentsPageClient({
                 <button
                   onClick={refreshAssignments}
                   disabled={loading.assignments}
-                  className="w-10 h-10 rounded-lg bg-theme-elevated border border-theme-secondary transition-all flex items-center justify-center group"
+                  className="w-10 h-10 rounded-lg bg-theme-elevated transition-all flex items-center justify-center group"
                 >
                   <PiArrowsClockwise
                     className={`w-4 h-4 text-theme-tertiary transition-all ${
@@ -1758,7 +1754,7 @@ function AssignmentDetailsModal({
                 {/* Status e Indicadores */}
                 <Inline gap={3}>
                   <span
-                    className={`px-3 py-1 rounded-full text-sm font-medium border ${getStatusColor(
+                    className={`px-3 py-1 rounded-full text-sm font-medium bg-sup-2 ${getStatusColor(
                       assignment
                     )}`}
                   >
@@ -1766,7 +1762,7 @@ function AssignmentDetailsModal({
                   </span>
 
                   <span
-                    className={`px-2 py-1 rounded text-xs font-medium border ${
+                    className={`px-2 py-1 rounded text-xs font-medium bg-sup-2 ${
                       PRIORITY_COLORS[
                         assignment.priority as keyof typeof PRIORITY_COLORS
                       ]
@@ -1784,7 +1780,7 @@ function AssignmentDetailsModal({
                     <Inline
                       as="span"
                       gap={1}
-                      className="px-2 py-1 border rounded text-xs"
+                      className="px-2 py-1 rounded text-xs bg-sup-2"
                     >
                       <PiVideoCamera className="w-3 h-3" />
                       <span>Vídeo</span>
@@ -1796,7 +1792,7 @@ function AssignmentDetailsModal({
                       <Inline
                         as="span"
                         gap={1}
-                        className="px-2 py-1 border rounded text-xs"
+                        className="px-2 py-1 rounded text-xs bg-sup-2"
                       >
                         <PiMusicNotes className="w-3 h-3" />
                         <span>{assignment.workScoreIds.length}</span>
@@ -1807,7 +1803,7 @@ function AssignmentDetailsModal({
                     <Inline
                       as="span"
                       gap={1}
-                      className="px-2 py-1 border rounded text-xs"
+                      className="px-2 py-1 rounded text-xs bg-sup-2"
                     >
                       <PiTarget className="w-3 h-3" />
                       <span>{completedMilestones.length} conquistas</span>
@@ -1919,7 +1915,7 @@ function AssignmentDetailsModal({
                       <Inline
                         gap={2}
                         key={idx}
-                        className="text-sm p-2 border rounded"
+                        className="text-sm p-2 rounded bg-sup-2"
                       >
                         <PiTarget className="w-3 h-3" />
                         <span className="text-theme-primary truncate">
@@ -1931,7 +1927,7 @@ function AssignmentDetailsModal({
                       <Inline
                         gap={2}
                         key={idx}
-                        className="text-sm p-2 border rounded"
+                        className="text-sm p-2 rounded bg-sup-2"
                       >
                         <PiMusicNotes className="w-3 h-3" />
                         <span className="text-theme-primary truncate">
@@ -1962,7 +1958,7 @@ function AssignmentDetailsModal({
                   </label>
                   <Stack gap={3}>
                     {assignment.studentNotes && (
-                      <Stack gap={1} className="p-3 rounded-lg border">
+                      <Stack gap={1} className="p-3 rounded-lg bg-sup-2">
                         <Text
                           papel="rotulo"
                           tom="forte"

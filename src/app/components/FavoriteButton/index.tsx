@@ -104,17 +104,7 @@ const FavoriteButton = ({
     const baseClasses = `
       ${sizeClasses[size]} 
       ${typeButton === 'circle' ? 'rounded-full ' : ' '}
-      transition-all 
-      duration-300 
-      hover:scale-110 
-      active:scale-95
-      flex 
-      items-center 
-      justify-center
-      border
-      relative
-      overflow-hidden
-      group
+      transition-all duration-300 hover:scale-110 active:scale-95 flex items-center justify-center relative overflow-hidden group
       ${disabled ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'}
     `;
 
@@ -140,10 +130,7 @@ const FavoriteButton = ({
     const mobileHighlight =
       highlightMobile && isMobile
         ? `
-      bg-gradient-to-br from-black/60 via-black/30 to-transparent
-      backdrop-blur-md
-      border border-white/20
-      shadow-md
+      bg-gradient-to-br from-black/60 via-black/30 to-transparent backdrop-blur-md shadow-md
     `
         : '';
 
@@ -248,7 +235,7 @@ const FavoriteButton = ({
         className={`
           ${sizeClasses[size]} 
           ${typeButton === 'circle' ? 'rounded-full ' : ' '} 
-          border text-theme-tertiary flex items-center justify-center
+          text-theme-tertiary flex items-center justify-center
           ${className}
         `}
         style={style}

@@ -19,7 +19,7 @@ export default function ViewModeToggle({
   return (
     <div className={`hidden sm:flex items-center space-x-3 ${className}`}>
       {/* <span className="text-sm text-theme-secondary">Vista:</span> */}
-      <div className="border border-theme-primary rounded-lg p-1 flex">
+      <div className="rounded-lg p-1 flex bg-sup-2">
         <button
           onClick={() => onViewModeChange('list')}
           className={`p-2 rounded-md transition-all duration-300 ${

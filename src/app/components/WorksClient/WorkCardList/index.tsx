@@ -59,7 +59,7 @@ const WorkCardList: React.FC<workCardListProps> = ({ work }) => {
                 <Text
                   papel="legenda"
                   tom="suave"
-                  className="inline-flex items-center px-2 py-0.5 bg-theme-elevated border rounded-md font-medium flex-shrink-0"
+                  className="inline-flex items-center px-2 py-0.5 bg-theme-elevated rounded-md font-medium flex-shrink-0"
                 >
                   <PiBookOpen className="w-2.5 h-2.5 mr-1" />
                   {work.opOrCatalog}
@@ -158,7 +158,7 @@ const WorkCardList: React.FC<workCardListProps> = ({ work }) => {
         </Text>
 
         {/* Arrow */}
-        <div className="w-8 h-8 border border-theme-primary rounded-full flex items-center justify-center transition-all duration-300">
+        <div className="w-8 h-8 rounded-full flex items-center justify-center transition-all duration-300">
           <PiCaretRight className="w-4 h-4 text-theme-primary transition-all duration-300 transform group-hover:translate-x-0.5" />
         </div>
       </Inline>

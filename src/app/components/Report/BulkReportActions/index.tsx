@@ -49,7 +49,7 @@ export default function BulkReportActions({
   if (selectedReports.length === 0) return null;
 
   return (
-    <div className="fixed bottom-6 left-1/2 transform -translate-x-1/2 bg-theme-elevated border border-theme-primary rounded-2xl p-4 shadow-theme-glow z-barra">
+    <div className="fixed bottom-6 left-1/2 transform -translate-x-1/2 bg-theme-elevated rounded-2xl p-4 shadow-theme-glow z-barra">
       <Inline gap={4}>
         <Text papel="rotulo" tom="forte" as="div" className="font-medium">
           {selectedReports.length} report(s) selecionado(s)

@@ -195,7 +195,7 @@ const ActiveFilters = memo(
               papel="rotulo"
               tom="ouro"
               as="div"
-              className="flex items-center gap-2 px-3 py-1 border rounded-full"
+              className="flex items-center gap-2 px-3 py-1 rounded-full bg-sup-2"
             >
               <span>
                 {t('client_jsx_span_search_filter')} &quot;{searchParams.search}
@@ -214,7 +214,7 @@ const ActiveFilters = memo(
 
         {searchParams.composer && (
           <AnimatedItem hover="scale">
-            <div className="flex items-center gap-2 px-3 py-1 border rounded-full text-sm">
+            <div className="flex items-center gap-2 px-3 py-1 rounded-full text-sm bg-sup-2">
               <span>
                 {t('client_jsx_span_composer_filter')}{' '}
                 {composerName.composerName || 'Carregando...'}
@@ -232,7 +232,7 @@ const ActiveFilters = memo(
 
         {searchParams.instrument && (
           <AnimatedItem hover="scale">
-            <div className="flex items-center gap-2 px-3 py-1 border rounded-full text-sm">
+            <div className="flex items-center gap-2 px-3 py-1 rounded-full text-sm bg-sup-2">
               <span>
                 {t('client_jsx_span_instrument_filter')}{' '}
                 {/* 🔧 CORREÇÃO: Buscar pelo ID em vez de nome */}
@@ -253,7 +253,7 @@ const ActiveFilters = memo(
 
         {searchParams.epoch && (
           <AnimatedItem hover="scale">
-            <div className="flex items-center gap-2 px-3 py-1 border rounded-full text-sm">
+            <div className="flex items-center gap-2 px-3 py-1 rounded-full text-sm bg-sup-2">
               <span>
                 {t('client_jsx_span_epoch_filter')}{' '}
                 {translateEpochWithHook(
@@ -280,7 +280,7 @@ const ActiveFilters = memo(
 
         {searchParams.workGenresArr && (
           <AnimatedItem hover="scale">
-            <div className="flex items-center gap-2 px-3 py-1 border rounded-full text-sm">
+            <div className="flex items-center gap-2 px-3 py-1 rounded-full text-sm bg-sup-2">
               <span>
                 {t('client_jsx_span_genre_filter')}{' '}
                 {filterOptions.workGenres.find(
@@ -589,7 +589,7 @@ const WorksClient = memo(
           hover="none"
           className="px-0 md:px-4 rounded-2xl overflow-hidden"
         >
-          <div className="divide-y flex flex-col gap-4 py-4">
+          <div className="divide-y flex flex-col gap-4 py-4 divide-linha">
             {worksData.works.map((work, index) => (
               <AnimatedItem
                 key={work.id}

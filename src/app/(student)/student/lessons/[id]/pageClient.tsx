@@ -482,7 +482,7 @@ export default function StudentLessonDetailPageClient({
                         lesson.topics.map((topic, index) => (
                           <span
                             key={index}
-                            className="px-3 py-1 border rounded-full text-sm"
+                            className="px-3 py-1 rounded-full text-sm bg-sup-2"
                           >
                             {topic}
                           </span>
@@ -504,7 +504,7 @@ export default function StudentLessonDetailPageClient({
                         lesson.techniques.map((technique, index) => (
                           <span
                             key={index}
-                            className="px-3 py-1 border rounded-full text-sm"
+                            className="px-3 py-1 rounded-full text-sm bg-sup-2"
                           >
                             {technique}
                           </span>
@@ -654,7 +654,7 @@ export default function StudentLessonDetailPageClient({
                         <h3 className="font-medium text-theme-primary">
                           {t('your_feedback')}
                         </h3>
-                        <div className="border rounded-lg p-4">
+                        <div className="rounded-lg p-4 bg-sup-2">
                           <p className="text-theme-secondary whitespace-pre-wrap">
                             {lesson.studentFeedback}
                           </p>
@@ -735,7 +735,7 @@ export default function StudentLessonDetailPageClient({
 
                   <div
                     className={`p-4 rounded-lg ${
-                      lesson.studentPresent ? 'border' : 'border'
+                      lesson.studentPresent ? '' : ''
                     }`}
                   >
                     <Inline gap={2} className="mb-2">
@@ -863,7 +863,7 @@ export default function StudentLessonDetailPageClient({
                         href={`/student/assignments/${assignment.id}`}
                         key={assignment.id}
                       >
-                        <div className="p-3 border border-theme-secondary rounded-lg">
+                        <div className="p-3 rounded-lg bg-sup-2">
                           <div className="flex items-center justify-between">
                             <h4 className="font-medium text-theme-primary">
                               {assignment.title}
@@ -988,7 +988,7 @@ export default function StudentLessonDetailPageClient({
                   />
                 </div>
 
-                <div className="border rounded-lg p-4 mb-6">
+                <div className="rounded-lg p-4 mb-6 bg-sup-2">
                   <div className="flex items-start space-x-3">
                     <PiInfo className="w-5 h-5 mt-0.5" />
                     <Stack gap={1} className="text-sm">

@@ -392,7 +392,7 @@ export default function TeacherLessonsPageClient({
           key={lesson.id}
           hover="lift"
           className={`classical-card p-6   relative ${
-            statusInfo.needsAttention ? ' border !border-red-400 0' : ''
+            statusInfo.needsAttention ? ' 0' : ''
           }`}
           delay={index * 0.05}
         >
@@ -443,7 +443,7 @@ export default function TeacherLessonsPageClient({
 
                           {/* Menu com posicionamento próximo ao botão */}
                           <div
-                            className="absolute right-0 top-10 bg-theme-elevated border border-theme-secondary rounded-lg shadow-xl py-2 min-w-48"
+                            className="absolute right-0 top-10 bg-theme-elevated rounded-lg shadow-xl py-2 min-w-48"
                             style={{
                               zIndex: 'var(--z-menu)',
                               maxHeight: '90vh',
@@ -573,7 +573,7 @@ export default function TeacherLessonsPageClient({
                   {lesson.objectives.slice(0, 3).map((objective, index) => (
                     <span
                       key={index}
-                      className="px-2 py-1 border rounded text-xs"
+                      className="px-2 py-1 rounded text-xs bg-sup-2"
                     >
                       {objective}
                     </span>
@@ -581,7 +581,7 @@ export default function TeacherLessonsPageClient({
                   {lesson.topics.slice(0, 2).map((topic, index) => (
                     <span
                       key={index}
-                      className="px-2 py-1 border rounded text-xs"
+                      className="px-2 py-1 rounded text-xs bg-sup-2"
                     >
                       {topic}
                     </span>
@@ -674,7 +674,7 @@ export default function TeacherLessonsPageClient({
           key={lesson.id}
           hover="lift"
           className={`classical-card p-6 relative ${
-            statusInfo.needsAttention ? ' border !border-red-400 0' : ''
+            statusInfo.needsAttention ? ' 0' : ''
           }`}
         >
           {/* Indicativo de atenção necessária */}
@@ -745,7 +745,7 @@ export default function TeacherLessonsPageClient({
                           onClick={() => setShowQuickActions(null)}
                         />
                         <div
-                          className="absolute bg-theme-elevated border border-theme-secondary rounded-lg shadow-xl py-2 min-w-48"
+                          className="absolute bg-theme-elevated rounded-lg shadow-xl py-2 min-w-48"
                           style={{
                             position: 'fixed',
                             right: '4rem',
@@ -858,7 +858,7 @@ export default function TeacherLessonsPageClient({
                     .map((objective: any, index: number) => (
                       <span
                         key={index}
-                        className="px-2 py-1 border rounded text-xs"
+                        className="px-2 py-1 rounded text-xs bg-sup-2"
                       >
                         {objective}
                       </span>
@@ -868,7 +868,7 @@ export default function TeacherLessonsPageClient({
                     .map((topic: any, index: number) => (
                       <span
                         key={index}
-                        className="px-2 py-1 border rounded text-xs"
+                        className="px-2 py-1 rounded text-xs bg-sup-2"
                       >
                         {topic}
                       </span>

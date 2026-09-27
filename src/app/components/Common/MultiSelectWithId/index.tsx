@@ -221,7 +221,7 @@ export default function MultiSelectWithId({
       {isOpen && (
         <div
           ref={dropdownRef}
-          className="absolute top-full left-0 right-0 mt-2 bg-theme-elevated border border-theme-secondary rounded-xl shadow-xl z-menu max-h-80 overflow-hidden"
+          className="absolute top-full left-0 right-0 mt-2 bg-theme-elevated rounded-xl shadow-xl z-menu max-h-80 overflow-hidden"
         >
           <div className="p-3 border-b border-theme-secondary">
             <div className="relative">
@@ -260,7 +260,7 @@ export default function MultiSelectWithId({
                     type="button"
                     onClick={(e) => handleOptionClick(opt.id, e)}
                     className={`
-                      w-full text-left px-4 py-3 transition-colors duration-200 flex items-center justify-between border-b last:border-b-0
+                      w-full text-left px-4 py-3 transition-colors duration-200 flex items-center justify-between border-b last:border-b-0 border-linha
                       ${isSelected ? 'text-ouro-texto' : 'text-theme-primary'}
                     `}
                   >

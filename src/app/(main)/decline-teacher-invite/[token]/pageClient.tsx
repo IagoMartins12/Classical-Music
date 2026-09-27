@@ -256,10 +256,7 @@ export default function DeclineTeacherInvitePage() {
             <p className="text-theme-secondary text-lg mb-6">{state.message}</p>
 
             {state.user && (
-              <Stack
-                gap={2}
-                className="bg-theme-secondary border border-theme-secondary rounded-xl p-6 mb-8"
-              >
+              <Stack gap={2} className="bg-theme-secondary rounded-xl p-6 mb-8">
                 <h3 className="text-xl font-semibold text-theme-primary">
                   {t('pages_token_jsx_h3_children_0__olá_nome', {
                     firstName: state.user.firstName,
@@ -271,7 +268,7 @@ export default function DeclineTeacherInvitePage() {
               </Stack>
             )}
 
-            <Stack gap={3} className="border rounded-xl p-6 mb-8">
+            <Stack gap={3} className="rounded-xl p-6 mb-8 bg-sup-2">
               <h4 className="font-medium">
                 {t('pages_token_jsx_h4_children_0__ainda_mudar_ideia')}
               </h4>
@@ -319,7 +316,7 @@ export default function DeclineTeacherInvitePage() {
             </h1>
             <p className="text-theme-secondary text-lg mb-6">{state.message}</p>
 
-            <div className="bg-theme-secondary border border-theme-secondary rounded-xl p-6 mb-8">
+            <div className="bg-theme-secondary rounded-xl p-6 mb-8">
               <p className="text-theme-primary opacity-80">
                 {t('pages_token_jsx_p_children_0__convite_já_processado')}
               </p>
@@ -357,7 +354,7 @@ export default function DeclineTeacherInvitePage() {
             </h1>
             <p className="text-theme-secondary text-lg mb-6">{state.message}</p>
 
-            <Stack gap={3} className="border rounded-xl p-6 mb-8">
+            <Stack gap={3} className="rounded-xl p-6 mb-8 bg-sup-2">
               <div className="flex items-center justify-center">
                 <PiWarningCircle className="w-5 h-5 mr-2" />
                 <span className="font-medium">

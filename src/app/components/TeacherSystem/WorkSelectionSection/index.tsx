@@ -345,7 +345,7 @@ export default function WorkSelectionSection({
                   direction="left"
                   springType="gentle"
                 >
-                  <div className="bg-theme-elevated border border-theme-secondary rounded-lg p-4">
+                  <div className="bg-theme-elevated rounded-lg p-4">
                     <div className="flex items-center flex-col sm:flex-row gap-4 sm:gap-0 justify-between">
                       <Inline gap={3} className="flex-1 min-w-0 w-full">
                         <div className="w-8 h-8 rounded-lg flex items-center justify-center flex-shrink-0">
@@ -420,7 +420,7 @@ export default function WorkSelectionSection({
                           type="button"
                           onClick={() => handleRemoveWork(index)}
                           disabled={disabled}
-                          className={`w-8 h-8 rounded-lg transition-colors flex items-center justify-center ${
+                          className={`w-8 h-8 rounded-lg transition-colors flex items-center justify-center !text-erro ${
                             disabled ? 'opacity-50 cursor-not-allowed' : ''
                           }`}
                         >
@@ -459,7 +459,7 @@ export default function WorkSelectionSection({
                 </span>
               </button>
             ) : (
-              <Stack className="border border-color-primary rounded-lg p-4">
+              <Stack className="rounded-lg p-4 bg-sup-2">
                 <div className="flex items-center justify-between">
                   <Inline
                     as="h4"
@@ -472,7 +472,7 @@ export default function WorkSelectionSection({
                   <button
                     type="button"
                     onClick={resetAddForm}
-                    className="w-6 h-6 rounded-full bg-theme-elevated border border-theme-secondary transition-colors flex items-center justify-center"
+                    className="w-6 h-6 rounded-full bg-theme-elevated transition-colors flex items-center justify-center"
                   >
                     <PiX className="w-3 h-3 text-theme-tertiary" />
                     <NomeAcao acao="fechar" />
@@ -596,7 +596,7 @@ export default function WorkSelectionSection({
 
         {/* Informação sobre limite */}
         {selectedWorks.length >= maxWorks && (
-          <div className="border rounded-lg p-3">
+          <div className="rounded-lg p-3 bg-sup-2">
             <div className="flex items-start space-x-3">
               <PiInfo className="w-5 h-5 mt-0.5 flex-shrink-0" />
               <Stack gap={1} className="text-sm">

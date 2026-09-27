@@ -49,7 +49,7 @@ export default function VerificationBadge({
   if (variant === 'badge') {
     return (
       <div
-        className={`inline-flex items-center space-x-1 px-2 py-1 rounded-full border ${className}`}
+        className={`inline-flex items-center space-x-1 px-2 py-1 rounded-full bg-sup-2 ${className}`}
       >
         <PiSealCheck className={`${iconSizeClasses[size]}`} />
         <span className="text-xs font-medium">

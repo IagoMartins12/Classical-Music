@@ -232,7 +232,7 @@ export default function ContactPageClient() {
           <div className="relative section-wrap">
             <div className="text-center max-w-4xl mx-auto">
               <AnimatedItem direction="scale" springType="bouncy">
-                <div className="inline-flex items-center px-6 py-3 border rounded-full mb-8">
+                <div className="inline-flex items-center px-6 py-3 rounded-full mb-8 bg-sup-2">
                   <PiEnvelopeSimple className="w-5 h-5 text-ouro-texto mr-2" />
                   <span className="text-ouro-texto font-medium">
                     {t('contact_jsx_span_children_0__fale_conosco')}
@@ -329,7 +329,7 @@ export default function ContactPageClient() {
 
                 {formStatus && (
                   <div
-                    className={`mb-6 p-4 rounded-lg border flex items-center space-x-3 ${
+                    className={`mb-6 p-4 rounded-lg flex items-center space-x-3 bg-sup-2 ${
                       success ? '' : error ? '' : ''
                     }`}
                   >
@@ -560,7 +560,7 @@ export default function ContactPageClient() {
                     </div>
                   </Stack>
 
-                  <div className="mt-6 p-4 border rounded-lg">
+                  <div className="mt-6 p-4 rounded-lg bg-sup-2">
                     <Inline gap={3}>
                       <PiClock className="w-5 h-5" />
                       <span className="font-medium">

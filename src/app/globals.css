@@ -20,6 +20,7 @@
   --color-ouro-texto: var(--ouro-texto);
 
   --color-erro: var(--erro);
+  --color-sobre-erro: var(--sobre-erro);
   --color-ok: var(--ok);
   --color-atencao: var(--atencao);
   --color-aviso: var(--aviso);
@@ -167,6 +168,8 @@
 
   /* --- Estados: quatro, não onze. --- */
   --erro: #e8735a;
+  /* Texto sobre o vermelho: o erro do escuro é claro, e branco nele dá 2,9:1. */
+  --sobre-erro: #0c0d12;
   --ok: #6a9b6e;
   --atencao: #d9a441;
   --aviso: #6f8fbf;
@@ -324,6 +327,7 @@
   /* Vermelho vivo: o #a8331f passava no contraste mas puxava para tijolo, e o
      erro não se destacava no creme. 5,36:1. */
   --erro: #c81e1e;
+  --sobre-erro: #ffffff;
   --ok: #41693f;
   --atencao: #8a6416;
   --aviso: #355789;
@@ -722,12 +726,16 @@ body {
 /* Excluir: contorno vermelho, como a variante `perigo`. Vermelho cheio fica
    para a confirmação, não para o botão que a abre. */
 .btn-classical-delete {
-  background: transparent;
-  color: var(--erro);
-  border-color: color-mix(in srgb, var(--erro) 40%, transparent);
+  /* Apagar é um dos poucos momentos em que o vermelho aparece: chapado, com o
+     texto que passa no contraste em cada tema (6,5:1 no escuro, 5,9:1 no
+     claro). */
+  background: var(--erro);
+  color: var(--sobre-erro);
+  border-color: transparent;
+  font-weight: 600;
 }
 .btn-classical-delete:hover:not(:disabled) {
-  background: color-mix(in srgb, var(--erro) 10%, transparent);
+  background: color-mix(in srgb, var(--erro) 86%, var(--texto));
 }
 
 .btn-classical-primary:disabled,

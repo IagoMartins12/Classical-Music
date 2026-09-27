@@ -254,7 +254,7 @@ export default function MultiSelect({
       {isOpen && (
         <div
           ref={dropdownRef}
-          className="absolute top-full left-0 right-0 mt-2 bg-theme-elevated border border-theme-secondary rounded-xl shadow-xl z-menu max-h-80 overflow-hidden"
+          className="absolute top-full left-0 right-0 mt-2 bg-theme-elevated rounded-xl shadow-xl z-menu max-h-80 overflow-hidden"
         >
           {/* Search Input */}
           <div className="p-3 border-b border-theme-secondary">
@@ -292,7 +292,7 @@ export default function MultiSelect({
                     onChange([...selectedValues, newValue]);
                     setSearchTerm('');
                   }}
-                  className="w-full text-left px-4 py-3 transition-colors duration-200 flex items-center gap-2 border-b bg-green-50 dark:bg-green-900/20"
+                  className="w-full text-left px-4 py-3 transition-colors duration-200 flex items-center gap-2 border-b bg-green-50 dark:bg-green-900/20 border-linha"
                 >
                   <PiPlus className="w-4 h-4 text-green-600" />
                   <span className="text-sm font-medium text-green-600">
@@ -321,7 +321,7 @@ export default function MultiSelect({
                     type="button"
                     onClick={(e) => handleOptionClick(option, e)}
                     className={`
-                      w-full text-left px-4 py-3 transition-colors duration-200 flex items-center justify-between border-b last:border-b-0
+                      w-full text-left px-4 py-3 transition-colors duration-200 flex items-center justify-between border-b last:border-b-0 border-linha
                       ${isSelected ? 'text-ouro-texto' : 'text-theme-primary'}
                     `}
                   >

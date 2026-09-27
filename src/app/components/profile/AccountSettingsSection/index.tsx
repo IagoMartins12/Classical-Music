@@ -388,7 +388,7 @@ const AccountSettingsSection: React.FC<AccountSettingsSectionProps> = ({
 
                 {/* 🆕 NOVO: Aviso para usuários com login social */}
                 {!canChangeEmail && !loginMethod.isLoading && (
-                  <div className="border rounded-lg p-4">
+                  <div className="rounded-lg p-4 bg-sup-2">
                     <div className="flex items-start">
                       <PiShield className="w-5 h-5 mr-3 mt-0.5 flex-shrink-0" />
                       <Stack gap={1}>
@@ -407,7 +407,7 @@ const AccountSettingsSection: React.FC<AccountSettingsSectionProps> = ({
               </Stack>
             ) : (
               <Card nivel={2} densidade="compacta" className="space-y-4">
-                <div className="border border-red-400 rounded-lg p-4">
+                <div className="rounded-lg p-4 bg-sup-2">
                   <div className="flex items-start">
                     <PiWarning className="w-5 h-5 mr-3 mt-0.5 flex-shrink-0" />
                     <Stack gap={1}>
@@ -525,7 +525,7 @@ const AccountSettingsSection: React.FC<AccountSettingsSectionProps> = ({
           loginMethod.hasSocialLogin &&
           !isChangingPassword &&
           !loginMethod.isLoading && (
-            <div className="border rounded-lg p-4 mb-4">
+            <div className="rounded-lg p-4 mb-4 bg-sup-2">
               <div className="flex items-start">
                 <PiShield className="w-5 h-5 mr-3 mt-0.5 flex-shrink-0" />
                 <div>
@@ -550,7 +550,7 @@ const AccountSettingsSection: React.FC<AccountSettingsSectionProps> = ({
           !loginMethod.hasSocialLogin &&
           !isChangingPassword &&
           !loginMethod.isLoading && (
-            <div className="border rounded-lg p-4 mb-4">
+            <div className="rounded-lg p-4 mb-4 bg-sup-2">
               <div className="flex items-start">
                 <PiInfo className="w-5 h-5 mr-3 mt-0.5 flex-shrink-0" />
                 <Stack gap={1}>
@@ -744,7 +744,7 @@ const AccountSettingsSection: React.FC<AccountSettingsSectionProps> = ({
           </Card>
         ) : (
           <Card nivel={2} densidade="compacta" className="space-y-4">
-            <div className="border rounded-lg p-4">
+            <div className="rounded-lg p-4 bg-sup-2">
               <div className="flex items-start">
                 <PiInfo className="w-5 h-5 mr-3 mt-0.5 flex-shrink-0" />
                 <Stack gap={2}>
@@ -826,13 +826,13 @@ const AccountSettingsSection: React.FC<AccountSettingsSectionProps> = ({
       </Stack>
 
       {/* Danger Zone */}
-      <Stack className="border-t pt-8">
+      <Stack className="border-t pt-8 border-linha">
         <Inline gap={3}>
           <PiWarning className="w-5 h-5" />
           <h3 className="text-lg font-semibold">{t('account_danger_zone')}</h3>
         </Inline>
 
-        <Card nivel={2} densidade="compacta" className="border">
+        <Card nivel={2} densidade="compacta" className="">
           <div className="flex flex-col md:flex-row items-center gap-4 justify-between mb-4">
             <Stack gap={1}>
               <h4 className="font-medium text-theme-primary">

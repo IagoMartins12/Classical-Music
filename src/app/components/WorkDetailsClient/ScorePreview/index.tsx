@@ -30,7 +30,7 @@ const SourceBadge = React.memo(
   ({ source }: { source: 'IMSLP' | 'UPLOAD' | 'CUSTOM'; t: any }) => {
     if (source === 'IMSLP') {
       return (
-        <div className="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200 border border-blue-200 dark:border-blue-700">
+        <div className="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200">
           <PiBookOpen className="w-3 h-3 mr-1.5" />
           IMSLP
         </div>
@@ -38,7 +38,7 @@ const SourceBadge = React.memo(
     }
 
     return (
-      <div className="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200 border border-green-200 dark:border-green-700">
+      <div className="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200">
         <PiTarget className="w-3 h-3 mr-1.5" />
         Opus Atlas
       </div>
@@ -156,7 +156,7 @@ const ScorePreview = React.memo(({ score }: ScorePreviewProps) => {
     <>
       <Card
         nivel={2}
-        className="border rounded-lg transition-all duration-300 hover:shadow-lg"
+        className="rounded-lg transition-all duration-300 hover:shadow-lg"
       >
         {/* Header com título e badge */}
         <div className="flex items-start justify-between mb-6">

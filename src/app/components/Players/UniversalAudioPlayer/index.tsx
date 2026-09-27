@@ -378,7 +378,7 @@ const UniversalAudioPlayer: React.FC<UniversalAudioPlayerProps> = ({
 
   if (!sourcesInitialized) {
     return (
-      <div className="bg-gray-800 rounded-xl p-6 border border-gray-700">
+      <div className="bg-gray-800 rounded-xl p-6">
         <div className="text-center">
           <div className="w-12 h-12 border-4 border-blue-500 border-t-transparent rounded-full animate-spin mx-auto mb-4" />
           <p className="text-gray-400 text-sm">
@@ -407,7 +407,7 @@ const UniversalAudioPlayer: React.FC<UniversalAudioPlayerProps> = ({
   }
 
   return (
-    <div className="bg-gradient-to-r from-gray-900 to-gray-800 rounded-xl border border-gray-700 overflow-hidden">
+    <div className="bg-gradient-to-r from-gray-900 to-gray-800 rounded-xl overflow-hidden">
       {/* Header */}
       <div className="p-6 pb-4">
         <div className="flex items-start space-x-4">
@@ -474,7 +474,7 @@ const UniversalAudioPlayer: React.FC<UniversalAudioPlayerProps> = ({
             isPlaying={isPlaying}
             onSeek={handleSeek}
             height={80}
-            className="rounded-lg border border-gray-600"
+            className="rounded-lg"
           />
         </div>
       )}

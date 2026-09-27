@@ -173,8 +173,7 @@ const ProfileImageUpload: React.FC<ProfileImageUploadProps> = ({
             handleRemoveImage();
           }}
           disabled={isUploading}
-          className={`
-            absolute -top-2 -right-2 ${removeSizes[size]}
+          className={`absolute -top-2 -right-2 !text-erro ${removeSizes[size]}
             rounded-full flex items-center justify-center text-white hover:scale-110 transition-transform shadow-lg disabled:opacity-50 disabled:cursor-not-allowed
           `}
           title="Remover foto"

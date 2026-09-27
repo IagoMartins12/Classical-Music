@@ -222,7 +222,7 @@ const DeleteAccountModal: React.FC<DeleteAccountModalProps> = ({
               </p>
             </div>
 
-            <Stack gap={2} className="border border-red-400 rounded-lg p-4">
+            <Stack gap={2} className="rounded-lg p-4 bg-sup-2">
               <h5 className="font-medium flex items-center">
                 <PiInfo className="w-4 h-4 mr-2" />
                 {t('delete_modal_what_happens')}
@@ -287,10 +287,7 @@ const DeleteAccountModal: React.FC<DeleteAccountModalProps> = ({
             ) : cascadeInfo ? (
               <Stack>
                 {/* Summary */}
-                <Stack
-                  gap={1}
-                  className="border border-red-400 rounded-lg p-4 text-center"
-                >
+                <Stack gap={1} className="rounded-lg p-4 text-center bg-sup-2">
                   <h5 className="font-bold text-lg">
                     {cascadeInfo.totalItems}
                   </h5>
@@ -425,7 +422,7 @@ const DeleteAccountModal: React.FC<DeleteAccountModalProps> = ({
               </p>
             </div>
 
-            <Stack gap={2} className="border border-red-400 rounded-lg p-4">
+            <Stack gap={2} className="rounded-lg p-4 bg-sup-2">
               <h5 className="font-medium">
                 {t('delete_modal_permanent_warning')}
               </h5>
@@ -502,6 +499,7 @@ const DeleteAccountModal: React.FC<DeleteAccountModalProps> = ({
           {/* Back button */}
           {currentStep !== 'warning' && (
             <Button
+              className="!text-erro"
               variant="ghost"
               size="sm"
               onClick={handlePrevStep}
@@ -513,7 +511,8 @@ const DeleteAccountModal: React.FC<DeleteAccountModalProps> = ({
 
           {/* Cancel button */}
           <Button
-            variant="outline"
+            className="!text-erro"
+            variant="secondary"
             size="sm"
             onClick={handleClose}
             disabled={isLoading}
@@ -537,11 +536,11 @@ const DeleteAccountModal: React.FC<DeleteAccountModalProps> = ({
             </Button>
           ) : (
             <Button
-              variant="primary"
+              variant="secondary"
               size="sm"
               onClick={handleNextStep}
               disabled={isCascadeLoading}
-              className="hover:bg-red-600"
+              className="hover:bg-red-600 !text-erro"
             >
               {currentStep === 'warning'
                 ? t('delete_modal_continue')

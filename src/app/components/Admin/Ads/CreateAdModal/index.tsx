@@ -314,7 +314,7 @@ export default function CreateAdModal({
         </div>
 
         {/* Alert sobre mídia */}
-        <div className="p-4 border-l-4 mx-6 mt-4 rounded">
+        <div className="p-4 mx-6 mt-4 rounded bg-sup-2">
           <div className="flex items-start space-x-3">
             <PiInfo className="w-5 h-5 mt-0.5" />
             <div>
@@ -330,7 +330,7 @@ export default function CreateAdModal({
 
         {/* Conflict Warning */}
         {conflictInfo && (
-          <div className="p-4 border-l-4 mx-6 mt-4 rounded">
+          <div className="p-4 mx-6 mt-4 rounded bg-sup-2">
             <div className="flex items-start space-x-3">
               <PiTarget className="w-5 h-5 mt-0.5" />
               <div>

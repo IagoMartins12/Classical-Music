@@ -34,7 +34,7 @@ const TimelineComponent = (props: any) => {
         >
           <button
             onClick={handleDelete}
-            className="p-2 text-red-600 hover:bg-red-50 rounded transition-colors"
+            className="p-2 hover:bg-red-50 rounded transition-colors !text-erro"
             title="Remover"
           >
             <PiTrash className="w-4 h-4" />
@@ -44,7 +44,7 @@ const TimelineComponent = (props: any) => {
 
       {/* ✅ Header com compositor se existir */}
       {composerName && (
-        <Inline gap={3} className="mb-6 p-4 rounded-lg border-l-4">
+        <Inline gap={3} className="mb-6 p-4 rounded-lg bg-sup-2">
           <PiUser className="w-5 h-5 text-ouro-texto" />
           <div>
             <Text papel="rotulo" tom="fraco" as="p">

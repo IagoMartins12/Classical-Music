@@ -32,7 +32,7 @@ export default function DifficultyInfo({ onClose }: DifficultyInfoProps) {
         </div>
         <button
           onClick={onClose}
-          className="w-8 h-8 bg-theme-elevated border border-theme-secondary rounded-lg flex items-center justify-center transition-all duration-300"
+          className="w-8 h-8 bg-theme-elevated rounded-lg flex items-center justify-center transition-all duration-300"
         >
           <PiX className="w-4 h-4 text-theme-secondary" />
           <NomeAcao acao="fechar" />
@@ -42,7 +42,7 @@ export default function DifficultyInfo({ onClose }: DifficultyInfoProps) {
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
         {/* Sistema IMSLP */}
         <AnimatedItem direction="left">
-          <Stack className="bg-theme-elevated rounded-xl p-6 border border-theme-secondary">
+          <Stack className="bg-theme-elevated rounded-xl p-6">
             <div className="flex items-center">
               <div className="w-10 h-10 rounded-lg flex items-center justify-center mr-3">
                 <PiMedal className="w-5 h-5 text-ouro-texto" />
@@ -72,7 +72,7 @@ export default function DifficultyInfo({ onClose }: DifficultyInfoProps) {
                     <Text
                       papel="legenda"
                       tom="ouro"
-                      className="inline-flex items-center justify-center w-6 h-6 border rounded font-bold"
+                      className="inline-flex items-center justify-center w-6 h-6 rounded font-bold"
                     >
                       {level}
                     </Text>
@@ -95,7 +95,7 @@ export default function DifficultyInfo({ onClose }: DifficultyInfoProps) {
 
         {/* Sistema RCM */}
         <AnimatedItem direction="right">
-          <Stack className="bg-theme-elevated rounded-xl p-6 border border-theme-secondary">
+          <Stack className="bg-theme-elevated rounded-xl p-6">
             <div className="flex items-center">
               <div className="w-10 h-10 rounded-lg flex items-center justify-center mr-3">
                 <PiGraduationCap className="w-5 h-5" />
@@ -122,7 +122,7 @@ export default function DifficultyInfo({ onClose }: DifficultyInfoProps) {
                 .slice(0, 6)
                 .map(([level, description]) => (
                   <div key={level} className="flex items-start space-x-3">
-                    <span className="inline-flex items-center justify-center min-w-[2rem] h-6 border rounded text-xs font-bold px-1">
+                    <span className="inline-flex items-center justify-center min-w-[2rem] h-6 rounded text-xs font-bold px-1 bg-sup-2">
                       {level}
                     </span>
                     <Text
@@ -145,7 +145,7 @@ export default function DifficultyInfo({ onClose }: DifficultyInfoProps) {
 
       {/* Explicação sobre a base IMSLP */}
       <AnimatedItem direction="up" delay={0.2}>
-        <div className="mt-6 p-4 border rounded-xl">
+        <div className="mt-6 p-4 rounded-xl bg-sup-2">
           <div className="flex items-start space-x-3">
             <PiInfo className="w-5 h-5 text-ouro-texto mt-0.5 flex-shrink-0" />
             <Stack gap={2}>

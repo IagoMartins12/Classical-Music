@@ -312,7 +312,11 @@ export function GuiaClient() {
                     <Button variante="primario" tamanho="p">
                       Enviar partitura
                     </Button>
-                    <Button variante="fantasma" tamanho="p">
+                    <Button
+                      className="!text-erro"
+                      variante="fantasma"
+                      tamanho="p"
+                    >
                       Remover filtro
                     </Button>
                   </>

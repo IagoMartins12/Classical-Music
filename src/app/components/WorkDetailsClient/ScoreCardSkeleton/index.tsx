@@ -54,7 +54,7 @@ const ScoreCardSkeleton = ({
 
           {/* Additional Info Skeleton (for thumbnails) */}
           {showThumbnail && (
-            <div className="mt-4 pt-4 border-t">
+            <div className="mt-4 pt-4 border-t border-linha">
               <Stack gap={2}>
                 <div className="flex justify-between items-center">
                   <div className="h-3 bg-theme-elevated rounded w-12"></div>
@@ -160,7 +160,7 @@ export const ScoreLoadingWithProgress = ({
               <span>Progresso</span>
               <span>{Math.round(progress)}%</span>
             </Text>
-            <div className="w-full bg-theme-elevated border rounded-full h-3 overflow-hidden">
+            <div className="w-full bg-theme-elevated rounded-full h-3 overflow-hidden">
               <div
                 className="h-full rounded-full transition-all duration-500 relative overflow-hidden"
                 style={{ width: `${Math.max(progress, 5)}%` }}

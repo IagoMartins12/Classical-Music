@@ -123,7 +123,7 @@ const TermsAcceptance: React.FC<TermsAcceptanceProps> = ({
           </ul>
         </Stack>
 
-        <Stack gap={2} className="border rounded-lg p-4">
+        <Stack gap={2} className="rounded-lg p-4 bg-sup-2">
           <h4 className="font-semibold">{t('privacy_policy_contact_title')}</h4>
           <p className="">
             {t('privacy_policy_contact_text')}
@@ -242,7 +242,7 @@ const TermsAcceptance: React.FC<TermsAcceptanceProps> = ({
           className={`
             flex items-start space-x-3 p-4 rounded-lg  transition-all cursor-pointer
             ${accepted ? '' : ''}
-            ${error ? 'border-red-500 border' : ''}
+            ${error ? '' : ''}
             ${disabled ? 'opacity-50 cursor-not-allowed' : ''}
           `}
           onClick={handleCheckboxChange}

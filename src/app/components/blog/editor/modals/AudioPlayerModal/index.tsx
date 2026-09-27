@@ -179,7 +179,7 @@ export function AudioPlayerModal({
             onClick={() => handleTabChange('upload')}
             className={`flex-1 px-4 py-2 text-sm font-medium transition-colors ${
               activeTab === 'upload'
-                ? 'border-b-2 text-ouro-texto'
+                ? 'border-b-2 text-ouro-texto border-linha'
                 : 'text-theme-tertiary'
             }`}
           >
@@ -190,7 +190,7 @@ export function AudioPlayerModal({
             onClick={() => handleTabChange('youtube')}
             className={`flex-1 px-4 py-2 text-sm font-medium transition-colors ${
               activeTab === 'youtube'
-                ? 'border-b-2 text-ouro-texto'
+                ? 'border-b-2 text-ouro-texto border-linha'
                 : 'text-theme-tertiary'
             }`}
           >
@@ -281,7 +281,7 @@ export function AudioPlayerModal({
             />
 
             {youtubeUrl && extractYouTubeId(youtubeUrl) && (
-              <div className="p-4 bg-green-50 border border-green-200 rounded-lg">
+              <div className="p-4 bg-green-50 rounded-lg">
                 <p className="text-sm text-green-800 mb-2">
                   ✓ Link válido do YouTube
                 </p>
@@ -301,7 +301,7 @@ export function AudioPlayerModal({
 
         {/* VINCULAÇÕES OPCIONAIS */}
         {(audioUrl || youtubeUrl) && (
-          <Stack className="border-t pt-4">
+          <Stack className="border-t pt-4 border-linha">
             <h4 className="font-semibold text-theme-primary">
               📎 Vinculações Opcionais
             </h4>

@@ -421,7 +421,7 @@ export default function CreateAssignmentPageClient({
             <Inline gap={4}>
               <Link
                 href="/teacher/assignments"
-                className="w-10 h-10 rounded-lg bg-theme-elevated border border-theme-secondary transition-all flex items-center justify-center group"
+                className="w-10 h-10 rounded-lg bg-theme-elevated transition-all flex items-center justify-center group"
               >
                 <PiArrowLeft className="w-4 h-4 text-theme-tertiary transition-colors" />
               </Link>
@@ -952,7 +952,7 @@ export default function CreateAssignmentPageClient({
 
                   {/* Error Display */}
                   {error && (
-                    <div className="border rounded-lg p-4">
+                    <div className="rounded-lg p-4 bg-sup-2">
                       <Inline gap={3}>
                         <PiWarningCircle className="w-5 h-5" />
                         <div>
@@ -1132,7 +1132,7 @@ export default function CreateAssignmentPageClient({
                       </Inline>
                     ))}
 
-                    <div className="mt-3 p-3 border rounded-lg">
+                    <div className="mt-3 p-3 rounded-lg bg-sup-2">
                       <Text papel="legenda" tom="suave" as="div">
                         <div className="flex justify-between">
                           <span>{t('total_pieces')}</span>
@@ -1169,7 +1169,7 @@ export default function CreateAssignmentPageClient({
                       <div
                         key={type.value}
                         className={`p-3 rounded-lg bg-theme-elevated transition-all ${
-                          isSelected ? 'border border-theme-primary' : ''
+                          isSelected ? '' : ''
                         }`}
                       >
                         <Inline gap={2} className="mb-1">

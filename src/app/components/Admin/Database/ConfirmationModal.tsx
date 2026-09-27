@@ -123,7 +123,7 @@ export default function ConfirmationModal({
 
           {/* Avisos adicionais */}
           <div
-            className={`p-4 rounded-lg border ${colorScheme.border} ${colorScheme.bg}`}
+            className={`p-4 rounded-lg bg-sup-2 ${colorScheme.border} ${colorScheme.bg}`}
           >
             <div className="flex items-start space-x-2">
               <PiWarning className={`w-5 h-5 ${colorScheme.text} mt-0.5`} />

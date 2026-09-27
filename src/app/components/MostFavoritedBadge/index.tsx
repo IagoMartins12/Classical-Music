@@ -120,7 +120,7 @@ export default function MostFavoritedBadge({
     ${positions[position]} 
     ${sizeConfig.container}
     bg-gradient-to-r ${config?.bgGradient}
-    border ${config?.borderColor}
+     ${config?.borderColor}
     ${config?.textColor}
     rounded-full
     font-medium

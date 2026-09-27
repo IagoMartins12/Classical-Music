@@ -77,7 +77,7 @@ const ListComposersCards: React.FC<listComposersCardsProps> = ({
             {/* Period Badge */}
             {composer.epochName && (
               <div className="absolute top-3 left-3 opacity-0 group-hover:opacity-100 transition-all duration-300 transform -translate-y-2 group-hover:translate-y-0">
-                <span className="inline-flex items-center px-2 py-1 backdrop-blur-md border rounded-full text-xs font-medium text-white">
+                <span className="inline-flex items-center px-2 py-1 backdrop-blur-md rounded-full text-xs font-medium text-white bg-sup-2">
                   <PiCalendarBlank className="w-2.5 h-2.5 mr-1" />
                   {translateEpochWithHook(composer.epochName, t)}
                 </span>
@@ -115,7 +115,7 @@ const ListComposersCards: React.FC<listComposersCardsProps> = ({
                 </div>
 
                 {/* Arrow indicator */}
-                <div className="w-5 h-5 border border-theme-primary rounded-full flex items-center justify-center transition-all duration-300">
+                <div className="w-5 h-5 rounded-full flex items-center justify-center transition-all duration-300">
                   <svg
                     className="w-2.5 h-2.5 text-theme-primary transition-all duration-300 transform group-hover:translate-x-0.5"
                     fill="none"

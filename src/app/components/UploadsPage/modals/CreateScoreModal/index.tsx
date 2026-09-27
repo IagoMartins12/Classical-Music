@@ -772,7 +772,7 @@ const CreateScoreModal = ({
                     </div>
 
                     {errors.uploadMode && (
-                      <div className="mt-2 p-3 bg-red-50 border border-red-200 rounded-lg">
+                      <div className="mt-2 p-3 bg-red-50 rounded-lg">
                         <Inline gap={2}>
                           <PiWarningCircle className="w-4 h-4 text-red-600" />
                           <span className="text-sm font-medium text-red-800">
@@ -872,7 +872,7 @@ const CreateScoreModal = ({
 
                           {generatedThumbnail && thumbnailGenerated && (
                             <div className="mt-4 text-center">
-                              <div className="w-24 h-32 mx-auto rounded border overflow-hidden shadow-theme-small">
+                              <div className="w-24 h-32 mx-auto rounded overflow-hidden shadow-theme-small">
                                 <Image
                                   src={generatedThumbnail}
                                   alt="Preview do arquivo"
@@ -926,7 +926,7 @@ const CreateScoreModal = ({
                     </div>
 
                     {errors.downloadUrl && uploadMode === 'file' && (
-                      <div className="mt-2 p-3 bg-red-50 border border-red-200 rounded-lg">
+                      <div className="mt-2 p-3 bg-red-50 rounded-lg">
                         <Inline gap={2}>
                           <PiWarningCircle className="w-4 h-4 text-red-600" />
                           <span className="text-sm font-medium text-red-800">
@@ -945,7 +945,7 @@ const CreateScoreModal = ({
                           setSelectedFile(null);
                           resetUploadMode();
                         }}
-                        className="mx-auto text-sm text-theme-tertiary transition-colors"
+                        className="mx-auto text-sm transition-colors !text-erro"
                       >
                         <PiX className="w-4 h-4" />
                         <span>Remover arquivo</span>
@@ -992,7 +992,7 @@ const CreateScoreModal = ({
                   )}
 
                   {fileValidation.error && (
-                    <div className="mt-2 p-3 bg-red-50 border border-red-200 rounded-lg">
+                    <div className="mt-2 p-3 bg-red-50 rounded-lg">
                       <Inline gap={2}>
                         <PiWarningCircle className="w-4 h-4 text-red-600" />
                         <span className="text-sm font-medium text-red-800">
@@ -1055,7 +1055,7 @@ const CreateScoreModal = ({
                     </label>
 
                     {editingScore && workData ? (
-                      <div className="w-full p-3 border rounded-lg bg-theme-elevated border-theme-secondary opacity-50 cursor-not-allowed">
+                      <div className="w-full p-3 rounded-lg bg-theme-elevated opacity-50 cursor-not-allowed">
                         <div className="flex items-center justify-between">
                           <Inline gap={3}>
                             <div className="w-8 h-8 rounded-lg flex items-center justify-center">

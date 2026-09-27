@@ -254,18 +254,18 @@ const HistoryClient = ({
   const getCardBorderColor = (action: string, changes?: any) => {
     // Cor especial para bulk import
     if (changes?.bulkImport) {
-      return 'border-l-4 border-l-purple-500';
+      return '';
     }
 
     switch (action) {
       case 'create':
-        return 'border-l-4 border-l-green-500';
+        return '';
       case 'update':
-        return 'border-l-4 border-l-blue-500';
+        return '';
       case 'delete':
-        return 'border-l-4 border-l-red-500';
+        return '';
       default:
-        return 'border-l-4 border-l-gray-300';
+        return '';
     }
   };
 
@@ -276,7 +276,7 @@ const HistoryClient = ({
     if (changes.bulkImport) {
       const bulk = changes.bulkImport;
       return (
-        <div className="mt-3 p-3 bg-purple-50 border border-purple-200 rounded-lg">
+        <div className="mt-3 p-3 bg-purple-50 rounded-lg">
           <h5 className="text-sm font-medium text-purple-700 mb-3 flex items-center">
             <PiDatabase className="w-4 h-4 mr-1" />
             {t('history_bulk_import_title')}
@@ -361,10 +361,7 @@ const HistoryClient = ({
 
     if (action === 'create' && changes.created) {
       return (
-        <Stack
-          gap={2}
-          className="mt-3 p-3 bg-green-50 border border-green-200 rounded-lg"
-        >
+        <Stack gap={2} className="mt-3 p-3 bg-green-50 rounded-lg">
           <h5 className="text-sm font-medium text-green-700 flex items-center">
             <PiPlus className="w-4 h-4 mr-1" />
             {t('history_changes_created_title')}
@@ -385,10 +382,7 @@ const HistoryClient = ({
 
     if (action === 'delete' && changes.deleted) {
       return (
-        <Stack
-          gap={2}
-          className="mt-3 p-3 bg-red-50 border border-red-200 rounded-lg"
-        >
+        <Stack gap={2} className="mt-3 p-3 bg-red-50 rounded-lg">
           <h5 className="text-sm font-medium text-red-700 flex items-center">
             <PiTrash className="w-4 h-4 mr-1" />
             {t('history_changes_deleted_title')}
@@ -419,10 +413,7 @@ const HistoryClient = ({
       if (changesList.length === 0) return null;
 
       return (
-        <Stack
-          gap={2}
-          className="mt-3 p-3 bg-blue-50 border border-blue-200 rounded-lg"
-        >
+        <Stack gap={2} className="mt-3 p-3 bg-blue-50 rounded-lg">
           <h5 className="text-sm font-medium text-blue-700 flex items-center">
             <PiNotePencil className="w-4 h-4 mr-1" />
             {t('history_changes_updated_title')}
@@ -664,7 +655,7 @@ const HistoryClient = ({
                                 )}
                               </Text>
                               <span
-                                className={`px-2 py-1 rounded-full text-xs font-medium border ${getActionColor(
+                                className={`px-2 py-1 rounded-full text-xs font-medium bg-sup-2 ${getActionColor(
                                   record.action,
                                   record.changes
                                 )}`}

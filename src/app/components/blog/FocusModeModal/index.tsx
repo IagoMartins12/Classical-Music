@@ -69,7 +69,7 @@ export function FocusModeModal({
         {/* Controle de Fonte */}
         <Inline
           gap={2}
-          className="bg-theme-elevated rounded-full px-4 py-2 shadow-2xl border border-theme-secondary"
+          className="bg-theme-elevated rounded-full px-4 py-2 shadow-2xl"
         >
           <button
             onClick={() => changeFontSize(-2)}
@@ -188,7 +188,7 @@ function renderNode(node: any): React.ReactNode {
 
     case 'blockquote':
       return (
-        <blockquote className="border-l-4 pl-6 py-4 mb-4 italic rounded-r-lg">
+        <blockquote className="pl-6 py-4 mb-4 italic rounded-r-lg bg-sup-2">
           {node.content?.map((child: any, i: number) => (
             <div key={i}>{renderNode(child)}</div>
           ))}

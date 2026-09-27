@@ -590,7 +590,7 @@ const BulkInsertWorksModal = ({
 
                                 <button
                                   onClick={() => removeWork(work.id)}
-                                  className="text-theme-tertiary"
+                                  className="!text-erro"
                                   title={t('bulk_remove_work')}
                                 >
                                   <PiTrash className="w-4 h-4" />

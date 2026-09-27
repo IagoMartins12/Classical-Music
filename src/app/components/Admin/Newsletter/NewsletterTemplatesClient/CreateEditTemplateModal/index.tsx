@@ -389,7 +389,7 @@ export default function CreateEditTemplateModal({
 
                 {/* Variáveis detectadas */}
                 {form.variables.length > 0 && (
-                  <Stack gap={2} className="p-4 border rounded-lg">
+                  <Stack gap={2} className="p-4 rounded-lg bg-sup-2">
                     <h4 className="font-medium">
                       🔧 Variáveis detectadas ({form.variables.length})
                     </h4>
@@ -516,7 +516,7 @@ export default function CreateEditTemplateModal({
                 </Stack>
 
                 {errors.submit && (
-                  <div className="p-4 border rounded-lg">
+                  <div className="p-4 rounded-lg bg-sup-2">
                     <div className="flex items-center">
                       <PiWarningCircle className="w-5 h-5 mr-2" />
                       <span className="">{errors.submit}</span>
@@ -615,7 +615,7 @@ export default function CreateEditTemplateModal({
                 </p>
               </Stack>
 
-              <div className="border border-theme-secondary rounded-lg overflow-hidden">
+              <div className="rounded-lg overflow-hidden">
                 <div
                   dangerouslySetInnerHTML={{ __html: previewData.html }}
                   className="bg-white"

@@ -48,7 +48,7 @@ const ComposerCardComponent = (props: any) => {
         >
           <button
             onClick={handleDelete}
-            className="p-2 text-red-600 hover:bg-red-50 rounded transition-colors"
+            className="p-2 hover:bg-red-50 rounded transition-colors !text-erro"
             title="Remover"
           >
             <PiTrash className="w-4 h-4" />
@@ -58,7 +58,7 @@ const ComposerCardComponent = (props: any) => {
 
       {/* Card do Compositor */}
       <div
-        className={`classical-card rounded-lg border-l-4 shadow-md p-6 ${
+        className={`classical-card rounded-lg shadow-md p-6 ${
           layout === 'horizontal' ? 'flex items-start space-x-6' : ''
         }`}
       >

@@ -58,7 +58,7 @@ const DiscoveryComposerCard = ({ composer }: { composer: Composer }) => {
         <div className="classical-card overflow-hidden transition-all duration-700 ease-out group-hover:scale-105 group-hover:-translate-y-1 relative">
           {/* Discovery badge */}
           <div className="absolute top-3 left-3 z-10">
-            <div className="bg-gradient-to-r from-orange-500/20 to-yellow-500/20 border border-orange-500/30 backdrop-blur-md rounded-full px-2 py-1 text-xs font-medium text-orange-400 flex items-center gap-1">
+            <div className="bg-gradient-to-r from-orange-500/20 to-yellow-500/20 backdrop-blur-md rounded-full px-2 py-1 text-xs font-medium text-orange-400 flex items-center gap-1 bg-sup-2">
               <PiMapTrifold className="w-2.5 h-2.5" />
               {t('random_discoveries_composer_badge')}
             </div>
@@ -111,7 +111,7 @@ const DiscoveryComposerCard = ({ composer }: { composer: Composer }) => {
                 <Text
                   papel="legenda"
                   tom="fraco"
-                  className="inline-flex items-center px-2 py-0.5 border rounded-full font-medium"
+                  className="inline-flex items-center px-2 py-0.5 rounded-full font-medium bg-sup-2"
                 >
                   <PiMusicNotes className="w-2 h-2 mr-1" />
                   {translateEpochWithHook(composer.epochName, t)}
@@ -119,7 +119,7 @@ const DiscoveryComposerCard = ({ composer }: { composer: Composer }) => {
               </div>
 
               {/* Action indicator */}
-              <div className="flex items-center justify-center pt-2 border-t">
+              <div className="flex items-center justify-center pt-2 border-t border-linha">
                 <Inline gap={1} className="text-theme-tertiary text-xs">
                   <div className="w-1 h-1 bg-orange-400 rounded-full animate-pulse"></div>
                   <span className="font-medium">
@@ -152,7 +152,7 @@ const DiscoveryWorkCard = ({ work }: { work: Work }) => {
         <div className="classical-card overflow-hidden transition-all duration-700 ease-out group-hover:scale-105 group-hover:-translate-y-1 relative">
           {/* Discovery badge */}
           <div className="absolute top-3 left-3 z-10">
-            <div className="bg-gradient-to-r from-purple-500/20 to-blue-500/20 border border-purple-500/30 backdrop-blur-md rounded-full px-2 py-1 text-xs font-medium text-purple-400 flex items-center gap-1">
+            <div className="bg-gradient-to-r from-purple-500/20 to-blue-500/20 backdrop-blur-md rounded-full px-2 py-1 text-xs font-medium text-purple-400 flex items-center gap-1 bg-sup-2">
               <PiPianoKeys className="w-2.5 h-2.5" />
               {t('random_discoveries_work_badge')}
             </div>
@@ -185,19 +185,19 @@ const DiscoveryWorkCard = ({ work }: { work: Work }) => {
                 <Text
                   papel="legenda"
                   tom="fraco"
-                  className="inline-flex items-center px-1.5 py-0.5 border rounded"
+                  className="inline-flex items-center px-1.5 py-0.5 rounded bg-sup-2"
                 >
                   {work.instrumentName}
                 </Text>
                 {work.tone && (
-                  <span className="inline-flex items-center px-1.5 py-0.5 bg-purple-500/10 border border-purple-500/20 text-purple-400 rounded text-xs">
+                  <span className="inline-flex items-center px-1.5 py-0.5 bg-purple-500/10 text-purple-400 rounded text-xs">
                     {work.tone}
                   </span>
                 )}
               </div>
 
               {/* Action indicator */}
-              <div className="flex items-center justify-center pt-2 border-t">
+              <div className="flex items-center justify-center pt-2 border-t border-linha">
                 <Inline gap={1} className="text-theme-tertiary text-xs">
                   <div className="w-1 h-1 bg-purple-400 rounded-full animate-pulse"></div>
                   <span className="font-medium">

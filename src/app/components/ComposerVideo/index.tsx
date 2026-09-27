@@ -228,7 +228,7 @@ const ComposerVideo: React.FC<ComposerVideoProps> = ({
 
       {hasError && (
         <AnimatedItem direction="up" springType="gentle">
-          <div className="mt-4 p-4 bg-red-50 border border-red-200 rounded-xl">
+          <div className="mt-4 p-4 bg-red-50 rounded-xl">
             <Inline gap={3}>
               <PiWarningCircle className="w-5 h-5 text-red-600 flex-shrink-0" />
               <div>

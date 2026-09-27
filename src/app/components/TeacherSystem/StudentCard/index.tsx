@@ -170,7 +170,7 @@ export default function StudentCard({
           {/* Status & Actions */}
           <Inline gap={3}>
             <span
-              className={`px-3 py-1 border rounded-full text-xs font-medium`}
+              className={`px-3 py-1 rounded-full text-xs font-medium bg-sup-2`}
             >
               {getStatusText()}
             </span>
@@ -179,7 +179,7 @@ export default function StudentCard({
               <button
                 onClick={handleToggleStatus}
                 disabled={isToggling}
-                className={`w-8 h-8 rounded-lg border transition-all flex items-center justify-center ${
+                className={`w-8 h-8 rounded-lg transition-all flex items-center justify-center ${
                   isPaused ? '' : ''
                 }`}
                 title={isPaused ? translations.reactivate : translations.pause}
@@ -195,7 +195,7 @@ export default function StudentCard({
 
               <Link
                 href={`/teacher/students/${student.id}`}
-                className="w-8 h-8 rounded-lg bg-theme-elevated border border-theme-secondary transition-all flex items-center justify-center group"
+                className="w-8 h-8 rounded-lg bg-theme-elevated transition-all flex items-center justify-center group"
                 title={translations.viewDetails}
               >
                 <PiEye className="w-4 h-4 text-theme-tertiary transition-colors" />
@@ -255,7 +255,7 @@ export default function StudentCard({
         </Inline>
 
         {/* Status Badge */}
-        <span className={`px-3 py-1 border rounded-full text-xs font-medium`}>
+        <span className={`px-3 py-1 rounded-full text-xs font-medium bg-sup-2`}>
           {getStatusText()}
         </span>
       </div>

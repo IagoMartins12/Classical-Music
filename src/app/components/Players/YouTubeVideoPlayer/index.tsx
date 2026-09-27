@@ -46,7 +46,7 @@ const YouTubeVideoPlayer: React.FC<YouTubePlayerProps> = ({
   };
 
   return (
-    <div className="bg-gradient-to-r from-red-900/20 to-red-800/20 rounded-xl border border-red-700/30 overflow-hidden">
+    <div className="bg-gradient-to-r from-red-900/20 to-red-800/20 rounded-xl overflow-hidden">
       {/* Header */}
       <div className="p-4 border-b border-red-700/30">
         <div className="flex items-start space-x-3">

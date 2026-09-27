@@ -33,7 +33,7 @@ import {
 const CustomTooltip = ({ active, payload, label }: any) => {
   if (active && payload && payload.length) {
     return (
-      <div className="bg-theme-elevated border border-theme-primary rounded-lg p-3 shadow-theme-medium">
+      <div className="bg-theme-elevated rounded-lg p-3 shadow-theme-medium">
         <p className="text-theme-primary font-medium mb-2">{label}</p>
         {payload.map((entry: any, index: number) => (
           <p key={index} className="text-sm" style={{ color: entry.color }}>

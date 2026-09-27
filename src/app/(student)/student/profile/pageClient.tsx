@@ -479,10 +479,7 @@ export default function StudentProfilePageClient({
         {/* Success Message */}
         {successMessage && (
           <AnimatedItem direction="up" springType="gentle">
-            <AnimatedCard
-              hover="lift"
-              className="classical-card p-4 mb-6 border-l-4"
-            >
+            <AnimatedCard hover="lift" className="classical-card p-4 mb-6">
               <Inline gap={3}>
                 <div className="w-8 h-8 rounded-full flex items-center justify-center">
                   <PiCheck className="w-4 h-4" />
@@ -496,10 +493,7 @@ export default function StudentProfilePageClient({
         {/* Error Message */}
         {error && (
           <AnimatedItem direction="up" springType="gentle">
-            <AnimatedCard
-              hover="lift"
-              className="classical-card p-4 mb-6 border-l-4"
-            >
+            <AnimatedCard hover="lift" className="classical-card p-4 mb-6">
               <div className="flex items-center justify-between">
                 <Inline gap={3}>
                   <div className="w-8 h-8 rounded-full flex items-center justify-center">
@@ -604,7 +598,7 @@ export default function StudentProfilePageClient({
                     {phoneError &&
                       phoneValidation.showError &&
                       phoneValidation.error && (
-                        <div className="p-4 bg-red-50 border border-red-200 rounded-lg flex items-start space-x-3 mt-4">
+                        <div className="p-4 bg-red-50 rounded-lg flex items-start space-x-3 mt-4">
                           <PiWarningCircle className="w-5 h-5 text-red-600 flex-shrink-0 mt-0.5" />
                           <div>
                             <h4 className="text-sm font-medium text-red-800">
@@ -1062,7 +1056,7 @@ export default function StudentProfilePageClient({
                             key={genre}
                             onClick={() => handleGenreToggle(genre)}
                             disabled={saving}
-                            className={`p-2 rounded-lg border transition-all text-sm ${
+                            className={`p-2 rounded-lg transition-all text-sm bg-sup-2 ${
                               isSelected
                                 ? 'text-ouro-texto'
                                 : 'bg-theme-elevated text-theme-secondary'
@@ -1113,7 +1107,7 @@ export default function StudentProfilePageClient({
                           papel="rotulo"
                           tom="ouro"
                           key={genre}
-                          className="px-3 py-1 border rounded-full text-center"
+                          className="px-3 py-1 rounded-full text-center bg-sup-2"
                         >
                           {genre}
                         </Text>
@@ -1500,7 +1494,7 @@ export default function StudentProfilePageClient({
                       {studyData.wantToLearn.slice(0, 5).map((work) => (
                         <div
                           key={work.workId}
-                          className="p-3 rounded-lg border"
+                          className="p-3 rounded-lg bg-sup-2"
                         >
                           <Text
                             papel="rotulo"
@@ -1541,7 +1535,7 @@ export default function StudentProfilePageClient({
                       {studyData.learned.slice(0, 5).map((work) => (
                         <div
                           key={work.workId}
-                          className="p-3 rounded-lg border"
+                          className="p-3 rounded-lg bg-sup-2"
                         >
                           <Text
                             papel="rotulo"

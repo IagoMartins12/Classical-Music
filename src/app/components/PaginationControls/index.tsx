@@ -111,7 +111,7 @@ const PaginationControls: React.FC<PaginationControlsProps> = ({
           <button
             onClick={() => handlePageChange(1)}
             disabled={currentPage === 1 || isPending}
-            className="hidden md:flex items-center px-3 py-2 text-sm font-medium text-theme-secondary bg-theme-elevated border border-theme-secondary rounded-lg transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed hover:scale-105"
+            className="hidden md:flex items-center px-3 py-2 text-sm font-medium text-theme-secondary bg-theme-elevated rounded-lg transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed hover:scale-105"
           >
             {t('pagination_jsx_button_children_0__inicio')}
           </button>
@@ -121,7 +121,7 @@ const PaginationControls: React.FC<PaginationControlsProps> = ({
             onClick={() => handlePageChange(currentPage - 1)}
             disabled={currentPage === 1 || isPending}
             aria-label={t('pagination_aria_anterior')}
-            className="flex items-center justify-center w-10 h-10 text-theme-secondary bg-theme-elevated border border-theme-secondary rounded-lg transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed hover:scale-105 group"
+            className="flex items-center justify-center w-10 h-10 text-theme-secondary bg-theme-elevated rounded-lg transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed hover:scale-105 group"
           >
             <PiCaretLeft
               aria-hidden="true"
@@ -161,7 +161,7 @@ const PaginationControls: React.FC<PaginationControlsProps> = ({
                     ${
                       isActive
                         ? 'text-theme-primary shadow-theme-glow border-2'
-                        : 'text-theme-secondary bg-theme-elevated border border-theme-secondary'
+                        : 'text-theme-secondary bg-theme-elevated'
                     }
                   `}
                 >
@@ -176,7 +176,7 @@ const PaginationControls: React.FC<PaginationControlsProps> = ({
             onClick={() => handlePageChange(currentPage + 1)}
             disabled={currentPage === totalPages || isPending}
             aria-label={t('pagination_aria_proxima')}
-            className="flex items-center justify-center w-10 h-10 text-theme-secondary bg-theme-elevated border border-theme-secondary rounded-lg transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed hover:scale-105 group"
+            className="flex items-center justify-center w-10 h-10 text-theme-secondary bg-theme-elevated rounded-lg transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed hover:scale-105 group"
           >
             <PiCaretRight
               aria-hidden="true"
@@ -188,7 +188,7 @@ const PaginationControls: React.FC<PaginationControlsProps> = ({
           <button
             onClick={() => handlePageChange(totalPages)}
             disabled={currentPage === totalPages || isPending}
-            className="hidden md:flex items-center px-3 py-2 text-sm font-medium text-theme-secondary bg-theme-elevated border border-theme-secondary rounded-lg transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed hover:scale-105"
+            className="hidden md:flex items-center px-3 py-2 text-sm font-medium text-theme-secondary bg-theme-elevated rounded-lg transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed hover:scale-105"
           >
             {t('pagination_jsx_button_children_0__final')}
           </button>

@@ -684,7 +684,7 @@ export default function TeacherCalendarPageClient({
           <AnimatedItem direction="up" springType="gentle">
             <AnimatedCard
               hover="lift"
-              className="classical-card p-4 mb-6 border-l-4 flex items-center justify-between !border-red-600"
+              className="classical-card p-4 mb-6 flex items-center justify-between"
             >
               <Inline gap={3}>
                 <PiWarning className="w-5 h-5" />
@@ -727,7 +727,7 @@ export default function TeacherCalendarPageClient({
                         : navigateWeek('prev')
                     }
                     disabled={loading.calendar}
-                    className="w-10 h-10 rounded-lg bg-theme-elevated border border-theme-secondary transition-all flex items-center justify-center group disabled:opacity-50"
+                    className="w-10 h-10 rounded-lg bg-theme-elevated transition-all flex items-center justify-center group disabled:opacity-50"
                   >
                     <PiCaretLeft className="w-5 h-5 text-theme-tertiary transition-colors" />
                     <NomeAcao acao="anterior" />
@@ -752,7 +752,7 @@ export default function TeacherCalendarPageClient({
                         : navigateWeek('next')
                     }
                     disabled={loading.calendar}
-                    className="w-10 h-10 rounded-lg bg-theme-elevated border border-theme-secondary transition-all flex items-center justify-center group disabled:opacity-50"
+                    className="w-10 h-10 rounded-lg bg-theme-elevated transition-all flex items-center justify-center group disabled:opacity-50"
                   >
                     <PiCaretRight className="w-5 h-5 text-theme-tertiary transition-colors" />
                     <NomeAcao acao="proximo" />
@@ -927,10 +927,7 @@ export default function TeacherCalendarPageClient({
         {/* Conflicts Warning */}
         {hasConflicts && conflicts && conflicts.length > 0 && (
           <AnimatedItem direction="up" springType="gentle">
-            <AnimatedCard
-              hover="lift"
-              className="classical-card p-6 border-l-4"
-            >
+            <AnimatedCard hover="lift" className="classical-card p-6">
               <div className="flex items-start space-x-4">
                 <div className="w-10 h-10 rounded-full flex items-center justify-center">
                   <PiWarningCircle className="w-5 h-5" />
@@ -1183,7 +1180,7 @@ function MonthView({
           return (
             <div
               key={index}
-              className={`min-h-24 p-2 border rounded-lg transition-all ${
+              className={`min-h-24 p-2 rounded-lg transition-all bg-sup-2 ${
                 isToday ? '' : isCurrentMonth ? '' : 'opacity-60'
               } ${hasAttentionEvents ? 'ring-1' : ''}`}
             >
@@ -1278,7 +1275,7 @@ function WeekView({
             className="rounded-lg bg-theme-secondary overflow-hidden"
           >
             <div
-              className={`text-center p-4 ${isToday ? 'border-b' : 'border-b'}`}
+              className={`text-center p-4 ${isToday ? 'border-b border-linha' : 'border-b border-linha'}`}
             >
               <Inline
                 gap={1}
@@ -1536,7 +1533,7 @@ function EventDetailsModal({
                             : event.status}
                 </span>
                 {event.details?.isRecurring && (
-                  <span className="px-3 py-1 border rounded-full text-sm">
+                  <span className="px-3 py-1 rounded-full text-sm bg-sup-2">
                     {t('recurring')}
                   </span>
                 )}
@@ -1544,7 +1541,7 @@ function EventDetailsModal({
                   <Inline
                     as="span"
                     gap={1}
-                    className="px-3 py-1 border rounded-full text-sm"
+                    className="px-3 py-1 rounded-full text-sm bg-sup-2"
                   >
                     <PiWarning className="w-3 h-3" />
                     <span>{t('needs_attention')}</span>
@@ -1556,7 +1553,7 @@ function EventDetailsModal({
 
           {/* 🆕 ALERTA DE ATENÇÃO EXPANDIDO E MELHORADO */}
           {statusInfo.needsAttention && (
-            <div className="mb-6 p-6 border border-red-600 rounded-lg">
+            <div className="mb-6 p-6 rounded-lg bg-sup-2">
               <Stack gap={4} className="items-center text-center">
                 <PiWarning className="w-12 h-12" />
                 <div>
@@ -1687,7 +1684,7 @@ function EventDetailsModal({
                   {event.objectives.map((objective, index) => (
                     <span
                       key={index}
-                      className="px-3 py-1 border rounded-full text-sm"
+                      className="px-3 py-1 rounded-full text-sm bg-sup-2"
                     >
                       {objective}
                     </span>
@@ -1723,7 +1720,7 @@ function EventDetailsModal({
                 <label className="text-sm font-medium text-theme-tertiary block">
                   {t('homework')}
                 </label>
-                <div className="rounded-lg border p-4">
+                <div className="rounded-lg p-4 bg-sup-2">
                   <div className="text-theme-primary">
                     {event.details.homework}
                   </div>
@@ -1737,7 +1734,7 @@ function EventDetailsModal({
                 <label className="text-sm font-medium text-theme-tertiary block">
                   {t('teacher_notes')}
                 </label>
-                <div className="rounded-lg border p-4">
+                <div className="rounded-lg p-4 bg-sup-2">
                   <div className="text-theme-primary whitespace-pre-wrap">
                     {event.details.teacherNotes}
                   </div>
@@ -1896,7 +1893,7 @@ function DayEventsModal({
 
           {/* Alerta geral se houver eventos precisando de atenção */}
           {eventsNeedingAttention.length > 0 && (
-            <div className="mb-6 p-4 border rounded-lg">
+            <div className="mb-6 p-4 rounded-lg bg-sup-2">
               <Inline gap={3}>
                 <PiWarning className="w-5 h-5" />
                 <div>
@@ -1923,7 +1920,7 @@ function DayEventsModal({
               return (
                 <div
                   key={event.id}
-                  className={`p-4 rounded-lg border transition-all ${getEventStatusColor(
+                  className={`p-4 rounded-lg transition-all bg-sup-2 ${getEventStatusColor(
                     event.status,
                     statusInfo.needsAttention
                   )}`}
@@ -2074,7 +2071,7 @@ function DayEventsModal({
                               as="button"
                               gap={1}
                               onClick={() => onCancelEvent(event.id)}
-                              className="text-sm font-medium transition-colors"
+                              className="text-sm font-medium transition-colors !text-erro"
                             >
                               <PiTrash className="w-4 h-4" />
                               <span>{t('cancel_lesson')}</span>

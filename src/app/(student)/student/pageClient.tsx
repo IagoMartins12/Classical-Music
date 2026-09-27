@@ -168,7 +168,7 @@ export default function StudentPageClient({
               {t('student_home_no_teacher_description')}
             </p>
             <Stack>
-              <Stack gap={2} className="rounded-lg border p-4">
+              <Stack gap={2} className="rounded-lg p-4 bg-sup-2">
                 <h3 className="font-semibold text-theme-primary">
                   {t('student_home_no_teacher_how_it_works')}
                 </h3>
@@ -373,7 +373,7 @@ export default function StudentPageClient({
                   <button
                     onClick={handleRefreshData}
                     disabled={loading.refreshing}
-                    className="w-8 h-8 rounded-lg bg-theme-elevated border border-theme-secondary transition-all flex items-center justify-center group"
+                    className="w-8 h-8 rounded-lg bg-theme-elevated transition-all flex items-center justify-center group"
                   >
                     <PiArrowsClockwise
                       className={`w-4 h-4 text-theme-tertiary transition-all ${
@@ -493,14 +493,14 @@ export default function StudentPageClient({
                               </h3>
 
                               <Inline gap={2}>
-                                <span className="px-3 py-1 border rounded-full text-xs font-medium">
+                                <span className="px-3 py-1 rounded-full text-xs font-medium bg-sup-2">
                                   {t(
                                     'student_home_recent_lessons_status_completed'
                                   )}
                                 </span>
                                 <Link
                                   href={`/student/lessons/${lesson.id}`}
-                                  className="w-8 h-8 rounded-lg bg-theme-elevated border border-theme-secondary transition-all flex items-center justify-center group/btn"
+                                  className="w-8 h-8 rounded-lg bg-theme-elevated transition-all flex items-center justify-center group/btn"
                                 >
                                   <PiEye className="w-4 h-4 text-theme-tertiary transition-colors" />
                                 </Link>
@@ -602,7 +602,10 @@ export default function StudentPageClient({
 
                         {/* Homework */}
                         {lesson.homework && (
-                          <Stack gap={1} className="mt-3 p-3 rounded-lg border">
+                          <Stack
+                            gap={1}
+                            className="mt-3 p-3 rounded-lg bg-sup-2"
+                          >
                             <Text papel="legenda" tom="fraco" as="div">
                               {t('student_home_recent_lessons_homework')}
                             </Text>

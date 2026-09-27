@@ -459,7 +459,7 @@ const InstrumentsSection: React.FC<InstrumentsSectionProps> = ({ user }) => {
                 {isEditing && (
                   <button
                     onClick={() => handleRemoveInstrument(instrument.id)}
-                    className="p-2 text-theme-tertiary transition-colors"
+                    className="p-2 transition-colors !text-erro"
                     title="Remover instrumento"
                   >
                     <PiTrash className="w-4 h-4" />

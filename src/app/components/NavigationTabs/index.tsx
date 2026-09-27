@@ -96,7 +96,7 @@ export function NavigationTabs({ activeTab, onTabChange }: Props) {
                       ${
                         isActive
                           ? `bg-gradient-to-br ${tab.gradient} text-theme-primary shadow-theme-glow`
-                          : 'bg-theme-elevated border border-theme-secondary text-theme-primary'
+                          : 'bg-theme-elevated text-theme-primary'
                       }
                       group-hover:scale-110
                     `}

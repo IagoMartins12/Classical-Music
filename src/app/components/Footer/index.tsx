@@ -172,7 +172,7 @@ const Footer: React.FC = () => {
           </Inline>
 
           {status === 'PENDING' && (
-            <div className="border rounded-lg p-3">
+            <div className="rounded-lg p-3 bg-sup-2">
               <p className="text-sm">{t('footer_jsx_p_children_0__confirm')}</p>
             </div>
           )}
@@ -353,7 +353,7 @@ const Footer: React.FC = () => {
         {/* 🆕 NEWSLETTER SECTION ATUALIZADA */}
         <div className="border-t border-theme-secondary" id="newsletter">
           <div className="section-wrap py-8">
-            <Card className="border">
+            <Card className="">
               <div className="flex flex-col lg:flex-row items-start lg:items-center justify-between space-y-6 lg:space-y-0 lg:space-x-8">
                 <div className="flex-1">
                   <h3 className="text-lg font-semibold text-theme-primary flex items-center mb-2">
@@ -422,7 +422,7 @@ const Footer: React.FC = () => {
               </div>
 
               {/* Privacy note */}
-              <div className="mt-4 pt-4 border-t">
+              <div className="mt-4 pt-4 border-t border-linha">
                 <Text papel="legenda" tom="fraco" as="p">
                   {t('footer_jsx_p_children_0__email')}
                   <br />

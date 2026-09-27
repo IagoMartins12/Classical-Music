@@ -3,10 +3,7 @@
 
 import { useEffect, useState } from 'react';
 import { createPortal } from 'react-dom';
-import { PiTrash, PiWarning } from 'react-icons/pi';
-import { Inline } from '@/app/components/ui/Layout';
-import { Text } from '@/app/components/ui/Text';
-import Modal from '@/app/components/Modal';
+import ConfirmModal from '@/app/components/ConfirmModal';
 
 export default function ConfirmDeleteEventModal({
   isOpen,
@@ -40,65 +37,22 @@ export default function ConfirmDeleteEventModal({
   if (!mounted || !isOpen) return null;
 
   const modalContent = (
-    <Modal
+    <ConfirmModal
       isOpen={isOpen}
       onClose={onClose}
-      maxWidth="md"
-      showCloseButton={false}
-    >
-      <Inline gap={3} className="mb-4">
-        <div className="w-12 h-12 rounded-xl flex items-center justify-center">
-          <PiWarning className="w-6 h-6" />
-        </div>
-        <div>
-          <h3 className="text-lg font-bold text-theme-primary">
-            Confirmar Exclusão
-          </h3>
-          <Text papel="rotulo" tom="suave" as="p">
-            Esta ação não pode ser desfeita
-          </Text>
-        </div>
-      </Inline>
-
-      <div className="mb-6">
-        <p className="text-theme-secondary">
+      onConfirm={onConfirm}
+      isLoading={isLoading}
+      type="danger"
+      title="Confirmar Exclusão"
+      confirmText="Deletar"
+      message={
+        <>
           Tem certeza que deseja deletar o evento{' '}
-          <strong>&quot;{eventTitle}&quot;</strong>?
-        </p>
-        <Text papel="rotulo" tom="fraco" as="p" className="mt-2">
+          <strong className="text-texto">&quot;{eventTitle}&quot;</strong>?
           Todos os dados relacionados ao evento serão permanentemente removidos.
-        </Text>
-      </div>
-
-      <Inline gap={3} className="justify-end">
-        <button
-          onClick={onClose}
-          disabled={isLoading}
-          className="px-4 py-2 rounded-lg border border-theme-secondary text-theme-secondary transition-colors disabled:opacity-50"
-        >
-          Cancelar
-        </button>
-        <Inline
-          as="button"
-          gap={2}
-          onClick={onConfirm}
-          disabled={isLoading}
-          className="px-4 py-2 text-white rounded-lg hover:bg-red-600 transition-colors disabled:opacity-50"
-        >
-          {isLoading ? (
-            <>
-              <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
-              <span>Deletando...</span>
-            </>
-          ) : (
-            <>
-              <PiTrash className="w-4 h-4" />
-              <span>Deletar</span>
-            </>
-          )}
-        </Inline>
-      </Inline>
-    </Modal>
+        </>
+      }
+    />
   );
 
   return createPortal(modalContent, document.body);

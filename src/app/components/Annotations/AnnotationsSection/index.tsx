@@ -386,7 +386,7 @@ export default function AnnotationsSection({
                   className={`px-4 py-2 rounded-xl text-sm font-medium transition-all ${
                     !communityFilters.category
                       ? 'text-theme-primary shadow-theme-glow'
-                      : 'bg-theme-elevated border text-theme-secondary'
+                      : 'bg-theme-elevated text-theme-secondary'
                   }`}
                 >
                   {t('annotations_todas')} (
@@ -414,8 +414,8 @@ export default function AnnotationsSection({
                           communityFilters.category === category && count > 0
                             ? `bg-gradient-to-r ${config?.color} text-theme-primary shadow-theme-glow`
                             : count === 0
-                              ? 'bg-theme-elevated border text-theme-tertiary opacity-50 cursor-not-allowed'
-                              : 'bg-theme-elevated border text-theme-secondary hover:scale-105'
+                              ? 'bg-theme-elevated text-theme-tertiary opacity-50 cursor-not-allowed'
+                              : 'bg-theme-elevated text-theme-secondary hover:scale-105'
                         }`}
                       >
                         <Icon className="w-3 h-3" />

@@ -254,7 +254,7 @@ export default function TeacherProgressPageClient({
             <Inline gap={4} className="mb-4 lg:mb-0">
               <Link
                 href={`/teacher/students/${studentId}`}
-                className="w-12 h-12 rounded-xl bg-theme-elevated border border-theme-secondary transition-all flex items-center justify-center group"
+                className="w-12 h-12 rounded-xl bg-theme-elevated transition-all flex items-center justify-center group"
               >
                 <PiArrowLeft className="w-5 h-5 text-theme-tertiary transition-colors" />
               </Link>
@@ -341,7 +341,7 @@ export default function TeacherProgressPageClient({
         {/* Success Message */}
         {shareSuccess && (
           <AnimatedItem direction="up" springType="gentle">
-            <Card densidade="compacta" className="border-l-4 mb-6">
+            <Card densidade="compacta" className="mb-6">
               <Inline gap={3}>
                 <PiCheckCircle className="w-5 h-5" />
                 <span className="font-medium">{shareSuccess}</span>
@@ -637,7 +637,7 @@ export default function TeacherProgressPageClient({
 
         {/* Report Metadata */}
         <AnimatedItem direction="up" springType="gentle">
-          <Card densidade="compacta" className="border">
+          <Card densidade="compacta" className="">
             <Text
               papel="rotulo"
               tom="fraco"

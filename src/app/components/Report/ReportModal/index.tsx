@@ -212,7 +212,7 @@ export default function ReportModal({
             </div>
 
             {/* Warning */}
-            <div className="p-4 border rounded-lg">
+            <div className="p-4 rounded-lg bg-sup-2">
               <div className="flex items-start space-x-3">
                 <PiWarning className="w-5 h-5 flex-shrink-0 mt-0.5" />
                 <Stack gap={1} className="text-sm">

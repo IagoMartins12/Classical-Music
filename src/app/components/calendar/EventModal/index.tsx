@@ -209,7 +209,7 @@ export default function EventModal({
         )}
 
         {/* Botões de Ação */}
-        <div className="flex flex-col sm:flex-row gap-3 pt-4 border-t">
+        <div className="flex flex-col sm:flex-row gap-3 pt-4 border-t border-linha">
           <Button
             variant="primary"
             size="lg"

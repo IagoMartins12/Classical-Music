@@ -611,7 +611,7 @@ export default function AdminAnalytics() {
                   return (
                     <div
                       key={index}
-                      className={`p-4 border-l-4 rounded-xl ${getRecommendationColor(
+                      className={`p-4 rounded-xl bg-sup-2 ${getRecommendationColor(
                         rec.type
                       )}`}
                     >

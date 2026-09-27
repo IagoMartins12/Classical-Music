@@ -260,7 +260,7 @@ export default function StudentSharedReportPageClient({
             <Inline gap={4} className="mb-4 lg:mb-0">
               <Link
                 href="/student/progress"
-                className="w-12 h-12 rounded-xl bg-theme-elevated border border-theme-secondary transition-all flex items-center justify-center group"
+                className="w-12 h-12 rounded-xl bg-theme-elevated transition-all flex items-center justify-center group"
               >
                 <PiArrowLeft className="w-5 h-5 text-theme-tertiary transition-colors" />
               </Link>
@@ -384,10 +384,7 @@ export default function StudentSharedReportPageClient({
         {/* Teacher Message */}
         {reportData.teacherMessage && (
           <AnimatedItem direction="up" springType="gentle">
-            <AnimatedCard
-              hover="lift"
-              className="classical-card p-6 border-l-4 mb-8"
-            >
+            <AnimatedCard hover="lift" className="classical-card p-6 mb-8">
               <h3 className="text-lg font-bold text-theme-primary mb-3 flex items-center">
                 <PiChatCenteredText className="w-5 h-5 mr-2" />
                 Mensagem do Professor
@@ -648,7 +645,7 @@ export default function StudentSharedReportPageClient({
                 {reportData.comments.map((comment) => (
                   <div
                     key={comment.id}
-                    className="p-4 bg-theme-elevated rounded-lg border border-theme-secondary"
+                    className="p-4 bg-theme-elevated rounded-lg"
                   >
                     <div className="flex items-start space-x-3">
                       <div className="w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0">

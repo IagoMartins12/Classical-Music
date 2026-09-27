@@ -487,7 +487,7 @@ export default function StudentProgressPageClient({
                       springType="bouncy"
                       delay={index * 0.1}
                     >
-                      <div className="p-4 bg-theme-elevated rounded-lg border border-theme-secondary transition-all duration-300">
+                      <div className="p-4 bg-theme-elevated rounded-lg transition-all duration-300">
                         <Inline gap={3} className="mb-4">
                           {teacher.teacherImage ? (
                             <div className="w-10 h-10 relative rounded-full overflow-hidden">
@@ -598,7 +598,7 @@ export default function StudentProgressPageClient({
                     springType="bouncy"
                     delay={index * 0.1}
                   >
-                    <div className="p-4 border rounded-lg">
+                    <div className="p-4 rounded-lg bg-sup-2">
                       <Inline gap={3} className="mb-2">
                         <div className="w-8 h-8 rounded-full flex items-center justify-center">
                           <PiMedal className="w-4 h-4 text-theme-primary" />
@@ -669,7 +669,7 @@ export default function StudentProgressPageClient({
                         springType="gentle"
                         delay={index * 0.05}
                       >
-                        <div className="p-3 bg-theme-elevated rounded-lg border border-theme-secondary">
+                        <div className="p-3 bg-theme-elevated rounded-lg">
                           <div className="flex justify-between items-start">
                             <div className="flex-1">
                               <h5 className="font-medium text-theme-primary text-sm">
@@ -723,7 +723,7 @@ export default function StudentProgressPageClient({
                         springType="gentle"
                         delay={index * 0.05}
                       >
-                        <div className="p-3 bg-theme-elevated rounded-lg border border-theme-secondary">
+                        <div className="p-3 bg-theme-elevated rounded-lg">
                           <div className="flex justify-between items-start">
                             <div className="flex-1">
                               <h5 className="font-medium text-theme-primary text-sm">

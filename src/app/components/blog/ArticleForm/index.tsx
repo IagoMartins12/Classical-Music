@@ -787,7 +787,7 @@ export function ArticleForm({
             <label className="block text-sm font-medium text-theme-primary">
               Tempo de Leitura
             </label>
-            <div className="flex items-center gap-4 p-4 bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg">
+            <div className="flex items-center gap-4 p-4 bg-blue-50 dark:bg-blue-900/20 rounded-lg">
               <PiClock className="text-blue-600 w-5 h-5 flex-shrink-0" />
               <div className="flex-1">
                 <p className="text-sm font-medium text-blue-900 dark:text-blue-100 mb-2">
@@ -919,7 +919,7 @@ export function ArticleForm({
                 onClick={() => setBackgroundMusicTab('upload')}
                 className={`flex-1 px-4 py-2 text-sm font-medium transition-colors ${
                   backgroundMusicTab === 'upload'
-                    ? 'border-b-2 text-ouro-texto'
+                    ? 'border-b-2 text-ouro-texto border-linha'
                     : 'text-theme-tertiary'
                 }`}
               >
@@ -930,7 +930,7 @@ export function ArticleForm({
                 onClick={() => setBackgroundMusicTab('link')}
                 className={`flex-1 px-4 py-2 text-sm font-medium transition-colors ${
                   backgroundMusicTab === 'link'
-                    ? 'border-b-2 text-ouro-texto'
+                    ? 'border-b-2 text-ouro-texto border-linha'
                     : 'text-theme-tertiary'
                 }`}
               >
@@ -1129,7 +1129,7 @@ export function ArticleForm({
       {activeTab === 'relations' && (
         <Stack gap={6}>
           {/* ✅ INFO BOX - Mostra quantos estão vinculados */}
-          <div className="bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg p-4">
+          <div className="bg-blue-50 dark:bg-blue-900/20 rounded-lg p-4">
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-sm font-medium text-blue-900 dark:text-blue-100">
@@ -1196,7 +1196,7 @@ export function ArticleForm({
                     <button
                       type="button"
                       onClick={() => handleRemoveComposer(composer.id)}
-                      className="p-2 text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-lg transition-colors"
+                      className="p-2 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-lg transition-colors !text-erro"
                     >
                       <PiTrash className="w-4 h-4" />
                       <NomeAcao acao="excluir" />
@@ -1257,7 +1257,7 @@ export function ArticleForm({
                     <button
                       type="button"
                       onClick={() => handleRemoveWork(work.id)}
-                      className="p-2 text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-lg transition-colors"
+                      className="p-2 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-lg transition-colors !text-erro"
                     >
                       <PiTrash className="w-4 h-4" />
                       <NomeAcao acao="excluir" />

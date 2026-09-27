@@ -631,7 +631,7 @@ function ComposerFavoriteCard({
                 <Text
                   papel="legenda"
                   tom="ouro"
-                  className="inline-flex items-center px-3 justify-center py-1 mt-1 border rounded-full font-medium"
+                  className="inline-flex items-center px-3 justify-center py-1 mt-1 rounded-full font-medium bg-sup-2"
                 >
                   <PiClock className="w-2.5 h-2.5 mr-1" />
                   {favorite.composer?.epochName &&
@@ -714,7 +714,7 @@ function WorkFavoriteCard({ favorite, viewMode, t }: WorkFavoriteCardProps) {
                     <Text
                       papel="legenda"
                       tom="suave"
-                      className="inline-flex items-center px-2 py-0.5 bg-theme-elevated border rounded-md font-medium flex-shrink-0"
+                      className="inline-flex items-center px-2 py-0.5 bg-theme-elevated rounded-md font-medium flex-shrink-0"
                     >
                       <PiBookOpen className="w-2.5 h-2.5 mr-1" />
                       {favorite.work?.opOrCatalog}
@@ -815,7 +815,7 @@ function ScoreFavoriteCard({ favorite, viewMode, t }: ScoreFavoriteCardProps) {
               </div>
 
               <div className="flex gap-2 items-center flex-wrap">
-                <span className="inline-flex items-center px-2 py-0.5 border rounded-md text-xs font-medium">
+                <span className="inline-flex items-center px-2 py-0.5 rounded-md text-xs font-medium bg-sup-2">
                   <PiHeart className="w-2.5 h-2.5 mr-1" />
                   {favorite.scoreType}
                 </span>
@@ -823,7 +823,7 @@ function ScoreFavoriteCard({ favorite, viewMode, t }: ScoreFavoriteCardProps) {
                 <Text
                   papel="legenda"
                   tom="suave"
-                  className="inline-flex items-center px-2 py-0.5 bg-theme-elevated border rounded-md font-medium"
+                  className="inline-flex items-center px-2 py-0.5 bg-theme-elevated rounded-md font-medium"
                 >
                   {favorite.scoreSource}
                 </Text>
@@ -851,7 +851,7 @@ function ScoreFavoriteCard({ favorite, viewMode, t }: ScoreFavoriteCardProps) {
             {(favorite.personalRating ||
               favorite.notes ||
               favorite.tags?.length > 0) && (
-              <Stack gap={2} className="mb-3 p-3 rounded-lg border">
+              <Stack gap={2} className="mb-3 p-3 rounded-lg bg-sup-2">
                 {favorite.personalRating && (
                   <Inline gap={2}>
                     <PiStar className="w-3 h-3" />

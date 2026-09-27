@@ -106,7 +106,7 @@ export default function DifficultyTable({
               </th>
             </tr>
           </thead>
-          <tbody className="divide-y">
+          <tbody className="divide-y divide-linha">
             {works.map((work, index) => (
               <AnimatedItem
                 key={work.id}
@@ -124,7 +124,7 @@ export default function DifficultyTable({
                   <Stack gap={2}>
                     {/* Badge Principal (Enum) */}
                     <div
-                      className={`inline-flex items-center px-3 py-1 rounded-full text-sm font-bold border max-w-fit ${
+                      className={`inline-flex items-center px-3 py-1 rounded-full text-sm font-bold max-w-fit bg-sup-2 ${
                         getDifficultyDisplay(work).enumColor
                       }`}
                     >
@@ -215,7 +215,7 @@ export default function DifficultyTable({
                             href={score.downloadUrl || work.imslpPermlink}
                             target="_blank"
                             rel="noopener noreferrer"
-                            className="inline-flex items-center px-2 py-1 border rounded text-xs font-medium transition-all duration-300"
+                            className="inline-flex items-center px-2 py-1 rounded text-xs font-medium transition-all duration-300 bg-sup-2"
                           >
                             <PiDownloadSimple className="w-3 h-3 mr-1" />
                             {score.fileFormat}
@@ -232,7 +232,7 @@ export default function DifficultyTable({
                         href={work.imslpPermlink}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="inline-flex items-center px-2 py-1 border text-ouro-texto rounded text-xs font-medium transition-all duration-300"
+                        className="inline-flex items-center px-2 py-1 text-ouro-texto rounded text-xs font-medium transition-all duration-300 bg-sup-2"
                       >
                         <PiArrowSquareOut className="w-3 h-3 mr-1" />
                         IMSLP

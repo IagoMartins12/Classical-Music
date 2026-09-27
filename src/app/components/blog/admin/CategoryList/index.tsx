@@ -353,7 +353,7 @@ export function CategoryList({
               {/* Delete */}
               <button
                 onClick={() => setDeleteModal(category.id)}
-                className="p-2 rounded-lg text-theme-secondary hover:text-red-500 transition-all"
+                className="p-2 rounded-lg transition-all !text-erro"
                 title="Deletar"
                 disabled={category._count.articles > 0}
               >
@@ -397,7 +397,7 @@ export function CategoryList({
 
                 {(categories.find((c) => c.id === deleteModal)?._count
                   .articles ?? 0) > 0 && (
-                  <div className="mb-4 p-3 bg-red-500/10 border border-red-500/20 rounded-lg">
+                  <div className="mb-4 p-3 bg-red-500/10 rounded-lg">
                     <p className="text-sm text-red-600">
                       ⚠️ Esta categoria possui{' '}
                       {

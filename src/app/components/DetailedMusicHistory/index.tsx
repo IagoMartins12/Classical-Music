@@ -210,7 +210,7 @@ const OriginsSection = memo<SectionProps>(({ isExpanded, onToggle }) => {
         <p className="text-lg leading-relaxed mb-6">
           {t('detailed_jsx_p_children_0__origem_musica_classica')}
         </p>
-        <div className="border-l-4 rounded-xl p-6 my-6 transform transition-all duration-200 hover:scale-101">
+        <div className="rounded-xl p-6 my-6 transform transition-all duration-200 hover:scale-101 bg-sup-2">
           <div className="flex items-start space-x-3">
             <div className="w-8 h-8 rounded-xl flex items-center justify-center flex-shrink-0 mt-0.5">
               <PiStar className="w-4 h-4 text-theme-primary" />
@@ -282,7 +282,7 @@ const MedievalSection = memo<SectionProps>(({ isExpanded, onToggle }) => {
           </p>
         </div>
       </div>
-      <div className="mt-8 border-l-4 rounded-xl p-6">
+      <div className="mt-8 rounded-xl p-6 bg-sup-2">
         <div className="flex items-start space-x-3">
           <div className="w-8 h-8 rounded-xl flex items-center justify-center flex-shrink-0 mt-0.5">
             <GiViolin className="w-4 h-4 text-theme-primary" />
@@ -357,7 +357,7 @@ const RenaissanceSection = memo<SectionProps>(({ isExpanded, onToggle }) => {
           </Card>
         </div>
 
-        <div className="border-l-4 rounded-xl p-6">
+        <div className="rounded-xl p-6 bg-sup-2">
           <div className="flex items-start space-x-3">
             <div className="w-8 h-8 rounded-xl flex items-center justify-center flex-shrink-0 mt-0.5">
               <PiFileText className="w-4 h-4 text-theme-primary" />
@@ -438,7 +438,7 @@ const BaroqueSection = memo<SectionProps>(({ isExpanded, onToggle }) => {
           ))}
         </div>
 
-        <div className="border-l-4 rounded-xl p-6">
+        <div className="rounded-xl p-6 bg-sup-2">
           <div className="flex items-start space-x-3">
             <div className="w-8 h-8 rounded-xl flex items-center justify-center flex-shrink-0 mt-0.5">
               <GiGrandPiano className="w-4 h-4 text-theme-primary" />
@@ -693,7 +693,7 @@ const ModernSection = memo<SectionProps>(({ isExpanded, onToggle }) => {
           </div>
         </div>
 
-        <div className="border-l-4 rounded-xl p-6">
+        <div className="rounded-xl p-6 bg-sup-2">
           <div className="flex items-start space-x-3">
             <div className="w-8 h-8 rounded-xl flex items-center justify-center flex-shrink-0 mt-0.5">
               <PiStar className="w-4 h-4 text-theme-primary" />
@@ -771,7 +771,7 @@ const ContemporarySection = memo<SectionProps>(({ isExpanded, onToggle }) => {
           </Card>
         </div>
 
-        <Stack className="border-l-4 rounded-xl p-6 text-center">
+        <Stack className="rounded-xl p-6 text-center bg-sup-2">
           <div className="flex items-center justify-center">
             <div className="w-12 h-12 rounded-2xl flex items-center justify-center">
               <PiStar className="w-6 h-6 text-theme-primary" />
@@ -908,7 +908,7 @@ const PopularMusicSection = memo<SectionProps>(({ isExpanded, onToggle }) => {
           </Card>
         </div>
 
-        <div className="border-l-4 rounded-xl p-6">
+        <div className="rounded-xl p-6 bg-sup-2">
           <div className="flex items-start space-x-3">
             <div className="w-8 h-8 rounded-xl flex items-center justify-center flex-shrink-0 mt-0.5">
               <PiStar className="w-4 h-4 text-theme-primary" />

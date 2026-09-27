@@ -214,7 +214,7 @@ export default function ResetPasswordPage() {
         <form onSubmit={handleSubmit} className="space-y-6">
           {/* Erro geral */}
           {error && (
-            <div className="p-3 rounded-lg border text-sm">
+            <div className="p-3 rounded-lg text-sm bg-sup-2">
               <div className="flex items-center">
                 <PiWarningCircle className="w-4 h-4 mr-2 flex-shrink-0" />
                 <span>{error}</span>
@@ -327,7 +327,7 @@ export default function ResetPasswordPage() {
           </div>
 
           {/* Dicas de Segurança */}
-          <Stack gap={2} className="border rounded-lg p-4">
+          <Stack gap={2} className="rounded-lg p-4 bg-sup-2">
             <h4 className="text-sm font-medium">{t('security_tips_title')}</h4>
             <ul className="text-xs opacity-80 space-y-1">
               <li>{t('security_tip_1')}</li>
@@ -375,7 +375,7 @@ export default function ResetPasswordPage() {
         {t('success_subtitle')}
       </p>
 
-      <Stack gap={2} className="border rounded-xl p-6 mb-8">
+      <Stack gap={2} className="rounded-xl p-6 mb-8 bg-sup-2">
         <h3 className="text-xl font-semibold">{t('success_all_done')}</h3>
         <p className="opacity-80">{t('success_description')}</p>
       </Stack>
@@ -414,7 +414,7 @@ export default function ResetPasswordPage() {
         {getErrorMessage(pageState.errorCode)}
       </p>
 
-      <Stack gap={3} className="border rounded-xl p-6 mb-8">
+      <Stack gap={3} className="rounded-xl p-6 mb-8 bg-sup-2">
         <div className="flex items-center justify-center">
           <PiWarningCircle className="w-5 h-5 mr-2" />
           <span className="font-medium">

@@ -388,7 +388,7 @@ export default function CreateVenueModal({
               <Text papel="rotulo" tom="suave" as="p">
                 Preview do Logo:
               </Text>
-              <div className="relative w-32 h-32 rounded-lg overflow-hidden border border-theme-secondary bg-white p-2">
+              <div className="relative w-32 h-32 rounded-lg overflow-hidden bg-white p-2">
                 <Image
                   src={formData.logoUrl}
                   alt="Logo Preview"
@@ -422,7 +422,7 @@ export default function CreateVenueModal({
               <Text papel="rotulo" tom="suave" as="p">
                 Preview da Capa:
               </Text>
-              <div className="relative w-full h-48 rounded-lg overflow-hidden border border-theme-secondary">
+              <div className="relative w-full h-48 rounded-lg overflow-hidden">
                 <Image
                   src={formData.coverImageUrl}
                   alt="Cover Preview"

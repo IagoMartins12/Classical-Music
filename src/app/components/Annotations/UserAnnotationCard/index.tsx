@@ -262,7 +262,7 @@ export default function UserAnnotationCard({
         {/* Loading overlay para updates */}
         {isUpdating && (
           <div className="absolute inset-0 backdrop-blur-sm z-20 flex items-center justify-center">
-            <Inline gap={3} className="rounded-xl px-4 py-2 border">
+            <Inline gap={3} className="rounded-xl px-4 py-2 bg-sup-2">
               <PiSpinnerGap className="w-4 h-4 animate-spin text-ouro-texto" />
               <Text papel="rotulo" tom="forte" className="font-medium">
                 {isOptimistic
@@ -303,7 +303,7 @@ export default function UserAnnotationCard({
             {/* Categoria */}
             <div className="col-span-2">
               <span
-                className={`px-2 py-1 rounded-full text-xs font-medium border ${categoryConfig.bgColor} flex items-center space-x-1`}
+                className={`px-2 py-1 rounded-full text-xs font-medium bg-sup-2 ${categoryConfig.bgColor} flex items-center space-x-1`}
               >
                 <CategoryIcon className="w-3 h-3" />
                 <span className="hidden sm:inline">{categoryConfig.label}</span>
@@ -313,7 +313,7 @@ export default function UserAnnotationCard({
             {/* Dificuldade */}
             <div className="col-span-2">
               <span
-                className={`px-2 py-1 rounded-full text-xs font-medium border ${difficultyConfig.bgColor}`}
+                className={`px-2 py-1 rounded-full text-xs font-medium bg-sup-2 ${difficultyConfig.bgColor}`}
               >
                 {difficultyConfig.label}
               </span>
@@ -343,7 +343,7 @@ export default function UserAnnotationCard({
                   <button
                     onClick={() => setShowActions(!showActions)}
                     disabled={isUpdating}
-                    className={`w-6 h-6 rounded-lg bg-theme-elevated border flex items-center justify-center text-theme-tertiary transition-all opacity-0 group-hover:opacity-100 ${
+                    className={`w-6 h-6 rounded-lg bg-theme-elevated flex items-center justify-center text-theme-tertiary transition-all opacity-0 group-hover:opacity-100 ${
                       isUpdating ? 'opacity-50 cursor-not-allowed' : ''
                     }`}
                   >
@@ -352,7 +352,7 @@ export default function UserAnnotationCard({
                   </button>
 
                   {showActions && !isUpdating && (
-                    <div className="absolute right-0 top-7 bg-theme-elevated border rounded-xl shadow-theme-glow z-10 py-2 min-w-[100px]">
+                    <div className="absolute right-0 top-7 bg-theme-elevated rounded-xl shadow-theme-glow z-10 py-2 min-w-[100px]">
                       <Inline
                         as="button"
                         gap={2}
@@ -372,7 +372,7 @@ export default function UserAnnotationCard({
                           setShowDeleteModal(true);
                           setShowActions(false);
                         }}
-                        className="w-full px-3 py-1 text-left text-xs transition-colors"
+                        className="w-full px-3 py-1 text-left text-xs transition-colors !text-erro"
                       >
                         <PiTrash className="w-3 h-3" />
                         <span>{t('user_annotation_card_delete')}</span>
@@ -383,7 +383,7 @@ export default function UserAnnotationCard({
               )}
               <Link
                 href={`/works/${workInfo.id}`}
-                className="w-6 h-6 rounded-lg bg-theme-elevated border flex items-center justify-center text-theme-tertiary transition-all ml-2"
+                className="w-6 h-6 rounded-lg bg-theme-elevated flex items-center justify-center text-theme-tertiary transition-all ml-2"
               >
                 <PiArrowSquareOut className="w-3 h-3" />
               </Link>
@@ -406,7 +406,7 @@ export default function UserAnnotationCard({
           {/* Loading overlay para updates */}
           {isUpdating && (
             <div className="absolute inset-0 backdrop-blur-sm z-20 flex items-center justify-center rounded-xl">
-              <Inline gap={3} className="rounded-xl px-4 py-2 border">
+              <Inline gap={3} className="rounded-xl px-4 py-2 bg-sup-2">
                 <PiSpinnerGap className="w-4 h-4 animate-spin text-ouro-texto" />
                 <Text papel="rotulo" tom="forte" className="font-medium">
                   {isOptimistic
@@ -467,14 +467,14 @@ export default function UserAnnotationCard({
               {/* Badges compactos */}
               <div className="flex flex-wrap gap-2 mb-3">
                 <span
-                  className={`px-2 py-0.5 rounded-full text-xs font-medium border ${categoryConfig.bgColor} flex items-center space-x-1`}
+                  className={`px-2 py-0.5 rounded-full text-xs font-medium bg-sup-2 ${categoryConfig.bgColor} flex items-center space-x-1`}
                 >
                   <CategoryIcon className="w-2.5 h-2.5" />
                   <span>{categoryConfig.label}</span>
                 </span>
 
                 <span
-                  className={`px-2 py-0.5 rounded-full text-xs font-medium border ${difficultyConfig.bgColor}`}
+                  className={`px-2 py-0.5 rounded-full text-xs font-medium bg-sup-2 ${difficultyConfig.bgColor}`}
                 >
                   {difficultyConfig.label}
                 </span>
@@ -483,7 +483,7 @@ export default function UserAnnotationCard({
                   <Inline
                     as="span"
                     gap={1}
-                    className="px-2 py-0.5 rounded-full text-xs font-medium border"
+                    className="px-2 py-0.5 rounded-full text-xs font-medium bg-sup-2"
                   >
                     <PiEye className="w-2.5 h-2.5" />
                     <span>{t('user_annotation_card_private')}</span>
@@ -494,7 +494,7 @@ export default function UserAnnotationCard({
                   <Inline
                     as="span"
                     gap={1}
-                    className="px-2 py-0.5 rounded-full text-xs font-medium border text-theme-primary"
+                    className="px-2 py-0.5 rounded-full text-xs font-medium text-theme-primary bg-sup-2"
                   >
                     <PiMapPin className="w-2.5 h-2.5" />
                     <span>{measureInfo}</span>
@@ -534,7 +534,7 @@ export default function UserAnnotationCard({
                   <button
                     onClick={() => setShowActions(!showActions)}
                     disabled={isUpdating}
-                    className={`w-6 h-6 rounded-lg bg-theme-elevated border flex items-center justify-center text-theme-tertiary transition-all ${
+                    className={`w-6 h-6 rounded-lg bg-theme-elevated flex items-center justify-center text-theme-tertiary transition-all ${
                       isUpdating ? 'opacity-50 cursor-not-allowed' : ''
                     }`}
                   >
@@ -543,7 +543,7 @@ export default function UserAnnotationCard({
                   </button>
 
                   {showActions && !isUpdating && (
-                    <div className="absolute right-0 top-7 bg-theme-elevated border rounded-xl shadow-theme-glow z-10 py-2 min-w-[100px]">
+                    <div className="absolute right-0 top-7 bg-theme-elevated rounded-xl shadow-theme-glow z-10 py-2 min-w-[100px]">
                       <Inline
                         as="button"
                         gap={2}
@@ -563,7 +563,7 @@ export default function UserAnnotationCard({
                           setShowDeleteModal(true);
                           setShowActions(false);
                         }}
-                        className="w-full px-3 py-1 text-left text-xs transition-colors"
+                        className="w-full px-3 py-1 text-left text-xs transition-colors !text-erro"
                       >
                         <PiTrash className="w-3 h-3" />
                         <span>{t('user_annotation_card_delete')}</span>
@@ -619,7 +619,7 @@ export default function UserAnnotationCard({
         {/* Loading overlay para updates */}
         {isUpdating && (
           <div className="absolute inset-0 backdrop-blur-sm z-20 flex items-center justify-center">
-            <Inline gap={3} className="rounded-xl px-4 py-2 border">
+            <Inline gap={3} className="rounded-xl px-4 py-2 bg-sup-2">
               <PiSpinnerGap className="w-4 h-4 animate-spin text-ouro-texto" />
               <Text papel="rotulo" tom="forte" className="font-medium">
                 {isOptimistic
@@ -712,7 +712,7 @@ export default function UserAnnotationCard({
                 <button
                   onClick={() => setShowActions(!showActions)}
                   disabled={isUpdating}
-                  className={`w-8 h-8 rounded-lg bg-theme-elevated border flex items-center justify-center text-theme-tertiary transition-all opacity-0 group-hover:opacity-100 ${
+                  className={`w-8 h-8 rounded-lg bg-theme-elevated flex items-center justify-center text-theme-tertiary transition-all opacity-0 group-hover:opacity-100 ${
                     isUpdating ? 'opacity-50 cursor-not-allowed' : ''
                   }`}
                 >
@@ -721,7 +721,7 @@ export default function UserAnnotationCard({
                 </button>
 
                 {showActions && !isUpdating && (
-                  <div className="absolute right-0 top-9 bg-theme-elevated border rounded-xl shadow-theme-glow z-10 py-2 min-w-[120px]">
+                  <div className="absolute right-0 top-9 bg-theme-elevated rounded-xl shadow-theme-glow z-10 py-2 min-w-[120px]">
                     <Inline
                       as="button"
                       gap={2}
@@ -741,7 +741,7 @@ export default function UserAnnotationCard({
                         setShowDeleteModal(true);
                         setShowActions(false);
                       }}
-                      className="w-full px-4 py-2 text-left text-sm transition-colors"
+                      className="w-full px-4 py-2 text-left text-sm transition-colors !text-erro"
                     >
                       <PiTrash className="w-3 h-3" />
                       <span>{t('user_annotation_card_delete')}</span>
@@ -755,14 +755,14 @@ export default function UserAnnotationCard({
           {/* Badges */}
           <div className="flex flex-wrap gap-2 mb-4">
             <span
-              className={`px-3 py-1 rounded-full text-xs font-medium border ${categoryConfig.bgColor} flex items-center space-x-1`}
+              className={`px-3 py-1 rounded-full text-xs font-medium bg-sup-2 ${categoryConfig.bgColor} flex items-center space-x-1`}
             >
               <CategoryIcon className="w-3 h-3" />
               <span>{categoryConfig.label}</span>
             </span>
 
             <span
-              className={`px-3 py-1 rounded-full text-xs font-medium border ${difficultyConfig.bgColor}`}
+              className={`px-3 py-1 rounded-full text-xs font-medium bg-sup-2 ${difficultyConfig.bgColor}`}
             >
               {difficultyConfig.label}
             </span>
@@ -771,7 +771,7 @@ export default function UserAnnotationCard({
               <Inline
                 as="span"
                 gap={1}
-                className="px-3 py-1 rounded-full text-xs font-medium border"
+                className="px-3 py-1 rounded-full text-xs font-medium bg-sup-2"
               >
                 <PiEye className="w-3 h-3" />
                 <span>{t('user_annotation_card_private')}</span>
@@ -782,7 +782,7 @@ export default function UserAnnotationCard({
               <Inline
                 as="span"
                 gap={1}
-                className="px-3 py-1 rounded-full text-xs font-medium border text-theme-primary"
+                className="px-3 py-1 rounded-full text-xs font-medium text-theme-primary bg-sup-2"
               >
                 <PiMapPin className="w-3 h-3" />
                 <span>{measureInfo}</span>
@@ -793,7 +793,7 @@ export default function UserAnnotationCard({
               <Text
                 papel="legenda"
                 tom="forte"
-                className="px-3 py-1 rounded-full font-medium border"
+                className="px-3 py-1 rounded-full font-medium bg-sup-2"
               >
                 {t('user_annotation_card_page')} {currentAnnotation.pageNumber}
               </Text>
@@ -826,7 +826,7 @@ export default function UserAnnotationCard({
                   papel="legenda"
                   tom="suave"
                   key={index}
-                  className="px-2 py-1 bg-theme-elevated border rounded-lg"
+                  className="px-2 py-1 bg-theme-elevated rounded-lg"
                 >
                   #{tag}
                 </Text>

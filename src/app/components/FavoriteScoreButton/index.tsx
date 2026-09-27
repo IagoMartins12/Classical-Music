@@ -112,7 +112,7 @@ const FavoriteModal = ({
         </div>
         <button
           onClick={onClose}
-          className="w-8 h-8 bg-theme-elevated border border-theme-secondary rounded-xl flex items-center justify-center transition-colors"
+          className="w-8 h-8 bg-theme-elevated rounded-xl flex items-center justify-center transition-colors"
         >
           <PiX className="w-4 h-4 text-theme-tertiary" />
           <NomeAcao acao="fechar" />
@@ -135,7 +135,7 @@ const FavoriteModal = ({
                 className={`w-8 h-8 rounded-xl flex items-center justify-center transition-all duration-300 ${
                   star <= personalRating
                     ? 'text-theme-primary shadow-theme-glow'
-                    : 'bg-theme-elevated border border-theme-secondary text-theme-tertiary'
+                    : 'bg-theme-elevated text-theme-tertiary'
                 }`}
               >
                 {star <= personalRating ? (
@@ -194,7 +194,7 @@ const FavoriteModal = ({
                 as="span"
                 gap={1}
                 key={tag}
-                className="px-3 py-1 border text-ouro-texto rounded-full text-xs font-medium"
+                className="px-3 py-1 text-ouro-texto rounded-full text-xs font-medium bg-sup-2"
               >
                 <span>{tag}</span>
                 <button
@@ -231,7 +231,7 @@ const FavoriteModal = ({
       <div className="flex justify-end space-x-3 mt-8">
         <button
           onClick={onClose}
-          className="px-4 py-2 bg-theme-elevated border border-theme-secondary text-theme-secondary rounded-xl transition-colors"
+          className="px-4 py-2 bg-theme-elevated text-theme-secondary rounded-xl transition-colors"
         >
           Cancelar
         </button>
@@ -368,12 +368,10 @@ export default function FavoriteScoreButton({
       default: isFavorited
         ? 'text-theme-primary shadow-theme-glow border-2'
         : 'bg-theme-elevated border-2 border-theme-secondary text-theme-tertiary',
-      compact: isFavorited
-        ? 'border'
-        : 'bg-theme-elevated border border-theme-secondary text-theme-tertiary',
+      compact: isFavorited ? 'border' : 'bg-theme-elevated text-theme-tertiary',
       detailed: isFavorited
         ? 'text-theme-primary shadow-theme-glow'
-        : 'bg-theme-elevated border border-theme-secondary text-theme-tertiary',
+        : 'bg-theme-elevated text-theme-tertiary',
     };
 
     return `${baseClasses} ${sizeClasses[size]} ${variantClasses[variant]} ${className}`;

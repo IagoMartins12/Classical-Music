@@ -319,7 +319,10 @@ export default function DatabaseStudioClient() {
 
                       {/* Seleção múltipla */}
                       {selectedRecords.size > 0 && (
-                        <Inline gap={2} className="px-3 py-2 border rounded-lg">
+                        <Inline
+                          gap={2}
+                          className="px-3 py-2 rounded-lg bg-sup-2"
+                        >
                           <Text
                             papel="rotulo"
                             tom="ouro"
@@ -332,7 +335,7 @@ export default function DatabaseStudioClient() {
                             size="sm"
                             leftIcon={<PiTrash />}
                             onClick={handleDeleteMultipleClick}
-                            className=""
+                            className="!text-erro"
                           >
                             Deletar
                           </Button>

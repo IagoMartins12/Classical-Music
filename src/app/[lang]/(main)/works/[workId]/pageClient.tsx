@@ -759,7 +759,7 @@ export default function WorkDetailsClient({
                     )}
 
                     {/* Learning Action Buttons */}
-                    <div className="flex flex-wrap gap-3 pt-4 border-t">
+                    <div className="flex flex-wrap gap-3 pt-4 border-t border-linha">
                       <LearningButtonWithModal
                         workId={work.id}
                         workTitle={work.title}
@@ -1054,7 +1054,7 @@ export default function WorkDetailsClient({
                           </Inline>
                         )}
                         {work.instrumentation && (
-                          <div className="md:col-span-2 p-3 rounded-xl border border-theme-primary">
+                          <div className="md:col-span-2 p-3 rounded-xl bg-sup-2">
                             <span className="font-medium text-theme-tertiary block mb-1">
                               {t('work_details_instrumentacao')}
                             </span>
@@ -1065,7 +1065,7 @@ export default function WorkDetailsClient({
                         )}
 
                         {work.moviment && (
-                          <div className="md:col-span-2 p-3 rounded-xl border border-theme-primary">
+                          <div className="md:col-span-2 p-3 rounded-xl bg-sup-2">
                             <span className="font-medium text-theme-tertiary block mb-1">
                               {t('work_details_movimentos')}
                             </span>
@@ -1112,7 +1112,7 @@ export default function WorkDetailsClient({
                                       <Text
                                         papel="rotulo"
                                         tom="ouro"
-                                        className="px-4 py-2 cursor-pointer bg-gradient-to-r border rounded-full font-medium"
+                                        className="px-4 py-2 cursor-pointer bg-gradient-to-r rounded-full font-medium bg-sup-2"
                                         onClick={() =>
                                           navigateToUrl(
                                             `works?categoryNames=${categoryName}`
@@ -1147,7 +1147,7 @@ export default function WorkDetailsClient({
                                         springType="bouncy"
                                       >
                                         <span
-                                          className="capitalize cursor-pointer px-4 py-2 border rounded-full text-sm font-medium hover:scale-105 transition-all duration-300"
+                                          className="capitalize cursor-pointer px-4 py-2 rounded-full text-sm font-medium hover:scale-105 transition-all duration-300 bg-sup-2"
                                           onClick={() =>
                                             navigateToUrl(
                                               `works?workGenresArr=${workGenre}`

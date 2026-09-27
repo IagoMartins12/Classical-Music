@@ -179,7 +179,7 @@ export default function StatsModal({
         <AnimatedCard
           hover="none"
           className={`
-            h-full bg-theme-elevated border-t-4 border-l-4 border-r-4 
+            h-full bg-theme-elevated border-t-4 
             ${
               colors.gradient
                 .replace('from-', 'border-')
@@ -249,7 +249,7 @@ export default function StatsModal({
 
           {/* Footer Actions (visible only when not fullscreen) */}
           {!isFullscreen && (
-            <div className="flex-shrink-0 p-4 pt-2 border-t">
+            <div className="flex-shrink-0 p-4 pt-2 border-t border-linha">
               <div className="grid grid-cols-2 gap-3">
                 <Inline
                   as="button"

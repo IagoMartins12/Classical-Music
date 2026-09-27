@@ -262,7 +262,7 @@ const RecentActivities = ({
           </Inline>
           <button
             onClick={fetchRecentActivities}
-            className="w-8 h-8 rounded-lg bg-theme-elevated border border-theme-secondary transition-all flex items-center justify-center group"
+            className="w-8 h-8 rounded-lg bg-theme-elevated transition-all flex items-center justify-center group"
           >
             <PiArrowsClockwise className="w-4 h-4 text-theme-tertiary transition-colors" />
             <NomeAcao acao="atualizar" />
@@ -305,7 +305,7 @@ const RecentActivities = ({
           <button
             onClick={fetchRecentActivities}
             disabled={loading}
-            className="w-8 h-8 rounded-lg bg-theme-elevated border border-theme-secondary transition-all flex items-center justify-center group"
+            className="w-8 h-8 rounded-lg bg-theme-elevated transition-all flex items-center justify-center group"
           >
             <PiArrowsClockwise
               className={`w-4 h-4 text-theme-tertiary transition-all ${
@@ -352,7 +352,7 @@ const RecentActivities = ({
                 <div className="flex items-start space-x-3">
                   {/* Ícone da ação */}
                   <div className="flex-shrink-0">
-                    <div className="w-8 h-8 rounded-lg bg-theme-elevated border border-theme-secondary flex items-center justify-center">
+                    <div className="w-8 h-8 rounded-lg bg-theme-elevated flex items-center justify-center">
                       {getActionIcon(activity.action, activity.metadata)}
                     </div>
                   </div>

@@ -175,7 +175,7 @@ export default function AdminHeader({ onMenuClick }: AdminHeaderProps) {
 
                 {/* User Dropdown */}
                 {showUserMenu && (
-                  <div className="absolute right-0 top-full mt-2 w-48 lg:w-72 bg-theme-elevated border border-theme-primary rounded-xl shadow-2xl py-2 z-50">
+                  <div className="absolute right-0 top-full mt-2 w-48 lg:w-72 bg-theme-elevated rounded-xl shadow-2xl py-2 z-50">
                     <div className="px-4 py-3 border-b border-theme-secondary">
                       <Text
                         papel="rotulo"

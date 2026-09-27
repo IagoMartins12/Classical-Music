@@ -308,7 +308,7 @@ const LoginModal: React.FC = () => {
 
         {/* Aviso de conflito de email */}
         {emailConflictError && (
-          <div className="mb-6 p-4 rounded-lg border">
+          <div className="mb-6 p-4 rounded-lg bg-sup-2">
             <div className="flex items-start">
               <PiWarning className="w-5 h-5 mr-3 mt-0.5 flex-shrink-0" />
               <div>
@@ -347,7 +347,7 @@ const LoginModal: React.FC = () => {
         <form onSubmit={handleSubmit} className="space-y-6">
           {/* General Error */}
           {errors.general && (
-            <div className="p-3 rounded-lg border border-red-400 text-red-400 text-sm">
+            <div className="p-3 rounded-lg text-red-400 text-sm bg-sup-2">
               {errors.general}
             </div>
           )}

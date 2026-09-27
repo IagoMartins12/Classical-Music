@@ -444,10 +444,7 @@ export default function PublicTeacherDetailsPageClient({
                       </div>
 
                       {/* Status de disponibilidade */}
-                      <Inline
-                        gap={3}
-                        className="p-4 rounded-xl border border-theme-primary"
-                      >
+                      <Inline gap={3} className="p-4 rounded-xl bg-sup-2">
                         <div
                           className={`w-3 h-3 rounded-full ${
                             teacher.contactPreferences.acceptingStudents
@@ -473,7 +470,7 @@ export default function PublicTeacherDetailsPageClient({
                 >
                   <div className="relative group">
                     {teacher.profileImage && !imageError ? (
-                      <div className="relative w-64 h-80 rounded-2xl overflow-hidden shadow-theme-glow border border-theme-primary group-hover:scale-105 transition-all duration-500">
+                      <div className="relative w-64 h-80 rounded-2xl overflow-hidden shadow-theme-glow group-hover:scale-105 transition-all duration-500">
                         <Image
                           src={teacher.profileImage}
                           alt={teacher.name}
@@ -486,7 +483,7 @@ export default function PublicTeacherDetailsPageClient({
                         <div className="absolute inset-0 opacity-0 group-hover:opacity-10 transition-opacity duration-500"></div>
                       </div>
                     ) : (
-                      <div className="w-64 h-80 border border-theme-primary rounded-2xl flex items-center justify-center shadow-theme-glow group-hover:scale-105 transition-all duration-500">
+                      <div className="w-64 h-80 rounded-2xl flex items-center justify-center shadow-theme-glow group-hover:scale-105 transition-all duration-500">
                         <div className="text-center text-theme-tertiary">
                           <PiUser className="w-16 h-16 mx-auto mb-4 opacity-50" />
                           <p className="text-sm">Sem imagem disponível</p>
@@ -526,7 +523,7 @@ export default function PublicTeacherDetailsPageClient({
                       <Text
                         papel="rotulo"
                         tom="ouro"
-                        className="inline-flex items-center px-4 py-2 border rounded-full font-medium shadow-theme-small transition-all duration-300 hover:scale-105 group"
+                        className="inline-flex items-center px-4 py-2 rounded-full font-medium shadow-theme-small transition-all duration-300 hover:scale-105 group bg-sup-2"
                       >
                         <div className="w-4 h-4 rounded-full flex items-center justify-center mr-2 group-hover:scale-110 transition-transform duration-300">
                           <PiMusicNotes className="w-3 h-3 text-theme-primary" />
@@ -542,7 +539,7 @@ export default function PublicTeacherDetailsPageClient({
                       hover="scale"
                       springType="bouncy"
                     >
-                      <span className="inline-flex items-center px-4 py-2 border rounded-full text-sm font-medium shadow-theme-small transition-all duration-300 hover:scale-105 group">
+                      <span className="inline-flex items-center px-4 py-2 rounded-full text-sm font-medium shadow-theme-small transition-all duration-300 hover:scale-105 group bg-sup-2">
                         <div className="w-4 h-4 rounded-full flex items-center justify-center mr-2 group-hover:scale-110 transition-transform duration-300">
                           <PiTarget className="w-3 h-3 text-theme-primary" />
                         </div>
@@ -594,10 +591,7 @@ export default function PublicTeacherDetailsPageClient({
 
               {teacher.teachingPhilosophy && (
                 <AnimatedItem direction="up" springType="gentle">
-                  <Stack
-                    gap={2}
-                    className="mt-6 p-4 rounded-xl border border-theme-primary"
-                  >
+                  <Stack gap={2} className="mt-6 p-4 rounded-xl bg-sup-2">
                     <h3 className="text-lg font-bold text-ouro-texto">
                       Filosofia de Ensino
                     </h3>
@@ -730,7 +724,7 @@ export default function PublicTeacherDetailsPageClient({
 
               {/* Aviso sobre Disponibilidade */}
               <AnimatedItem direction="up" springType="gentle">
-                <div className="mt-6 p-4 rounded-xl border border-theme-primary">
+                <div className="mt-6 p-4 rounded-xl bg-sup-2">
                   <div className="flex items-start space-x-3">
                     <PiInfo className="w-5 h-5 text-ouro-texto mt-1" />
                     <div>

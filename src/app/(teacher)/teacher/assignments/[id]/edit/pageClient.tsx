@@ -37,9 +37,8 @@ import { Stack, Inline } from '@/app/components/ui/Layout';
 import { Text } from '@/app/components/ui/Text';
 import { Field } from '@/app/components/ui/Field';
 import { NomeAcao } from '@/app/components/ui/NomeAcao';
-import { Button } from '@/app/components/ui/Button';
 import { Card } from '@/app/components/ui/Card';
-import Modal from '@/app/components/Modal';
+import ConfirmModal from '@/app/components/ConfirmModal';
 
 interface EditAssignmentPageClientProps {
   initialData: EditAssignmentData | null;
@@ -351,7 +350,7 @@ export default function EditAssignmentPageClient({
             <Inline gap={4}>
               <Link
                 href="/teacher/assignments"
-                className="w-10 h-10 rounded-lg bg-theme-elevated border border-theme-secondary transition-all flex items-center justify-center group"
+                className="w-10 h-10 rounded-lg bg-theme-elevated transition-all flex items-center justify-center group"
               >
                 <PiArrowLeft className="w-4 h-4 text-theme-tertiary transition-colors" />
               </Link>
@@ -371,7 +370,7 @@ export default function EditAssignmentPageClient({
               gap={2}
               type="button"
               onClick={() => setShowDeleteConfirm(true)}
-              className="btn-classical-secondary"
+              className="btn-classical-secondary !text-erro"
             >
               <PiTrash className="w-4 h-4" />
               <span>{t('delete')}</span>
@@ -772,7 +771,7 @@ export default function EditAssignmentPageClient({
 
                   {/* Error Display */}
                   {error && (
-                    <div className="border rounded-lg p-4">
+                    <div className="rounded-lg p-4 bg-sup-2">
                       <Inline gap={3}>
                         <PiWarningCircle className="w-5 h-5" />
                         <div>
@@ -866,7 +865,7 @@ export default function EditAssignmentPageClient({
                     </div>
                   </Inline>
 
-                  <div className="pt-4 border-t">
+                  <div className="pt-4 border-t border-linha">
                     <Stack gap={2} className="text-sm">
                       <div className="flex justify-between">
                         <span className="text-theme-tertiary">
@@ -1034,7 +1033,7 @@ export default function EditAssignmentPageClient({
                     {assignment.workScores.map((score) => (
                       <div
                         key={score.id}
-                        className="text-sm p-2 rounded border"
+                        className="text-sm p-2 rounded bg-sup-2"
                       >
                         <div className="font-medium text-theme-primary">
                           {score.title}
@@ -1053,53 +1052,19 @@ export default function EditAssignmentPageClient({
 
         {/* Delete Confirmation Modal */}
         {showDeleteConfirm && (
-          <Modal
+          <ConfirmModal
             isOpen={true}
             onClose={() => setShowDeleteConfirm(false)}
-            maxWidth="md"
-            showCloseButton={false}
-          >
-            <div className="text-center">
-              <div className="w-16 h-16 rounded-3xl flex items-center justify-center mx-auto mb-6">
-                <PiTrash className="w-8 h-8 text-theme-primary" />
-              </div>
-              <h2 className="text-xl font-bold text-theme-primary mb-4">
-                {t('confirm_deletion')}
-              </h2>
-              <p className="text-theme-secondary mb-6">
-                {t('delete_confirmation_message', {
-                  title: assignment.title,
-                })}
-              </p>
-              <div className="flex space-x-3">
-                <Button
-                  variante="secundario"
-                  type="submit"
-                  onClick={() => setShowDeleteConfirm(false)}
-                  className="flex-1"
-                  disabled={loading.deleteAssignment}
-                >
-                  {t('cancel')}
-                </Button>
-                <Inline
-                  as="button"
-                  gap={2}
-                  onClick={handleDelete}
-                  disabled={loading.deleteAssignment}
-                  className="btn-classical-primary flex-1 justify-center"
-                >
-                  {loading.deleteAssignment ? (
-                    <PiArrowsClockwise className="w-4 h-4 animate-spin" />
-                  ) : (
-                    <PiTrash className="w-4 h-4" />
-                  )}
-                  <span>
-                    {loading.deleteAssignment ? t('deleting') : t('delete')}
-                  </span>
-                </Inline>
-              </div>
-            </div>
-          </Modal>
+            onConfirm={handleDelete}
+            isLoading={loading.deleteAssignment}
+            type="danger"
+            title={t('confirm_deletion')}
+            cancelText={t('cancel')}
+            confirmText={t('delete')}
+            message={t('delete_confirmation_message', {
+              title: assignment.title,
+            })}
+          />
         )}
       </AnimatedContainer>
     </PageContainer>

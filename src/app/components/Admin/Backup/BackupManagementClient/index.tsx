@@ -178,7 +178,7 @@ export default function BackupManagementClient() {
       </header>
 
       {impedimento && (
-        <Card densidade="compacta" className="flex gap-3 border-l-4">
+        <Card densidade="compacta" className="flex gap-3">
           <PiWarning className="w-5 h-5 shrink-0 mt-0.5" />
           <div>
             <p className="text-theme-primary font-medium">
@@ -269,7 +269,7 @@ export default function BackupManagementClient() {
           </div>
         </div>
 
-        <div className="max-h-[28rem] overflow-y-auto divide-y">
+        <div className="max-h-[28rem] overflow-y-auto divide-y divide-linha">
           {colecoes.map((colecao) => {
             const marcada = selecionadas.has(colecao.name);
             const limite = selecionadas.get(colecao.name) ?? null;
@@ -332,7 +332,7 @@ export default function BackupManagementClient() {
               Nenhum arquivo ainda.
             </Text>
           ) : (
-            <ul className="divide-y">
+            <ul className="divide-y divide-linha">
               {backup.data?.arquivos.map((arquivo) => (
                 <li
                   key={arquivo.key}
@@ -377,7 +377,7 @@ export default function BackupManagementClient() {
               Nenhuma execução registrada.
             </Text>
           ) : (
-            <ul className="divide-y">
+            <ul className="divide-y divide-linha">
               {backup.data?.execucoes.map((execucao) => (
                 <li key={execucao.id} className="flex gap-3 py-2.5">
                   {execucao.status === 'ok' ? (

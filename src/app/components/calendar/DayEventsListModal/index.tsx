@@ -78,7 +78,7 @@ export default function DayEventsListModal({
             >
               <button
                 onClick={() => handleEventClick(event)}
-                className={`w-full text-left p-4 rounded-lg transition-all hover:scale-101 border-l-4 bg-theme-elevated ${getEventBorderColor(event.type, event.isFree)}`}
+                className={`w-full text-left p-4 rounded-lg transition-all hover:scale-101 bg-theme-elevated ${getEventBorderColor(event.type, event.isFree)}`}
               >
                 <div className="flex items-start justify-between gap-3">
                   <div className="flex-1 min-w-0">
@@ -89,7 +89,7 @@ export default function DayEventsListModal({
                         {formatEventTime(event.start)}
                       </Text>
                       {event.isFree && (
-                        <span className="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium border">
+                        <span className="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-sup-2">
                           Gratuito
                         </span>
                       )}

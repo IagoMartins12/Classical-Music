@@ -268,7 +268,7 @@ export default function LogsAudit() {
             {(activityFilters.search ||
               activityFilters.type ||
               activityFilters.period) && (
-              <div className="flex items-center justify-between p-3 mt-4 border rounded-lg">
+              <div className="flex items-center justify-between p-3 mt-4 rounded-lg bg-sup-2">
                 <Inline gap={2} className="text-sm">
                   <PiFunnel className="w-4 h-4" />
                   <span>

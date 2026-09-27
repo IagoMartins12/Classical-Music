@@ -448,7 +448,7 @@ export default function StudentAssignmentDetailsPageClient({
             <Inline gap={4}>
               <Link
                 href="/student/assignments"
-                className="w-10 h-10 rounded-lg bg-theme-elevated border border-theme-secondary transition-all flex items-center justify-center group"
+                className="w-10 h-10 rounded-lg bg-theme-elevated transition-all flex items-center justify-center group"
               >
                 <PiArrowLeft className="w-4 h-4 text-theme-tertiary transition-colors" />
               </Link>
@@ -465,7 +465,7 @@ export default function StudentAssignmentDetailsPageClient({
             {/* Quick Actions */}
             <Inline gap={3}>
               <span
-                className={`px-3 py-2 rounded-full text-sm font-medium border ${getStatusColor(
+                className={`px-3 py-2 rounded-full text-sm font-medium bg-sup-2 ${getStatusColor(
                   assignment
                 )}`}
               >
@@ -514,7 +514,7 @@ export default function StudentAssignmentDetailsPageClient({
         {/* Alerta de mudanças não salvas */}
         {hasUnsavedChanges && (
           <AnimatedItem direction="up" springType="gentle">
-            <Inline gap={3} className="mb-6 p-4 border rounded-lg">
+            <Inline gap={3} className="mb-6 p-4 rounded-lg bg-sup-2">
               <PiWarning className="w-5 h-5" />
               <div className="flex-1">
                 <p className="font-medium">
@@ -559,7 +559,7 @@ export default function StudentAssignmentDetailsPageClient({
                         {t('student_assignment_details_priority')}
                       </label>
                       <span
-                        className={`px-3 py-1 rounded-full text-sm font-medium border ${
+                        className={`px-3 py-1 rounded-full text-sm font-medium bg-sup-2 ${
                           PRIORITY_COLORS[
                             assignment.priority as keyof typeof PRIORITY_COLORS
                           ]
@@ -803,10 +803,10 @@ export default function StudentAssignmentDetailsPageClient({
                           </label>
                         </div>
                       ) : (
-                        <div className="border border-theme-secondary rounded-lg p-4">
+                        <div className="rounded-lg p-4 bg-sup-2">
                           <div className="flex items-center justify-between">
                             <Inline gap={3}>
-                              <div className="w-12 h-12 border rounded-lg flex items-center justify-center">
+                              <div className="w-12 h-12 rounded-lg flex items-center justify-center">
                                 <PiVideoCamera className="w-6 h-6" />
                               </div>
                               <div>
@@ -820,7 +820,7 @@ export default function StudentAssignmentDetailsPageClient({
                             </Inline>
                             <button
                               onClick={removeVideo}
-                              className="transition-colors"
+                              className="transition-colors !text-erro"
                             >
                               <PiTrash className="w-4 h-4" />
                               <NomeAcao acao="excluir" />
@@ -842,7 +842,7 @@ export default function StudentAssignmentDetailsPageClient({
 
                     {/* Error Display */}
                     {uploadError && (
-                      <Inline gap={2} className="p-3 border rounded-lg">
+                      <Inline gap={2} className="p-3 rounded-lg bg-sup-2">
                         <PiWarningCircle className="w-4 h-4" />
                         <span className="text-sm">{uploadError}</span>
                         <button onClick={clearVideoError} className="ml-auto">

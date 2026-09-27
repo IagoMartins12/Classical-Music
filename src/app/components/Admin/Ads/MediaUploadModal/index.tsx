@@ -353,7 +353,7 @@ export default function MediaUploadModal({
           {activeTab === 'current' && (
             <Stack gap={6}>
               {/* Info sobre dimensões ideais */}
-              <Card densidade="compacta" className="border">
+              <Card densidade="compacta" className="">
                 <h3 className="font-semibold text-theme-primary mb-3 flex items-center">
                   <PiGear className="w-5 h-5 mr-2" />
                   Dimensões para {ad.placement}
@@ -435,7 +435,7 @@ export default function MediaUploadModal({
                         size="sm"
                         leftIcon={<PiTrash />}
                         onClick={() => removeMedia('image')}
-                        className=""
+                        className="!text-erro"
                       >
                         Remover
                       </Button>
@@ -505,7 +505,7 @@ export default function MediaUploadModal({
                         size="sm"
                         leftIcon={<PiTrash />}
                         onClick={() => removeMedia('video')}
-                        className=""
+                        className="!text-erro"
                       >
                         Remover
                       </Button>
@@ -620,7 +620,7 @@ export default function MediaUploadModal({
 
               {/* 🆕 Preview do arquivo selecionado - CORRIGIDO */}
               {filePreview && (
-                <Card densidade="compacta" className="border">
+                <Card densidade="compacta" className="">
                   <div className="flex items-center justify-between mb-3">
                     <h4 className="font-medium text-theme-primary">Preview</h4>
                     <Button

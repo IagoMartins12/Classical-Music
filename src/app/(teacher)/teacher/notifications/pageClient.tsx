@@ -374,7 +374,7 @@ export default function TeacherNotificationsPageClient({
                     className={`flex items-center space-x-2 px-3 py-2 rounded-lg transition-all ${
                       filter === filterType
                         ? 'text-theme-primary border'
-                        : 'bg-theme-elevated text-theme-secondary border border-theme-secondary'
+                        : 'bg-theme-elevated text-theme-secondary'
                     }`}
                   >
                     {getFilterIcon(filterType)}
@@ -456,7 +456,7 @@ export default function TeacherNotificationsPageClient({
                   <AnimatedCard
                     key={notification.id}
                     hover="lift"
-                    className={`classical-card border-l-4 ${getPriorityColor(
+                    className={`classical-card ${getPriorityColor(
                       notification.priority
                     )} ${notification.status === 'UNREAD' ? 'ring-1' : ''}`}
                   >

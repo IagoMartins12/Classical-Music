@@ -252,7 +252,7 @@ export function TranslationLoadingModal({
           </div>
 
           {/* Nota motivacional */}
-          <div className="mt-6 p-4 border-l-4 rounded-xl">
+          <div className="mt-6 p-4 rounded-xl bg-sup-2">
             <Text papel="rotulo" tom="suave" as="p" className="italic">
               {currentLanguage === 'pt'
                 ? '"A música é a linguagem universal da humanidade."'

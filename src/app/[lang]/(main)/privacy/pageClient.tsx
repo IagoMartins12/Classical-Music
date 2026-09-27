@@ -180,7 +180,7 @@ export default function PrivacyPage() {
           <div className="relative ">
             <div className="text-center max-w-4xl mx-auto">
               <AnimatedItem direction="scale" springType="bouncy">
-                <div className="inline-flex items-center px-6 py-3 border rounded-full mb-8">
+                <div className="inline-flex items-center px-6 py-3 rounded-full mb-8 bg-sup-2">
                   <PiShield className="w-5 h-5 text-ouro-texto mr-2" />
                   <span className="text-ouro-texto font-medium">
                     {t('privacy_jsx_span_children_0__proteção_dados')}

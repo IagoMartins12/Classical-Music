@@ -110,7 +110,7 @@ export function BlogEditor({
   }
 
   return (
-    <div className="border border-gray-300 rounded-lg overflow-hidden classical-card-simple">
+    <div className="rounded-lg overflow-hidden classical-card-simple">
       {editable && (
         <EditorToolbar
           editor={editor}

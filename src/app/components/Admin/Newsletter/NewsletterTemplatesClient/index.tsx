@@ -308,10 +308,7 @@ export default function NewsletterTemplatesClient() {
             </div>
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
               {builtInTemplates.map(({ type, template }) => (
-                <div
-                  key={type}
-                  className="p-4 bg-theme-secondary rounded-lg border"
-                >
+                <div key={type} className="p-4 bg-theme-secondary rounded-lg">
                   <div className="flex items-center justify-between mb-2">
                     <span
                       className={`px-2 py-1 rounded-full text-xs font-medium ${getTemplateTypeColor(
@@ -331,7 +328,7 @@ export default function NewsletterTemplatesClient() {
                 </div>
               ))}
             </div>
-            <div className="mt-4 p-3 border rounded-lg">
+            <div className="mt-4 p-3 rounded-lg bg-sup-2">
               <p className="text-sm">
                 <strong>ℹ️ Dica:</strong> Templates built-in são criados
                 automaticamente quando você usa um tipo de template nas

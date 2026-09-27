@@ -278,7 +278,7 @@ export default function GenreSearchInput({
       {isOpen && (
         <div
           ref={dropdownRef}
-          className="absolute classical-card-simple top-full left-0 right-0 mt-2 border border-theme-primary rounded-lg shadow-theme-glow z-menu max-h-80 overflow-hidden"
+          className="absolute classical-card-simple top-full left-0 right-0 mt-2 rounded-lg shadow-theme-glow z-menu max-h-80 overflow-hidden"
           style={{
             boxShadow:
               '0 25px 50px -12px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(212, 175, 55, 0.3)',
@@ -321,7 +321,7 @@ export default function GenreSearchInput({
                     <button
                       key={genre.id}
                       onClick={() => handleGenreSelect(genre)}
-                      className={`w-full px-4 py-3 text-left transition-colors border-b last:border-b-0 ${
+                      className={`w-full px-4 py-3 text-left transition-colors border-b last:border-b-0 border-linha ${
                         genre.originalName === selectedGenre ||
                         genre.name === selectedGenre
                           ? 'text-ouro-texto font-medium'

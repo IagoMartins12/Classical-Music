@@ -149,7 +149,7 @@ export default function AnnotationsStatsWidget({
                             %)
                           </Text>
                         </div>
-                        <div className="w-full bg-theme-elevated border rounded-full h-1.5">
+                        <div className="w-full bg-theme-elevated rounded-full h-1.5">
                           <div
                             className={`bg-gradient-to-r ${
                               config?.color || ''

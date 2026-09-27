@@ -293,7 +293,7 @@ export default function ModerationDetail({ itemId }: ModerationDetailProps) {
                       <Inline
                         gap={2}
                         key={index}
-                        className="p-3 border rounded-lg"
+                        className="p-3 rounded-lg bg-sup-2"
                       >
                         <PiWarning className="w-4 h-4" />
                         <span className="text-theme-primary">{issue}</span>

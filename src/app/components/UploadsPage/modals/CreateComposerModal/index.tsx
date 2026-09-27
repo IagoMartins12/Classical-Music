@@ -990,7 +990,7 @@ const CreateComposerModal = ({
                       />
 
                       {duplicateCheck.loading && (
-                        <div className="mt-2 p-2 bg-blue-50 border border-blue-200 rounded-lg">
+                        <div className="mt-2 p-2 bg-blue-50 rounded-lg">
                           <Inline gap={2}>
                             <PiSpinnerGap className="w-4 h-4 animate-spin text-theme-primary font-bold" />
                             <span className="text-sm text-blue-800">
@@ -1003,7 +1003,7 @@ const CreateComposerModal = ({
                       {duplicateCheck.found && (
                         <Stack
                           gap={2}
-                          className="mt-2 p-3 bg-red-50 border border-red-200 rounded-lg"
+                          className="mt-2 p-3 bg-red-50 rounded-lg"
                         >
                           <Inline gap={2}>
                             <PiWarningCircle className="w-4 h-4 text-red-600" />
@@ -1104,7 +1104,7 @@ const CreateComposerModal = ({
                       {scrapingResult && (
                         <Stack
                           gap={2}
-                          className="mt-4 p-3 bg-green-50 border border-green-200 rounded-lg"
+                          className="mt-4 p-3 bg-green-50 rounded-lg"
                         >
                           <Inline gap={2}>
                             <PiCheck className="w-4 h-4 text-green-600" />
@@ -1124,7 +1124,7 @@ const CreateComposerModal = ({
                       )}
 
                       {isEditingExternalSource && (
-                        <div className="mt-3 p-3 bg-blue-50 border border-blue-200 rounded-lg">
+                        <div className="mt-3 p-3 bg-blue-50 rounded-lg">
                           <Inline gap={2}>
                             <PiInfo className="w-4 h-4 text-blue-600" />
                             <span className="text-sm text-blue-800">
@@ -1555,7 +1555,7 @@ const CreateComposerModal = ({
                     onClick={() => setBiographyTab('pt')}
                     className={`flex-1 px-4 py-3 font-semibold transition-all ${
                       biographyTab === 'pt'
-                        ? 'border-b-2 text-ouro-texto'
+                        ? 'border-b-2 text-ouro-texto border-linha'
                         : 'text-theme-tertiary'
                     }`}
                   >
@@ -1566,7 +1566,7 @@ const CreateComposerModal = ({
                     onClick={() => setBiographyTab('en')}
                     className={`flex-1 px-4 py-3 font-semibold transition-all ${
                       biographyTab === 'en'
-                        ? 'border-b-2 text-ouro-texto'
+                        ? 'border-b-2 text-ouro-texto border-linha'
                         : 'text-theme-tertiary'
                     }`}
                   >
@@ -1578,7 +1578,7 @@ const CreateComposerModal = ({
                 {bioMessage.text && (
                   <div
                     className={`mb-4 p-3 rounded-xl flex items-center space-x-2 ${
-                      bioMessage.type === 'success' ? 'border' : 'border'
+                      bioMessage.type === 'success' ? '' : ''
                     }`}
                   >
                     {bioMessage.type === 'success' ? (
@@ -1694,7 +1694,7 @@ const CreateComposerModal = ({
 
                 {/* Status Cards */}
                 <div className="grid grid-cols-2 gap-4 mt-4">
-                  <div className="p-3 bg-theme-elevated rounded-lg border border-theme-secondary">
+                  <div className="p-3 bg-theme-elevated rounded-lg">
                     <div className="flex items-center justify-between">
                       <Inline gap={2}>
                         <span className="text-xl">🇧🇷</span>
@@ -1716,7 +1716,7 @@ const CreateComposerModal = ({
                     </div>
                   </div>
 
-                  <div className="p-3 bg-theme-elevated rounded-lg border border-theme-secondary">
+                  <div className="p-3 bg-theme-elevated rounded-lg">
                     <div className="flex items-center justify-between">
                       <Inline gap={2}>
                         <span className="text-xl">🇺🇸</span>

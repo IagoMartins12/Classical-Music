@@ -662,17 +662,17 @@ const SendTestModal: React.FC<SendTestModalProps> = ({
 
       {result && (
         <div className="grid grid-cols-3 gap-4 mb-6">
-          <div className="border rounded-lg p-4">
+          <div className="rounded-lg p-4 bg-sup-2">
             <div className="text-2xl font-bold">
               {result.results.successful}
             </div>
             <div className="text-sm">Enviados</div>
           </div>
-          <div className="border rounded-lg p-4">
+          <div className="rounded-lg p-4 bg-sup-2">
             <div className="text-2xl font-bold">{result.results.failed}</div>
             <div className="text-sm">Falhas</div>
           </div>
-          <div className="border rounded-lg p-4">
+          <div className="rounded-lg p-4 bg-sup-2">
             <div className="text-2xl font-bold">
               {result.results.successRate}%
             </div>

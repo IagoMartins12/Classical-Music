@@ -445,7 +445,7 @@ export function BadgeComponent({
                      opacity-0 group-hover:opacity-100 transition-opacity duration-300 
                      pointer-events-none z-50"
       >
-        <div className=" bg-theme-primary px-3 py-2 rounded-lg text-sm font-medium shadow-lg border max-w-64 w-32 text-center">
+        <div className=" bg-theme-primary px-3 py-2 rounded-lg text-sm font-medium shadow-lg max-w-64 w-32 text-center">
           <div className="font-bold">{badge.name}</div>
           <div className="text-xs opacity-90 mt-1">{badge.description}</div>
           {badge.maxProgress && !badge.unlocked && (
@@ -510,7 +510,7 @@ export function BadgeGrid({
         </div>
 
         {/* Resumo de conquistas */}
-        <div className="pt-4 border-t">
+        <div className="pt-4 border-t border-linha">
           <div className="flex items-center justify-between text-sm">
             <span className="text-theme-secondary">
               Próxima conquista: {nextBadges[0]?.name || 'Todas desbloqueadas!'}

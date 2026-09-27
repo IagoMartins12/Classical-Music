@@ -35,7 +35,7 @@ const WorkCardComponent = (props: any) => {
         >
           <button
             onClick={handleDelete}
-            className="p-2 text-red-600 hover:bg-red-50 rounded transition-colors"
+            className="p-2 hover:bg-red-50 rounded transition-colors !text-erro"
             title="Remover"
           >
             <PiTrash className="w-4 h-4" />
@@ -43,7 +43,7 @@ const WorkCardComponent = (props: any) => {
         </Inline>
       )}
 
-      <Card className="border-l-4">
+      <Card className="">
         <div className="flex items-start space-x-4">
           <div className="p-3 rounded-lg shadow-theme-medium">
             <PiMusicNotes className="w-8 h-8 text-white" />
@@ -70,7 +70,7 @@ const WorkCardComponent = (props: any) => {
                 href={`/works/${workId}#scores`}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="inline-flex items-center px-4 py-2 bg-theme-elevated border rounded-lg transition-colors"
+                className="inline-flex items-center px-4 py-2 bg-theme-elevated rounded-lg transition-colors"
               >
                 Ver Partituras
               </Link>

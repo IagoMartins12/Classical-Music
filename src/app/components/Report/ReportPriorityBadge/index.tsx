@@ -67,7 +67,7 @@ export default function ReportPriorityBadge({
 
   return (
     <div
-      className={`inline-flex items-center space-x-1 px-2 py-1 rounded-full border text-xs font-medium ${
+      className={`inline-flex items-center space-x-1 px-2 py-1 rounded-full text-xs font-medium bg-sup-2 ${
         config.color
       } ${config?.pulse ? 'animate-pulse' : ''} ${className}`}
     >

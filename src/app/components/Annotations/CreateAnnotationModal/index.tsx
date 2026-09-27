@@ -845,12 +845,12 @@ export default function CreateAnnotationModal({
             </div>
 
             {workSearchResults.length > 0 && (
-              <div className="mt-2 max-h-40 overflow-y-auto bg-theme-elevated border rounded-xl">
+              <div className="mt-2 max-h-40 overflow-y-auto bg-theme-elevated rounded-xl">
                 {workSearchResults.map((work) => (
                   <button
                     key={work.id}
                     onClick={() => handleWorkSelect(work)}
-                    className="w-full p-3 text-left border-b last:border-b-0 transition-colors"
+                    className="w-full p-3 text-left border-b last:border-b-0 transition-colors border-linha"
                   >
                     <Text
                       papel="rotulo"
@@ -1111,7 +1111,7 @@ export default function CreateAnnotationModal({
                 as="span"
                 gap={2}
                 key={index}
-                className="px-3 py-1 border text-ouro-texto rounded-full text-sm"
+                className="px-3 py-1 text-ouro-texto rounded-full text-sm bg-sup-2"
               >
                 <span>#{tag}</span>
                 <button
@@ -1170,7 +1170,7 @@ export default function CreateAnnotationModal({
                     gap={1}
                     key={tag}
                     onClick={() => addTag(tag)}
-                    className="px-2 py-1 bg-theme-elevated border border-theme-secondary text-theme-secondary rounded-md text-xs transition-all duration-200"
+                    className="px-2 py-1 bg-theme-elevated text-theme-secondary rounded-md text-xs transition-all duration-200"
                   >
                     <PiPlus className="w-3 h-3" />
                     <span>#{tag}</span>

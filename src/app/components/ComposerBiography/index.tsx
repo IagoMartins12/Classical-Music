@@ -95,7 +95,7 @@ export default function ComposerBiography({
     return (
       <div className="rounded-2xl p-6 flex justify-center">
         <div className="flex flex-col gap-4 justify-center items-center space-x-4">
-          <div className="w-10 h-10 border rounded-xl flex items-center justify-center flex-shrink-0">
+          <div className="w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0">
             <PiWarningCircle className="w-5 h-5" />
           </div>
           <div className="flex-1 items-center justify-center">
@@ -161,7 +161,7 @@ export default function ComposerBiography({
 
       {/* Warning se houver fallback */}
       {warning && (
-        <div className="mb-6 p-3 border rounded-xl">
+        <div className="mb-6 p-3 rounded-xl bg-sup-2">
           <Inline gap={2}>
             <PiWarningCircle className="w-4 h-4" />
             <span className="text-sm font-medium">{warning}</span>
@@ -171,7 +171,7 @@ export default function ComposerBiography({
 
       {/* ✅ Mostrar erro como warning se tiver biografia para fallback */}
       {error && displayBio && (
-        <div className="mb-6 p-3 border rounded-xl">
+        <div className="mb-6 p-3 rounded-xl bg-sup-2">
           <div className="flex items-center justify-between">
             <Inline gap={2}>
               <PiWarningCircle className="w-4 h-4" />

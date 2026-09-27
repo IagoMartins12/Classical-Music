@@ -254,7 +254,7 @@ const PrivacySection: React.FC<PrivacySectionProps> = ({
       </Stack>
 
       {/* Privacy Summary */}
-      <Card nivel={2} densidade="compacta" className="border">
+      <Card nivel={2} densidade="compacta" className="">
         <h4 className="font-medium text-ouro-texto mb-2">
           {t('privacy_summary')}
         </h4>

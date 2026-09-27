@@ -325,7 +325,7 @@ export default function CloneAdModal({
 
         {/* Alert sobre mídia */}
         {hasMedia && (
-          <div className="p-4 border-l-4 mx-6 mt-4 rounded">
+          <div className="p-4 mx-6 mt-4 rounded bg-sup-2">
             <div className="flex items-start space-x-3">
               <PiInfo className="w-5 h-5 mt-0.5" />
               <div>
@@ -343,7 +343,7 @@ export default function CloneAdModal({
         )}
 
         {!hasMedia && (
-          <div className="p-4 border-l-4 mx-6 mt-4 rounded">
+          <div className="p-4 mx-6 mt-4 rounded bg-sup-2">
             <div className="flex items-start space-x-3">
               <PiWarning className="w-5 h-5 mt-0.5" />
               <div>
@@ -361,7 +361,7 @@ export default function CloneAdModal({
 
         {/* Conflict Warning - Atualizado para mostrar detalhes */}
         {conflictInfo && (
-          <div className="p-4 border-l-4 mx-6 mt-4 rounded">
+          <div className="p-4 mx-6 mt-4 rounded bg-sup-2">
             <div className="flex items-start space-x-3">
               <PiTarget className="w-5 h-5 mt-0.5" />
               <div className="flex-1">
@@ -378,10 +378,7 @@ export default function CloneAdModal({
                     <Stack gap={3}>
                       {conflictInfo.conflicts.map(
                         (conflict: any, index: number) => (
-                          <div
-                            key={index}
-                            className="p-3 bg-white/50 rounded border"
-                          >
+                          <div key={index} className="p-3 bg-white/50 rounded">
                             <div className="font-medium text-sm mb-1">
                               {conflict.type.replace(/_/g, ' ')}
                             </div>
@@ -422,7 +419,7 @@ export default function CloneAdModal({
 
                 {conflictInfo.suggestions &&
                   conflictInfo.suggestions.length > 0 && (
-                    <Stack gap={2} className="mt-4 p-3 rounded border">
+                    <Stack gap={2} className="mt-4 p-3 rounded bg-sup-2">
                       <h5 className="font-medium text-sm">Sugestões:</h5>
                       <ul className="text-xs text-theme-secondary space-y-1">
                         {conflictInfo.suggestions.map(

@@ -17,10 +17,8 @@ import {
   PiPlay,
   PiStar,
   PiStarFill,
-  PiTrash,
   PiTrendUp,
   PiUsers,
-  PiWarning,
   PiX,
 } from 'react-icons/pi';
 import { toast } from 'react-hot-toast';
@@ -36,7 +34,7 @@ import { AnimatedItem } from '../../animation/AnimatedComponents';
 import { useTranslation } from '@/app/context/TranslationContext';
 import { Stack, Inline } from '@/app/components/ui/Layout';
 import { Text } from '@/app/components/ui/Text';
-import Modal from '@/app/components/Modal';
+import ConfirmModal from '@/app/components/ConfirmModal';
 
 type DifficultyLevel = 'BEGINNER' | 'INTERMEDIATE' | 'ADVANCED';
 
@@ -88,63 +86,23 @@ const ConfirmDeleteModal = ({
       : t('confirm_removal_learned_list');
 
   const modalContent = (
-    <Modal
+    <ConfirmModal
       isOpen={isOpen}
       onClose={onClose}
-      maxWidth="md"
-      showCloseButton={false}
-    >
-      <Inline gap={3} className="mb-4">
-        <div className="w-12 h-12 rounded-xl flex items-center justify-center">
-          <PiWarning className="w-6 h-6" />
-        </div>
-        <div>
-          <h3 className="text-lg font-bold text-theme-primary">
-            {t('confirm_removal_title')}
-          </h3>
-          <Text papel="rotulo" tom="suave" as="p">
-            {t('confirm_removal_subtitle')}
-          </Text>
-        </div>
-      </Inline>
-
-      <div className="mb-6">
-        <p className="text-theme-secondary">
+      onConfirm={onConfirm}
+      isLoading={isLoading}
+      type="danger"
+      title={t('confirm_removal_title')}
+      cancelText={t('cancel_button')}
+      confirmText={t('remove_button')}
+      message={
+        <>
           {t('confirm_removal_question')}{' '}
-          <strong>&quot;{workTitle}&quot;</strong> {t('confirm_removal_from')}{' '}
-          {typeText}?
-        </p>
-      </div>
-
-      <Inline gap={3} className="justify-end">
-        <button
-          onClick={onClose}
-          disabled={isLoading}
-          className="px-4 py-2 rounded-lg border border-theme-secondary text-theme-secondary transition-colors disabled:opacity-50"
-        >
-          {t('cancel_button')}
-        </button>
-        <Inline
-          as="button"
-          gap={2}
-          onClick={onConfirm}
-          disabled={isLoading}
-          className="px-4 py-2 text-white rounded-lg hover:bg-red-600 transition-colors disabled:opacity-50"
-        >
-          {isLoading ? (
-            <>
-              <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
-              <span>{t('removing_button')}</span>
-            </>
-          ) : (
-            <>
-              <PiTrash className="w-4 h-4" />
-              <span>{t('remove_button')}</span>
-            </>
-          )}
-        </Inline>
-      </Inline>
-    </Modal>
+          <strong className="text-texto">&quot;{workTitle}&quot;</strong>{' '}
+          {t('confirm_removal_from')} {typeText}?
+        </>
+      }
+    />
   );
 
   return createPortal(modalContent, document.body);
@@ -258,7 +216,7 @@ export const LearningCard = ({
                     {/* ✅ INDICADOR VISUAL DE PARTITURA VINCULADA */}
                     {hasSelectedScore && (
                       <div
-                        className="w-5 h-5 border rounded-full flex items-center justify-center"
+                        className="w-5 h-5 rounded-full flex items-center justify-center"
                         title={t('has_linked_score')}
                       >
                         <PiFileText className="w-3 h-3" />
@@ -313,7 +271,7 @@ export const LearningCard = ({
                   {/* Difficulty */}
                   {item.difficulty && (
                     <span
-                      className={`text-xs px-2 py-1 rounded-full border transition-colors ${getDifficultyColor(
+                      className={`text-xs px-2 py-1 rounded-full transition-colors bg-sup-2 ${getDifficultyColor(
                         item.difficulty
                       )}`}
                     >
@@ -557,7 +515,7 @@ export const LearningCard = ({
             <Inline gap={2}>
               <PiTrendUp className="w-4 h-4 text-theme-tertiary" />
               <span
-                className={`text-xs px-2 py-1 rounded-full border transition-colors ${getDifficultyColor(
+                className={`text-xs px-2 py-1 rounded-full transition-colors bg-sup-2 ${getDifficultyColor(
                   item.difficulty
                 )}`}
               >
@@ -597,10 +555,7 @@ export const LearningCard = ({
               )}
 
               {wantToLearnItem.motivation && (
-                <Stack
-                  gap={1}
-                  className="bg-theme-secondary rounded-lg p-3 border-l-4"
-                >
+                <Stack gap={1} className="bg-theme-secondary rounded-lg p-3">
                   <Inline gap={2}>
                     <PiHeart className="w-4 h-4" />
                     <Text papel="rotulo" tom="suave" className="font-medium">
@@ -614,10 +569,7 @@ export const LearningCard = ({
               )}
 
               {wantToLearnItem.notes && (
-                <Stack
-                  gap={1}
-                  className="bg-theme-secondary rounded-lg p-3 border-l-4"
-                >
+                <Stack gap={1} className="bg-theme-secondary rounded-lg p-3">
                   <Inline gap={2}>
                     <PiBookOpen className="w-4 h-4" />
                     <Text papel="rotulo" tom="suave" className="font-medium">
@@ -680,10 +632,7 @@ export const LearningCard = ({
               </Inline>
 
               {learnedItem.technicalChallenges && (
-                <Stack
-                  gap={1}
-                  className="bg-theme-secondary rounded-lg p-3 border-l-4"
-                >
+                <Stack gap={1} className="bg-theme-secondary rounded-lg p-3">
                   <Inline gap={2}>
                     <PiTrendUp className="w-4 h-4" />
                     <Text papel="rotulo" tom="suave" className="font-medium">
@@ -702,10 +651,7 @@ export const LearningCard = ({
               )}
 
               {learnedItem.musicalInsights && (
-                <Stack
-                  gap={1}
-                  className="bg-theme-secondary rounded-lg p-3 border-l-4"
-                >
+                <Stack gap={1} className="bg-theme-secondary rounded-lg p-3">
                   <Inline gap={2}>
                     <PiMedal className="w-4 h-4" />
                     <Text papel="rotulo" tom="suave" className="font-medium">
@@ -724,10 +670,7 @@ export const LearningCard = ({
               )}
 
               {learnedItem.notes && (
-                <Stack
-                  gap={1}
-                  className="bg-theme-secondary rounded-lg p-3 border-l-4"
-                >
+                <Stack gap={1} className="bg-theme-secondary rounded-lg p-3">
                   <Inline gap={2}>
                     <PiBookOpen className="w-4 h-4" />
                     <Text papel="rotulo" tom="suave" className="font-medium">

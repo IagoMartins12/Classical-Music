@@ -100,7 +100,7 @@ const StudentInviteStatusBadge: React.FC<StudentInviteStatusBadgeProps> = ({
     return (
       <div className="flex items-center gap-2">
         <div
-          className={`inline-flex items-center gap-1.5 px-2 py-1 rounded-full text-xs font-medium border ${config?.color}`}
+          className={`inline-flex items-center gap-1.5 px-2 py-1 rounded-full text-xs font-medium bg-sup-2 ${config?.color}`}
         >
           <IconComponent className="w-3 h-3" />
           <span>{config?.shortText}</span>
@@ -126,7 +126,7 @@ const StudentInviteStatusBadge: React.FC<StudentInviteStatusBadgeProps> = ({
 
   return (
     <div
-      className={`rounded-lg border p-4 ${config?.color} ${config?.bgColor}`}
+      className={`rounded-lg p-4 bg-sup-2 ${config?.color} ${config?.bgColor}`}
     >
       <div className="flex items-start justify-between">
         <div className="flex items-center gap-3">

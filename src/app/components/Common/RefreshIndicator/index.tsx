@@ -82,7 +82,7 @@ export default function RefreshIndicator({
         disabled={disabled || isRefreshing}
         className={`
           ${currentSize.button} 
-          rounded-lg bg-theme-elevated border border-theme-secondary transition-all flex items-center justify-center group relative
+          rounded-lg bg-theme-elevated transition-all flex items-center justify-center group relative
           ${disabled || isRefreshing ? 'opacity-50 cursor-not-allowed' : ''}
         `}
         title={isRefreshing ? 'Atualizando...' : 'Atualizar dados'}
@@ -156,7 +156,7 @@ export function RefreshButton({
       onClick={onRefresh}
       disabled={disabled || isRefreshing}
       className={`
-        w-8 h-8 rounded-lg bg-theme-elevated border border-theme-secondary transition-all flex items-center justify-center group ${
+        w-8 h-8 rounded-lg bg-theme-elevated transition-all flex items-center justify-center group ${
           disabled || isRefreshing ? 'opacity-50 cursor-not-allowed' : ''
         }
         ${className}

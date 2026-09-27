@@ -188,7 +188,7 @@ export default function DifficultyClient({
             <AnimatedItem hover="scale">
               <button
                 onClick={() => setShowInfo(!showInfo)}
-                className="inline-flex items-center space-x-2 px-4 py-2 border rounded-full text-sm font-medium transition-all duration-300"
+                className="inline-flex items-center space-x-2 px-4 py-2 rounded-full text-sm font-medium transition-all duration-300 bg-sup-2"
               >
                 <PiInfo className="w-4 h-4" />
                 <span>Sobre os Níveis de Dificuldade</span>
@@ -279,7 +279,7 @@ export default function DifficultyClient({
                   className={`px-3 py-1.5 rounded-full text-sm font-medium transition-all duration-300 ${
                     selectedLevel === 'all'
                       ? 'text-theme-inverse'
-                      : 'bg-theme-elevated border border-theme-secondary text-theme-secondary'
+                      : 'bg-theme-elevated text-theme-secondary'
                   }`}
                   disabled={isPending}
                 >
@@ -292,7 +292,7 @@ export default function DifficultyClient({
                     className={`px-3 py-1.5 rounded-full text-sm font-medium transition-all duration-300 ${
                       selectedLevel === level.level
                         ? 'text-theme-inverse'
-                        : 'bg-theme-elevated border border-theme-secondary text-theme-secondary'
+                        : 'bg-theme-elevated text-theme-secondary'
                     }`}
                     disabled={isPending}
                   >
@@ -314,7 +314,7 @@ export default function DifficultyClient({
                 <Text
                   papel="rotulo"
                   tom="ouro"
-                  className="inline-flex items-center gap-2 px-3 py-1 border rounded-full"
+                  className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-sup-2"
                 >
                   Busca: &quot;{searchParams.search}&quot;
                   <button

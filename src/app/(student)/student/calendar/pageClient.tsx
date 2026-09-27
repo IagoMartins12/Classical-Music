@@ -437,7 +437,7 @@ export default function StudentCalendarPageClient({
                         : navigateWeek('prev')
                     }
                     disabled={loading.refreshing}
-                    className="w-10 h-10 rounded-lg bg-theme-elevated border border-theme-secondary transition-all flex items-center justify-center group disabled:opacity-50"
+                    className="w-10 h-10 rounded-lg bg-theme-elevated transition-all flex items-center justify-center group disabled:opacity-50"
                   >
                     <PiCaretLeft className="w-5 h-5 text-theme-tertiary transition-colors" />
                     <NomeAcao acao="anterior" />
@@ -464,7 +464,7 @@ export default function StudentCalendarPageClient({
                         : navigateWeek('next')
                     }
                     disabled={loading.refreshing}
-                    className="w-10 h-10 rounded-lg bg-theme-elevated border border-theme-secondary transition-all flex items-center justify-center group disabled:opacity-50"
+                    className="w-10 h-10 rounded-lg bg-theme-elevated transition-all flex items-center justify-center group disabled:opacity-50"
                   >
                     <PiCaretRight className="w-5 h-5 text-theme-tertiary transition-colors" />
                     <NomeAcao acao="proximo" />
@@ -723,7 +723,7 @@ function MonthView({
           return (
             <div
               key={index}
-              className={`min-h-24 p-2 border rounded-lg transition-all ${
+              className={`min-h-24 p-2 rounded-lg transition-all bg-sup-2 ${
                 isToday ? '' : isCurrentMonth ? '' : 'opacity-60'
               }`}
             >
@@ -801,7 +801,7 @@ function WeekView({
             className="rounded-lg bg-theme-secondary overflow-hidden"
           >
             <div
-              className={`text-center p-4 ${isToday ? 'border-b' : 'border-b'}`}
+              className={`text-center p-4 ${isToday ? 'border-b border-linha' : 'border-b border-linha'}`}
             >
               <Text papel="rotulo" tom="fraco" as="div">
                 {WEEKDAYS[index]}
@@ -1097,7 +1097,7 @@ function StudentEventDetailsModal({
                   {event.objectives.map((objective: any, index: number) => (
                     <span
                       key={index}
-                      className="px-3 py-1 border rounded-full text-sm"
+                      className="px-3 py-1 rounded-full text-sm bg-sup-2"
                     >
                       {objective}
                     </span>
@@ -1112,7 +1112,7 @@ function StudentEventDetailsModal({
                 <label className="text-sm font-medium text-theme-tertiary block">
                   {t('student_calendar_modal_teacher_notes')}
                 </label>
-                <div className="rounded-lg border p-4">
+                <div className="rounded-lg p-4 bg-sup-2">
                   <div className="text-theme-primary whitespace-pre-wrap">
                     {event.publicNotes}
                   </div>
@@ -1126,7 +1126,7 @@ function StudentEventDetailsModal({
                 <label className="text-sm font-medium text-theme-tertiary block">
                   {t('student_calendar_modal_homework')}
                 </label>
-                <div className="rounded-lg border p-4">
+                <div className="rounded-lg p-4 bg-sup-2">
                   <div className="text-theme-primary">{event.homework}</div>
                 </div>
               </Stack>
@@ -1138,7 +1138,7 @@ function StudentEventDetailsModal({
                 <label className="text-sm font-medium text-theme-tertiary block">
                   {t('student_calendar_modal_lesson_summary')}
                 </label>
-                <div className="rounded-lg border p-4">
+                <div className="rounded-lg p-4 bg-sup-2">
                   <div className="text-theme-primary">
                     {event.details.lessonSummary}
                   </div>
@@ -1182,7 +1182,7 @@ function StudentEventDetailsModal({
                       (improvement: any, index: number) => (
                         <span
                           key={index}
-                          className="px-3 py-1 border rounded-full text-sm"
+                          className="px-3 py-1 rounded-full text-sm bg-sup-2"
                         >
                           {improvement}
                         </span>

@@ -51,7 +51,7 @@ export default function ReportStatus({
 
   return (
     <div
-      className={`inline-flex items-center space-x-1 px-2 py-1 rounded-full border text-xs font-medium ${config?.color} ${className}`}
+      className={`inline-flex items-center space-x-1 px-2 py-1 rounded-full text-xs font-medium bg-sup-2 ${config?.color} ${className}`}
       title={`${reportCount} report(s) - ${config?.label}`}
     >
       {config?.icon}

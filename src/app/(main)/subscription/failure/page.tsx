@@ -28,7 +28,7 @@ export default function SubscriptionFailurePage() {
           </p>
 
           {/* Info Box */}
-          <div className="bg-red-500/10 border border-red-500/30 rounded-xl p-6 mb-8 text-left">
+          <div className="bg-red-500/10 rounded-xl p-6 mb-8 text-left">
             <div className="flex items-start gap-4">
               <div className="w-12 h-12 bg-red-500/20 rounded-lg flex items-center justify-center flex-shrink-0">
                 <PiQuestion className="w-6 h-6 text-red-500" />

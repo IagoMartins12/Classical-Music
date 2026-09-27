@@ -454,7 +454,7 @@ export function ArticleList({
                         </button>
 
                         {actionMenu === article.id && (
-                          <div className="absolute top-0 right-7 mt-1 w-48 bg-theme-tertiary rounded-lg shadow-xl border border-theme-secondary z-10">
+                          <div className="absolute top-0 right-7 mt-1 w-48 bg-theme-tertiary rounded-lg shadow-xl z-10">
                             <Link
                               href={`/blog/admin/articles/${article.id}/edit`}
                               className="flex items-center space-x-2 px-4 py-2 text-theme-secondary"
@@ -488,7 +488,7 @@ export function ArticleList({
                               as="button"
                               gap={2}
                               onClick={() => setDeleteModal(article.id)}
-                              className="w-full px-4 py-2 hover:bg-red-500/10 text-red-500 rounded-b-lg"
+                              className="w-full px-4 py-2 hover:bg-red-500/10 rounded-b-lg !text-erro"
                             >
                               <PiTrash className="w-4 h-4" />
                               <span>Deletar</span>
@@ -582,7 +582,7 @@ export function ArticleList({
 
                           <button
                             onClick={() => setDeleteModal(article.id)}
-                            className="p-2 rounded-lg text-theme-tertiary hover:text-red-500 transition-all"
+                            className="p-2 rounded-lg transition-all !text-erro"
                             title="Deletar"
                           >
                             <PiTrash className="w-4 h-4" />
@@ -699,7 +699,7 @@ export function ArticleList({
                   </button>
                   <button
                     onClick={() => handleDelete(deleteModal)}
-                    className="flex-1 px-4 py-2 rounded-lg bg-red-500 hover:bg-red-600 text-white transition-all disabled:opacity-50"
+                    className="flex-1 px-4 py-2 rounded-lg bg-red-500 hover:bg-red-600 transition-all disabled:opacity-50 !text-erro"
                     disabled={deleting}
                   >
                     {deleting ? 'Deletando...' : 'Deletar'}

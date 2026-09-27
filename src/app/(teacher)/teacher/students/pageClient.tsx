@@ -418,7 +418,7 @@ export default function TeacherStudentsPageClient({
                   <button
                     onClick={refreshStudents}
                     disabled={loading.students}
-                    className="w-10 h-10 rounded-lg bg-theme-elevated border border-theme-secondary transition-all flex items-center justify-center group"
+                    className="w-10 h-10 rounded-lg bg-theme-elevated transition-all flex items-center justify-center group"
                   >
                     <PiArrowsClockwise
                       className={`w-4 h-4 text-theme-tertiary transition-all ${

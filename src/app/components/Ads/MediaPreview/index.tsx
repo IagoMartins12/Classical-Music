@@ -385,7 +385,7 @@ export default function MediaPreview({
 
       {/* Usage Tips */}
       <div className="px-4 pb-4">
-        <div className="border rounded-lg p-3">
+        <div className="rounded-lg p-3 bg-sup-2">
           <div className="flex items-start space-x-2">
             <PiInfo className="w-4 h-4 mt-0.5 flex-shrink-0" />
             <Text papel="legenda" tom="suave" as="div">

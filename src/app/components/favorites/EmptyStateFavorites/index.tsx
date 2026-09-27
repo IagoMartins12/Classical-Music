@@ -259,7 +259,7 @@ const EmptyStateFavorites: React.FC<emptyStatesProps> = ({
 
           {/* Dica */}
           {config?.tip && (
-            <div className="mt-8 p-4 rounded-xl border border-theme-primary">
+            <div className="mt-8 p-4 rounded-xl bg-sup-2">
               <div className="flex items-start space-x-3">
                 <div className="w-10 h-8 md:w-6 md:h-6 rounded-lg flex items-center justify-center mt-0.5">
                   <PiStar className="w-5 h-5text-theme-primary" />

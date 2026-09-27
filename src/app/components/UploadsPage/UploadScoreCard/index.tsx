@@ -172,7 +172,7 @@ const UploadScoreCard = ({
                 href={`https://imslp.org/wiki/${item.imslpId}`}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="inline-flex items-center px-2 py-1 border rounded-md text-xs font-medium hover:scale-105 transition-all duration-300"
+                className="inline-flex items-center px-2 py-1 rounded-md text-xs font-medium hover:scale-105 transition-all duration-300 bg-sup-2"
                 onClick={(e) => e.stopPropagation()}
               >
                 IMSLP
@@ -192,7 +192,7 @@ const UploadScoreCard = ({
               <button
                 onClick={handleDeleteClick}
                 disabled={isDeleting}
-                className={`w-8 h-8 rounded-lg bg-theme-secondary text-theme-tertiary transition-colors flex items-center justify-center ${
+                className={`w-8 h-8 rounded-lg bg-theme-secondary transition-colors flex items-center justify-center !text-erro ${
                   isDeleting ? 'opacity-50 cursor-not-allowed' : ''
                 }`}
               >
@@ -227,7 +227,7 @@ const UploadScoreCard = ({
             <button
               onClick={handleDeleteClick}
               disabled={isDeleting}
-              className={`w-8 h-8 rounded-lg bg-theme-elevated text-theme-tertiary transition-colors flex items-center justify-center shadow-theme-medium ${
+              className={`w-8 h-8 rounded-lg bg-theme-elevated transition-colors flex items-center justify-center shadow-theme-medium !text-erro ${
                 isDeleting ? 'opacity-50 cursor-not-allowed' : ''
               }`}
             >
@@ -321,10 +321,10 @@ const UploadScoreCard = ({
                 <span
                   className={`inline-flex items-center px-3 py-1 rounded-full text-xs font-medium ${
                     item.dataQuality === 'high'
-                      ? 'border'
+                      ? ''
                       : item.dataQuality === 'medium'
-                        ? 'border'
-                        : 'border'
+                        ? ''
+                        : ''
                   }`}
                 >
                   <PiStar className="w-2.5 h-2.5 mr-1" />
@@ -337,14 +337,14 @@ const UploadScoreCard = ({
           {/* Badges */}
           <div className="flex flex-wrap justify-center gap-2 mb-4">
             {item.isIMSLP && (
-              <span className="inline-flex items-center px-2 py-1 border rounded-full text-xs font-medium">
+              <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-sup-2">
                 <PiArrowSquareOut className="w-2.5 h-2.5 mr-1" />
                 IMSLP
               </span>
             )}
 
             {item.verificationStatus === 'verified' && (
-              <span className="inline-flex items-center px-2 py-1 border rounded-full text-xs font-medium">
+              <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-sup-2">
                 <PiShield className="w-2.5 h-2.5 mr-1" />
                 {t('card_verified_badge')}
               </span>

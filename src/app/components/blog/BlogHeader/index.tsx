@@ -410,7 +410,7 @@ export function BlogHeader() {
 
                       {/* Submenu Dropdown */}
                       {activeSubmenu === label && (
-                        <div className="absolute top-full left-0 mt-2 w-72 bg-theme-tertiary rounded-2xl shadow-xl border border-theme-secondary z-50 overflow-hidden">
+                        <div className="absolute top-full left-0 mt-2 w-72 bg-theme-tertiary rounded-2xl shadow-xl z-50 overflow-hidden">
                           <div className="p-2">
                             {submenu.map((item) => (
                               <Link
@@ -530,7 +530,7 @@ export function BlogHeader() {
 
                   {/* Desktop Profile Dropdown */}
                   {isProfileOpen && (
-                    <div className="absolute right-0 top-full mt-2 w-64 bg-theme-tertiary rounded-2xl z-20 p-2 shadow-xl border border-theme-secondary">
+                    <div className="absolute right-0 top-full mt-2 w-64 bg-theme-tertiary rounded-2xl z-20 p-2 shadow-xl">
                       {/* User Info */}
                       <div className="px-3 py-2 border-b border-theme-secondary mb-2">
                         <p className="font-medium text-theme-primary">

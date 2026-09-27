@@ -105,7 +105,7 @@ const RecentWorkCard = ({ work }: RecentWorkCardProps) => {
               papel="legenda"
               tom="fraco"
               as="div"
-              className="border backdrop-blur-md rounded-full px-2 py-1 flex items-center gap-1"
+              className="backdrop-blur-md rounded-full px-2 py-1 flex items-center gap-1 bg-sup-2"
             >
               <PiClock className="w-2.5 h-2.5" />
               {formatTimeAgo(String(work.createdAt))}
@@ -194,7 +194,7 @@ const RecentWorkCard = ({ work }: RecentWorkCardProps) => {
             </div>
 
             {/* Action bar */}
-            <div className="flex items-center justify-end pt-3 border-t">
+            <div className="flex items-center justify-end pt-3 border-t border-linha">
               {/* <div className="flex items-center space-x-2 text-theme-tertiary text-xs">
                 <div className="w-1.5 h-1.5 bg-green-400 rounded-full animate-pulse"></div>
                 <span className="font-medium">Recém-adicionado</span>
@@ -202,14 +202,14 @@ const RecentWorkCard = ({ work }: RecentWorkCardProps) => {
 
               <div className="flex items-center gap-2">
                 <div
-                  className="w-7 h-7 border rounded-full flex items-center justify-center text-theme-tertiary hover:border-blue-400 hover:text-blue-400 transition-all duration-300"
+                  className="w-7 h-7 rounded-full flex items-center justify-center text-theme-tertiary hover:text-blue-400 transition-all duration-300"
                   title="Disponível no IMSLP"
                 >
                   <PiArrowSquareOut className="w-3.5 h-3.5" />
                 </div>
 
                 {/* Navigation arrow */}
-                <div className="w-6 h-6 border rounded-full flex items-center justify-center group-hover:border-green-400 group-hover:bg-green-400/10 transition-all duration-300">
+                <div className="w-6 h-6 rounded-full flex items-center justify-center group-hover:bg-green-400/10 transition-all duration-300">
                   <svg
                     className="w-3 h-3 text-theme-tertiary group-hover:text-green-400 transition-all duration-300 transform group-hover:translate-x-0.5"
                     fill="none"

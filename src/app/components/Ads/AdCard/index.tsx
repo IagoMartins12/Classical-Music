@@ -43,7 +43,7 @@ export default function AdCard({
 
   return (
     <div
-      className={`relative bg-theme-elevated border border-theme-primary rounded-xl overflow-hidden shadow-sm hover:shadow-md transition-shadow ${className}`}
+      className={`relative bg-theme-elevated rounded-xl overflow-hidden shadow-sm hover:shadow-md transition-shadow ${className}`}
     >
       {/* Dismiss Button */}
       <button

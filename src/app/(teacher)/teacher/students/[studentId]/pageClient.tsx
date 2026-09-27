@@ -593,7 +593,7 @@ export default function TeacherStudentDetailPageClient({
             <Inline gap={4} className="w-full sm:w-auto">
               <Link
                 href="/teacher/students"
-                className="w-10 h-10 rounded-lg bg-theme-elevated border border-theme-secondary transition-all flex items-center justify-center group"
+                className="w-10 h-10 rounded-lg bg-theme-elevated transition-all flex items-center justify-center group"
               >
                 <PiArrowLeft className="w-5 h-5 text-theme-tertiary transition-colors" />
               </Link>
@@ -612,7 +612,7 @@ export default function TeacherStudentDetailPageClient({
               className="w-full justify-between sm:justify-start sm:w-auto"
             >
               <span
-                className={`px-4 py-2 border rounded-full text-sm font-medium`}
+                className={`px-4 py-2 rounded-full text-sm font-medium bg-sup-2`}
               >
                 {getStatusText()}
               </span>
@@ -652,10 +652,7 @@ export default function TeacherStudentDetailPageClient({
         {/* Error Message */}
         {error && (
           <AnimatedItem direction="up" springType="gentle">
-            <AnimatedCard
-              hover="lift"
-              className="classical-card p-4 border-l-4 mb-6"
-            >
+            <AnimatedCard hover="lift" className="classical-card p-4 mb-6">
               <div className="flex items-center justify-between">
                 <Inline gap={3}>
                   <PiXCircle className="w-5 h-5" />
@@ -822,7 +819,7 @@ export default function TeacherStudentDetailPageClient({
                             papel="rotulo"
                             tom="ouro"
                             key={index}
-                            className="px-3 py-1 border rounded-full"
+                            className="px-3 py-1 rounded-full bg-sup-2"
                           >
                             {focus}
                           </Text>
@@ -909,7 +906,7 @@ export default function TeacherStudentDetailPageClient({
                               return (
                                 <span
                                   key={day}
-                                  className="px-2 py-1 border rounded text-sm"
+                                  className="px-2 py-1 rounded text-sm bg-sup-2"
                                 >
                                   {dayLabel}
                                 </span>
@@ -934,7 +931,7 @@ export default function TeacherStudentDetailPageClient({
                             {relationship.preferredTimes.map((time) => (
                               <span
                                 key={time}
-                                className="px-2 py-1 border rounded text-sm font-mono"
+                                className="px-2 py-1 rounded text-sm font-mono bg-sup-2"
                               >
                                 {time}
                               </span>
@@ -1071,10 +1068,10 @@ export default function TeacherStudentDetailPageClient({
                             <span
                               className={`px-2 py-1 rounded-full text-xs font-medium ${
                                 lesson.status === 'COMPLETED'
-                                  ? 'border'
+                                  ? ''
                                   : lesson.status === 'CANCELLED'
-                                    ? 'border'
-                                    : 'border'
+                                    ? ''
+                                    : ''
                               }`}
                             >
                               {lesson.status === 'COMPLETED'
@@ -1123,7 +1120,10 @@ export default function TeacherStudentDetailPageClient({
                           )}
 
                           {lesson.homework && (
-                            <Stack gap={1} className="mt-2 p-2 rounded border">
+                            <Stack
+                              gap={1}
+                              className="mt-2 p-2 rounded bg-sup-2"
+                            >
                               <Text papel="legenda" tom="fraco" as="div">
                                 {t('homework_label')}
                               </Text>
@@ -1141,7 +1141,7 @@ export default function TeacherStudentDetailPageClient({
 
                         <Link
                           href={`/teacher/lessons/${lesson.id}`}
-                          className="w-8 h-8 rounded-lg bg-theme-elevated border border-theme-secondary transition-all flex items-center justify-center ml-4"
+                          className="w-8 h-8 rounded-lg bg-theme-elevated transition-all flex items-center justify-center ml-4"
                         >
                           <PiEye className="w-4 h-4 text-theme-tertiary transition-colors" />
                         </Link>
@@ -1182,7 +1182,7 @@ export default function TeacherStudentDetailPageClient({
                   <button
                     onClick={() => setEditingNotes(!editingNotes)}
                     disabled={loading.updateNotes}
-                    className="w-8 h-8 rounded-lg bg-theme-elevated border border-theme-secondary transition-all flex items-center justify-center"
+                    className="w-8 h-8 rounded-lg bg-theme-elevated transition-all flex items-center justify-center"
                   >
                     {loading.updateNotes ? (
                       <PiArrowsClockwise className="w-4 h-4 animate-spin text-theme-tertiary" />
@@ -1364,10 +1364,10 @@ export default function TeacherStudentDetailPageClient({
                           <span
                             className={`px-2 py-1 rounded-full text-xs font-medium ml-2 ${
                               assignment.priority === 'high'
-                                ? 'border'
+                                ? ''
                                 : assignment.priority === 'medium'
-                                  ? 'border'
-                                  : 'border'
+                                  ? ''
+                                  : ''
                             }`}
                           >
                             {assignment.priority === 'high'

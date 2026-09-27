@@ -265,7 +265,9 @@ export default function UserDetailsModal({
             key={tab.id}
             onClick={() => setActiveTab(tab.id as any)}
             className={`flex items-center gap-2 px-4 py-3 text-sm font-medium transition-all whitespace-nowrap ${
-              activeTab === tab.id ? 'border-b-2' : 'text-theme-tertiary'
+              activeTab === tab.id
+                ? 'border-b-2 border-linha'
+                : 'text-theme-tertiary'
             }`}
           >
             <tab.icon className="w-4 h-4" />

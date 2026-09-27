@@ -69,7 +69,7 @@ export default function EntityActionMenu({
             />
 
             {/* Menu dropdown */}
-            <div className="absolute right-0 top-full mt-2 bg-theme-elevated border border-theme-primary rounded-lg shadow-theme-medium z-20 min-w-48">
+            <div className="absolute right-0 top-full mt-2 bg-theme-elevated rounded-lg shadow-theme-medium z-20 min-w-48">
               <div className="py-2">
                 {onView && (
                   <Inline
@@ -110,7 +110,7 @@ export default function EntityActionMenu({
                       setShowVerificationModal(true);
                       setShowMenu(false);
                     }}
-                    className="w-full px-4 py-2 text-left text-sm text-theme-primary transition-colors"
+                    className="w-full px-4 py-2 text-left text-sm transition-colors !text-erro"
                   >
                     <PiShield className="w-4 h-4" />
                     <span>
@@ -143,7 +143,7 @@ export default function EntityActionMenu({
                         onDelete();
                         setShowMenu(false);
                       }}
-                      className="w-full px-4 py-2 text-left text-sm transition-colors"
+                      className="w-full px-4 py-2 text-left text-sm transition-colors !text-erro"
                     >
                       <PiTrash className="w-4 h-4" />
                       <span>Deletar</span>

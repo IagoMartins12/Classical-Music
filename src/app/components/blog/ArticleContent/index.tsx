@@ -150,7 +150,7 @@ export function ArticleContent({ content }: ArticleContentProps) {
   const renderBlockquote = (node: any): HTMLElement => {
     const blockquote = document.createElement('blockquote');
     blockquote.className =
-      'border-l-4 pl-6 py-4 mb-4 italic text-theme-secondary bg-theme-elevated rounded-r-lg';
+      'pl-6 py-4 mb-4 italic text-theme-secondary bg-theme-elevated rounded-r-lg';
     if (node.content) {
       node.content.forEach((child: any) => {
         const element = renderNode(child);
@@ -162,8 +162,7 @@ export function ArticleContent({ content }: ArticleContentProps) {
 
   const renderCodeBlock = (node: any): HTMLElement => {
     const pre = document.createElement('pre');
-    pre.className =
-      'bg-theme-elevated border border-theme-secondary rounded-lg p-4 mb-4 overflow-x-auto';
+    pre.className = 'bg-theme-elevated rounded-lg p-4 mb-4 overflow-x-auto';
     const code = document.createElement('code');
     code.className = 'text-sm text-theme-secondary font-mono';
     if (node.content) {
@@ -234,7 +233,7 @@ export function ArticleContent({ content }: ArticleContentProps) {
     wrapper.className = 'composer-card my-6';
 
     const card = document.createElement('div');
-    card.className = `classical-card rounded-lg border-l-4 shadow-md p-6 ${
+    card.className = `classical-card rounded-lg shadow-md p-6 ${
       layout === 'horizontal' ? 'flex items-start space-x-6' : ''
     }`;
 
@@ -334,7 +333,7 @@ export function ArticleContent({ content }: ArticleContentProps) {
     wrapper.className = 'work-card my-6';
 
     const card = document.createElement('div');
-    card.className = 'classical-card p-6 border-l-4';
+    card.className = 'classical-card p-6';
 
     const flexDiv = document.createElement('div');
     flexDiv.className = 'flex items-start space-x-4';
@@ -375,7 +374,7 @@ export function ArticleContent({ content }: ArticleContentProps) {
     scoresBtn.target = '_blank';
     scoresBtn.rel = 'noopener noreferrer';
     scoresBtn.className =
-      'inline-flex items-center px-4 py-2 bg-theme-elevated border rounded-lg transition-colors';
+      'inline-flex items-center px-4 py-2 bg-theme-elevated rounded-lg transition-colors';
     scoresBtn.textContent = 'Ver Partituras';
     buttonsDiv.appendChild(scoresBtn);
 
@@ -402,7 +401,7 @@ export function ArticleContent({ content }: ArticleContentProps) {
     wrapper.className = 'score-viewer my-6';
 
     const card = document.createElement('div');
-    card.className = 'classical-card overflow-hidden border-l-4';
+    card.className = 'classical-card overflow-hidden';
 
     const header = document.createElement('div');
     header.className = 'text-white px-6 py-4';
@@ -476,7 +475,7 @@ export function ArticleContent({ content }: ArticleContentProps) {
 
     const card = document.createElement('div');
     card.className =
-      'rounded-lg classical-card-simple border-l-4 shadow-md overflow-hidden';
+      'rounded-lg classical-card-simple shadow-md overflow-hidden';
 
     const content = document.createElement('div');
     content.className = 'p-6';
@@ -830,7 +829,7 @@ export function ArticleContent({ content }: ArticleContentProps) {
     if (composerName) {
       const header = document.createElement('div');
       header.className =
-        'mb-6 flex items-center space-x-3 p-4 rounded-lg border-l-4';
+        'mb-6 flex items-center space-x-3 p-4 rounded-lg bg-sup-2';
       header.innerHTML = `
         <svg class="w-5 h-5 text-ouro-texto" fill="currentColor" viewBox="0 0 24 24">
           <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/>
@@ -910,7 +909,7 @@ export function ArticleContent({ content }: ArticleContentProps) {
     wrapper.className = 'video-comparison my-8';
 
     const card = document.createElement('div');
-    card.className = 'classical-card overflow-hidden border-l-4';
+    card.className = 'classical-card overflow-hidden';
 
     const header = document.createElement('div');
     header.className = 'text-white px-6 py-4';
@@ -987,7 +986,7 @@ export function ArticleContent({ content }: ArticleContentProps) {
     wrapper.className = 'quote-musical my-8';
 
     const card = document.createElement('div');
-    card.className = 'relative classical-card p-8 border-l-4';
+    card.className = 'relative classical-card p-8';
 
     card.innerHTML = `
       <svg class="absolute top-4 right-4 w-12 h-12 text-theme-tertiary opacity-20" fill="currentColor" viewBox="0 0 24 24">

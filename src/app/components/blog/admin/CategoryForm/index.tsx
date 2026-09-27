@@ -411,7 +411,7 @@ export function CategoryForm({ mode, category }: CategoryFormProps) {
               <button
                 type="button"
                 onClick={handleRemoveImage}
-                className="absolute top-2 right-2 p-2 bg-red-500 hover:bg-red-600 text-white rounded-lg transition-all"
+                className="absolute top-2 right-2 p-2 bg-red-500 hover:bg-red-600 rounded-lg transition-all !text-erro"
               >
                 <PiTrash className="w-4 h-4" />
                 <NomeAcao acao="excluir" />

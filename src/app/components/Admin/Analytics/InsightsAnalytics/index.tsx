@@ -307,7 +307,7 @@ export default function AdvancedInsightsAnalytics() {
         {insights.anomalies.filter((a) => a.severity === 'critical').length >
           0 && (
           <AnimatedItem direction="up" springType="gentle">
-            <AnimatedCard className="classical-card p-6 mb-8 border-l-4">
+            <AnimatedCard className="classical-card p-6 mb-8">
               <Inline gap={3} className="mb-4">
                 <PiWarning className="w-6 h-6" />
                 <h3 className="text-xl font-bold text-theme-primary">
@@ -322,7 +322,7 @@ export default function AdvancedInsightsAnalytics() {
                     <Stack
                       gap={2}
                       key={index}
-                      className="p-4 rounded-xl border"
+                      className="p-4 rounded-xl bg-sup-2"
                     >
                       <h4 className="font-bold">{anomaly.metric}</h4>
                       <Text papel="rotulo" tom="suave" as="p">
@@ -584,7 +584,7 @@ export default function AdvancedInsightsAnalytics() {
                   .map((item, index: number) => (
                     <div
                       key={index}
-                      className={`p-4 rounded-xl border-l-4 ${
+                      className={`p-4 rounded-xl bg-sup-2 ${
                         item.priority === 'high'
                           ? ''
                           : item.priority === 'medium'
@@ -1694,7 +1694,7 @@ function RiskAssessmentSection({
                 <Stack
                   gap={3}
                   key={index}
-                  className="p-4 bg-theme-secondary rounded-xl border-l-4"
+                  className="p-4 bg-theme-secondary rounded-xl"
                 >
                   <div className="flex items-start justify-between">
                     <div>
@@ -2091,7 +2091,7 @@ function MonetizationSection({
                       {segment.engagementScore}%
                     </span>
                   </div>
-                  <div className="pt-2 border-t">
+                  <div className="pt-2 border-t border-linha">
                     <Text papel="legenda" tom="fraco" as="p">
                       Potencial de crescimento:
                     </Text>
@@ -2512,7 +2512,7 @@ function AnomaliesSection({ anomalies, onRefreshModule, isGenerating }: any) {
             return (
               <AnimatedCard
                 key={index}
-                className={`classical-card p-6 border-l-4 ${getSeverityColor(
+                className={`classical-card p-6 ${getSeverityColor(
                   anomaly.severity
                 )}`}
               >

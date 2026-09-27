@@ -79,7 +79,7 @@ export const ThemeToggle: React.FC<ThemeToggleProps> = ({
         disabled={isTransitioning}
         className={`
           ${getVariantClasses()}
-          relative bg-theme-elevated border border-theme-primary rounded-xl active:scale-95 transition-all duration-300 group disabled:opacity-50 disabled:cursor-not-allowed
+          relative bg-theme-elevated rounded-xl active:scale-95 transition-all duration-300 group disabled:opacity-50 disabled:cursor-not-allowed
         `}
         aria-label={`Alternar para tema ${
           mode === 'dark' ? 'claro' : 'escuro'

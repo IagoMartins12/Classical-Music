@@ -460,7 +460,7 @@ export default function CreateEventModal({
               <Text papel="rotulo" tom="suave" as="p">
                 Preview:
               </Text>
-              <div className="relative w-full h-48 rounded-lg overflow-hidden border border-theme-secondary">
+              <div className="relative w-full h-48 rounded-lg overflow-hidden">
                 <Image
                   src={formData.imageUrl}
                   alt="Preview"

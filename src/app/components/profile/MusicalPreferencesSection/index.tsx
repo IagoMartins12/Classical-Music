@@ -369,7 +369,7 @@ const MusicalPreferencesSection: React.FC<MusicalPreferencesSectionProps> = ({
 
       {/* Summary Card */}
       {formData.experienceLevel && formData.practiceTimePerWeek > 0 && (
-        <Card nivel={2} densidade="compacta" className="border">
+        <Card nivel={2} densidade="compacta" className="">
           <h4 className="font-medium text-ouro-texto mb-2">
             {t('preferences_profile_summary')}
           </h4>

@@ -475,7 +475,7 @@ export function InstrumentsPageClient({
                                   (char, i) => (
                                     <div
                                       key={i}
-                                      className="flex items-start space-x-3 p-3 border rounded-xl transition-all duration-300 group/item"
+                                      className="flex items-start space-x-3 p-3 rounded-xl transition-all duration-300 group/item bg-sup-2"
                                       style={{ animationDelay: `${i * 0.1}s` }}
                                     >
                                       <div className="w-2 h-2 rounded-full mt-2 flex-shrink-0 group-hover/item:scale-150 transition-transform duration-300" />
@@ -535,7 +535,7 @@ export function InstrumentsPageClient({
                                   (stage, i) => (
                                     <div
                                       key={i}
-                                      className="flex items-start space-x-3 p-3 border rounded-xl transition-all duration-300 group/item"
+                                      className="flex items-start space-x-3 p-3 rounded-xl transition-all duration-300 group/item bg-sup-2"
                                     >
                                       <Text
                                         papel="rotulo"
@@ -601,7 +601,7 @@ export function InstrumentsPageClient({
                                   (feature, i) => (
                                     <div
                                       key={i}
-                                      className="flex items-start space-x-3 p-3 border rounded-xl transition-all duration-300 group/item"
+                                      className="flex items-start space-x-3 p-3 rounded-xl transition-all duration-300 group/item bg-sup-2"
                                     >
                                       <div className="w-2 h-2 rounded-full mt-2 flex-shrink-0 group-hover/item:scale-150 transition-transform duration-300" />
                                       <span className="text-theme-secondary leading-relaxed transition-colors duration-300">

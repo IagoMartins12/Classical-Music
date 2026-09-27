@@ -288,7 +288,7 @@ export function CampaignStatsModal({
         <div className="p-6 overflow-y-auto max-h-[70vh]">
           {loading && (
             <div className="flex items-center justify-center py-12">
-              <div className="animate-spin rounded-full h-8 w-8 border-b-2"></div>
+              <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-linha"></div>
               <span className="ml-2 text-theme-secondary">Carregando...</span>
             </div>
           )}

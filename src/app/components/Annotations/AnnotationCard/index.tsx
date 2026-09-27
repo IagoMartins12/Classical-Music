@@ -245,7 +245,7 @@ export default function AnnotationCard({
         {/* Loading overlay para updates */}
         {isUpdating && (
           <div className="absolute inset-0 backdrop-blur-sm z-20 flex items-center justify-center">
-            <Inline gap={3} className="rounded-xl px-4 py-2 border">
+            <Inline gap={3} className="rounded-xl px-4 py-2 bg-sup-2">
               <PiSpinnerGap className="w-4 h-4 animate-spin text-ouro-texto" />
               <Text papel="rotulo" tom="forte" className="font-medium">
                 {isOptimistic
@@ -344,7 +344,7 @@ export default function AnnotationCard({
                 <button
                   onClick={() => setShowActions(!showActions)}
                   disabled={isUpdating}
-                  className={`w-8 h-8 rounded-lg bg-theme-elevated border flex items-center justify-center text-theme-tertiary transition-all  ${
+                  className={`w-8 h-8 rounded-lg bg-theme-elevated flex items-center justify-center text-theme-tertiary transition-all  ${
                     isUpdating ? 'opacity-50 cursor-not-allowed' : ''
                   }`}
                 >
@@ -353,7 +353,7 @@ export default function AnnotationCard({
                 </button>
 
                 {showActions && !isUpdating && (
-                  <div className="absolute right-0 top-9 bg-theme-elevated border rounded-xl shadow-theme-glow z-10 py-2 min-w-[120px]">
+                  <div className="absolute right-0 top-9 bg-theme-elevated rounded-xl shadow-theme-glow z-10 py-2 min-w-[120px]">
                     <Inline
                       as="button"
                       gap={2}
@@ -373,7 +373,7 @@ export default function AnnotationCard({
                         setShowDeleteModal(true);
                         setShowActions(false);
                       }}
-                      className="w-full cursor-pointer px-4 py-2 text-left text-sm transition-colors"
+                      className="w-full cursor-pointer px-4 py-2 text-left text-sm transition-colors !text-erro"
                     >
                       <PiTrash className="w-3 h-3" />
                       <span>{t('annotation_card_delete')}</span>
@@ -406,7 +406,7 @@ export default function AnnotationCard({
               <Inline
                 as="span"
                 gap={1}
-                className="px-3 py-1 rounded-full text-xs font-medium border border-red-400"
+                className="px-3 py-1 rounded-full text-xs font-medium bg-sup-2"
               >
                 <PiEye className="w-3 h-3" />
                 <span>{t('annotation_card_private_annotation')}</span>
@@ -417,7 +417,7 @@ export default function AnnotationCard({
               <Inline
                 as="span"
                 gap={1}
-                className="px-3 py-1 rounded-full text-xs font-medium border text-theme-primary"
+                className="px-3 py-1 rounded-full text-xs font-medium text-theme-primary bg-sup-2"
               >
                 <PiMapPin className="w-3 h-3" />
                 <span>{measureInfo}</span>
@@ -425,7 +425,7 @@ export default function AnnotationCard({
             )}
 
             {annotation.hand && (
-              <span className="px-3 py-1 rounded-full text-xs font-medium border">
+              <span className="px-3 py-1 rounded-full text-xs font-medium bg-sup-2">
                 {getHandLabel(annotation.hand)}
               </span>
             )}
@@ -434,7 +434,7 @@ export default function AnnotationCard({
               <Text
                 papel="legenda"
                 tom="forte"
-                className="px-3 py-1 rounded-full font-medium border"
+                className="px-3 py-1 rounded-full font-medium bg-sup-2"
               >
                 {t('user_annotation_card_page')} {annotation.pageNumber}
               </Text>
@@ -443,7 +443,7 @@ export default function AnnotationCard({
 
           {/* Work info (for user profile pages) */}
           {showWorkInfo && annotation.work && (
-            <div className="mb-4 p-3 border rounded-xl">
+            <div className="mb-4 p-3 rounded-xl bg-sup-2">
               <Inline gap={2} className="text-sm">
                 <PiMusicNotes className="w-4 h-4 text-theme-tertiary" />
                 <span className="font-medium text-theme-primary">
@@ -482,7 +482,7 @@ export default function AnnotationCard({
                   papel="legenda"
                   tom="suave"
                   key={index}
-                  className="px-2 py-1 bg-theme-elevated border rounded-lg"
+                  className="px-2 py-1 bg-theme-elevated rounded-lg"
                 >
                   #{tag}
                 </Text>

@@ -260,7 +260,7 @@ export default function SendTestCampaignModal({
             </Button>
           </div>
 
-          <div className="space-y-2 max-h-48 overflow-y-auto border border-theme-secondary rounded-lg p-3">
+          <div className="space-y-2 max-h-48 overflow-y-auto rounded-lg p-3 bg-sup-2">
             {testInfo.testLists.map((list: any) => (
               <label
                 key={list.id}
@@ -310,7 +310,7 @@ export default function SendTestCampaignModal({
           </div>
 
           {selectedLists.length > 0 && (
-            <div className="mt-3 p-3 border rounded-lg">
+            <div className="mt-3 p-3 rounded-lg bg-sup-2">
               <Text papel="rotulo" tom="ouro" as="div">
                 <strong>Selecionado:</strong> {selectedLists.length} lista(s) •{' '}
                 {totalEmails} email(s) únicos
@@ -503,19 +503,19 @@ export default function SendTestCampaignModal({
 
         {/* Results Grid */}
         <div className="grid grid-cols-3 gap-4 mb-6">
-          <div className="border rounded-lg p-4">
+          <div className="rounded-lg p-4 bg-sup-2">
             <div className="text-2xl font-bold">
               {sendResult?.results.successful}
             </div>
             <div className="text-sm">Enviados</div>
           </div>
-          <div className="border rounded-lg p-4">
+          <div className="rounded-lg p-4 bg-sup-2">
             <div className="text-2xl font-bold">
               {sendResult?.results.failed}
             </div>
             <div className="text-sm">Falhas</div>
           </div>
-          <div className="border rounded-lg p-4">
+          <div className="rounded-lg p-4 bg-sup-2">
             <div className="text-2xl font-bold">
               {sendResult?.results.successRate}%
             </div>
@@ -561,7 +561,7 @@ export default function SendTestCampaignModal({
 
         {/* Errors */}
         {sendResult?.results.errors && sendResult.results.errors.length > 0 && (
-          <Stack gap={3} className="border rounded-lg p-4 mb-6 text-left">
+          <Stack gap={3} className="rounded-lg p-4 mb-6 text-left bg-sup-2">
             <h4 className="font-medium">Erros Encontrados</h4>
             <div className="space-y-1 text-sm max-h-32 overflow-y-auto">
               {sendResult.results.errors.map((error: string, index: number) => (

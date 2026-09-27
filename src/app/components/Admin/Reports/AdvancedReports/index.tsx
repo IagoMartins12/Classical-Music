@@ -375,7 +375,7 @@ export default function AdvancedReports() {
 
         {/* 🔄 AVISO PARA PDF */}
         {selectedFormat === 'pdf' && (
-          <div className="mb-6 p-4 border rounded-lg">
+          <div className="mb-6 p-4 rounded-lg bg-sup-2">
             <div className="flex items-start space-x-3">
               <PiInfo className="w-5 h-5 mt-0.5" />
               <Stack gap={1}>
@@ -590,7 +590,7 @@ export default function AdvancedReports() {
                 </div>
 
                 {result.error && (
-                  <div className="mt-3 p-3 border rounded-lg">
+                  <div className="mt-3 p-3 rounded-lg bg-sup-2">
                     <p className="text-sm">
                       <PiWarning className="inline w-4 h-4 mr-2" />
                       {result.error}

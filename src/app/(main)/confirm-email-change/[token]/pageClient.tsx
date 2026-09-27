@@ -215,7 +215,7 @@ export default function ConfirmEmailChangePage() {
           <p className="text-theme-secondary mb-6">{result.message}</p>
 
           {result.data && (
-            <Stack className="border rounded-lg p-6 mb-6">
+            <Stack className="rounded-lg p-6 mb-6 bg-sup-2">
               <h3 className="font-semibold flex items-center justify-center">
                 <PiEnvelopeSimple className="w-5 h-5 mr-2" />
                 {t('pages_token_jsx_h3_children_0__resumo_alteração')}
@@ -242,7 +242,7 @@ export default function ConfirmEmailChangePage() {
           )}
 
           {/* 🆕 NOVO: Aviso sobre logout necessário */}
-          <div className="border rounded-lg p-4 mb-6">
+          <div className="rounded-lg p-4 mb-6 bg-sup-2">
             <div className="flex items-start">
               <PiSignOut className="w-5 h-5 mr-3 mt-0.5 flex-shrink-0" />
               <div>
@@ -268,7 +268,7 @@ export default function ConfirmEmailChangePage() {
             </div>
           </div>
 
-          <Stack gap={2} className="border rounded-lg p-4 mb-6">
+          <Stack gap={2} className="rounded-lg p-4 mb-6 bg-sup-2">
             <h4 className="font-medium flex items-center justify-center">
               <PiCheckCircle className="w-4 h-4 mr-2" />
               {t('pages_token_jsx_h4_children_0__funcionalidades_restauradas')}
@@ -357,7 +357,7 @@ export default function ConfirmEmailChangePage() {
 
         <Stack>
           {result.errorCode === 'EXPIRED_TOKEN' && (
-            <div className="border rounded-lg p-4">
+            <div className="rounded-lg p-4 bg-sup-2">
               <p className="text-sm">
                 {t('pages_token_jsx_p_children_0__link_expirado_dica')}
               </p>
@@ -365,7 +365,7 @@ export default function ConfirmEmailChangePage() {
           )}
 
           {result.errorCode === 'EMAIL_TAKEN' && (
-            <div className="border rounded-lg p-4">
+            <div className="rounded-lg p-4 bg-sup-2">
               <p className="text-sm">
                 {t('pages_token_jsx_p_children_0__email_indisponível_dica')}
               </p>
@@ -373,7 +373,7 @@ export default function ConfirmEmailChangePage() {
           )}
 
           {result.errorCode === 'USED_TOKEN' && (
-            <div className="border rounded-lg p-4">
+            <div className="rounded-lg p-4 bg-sup-2">
               <p className="text-sm">
                 {t('pages_token_jsx_p_children_0__link_já_usado')}
               </p>

@@ -242,20 +242,20 @@ const TeacherHistoryClient = ({
       case 'STUDENT_ADDED':
       case 'LESSON_CREATED':
       case 'ASSIGNMENT_CREATED':
-        return 'border-l-4 border-l-green-500';
+        return '';
       case 'LESSON_UPDATED':
       case 'ASSIGNMENT_UPDATED':
       case 'LESSON_STATUS_CHANGED':
-        return 'border-l-4 border-l-orange-500';
+        return '';
       case 'ASSIGNMENT_FEEDBACK_GIVEN':
-        return 'border-l-4 border-l-yellow-500';
+        return '';
       case 'LESSON_NOTES_ADDED':
-        return 'border-l-4 border-l-indigo-500';
+        return '';
       case 'TEACHER_PROFILE_UPDATED':
       case 'USER_PROFILE_UPDATED':
-        return 'border-l-4 border-l-purple-500';
+        return '';
       default:
-        return 'border-l-4 border-l-gray-300';
+        return '';
     }
   };
 
@@ -307,10 +307,7 @@ const TeacherHistoryClient = ({
     if (changesList.length === 0) return null;
 
     return (
-      <Stack
-        gap={2}
-        className="mt-3 p-3 bg-blue-50 border border-blue-200 rounded-lg"
-      >
+      <Stack gap={2} className="mt-3 p-3 bg-blue-50 rounded-lg">
         <h5 className="text-sm font-medium text-blue-700 flex items-center">
           <PiNotePencil className="w-4 h-4 mr-1" />
           {t('changes_label')}

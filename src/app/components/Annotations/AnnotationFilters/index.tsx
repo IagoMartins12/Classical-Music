@@ -173,7 +173,7 @@ export default function AnnotationFiltersComponent({
           </Inline>
           <button
             onClick={onClose}
-            className="w-8 h-8 rounded-lg bg-theme-elevated border flex items-center justify-center text-theme-tertiary transition-all"
+            className="w-8 h-8 rounded-lg bg-theme-elevated flex items-center justify-center text-theme-tertiary transition-all"
           >
             <PiX className="w-4 h-4" />
             <NomeAcao acao="fechar" />
@@ -213,8 +213,8 @@ export default function AnnotationFiltersComponent({
                       }
                       className={`w-full flex items-center space-x-3 px-3 py-2 rounded-xl text-sm font-medium transition-all ${
                         isSelected
-                          ? 'border'
-                          : 'bg-theme-elevated border text-theme-secondary'
+                          ? ''
+                          : 'bg-theme-elevated text-theme-secondary'
                       }`}
                     >
                       <Icon className="w-4 h-4" />
@@ -259,8 +259,8 @@ export default function AnnotationFiltersComponent({
                       }
                       className={`w-full flex items-center space-x-3 px-3 py-2 rounded-xl text-sm font-medium transition-all ${
                         isSelected
-                          ? 'border'
-                          : 'bg-theme-elevated border text-theme-secondary'
+                          ? ''
+                          : 'bg-theme-elevated text-theme-secondary'
                       }`}
                     >
                       <Icon className="w-4 h-4" />
@@ -299,8 +299,8 @@ export default function AnnotationFiltersComponent({
                       onClick={() => handleFilterChange('sortBy', option.value)}
                       className={`w-full flex items-center space-x-3 px-3 py-2 rounded-xl text-sm font-medium transition-all ${
                         isSelected
-                          ? 'border'
-                          : 'bg-theme-elevated border text-theme-secondary'
+                          ? ''
+                          : 'bg-theme-elevated text-theme-secondary'
                       }`}
                     >
                       <Icon className="w-4 h-4" />
@@ -372,7 +372,7 @@ export default function AnnotationFiltersComponent({
                 <Inline
                   as="span"
                   gap={2}
-                  className="px-3 py-1 border rounded-full text-sm font-medium"
+                  className="px-3 py-1 rounded-full text-sm font-medium bg-sup-2"
                 >
                   <span>
                     {t('annotation_filters_dificuldade')}{' '}
@@ -396,7 +396,7 @@ export default function AnnotationFiltersComponent({
                 <Inline
                   as="span"
                   gap={2}
-                  className="px-3 py-1 border rounded-full text-sm font-medium"
+                  className="px-3 py-1 rounded-full text-sm font-medium bg-sup-2"
                 >
                   <span>
                     {t('annotation_filters_abrangencia_label')}{' '}
@@ -419,7 +419,7 @@ export default function AnnotationFiltersComponent({
                 <Inline
                   as="span"
                   gap={2}
-                  className="px-3 py-1 border rounded-full text-sm font-medium"
+                  className="px-3 py-1 rounded-full text-sm font-medium bg-sup-2"
                 >
                   <span>
                     {t('annotation_filters_ordem')}{' '}
@@ -442,7 +442,7 @@ export default function AnnotationFiltersComponent({
                 <Inline
                   as="span"
                   gap={2}
-                  className="px-3 py-1 border text-ouro-texto rounded-full text-sm font-medium"
+                  className="px-3 py-1 text-ouro-texto rounded-full text-sm font-medium bg-sup-2"
                 >
                   <span>
                     {t('annotation_filters_busca')} &quot;{localFilters.search}
@@ -468,7 +468,7 @@ export default function AnnotationFiltersComponent({
               <Inline
                 as="span"
                 gap={1}
-                className="px-3 py-1 border text-ouro-texto rounded-full text-sm font-medium"
+                className="px-3 py-1 text-ouro-texto rounded-full text-sm font-medium bg-sup-2"
               >
                 <PiFunnel className="w-3 h-3" />
                 <span>
@@ -516,7 +516,7 @@ export default function AnnotationFiltersComponent({
         </div>
 
         {/* ✅ Dica de uso com traduções */}
-        <div className="mt-4 p-3 border rounded-xl">
+        <div className="mt-4 p-3 rounded-xl bg-sup-2">
           <Text
             papel="legenda"
             tom="fraco"

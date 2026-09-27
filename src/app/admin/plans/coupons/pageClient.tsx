@@ -799,7 +799,7 @@ function CouponCard({
 
         <button
           onClick={onDelete}
-          className="flex items-center gap-2 px-3 py-2 rounded-lg bg-theme-secondary text-red-500 hover:bg-red-500/10 transition-colors text-sm font-medium ml-auto"
+          className="flex items-center gap-2 px-3 py-2 rounded-lg bg-theme-secondary hover:bg-red-500/10 transition-colors text-sm font-medium ml-auto !text-erro"
         >
           <PiTrash className="w-4 h-4" />
           <NomeAcao acao="excluir" />

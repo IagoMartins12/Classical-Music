@@ -534,7 +534,7 @@ export const SendEmailModal: React.FC<SendEmailModalProps> = ({
               <p>
                 <strong>Assunto:</strong> {formData.subject || 'Sem assunto'}
               </p>
-              <div className="mt-2 p-3 bg-theme-tertiary rounded border-l-4">
+              <div className="mt-2 p-3 bg-theme-tertiary rounded">
                 <p className="whitespace-pre-wrap">
                   {formData.content.replace(
                     '{{firstName}}',

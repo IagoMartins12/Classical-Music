@@ -303,7 +303,7 @@ const AddStudentModal: React.FC<AddStudentModalProps> = ({
                         {/* Action Button */}
                         <div>
                           {student.isAlreadyStudent ? (
-                            <span className="px-3 py-1 border rounded-full text-xs font-medium">
+                            <span className="px-3 py-1 rounded-full text-xs font-medium bg-sup-2">
                               Já é seu aluno
                             </span>
                           ) : (

@@ -371,7 +371,7 @@ export default function StudentAssignmentsPageClient({
           {/* Status and Priority */}
           <div className="flex items-center justify-between mb-4">
             <span
-              className={`px-3 py-1 rounded-full text-xs font-medium border ${statusInfo.color}`}
+              className={`px-3 py-1 rounded-full text-xs font-medium bg-sup-2 ${statusInfo.color}`}
             >
               <StatusIcon className="w-3 h-3 inline mr-1" />
               {statusInfo.label}
@@ -384,7 +384,7 @@ export default function StudentAssignmentsPageClient({
               {/* 🆕 WORK SCORE INDICATOR */}
               {hasScores && (
                 <div
-                  className="w-5 h-5 border rounded-full flex items-center justify-center"
+                  className="w-5 h-5 rounded-full flex items-center justify-center"
                   title="Tem partituras vinculadas"
                 >
                   <PiMusicNotes className="w-3 h-3" />
@@ -580,7 +580,7 @@ export default function StudentAssignmentsPageClient({
           {/* Status and Priority */}
           <div className="flex items-center justify-between mb-4">
             <span
-              className={`px-3 py-1 rounded-full text-xs font-medium border ${statusInfo.color}`}
+              className={`px-3 py-1 rounded-full text-xs font-medium bg-sup-2 ${statusInfo.color}`}
             >
               <StatusIcon className="w-3 h-3 inline mr-1" />
               {statusInfo.label}

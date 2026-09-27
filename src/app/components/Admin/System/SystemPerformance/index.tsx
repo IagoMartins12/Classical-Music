@@ -184,7 +184,7 @@ export default function SystemPerformance() {
             {/* Status de Saúde */}
             <div className="mt-6 flex items-center justify-center">
               <div
-                className={`inline-flex items-center space-x-2 px-4 py-2 rounded-xl border ${getHealthStatusColor(
+                className={`inline-flex items-center space-x-2 px-4 py-2 rounded-xl bg-sup-2 ${getHealthStatusColor(
                   healthStatus
                 )}`}
               >
@@ -200,7 +200,7 @@ export default function SystemPerformance() {
               </div>
 
               {!isConnected && (
-                <div className="ml-4 inline-flex items-center space-x-2 px-4 py-2 rounded-xl border">
+                <div className="ml-4 inline-flex items-center space-x-2 px-4 py-2 rounded-xl bg-sup-2">
                   <PiWarning className="w-4 h-4" />
                   <span className="font-medium">Desconectado</span>
                 </div>
@@ -419,7 +419,7 @@ export default function SystemPerformance() {
         {criticalAlerts.length > 0 && (
           <AnimatedItem direction="up" springType="gentle">
             <div className="mb-8">
-              <AnimatedCard className="classical-card p-6 border-l-4">
+              <AnimatedCard className="classical-card p-6">
                 <Inline gap={3} className="mb-4">
                   <PiWarning className="w-6 h-6" />
                   <h3 className="text-xl font-bold text-theme-primary">
@@ -698,7 +698,7 @@ export default function SystemPerformance() {
                 activeAlerts.slice(0, 5).map((alert) => (
                   <div
                     key={alert.id}
-                    className={`p-4 border-l-4 rounded-xl ${AlertUtils.getAlertColor(
+                    className={`p-4 rounded-xl bg-sup-2 ${AlertUtils.getAlertColor(
                       alert.type
                     )}`}
                   >

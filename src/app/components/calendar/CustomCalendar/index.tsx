@@ -183,7 +183,7 @@ export default function CustomCalendar({
             <Inline gap={2}>
               <button
                 onClick={goToPrevious}
-                className="w-10 h-10 rounded-lg bg-theme-elevated border border-theme-secondary transition-all flex items-center justify-center group"
+                className="w-10 h-10 rounded-lg bg-theme-elevated transition-all flex items-center justify-center group"
               >
                 <PiCaretLeft className="w-5 h-5 text-theme-tertiary transition-colors" />
                 <NomeAcao acao="anterior" />
@@ -197,7 +197,7 @@ export default function CustomCalendar({
 
               <button
                 onClick={goToNext}
-                className="w-10 h-10 rounded-lg bg-theme-elevated border border-theme-secondary transition-all flex items-center justify-center group"
+                className="w-10 h-10 rounded-lg bg-theme-elevated transition-all flex items-center justify-center group"
               >
                 <PiCaretRight className="w-5 h-5 text-theme-tertiary transition-colors" />
                 <NomeAcao acao="proximo" />

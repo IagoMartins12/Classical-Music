@@ -62,7 +62,7 @@ const SectionTitle: React.FC<SectionTitleProps> = ({
         {linkHref && (
           <Link
             href={linkHref}
-            className="flex justify-center items-center px-6 py-3 bg-theme-elevated border border-theme-primary rounded-xl text-theme-primary hover:scale-105 transition-all duration-300 group font-medium"
+            className="flex justify-center items-center px-6 py-3 bg-theme-elevated rounded-xl text-theme-primary hover:scale-105 transition-all duration-300 group font-medium"
           >
             {linkText}
             <PiArrowRight className="ml-2 w-4 h-4 transition-transform group-hover:translate-x-1" />

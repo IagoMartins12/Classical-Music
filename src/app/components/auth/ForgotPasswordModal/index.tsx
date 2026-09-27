@@ -152,7 +152,7 @@ const ForgotPasswordModal: React.FC<ForgotPasswordModalProps> = ({
 
       <form onSubmit={handleSubmit} className="space-y-6">
         {state.error && (
-          <div className="p-3 rounded-lg border text-sm">
+          <div className="p-3 rounded-lg text-sm bg-sup-2">
             <div className="flex items-center">
               <PiWarningCircle className="w-4 h-4 mr-2 flex-shrink-0" />
               <span>{state.error}</span>
@@ -230,7 +230,7 @@ const ForgotPasswordModal: React.FC<ForgotPasswordModalProps> = ({
       </div>
 
       <Stack gap={6}>
-        <div className="border rounded-lg p-4">
+        <div className="rounded-lg p-4 bg-sup-2">
           <div className="flex items-start">
             <PiEnvelopeSimple className="w-5 h-5 mr-3 mt-0.5 flex-shrink-0" />
             <Stack gap={1}>
@@ -309,7 +309,7 @@ const ForgotPasswordModal: React.FC<ForgotPasswordModalProps> = ({
       </div>
 
       <Stack gap={6}>
-        <div className="border rounded-lg p-4">
+        <div className="rounded-lg p-4 bg-sup-2">
           <div className="flex items-start">
             <PiWarningCircle className="w-5 h-5 mr-3 mt-0.5 flex-shrink-0" />
             <Stack gap={1}>

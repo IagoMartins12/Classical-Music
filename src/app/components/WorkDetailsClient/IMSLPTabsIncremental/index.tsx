@@ -209,7 +209,7 @@ const ScoreCardWithBadge = React.memo(
             </div>
 
             {/* Tooltip elegante */}
-            <div className="absolute left-12 top-1/2 -translate-y-1/2 bg-gray-900 text-white px-3 py-2 rounded-lg text-sm whitespace-nowrap opacity-0 group-hover/crown:opacity-100 transition-all duration-300 pointer-events-none shadow-xl border border-gray-700 z-30">
+            <div className="absolute left-12 top-1/2 -translate-y-1/2 bg-gray-900 text-white px-3 py-2 rounded-lg text-sm whitespace-nowrap opacity-0 group-hover/crown:opacity-100 transition-all duration-300 pointer-events-none shadow-xl z-30">
               {t('score_card_favorita_comunidade')}
               <div className="absolute left-0 top-1/2 -translate-y-1/2 -translate-x-1 w-2 h-2 bg-gray-900 border-l border-b border-gray-700 rotate-45"></div>
             </div>
@@ -860,7 +860,7 @@ export default function IMSLPTabsIncremental({
                             className={`px-2 py-1 rounded-full text-xs font-bold transition-all duration-300 ${
                               isActive
                                 ? 'text-ouro-texto border'
-                                : 'bg-theme-elevated text-theme-tertiary border border-theme-secondary'
+                                : 'bg-theme-elevated text-theme-tertiary'
                             }`}
                           >
                             {tabStats.loaded}/{tabStats.total}
@@ -1163,9 +1163,9 @@ const ErrorState = React.memo(
         </Inline>
       </div>
       <div className="p-8">
-        <div className="border rounded-2xl p-6">
+        <div className="rounded-2xl p-6 bg-sup-2">
           <div className="flex items-start space-x-4">
-            <div className="w-10 h-10 border rounded-xl flex items-center justify-center flex-shrink-0">
+            <div className="w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0">
               <PiWarningCircle className="w-5 h-5" />
             </div>
             <div className="flex-1">

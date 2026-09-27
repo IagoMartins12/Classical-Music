@@ -104,7 +104,7 @@ export function EpochSection({ epoch, index, isReversed = false }: Props) {
         {/* Header */}
         <div className="relative flex justify-center lg:justify-start">
           <div
-            className={`inline-flex items-center px-12 py-4 rounded-2xl bg-gradient-to-r ${gradientClass} text-theme-inverse shadow-theme-glow border border-theme-primary backdrop-blur-md relative overflow-hidden group hover:scale-105 transition-all duration-500`}
+            className={`inline-flex items-center px-12 py-4 rounded-2xl bg-gradient-to-r ${gradientClass} text-theme-inverse shadow-theme-glow backdrop-blur-md relative overflow-hidden group hover:scale-105 transition-all duration-500`}
           >
             {/* Background pattern */}
             <div className="absolute inset-0 bg-gradient-to-r from-transparent to-transparent transform -skew-x-12 -translate-x-full group-hover:translate-x-full transition-transform duration-1000"></div>
@@ -205,7 +205,7 @@ export function EpochSection({ epoch, index, isReversed = false }: Props) {
                       {epoch.historicalData.characteristics.map((char, i) => (
                         <div
                           key={i}
-                          className="flex items-start space-x-3 p-3 border rounded-xl transition-all duration-300 group/item"
+                          className="flex items-start space-x-3 p-3 rounded-xl transition-all duration-300 group/item bg-sup-2"
                           style={{ animationDelay: `${i * 0.1}s` }}
                         >
                           <div className="w-2 h-2 rounded-full mt-2 flex-shrink-0 group-hover/item:scale-150 transition-transform duration-300" />
@@ -231,7 +231,7 @@ export function EpochSection({ epoch, index, isReversed = false }: Props) {
                       {epoch.historicalData.keyDevelopments.map((dev, i) => (
                         <div
                           key={i}
-                          className="flex items-start space-x-3 p-3 border rounded-xl transition-all duration-300 group/item"
+                          className="flex items-start space-x-3 p-3 rounded-xl transition-all duration-300 group/item bg-sup-2"
                           style={{ animationDelay: `${i * 0.1}s` }}
                         >
                           <div className="w-2 h-2 rounded-full mt-2 flex-shrink-0 group-hover/item:scale-150 transition-transform duration-300" />
@@ -257,7 +257,7 @@ export function EpochSection({ epoch, index, isReversed = false }: Props) {
                       {epoch.historicalData.musicalForms.map((form, i) => (
                         <span
                           key={i}
-                          className="px-4 py-2 border rounded-full text-sm font-medium hover:scale-105 transition-all duration-300 cursor-default"
+                          className="px-4 py-2 rounded-full text-sm font-medium hover:scale-105 transition-all duration-300 cursor-default bg-sup-2"
                           style={{ animationDelay: `${i * 0.05}s` }}
                         >
                           {form}
@@ -282,7 +282,7 @@ export function EpochSection({ epoch, index, isReversed = false }: Props) {
                           papel="rotulo"
                           tom="ouro"
                           key={i}
-                          className="px-4 py-2 border rounded-full font-medium hover:scale-105 transition-all duration-300 cursor-default"
+                          className="px-4 py-2 rounded-full font-medium hover:scale-105 transition-all duration-300 cursor-default bg-sup-2"
                           style={{ animationDelay: `${i * 0.05}s` }}
                         >
                           {instrument}

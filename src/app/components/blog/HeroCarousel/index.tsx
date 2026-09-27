@@ -116,7 +116,7 @@ export function HeroCarousel({ articles }: { articles: Article[] }) {
               {currentArticle.categories[0] && (
                 <Link
                   href={`/blog/category/${currentArticle.categories[0].category.slug}`}
-                  className="inline-block px-4 py-2 rounded-lg mb-4 text-sm font-medium backdrop-blur-sm border"
+                  className="inline-block px-4 py-2 rounded-lg mb-4 text-sm font-medium backdrop-blur-sm bg-sup-2"
                   style={{
                     background: currentArticle.categories[0].category.color
                       ? `${currentArticle.categories[0].category.color}40`

@@ -149,7 +149,7 @@ export function ThreadViewModal({
       >
         {/* Flag Warning */}
         {comment.isFlagged && (
-          <div className="bg-yellow-500/10 border-l-4 border-yellow-500 p-3 mb-3 rounded">
+          <div className="bg-yellow-500/10 p-3 mb-3 rounded">
             <div className="flex items-start space-x-2">
               <PiWarning className="w-5 h-5 text-yellow-600 flex-shrink-0 mt-0.5" />
               <div className="flex-1">
@@ -317,7 +317,7 @@ export function ThreadViewModal({
                 Artigo: {articleTitle}
               </Text>
             </Stack>
-            <div className="bg-blue-50 dark:bg-blue-900/10 border border-blue-200 dark:border-blue-800 rounded-lg p-4">
+            <div className="bg-blue-50 dark:bg-blue-900/10 rounded-lg p-4">
               <div className="flex items-start gap-3">
                 <div className="w-10 h-10 bg-blue-500/20 rounded-lg flex items-center justify-center flex-shrink-0">
                   <PiArrowBendUpLeft className="w-5 h-5 text-blue-600" />

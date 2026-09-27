@@ -506,7 +506,7 @@ const ScoreSelectionModal = ({
             <Inline gap={4}>
               <button
                 onClick={onClose}
-                className="w-10 h-10 bg-theme-elevated border border-theme-primary rounded-xl flex items-center justify-center transition-all duration-300"
+                className="w-10 h-10 bg-theme-elevated rounded-xl flex items-center justify-center transition-all duration-300"
               >
                 <PiArrowLeft className="w-5 h-5 text-theme-primary" />
                 <NomeAcao acao="voltar" />
@@ -532,7 +532,7 @@ const ScoreSelectionModal = ({
 
             {/* Status e botão de confirmação */}
             <Inline gap={3}>
-              <div className="border rounded-xl px-4 py-2">
+              <div className="rounded-xl px-4 py-2 bg-sup-2">
                 <Inline gap={2} className="text-sm">
                   <span className="text-theme-secondary text-center font-medium">
                     {selectedScore
@@ -547,7 +547,7 @@ const ScoreSelectionModal = ({
               <Button
                 onClick={handleConfirmSelection}
                 disabled={isConverting}
-                className="btn-classical-primary SW"
+                className="btn-classical-secondary SW !text-erro"
               >
                 {isConverting ? (
                   <>
@@ -611,7 +611,7 @@ const ScoreSelectionModal = ({
                         className={`px-2 py-1 rounded-full text-xs font-bold transition-all duration-300 ${
                           isActive
                             ? 'text-ouro-texto border'
-                            : 'bg-theme-elevated text-theme-tertiary border border-theme-secondary'
+                            : 'bg-theme-elevated text-theme-tertiary'
                         }`}
                       >
                         {tabStat.loaded}/{tabStat.total}
@@ -743,7 +743,7 @@ const ScoreSelectionModal = ({
                         </Inline>
                         <button
                           onClick={() => setSelectedScore(null)}
-                          className="w-8 h-8 bg-theme-primary border border-theme-secondary rounded-lg flex items-center justify-center transition-all duration-300"
+                          className="w-8 h-8 bg-theme-primary rounded-lg flex items-center justify-center transition-all duration-300"
                         >
                           <PiX className="w-4 h-4 text-theme-primary" />
                           <NomeAcao acao="fechar" />
@@ -773,7 +773,7 @@ const ScoreSelectionModal = ({
                 </Inline>
                 <button
                   onClick={() => setSelectedScore(null)}
-                  className="w-8 h-8 bg-theme-primary border border-theme-secondary rounded-lg flex items-center justify-center transition-all duration-300"
+                  className="w-8 h-8 bg-theme-primary rounded-lg flex items-center justify-center transition-all duration-300"
                 >
                   <PiX className="w-4 h-4 text-theme-primary" />
                   <NomeAcao acao="fechar" />
@@ -807,7 +807,7 @@ const ScoreSelectionModal = ({
             <Button
               onClick={handleConfirmSelection}
               disabled={isConverting}
-              className="btn-classical-primary"
+              className="btn-classical-secondary !text-erro"
             >
               {isConverting
                 ? t('processing')
@@ -852,7 +852,7 @@ function ErrorState({
   const { t } = useTranslation({ sections: ['pages/learning'] });
 
   return (
-    <div className="border rounded-2xl p-6">
+    <div className="rounded-2xl p-6 bg-sup-2">
       <div className="text-center">
         <PiWarningCircle className="w-12 h-12 mx-auto mb-4" />
         <p className="font-medium mb-4">{error}</p>

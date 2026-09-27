@@ -40,7 +40,7 @@ export default function WeekView({
             <div
               key={index}
               className={`text-center p-3 rounded-lg ${
-                isToday ? 'border' : 'bg-theme-elevated'
+                isToday ? '' : 'bg-theme-elevated'
               }`}
             >
               <Text papel="rotulo" tom="fraco" as="div">

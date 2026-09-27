@@ -127,7 +127,7 @@ const CommentItem = memo(
             !isReply ? 'pb-6 border-b border-theme-secondary' : ''
           }`}
         >
-          <div className="bg-gray-100 dark:bg-gray-800/50 p-4 rounded-lg border border-gray-300 dark:border-gray-700">
+          <div className="bg-gray-100 dark:bg-gray-800/50 p-4 rounded-lg">
             <Inline gap={2} className="text-gray-600 dark:text-gray-400">
               <PiWarning className="w-5 h-5" />
               <span className="text-sm font-medium">
@@ -174,7 +174,7 @@ const CommentItem = memo(
           <div className="flex-1">
             {/* Status Warning for Owner */}
             {isOwner && (isRejected || isSpam || isFlagged || isPending) && (
-              <div className="mb-3 p-2 bg-yellow-50/50 dark:bg-yellow-900/10 rounded-lg border border-yellow-200 dark:border-yellow-800">
+              <div className="mb-3 p-2 bg-yellow-50/50 dark:bg-yellow-900/10 rounded-lg">
                 <Inline
                   gap={2}
                   className="text-yellow-700 dark:text-yellow-400"
@@ -280,7 +280,7 @@ const CommentItem = memo(
                     </button>
                     <button
                       onClick={() => onDelete(comment.id)}
-                      className="text-xs text-red-500 hover:text-red-600 transition-colors flex items-center gap-1"
+                      className="text-xs transition-colors flex items-center gap-1 !text-erro"
                     >
                       <PiTrash className="w-3.5 h-3.5" />
                       <span className="hidden md:block">Deletar</span>

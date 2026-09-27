@@ -451,7 +451,7 @@ const EditScoreClient = ({
                           </Inline>
                         )}
                         {score.copyright && (
-                          <div className="md:col-span-2 p-3 rounded-xl border border-theme-primary">
+                          <div className="md:col-span-2 p-3 rounded-xl bg-sup-2">
                             <span className="font-medium text-theme-tertiary block mb-1">
                               {t('score_info_copyright')}:
                             </span>
@@ -475,7 +475,7 @@ const EditScoreClient = ({
                         <PiInfo className="w-5 h-5" />
                         <span>{t('score_info_notes')}</span>
                       </Inline>
-                      <div className="p-4 rounded-xl border border-theme-primary">
+                      <div className="p-4 rounded-xl bg-sup-2">
                         <p className="text-theme-primary whitespace-pre-line">
                           {score.notes}
                         </p>
@@ -538,7 +538,7 @@ const EditScoreClient = ({
 
                       <div className="text-center">
                         {!imageError ? (
-                          <div className="relative w-full aspect-[3/4] mx-auto rounded-xl overflow-hidden shadow-theme-medium border border-theme-primary">
+                          <div className="relative w-full aspect-[3/4] mx-auto rounded-xl overflow-hidden shadow-theme-medium">
                             <Image
                               src={score.thumbnailUrl}
                               alt={`Thumbnail de ${score.title}`}
@@ -549,7 +549,7 @@ const EditScoreClient = ({
                             />
                           </div>
                         ) : (
-                          <div className="w-full aspect-[3/4] mx-auto border border-theme-primary rounded-xl flex items-center justify-center">
+                          <div className="w-full aspect-[3/4] mx-auto rounded-xl flex items-center justify-center">
                             <PiFile className="w-12 h-12 text-theme-tertiary opacity-50" />
                           </div>
                         )}

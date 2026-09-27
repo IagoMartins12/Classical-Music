@@ -204,7 +204,7 @@ export default function NotificationBell({
 
       {/* Dropdown */}
       {isOpen && (
-        <div className="absolute right-0 top-full mt-2 w-96 bg-theme-secondary backdrop-blur-xl rounded-2xl shadow-xl border border-theme-secondary z-50 overflow-hidden">
+        <div className="absolute right-0 top-full mt-2 w-96 bg-theme-secondary backdrop-blur-xl rounded-2xl shadow-xl z-50 overflow-hidden">
           {/* Header */}
           <div className="p-4 border-b border-theme-secondary">
             <div className="flex items-center justify-between">
@@ -254,7 +254,7 @@ export default function NotificationBell({
                 </Text>
               </div>
             ) : recentNotifications.length > 0 ? (
-              <div className="divide-y">
+              <div className="divide-y divide-linha">
                 {recentNotifications.map((notification) => (
                   <div
                     key={notification.id}

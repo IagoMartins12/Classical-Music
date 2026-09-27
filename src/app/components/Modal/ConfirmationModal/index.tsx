@@ -2,12 +2,10 @@
 'use client';
 
 import React from 'react';
-import { PiFloppyDisk, PiTrash, PiWarning, PiX } from 'react-icons/pi';
-import Modal from '..';
-import Button from '../../Common/Button';
+import ConfirmModal from '@/app/components/ConfirmModal';
 import { ConfirmationConfig } from '@/app/hooks/useModalConfirmation';
 import { useTranslation } from '@/app/hooks/useTranslation';
-import { Stack, Inline } from '@/app/components/ui/Layout';
+import { Stack } from '@/app/components/ui/Layout';
 
 interface ConfirmationModalProps {
   isOpen: boolean;
@@ -37,11 +35,6 @@ const ConfirmationModal: React.FC<ConfirmationModalProps> = ({
           message: t('unsaved_changes_message'),
           confirmLabel: t('unsaved_changes_confirm'),
           cancelLabel: t('unsaved_changes_cancel'),
-          icon: (
-            <div className="w-12 h-12 rounded-full flex items-center justify-center">
-              <PiWarning className="w-6 h-6 text-white" />
-            </div>
-          ),
           confirmVariant: 'danger' as const,
         };
 
@@ -56,11 +49,6 @@ const ConfirmationModal: React.FC<ConfirmationModalProps> = ({
             : t('ongoing_process_message_generic'),
           confirmLabel: t('ongoing_process_confirm'),
           cancelLabel: t('ongoing_process_cancel'),
-          icon: (
-            <div className="w-12 h-12 rounded-full flex items-center justify-center">
-              <PiX className="w-6 h-6 text-white" />
-            </div>
-          ),
           confirmVariant: 'danger' as const,
         };
 
@@ -70,11 +58,6 @@ const ConfirmationModal: React.FC<ConfirmationModalProps> = ({
           message: t('danger_message'),
           confirmLabel: t('danger_confirm'),
           cancelLabel: t('danger_cancel'),
-          icon: (
-            <div className="w-12 h-12 rounded-full flex items-center justify-center">
-              <PiTrash className="w-6 h-6 text-white" />
-            </div>
-          ),
           confirmVariant: 'danger' as const,
         };
 
@@ -85,11 +68,6 @@ const ConfirmationModal: React.FC<ConfirmationModalProps> = ({
           message: t('custom_message'),
           confirmLabel: t('custom_confirm'),
           cancelLabel: t('custom_cancel'),
-          icon: (
-            <div className="w-12 h-12 rounded-full flex items-center justify-center">
-              <PiWarning className="w-6 h-6 text-white" />
-            </div>
-          ),
           confirmVariant: 'primary' as const,
         };
     }
@@ -98,110 +76,47 @@ const ConfirmationModal: React.FC<ConfirmationModalProps> = ({
   const defaultConfig = getDefaultConfig(config.type);
   const finalConfig = { ...defaultConfig, ...config };
 
+  const caixa = (titulo: string, texto: React.ReactNode) => (
+    <Stack gap={1} className="rounded-lg bg-sup-2 p-4">
+      <p className="t-rotulo font-medium text-texto">{titulo}</p>
+      <p className="t-rotulo text-texto-suave">{texto}</p>
+    </Stack>
+  );
+
   return (
-    <Modal
+    <ConfirmModal
       isOpen={isOpen}
       onClose={onCancel}
-      maxWidth="md"
-      showCloseButton={false}
-      preventBodyScroll={true}
-      className="!max-h-auto"
+      onConfirm={onConfirm}
+      isLoading={isLoading}
+      type={
+        config.type === 'danger'
+          ? 'danger'
+          : config.type === 'custom' || !config.type
+            ? 'question'
+            : 'warning'
+      }
+      acaoPerigosa={finalConfig.confirmVariant === 'danger'}
+      title={finalConfig.title}
+      message={finalConfig.message}
+      cancelText={finalConfig.cancelLabel}
+      confirmText={finalConfig.confirmLabel}
     >
-      <div className="p-4 md:p-6">
-        {/* Icon e Header */}
-        <div className="flex flex-col items-center text-center mb-6">
-          {finalConfig.icon}
-
-          <h3 className="text-xl font-bold text-theme-primary mt-4 mb-2">
-            {finalConfig.title}
-          </h3>
-
-          <p className="text-theme-secondary leading-relaxed max-w-md">
-            {finalConfig.message}
-          </p>
-        </div>
-
-        {/* Informações adicionais para processo em andamento */}
-        {config?.type === 'ongoing-process' && (
-          <div className="border rounded-lg p-4 mb-6">
-            <div className="flex items-start space-x-3">
-              <div className="w-5 h-5 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5">
-                <div className="w-2 h-2 bg-white rounded-full animate-pulse"></div>
-              </div>
-              <Stack gap={1}>
-                <h4 className="font-medium">{t('process_active_title')}</h4>
-                <p className="text-sm">
-                  {config?.processName ? (
-                    <>
-                      {t('process_active_description').replace(
-                        '{processName}',
-                        config.processName
-                      )}
-                    </>
-                  ) : (
-                    t('process_active_description_generic')
-                  )}
-                </p>
-              </Stack>
-            </div>
-          </div>
+      {config?.type === 'ongoing-process' &&
+        caixa(
+          t('process_active_title'),
+          config?.processName
+            ? t('process_active_description').replace(
+                '{processName}',
+                config.processName
+              )
+            : t('process_active_description_generic')
         )}
-
-        {/* Informações adicionais para alterações não salvas */}
-        {config?.type === 'unsaved-changes' && (
-          <div className="border rounded-lg p-4 mb-6">
-            <div className="flex items-start space-x-3">
-              <PiFloppyDisk className="w-5 h-5 flex-shrink-0 mt-0.5" />
-              <Stack gap={1}>
-                <h4 className="font-medium">{t('changes_detected_title')}</h4>
-                <p className="text-sm">{t('changes_detected_description')}</p>
-              </Stack>
-            </div>
-          </div>
-        )}
-
-        {config?.type === 'general-no-verification' && (
-          <div className="border rounded-lg p-4 mb-6">
-            <div className="flex items-start space-x-3">
-              <PiFloppyDisk className="w-5 h-5 flex-shrink-0 mt-0.5" />
-              <Stack gap={1}>
-                <h4 className="font-medium">{t('possible_changes_title')}</h4>
-                <p className="text-sm">{t('possible_changes_description')}</p>
-              </Stack>
-            </div>
-          </div>
-        )}
-
-        {/* Botões */}
-        <Inline gap={3} className="justify-end">
-          <Button
-            variant="secondary"
-            onClick={onCancel}
-            disabled={isLoading}
-            className="min-w-[120px]"
-          >
-            {finalConfig.cancelLabel}
-          </Button>
-
-          <Button
-            variant={
-              finalConfig.confirmVariant === 'danger' ? 'secondary' : 'primary'
-            }
-            onClick={onConfirm}
-            isLoading={isLoading}
-            className={`min-w-[140px] ${
-              finalConfig.confirmVariant === 'danger'
-                ? 'text-white shadow-lg'
-                : finalConfig.confirmVariant === 'warning'
-                  ? 'text-white shadow-lg'
-                  : ''
-            }`}
-          >
-            {finalConfig.confirmLabel}
-          </Button>
-        </Inline>
-      </div>
-    </Modal>
+      {config?.type === 'unsaved-changes' &&
+        caixa(t('changes_detected_title'), t('changes_detected_description'))}
+      {config?.type === 'general-no-verification' &&
+        caixa(t('possible_changes_title'), t('possible_changes_description'))}
+    </ConfirmModal>
   );
 };
 

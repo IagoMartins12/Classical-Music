@@ -133,7 +133,7 @@ const FactCard = ({
       className={`
         classical-card-simple overflow-hidden transition-all duration-500 ease-out 
         group hover:scale-[1.02] relative
-        bg-gradient-to-br ${style.gradient} border ${style.border}
+        bg-gradient-to-br ${style.gradient}  ${style.border}
         animate-fade-in-up
       `}
       style={{ animationDelay }}
@@ -160,7 +160,7 @@ const FactCard = ({
 
               {/* Category badge */}
               <span
-                className={`inline-flex items-center px-2 py-1 ${style.bg} border ${style.border} rounded-full text-xs font-medium ${style.accent}`}
+                className={`inline-flex items-center px-2 py-1 ${style.bg}  ${style.border} rounded-full text-xs font-medium ${style.accent}`}
               >
                 {fact.category}
               </span>

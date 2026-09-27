@@ -161,7 +161,7 @@ const ComposerCard: React.FC<composerCardProps> = ({ composer }) => {
                 <Text
                   papel="legenda"
                   tom="ouro"
-                  className="inline-flex items-center px-3 py-1 border rounded-full font-medium transition-colors duration-300"
+                  className="inline-flex items-center px-3 py-1 rounded-full font-medium transition-colors duration-300 bg-sup-2"
                 >
                   <PiMusicNotes className="w-3 h-3 mr-1" />
                   {translateEpochWithHook(composer.epochName, t)}
@@ -177,7 +177,7 @@ const ComposerCard: React.FC<composerCardProps> = ({ composer }) => {
                     href={composer.wikipediaLink}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="inline-flex items-center px-3 py-1 border rounded-full text-xs font-medium hover:scale-105 transition-all duration-300 group/link"
+                    className="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium hover:scale-105 transition-all duration-300 group/link bg-sup-2"
                     onClick={(e) => e.stopPropagation()}
                   >
                     Wikipedia
@@ -189,7 +189,7 @@ const ComposerCard: React.FC<composerCardProps> = ({ composer }) => {
                     href={composer.permLinkImslp}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="inline-flex items-center px-3 py-1 border rounded-full text-xs font-medium hover:scale-105 transition-all duration-300 group/link"
+                    className="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium hover:scale-105 transition-all duration-300 group/link bg-sup-2"
                     onClick={(e) => e.stopPropagation()}
                   >
                     IMSLP

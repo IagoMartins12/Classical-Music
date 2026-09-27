@@ -458,7 +458,7 @@ const LearningPageClient = ({ initialData }: LearningPageClientProps) => {
               {/* Filtros Expandidos */}
               {showFilters && (
                 <AnimatedItem direction="scale" springType="gentle">
-                  <Stack className="bg-theme-secondary rounded-xl p-4 border border-theme-primary">
+                  <Stack className="bg-theme-secondary rounded-xl p-4">
                     <div className="flex items-center justify-between">
                       <Inline
                         as="h3"
@@ -472,7 +472,7 @@ const LearningPageClient = ({ initialData }: LearningPageClientProps) => {
                         {hasActiveFilters && (
                           <button
                             onClick={clearFilters}
-                            className="text-xs text-theme-tertiary transition-colors px-2 py-1 rounded border"
+                            className="text-xs text-theme-tertiary transition-colors px-2 py-1 rounded bg-sup-2"
                           >
                             {t('clear_all_filters')}
                           </button>

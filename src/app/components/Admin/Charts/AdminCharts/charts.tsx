@@ -62,7 +62,7 @@ const GRADIENT_COLORS = [
 const CustomTooltip = ({ active, payload, label }: any) => {
   if (active && payload && payload.length) {
     return (
-      <div className="bg-theme-elevated border border-theme-primary rounded-xl p-3 shadow-2xl">
+      <div className="bg-theme-elevated rounded-xl p-3 shadow-2xl">
         <Text papel="rotulo" tom="forte" as="p" className="font-medium mb-1">
           {label}
         </Text>
@@ -85,7 +85,7 @@ const CustomPieTooltip = ({ active, payload }: any) => {
   if (active && payload && payload.length) {
     const data = payload[0];
     return (
-      <div className="bg-theme-elevated border border-theme-primary rounded-xl p-3 shadow-2xl">
+      <div className="bg-theme-elevated rounded-xl p-3 shadow-2xl">
         <Text papel="rotulo" tom="forte" as="p" className="font-medium">
           {data.name}
         </Text>

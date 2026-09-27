@@ -166,19 +166,7 @@ const LearningButtonWithModal = ({
   const getButtonClasses = () => {
     const baseClasses = `
       ${sizes[size].button}
-      rounded-xl
-      transition-all 
-      duration-300 
-      hover:scale-105 
-      active:scale-95
-      flex 
-      items-center 
-      justify-center
-      border
-      font-medium
-      relative
-      overflow-hidden
-      group
+      rounded-xl transition-all duration-300 hover:scale-105 active:scale-95 flex items-center justify-center font-medium relative overflow-hidden group
       ${disabled ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'}
     `;
 

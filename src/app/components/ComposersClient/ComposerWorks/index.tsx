@@ -491,7 +491,7 @@ export default function ComposerWorks({
                         ${
                           selectedWorkType === 'all'
                             ? 'text-theme-primary shadow-theme-medium border-2'
-                            : 'border border-theme-secondary text-theme-secondary'
+                            : 'text-theme-secondary'
                         }
                       `}
                   disabled={loading}
@@ -515,7 +515,7 @@ export default function ComposerWorks({
                             ${
                               selectedWorkType === groupKey
                                 ? 'text-theme-primary shadow-theme-medium border-2'
-                                : 'border border-theme-secondary text-theme-secondary'
+                                : 'text-theme-secondary'
                             }
                           `}
                         disabled={loading}
@@ -597,7 +597,7 @@ export default function ComposerWorks({
           {/* Filtros expandidos */}
           {showFilters && (
             <div className="overflow-hidden transition-all duration-500 max-h-96 opacity-100 mt-6">
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-4 p-4 border border-theme-primary rounded-xl">
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4 p-4 rounded-xl bg-sup-2">
                 {/* Filtro de instrumento */}
                 <Stack gap={2} className="gap-1">
                   <label className="text-sm font-medium text-theme-secondary">
@@ -685,7 +685,7 @@ export default function ComposerWorks({
                   papel="rotulo"
                   tom="ouro"
                   as="div"
-                  className="flex items-center gap-2 px-3 py-1 border rounded-full"
+                  className="flex items-center gap-2 px-3 py-1 rounded-full bg-sup-2"
                 >
                   <span>
                     {t('search_filter_prefix')} &quot;{searchTerm}&quot;
@@ -702,7 +702,7 @@ export default function ComposerWorks({
               )}
 
               {selectedWorkType !== 'all' && (
-                <div className="flex items-center gap-2 px-3 py-1 border rounded-full text-sm">
+                <div className="flex items-center gap-2 px-3 py-1 rounded-full text-sm bg-sup-2">
                   <span>
                     {t('type_filter_prefix')}{' '}
                     {t(WORK_TYPE_LABELS[selectedWorkType])}
@@ -719,7 +719,7 @@ export default function ComposerWorks({
               )}
 
               {selectedInstrument && (
-                <div className="flex items-center gap-2 px-3 py-1 border rounded-full text-sm">
+                <div className="flex items-center gap-2 px-3 py-1 rounded-full text-sm bg-sup-2">
                   <span>
                     {t('instrument_filter_prefix')}{' '}
                     {
@@ -740,7 +740,7 @@ export default function ComposerWorks({
               )}
 
               {selectedGenre && (
-                <div className="flex items-center gap-2 px-3 py-1 border rounded-full text-sm">
+                <div className="flex items-center gap-2 px-3 py-1 rounded-full text-sm bg-sup-2">
                   <span>
                     {t('genre_filter_prefix')} {selectedGenre}
                   </span>
@@ -756,7 +756,7 @@ export default function ComposerWorks({
               )}
 
               {selectedCategory && (
-                <div className="flex items-center gap-2 px-3 py-1 border rounded-full text-sm">
+                <div className="flex items-center gap-2 px-3 py-1 rounded-full text-sm bg-sup-2">
                   <span>
                     {t('category_filter_prefix')} {selectedCategory}
                   </span>
@@ -852,7 +852,7 @@ export default function ComposerWorks({
                                   <Text
                                     papel="rotulo"
                                     tom="fraco"
-                                    className="!max-w-[15rem] bg-theme-elevated border border-theme-secondary px-3 py-1 rounded-full"
+                                    className="!max-w-[15rem] bg-theme-elevated px-3 py-1 rounded-full"
                                   >
                                     {work.opOrCatalog}
                                   </Text>
@@ -906,7 +906,7 @@ export default function ComposerWorks({
                                   .map((genre) => (
                                     <span
                                       key={genre}
-                                      className="px-2 capitalize py-1 border text-xs rounded-full"
+                                      className="px-2 capitalize py-1 text-xs rounded-full bg-sup-2"
                                     >
                                       {translateGenre(genre, language)}
                                     </span>
@@ -916,7 +916,7 @@ export default function ComposerWorks({
                                   .map((category) => (
                                     <span
                                       key={category}
-                                      className="px-2 py-1 border text-xs rounded-full"
+                                      className="px-2 py-1 text-xs rounded-full bg-sup-2"
                                     >
                                       {translateCategory(category, language)}
                                     </span>
@@ -974,7 +974,7 @@ export default function ComposerWorks({
                                     <Text
                                       papel="rotulo"
                                       tom="fraco"
-                                      className="ml-3 bg-theme-elevated border border-theme-secondary px-3 py-1 rounded-full"
+                                      className="ml-3 bg-theme-elevated px-3 py-1 rounded-full"
                                     >
                                       {work.opOrCatalog}
                                     </Text>
@@ -1028,7 +1028,7 @@ export default function ComposerWorks({
                                     .map((genre) => (
                                       <span
                                         key={genre}
-                                        className="px-2 capitalize py-1 border text-xs rounded-full"
+                                        className="px-2 capitalize py-1 text-xs rounded-full bg-sup-2"
                                       >
                                         {translateGenre(genre, language)}
                                       </span>
@@ -1038,7 +1038,7 @@ export default function ComposerWorks({
                                     .map((category) => (
                                       <span
                                         key={category}
-                                        className="px-2 py-1 border text-xs rounded-full"
+                                        className="px-2 py-1 text-xs rounded-full bg-sup-2"
                                       >
                                         {translateCategory(category, language)}
                                       </span>

@@ -1107,7 +1107,10 @@ const LearningModal = () => {
                         </div>
                       </Inline>
                       {currentLearnedItem?.videoUrl && (
-                        <button onClick={handleDeleteVideo} className="text-sm">
+                        <button
+                          onClick={handleDeleteVideo}
+                          className="text-sm !text-erro"
+                        >
                           <PiTrashSimple className="w-4 h-4" />
                           <NomeAcao acao="excluir" />
                         </button>
@@ -1186,10 +1189,7 @@ const LearningModal = () => {
 
               {/* Error display */}
               {uploadError && (
-                <Inline
-                  gap={2}
-                  className="mt-4 p-3 border border-red-400 rounded-lg"
-                >
+                <Inline gap={2} className="mt-4 p-3 rounded-lg bg-sup-2">
                   <PiWarningCircle className="w-4 h-4 text-red-400" />
                   <span className="text-sm">{uploadError}</span>
                   <button
@@ -1225,7 +1225,7 @@ const LearningModal = () => {
             </div>
 
             {selectedWorkScore ? (
-              <div className="bg-theme-elevated rounded-xl p-4 border border-theme-primary">
+              <div className="bg-theme-elevated rounded-xl p-4">
                 <div className="flex items-center justify-between">
                   <Inline gap={3}>
                     <div className="w-10 h-10 rounded-lg flex items-center justify-center">

@@ -423,7 +423,7 @@ export default function ModerationDashboard() {
               </h3>
             </div>
 
-            <div className="divide-y">
+            <div className="divide-y divide-linha">
               {filteredItems.map((item) => {
                 const TypeIcon = getTypeIcon(item.type);
                 return (

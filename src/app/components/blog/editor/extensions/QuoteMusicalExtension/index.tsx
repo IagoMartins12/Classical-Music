@@ -162,7 +162,7 @@ const QuoteMusicalComponent = (props: any) => {
       onMouseEnter={() => setShowControls(true)}
       onMouseLeave={() => setShowControls(false)}
     >
-      <Card densidade="larga" className="relative border-l-4">
+      <Card densidade="larga" className="relative">
         {/* Controles de Edição */}
         {showControls && (
           <Inline
@@ -172,7 +172,7 @@ const QuoteMusicalComponent = (props: any) => {
             <button
               type="button"
               onClick={handleDelete}
-              className="p-2 text-red-600 hover:bg-red-50 rounded transition-colors"
+              className="p-2 hover:bg-red-50 rounded transition-colors !text-erro"
               title="Remover"
             >
               <PiTrash className="w-4 h-4" />

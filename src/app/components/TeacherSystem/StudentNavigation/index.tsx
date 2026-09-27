@@ -273,7 +273,7 @@ export default function StudentNavigation({ user }: StudentNavigationProps) {
 
                       {/* Desktop Submenu */}
                       {activeSubmenu === item.label && (
-                        <div className="absolute top-full left-0 mt-2 w-80 bg-theme-secondary backdrop-blur-xl rounded-2xl shadow-xl border border-theme-secondary z-50 overflow-hidden">
+                        <div className="absolute top-full left-0 mt-2 w-80 bg-theme-secondary backdrop-blur-xl rounded-2xl shadow-xl z-50 overflow-hidden">
                           <div className="p-2">
                             {item.submenu.map((subItem) => (
                               <Link
@@ -393,7 +393,7 @@ export default function StudentNavigation({ user }: StudentNavigationProps) {
 
                 {/* Profile Dropdown */}
                 {isProfileOpen && (
-                  <div className="absolute right-0 top-full mt-2 w-64 bg-theme-secondary  rounded-2xl shadow-xl border border-theme-secondary z-50 p-2">
+                  <div className="absolute right-0 top-full mt-2 w-64 bg-theme-secondary rounded-2xl shadow-xl z-50 p-2">
                     {/* User Info */}
                     <div className="px-3 py-2 border-b border-theme-secondary mb-2">
                       <p className="font-medium text-theme-primary">
@@ -539,7 +539,7 @@ export default function StudentNavigation({ user }: StudentNavigationProps) {
                           }
                           className={`
                             w-full flex items-center justify-between px-3 py-2 rounded-lg font-medium transition-all duration-300
-                            ${item.active ? 'border' : 'text-theme-secondary'}
+                            ${item.active ? '' : 'text-theme-secondary'}
                           `}
                         >
                           <Inline gap={3}>
@@ -579,7 +579,7 @@ export default function StudentNavigation({ user }: StudentNavigationProps) {
                         href={item.href || '#'}
                         className={`
                           flex items-center space-x-3 px-3 py-2 rounded-lg font-medium transition-all duration-300
-                          ${item.active ? 'border' : 'text-theme-secondary'}
+                          ${item.active ? '' : 'text-theme-secondary'}
                         `}
                         onClick={closeSidebar}
                       >

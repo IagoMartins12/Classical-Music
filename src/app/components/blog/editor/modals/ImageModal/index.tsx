@@ -107,7 +107,7 @@ export function ImageModal({
             onClick={() => handleTabChange('upload')}
             className={`flex-1 px-4 py-2 text-sm font-medium transition-colors ${
               activeTab === 'upload'
-                ? 'border-b-2 text-ouro-texto'
+                ? 'border-b-2 text-ouro-texto border-linha'
                 : 'text-theme-tertiary'
             }`}
           >
@@ -118,7 +118,7 @@ export function ImageModal({
             onClick={() => handleTabChange('link')}
             className={`flex-1 px-4 py-2 text-sm font-medium transition-colors ${
               activeTab === 'link'
-                ? 'border-b-2 text-ouro-texto'
+                ? 'border-b-2 text-ouro-texto border-linha'
                 : 'text-theme-tertiary'
             }`}
           >

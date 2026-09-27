@@ -350,7 +350,7 @@ export default function ComposersClient({
                 ))}
               </SequentialGrid>
             ) : (
-              <div className="divide-y flex flex-col gap-4 py-4 mx-4">
+              <div className="divide-y flex flex-col gap-4 py-4 mx-4 divide-linha">
                 {composers.map((composer, index) => (
                   <AnimatedItem
                     key={composer.id}

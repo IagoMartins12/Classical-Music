@@ -36,7 +36,7 @@ const UploadFormValidation = ({
 
   if (!validation.errors.length && !validation.warnings.length) {
     return (
-      <div className={`border rounded-lg p-4 ${className}`}>
+      <div className={`rounded-lg p-4 bg-sup-2 ${className}`}>
         <Inline gap={2}>
           <PiCheckCircle className="w-5 h-5" />
           <span className="text-sm font-medium">Validação bem-sucedida</span>
@@ -63,7 +63,7 @@ const UploadFormValidation = ({
     <div className={`space-y-3 ${className}`}>
       {/* Errors */}
       {validation.errors.length > 0 && (
-        <Stack gap={2} className="border rounded-lg p-4">
+        <Stack gap={2} className="rounded-lg p-4 bg-sup-2">
           <Inline gap={2}>
             <PiWarningCircle className="w-5 h-5" />
             <span className="text-sm font-medium">
@@ -83,7 +83,7 @@ const UploadFormValidation = ({
 
       {/* Warnings */}
       {validation.warnings.length > 0 && (
-        <Stack gap={2} className="border rounded-lg p-4">
+        <Stack gap={2} className="rounded-lg p-4 bg-sup-2">
           <Inline gap={2}>
             <PiWarning className="w-5 h-5" />
             <span className="text-sm font-medium">
@@ -102,7 +102,7 @@ const UploadFormValidation = ({
       )}
 
       {/* Data Quality */}
-      <div className="border rounded-lg p-4">
+      <div className="rounded-lg p-4 bg-sup-2">
         <Inline gap={2} className="mb-2">
           <PiInfo className="w-5 h-5" />
           <span className="text-sm font-medium">Qualidade dos dados</span>

@@ -143,7 +143,7 @@ export default function GroupingSuggestions({
 
   if (loading) {
     return (
-      <div className="rounded-xl p-4 border">
+      <div className="rounded-xl p-4 bg-sup-2">
         <Inline gap={3} className="justify-center py-4">
           <div className="w-5 h-5 border-2 rounded-full animate-spin"></div>
           <Text papel="rotulo" tom="suave">
@@ -156,7 +156,7 @@ export default function GroupingSuggestions({
 
   if (error) {
     return (
-      <div className="bg-red-50 border border-red-200 rounded-xl p-4">
+      <div className="bg-red-50 rounded-xl p-4">
         <Inline gap={2} className="text-red-800">
           <PiArrowsClockwise className="w-4 h-4" />
           <span className="text-sm">{error}</span>
@@ -291,7 +291,7 @@ export default function GroupingSuggestions({
                 })}
               </div>
 
-              <div className="bg-blue-50 border border-blue-200 rounded-lg p-3 mb-4">
+              <div className="bg-blue-50 rounded-lg p-3 mb-4">
                 <div className="flex items-start space-x-2">
                   <PiInfo className="w-4 h-4 text-blue-600 mt-0.5 flex-shrink-0" />
                   <Stack gap={1} className="text-xs text-blue-800">
@@ -354,7 +354,7 @@ export default function GroupingSuggestions({
       </div>
 
       {/* Info Helper Atualizado */}
-      <div className="rounded-lg p-3 border">
+      <div className="rounded-lg p-3 bg-sup-2">
         <div className="flex items-start space-x-2">
           <PiInfo className="w-4 h-4 text-theme-tertiary mt-0.5 flex-shrink-0" />
           <Text papel="legenda" tom="fraco" as="div">

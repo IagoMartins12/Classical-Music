@@ -252,7 +252,7 @@ export default function StudentVerificationRequired({
               </Inline>
 
               <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-                <div className="text-center p-4 rounded-lg border">
+                <div className="text-center p-4 rounded-lg bg-sup-2">
                   <div className="w-8 h-8 rounded-full flex items-center justify-center mx-auto mb-2">
                     <span className="text-white text-sm font-bold">1</span>
                   </div>
@@ -264,7 +264,7 @@ export default function StudentVerificationRequired({
                   </Text>
                 </div>
 
-                <div className="text-center p-4 rounded-lg border">
+                <div className="text-center p-4 rounded-lg bg-sup-2">
                   <div className="w-8 h-8 rounded-full flex items-center justify-center mx-auto mb-2">
                     <span className="text-white text-sm font-bold">2</span>
                   </div>
@@ -276,7 +276,7 @@ export default function StudentVerificationRequired({
                   </Text>
                 </div>
 
-                <div className="text-center p-4 rounded-lg border">
+                <div className="text-center p-4 rounded-lg bg-sup-2">
                   <div className="w-8 h-8 bg-theme-tertiary rounded-full flex items-center justify-center mx-auto mb-2">
                     <span className="text-white text-sm font-bold">3</span>
                   </div>
@@ -288,7 +288,7 @@ export default function StudentVerificationRequired({
                   </Text>
                 </div>
 
-                <div className="text-center p-4 rounded-lg border">
+                <div className="text-center p-4 rounded-lg bg-sup-2">
                   <div className="w-8 h-8 rounded-full flex items-center justify-center mx-auto mb-2">
                     <span className="text-white text-sm font-bold">4</span>
                   </div>

@@ -542,7 +542,7 @@ export default function SupportPage(): JSX.Element {
           <div className="relative p">
             <div className="text-center max-w-4xl mx-auto">
               <AnimatedItem direction="scale" springType="bouncy">
-                <div className="inline-flex items-center px-6 py-3 border rounded-full mb-8">
+                <div className="inline-flex items-center px-6 py-3 rounded-full mb-8 bg-sup-2">
                   <PiWrench className="w-5 h-5 text-ouro-texto mr-2" />
                   <span className="text-ouro-texto font-medium">
                     {t(
@@ -754,7 +754,7 @@ export default function SupportPage(): JSX.Element {
 
                               {expandedSolution === solution.id &&
                                 solution.steps && (
-                                  <div className="px-0 md:px-6 pb-6 border-t">
+                                  <div className="px-0 md:px-6 pb-6 border-t border-linha">
                                     <div className="pt-4">
                                       <div className="pl-4">
                                         <h5 className="font-semibold classical-title text-theme-primary mb-4 flex items-center">
@@ -783,7 +783,7 @@ export default function SupportPage(): JSX.Element {
                                           )}
                                         </ol>
 
-                                        <div className="mt-6 pt-4 border-t">
+                                        <div className="mt-6 pt-4 border-t border-linha">
                                           <button
                                             onClick={() =>
                                               setExpandedSolution(null)

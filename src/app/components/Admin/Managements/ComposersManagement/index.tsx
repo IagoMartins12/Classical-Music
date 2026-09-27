@@ -691,7 +691,7 @@ export default function ComposersManagement() {
 
             {/* Bulk Actions */}
             {selectedComposers.size > 0 && (
-              <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between p-3 md:p-4 border rounded-xl mb-6 gap-3">
+              <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between p-3 md:p-4 rounded-xl mb-6 gap-3 bg-sup-2">
                 <span className="text-sm md:text-base font-medium">
                   {selectedComposers.size} selecionado
                   {selectedComposers.size > 1 ? 's' : ''}
@@ -711,7 +711,7 @@ export default function ComposersManagement() {
                     size="sm"
                     leftIcon={<PiX />}
                     onClick={() => handleBulkAction('unverify')}
-                    className="flex-1 sm:flex-none"
+                    className="flex-1 sm:flex-none !text-erro"
                   >
                     <span className="hidden md:inline">
                       Remover Verificação
@@ -898,7 +898,7 @@ export default function ComposersManagement() {
                   </div>
 
                   {/* Ações - Mobile */}
-                  <div className="flex md:hidden items-center gap-2 mt-3 pt-3 border-t">
+                  <div className="flex md:hidden items-center gap-2 mt-3 pt-3 border-t border-linha">
                     <Button
                       variant="ghost"
                       size="sm"
@@ -937,7 +937,7 @@ export default function ComposersManagement() {
                       onClick={() =>
                         handleDeleteComposer(composer.id, composer.name)
                       }
-                      className="flex-1"
+                      className="flex-1 !text-erro"
                     >
                       <PiTrash className="w-4 h-4" />
                     </Button>

@@ -212,7 +212,7 @@ function GuideCard({ guide, t }: GuideCardProps): JSX.Element {
       </button>
 
       {isExpanded && (
-        <div className="px-6 pb-6 border-t">
+        <div className="px-6 pb-6 border-t border-linha">
           <div className="pt-4">
             <div className="pl-4">
               <div className="prose prose-sm max-w-none text-theme-secondary classical-body">
@@ -299,7 +299,7 @@ function GuideCard({ guide, t }: GuideCardProps): JSX.Element {
               </div>
 
               {/* Botão para fechar */}
-              <div className="mt-6 pt-4 border-t">
+              <div className="mt-6 pt-4 border-t border-linha">
                 <button
                   onClick={() => setIsExpanded(false)}
                   className="text-ouro-texto text-sm font-medium transition-colors"
@@ -672,7 +672,7 @@ export default function HelpPage(): JSX.Element {
           <div className="relative">
             <div className="text-center max-w-4xl mx-auto">
               <AnimatedItem direction="scale" springType="bouncy">
-                <div className="inline-flex items-center px-6 py-3 border rounded-full mb-8">
+                <div className="inline-flex items-center px-6 py-3 rounded-full mb-8 bg-sup-2">
                   <PiQuestion className="w-5 h-5 text-ouro-texto mr-2" />
                   <span className="text-ouro-texto font-medium">
                     {t('help_jsx_span_children_0__tutoriais_guias')}
@@ -713,7 +713,7 @@ export default function HelpPage(): JSX.Element {
                   <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                     <Link
                       href="/faq"
-                      className="flex items-center justify-center space-x-3 p-4 border rounded-lg transition-all"
+                      className="flex items-center justify-center space-x-3 p-4 rounded-lg transition-all bg-sup-2"
                     >
                       <PiQuestion className="w-5 h-5" />
                       <span className="text-theme-primary font-medium">
@@ -723,7 +723,7 @@ export default function HelpPage(): JSX.Element {
 
                     <Link
                       href="/contact"
-                      className="flex items-center justify-center space-x-3 p-4 border rounded-lg transition-all"
+                      className="flex items-center justify-center space-x-3 p-4 rounded-lg transition-all bg-sup-2"
                     >
                       <PiChatCircle className="w-5 h-5" />
                       <span className="text-theme-primary font-medium">
@@ -733,7 +733,7 @@ export default function HelpPage(): JSX.Element {
 
                     <Link
                       href="/support"
-                      className="flex items-center justify-center space-x-3 p-4 border rounded-lg transition-all"
+                      className="flex items-center justify-center space-x-3 p-4 rounded-lg transition-all bg-sup-2"
                     >
                       <PiUser className="w-5 h-5" />
                       <span className="text-theme-primary font-medium">

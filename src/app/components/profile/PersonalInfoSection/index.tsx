@@ -415,7 +415,7 @@ const PersonalInfoSection: React.FC<PersonalInfoSectionProps> = ({
 
         {/* 🆕 AVISO DE VALIDAÇÃO DE TELEFONE (se editando e houver erro) */}
         {errors.phone && phoneValidation.showError && phoneValidation.error && (
-          <div className="p-4 bg-red-50 border border-red-200 rounded-lg flex items-start space-x-3">
+          <div className="p-4 bg-red-50 rounded-lg flex items-start space-x-3">
             <PiWarningCircle className="w-5 h-5 text-red-600 flex-shrink-0 mt-0.5" />
             <div>
               <h4 className="text-sm font-medium text-red-800">

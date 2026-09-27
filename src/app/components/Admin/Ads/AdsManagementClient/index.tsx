@@ -413,7 +413,7 @@ export default function AdsManagementClient() {
 
             {/* Bulk Actions */}
             {selectedAds.length > 0 && (
-              <div className="flex items-center gap-2 p-3 border rounded-lg mb-4">
+              <div className="flex items-center gap-2 p-3 rounded-lg mb-4 bg-sup-2">
                 <Text papel="rotulo" tom="forte" className="font-medium">
                   {selectedAds.length} selecionado(s)
                 </Text>
@@ -439,7 +439,7 @@ export default function AdsManagementClient() {
                     size="sm"
                     leftIcon={<PiTrash />}
                     onClick={() => handleBulkAction('delete')}
-                    className=""
+                    className="!text-erro"
                   >
                     Deletar
                   </Button>

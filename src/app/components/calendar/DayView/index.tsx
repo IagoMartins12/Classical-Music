@@ -57,7 +57,7 @@ export default function DayView({ date, events, onEventClick }: DayViewProps) {
             <button
               key={event.id}
               onClick={() => onEventClick(event)}
-              className={`w-full text-left p-6 rounded-lg transition-all hover:scale-105 border-l-4 bg-theme-elevated ${getEventBorderColor(event.type, event.isFree)}`}
+              className={`w-full text-left p-6 rounded-lg transition-all hover:scale-105 bg-theme-elevated ${getEventBorderColor(event.type, event.isFree)}`}
             >
               <div className="flex items-start justify-between">
                 <div className="flex-1">
@@ -110,7 +110,7 @@ export default function DayView({ date, events, onEventClick }: DayViewProps) {
                   <div className="flex items-center gap-2 mt-3">
                     <span
                       className={`inline-flex items-center px-2 py-1 rounded-md text-xs font-medium ${
-                        event.isFree ? 'border' : 'border'
+                        event.isFree ? '' : ''
                       }`}
                     >
                       {event.isFree ? '🎫 Gratuito' : '🎫 Ingresso'}

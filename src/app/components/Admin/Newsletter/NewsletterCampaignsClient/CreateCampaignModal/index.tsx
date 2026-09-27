@@ -402,7 +402,7 @@ export default function CreateCampaignModal({
                       )}
 
                       {selectedTemplate && (
-                        <div className="p-4 bg-theme-primary border border-theme-secondary rounded-lg">
+                        <div className="p-4 bg-theme-primary rounded-lg">
                           <div className="flex items-start justify-between">
                             <div className="flex-1">
                               <Inline gap={2} className="mb-2">
@@ -560,7 +560,7 @@ export default function CreateCampaignModal({
                 </div>
 
                 {selectedTemplate && (
-                  <div className="p-4 border rounded-lg">
+                  <div className="p-4 rounded-lg bg-sup-2">
                     <p className="text-sm">
                       <strong>💡 Configurações do Template:</strong> As
                       configurações acima sobrescreverão as configurações padrão
@@ -677,7 +677,7 @@ export default function CreateCampaignModal({
                   </Stack>
                 </div>
 
-                <Stack gap={2} className="p-4 border rounded-lg">
+                <Stack gap={2} className="p-4 rounded-lg bg-sup-2">
                   <h4 className="font-medium">📊 Estimativa de Alcance</h4>
                   <p className="text-sm">
                     Com as configurações atuais, esta campanha será enviada para
@@ -772,7 +772,7 @@ export default function CreateCampaignModal({
                 </p>
               </Stack>
 
-              <div className="border border-theme-secondary rounded-lg overflow-hidden">
+              <div className="rounded-lg overflow-hidden">
                 <div
                   dangerouslySetInnerHTML={{ __html: previewData.html }}
                   className="bg-white"
