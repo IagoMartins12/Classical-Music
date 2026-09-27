@@ -21,6 +21,7 @@ import { useToast } from '@/app/hooks/useToast';
 import { Stack, Inline } from '@/app/components/ui/Layout';
 import { Text } from '@/app/components/ui/Text';
 import { NomeAcao } from '@/app/components/ui/NomeAcao';
+import Modal from '@/app/components/Modal';
 
 interface FavoriteWorkScore {
   id: string;
@@ -94,161 +95,157 @@ const FavoriteModal = ({
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 z-dialogo flex items-center justify-center">
-      {/* Backdrop */}
-      <div
-        className="absolute inset-0 bg-black/60 backdrop-blur-sm"
-        onClick={onClose}
-      />
-
-      {/* Modal */}
-      <div className="relative bg-theme-elevated border border-theme-primary rounded-2xl p-6 max-w-md w-full mx-4 shadow-theme-large">
-        <div className="flex items-start justify-between mb-6">
-          <div>
-            <h3 className="text-lg font-semibold text-theme-primary classical-title">
-              Personalizar Favorito
-            </h3>
-            <Text papel="rotulo" tom="suave" as="p" className="mt-1">
-              {scoreTitle}
-            </Text>
-          </div>
-          <button
-            onClick={onClose}
-            className="w-8 h-8 bg-theme-elevated border border-theme-secondary rounded-xl flex items-center justify-center transition-colors"
-          >
-            <PiX className="w-4 h-4 text-theme-tertiary" />
-            <NomeAcao acao="fechar" />
-          </button>
+    <Modal
+      isOpen={isOpen}
+      onClose={onClose}
+      maxWidth="md"
+      showCloseButton={false}
+    >
+      <div className="flex items-start justify-between mb-6">
+        <div>
+          <h3 className="text-lg font-semibold text-theme-primary classical-title">
+            Personalizar Favorito
+          </h3>
+          <Text papel="rotulo" tom="suave" as="p" className="mt-1">
+            {scoreTitle}
+          </Text>
         </div>
+        <button
+          onClick={onClose}
+          className="w-8 h-8 bg-theme-elevated border border-theme-secondary rounded-xl flex items-center justify-center transition-colors"
+        >
+          <PiX className="w-4 h-4 text-theme-tertiary" />
+          <NomeAcao acao="fechar" />
+        </button>
+      </div>
 
-        <Stack gap={6}>
-          {/* Avaliação Pessoal */}
-          <Stack gap={3}>
-            <label className="block text-sm font-medium text-theme-secondary">
-              Avaliação Pessoal
-            </label>
-            <Inline gap={2}>
-              {[1, 2, 3, 4, 5].map((star) => (
-                <button
-                  key={star}
-                  onClick={() =>
-                    setPersonalRating(star === personalRating ? 0 : star)
-                  }
-                  className={`w-8 h-8 rounded-xl flex items-center justify-center transition-all duration-300 ${
-                    star <= personalRating
-                      ? 'text-theme-primary shadow-theme-glow'
-                      : 'bg-theme-elevated border border-theme-secondary text-theme-tertiary'
-                  }`}
-                >
-                  {star <= personalRating ? (
-                    <PiStarFill
-                      className={`w-4 h-4 ${
-                        star <= personalRating ? 'fill-current' : ''
-                      }`}
-                    />
-                  ) : (
-                    <PiStar
-                      className={`w-4 h-4 ${
-                        star <= personalRating ? 'fill-current' : ''
-                      }`}
-                    />
-                  )}
-                </button>
-              ))}
-              {personalRating > 0 && (
-                <Text papel="rotulo" tom="suave" className="ml-2">
-                  {personalRating} de 5
-                </Text>
-              )}
-            </Inline>
-          </Stack>
-
-          {/* Notas */}
-          <div>
-            <label className="block text-sm font-medium text-theme-secondary mb-3">
-              Notas Pessoais
-            </label>
-            <textarea
-              value={notes}
-              onChange={(e) => setNotes(e.target.value)}
-              placeholder="Adicione suas observações sobre esta partitura..."
-              className="w-full h-24 px-4 py-3 bg-theme-elevated border border-theme-secondary rounded-xl text-theme-primary resize-none focus:outline-none transition-all duration-300"
-              maxLength={500}
-            />
-            <Text
-              papel="legenda"
-              tom="fraco"
-              as="div"
-              className="mt-1 text-right"
-            >
-              {notes.length}/500
-            </Text>
-          </div>
-
-          {/* Tags */}
-          <Stack gap={3}>
-            <label className="block text-sm font-medium text-theme-secondary">
-              Tags
-            </label>
-            <div className="flex flex-wrap gap-2">
-              {tags.map((tag) => (
-                <Inline
-                  as="span"
-                  gap={1}
-                  key={tag}
-                  className="px-3 py-1 border text-ouro-texto rounded-full text-xs font-medium"
-                >
-                  <span>{tag}</span>
-                  <button
-                    onClick={() => removeTag(tag)}
-                    className="w-4 h-4 rounded-full flex items-center justify-center"
-                  >
-                    <PiX className="w-3 h-3" />
-                    <NomeAcao acao="fechar" />
-                  </button>
-                </Inline>
-              ))}
-            </div>
-            <div className="flex space-x-2">
-              <input
-                value={newTag}
-                onChange={(e) => setNewTag(e.target.value)}
-                onKeyPress={(e) => e.key === 'Enter' && addTag()}
-                placeholder="Adicionar tag..."
-                className="flex-1 px-3 py-2 bg-theme-elevated border border-theme-secondary rounded-xl text-theme-primary text-sm focus:outline-none transition-all duration-300"
-                maxLength={20}
-              />
+      <Stack gap={6}>
+        {/* Avaliação Pessoal */}
+        <Stack gap={3}>
+          <label className="block text-sm font-medium text-theme-secondary">
+            Avaliação Pessoal
+          </label>
+          <Inline gap={2}>
+            {[1, 2, 3, 4, 5].map((star) => (
               <button
-                onClick={addTag}
-                disabled={!newTag.trim() || tags.includes(newTag.trim())}
-                className="px-4 py-2 text-theme-primary rounded-xl text-sm font-medium disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-300"
+                key={star}
+                onClick={() =>
+                  setPersonalRating(star === personalRating ? 0 : star)
+                }
+                className={`w-8 h-8 rounded-xl flex items-center justify-center transition-all duration-300 ${
+                  star <= personalRating
+                    ? 'text-theme-primary shadow-theme-glow'
+                    : 'bg-theme-elevated border border-theme-secondary text-theme-tertiary'
+                }`}
               >
-                Adicionar
+                {star <= personalRating ? (
+                  <PiStarFill
+                    className={`w-4 h-4 ${
+                      star <= personalRating ? 'fill-current' : ''
+                    }`}
+                  />
+                ) : (
+                  <PiStar
+                    className={`w-4 h-4 ${
+                      star <= personalRating ? 'fill-current' : ''
+                    }`}
+                  />
+                )}
               </button>
-            </div>
-          </Stack>
+            ))}
+            {personalRating > 0 && (
+              <Text papel="rotulo" tom="suave" className="ml-2">
+                {personalRating} de 5
+              </Text>
+            )}
+          </Inline>
         </Stack>
 
-        {/* Actions */}
-        <div className="flex justify-end space-x-3 mt-8">
-          <button
-            onClick={onClose}
-            className="px-4 py-2 bg-theme-elevated border border-theme-secondary text-theme-secondary rounded-xl transition-colors"
+        {/* Notas */}
+        <div>
+          <label className="block text-sm font-medium text-theme-secondary mb-3">
+            Notas Pessoais
+          </label>
+          <textarea
+            value={notes}
+            onChange={(e) => setNotes(e.target.value)}
+            placeholder="Adicione suas observações sobre esta partitura..."
+            className="w-full h-24 px-4 py-3 bg-theme-elevated border border-theme-secondary rounded-xl text-theme-primary resize-none focus:outline-none transition-all duration-300"
+            maxLength={500}
+          />
+          <Text
+            papel="legenda"
+            tom="fraco"
+            as="div"
+            className="mt-1 text-right"
           >
-            Cancelar
-          </button>
-          <Inline
-            as="button"
-            gap={2}
-            onClick={handleSave}
-            className="px-6 py-2 text-theme-primary rounded-xl font-medium transition-all duration-300"
-          >
-            <PiCheck className="w-4 h-4" />
-            <span>Salvar</span>
-          </Inline>
+            {notes.length}/500
+          </Text>
         </div>
+
+        {/* Tags */}
+        <Stack gap={3}>
+          <label className="block text-sm font-medium text-theme-secondary">
+            Tags
+          </label>
+          <div className="flex flex-wrap gap-2">
+            {tags.map((tag) => (
+              <Inline
+                as="span"
+                gap={1}
+                key={tag}
+                className="px-3 py-1 border text-ouro-texto rounded-full text-xs font-medium"
+              >
+                <span>{tag}</span>
+                <button
+                  onClick={() => removeTag(tag)}
+                  className="w-4 h-4 rounded-full flex items-center justify-center"
+                >
+                  <PiX className="w-3 h-3" />
+                  <NomeAcao acao="fechar" />
+                </button>
+              </Inline>
+            ))}
+          </div>
+          <div className="flex space-x-2">
+            <input
+              value={newTag}
+              onChange={(e) => setNewTag(e.target.value)}
+              onKeyPress={(e) => e.key === 'Enter' && addTag()}
+              placeholder="Adicionar tag..."
+              className="flex-1 px-3 py-2 bg-theme-elevated border border-theme-secondary rounded-xl text-theme-primary text-sm focus:outline-none transition-all duration-300"
+              maxLength={20}
+            />
+            <button
+              onClick={addTag}
+              disabled={!newTag.trim() || tags.includes(newTag.trim())}
+              className="px-4 py-2 text-theme-primary rounded-xl text-sm font-medium disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-300"
+            >
+              Adicionar
+            </button>
+          </div>
+        </Stack>
+      </Stack>
+
+      {/* Actions */}
+      <div className="flex justify-end space-x-3 mt-8">
+        <button
+          onClick={onClose}
+          className="px-4 py-2 bg-theme-elevated border border-theme-secondary text-theme-secondary rounded-xl transition-colors"
+        >
+          Cancelar
+        </button>
+        <Inline
+          as="button"
+          gap={2}
+          onClick={handleSave}
+          className="px-6 py-2 text-theme-primary rounded-xl font-medium transition-all duration-300"
+        >
+          <PiCheck className="w-4 h-4" />
+          <span>Salvar</span>
+        </Inline>
       </div>
-    </div>
+    </Modal>
   );
 };
 

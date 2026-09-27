@@ -39,6 +39,7 @@ import { Field } from '@/app/components/ui/Field';
 import { NomeAcao } from '@/app/components/ui/NomeAcao';
 import { Button } from '@/app/components/ui/Button';
 import { Card } from '@/app/components/ui/Card';
+import Modal from '@/app/components/Modal';
 
 interface EditAssignmentPageClientProps {
   initialData: EditAssignmentData | null;
@@ -1052,53 +1053,53 @@ export default function EditAssignmentPageClient({
 
         {/* Delete Confirmation Modal */}
         {showDeleteConfirm && (
-          <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-dialogo">
-            <AnimatedCard
-              hover="none"
-              className="classical-card p-6 max-w-md w-full mx-4"
-            >
-              <div className="text-center">
-                <div className="w-16 h-16 rounded-3xl flex items-center justify-center mx-auto mb-6">
-                  <PiTrash className="w-8 h-8 text-theme-primary" />
-                </div>
-                <h2 className="text-xl font-bold text-theme-primary mb-4">
-                  {t('confirm_deletion')}
-                </h2>
-                <p className="text-theme-secondary mb-6">
-                  {t('delete_confirmation_message', {
-                    title: assignment.title,
-                  })}
-                </p>
-                <div className="flex space-x-3">
-                  <Button
-                    variante="secundario"
-                    type="submit"
-                    onClick={() => setShowDeleteConfirm(false)}
-                    className="flex-1"
-                    disabled={loading.deleteAssignment}
-                  >
-                    {t('cancel')}
-                  </Button>
-                  <Inline
-                    as="button"
-                    gap={2}
-                    onClick={handleDelete}
-                    disabled={loading.deleteAssignment}
-                    className="btn-classical-primary flex-1 justify-center"
-                  >
-                    {loading.deleteAssignment ? (
-                      <PiArrowsClockwise className="w-4 h-4 animate-spin" />
-                    ) : (
-                      <PiTrash className="w-4 h-4" />
-                    )}
-                    <span>
-                      {loading.deleteAssignment ? t('deleting') : t('delete')}
-                    </span>
-                  </Inline>
-                </div>
+          <Modal
+            isOpen={true}
+            onClose={() => setShowDeleteConfirm(false)}
+            maxWidth="md"
+            showCloseButton={false}
+          >
+            <div className="text-center">
+              <div className="w-16 h-16 rounded-3xl flex items-center justify-center mx-auto mb-6">
+                <PiTrash className="w-8 h-8 text-theme-primary" />
               </div>
-            </AnimatedCard>
-          </div>
+              <h2 className="text-xl font-bold text-theme-primary mb-4">
+                {t('confirm_deletion')}
+              </h2>
+              <p className="text-theme-secondary mb-6">
+                {t('delete_confirmation_message', {
+                  title: assignment.title,
+                })}
+              </p>
+              <div className="flex space-x-3">
+                <Button
+                  variante="secundario"
+                  type="submit"
+                  onClick={() => setShowDeleteConfirm(false)}
+                  className="flex-1"
+                  disabled={loading.deleteAssignment}
+                >
+                  {t('cancel')}
+                </Button>
+                <Inline
+                  as="button"
+                  gap={2}
+                  onClick={handleDelete}
+                  disabled={loading.deleteAssignment}
+                  className="btn-classical-primary flex-1 justify-center"
+                >
+                  {loading.deleteAssignment ? (
+                    <PiArrowsClockwise className="w-4 h-4 animate-spin" />
+                  ) : (
+                    <PiTrash className="w-4 h-4" />
+                  )}
+                  <span>
+                    {loading.deleteAssignment ? t('deleting') : t('delete')}
+                  </span>
+                </Inline>
+              </div>
+            </div>
+          </Modal>
         )}
       </AnimatedContainer>
     </PageContainer>

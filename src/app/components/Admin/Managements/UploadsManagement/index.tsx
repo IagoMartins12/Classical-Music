@@ -46,6 +46,7 @@ import { AppRouterInstance } from 'next/dist/shared/lib/app-router-context.share
 import { Stack, Inline } from '@/app/components/ui/Layout';
 import { Text } from '@/app/components/ui/Text';
 import { Card } from '@/app/components/ui/Card';
+import Modal from '@/app/components/Modal';
 
 interface UploadFilters {
   search: string;
@@ -118,203 +119,204 @@ const ActivityDetailModal = ({
   const EntityIcon = getEntityIcon(activity.entityType);
 
   return (
-    <div className="fixed inset-0 bg-black/50 z-dialogo flex items-center justify-center p-4">
-      <div className="bg-theme-elevated rounded-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto">
-        {/* Header */}
-        <div className="flex items-center justify-between p-6 border-b border-theme-secondary">
-          <Inline gap={3}>
-            <div className="w-12 h-12 rounded-xl flex items-center justify-center">
-              <EntityIcon className="w-6 h-6 text-theme-primary" />
-            </div>
-            <div>
-              <h2 className="text-xl font-bold text-theme-primary">
-                Detalhes da Atividade
-              </h2>
-              <Text papel="rotulo" tom="fraco" as="p">
-                {getActionLabel(activity.action)} de{' '}
-                {getEntityTypeLabel(activity.entityType)}
-              </Text>
-            </div>
-          </Inline>
-          <Button
-            variant="ghost"
-            size="sm"
-            leftIcon={<PiX />}
-            onClick={onClose}
-          />
-        </div>
+    <Modal
+      isOpen={true}
+      onClose={onClose}
+      maxWidth="2xl"
+      showCloseButton={false}
+    >
+      {/* Header */}
+      <div className="flex items-center justify-between p-6 border-b border-theme-secondary">
+        <Inline gap={3}>
+          <div className="w-12 h-12 rounded-xl flex items-center justify-center">
+            <EntityIcon className="w-6 h-6 text-theme-primary" />
+          </div>
+          <div>
+            <h2 className="text-xl font-bold text-theme-primary">
+              Detalhes da Atividade
+            </h2>
+            <Text papel="rotulo" tom="fraco" as="p">
+              {getActionLabel(activity.action)} de{' '}
+              {getEntityTypeLabel(activity.entityType)}
+            </Text>
+          </div>
+        </Inline>
+        <Button
+          variant="ghost"
+          size="sm"
+          leftIcon={<PiX />}
+          onClick={onClose}
+        />
+      </div>
 
-        {/* Content */}
-        <Stack gap={6} className="p-6">
-          {/* Informações básicas */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div>
-              <label className="text-sm font-medium text-theme-secondary">
-                Usuário
-              </label>
-              <Inline gap={2} className="mt-1">
-                <PiUser className="w-4 h-4 text-theme-tertiary" />
-                <span className="text-theme-primary">{activity.user.name}</span>
-              </Inline>
-            </div>
-
-            <div>
-              <label className="text-sm font-medium text-theme-secondary">
-                Data
-              </label>
-              <Inline gap={2} className="mt-1">
-                <PiCalendarBlank className="w-4 h-4 text-theme-tertiary" />
-                <span className="text-theme-primary">
-                  {new Date(activity.createdAt).toLocaleString('pt-BR')}
-                </span>
-              </Inline>
-            </div>
-
-            <div>
-              <label className="text-sm font-medium text-theme-secondary">
-                Tipo de Entidade
-              </label>
-              <Inline gap={2} className="mt-1">
-                <EntityIcon className="w-4 h-4 text-theme-tertiary" />
-                <span className="text-theme-primary">
-                  {getEntityTypeLabel(activity.entityType)}
-                </span>
-              </Inline>
-            </div>
-
-            <div>
-              <label className="text-sm font-medium text-theme-secondary">
-                Ação
-              </label>
-              <Inline gap={2} className="mt-1">
-                <PiNotePencil className="w-4 h-4 text-theme-tertiary" />
-                <span className="text-theme-primary">
-                  {getActionLabel(activity.action)}
-                </span>
-              </Inline>
-            </div>
+      {/* Content */}
+      <Stack gap={6} className="p-6">
+        {/* Informações básicas */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div>
+            <label className="text-sm font-medium text-theme-secondary">
+              Usuário
+            </label>
+            <Inline gap={2} className="mt-1">
+              <PiUser className="w-4 h-4 text-theme-tertiary" />
+              <span className="text-theme-primary">{activity.user.name}</span>
+            </Inline>
           </div>
 
-          {/* Detalhes da entidade */}
-          {activity.entityDetails && (
-            <Stack gap={2}>
-              <label className="text-sm font-medium text-theme-secondary block">
-                Detalhes da Entidade
-              </label>
-              <div className="bg-theme-secondary rounded-xl p-4">
-                {activity.entityType === 'composer' && (
-                  <div>
-                    <h4 className="font-medium text-theme-primary mb-2">
-                      {activity.entityDetails.name}
-                    </h4>
-                    {activity.entityDetails.isVerified && (
-                      <span className="inline-flex items-center space-x-1 text-xs px-2 py-1 rounded">
-                        <span>Verificado</span>
-                      </span>
-                    )}
-                  </div>
-                )}
+          <div>
+            <label className="text-sm font-medium text-theme-secondary">
+              Data
+            </label>
+            <Inline gap={2} className="mt-1">
+              <PiCalendarBlank className="w-4 h-4 text-theme-tertiary" />
+              <span className="text-theme-primary">
+                {new Date(activity.createdAt).toLocaleString('pt-BR')}
+              </span>
+            </Inline>
+          </div>
 
-                {activity.entityType === 'work' && (
-                  <div>
-                    <h4 className="font-medium text-theme-primary mb-2">
-                      {activity.entityDetails.title}
-                    </h4>
-                    {activity.entityDetails.composer && (
-                      <Text papel="rotulo" tom="fraco" as="p">
-                        Compositor: {activity.entityDetails.composer.name}
-                      </Text>
-                    )}
-                  </div>
-                )}
+          <div>
+            <label className="text-sm font-medium text-theme-secondary">
+              Tipo de Entidade
+            </label>
+            <Inline gap={2} className="mt-1">
+              <EntityIcon className="w-4 h-4 text-theme-tertiary" />
+              <span className="text-theme-primary">
+                {getEntityTypeLabel(activity.entityType)}
+              </span>
+            </Inline>
+          </div>
 
-                {activity.entityType === 'score' && (
-                  <div>
-                    <h4 className="font-medium text-theme-primary mb-2">
-                      {activity.entityDetails.title}
-                    </h4>
-                    {activity.entityDetails.work && (
-                      <Text papel="rotulo" tom="fraco" as="p">
-                        Obra: {activity.entityDetails.work.title}
-                      </Text>
-                    )}
-                  </div>
-                )}
-              </div>
-            </Stack>
-          )}
+          <div>
+            <label className="text-sm font-medium text-theme-secondary">
+              Ação
+            </label>
+            <Inline gap={2} className="mt-1">
+              <PiNotePencil className="w-4 h-4 text-theme-tertiary" />
+              <span className="text-theme-primary">
+                {getActionLabel(activity.action)}
+              </span>
+            </Inline>
+          </div>
+        </div>
 
-          {/* Motivo */}
-          {activity.reason && (
-            <Stack gap={2}>
-              <label className="text-sm font-medium text-theme-secondary block">
-                Motivo
-              </label>
-              <div className="bg-theme-secondary rounded-xl p-4">
-                <p className="text-theme-primary">{activity.reason}</p>
-              </div>
-            </Stack>
-          )}
-
-          {/* Mudanças */}
-          {activity.changes && (
-            <Stack gap={2}>
-              <label className="text-sm font-medium text-theme-secondary block">
-                Mudanças Realizadas
-              </label>
-              <div className="bg-theme-secondary rounded-xl p-4">
-                <pre className="text-sm text-theme-primary whitespace-pre-wrap">
-                  {JSON.stringify(activity.changes, null, 2)}
-                </pre>
-              </div>
-            </Stack>
-          )}
-
-          {/* Informações do usuário */}
+        {/* Detalhes da entidade */}
+        {activity.entityDetails && (
           <Stack gap={2}>
             <label className="text-sm font-medium text-theme-secondary block">
-              Informações do Usuário
+              Detalhes da Entidade
             </label>
-            <Stack gap={2} className="bg-theme-secondary rounded-xl p-4">
-              <div className="flex justify-between">
-                <span className="text-theme-tertiary">Email:</span>
-                <span className="text-theme-primary">
-                  {activity.user.email}
-                </span>
-              </div>
-              <div className="flex justify-between">
-                <span className="text-theme-tertiary">Score de Upload:</span>
-                <span className="text-theme-primary">
-                  {activity.user.uploadScore}
-                </span>
-              </div>
-            </Stack>
+            <div className="bg-theme-secondary rounded-xl p-4">
+              {activity.entityType === 'composer' && (
+                <div>
+                  <h4 className="font-medium text-theme-primary mb-2">
+                    {activity.entityDetails.name}
+                  </h4>
+                  {activity.entityDetails.isVerified && (
+                    <span className="inline-flex items-center space-x-1 text-xs px-2 py-1 rounded">
+                      <span>Verificado</span>
+                    </span>
+                  )}
+                </div>
+              )}
+
+              {activity.entityType === 'work' && (
+                <div>
+                  <h4 className="font-medium text-theme-primary mb-2">
+                    {activity.entityDetails.title}
+                  </h4>
+                  {activity.entityDetails.composer && (
+                    <Text papel="rotulo" tom="fraco" as="p">
+                      Compositor: {activity.entityDetails.composer.name}
+                    </Text>
+                  )}
+                </div>
+              )}
+
+              {activity.entityType === 'score' && (
+                <div>
+                  <h4 className="font-medium text-theme-primary mb-2">
+                    {activity.entityDetails.title}
+                  </h4>
+                  {activity.entityDetails.work && (
+                    <Text papel="rotulo" tom="fraco" as="p">
+                      Obra: {activity.entityDetails.work.title}
+                    </Text>
+                  )}
+                </div>
+              )}
+            </div>
+          </Stack>
+        )}
+
+        {/* Motivo */}
+        {activity.reason && (
+          <Stack gap={2}>
+            <label className="text-sm font-medium text-theme-secondary block">
+              Motivo
+            </label>
+            <div className="bg-theme-secondary rounded-xl p-4">
+              <p className="text-theme-primary">{activity.reason}</p>
+            </div>
+          </Stack>
+        )}
+
+        {/* Mudanças */}
+        {activity.changes && (
+          <Stack gap={2}>
+            <label className="text-sm font-medium text-theme-secondary block">
+              Mudanças Realizadas
+            </label>
+            <div className="bg-theme-secondary rounded-xl p-4">
+              <pre className="text-sm text-theme-primary whitespace-pre-wrap">
+                {JSON.stringify(activity.changes, null, 2)}
+              </pre>
+            </div>
+          </Stack>
+        )}
+
+        {/* Informações do usuário */}
+        <Stack gap={2}>
+          <label className="text-sm font-medium text-theme-secondary block">
+            Informações do Usuário
+          </label>
+          <Stack gap={2} className="bg-theme-secondary rounded-xl p-4">
+            <div className="flex justify-between">
+              <span className="text-theme-tertiary">Email:</span>
+              <span className="text-theme-primary">{activity.user.email}</span>
+            </div>
+            <div className="flex justify-between">
+              <span className="text-theme-tertiary">Score de Upload:</span>
+              <span className="text-theme-primary">
+                {activity.user.uploadScore}
+              </span>
+            </div>
           </Stack>
         </Stack>
+      </Stack>
 
-        {/* Footer */}
-        <div className="flex justify-end space-x-3 p-6 border-t border-theme-secondary">
-          <Button variant="secondary" onClick={onClose}>
-            Fechar
-          </Button>
-          <Button
-            variant="primary"
-            leftIcon={<PiEye />}
-            onClick={() => {
-              // Navegar para a entidade
-              if (activity.entityType === 'composer') {
-                router.push(`/composer/${activity.entityId}`);
-              } else if (activity.entityType === 'work') {
-                router.push(`/work/${activity.entityId}`);
-              }
-              onClose();
-            }}
-          >
-            Ver Entidade
-          </Button>
-        </div>
+      {/* Footer */}
+      <div className="flex justify-end space-x-3 p-6 border-t border-theme-secondary">
+        <Button variant="secondary" onClick={onClose}>
+          Fechar
+        </Button>
+        <Button
+          variant="primary"
+          leftIcon={<PiEye />}
+          onClick={() => {
+            // Navegar para a entidade
+            if (activity.entityType === 'composer') {
+              router.push(`/composer/${activity.entityId}`);
+            } else if (activity.entityType === 'work') {
+              router.push(`/work/${activity.entityId}`);
+            }
+            onClose();
+          }}
+        >
+          Ver Entidade
+        </Button>
       </div>
-    </div>
+    </Modal>
   );
 };
 

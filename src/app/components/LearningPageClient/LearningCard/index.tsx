@@ -32,10 +32,11 @@ import {
 import { useAuth } from '@/app/hooks/useAuth';
 
 // Importar componentes de animação
-import { AnimatedCard, AnimatedItem } from '../../animation/AnimatedComponents';
+import { AnimatedItem } from '../../animation/AnimatedComponents';
 import { useTranslation } from '@/app/context/TranslationContext';
 import { Stack, Inline } from '@/app/components/ui/Layout';
 import { Text } from '@/app/components/ui/Text';
+import Modal from '@/app/components/Modal';
 
 type DifficultyLevel = 'BEGINNER' | 'INTERMEDIATE' | 'ADVANCED';
 
@@ -87,68 +88,63 @@ const ConfirmDeleteModal = ({
       : t('confirm_removal_learned_list');
 
   const modalContent = (
-    <div className="fixed inset-0 z-dialogo flex items-center justify-center p-4">
-      <div
-        className="absolute inset-0 bg-black/50 backdrop-blur-sm transition-opacity duration-300"
-        onClick={!isLoading ? onClose : undefined}
-      />
-
-      <AnimatedCard
-        hover="none"
-        className="relative bg-theme-primary rounded-xl shadow-xl max-w-md w-full p-6 border border-theme-secondary"
-      >
-        <Inline gap={3} className="mb-4">
-          <div className="w-12 h-12 rounded-xl flex items-center justify-center">
-            <PiWarning className="w-6 h-6" />
-          </div>
-          <div>
-            <h3 className="text-lg font-bold text-theme-primary">
-              {t('confirm_removal_title')}
-            </h3>
-            <Text papel="rotulo" tom="suave" as="p">
-              {t('confirm_removal_subtitle')}
-            </Text>
-          </div>
-        </Inline>
-
-        <div className="mb-6">
-          <p className="text-theme-secondary">
-            {t('confirm_removal_question')}{' '}
-            <strong>&quot;{workTitle}&quot;</strong> {t('confirm_removal_from')}{' '}
-            {typeText}?
-          </p>
+    <Modal
+      isOpen={isOpen}
+      onClose={onClose}
+      maxWidth="md"
+      showCloseButton={false}
+    >
+      <Inline gap={3} className="mb-4">
+        <div className="w-12 h-12 rounded-xl flex items-center justify-center">
+          <PiWarning className="w-6 h-6" />
         </div>
+        <div>
+          <h3 className="text-lg font-bold text-theme-primary">
+            {t('confirm_removal_title')}
+          </h3>
+          <Text papel="rotulo" tom="suave" as="p">
+            {t('confirm_removal_subtitle')}
+          </Text>
+        </div>
+      </Inline>
 
-        <Inline gap={3} className="justify-end">
-          <button
-            onClick={onClose}
-            disabled={isLoading}
-            className="px-4 py-2 rounded-lg border border-theme-secondary text-theme-secondary transition-colors disabled:opacity-50"
-          >
-            {t('cancel_button')}
-          </button>
-          <Inline
-            as="button"
-            gap={2}
-            onClick={onConfirm}
-            disabled={isLoading}
-            className="px-4 py-2 text-white rounded-lg hover:bg-red-600 transition-colors disabled:opacity-50"
-          >
-            {isLoading ? (
-              <>
-                <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
-                <span>{t('removing_button')}</span>
-              </>
-            ) : (
-              <>
-                <PiTrash className="w-4 h-4" />
-                <span>{t('remove_button')}</span>
-              </>
-            )}
-          </Inline>
+      <div className="mb-6">
+        <p className="text-theme-secondary">
+          {t('confirm_removal_question')}{' '}
+          <strong>&quot;{workTitle}&quot;</strong> {t('confirm_removal_from')}{' '}
+          {typeText}?
+        </p>
+      </div>
+
+      <Inline gap={3} className="justify-end">
+        <button
+          onClick={onClose}
+          disabled={isLoading}
+          className="px-4 py-2 rounded-lg border border-theme-secondary text-theme-secondary transition-colors disabled:opacity-50"
+        >
+          {t('cancel_button')}
+        </button>
+        <Inline
+          as="button"
+          gap={2}
+          onClick={onConfirm}
+          disabled={isLoading}
+          className="px-4 py-2 text-white rounded-lg hover:bg-red-600 transition-colors disabled:opacity-50"
+        >
+          {isLoading ? (
+            <>
+              <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
+              <span>{t('removing_button')}</span>
+            </>
+          ) : (
+            <>
+              <PiTrash className="w-4 h-4" />
+              <span>{t('remove_button')}</span>
+            </>
+          )}
         </Inline>
-      </AnimatedCard>
-    </div>
+      </Inline>
+    </Modal>
   );
 
   return createPortal(modalContent, document.body);

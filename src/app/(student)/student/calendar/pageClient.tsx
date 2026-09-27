@@ -1258,77 +1258,80 @@ function FeedbackModal({
   t,
 }: FeedbackModalProps) {
   return (
-    <div className="fixed inset-0 backdrop-blur-sm z-dialogo flex items-center justify-center p-4">
-      <AnimatedCard hover="none" className="classical-card w-full max-w-lg">
-        <Stack gap={6} className="p-6">
-          <div className="flex items-center justify-between">
-            <div>
-              <h2 className="text-xl font-bold text-theme-primary classical-title">
-                {t('student_calendar_feedback_modal_title')}
-              </h2>
-              <Text papel="rotulo" tom="fraco" as="p">
-                {t('student_calendar_feedback_modal_lesson')} {event.title}
-              </Text>
-            </div>
-            <button
-              onClick={onClose}
-              className="w-8 h-8 rounded-lg bg-theme-elevated transition-colors flex items-center justify-center"
-            >
-              <PiX className="w-4 h-4 text-theme-tertiary" />
-              <NomeAcao acao="fechar" />
-            </button>
+    <Modal
+      isOpen={true}
+      onClose={onClose}
+      maxWidth="lg"
+      showCloseButton={false}
+    >
+      <Stack gap={6} className="p-6">
+        <div className="flex items-center justify-between">
+          <div>
+            <h2 className="text-xl font-bold text-theme-primary classical-title">
+              {t('student_calendar_feedback_modal_title')}
+            </h2>
+            <Text papel="rotulo" tom="fraco" as="p">
+              {t('student_calendar_feedback_modal_lesson')} {event.title}
+            </Text>
+          </div>
+          <button
+            onClick={onClose}
+            className="w-8 h-8 rounded-lg bg-theme-elevated transition-colors flex items-center justify-center"
+          >
+            <PiX className="w-4 h-4 text-theme-tertiary" />
+            <NomeAcao acao="fechar" />
+          </button>
+        </div>
+
+        <Stack>
+          <div>
+            <Field.Area
+              label={t('student_calendar_feedback_modal_question')}
+              classeCampo="h-32 resize-none"
+              value={feedbackText}
+              onChange={(e) => setFeedbackText(e.target.value)}
+              placeholder={t('student_calendar_feedback_modal_placeholder')}
+              maxLength={500}
+            />
+            <Text papel="legenda" tom="fraco" as="div" className="mt-1">
+              {t('student_calendar_feedback_modal_characters', {
+                current: feedbackText.length,
+                max: 500,
+              })}
+            </Text>
           </div>
 
-          <Stack>
-            <div>
-              <Field.Area
-                label={t('student_calendar_feedback_modal_question')}
-                classeCampo="h-32 resize-none"
-                value={feedbackText}
-                onChange={(e) => setFeedbackText(e.target.value)}
-                placeholder={t('student_calendar_feedback_modal_placeholder')}
-                maxLength={500}
-              />
-              <Text papel="legenda" tom="fraco" as="div" className="mt-1">
-                {t('student_calendar_feedback_modal_characters', {
-                  current: feedbackText.length,
-                  max: 500,
-                })}
-              </Text>
-            </div>
-
-            <Inline gap={3}>
-              <Inline
-                as="button"
-                gap={2}
-                onClick={onSubmit}
-                disabled={loading || !feedbackText.trim()}
-                className="btn-classical-primary disabled:opacity-50 disabled:cursor-not-allowed"
-              >
-                {loading ? (
-                  <>
-                    <div className="w-4 h-4 border-2 rounded-full animate-spin"></div>
-                    <span>{t('student_calendar_feedback_modal_sending')}</span>
-                  </>
-                ) : (
-                  <>
-                    <PiChatCenteredText className="w-4 h-4" />
-                    <span>{t('student_calendar_feedback_modal_send')}</span>
-                  </>
-                )}
-              </Inline>
-              <Button
-                variante="secundario"
-                type="submit"
-                onClick={onClose}
-                disabled={loading}
-              >
-                {t('student_calendar_feedback_modal_cancel')}
-              </Button>
+          <Inline gap={3}>
+            <Inline
+              as="button"
+              gap={2}
+              onClick={onSubmit}
+              disabled={loading || !feedbackText.trim()}
+              className="btn-classical-primary disabled:opacity-50 disabled:cursor-not-allowed"
+            >
+              {loading ? (
+                <>
+                  <div className="w-4 h-4 border-2 rounded-full animate-spin"></div>
+                  <span>{t('student_calendar_feedback_modal_sending')}</span>
+                </>
+              ) : (
+                <>
+                  <PiChatCenteredText className="w-4 h-4" />
+                  <span>{t('student_calendar_feedback_modal_send')}</span>
+                </>
+              )}
             </Inline>
-          </Stack>
+            <Button
+              variante="secundario"
+              type="submit"
+              onClick={onClose}
+              disabled={loading}
+            >
+              {t('student_calendar_feedback_modal_cancel')}
+            </Button>
+          </Inline>
         </Stack>
-      </AnimatedCard>
-    </div>
+      </Stack>
+    </Modal>
   );
 }

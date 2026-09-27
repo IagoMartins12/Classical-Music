@@ -23,6 +23,7 @@ import { AnimatedCard } from '@/app/components/animation/AnimatedComponents';
 import toast from 'react-hot-toast';
 import { Stack, Inline } from '@/app/components/ui/Layout';
 import { Text } from '@/app/components/ui/Text';
+import Modal from '@/app/components/Modal';
 
 interface LogsCleanupProps {
   onClose?: () => void;
@@ -392,55 +393,58 @@ export default function LogsCleanup({ onClose }: LogsCleanupProps) {
 
       {/* Dialog de Confirmação */}
       {showConfirmDialog && (
-        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-dialogo">
-          <AnimatedCard className="classical-card p-6 max-w-md mx-4">
-            <div className="text-center">
-              <div className="w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
-                <PiWarning className="w-8 h-8 text-theme-primary" />
-              </div>
-
-              <h3 className="text-xl font-bold text-theme-primary mb-2">
-                Confirmar Exclusão
-              </h3>
-
-              <p className="text-theme-secondary mb-6">
-                Tem certeza que deseja deletar{' '}
-                <strong>{selectedDates.size}</strong> arquivo(s) de log?
-                <br />
-                <span className="text-sm mt-2 block">
-                  Esta ação não pode ser desfeita!
-                </span>
-              </p>
-
-              <Inline gap={3}>
-                <Button
-                  variant="secondary"
-                  onClick={() => setShowConfirmDialog(false)}
-                  disabled={!!actionLoading}
-                  className="flex-1"
-                >
-                  Cancelar
-                </Button>
-
-                <Button
-                  variant="primary"
-                  leftIcon={
-                    actionLoading === 'delete' ? (
-                      <PiSpinnerGap className="animate-spin" />
-                    ) : (
-                      <PiTrash />
-                    )
-                  }
-                  onClick={handleDeleteSelected}
-                  disabled={!!actionLoading}
-                  className="flex-1"
-                >
-                  {actionLoading === 'delete' ? 'Deletando...' : 'Deletar'}
-                </Button>
-              </Inline>
+        <Modal
+          isOpen={true}
+          onClose={() => setShowConfirmDialog(false)}
+          maxWidth="md"
+          showCloseButton={false}
+        >
+          <div className="text-center">
+            <div className="w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
+              <PiWarning className="w-8 h-8 text-theme-primary" />
             </div>
-          </AnimatedCard>
-        </div>
+
+            <h3 className="text-xl font-bold text-theme-primary mb-2">
+              Confirmar Exclusão
+            </h3>
+
+            <p className="text-theme-secondary mb-6">
+              Tem certeza que deseja deletar{' '}
+              <strong>{selectedDates.size}</strong> arquivo(s) de log?
+              <br />
+              <span className="text-sm mt-2 block">
+                Esta ação não pode ser desfeita!
+              </span>
+            </p>
+
+            <Inline gap={3}>
+              <Button
+                variant="secondary"
+                onClick={() => setShowConfirmDialog(false)}
+                disabled={!!actionLoading}
+                className="flex-1"
+              >
+                Cancelar
+              </Button>
+
+              <Button
+                variant="primary"
+                leftIcon={
+                  actionLoading === 'delete' ? (
+                    <PiSpinnerGap className="animate-spin" />
+                  ) : (
+                    <PiTrash />
+                  )
+                }
+                onClick={handleDeleteSelected}
+                disabled={!!actionLoading}
+                className="flex-1"
+              >
+                {actionLoading === 'delete' ? 'Deletando...' : 'Deletar'}
+              </Button>
+            </Inline>
+          </div>
+        </Modal>
       )}
     </div>
   );

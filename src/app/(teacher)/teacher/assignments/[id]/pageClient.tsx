@@ -968,60 +968,58 @@ export default function AssignmentDetailsPageClient({
 
         {/* Approve Modal */}
         {showApproveModal && (
-          <div className="fixed inset-0 backdrop-blur-sm z-dialogo flex items-center justify-center p-4">
-            <AnimatedCard
-              hover="none"
-              className="classical-card w-full max-w-md"
-            >
-              <Stack className="p-6">
-                <div className="flex items-center justify-between">
-                  <h2 className="text-xl font-bold text-theme-primary classical-title">
-                    {t('approve_assignment')}
-                  </h2>
-                  <button
-                    onClick={() => setShowApproveModal(false)}
-                    className="text-theme-tertiary"
-                  >
-                    <PiX className="w-5 h-5" />
-                    <NomeAcao acao="fechar" />
-                  </button>
-                </div>
+          <Modal
+            isOpen={true}
+            onClose={() => setShowApproveModal(false)}
+            maxWidth="md"
+            showCloseButton={false}
+          >
+            <Stack className="p-6">
+              <div className="flex items-center justify-between">
+                <h2 className="text-xl font-bold text-theme-primary classical-title">
+                  {t('approve_assignment')}
+                </h2>
+                <button
+                  onClick={() => setShowApproveModal(false)}
+                  className="text-theme-tertiary"
+                >
+                  <PiX className="w-5 h-5" />
+                  <NomeAcao acao="fechar" />
+                </button>
+              </div>
 
-                <p className="text-theme-secondary">
-                  {t('confirm_approval_message')}
-                </p>
+              <p className="text-theme-secondary">
+                {t('confirm_approval_message')}
+              </p>
 
-                <Inline gap={3} className="justify-end">
-                  <Button
-                    variante="secundario"
-                    type="submit"
-                    onClick={() => setShowApproveModal(false)}
-                    disabled={loading.approve}
-                  >
-                    {t('cancel')}
-                  </Button>
-                  <Inline
-                    as="button"
-                    gap={2}
-                    onClick={handleApproveAssignment}
-                    disabled={loading.approve}
-                    className="btn-classical-primary"
-                  >
-                    {loading.approve ? (
-                      <PiArrowsClockwise className="w-4 h-4 animate-spin" />
-                    ) : (
-                      <PiCheck className="w-4 h-4" />
-                    )}
-                    <span>
-                      {loading.approve
-                        ? t('approving')
-                        : t('approve_assignment')}
-                    </span>
-                  </Inline>
+              <Inline gap={3} className="justify-end">
+                <Button
+                  variante="secundario"
+                  type="submit"
+                  onClick={() => setShowApproveModal(false)}
+                  disabled={loading.approve}
+                >
+                  {t('cancel')}
+                </Button>
+                <Inline
+                  as="button"
+                  gap={2}
+                  onClick={handleApproveAssignment}
+                  disabled={loading.approve}
+                  className="btn-classical-primary"
+                >
+                  {loading.approve ? (
+                    <PiArrowsClockwise className="w-4 h-4 animate-spin" />
+                  ) : (
+                    <PiCheck className="w-4 h-4" />
+                  )}
+                  <span>
+                    {loading.approve ? t('approving') : t('approve_assignment')}
+                  </span>
                 </Inline>
-              </Stack>
-            </AnimatedCard>
-          </div>
+              </Inline>
+            </Stack>
+          </Modal>
         )}
 
         {/* 🆕 Video Modal */}

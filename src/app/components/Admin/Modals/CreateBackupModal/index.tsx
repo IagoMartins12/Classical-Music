@@ -15,6 +15,7 @@ import Input from '@/app/components/Common/Inputs';
 import { Stack, Inline } from '@/app/components/ui/Layout';
 import { Text } from '@/app/components/ui/Text';
 import { NomeAcao } from '@/app/components/ui/NomeAcao';
+import Modal from '@/app/components/Modal';
 
 interface CreateBackupModalProps {
   isOpen: boolean;
@@ -67,258 +68,259 @@ export default function CreateBackupModal({
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 z-dialogo backdrop-blur-sm flex items-center justify-center p-4">
-      <div className="classical-card max-w-2xl w-full max-h-[80vh] overflow-y-auto">
-        {/* Header */}
-        <div className="flex items-center justify-between p-6 border-b border-theme-secondary">
-          <Inline gap={3}>
-            <div className="w-10 h-10 rounded-xl flex items-center justify-center">
-              <PiDownloadSimple className="w-5 h-5 text-theme-primary" />
-            </div>
-            <div>
-              <h2 className="text-xl font-bold text-theme-primary">
-                Criar Backup
-              </h2>
-              <Text papel="rotulo" tom="fraco" as="p">
-                Configure um novo backup do sistema
-              </Text>
-            </div>
-          </Inline>
-          <button
-            onClick={onClose}
-            className="p-2 rounded-lg text-theme-tertiary transition-all"
-          >
-            <PiX className="w-5 h-5" />
-            <NomeAcao acao="fechar" />
-          </button>
-        </div>
-
-        {/* Form */}
-        <Stack gap={6} as="form" onSubmit={handleSubmit} className="p-6">
-          {/* Basic Settings */}
-          <Stack>
-            <h3 className="text-lg font-bold text-theme-primary">
-              Configurações Básicas
-            </h3>
-
-            <div>
-              <Input
-                label="Nome do Backup"
-                type="text"
-                value={config?.name}
-                onChange={(e) =>
-                  setConfig((prev) => ({ ...prev, name: e.target.value }))
-                }
-                className="input-classical-2 w-full"
-                required
-              />
-            </div>
-
-            <div>
-              <Select
-                label="Tipo de Backup"
-                value={config?.type}
-                onChange={(e) =>
-                  setConfig((prev) => ({
-                    ...prev,
-                    type: e.target.value as any,
-                  }))
-                }
-                options={[
-                  { value: 'full', label: 'Completo - Todos os dados' },
-                  {
-                    value: 'incremental',
-                    label: 'Incremental - Apenas alterações',
-                  },
-                  {
-                    value: 'differential',
-                    label: 'Diferencial - Mudanças desde o último completo',
-                  },
-                ]}
-                className="input-classical-2 w-full"
-              />
-            </div>
-          </Stack>
-
-          {/* Content Selection */}
-          <Stack>
-            <h3 className="text-lg font-bold text-theme-primary">Conteúdo</h3>
-
-            <div className="grid grid-cols-2 gap-4">
-              <Inline
-                as="label"
-                gap={3}
-                className="p-3 bg-theme-secondary rounded-xl transition-all cursor-pointer"
-              >
-                <Input
-                  type="checkbox"
-                  checked={config?.includeDatabase}
-                  onChange={(e) =>
-                    setConfig((prev) => ({
-                      ...prev,
-                      includeDatabase: e.target.checked,
-                    }))
-                  }
-                  className="w-4 h-4 text-ouro-texto bg-theme-secondary border-theme-primary rounded focus:ring-2"
-                />
-                <PiDatabase className="w-5 h-5" />
-                <div>
-                  <div className="font-medium text-theme-primary">Database</div>
-                  <Text papel="legenda" tom="fraco" as="div">
-                    Dados da aplicação
-                  </Text>
-                </div>
-              </Inline>
-
-              <Inline
-                as="label"
-                gap={3}
-                className="p-3 bg-theme-secondary rounded-xl transition-all cursor-pointer"
-              >
-                <Input
-                  type="checkbox"
-                  checked={config?.includeFiles}
-                  onChange={(e) =>
-                    setConfig((prev) => ({
-                      ...prev,
-                      includeFiles: e.target.checked,
-                    }))
-                  }
-                  className="w-4 h-4 text-ouro-texto bg-theme-secondary border-theme-primary rounded focus:ring-2"
-                />
-                <PiHardDrive className="w-5 h-5" />
-                <div>
-                  <div className="font-medium text-theme-primary">Arquivos</div>
-                  <Text papel="legenda" tom="fraco" as="div">
-                    PDFs e uploads
-                  </Text>
-                </div>
-              </Inline>
-            </div>
-          </Stack>
-
-          {/* Options */}
-          <Stack>
-            <h3 className="text-lg font-bold text-theme-primary">Opções</h3>
-
-            <div className="grid grid-cols-2 gap-4">
-              <Inline as="label" gap={3}>
-                <Input
-                  type="checkbox"
-                  checked={config?.compression}
-                  onChange={(e) =>
-                    setConfig((prev) => ({
-                      ...prev,
-                      compression: e.target.checked,
-                    }))
-                  }
-                  className="w-4 h-4 text-ouro-texto bg-theme-secondary border-theme-primary rounded focus:ring-2"
-                />
-                <span className="text-theme-primary">Compressão</span>
-              </Inline>
-
-              <Inline as="label" gap={3}>
-                <Input
-                  type="checkbox"
-                  checked={config?.encryption}
-                  onChange={(e) =>
-                    setConfig((prev) => ({
-                      ...prev,
-                      encryption: e.target.checked,
-                    }))
-                  }
-                  className="w-4 h-4 text-ouro-texto bg-theme-secondary border-theme-primary rounded focus:ring-2"
-                />
-                <span className="text-theme-primary">Criptografia</span>
-              </Inline>
-            </div>
-
-            <div>
-              <Input
-                label="Retenção (dias)"
-                type="number"
-                value={config?.retentionDays}
-                onChange={(e) =>
-                  setConfig((prev) => ({
-                    ...prev,
-                    retentionDays: parseInt(e.target.value),
-                  }))
-                }
-                className="input-classical-2 w-full"
-                min="1"
-                max="365"
-              />
-            </div>
-          </Stack>
-
-          {/* Schedule */}
-          <Stack>
-            <h3 className="text-lg font-bold text-theme-primary">
-              Agendamento
-            </h3>
-
-            <div>
-              <Select
-                label="Frequência"
-                value={config?.scheduleType}
-                onChange={(e) =>
-                  setConfig((prev) => ({
-                    ...prev,
-                    scheduleType: e.target.value as any,
-                  }))
-                }
-                options={[
-                  { value: 'once', label: 'Executar uma vez' },
-                  { value: 'daily', label: 'Diário' },
-                  { value: 'weekly', label: 'Semanal' },
-                  { value: 'monthly', label: 'Mensal' },
-                ]}
-                className="input-classical-2 w-full"
-              />
-            </div>
-
-            {config?.scheduleType !== 'once' && (
-              <div>
-                <Input
-                  label="Horário"
-                  type="time"
-                  value={config?.scheduleTime || '03:00'}
-                  onChange={(e) =>
-                    setConfig((prev) => ({
-                      ...prev,
-                      scheduleTime: e.target.value,
-                    }))
-                  }
-                  className="input-classical-2 w-full"
-                />
-              </div>
-            )}
-          </Stack>
-
-          {/* Footer */}
-          <Inline
-            gap={3}
-            className="justify-end pt-6 border-t border-theme-secondary"
-          >
-            <Button
-              type="button"
-              variant="ghost"
-              onClick={onClose}
-              disabled={submitting}
-            >
-              Cancelar
-            </Button>
-            <Button
-              type="submit"
-              variant="primary"
-              leftIcon={<PiFloppyDisk />}
-              disabled={submitting}
-            >
+    <Modal
+      isOpen={isOpen}
+      onClose={onClose}
+      maxWidth="2xl"
+      showCloseButton={false}
+    >
+      {/* Header */}
+      <div className="flex items-center justify-between p-6 border-b border-theme-secondary">
+        <Inline gap={3}>
+          <div className="w-10 h-10 rounded-xl flex items-center justify-center">
+            <PiDownloadSimple className="w-5 h-5 text-theme-primary" />
+          </div>
+          <div>
+            <h2 className="text-xl font-bold text-theme-primary">
               Criar Backup
-            </Button>
-          </Inline>
-        </Stack>
+            </h2>
+            <Text papel="rotulo" tom="fraco" as="p">
+              Configure um novo backup do sistema
+            </Text>
+          </div>
+        </Inline>
+        <button
+          onClick={onClose}
+          className="p-2 rounded-lg text-theme-tertiary transition-all"
+        >
+          <PiX className="w-5 h-5" />
+          <NomeAcao acao="fechar" />
+        </button>
       </div>
-    </div>
+
+      {/* Form */}
+      <Stack gap={6} as="form" onSubmit={handleSubmit} className="p-6">
+        {/* Basic Settings */}
+        <Stack>
+          <h3 className="text-lg font-bold text-theme-primary">
+            Configurações Básicas
+          </h3>
+
+          <div>
+            <Input
+              label="Nome do Backup"
+              type="text"
+              value={config?.name}
+              onChange={(e) =>
+                setConfig((prev) => ({ ...prev, name: e.target.value }))
+              }
+              className="input-classical-2 w-full"
+              required
+            />
+          </div>
+
+          <div>
+            <Select
+              label="Tipo de Backup"
+              value={config?.type}
+              onChange={(e) =>
+                setConfig((prev) => ({
+                  ...prev,
+                  type: e.target.value as any,
+                }))
+              }
+              options={[
+                { value: 'full', label: 'Completo - Todos os dados' },
+                {
+                  value: 'incremental',
+                  label: 'Incremental - Apenas alterações',
+                },
+                {
+                  value: 'differential',
+                  label: 'Diferencial - Mudanças desde o último completo',
+                },
+              ]}
+              className="input-classical-2 w-full"
+            />
+          </div>
+        </Stack>
+
+        {/* Content Selection */}
+        <Stack>
+          <h3 className="text-lg font-bold text-theme-primary">Conteúdo</h3>
+
+          <div className="grid grid-cols-2 gap-4">
+            <Inline
+              as="label"
+              gap={3}
+              className="p-3 bg-theme-secondary rounded-xl transition-all cursor-pointer"
+            >
+              <Input
+                type="checkbox"
+                checked={config?.includeDatabase}
+                onChange={(e) =>
+                  setConfig((prev) => ({
+                    ...prev,
+                    includeDatabase: e.target.checked,
+                  }))
+                }
+                className="w-4 h-4 text-ouro-texto bg-theme-secondary border-theme-primary rounded focus:ring-2"
+              />
+              <PiDatabase className="w-5 h-5" />
+              <div>
+                <div className="font-medium text-theme-primary">Database</div>
+                <Text papel="legenda" tom="fraco" as="div">
+                  Dados da aplicação
+                </Text>
+              </div>
+            </Inline>
+
+            <Inline
+              as="label"
+              gap={3}
+              className="p-3 bg-theme-secondary rounded-xl transition-all cursor-pointer"
+            >
+              <Input
+                type="checkbox"
+                checked={config?.includeFiles}
+                onChange={(e) =>
+                  setConfig((prev) => ({
+                    ...prev,
+                    includeFiles: e.target.checked,
+                  }))
+                }
+                className="w-4 h-4 text-ouro-texto bg-theme-secondary border-theme-primary rounded focus:ring-2"
+              />
+              <PiHardDrive className="w-5 h-5" />
+              <div>
+                <div className="font-medium text-theme-primary">Arquivos</div>
+                <Text papel="legenda" tom="fraco" as="div">
+                  PDFs e uploads
+                </Text>
+              </div>
+            </Inline>
+          </div>
+        </Stack>
+
+        {/* Options */}
+        <Stack>
+          <h3 className="text-lg font-bold text-theme-primary">Opções</h3>
+
+          <div className="grid grid-cols-2 gap-4">
+            <Inline as="label" gap={3}>
+              <Input
+                type="checkbox"
+                checked={config?.compression}
+                onChange={(e) =>
+                  setConfig((prev) => ({
+                    ...prev,
+                    compression: e.target.checked,
+                  }))
+                }
+                className="w-4 h-4 text-ouro-texto bg-theme-secondary border-theme-primary rounded focus:ring-2"
+              />
+              <span className="text-theme-primary">Compressão</span>
+            </Inline>
+
+            <Inline as="label" gap={3}>
+              <Input
+                type="checkbox"
+                checked={config?.encryption}
+                onChange={(e) =>
+                  setConfig((prev) => ({
+                    ...prev,
+                    encryption: e.target.checked,
+                  }))
+                }
+                className="w-4 h-4 text-ouro-texto bg-theme-secondary border-theme-primary rounded focus:ring-2"
+              />
+              <span className="text-theme-primary">Criptografia</span>
+            </Inline>
+          </div>
+
+          <div>
+            <Input
+              label="Retenção (dias)"
+              type="number"
+              value={config?.retentionDays}
+              onChange={(e) =>
+                setConfig((prev) => ({
+                  ...prev,
+                  retentionDays: parseInt(e.target.value),
+                }))
+              }
+              className="input-classical-2 w-full"
+              min="1"
+              max="365"
+            />
+          </div>
+        </Stack>
+
+        {/* Schedule */}
+        <Stack>
+          <h3 className="text-lg font-bold text-theme-primary">Agendamento</h3>
+
+          <div>
+            <Select
+              label="Frequência"
+              value={config?.scheduleType}
+              onChange={(e) =>
+                setConfig((prev) => ({
+                  ...prev,
+                  scheduleType: e.target.value as any,
+                }))
+              }
+              options={[
+                { value: 'once', label: 'Executar uma vez' },
+                { value: 'daily', label: 'Diário' },
+                { value: 'weekly', label: 'Semanal' },
+                { value: 'monthly', label: 'Mensal' },
+              ]}
+              className="input-classical-2 w-full"
+            />
+          </div>
+
+          {config?.scheduleType !== 'once' && (
+            <div>
+              <Input
+                label="Horário"
+                type="time"
+                value={config?.scheduleTime || '03:00'}
+                onChange={(e) =>
+                  setConfig((prev) => ({
+                    ...prev,
+                    scheduleTime: e.target.value,
+                  }))
+                }
+                className="input-classical-2 w-full"
+              />
+            </div>
+          )}
+        </Stack>
+
+        {/* Footer */}
+        <Inline
+          gap={3}
+          className="justify-end pt-6 border-t border-theme-secondary"
+        >
+          <Button
+            type="button"
+            variant="ghost"
+            onClick={onClose}
+            disabled={submitting}
+          >
+            Cancelar
+          </Button>
+          <Button
+            type="submit"
+            variant="primary"
+            leftIcon={<PiFloppyDisk />}
+            disabled={submitting}
+          >
+            Criar Backup
+          </Button>
+        </Inline>
+      </Stack>
+    </Modal>
   );
 }

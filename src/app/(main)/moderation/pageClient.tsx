@@ -41,6 +41,7 @@ import { Inline } from '@/app/components/ui/Layout';
 import { Text } from '@/app/components/ui/Text';
 import { Field } from '@/app/components/ui/Field';
 import { Card } from '@/app/components/ui/Card';
+import Modal from '@/app/components/Modal';
 
 interface ModerationClientProps {
   page: number;
@@ -587,62 +588,63 @@ const ModerationClient = ({
 
       {/* Delete Confirmation Modal */}
       {showModal && selectedModeration && (
-        <div className="fixed inset-0 z-dialogo flex items-center justify-center p-4 backdrop-blur-sm">
-          <AnimatedItem direction="scale" springType="bouncy">
-            <Card className="max-w-md w-full">
-              <div className="text-center">
-                <div className="w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
-                  <PiWarning className="w-8 h-8" />
-                </div>
+        <Modal
+          isOpen={true}
+          onClose={() => setShowModal(false)}
+          maxWidth="md"
+          showCloseButton={false}
+        >
+          <div className="text-center">
+            <div className="w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
+              <PiWarning className="w-8 h-8" />
+            </div>
 
-                <h3 className="text-xl font-bold text-theme-primary mb-2">
-                  {t('moderation_delete_title')}
-                </h3>
+            <h3 className="text-xl font-bold text-theme-primary mb-2">
+              {t('moderation_delete_title')}
+            </h3>
 
-                <p className="text-theme-secondary mb-6">
-                  {t('moderation_delete_subtitle').replace(
-                    '{title}',
-                    getEntityTitle(selectedModeration)
-                  )}
-                </p>
+            <p className="text-theme-secondary mb-6">
+              {t('moderation_delete_subtitle').replace(
+                '{title}',
+                getEntityTitle(selectedModeration)
+              )}
+            </p>
 
-                <div className="mb-4">
-                  <Field.Area
-                    label={t('moderation_delete_notes_label')}
-                    classeCampo="resize-none"
-                    value={moderationNotes}
-                    onChange={(e) => setModerationNotes(e.target.value)}
-                    rows={3}
-                    placeholder={t('moderation_delete_notes_placeholder')}
-                  />
-                </div>
+            <div className="mb-4">
+              <Field.Area
+                label={t('moderation_delete_notes_label')}
+                classeCampo="resize-none"
+                value={moderationNotes}
+                onChange={(e) => setModerationNotes(e.target.value)}
+                rows={3}
+                placeholder={t('moderation_delete_notes_placeholder')}
+              />
+            </div>
 
-                <div className="flex space-x-3">
-                  <Button
-                    variant="secondary"
-                    onClick={() => {
-                      setShowModal(false);
-                      setSelectedModeration(null);
-                      setModerationNotes('');
-                    }}
-                  >
-                    {t('moderation_delete_cancel')}
-                  </Button>
+            <div className="flex space-x-3">
+              <Button
+                variant="secondary"
+                onClick={() => {
+                  setShowModal(false);
+                  setSelectedModeration(null);
+                  setModerationNotes('');
+                }}
+              >
+                {t('moderation_delete_cancel')}
+              </Button>
 
-                  <Button
-                    variant="delete"
-                    onClick={() =>
-                      handleModeration(selectedModeration.id, 'delete')
-                    }
-                    disabled={processingId === selectedModeration.id}
-                  >
-                    {t('moderation_delete_confirm')}
-                  </Button>
-                </div>
-              </div>
-            </Card>
-          </AnimatedItem>
-        </div>
+              <Button
+                variant="delete"
+                onClick={() =>
+                  handleModeration(selectedModeration.id, 'delete')
+                }
+                disabled={processingId === selectedModeration.id}
+              >
+                {t('moderation_delete_confirm')}
+              </Button>
+            </div>
+          </div>
+        </Modal>
       )}
 
       {/* History Modal */}
