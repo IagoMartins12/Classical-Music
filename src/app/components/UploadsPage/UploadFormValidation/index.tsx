@@ -8,7 +8,7 @@ import {
   PiWarning,
   PiWarningCircle,
 } from 'react-icons/pi';
-import { Inline } from '@/app/components/ui/Layout';
+import { Stack, Inline } from '@/app/components/ui/Layout';
 import { Text } from '@/app/components/ui/Text';
 
 interface UploadFormValidationProps {
@@ -67,8 +67,11 @@ const UploadFormValidation = ({
     <div className={`space-y-3 ${className}`}>
       {/* Errors */}
       {validation.errors.length > 0 && (
-        <div className="bg-accent-red/10 border border-accent-red/20 rounded-lg p-4">
-          <Inline gap={2} className="mb-2">
+        <Stack
+          gap={2}
+          className="bg-accent-red/10 border border-accent-red/20 rounded-lg p-4"
+        >
+          <Inline gap={2}>
             <PiWarningCircle className="w-5 h-5 text-accent-red" />
             <span className="text-sm font-medium text-accent-red">
               Erros encontrados ({validation.errors.length})
@@ -85,13 +88,16 @@ const UploadFormValidation = ({
               </li>
             ))}
           </ul>
-        </div>
+        </Stack>
       )}
 
       {/* Warnings */}
       {validation.warnings.length > 0 && (
-        <div className="bg-accent-amber/10 border border-accent-amber/20 rounded-lg p-4">
-          <Inline gap={2} className="mb-2">
+        <Stack
+          gap={2}
+          className="bg-accent-amber/10 border border-accent-amber/20 rounded-lg p-4"
+        >
+          <Inline gap={2}>
             <PiWarning className="w-5 h-5 text-accent-amber" />
             <span className="text-sm font-medium text-accent-amber">
               Avisos ({validation.warnings.length})
@@ -108,7 +114,7 @@ const UploadFormValidation = ({
               </li>
             ))}
           </ul>
-        </div>
+        </Stack>
       )}
 
       {/* Data Quality */}

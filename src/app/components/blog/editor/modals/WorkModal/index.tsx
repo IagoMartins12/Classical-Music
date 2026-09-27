@@ -10,6 +10,7 @@ import Button from '@/app/components/Common/Button';
 import ComposerSearchInputSimple from '@/app/components/ComposerSearchInputSimple';
 import SimpleWorkSearchInput from '@/app/components/SimpleWorkSearchInput';
 import { getWorkById } from '@/app/requests/catalog-search';
+import { Stack } from '@/app/components/ui/Layout';
 
 interface WorkModalProps {
   editor: Editor;
@@ -59,7 +60,7 @@ export function WorkModal({ editor, onClose }: WorkModalProps) {
       maxWidth="2xl"
       minHeight
     >
-      <form onSubmit={handleSubmit} className="space-y-4">
+      <Stack as="form" onSubmit={handleSubmit}>
         <div>
           <label className="block text-sm font-medium text-theme-primary mb-2">
             1. Filtrar por Compositor (opcional)
@@ -89,7 +90,7 @@ export function WorkModal({ editor, onClose }: WorkModalProps) {
             Inserir Card
           </Button>
         </div>
-      </form>
+      </Stack>
     </Modal>
   );
 }

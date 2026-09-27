@@ -30,7 +30,7 @@ import { useLoginModal, useRegisterModal } from '@/app/stores/authStore';
 import { SearchModal } from '../SearchModal';
 import { useFavoritesStore } from '@/app/stores/useFavoritesStore';
 import { useLearningStore } from '@/app/stores/useLearningStore';
-import { Inline } from '@/app/components/ui/Layout';
+import { Stack, Inline } from '@/app/components/ui/Layout';
 import { Text } from '@/app/components/ui/Text';
 import { Card } from '@/app/components/ui/Card';
 
@@ -896,8 +896,8 @@ export function BlogHeader() {
                 `}
                 >
                   {isAuthenticated && user && (
-                    <div>
-                      <div className="flex items-center mb-4 pb-3 border-b border-theme-secondary">
+                    <Stack>
+                      <div className="flex items-center pb-3 border-b border-theme-secondary">
                         <button
                           onClick={goBackToMain}
                           aria-label="Voltar ao menu"
@@ -912,7 +912,7 @@ export function BlogHeader() {
 
                       <Inline
                         gap={3}
-                        className="px-4 py-3 mb-4 bg-interactive-hover rounded-lg"
+                        className="px-4 py-3 bg-interactive-hover rounded-lg"
                       >
                         {user.image ? (
                           <Image
@@ -1065,7 +1065,7 @@ export function BlogHeader() {
                           </Inline>
                         </li>
                       </ul>
-                    </div>
+                    </Stack>
                   )}
                 </div>
 
@@ -1076,8 +1076,8 @@ export function BlogHeader() {
                   ${mobileView === 'submenu' ? 'translate-x-0' : 'translate-x-full absolute top-0 left-0 w-full'}
                 `}
                 >
-                  <div>
-                    <div className="flex items-center mb-4 pb-3 border-b border-theme-secondary">
+                  <Stack>
+                    <div className="flex items-center pb-3 border-b border-theme-secondary">
                       <button
                         onClick={goBackToMain}
                         aria-label="Voltar ao menu"
@@ -1120,7 +1120,7 @@ export function BlogHeader() {
                         </li>
                       ))}
                     </ul>
-                  </div>
+                  </Stack>
                 </div>
               </div>
             </Card>

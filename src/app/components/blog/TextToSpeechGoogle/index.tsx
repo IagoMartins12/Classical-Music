@@ -11,7 +11,7 @@ import {
   PiSquare,
 } from 'react-icons/pi';
 import { generateArticleAudio } from '@/app/requests/blog/interactions';
-import { Inline } from '@/app/components/ui/Layout';
+import { Stack, Inline } from '@/app/components/ui/Layout';
 import { Text } from '@/app/components/ui/Text';
 import { Button } from '@/app/components/ui/Button';
 import { Card } from '@/app/components/ui/Card';
@@ -267,7 +267,7 @@ export function TextToSpeechGoogle({
 
       {/* PLAYER OU BOTÃO INICIAL */}
       {audioUrl ? (
-        <div className="space-y-4">
+        <Stack>
           {/* Progresso */}
           <div>
             <input
@@ -353,9 +353,9 @@ export function TextToSpeechGoogle({
               {Math.round(volume * 100)}%
             </Text>
           </Inline>
-        </div>
+        </Stack>
       ) : (
-        <div className="space-y-3">
+        <Stack gap={3}>
           <Inline
             as="button"
             gap={2}
@@ -383,7 +383,7 @@ export function TextToSpeechGoogle({
               </Text>
             </div>
           )}
-        </div>
+        </Stack>
       )}
     </Card>
   );

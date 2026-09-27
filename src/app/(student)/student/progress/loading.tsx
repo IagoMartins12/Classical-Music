@@ -18,7 +18,7 @@ import {
   PiTrendUp,
   PiUsers,
 } from 'react-icons/pi';
-import { Inline } from '@/app/components/ui/Layout';
+import { Stack, Inline } from '@/app/components/ui/Layout';
 import { Card } from '@/app/components/ui/Card';
 
 export default function StudentProgressLoading() {
@@ -108,11 +108,11 @@ export default function StudentProgressLoading() {
           ].map((item, index) => (
             <Card key={index} className="animate-pulse">
               <div className="flex items-center justify-between">
-                <div>
-                  <div className="h-8 bg-theme-primary/30 rounded w-12 mb-1"></div>
-                  <div className="h-3 bg-theme-tertiary/30 rounded w-24 mb-1"></div>
+                <Stack gap={1}>
+                  <div className="h-8 bg-theme-primary/30 rounded w-12"></div>
+                  <div className="h-3 bg-theme-tertiary/30 rounded w-24"></div>
                   <div className="h-3 bg-accent-blue/20 rounded w-20"></div>
-                </div>
+                </Stack>
                 <div className="w-12 h-12 bg-gradient-to-br from-brand-primary/20 to-brand-secondary/20 rounded-xl flex items-center justify-center">
                   {item.icon}
                 </div>
@@ -140,7 +140,7 @@ export default function StudentProgressLoading() {
                 </div>
               </div>
 
-              <div className="space-y-3">
+              <Stack gap={3}>
                 <div className="flex justify-between items-center">
                   <div className="h-4 bg-theme-secondary/30 rounded w-20"></div>
                   <div className="h-4 bg-theme-primary/30 rounded w-12"></div>
@@ -153,7 +153,7 @@ export default function StudentProgressLoading() {
                 <div className="text-center">
                   <div className="h-3 bg-accent-green/20 rounded w-16 mx-auto"></div>
                 </div>
-              </div>
+              </Stack>
             </Card>
           ))}
         </div>
@@ -217,7 +217,7 @@ export default function StudentProgressLoading() {
                   </div>
                 </Inline>
 
-                <div className="space-y-2">
+                <Stack gap={2}>
                   <div className="flex justify-between">
                     <div className="h-3 bg-theme-secondary/30 rounded w-12"></div>
                     <div className="h-3 bg-theme-primary/30 rounded w-8"></div>
@@ -233,7 +233,7 @@ export default function StudentProgressLoading() {
                       <PiStar className="w-3 h-3 text-accent-yellow/30" />
                     </Inline>
                   </div>
-                </div>
+                </Stack>
 
                 <div className="mt-3 flex flex-wrap gap-1">
                   {Array.from({ length: 2 }).map((_, i) => (
@@ -258,20 +258,21 @@ export default function StudentProgressLoading() {
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
             {Array.from({ length: 6 }).map((_, index) => (
-              <div
+              <Stack
+                gap={2}
                 key={index}
                 className="p-4 bg-gradient-to-r from-accent-green/5 to-accent-blue/5 border border-accent-green/30 rounded-lg"
                 style={{ animationDelay: `${index * 0.1}s` }}
               >
-                <Inline gap={3} className="mb-2">
+                <Inline gap={3}>
                   <div className="w-8 h-8 bg-gradient-to-br from-accent-green/20 to-accent-blue/20 rounded-full flex items-center justify-center">
                     <PiMedal className="w-4 h-4 text-theme-inverse/20" />
                   </div>
                   <div className="h-4 bg-theme-primary/30 rounded w-32"></div>
                 </Inline>
-                <div className="h-3 bg-theme-secondary/30 rounded w-full mb-2"></div>
+                <div className="h-3 bg-theme-secondary/30 rounded w-full"></div>
                 <div className="h-3 bg-accent-green/20 rounded w-24"></div>
-              </div>
+              </Stack>
             ))}
           </div>
         </Card>
@@ -285,8 +286,8 @@ export default function StudentProgressLoading() {
 
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
             {/* Learned Works */}
-            <div>
-              <div className="h-4 bg-theme-primary/30 rounded w-40 mb-4 flex items-center">
+            <Stack>
+              <div className="h-4 bg-theme-primary/30 rounded w-40 flex items-center">
                 <PiCheckCircle className="w-5 h-5 mr-2 text-accent-green/30" />
               </div>
 
@@ -312,11 +313,11 @@ export default function StudentProgressLoading() {
                   </div>
                 ))}
               </div>
-            </div>
+            </Stack>
 
             {/* Want to Learn */}
-            <div>
-              <div className="h-4 bg-theme-primary/30 rounded w-32 mb-4 flex items-center">
+            <Stack>
+              <div className="h-4 bg-theme-primary/30 rounded w-32 flex items-center">
                 <PiHeart className="w-5 h-5 mr-2 text-accent-blue/30" />
               </div>
 
@@ -338,7 +339,7 @@ export default function StudentProgressLoading() {
                   </div>
                 ))}
               </div>
-            </div>
+            </Stack>
           </div>
         </Card>
       </div>

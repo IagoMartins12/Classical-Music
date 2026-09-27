@@ -46,7 +46,7 @@ import Input from '@/app/components/Common/Inputs';
 import Link from '@/app/components/LocalizedLink';
 import { useLoginModal } from '@/app/stores/authStore';
 import Image from '@/app/components/SmartImage';
-import { Inline } from '@/app/components/ui/Layout';
+import { Stack, Inline } from '@/app/components/ui/Layout';
 import { Text } from '@/app/components/ui/Text';
 
 const comparisonData = [
@@ -869,8 +869,8 @@ export default function PricingPage({ pricing }: PricingProps) {
       {/* FAQ */}
       <section className="py-8">
         <AnimatedContainer delay={0.1} staggerSpeed="normal">
-          <div className="section-wrap max-w-4xl mx-auto">
-            <div className="text-center mb-12">
+          <Stack gap={12} className="section-wrap max-w-4xl mx-auto">
+            <div className="text-center">
               <h2 className="text-3xl lg:text-4xl font-bold classical-title text-theme-primary mb-4">
                 Perguntas Frequentes
               </h2>
@@ -902,7 +902,7 @@ export default function PricingPage({ pricing }: PricingProps) {
                 answer="Sim! Entre em contato conosco para planos corporativos e descontos especiais para instituições de ensino."
               />
             </div>
-          </div>
+          </Stack>
         </AnimatedContainer>
       </section>
 
@@ -995,7 +995,7 @@ export default function PricingPage({ pricing }: PricingProps) {
                 </div>
 
                 {/* Card do Plano */}
-                <div className="classical-card rounded-xl p-5 space-y-4">
+                <Stack className="classical-card rounded-xl p-5">
                   {/* Topo */}
                   <div className="flex items-center gap-4">
                     <Image
@@ -1029,7 +1029,7 @@ export default function PricingPage({ pricing }: PricingProps) {
                   </div>
 
                   {/* Lista de benefícios */}
-                  <div className="space-y-2 pt-2">
+                  <Stack gap={2} className="pt-2">
                     {plan.features.map((feature, index) => (
                       <div
                         key={index}
@@ -1039,7 +1039,7 @@ export default function PricingPage({ pricing }: PricingProps) {
                         <span className="text-theme-secondary">{feature}</span>
                       </div>
                     ))}
-                  </div>
+                  </Stack>
 
                   {/* Preço */}
                   <div className="pt-4 border-t border-theme-secondary">
@@ -1054,7 +1054,7 @@ export default function PricingPage({ pricing }: PricingProps) {
                     </p>
 
                     {couponData?.pricing ? (
-                      <div className="mt-4 space-y-2 text-sm">
+                      <Stack gap={2} className="mt-4 text-sm">
                         <div className="flex justify-between">
                           <span className="text-theme-tertiary">
                             Preço original
@@ -1076,7 +1076,7 @@ export default function PricingPage({ pricing }: PricingProps) {
                             R$ {couponData.pricing.finalPrice.toFixed(2)}
                           </span>
                         </div>
-                      </div>
+                      </Stack>
                     ) : (
                       <p className="text-lg text-theme-secondary mt-2">
                         R${' '}
@@ -1096,7 +1096,7 @@ export default function PricingPage({ pricing }: PricingProps) {
                       </p>
                     )}
                   </div>
-                </div>
+                </Stack>
 
                 {/* Cupom */}
                 <div>
@@ -1462,7 +1462,7 @@ function BenefitCard({
       <Text papel="rotulo" tom="fraco" as="p" className="mb-4">
         {subtitle}
       </Text>
-      <div className="space-y-2">
+      <Stack gap={2}>
         {benefits.map((benefit, index) => (
           <Inline gap={2} key={index} className="justify-center">
             <PiCheck
@@ -1475,7 +1475,7 @@ function BenefitCard({
             </Text>
           </Inline>
         ))}
-      </div>
+      </Stack>
     </AnimatedCard>
   );
 }

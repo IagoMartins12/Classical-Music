@@ -891,11 +891,11 @@ export default function IMSLPTabsIncremental({
           <div className="p-0 py-4 md:p-8">
             {activeTabData.length > 0 ? (
               <div className="grid grid-cols-1 gap-8">
-                <div className="space-y-6">
+                <Stack gap={6}>
                   {activeTabData.map((scoreGroup, groupIndex) => (
-                    <div
+                    <Stack
                       key={`${scoreGroup.source}-${groupIndex}`}
-                      className="space-y-4 animate-fade-in-up"
+                      className="animate-fade-in-up"
                       style={{ animationDelay: `${groupIndex * 0.1}s` }}
                     >
                       {scoreGroup.groupTitle && (
@@ -963,7 +963,7 @@ export default function IMSLPTabsIncremental({
                           );
                         })}
                       </div>
-                    </div>
+                    </Stack>
                   ))}
 
                   {/* Botões de Load More */}
@@ -1048,7 +1048,7 @@ export default function IMSLPTabsIncremental({
                       </Inline>
                     </Stack>
                   )}
-                </div>
+                </Stack>
 
                 {/* Preview Panel com ID para scroll */}
                 {selectedScore && !isSelectionMode && (

@@ -39,7 +39,7 @@ import {
   EditSubscriberModal,
   SendEmailModal,
 } from '@/app/components/Admin/Newsletter/SubscriberModals';
-import { Inline } from '@/app/components/ui/Layout';
+import { Stack, Inline } from '@/app/components/ui/Layout';
 import { Text } from '@/app/components/ui/Text';
 
 interface FilterState {
@@ -219,7 +219,7 @@ export default function NewsletterSubscribersClient() {
 
   return (
     <PageContainer showBackground={true}>
-      <div className="space-y-8">
+      <Stack gap={8}>
         <AnimatedContainer
           delay={0.1}
           staggerSpeed="normal"
@@ -246,14 +246,14 @@ export default function NewsletterSubscribersClient() {
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 lg:gap-6">
             <AnimatedCard className="classical-card p-6">
               <div className="flex items-center justify-between">
-                <div>
-                  <Text papel="rotulo" tom="fraco" as="p" className="mb-1">
+                <Stack gap={1}>
+                  <Text papel="rotulo" tom="fraco" as="p">
                     Total
                   </Text>
                   <p className="text-3xl font-bold text-theme-primary">
                     {formatSubscriberCount(pagination?.total || 0)}
                   </p>
-                </div>
+                </Stack>
                 <div className="w-12 h-12 bg-accent-blue/20 rounded-xl flex items-center justify-center">
                   <PiUsers className="w-6 h-6 text-accent-blue" />
                 </div>
@@ -262,14 +262,14 @@ export default function NewsletterSubscribersClient() {
 
             <AnimatedCard className="classical-card p-6">
               <div className="flex items-center justify-between">
-                <div>
-                  <Text papel="rotulo" tom="fraco" as="p" className="mb-1">
+                <Stack gap={1}>
+                  <Text papel="rotulo" tom="fraco" as="p">
                     Ativos
                   </Text>
                   <p className="text-3xl font-bold text-accent-green">
                     {subscribers.filter((s) => s.status === 'ACTIVE').length}
                   </p>
-                </div>
+                </Stack>
                 <div className="w-12 h-12 bg-accent-green/20 rounded-xl flex items-center justify-center">
                   <PiCheckCircle className="w-6 h-6 text-accent-green" />
                 </div>
@@ -278,14 +278,14 @@ export default function NewsletterSubscribersClient() {
 
             <AnimatedCard className="classical-card p-6">
               <div className="flex items-center justify-between">
-                <div>
-                  <Text papel="rotulo" tom="fraco" as="p" className="mb-1">
+                <Stack gap={1}>
+                  <Text papel="rotulo" tom="fraco" as="p">
                     Pendentes
                   </Text>
                   <p className="text-3xl font-bold text-accent-amber">
                     {subscribers.filter((s) => s.status === 'PENDING').length}
                   </p>
-                </div>
+                </Stack>
                 <div className="w-12 h-12 bg-accent-amber/20 rounded-xl flex items-center justify-center">
                   <PiClock className="w-6 h-6 text-accent-amber" />
                 </div>
@@ -294,8 +294,8 @@ export default function NewsletterSubscribersClient() {
 
             <AnimatedCard className="classical-card p-6">
               <div className="flex items-center justify-between">
-                <div>
-                  <Text papel="rotulo" tom="fraco" as="p" className="mb-1">
+                <Stack gap={1}>
+                  <Text papel="rotulo" tom="fraco" as="p">
                     Cancelados
                   </Text>
                   <p className="text-3xl font-bold text-accent-red">
@@ -304,7 +304,7 @@ export default function NewsletterSubscribersClient() {
                         .length
                     }
                   </p>
-                </div>
+                </Stack>
                 <div className="w-12 h-12 bg-accent-red/20 rounded-xl flex items-center justify-center">
                   <PiXCircle className="w-6 h-6 text-accent-red" />
                 </div>
@@ -712,7 +712,7 @@ export default function NewsletterSubscribersClient() {
             )}
           </AnimatedCard>
         </AnimatedContainer>
-      </div>
+      </Stack>
 
       {/* 🆕 MODAIS */}
       <SubscriberDetailsModal

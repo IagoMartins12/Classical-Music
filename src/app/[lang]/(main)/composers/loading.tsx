@@ -8,7 +8,7 @@ import {
   PiMagnifyingGlass,
   PiSquaresFour,
 } from 'react-icons/pi';
-import { Inline } from '@/app/components/ui/Layout';
+import { Stack, Inline } from '@/app/components/ui/Layout';
 import { Text } from '@/app/components/ui/Text';
 import { Card } from '@/app/components/ui/Card';
 
@@ -42,24 +42,24 @@ export default function ComposersLoading() {
         {/* Filters Section */}
         <Card className="mx-4">
           <div className="flex items-center mb-6">
-            <div className="space-y-2">
+            <Stack gap={2}>
               <div className="h-5 w-32 bg-gradient-to-r from-theme-primary/20 to-theme-secondary/20 rounded animate-pulse"></div>
               <div className="h-3 w-48 bg-theme-elevated rounded animate-pulse"></div>
-            </div>
+            </Stack>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
             {/* Search Field */}
-            <div className="space-y-2">
+            <Stack gap={2}>
               <div className="h-4 w-24 bg-theme-elevated rounded animate-pulse"></div>
               <div className="relative">
                 <PiMagnifyingGlass className="absolute left-4 top-1/2 transform -translate-y-1/2 w-5 h-5 text-theme-tertiary/50" />
                 <div className="h-10 bg-gradient-to-r from-theme-elevated to-interactive-hover border border-theme-secondary rounded-lg pl-12 animate-pulse"></div>
               </div>
-            </div>
+            </Stack>
 
             {/* Epoch Filter */}
-            <div className="space-y-2">
+            <Stack gap={2}>
               <div className="h-4 w-28 bg-theme-elevated rounded animate-pulse"></div>
               <div className="relative">
                 <PiClock className="absolute left-4 top-1/2 transform -translate-y-1/2 w-5 h-5 text-theme-tertiary/50" />
@@ -80,7 +80,7 @@ export default function ComposersLoading() {
                   </svg>
                 </div>
               </div>
-            </div>
+            </Stack>
           </div>
 
           {/* Filter Status and View Toggle */}
@@ -176,7 +176,7 @@ function ComposerCardSkeleton() {
         <div className="h-4 bg-theme-elevated rounded mx-auto w-1/2 animate-pulse"></div>
 
         {/* Details */}
-        <div className="space-y-2 pt-2">
+        <Stack gap={2} className="pt-2">
           <Inline gap={2} className="justify-center">
             <div className="w-3 h-3 bg-theme-tertiary/30 rounded animate-pulse"></div>
             <div className="h-3 bg-theme-elevated rounded w-20 animate-pulse"></div>
@@ -185,7 +185,7 @@ function ComposerCardSkeleton() {
             <div className="w-3 h-3 bg-theme-tertiary/30 rounded animate-pulse"></div>
             <div className="h-3 bg-theme-elevated rounded w-16 animate-pulse"></div>
           </Inline>
-        </div>
+        </Stack>
 
         {/* Period tag */}
         <div className="pt-2">

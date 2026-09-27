@@ -33,7 +33,7 @@ import CreateScoreModal from '../../../../../components/UploadsPage/modals/Creat
 import { useToast } from '@/app/hooks/useToast';
 import { deleteUpload } from '@/app/requests/uploads-client';
 import { useTranslation } from '@/app/context/TranslationContext';
-import { Inline } from '@/app/components/ui/Layout';
+import { Stack, Inline } from '@/app/components/ui/Layout';
 import { Text } from '@/app/components/ui/Text';
 import { Card } from '@/app/components/ui/Card';
 
@@ -181,9 +181,9 @@ const EditScoreClient = ({
             <div className="p-8 relative z-10">
               <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
                 {/* Informações Principais */}
-                <div className="lg:col-span-3 space-y-6">
+                <Stack gap={6} className="lg:col-span-3">
                   {/* Título e Header */}
-                  <div className="space-y-4">
+                  <Stack>
                     <div className="flex flex-col sm:flex-row gap-4 sm:gap-0  items-start justify-between">
                       <div className="flex-1">
                         <Inline gap={3} className="mb-4">
@@ -288,7 +288,7 @@ const EditScoreClient = ({
                         </Text>
                       </div>
                     </Inline>
-                  </div>
+                  </Stack>
 
                   {/* Grid de Informações Detalhadas */}
                   <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
@@ -423,11 +423,11 @@ const EditScoreClient = ({
 
                   {/* Informações de Publicação */}
                   {(score.editor || score.publisher || score.copyright) && (
-                    <div className="border-t border-theme-secondary pt-6">
+                    <Stack className="border-t border-theme-secondary pt-6">
                       <Inline
                         as="h3"
                         gap={2}
-                        className="text-lg font-semibold text-theme-primary classical-title mb-4"
+                        className="text-lg font-semibold text-theme-primary classical-title"
                       >
                         <PiFileText className="w-5 h-5 text-accent-blue" />
                         <span>{t('score_info_publication_info')}</span>
@@ -464,16 +464,16 @@ const EditScoreClient = ({
                           </div>
                         )}
                       </div>
-                    </div>
+                    </Stack>
                   )}
 
                   {/* Notas */}
                   {score.notes && (
-                    <div className="border-t border-theme-secondary pt-6">
+                    <Stack className="border-t border-theme-secondary pt-6">
                       <Inline
                         as="h3"
                         gap={2}
-                        className="text-lg font-semibold text-theme-primary classical-title mb-4"
+                        className="text-lg font-semibold text-theme-primary classical-title"
                       >
                         <PiInfo className="w-5 h-5 text-accent-green" />
                         <span>{t('score_info_notes')}</span>
@@ -483,7 +483,7 @@ const EditScoreClient = ({
                           {score.notes}
                         </p>
                       </div>
-                    </div>
+                    </Stack>
                   )}
 
                   {/* Link de Download */}
@@ -523,10 +523,10 @@ const EditScoreClient = ({
                       </Inline>
                     </div>
                   )}
-                </div>
+                </Stack>
 
                 {/* Sidebar com Thumbnail e Obra */}
-                <div className="space-y-6">
+                <Stack gap={6}>
                   {/* Thumbnail da Partitura */}
                   {score.thumbnailUrl && (
                     <Card nivel={2}>
@@ -571,7 +571,7 @@ const EditScoreClient = ({
                       </h3>
                     </Inline>
 
-                    <div className="space-y-4">
+                    <Stack>
                       <div>
                         <Link
                           href={`/work/${score.work.id}`}
@@ -587,7 +587,7 @@ const EditScoreClient = ({
                             score.work.composer.name}
                         </Link>
                       </div>
-                    </div>
+                    </Stack>
                   </Card>
 
                   {/* Detalhes Técnicos */}
@@ -600,7 +600,7 @@ const EditScoreClient = ({
                         {t('score_info_technical_details')}
                       </h3>
                     </Inline>
-                    <div className="space-y-3 text-sm">
+                    <Stack gap={3} className="text-sm">
                       {score.groupIndex !== null && (
                         <div className="flex items-center justify-between">
                           <span className="font-medium text-theme-tertiary">
@@ -639,9 +639,9 @@ const EditScoreClient = ({
                           )}
                         </Text>
                       </div>
-                    </div>
+                    </Stack>
                   </Card>
-                </div>
+                </Stack>
               </div>
             </div>
           </AnimatedCard>

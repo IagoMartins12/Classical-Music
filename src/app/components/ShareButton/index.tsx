@@ -14,7 +14,7 @@ import {
 } from 'react-icons/pi';
 import Input from '../Common/Inputs';
 import { useTranslation } from '@/app/hooks/useTranslation';
-import { Inline } from '@/app/components/ui/Layout';
+import { Stack, Inline } from '@/app/components/ui/Layout';
 import { Text } from '@/app/components/ui/Text';
 import { NomeAcao } from '@/app/components/ui/NomeAcao';
 
@@ -214,8 +214,8 @@ export default function ShareButton({
             </div>
 
             {/* Plataformas de compartilhamento */}
-            <div>
-              <label className="text-sm font-medium text-theme-secondary mb-3 block">
+            <Stack gap={3}>
+              <label className="text-sm font-medium text-theme-secondary block">
                 {t('share_compartilhar_em')}
               </label>
               <div className="grid grid-cols-2 gap-3">
@@ -267,7 +267,7 @@ export default function ShareButton({
                   </span>
                 </Inline>
               </div>
-            </div>
+            </Stack>
           </div>
         </>
       )}

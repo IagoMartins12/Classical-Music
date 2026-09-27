@@ -33,7 +33,7 @@ import toast from 'react-hot-toast';
 import { useLoginModal } from '@/app/stores/authStore';
 import Input from '../../Common/Inputs';
 import { useTranslation } from '@/app/context/TranslationContext';
-import { Inline } from '@/app/components/ui/Layout';
+import { Stack, Inline } from '@/app/components/ui/Layout';
 import { Text } from '@/app/components/ui/Text';
 import { Button } from '@/app/components/ui/Button';
 
@@ -307,7 +307,7 @@ export default function AnnotationsSection({
             </div>
 
             {/* ✅ Barra de busca e filtros COM TRADUÇÕES */}
-            <div className="space-y-4">
+            <Stack>
               <Inline
                 as="button"
                 gap={2}
@@ -500,7 +500,7 @@ export default function AnnotationsSection({
                   </Inline>
                 </div>
               )}
-            </div>
+            </Stack>
           </div>
         </div>
 

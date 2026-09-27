@@ -46,7 +46,7 @@ import ShareReportModal, {
 } from '@/app/components/TeacherSystem/ShareReportModal';
 import { shareProgressReport } from '@/app/requests/portal/progress-report';
 import dynamic from 'next/dynamic';
-import { Inline } from '@/app/components/ui/Layout';
+import { Stack, Inline } from '@/app/components/ui/Layout';
 import { Text } from '@/app/components/ui/Text';
 import { Button } from '@/app/components/ui/Button';
 import { Card } from '@/app/components/ui/Card';
@@ -441,8 +441,8 @@ export default function TeacherProgressPageClient({
 
         {/* Progress Evolution Charts */}
         <AnimatedItem direction="up" springType="gentle">
-          <div className="mb-8">
-            <h2 className="text-2xl font-bold text-theme-primary classical-title mb-6 flex items-center">
+          <Stack gap={6} className="mb-8">
+            <h2 className="text-2xl font-bold text-theme-primary classical-title flex items-center">
               <PiTrendUp className="w-6 h-6 mr-3 text-brand-primary" />
               {t('progress_evolution')}
             </h2>
@@ -468,14 +468,14 @@ export default function TeacherProgressPageClient({
                 </div>
               </AnimatedCard>
             </div>
-          </div>
+          </Stack>
         </AnimatedItem>
 
         {/* Musical Preferences */}
         {reportData.preferences.favoriteComposers.length > 0 && (
           <AnimatedItem direction="up" springType="gentle">
-            <div className="mb-8">
-              <h2 className="text-2xl font-bold text-theme-primary classical-title mb-6 flex items-center">
+            <Stack gap={6} className="mb-8">
+              <h2 className="text-2xl font-bold text-theme-primary classical-title flex items-center">
                 <PiHeart className="w-6 h-6 mr-3 text-brand-primary" />
                 {t('musical_preferences')}
               </h2>
@@ -486,7 +486,7 @@ export default function TeacherProgressPageClient({
                   <h3 className="text-lg font-bold text-theme-primary mb-4">
                     {t('favorite_composers')}
                   </h3>
-                  <div className="space-y-3">
+                  <Stack gap={3}>
                     {reportData.preferences.favoriteComposers
                       .slice(0, 6)
                       .map((composer, index) => (
@@ -530,7 +530,7 @@ export default function TeacherProgressPageClient({
                           </div>
                         </div>
                       ))}
-                  </div>
+                  </Stack>
                 </AnimatedCard>
 
                 {/* Skills Assessment Radar */}
@@ -543,14 +543,14 @@ export default function TeacherProgressPageClient({
                   </div>
                 </AnimatedCard>
               </div>
-            </div>
+            </Stack>
           </AnimatedItem>
         )}
 
         {/* Pedagogical Insights */}
         <AnimatedItem direction="up" springType="gentle">
-          <div className="mb-8">
-            <h2 className="text-2xl font-bold text-theme-primary classical-title mb-6 flex items-center">
+          <Stack gap={6} className="mb-8">
+            <h2 className="text-2xl font-bold text-theme-primary classical-title flex items-center">
               <PiTarget className="w-6 h-6 mr-3 text-brand-primary" />
               {t('pedagogical_insights')}
             </h2>
@@ -561,14 +561,14 @@ export default function TeacherProgressPageClient({
                 <h3 className="text-lg font-bold text-theme-primary mb-4">
                   {t('learning_style')}
                 </h3>
-                <div className="space-y-4">
+                <Stack>
                   <div>
                     <span className="inline-block px-3 py-1 bg-brand-primary text-white rounded-full text-sm font-medium">
                       {reportData.insights.learningStyle.primary}
                     </span>
                   </div>
-                  <div>
-                    <h4 className="font-medium text-theme-primary mb-2">
+                  <Stack gap={2}>
+                    <h4 className="font-medium text-theme-primary">
                       {t('strong_areas')}
                     </h4>
                     <div className="flex flex-wrap gap-1">
@@ -581,9 +581,9 @@ export default function TeacherProgressPageClient({
                         </span>
                       ))}
                     </div>
-                  </div>
-                  <div>
-                    <h4 className="font-medium text-theme-primary mb-2">
+                  </Stack>
+                  <Stack gap={2}>
+                    <h4 className="font-medium text-theme-primary">
                       {t('improvement_areas')}
                     </h4>
                     <div className="flex flex-wrap gap-1">
@@ -598,8 +598,8 @@ export default function TeacherProgressPageClient({
                         )
                       )}
                     </div>
-                  </div>
-                </div>
+                  </Stack>
+                </Stack>
               </AnimatedCard>
 
               {/* Recommendations */}
@@ -607,7 +607,7 @@ export default function TeacherProgressPageClient({
                 <h3 className="text-lg font-bold text-theme-primary mb-4">
                   {t('recommended_focus')}
                 </h3>
-                <div className="space-y-3">
+                <Stack gap={3}>
                   {reportData.insights.recommendedFocus.map((focus, index) => (
                     <Inline gap={3} key={index}>
                       <div className="w-2 h-2 bg-brand-primary rounded-full"></div>
@@ -616,7 +616,7 @@ export default function TeacherProgressPageClient({
                       </Text>
                     </Inline>
                   ))}
-                </div>
+                </Stack>
               </AnimatedCard>
 
               {/* Next Steps */}
@@ -624,7 +624,7 @@ export default function TeacherProgressPageClient({
                 <h3 className="text-lg font-bold text-theme-primary mb-4">
                   {t('next_steps')}
                 </h3>
-                <div className="space-y-3">
+                <Stack gap={3}>
                   {reportData.insights.nextSteps.map((step, index) => (
                     <div key={index} className="flex items-start space-x-3">
                       <div className="w-6 h-6 bg-gradient-to-br from-brand-primary to-brand-secondary rounded-full flex items-center justify-center flex-shrink-0 mt-0.5">
@@ -637,10 +637,10 @@ export default function TeacherProgressPageClient({
                       </Text>
                     </div>
                   ))}
-                </div>
+                </Stack>
               </AnimatedCard>
             </div>
-          </div>
+          </Stack>
         </AnimatedItem>
 
         {/* Report Metadata */}

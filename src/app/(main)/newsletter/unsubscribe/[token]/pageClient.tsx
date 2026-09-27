@@ -14,7 +14,7 @@ import {
 import Input from '@/app/components/Common/Inputs';
 import { useTranslation } from '@/app/context/TranslationContext';
 import { unsubscribeFromNewsletter } from '@/app/requests/newsletter';
-import { Inline } from '@/app/components/ui/Layout';
+import { Stack, Inline } from '@/app/components/ui/Layout';
 import { Field } from '@/app/components/ui/Field';
 import { Button } from '@/app/components/ui/Button';
 
@@ -143,15 +143,15 @@ export default function UnsubscribePage() {
                   hover="lift"
                   className="classical-card p-8 text-center"
                 >
-                  <div className="space-y-6">
-                    <div>
-                      <h3 className="text-xl font-semibold text-theme-primary mb-4">
+                  <Stack gap={6}>
+                    <Stack>
+                      <h3 className="text-xl font-semibold text-theme-primary">
                         {t('unsubscribe_before_title')}
                       </h3>
                       <p className="text-theme-secondary">
                         {t('unsubscribe_before_message')}
                       </p>
-                    </div>
+                    </Stack>
 
                     <div className="space-y-4">
                       <Button
@@ -182,28 +182,28 @@ export default function UnsubscribePage() {
                         {t('unsubscribe_keep_button')}
                       </button>
                     </div>
-                  </div>
+                  </Stack>
                 </AnimatedCard>
               )}
 
               {step === 'feedback' && (
                 <AnimatedCard hover="lift" className="classical-card p-8">
-                  <div className="space-y-6">
-                    <div className="text-center">
-                      <h3 className="text-xl font-semibold text-theme-primary mb-2">
+                  <Stack gap={6}>
+                    <Stack gap={2} className="text-center">
+                      <h3 className="text-xl font-semibold text-theme-primary">
                         {t('unsubscribe_feedback_title')}
                       </h3>
                       <p className="text-theme-secondary">
                         {t('unsubscribe_feedback_subtitle')}
                       </p>
-                    </div>
+                    </Stack>
 
                     {/* Reason Selection */}
-                    <div className="space-y-3">
+                    <Stack gap={3}>
                       <label className="block text-sm font-medium text-theme-secondary">
                         {t('unsubscribe_reason_label')}
                       </label>
-                      <div className="space-y-2">
+                      <Stack gap={2}>
                         {unsubscribeReasons.map((reasonOption) => (
                           <Inline
                             as="label"
@@ -224,8 +224,8 @@ export default function UnsubscribePage() {
                             </span>
                           </Inline>
                         ))}
-                      </div>
-                    </div>
+                      </Stack>
+                    </Stack>
 
                     {/* Feedback */}
                     <div>
@@ -260,7 +260,7 @@ export default function UnsubscribePage() {
                         {t('unsubscribe_back_button')}
                       </button>
                     </div>
-                  </div>
+                  </Stack>
                 </AnimatedCard>
               )}
             </div>

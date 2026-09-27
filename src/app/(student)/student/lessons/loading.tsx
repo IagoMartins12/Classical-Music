@@ -17,7 +17,7 @@ import {
   PiWarning,
   PiX,
 } from 'react-icons/pi';
-import { Inline } from '@/app/components/ui/Layout';
+import { Stack, Inline } from '@/app/components/ui/Layout';
 import { Card } from '@/app/components/ui/Card';
 
 export default function StudentLessonsLoading() {
@@ -137,18 +137,18 @@ export default function StudentLessonsLoading() {
 
           {/* Filters Panel */}
           <div className="mt-6 pt-6 border-t border-theme-secondary grid grid-cols-1 md:grid-cols-3 gap-4">
-            <div>
-              <div className="h-3 w-16 bg-theme-tertiary/30 rounded mb-2"></div>
+            <Stack gap={2}>
+              <div className="h-3 w-16 bg-theme-tertiary/30 rounded"></div>
               <div className="h-10 bg-gradient-to-r from-theme-elevated to-interactive-hover border border-theme-secondary rounded-lg"></div>
-            </div>
-            <div>
-              <div className="h-3 w-12 bg-theme-tertiary/30 rounded mb-2"></div>
+            </Stack>
+            <Stack gap={2}>
+              <div className="h-3 w-12 bg-theme-tertiary/30 rounded"></div>
               <div className="h-10 bg-gradient-to-r from-theme-elevated to-interactive-hover border border-theme-secondary rounded-lg"></div>
-            </div>
-            <div>
-              <div className="h-3 w-14 bg-theme-tertiary/30 rounded mb-2"></div>
+            </Stack>
+            <Stack gap={2}>
+              <div className="h-3 w-14 bg-theme-tertiary/30 rounded"></div>
               <div className="h-10 bg-gradient-to-r from-theme-elevated to-interactive-hover border border-theme-secondary rounded-lg"></div>
-            </div>
+            </Stack>
           </div>
         </Card>
 
@@ -227,7 +227,7 @@ function LessonCardSkeleton({ delay = 0 }: { delay?: number }) {
       {/* Lesson Info */}
       <div className="h-5 bg-theme-primary/30 rounded w-full mb-2"></div>
 
-      <div className="space-y-2 mb-4">
+      <Stack gap={2} className="mb-4">
         <div className="flex items-center">
           <PiCalendarBlank className="w-4 h-4 mr-2 text-theme-tertiary/30" />
           <div className="h-3 bg-theme-secondary/30 rounded w-32"></div>
@@ -247,18 +247,18 @@ function LessonCardSkeleton({ delay = 0 }: { delay?: number }) {
           <PiMapPin className="w-4 h-4 mr-2 text-theme-tertiary/30" />
           <div className="h-3 bg-theme-secondary/30 rounded w-28"></div>
         </div>
-      </div>
+      </Stack>
 
       {/* Objectives Preview */}
-      <div className="mb-4">
-        <div className="h-3 bg-theme-tertiary/30 rounded w-16 mb-1"></div>
+      <Stack gap={1} className="mb-4">
+        <div className="h-3 bg-theme-tertiary/30 rounded w-16"></div>
         <div className="flex flex-wrap gap-1">
           {Array.from({ length: 2 }).map((_, i) => (
             <div key={i} className="h-5 w-16 bg-accent-blue/10 rounded"></div>
           ))}
           <div className="h-3 bg-theme-tertiary/30 rounded w-8"></div>
         </div>
-      </div>
+      </Stack>
 
       {/* Feedback Status */}
       <div className="mb-4">

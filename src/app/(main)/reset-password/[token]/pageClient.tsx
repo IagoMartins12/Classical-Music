@@ -23,6 +23,7 @@ import {
 } from '@/app/hooks/usePasswordReset';
 import { useTranslation } from '@/app/context/TranslationContext';
 import { Text } from '@/app/components/ui/Text';
+import { Stack } from '@/app/components/ui/Layout';
 
 interface ResetPageState {
   step: 'validating' | 'form' | 'success' | 'error';
@@ -326,8 +327,11 @@ export default function ResetPasswordPage() {
           </div>
 
           {/* Dicas de Segurança */}
-          <div className="bg-accent-blue bg-opacity-10 border border-accent-blue rounded-lg p-4">
-            <h4 className="text-sm font-medium text-accent-blue mb-2">
+          <Stack
+            gap={2}
+            className="bg-accent-blue bg-opacity-10 border border-accent-blue rounded-lg p-4"
+          >
+            <h4 className="text-sm font-medium text-accent-blue">
               {t('security_tips_title')}
             </h4>
             <ul className="text-xs text-accent-blue opacity-80 space-y-1">
@@ -336,7 +340,7 @@ export default function ResetPasswordPage() {
               <li>{t('security_tip_3')}</li>
               <li>{t('security_tip_4')}</li>
             </ul>
-          </div>
+          </Stack>
 
           {/* Botão de Submissão */}
           <Button
@@ -376,14 +380,17 @@ export default function ResetPasswordPage() {
         {t('success_subtitle')}
       </p>
 
-      <div className="bg-accent-green bg-opacity-10 border border-accent-green rounded-xl p-6 mb-8">
-        <h3 className="text-xl font-semibold text-accent-green mb-2">
+      <Stack
+        gap={2}
+        className="bg-accent-green bg-opacity-10 border border-accent-green rounded-xl p-6 mb-8"
+      >
+        <h3 className="text-xl font-semibold text-accent-green">
           {t('success_all_done')}
         </h3>
         <p className="text-accent-green opacity-80">
           {t('success_description')}
         </p>
-      </div>
+      </Stack>
 
       <div className="grid md:grid-cols-2 gap-4">
         <Button
@@ -419,8 +426,11 @@ export default function ResetPasswordPage() {
         {getErrorMessage(pageState.errorCode)}
       </p>
 
-      <div className="bg-accent-red bg-opacity-10 border border-accent-red rounded-xl p-6 mb-8">
-        <div className="flex items-center justify-center mb-3">
+      <Stack
+        gap={3}
+        className="bg-accent-red bg-opacity-10 border border-accent-red rounded-xl p-6 mb-8"
+      >
+        <div className="flex items-center justify-center">
           <PiWarningCircle className="w-5 h-5 text-accent-red mr-2" />
           <span className="font-medium text-accent-red">
             {getErrorTitle(pageState.errorCode)}
@@ -429,7 +439,7 @@ export default function ResetPasswordPage() {
         <p className="text-accent-red opacity-80 text-sm">
           {getErrorDescription(pageState.errorCode)}
         </p>
-      </div>
+      </Stack>
 
       <div className="grid md:grid-cols-2 gap-4">
         <Button

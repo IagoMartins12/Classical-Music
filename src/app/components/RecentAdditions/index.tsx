@@ -7,6 +7,7 @@ import SectionTitle from '../Utils/SectionTitle';
 import RecentComposerCard from './RecentComposerCard';
 import RecentWorkCard, { RecentWorkProps } from './RecentWorkCard';
 import { useTranslation } from '@/app/context/TranslationContext';
+import { Stack } from '@/app/components/ui/Layout';
 
 export interface RecentComposerProps {
   name: string;
@@ -40,8 +41,8 @@ const RecentAdditions: React.FC<RecentAdditionsProps> = ({
       />
 
       {/* Grid responsivo */}
-      <div className="mb-12">
-        <div className="flex items-center gap-3 mb-6">
+      <Stack gap={6} className="mb-12">
+        <div className="flex items-center gap-3">
           <h3 className="text-xl font-bold text-theme-primary classical-title">
             {t('recent_additions_composers_section')}
           </h3>
@@ -53,10 +54,10 @@ const RecentAdditions: React.FC<RecentAdditionsProps> = ({
             <RecentComposerCard key={composer.id} composer={composer} />
           ))}
         </div>
-      </div>
+      </Stack>
 
-      <div className="mb-8">
-        <div className="flex items-center gap-3 mb-6">
+      <Stack gap={6} className="mb-8">
+        <div className="flex items-center gap-3">
           <h3 className="text-xl font-bold text-theme-primary classical-title">
             {t('recent_additions_works_section')}
           </h3>
@@ -68,7 +69,7 @@ const RecentAdditions: React.FC<RecentAdditionsProps> = ({
             <RecentWorkCard key={work.id} work={work} />
           ))}
         </div>
-      </div>
+      </Stack>
 
       {/* Background decoration */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">

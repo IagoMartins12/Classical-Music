@@ -55,7 +55,7 @@ import {
   loadComposerBiographies,
   translateBiographyText,
 } from '@/app/requests/composer-biography';
-import { Inline } from '@/app/components/ui/Layout';
+import { Stack, Inline } from '@/app/components/ui/Layout';
 import { Text } from '@/app/components/ui/Text';
 
 interface DuplicateCheckState {
@@ -956,7 +956,7 @@ const CreateComposerModal = ({
                   </Inline>
                 </div>
 
-                <div className="space-y-4">
+                <Stack>
                   <div>
                     <Select
                       label={t('modal_composer_scraping_source_type')}
@@ -1001,8 +1001,11 @@ const CreateComposerModal = ({
                       )}
 
                       {duplicateCheck.found && (
-                        <div className="mt-2 p-3 bg-red-50 border border-red-200 rounded-lg">
-                          <Inline gap={2} className="mb-2">
+                        <Stack
+                          gap={2}
+                          className="mt-2 p-3 bg-red-50 border border-red-200 rounded-lg"
+                        >
+                          <Inline gap={2}>
                             <PiWarningCircle className="w-4 h-4 text-red-600" />
                             <span className="text-sm font-medium text-red-800">
                               {t('modal_composer_scraping_duplicate_found')}
@@ -1072,7 +1075,7 @@ const CreateComposerModal = ({
                               </p>
                             )}
                           </div>
-                        </div>
+                        </Stack>
                       )}
 
                       {!isEditingExternalSource && (
@@ -1099,8 +1102,11 @@ const CreateComposerModal = ({
                       )}
 
                       {scrapingResult && (
-                        <div className="mt-4 p-3 bg-green-50 border border-green-200 rounded-lg">
-                          <Inline gap={2} className="mb-2">
+                        <Stack
+                          gap={2}
+                          className="mt-4 p-3 bg-green-50 border border-green-200 rounded-lg"
+                        >
+                          <Inline gap={2}>
                             <PiCheck className="w-4 h-4 text-green-600" />
                             <span className="text-sm font-medium text-green-800">
                               {t('modal_composer_scraping_success')}
@@ -1114,7 +1120,7 @@ const CreateComposerModal = ({
                                 scrapingResult.data.dataCompleteness,
                             })}
                           </div>
-                        </div>
+                        </Stack>
                       )}
 
                       {isEditingExternalSource && (
@@ -1134,7 +1140,7 @@ const CreateComposerModal = ({
                       )}
                     </div>
                   )}
-                </div>
+                </Stack>
               </AnimatedCard>
 
               {/* Basic Information */}
@@ -1284,7 +1290,7 @@ const CreateComposerModal = ({
                   <span>{t('modal_composer_classification_title')}</span>
                 </Inline>
 
-                <div className=" space-y-6 gap-4">
+                <Stack gap={6} className="gap-4">
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div>
                       <Select
@@ -1360,8 +1366,8 @@ const CreateComposerModal = ({
                     </div>
                   </div>
 
-                  <div className="md:col-span-2 s">
-                    <label className="block text-sm font-medium text-theme-tertiary mb-4">
+                  <Stack className="md:col-span-2 s">
+                    <label className="block text-sm font-medium text-theme-tertiary">
                       {t('modal_composer_classification_secondary_roles')}
                     </label>
                     <div className="flex flex-wrap gap-6">
@@ -1388,7 +1394,7 @@ const CreateComposerModal = ({
                         </Inline>
                       ))}
                     </div>
-                  </div>
+                  </Stack>
 
                   <div className="col-span-2">
                     <Input
@@ -1411,7 +1417,7 @@ const CreateComposerModal = ({
                       className="hidden"
                     />
                   </div>
-                </div>
+                </Stack>
               </AnimatedCard>
 
               {/* External Links */}

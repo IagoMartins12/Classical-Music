@@ -28,7 +28,7 @@ import {
   FloatingElement,
 } from '../../../components/animation/AnimatedComponents';
 import { useTranslation } from '@/app/context/TranslationContext';
-import { Inline } from '@/app/components/ui/Layout';
+import { Stack, Inline } from '@/app/components/ui/Layout';
 
 interface TermsSection {
   id: string;
@@ -191,14 +191,14 @@ export default function TermsPage() {
                   <div className="w-16 h-16 bg-gradient-to-br from-accent-blue to-accent-purple rounded-2xl flex items-center justify-center flex-shrink-0">
                     <PiScales className="w-8 h-8 text-theme-primary" />
                   </div>
-                  <div>
-                    <h2 className="text-xl md:text-2xl font-bold classical-title text-theme-primary mb-4">
+                  <Stack>
+                    <h2 className="text-xl md:text-2xl font-bold classical-title text-theme-primary">
                       {t('terms_jsx_h2_children_0__welcome')}
                     </h2>
                     <p className="text-md md:text-lg text-theme-secondary classical-body leading-relaxed">
                       {t('terms_jsx_p_children_0__create')}
                     </p>
-                  </div>
+                  </Stack>
                 </div>
               </AnimatedCard>
             </div>
@@ -229,7 +229,7 @@ export default function TermsPage() {
                           {section.title}
                         </h3>
 
-                        <div className="space-y-4">
+                        <Stack>
                           {section.content.map((paragraph, pIndex) => (
                             <p
                               key={pIndex}
@@ -238,7 +238,7 @@ export default function TermsPage() {
                               {paragraph}
                             </p>
                           ))}
-                        </div>
+                        </Stack>
                       </div>
                     </div>
                   </div>
@@ -259,8 +259,8 @@ export default function TermsPage() {
                   <div className="w-12 h-12 bg-gradient-to-br from-accent-amber to-accent-red rounded-xl flex items-center justify-center flex-shrink-0">
                     <PiWarningCircle className="w-6 h-6 text-theme-primary" />
                   </div>
-                  <div>
-                    <h3 className="text-xl font-bold classical-title text-theme-primary mb-4">
+                  <Stack>
+                    <h3 className="text-xl font-bold classical-title text-theme-primary">
                       {t('terms_jsx_h3_children_0__considerações_importantes')}
                     </h3>
                     <ul className="space-y-3 text-theme-secondary">
@@ -295,7 +295,7 @@ export default function TermsPage() {
                         </span>
                       </li>
                     </ul>
-                  </div>
+                  </Stack>
                 </div>
               </AnimatedCard>
             </div>

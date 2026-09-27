@@ -5,7 +5,7 @@ import { NodeViewWrapper } from '@tiptap/react';
 import { useState } from 'react';
 import Image from '@/app/components/SmartImage';
 import { PiClock, PiTrash, PiUser } from 'react-icons/pi';
-import { Inline } from '@/app/components/ui/Layout';
+import { Stack, Inline } from '@/app/components/ui/Layout';
 import { Text } from '@/app/components/ui/Text';
 import { Card } from '@/app/components/ui/Card';
 
@@ -62,7 +62,7 @@ const TimelineComponent = (props: any) => {
         {/* Linha vertical */}
         <div className="absolute left-8 top-0 bottom-0 w-0.5 bg-theme-tertiary"></div>
 
-        <div className="space-y-8">
+        <Stack gap={8}>
           {events.map((event: any, index: number) => (
             <div key={index} className="relative flex items-start space-x-6">
               {/* Ícone */}
@@ -100,7 +100,7 @@ const TimelineComponent = (props: any) => {
               </div>
             </div>
           ))}
-        </div>
+        </Stack>
       </div>
     </NodeViewWrapper>
   );

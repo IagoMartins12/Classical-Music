@@ -26,7 +26,7 @@ import { BadgeGrid } from '../../badges/BadgeSystem';
 import { useAchievementSystem } from '../../../hooks/useAchievements';
 import { useTranslation } from '@/app/context/TranslationContext';
 import { useLanguageStore } from '@/app/stores/useLanguageStore';
-import { Inline } from '@/app/components/ui/Layout';
+import { Stack, Inline } from '@/app/components/ui/Layout';
 import { Text } from '@/app/components/ui/Text';
 
 interface FavoritesStatsWidgetProps {
@@ -145,7 +145,7 @@ export default function FavoritesStatsWidget({
                 {t('stats_widget_next_achievements')}
               </h4>
             </Inline>
-            <div className="space-y-3">
+            <Stack gap={3}>
               {nextAchievements.slice(0, 2).map((badge) => {
                 const Icon = badge.icon;
                 const progressPercent = badge.maxProgress
@@ -192,7 +192,7 @@ export default function FavoritesStatsWidget({
                   </Inline>
                 );
               })}
-            </div>
+            </Stack>
           </AnimatedCard>
         )}
 
@@ -264,15 +264,15 @@ export default function FavoritesStatsWidget({
                 {t('stats_widget_favorite_composer')}
               </h4>
             </Inline>
-            <div className="text-center">
-              <div className="text-2xl font-bold text-theme-primary mb-2">
+            <Stack gap={2} className="text-center">
+              <div className="text-2xl font-bold text-theme-primary">
                 {stats.topComposerName}
               </div>
               <div className="text-theme-secondary">
                 <strong>{stats.topComposerWorks}</strong>{' '}
                 {t('stats_widget_composer_works')}
               </div>
-            </div>
+            </Stack>
           </AnimatedCard>
         )}
       </>

@@ -9,7 +9,7 @@ import {
   PiMusicNotes,
 } from 'react-icons/pi';
 import { AnimatedCard, AnimatedItem } from '../../animation/AnimatedComponents';
-import { Inline } from '@/app/components/ui/Layout';
+import { Stack, Inline } from '@/app/components/ui/Layout';
 import { Text } from '@/app/components/ui/Text';
 
 interface WorkScore {
@@ -73,7 +73,7 @@ export default function MusicalPiecesSection({
           </Inline>
         </div>
 
-        <div className="space-y-4">
+        <Stack>
           {workScores.map((workScore, index) => (
             <div
               key={workScore.id}
@@ -112,7 +112,7 @@ export default function MusicalPiecesSection({
                       <PiArrowSquareOut className="w-3 h-3" />
                     </Link>
 
-                    <div className="space-y-2">
+                    <Stack gap={2}>
                       {/* Link para a Obra */}
                       <div>
                         <Link
@@ -141,7 +141,7 @@ export default function MusicalPiecesSection({
                           {workScore.type}
                         </div>
                       </Text>
-                    </div>
+                    </Stack>
                   </div>
                 </div>
 
@@ -164,7 +164,7 @@ export default function MusicalPiecesSection({
               </div>
             </div>
           ))}
-        </div>
+        </Stack>
       </AnimatedCard>
     </AnimatedItem>
   );

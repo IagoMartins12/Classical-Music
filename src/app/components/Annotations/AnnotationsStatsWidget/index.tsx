@@ -19,7 +19,7 @@ import {
   AnimatedCard,
   AnimatedItem,
 } from '@/app/components/animation/AnimatedComponents';
-import { Inline } from '@/app/components/ui/Layout';
+import { Stack, Inline } from '@/app/components/ui/Layout';
 import { Text } from '@/app/components/ui/Text';
 
 interface AnnotationsStatsWidgetProps {
@@ -96,11 +96,11 @@ export default function AnnotationsStatsWidget({
       {/* Estatísticas por categoria */}
       {topCategories.length > 0 && (
         <AnimatedCard hover="lift" className="classical-card-2">
-          <div className="p-6">
+          <Stack className="p-6">
             <Inline
               as="h4"
               gap={2}
-              className="text-sm font-semibold text-theme-primary mb-4"
+              className="text-sm font-semibold text-theme-primary"
             >
               <PiTrendUp className="w-4 h-4" />
               <span>Suas Categorias Favoritas</span>
@@ -165,18 +165,18 @@ export default function AnnotationsStatsWidget({
                 );
               })}
             </div>
-          </div>
+          </Stack>
         </AnimatedCard>
       )}
 
       {/* Top anotações */}
       {topAnnotations.length > 0 && (
         <AnimatedCard hover="lift" className="classical-card-2">
-          <div className="p-6">
+          <Stack className="p-6">
             <Inline
               as="h4"
               gap={2}
-              className="text-sm font-semibold text-theme-primary mb-4"
+              className="text-sm font-semibold text-theme-primary"
             >
               <PiTrophy className="w-4 h-4" />
               <span>Suas Anotações Mais Populares</span>
@@ -242,18 +242,18 @@ export default function AnnotationsStatsWidget({
                 );
               })}
             </div>
-          </div>
+          </Stack>
         </AnimatedCard>
       )}
 
       {/* Obras mais anotadas */}
       {mostAnnotatedWorks.length > 0 && (
         <AnimatedCard hover="lift" className="classical-card-2">
-          <div className="p-6">
+          <Stack className="p-6">
             <Inline
               as="h4"
               gap={2}
-              className="text-sm font-semibold text-theme-primary mb-4"
+              className="text-sm font-semibold text-theme-primary"
             >
               <PiMusicNotes className="w-4 h-4" />
               <span>Obras Que Você Mais Anota</span>
@@ -302,17 +302,17 @@ export default function AnnotationsStatsWidget({
                 </AnimatedItem>
               ))}
             </div>
-          </div>
+          </Stack>
         </AnimatedCard>
       )}
 
       {/* Dicas para anotações */}
       <AnimatedCard hover="lift" className="classical-card-2">
-        <div className="p-6">
+        <Stack className="p-6">
           <Inline
             as="h4"
             gap={2}
-            className="text-sm font-semibold text-theme-primary mb-4"
+            className="text-sm font-semibold text-theme-primary"
           >
             <PiBookOpen className="w-4 h-4" />
             <span>Dicas para Anotar</span>
@@ -335,7 +335,7 @@ export default function AnnotationsStatsWidget({
               conhecimento.
             </p>
           </Text>
-        </div>
+        </Stack>
       </AnimatedCard>
 
       {/* CTA para criar mais anotações */}

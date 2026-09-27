@@ -18,7 +18,7 @@ import { useAuth } from '@/app/hooks/useAuth';
 import { useLoginModal } from '@/app/stores/authStore';
 import type { WorkScore } from '@/app/types/catalog';
 import { useToast } from '@/app/hooks/useToast';
-import { Inline } from '@/app/components/ui/Layout';
+import { Stack, Inline } from '@/app/components/ui/Layout';
 import { Text } from '@/app/components/ui/Text';
 import { NomeAcao } from '@/app/components/ui/NomeAcao';
 
@@ -121,10 +121,10 @@ const FavoriteModal = ({
           </button>
         </div>
 
-        <div className="space-y-6">
+        <Stack gap={6}>
           {/* Avaliação Pessoal */}
-          <div>
-            <label className="block text-sm font-medium text-theme-secondary mb-3">
+          <Stack gap={3}>
+            <label className="block text-sm font-medium text-theme-secondary">
               Avaliação Pessoal
             </label>
             <Inline gap={2}>
@@ -161,7 +161,7 @@ const FavoriteModal = ({
                 </Text>
               )}
             </Inline>
-          </div>
+          </Stack>
 
           {/* Notas */}
           <div>
@@ -186,11 +186,11 @@ const FavoriteModal = ({
           </div>
 
           {/* Tags */}
-          <div>
-            <label className="block text-sm font-medium text-theme-secondary mb-3">
+          <Stack gap={3}>
+            <label className="block text-sm font-medium text-theme-secondary">
               Tags
             </label>
-            <div className="flex flex-wrap gap-2 mb-3">
+            <div className="flex flex-wrap gap-2">
               {tags.map((tag) => (
                 <Inline
                   as="span"
@@ -226,8 +226,8 @@ const FavoriteModal = ({
                 Adicionar
               </button>
             </div>
-          </div>
-        </div>
+          </Stack>
+        </Stack>
 
         {/* Actions */}
         <div className="flex justify-end space-x-3 mt-8">

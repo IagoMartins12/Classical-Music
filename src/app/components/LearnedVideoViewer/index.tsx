@@ -24,7 +24,7 @@ import Modal from '@/app/components/Modal';
 import { formatDistanceToNow } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
 import Image from '@/app/components/SmartImage';
-import { Inline } from '@/app/components/ui/Layout';
+import { Stack, Inline } from '@/app/components/ui/Layout';
 import { Text } from '@/app/components/ui/Text';
 
 interface LearnedVideoData {
@@ -353,11 +353,11 @@ export default function LearnedVideoViewer({
           <div className="p-4 bg-theme-secondary border-t border-theme-primary">
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
               {/* Informações do Arquivo */}
-              <div>
-                <h4 className="font-medium text-theme-primary mb-3">
+              <Stack gap={3}>
+                <h4 className="font-medium text-theme-primary">
                   Informações do Vídeo
                 </h4>
-                <div className="space-y-2 text-sm">
+                <Stack gap={2} className="text-sm">
                   <div className="flex justify-between">
                     <span className="text-theme-secondary">Nome:</span>
                     <Text papel="legenda" tom="forte" className="font-mono">
@@ -396,15 +396,15 @@ export default function LearnedVideoViewer({
                       {videoData.isPublic ? 'Público' : 'Privado'}
                     </span>
                   </div>
-                </div>
-              </div>
+                </Stack>
+              </Stack>
 
               {/* Informações de Aprendizado */}
-              <div>
-                <h4 className="font-medium text-theme-primary mb-3">
+              <Stack gap={3}>
+                <h4 className="font-medium text-theme-primary">
                   Informações de Estudo
                 </h4>
-                <div className="space-y-2 text-sm">
+                <Stack gap={2} className="text-sm">
                   <div className="flex justify-between">
                     <span className="text-theme-secondary">Maestria:</span>
                     <Inline gap={2}>
@@ -496,8 +496,8 @@ export default function LearnedVideoViewer({
                       </span>
                     </div>
                   )}
-                </div>
-              </div>
+                </Stack>
+              </Stack>
 
               {/* Notas e Insights */}
               <div>
@@ -548,15 +548,10 @@ export default function LearnedVideoViewer({
                     </Inline>
                   </div>
                 ) : (
-                  <div className="space-y-3">
+                  <Stack gap={3}>
                     {learned.notes && (
-                      <div>
-                        <Text
-                          papel="rotulo"
-                          tom="suave"
-                          as="p"
-                          className="mb-1"
-                        >
+                      <Stack gap={1}>
+                        <Text papel="rotulo" tom="suave" as="p">
                           Notas pessoais:
                         </Text>
                         <Text
@@ -567,39 +562,29 @@ export default function LearnedVideoViewer({
                         >
                           {learned.notes}
                         </Text>
-                      </div>
+                      </Stack>
                     )}
 
                     {learned.technicalChallenges && (
-                      <div>
-                        <Text
-                          papel="rotulo"
-                          tom="suave"
-                          as="p"
-                          className="mb-1"
-                        >
+                      <Stack gap={1}>
+                        <Text papel="rotulo" tom="suave" as="p">
                           Desafios técnicos:
                         </Text>
                         <Text papel="rotulo" tom="forte" as="p">
                           {learned.technicalChallenges}
                         </Text>
-                      </div>
+                      </Stack>
                     )}
 
                     {learned.musicalInsights && (
-                      <div>
-                        <Text
-                          papel="rotulo"
-                          tom="suave"
-                          as="p"
-                          className="mb-1"
-                        >
+                      <Stack gap={1}>
+                        <Text papel="rotulo" tom="suave" as="p">
                           Insights musicais:
                         </Text>
                         <Text papel="rotulo" tom="forte" as="p">
                           {learned.musicalInsights}
                         </Text>
-                      </div>
+                      </Stack>
                     )}
 
                     {!learned.notes &&
@@ -614,7 +599,7 @@ export default function LearnedVideoViewer({
                           Nenhuma nota adicionada ainda.
                         </Text>
                       )}
-                  </div>
+                  </Stack>
                 )}
               </div>
             </div>

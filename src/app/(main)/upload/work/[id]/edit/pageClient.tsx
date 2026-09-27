@@ -34,7 +34,7 @@ import CreateWorkModal from '../../../../../components/UploadsPage/modals/Create
 import { useToast } from '@/app/hooks/useToast';
 import { deleteUpload } from '@/app/requests/uploads-client';
 import { useTranslation } from '@/app/context/TranslationContext';
-import { Inline } from '@/app/components/ui/Layout';
+import { Stack, Inline } from '@/app/components/ui/Layout';
 import { Text } from '@/app/components/ui/Text';
 import { Card } from '@/app/components/ui/Card';
 
@@ -188,9 +188,9 @@ const EditWorkClient = ({
             <div className="p-8 relative z-10">
               <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
                 {/* Informações Principais */}
-                <div className="lg:col-span-3 space-y-6">
+                <Stack gap={6} className="lg:col-span-3">
                   {/* Título e Header */}
-                  <div className="space-y-4">
+                  <Stack>
                     <div className="flex flex-col sm:flex-row items-start justify-between">
                       <div className="flex-1">
                         <Inline gap={3} className="mb-4">
@@ -295,7 +295,7 @@ const EditWorkClient = ({
                         </div>
                       </Inline>
                     )}
-                  </div>
+                  </Stack>
 
                   {/* Grid de Informações Detalhadas */}
                   <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
@@ -453,11 +453,11 @@ const EditWorkClient = ({
                     work.dedicateTo ||
                     work.workStyle ||
                     work.instrumentation) && (
-                    <div className="border-t border-theme-secondary pt-6">
+                    <Stack className="border-t border-theme-secondary pt-6">
                       <Inline
                         as="h3"
                         gap={2}
-                        className="text-lg font-semibold text-theme-primary classical-title mb-4"
+                        className="text-lg font-semibold text-theme-primary classical-title"
                       >
                         <PiBookOpen className="w-5 h-5 text-accent-blue" />
                         <span>{t('work_info_additional_info')}</span>
@@ -504,28 +504,28 @@ const EditWorkClient = ({
                           </div>
                         )}
                       </div>
-                    </div>
+                    </Stack>
                   )}
 
                   {/* Tags de Categorias e Gêneros */}
                   {(work.categoryNames?.length > 0 ||
                     work.workGenresArr?.length > 0) && (
-                    <div className="border-t border-theme-secondary pt-6">
+                    <Stack className="border-t border-theme-secondary pt-6">
                       <Inline
                         as="h3"
                         gap={2}
-                        className="text-lg font-semibold text-theme-primary classical-title mb-4"
+                        className="text-lg font-semibold text-theme-primary classical-title"
                       >
                         <PiTag className="w-5 h-5 text-accent-green" />
                         <span>{t('work_info_categories_genres')}</span>
                       </Inline>
-                      <div className="space-y-4">
+                      <Stack>
                         {work.categoryNames?.length > 0 && (
-                          <div>
+                          <Stack gap={3}>
                             <Text
                               papel="rotulo"
                               tom="fraco"
-                              className="font-medium block mb-3"
+                              className="font-medium block"
                             >
                               {t('work_info_categories')}:
                             </Text>
@@ -543,15 +543,15 @@ const EditWorkClient = ({
                                 )
                               )}
                             </div>
-                          </div>
+                          </Stack>
                         )}
 
                         {work.workGenresArr?.length > 0 && (
-                          <div>
+                          <Stack gap={3}>
                             <Text
                               papel="rotulo"
                               tom="fraco"
-                              className="font-medium block mb-3"
+                              className="font-medium block"
                             >
                               {t('work_info_work_types')}:
                             </Text>
@@ -567,10 +567,10 @@ const EditWorkClient = ({
                                 )
                               )}
                             </div>
-                          </div>
+                          </Stack>
                         )}
-                      </div>
-                    </div>
+                      </Stack>
+                    </Stack>
                   )}
 
                   {/* Link IMSLP */}
@@ -610,10 +610,10 @@ const EditWorkClient = ({
                       </Inline>
                     </div>
                   )}
-                </div>
+                </Stack>
 
                 {/* Sidebar com Foto do Compositor */}
-                <div className="space-y-6">
+                <Stack gap={6}>
                   {/* Foto do Compositor */}
                   <Card nivel={2}>
                     <Inline gap={3} className="mb-4">
@@ -672,7 +672,7 @@ const EditWorkClient = ({
                         {t('work_info_technical_details')}
                       </h3>
                     </Inline>
-                    <div className="space-y-3 text-sm">
+                    <Stack gap={3} className="text-sm">
                       {work.movementNumber && (
                         <div className="flex items-center justify-between">
                           <span className="font-medium text-theme-tertiary">
@@ -695,9 +695,9 @@ const EditWorkClient = ({
                           {new Date(work.createdAt).toLocaleDateString('pt-BR')}
                         </Text>
                       </div>
-                    </div>
+                    </Stack>
                   </Card>
-                </div>
+                </Stack>
               </div>
             </div>
           </AnimatedCard>

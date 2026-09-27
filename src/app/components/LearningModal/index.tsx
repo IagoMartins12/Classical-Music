@@ -1090,7 +1090,7 @@ const LearningModal = () => {
 
               {displayVideo ? (
                 /* Mostrar vídeo (existente ou novo) */
-                <div className="space-y-4">
+                <Stack>
                   {/* Informações do vídeo */}
                   <div className="bg-theme-elevated rounded-xl px-4">
                     <div className="flex items-center justify-between mb-4">
@@ -1145,7 +1145,7 @@ const LearningModal = () => {
                       {t('replace_video')}
                     </label>
                   </div>
-                </div>
+                </Stack>
               ) : (
                 /* Upload de vídeo inicial */
                 <div>
@@ -1552,8 +1552,8 @@ const LearningModal = () => {
             </div>
 
             {/* Barra de progresso */}
-            <div className="mb-6">
-              <Inline gap={4} className="mb-2">
+            <Stack gap={2} className="mb-6">
+              <Inline gap={4}>
                 <div className="flex-1">
                   <div className="w-full bg-theme-secondary rounded-full h-3">
                     <div
@@ -1575,7 +1575,7 @@ const LearningModal = () => {
               <Text papel="rotulo" tom="fraco" as="p">
                 {t('click_milestones_instruction')}
               </Text>
-            </div>
+            </Stack>
 
             {/* Lista de milestones */}
             <div className="space-y-3 max-h-96 pr-4 classical-scrollbar md:pr-2 overflow-y-auto">

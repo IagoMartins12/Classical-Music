@@ -39,7 +39,7 @@ import {
 import LoadingAdminState from '../../Common/LoadingState';
 import Modal from '@/app/components/Modal';
 import Checkbox from '@/app/components/Common/Checkbox';
-import { Inline } from '@/app/components/ui/Layout';
+import { Stack, Inline } from '@/app/components/ui/Layout';
 import { Text } from '@/app/components/ui/Text';
 
 export default function SystemPerformance() {
@@ -426,7 +426,7 @@ export default function SystemPerformance() {
                     Alertas Críticos ({criticalAlerts.length})
                   </h3>
                 </Inline>
-                <div className="space-y-3">
+                <Stack gap={3}>
                   {criticalAlerts.slice(0, 3).map((alert) => (
                     <div
                       key={alert.id}
@@ -448,7 +448,7 @@ export default function SystemPerformance() {
                       </Text>
                     </div>
                   ))}
-                </div>
+                </Stack>
               </AnimatedCard>
             </div>
           </AnimatedItem>
@@ -467,7 +467,7 @@ export default function SystemPerformance() {
               <span>Recursos do Servidor</span>
             </Inline>
 
-            <div className="space-y-6">
+            <Stack gap={6}>
               <div>
                 <div className="flex items-center justify-between mb-2">
                   <Text papel="rotulo" tom="forte" className="font-medium">
@@ -498,8 +498,8 @@ export default function SystemPerformance() {
                 </Text>
               </div>
 
-              <div>
-                <div className="flex items-center justify-between mb-2">
+              <Stack gap={2}>
+                <div className="flex items-center justify-between">
                   <Text papel="rotulo" tom="forte" className="font-medium">
                     Memory
                   </Text>
@@ -517,10 +517,10 @@ export default function SystemPerformance() {
                     }}
                   />
                 </div>
-              </div>
+              </Stack>
 
-              <div>
-                <div className="flex items-center justify-between mb-2">
+              <Stack gap={2}>
+                <div className="flex items-center justify-between">
                   <Text papel="rotulo" tom="forte" className="font-medium">
                     Disk Space
                   </Text>
@@ -538,7 +538,7 @@ export default function SystemPerformance() {
                     }}
                   />
                 </div>
-              </div>
+              </Stack>
 
               <div className="grid grid-cols-2 gap-4 pt-4 border-t border-theme-secondary">
                 <div className="text-center">
@@ -564,7 +564,7 @@ export default function SystemPerformance() {
                   {metrics?.server.platform} • {metrics?.server.hostname}
                 </Text>
               </div>
-            </div>
+            </Stack>
           </AnimatedCard>
 
           {/* Database Performance */}
@@ -578,7 +578,7 @@ export default function SystemPerformance() {
               <span>Performance da Database</span>
             </Inline>
 
-            <div className="space-y-4">
+            <Stack>
               <div className="grid grid-cols-3 gap-4">
                 <div className="text-center p-3 bg-theme-secondary rounded-xl">
                   <div className="text-lg font-bold text-accent-blue">
@@ -606,7 +606,7 @@ export default function SystemPerformance() {
                 </div>
               </div>
 
-              <div className="space-y-3">
+              <Stack gap={3}>
                 <div className="flex items-center justify-between p-3 bg-theme-secondary rounded-xl">
                   <Text papel="rotulo" tom="forte">
                     Database Size
@@ -631,7 +631,7 @@ export default function SystemPerformance() {
                     {metrics?.database.cache.hitRatio.toFixed(1) || 0}%
                   </span>
                 </div>
-              </div>
+              </Stack>
 
               <div className="pt-3 border-t border-theme-secondary">
                 <div className="grid grid-cols-3 gap-3 text-center">
@@ -661,7 +661,7 @@ export default function SystemPerformance() {
                   </div>
                 </div>
               </div>
-            </div>
+            </Stack>
           </AnimatedCard>
         </div>
 
@@ -835,7 +835,7 @@ export default function SystemPerformance() {
               <span>Rede</span>
             </Inline>
 
-            <div className="space-y-4">
+            <Stack>
               <div className="text-center p-3 bg-theme-secondary rounded-xl">
                 <div className="text-2xl font-bold text-accent-purple">
                   {metrics?.network.requests.current || 0}
@@ -845,7 +845,7 @@ export default function SystemPerformance() {
                 </Text>
               </div>
 
-              <div className="space-y-3">
+              <Stack gap={3}>
                 <div className="flex items-center justify-between">
                   <Text papel="rotulo" tom="forte">
                     Latência P50
@@ -886,8 +886,8 @@ export default function SystemPerformance() {
                     {metrics?.network.connections || 0}
                   </span>
                 </div>
-              </div>
-            </div>
+              </Stack>
+            </Stack>
           </AnimatedCard>
 
           {/* Cache Performance */}
@@ -901,7 +901,7 @@ export default function SystemPerformance() {
               <span>Cache</span>
             </Inline>
 
-            <div className="space-y-4">
+            <Stack>
               <div className="text-center p-3 bg-theme-secondary rounded-xl">
                 <div className="text-2xl font-bold text-accent-green">
                   {metrics?.cache.application.hitRate.toFixed(1) || 0}%
@@ -911,7 +911,7 @@ export default function SystemPerformance() {
                 </Text>
               </div>
 
-              <div className="space-y-3">
+              <Stack gap={3}>
                 {metrics?.cache.redis && (
                   <>
                     <div className="flex items-center justify-between">
@@ -948,8 +948,8 @@ export default function SystemPerformance() {
                     {metrics?.cache.application.entries.toLocaleString() || 0}
                   </span>
                 </div>
-              </div>
-            </div>
+              </Stack>
+            </Stack>
           </AnimatedCard>
 
           {/* Application Stats */}
@@ -963,7 +963,7 @@ export default function SystemPerformance() {
               <span>Aplicação</span>
             </Inline>
 
-            <div className="space-y-4">
+            <Stack>
               <div className="grid grid-cols-2 gap-2">
                 <div className="text-center p-2 bg-theme-secondary rounded-lg">
                   <div className="text-lg font-bold text-accent-blue">
@@ -975,7 +975,7 @@ export default function SystemPerformance() {
                 </div>
               </div>
 
-              <div className="space-y-3">
+              <Stack gap={3}>
                 <div className="flex items-center justify-between">
                   <Text papel="rotulo" tom="forte">
                     Uploads Hoje
@@ -1009,8 +1009,8 @@ export default function SystemPerformance() {
                     {metrics?.application.performance.avgResponseTime || 0}ms
                   </span>
                 </div>
-              </div>
-            </div>
+              </Stack>
+            </Stack>
           </AnimatedCard>
         </div>
 
@@ -1029,11 +1029,9 @@ export default function SystemPerformance() {
               </div>
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div>
-                  <h3 className="text-lg font-semibold mb-3">
-                    Requests por Status
-                  </h3>
-                  <div className="space-y-2">
+                <Stack gap={3}>
+                  <h3 className="text-lg font-semibold">Requests por Status</h3>
+                  <Stack gap={2}>
                     {Object.entries(detailedStats.byStatus || {}).map(
                       ([status, count]) => (
                         <div key={status} className="flex justify-between">
@@ -1042,12 +1040,12 @@ export default function SystemPerformance() {
                         </div>
                       )
                     )}
-                  </div>
-                </div>
+                  </Stack>
+                </Stack>
 
-                <div>
-                  <h3 className="text-lg font-semibold mb-3">Top Endpoints</h3>
-                  <div className="space-y-2">
+                <Stack gap={3}>
+                  <h3 className="text-lg font-semibold">Top Endpoints</h3>
+                  <Stack gap={2}>
                     {Object.entries(detailedStats.byPath || {})
                       .slice(0, 10)
                       .map(([path, count]) => (
@@ -1058,8 +1056,8 @@ export default function SystemPerformance() {
                           <span className="font-medium">{count as string}</span>
                         </div>
                       ))}
-                  </div>
-                </div>
+                  </Stack>
+                </Stack>
               </div>
 
               <div className="mt-6 grid grid-cols-1 md:grid-cols-3 gap-6">

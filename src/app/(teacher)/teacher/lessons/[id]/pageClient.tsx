@@ -47,7 +47,7 @@ import { translateNivel } from '@/app/utils';
 import Checkbox from '@/app/components/Common/Checkbox';
 import { useTranslation } from '@/app/context/TranslationContext';
 import { updateLessonRequest } from '@/app/requests/portal/lesson-actions';
-import { Inline } from '@/app/components/ui/Layout';
+import { Stack, Inline } from '@/app/components/ui/Layout';
 import { Text } from '@/app/components/ui/Text';
 import { Field } from '@/app/components/ui/Field';
 import { NomeAcao } from '@/app/components/ui/NomeAcao';
@@ -713,7 +713,7 @@ export default function TeacherLessonDetailsPageClient({
             <p className="text-theme-secondary classical-subtitle mb-6">
               {error || errorMessage}
             </p>
-            <div className="space-y-3">
+            <Stack gap={3}>
               <Inline
                 as="button"
                 gap={2}
@@ -732,7 +732,7 @@ export default function TeacherLessonDetailsPageClient({
               >
                 {t('back_to_lessons')}
               </Link>
-            </div>
+            </Stack>
           </Card>
         </div>
       </PageContainer>
@@ -874,7 +874,7 @@ export default function TeacherLessonDetailsPageClient({
                 </div>
 
                 {isEditing.basicInfo ? (
-                  <div className="space-y-4">
+                  <Stack>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                       <div>
                         <Input
@@ -969,9 +969,9 @@ export default function TeacherLessonDetailsPageClient({
                         placeholder={t('form_description_placeholder')}
                       />
                     </div>
-                  </div>
+                  </Stack>
                 ) : (
-                  <div className="space-y-4">
+                  <Stack>
                     <h3 className="text-xl font-bold text-theme-primary">
                       {lesson.title}
                     </h3>
@@ -1001,8 +1001,11 @@ export default function TeacherLessonDetailsPageClient({
 
                     {/* Recurrence Info */}
                     {lesson.isRecurring && (
-                      <div className="bg-theme-elevated rounded-lg p-4">
-                        <Inline gap={2} className="text-accent-blue mb-2">
+                      <Stack
+                        gap={2}
+                        className="bg-theme-elevated rounded-lg p-4"
+                      >
+                        <Inline gap={2} className="text-accent-blue">
                           <PiRepeat className="w-4 h-4" />
                           <span className="font-medium">
                             {t('recurring_lesson_title')}
@@ -1014,13 +1017,16 @@ export default function TeacherLessonDetailsPageClient({
                             ? t('recurring_child_description')
                             : t('recurring_parent_description')}
                         </Text>
-                      </div>
+                      </Stack>
                     )}
 
                     {/* Warning if lesson was cancelled */}
                     {lesson.status === 'CANCELLED' && (
-                      <div className="bg-accent-red/10 border border-accent-red/30 rounded-lg p-4">
-                        <Inline gap={2} className="text-accent-red mb-2">
+                      <Stack
+                        gap={2}
+                        className="bg-accent-red/10 border border-accent-red/30 rounded-lg p-4"
+                      >
+                        <Inline gap={2} className="text-accent-red">
                           <PiWarning className="w-4 h-4" />
                           <span className="font-medium">
                             {t('cancelled_lesson_title')}
@@ -1029,9 +1035,9 @@ export default function TeacherLessonDetailsPageClient({
                         <Text papel="rotulo" tom="suave" as="p">
                           {t('cancelled_lesson_description')}
                         </Text>
-                      </div>
+                      </Stack>
                     )}
-                  </div>
+                  </Stack>
                 )}
               </AnimatedCard>
             </AnimatedItem>
@@ -1059,11 +1065,11 @@ export default function TeacherLessonDetailsPageClient({
                     disabled={loading.update}
                   />
                 ) : editingWorks.length > 0 ? (
-                  <div className="space-y-3">
+                  <Stack gap={3}>
                     <h4 className="text-sm font-medium text-theme-primary">
                       {t('pieces_linked_count', { count: editingWorks.length })}
                     </h4>
-                    <div className="space-y-2">
+                    <Stack gap={2}>
                       {editingWorks.map((work, index) => (
                         <div
                           key={work.workId}
@@ -1107,8 +1113,8 @@ export default function TeacherLessonDetailsPageClient({
                           </Inline>
                         </div>
                       ))}
-                    </div>
-                  </div>
+                    </Stack>
+                  </Stack>
                 ) : (
                   <div className="text-center py-8">
                     <PiMusicNotes className="w-12 h-12 text-theme-tertiary mx-auto mb-4 opacity-50" />
@@ -1168,7 +1174,7 @@ export default function TeacherLessonDetailsPageClient({
                 </div>
 
                 {isEditing.objectives ? (
-                  <div className="space-y-3">
+                  <Stack gap={3}>
                     {editingObjectives.map((objective, index) => (
                       <Inline gap={2} key={index}>
                         <Input
@@ -1226,9 +1232,9 @@ export default function TeacherLessonDetailsPageClient({
                         <NomeAcao acao="adicionar" />
                       </button>
                     </Inline>
-                  </div>
+                  </Stack>
                 ) : (
-                  <div className="space-y-2">
+                  <Stack gap={2}>
                     {lesson.objectives.length > 0 ? (
                       lesson.objectives.map((objective, index) => (
                         <div key={index} className="flex items-start space-x-2">
@@ -1243,7 +1249,7 @@ export default function TeacherLessonDetailsPageClient({
                         {t('no_objectives_defined')}
                       </p>
                     )}
-                  </div>
+                  </Stack>
                 )}
               </AnimatedCard>
             </AnimatedItem>
@@ -1294,7 +1300,7 @@ export default function TeacherLessonDetailsPageClient({
                     </div>
 
                     {canEditLesson ? (
-                      <div className="space-y-2">
+                      <Stack gap={2}>
                         {editingTopics.map((topic, index) => (
                           <Inline gap={2} key={index}>
                             <Input
@@ -1358,7 +1364,7 @@ export default function TeacherLessonDetailsPageClient({
                             <PiPlus className="w-3 h-3 text-brand-primary" />
                           </button> */}
                         {/* </div> */}
-                      </div>
+                      </Stack>
                     ) : (
                       <div className="flex flex-wrap gap-2">
                         {lesson.topics.length > 0 ? (
@@ -1398,7 +1404,7 @@ export default function TeacherLessonDetailsPageClient({
                     </div>
 
                     {canEditLesson ? (
-                      <div className="space-y-2">
+                      <Stack gap={2}>
                         {editingTechniques.map((technique, index) => (
                           <Inline gap={2} key={index}>
                             <Input
@@ -1462,7 +1468,7 @@ export default function TeacherLessonDetailsPageClient({
                             <PiPlus className="w-3 h-3 text-brand-primary" />
                           </button> */}
                         {/* </div> */}
-                      </div>
+                      </Stack>
                     ) : (
                       <div className="flex flex-wrap gap-2">
                         {lesson.techniques.length > 0 ? (
@@ -1534,7 +1540,7 @@ export default function TeacherLessonDetailsPageClient({
                 </div>
 
                 {isEditing.notes ? (
-                  <div className="space-y-4">
+                  <Stack>
                     <div>
                       <Field.Area
                         label={t('teacher_notes_label')}
@@ -1594,12 +1600,12 @@ export default function TeacherLessonDetailsPageClient({
                         placeholder={t('homework_placeholder')}
                       />
                     </div>
-                  </div>
+                  </Stack>
                 ) : (
-                  <div className="space-y-4">
+                  <Stack>
                     {lesson.teacherNotes && (
-                      <div>
-                        <h3 className="font-medium text-theme-primary mb-2">
+                      <Stack gap={2}>
+                        <h3 className="font-medium text-theme-primary">
                           {t('private_notes_section')}
                         </h3>
                         <div className="bg-accent-yellow/5 border border-accent-yellow/20 rounded-lg p-4">
@@ -1607,12 +1613,12 @@ export default function TeacherLessonDetailsPageClient({
                             {lesson.teacherNotes}
                           </p>
                         </div>
-                      </div>
+                      </Stack>
                     )}
 
                     {lesson.publicNotes && (
-                      <div>
-                        <h3 className="font-medium text-theme-primary mb-2">
+                      <Stack gap={2}>
+                        <h3 className="font-medium text-theme-primary">
                           {t('public_notes_section')}
                         </h3>
                         <div className="bg-accent-blue/5 border border-accent-blue/20 rounded-lg p-4">
@@ -1620,12 +1626,12 @@ export default function TeacherLessonDetailsPageClient({
                             {lesson.publicNotes}
                           </p>
                         </div>
-                      </div>
+                      </Stack>
                     )}
 
                     {lesson.lessonSummary && (
-                      <div>
-                        <h3 className="font-medium text-theme-primary mb-2">
+                      <Stack gap={2}>
+                        <h3 className="font-medium text-theme-primary">
                           {t('lesson_summary_section')}
                         </h3>
                         <div className="bg-accent-green/5 border border-accent-green/20 rounded-lg p-4">
@@ -1633,12 +1639,12 @@ export default function TeacherLessonDetailsPageClient({
                             {lesson.lessonSummary}
                           </p>
                         </div>
-                      </div>
+                      </Stack>
                     )}
 
                     {lesson.homework && (
-                      <div>
-                        <h3 className="font-medium text-theme-primary mb-2">
+                      <Stack gap={2}>
+                        <h3 className="font-medium text-theme-primary">
                           {t('homework_section')}
                         </h3>
                         <div className="bg-accent-purple/5 border border-accent-purple/20 rounded-lg p-4">
@@ -1646,7 +1652,7 @@ export default function TeacherLessonDetailsPageClient({
                             {lesson.homework}
                           </p>
                         </div>
-                      </div>
+                      </Stack>
                     )}
 
                     {!lesson.teacherNotes &&
@@ -1657,7 +1663,7 @@ export default function TeacherLessonDetailsPageClient({
                           {t('no_notes_recorded')}
                         </p>
                       )}
-                  </div>
+                  </Stack>
                 )}
               </AnimatedCard>
             </AnimatedItem>
@@ -1702,7 +1708,7 @@ export default function TeacherLessonDetailsPageClient({
                 </Inline>
 
                 {/* Relationship Stats */}
-                <div className="space-y-2 text-sm">
+                <Stack gap={2} className="text-sm">
                   <div className="flex justify-between">
                     <span className="text-theme-tertiary">
                       {t('total_lessons_label')}
@@ -1727,7 +1733,7 @@ export default function TeacherLessonDetailsPageClient({
                       {lesson.relationship.relationshipDuration}
                     </span>
                   </div>
-                </div>
+                </Stack>
               </AnimatedCard>
             </AnimatedItem>
 
@@ -1814,7 +1820,7 @@ export default function TeacherLessonDetailsPageClient({
                     {t('quick_actions_title')}
                   </h2>
 
-                  <div className="space-y-3">
+                  <Stack gap={3}>
                     <Inline
                       as="button"
                       gap={2}
@@ -1858,7 +1864,7 @@ export default function TeacherLessonDetailsPageClient({
                       <PiX className="w-4 h-4" />
                       <span>{t('cancel_lesson')}</span>
                     </Inline>
-                  </div>
+                  </Stack>
                 </AnimatedCard>
               </AnimatedItem>
             )}
@@ -2030,8 +2036,8 @@ export default function TeacherLessonDetailsPageClient({
             <div className="bg-accent-blue/10 border border-accent-blue/30 rounded-lg p-4 mb-6">
               <div className="flex items-start space-x-3">
                 <PiInfo className="w-5 h-5 text-accent-blue mt-0.5" />
-                <div className="text-sm">
-                  <p className="font-medium text-accent-blue mb-1">
+                <Stack gap={1} className="text-sm">
+                  <p className="font-medium text-accent-blue">
                     {t('confirmation_title')}
                   </p>
                   <p className="text-theme-secondary">
@@ -2044,7 +2050,7 @@ export default function TeacherLessonDetailsPageClient({
                     {quickActionType === 'cancel' &&
                       t('cancel_confirmation_text')}
                   </p>
-                </div>
+                </Stack>
               </div>
             </div>
 
@@ -2096,8 +2102,8 @@ export default function TeacherLessonDetailsPageClient({
       {/* Modal de apagar/delete real */}
       {showDeleteModal && (
         <Modal isOpen onClose={() => setShowDeleteModal(false)} maxWidth="2xl">
-          <div className="p-6">
-            <Inline gap={3} className="mb-6">
+          <Stack gap={6} className="p-6">
+            <Inline gap={3}>
               <div className="w-12 h-12 bg-accent-red/10 rounded-full flex items-center justify-center">
                 <PiTrash className="w-6 h-6 text-accent-red" />
               </div>
@@ -2111,7 +2117,7 @@ export default function TeacherLessonDetailsPageClient({
               </div>
             </Inline>
 
-            <div className="space-y-4 mb-6">
+            <Stack>
               <div>
                 <Field.Area
                   label={t('reason_optional')}
@@ -2123,7 +2129,7 @@ export default function TeacherLessonDetailsPageClient({
               </div>
 
               {lesson.isRecurring && (
-                <div className="space-y-3">
+                <Stack gap={3}>
                   <Inline gap={3}>
                     <Checkbox
                       label={t('delete_all_recurring')}
@@ -2145,15 +2151,15 @@ export default function TeacherLessonDetailsPageClient({
                       />
                     </Inline>
                   )}
-                </div>
+                </Stack>
               )}
-            </div>
+            </Stack>
 
-            <div className="bg-accent-red/10 border border-accent-red/30 rounded-lg p-4 mb-6">
+            <div className="bg-accent-red/10 border border-accent-red/30 rounded-lg p-4">
               <div className="flex items-start space-x-3">
                 <PiWarning className="w-5 h-5 text-accent-red mt-0.5" />
-                <div className="text-sm">
-                  <p className="font-medium text-accent-red mb-1">
+                <Stack gap={1} className="text-sm">
+                  <p className="font-medium text-accent-red">
                     {t('irreversible_action_title')}
                   </p>
                   <p className="text-theme-secondary">
@@ -2167,7 +2173,7 @@ export default function TeacherLessonDetailsPageClient({
                       !deleteRecurringSeries &&
                       t('delete_next_parent_warning')}
                   </p>
-                </div>
+                </Stack>
               </div>
             </div>
 
@@ -2199,7 +2205,7 @@ export default function TeacherLessonDetailsPageClient({
                 </span>
               </Inline>
             </Inline>
-          </div>
+          </Stack>
         </Modal>
       )}
     </PageContainer>

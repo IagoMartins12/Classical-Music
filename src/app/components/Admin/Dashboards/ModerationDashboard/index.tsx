@@ -32,7 +32,7 @@ import {
 import Button from '@/app/components/Common/Button';
 import Select from '@/app/components/Common/Select';
 import { MetricCard } from '@/app/components/Admin/Charts/AdminCharts';
-import { Inline } from '@/app/components/ui/Layout';
+import { Stack, Inline } from '@/app/components/ui/Layout';
 import { Text } from '@/app/components/ui/Text';
 
 interface ModerationItem {
@@ -631,7 +631,7 @@ export default function ModerationDashboard() {
               <PiTarget className="w-5 h-5 text-accent-green" />
               <span>Top Moderadores</span>
             </Inline>
-            <div className="space-y-4">
+            <Stack>
               {stats?.topModerators.map((moderator, index) => (
                 <Inline
                   gap={3}
@@ -657,7 +657,7 @@ export default function ModerationDashboard() {
                   </div>
                 </Inline>
               ))}
-            </div>
+            </Stack>
           </AnimatedCard>
 
           {/* Quality Metrics */}
@@ -670,9 +670,9 @@ export default function ModerationDashboard() {
               <PiTrendUp className="w-5 h-5 text-accent-blue" />
               <span>Métricas de Qualidade</span>
             </Inline>
-            <div className="space-y-4">
-              <div className="p-4 bg-theme-secondary rounded-xl">
-                <div className="flex items-center justify-between mb-2">
+            <Stack>
+              <Stack gap={2} className="p-4 bg-theme-secondary rounded-xl">
+                <div className="flex items-center justify-between">
                   <Text papel="rotulo" tom="forte" className="font-medium">
                     Taxa de Aprovação Geral
                   </Text>
@@ -694,7 +694,7 @@ export default function ModerationDashboard() {
                     }}
                   />
                 </div>
-              </div>
+              </Stack>
 
               <div className="grid grid-cols-2 gap-4">
                 <div className="text-center p-3 bg-theme-secondary rounded-xl">
@@ -714,7 +714,7 @@ export default function ModerationDashboard() {
                   </Text>
                 </div>
               </div>
-            </div>
+            </Stack>
           </AnimatedCard>
         </div>
       </AnimatedContainer>

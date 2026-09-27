@@ -11,7 +11,7 @@ import Input from '@/app/components/Common/Inputs';
 import { useSmartFormChanges } from '@/app/hooks/useFormChanges';
 import { saveVenue } from '@/app/requests/calendar-requests';
 import Image from '@/app/components/SmartImage';
-import { Inline } from '@/app/components/ui/Layout';
+import { Stack, Inline } from '@/app/components/ui/Layout';
 import { Text } from '@/app/components/ui/Text';
 import { Field } from '@/app/components/ui/Field';
 
@@ -231,7 +231,7 @@ export default function CreateVenueModal({
       </div>
 
       {/* Form Content */}
-      <div className="px-6 py-6 space-y-6 overflow-y-auto ">
+      <Stack gap={6} className="px-6 py-6 overflow-y-auto">
         {/* Name */}
         <div>
           <Input
@@ -384,8 +384,8 @@ export default function CreateVenueModal({
             placeholder="https://exemplo.com/logo.jpg"
           />
           {formData.logoUrl && (
-            <div className="mt-3">
-              <Text papel="rotulo" tom="suave" as="p" className="mb-2">
+            <Stack gap={2} className="mt-3">
+              <Text papel="rotulo" tom="suave" as="p">
                 Preview do Logo:
               </Text>
               <div className="relative w-32 h-32 rounded-lg overflow-hidden border border-theme-secondary bg-white p-2">
@@ -398,7 +398,7 @@ export default function CreateVenueModal({
                   }}
                 />
               </div>
-            </div>
+            </Stack>
           )}
         </div>
 
@@ -418,8 +418,8 @@ export default function CreateVenueModal({
             placeholder="https://exemplo.com/capa.jpg"
           />
           {formData.coverImageUrl && (
-            <div className="mt-3">
-              <Text papel="rotulo" tom="suave" as="p" className="mb-2">
+            <Stack gap={2} className="mt-3">
+              <Text papel="rotulo" tom="suave" as="p">
                 Preview da Capa:
               </Text>
               <div className="relative w-full h-48 rounded-lg overflow-hidden border border-theme-secondary">
@@ -434,7 +434,7 @@ export default function CreateVenueModal({
                   height={100}
                 />
               </div>
-            </div>
+            </Stack>
           )}
         </div>
 
@@ -454,7 +454,7 @@ export default function CreateVenueModal({
             </Text>
           </Inline>
         </div>
-      </div>
+      </Stack>
 
       {/* Footer */}
       <Inline

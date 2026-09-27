@@ -39,7 +39,7 @@ import Image from '@/app/components/SmartImage';
 import Link from '@/app/components/LocalizedLink';
 
 import { currentSearchParams } from '@/app/utils/currentSearchParams';
-import { Inline } from '@/app/components/ui/Layout';
+import { Stack, Inline } from '@/app/components/ui/Layout';
 import { Text } from '@/app/components/ui/Text';
 import { NomeAcao } from '@/app/components/ui/NomeAcao';
 import { Button } from '@/app/components/ui/Button';
@@ -743,7 +743,7 @@ function TeacherCard({
           )}
 
           {/* Actions */}
-          <div className="mt-auto space-y-3">
+          <Stack gap={3} className="mt-auto">
             {/* View Profile */}
             <Link
               href={`/teachers/${teacher.id}`}
@@ -779,7 +779,7 @@ function TeacherCard({
                 </Inline>
               )}
             </Inline>
-          </div>
+          </Stack>
         </div>
       </AnimatedCard>
     </AnimatedItem>

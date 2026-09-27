@@ -24,7 +24,7 @@ import { AnimatedCard } from '../animation/AnimatedComponents';
 import { CascadeInfo } from '@/app/hooks/useAccountManagement';
 import { useTranslation } from '@/app/context/TranslationContext';
 import { useIsMobile } from '@/app/hooks/useMobile';
-import { Inline } from '@/app/components/ui/Layout';
+import { Stack, Inline } from '@/app/components/ui/Layout';
 import { Text } from '@/app/components/ui/Text';
 import { NomeAcao } from '@/app/components/ui/NomeAcao';
 
@@ -222,7 +222,7 @@ const DeleteAccountModal: React.FC<DeleteAccountModalProps> = ({
         <div className="p-6">
           {/* Step 1: Warning */}
           {currentStep === 'warning' && (
-            <div className="space-y-6">
+            <Stack gap={6}>
               <div className="text-center">
                 <div className="w-16 h-16 bg-accent-red/10 rounded-full flex items-center justify-center mx-auto mb-4">
                   <PiWarning className="w-8 h-8 text-red-500" />
@@ -235,8 +235,11 @@ const DeleteAccountModal: React.FC<DeleteAccountModalProps> = ({
                 </p>
               </div>
 
-              <div className="bg-accent-red/10 border border-red-400 rounded-lg p-4">
-                <h5 className="font-medium text-accent-red mb-2 flex items-center">
+              <Stack
+                gap={2}
+                className="bg-accent-red/10 border border-red-400 rounded-lg p-4"
+              >
+                <h5 className="font-medium text-accent-red flex items-center">
                   <PiInfo className="w-4 h-4 mr-2" />
                   {t('delete_modal_what_happens')}
                 </h5>
@@ -248,13 +251,13 @@ const DeleteAccountModal: React.FC<DeleteAccountModalProps> = ({
                   <li>{t('delete_modal_goodbye_email')}</li>
                   <li>{t('delete_modal_irreversible')}</li>
                 </ul>
-              </div>
+              </Stack>
 
-              <div className="bg-theme-secondary rounded-lg p-4">
-                <h5 className="font-medium text-theme-primary mb-2">
+              <Stack gap={2} className="bg-theme-secondary rounded-lg p-4">
+                <h5 className="font-medium text-theme-primary">
                   {t('delete_modal_account_info')}
                 </h5>
-                <div className="space-y-2 text-sm">
+                <Stack gap={2} className="text-sm">
                   <div className="flex justify-between">
                     <span className="text-theme-secondary">
                       {t('delete_modal_name')}
@@ -271,22 +274,22 @@ const DeleteAccountModal: React.FC<DeleteAccountModalProps> = ({
                       {userEmail}
                     </span>
                   </div>
-                </div>
-              </div>
-            </div>
+                </Stack>
+              </Stack>
+            </Stack>
           )}
 
           {/* Step 2: Cascade Info */}
           {currentStep === 'cascade' && (
-            <div className="space-y-6">
-              <div className="text-center">
-                <h4 className="text-lg font-semibold text-theme-primary mb-2">
+            <Stack gap={6}>
+              <Stack gap={2} className="text-center">
+                <h4 className="text-lg font-semibold text-theme-primary">
                   {t('delete_modal_data_summary')}
                 </h4>
                 <p className="text-theme-secondary">
                   {t('delete_modal_data_description')}
                 </p>
-              </div>
+              </Stack>
 
               {isCascadeLoading ? (
                 <div className="flex items-center justify-center py-12">
@@ -298,16 +301,19 @@ const DeleteAccountModal: React.FC<DeleteAccountModalProps> = ({
                   </div>
                 </div>
               ) : cascadeInfo ? (
-                <div className="space-y-4">
+                <Stack>
                   {/* Summary */}
-                  <div className="bg-accent-amber/10 border border-red-400 rounded-lg p-4 text-center">
-                    <h5 className="font-bold text-accent-amber text-lg mb-1">
+                  <Stack
+                    gap={1}
+                    className="bg-accent-amber/10 border border-red-400 rounded-lg p-4 text-center"
+                  >
+                    <h5 className="font-bold text-accent-amber text-lg">
                       {cascadeInfo.totalItems}
                     </h5>
                     <p className="text-accent-amber text-sm">
                       {t('delete_modal_total_items')}
                     </p>
-                  </div>
+                  </Stack>
 
                   {/* Data Grid */}
                   <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
@@ -340,8 +346,11 @@ const DeleteAccountModal: React.FC<DeleteAccountModalProps> = ({
                   {(cascadeInfo.sampleComposers.length > 0 ||
                     cascadeInfo.sampleWorks.length > 0 ||
                     cascadeInfo.sampleAnnotations.length > 0) && (
-                    <div className="bg-theme-secondary rounded-lg p-4">
-                      <h5 className="font-medium text-theme-primary mb-3 flex items-center">
+                    <Stack
+                      gap={3}
+                      className="bg-theme-secondary rounded-lg p-4"
+                    >
+                      <h5 className="font-medium text-theme-primary flex items-center">
                         <PiInfo className="w-4 h-4 mr-2" />
                         {t('delete_modal_examples')}
                       </h5>
@@ -397,24 +406,24 @@ const DeleteAccountModal: React.FC<DeleteAccountModalProps> = ({
                             </Inline>
                           ))}
                       </div>
-                    </div>
+                    </Stack>
                   )}
 
                   {/* Additional Info */}
                   <div className="bg-theme-elevated rounded-lg p-4">
                     <div className="flex items-start space-x-2">
                       <PiEnvelopeSimple className="w-4 h-4 text-accent-blue mt-0.5 flex-shrink-0" />
-                      <div className="text-sm text-accent-blue">
-                        <p className="font-medium mb-1">
+                      <Stack gap={1} className="text-sm text-accent-blue">
+                        <p className="font-medium">
                           {t('delete_modal_goodbye_email_info')}
                         </p>
                         <p className="opacity-90">
                           {t('delete_modal_goodbye_description')}
                         </p>
-                      </div>
+                      </Stack>
                     </div>
                   </div>
-                </div>
+                </Stack>
               ) : (
                 <div className="text-center py-8">
                   <PiInfo className="w-8 h-8 text-theme-tertiary mx-auto mb-4" />
@@ -423,12 +432,12 @@ const DeleteAccountModal: React.FC<DeleteAccountModalProps> = ({
                   </p>
                 </div>
               )}
-            </div>
+            </Stack>
           )}
 
           {/* Step 3: Final Confirmation */}
           {currentStep === 'confirm' && (
-            <div className="space-y-6">
+            <Stack gap={6}>
               <div className="text-center">
                 <div className="w-16 h-16 bg-accent-red/10 rounded-full flex items-center justify-center mx-auto mb-4">
                   <PiTrash className="w-8 h-8 text-accent-red" />
@@ -441,14 +450,14 @@ const DeleteAccountModal: React.FC<DeleteAccountModalProps> = ({
                 </p>
               </div>
 
-              <div className="border border-red-400 rounded-lg p-4">
-                <h5 className="font-medium text-accent-red mb-2">
+              <Stack gap={2} className="border border-red-400 rounded-lg p-4">
+                <h5 className="font-medium text-accent-red">
                   {t('delete_modal_permanent_warning')}
                 </h5>
                 <p className="text-sm text-accent-red opacity-90">
                   {t('delete_modal_immediate_removal')}
                 </p>
-              </div>
+              </Stack>
 
               <div>
                 <Input
@@ -486,7 +495,7 @@ const DeleteAccountModal: React.FC<DeleteAccountModalProps> = ({
                   </Text>
                 </div>
               )}
-            </div>
+            </Stack>
           )}
         </div>
 

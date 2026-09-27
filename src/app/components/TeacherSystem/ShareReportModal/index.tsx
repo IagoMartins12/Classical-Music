@@ -23,6 +23,7 @@ import Checkbox from '../../Common/Checkbox';
 import { Text } from '@/app/components/ui/Text';
 import { Field } from '@/app/components/ui/Field';
 import { Button } from '@/app/components/ui/Button';
+import { Stack } from '@/app/components/ui/Layout';
 
 interface ShareReportModalProps {
   isOpen: boolean;
@@ -195,9 +196,9 @@ export default function ShareReportModal({
           </div>
         </div>
 
-        <div className="space-y-6">
+        <Stack gap={6}>
           {/* Configurações Básicas */}
-          <div className="space-y-4">
+          <Stack>
             <h3 className="text-lg font-bold text-theme-primary">
               Informações Básicas
             </h3>
@@ -243,11 +244,11 @@ export default function ShareReportModal({
                 placeholder="Escreva uma mensagem personalizada para o aluno sobre este relatório..."
               />
             </div>
-          </div>
+          </Stack>
 
           {/* Seleção de Seções */}
-          <div>
-            <div className="flex items-center justify-between mb-4">
+          <Stack>
+            <div className="flex items-center justify-between">
               <h3 className="text-lg font-bold text-theme-primary">
                 Seções do Relatório
               </h3>
@@ -319,10 +320,10 @@ export default function ShareReportModal({
                 );
               })}
             </div>
-          </div>
+          </Stack>
 
           {/* Configurações Avançadas */}
-          <div className="space-y-4">
+          <Stack>
             <h3 className="text-lg font-bold text-theme-primary">
               Configurações
             </h3>
@@ -372,8 +373,8 @@ export default function ShareReportModal({
                 <option value="90">90 dias</option>
               </Field.Selecao>
             </div>
-          </div>
-        </div>
+          </Stack>
+        </Stack>
 
         {/* Actions */}
         <div className="flex items-center justify-end gap-3 pt-6 border-t border-theme-secondary mt-6">

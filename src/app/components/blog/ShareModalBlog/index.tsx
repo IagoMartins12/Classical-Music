@@ -12,7 +12,7 @@ import {
   PiTwitterLogo,
   PiWhatsappLogo,
 } from 'react-icons/pi';
-import { Inline } from '@/app/components/ui/Layout';
+import { Stack, Inline } from '@/app/components/ui/Layout';
 
 interface ShareModalProps {
   isOpen: boolean;
@@ -107,7 +107,7 @@ export function ShareModalBlog({
       title="Compartilhar Artigo"
       maxWidth="md"
     >
-      <div className="space-y-6">
+      <Stack gap={6}>
         {/* Grid de Botões de Compartilhamento */}
         <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
           {shareOptions.map((option) => {
@@ -126,8 +126,8 @@ export function ShareModalBlog({
         </div>
 
         {/* Copiar Link */}
-        <div className="pt-4 border-t border-theme-secondary">
-          <label className="block text-sm font-medium text-theme-primary mb-2">
+        <Stack gap={2} className="pt-4 border-t border-theme-secondary">
+          <label className="block text-sm font-medium text-theme-primary">
             Ou copie o link:
           </label>
           <Inline gap={2}>
@@ -158,8 +158,8 @@ export function ShareModalBlog({
               )}
             </button>
           </Inline>
-        </div>
-      </div>
+        </Stack>
+      </Stack>
     </Modal>
   );
 }

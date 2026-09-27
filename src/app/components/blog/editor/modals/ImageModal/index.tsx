@@ -10,6 +10,7 @@ import Button from '@/app/components/Common/Button';
 import Select from '@/app/components/Common/Select';
 import { uploadBlogMedia } from '@/app/requests/blog/interactions';
 import { Text } from '@/app/components/ui/Text';
+import { Stack } from '@/app/components/ui/Layout';
 
 interface ImageModalProps {
   editor: Editor;
@@ -128,8 +129,8 @@ export function ImageModal({
         {/* ABA - UPLOAD */}
         {activeTab === 'upload' && (
           <>
-            <div>
-              <label className="block text-sm font-medium text-theme-primary mb-2">
+            <Stack gap={2}>
+              <label className="block text-sm font-medium text-theme-primary">
                 Selecionar Arquivo
               </label>
               <div className="border-2 border-dashed border-theme-secondary rounded-lg p-4 text-center hover:border-brand-primary transition-colors">
@@ -166,7 +167,7 @@ export function ImageModal({
                   </label>
                 )}
               </div>
-            </div>
+            </Stack>
 
             {url && (
               <Input
@@ -186,8 +187,8 @@ export function ImageModal({
         {activeTab === 'link' && (
           <>
             {url && (
-              <div className="mb-4">
-                <label className="block text-sm font-medium text-theme-primary mb-2">
+              <Stack gap={2} className="mb-4">
+                <label className="block text-sm font-medium text-theme-primary">
                   Preview
                 </label>
                 <div className="border-2 border-theme-secondary rounded-lg p-4 text-center bg-gray-50">
@@ -205,7 +206,7 @@ export function ImageModal({
                     </p>
                   )}
                 </div>
-              </div>
+              </Stack>
             )}
 
             <Input

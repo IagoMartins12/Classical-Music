@@ -21,6 +21,7 @@ import {
   seedDefaultPlanPrices,
   setPlanPricingRequest,
 } from '@/app/requests/admin/billing';
+import { Stack } from '@/app/components/ui/Layout';
 
 /** Versão vigente do preço de um plano, como `GET /admin/plan-pricing` devolve. */
 interface PlanPricing {
@@ -249,7 +250,7 @@ export default function AdminPlanPricingPage() {
                 </div>
 
                 {/* Body */}
-                <div className="p-6 space-y-6">
+                <Stack gap={6} className="p-6">
                   {/* Preço Mensal */}
                   <div>
                     <label className="block text-sm font-medium mb-2">
@@ -276,15 +277,15 @@ export default function AdminPlanPricingPage() {
                   </div>
 
                   {/* Descontos */}
-                  <div className="space-y-3">
+                  <Stack gap={3}>
                     <h4 className="text-sm font-semibold flex items-center gap-2">
                       <PiTrendUp className="w-4 h-4" />
                       Descontos Progressivos
                     </h4>
 
                     {/* Trimestral */}
-                    <div className="bg-theme-elevated rounded-lg p-3">
-                      <div className="flex justify-between items-center mb-2">
+                    <Stack gap={2} className="bg-theme-elevated rounded-lg p-3">
+                      <div className="flex justify-between items-center">
                         <span className="text-sm font-medium">
                           Trimestral (3 meses)
                         </span>
@@ -317,11 +318,11 @@ export default function AdminPlanPricingPage() {
                         )}
                         <span className="text-sm font-normal"> / 3 meses</span>
                       </div>
-                    </div>
+                    </Stack>
 
                     {/* Semestral */}
-                    <div className="bg-theme-elevated rounded-lg p-3">
-                      <div className="flex justify-between items-center mb-2">
+                    <Stack gap={2} className="bg-theme-elevated rounded-lg p-3">
+                      <div className="flex justify-between items-center">
                         <span className="text-sm font-medium">
                           Semestral (6 meses)
                         </span>
@@ -354,11 +355,11 @@ export default function AdminPlanPricingPage() {
                         )}
                         <span className="text-sm font-normal"> / 6 meses</span>
                       </div>
-                    </div>
+                    </Stack>
 
                     {/* Anual */}
-                    <div className="bg-theme-elevated rounded-lg p-3">
-                      <div className="flex justify-between items-center mb-2">
+                    <Stack gap={2} className="bg-theme-elevated rounded-lg p-3">
+                      <div className="flex justify-between items-center">
                         <span className="text-sm font-medium">
                           Anual (12 meses)
                         </span>
@@ -390,8 +391,8 @@ export default function AdminPlanPricingPage() {
                         )}
                         <span className="text-sm font-normal"> / ano</span>
                       </div>
-                    </div>
-                  </div>
+                    </Stack>
+                  </Stack>
 
                   {/* Trial Days */}
                   {isEditing && (
@@ -445,7 +446,7 @@ export default function AdminPlanPricingPage() {
                       </Button>
                     )}
                   </div>
-                </div>
+                </Stack>
               </div>
             );
           })}
@@ -456,8 +457,8 @@ export default function AdminPlanPricingPage() {
       {activePlans.length > 0 && (
         <div className="bg-blue-50 border border-blue-200 rounded-xl p-4 flex gap-3">
           <PiInfo className="w-5 h-5 text-blue-500 flex-shrink-0 mt-0.5" />
-          <div className="text-sm text-blue-900">
-            <p className="font-semibold mb-1">Como funciona:</p>
+          <Stack gap={1} className="text-sm text-blue-900">
+            <p className="font-semibold">Como funciona:</p>
             <ul className="list-disc list-inside space-y-1 text-blue-800">
               <li>
                 O <strong>preço mensal</strong> é a base de cálculo
@@ -473,7 +474,7 @@ export default function AdminPlanPricingPage() {
                 Alterações afetam apenas <strong>novas assinaturas</strong>
               </li>
             </ul>
-          </div>
+          </Stack>
         </div>
       )}
     </div>

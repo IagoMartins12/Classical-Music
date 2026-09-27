@@ -831,7 +831,7 @@ function ScoreFavoriteCard({ favorite, viewMode, t }: ScoreFavoriteCardProps) {
             </div>
 
             {/* Informações da obra */}
-            <div className="space-y-1 mb-3">
+            <Stack gap={1} className="mb-3">
               <Inline gap={2}>
                 <PiMusicNotes className="w-3 h-3 text-accent-blue" />
                 <span className="text-sm text-accent-blue hover:text-accent-purple transition-colors font-medium">
@@ -845,13 +845,16 @@ function ScoreFavoriteCard({ favorite, viewMode, t }: ScoreFavoriteCardProps) {
                   {favorite.work?.composer?.fullName}
                 </Text>
               </Inline>
-            </div>
+            </Stack>
 
             {/* Metadados pessoais */}
             {(favorite.personalRating ||
               favorite.notes ||
               favorite.tags?.length > 0) && (
-              <div className="space-y-2 mb-3 p-3 bg-gradient-to-r from-theme-elevated to-interactive-hover rounded-lg border border-theme-primary/20">
+              <Stack
+                gap={2}
+                className="mb-3 p-3 bg-gradient-to-r from-theme-elevated to-interactive-hover rounded-lg border border-theme-primary/20"
+              >
                 {favorite.personalRating && (
                   <Inline gap={2}>
                     <PiStar className="w-3 h-3 text-accent-gold" />
@@ -897,7 +900,7 @@ function ScoreFavoriteCard({ favorite, viewMode, t }: ScoreFavoriteCardProps) {
                     )}
                   </div>
                 )}
-              </div>
+              </Stack>
             )}
 
             {/* Data de adição */}

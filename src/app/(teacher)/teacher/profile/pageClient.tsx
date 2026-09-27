@@ -45,7 +45,7 @@ import { TeacherStatus } from '@/app/types/portal';
 import { saveTeacherProfile } from '@/app/requests/portal/profile-actions';
 import Input from '@/app/components/Common/Inputs';
 import { useTranslation } from '@/app/context/TranslationContext';
-import { Inline } from '@/app/components/ui/Layout';
+import { Stack, Inline } from '@/app/components/ui/Layout';
 import { Text } from '@/app/components/ui/Text';
 import { Field } from '@/app/components/ui/Field';
 import { NomeAcao } from '@/app/components/ui/NomeAcao';
@@ -584,7 +584,7 @@ export default function TeacherProfilePageClient({
               </div>
 
               {editingSection === 'personal' ? (
-                <div className="space-y-6">
+                <Stack gap={6}>
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div>
                       <Field
@@ -704,10 +704,10 @@ export default function TeacherProfilePageClient({
                       <span>{t('save')}</span>
                     </Inline>
                   </Inline>
-                </div>
+                </Stack>
               ) : (
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                  <div className="space-y-4">
+                  <Stack>
                     <div>
                       <label className="text-sm text-theme-tertiary">
                         {t('name_label')}
@@ -742,9 +742,9 @@ export default function TeacherProfilePageClient({
                         <span>{data?.user.phone || t('not_informed')}</span>
                       </Inline>
                     </div>
-                  </div>
+                  </Stack>
 
-                  <div className="space-y-4">
+                  <Stack>
                     <div>
                       <label className="text-sm text-theme-tertiary">
                         {t('location_label')}
@@ -802,7 +802,7 @@ export default function TeacherProfilePageClient({
                         )}
                       </Inline>
                     </div>
-                  </div>
+                  </Stack>
                 </div>
               )}
             </div>
@@ -847,7 +847,7 @@ export default function TeacherProfilePageClient({
               </div>
 
               {editingSection === 'professional' ? (
-                <div className="space-y-6">
+                <Stack gap={6}>
                   <div>
                     <Field.Area
                       label={t('biography')}
@@ -961,9 +961,9 @@ export default function TeacherProfilePageClient({
                       <span>{t('save')}</span>
                     </Inline>
                   </Inline>
-                </div>
+                </Stack>
               ) : (
-                <div className="space-y-6">
+                <Stack gap={6}>
                   {data?.bio && (
                     <div>
                       <label className="text-sm text-theme-tertiary">
@@ -1053,7 +1053,7 @@ export default function TeacherProfilePageClient({
                         </Button>
                       </div>
                     )}
-                </div>
+                </Stack>
               )}
             </div>
           </AnimatedCard>
@@ -1095,7 +1095,7 @@ export default function TeacherProfilePageClient({
               </div>
 
               {editingSection === 'teaching' ? (
-                <div className="space-y-6">
+                <Stack gap={6}>
                   <div>
                     <label className="block text-sm font-medium text-theme-primary mb-3">
                       {t('instruments_teach')}
@@ -1209,11 +1209,11 @@ export default function TeacherProfilePageClient({
                   </div>
 
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <div>
-                      <label className="block text-sm font-medium text-theme-primary mb-3">
+                    <Stack gap={3}>
+                      <label className="block text-sm font-medium text-theme-primary">
                         {t('age_groups')}
                       </label>
-                      <div className="space-y-2">
+                      <Stack gap={2}>
                         {AGE_GROUPS.map((ageGroup) => (
                           <Inline as="label" gap={3} key={ageGroup.value}>
                             <input
@@ -1236,14 +1236,14 @@ export default function TeacherProfilePageClient({
                             </Text>
                           </Inline>
                         ))}
-                      </div>
-                    </div>
+                      </Stack>
+                    </Stack>
 
-                    <div>
-                      <label className="block text-sm font-medium text-theme-primary mb-3">
+                    <Stack gap={3}>
+                      <label className="block text-sm font-medium text-theme-primary">
                         {t('skill_levels')}
                       </label>
-                      <div className="space-y-2">
+                      <Stack gap={2}>
                         {SKILL_LEVELS.map((skillLevel) => (
                           <Inline as="label" gap={3} key={skillLevel.value}>
                             <input
@@ -1273,8 +1273,8 @@ export default function TeacherProfilePageClient({
                             </Text>
                           </Inline>
                         ))}
-                      </div>
-                    </div>
+                      </Stack>
+                    </Stack>
                   </div>
 
                   <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
@@ -1367,9 +1367,9 @@ export default function TeacherProfilePageClient({
                       <span>{t('save')}</span>
                     </Inline>
                   </Inline>
-                </div>
+                </Stack>
               ) : (
-                <div className="space-y-6">
+                <Stack gap={6}>
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div>
                       <label className="text-sm text-theme-tertiary">
@@ -1547,7 +1547,7 @@ export default function TeacherProfilePageClient({
                         </Button>
                       </div>
                     )}
-                </div>
+                </Stack>
               )}
             </div>
           </AnimatedCard>
@@ -1589,7 +1589,7 @@ export default function TeacherProfilePageClient({
               </div>
 
               {editingSection === 'public' ? (
-                <div className="space-y-6">
+                <Stack gap={6}>
                   <div className="flex items-center justify-between p-4 bg-gradient-to-r from-theme-elevated to-interactive-hover rounded-lg bg-theme-elevated border-theme-primary/20">
                     <Inline gap={3}>
                       <div
@@ -1686,9 +1686,9 @@ export default function TeacherProfilePageClient({
                       <span>{t('save')}</span>
                     </Inline>
                   </Inline>
-                </div>
+                </Stack>
               ) : (
-                <div className="space-y-4">
+                <Stack>
                   <div className="flex items-center justify-between p-4 bg-gradient-to-r from-theme-elevated to-interactive-hover rounded-lg bg-theme-elevated border-theme-primary/20">
                     <Inline gap={3}>
                       <div
@@ -1784,7 +1784,7 @@ export default function TeacherProfilePageClient({
                       </Button>
                     </div>
                   )}
-                </div>
+                </Stack>
               )}
             </div>
           </AnimatedCard>

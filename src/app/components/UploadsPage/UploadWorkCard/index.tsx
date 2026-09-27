@@ -291,7 +291,7 @@ const UploadWorkCard = ({
             </div>
 
             {/* Action Section */}
-            <div className="space-y-3">
+            <Stack gap={3}>
               {/* Secondary Actions */}
               <div className="flex items-center justify-between pt-3 border-t border-theme-secondary">
                 <Inline gap={2} className="text-theme-tertiary text-xs">
@@ -312,7 +312,7 @@ const UploadWorkCard = ({
                   </Inline>
                 )}
               </div>
-            </div>
+            </Stack>
 
             {/* Hover glow effect */}
             <div className="absolute inset-0 bg-brand-gradient opacity-0 group-hover:opacity-5 transition-opacity duration-500 rounded-2xl pointer-events-none"></div>

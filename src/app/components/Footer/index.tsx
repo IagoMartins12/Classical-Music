@@ -191,7 +191,7 @@ const Footer: React.FC = () => {
 
     if (error) {
       return (
-        <div className="space-y-3">
+        <Stack gap={3}>
           <Inline gap={2} className="text-accent-red">
             <PiWarningCircle className="w-4 h-4 mt-0.5 text-red-600 flex-shrink-0" />
             <p className="text-sm text-red-500 mt-1">{error}</p>
@@ -217,7 +217,7 @@ const Footer: React.FC = () => {
               {t('footer_jsx_button_children_0__tentar_novamente')}
             </button>
           </div>
-        </div>
+        </Stack>
       );
     }
 
@@ -231,7 +231,7 @@ const Footer: React.FC = () => {
         <div className="section-wrap py-16">
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 lg:gap-12">
             {/* Brand Section */}
-            <div className="lg:col-span-1 space-y-6">
+            <Stack gap={6} className="lg:col-span-1">
               <Link href="/" className="flex items-center group">
                 <div className="relative">
                   <GiGrandPiano className="w-10 h-10 mr-3 text-brand-primary icon-glow transition-all duration-300 group-hover:scale-110" />
@@ -251,7 +251,7 @@ const Footer: React.FC = () => {
               </Text>
 
               {/* Contact Info */}
-              <div className="space-y-3">
+              <Stack gap={3}>
                 <Inline gap={3} className="text-sm text-theme-tertiary">
                   <PiEnvelopeSimple className="w-4 h-4 text-brand-primary" />
                   <span>opusatlas@gmail.com</span>
@@ -266,11 +266,11 @@ const Footer: React.FC = () => {
                     {t('footer_jsx_span_children_0__são_paulo_brasil')}
                   </span>
                 </Inline>
-              </div>
-            </div>
+              </Stack>
+            </Stack>
 
             {/* Quick Links */}
-            <div className="space-y-6">
+            <Stack gap={6}>
               <h3 className="text-lg font-semibold text-theme-primary flex items-center">
                 <PiBookOpen className="w-5 h-5 mr-2 text-brand-primary" />
                 {t('footer_jsx_h3_children_2__explorar')}
@@ -289,10 +289,10 @@ const Footer: React.FC = () => {
                   </li>
                 ))}
               </ul>
-            </div>
+            </Stack>
 
             {/* Support Links */}
-            <div className="space-y-6">
+            <Stack gap={6}>
               <h3 className="text-lg font-semibold text-theme-primary flex items-center">
                 <PiInfo className="w-5 h-5 mr-2 text-brand-primary" />
                 {t('footer_jsx_h3_children_2__suporte')}
@@ -309,10 +309,10 @@ const Footer: React.FC = () => {
                   </li>
                 ))}
               </ul>
-            </div>
+            </Stack>
 
             {/* Legal & Social */}
-            <div className="space-y-6">
+            <Stack gap={6}>
               <h3 className="text-lg font-semibold text-theme-primary flex items-center">
                 <PiShield className="w-5 h-5 mr-2 text-brand-primary" />
                 {t('footer_jsx_h3_children_2__legal')}
@@ -331,8 +331,8 @@ const Footer: React.FC = () => {
               </ul>
 
               {/* Social Media */}
-              <div className="pt-4">
-                <h4 className="text-sm font-medium text-theme-secondary mb-4">
+              <Stack className="pt-4">
+                <h4 className="text-sm font-medium text-theme-secondary">
                   {t('footer_jsx_h4_children_0__siganos')}
                 </h4>
                 <div className="flex space-x-4">
@@ -347,8 +347,8 @@ const Footer: React.FC = () => {
                     </a>
                   ))}
                 </div>
-              </div>
-            </div>
+              </Stack>
+            </Stack>
           </div>
         </div>
 

@@ -11,7 +11,7 @@ import {
   PiSquaresFour,
   PiUser,
 } from 'react-icons/pi';
-import { Inline } from '@/app/components/ui/Layout';
+import { Stack, Inline } from '@/app/components/ui/Layout';
 import { Card } from '@/app/components/ui/Card';
 
 export default function FavoritesLoading() {
@@ -120,10 +120,10 @@ export default function FavoritesLoading() {
             <div className="w-10 h-10 rounded-xl flex items-center justify-center">
               <PiUser className="w-5 h-5 text-theme-primary/30" />
             </div>
-            <div className="space-y-2">
+            <Stack gap={2}>
               <div className="h-8 w-56 bg-gradient-to-r from-theme-primary/20 to-theme-secondary/20 rounded animate-pulse"></div>
               <div className="h-4 w-40 bg-theme-elevated rounded animate-pulse"></div>
-            </div>
+            </Stack>
           </Inline>
 
           {/* Composers Grid */}
@@ -140,10 +140,10 @@ export default function FavoritesLoading() {
             <div className="w-10 h-10 rounded-xl flex items-center justify-center">
               <PiMusicNotes className="w-5 h-5 text-theme-primary/30" />
             </div>
-            <div className="space-y-2">
+            <Stack gap={2}>
               <div className="h-8 w-40 bg-gradient-to-r from-theme-primary/20 to-theme-secondary/20 rounded animate-pulse"></div>
               <div className="h-4 w-32 bg-theme-elevated rounded animate-pulse"></div>
-            </div>
+            </Stack>
           </Inline>
 
           {/* Works Grid */}

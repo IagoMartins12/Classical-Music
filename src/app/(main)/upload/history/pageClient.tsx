@@ -35,7 +35,7 @@ import Select from '@/app/components/Common/Select';
 import { formatChangesForDisplay } from '@/app/utils/historyFormat';
 import { getUploadHistory } from '@/app/requests/uploads-client';
 import { useTranslation } from '@/app/context/TranslationContext';
-import { Inline } from '@/app/components/ui/Layout';
+import { Stack, Inline } from '@/app/components/ui/Layout';
 import { Text } from '@/app/components/ui/Text';
 import { Button } from '@/app/components/ui/Button';
 
@@ -328,11 +328,11 @@ const HistoryClient = ({
 
           {/* Lista de obras criadas (primeiras 5) */}
           {bulk.worksCreated && bulk.worksCreated.length > 0 && (
-            <div>
-              <div className="text-xs font-medium text-purple-700 mb-1">
+            <Stack gap={1}>
+              <div className="text-xs font-medium text-purple-700">
                 {t('history_bulk_works_created')}
               </div>
-              <div className="space-y-1">
+              <Stack gap={1}>
                 {bulk.worksCreated
                   .slice(0, 5)
                   .map((work: any, index: number) => (
@@ -352,8 +352,8 @@ const HistoryClient = ({
                     )}
                   </div>
                 )}
-              </div>
-            </div>
+              </Stack>
+            </Stack>
           )}
         </div>
       );
@@ -361,12 +361,15 @@ const HistoryClient = ({
 
     if (action === 'create' && changes.created) {
       return (
-        <div className="mt-3 p-3 bg-green-50 border border-green-200 rounded-lg">
-          <h5 className="text-sm font-medium text-green-700 mb-2 flex items-center">
+        <Stack
+          gap={2}
+          className="mt-3 p-3 bg-green-50 border border-green-200 rounded-lg"
+        >
+          <h5 className="text-sm font-medium text-green-700 flex items-center">
             <PiPlus className="w-4 h-4 mr-1" />
             {t('history_changes_created_title')}
           </h5>
-          <div className="space-y-1">
+          <Stack gap={1}>
             {Object.entries(changes.created)
               .slice(0, 5)
               .map(([key, value]) => (
@@ -375,19 +378,22 @@ const HistoryClient = ({
                   {formatValue(value)}
                 </div>
               ))}
-          </div>
-        </div>
+          </Stack>
+        </Stack>
       );
     }
 
     if (action === 'delete' && changes.deleted) {
       return (
-        <div className="mt-3 p-3 bg-red-50 border border-red-200 rounded-lg">
-          <h5 className="text-sm font-medium text-red-700 mb-2 flex items-center">
+        <Stack
+          gap={2}
+          className="mt-3 p-3 bg-red-50 border border-red-200 rounded-lg"
+        >
+          <h5 className="text-sm font-medium text-red-700 flex items-center">
             <PiTrash className="w-4 h-4 mr-1" />
             {t('history_changes_deleted_title')}
           </h5>
-          <div className="space-y-1">
+          <Stack gap={1}>
             {Object.entries(changes.deleted)
               .slice(0, 5)
               .map(([key, value]) => (
@@ -396,8 +402,8 @@ const HistoryClient = ({
                   {formatValue(value)}
                 </div>
               ))}
-          </div>
-        </div>
+          </Stack>
+        </Stack>
       );
     }
 
@@ -413,15 +419,18 @@ const HistoryClient = ({
       if (changesList.length === 0) return null;
 
       return (
-        <div className="mt-3 p-3 bg-blue-50 border border-blue-200 rounded-lg">
-          <h5 className="text-sm font-medium text-blue-700 mb-2 flex items-center">
+        <Stack
+          gap={2}
+          className="mt-3 p-3 bg-blue-50 border border-blue-200 rounded-lg"
+        >
+          <h5 className="text-sm font-medium text-blue-700 flex items-center">
             <PiNotePencil className="w-4 h-4 mr-1" />
             {t('history_changes_updated_title')}
           </h5>
-          <div className="space-y-2">
+          <Stack gap={2}>
             {changesList.slice(0, 5).map(([key, change]: [string, any]) => (
-              <div key={key} className="text-xs">
-                <div className="font-medium text-blue-700 mb-1">
+              <Stack gap={1} key={key} className="text-xs">
+                <div className="font-medium text-blue-700">
                   {formatFieldName(key)}:
                 </div>
                 <div className="pl-2 border-l-2 border-blue-300">
@@ -438,7 +447,7 @@ const HistoryClient = ({
                     <span>{formatValue(change.to)}</span>
                   </div>
                 </div>
-              </div>
+              </Stack>
             ))}
             {changesList.length > 5 && (
               <div className="text-xs text-blue-600">
@@ -448,8 +457,8 @@ const HistoryClient = ({
                 )}
               </div>
             )}
-          </div>
-        </div>
+          </Stack>
+        </Stack>
       );
     }
 
@@ -596,7 +605,7 @@ const HistoryClient = ({
 
         {/* History Timeline */}
         <AnimatedItem direction="up" springType="gentle">
-          <div className="space-y-6">
+          <Stack gap={6}>
             {history.length === 0 ? (
               <div className="classical-card p-12 text-center">
                 <PiClock className="w-16 h-16 text-theme-tertiary mx-auto mb-4" />
@@ -784,7 +793,7 @@ const HistoryClient = ({
                 ))}
               </div>
             )}
-          </div>
+          </Stack>
         </AnimatedItem>
 
         {/* Pagination */}

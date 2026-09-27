@@ -15,7 +15,7 @@ import {
   PiTrophy,
 } from 'react-icons/pi';
 import { AnimatedCard, AnimatedItem } from '../../animation/AnimatedComponents';
-import { Inline } from '@/app/components/ui/Layout';
+import { Stack, Inline } from '@/app/components/ui/Layout';
 import { Text } from '@/app/components/ui/Text';
 
 // Tipos de badges
@@ -489,7 +489,7 @@ export function BadgeGrid({
 
   return (
     <AnimatedCard hover="lift" className="classical-card p-6">
-      <div className="space-y-4">
+      <Stack>
         {title && (
           <Inline gap={2}>
             <PiMedal className="w-5 h-5 text-brand-primary" />
@@ -525,7 +525,7 @@ export function BadgeGrid({
             </span>
           </div>
         </div>
-      </div>
+      </Stack>
     </AnimatedCard>
   );
 }

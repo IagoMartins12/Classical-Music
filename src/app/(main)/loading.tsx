@@ -12,7 +12,7 @@ import {
   PiTrendUp,
   PiUser,
 } from 'react-icons/pi';
-import { Inline } from '@/app/components/ui/Layout';
+import { Stack, Inline } from '@/app/components/ui/Layout';
 
 export default function HomeLoading() {
   return (
@@ -59,7 +59,7 @@ export default function HomeLoading() {
         </div>
       </div>
 
-      <div className="section-wrap space-y-16 relative z-10">
+      <Stack gap={16} className="section-wrap relative z-10">
         {/* Hero Section Skeleton */}
         <div className="animate-fade-in-up">
           <div className="grid lg:grid-cols-3 gap-6">
@@ -70,21 +70,21 @@ export default function HomeLoading() {
                 <div className="absolute inset-0 bg-gradient-to-br from-accent-blue/20 to-accent-purple/20"></div>
 
                 {/* Content overlay */}
-                <div className="absolute bottom-0 left-0 right-0 p-6 space-y-4">
+                <Stack className="absolute bottom-0 left-0 right-0 p-6">
                   <div className="w-32 h-6 bg-accent-blue/20 rounded-full"></div>
                   <div className="h-8 bg-gradient-to-r from-theme-inverse/20 to-theme-inverse/10 rounded w-3/4"></div>
-                  <div className="space-y-2">
+                  <Stack gap={2}>
                     <div className="h-4 bg-theme-inverse/15 rounded"></div>
                     <div className="h-4 bg-theme-inverse/15 rounded w-5/6"></div>
                     <div className="h-4 bg-theme-inverse/15 rounded w-4/6"></div>
-                  </div>
+                  </Stack>
                   <div className="h-10 w-48 bg-theme-inverse/20 rounded-full"></div>
-                </div>
+                </Stack>
               </div>
             </div>
 
             {/* Side Cards */}
-            <div className="space-y-4">
+            <Stack>
               {[1, 2].map((index) => (
                 <div
                   key={index}
@@ -92,15 +92,18 @@ export default function HomeLoading() {
                   style={{ animationDelay: `${index * 0.1}s` }}
                 >
                   <div className="absolute inset-0 bg-gradient-to-br from-brand-primary/20 to-brand-secondary/20"></div>
-                  <div className="absolute bottom-0 left-0 right-0 p-4 space-y-2">
+                  <Stack
+                    gap={2}
+                    className="absolute bottom-0 left-0 right-0 p-4"
+                  >
                     <div className="w-20 h-4 bg-accent-green/20 rounded-full"></div>
                     <div className="h-5 bg-theme-inverse/20 rounded w-2/3"></div>
                     <div className="h-3 bg-theme-inverse/15 rounded"></div>
                     <div className="h-3 bg-theme-inverse/15 rounded w-3/4"></div>
-                  </div>
+                  </Stack>
                 </div>
               ))}
-            </div>
+            </Stack>
           </div>
         </div>
 
@@ -112,10 +115,10 @@ export default function HomeLoading() {
               <div className="w-12 h-12 bg-gradient-to-br from-brand-primary/20 to-brand-secondary/20 rounded-xl flex items-center justify-center animate-shimmer">
                 <PiTrendUp className="w-6 h-6 text-brand-primary/50" />
               </div>
-              <div>
-                <div className="h-8 w-64 bg-gradient-to-r from-theme-primary/20 to-theme-secondary/20 rounded mb-2"></div>
+              <Stack gap={2}>
+                <div className="h-8 w-64 bg-gradient-to-r from-theme-primary/20 to-theme-secondary/20 rounded"></div>
                 <div className="h-4 w-80 bg-theme-elevated rounded"></div>
-              </div>
+              </Stack>
             </Inline>
             <div className="h-10 w-48 bg-theme-elevated border border-theme-secondary rounded-xl"></div>
           </div>
@@ -125,20 +128,20 @@ export default function HomeLoading() {
             <div className="absolute inset-0 bg-gradient-to-r from-transparent via-theme-elevated/30 to-transparent rounded-3xl"></div>
             <div className="grid grid-cols-2 md:grid-cols-4 gap-6 px-6">
               {Array.from({ length: 4 }).map((_, i) => (
-                <div
+                <Stack
                   key={i}
                   className="classical-card p-4 group animate-shimmer"
                   style={{ animationDelay: `${0.2 + i * 0.1}s` }}
                 >
-                  <div className="aspect-[4/5] bg-gradient-to-br from-accent-blue/20 to-accent-purple/20 rounded-xl mb-4"></div>
-                  <div className="space-y-3">
+                  <div className="aspect-[4/5] bg-gradient-to-br from-accent-blue/20 to-accent-purple/20 rounded-xl"></div>
+                  <Stack gap={3}>
                     <div className="h-5 bg-gradient-to-r from-theme-primary/20 to-theme-secondary/20 rounded"></div>
                     <div className="h-3 bg-theme-elevated rounded w-3/4"></div>
                     <div className="flex justify-center">
                       <div className="h-5 w-20 bg-theme-tertiary/20 rounded-full"></div>
                     </div>
-                  </div>
-                </div>
+                  </Stack>
+                </Stack>
               ))}
             </div>
           </div>
@@ -152,10 +155,10 @@ export default function HomeLoading() {
               <div className="w-12 h-12 bg-brand-gradient rounded-2xl flex items-center justify-center">
                 <PiMusicNotes className="w-6 h-6 text-theme-primary/50" />
               </div>
-              <div>
-                <div className="h-6 w-48 bg-gradient-to-r from-theme-primary/20 to-theme-secondary/20 rounded mb-2"></div>
+              <Stack gap={2}>
+                <div className="h-6 w-48 bg-gradient-to-r from-theme-primary/20 to-theme-secondary/20 rounded"></div>
                 <div className="h-4 w-56 bg-theme-elevated rounded"></div>
-              </div>
+              </Stack>
             </div>
 
             {/* Main Content */}
@@ -172,15 +175,15 @@ export default function HomeLoading() {
               </div>
 
               {/* Content Section */}
-              <div className="lg:col-span-2 space-y-6">
-                <div className="space-y-3">
+              <Stack gap={6} className="lg:col-span-2">
+                <Stack gap={3}>
                   <div className="h-5 w-24 bg-theme-primary/20 rounded"></div>
-                  <div className="space-y-2">
+                  <Stack gap={2}>
                     <div className="h-4 bg-theme-elevated rounded"></div>
                     <div className="h-4 bg-theme-elevated rounded w-5/6"></div>
                     <div className="h-4 bg-theme-elevated rounded w-4/6"></div>
-                  </div>
-                </div>
+                  </Stack>
+                </Stack>
 
                 <div className="grid gap-3">
                   {Array.from({ length: 3 }).map((_, i) => (
@@ -190,7 +193,7 @@ export default function HomeLoading() {
                     ></div>
                   ))}
                 </div>
-              </div>
+              </Stack>
             </div>
           </div>
         </div>
@@ -202,10 +205,10 @@ export default function HomeLoading() {
             <div className="w-12 h-12 bg-gradient-to-br from-accent-purple/20 to-accent-blue/20 rounded-xl flex items-center justify-center">
               <PiClock className="w-6 h-6 text-accent-purple/50" />
             </div>
-            <div>
-              <div className="h-8 w-48 bg-gradient-to-r from-theme-primary/20 to-theme-secondary/20 rounded mb-2"></div>
+            <Stack gap={2}>
+              <div className="h-8 w-48 bg-gradient-to-r from-theme-primary/20 to-theme-secondary/20 rounded"></div>
               <div className="h-4 w-64 bg-theme-elevated rounded"></div>
-            </div>
+            </Stack>
           </Inline>
 
           {/* Epochs Grid */}
@@ -231,15 +234,15 @@ export default function HomeLoading() {
             <div className="w-12 h-12 bg-gradient-to-br from-orange-500/20 to-yellow-500/20 rounded-xl flex items-center justify-center">
               <PiMapTrifold className="w-6 h-6 text-orange-400/50" />
             </div>
-            <div>
-              <div className="h-8 w-56 bg-gradient-to-r from-theme-primary/20 to-theme-secondary/20 rounded mb-2"></div>
+            <Stack gap={2}>
+              <div className="h-8 w-56 bg-gradient-to-r from-theme-primary/20 to-theme-secondary/20 rounded"></div>
               <div className="h-4 w-72 bg-theme-elevated rounded"></div>
-            </div>
+            </Stack>
           </Inline>
 
           {/* Composers Grid */}
-          <div className="mb-8">
-            <div className="flex items-center gap-3 mb-4">
+          <Stack className="mb-8">
+            <div className="flex items-center gap-3">
               <div className="h-5 w-48 bg-gradient-to-r from-orange-500/20 to-yellow-500/20 rounded"></div>
             </div>
             <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4">
@@ -257,11 +260,11 @@ export default function HomeLoading() {
                 </div>
               ))}
             </div>
-          </div>
+          </Stack>
 
           {/* Works Grid */}
-          <div>
-            <div className="flex items-center gap-3 mb-4">
+          <Stack>
+            <div className="flex items-center gap-3">
               <div className="h-5 w-40 bg-gradient-to-r from-purple-500/20 to-blue-500/20 rounded"></div>
             </div>
             <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4">
@@ -281,7 +284,7 @@ export default function HomeLoading() {
                 </div>
               ))}
             </div>
-          </div>
+          </Stack>
         </div>
 
         {/* Recent Additions Section */}
@@ -291,21 +294,22 @@ export default function HomeLoading() {
             <div className="w-12 h-12 bg-gradient-to-br from-green-500/20 to-emerald-500/20 rounded-xl flex items-center justify-center">
               <PiPlus className="w-6 h-6 text-green-400/50" />
             </div>
-            <div>
-              <div className="h-8 w-44 bg-gradient-to-r from-theme-primary/20 to-theme-secondary/20 rounded mb-2"></div>
+            <Stack gap={2}>
+              <div className="h-8 w-44 bg-gradient-to-r from-theme-primary/20 to-theme-secondary/20 rounded"></div>
               <div className="h-4 w-64 bg-theme-elevated rounded"></div>
-            </div>
+            </Stack>
           </Inline>
 
           {/* Recent Items Grid */}
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
             {Array.from({ length: 8 }).map((_, i) => (
-              <div
+              <Stack
+                gap={3}
                 key={i}
                 className="classical-card-simple p-4 animate-shimmer"
                 style={{ animationDelay: `${0.6 + i * 0.05}s` }}
               >
-                <div className="flex items-center gap-3 mb-3">
+                <div className="flex items-center gap-3">
                   <div className="w-12 h-12 bg-gradient-to-br from-green-500/20 to-emerald-500/20 rounded-xl"></div>
                   <div className="flex-1 space-y-2">
                     <div className="h-4 bg-theme-primary/20 rounded"></div>
@@ -316,7 +320,7 @@ export default function HomeLoading() {
                   <div className="h-3 bg-green-400/20 rounded w-24"></div>
                   <div className="w-6 h-6 bg-theme-tertiary/20 rounded-full"></div>
                 </div>
-              </div>
+              </Stack>
             ))}
           </div>
         </div>
@@ -328,10 +332,10 @@ export default function HomeLoading() {
             <div className="w-12 h-12 bg-gradient-to-br from-accent-blue/20 to-accent-purple/20 rounded-xl flex items-center justify-center">
               <PiBookOpen className="w-6 h-6 text-accent-blue/50" />
             </div>
-            <div>
-              <div className="h-8 w-52 bg-gradient-to-r from-theme-primary/20 to-theme-secondary/20 rounded mb-2"></div>
+            <Stack gap={2}>
+              <div className="h-8 w-52 bg-gradient-to-r from-theme-primary/20 to-theme-secondary/20 rounded"></div>
               <div className="h-4 w-80 bg-theme-elevated rounded"></div>
-            </div>
+            </Stack>
           </Inline>
 
           {/* Facts Grid */}
@@ -349,11 +353,11 @@ export default function HomeLoading() {
                       <div className="h-5 bg-theme-primary/20 rounded w-2/3"></div>
                       <div className="h-5 w-16 bg-accent-blue/20 rounded-full"></div>
                     </div>
-                    <div className="space-y-2">
+                    <Stack gap={2}>
                       <div className="h-3 bg-theme-elevated rounded"></div>
                       <div className="h-3 bg-theme-elevated rounded w-5/6"></div>
                       <div className="h-3 bg-theme-elevated rounded w-3/4"></div>
-                    </div>
+                    </Stack>
                   </div>
                 </div>
               </div>
@@ -368,31 +372,31 @@ export default function HomeLoading() {
             <div className="w-12 h-12 bg-gradient-to-br from-accent-purple/20 to-accent-blue/20 rounded-xl flex items-center justify-center">
               <PiMedal className="w-6 h-6 text-accent-purple/50" />
             </div>
-            <div>
-              <div className="h-8 w-60 bg-gradient-to-r from-theme-primary/20 to-theme-secondary/20 rounded mb-2"></div>
+            <Stack gap={2}>
+              <div className="h-8 w-60 bg-gradient-to-r from-theme-primary/20 to-theme-secondary/20 rounded"></div>
               <div className="h-4 w-32 md:w-96 max-w-full bg-theme-elevated rounded"></div>
-            </div>
+            </Stack>
           </Inline>
 
           {/* Essential Composers Grid */}
           <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4">
             {Array.from({ length: 12 }).map((_, i) => (
-              <div
+              <Stack
                 key={i}
                 className="classical-card p-4 animate-shimmer"
                 style={{ animationDelay: `${0.8 + i * 0.05}s` }}
               >
-                <div className="aspect-square bg-gradient-to-br from-accent-purple/20 to-accent-blue/20 rounded-xl mb-4"></div>
-                <div className="space-y-2">
+                <div className="aspect-square bg-gradient-to-br from-accent-purple/20 to-accent-blue/20 rounded-xl"></div>
+                <Stack gap={2}>
                   <div className="h-4 bg-theme-primary/20 rounded"></div>
                   <div className="h-3 bg-theme-elevated rounded w-3/4"></div>
                   <div className="h-6 bg-theme-tertiary/20 rounded-full"></div>
-                </div>
-              </div>
+                </Stack>
+              </Stack>
             ))}
           </div>
         </div>
-      </div>
+      </Stack>
 
       {/* Floating Elements */}
       <div className="fixed top-20 left-4 w-2 h-2 bg-brand-primary/30 rounded-full animate-pulse"></div>

@@ -640,8 +640,8 @@ export default function SupportPage(): JSX.Element {
                   if (!category) return null;
 
                   return (
-                    <div>
-                      <div className="text-center mb-8">
+                    <Stack gap={8}>
+                      <div className="text-center">
                         <button
                           onClick={() => setSelectedCategory(null)}
                           className="inline-flex items-center text-brand-primary hover:text-brand-primary/80 mb-4 transition-colors"
@@ -805,7 +805,7 @@ export default function SupportPage(): JSX.Element {
                           </AnimatedItem>
                         ))}
                       </div>
-                    </div>
+                    </Stack>
                   );
                 })()}
               </div>

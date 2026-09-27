@@ -16,7 +16,7 @@ import {
   PiTrash,
   PiUser,
 } from 'react-icons/pi';
-import { Inline } from '@/app/components/ui/Layout';
+import { Stack, Inline } from '@/app/components/ui/Layout';
 import { Card } from '@/app/components/ui/Card';
 
 export default function EditScoreLoading() {
@@ -72,19 +72,19 @@ export default function EditScoreLoading() {
           <div className="p-8 relative z-10">
             <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
               {/* Informações Principais */}
-              <div className="lg:col-span-3 space-y-6">
+              <Stack gap={6} className="lg:col-span-3">
                 {/* Título e Header */}
-                <div className="space-y-4">
+                <Stack>
                   <div className="flex items-start justify-between">
                     <div className="flex-1">
                       <Inline gap={3} className="mb-4">
                         <div className="w-10 h-10 bg-gradient-to-br from-accent-purple/20 to-accent-blue/20 rounded-xl flex items-center justify-center">
                           <PiPencilLine className="w-5 h-5 text-theme-primary/30" />
                         </div>
-                        <div className="space-y-2">
+                        <Stack gap={2}>
                           <div className="h-10 w-56 bg-gradient-to-r from-brand-primary/20 to-brand-secondary/20 rounded"></div>
                           <div className="h-5 w-40 bg-theme-elevated rounded"></div>
-                        </div>
+                        </Stack>
                       </Inline>
 
                       <div className="h-12 bg-gradient-to-r from-brand-primary/20 to-brand-secondary/20 rounded mb-2"></div>
@@ -129,7 +129,7 @@ export default function EditScoreLoading() {
                       <div className="w-20 h-4 bg-theme-primary/30 rounded"></div>
                     </Inline>
                   </Inline>
-                </div>
+                </Stack>
 
                 {/* Grid de Informações Detalhadas */}
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
@@ -178,20 +178,20 @@ export default function EditScoreLoading() {
                       >
                         {item.icon}
                       </div>
-                      <div className="space-y-1">
+                      <Stack gap={1}>
                         <div className="h-4 w-16 bg-theme-elevated rounded"></div>
                         <div className="h-5 w-20 bg-gradient-to-r from-theme-primary/20 to-theme-secondary/20 rounded"></div>
-                      </div>
+                      </Stack>
                     </div>
                   ))}
                 </div>
 
                 {/* Informações de Publicação */}
-                <div className="border-t border-theme-secondary pt-6">
+                <Stack className="border-t border-theme-secondary pt-6">
                   <Inline
                     as="h3"
                     gap={2}
-                    className="text-lg font-semibold text-theme-primary classical-title mb-4"
+                    className="text-lg font-semibold text-theme-primary classical-title"
                   >
                     <PiFileText className="w-5 h-5 text-accent-blue/30" />
                     <div className="h-5 w-48 bg-theme-elevated rounded"></div>
@@ -205,41 +205,44 @@ export default function EditScoreLoading() {
                       <div className="h-4 w-16 bg-theme-elevated rounded"></div>
                       <div className="h-4 w-24 bg-theme-primary/20 rounded"></div>
                     </Inline>
-                    <div className="md:col-span-2 p-3 bg-gradient-to-r from-theme-elevated/50 to-interactive-hover/50 rounded-xl border border-theme-primary/20">
-                      <div className="h-4 w-20 bg-theme-elevated rounded mb-1"></div>
-                      <div className="space-y-1">
+                    <Stack
+                      gap={1}
+                      className="md:col-span-2 p-3 bg-gradient-to-r from-theme-elevated/50 to-interactive-hover/50 rounded-xl border border-theme-primary/20"
+                    >
+                      <div className="h-4 w-20 bg-theme-elevated rounded"></div>
+                      <Stack gap={1}>
                         <div className="h-3 bg-theme-secondary rounded"></div>
                         <div className="h-3 bg-theme-secondary rounded w-4/5"></div>
-                      </div>
-                    </div>
+                      </Stack>
+                    </Stack>
                   </div>
-                </div>
+                </Stack>
 
                 {/* Notas */}
-                <div className="border-t border-theme-secondary pt-6">
+                <Stack className="border-t border-theme-secondary pt-6">
                   <Inline
                     as="h3"
                     gap={2}
-                    className="text-lg font-semibold text-theme-primary classical-title mb-4"
+                    className="text-lg font-semibold text-theme-primary classical-title"
                   >
                     <PiInfo className="w-5 h-5 text-accent-green/30" />
                     <div className="h-5 w-16 bg-theme-elevated rounded"></div>
                   </Inline>
                   <div className="p-4 bg-gradient-to-r from-theme-elevated/50 to-interactive-hover/50 rounded-xl border border-theme-primary/20">
-                    <div className="space-y-2">
+                    <Stack gap={2}>
                       <div className="h-4 bg-theme-secondary rounded"></div>
                       <div className="h-4 bg-theme-secondary rounded w-5/6"></div>
                       <div className="h-4 bg-theme-secondary rounded w-3/4"></div>
-                    </div>
+                    </Stack>
                   </div>
-                </div>
+                </Stack>
 
                 {/* Link de Download */}
-                <div className="border-t border-theme-secondary pt-6">
+                <Stack className="border-t border-theme-secondary pt-6">
                   <Inline
                     as="h3"
                     gap={2}
-                    className="text-lg font-semibold text-theme-primary classical-title mb-4"
+                    className="text-lg font-semibold text-theme-primary classical-title"
                   >
                     <PiArrowSquareOut className="w-5 h-5 text-accent-blue/30" />
                     <div className="h-5 w-16 bg-theme-elevated rounded"></div>
@@ -251,11 +254,11 @@ export default function EditScoreLoading() {
                     <PiDownloadSimple className="w-4 h-4 text-theme-primary/30" />
                     <div className="w-32 h-4 bg-theme-primary/30 rounded"></div>
                   </Inline>
-                </div>
-              </div>
+                </Stack>
+              </Stack>
 
               {/* Sidebar com Thumbnail e Obra */}
-              <div className="space-y-6">
+              <Stack gap={6}>
                 {/* Thumbnail da Partitura */}
                 <Card nivel={2}>
                   <Inline gap={3} className="mb-4">
@@ -281,12 +284,12 @@ export default function EditScoreLoading() {
                     <div className="h-5 w-12 bg-theme-elevated rounded"></div>
                   </Inline>
 
-                  <div className="space-y-4">
-                    <div className="space-y-2">
+                  <Stack>
+                    <Stack gap={2}>
                       <div className="h-5 w-32 bg-brand-primary/20 rounded"></div>
                       <div className="h-4 w-28 bg-theme-elevated rounded"></div>
-                    </div>
-                  </div>
+                    </Stack>
+                  </Stack>
                 </Card>
 
                 {/* Detalhes Técnicos */}
@@ -297,7 +300,7 @@ export default function EditScoreLoading() {
                     </div>
                     <div className="h-5 w-32 bg-theme-elevated rounded"></div>
                   </Inline>
-                  <div className="space-y-3 text-sm">
+                  <Stack gap={3} className="text-sm">
                     <div className="flex items-center justify-between">
                       <div className="h-4 w-16 bg-theme-elevated rounded"></div>
                       <div className="h-4 w-8 bg-theme-primary/20 rounded"></div>
@@ -310,9 +313,9 @@ export default function EditScoreLoading() {
                       <div className="h-4 w-24 bg-theme-elevated rounded"></div>
                       <div className="h-3 w-16 bg-theme-primary/20 rounded"></div>
                     </div>
-                  </div>
+                  </Stack>
                 </Card>
-              </div>
+              </Stack>
             </div>
           </div>
         </div>

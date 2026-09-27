@@ -18,6 +18,7 @@ import Link from 'next/link';
 import { toast } from 'react-hot-toast';
 import { useTranslation } from '@/app/context/TranslationContext';
 import { Text } from '@/app/components/ui/Text';
+import { Stack } from '@/app/components/ui/Layout';
 
 interface DeclineState {
   status: 'loading' | 'success' | 'error' | 'already-processed';
@@ -160,11 +161,11 @@ export default function DeclineTeacherInvitePage() {
             {t('pages_token_jsx_p_children_0__certeza_recusar_professor')}
           </p>
 
-          <div className="bg-theme-elevated rounded-xl p-6 mb-8">
-            <h3 className="text-xl font-semibold text-accent-amber mb-4">
+          <Stack className="bg-theme-elevated rounded-xl p-6 mb-8">
+            <h3 className="text-xl font-semibold text-accent-amber">
               {t('pages_token_jsx_h3_children_0__ação_irreversível')}
             </h3>
-            <div className="text-accent-amber opacity-90 space-y-3 text-left">
+            <Stack gap={3} className="text-accent-amber opacity-90 text-left">
               <p
                 className="text-sm"
                 dangerouslySetInnerHTML={{
@@ -189,10 +190,10 @@ export default function DeclineTeacherInvitePage() {
                   )}
                 </li>
               </ul>
-            </div>
-          </div>
+            </Stack>
+          </Stack>
 
-          <div className="space-y-4">
+          <Stack>
             <div className="text-center">
               <Text papel="rotulo" tom="fraco" as="p" className="mb-6">
                 {t('pages_token_jsx_p_children_0__decisão_revertida')}
@@ -219,7 +220,7 @@ export default function DeclineTeacherInvitePage() {
                 {t('pages_token_jsx_button_children_0__confirmar_recusa')}
               </Button>
             </div>
-          </div>
+          </Stack>
         </div>
       );
     }
@@ -255,8 +256,11 @@ export default function DeclineTeacherInvitePage() {
             <p className="text-theme-secondary text-lg mb-6">{state.message}</p>
 
             {state.user && (
-              <div className="bg-theme-secondary bg-opacity-50 border border-theme-secondary rounded-xl p-6 mb-8">
-                <h3 className="text-xl font-semibold text-theme-primary mb-2">
+              <Stack
+                gap={2}
+                className="bg-theme-secondary bg-opacity-50 border border-theme-secondary rounded-xl p-6 mb-8"
+              >
+                <h3 className="text-xl font-semibold text-theme-primary">
                   {t('pages_token_jsx_h3_children_0__olá_nome', {
                     firstName: state.user.firstName,
                   })}
@@ -264,17 +268,20 @@ export default function DeclineTeacherInvitePage() {
                 <p className="text-theme-secondary opacity-80">
                   {t('pages_token_jsx_p_children_0__conta_voltou_usuário')}
                 </p>
-              </div>
+              </Stack>
             )}
 
-            <div className="bg-accent-blue bg-opacity-10 border border-accent-blue rounded-xl p-6 mb-8">
-              <h4 className="font-medium text-accent-blue mb-3">
+            <Stack
+              gap={3}
+              className="bg-accent-blue bg-opacity-10 border border-accent-blue rounded-xl p-6 mb-8"
+            >
+              <h4 className="font-medium text-accent-blue">
                 {t('pages_token_jsx_h4_children_0__ainda_mudar_ideia')}
               </h4>
               <p className="text-accent-blue opacity-80 text-sm">
                 {t('pages_token_jsx_p_children_0__futuro_professor')}
               </p>
-            </div>
+            </Stack>
 
             <div className="grid md:grid-cols-2 gap-4">
               <Button
@@ -353,8 +360,11 @@ export default function DeclineTeacherInvitePage() {
             </h1>
             <p className="text-theme-secondary text-lg mb-6">{state.message}</p>
 
-            <div className="bg-accent-red bg-opacity-10 border border-accent-red rounded-xl p-6 mb-8">
-              <div className="flex items-center justify-center mb-3">
+            <Stack
+              gap={3}
+              className="bg-accent-red bg-opacity-10 border border-accent-red rounded-xl p-6 mb-8"
+            >
+              <div className="flex items-center justify-center">
                 <PiWarningCircle className="w-5 h-5 text-accent-red mr-2" />
                 <span className="font-medium text-accent-red">
                   {getErrorTitle(state.errorCode, t)}
@@ -363,7 +373,7 @@ export default function DeclineTeacherInvitePage() {
               <p className="text-accent-red opacity-80 text-sm">
                 {getErrorDescription(state.errorCode, t)}
               </p>
-            </div>
+            </Stack>
 
             <div className="grid md:grid-cols-2 gap-4">
               <Button

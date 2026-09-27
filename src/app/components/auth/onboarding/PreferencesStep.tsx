@@ -10,7 +10,7 @@ import Select from '../../Common/Select';
 import { translateEpochWithHook } from '@/app/utils/translations/epochTranslationComposer';
 import Input from '../../Common/Inputs';
 import { findComposers } from '@/app/requests/catalog-search';
-import { Inline } from '@/app/components/ui/Layout';
+import { Stack, Inline } from '@/app/components/ui/Layout';
 import { Text } from '@/app/components/ui/Text';
 
 interface Composer {
@@ -134,7 +134,7 @@ const PreferencesStep: React.FC<PreferencesStepProps> = ({
         </p>
       </div>
 
-      <div className="space-y-8 max-w-2xl mx-auto">
+      <Stack gap={8} className="max-w-2xl mx-auto">
         {/* Practice Time */}
         {data.userType !== 'CASUAL_USER' && (
           <div>
@@ -158,8 +158,8 @@ const PreferencesStep: React.FC<PreferencesStepProps> = ({
         )}
 
         {/* Favorite Epoch */}
-        <div>
-          <label className="block text-sm font-medium text-theme-secondary mb-3">
+        <Stack gap={3}>
+          <label className="block text-sm font-medium text-theme-secondary">
             <PiHeart className="w-4 h-4 inline mr-2" />
             {t('preferences_step_favorite_epoch')}
           </label>
@@ -189,7 +189,7 @@ const PreferencesStep: React.FC<PreferencesStepProps> = ({
               </button>
             ))}
           </div>
-        </div>
+        </Stack>
 
         {/* Favorite Composer */}
         <div>
@@ -311,7 +311,7 @@ const PreferencesStep: React.FC<PreferencesStepProps> = ({
             </Text>
           )}
         </div>
-      </div>
+      </Stack>
 
       <div className="mt-8 text-center">
         <Text papel="rotulo" tom="fraco" as="p">

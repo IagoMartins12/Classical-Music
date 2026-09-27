@@ -4,6 +4,7 @@ import Link from 'next/link';
 import { PiFileText, PiMusicNotes, PiUser } from 'react-icons/pi';
 import { Text } from '@/app/components/ui/Text';
 import { Card } from '@/app/components/ui/Card';
+import { Stack } from '@/app/components/ui/Layout';
 
 interface RelatedEntitiesProps {
   composerIds: string[];
@@ -46,7 +47,7 @@ export async function RelatedEntities({
   }
 
   return (
-    <div className="space-y-8">
+    <Stack gap={8}>
       <h2 className="text-2xl font-bold text-theme-primary flex items-center gap-2">
         <PiMusicNotes className="text-brand-primary" />
         Vinculações
@@ -60,7 +61,7 @@ export async function RelatedEntities({
               <PiUser className="text-brand-primary" />
               Compositores Mencionados
             </h3>
-            <div className="space-y-3">
+            <Stack gap={3}>
               {composers.map((composer: any) => (
                 <Link
                   key={composer.id}
@@ -75,7 +76,7 @@ export async function RelatedEntities({
                   </Text>
                 </Link>
               ))}
-            </div>
+            </Stack>
           </Card>
         )}
 
@@ -86,7 +87,7 @@ export async function RelatedEntities({
               <PiMusicNotes className="text-brand-primary" />
               Obras Mencionadas
             </h3>
-            <div className="space-y-3">
+            <Stack gap={3}>
               {works.map((work: any) => (
                 <Link
                   key={work.id}
@@ -101,7 +102,7 @@ export async function RelatedEntities({
                   </Text>
                 </Link>
               ))}
-            </div>
+            </Stack>
           </Card>
         )}
 
@@ -112,7 +113,7 @@ export async function RelatedEntities({
               <PiFileText className="text-brand-primary" />
               Partituras Relacionadas
             </h3>
-            <div className="space-y-3">
+            <Stack gap={3}>
               {scores.map((score: any) => (
                 <Link
                   key={score.id}
@@ -127,10 +128,10 @@ export async function RelatedEntities({
                   </Text>
                 </Link>
               ))}
-            </div>
+            </Stack>
           </Card>
         )}
       </div>
-    </div>
+    </Stack>
   );
 }

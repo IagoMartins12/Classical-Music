@@ -38,7 +38,7 @@ import Link from 'next/link';
 import { useToast } from '@/app/hooks/useToast';
 import { useTranslation } from '@/app/context/TranslationContext';
 import { loadSchoolActivities } from '@/app/requests/portal/school-activities';
-import { Inline } from '@/app/components/ui/Layout';
+import { Stack, Inline } from '@/app/components/ui/Layout';
 import { Text } from '@/app/components/ui/Text';
 import { Field } from '@/app/components/ui/Field';
 import { Button } from '@/app/components/ui/Button';
@@ -301,15 +301,18 @@ const StudentHistoryClient = ({
     if (changesList.length === 0) return null;
 
     return (
-      <div className="mt-3 p-3 bg-blue-50 border border-blue-200 rounded-lg">
-        <h5 className="text-sm font-medium text-blue-700 mb-2 flex items-center">
+      <Stack
+        gap={2}
+        className="mt-3 p-3 bg-blue-50 border border-blue-200 rounded-lg"
+      >
+        <h5 className="text-sm font-medium text-blue-700 flex items-center">
           <PiNotePencil className="w-4 h-4 mr-1" />
           {t('student_history_changes_title')}
         </h5>
-        <div className="space-y-2">
+        <Stack gap={2}>
           {changesList.slice(0, 3).map(([key, change]: [string, any]) => (
-            <div key={key} className="text-xs">
-              <div className="font-medium text-blue-700 mb-1">{key}:</div>
+            <Stack gap={1} key={key} className="text-xs">
+              <div className="font-medium text-blue-700">{key}:</div>
               <div className="pl-2 border-l-2 border-blue-300">
                 <div className="text-red-600 flex items-center">
                   <span className="w-8 text-xs">
@@ -324,7 +327,7 @@ const StudentHistoryClient = ({
                   <span>{String(change.to)}</span>
                 </div>
               </div>
-            </div>
+            </Stack>
           ))}
           {changesList.length > 3 && (
             <div className="text-xs text-blue-600">
@@ -333,8 +336,8 @@ const StudentHistoryClient = ({
               })}
             </div>
           )}
-        </div>
-      </div>
+        </Stack>
+      </Stack>
     );
   };
 
@@ -549,7 +552,7 @@ const StudentHistoryClient = ({
 
         {/* Activities Timeline */}
         <AnimatedItem direction="up" springType="gentle">
-          <div className="space-y-6">
+          <Stack gap={6}>
             {error ? (
               <div className="classical-card p-12 text-center">
                 <PiPulse className="w-16 h-16 text-theme-tertiary mx-auto mb-4" />
@@ -711,7 +714,7 @@ const StudentHistoryClient = ({
                 ))}
               </div>
             )}
-          </div>
+          </Stack>
         </AnimatedItem>
 
         {/* Pagination */}

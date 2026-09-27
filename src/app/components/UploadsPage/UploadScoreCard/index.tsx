@@ -84,7 +84,7 @@ const UploadScoreCard = ({
                 {item.title}
               </h3>
 
-              <div className="space-y-1 mt-1">
+              <Stack gap={1} className="mt-1">
                 {/* Work and Composer */}
                 <Inline gap={4} className="flex-wrap">
                   {item.workId && item.workTitle && (
@@ -161,7 +161,7 @@ const UploadScoreCard = ({
                     </Inline>
                   )}
                 </Inline>
-              </div>
+              </Stack>
             </div>
           </Inline>
 
@@ -256,7 +256,7 @@ const UploadScoreCard = ({
           {/* Score Details */}
           <div className="space-y-3 mb-4 flex-1">
             {/* Work info */}
-            <div className="text-center space-y-2">
+            <Stack gap={2} className="text-center">
               {item.workId && item.workTitle ? (
                 <Link
                   href={`/works/${item.workId}`}
@@ -300,7 +300,7 @@ const UploadScoreCard = ({
                   </Text>
                 </div>
               ) : null}
-            </div>
+            </Stack>
 
             {/* File info */}
             {(item.fileSize || item.pageCount) && (
@@ -352,7 +352,7 @@ const UploadScoreCard = ({
           </div>
 
           {/* Action Section */}
-          <div className="space-y-3">
+          <Stack gap={3}>
             {/* Secondary Actions */}
             <div className="flex items-center justify-between pt-3 border-t border-theme-secondary">
               <Inline gap={2} className="text-theme-tertiary text-xs">
@@ -398,7 +398,7 @@ const UploadScoreCard = ({
                 )}
               </Inline>
             </div>
-          </div>
+          </Stack>
 
           {/* Hover glow effect */}
           <div className="absolute inset-0 bg-brand-gradient opacity-0 group-hover:opacity-5 transition-opacity duration-500 rounded-2xl pointer-events-none"></div>

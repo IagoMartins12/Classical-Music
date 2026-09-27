@@ -43,7 +43,7 @@ import Input from '@/app/components/Common/Inputs';
 import PeriodSelector from '../../Common/PeriodSelector';
 import { getPeriodLabel } from '@/app/utils/adminUtils';
 import { AppRouterInstance } from 'next/dist/shared/lib/app-router-context.shared-runtime';
-import { Inline } from '@/app/components/ui/Layout';
+import { Stack, Inline } from '@/app/components/ui/Layout';
 import { Text } from '@/app/components/ui/Text';
 import { Card } from '@/app/components/ui/Card';
 
@@ -145,7 +145,7 @@ const ActivityDetailModal = ({
         </div>
 
         {/* Content */}
-        <div className="p-6 space-y-6">
+        <Stack gap={6} className="p-6">
           {/* Informações básicas */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
@@ -197,8 +197,8 @@ const ActivityDetailModal = ({
 
           {/* Detalhes da entidade */}
           {activity.entityDetails && (
-            <div>
-              <label className="text-sm font-medium text-theme-secondary mb-2 block">
+            <Stack gap={2}>
+              <label className="text-sm font-medium text-theme-secondary block">
                 Detalhes da Entidade
               </label>
               <div className="bg-theme-secondary rounded-xl p-4">
@@ -241,25 +241,25 @@ const ActivityDetailModal = ({
                   </div>
                 )}
               </div>
-            </div>
+            </Stack>
           )}
 
           {/* Motivo */}
           {activity.reason && (
-            <div>
-              <label className="text-sm font-medium text-theme-secondary mb-2 block">
+            <Stack gap={2}>
+              <label className="text-sm font-medium text-theme-secondary block">
                 Motivo
               </label>
               <div className="bg-theme-secondary rounded-xl p-4">
                 <p className="text-theme-primary">{activity.reason}</p>
               </div>
-            </div>
+            </Stack>
           )}
 
           {/* Mudanças */}
           {activity.changes && (
-            <div>
-              <label className="text-sm font-medium text-theme-secondary mb-2 block">
+            <Stack gap={2}>
+              <label className="text-sm font-medium text-theme-secondary block">
                 Mudanças Realizadas
               </label>
               <div className="bg-theme-secondary rounded-xl p-4">
@@ -267,15 +267,15 @@ const ActivityDetailModal = ({
                   {JSON.stringify(activity.changes, null, 2)}
                 </pre>
               </div>
-            </div>
+            </Stack>
           )}
 
           {/* Informações do usuário */}
-          <div>
-            <label className="text-sm font-medium text-theme-secondary mb-2 block">
+          <Stack gap={2}>
+            <label className="text-sm font-medium text-theme-secondary block">
               Informações do Usuário
             </label>
-            <div className="bg-theme-secondary rounded-xl p-4 space-y-2">
+            <Stack gap={2} className="bg-theme-secondary rounded-xl p-4">
               <div className="flex justify-between">
                 <span className="text-theme-tertiary">Email:</span>
                 <span className="text-theme-primary">
@@ -288,9 +288,9 @@ const ActivityDetailModal = ({
                   {activity.user.uploadScore}
                 </span>
               </div>
-            </div>
-          </div>
-        </div>
+            </Stack>
+          </Stack>
+        </Stack>
 
         {/* Footer */}
         <div className="flex justify-end space-x-3 p-6 border-t border-theme-secondary">
@@ -608,11 +608,12 @@ export default function UploadsManagement() {
               </Inline>
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                 {stats.byUser.slice(0, 6).map((user, index) => (
-                  <div
+                  <Stack
+                    gap={3}
                     key={user.userId}
                     className="p-4 bg-theme-secondary rounded-xl"
                   >
-                    <Inline gap={3} className="mb-3">
+                    <Inline gap={3}>
                       <Text
                         papel="rotulo"
                         tom="forte"
@@ -653,7 +654,7 @@ export default function UploadsManagement() {
                         className="ml-2"
                       />
                     </div>
-                  </div>
+                  </Stack>
                 ))}
               </div>
             </AnimatedCard>
@@ -672,7 +673,7 @@ export default function UploadsManagement() {
                 <PiClock className="w-5 h-5 text-accent-blue" />
                 <span>Atividade Recente</span>
               </Inline>
-              <div className="space-y-3">
+              <Stack gap={3}>
                 {stats.recentActivity.slice(0, 8).map((activity) => {
                   const EntityIcon = getEntityIcon(activity.entityType);
                   return (
@@ -717,7 +718,7 @@ export default function UploadsManagement() {
                     </Inline>
                   );
                 })}
-              </div>
+              </Stack>
             </AnimatedCard>
           </AnimatedItem>
         )}

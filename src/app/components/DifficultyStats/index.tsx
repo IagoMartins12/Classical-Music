@@ -4,7 +4,7 @@
 
 import { PiChartBar, PiMedal, PiTrendUp, PiUsers } from 'react-icons/pi';
 import { AnimatedItem, AnimatedCard } from '../animation/AnimatedComponents';
-import { Inline } from '@/app/components/ui/Layout';
+import { Stack, Inline } from '@/app/components/ui/Layout';
 import { Text } from '@/app/components/ui/Text';
 
 interface DifficultyStatsProps {
@@ -118,8 +118,8 @@ export default function DifficultyStats({ stats }: DifficultyStatsProps) {
 
       {/* Distribuição por Sistema */}
       {stats.systemDistribution.length > 1 && (
-        <div className="mt-6 pt-6 border-t border-theme-secondary">
-          <h4 className="text-lg font-semibold text-theme-primary mb-4">
+        <Stack className="mt-6 pt-6 border-t border-theme-secondary">
+          <h4 className="text-lg font-semibold text-theme-primary">
             Distribuição por Sistema
           </h4>
           <div className="space-y-3">
@@ -152,7 +152,7 @@ export default function DifficultyStats({ stats }: DifficultyStatsProps) {
               </AnimatedItem>
             ))}
           </div>
-        </div>
+        </Stack>
       )}
     </AnimatedCard>
   );

@@ -46,7 +46,7 @@ import StatsSkeleton, {
 import { getPeriodLabel } from '@/app/utils/adminUtils';
 import PeriodSelector from '../../Common/PeriodSelector';
 import LoadingAdminState from '../../Common/LoadingState';
-import { Inline } from '@/app/components/ui/Layout';
+import { Stack, Inline } from '@/app/components/ui/Layout';
 import { Text } from '@/app/components/ui/Text';
 
 interface WorkFilters {
@@ -386,7 +386,7 @@ export default function WorksManagement() {
                     <PiStar className="w-5 h-5 text-accent-amber" />
                     <span>Mais Favoritadas</span>
                   </Inline>
-                  <div className="space-y-3">
+                  <Stack gap={3}>
                     {stats.mostPopular.slice(0, 5).map((work, index) => (
                       <Inline
                         gap={3}
@@ -422,7 +422,7 @@ export default function WorksManagement() {
                         />
                       </Inline>
                     ))}
-                  </div>
+                  </Stack>
                 </AnimatedCard>
               </AnimatedItem>
             )}
@@ -439,7 +439,7 @@ export default function WorksManagement() {
                     <PiBookOpen className="w-5 h-5 text-accent-blue" />
                     <span>Mais Queridas</span>
                   </Inline>
-                  <div className="space-y-3">
+                  <Stack gap={3}>
                     {stats.mostWantedToLearn.slice(0, 5).map((work, index) => (
                       <Inline
                         gap={3}
@@ -476,7 +476,7 @@ export default function WorksManagement() {
                         />
                       </Inline>
                     ))}
-                  </div>
+                  </Stack>
                 </AnimatedCard>
               </AnimatedItem>
             )}
@@ -493,7 +493,7 @@ export default function WorksManagement() {
                     <PiCheckCircle className="w-5 h-5 text-accent-green" />
                     <span>Mais Aprendidas</span>
                   </Inline>
-                  <div className="space-y-3">
+                  <Stack gap={3}>
                     {stats.mostLearned.slice(0, 5).map((work, index) => (
                       <Inline
                         gap={3}
@@ -529,7 +529,7 @@ export default function WorksManagement() {
                         />
                       </Inline>
                     ))}
-                  </div>
+                  </Stack>
                 </AnimatedCard>
               </AnimatedItem>
             )}
@@ -569,7 +569,7 @@ export default function WorksManagement() {
             </div>
 
             {/* Filtros Básicos - sempre visíveis */}
-            <div className="space-y-4 mb-6">
+            <Stack className="mb-6">
               <Inline gap={4}>
                 <div className="relative flex-1">
                   <PiMagnifyingGlass className="absolute left-3 top-1/2 transform -translate-y-1/2 text-theme-tertiary w-4 h-4" />
@@ -621,7 +621,7 @@ export default function WorksManagement() {
                   Buscar
                 </Button>
               </Inline>
-            </div>
+            </Stack>
 
             {/* Filtros Avançados */}
             <div
@@ -785,7 +785,7 @@ export default function WorksManagement() {
             )}
 
             {/* Lista de Obras */}
-            <div className="space-y-4">
+            <Stack>
               {works.map((work) => (
                 <div
                   key={work.id}
@@ -937,7 +937,7 @@ export default function WorksManagement() {
                   </div>
                 </div>
               ))}
-            </div>
+            </Stack>
 
             {/* Pagination */}
             {pagination && (

@@ -5,7 +5,7 @@ import { createPortal } from 'react-dom';
 import { GiGrandPiano, GiGClef } from 'react-icons/gi';
 import { PiArrowsClockwise, PiGlobe, PiMusicNotes } from 'react-icons/pi';
 import Modal from '../Modal';
-import { Inline } from '@/app/components/ui/Layout';
+import { Stack, Inline } from '@/app/components/ui/Layout';
 import { Text } from '@/app/components/ui/Text';
 
 interface TranslationLoadingModalProps {
@@ -215,12 +215,12 @@ export function TranslationLoadingModal({
           </p>
 
           {/* Barra de progresso */}
-          <div className="mb-6">
+          <Stack gap={2} className="mb-6">
             <Text
               papel="legenda"
               tom="fraco"
               as="div"
-              className="flex items-center justify-between mb-2"
+              className="flex items-center justify-between"
             >
               <span>{currentLanguage === 'pt' ? 'Progresso' : 'Progress'}</span>
               <span>{progress}%</span>
@@ -235,7 +235,7 @@ export function TranslationLoadingModal({
                 <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent transform -skew-x-12 animate-shimmer-fast" />
               </div>
             </div>
-          </div>
+          </Stack>
 
           {/* Steps indicator */}
           <div className="flex justify-center space-x-2">

@@ -48,8 +48,8 @@ export default function WorksLoading() {
 
       <div className="section-wrap space-y-8 relative z-10">
         {/* Header Skeleton */}
-        <div className="relative text-center py-16">
-          <div className="flex items-center justify-center mb-6">
+        <Stack gap={6} className="relative text-center py-16">
+          <div className="flex items-center justify-center">
             <div className="w-16 h-16 bg-gradient-to-br from-brand-primary/20 to-brand-secondary/20 rounded-2xl flex items-center justify-center shadow-theme-glow animate-pulse">
               <div className="w-8 h-8 bg-theme-inverse/20 rounded-lg"></div>
             </div>
@@ -59,16 +59,16 @@ export default function WorksLoading() {
             <div className="h-12 bg-gradient-to-r from-theme-elevated to-interactive-hover border border-theme-primary rounded-2xl mx-auto max-w-lg animate-pulse"></div>
             <div className="h-6 bg-gradient-to-r from-theme-elevated to-interactive-hover border border-theme-secondary rounded-lg mx-auto max-w-2xl animate-pulse"></div>
           </div>
-        </div>
+        </Stack>
 
         {/* Search and Filters Skeleton */}
         <Card>
           <Inline gap={3} className="mb-6">
             <div className="w-10 h-10 bg-gradient-to-br from-accent-blue/20 to-accent-purple/20 rounded-xl"></div>
-            <div className="space-y-2">
+            <Stack gap={2}>
               <div className="h-5 w-32 bg-gradient-to-r from-theme-primary/20 to-theme-secondary/20 rounded animate-pulse"></div>
               <div className="h-3 w-48 bg-theme-elevated rounded animate-pulse"></div>
-            </div>
+            </Stack>
           </Inline>
 
           {/* Search Bar */}
@@ -218,7 +218,7 @@ function WorkCardSkeleton() {
         </div>
 
         {/* Action Section */}
-        <div className="space-y-3">
+        <Stack gap={3}>
           {/* Main Action Button */}
           <div className="h-10 bg-gradient-to-r from-brand-primary/20 to-brand-secondary/20 border border-brand-primary/30 rounded-xl shadow-theme-small"></div>
 
@@ -230,7 +230,7 @@ function WorkCardSkeleton() {
             </Inline>
             <div className="w-6 h-6 bg-theme-elevated border border-theme-primary/30 rounded-full"></div>
           </div>
-        </div>
+        </Stack>
       </div>
 
       {/* Floating mini indicator */}

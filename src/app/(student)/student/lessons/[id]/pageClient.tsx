@@ -39,7 +39,7 @@ import { useTranslation } from '@/app/context/TranslationContext';
 import { apiFetch } from '@/app/libs/api/client';
 import { loadStudentLesson } from '@/app/requests/portal/student';
 import { sendStudentLessonNotice } from '@/app/requests/portal/lesson-actions';
-import { Inline } from '@/app/components/ui/Layout';
+import { Stack, Inline } from '@/app/components/ui/Layout';
 import { Text } from '@/app/components/ui/Text';
 import { Field } from '@/app/components/ui/Field';
 import { Button } from '@/app/components/ui/Button';
@@ -244,7 +244,7 @@ export default function StudentLessonDetailPageClient({
             <p className="text-theme-secondary classical-subtitle mb-6">
               {error || errorMessage}
             </p>
-            <div className="space-y-3">
+            <Stack gap={3}>
               <Inline
                 as="button"
                 gap={2}
@@ -263,7 +263,7 @@ export default function StudentLessonDetailPageClient({
               >
                 {t('back_to_lessons')}
               </Link>
-            </div>
+            </Stack>
           </Card>
         </div>
       </PageContainer>
@@ -372,7 +372,7 @@ export default function StudentLessonDetailPageClient({
                   </Inline>
                 </div>
 
-                <div className="space-y-4">
+                <Stack>
                   <h3 className="text-xl font-bold text-theme-primary">
                     {lesson.title}
                   </h3>
@@ -400,8 +400,8 @@ export default function StudentLessonDetailPageClient({
 
                   {/* Recurrence Info */}
                   {lesson.isRecurring && (
-                    <div className="bg-theme-elevated rounded-lg p-4">
-                      <Inline gap={2} className="text-accent-blue mb-2">
+                    <Stack gap={2} className="bg-theme-elevated rounded-lg p-4">
+                      <Inline gap={2} className="text-accent-blue">
                         <PiRepeat className="w-4 h-4" />
                         <span className="font-medium">
                           {t('recurring_lesson')}
@@ -410,9 +410,9 @@ export default function StudentLessonDetailPageClient({
                       <Text papel="rotulo" tom="suave" as="p">
                         {t('recurring_lesson_description')}
                       </Text>
-                    </div>
+                    </Stack>
                   )}
-                </div>
+                </Stack>
               </AnimatedCard>
             </AnimatedItem>
 
@@ -439,7 +439,7 @@ export default function StudentLessonDetailPageClient({
                   </Inline>
                 </div>
 
-                <div className="space-y-2">
+                <Stack gap={2}>
                   {lesson.objectives.length > 0 ? (
                     lesson.objectives.map((objective, index) => (
                       <div key={index} className="flex items-start space-x-2">
@@ -454,7 +454,7 @@ export default function StudentLessonDetailPageClient({
                       {t('no_objectives')}
                     </p>
                   )}
-                </div>
+                </Stack>
               </AnimatedCard>
             </AnimatedItem>
 
@@ -473,8 +473,8 @@ export default function StudentLessonDetailPageClient({
                 </div>
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                  <div>
-                    <h3 className="font-medium text-theme-primary mb-3">
+                  <Stack gap={3}>
+                    <h3 className="font-medium text-theme-primary">
                       {t('topics_covered')}
                     </h3>
                     <div className="flex flex-wrap gap-2">
@@ -493,10 +493,10 @@ export default function StudentLessonDetailPageClient({
                         </Text>
                       )}
                     </div>
-                  </div>
+                  </Stack>
 
-                  <div>
-                    <h3 className="font-medium text-theme-primary mb-3">
+                  <Stack gap={3}>
+                    <h3 className="font-medium text-theme-primary">
                       {t('techniques_worked')}
                     </h3>
                     <div className="flex flex-wrap gap-2">
@@ -515,7 +515,7 @@ export default function StudentLessonDetailPageClient({
                         </Text>
                       )}
                     </div>
-                  </div>
+                  </Stack>
                 </div>
               </AnimatedCard>
             </AnimatedItem>
@@ -534,10 +534,10 @@ export default function StudentLessonDetailPageClient({
                   </Inline>
                 </div>
 
-                <div className="space-y-4">
+                <Stack>
                   {lesson.publicNotes && (
-                    <div>
-                      <h3 className="font-medium text-theme-primary mb-2">
+                    <Stack gap={2}>
+                      <h3 className="font-medium text-theme-primary">
                         {t('teacher_notes')}
                       </h3>
                       <div className="bg-theme-elevated rounded-lg p-4">
@@ -545,12 +545,12 @@ export default function StudentLessonDetailPageClient({
                           {lesson.publicNotes}
                         </p>
                       </div>
-                    </div>
+                    </Stack>
                   )}
 
                   {lesson.lessonSummary && (
-                    <div>
-                      <h3 className="font-medium text-theme-primary mb-2">
+                    <Stack gap={2}>
+                      <h3 className="font-medium text-theme-primary">
                         {t('lesson_summary')}
                       </h3>
                       <div className="bg-theme-elevated rounded-lg p-4">
@@ -558,12 +558,12 @@ export default function StudentLessonDetailPageClient({
                           {lesson.lessonSummary}
                         </p>
                       </div>
-                    </div>
+                    </Stack>
                   )}
 
                   {lesson.homework && (
-                    <div>
-                      <h3 className="font-medium text-theme-primary mb-2">
+                    <Stack gap={2}>
+                      <h3 className="font-medium text-theme-primary">
                         {t('homework')}
                       </h3>
                       <div className="bg-theme-elevated rounded-lg p-4">
@@ -571,7 +571,7 @@ export default function StudentLessonDetailPageClient({
                           {lesson.homework}
                         </p>
                       </div>
-                    </div>
+                    </Stack>
                   )}
 
                   {/* Student Feedback Section */}
@@ -650,8 +650,8 @@ export default function StudentLessonDetailPageClient({
                   {/* Display existing feedback for completed lessons */}
                   {lesson.studentFeedback &&
                     !lesson.permissions.canAddFeedback && (
-                      <div>
-                        <h3 className="font-medium text-theme-primary mb-2">
+                      <Stack gap={2}>
+                        <h3 className="font-medium text-theme-primary">
                           {t('your_feedback')}
                         </h3>
                         <div className="bg-accent-yellow/5 border border-accent-yellow/20 rounded-lg p-4">
@@ -659,7 +659,7 @@ export default function StudentLessonDetailPageClient({
                             {lesson.studentFeedback}
                           </p>
                         </div>
-                      </div>
+                      </Stack>
                     )}
 
                   {!lesson.publicNotes &&
@@ -671,7 +671,7 @@ export default function StudentLessonDetailPageClient({
                         {t('no_notes_yet')}
                       </p>
                     )}
-                </div>
+                </Stack>
               </AnimatedCard>
             </AnimatedItem>
           </div>
@@ -712,7 +712,7 @@ export default function StudentLessonDetailPageClient({
                 </Inline>
 
                 {/* Relationship Stats */}
-                <div className="space-y-2 text-sm">
+                <Stack gap={2} className="text-sm">
                   <div className="flex justify-between">
                     <span className="text-theme-tertiary">
                       {t('teaching_since')}:
@@ -721,7 +721,7 @@ export default function StudentLessonDetailPageClient({
                       {lesson.relationship.relationshipDuration}
                     </span>
                   </div>
-                </div>
+                </Stack>
               </AnimatedCard>
             </AnimatedItem>
 
@@ -794,10 +794,10 @@ export default function StudentLessonDetailPageClient({
                     {t('lesson_progress')}
                   </h2>
 
-                  <div className="space-y-4">
+                  <Stack>
                     {lesson.skillsWorked.length > 0 && (
-                      <div>
-                        <h4 className="font-medium text-theme-primary mb-2">
+                      <Stack gap={2}>
+                        <h4 className="font-medium text-theme-primary">
                           {t('skills_worked')}
                         </h4>
                         <div className="flex flex-wrap gap-1">
@@ -810,12 +810,12 @@ export default function StudentLessonDetailPageClient({
                             </span>
                           ))}
                         </div>
-                      </div>
+                      </Stack>
                     )}
 
                     {lesson.improvements.length > 0 && (
-                      <div>
-                        <h4 className="font-medium text-theme-primary mb-2">
+                      <Stack gap={2}>
+                        <h4 className="font-medium text-theme-primary">
                           {t('improvements')}
                         </h4>
                         <div className="flex flex-wrap gap-1">
@@ -828,12 +828,12 @@ export default function StudentLessonDetailPageClient({
                             </span>
                           ))}
                         </div>
-                      </div>
+                      </Stack>
                     )}
 
                     {lesson.challenges.length > 0 && (
-                      <div>
-                        <h4 className="font-medium text-theme-primary mb-2">
+                      <Stack gap={2}>
+                        <h4 className="font-medium text-theme-primary">
                           {t('challenges')}
                         </h4>
                         <div className="flex flex-wrap gap-1">
@@ -846,9 +846,9 @@ export default function StudentLessonDetailPageClient({
                             </span>
                           ))}
                         </div>
-                      </div>
+                      </Stack>
                     )}
-                  </div>
+                  </Stack>
                 </AnimatedCard>
               </AnimatedItem>
             )}
@@ -997,8 +997,8 @@ export default function StudentLessonDetailPageClient({
                 <div className="bg-accent-blue/10 border border-accent-blue/30 rounded-lg p-4 mb-6">
                   <div className="flex items-start space-x-3">
                     <PiInfo className="w-5 h-5 text-accent-blue mt-0.5" />
-                    <div className="text-sm">
-                      <p className="font-medium text-accent-blue mb-1">
+                    <Stack gap={1} className="text-sm">
+                      <p className="font-medium text-accent-blue">
                         {t('confirmation')}
                       </p>
                       <p className="text-theme-secondary">
@@ -1006,7 +1006,7 @@ export default function StudentLessonDetailPageClient({
                           ? t('absence_confirmation')
                           : t('reschedule_confirmation')}
                       </p>
-                    </div>
+                    </Stack>
                   </div>
                 </div>
 

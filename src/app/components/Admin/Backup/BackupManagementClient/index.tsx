@@ -17,6 +17,7 @@ import type { BackupCollectionConfig } from '@/app/requests/admin/backup';
 import { Text } from '@/app/components/ui/Text';
 import { Button } from '@/app/components/ui/Button';
 import { Card } from '@/app/components/ui/Card';
+import { Stack } from '@/app/components/ui/Layout';
 
 /** `18234567` → `17,4 MB`. */
 function tamanho(bytes: number | null): string {
@@ -139,7 +140,7 @@ export default function BackupManagementClient() {
   const impedimento = backup.data?.settings.storageIssue;
 
   return (
-    <div className="space-y-6">
+    <Stack gap={6}>
       <header className="flex flex-wrap items-center justify-between gap-4">
         <div>
           <h1 className="text-2xl font-bold text-theme-primary classical-title">
@@ -251,8 +252,8 @@ export default function BackupManagementClient() {
         </Card>
       </section>
 
-      <section className="classical-card p-4">
-        <div className="flex flex-wrap items-center justify-between gap-3 mb-4">
+      <Stack as="section" className="classical-card p-4">
+        <div className="flex flex-wrap items-center justify-between gap-3">
           <h2 className="text-lg font-semibold text-theme-primary flex items-center gap-2">
             <PiDatabase className="w-4 h-4" />O que entra no arquivo
           </h2>
@@ -321,7 +322,7 @@ export default function BackupManagementClient() {
             );
           })}
         </div>
-      </section>
+      </Stack>
 
       <section className="grid gap-4 lg:grid-cols-2">
         <Card densidade="compacta">
@@ -417,6 +418,6 @@ export default function BackupManagementClient() {
           )}
         </Card>
       </section>
-    </div>
+    </Stack>
   );
 }

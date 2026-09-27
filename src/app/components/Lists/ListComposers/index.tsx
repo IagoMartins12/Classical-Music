@@ -11,6 +11,7 @@ import { useIsMobile } from '@/app/hooks/useMobile';
 import { Text } from '@/app/components/ui/Text';
 import { Button } from '@/app/components/ui/Button';
 import { Card } from '@/app/components/ui/Card';
+import { Stack } from '@/app/components/ui/Layout';
 
 interface listComposersProps {
   composers: composerHomeProps[];
@@ -72,10 +73,10 @@ const ListComposers: React.FC<listComposersProps> = ({ composers }) => {
             >
               <Card densidade="compacta" className="space-y-4">
                 <div className="aspect-square loading-skeleton rounded-xl"></div>
-                <div className="space-y-2">
+                <Stack gap={2}>
                   <div className="h-4 loading-skeleton rounded"></div>
                   <div className="h-3 loading-skeleton rounded w-3/4"></div>
-                </div>
+                </Stack>
               </Card>
             </div>
           ))}

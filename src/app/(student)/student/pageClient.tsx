@@ -31,7 +31,7 @@ import { StudentDashboardData } from './pageServer';
 import { useStudentDashboard } from '@/app/hooks/lessonsSystem/useStudentDashboard';
 import RecentActivities from '@/app/components/TeacherSystem/RecentActivities';
 import { useTranslation } from '@/app/context/TranslationContext';
-import { Inline } from '@/app/components/ui/Layout';
+import { Stack, Inline } from '@/app/components/ui/Layout';
 import { Text } from '@/app/components/ui/Text';
 import { NomeAcao } from '@/app/components/ui/NomeAcao';
 import { Button } from '@/app/components/ui/Button';
@@ -167,9 +167,12 @@ export default function StudentPageClient({
             <p className="text-theme-secondary classical-subtitle mb-6">
               {t('student_home_no_teacher_description')}
             </p>
-            <div className="space-y-4">
-              <div className="bg-gradient-to-r from-theme-elevated to-interactive-hover rounded-lg border border-theme-primary/20 p-4">
-                <h3 className="font-semibold text-theme-primary mb-2">
+            <Stack>
+              <Stack
+                gap={2}
+                className="bg-gradient-to-r from-theme-elevated to-interactive-hover rounded-lg border border-theme-primary/20 p-4"
+              >
+                <h3 className="font-semibold text-theme-primary">
                   {t('student_home_no_teacher_how_it_works')}
                 </h3>
                 <Text papel="rotulo" tom="suave" as="div" className="space-y-2">
@@ -177,7 +180,7 @@ export default function StudentPageClient({
                   <p>2. {t('student_home_no_teacher_step_2')}</p>
                   <p>3. {t('student_home_no_teacher_step_3')}</p>
                 </Text>
-              </div>
+              </Stack>
               <div className="flex flex-col sm:flex-row gap-3 justify-center">
                 <Link href="/contact" className="btn-classical-primary">
                   {t('student_home_no_teacher_contact_teacher')}
@@ -186,7 +189,7 @@ export default function StudentPageClient({
                   {t('student_home_no_teacher_back_home')}
                 </Link>
               </div>
-            </div>
+            </Stack>
           </Card>
         </div>
       </PageContainer>
@@ -529,12 +532,12 @@ export default function StudentPageClient({
                           lesson.improvements.length > 0) && (
                           <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-3 pt-3 border-t border-theme-secondary">
                             {lesson.skillsWorked.length > 0 && (
-                              <div>
+                              <Stack gap={1}>
                                 <Text
                                   papel="legenda"
                                   tom="fraco"
                                   as="div"
-                                  className="font-medium mb-1"
+                                  className="font-medium"
                                 >
                                   {t(
                                     'student_home_recent_lessons_skills_worked'
@@ -563,16 +566,16 @@ export default function StudentPageClient({
                                     </Text>
                                   )}
                                 </div>
-                              </div>
+                              </Stack>
                             )}
 
                             {lesson.improvements.length > 0 && (
-                              <div>
+                              <Stack gap={1}>
                                 <Text
                                   papel="legenda"
                                   tom="fraco"
                                   as="div"
-                                  className="font-medium mb-1"
+                                  className="font-medium"
                                 >
                                   {t(
                                     'student_home_recent_lessons_improvements'
@@ -595,20 +598,18 @@ export default function StudentPageClient({
                                     </span>
                                   )}
                                 </div>
-                              </div>
+                              </Stack>
                             )}
                           </div>
                         )}
 
                         {/* Homework */}
                         {lesson.homework && (
-                          <div className="mt-3 p-3 bg-gradient-to-r from-theme-elevated to-interactive-hover rounded-lg border border-theme-primary/20">
-                            <Text
-                              papel="legenda"
-                              tom="fraco"
-                              as="div"
-                              className="mb-1"
-                            >
+                          <Stack
+                            gap={1}
+                            className="mt-3 p-3 bg-gradient-to-r from-theme-elevated to-interactive-hover rounded-lg border border-theme-primary/20"
+                          >
+                            <Text papel="legenda" tom="fraco" as="div">
                               {t('student_home_recent_lessons_homework')}
                             </Text>
                             <Text
@@ -619,7 +620,7 @@ export default function StudentPageClient({
                             >
                               {lesson.homework}
                             </Text>
-                          </div>
+                          </Stack>
                         )}
                       </Card>
                     </AnimatedItem>
@@ -665,11 +666,11 @@ export default function StudentPageClient({
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   {/* Current Works */}
-                  <div>
+                  <Stack gap={3}>
                     <Inline
                       as="h3"
                       gap={2}
-                      className="font-semibold text-theme-primary mb-3"
+                      className="font-semibold text-theme-primary"
                     >
                       <PiBookOpen className="w-4 h-4 text-accent-blue" />
                       <span>
@@ -713,14 +714,14 @@ export default function StudentPageClient({
                         </Text>
                       )}
                     </div>
-                  </div>
+                  </Stack>
 
                   {/* Learned Works */}
-                  <div>
+                  <Stack gap={3}>
                     <Inline
                       as="h3"
                       gap={2}
-                      className="font-semibold text-theme-primary mb-3"
+                      className="font-semibold text-theme-primary"
                     >
                       <PiCheckCircle className="w-4 h-4 text-accent-green" />
                       <span>
@@ -770,7 +771,7 @@ export default function StudentPageClient({
                         </Text>
                       )}
                     </div>
-                  </div>
+                  </Stack>
                 </div>
               </AnimatedCard>
             </AnimatedItem>
@@ -797,7 +798,7 @@ export default function StudentPageClient({
                   </div>
                 </Inline>
 
-                <div className="space-y-3">
+                <Stack gap={3}>
                   {todayLessons.slice(0, 4).map((lesson) => (
                     <div key={lesson.id} className="classical-card-2 p-3">
                       <Inline gap={3}>
@@ -837,7 +838,7 @@ export default function StudentPageClient({
                       </Text>
                     </div>
                   )}
-                </div>
+                </Stack>
 
                 {todayLessons.length > 0 && (
                   <Link
@@ -867,7 +868,7 @@ export default function StudentPageClient({
                   </div>
                 </Inline>
 
-                <div className="space-y-2">
+                <Stack gap={2}>
                   {upcomingLessons.map((lesson) => (
                     <div
                       key={lesson.id}
@@ -901,7 +902,7 @@ export default function StudentPageClient({
                       </Text>
                     </div>
                   )}
-                </div>
+                </Stack>
               </AnimatedCard>
             </AnimatedItem>
 
@@ -926,7 +927,7 @@ export default function StudentPageClient({
                   </div>
                 </Inline>
 
-                <div className="space-y-3">
+                <Stack gap={3}>
                   {teachers.map((teacher) => (
                     <div
                       key={teacher.teacherId}
@@ -984,7 +985,7 @@ export default function StudentPageClient({
                       </Text>
                     </div>
                   )}
-                </div>
+                </Stack>
               </AnimatedCard>
             </AnimatedItem>
 

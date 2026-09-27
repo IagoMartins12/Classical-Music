@@ -17,7 +17,7 @@ import Input from '@/app/components/Common/Inputs';
 import Select from '@/app/components/Common/Select';
 import Checkbox from '@/app/components/Common/Checkbox';
 import { listInstruments } from '@/app/requests/admin/ads';
-import { Inline } from '@/app/components/ui/Layout';
+import { Stack, Inline } from '@/app/components/ui/Layout';
 import { Text } from '@/app/components/ui/Text';
 import { Field } from '@/app/components/ui/Field';
 
@@ -377,7 +377,7 @@ export default function CloneAdModal({
 
                 {conflictInfo.conflicts &&
                   conflictInfo.conflicts.length > 0 && (
-                    <div className="space-y-3">
+                    <Stack gap={3}>
                       {conflictInfo.conflicts.map(
                         (conflict: any, index: number) => (
                           <div
@@ -419,13 +419,16 @@ export default function CloneAdModal({
                           </div>
                         )
                       )}
-                    </div>
+                    </Stack>
                   )}
 
                 {conflictInfo.suggestions &&
                   conflictInfo.suggestions.length > 0 && (
-                    <div className="mt-4 p-3 bg-accent-blue/10 rounded border border-accent-blue/20">
-                      <h5 className="font-medium text-sm text-accent-blue mb-2">
+                    <Stack
+                      gap={2}
+                      className="mt-4 p-3 bg-accent-blue/10 rounded border border-accent-blue/20"
+                    >
+                      <h5 className="font-medium text-sm text-accent-blue">
                         Sugestões:
                       </h5>
                       <ul className="text-xs text-theme-secondary space-y-1">
@@ -435,7 +438,7 @@ export default function CloneAdModal({
                           )
                         )}
                       </ul>
-                    </div>
+                    </Stack>
                   )}
               </div>
             </div>
@@ -443,9 +446,9 @@ export default function CloneAdModal({
         )}
 
         {/* Form */}
-        <form onSubmit={handleSubmit} className="p-6 space-y-6">
+        <Stack gap={6} as="form" onSubmit={handleSubmit} className="p-6">
           {/* Informações Básicas */}
-          <div className="space-y-4">
+          <Stack>
             <Inline
               as="h3"
               gap={2}
@@ -514,10 +517,10 @@ export default function CloneAdModal({
                 />
               </div>
             </div>
-          </div>
+          </Stack>
 
           {/* Segmentação */}
-          <div className="space-y-4">
+          <Stack>
             <Inline
               as="h3"
               gap={2}
@@ -571,10 +574,10 @@ export default function CloneAdModal({
                 </div>
               )}
             </div>
-          </div>
+          </Stack>
 
           {/* Link e Call-to-Action */}
-          <div className="space-y-4">
+          <Stack>
             <Inline
               as="h3"
               gap={2}
@@ -631,10 +634,10 @@ export default function CloneAdModal({
                 />
               </div>
             </div>
-          </div>
+          </Stack>
 
           {/* Agendamento */}
-          <div className="space-y-4">
+          <Stack>
             <h3 className="text-lg font-semibold text-theme-primary">
               Agendamento (Opcional)
             </h3>
@@ -660,16 +663,16 @@ export default function CloneAdModal({
                 />
               </div>
             </div>
-          </div>
+          </Stack>
 
           {/* Dispositivos */}
-          <div className="space-y-4">
+          <Stack>
             <h3 className="text-lg font-semibold text-theme-primary">
               Configurações de Exibição
             </h3>
 
-            <div>
-              <label className="block text-sm font-medium text-theme-primary mb-2">
+            <Stack gap={2}>
+              <label className="block text-sm font-medium text-theme-primary">
                 Exibir em:
               </label>
               <div className="flex space-x-4">
@@ -709,8 +712,8 @@ export default function CloneAdModal({
                   />
                 </Inline>
               </div>
-            </div>
-          </div>
+            </Stack>
+          </Stack>
 
           {/* Actions */}
           <div className="flex justify-end space-x-3 pt-6 border-t border-theme-primary">
@@ -732,7 +735,7 @@ export default function CloneAdModal({
               {loading ? 'Clonando...' : 'Clonar Anúncio'}
             </Button>
           </div>
-        </form>
+        </Stack>
       </div>
     </Modal>
   );

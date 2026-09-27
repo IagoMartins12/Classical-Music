@@ -12,6 +12,7 @@ import Checkbox from '../../Common/Checkbox';
 import { Text } from '@/app/components/ui/Text';
 import { NomeAcao } from '@/app/components/ui/NomeAcao';
 import { Card } from '@/app/components/ui/Card';
+import { Stack } from '@/app/components/ui/Layout';
 
 interface Instrument {
   id: string;
@@ -131,13 +132,13 @@ const InstrumentsStep: React.FC<InstrumentsStepProps> = ({ instruments }) => {
 
       {/* Selected Instruments */}
       {selectedInstruments.length > 0 && (
-        <div className="mb-8">
-          <h4 className="font-semibold text-theme-primary mb-4">
+        <Stack className="mb-8">
+          <h4 className="font-semibold text-theme-primary">
             {t('instruments_step_your_instruments')} (
             {selectedInstruments.length})
           </h4>
 
-          <div className="space-y-3">
+          <Stack gap={3}>
             {selectedInstruments.map((instrument) => (
               <Card
                 nivel={2}
@@ -230,8 +231,8 @@ const InstrumentsStep: React.FC<InstrumentsStepProps> = ({ instruments }) => {
                 </button>
               </Card>
             ))}
-          </div>
-        </div>
+          </Stack>
+        </Stack>
       )}
 
       {/* Available Instruments */}

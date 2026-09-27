@@ -10,7 +10,7 @@ import {
 } from 'react-icons/pi';
 import { useTranslation } from '@/app/context/TranslationContext';
 import { useBiographyWithLanguage } from '@/app/hooks/useBiographyWithLanguage';
-import { Inline } from '@/app/components/ui/Layout';
+import { Stack, Inline } from '@/app/components/ui/Layout';
 import { Text } from '@/app/components/ui/Text';
 
 interface ComposerBiographyProps {
@@ -56,9 +56,9 @@ export default function ComposerBiography({
   // Renderizar estado de loading
   if (isGenerating) {
     return (
-      <div className="space-y-6">
+      <Stack gap={6}>
         {/* Skeleton animado da biografia */}
-        <div className="space-y-4">
+        <Stack>
           {[...Array(6)].map((_, index) => (
             <div
               key={index}
@@ -69,7 +69,7 @@ export default function ComposerBiography({
               }}
             ></div>
           ))}
-        </div>
+        </Stack>
 
         {/* Indicadores de progresso */}
         {/* <div className="flex items-center justify-center space-x-6 pt-4">
@@ -86,7 +86,7 @@ export default function ComposerBiography({
             </div>
           )}
         </div> */}
-      </div>
+      </Stack>
     );
   }
 

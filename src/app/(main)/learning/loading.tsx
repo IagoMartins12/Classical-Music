@@ -11,7 +11,7 @@ import {
   PiSquaresFour,
   PiTarget,
 } from 'react-icons/pi';
-import { Inline } from '@/app/components/ui/Layout';
+import { Stack, Inline } from '@/app/components/ui/Layout';
 import { Text } from '@/app/components/ui/Text';
 import { Card } from '@/app/components/ui/Card';
 
@@ -80,7 +80,7 @@ export default function LearningPageLoading() {
 
         {/* Controls Skeleton */}
         <Card>
-          <div className="space-y-4">
+          <Stack>
             {/* Main Controls Row */}
             <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
               {/* Tabs Skeleton */}
@@ -130,7 +130,7 @@ export default function LearningPageLoading() {
                 </Inline>
               </div>
             </div>
-          </div>
+          </Stack>
         </Card>
 
         {/* Want to Learn Section Skeleton */}
@@ -139,10 +139,10 @@ export default function LearningPageLoading() {
             <div className="w-10 h-10 bg-gradient-to-br from-accent-blue/20 to-accent-purple/20 rounded-xl flex items-center justify-center">
               <PiTarget className="w-5 h-5 text-theme-inverse/20" />
             </div>
-            <div className="space-y-2">
+            <Stack gap={2}>
               <div className="h-8 w-48 bg-gradient-to-r from-theme-primary/20 to-theme-secondary/20 rounded animate-pulse"></div>
               <div className="h-4 w-32 bg-theme-elevated rounded animate-pulse"></div>
-            </div>
+            </Stack>
           </Inline>
 
           {/* Learning Cards Grid */}
@@ -159,10 +159,10 @@ export default function LearningPageLoading() {
             <div className="w-10 h-10 bg-gradient-to-br from-accent-green/20 to-accent-blue/20 rounded-xl flex items-center justify-center">
               <PiCheckCircle className="w-5 h-5 text-theme-inverse/20" />
             </div>
-            <div className="space-y-2">
+            <Stack gap={2}>
               <div className="h-8 w-32 bg-gradient-to-r from-theme-primary/20 to-theme-secondary/20 rounded animate-pulse"></div>
               <div className="h-4 w-28 bg-theme-elevated rounded animate-pulse"></div>
-            </div>
+            </Stack>
           </Inline>
 
           {/* Learned Cards Grid */}
@@ -213,7 +213,7 @@ function LearningCardSkeleton() {
       </Inline>
 
       {/* Details */}
-      <div className="space-y-3">
+      <Stack gap={3}>
         <Inline gap={2}>
           <div className="w-4 h-4 bg-theme-tertiary/30 rounded"></div>
           <div className="h-6 w-20 bg-gradient-to-r from-accent-blue/20 to-accent-purple/20 border border-accent-blue/30 rounded-full"></div>
@@ -224,17 +224,20 @@ function LearningCardSkeleton() {
           <div className="h-4 w-24 bg-theme-elevated rounded"></div>
         </Inline>
 
-        <div className="bg-theme-secondary rounded-lg p-3 border-l-4 border-accent-blue/30">
-          <Inline gap={2} className="mb-2">
+        <Stack
+          gap={2}
+          className="bg-theme-secondary rounded-lg p-3 border-l-4 border-accent-blue/30"
+        >
+          <Inline gap={2}>
             <div className="w-4 h-4 bg-accent-blue/30 rounded"></div>
             <div className="h-4 w-16 bg-theme-elevated rounded"></div>
           </Inline>
-          <div className="space-y-2">
+          <Stack gap={2}>
             <div className="h-3 bg-theme-elevated rounded"></div>
             <div className="h-3 bg-theme-elevated rounded w-5/6"></div>
-          </div>
-        </div>
-      </div>
+          </Stack>
+        </Stack>
+      </Stack>
 
       {/* Footer */}
       <div className="mt-4 pt-4 border-t border-theme-secondary flex items-center justify-between">

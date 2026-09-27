@@ -15,7 +15,7 @@ import {
 import { AdminPieChart, TrendAreaChart } from '../../Charts/AdminCharts';
 import Select from '@/app/components/Common/Select';
 import Modal from '@/app/components/Modal';
-import { Inline } from '@/app/components/ui/Layout';
+import { Stack, Inline } from '@/app/components/ui/Layout';
 import { Text } from '@/app/components/ui/Text';
 
 interface AdStatsModalProps {
@@ -184,11 +184,11 @@ export default function AdStatsModal({
               </div>
             </div>
           ) : stats ? (
-            <div className="space-y-6">
+            <Stack gap={6}>
               {/* Métricas Principais - APENAS CAMPOS EXISTENTES */}
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-                <div className="bg-theme-secondary rounded-xl p-4">
-                  <div className="flex items-center justify-between mb-2">
+                <Stack gap={2} className="bg-theme-secondary rounded-xl p-4">
+                  <div className="flex items-center justify-between">
                     <Text papel="rotulo" tom="fraco">
                       Impressões
                     </Text>
@@ -197,10 +197,10 @@ export default function AdStatsModal({
                   <div className="text-2xl font-bold text-theme-primary">
                     {formatNumber(stats.totals?.impressions)}
                   </div>
-                </div>
+                </Stack>
 
-                <div className="bg-theme-secondary rounded-xl p-4">
-                  <div className="flex items-center justify-between mb-2">
+                <Stack gap={2} className="bg-theme-secondary rounded-xl p-4">
+                  <div className="flex items-center justify-between">
                     <Text papel="rotulo" tom="fraco">
                       Cliques
                     </Text>
@@ -209,10 +209,10 @@ export default function AdStatsModal({
                   <div className="text-2xl font-bold text-theme-primary">
                     {formatNumber(stats.totals?.clicks)}
                   </div>
-                </div>
+                </Stack>
 
-                <div className="bg-theme-secondary rounded-xl p-4">
-                  <div className="flex items-center justify-between mb-2">
+                <Stack gap={2} className="bg-theme-secondary rounded-xl p-4">
+                  <div className="flex items-center justify-between">
                     <Text papel="rotulo" tom="fraco">
                       CTR
                     </Text>
@@ -221,13 +221,13 @@ export default function AdStatsModal({
                   <div className="text-2xl font-bold text-theme-primary">
                     {formatPercentage(stats.totals?.ctr)}%
                   </div>
-                </div>
+                </Stack>
               </div>
 
               {/* Métrica de Hover Time (se relevante) */}
               {stats.totals?.avgHoverTime > 0 && (
-                <div className="bg-theme-secondary rounded-xl p-4">
-                  <div className="flex items-center justify-between mb-2">
+                <Stack gap={2} className="bg-theme-secondary rounded-xl p-4">
+                  <div className="flex items-center justify-between">
                     <Text papel="rotulo" tom="fraco">
                       Tempo Médio de Hover
                     </Text>
@@ -236,7 +236,7 @@ export default function AdStatsModal({
                   <div className="text-2xl font-bold text-theme-primary">
                     {formatHoverTime(stats.totals.avgHoverTime)}
                   </div>
-                </div>
+                </Stack>
               )}
 
               {/* Gráfico de Tendência */}
@@ -300,11 +300,11 @@ export default function AdStatsModal({
                 </div>
 
                 {/* Top Países */}
-                <div className="bg-theme-secondary rounded-xl p-6">
-                  <h3 className="text-lg font-bold text-theme-primary mb-4">
+                <Stack className="bg-theme-secondary rounded-xl p-6">
+                  <h3 className="text-lg font-bold text-theme-primary">
                     Top Países
                   </h3>
-                  <div className="space-y-3">
+                  <Stack gap={3}>
                     {(stats.topCountries || [])
                       .slice(0, 5)
                       .map((country: any, index: number) => (
@@ -342,14 +342,14 @@ export default function AdStatsModal({
                           </Inline>
                         </div>
                       ))}
-                  </div>
-                </div>
+                  </Stack>
+                </Stack>
               </div>
 
               {/* Top Páginas */}
               {stats.topPages && stats.topPages.length > 0 && (
-                <div className="bg-theme-secondary rounded-xl p-6">
-                  <h3 className="text-lg font-bold text-theme-primary mb-4">
+                <Stack className="bg-theme-secondary rounded-xl p-6">
+                  <h3 className="text-lg font-bold text-theme-primary">
                     Páginas com Mais Impressões
                   </h3>
                   <div className="overflow-x-auto">
@@ -411,9 +411,9 @@ export default function AdStatsModal({
                       </tbody>
                     </table>
                   </div>
-                </div>
+                </Stack>
               )}
-            </div>
+            </Stack>
           ) : (
             <div className="text-center py-12">
               <PiChartBar className="w-16 h-16 text-theme-tertiary mx-auto mb-4" />

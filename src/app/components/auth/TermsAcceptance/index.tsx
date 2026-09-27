@@ -11,7 +11,7 @@ import {
 } from 'react-icons/pi';
 import { useTranslation } from '@/app/context/TranslationContext';
 import Modal from '../../Modal';
-import { Inline } from '@/app/components/ui/Layout';
+import { Stack, Inline } from '@/app/components/ui/Layout';
 import { Text } from '@/app/components/ui/Text';
 
 interface TermsAcceptanceProps {
@@ -53,18 +53,18 @@ const TermsAcceptance: React.FC<TermsAcceptanceProps> = ({
         as="div"
         className="space-y-6 leading-relaxed"
       >
-        <div className="rounded-lg p-4">
-          <h4 className="font-semibold text-accent-blue mb-2 flex items-center">
+        <Stack gap={2} className="rounded-lg p-4">
+          <h4 className="font-semibold text-accent-blue flex items-center">
             <PiShield className="w-4 h-4 mr-2" />
             {t('privacy_policy_summary_title')}
           </h4>
           <p className="text-accent-blue/90">
             {t('privacy_policy_summary_text')}
           </p>
-        </div>
+        </Stack>
 
-        <div>
-          <h4 className="font-semibold text-theme-primary mb-3">
+        <Stack gap={3}>
+          <h4 className="font-semibold text-theme-primary">
             {t('privacy_policy_data_collection_title')}
           </h4>
           <ul className="space-y-2 ml-4">
@@ -72,10 +72,10 @@ const TermsAcceptance: React.FC<TermsAcceptanceProps> = ({
             <li>{t('privacy_policy_data_usage')}</li>
             <li>{t('privacy_policy_data_technical')}</li>
           </ul>
-        </div>
+        </Stack>
 
-        <div>
-          <h4 className="font-semibold text-theme-primary mb-3">
+        <Stack gap={3}>
+          <h4 className="font-semibold text-theme-primary">
             {t('privacy_policy_how_we_use_title')}
           </h4>
           <ul className="space-y-2 ml-4">
@@ -84,10 +84,10 @@ const TermsAcceptance: React.FC<TermsAcceptanceProps> = ({
             <li>{t('privacy_policy_use_updates')}</li>
             <li>{t('privacy_policy_use_statistics')}</li>
           </ul>
-        </div>
+        </Stack>
 
-        <div>
-          <h4 className="font-semibold text-theme-primary mb-3">
+        <Stack gap={3}>
+          <h4 className="font-semibold text-theme-primary">
             {t('privacy_policy_rights_title')}
           </h4>
           <div className="rounded-lg p-3">
@@ -99,10 +99,10 @@ const TermsAcceptance: React.FC<TermsAcceptanceProps> = ({
               <li>{t('privacy_policy_right_revocation')}</li>
             </ul>
           </div>
-        </div>
+        </Stack>
 
-        <div>
-          <h4 className="font-semibold text-theme-primary mb-3">
+        <Stack gap={3}>
+          <h4 className="font-semibold text-theme-primary">
             {t('privacy_policy_security_title')}
           </h4>
           <ul className="space-y-2 ml-4">
@@ -111,10 +111,10 @@ const TermsAcceptance: React.FC<TermsAcceptanceProps> = ({
             <li>{t('privacy_policy_security_backups')}</li>
             <li>{t('privacy_policy_security_monitoring')}</li>
           </ul>
-        </div>
+        </Stack>
 
-        <div>
-          <h4 className="font-semibold text-theme-primary mb-3">
+        <Stack gap={3}>
+          <h4 className="font-semibold text-theme-primary">
             {t('privacy_policy_retention_title')}
           </h4>
           <ul className="space-y-2 ml-4">
@@ -123,10 +123,13 @@ const TermsAcceptance: React.FC<TermsAcceptanceProps> = ({
             <li>{t('privacy_policy_retention_cookies')}</li>
             <li>{t('privacy_policy_retention_annotations')}</li>
           </ul>
-        </div>
+        </Stack>
 
-        <div className="bg-accent-amber/10 border border-accent-amber/30 rounded-lg p-4">
-          <h4 className="font-semibold text-accent-amber mb-2">
+        <Stack
+          gap={2}
+          className="bg-accent-amber/10 border border-accent-amber/30 rounded-lg p-4"
+        >
+          <h4 className="font-semibold text-accent-amber">
             {t('privacy_policy_contact_title')}
           </h4>
           <p className="text-accent-amber/90">
@@ -134,7 +137,7 @@ const TermsAcceptance: React.FC<TermsAcceptanceProps> = ({
             <br />
             <strong>{t('privacy_policy_contact_email')}</strong>
           </p>
-        </div>
+        </Stack>
       </Text>
     ),
   };
@@ -149,18 +152,18 @@ const TermsAcceptance: React.FC<TermsAcceptanceProps> = ({
         as="div"
         className="space-y-6 leading-relaxed"
       >
-        <div className="bg-theme-elevated rounded-lg p-4">
-          <h4 className="font-semibold text-accent-purple mb-2 flex items-center">
+        <Stack gap={2} className="bg-theme-elevated rounded-lg p-4">
+          <h4 className="font-semibold text-accent-purple flex items-center">
             <PiFileText className="w-4 h-4 mr-2" />
             {t('terms_of_use_summary_title')}
           </h4>
           <p className="text-accent-purple/90">
             {t('terms_of_use_summary_text')}
           </p>
-        </div>
+        </Stack>
 
-        <div>
-          <h4 className="font-semibold text-theme-primary mb-3">
+        <Stack gap={3}>
+          <h4 className="font-semibold text-theme-primary">
             {t('terms_of_use_permitted_title')}
           </h4>
           <ul className="space-y-2 ml-4">
@@ -169,10 +172,10 @@ const TermsAcceptance: React.FC<TermsAcceptanceProps> = ({
             <li>{t('terms_of_use_permitted_community')}</li>
             <li>{t('terms_of_use_permitted_tools')}</li>
           </ul>
-        </div>
+        </Stack>
 
-        <div>
-          <h4 className="font-semibold text-theme-primary mb-3">
+        <Stack gap={3}>
+          <h4 className="font-semibold text-theme-primary">
             {t('terms_of_use_prohibited_title')}
           </h4>
           <ul className="space-y-2 ml-4">
@@ -181,10 +184,10 @@ const TermsAcceptance: React.FC<TermsAcceptanceProps> = ({
             <li>{t('terms_of_use_prohibited_copyright')}</li>
             <li>{t('terms_of_use_prohibited_offensive')}</li>
           </ul>
-        </div>
+        </Stack>
 
-        <div>
-          <h4 className="font-semibold text-theme-primary mb-3">
+        <Stack gap={3}>
+          <h4 className="font-semibold text-theme-primary">
             {t('terms_of_use_content_title')}
           </h4>
           <ul className="space-y-2 ml-4">
@@ -193,10 +196,10 @@ const TermsAcceptance: React.FC<TermsAcceptanceProps> = ({
             <li>{t('terms_of_use_content_uploads')}</li>
             <li>{t('terms_of_use_content_points')}</li>
           </ul>
-        </div>
+        </Stack>
 
-        <div>
-          <h4 className="font-semibold text-theme-primary mb-3">
+        <Stack gap={3}>
+          <h4 className="font-semibold text-theme-primary">
             {t('terms_of_use_favorites_title')}
           </h4>
           <ul className="space-y-2 ml-4">
@@ -204,10 +207,10 @@ const TermsAcceptance: React.FC<TermsAcceptanceProps> = ({
             <li>{t('terms_of_use_favorites_privacy')}</li>
             <li>{t('terms_of_use_favorites_educational')}</li>
           </ul>
-        </div>
+        </Stack>
 
-        <div>
-          <h4 className="font-semibold text-theme-primary mb-3">
+        <Stack gap={3}>
+          <h4 className="font-semibold text-theme-primary">
             {t('terms_of_use_responsibilities_title')}
           </h4>
           <div className="rounded-lg p-3">
@@ -218,10 +221,10 @@ const TermsAcceptance: React.FC<TermsAcceptanceProps> = ({
               <li>{t('terms_of_use_responsibility_collaboration')}</li>
             </ul>
           </div>
-        </div>
+        </Stack>
 
-        <div>
-          <h4 className="font-semibold text-theme-primary mb-3">
+        <Stack gap={3}>
+          <h4 className="font-semibold text-theme-primary">
             {t('terms_of_use_suspension_title')}
           </h4>
           <ul className="space-y-2 ml-4">
@@ -229,16 +232,16 @@ const TermsAcceptance: React.FC<TermsAcceptanceProps> = ({
             <li>{t('terms_of_use_suspension_user_choice')}</li>
             <li>{t('terms_of_use_suspension_annotations')}</li>
           </ul>
-        </div>
+        </Stack>
 
-        <div className="rounded-lg p-4">
-          <h4 className="font-semibold text-accent-red mb-2">
+        <Stack gap={2} className="rounded-lg p-4">
+          <h4 className="font-semibold text-accent-red">
             {t('terms_of_use_limitations_title')}
           </h4>
           <p className="text-accent-red/90">
             {t('terms_of_use_limitations_text')}
           </p>
-        </div>
+        </Stack>
       </Text>
     ),
   };

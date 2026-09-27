@@ -17,7 +17,7 @@ import {
   PiTrash,
   PiUsersThree,
 } from 'react-icons/pi';
-import { Inline } from '@/app/components/ui/Layout';
+import { Stack, Inline } from '@/app/components/ui/Layout';
 
 interface EventModalProps {
   event: any;
@@ -150,8 +150,8 @@ export default function EventModal({
 
         {/* Compositores */}
         {event.composers && event.composers.length > 0 && (
-          <div>
-            <Inline gap={2} className="mb-3">
+          <Stack gap={3}>
+            <Inline gap={2}>
               <PiUsersThree className="w-5 h-5 " />
               <h4 className="text-sm font-semibold ">Compositores</h4>
             </Inline>
@@ -180,22 +180,22 @@ export default function EventModal({
                 </Link>
               ))}
             </div>
-          </div>
+          </Stack>
         )}
 
         {/* Descrição */}
         {event.description && (
-          <div>
-            <h4 className="text-sm font-semibold mb-2">Sobre o Evento</h4>
+          <Stack gap={2}>
+            <h4 className="text-sm font-semibold">Sobre o Evento</h4>
             <p className="text-sm leading-relaxed whitespace-pre-line">
               {formatEventText(event.description)}
             </p>
-          </div>
+          </Stack>
         )}
         {/* Programa */}
         {event.program && (
-          <div>
-            <h4 className="text-sm font-semibold mb-2">Programa</h4>
+          <Stack gap={2}>
+            <h4 className="text-sm font-semibold">Programa</h4>
             <div className="bg-theme-tertiary rounded-lg p-4">
               <p className="text-sm leading-relaxed whitespace-pre-line">
                 {formatEventText(
@@ -205,7 +205,7 @@ export default function EventModal({
                 )}
               </p>
             </div>
-          </div>
+          </Stack>
         )}
 
         {/* Botões de Ação */}

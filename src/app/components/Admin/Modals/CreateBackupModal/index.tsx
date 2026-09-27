@@ -12,7 +12,7 @@ import {
 import Button from '@/app/components/Common/Button';
 import Select from '@/app/components/Common/Select';
 import Input from '@/app/components/Common/Inputs';
-import { Inline } from '@/app/components/ui/Layout';
+import { Stack, Inline } from '@/app/components/ui/Layout';
 import { Text } from '@/app/components/ui/Text';
 import { NomeAcao } from '@/app/components/ui/NomeAcao';
 
@@ -94,9 +94,9 @@ export default function CreateBackupModal({
         </div>
 
         {/* Form */}
-        <form onSubmit={handleSubmit} className="p-6 space-y-6">
+        <Stack gap={6} as="form" onSubmit={handleSubmit} className="p-6">
           {/* Basic Settings */}
-          <div className="space-y-4">
+          <Stack>
             <h3 className="text-lg font-bold text-theme-primary">
               Configurações Básicas
             </h3>
@@ -138,10 +138,10 @@ export default function CreateBackupModal({
                 className="input-classical-2 w-full"
               />
             </div>
-          </div>
+          </Stack>
 
           {/* Content Selection */}
-          <div className="space-y-4">
+          <Stack>
             <h3 className="text-lg font-bold text-theme-primary">Conteúdo</h3>
 
             <div className="grid grid-cols-2 gap-4">
@@ -195,10 +195,10 @@ export default function CreateBackupModal({
                 </div>
               </Inline>
             </div>
-          </div>
+          </Stack>
 
           {/* Options */}
-          <div className="space-y-4">
+          <Stack>
             <h3 className="text-lg font-bold text-theme-primary">Opções</h3>
 
             <div className="grid grid-cols-2 gap-4">
@@ -249,10 +249,10 @@ export default function CreateBackupModal({
                 max="365"
               />
             </div>
-          </div>
+          </Stack>
 
           {/* Schedule */}
-          <div className="space-y-4">
+          <Stack>
             <h3 className="text-lg font-bold text-theme-primary">
               Agendamento
             </h3>
@@ -293,7 +293,7 @@ export default function CreateBackupModal({
                 />
               </div>
             )}
-          </div>
+          </Stack>
 
           {/* Footer */}
           <Inline
@@ -317,7 +317,7 @@ export default function CreateBackupModal({
               Criar Backup
             </Button>
           </Inline>
-        </form>
+        </Stack>
       </div>
     </div>
   );

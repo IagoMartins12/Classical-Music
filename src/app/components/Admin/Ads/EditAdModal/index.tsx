@@ -17,7 +17,7 @@ import Input from '@/app/components/Common/Inputs';
 import Modal from '@/app/components/Modal';
 import Checkbox from '@/app/components/Common/Checkbox';
 import { listInstruments } from '@/app/requests/admin/ads';
-import { Inline } from '@/app/components/ui/Layout';
+import { Stack, Inline } from '@/app/components/ui/Layout';
 import { Text } from '@/app/components/ui/Text';
 
 interface EditAdModalProps {
@@ -399,11 +399,11 @@ export default function EditAdModal({
         )}
 
         {/* Form */}
-        <form onSubmit={handleSubmit} className="p-6 space-y-6">
+        <Stack gap={6} as="form" onSubmit={handleSubmit} className="p-6">
           {/* Performance Atual */}
           {ad?.totalImpressions !== undefined && (
-            <div className="p-4 bg-theme-secondary/50 rounded-lg">
-              <h4 className="font-medium text-theme-primary mb-3">
+            <Stack gap={3} className="p-4 bg-theme-secondary/50 rounded-lg">
+              <h4 className="font-medium text-theme-primary">
                 Performance Atual
               </h4>
               <div className="grid grid-cols-3 gap-4 text-center">
@@ -432,11 +432,11 @@ export default function EditAdModal({
                   </Text>
                 </div>
               </div>
-            </div>
+            </Stack>
           )}
 
           {/* Informações Básicas */}
-          <div className="space-y-4">
+          <Stack>
             <Inline
               as="h3"
               gap={2}
@@ -531,10 +531,10 @@ export default function EditAdModal({
                 />
               </div>
             </div>
-          </div>
+          </Stack>
 
           {/* Segmentação */}
-          <div className="space-y-4">
+          <Stack>
             <Inline
               as="h3"
               gap={2}
@@ -600,10 +600,10 @@ export default function EditAdModal({
                 </div>
               )}
             </div>
-          </div>
+          </Stack>
 
           {/* Link e Call-to-Action */}
-          <div className="space-y-4">
+          <Stack>
             <Inline
               as="h3"
               gap={2}
@@ -673,10 +673,10 @@ export default function EditAdModal({
                 />
               </div>
             </div>
-          </div>
+          </Stack>
 
           {/* Dados do Anunciante */}
-          <div className="space-y-4">
+          <Stack>
             <h3 className="text-lg font-semibold text-theme-primary">
               Contato do Anunciante
             </h3>
@@ -718,10 +718,10 @@ export default function EditAdModal({
                 />
               </div>
             </div>
-          </div>
+          </Stack>
 
           {/* Configurações */}
-          <div className="space-y-4">
+          <Stack>
             <h3 className="text-lg font-semibold text-theme-primary">
               Configurações
             </h3>
@@ -749,8 +749,8 @@ export default function EditAdModal({
             </div>
 
             {/* Dispositivos */}
-            <div>
-              <label className="block text-sm font-medium text-theme-primary mb-2">
+            <Stack gap={2}>
+              <label className="block text-sm font-medium text-theme-primary">
                 Exibir em:
               </label>
               <div className="flex space-x-4">
@@ -788,8 +788,8 @@ export default function EditAdModal({
                   />
                 </Inline>
               </div>
-            </div>
-          </div>
+            </Stack>
+          </Stack>
 
           {/* Actions */}
           <div className="flex justify-end space-x-3 pt-6 border-t border-theme-primary">
@@ -811,7 +811,7 @@ export default function EditAdModal({
               Salvar Alterações
             </Button>
           </div>
-        </form>
+        </Stack>
       </div>
     </Modal>
   );

@@ -36,7 +36,7 @@ import {
   usePhoneValidation,
 } from '@/app/utils/phones_and_location/phoneValidation';
 import { useTranslation } from '@/app/context/TranslationContext';
-import { Inline } from '@/app/components/ui/Layout';
+import { Stack, Inline } from '@/app/components/ui/Layout';
 import { Text } from '@/app/components/ui/Text';
 
 interface PersonalInfoSectionProps {
@@ -274,7 +274,7 @@ const PersonalInfoSection: React.FC<PersonalInfoSectionProps> = ({
   };
 
   return (
-    <div className="space-y-6">
+    <Stack gap={6}>
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
@@ -461,7 +461,7 @@ const PersonalInfoSection: React.FC<PersonalInfoSectionProps> = ({
           </Text>
         )}
       </div>
-    </div>
+    </Stack>
   );
 };
 

@@ -22,7 +22,7 @@ import Button from '../../Common/Button';
 import { useEmailRefreshSimple } from '@/app/hooks/useEmailRefresh';
 import Navbar from '../../Navbar';
 import { Toaster } from 'react-hot-toast';
-import { Inline } from '@/app/components/ui/Layout';
+import { Stack, Inline } from '@/app/components/ui/Layout';
 import { Text } from '@/app/components/ui/Text';
 import { Card } from '@/app/components/ui/Card';
 
@@ -85,7 +85,7 @@ export default function TeacherVerificationRequired({
                   <h3 className="text-lg font-bold text-theme-primary mb-3 classical-title">
                     {userName ? `Olá, ${userName}!` : 'Aguardando Aprovação'}
                   </h3>
-                  <div className="space-y-3">
+                  <Stack gap={3}>
                     <p className="text-theme-secondary">
                       <strong className="text-brand-primary">Seu Email:</strong>{' '}
                       {userEmail}
@@ -96,7 +96,7 @@ export default function TeacherVerificationRequired({
                       funcionalidades da área do professor, é necessário aceitar
                       o convite que foi enviado para seu email.
                     </Text>
-                  </div>
+                  </Stack>
                 </div>
               </div>
             </AnimatedCard>
@@ -167,7 +167,7 @@ export default function TeacherVerificationRequired({
                   </h3>
                 </Inline>
 
-                <div className="text-left space-y-3">
+                <Stack gap={3} className="text-left">
                   <Inline gap={2}>
                     <div className="w-2 h-2 bg-accent-blue rounded-full"></div>
                     <Text papel="rotulo" tom="suave">
@@ -192,7 +192,7 @@ export default function TeacherVerificationRequired({
                       Acesso completo liberado
                     </Text>
                   </Inline>
-                </div>
+                </Stack>
               </AnimatedCard>
 
               {/* After approval */}
@@ -206,7 +206,7 @@ export default function TeacherVerificationRequired({
                   </h3>
                 </Inline>
 
-                <div className="text-left space-y-2">
+                <Stack gap={2} className="text-left">
                   <Inline gap={2}>
                     <div className="w-2 h-2 bg-accent-green rounded-full"></div>
                     <Text papel="rotulo" tom="suave">
@@ -231,7 +231,7 @@ export default function TeacherVerificationRequired({
                       Sistema completo de avaliação
                     </Text>
                   </Inline>
-                </div>
+                </Stack>
               </AnimatedCard>
             </div>
 

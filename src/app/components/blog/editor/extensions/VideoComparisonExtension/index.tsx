@@ -6,7 +6,7 @@ import { ReactNodeViewRenderer } from '@tiptap/react';
 import { NodeViewWrapper } from '@tiptap/react';
 import { useState } from 'react';
 import { PiColumns, PiPlay, PiTrash } from 'react-icons/pi';
-import { Inline } from '@/app/components/ui/Layout';
+import { Stack, Inline } from '@/app/components/ui/Layout';
 import { Text } from '@/app/components/ui/Text';
 
 const VideoComparisonComponent = (props: any) => {
@@ -72,7 +72,7 @@ const VideoComparisonComponent = (props: any) => {
           }`}
         >
           {/* Video 1 */}
-          <div className="space-y-2">
+          <Stack gap={2}>
             <div className="flex items-center justify-between bg-theme-secondary px-4 py-2 rounded-lg">
               <div>
                 <h5 className="font-semibold text-theme-primary">
@@ -95,10 +95,10 @@ const VideoComparisonComponent = (props: any) => {
                 allowFullScreen
               />
             </div>
-          </div>
+          </Stack>
 
           {/* Video 2 */}
-          <div className="space-y-2">
+          <Stack gap={2}>
             <div className="flex items-center justify-between bg-theme-secondary px-4 py-2 rounded-lg">
               <div>
                 <h5 className="font-semibold text-theme-primary">
@@ -121,7 +121,7 @@ const VideoComparisonComponent = (props: any) => {
                 allowFullScreen
               />
             </div>
-          </div>
+          </Stack>
         </div>
       </div>
     </NodeViewWrapper>

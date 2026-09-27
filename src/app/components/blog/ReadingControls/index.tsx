@@ -2,6 +2,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import { Stack } from '@/app/components/ui/Layout';
 
 interface ReadingControlsProps {
   isMobile?: boolean;
@@ -127,7 +128,7 @@ export function ReadingControls({
         <div className="h-px bg-theme-secondary my-2" />
 
         {/* Font Size */}
-        <div className="space-y-2">
+        <Stack gap={2}>
           {/* <div className="flex items-center justify-between px-3">
             <FaFont className="w-4 h-4 text-theme-tertiary" />
             <span className="text-xs text-theme-tertiary">{fontSize}px</span>
@@ -156,7 +157,7 @@ export function ReadingControls({
               <FaBullseye className="w-4 h-4" />
             </button> */}
           </div>
-        </div>
+        </Stack>
 
         {/* <div className="h-px bg-theme-secondary my-2" />
 

@@ -44,7 +44,7 @@ import {
 import Button from '@/app/components/Common/Button';
 import { MetricCard } from '@/app/components/Admin/Charts/AdminCharts';
 import { IconType } from 'react-icons';
-import { Inline } from '@/app/components/ui/Layout';
+import { Stack, Inline } from '@/app/components/ui/Layout';
 import { Text } from '@/app/components/ui/Text';
 
 // Tabs atualizadas com Cloudinary
@@ -403,7 +403,7 @@ export default function OrphanFilesManagementClient() {
 
   return (
     <PageContainer showBackground={true}>
-      <div className="space-y-8">
+      <Stack gap={8}>
         <AnimatedContainer
           delay={0.1}
           staggerSpeed="normal"
@@ -756,14 +756,14 @@ export default function OrphanFilesManagementClient() {
                     )}
                   </div>
                 ) : (
-                  <div className="space-y-4">
+                  <Stack>
                     {/* Arquivos Locais */}
                     {filteredLocalFiles.length > 0 && (
-                      <div>
+                      <Stack gap={3}>
                         <Inline
                           as="h4"
                           gap={2}
-                          className="text-lg font-semibold text-theme-primary mb-3"
+                          className="text-lg font-semibold text-theme-primary"
                         >
                           <PiMonitor className="w-5 h-5" />
                           <span>
@@ -861,16 +861,16 @@ export default function OrphanFilesManagementClient() {
                             );
                           })}
                         </div>
-                      </div>
+                      </Stack>
                     )}
 
                     {/* Arquivos do Cloudinary */}
                     {filteredCloudinaryFiles.length > 0 && (
-                      <div>
+                      <Stack gap={3}>
                         <Inline
                           as="h4"
                           gap={2}
-                          className="text-lg font-semibold text-theme-primary mb-3"
+                          className="text-lg font-semibold text-theme-primary"
                         >
                           <PiCloud className="w-5 h-5" />
                           <span>
@@ -895,15 +895,15 @@ export default function OrphanFilesManagementClient() {
                             />
                           ))}
                         </div>
-                      </div>
+                      </Stack>
                     )}
-                  </div>
+                  </Stack>
                 )}
               </AnimatedCard>
             </AnimatedItem>
           )}
         </AnimatedContainer>
-      </div>
+      </Stack>
     </PageContainer>
   );
 }

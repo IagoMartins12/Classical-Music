@@ -40,7 +40,7 @@ import Select from '@/app/components/Common/Select';
 import Input from '@/app/components/Common/Inputs';
 import Image from '@/app/components/SmartImage';
 import LoadingAdminState from '../../Common/LoadingState';
-import { Inline } from '@/app/components/ui/Layout';
+import { Stack, Inline } from '@/app/components/ui/Layout';
 import { Text } from '@/app/components/ui/Text';
 
 interface FilterState {
@@ -245,7 +245,7 @@ export default function AdsManagementClient() {
 
   return (
     <PageContainer showBackground={true}>
-      <div className="space-y-8">
+      <Stack gap={8}>
         <AnimatedContainer
           delay={0.1}
           staggerSpeed="normal"
@@ -273,14 +273,14 @@ export default function AdsManagementClient() {
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 lg:gap-6">
               <AnimatedCard className="classical-card p-6">
                 <div className="flex items-center justify-between">
-                  <div>
-                    <Text papel="rotulo" tom="fraco" as="p" className="mb-1">
+                  <Stack gap={1}>
+                    <Text papel="rotulo" tom="fraco" as="p">
                       Total de Ads
                     </Text>
                     <p className="text-3xl font-bold text-theme-primary">
                       {stats.totalAds}
                     </p>
-                  </div>
+                  </Stack>
                   <div className="w-12 h-12 bg-accent-blue/20 rounded-xl flex items-center justify-center">
                     <PiTarget className="w-6 h-6 text-accent-blue" />
                   </div>
@@ -289,14 +289,14 @@ export default function AdsManagementClient() {
 
               <AnimatedCard className="classical-card p-6">
                 <div className="flex items-center justify-between">
-                  <div>
-                    <Text papel="rotulo" tom="fraco" as="p" className="mb-1">
+                  <Stack gap={1}>
+                    <Text papel="rotulo" tom="fraco" as="p">
                       Ativos
                     </Text>
                     <p className="text-3xl font-bold text-accent-green">
                       {stats.activeAds}
                     </p>
-                  </div>
+                  </Stack>
                   <div className="w-12 h-12 bg-accent-green/20 rounded-xl flex items-center justify-center">
                     <PiPlay className="w-6 h-6 text-accent-green" />
                   </div>
@@ -305,14 +305,14 @@ export default function AdsManagementClient() {
 
               <AnimatedCard className="classical-card p-6">
                 <div className="flex items-center justify-between">
-                  <div>
-                    <Text papel="rotulo" tom="fraco" as="p" className="mb-1">
+                  <Stack gap={1}>
+                    <Text papel="rotulo" tom="fraco" as="p">
                       Impressões (30d)
                     </Text>
                     <p className="text-3xl font-bold text-accent-purple">
                       {stats.impressions30d.toLocaleString()}
                     </p>
-                  </div>
+                  </Stack>
                   <div className="w-12 h-12 bg-accent-purple/20 rounded-xl flex items-center justify-center">
                     <PiEye className="w-6 h-6 text-accent-purple" />
                   </div>
@@ -321,14 +321,14 @@ export default function AdsManagementClient() {
 
               <AnimatedCard className="classical-card p-6">
                 <div className="flex items-center justify-between">
-                  <div>
-                    <Text papel="rotulo" tom="fraco" as="p" className="mb-1">
+                  <Stack gap={1}>
+                    <Text papel="rotulo" tom="fraco" as="p">
                       CTR Médio
                     </Text>
                     <p className="text-3xl font-bold text-accent-amber">
                       {stats.avgCTR.toFixed(2)}%
                     </p>
-                  </div>
+                  </Stack>
                   <div className="w-12 h-12 bg-accent-amber/20 rounded-xl flex items-center justify-center">
                     <PiTrendUp className="w-6 h-6 text-accent-amber" />
                   </div>
@@ -728,7 +728,7 @@ export default function AdsManagementClient() {
             )}
           </AnimatedCard>
         </AnimatedContainer>
-      </div>
+      </Stack>
 
       {/* Modals */}
       {showCreateModal && (

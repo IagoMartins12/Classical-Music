@@ -28,7 +28,7 @@ import AdminSidebar from './components/Admin/AdminSidebar';
 import { useTranslation } from '@/app/hooks/useTranslation';
 import { useClientMetadata } from './hooks/useClientMetadata';
 import { BlogHeader } from './components/blog/BlogHeader';
-import { Inline } from '@/app/components/ui/Layout';
+import { Stack, Inline } from '@/app/components/ui/Layout';
 import { Text } from '@/app/components/ui/Text';
 import { Card } from '@/app/components/ui/Card';
 
@@ -285,7 +285,7 @@ export default function Error({ error, reset }: ErrorProps) {
               </Inline>
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-left">
-                <div className="space-y-2">
+                <Stack gap={2}>
                   <Inline gap={2}>
                     <div className="w-2 h-2 bg-brand-primary rounded-full"></div>
                     <span className="text-theme-secondary">
@@ -298,8 +298,8 @@ export default function Error({ error, reset }: ErrorProps) {
                       {t('error_jsx_span_children_0__verificar_conexao')}
                     </span>
                   </Inline>
-                </div>
-                <div className="space-y-2">
+                </Stack>
+                <Stack gap={2}>
                   <Inline gap={2}>
                     <div className="w-2 h-2 bg-brand-primary rounded-full"></div>
                     <span className="text-theme-secondary">
@@ -312,7 +312,7 @@ export default function Error({ error, reset }: ErrorProps) {
                       {t('error_jsx_span_children_0__voltar_pagina_anterior')}
                     </span>
                   </Inline>
-                </div>
+                </Stack>
               </div>
             </AnimatedCard>
 

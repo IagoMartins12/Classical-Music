@@ -18,6 +18,7 @@ import Link from 'next/link';
 import { toast } from 'react-hot-toast';
 import { useTranslation } from '@/app/context/TranslationContext';
 import { Text } from '@/app/components/ui/Text';
+import { Stack } from '@/app/components/ui/Layout';
 
 interface ConfirmationState {
   status: 'loading' | 'success' | 'error' | 'already-accepted';
@@ -233,8 +234,11 @@ export default function ConfirmTeacherInvitePage() {
                 </div>
 
                 <div className="grid md:grid-cols-2 gap-4 mt-6">
-                  <div className="bg-theme-secondary bg-opacity-10 rounded-lg p-4">
-                    <h4 className="font-medium text-theme-primary mb-2">
+                  <Stack
+                    gap={2}
+                    className="bg-theme-secondary bg-opacity-10 rounded-lg p-4"
+                  >
+                    <h4 className="font-medium text-theme-primary">
                       {t('pages_token_jsx_h4_children_0__como_professor')}
                     </h4>
                     <ul className="text-sm text-theme-primary opacity-90 space-y-1 text-left">
@@ -255,9 +259,12 @@ export default function ConfirmTeacherInvitePage() {
                         {t('pages_token_jsx_li_children_0__crie_planos_estudo')}
                       </li>
                     </ul>
-                  </div>
-                  <div className="bg-theme-secondary bg-opacity-10 rounded-lg p-4">
-                    <h4 className="font-medium text-theme-primary mb-2">
+                  </Stack>
+                  <Stack
+                    gap={2}
+                    className="bg-theme-secondary bg-opacity-10 rounded-lg p-4"
+                  >
+                    <h4 className="font-medium text-theme-primary">
                       {t('pages_token_jsx_h4_children_0__próximos_passos')}
                     </h4>
                     <ul className="text-sm text-theme-primary opacity-90 space-y-1 text-left">
@@ -278,7 +285,7 @@ export default function ConfirmTeacherInvitePage() {
                         {t('pages_token_jsx_li_children_0__comece_ensinar')}
                       </li>
                     </ul>
-                  </div>
+                  </Stack>
                 </div>
               </div>
             )}
@@ -323,8 +330,11 @@ export default function ConfirmTeacherInvitePage() {
             <p className="text-theme-secondary text-lg mb-6">{state.message}</p>
 
             {state.user && (
-              <div className="bg-accent-blue bg-opacity-10 border border-accent-blue rounded-xl p-6 mb-8">
-                <h3 className="text-xl font-semibold text-accent-blue mb-2">
+              <Stack
+                gap={2}
+                className="bg-accent-blue bg-opacity-10 border border-accent-blue rounded-xl p-6 mb-8"
+              >
+                <h3 className="text-xl font-semibold text-accent-blue">
                   {t('pages_token_jsx_h3_children_0__olá_professor', {
                     firstName: state.user.firstName,
                   })}
@@ -332,7 +342,7 @@ export default function ConfirmTeacherInvitePage() {
                 <p className="text-accent-blue opacity-80">
                   {t('pages_token_jsx_p_children_0__já_é_professor_verificado')}
                 </p>
-              </div>
+              </Stack>
             )}
 
             <div className="grid md:grid-cols-2 gap-4">
@@ -367,8 +377,11 @@ export default function ConfirmTeacherInvitePage() {
             </h1>
             <p className="text-theme-secondary text-lg mb-6">{state.message}</p>
 
-            <div className="bg-accent-red bg-opacity-10 border border-accent-red rounded-xl p-6 mb-8">
-              <div className="flex items-center justify-center mb-3">
+            <Stack
+              gap={3}
+              className="bg-accent-red bg-opacity-10 border border-accent-red rounded-xl p-6 mb-8"
+            >
+              <div className="flex items-center justify-center">
                 <PiWarningCircle className="w-5 h-5 text-accent-red mr-2" />
                 <span className="font-medium text-accent-red">
                   {getErrorTitle(state.errorCode, t)}
@@ -377,7 +390,7 @@ export default function ConfirmTeacherInvitePage() {
               <p className="text-accent-red opacity-80 text-sm">
                 {getErrorDescription(state.errorCode, t)}
               </p>
-            </div>
+            </Stack>
 
             <div className="space-y-4">
               {state.canResend && (

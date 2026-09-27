@@ -16,7 +16,7 @@ import {
 } from 'react-icons/pi';
 import { HistoryComposerCard } from '../cards/HistoryComposerCard';
 import { useTranslation } from '@/app/context/TranslationContext';
-import { Inline } from '@/app/components/ui/Layout';
+import { Stack, Inline } from '@/app/components/ui/Layout';
 import { Text } from '@/app/components/ui/Text';
 import { Card } from '@/app/components/ui/Card';
 
@@ -138,8 +138,8 @@ export function EpochSection({ epoch, index, isReversed = false }: Props) {
               <PiMusicNotes />
             </div>
 
-            <div className="relative z-10">
-              <Inline gap={3} className="mb-4">
+            <Stack className="relative z-10">
+              <Inline gap={3}>
                 <div className="w-8 h-8 bg-gradient-to-br from-accent-blue to-accent-purple rounded-xl flex items-center justify-center">
                   <PiBookOpen className="w-4 h-4 text-theme-primary" />
                 </div>
@@ -150,7 +150,7 @@ export function EpochSection({ epoch, index, isReversed = false }: Props) {
               <p className="text-theme-secondary text-md sm:text-lg leading-relaxed classical-body">
                 {epoch.historicalData.description}
               </p>
-            </div>
+            </Stack>
           </Card>
         )}
 
@@ -203,7 +203,7 @@ export function EpochSection({ epoch, index, isReversed = false }: Props) {
                         {t('epoch_jsx_h4_children_0__caracteristicas')}
                       </h4>
                     </Inline>
-                    <div className="space-y-3">
+                    <Stack gap={3}>
                       {epoch.historicalData.characteristics.map((char, i) => (
                         <div
                           key={i}
@@ -216,7 +216,7 @@ export function EpochSection({ epoch, index, isReversed = false }: Props) {
                           </span>
                         </div>
                       ))}
-                    </div>
+                    </Stack>
                   </div>
 
                   {/* Desenvolvimentos */}
@@ -229,7 +229,7 @@ export function EpochSection({ epoch, index, isReversed = false }: Props) {
                         {t('epoch_jsx_h4_children_0__desenvolvimentos_chave')}
                       </h4>
                     </Inline>
-                    <div className="space-y-3">
+                    <Stack gap={3}>
                       {epoch.historicalData.keyDevelopments.map((dev, i) => (
                         <div
                           key={i}
@@ -242,7 +242,7 @@ export function EpochSection({ epoch, index, isReversed = false }: Props) {
                           </span>
                         </div>
                       ))}
-                    </div>
+                    </Stack>
                   </div>
 
                   {/* Formas Musicais */}
@@ -319,7 +319,7 @@ export function EpochSection({ epoch, index, isReversed = false }: Props) {
             </div>
           </Inline>
 
-          <div className="space-y-4">
+          <Stack>
             {visibleComposers.map((composer, composerIndex) => (
               <div
                 key={composer.id}
@@ -366,7 +366,7 @@ export function EpochSection({ epoch, index, isReversed = false }: Props) {
                 </svg>
               </Inline>
             )}
-          </div>
+          </Stack>
         </Card>
       </div>
     </div>

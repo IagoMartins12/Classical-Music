@@ -38,7 +38,7 @@ import ConfirmationModal from './ConfirmationModal';
 import { useDatabaseStudio } from '@/app/hooks/admin/useDatabaseStudio';
 import { CONFIRMATION_MESSAGES } from './confirmations';
 import { deleteConfirmationPhrase } from '@/app/requests/admin/database';
-import { Inline } from '@/app/components/ui/Layout';
+import { Stack, Inline } from '@/app/components/ui/Layout';
 import { Text } from '@/app/components/ui/Text';
 import { NomeAcao } from '@/app/components/ui/NomeAcao';
 
@@ -245,11 +245,11 @@ export default function DatabaseStudioClient() {
               </div>
 
               {/* Lista de models por categoria */}
-              <div className="space-y-4">
+              <Stack>
                 {Object.entries(modelsByCategory).map(
                   ([category, categoryModels]) => (
-                    <div key={category}>
-                      <Inline gap={2} className="mb-2">
+                    <Stack gap={2} key={category}>
+                      <Inline gap={2}>
                         <div
                           className={`w-2 h-2 rounded-full bg-gradient-to-r ${categoryColors[category]}`}
                         />
@@ -288,10 +288,10 @@ export default function DatabaseStudioClient() {
                           </button>
                         ))}
                       </div>
-                    </div>
+                    </Stack>
                   )
                 )}
-              </div>
+              </Stack>
             </AnimatedCard>
           </div>
         </AnimatedItem>

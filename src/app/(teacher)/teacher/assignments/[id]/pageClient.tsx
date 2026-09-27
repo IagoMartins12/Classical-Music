@@ -36,7 +36,7 @@ import { useAssignmentDetails } from '@/app/hooks/lessonsSystem/useAssignmentDet
 import MusicalPiecesSection from '@/app/components/TeacherSystem/MusicalPiecesSection';
 import Modal from '@/app/components/Modal';
 import { useTranslation } from '@/app/context/TranslationContext';
-import { Inline } from '@/app/components/ui/Layout';
+import { Stack, Inline } from '@/app/components/ui/Layout';
 import { Text } from '@/app/components/ui/Text';
 import { NomeAcao } from '@/app/components/ui/NomeAcao';
 import { Button } from '@/app/components/ui/Button';
@@ -293,11 +293,11 @@ export default function AssignmentDetailsPageClient({
                   {t('assignment_details')}
                 </h2>
 
-                <div className="space-y-6">
+                <Stack gap={6}>
                   {/* Basic Info */}
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <div>
-                      <label className="text-sm font-medium text-theme-tertiary block mb-2">
+                    <Stack gap={2}>
+                      <label className="text-sm font-medium text-theme-tertiary block">
                         {t('assignment_type')}
                       </label>
                       <div className="text-theme-primary">
@@ -307,7 +307,7 @@ export default function AssignmentDetailsPageClient({
                           ]
                         ) || assignment.type}
                       </div>
-                    </div>
+                    </Stack>
 
                     <div>
                       <label className="text-sm font-medium text-theme-tertiary block mb-2">
@@ -329,8 +329,8 @@ export default function AssignmentDetailsPageClient({
                     </div>
 
                     {assignment.dueDate && (
-                      <div>
-                        <label className="text-sm font-medium text-theme-tertiary block mb-2">
+                      <Stack gap={2}>
+                        <label className="text-sm font-medium text-theme-tertiary block">
                           {t('due_date')}
                         </label>
                         <Inline gap={2} className="text-theme-primary">
@@ -360,12 +360,12 @@ export default function AssignmentDetailsPageClient({
                             </span>
                           )}
                         </Inline>
-                      </div>
+                      </Stack>
                     )}
 
                     {assignment.estimatedTime && (
-                      <div>
-                        <label className="text-sm font-medium text-theme-tertiary block mb-2">
+                      <Stack gap={2}>
+                        <label className="text-sm font-medium text-theme-tertiary block">
                           {t('estimated_time')}
                         </label>
                         <Inline gap={2} className="text-theme-primary">
@@ -379,27 +379,27 @@ export default function AssignmentDetailsPageClient({
                             </Text>
                           )}
                         </Inline>
-                      </div>
+                      </Stack>
                     )}
                   </div>
 
                   {/* Description */}
-                  <div>
-                    <label className="text-sm font-medium text-theme-tertiary block mb-2">
+                  <Stack gap={2}>
+                    <label className="text-sm font-medium text-theme-tertiary block">
                       {t('description')}
                     </label>
                     <div className="text-theme-primary whitespace-pre-wrap">
                       {assignment.description}
                     </div>
-                  </div>
+                  </Stack>
 
                   {/* Goals */}
                   {assignment.practiceGoals.length > 0 && (
-                    <div>
-                      <label className="text-sm font-medium text-theme-tertiary block mb-2">
+                    <Stack gap={2}>
+                      <label className="text-sm font-medium text-theme-tertiary block">
                         {t('practice_goals')}
                       </label>
-                      <div className="space-y-2">
+                      <Stack gap={2}>
                         {assignment.practiceGoals.map((goal, index) => (
                           <Inline
                             gap={2}
@@ -410,16 +410,16 @@ export default function AssignmentDetailsPageClient({
                             <span>{goal}</span>
                           </Inline>
                         ))}
-                      </div>
-                    </div>
+                      </Stack>
+                    </Stack>
                   )}
 
                   {assignment.technicalGoals.length > 0 && (
-                    <div>
-                      <label className="text-sm font-medium text-theme-tertiary block mb-2">
+                    <Stack gap={2}>
+                      <label className="text-sm font-medium text-theme-tertiary block">
                         {t('technical_goals')}
                       </label>
-                      <div className="space-y-2">
+                      <Stack gap={2}>
                         {assignment.technicalGoals.map((goal, index) => (
                           <Inline
                             gap={2}
@@ -430,16 +430,16 @@ export default function AssignmentDetailsPageClient({
                             <span>{goal}</span>
                           </Inline>
                         ))}
-                      </div>
-                    </div>
+                      </Stack>
+                    </Stack>
                   )}
 
                   {assignment.exercises.length > 0 && (
-                    <div>
-                      <label className="text-sm font-medium text-theme-tertiary block mb-2">
+                    <Stack gap={2}>
+                      <label className="text-sm font-medium text-theme-tertiary block">
                         {t('exercises')}
                       </label>
-                      <div className="space-y-2">
+                      <Stack gap={2}>
                         {assignment.exercises.map((exercise, index) => (
                           <Inline
                             gap={2}
@@ -450,15 +450,15 @@ export default function AssignmentDetailsPageClient({
                             <span>{exercise}</span>
                           </Inline>
                         ))}
-                      </div>
-                    </div>
+                      </Stack>
+                    </Stack>
                   )}
 
                   {/* Progress */}
                   {assignment.progress !== null &&
                     assignment.progress !== undefined && (
-                      <div>
-                        <label className="text-sm font-medium text-theme-tertiary block mb-2">
+                      <Stack gap={2}>
+                        <label className="text-sm font-medium text-theme-tertiary block">
                           {t('progress')}
                         </label>
                         <Inline gap={4}>
@@ -474,9 +474,9 @@ export default function AssignmentDetailsPageClient({
                             {assignment.progress}%
                           </span>
                         </Inline>
-                      </div>
+                      </Stack>
                     )}
-                </div>
+                </Stack>
               </AnimatedCard>
             </AnimatedItem>
 
@@ -504,8 +504,8 @@ export default function AssignmentDetailsPageClient({
                           <div className="w-12 h-12 bg-accent-purple/10 border border-accent-purple/30 rounded-lg flex items-center justify-center">
                             <PiVideoCamera className="w-6 h-6 text-accent-purple" />
                           </div>
-                          <div>
-                            <h4 className="font-medium text-theme-primary mb-1">
+                          <Stack gap={1}>
+                            <h4 className="font-medium text-theme-primary">
                               {videoSubmission.originalName}
                             </h4>
                             <Inline
@@ -520,7 +520,7 @@ export default function AssignmentDetailsPageClient({
                                 {formatDateTime(videoSubmission.uploadedAt)}
                               </span>
                             </Inline>
-                          </div>
+                          </Stack>
                         </Inline>
                         <Inline gap={2}>
                           <Inline
@@ -578,8 +578,8 @@ export default function AssignmentDetailsPageClient({
 
                   {/* Student Notes */}
                   {assignment.studentNotes && (
-                    <div className="mb-6">
-                      <label className="text-sm font-medium text-theme-tertiary block mb-2">
+                    <Stack gap={2} className="mb-6">
+                      <label className="text-sm font-medium text-theme-tertiary block">
                         {t('student_comments')}
                       </label>
                       <div className="p-4 bg-theme-secondary/10 rounded-lg bg-theme-elevated">
@@ -587,13 +587,13 @@ export default function AssignmentDetailsPageClient({
                           {assignment.studentNotes}
                         </div>
                       </div>
-                    </div>
+                    </Stack>
                   )}
 
                   {/* Student Rating */}
                   {assignment.studentRating && (
-                    <div className="mb-6">
-                      <label className="text-sm font-medium text-theme-tertiary block mb-2">
+                    <Stack gap={2} className="mb-6">
+                      <label className="text-sm font-medium text-theme-tertiary block">
                         {t('student_rating')}
                       </label>
                       <Inline gap={2}>
@@ -622,13 +622,13 @@ export default function AssignmentDetailsPageClient({
                           {assignment.studentRating}/5
                         </span>
                       </Inline>
-                    </div>
+                    </Stack>
                   )}
 
                   {/* 🆕 Progress Milestones do aluno */}
                   {assignment.submissions?.progressMilestones && (
-                    <div className="mb-6">
-                      <label className="text-sm font-medium text-theme-tertiary block mb-3">
+                    <Stack gap={3} className="mb-6">
+                      <label className="text-sm font-medium text-theme-tertiary block">
                         {t('student_achievements')}
                       </label>
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
@@ -661,7 +661,7 @@ export default function AssignmentDetailsPageClient({
                             );
                           })}
                       </div>
-                    </div>
+                    </Stack>
                   )}
                 </AnimatedCard>
               </AnimatedItem>
@@ -687,7 +687,7 @@ export default function AssignmentDetailsPageClient({
                   )}
                 </div>
 
-                <div className="space-y-4">
+                <Stack>
                   {/* Teacher Feedback Text */}
                   <div>
                     <label className="text-sm font-medium text-theme-tertiary block mb-2">
@@ -719,8 +719,8 @@ export default function AssignmentDetailsPageClient({
                   </div>
 
                   {/* Teacher Rating */}
-                  <div>
-                    <label className="text-sm font-medium text-theme-tertiary block mb-2">
+                  <Stack gap={2}>
+                    <label className="text-sm font-medium text-theme-tertiary block">
                       {t('your_rating')}
                     </label>
                     <Inline gap={2}>
@@ -763,7 +763,7 @@ export default function AssignmentDetailsPageClient({
                           : '0/5'}
                       </span>
                     </Inline>
-                  </div>
+                  </Stack>
 
                   {/* Edit Actions */}
                   {isEditingFeedback && (
@@ -799,7 +799,7 @@ export default function AssignmentDetailsPageClient({
                       </Inline>
                     </Inline>
                   )}
-                </div>
+                </Stack>
               </AnimatedCard>
             </AnimatedItem>
           </div>
@@ -850,7 +850,7 @@ export default function AssignmentDetailsPageClient({
                 <h3 className="text-lg font-bold text-theme-primary classical-title mb-4">
                   {t('information')}
                 </h3>
-                <div className="space-y-3 text-sm">
+                <Stack gap={3} className="text-sm">
                   <div className="flex justify-between">
                     <span className="text-theme-tertiary">
                       {t('created_on')}
@@ -896,7 +896,7 @@ export default function AssignmentDetailsPageClient({
                       </Link>
                     </div>
                   )}
-                </div>
+                </Stack>
               </AnimatedCard>
             </AnimatedItem>
 
@@ -906,7 +906,7 @@ export default function AssignmentDetailsPageClient({
                 <h3 className="text-lg font-bold text-theme-primary classical-title mb-4">
                   {t('actions')}
                 </h3>
-                <div className="space-y-2">
+                <Stack gap={2}>
                   <Link
                     href={`/teacher/assignments/${assignment.id}/edit`}
                     className="w-full btn-classical-secondary flex items-center justify-center space-x-2"
@@ -945,7 +945,7 @@ export default function AssignmentDetailsPageClient({
                     <PiUser className="w-4 h-4" />
                     <span>{t('student_profile')}</span>
                   </Link>
-                </div>
+                </Stack>
               </AnimatedCard>
             </AnimatedItem>
           </div>
@@ -978,8 +978,8 @@ export default function AssignmentDetailsPageClient({
               hover="none"
               className="classical-card w-full max-w-md"
             >
-              <div className="p-6">
-                <div className="flex items-center justify-between mb-4">
+              <Stack className="p-6">
+                <div className="flex items-center justify-between">
                   <h2 className="text-xl font-bold text-theme-primary classical-title">
                     {t('approve_assignment')}
                   </h2>
@@ -992,7 +992,7 @@ export default function AssignmentDetailsPageClient({
                   </button>
                 </div>
 
-                <p className="text-theme-secondary mb-4">
+                <p className="text-theme-secondary">
                   {t('confirm_approval_message')}
                 </p>
 
@@ -1024,7 +1024,7 @@ export default function AssignmentDetailsPageClient({
                     </span>
                   </Inline>
                 </Inline>
-              </div>
+              </Stack>
             </AnimatedCard>
           </div>
         )}
@@ -1037,8 +1037,8 @@ export default function AssignmentDetailsPageClient({
             maxWidth="6xl"
           >
             <AnimatedCard hover="none">
-              <div className="p-6">
-                <div className="flex items-center justify-between mb-6">
+              <Stack gap={6} className="p-6">
+                <div className="flex items-center justify-between">
                   <div>
                     <h2 className="text-xl font-bold text-theme-primary classical-title">
                       {t('video_modal_title')}
@@ -1081,7 +1081,7 @@ export default function AssignmentDetailsPageClient({
                     {t('browser_no_support')}
                   </video>
                 </div>
-              </div>
+              </Stack>
             </AnimatedCard>
           </Modal>
         )}

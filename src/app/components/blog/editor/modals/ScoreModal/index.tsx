@@ -14,6 +14,7 @@ import ComposerSearchInputSimple from '@/app/components/ComposerSearchInputSimpl
 import Image from '@/app/components/SmartImage';
 import { workScoresRequest } from '@/app/requests/work-scores';
 import { Text } from '@/app/components/ui/Text';
+import { Stack } from '@/app/components/ui/Layout';
 
 interface ScoreModalProps {
   editor: Editor;
@@ -80,7 +81,7 @@ export function ScoreModal({ editor, onClose }: ScoreModalProps) {
       maxWidth="3xl"
       minHeight
     >
-      <form onSubmit={handleSubmit} className="space-y-4">
+      <Stack as="form" onSubmit={handleSubmit}>
         <div>
           <label className="block text-sm font-medium text-theme-primary mb-2">
             1. Filtrar por Compositor (opcional)
@@ -183,7 +184,7 @@ export function ScoreModal({ editor, onClose }: ScoreModalProps) {
             Inserir Visualizador
           </Button>
         </div>
-      </form>
+      </Stack>
     </Modal>
   );
 }

@@ -11,6 +11,7 @@ import {
 import { alternatesFor } from '@/app/utils/seoAlternates';
 import Link from '@/app/components/LocalizedLink';
 import { Card } from '@/app/components/ui/Card';
+import { Stack } from '@/app/components/ui/Layout';
 
 /** `[lang]` é quem decide o idioma desta página — ver `routeLanguage`. */
 interface LangPageProps {
@@ -218,7 +219,7 @@ export default async function GenresPage({ params }: LangPageProps) {
             da tela amigável vinha um erro. Tentar de novo é recarregar o
             mesmo endereço; voltar é ir para o catálogo.
           */}
-          <div className="space-y-3">
+          <Stack gap={3}>
             <Link href="/genres" className="btn-classical-primary w-full block">
               {t.tryAgain}
             </Link>
@@ -229,7 +230,7 @@ export default async function GenresPage({ params }: LangPageProps) {
             >
               {t.goBack}
             </Link>
-          </div>
+          </Stack>
         </Card>
       </div>
     );

@@ -11,7 +11,7 @@ import {
 } from 'react-icons/pi';
 
 import AnimatedMusicalNotes from '../../../components/AnimatedMusicalNotes';
-import { Inline } from '@/app/components/ui/Layout';
+import { Stack, Inline } from '@/app/components/ui/Layout';
 import { Card } from '@/app/components/ui/Card';
 
 const DetailedMusicHistorySkeleton = () => {
@@ -63,7 +63,7 @@ const DetailedMusicHistorySkeleton = () => {
     <div className="w-full bg-gradient-primary py-0 md:py-20 lg:py-20 relative overflow-hidden">
       <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Accordion Sections Skeleton */}
-        <div className="space-y-6">
+        <Stack gap={6}>
           {skeletonSections.map((section, index) => (
             <div
               key={section.id}
@@ -79,10 +79,10 @@ const DetailedMusicHistorySkeleton = () => {
                     >
                       {section.icon}
                     </div>
-                    <div className="space-y-2">
+                    <Stack gap={2}>
                       <div className="h-8 w-80 bg-gradient-to-r from-theme-primary/20 to-theme-secondary/20 rounded animate-pulse"></div>
                       <div className="h-4 w-64 bg-theme-elevated rounded animate-pulse"></div>
-                    </div>
+                    </Stack>
                   </Inline>
                   <Inline gap={2}>
                     <div className="h-4 w-16 bg-theme-elevated rounded animate-pulse"></div>
@@ -96,7 +96,7 @@ const DetailedMusicHistorySkeleton = () => {
               </div>
             </div>
           ))}
-        </div>
+        </Stack>
       </div>
     </div>
   );
@@ -132,7 +132,7 @@ const LoadingMusicHistorySkeleton = () => {
             </Inline>
 
             {/* Title Skeleton */}
-            <div className="space-y-6 mb-8">
+            <Stack gap={6} className="mb-8">
               <div className="space-y-4">
                 <div className="h-16 bg-gradient-to-r from-theme-elevated to-interactive-hover border border-theme-primary rounded-2xl mx-auto max-w-2xl animate-shimmer shadow-theme-medium"></div>
                 <div
@@ -140,7 +140,7 @@ const LoadingMusicHistorySkeleton = () => {
                   style={{ animationDelay: '0.2s' }}
                 ></div>
               </div>
-            </div>
+            </Stack>
 
             {/* Subtitle Skeleton */}
             <div className="space-y-4 mb-8">
@@ -222,10 +222,10 @@ const LoadingMusicHistorySkeleton = () => {
                 <div className="relative flex justify-center lg:justify-start">
                   <div className="inline-flex items-center px-12 py-4 rounded-2xl bg-gradient-to-r from-brand-primary/20 to-brand-secondary/20 border border-brand-primary/30 shadow-theme-glow backdrop-blur-md">
                     <div className="w-12 h-12 bg-theme-inverse/20 rounded-xl mr-4"></div>
-                    <div className="space-y-2">
+                    <Stack gap={2}>
                       <div className="h-8 w-48 bg-theme-primary/30 rounded"></div>
                       <div className="h-4 w-32 bg-theme-inverse/20 rounded"></div>
-                    </div>
+                    </Stack>
                   </div>
                 </div>
 
@@ -235,30 +235,30 @@ const LoadingMusicHistorySkeleton = () => {
                     <div className="w-8 h-8 bg-gradient-to-br from-accent-blue/20 to-accent-purple/20 rounded-xl"></div>
                     <div className="h-5 w-32 bg-gradient-to-r from-theme-primary/20 to-theme-secondary/20 rounded"></div>
                   </Inline>
-                  <div className="space-y-3">
+                  <Stack gap={3}>
                     <div className="h-4 bg-theme-elevated rounded"></div>
                     <div className="h-4 bg-theme-elevated rounded w-4/5"></div>
                     <div className="h-4 bg-theme-elevated rounded w-3/4"></div>
                     <div className="h-4 bg-theme-elevated rounded w-5/6"></div>
-                  </div>
+                  </Stack>
                 </Card>
 
                 {/* Details Card */}
                 <div className="classical-card overflow-hidden">
-                  <div className="p-6">
-                    <Inline gap={3} className="mb-6">
+                  <Stack gap={6} className="p-6">
+                    <Inline gap={3}>
                       <div className="w-10 h-10 bg-gradient-to-br from-brand-primary/20 to-brand-secondary/20 rounded-2xl"></div>
                       <div className="h-6 w-48 bg-gradient-to-r from-theme-primary/20 to-theme-secondary/20 rounded"></div>
                     </Inline>
 
                     <div className="grid md:grid-cols-2 gap-6">
                       {[1, 2, 3, 4].map((item) => (
-                        <div key={item} className="space-y-4">
+                        <Stack key={item}>
                           <Inline gap={3}>
                             <div className="w-8 h-8 bg-gradient-to-br from-accent-blue/20 to-accent-purple/20 rounded-xl"></div>
                             <div className="h-5 w-24 bg-theme-elevated rounded"></div>
                           </Inline>
-                          <div className="space-y-3">
+                          <Stack gap={3}>
                             {[1, 2, 3].map((subItem) => (
                               <div
                                 key={subItem}
@@ -271,11 +271,11 @@ const LoadingMusicHistorySkeleton = () => {
                                 </div>
                               </div>
                             ))}
-                          </div>
-                        </div>
+                          </Stack>
+                        </Stack>
                       ))}
                     </div>
-                  </div>
+                  </Stack>
                 </div>
               </div>
 
@@ -284,13 +284,13 @@ const LoadingMusicHistorySkeleton = () => {
                 <Card className="sticky top-6">
                   <Inline gap={3} className="mb-6">
                     <div className="w-10 h-10 bg-gradient-to-br from-accent-blue/20 to-accent-purple/20 rounded-xl"></div>
-                    <div className="space-y-2">
+                    <Stack gap={2}>
                       <div className="h-5 w-32 bg-gradient-to-r from-theme-primary/20 to-theme-secondary/20 rounded"></div>
                       <div className="h-3 w-24 bg-theme-elevated rounded"></div>
-                    </div>
+                    </Stack>
                   </Inline>
 
-                  <div className="space-y-4">
+                  <Stack>
                     {[1, 2, 3, 4].map((composer) => (
                       <div
                         key={composer}
@@ -305,10 +305,10 @@ const LoadingMusicHistorySkeleton = () => {
                           </div>
                           <div className="w-6 h-6 bg-theme-elevated border border-theme-secondary rounded-lg"></div>
                         </Inline>
-                        <div className="space-y-2">
+                        <Stack gap={2}>
                           <div className="h-3 bg-theme-elevated rounded"></div>
                           <div className="h-3 bg-theme-elevated rounded w-4/5"></div>
-                        </div>
+                        </Stack>
                         <div className="flex items-center justify-between mt-3 pt-2 border-t border-theme-secondary">
                           <Inline gap={1}>
                             <div className="w-1.5 h-1.5 bg-brand-primary/30 rounded-full"></div>
@@ -318,7 +318,7 @@ const LoadingMusicHistorySkeleton = () => {
                         </div>
                       </div>
                     ))}
-                  </div>
+                  </Stack>
                 </Card>
               </div>
             </div>
@@ -326,26 +326,27 @@ const LoadingMusicHistorySkeleton = () => {
         </div>
 
         {/* Detailed History Skeleton */}
-        <div className="space-y-8">
+        <Stack gap={8}>
           {[1, 2, 3].map((section) => (
-            <div
+            <Stack
+              gap={6}
               key={section}
               className="classical-card p-8 animate-shimmer"
               style={{ animationDelay: `${section * 0.3}s` }}
             >
-              <Inline gap={3} className="mb-6">
+              <Inline gap={3}>
                 <div className="w-12 h-12 bg-gradient-to-br from-accent-gold/20 to-brand-secondary/20 rounded-2xl"></div>
-                <div className="space-y-2">
+                <Stack gap={2}>
                   <div className="h-6 w-64 bg-gradient-to-r from-theme-primary/20 to-theme-secondary/20 rounded"></div>
                   <div className="h-4 w-48 bg-theme-elevated rounded"></div>
-                </div>
+                </Stack>
               </Inline>
 
-              <div className="space-y-4 mb-6">
+              <Stack>
                 <div className="h-4 bg-theme-elevated rounded"></div>
                 <div className="h-4 bg-theme-elevated rounded w-5/6"></div>
                 <div className="h-4 bg-theme-elevated rounded w-4/5"></div>
-              </div>
+              </Stack>
 
               <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
                 {[1, 2].map((card) => (
@@ -354,17 +355,17 @@ const LoadingMusicHistorySkeleton = () => {
                       <div className="w-8 h-8 bg-gradient-to-br from-accent-blue/20 to-accent-purple/20 rounded-xl"></div>
                       <div className="h-5 w-32 bg-gradient-to-r from-theme-primary/20 to-theme-secondary/20 rounded"></div>
                     </Inline>
-                    <div className="space-y-3">
+                    <Stack gap={3}>
                       <div className="h-3 bg-theme-elevated rounded"></div>
                       <div className="h-3 bg-theme-elevated rounded w-4/5"></div>
                       <div className="h-3 bg-theme-elevated rounded w-3/4"></div>
-                    </div>
+                    </Stack>
                   </Card>
                 ))}
               </div>
-            </div>
+            </Stack>
           ))}
-        </div>
+        </Stack>
       </div>
 
       {/* Floating Elements */}

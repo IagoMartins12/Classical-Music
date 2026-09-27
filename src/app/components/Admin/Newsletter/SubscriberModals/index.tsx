@@ -14,6 +14,7 @@ import Input from '@/app/components/Common/Inputs';
 import Select from '@/app/components/Common/Select';
 import { Text } from '@/app/components/ui/Text';
 import { Field } from '@/app/components/ui/Field';
+import { Stack } from '@/app/components/ui/Layout';
 
 // Modal de Detalhes do Subscriber
 interface SubscriberDetailsModalProps {
@@ -43,7 +44,7 @@ export const SubscriberDetailsModal: React.FC<SubscriberDetailsModalProps> = ({
 
   return (
     <Modal isOpen={isOpen} onClose={onClose} maxWidth="3xl">
-      <div className="space-y-6">
+      <Stack gap={6}>
         {/* Header */}
         <div className="text-center">
           <div className="w-16 h-16 bg-gradient-to-br from-accent-blue to-accent-purple rounded-full flex items-center justify-center mx-auto mb-4 shadow-theme-glow">
@@ -57,12 +58,12 @@ export const SubscriberDetailsModal: React.FC<SubscriberDetailsModalProps> = ({
 
         {/* Informações Básicas */}
         <div className="grid md:grid-cols-2 gap-6">
-          <div className="bg-theme-secondary p-6 rounded-lg">
-            <h3 className="font-bold text-theme-primary mb-4 flex items-center">
+          <Stack className="bg-theme-secondary p-6 rounded-lg">
+            <h3 className="font-bold text-theme-primary flex items-center">
               <PiUser className="w-5 h-5 mr-2" />
               Informações Pessoais
             </h3>
-            <div className="space-y-3">
+            <Stack gap={3}>
               <div>
                 <label className="text-sm text-theme-tertiary">Nome</label>
                 <p className="font-medium text-theme-primary">
@@ -111,15 +112,15 @@ export const SubscriberDetailsModal: React.FC<SubscriberDetailsModalProps> = ({
                   {subscriber.frequency || 'weekly'}
                 </p>
               </div>
-            </div>
-          </div>
+            </Stack>
+          </Stack>
 
-          <div className="bg-theme-secondary p-6 rounded-lg">
-            <h3 className="font-bold text-theme-primary mb-4 flex items-center">
+          <Stack className="bg-theme-secondary p-6 rounded-lg">
+            <h3 className="font-bold text-theme-primary flex items-center">
               <PiChartBar className="w-5 h-5 mr-2" />
               Engajamento
             </h3>
-            <div className="space-y-3">
+            <Stack gap={3}>
               <div>
                 <label className="text-sm text-theme-tertiary">Nível</label>
                 <p
@@ -157,13 +158,13 @@ export const SubscriberDetailsModal: React.FC<SubscriberDetailsModalProps> = ({
                     : 'Nunca'}
                 </p>
               </div>
-            </div>
-          </div>
+            </Stack>
+          </Stack>
         </div>
 
         {/* Interesses e Preferências */}
-        <div className="bg-theme-secondary p-6 rounded-lg">
-          <h3 className="font-bold text-theme-primary mb-4">
+        <Stack className="bg-theme-secondary p-6 rounded-lg">
+          <h3 className="font-bold text-theme-primary">
             Interesses e Preferências
           </h3>
           <div className="grid md:grid-cols-2 gap-4">
@@ -197,15 +198,13 @@ export const SubscriberDetailsModal: React.FC<SubscriberDetailsModalProps> = ({
               </p>
             </div>
           </div>
-        </div>
+        </Stack>
 
         {/* Usuário Vinculado */}
         {subscriber.user && (
-          <div className="bg-theme-secondary p-6 rounded-lg">
-            <h3 className="font-bold text-theme-primary mb-4">
-              Usuário Vinculado
-            </h3>
-            <div className="space-y-2">
+          <Stack className="bg-theme-secondary p-6 rounded-lg">
+            <h3 className="font-bold text-theme-primary">Usuário Vinculado</h3>
+            <Stack gap={2}>
               <p>
                 <span className="text-theme-tertiary">Nome:</span>{' '}
                 {subscriber.user.firstName} {subscriber.user.lastName}
@@ -218,8 +217,8 @@ export const SubscriberDetailsModal: React.FC<SubscriberDetailsModalProps> = ({
                     ? 'Professor'
                     : 'Admin'}
               </p>
-            </div>
-          </div>
+            </Stack>
+          </Stack>
         )}
 
         {/* Footer */}
@@ -228,7 +227,7 @@ export const SubscriberDetailsModal: React.FC<SubscriberDetailsModalProps> = ({
             Fechar
           </Button>
         </div>
-      </div>
+      </Stack>
     </Modal>
   );
 };
@@ -296,7 +295,7 @@ export const EditSubscriberModal: React.FC<EditSubscriberModalProps> = ({
 
   return (
     <Modal isOpen={isOpen} onClose={onClose} maxWidth="2xl">
-      <div className="space-y-6">
+      <Stack gap={6}>
         {/* Header */}
         <div className="text-center">
           <div className="w-16 h-16 bg-gradient-to-br from-accent-green to-accent-blue rounded-full flex items-center justify-center mx-auto mb-4 shadow-theme-glow">
@@ -308,7 +307,7 @@ export const EditSubscriberModal: React.FC<EditSubscriberModalProps> = ({
           <p className="text-theme-secondary">{subscriber.email}</p>
         </div>
 
-        <form onSubmit={handleSubmit} className="space-y-6">
+        <Stack gap={6} as="form" onSubmit={handleSubmit}>
           {/* Nome */}
           <div className="grid md:grid-cols-2 gap-4">
             <Input
@@ -397,8 +396,8 @@ export const EditSubscriberModal: React.FC<EditSubscriberModalProps> = ({
               Cancelar
             </Button>
           </div>
-        </form>
-      </div>
+        </Stack>
+      </Stack>
     </Modal>
   );
 };
@@ -458,7 +457,7 @@ export const SendEmailModal: React.FC<SendEmailModalProps> = ({
 
   return (
     <Modal isOpen={isOpen} onClose={onClose} maxWidth="3xl">
-      <div className="space-y-6">
+      <Stack gap={6}>
         {/* Header */}
         <div className="text-center">
           <div className="w-16 h-16 bg-gradient-to-br from-accent-amber to-accent-red rounded-full flex items-center justify-center mx-auto mb-4 shadow-theme-glow">
@@ -529,8 +528,8 @@ export const SendEmailModal: React.FC<SendEmailModalProps> = ({
           </div>
 
           {/* Preview */}
-          <div className="bg-theme-secondary p-4 rounded-lg">
-            <h4 className="font-medium text-theme-primary mb-2">Preview:</h4>
+          <Stack gap={2} className="bg-theme-secondary p-4 rounded-lg">
+            <h4 className="font-medium text-theme-primary">Preview:</h4>
             <Text papel="rotulo" tom="suave" as="div">
               <p>
                 <strong>Para:</strong> {subscriber.email}
@@ -547,7 +546,7 @@ export const SendEmailModal: React.FC<SendEmailModalProps> = ({
                 </p>
               </div>
             </Text>
-          </div>
+          </Stack>
 
           {/* Botões */}
           <div className="flex space-x-4 pt-4">
@@ -574,7 +573,7 @@ export const SendEmailModal: React.FC<SendEmailModalProps> = ({
             </Button>
           </div>
         </form>
-      </div>
+      </Stack>
     </Modal>
   );
 };

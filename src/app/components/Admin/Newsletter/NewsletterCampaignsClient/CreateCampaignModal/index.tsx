@@ -25,7 +25,7 @@ import {
   processTemplate,
 } from '@/app/libs/newsletter/emailTemplates';
 import Checkbox from '@/app/components/Common/Checkbox';
-import { Inline } from '@/app/components/ui/Layout';
+import { Stack, Inline } from '@/app/components/ui/Layout';
 import { Text } from '@/app/components/ui/Text';
 import { Field } from '@/app/components/ui/Field';
 import { NomeAcao } from '@/app/components/ui/NomeAcao';
@@ -256,7 +256,7 @@ export default function CreateCampaignModal({
           <div className="p-6 overflow-y-auto max-h-[60vh]">
             {/* Step 1: Informações Básicas */}
             {currentStep === 1 && (
-              <div className="space-y-6">
+              <Stack gap={6}>
                 <div>
                   <Input
                     label="Nome da Campanha *"
@@ -296,12 +296,12 @@ export default function CreateCampaignModal({
                     <option value="SCHEDULED">Agendada</option>
                   </Field.Selecao>
                 </div>
-              </div>
+              </Stack>
             )}
 
             {/* Step 2: Template e Conteúdo */}
             {currentStep === 2 && (
-              <div className="space-y-6">
+              <Stack gap={6}>
                 <div>
                   <Field.Selecao
                     label="Tipo de Template *"
@@ -359,7 +359,7 @@ export default function CreateCampaignModal({
                   </div>
 
                   {form.useCustomTemplate && (
-                    <div className="space-y-4">
+                    <Stack>
                       {getTemplateOptions().length > 0 ? (
                         <div>
                           <Field.Selecao
@@ -456,7 +456,7 @@ export default function CreateCampaignModal({
                           </div>
                         </div>
                       )}
-                    </div>
+                    </Stack>
                   )}
                 </div>
 
@@ -508,12 +508,12 @@ export default function CreateCampaignModal({
                     Preview Template
                   </Button>
                 </Inline>
-              </div>
+              </Stack>
             )}
 
             {/* Step 3: Configurações de Envio */}
             {currentStep === 3 && (
-              <div className="space-y-6">
+              <Stack gap={6}>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div>
                     <Input
@@ -570,17 +570,17 @@ export default function CreateCampaignModal({
                     </p>
                   </div>
                 )}
-              </div>
+              </Stack>
             )}
 
             {/* Step 4: Agendamento */}
             {currentStep === 4 && (
-              <div className="space-y-6">
-                <div className="p-4 bg-theme-secondary rounded-lg">
-                  <h3 className="font-medium text-theme-primary mb-2">
+              <Stack gap={6}>
+                <Stack gap={2} className="p-4 bg-theme-secondary rounded-lg">
+                  <h3 className="font-medium text-theme-primary">
                     Opções de Envio
                   </h3>
-                  <div className="space-y-3">
+                  <Stack gap={3}>
                     <Inline as="label" gap={3}>
                       <input
                         type="radio"
@@ -616,8 +616,8 @@ export default function CreateCampaignModal({
                       />
                       <span>Agendar envio automático</span>
                     </Inline>
-                  </div>
-                </div>
+                  </Stack>
+                </Stack>
 
                 {form.status === 'SCHEDULED' && (
                   <div>
@@ -639,12 +639,12 @@ export default function CreateCampaignModal({
                     </Text>
                   </div>
                 )}
-              </div>
+              </Stack>
             )}
 
             {/* Step 5: Segmentação */}
             {currentStep === 5 && (
-              <div className="space-y-6">
+              <Stack gap={6}>
                 <div className="p-4 bg-theme-secondary rounded-lg">
                   <h3 className="font-medium text-theme-primary mb-2">
                     Segmentação de Audiência
@@ -654,7 +654,7 @@ export default function CreateCampaignModal({
                     subscribers ativos.
                   </Text>
 
-                  <div className="space-y-3">
+                  <Stack gap={3}>
                     <Inline as="label" gap={3}>
                       <Checkbox
                         type="checkbox"
@@ -676,11 +676,14 @@ export default function CreateCampaignModal({
                       />
                       <span>Específicos interesses musicais</span>
                     </Inline>
-                  </div>
+                  </Stack>
                 </div>
 
-                <div className="p-4 bg-accent-blue/10 border border-accent-blue/20 rounded-lg">
-                  <h4 className="font-medium text-accent-blue mb-2">
+                <Stack
+                  gap={2}
+                  className="p-4 bg-accent-blue/10 border border-accent-blue/20 rounded-lg"
+                >
+                  <h4 className="font-medium text-accent-blue">
                     📊 Estimativa de Alcance
                   </h4>
                   <p className="text-sm text-accent-blue/80">
@@ -688,8 +691,8 @@ export default function CreateCampaignModal({
                     aproximadamente <strong>todos os subscribers ativos</strong>
                     .
                   </p>
-                </div>
-              </div>
+                </Stack>
+              </Stack>
             )}
           </div>
 
@@ -769,14 +772,12 @@ export default function CreateCampaignModal({
             </div>
 
             <div className="p-6 overflow-y-auto max-h-[80vh]">
-              <div className="mb-4">
-                <h4 className="font-medium text-theme-primary mb-2">
-                  Assunto:
-                </h4>
+              <Stack gap={2} className="mb-4">
+                <h4 className="font-medium text-theme-primary">Assunto:</h4>
                 <p className="text-theme-secondary bg-theme-secondary px-3 py-2 rounded">
                   {previewData.subject}
                 </p>
-              </div>
+              </Stack>
 
               <div className="border border-theme-secondary rounded-lg overflow-hidden">
                 <div

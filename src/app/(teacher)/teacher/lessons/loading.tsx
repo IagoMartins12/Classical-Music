@@ -14,7 +14,7 @@ import {
   PiUser,
   PiUsers,
 } from 'react-icons/pi';
-import { Inline } from '@/app/components/ui/Layout';
+import { Stack, Inline } from '@/app/components/ui/Layout';
 import { Card } from '@/app/components/ui/Card';
 
 export default function TeacherLessonsLoading() {
@@ -202,10 +202,10 @@ function LessonCardSkeleton() {
               </div>
 
               {/* Description */}
-              <div className="space-y-2 mb-4">
+              <Stack gap={2} className="mb-4">
                 <div className="h-3 bg-theme-elevated rounded w-full"></div>
                 <div className="h-3 bg-theme-elevated rounded w-3/4"></div>
-              </div>
+              </Stack>
 
               {/* Objectives */}
               <div className="flex flex-wrap gap-2 mb-4">
@@ -218,8 +218,8 @@ function LessonCardSkeleton() {
               </div>
 
               {/* Works */}
-              <div className="mb-4">
-                <Inline gap={2} className="mb-2">
+              <Stack gap={2} className="mb-4">
+                <Inline gap={2}>
                   <PiMusicNotes className="w-4 h-4 text-theme-tertiary/30" />
                   <div className="h-3 bg-theme-tertiary/30 rounded w-24"></div>
                 </Inline>
@@ -231,30 +231,33 @@ function LessonCardSkeleton() {
                     ></div>
                   ))}
                 </div>
-              </div>
+              </Stack>
 
               {/* Homework */}
-              <div className="space-y-2">
+              <Stack gap={2}>
                 <Inline gap={2}>
                   <PiTarget className="w-4 h-4 text-theme-tertiary/30" />
                   <div className="h-3 bg-theme-tertiary/30 rounded w-20"></div>
                 </Inline>
-                <div className="space-y-1">
+                <Stack gap={1}>
                   <div className="h-3 bg-theme-elevated rounded w-full"></div>
                   <div className="h-3 bg-theme-elevated rounded w-2/3"></div>
-                </div>
-              </div>
+                </Stack>
+              </Stack>
 
               {/* Progress */}
-              <div className="mt-4 pt-4 border-t border-theme-secondary">
-                <div className="flex items-center justify-between mb-2">
+              <Stack
+                gap={2}
+                className="mt-4 pt-4 border-t border-theme-secondary"
+              >
+                <div className="flex items-center justify-between">
                   <div className="h-3 bg-theme-tertiary/30 rounded w-16"></div>
                   <div className="h-3 bg-theme-tertiary/30 rounded w-8"></div>
                 </div>
                 <div className="w-full bg-theme-secondary rounded-full h-2">
                   <div className="h-2 bg-gradient-to-r from-brand-primary/30 to-brand-secondary/30 rounded-full w-2/3"></div>
                 </div>
-              </div>
+              </Stack>
 
               {/* Stats */}
               <Inline gap={6} className="text-sm text-theme-tertiary mt-4">

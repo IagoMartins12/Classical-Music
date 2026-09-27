@@ -54,7 +54,7 @@ import {
   searchComposers,
   uploadScoreFile,
 } from '@/app/requests/uploads-client';
-import { Inline } from '@/app/components/ui/Layout';
+import { Stack, Inline } from '@/app/components/ui/Layout';
 import { Text } from '@/app/components/ui/Text';
 import { Field } from '@/app/components/ui/Field';
 
@@ -885,10 +885,10 @@ const CreateScoreModal = ({
                           )}
 
                           {thumbnailError && !generatingThumbnail && (
-                            <div className="mt-4 text-center">
+                            <Stack gap={2} className="mt-4 text-center">
                               <Inline
                                 gap={2}
-                                className="justify-center text-sm text-amber-600 mb-2"
+                                className="justify-center text-sm text-amber-600"
                               >
                                 <PiWarningCircle className="w-4 h-4" />
                                 <span>Preview não disponível</span>
@@ -896,7 +896,7 @@ const CreateScoreModal = ({
                               <Text papel="legenda" tom="fraco" as="div">
                                 {thumbnailError}
                               </Text>
-                            </div>
+                            </Stack>
                           )}
                         </div>
                       ) : (
@@ -1015,7 +1015,7 @@ const CreateScoreModal = ({
                   <span>{t('modal_score_work_selection_title')}</span>
                 </Inline>
 
-                <div className="space-y-4">
+                <Stack>
                   <div ref={fieldRefs.composerFilter}>
                     <label className="block text-sm font-medium text-theme-tertiary mb-2">
                       <Inline gap={2}>
@@ -1124,7 +1124,7 @@ const CreateScoreModal = ({
                       </div>
                     </div>
                   )}
-                </div>
+                </Stack>
               </AnimatedCard>
 
               {/* Basic Information */}
@@ -1256,7 +1256,7 @@ const CreateScoreModal = ({
                   <span>{t('modal_score_grouping_title')}</span>
                 </Inline>
 
-                <div className="space-y-6">
+                <Stack gap={6}>
                   {formData.workId && (
                     <div>
                       <Inline
@@ -1280,11 +1280,11 @@ const CreateScoreModal = ({
                     </div>
                   )}
 
-                  <div>
+                  <Stack gap={3}>
                     <Inline
                       as="h4"
                       gap={2}
-                      className="text-sm font-semibold text-theme-primary mb-3"
+                      className="text-sm font-semibold text-theme-primary"
                     >
                       <PiGear className="w-4 h-4 text-theme-tertiary" />
                       <span>{t('modal_score_grouping_manual_title')}</span>
@@ -1311,7 +1311,7 @@ const CreateScoreModal = ({
                         placeholder="Ex: Partitura Completa, Versão Simplificada"
                       />
                     </div>
-                  </div>
+                  </Stack>
 
                   <div className="p-4 bg-theme-secondary/10 rounded-lg">
                     <Inline
@@ -1341,7 +1341,7 @@ const CreateScoreModal = ({
                       </p>
                     </Text>
                   </div>
-                </div>
+                </Stack>
               </AnimatedCard>
 
               {/* Notes and Custom Data */}
@@ -1355,7 +1355,7 @@ const CreateScoreModal = ({
                   <span>{t('modal_score_notes_title')}</span>
                 </Inline>
 
-                <div className="space-y-4">
+                <Stack>
                   <div>
                     <Field.Area
                       label={t('modal_score_notes_label')}
@@ -1368,7 +1368,7 @@ const CreateScoreModal = ({
                       placeholder={t('modal_score_notes_placeholder')}
                     />
                   </div>
-                </div>
+                </Stack>
               </AnimatedCard>
 
               {/* Actions */}

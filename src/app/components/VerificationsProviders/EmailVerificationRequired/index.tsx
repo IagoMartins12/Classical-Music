@@ -22,7 +22,7 @@ import Button from '../../Common/Button';
 import { useEmailVerification } from '@/app/hooks/useEmailVerification';
 import { useEmailRefresh } from '@/app/hooks/useEmailRefresh';
 import { useTranslation } from '@/app/context/TranslationContext';
-import { Inline } from '@/app/components/ui/Layout';
+import { Stack, Inline } from '@/app/components/ui/Layout';
 import { Text } from '@/app/components/ui/Text';
 import { Card } from '@/app/components/ui/Card';
 
@@ -83,7 +83,7 @@ export default function EmailVerificationRequired({
                     ? t('greeting_with_name', { userName })
                     : t('greeting_without_name')}
                 </h3>
-                <div className="space-y-3">
+                <Stack gap={3}>
                   <p className="text-theme-secondary">
                     <strong className="text-brand-primary">
                       {t('user_email_label')}
@@ -93,7 +93,7 @@ export default function EmailVerificationRequired({
                   <Text papel="rotulo" tom="suave" as="p">
                     {t('security_message')}
                   </Text>
-                </div>
+                </Stack>
               </div>
             </div>
           </AnimatedCard>
@@ -175,7 +175,7 @@ export default function EmailVerificationRequired({
                 </h3>
               </Inline>
 
-              <div className="text-left space-y-2">
+              <Stack gap={2} className="text-left">
                 <Inline gap={2}>
                   <div className="w-2 h-2 bg-brand-primary rounded-full"></div>
                   <Text papel="rotulo" tom="suave">
@@ -200,7 +200,7 @@ export default function EmailVerificationRequired({
                     {t('current_permission_profile')}
                   </Text>
                 </Inline>
-              </div>
+              </Stack>
             </AnimatedCard>
           </AnimatedItem>
 
@@ -216,7 +216,7 @@ export default function EmailVerificationRequired({
                 </h3>
               </Inline>
 
-              <div className="text-left space-y-2">
+              <Stack gap={2} className="text-left">
                 <Inline gap={2}>
                   <div className="w-2 h-2 bg-accent-amber rounded-full"></div>
                   <Text papel="rotulo" tom="suave">
@@ -241,7 +241,7 @@ export default function EmailVerificationRequired({
                     {t('after_verification_full_access')}
                   </Text>
                 </Inline>
-              </div>
+              </Stack>
             </AnimatedCard>
           </AnimatedItem>
         </div>

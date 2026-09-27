@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { PiArrowUp } from 'react-icons/pi';
-import { Inline } from '@/app/components/ui/Layout';
+import { Stack, Inline } from '@/app/components/ui/Layout';
 import { Text } from '@/app/components/ui/Text';
 import { Card } from '@/app/components/ui/Card';
 
@@ -93,14 +93,14 @@ export function ProgressBar() {
         </div>
 
         {/* Labels */}
-        <div className="text-center space-y-1">
+        <Stack gap={1} className="text-center">
           <Text papel="legenda" tom="fraco" as="div">
             Progresso
           </Text>
           <Text papel="rotulo" tom="suave" as="div" className="font-medium">
             {getProgressText()}
           </Text>
-        </div>
+        </Stack>
 
         {/* Scroll to Top Button */}
         {isVisible && (
@@ -117,14 +117,17 @@ export function ProgressBar() {
         )}
 
         {/* Reading Stats */}
-        <div className="mt-6 pt-4 border-t border-theme-secondary space-y-3 text-xs">
+        <Stack
+          gap={3}
+          className="mt-6 pt-4 border-t border-theme-secondary text-xs"
+        >
           <div className="flex items-center justify-between">
             <span className="text-theme-tertiary">Tempo estimado</span>
             <span className="text-theme-secondary font-medium">
               {remainingTime} min
             </span>
           </div>
-        </div>
+        </Stack>
       </Card>
     </div>
   );

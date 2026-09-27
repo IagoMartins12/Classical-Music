@@ -7,6 +7,7 @@ import { DIFFICULTY_INFO } from '@/app/requests/difficulty-details';
 import { AnimatedItem, AnimatedCard } from '../animation/AnimatedComponents';
 import { Text } from '@/app/components/ui/Text';
 import { NomeAcao } from '@/app/components/ui/NomeAcao';
+import { Stack } from '@/app/components/ui/Layout';
 
 interface DifficultyInfoProps {
   onClose: () => void;
@@ -41,8 +42,8 @@ export default function DifficultyInfo({ onClose }: DifficultyInfoProps) {
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
         {/* Sistema IMSLP */}
         <AnimatedItem direction="left">
-          <div className="bg-theme-elevated rounded-xl p-6 border border-theme-secondary">
-            <div className="flex items-center mb-4">
+          <Stack className="bg-theme-elevated rounded-xl p-6 border border-theme-secondary">
+            <div className="flex items-center">
               <div className="w-10 h-10 bg-brand-primary/20 rounded-lg flex items-center justify-center mr-3">
                 <PiMedal className="w-5 h-5 text-brand-primary" />
               </div>
@@ -56,12 +57,7 @@ export default function DifficultyInfo({ onClose }: DifficultyInfoProps) {
               </div>
             </div>
 
-            <Text
-              papel="rotulo"
-              tom="suave"
-              as="p"
-              className="mb-4 leading-relaxed"
-            >
+            <Text papel="rotulo" tom="suave" as="p" className="leading-relaxed">
               {DIFFICULTY_INFO.IMSLP.description}
             </Text>
 
@@ -94,13 +90,13 @@ export default function DifficultyInfo({ onClose }: DifficultyInfoProps) {
                 Níveis 7-12 são progressivamente mais avançados...
               </Text>
             </div>
-          </div>
+          </Stack>
         </AnimatedItem>
 
         {/* Sistema RCM */}
         <AnimatedItem direction="right">
-          <div className="bg-theme-elevated rounded-xl p-6 border border-theme-secondary">
-            <div className="flex items-center mb-4">
+          <Stack className="bg-theme-elevated rounded-xl p-6 border border-theme-secondary">
+            <div className="flex items-center">
               <div className="w-10 h-10 bg-accent-purple/20 rounded-lg flex items-center justify-center mr-3">
                 <PiGraduationCap className="w-5 h-5 text-accent-purple" />
               </div>
@@ -114,12 +110,7 @@ export default function DifficultyInfo({ onClose }: DifficultyInfoProps) {
               </div>
             </div>
 
-            <Text
-              papel="rotulo"
-              tom="suave"
-              as="p"
-              className="mb-4 leading-relaxed"
-            >
+            <Text papel="rotulo" tom="suave" as="p" className="leading-relaxed">
               {DIFFICULTY_INFO.RCM.description}
             </Text>
 
@@ -148,7 +139,7 @@ export default function DifficultyInfo({ onClose }: DifficultyInfoProps) {
                 Níveis 7-10 são para estudantes avançados...
               </Text>
             </div>
-          </div>
+          </Stack>
         </AnimatedItem>
       </div>
 
@@ -157,8 +148,8 @@ export default function DifficultyInfo({ onClose }: DifficultyInfoProps) {
         <div className="mt-6 p-4 bg-brand-primary/5 border border-brand-primary/20 rounded-xl">
           <div className="flex items-start space-x-3">
             <PiInfo className="w-5 h-5 text-brand-primary mt-0.5 flex-shrink-0" />
-            <div>
-              <h5 className="text-sm font-semibold text-brand-primary mb-2">
+            <Stack gap={2}>
+              <h5 className="text-sm font-semibold text-brand-primary">
                 Nossa Base de Dados
               </h5>
               <Text
@@ -176,7 +167,7 @@ export default function DifficultyInfo({ onClose }: DifficultyInfoProps) {
                 níveis IMSLP e as referências RCM, para fornecer orientação
                 precisa sobre a dificuldade técnica das obras.
               </Text>
-            </div>
+            </Stack>
           </div>
         </div>
       </AnimatedItem>

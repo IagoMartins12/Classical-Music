@@ -12,7 +12,7 @@ import { updatePrivacySettings } from '@/app/actions/profile';
 import { useAuth } from '@/app/hooks/useAuth';
 import { useSessionUpdate } from '@/app/hooks/useSessionUpdate';
 import { useTranslation } from '@/app/context/TranslationContext';
-import { Inline } from '@/app/components/ui/Layout';
+import { Stack, Inline } from '@/app/components/ui/Layout';
 import { Text } from '@/app/components/ui/Text';
 import { Card } from '@/app/components/ui/Card';
 
@@ -114,7 +114,7 @@ const PrivacySection: React.FC<PrivacySectionProps> = ({
   );
 
   return (
-    <div className="space-y-6">
+    <Stack gap={6}>
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
@@ -138,7 +138,7 @@ const PrivacySection: React.FC<PrivacySectionProps> = ({
       </div>
 
       {/* Privacy Settings */}
-      <div className="space-y-6">
+      <Stack gap={6}>
         {/* Profile Visibility */}
         <Card nivel={2} densidade="compacta">
           <div className="flex items-center justify-between">
@@ -251,7 +251,7 @@ const PrivacySection: React.FC<PrivacySectionProps> = ({
             </Text>
           )}
         </Card>
-      </div>
+      </Stack>
 
       {/* Privacy Summary */}
       <Card
@@ -307,7 +307,7 @@ const PrivacySection: React.FC<PrivacySectionProps> = ({
           <li>{t('privacy_auto_save')}</li>
         </ul>
       </Card>
-    </div>
+    </Stack>
   );
 };
 

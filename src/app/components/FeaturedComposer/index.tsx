@@ -17,6 +17,7 @@ import { useTranslation } from '@/app/context/TranslationContext';
 import { useComposerBiography } from '@/app/hooks/useComposerBiography';
 import { Text } from '@/app/components/ui/Text';
 import { Card } from '@/app/components/ui/Card';
+import { Stack } from '@/app/components/ui/Layout';
 
 interface FeaturedComposerProps {
   composer: {
@@ -142,7 +143,7 @@ const FeaturedComposer: React.FC<FeaturedComposerProps> = ({ composer }) => {
               </div>
 
               {/* Name and dates */}
-              <div className="space-y-2">
+              <Stack gap={2}>
                 <h3 className="text-2xl lg:text-3xl font-bold text-theme-primary classical-title group-hover:text-brand-primary transition-colors duration-300">
                   {composer.name}
                 </h3>
@@ -172,7 +173,7 @@ const FeaturedComposer: React.FC<FeaturedComposerProps> = ({ composer }) => {
                       translateEpochWithHook(composer.epochName, t)}
                   </Text>
                 </div>
-              </div>
+              </Stack>
 
               {/* External links */}
               <div className="flex gap-3 mt-6">
@@ -202,10 +203,10 @@ const FeaturedComposer: React.FC<FeaturedComposerProps> = ({ composer }) => {
             </div>
 
             {/* Content Section */}
-            <div className="lg:col-span-2 space-y-8">
+            <Stack gap={8} className="lg:col-span-2">
               {/* Biography */}
               {composer.bio && (
-                <div className="space-y-4">
+                <Stack>
                   <h4 className="text-xl font-bold text-theme-primary classical-title flex items-center gap-2">
                     <PiUser className="w-5 h-5 text-brand-primary" />
                     {t('featured_composer_biography')}
@@ -213,12 +214,12 @@ const FeaturedComposer: React.FC<FeaturedComposerProps> = ({ composer }) => {
                   <p className="text-theme-secondary leading-relaxed text-lg">
                     {formatBio(biography)}
                   </p>
-                </div>
+                </Stack>
               )}
 
               {/* Curiosidades */}
               {composer.curiosities && composer.curiosities.length > 0 && (
-                <div className="space-y-4">
+                <Stack>
                   <h4 className="text-xl font-bold text-theme-primary classical-title flex items-center gap-2">
                     <PiStar className="w-5 h-5 text-brand-primary" />
                     {t('featured_composer_curiosities')}
@@ -243,12 +244,12 @@ const FeaturedComposer: React.FC<FeaturedComposerProps> = ({ composer }) => {
                       </div>
                     ))}
                   </div>
-                </div>
+                </Stack>
               )}
 
               {/* Famous works */}
               {composer.works.length > 0 && (
-                <div className="space-y-4">
+                <Stack>
                   <h4 className="text-xl font-bold text-theme-primary classical-title flex items-center gap-2">
                     <PiMusicNotes className="w-5 h-5 text-brand-primary" />
                     {t('featured_composer_works')}
@@ -274,7 +275,7 @@ const FeaturedComposer: React.FC<FeaturedComposerProps> = ({ composer }) => {
                       </Link>
                     ))}
                   </div>
-                </div>
+                </Stack>
               )}
 
               {/* CTA Button */}
@@ -299,7 +300,7 @@ const FeaturedComposer: React.FC<FeaturedComposerProps> = ({ composer }) => {
                   </svg>
                 </Link>
               </div>
-            </div>
+            </Stack>
           </div>
 
           {/* Floating decoration */}

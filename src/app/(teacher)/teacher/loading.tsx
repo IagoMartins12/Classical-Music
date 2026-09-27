@@ -14,7 +14,7 @@ import {
   PiTrendUp,
   PiUsers,
 } from 'react-icons/pi';
-import { Inline } from '@/app/components/ui/Layout';
+import { Stack, Inline } from '@/app/components/ui/Layout';
 import { Card } from '@/app/components/ui/Card';
 
 export default function TeacherDashboardLoading() {
@@ -104,17 +104,17 @@ export default function TeacherDashboardLoading() {
         {/* Main Content Grid */}
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           {/* Left Column - 2/3 */}
-          <div className="lg:col-span-2 order-2 lg:order-1 space-y-8">
+          <Stack gap={8} className="lg:col-span-2 order-2 lg:order-1">
             {/* Quick Actions Skeleton */}
             <Card className="animate-pulse">
               <Inline gap={3} className="mb-6">
                 <div className="w-10 h-10 bg-gradient-to-br from-accent-green/20 to-accent-blue/20 rounded-xl flex items-center justify-center">
                   <PiClock className="w-5 h-5 text-theme-primary/30" />
                 </div>
-                <div className="space-y-2">
+                <Stack gap={2}>
                   <div className="h-6 w-48 bg-gradient-to-r from-theme-primary/20 to-theme-secondary/20 rounded"></div>
                   <div className="h-4 w-32 bg-theme-elevated rounded"></div>
-                </div>
+                </Stack>
               </Inline>
 
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
@@ -139,10 +139,10 @@ export default function TeacherDashboardLoading() {
                 <div className="w-10 h-10 rounded-xl flex items-center justify-center">
                   <PiBookOpen className="w-5 h-5 text-theme-primary/30" />
                 </div>
-                <div className="space-y-2">
+                <Stack gap={2}>
                   <div className="h-6 w-40 bg-gradient-to-r from-theme-primary/20 to-theme-secondary/20 rounded"></div>
                   <div className="h-4 w-32 bg-theme-elevated rounded"></div>
-                </div>
+                </Stack>
               </Inline>
 
               <div className="space-y-4">
@@ -158,10 +158,10 @@ export default function TeacherDashboardLoading() {
                 <div className="w-10 h-10 rounded-xl flex items-center justify-center">
                   <PiClipboardText className="w-5 h-5 text-theme-primary/30" />
                 </div>
-                <div className="space-y-2">
+                <Stack gap={2}>
                   <div className="h-6 w-48 bg-gradient-to-r from-theme-primary/20 to-theme-secondary/20 rounded"></div>
                   <div className="h-4 w-32 bg-theme-elevated rounded"></div>
-                </div>
+                </Stack>
               </Inline>
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -170,10 +170,10 @@ export default function TeacherDashboardLoading() {
                 ))}
               </div>
             </Card>
-          </div>
+          </Stack>
 
           {/* Right Column - 1/3 */}
-          <div className="lg:col-span-1 order-1 lg:order-2 space-y-6">
+          <Stack gap={6} className="lg:col-span-1 order-1 lg:order-2">
             {/* Today's Schedule Skeleton */}
             <Card className="animate-pulse">
               <Inline gap={3} className="mb-4">
@@ -183,7 +183,7 @@ export default function TeacherDashboardLoading() {
                 <div className="h-5 w-32 bg-gradient-to-r from-theme-primary/20 to-theme-secondary/20 rounded"></div>
               </Inline>
 
-              <div className="space-y-3">
+              <Stack gap={3}>
                 {Array.from({ length: 4 }).map((_, i) => (
                   <div key={i} className="classical-card-2 p-3 animate-pulse">
                     <Inline gap={3}>
@@ -195,7 +195,7 @@ export default function TeacherDashboardLoading() {
                     </Inline>
                   </div>
                 ))}
-              </div>
+              </Stack>
             </Card>
 
             {/* Recent Reviews Skeleton */}
@@ -223,7 +223,7 @@ export default function TeacherDashboardLoading() {
                 <div className="h-5 w-28 bg-gradient-to-r from-theme-primary/20 to-theme-secondary/20 rounded"></div>
               </Inline>
 
-              <div className="space-y-4">
+              <Stack>
                 {[
                   'Esta Semana',
                   'Este Mês',
@@ -235,7 +235,7 @@ export default function TeacherDashboardLoading() {
                     <div className="h-4 bg-accent-green/30 rounded w-8"></div>
                   </div>
                 ))}
-              </div>
+              </Stack>
             </Card>
 
             {/* Notifications Skeleton */}
@@ -253,7 +253,7 @@ export default function TeacherDashboardLoading() {
                 ))}
               </div>
             </Card>
-          </div>
+          </Stack>
         </div>
       </div>
 
@@ -289,10 +289,10 @@ function AssignmentItemSkeleton() {
       <div className="flex items-start justify-between mb-3">
         <Inline gap={2}>
           <div className="w-8 h-8 bg-brand-primary/20 rounded-full"></div>
-          <div>
-            <div className="h-4 bg-theme-primary/20 rounded mb-1 w-24"></div>
+          <Stack gap={1}>
+            <div className="h-4 bg-theme-primary/20 rounded w-24"></div>
             <div className="h-3 bg-theme-tertiary/20 rounded w-16"></div>
-          </div>
+          </Stack>
         </Inline>
         <div className="h-5 w-16 bg-accent-blue/20 border border-accent-blue/30 rounded-full"></div>
       </div>

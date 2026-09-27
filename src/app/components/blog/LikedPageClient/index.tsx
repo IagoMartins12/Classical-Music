@@ -11,6 +11,7 @@ import Link from 'next/link';
 import { Text } from '@/app/components/ui/Text';
 import { Button } from '@/app/components/ui/Button';
 import { Card } from '@/app/components/ui/Card';
+import { Stack } from '@/app/components/ui/Layout';
 
 interface Category {
   id: string;
@@ -127,8 +128,8 @@ export function LikedPageClient({ categories }: LikedPageClientProps) {
         </div>
 
         {/* Category Filter */}
-        <div className="mt-6 pt-6 border-t border-theme-secondary">
-          <div className="flex items-center gap-2 mb-3">
+        <Stack gap={3} className="mt-6 pt-6 border-t border-theme-secondary">
+          <div className="flex items-center gap-2">
             <PiFunnel className="w-4 h-4 text-theme-tertiary" />
             <Text papel="rotulo" tom="suave" className="font-medium">
               Filtrar por categoria:
@@ -174,7 +175,7 @@ export function LikedPageClient({ categories }: LikedPageClientProps) {
               </button>
             ))}
           </div>
-        </div>
+        </Stack>
       </Card>
 
       {/* Articles */}

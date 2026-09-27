@@ -17,7 +17,7 @@ import {
   PiThumbsUp,
   PiTrash,
 } from 'react-icons/pi';
-import { Inline } from '@/app/components/ui/Layout';
+import { Stack, Inline } from '@/app/components/ui/Layout';
 import { Text } from '@/app/components/ui/Text';
 import { Card } from '@/app/components/ui/Card';
 
@@ -95,7 +95,7 @@ export default function AnnotationsPageLoading() {
 
         {/* Controls Skeleton */}
         <Card>
-          <div className="space-y-4">
+          <Stack>
             {/* Main Controls Row */}
             <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
               {/* Tabs Skeleton - 4 tabs para anotações */}
@@ -154,7 +154,7 @@ export default function AnnotationsPageLoading() {
                 </Inline>
               </div>
             </div>
-          </div>
+          </Stack>
         </Card>
 
         {/* Main Content Area Skeleton */}
@@ -165,10 +165,10 @@ export default function AnnotationsPageLoading() {
               <div className="w-10 h-10 bg-gradient-to-br from-accent-green/20 to-accent-blue/20 rounded-xl flex items-center justify-center">
                 <PiChatCenteredText className="w-5 h-5 text-theme-inverse/20" />
               </div>
-              <div className="space-y-2">
+              <Stack gap={2}>
                 <div className="h-8 w-48 bg-gradient-to-r from-theme-primary/20 to-theme-secondary/20 rounded animate-pulse"></div>
                 <div className="h-4 w-32 bg-theme-elevated rounded animate-pulse"></div>
-              </div>
+              </Stack>
             </Inline>
 
             {/* Annotations Cards */}
@@ -181,14 +181,14 @@ export default function AnnotationsPageLoading() {
 
           {/* Sidebar (1/3 da largura) */}
           <div className="lg:col-span-1">
-            <div className="sticky top-6 space-y-6">
+            <Stack gap={6} className="sticky top-6">
               {/* Stats Widget Skeleton */}
               <Card nivel={2} className="animate-pulse">
                 <Inline gap={2} className="mb-4">
                   <div className="w-4 h-4 bg-theme-tertiary/30 rounded"></div>
                   <div className="h-4 w-32 bg-theme-elevated rounded"></div>
                 </Inline>
-                <div className="space-y-3">
+                <Stack gap={3}>
                   {Array.from({ length: 3 }).map((_, index) => (
                     <Inline
                       gap={3}
@@ -207,7 +207,7 @@ export default function AnnotationsPageLoading() {
                       </div>
                     </Inline>
                   ))}
-                </div>
+                </Stack>
               </Card>
 
               {/* Top Annotations Widget Skeleton */}
@@ -216,7 +216,7 @@ export default function AnnotationsPageLoading() {
                   <div className="w-4 h-4 bg-theme-tertiary/30 rounded"></div>
                   <div className="h-4 w-40 bg-theme-elevated rounded"></div>
                 </Inline>
-                <div className="space-y-3">
+                <Stack gap={3}>
                   {Array.from({ length: 3 }).map((_, index) => (
                     <Inline
                       gap={3}
@@ -234,7 +234,7 @@ export default function AnnotationsPageLoading() {
                       </div>
                     </Inline>
                   ))}
-                </div>
+                </Stack>
               </Card>
 
               {/* Tips Widget Skeleton */}
@@ -243,16 +243,16 @@ export default function AnnotationsPageLoading() {
                   <div className="w-4 h-4 bg-theme-tertiary/30 rounded"></div>
                   <div className="h-4 w-24 bg-theme-elevated rounded"></div>
                 </Inline>
-                <div className="space-y-3">
+                <Stack gap={3}>
                   {Array.from({ length: 4 }).map((_, index) => (
                     <div
                       key={index}
                       className="h-4 bg-theme-elevated rounded"
                     ></div>
                   ))}
-                </div>
+                </Stack>
               </Card>
-            </div>
+            </Stack>
           </div>
         </div>
       </div>
@@ -323,11 +323,11 @@ function AnnotationCardSkeleton() {
       </div>
 
       {/* Content */}
-      <div className="mb-4 space-y-2">
+      <Stack gap={2} className="mb-4">
         <div className="h-4 bg-theme-elevated rounded"></div>
         <div className="h-4 bg-theme-elevated rounded w-5/6"></div>
         <div className="h-4 bg-theme-elevated rounded w-4/6"></div>
-      </div>
+      </Stack>
 
       {/* Tags */}
       <div className="flex flex-wrap gap-2 mb-4">

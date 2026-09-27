@@ -9,7 +9,7 @@ import Button from '@/app/components/Common/Button';
 import Checkbox from '@/app/components/Common/Checkbox';
 import ComposerSearchInputSimple from '@/app/components/ComposerSearchInputSimple';
 import { findComposerById } from '@/app/requests/catalog-search';
-import { Inline } from '@/app/components/ui/Layout';
+import { Stack, Inline } from '@/app/components/ui/Layout';
 import { Text } from '@/app/components/ui/Text';
 import { Card } from '@/app/components/ui/Card';
 
@@ -98,7 +98,7 @@ export function ComposerModal({ editor, onClose }: ComposerModalProps) {
       maxWidth="4xl"
       minHeight
     >
-      <form onSubmit={handleSubmit} className="space-y-6">
+      <Stack gap={6} as="form" onSubmit={handleSubmit}>
         {/* Busca do Compositor */}
         <div>
           <label className="block text-sm font-medium text-theme-primary mb-2">
@@ -115,15 +115,15 @@ export function ComposerModal({ editor, onClose }: ComposerModalProps) {
         {composerData && (
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
             {/* COLUNA ESQUERDA - Configurações */}
-            <div className="space-y-4 classical-card">
+            <Stack className="classical-card">
               <div className="p-4 rounded-lg">
                 <h4 className="font-semibold text-theme-primary mb-3">
                   ⚙️ Configurações
                 </h4>
 
                 {/* Layout */}
-                <div className="mb-4">
-                  <label className="block text-sm font-medium text-theme-primary mb-2">
+                <Stack gap={2} className="mb-4">
+                  <label className="block text-sm font-medium text-theme-primary">
                     Layout
                   </label>
                   <div className="flex space-x-2">
@@ -144,7 +144,7 @@ export function ComposerModal({ editor, onClose }: ComposerModalProps) {
                       ↔️ Horizontal
                     </Button>
                   </div>
-                </div>
+                </Stack>
 
                 {/* Campos Visíveis */}
                 <div className="space-y-2">
@@ -216,10 +216,10 @@ export function ComposerModal({ editor, onClose }: ComposerModalProps) {
                   />
                 </div>
               </div>
-            </div>
+            </Stack>
 
             {/* COLUNA DIREITA - Preview */}
-            <div className="space-y-4">
+            <Stack>
               <Card densidade="compacta" className="rounded-lg">
                 <h4 className="font-semibold mb-3">👁️ Preview</h4>
 
@@ -333,7 +333,7 @@ export function ComposerModal({ editor, onClose }: ComposerModalProps) {
                   </div>
                 </div>
               </Card>
-            </div>
+            </Stack>
           </div>
         )}
 
@@ -346,7 +346,7 @@ export function ComposerModal({ editor, onClose }: ComposerModalProps) {
             Inserir Card
           </Button>
         </div>
-      </form>
+      </Stack>
     </Modal>
   );
 }

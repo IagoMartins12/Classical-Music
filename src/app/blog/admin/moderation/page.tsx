@@ -16,6 +16,7 @@ import { AnimatedItem } from '@/app/components/animation/AnimatedComponents';
 import AnimatedMusicalNotesClient from '@/app/components/AnimatedMusicalNotesClient';
 import { getServerSession } from '@/app/libs/api/server-session';
 import { Text } from '@/app/components/ui/Text';
+import { Stack } from '@/app/components/ui/Layout';
 
 export const metadata: Metadata = {
   title: 'Moderação de Comentários - Blog Admin',
@@ -88,19 +89,19 @@ export default async function ModerationPage({ searchParams }: PageProps) {
             <AnimatedItem direction="up">
               <div className="classical-card group hover:shadow-xl transition-all duration-300 cursor-pointer">
                 <div className="flex items-center justify-between p-4">
-                  <div>
+                  <Stack gap={2}>
                     <Text
                       papel="legenda"
                       tom="fraco"
                       as="p"
-                      className="font-medium mb-2"
+                      className="font-medium"
                     >
                       Total
                     </Text>
                     <p className="text-2xl font-bold text-theme-primary">
                       {stats.total}
                     </p>
-                  </div>
+                  </Stack>
                   <div className="w-12 h-12 bg-gradient-to-br from-purple-500/20 to-purple-600/20 rounded-2xl flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
                     <PiListBullets className="w-6 h-6 text-purple-500" />
                   </div>
@@ -111,19 +112,19 @@ export default async function ModerationPage({ searchParams }: PageProps) {
             <AnimatedItem direction="up">
               <div className="classical-card group hover:shadow-xl transition-all duration-300 cursor-pointer">
                 <div className="flex items-center justify-between p-4">
-                  <div>
+                  <Stack gap={2}>
                     <Text
                       papel="legenda"
                       tom="fraco"
                       as="p"
-                      className="font-medium mb-2"
+                      className="font-medium"
                     >
                       Pendentes
                     </Text>
                     <p className="text-2xl font-bold text-theme-primary">
                       {stats.pending}
                     </p>
-                  </div>
+                  </Stack>
                   <div className="w-12 h-12 bg-gradient-to-br from-blue-500/20 to-blue-600/20 rounded-2xl flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
                     <PiChatCircle className="w-6 h-6 text-blue-500" />
                   </div>
@@ -134,19 +135,19 @@ export default async function ModerationPage({ searchParams }: PageProps) {
             <AnimatedItem direction="up">
               <div className="classical-card group hover:shadow-xl transition-all duration-300 cursor-pointer">
                 <div className="flex items-center justify-between p-4">
-                  <div>
+                  <Stack gap={2}>
                     <Text
                       papel="legenda"
                       tom="fraco"
                       as="p"
-                      className="font-medium mb-2"
+                      className="font-medium"
                     >
                       Denunciados
                     </Text>
                     <p className="text-2xl font-bold text-theme-primary">
                       {stats.flagged}
                     </p>
-                  </div>
+                  </Stack>
                   <div className="w-12 h-12 bg-gradient-to-br from-orange-500/20 to-orange-600/20 rounded-2xl flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
                     <PiFlag className="w-6 h-6 text-orange-500" />
                   </div>
@@ -157,19 +158,19 @@ export default async function ModerationPage({ searchParams }: PageProps) {
             <AnimatedItem direction="up">
               <div className="classical-card group hover:shadow-xl transition-all duration-300 cursor-pointer">
                 <div className="flex items-center justify-between p-4">
-                  <div>
+                  <Stack gap={2}>
                     <Text
                       papel="legenda"
                       tom="fraco"
                       as="p"
-                      className="font-medium mb-2"
+                      className="font-medium"
                     >
                       Respostas
                     </Text>
                     <p className="text-2xl font-bold text-theme-primary">
                       {stats.replies}
                     </p>
-                  </div>
+                  </Stack>
                   <div className="w-12 h-12 bg-gradient-to-br from-indigo-500/20 to-indigo-600/20 rounded-2xl flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
                     <PiChatCircle className="w-6 h-6 text-indigo-500" />
                   </div>
@@ -180,19 +181,19 @@ export default async function ModerationPage({ searchParams }: PageProps) {
             <AnimatedItem direction="up">
               <div className="classical-card group hover:shadow-xl transition-all duration-300 cursor-pointer">
                 <div className="flex items-center justify-between p-4">
-                  <div>
+                  <Stack gap={2}>
                     <Text
                       papel="legenda"
                       tom="fraco"
                       as="p"
-                      className="font-medium mb-2"
+                      className="font-medium"
                     >
                       Aprovados
                     </Text>
                     <p className="text-2xl font-bold text-theme-primary">
                       {stats.approved}
                     </p>
-                  </div>
+                  </Stack>
                   <div className="w-12 h-12 bg-gradient-to-br from-green-500/20 to-green-600/20 rounded-2xl flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
                     <PiCheckCircle className="w-6 h-6 text-green-500" />
                   </div>
@@ -203,19 +204,19 @@ export default async function ModerationPage({ searchParams }: PageProps) {
             <AnimatedItem direction="up">
               <div className="classical-card group hover:shadow-xl transition-all duration-300 cursor-pointer">
                 <div className="flex items-center justify-between p-4">
-                  <div>
+                  <Stack gap={2}>
                     <Text
                       papel="legenda"
                       tom="fraco"
                       as="p"
-                      className="font-medium mb-2"
+                      className="font-medium"
                     >
                       Rejeitados/Spam
                     </Text>
                     <p className="text-2xl font-bold text-theme-primary">
                       {stats.rejected + stats.spam}
                     </p>
-                  </div>
+                  </Stack>
                   <div className="w-12 h-12 bg-gradient-to-br from-red-500/20 to-red-600/20 rounded-2xl flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
                     <PiXCircle className="w-6 h-6 text-red-500" />
                   </div>

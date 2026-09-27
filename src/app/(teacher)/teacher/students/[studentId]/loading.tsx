@@ -16,7 +16,7 @@ import {
   PiTrendUp,
   PiUser,
 } from 'react-icons/pi';
-import { Inline } from '@/app/components/ui/Layout';
+import { Stack, Inline } from '@/app/components/ui/Layout';
 import { Card } from '@/app/components/ui/Card';
 
 export default function TeacherStudentDetailLoading() {
@@ -80,10 +80,10 @@ export default function TeacherStudentDetailLoading() {
         <div className="flex items-center justify-between mb-8 animate-pulse">
           <Inline gap={4}>
             <div className="w-10 h-10 bg-theme-elevated border border-theme-secondary rounded-lg"></div>
-            <div>
-              <div className="h-8 bg-gradient-to-r from-theme-elevated to-interactive-hover border border-theme-primary rounded-lg w-64 mb-2"></div>
+            <Stack gap={2}>
+              <div className="h-8 bg-gradient-to-r from-theme-elevated to-interactive-hover border border-theme-primary rounded-lg w-64"></div>
               <div className="h-4 bg-theme-elevated rounded w-48"></div>
-            </div>
+            </Stack>
           </Inline>
 
           <Inline gap={3}>
@@ -96,7 +96,7 @@ export default function TeacherStudentDetailLoading() {
         {/* Main Content Grid */}
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           {/* Left Column - 2/3 */}
-          <div className="lg:col-span-2 space-y-8">
+          <Stack gap={8} className="lg:col-span-2">
             {/* Student Info Card Skeleton */}
             <Card className="animate-pulse">
               <Inline gap={6} className="mb-6">
@@ -106,47 +106,50 @@ export default function TeacherStudentDetailLoading() {
                 {/* Basic Info */}
                 <div className="flex-1">
                   <div className="h-6 bg-gradient-to-r from-theme-primary/20 to-theme-secondary/20 rounded w-48 mb-2"></div>
-                  <div className="space-y-1">
+                  <Stack gap={1}>
                     <div className="h-4 bg-theme-elevated rounded w-56"></div>
                     <div className="h-4 bg-theme-elevated rounded w-44"></div>
                     <div className="h-4 bg-theme-elevated rounded w-40"></div>
-                  </div>
+                  </Stack>
                 </div>
               </Inline>
 
               {/* Student Details Grid */}
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div className="space-y-4">
+                <Stack>
                   {Array.from({ length: 3 }).map((_, i) => (
-                    <div key={i}>
-                      <div className="h-3 w-24 bg-theme-tertiary/30 rounded mb-2"></div>
+                    <Stack gap={2} key={i}>
+                      <div className="h-3 w-24 bg-theme-tertiary/30 rounded"></div>
                       <div className="h-5 w-32 bg-theme-primary/30 rounded"></div>
-                    </div>
+                    </Stack>
                   ))}
-                </div>
-                <div className="space-y-4">
+                </Stack>
+                <Stack>
                   {Array.from({ length: 3 }).map((_, i) => (
-                    <div key={i}>
-                      <div className="h-3 w-20 bg-theme-tertiary/30 rounded mb-2"></div>
+                    <Stack gap={2} key={i}>
+                      <div className="h-3 w-20 bg-theme-tertiary/30 rounded"></div>
                       <div className="h-5 w-28 bg-theme-primary/30 rounded"></div>
-                    </div>
+                    </Stack>
                   ))}
-                </div>
+                </Stack>
               </div>
 
               {/* Goals Section */}
-              <div className="mt-6 pt-6 border-t border-theme-secondary">
-                <div className="h-3 w-32 bg-theme-tertiary/30 rounded mb-3"></div>
-                <div className="space-y-2">
+              <Stack
+                gap={3}
+                className="mt-6 pt-6 border-t border-theme-secondary"
+              >
+                <div className="h-3 w-32 bg-theme-tertiary/30 rounded"></div>
+                <Stack gap={2}>
                   <div className="h-4 bg-theme-primary/20 rounded w-full"></div>
                   <div className="h-4 bg-theme-primary/20 rounded w-5/6"></div>
                   <div className="h-4 bg-theme-primary/20 rounded w-4/6"></div>
-                </div>
-              </div>
+                </Stack>
+              </Stack>
 
               {/* Current Focus */}
-              <div className="mt-4">
-                <div className="h-3 w-20 bg-theme-tertiary/30 rounded mb-3"></div>
+              <Stack gap={3} className="mt-4">
+                <div className="h-3 w-20 bg-theme-tertiary/30 rounded"></div>
                 <div className="flex flex-wrap gap-2">
                   {Array.from({ length: 3 }).map((_, i) => (
                     <div
@@ -155,7 +158,7 @@ export default function TeacherStudentDetailLoading() {
                     ></div>
                   ))}
                 </div>
-              </div>
+              </Stack>
             </Card>
 
             {/* Progress Stats Skeleton */}
@@ -189,15 +192,15 @@ export default function TeacherStudentDetailLoading() {
                   <div className="w-10 h-10 bg-gradient-to-br from-accent-green/20 to-accent-blue/20 rounded-xl flex items-center justify-center">
                     <PiClock className="w-5 h-5 text-theme-inverse/20" />
                   </div>
-                  <div>
-                    <div className="h-5 bg-theme-primary/30 rounded w-32 mb-1"></div>
+                  <Stack gap={1}>
+                    <div className="h-5 bg-theme-primary/30 rounded w-32"></div>
                     <div className="h-3 bg-theme-tertiary/30 rounded w-48"></div>
-                  </div>
+                  </Stack>
                 </Inline>
                 <div className="h-4 w-20 bg-brand-primary/30 rounded"></div>
               </div>
 
-              <div className="space-y-4">
+              <Stack>
                 {Array.from({ length: 4 }).map((_, index) => (
                   <Card nivel={2} densidade="compacta" key={index}>
                     <div className="flex items-start justify-between">
@@ -221,17 +224,20 @@ export default function TeacherStudentDetailLoading() {
                           ))}
                         </div>
 
-                        <div className="mt-2 p-2 bg-gradient-to-r from-theme-elevated to-interactive-hover rounded border border-theme-primary/20">
-                          <div className="h-3 bg-theme-tertiary/30 rounded w-12 mb-1"></div>
+                        <Stack
+                          gap={1}
+                          className="mt-2 p-2 bg-gradient-to-r from-theme-elevated to-interactive-hover rounded border border-theme-primary/20"
+                        >
+                          <div className="h-3 bg-theme-tertiary/30 rounded w-12"></div>
                           <div className="h-3 bg-theme-primary/30 rounded w-full"></div>
-                        </div>
+                        </Stack>
                       </div>
 
                       <div className="w-8 h-8 bg-theme-elevated border border-theme-secondary rounded-lg ml-4"></div>
                     </div>
                   </Card>
                 ))}
-              </div>
+              </Stack>
             </Card>
 
             {/* Teacher Notes Skeleton */}
@@ -241,39 +247,39 @@ export default function TeacherStudentDetailLoading() {
                   <div className="w-10 h-10 bg-gradient-to-br from-accent-purple/20 to-accent-red/20 rounded-xl flex items-center justify-center">
                     <PiChatCenteredText className="w-5 h-5 text-theme-inverse/20" />
                   </div>
-                  <div>
-                    <div className="h-5 bg-theme-primary/30 rounded w-40 mb-1"></div>
+                  <Stack gap={1}>
+                    <div className="h-5 bg-theme-primary/30 rounded w-40"></div>
                     <div className="h-3 bg-theme-tertiary/30 rounded w-56"></div>
-                  </div>
+                  </Stack>
                 </Inline>
                 <div className="w-8 h-8 bg-theme-elevated border border-theme-secondary rounded-lg"></div>
               </div>
 
               <div className="bg-gradient-to-r from-theme-elevated to-interactive-hover rounded-lg border border-theme-primary/20 p-4">
-                <div className="space-y-2">
+                <Stack gap={2}>
                   <div className="h-4 bg-theme-primary/20 rounded w-full"></div>
                   <div className="h-4 bg-theme-primary/20 rounded w-5/6"></div>
                   <div className="h-4 bg-theme-primary/20 rounded w-4/6"></div>
-                </div>
+                </Stack>
               </div>
             </Card>
-          </div>
+          </Stack>
 
           {/* Right Column - 1/3 */}
-          <div className="lg:col-span-1 space-y-6">
+          <Stack gap={6} className="lg:col-span-1">
             {/* Upcoming Lessons Skeleton */}
             <Card className="animate-pulse">
               <Inline gap={3} className="mb-4">
                 <div className="w-8 h-8 bg-gradient-to-br from-accent-blue/20 to-accent-purple/20 rounded-lg flex items-center justify-center">
                   <PiCalendarBlank className="w-4 h-4 text-theme-inverse/20" />
                 </div>
-                <div>
-                  <div className="h-4 bg-theme-primary/30 rounded w-28 mb-1"></div>
+                <Stack gap={1}>
+                  <div className="h-4 bg-theme-primary/30 rounded w-28"></div>
                   <div className="h-3 bg-theme-tertiary/30 rounded w-20"></div>
-                </div>
+                </Stack>
               </Inline>
 
-              <div className="space-y-3">
+              <Stack gap={3}>
                 {Array.from({ length: 4 }).map((_, i) => (
                   <div key={i} className="classical-card-2 p-3">
                     <Inline gap={3}>
@@ -287,7 +293,7 @@ export default function TeacherStudentDetailLoading() {
                     </Inline>
                   </div>
                 ))}
-              </div>
+              </Stack>
             </Card>
 
             {/* Current Assignments Skeleton */}
@@ -296,16 +302,16 @@ export default function TeacherStudentDetailLoading() {
                 <div className="w-8 h-8 bg-gradient-to-br from-accent-green/20 to-accent-blue/20 rounded-lg flex items-center justify-center">
                   <PiTarget className="w-4 h-4 text-theme-inverse/20" />
                 </div>
-                <div>
-                  <div className="h-4 bg-theme-primary/30 rounded w-24 mb-1"></div>
+                <Stack gap={1}>
+                  <div className="h-4 bg-theme-primary/30 rounded w-24"></div>
                   <div className="h-3 bg-theme-tertiary/30 rounded w-20"></div>
-                </div>
+                </Stack>
               </Inline>
 
-              <div className="space-y-3">
+              <Stack gap={3}>
                 {Array.from({ length: 3 }).map((_, i) => (
-                  <div key={i} className="classical-card-2 p-3">
-                    <div className="flex items-start justify-between mb-2">
+                  <Stack gap={2} key={i} className="classical-card-2 p-3">
+                    <div className="flex items-start justify-between">
                       <div className="flex-1">
                         <div className="h-4 bg-theme-primary/30 rounded w-full mb-1"></div>
                         <div className="h-3 bg-theme-tertiary/30 rounded w-3/4"></div>
@@ -313,14 +319,14 @@ export default function TeacherStudentDetailLoading() {
                       <div className="h-5 w-12 bg-accent-yellow/20 border border-accent-yellow/30 rounded-full ml-2"></div>
                     </div>
 
-                    <div className="h-3 bg-theme-tertiary/30 rounded w-32 mb-2"></div>
+                    <div className="h-3 bg-theme-tertiary/30 rounded w-32"></div>
 
                     <div className="w-full bg-theme-secondary/20 rounded-full h-2">
                       <div className="bg-brand-primary/30 rounded-full h-2 w-2/3"></div>
                     </div>
-                  </div>
+                  </Stack>
                 ))}
-              </div>
+              </Stack>
             </Card>
 
             {/* Quick Actions Skeleton */}
@@ -334,19 +340,19 @@ export default function TeacherStudentDetailLoading() {
                 </div>
               </Inline>
 
-              <div className="space-y-3">
+              <Stack gap={3}>
                 {Array.from({ length: 3 }).map((_, i) => (
                   <div key={i} className="w-full classical-card-2 p-3">
                     <Inline gap={3}>
                       <div className="w-8 h-8 bg-gradient-to-br from-accent-green/20 to-accent-blue/20 rounded-lg"></div>
-                      <div>
-                        <div className="h-4 bg-theme-primary/30 rounded w-24 mb-1"></div>
+                      <Stack gap={1}>
+                        <div className="h-4 bg-theme-primary/30 rounded w-24"></div>
                         <div className="h-3 bg-theme-tertiary/30 rounded w-32"></div>
-                      </div>
+                      </Stack>
                     </Inline>
                   </div>
                 ))}
-              </div>
+              </Stack>
             </Card>
 
             {/* Refresh Button Skeleton */}
@@ -357,7 +363,7 @@ export default function TeacherStudentDetailLoading() {
               <PiTrendUp className="w-4 h-4 text-theme-inverse/20" />
               <div className="h-4 w-24 bg-theme-tertiary/30 rounded"></div>
             </Inline>
-          </div>
+          </Stack>
         </div>
       </div>
 

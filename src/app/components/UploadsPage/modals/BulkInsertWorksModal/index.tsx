@@ -456,8 +456,8 @@ const BulkInsertWorksModal = ({
               {currentStep === 'select' && (
                 <div className="p-6">
                   {/* Stats and controls */}
-                  <div className="mb-6">
-                    <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-4">
+                  <Stack className="mb-6">
+                    <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
                       <div className="text-center">
                         <div className="text-2xl font-bold text-theme-primary">
                           {stats.total}
@@ -522,7 +522,7 @@ const BulkInsertWorksModal = ({
                         })}
                       </Button>
                     </div>
-                  </div>
+                  </Stack>
 
                   {/* Works list */}
                   <div className="max-h-96 overflow-y-auto space-y-2">

@@ -9,7 +9,7 @@ import {
 } from 'react-icons/pi';
 import { AnimatedContainer } from '../../animation/AnimatedComponents';
 import { useTranslation } from '@/app/context/TranslationContext';
-import { Inline } from '@/app/components/ui/Layout';
+import { Stack, Inline } from '@/app/components/ui/Layout';
 import { Text } from '@/app/components/ui/Text';
 
 interface emptyStatesProps {
@@ -264,14 +264,14 @@ const EmptyStateFavorites: React.FC<emptyStatesProps> = ({
                 <div className="w-10 h-8 md:w-6 md:h-6 rounded-lg flex items-center justify-center mt-0.5">
                   <PiStar className="w-5 h-5text-theme-primary" />
                 </div>
-                <div className="text-left">
-                  <h4 className="font-semibold text-theme-primary text-sm mb-1">
+                <Stack gap={1} className="text-left">
+                  <h4 className="font-semibold text-theme-primary text-sm">
                     {t('empty_tip_to_start')}
                   </h4>
                   <Text papel="legenda" tom="suave" as="p">
                     {config?.tip}
                   </Text>
-                </div>
+                </Stack>
               </div>
             </div>
           )}

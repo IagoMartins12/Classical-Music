@@ -60,7 +60,7 @@ import {
   updateWorkMediaRequest,
   uploadWorkMediaFileRequest,
 } from '@/app/requests/work-media';
-import { Inline } from '@/app/components/ui/Layout';
+import { Stack, Inline } from '@/app/components/ui/Layout';
 import { Text } from '@/app/components/ui/Text';
 
 interface CreateWorkModalProps {
@@ -1096,8 +1096,11 @@ const CreateWorkModal = ({
                     )}
 
                     {duplicateCheck.found && (
-                      <div className="mt-2 p-3 bg-red-50 border border-red-200 rounded-lg">
-                        <Inline gap={2} className="mb-2">
+                      <Stack
+                        gap={2}
+                        className="mt-2 p-3 bg-red-50 border border-red-200 rounded-lg"
+                      >
+                        <Inline gap={2}>
                           <PiWarningCircle className="w-4 h-4 text-red-600" />
                           <span className="text-sm font-medium text-red-800">
                             {duplicateCheck.duplicateType === 'url'
@@ -1128,7 +1131,7 @@ const CreateWorkModal = ({
                               : `Uma obra com o título "${duplicateCheck.work?.title}" deste compositor já existe no sistema.`}
                           </p>
                         </div>
-                      </div>
+                      </Stack>
                     )}
 
                     {!isEditingExternalSource && (
@@ -1154,8 +1157,11 @@ const CreateWorkModal = ({
                     )}
 
                     {scrapingResult && (
-                      <div className="mt-4 p-3 bg-green-50 border border-green-200 rounded-lg">
-                        <Inline gap={2} className="mb-2">
+                      <Stack
+                        gap={2}
+                        className="mt-4 p-3 bg-green-50 border border-green-200 rounded-lg"
+                      >
+                        <Inline gap={2}>
                           <PiCheck className="w-4 h-4 text-green-600" />
                           <span className="text-sm font-medium text-green-800">
                             {t('modal_work_scraping_success')}
@@ -1168,7 +1174,7 @@ const CreateWorkModal = ({
                             completeness: scrapingResult.data.dataCompleteness,
                           })}
                         </div>
-                      </div>
+                      </Stack>
                     )}
 
                     {isEditingExternalSource && (
@@ -1342,7 +1348,7 @@ const CreateWorkModal = ({
                   </div>
 
                   {isPartOfCollection && (
-                    <div className="space-y-4 border-t border-theme-secondary pt-4">
+                    <Stack className="border-t border-theme-secondary pt-4">
                       {/* Informação sobre compositor */}
                       <div className="p-3 bg-blue-50 border border-blue-200 rounded-lg">
                         <Inline gap={2}>
@@ -1401,7 +1407,7 @@ const CreateWorkModal = ({
                       ) : (
                         <></>
                       )}
-                    </div>
+                    </Stack>
                   )}
                 </AnimatedCard>
 
@@ -1641,7 +1647,10 @@ const CreateWorkModal = ({
                   </div>
 
                   {includeMedia && (
-                    <div className="space-y-6 border-t border-theme-secondary pt-4">
+                    <Stack
+                      gap={6}
+                      className="border-t border-theme-secondary pt-4"
+                    >
                       {/* Spotify */}
                       <div className="space-y-3">
                         <Inline gap={2}>
@@ -1687,7 +1696,7 @@ const CreateWorkModal = ({
                       </div>
 
                       {/* Custom Audio */}
-                      <div className="space-y-3">
+                      <Stack gap={3}>
                         <Inline gap={2}>
                           <PiMusicNotes className="w-5 h-5 text-blue-400" />
                           <h4 className="text-lg font-semibold text-theme-primary">
@@ -1737,11 +1746,11 @@ const CreateWorkModal = ({
                             </Text>
                           )}
                         </div>
-                      </div>
+                      </Stack>
 
                       {/* Video Lesson */}
                       {user && user.role >= 1 && (
-                        <div className="space-y-4">
+                        <Stack>
                           <div className="flex items-center justify-between">
                             <Inline gap={2}>
                               <PiGraduationCap className="w-5 h-5 text-purple-400" />
@@ -1897,9 +1906,9 @@ const CreateWorkModal = ({
                               )}
                             </div>
                           )}
-                        </div>
+                        </Stack>
                       )}
-                    </div>
+                    </Stack>
                   )}
                 </AnimatedCard>
 

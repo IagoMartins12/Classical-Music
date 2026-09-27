@@ -202,14 +202,14 @@ export function CategoryForm({ mode, category }: CategoryFormProps) {
   };
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-6">
+    <Stack gap={6} as="form" onSubmit={handleSubmit}>
       {/* Basic Info Card */}
       <Card>
         <h3 className="text-lg font-semibold text-theme-primary mb-4">
           Informações Básicas
         </h3>
 
-        <div className="space-y-4">
+        <Stack>
           {/* Name */}
           <div>
             <label className="block text-sm font-medium text-theme-primary mb-2">
@@ -289,7 +289,7 @@ export function CategoryForm({ mode, category }: CategoryFormProps) {
               {formData.description.length}/200 caracteres
             </Text>
           </div>
-        </div>
+        </Stack>
       </Card>
 
       {/* Appearance Card */}
@@ -316,8 +316,8 @@ export function CategoryForm({ mode, category }: CategoryFormProps) {
             </Text>
 
             {formData.icon && (
-              <div className="mt-3 p-4 bg-theme-elevated rounded-lg">
-                <Text papel="legenda" tom="fraco" as="p" className="mb-2">
+              <Stack gap={2} className="mt-3 p-4 bg-theme-elevated rounded-lg">
+                <Text papel="legenda" tom="fraco" as="p">
                   Preview:
                 </Text>
                 <Inline gap={3}>
@@ -336,7 +336,7 @@ export function CategoryForm({ mode, category }: CategoryFormProps) {
                     {formData.name || 'Nome da Categoria'}
                   </span>
                 </Inline>
-              </div>
+              </Stack>
             )}
           </div>
 
@@ -515,6 +515,6 @@ export function CategoryForm({ mode, category }: CategoryFormProps) {
           </span>
         </Inline>
       </Inline>
-    </form>
+    </Stack>
   );
 }

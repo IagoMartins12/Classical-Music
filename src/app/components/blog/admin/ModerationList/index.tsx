@@ -25,7 +25,7 @@ import {
 import { toast } from 'react-hot-toast';
 import Button from '@/app/components/Common/Button';
 import { ThreadViewModal } from '../ThreadViewModal';
-import { Inline } from '@/app/components/ui/Layout';
+import { Stack, Inline } from '@/app/components/ui/Layout';
 import { Text } from '@/app/components/ui/Text';
 
 interface Comment {
@@ -227,7 +227,7 @@ export function ModerationList({
           </p>
         </div>
       ) : (
-        <div className="space-y-4">
+        <Stack>
           {initialComments.map((comment) => {
             const statusBadge = getStatusBadge(comment.status);
             const isReply = !!comment.parent;
@@ -357,8 +357,11 @@ export function ModerationList({
                 <div className="p-4">
                   {/* Reply Context */}
                   {comment.parent && (
-                    <div className="mb-3 p-3 bg-theme-elevated rounded-lg border-l-4 border-brand-primary">
-                      <Text papel="legenda" tom="fraco" as="p" className="mb-1">
+                    <Stack
+                      gap={1}
+                      className="mb-3 p-3 bg-theme-elevated rounded-lg border-l-4 border-brand-primary"
+                    >
+                      <Text papel="legenda" tom="fraco" as="p">
                         Respondendo a{' '}
                         {`${comment.parent.user.firstName || ''} ${
                           comment.parent.user.lastName || ''
@@ -373,7 +376,7 @@ export function ModerationList({
                       >
                         {comment.parent.content}
                       </Text>
-                    </div>
+                    </Stack>
                   )}
 
                   {/* Comment Text */}
@@ -470,7 +473,7 @@ export function ModerationList({
               </div>
             );
           })}
-        </div>
+        </Stack>
       )}
 
       {/* ✅ MODAL DE VISUALIZAÇÃO DE THREAD */}

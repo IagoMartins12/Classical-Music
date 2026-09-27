@@ -37,6 +37,7 @@ import {
 import { Text } from '@/app/components/ui/Text';
 import { Field } from '@/app/components/ui/Field';
 import { NomeAcao } from '@/app/components/ui/NomeAcao';
+import { Stack } from '@/app/components/ui/Layout';
 
 interface Coupon {
   id: string;
@@ -389,7 +390,7 @@ export default function AdminCouponsPageClient() {
               </h3>
             </div>
 
-            <div className="space-y-4">
+            <Stack>
               {/* Código */}
               <div>
                 <Input
@@ -597,7 +598,7 @@ export default function AdminCouponsPageClient() {
                   Cupom ativo
                 </label>
               </div>
-            </div>
+            </Stack>
 
             {/* Buttons */}
             <div className="flex gap-4 mt-8">
@@ -754,8 +755,8 @@ function CouponCard({
 
       {/* Planos Aplicáveis */}
       {coupon.applicablePlans.length > 0 && (
-        <div className="mb-4">
-          <Text papel="legenda" tom="fraco" as="p" className="mb-2">
+        <Stack gap={2} className="mb-4">
+          <Text papel="legenda" tom="fraco" as="p">
             Planos:
           </Text>
           <div className="flex flex-wrap gap-2">
@@ -770,7 +771,7 @@ function CouponCard({
               </Text>
             ))}
           </div>
-        </div>
+        </Stack>
       )}
 
       {/* Actions */}

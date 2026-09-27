@@ -14,6 +14,7 @@ import Button from '@/app/components/Common/Button';
 import Checkbox from '@/app/components/Common/Checkbox';
 import { Text } from '@/app/components/ui/Text';
 import { Field } from '@/app/components/ui/Field';
+import { Stack } from '@/app/components/ui/Layout';
 
 interface QuoteMusicalModalProps {
   editor: Editor;
@@ -202,8 +203,8 @@ export function QuoteMusicalModal({
 
             {/* ABA UPLOAD */}
             {activeTab === 'upload' && (
-              <div>
-                <label className="block text-sm font-medium text-theme-primary mb-2">
+              <Stack gap={2}>
+                <label className="block text-sm font-medium text-theme-primary">
                   Selecionar Arquivo de Áudio
                 </label>
                 <div className="border-2 border-dashed border-theme-secondary rounded-lg p-4 text-center hover:border-brand-primary transition-colors">
@@ -243,7 +244,7 @@ export function QuoteMusicalModal({
                     </label>
                   )}
                 </div>
-              </div>
+              </Stack>
             )}
 
             {/* ABA YOUTUBE */}

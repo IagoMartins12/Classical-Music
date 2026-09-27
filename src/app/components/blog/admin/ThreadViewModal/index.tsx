@@ -23,6 +23,7 @@ import Modal from '@/app/components/Modal';
 import Button from '@/app/components/Common/Button';
 import { toast } from 'react-hot-toast';
 import { Text } from '@/app/components/ui/Text';
+import { Stack } from '@/app/components/ui/Layout';
 
 interface ThreadComment {
   id: string;
@@ -306,16 +307,16 @@ export function ThreadViewModal({
             <PiSpinnerGap className="w-8 h-8 animate-spin text-brand-primary" />
           </div>
         ) : thread ? (
-          <div className="space-y-4">
+          <Stack>
             {/* Info Box */}
-            <div>
-              <h2 className="text-xl font-bold text-theme-primary mb-1">
+            <Stack gap={1}>
+              <h2 className="text-xl font-bold text-theme-primary">
                 Visualizar Thread
               </h2>
               <Text papel="rotulo" tom="suave" as="p">
                 Artigo: {articleTitle}
               </Text>
-            </div>
+            </Stack>
             <div className="bg-blue-50 dark:bg-blue-900/10 border border-blue-200 dark:border-blue-800 rounded-lg p-4">
               <div className="flex items-start gap-3">
                 <div className="w-10 h-10 bg-blue-500/20 rounded-lg flex items-center justify-center flex-shrink-0">
@@ -337,7 +338,7 @@ export function ThreadViewModal({
             <div className="bg-theme-elevated rounded-lg p-4">
               {renderComment(thread)}
             </div>
-          </div>
+          </Stack>
         ) : (
           <div className="text-center py-12">
             <PiWarning className="w-12 h-12 text-theme-tertiary mx-auto mb-3" />

@@ -21,7 +21,7 @@ import {
 import Button from '@/app/components/Common/Button';
 import { AnimatedCard } from '@/app/components/animation/AnimatedComponents';
 import toast from 'react-hot-toast';
-import { Inline } from '@/app/components/ui/Layout';
+import { Stack, Inline } from '@/app/components/ui/Layout';
 import { Text } from '@/app/components/ui/Text';
 
 interface LogsCleanupProps {
@@ -239,7 +239,7 @@ export default function LogsCleanup({ onClose }: LogsCleanupProps) {
 
       {/* Seleção Manual */}
       <AnimatedCard className="classical-card p-6">
-        <div className="space-y-4">
+        <Stack>
           <div className="flex items-center justify-between">
             <h3 className="text-lg font-bold text-theme-primary">
               Seleção Manual de Datas
@@ -387,7 +387,7 @@ export default function LogsCleanup({ onClose }: LogsCleanupProps) {
               </Inline>
             </div>
           )}
-        </div>
+        </Stack>
       </AnimatedCard>
 
       {/* Dialog de Confirmação */}

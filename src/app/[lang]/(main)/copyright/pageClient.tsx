@@ -31,7 +31,7 @@ import {
   FloatingElement,
 } from '../../../components/animation/AnimatedComponents';
 import { useTranslation } from '@/app/context/TranslationContext';
-import { Inline } from '@/app/components/ui/Layout';
+import { Stack, Inline } from '@/app/components/ui/Layout';
 import { Text } from '@/app/components/ui/Text';
 
 interface CopyrightSection {
@@ -255,14 +255,14 @@ export default function CopyrightPage() {
                   <div className="w-16 h-16 bg-gradient-to-br from-accent-blue to-accent-purple rounded-2xl flex items-center justify-center flex-shrink-0">
                     <PiScales className="w-8 h-8 text-theme-primary" />
                   </div>
-                  <div>
-                    <h2 className="text-2xl font-bold classical-title text-theme-primary mb-4">
+                  <Stack>
+                    <h2 className="text-2xl font-bold classical-title text-theme-primary">
                       {t('copyright_jsx_h2_children_0__compromisso_legalidade')}
                     </h2>
                     <p className="text-lg text-theme-secondary classical-body leading-relaxed">
                       {t('copyright_jsx_p_children_0__score')}
                     </p>
-                  </div>
+                  </Stack>
                 </div>
               </AnimatedCard>
             </div>
@@ -275,14 +275,14 @@ export default function CopyrightPage() {
         <AnimatedContainer delay={0.1} staggerSpeed="normal">
           <div className=" ">
             <div className="max-w-4xl mx-auto">
-              <div className="text-center mb-8">
-                <h2 className="text-3xl font-bold classical-title text-theme-primary mb-4">
+              <Stack className="text-center mb-8">
+                <h2 className="text-3xl font-bold classical-title text-theme-primary">
                   {t('copyright_jsx_h2_children_0__exemplos_domínio_público')}
                 </h2>
                 <p className="text-xl text-theme-secondary">
                   {t('copyright_jsx_p_children_0__composer_1')}
                 </p>
-              </div>
+              </Stack>
 
               <AnimatedCard hover="lift" className="classical-card">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -339,7 +339,7 @@ export default function CopyrightPage() {
                           {section.title}
                         </h3>
 
-                        <div className="space-y-4">
+                        <Stack>
                           {section.content.map((paragraph, pIndex) => (
                             <p
                               key={pIndex}
@@ -348,7 +348,7 @@ export default function CopyrightPage() {
                               {paragraph}
                             </p>
                           ))}
-                        </div>
+                        </Stack>
                       </div>
                     </div>
                   </div>
@@ -364,17 +364,17 @@ export default function CopyrightPage() {
         <AnimatedContainer delay={0.1} staggerSpeed="normal">
           <div className=" ">
             <div className="max-w-4xl mx-auto">
-              <div className="text-center mb-12">
-                <h2 className="text-3xl font-bold classical-title text-theme-primary mb-4">
+              <Stack className="text-center mb-12">
+                <h2 className="text-3xl font-bold classical-title text-theme-primary">
                   {t('copyright_jsx_h2_children_0__processo_report')}
                 </h2>
                 <p className="text-xl text-theme-secondary">
                   {t('copyright_jsx_p_children_0__como_reportar_violações')}
                 </p>
-              </div>
+              </Stack>
 
               <AnimatedCard hover="lift" className="classical-card !p-8 md:p-8">
-                <div className="space-y-6">
+                <Stack gap={6}>
                   {reportSteps.map((step, index) => (
                     <div
                       key={index}
@@ -383,17 +383,17 @@ export default function CopyrightPage() {
                       <div className="w-8 h-8 bg-brand-gradient rounded-full flex items-center justify-center text-white font-bold text-sm flex-shrink-0">
                         {step.step}
                       </div>
-                      <div>
-                        <h3 className="font-semibold text-theme-primary mb-2">
+                      <Stack gap={2}>
+                        <h3 className="font-semibold text-theme-primary">
                           {step.title}
                         </h3>
                         <p className="text-theme-secondary">
                           {step.description}
                         </p>
-                      </div>
+                      </Stack>
                     </div>
                   ))}
-                </div>
+                </Stack>
               </AnimatedCard>
             </div>
           </div>
@@ -410,8 +410,8 @@ export default function CopyrightPage() {
                   <div className="w-12 h-12 bg-gradient-to-br from-accent-amber to-accent-red rounded-xl flex items-center justify-center flex-shrink-0">
                     <PiWarningCircle className="w-6 h-6 text-theme-primary" />
                   </div>
-                  <div>
-                    <h3 className="text-xl font-bold classical-title text-theme-primary mb-4">
+                  <Stack>
+                    <h3 className="text-xl font-bold classical-title text-theme-primary">
                       {t('copyright_jsx_h3_children_0__warning')}
                     </h3>
                     <ul className="space-y-3 text-theme-secondary">
@@ -448,7 +448,7 @@ export default function CopyrightPage() {
                         </span>
                       </li>
                     </ul>
-                  </div>
+                  </Stack>
                 </div>
               </AnimatedCard>
             </div>
@@ -481,7 +481,7 @@ export default function CopyrightPage() {
                   )}
                 </p>
 
-                <div className="space-y-4 mb-12">
+                <Stack className="mb-12">
                   <Inline gap={3} className="justify-center">
                     <PiEnvelopeSimple className="w-5 h-5 text-brand-primary" />
                     <span className="text-theme-primary font-medium">
@@ -496,7 +496,7 @@ export default function CopyrightPage() {
                       )}
                     </span>
                   </Inline>
-                </div>
+                </Stack>
 
                 <div className="flex flex-col sm:flex-row gap-6 justify-center">
                   <Link

@@ -13,7 +13,7 @@ import {
 import { toast } from 'react-hot-toast';
 import Image from '@/app/components/SmartImage';
 import { uploadComposerImage } from '@/app/requests/uploads-client';
-import { Inline } from '@/app/components/ui/Layout';
+import { Stack, Inline } from '@/app/components/ui/Layout';
 import { Text } from '@/app/components/ui/Text';
 
 interface ComposerImageUploadProps {
@@ -275,7 +275,7 @@ const ComposerImageUpload: React.FC<ComposerImageUploadProps> = ({
         </div>
       ) : (
         /* URL Mode */
-        <div className="w-full max-w-md space-y-3">
+        <Stack gap={3} className="w-full max-w-md">
           <div className="flex space-x-2">
             <input
               type="url"
@@ -298,7 +298,7 @@ const ComposerImageUpload: React.FC<ComposerImageUploadProps> = ({
           <Text papel="legenda" tom="fraco" as="p" className="text-center">
             Insira a URL completa da imagem
           </Text>
-        </div>
+        </Stack>
       )}
 
       {/* Hidden File Input */}

@@ -33,7 +33,7 @@ import SendTestCampaignModal from './SendTestCampaignModal';
 import LoadingAdminState from '../../Common/LoadingState';
 import EditCampaignModal from '../EditCampaignModal';
 import { cancelCampaignRequest } from '@/app/requests/admin/newsletter';
-import { Inline } from '@/app/components/ui/Layout';
+import { Stack, Inline } from '@/app/components/ui/Layout';
 import { Text } from '@/app/components/ui/Text';
 
 interface FilterState {
@@ -236,7 +236,7 @@ export default function NewsletterCampaignsClient() {
 
   return (
     <PageContainer showBackground={true}>
-      <div className="space-y-8">
+      <Stack gap={8}>
         <AnimatedContainer
           delay={0.1}
           staggerSpeed="normal"
@@ -264,14 +264,14 @@ export default function NewsletterCampaignsClient() {
             {/* Total */}
             <AnimatedCard className="classical-card p-6">
               <div className="flex items-center justify-between">
-                <div>
-                  <Text papel="rotulo" tom="fraco" as="p" className="mb-1">
+                <Stack gap={1}>
+                  <Text papel="rotulo" tom="fraco" as="p">
                     Total
                   </Text>
                   <p className="text-3xl font-bold text-theme-primary">
                     {campaigns.length}
                   </p>
-                </div>
+                </Stack>
                 <div className="w-12 h-12 bg-accent-blue/20 rounded-xl flex items-center justify-center">
                   <PiEnvelopeSimple className="w-6 h-6 text-accent-blue" />
                 </div>
@@ -281,14 +281,14 @@ export default function NewsletterCampaignsClient() {
             {/* Enviadas */}
             <AnimatedCard className="classical-card p-6">
               <div className="flex items-center justify-between">
-                <div>
-                  <Text papel="rotulo" tom="fraco" as="p" className="mb-1">
+                <Stack gap={1}>
+                  <Text papel="rotulo" tom="fraco" as="p">
                     Enviadas
                   </Text>
                   <p className="text-3xl font-bold text-accent-green">
                     {campaigns.filter((c) => c.status === 'SENT').length}
                   </p>
-                </div>
+                </Stack>
                 <div className="w-12 h-12 bg-accent-green/20 rounded-xl flex items-center justify-center">
                   <PiCheckCircle className="w-6 h-6 text-accent-green" />
                 </div>
@@ -298,14 +298,14 @@ export default function NewsletterCampaignsClient() {
             {/* Agendadas */}
             <AnimatedCard className="classical-card p-6">
               <div className="flex items-center justify-between">
-                <div>
-                  <Text papel="rotulo" tom="fraco" as="p" className="mb-1">
+                <Stack gap={1}>
+                  <Text papel="rotulo" tom="fraco" as="p">
                     Agendadas
                   </Text>
                   <p className="text-3xl font-bold text-accent-purple">
                     {campaigns.filter((c) => c.status === 'SCHEDULED').length}
                   </p>
-                </div>
+                </Stack>
                 <div className="w-12 h-12 bg-accent-purple/20 rounded-xl flex items-center justify-center">
                   <PiCalendarBlank className="w-6 h-6 text-accent-purple" />
                 </div>
@@ -315,8 +315,8 @@ export default function NewsletterCampaignsClient() {
             {/* Prontas para Teste */}
             <AnimatedCard className="classical-card p-6">
               <div className="flex items-center justify-between">
-                <div>
-                  <Text papel="rotulo" tom="fraco" as="p" className="mb-1">
+                <Stack gap={1}>
+                  <Text papel="rotulo" tom="fraco" as="p">
                     Prontas p/ Teste
                   </Text>
                   <p className="text-3xl font-bold text-accent-purple">
@@ -326,7 +326,7 @@ export default function NewsletterCampaignsClient() {
                       ).length
                     }
                   </p>
-                </div>
+                </Stack>
                 <div className="w-12 h-12 bg-accent-purple/20 rounded-xl flex items-center justify-center">
                   <PiFlask className="w-6 h-6 text-accent-purple" />
                 </div>
@@ -336,14 +336,14 @@ export default function NewsletterCampaignsClient() {
             {/* Rascunhos */}
             <AnimatedCard className="classical-card p-6">
               <div className="flex items-center justify-between">
-                <div>
-                  <Text papel="rotulo" tom="fraco" as="p" className="mb-1">
+                <Stack gap={1}>
+                  <Text papel="rotulo" tom="fraco" as="p">
                     Rascunhos
                   </Text>
                   <p className="text-3xl font-bold text-accent-amber">
                     {campaigns.filter((c) => c.status === 'DRAFT').length}
                   </p>
-                </div>
+                </Stack>
                 <div className="w-12 h-12 bg-accent-amber/20 rounded-xl flex items-center justify-center">
                   <PiNotePencil className="w-6 h-6 text-accent-amber" />
                 </div>
@@ -691,7 +691,7 @@ export default function NewsletterCampaignsClient() {
             )}
           </AnimatedCard>
         </AnimatedContainer>
-      </div>
+      </Stack>
 
       {/* Modais Existentes */}
       {showCreateModal && (

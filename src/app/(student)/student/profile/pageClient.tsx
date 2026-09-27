@@ -44,7 +44,7 @@ import { useStudentProfile } from '@/app/hooks/lessonsSystem/useStudentProfile';
 import { useToast } from '@/app/hooks/useToast';
 import Select from '@/app/components/Common/Select';
 import { useTranslation } from '@/app/context/TranslationContext';
-import { Inline } from '@/app/components/ui/Layout';
+import { Stack, Inline } from '@/app/components/ui/Layout';
 import { Text } from '@/app/components/ui/Text';
 import { Field } from '@/app/components/ui/Field';
 import { NomeAcao } from '@/app/components/ui/NomeAcao';
@@ -560,7 +560,7 @@ export default function StudentProfilePageClient({
               </div>
 
               {editingSection === 'personal' ? (
-                <div className="space-y-6">
+                <Stack gap={6}>
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div>
                       <Field
@@ -680,10 +680,10 @@ export default function StudentProfilePageClient({
                       <span>{t('save')}</span>
                     </Inline>
                   </Inline>
-                </div>
+                </Stack>
               ) : (
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                  <div className="space-y-4">
+                  <Stack>
                     <div>
                       <label className="text-sm text-theme-tertiary">
                         Nome
@@ -718,9 +718,9 @@ export default function StudentProfilePageClient({
                         <span>{profile?.user.phone || t('not_informed')}</span>
                       </Inline>
                     </div>
-                  </div>
+                  </Stack>
 
-                  <div className="space-y-4">
+                  <Stack>
                     <div>
                       <label className="text-sm text-theme-tertiary">
                         {t('location')}
@@ -750,7 +750,7 @@ export default function StudentProfilePageClient({
                           : 'N/A'}
                       </div>
                     </div>
-                  </div>
+                  </Stack>
                 </div>
               )}
             </div>
@@ -793,7 +793,7 @@ export default function StudentProfilePageClient({
               </div>
 
               {editingSection === 'study' ? (
-                <div className="space-y-6">
+                <Stack gap={6}>
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div>
                       <Select
@@ -921,9 +921,9 @@ export default function StudentProfilePageClient({
                       <span>{t('save')}</span>
                     </Inline>
                   </Inline>
-                </div>
+                </Stack>
               ) : (
-                <div className="space-y-6">
+                <Stack gap={6}>
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div>
                       <label className="text-sm text-theme-tertiary">
@@ -1011,7 +1011,7 @@ export default function StudentProfilePageClient({
                       </Button>
                     </div>
                   )}
-                </div>
+                </Stack>
               )}
             </div>
           </AnimatedCard>
@@ -1053,9 +1053,9 @@ export default function StudentProfilePageClient({
               </div>
 
               {editingSection === 'preferences' ? (
-                <div className="space-y-6">
-                  <div>
-                    <label className="block text-sm font-medium text-theme-primary mb-4">
+                <Stack gap={6}>
+                  <Stack>
+                    <label className="block text-sm font-medium text-theme-primary">
                       {t('preferred_genres')}
                     </label>
                     <div className="grid grid-cols-2 md:grid-cols-3 gap-2">
@@ -1078,7 +1078,7 @@ export default function StudentProfilePageClient({
                         );
                       })}
                     </div>
-                  </div>
+                  </Stack>
 
                   <Inline
                     gap={3}
@@ -1107,7 +1107,7 @@ export default function StudentProfilePageClient({
                       <span>{t('save')}</span>
                     </Inline>
                   </Inline>
-                </div>
+                </Stack>
               ) : (
                 <div>
                   {profile?.preferredGenres &&
@@ -1184,7 +1184,7 @@ export default function StudentProfilePageClient({
               </div>
 
               {editingSection === 'privacy' ? (
-                <div className="space-y-6">
+                <Stack gap={6}>
                   <div>
                     <Field.Selecao
                       label={t('profile_visibility')}
@@ -1205,7 +1205,7 @@ export default function StudentProfilePageClient({
                     </Field.Selecao>
                   </div>
 
-                  <div className="space-y-4">
+                  <Stack>
                     <div className="flex items-center justify-between p-4 bg-theme-secondary/5 rounded-lg">
                       <div>
                         <div className="font-medium text-theme-primary">
@@ -1271,7 +1271,7 @@ export default function StudentProfilePageClient({
                         />
                       </button>
                     </div>
-                  </div>
+                  </Stack>
 
                   <Inline
                     gap={3}
@@ -1300,9 +1300,9 @@ export default function StudentProfilePageClient({
                       <span>{t('save')}</span>
                     </Inline>
                   </Inline>
-                </div>
+                </Stack>
               ) : (
-                <div className="space-y-4">
+                <Stack>
                   <div>
                     <label className="text-sm text-theme-tertiary">
                       {t('profile_visibility')}
@@ -1314,7 +1314,7 @@ export default function StudentProfilePageClient({
                     </div>
                   </div>
 
-                  <div className="space-y-3">
+                  <Stack gap={3}>
                     <div className="flex items-center justify-between p-3 bg-theme-secondary/5 rounded-lg">
                       <span className="text-theme-primary">
                         {t('public_progress')}
@@ -1348,8 +1348,8 @@ export default function StudentProfilePageClient({
                           : t('deactivated')}
                       </span>
                     </div>
-                  </div>
-                </div>
+                  </Stack>
+                </Stack>
               )}
             </div>
           </AnimatedCard>
@@ -1395,7 +1395,7 @@ export default function StudentProfilePageClient({
               </div>
 
               {editingSection === 'communication' ? (
-                <div className="space-y-6">
+                <Stack gap={6}>
                   <div>
                     <Field.Selecao
                       label={t('preferred_contact')}
@@ -1443,7 +1443,7 @@ export default function StudentProfilePageClient({
                       <span>{t('save')}</span>
                     </Inline>
                   </Inline>
-                </div>
+                </Stack>
               ) : (
                 <div>
                   <label className="text-sm text-theme-tertiary">
@@ -1496,12 +1496,12 @@ export default function StudentProfilePageClient({
               {studyData && (
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   {/* Want to Learn */}
-                  <div>
-                    <h3 className="text-lg font-bold text-theme-primary mb-4 flex items-center">
+                  <Stack>
+                    <h3 className="text-lg font-bold text-theme-primary flex items-center">
                       <PiTarget className="w-5 h-5 mr-2" />
                       {t('want_to_learn')} ({studyData.wantToLearn.length})
                     </h3>
-                    <div className="space-y-2">
+                    <Stack gap={2}>
                       {studyData.wantToLearn.slice(0, 5).map((work) => (
                         <div
                           key={work.workId}
@@ -1533,16 +1533,16 @@ export default function StudentProfilePageClient({
                           </Text>
                         </div>
                       )}
-                    </div>
-                  </div>
+                    </Stack>
+                  </Stack>
 
                   {/* Learned */}
-                  <div>
-                    <h3 className="text-lg font-bold text-theme-primary mb-4 flex items-center">
+                  <Stack>
+                    <h3 className="text-lg font-bold text-theme-primary flex items-center">
                       <PiCheck className="w-5 h-5 mr-2" />
                       {t('already_learned')} ({studyData.learned.length})
                     </h3>
-                    <div className="space-y-2">
+                    <Stack gap={2}>
                       {studyData.learned.slice(0, 5).map((work) => (
                         <div
                           key={work.workId}
@@ -1578,20 +1578,20 @@ export default function StudentProfilePageClient({
                           </Text>
                         </div>
                       )}
-                    </div>
-                  </div>
+                    </Stack>
+                  </Stack>
                 </div>
               )}
 
               {/* Recent Annotations */}
               {studyData?.recentAnnotations &&
                 studyData.recentAnnotations.length > 0 && (
-                  <div className="mt-8 pt-6 border-t border-theme-secondary">
-                    <h3 className="text-lg font-bold text-theme-primary mb-4 flex items-center">
+                  <Stack className="mt-8 pt-6 border-t border-theme-secondary">
+                    <h3 className="text-lg font-bold text-theme-primary flex items-center">
                       <PiPencilLine className="w-5 h-5 mr-2" />
                       {t('recent_annotations')}
                     </h3>
-                    <div className="space-y-2">
+                    <Stack gap={2}>
                       {studyData.recentAnnotations.map((annotation) => (
                         <div
                           key={annotation.id}
@@ -1610,17 +1610,17 @@ export default function StudentProfilePageClient({
                           </Text>
                         </div>
                       ))}
-                    </div>
-                  </div>
+                    </Stack>
+                  </Stack>
                 )}
 
               {/* Active Teachers */}
               {profile.teachers.length > 0 && (
-                <div className="mt-8 pt-6 border-t border-theme-secondary">
-                  <h3 className="text-lg font-bold text-theme-primary mb-4">
+                <Stack className="mt-8 pt-6 border-t border-theme-secondary">
+                  <h3 className="text-lg font-bold text-theme-primary">
                     {t('my_teachers')}
                   </h3>
-                  <div className="space-y-3">
+                  <Stack gap={3}>
                     {profile.teachers
                       .filter((t) => t.isActive)
                       .map((teacher) => (
@@ -1660,8 +1660,8 @@ export default function StudentProfilePageClient({
                           </div>
                         </Inline>
                       ))}
-                  </div>
-                </div>
+                  </Stack>
+                </Stack>
               )}
             </div>
           </AnimatedCard>

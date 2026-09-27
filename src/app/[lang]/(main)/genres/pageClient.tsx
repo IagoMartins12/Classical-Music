@@ -16,7 +16,7 @@ import {
 import AnimatedMusicalNotes2 from '../../../components/AnimatedMusicalNotes2';
 import ViewModeToggle from '../../../components/ViewModeToggle';
 import { useTranslation } from '@/app/context/TranslationContext';
-import { Inline } from '@/app/components/ui/Layout';
+import { Stack, Inline } from '@/app/components/ui/Layout';
 import { Text } from '@/app/components/ui/Text';
 import { NomeAcao } from '@/app/components/ui/NomeAcao';
 import { Button } from '@/app/components/ui/Button';
@@ -133,7 +133,7 @@ export default function GenresClient({ genres }: GenresClientProps) {
         <div className="absolute top-1/2 left-1/4 w-32 h-32 bg-accent-blue/20 rounded-full blur-xl"></div>
       </div>
 
-      <div className="section-wrap space-y-8 relative z-10">
+      <Stack gap={8} className="section-wrap relative z-10">
         {/* Header */}
         <div className="relative text-center py-16">
           <AnimatedMusicalNotes2 />
@@ -249,7 +249,7 @@ export default function GenresClient({ genres }: GenresClientProps) {
 
         {/* Genres Display */}
         {filteredGenres.length > 0 ? (
-          <div className="space-y-8">
+          <Stack gap={8}>
             {Object.entries(groupedGenres).map(([letter, genresInGroup]) => (
               <Card key={letter}>
                 {/* Section Header - Clicável para expandir/colapsar */}
@@ -375,7 +375,7 @@ export default function GenresClient({ genres }: GenresClientProps) {
                 )}
               </Card>
             ))}
-          </div>
+          </Stack>
         ) : (
           // Empty State
           <div className="classical-card p-12 text-center">
@@ -393,7 +393,7 @@ export default function GenresClient({ genres }: GenresClientProps) {
             </Button>
           </div>
         )}
-      </div>
+      </Stack>
     </div>
   );
 }

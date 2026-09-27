@@ -9,6 +9,7 @@ import SectionTitle from '../Utils/SectionTitle';
 import { translateEpochWithHook } from '@/app/utils/translations/epochTranslationComposer';
 import { useTranslation } from '@/app/context/TranslationContext';
 import { Text } from '@/app/components/ui/Text';
+import { Stack } from '@/app/components/ui/Layout';
 
 interface Epoch {
   id: string;
@@ -164,7 +165,7 @@ const EpochCard = ({ epoch }: { epoch: Epoch }) => {
         ${isExpanded ? 'max-h-40 opacity-100' : 'max-h-0 opacity-0'}
       `}
       >
-        <div className="space-y-3 px-4">
+        <Stack gap={3} className="px-4">
           {/* Botão Compositores */}
           <Link
             href={
@@ -237,7 +238,7 @@ const EpochCard = ({ epoch }: { epoch: Epoch }) => {
               />
             </svg>
           </Link>
-        </div>
+        </Stack>
       </div>
 
       {/* Dica de interação */}

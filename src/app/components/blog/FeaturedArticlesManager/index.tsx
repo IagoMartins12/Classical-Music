@@ -7,7 +7,7 @@ import {
   loadFeaturedArticles,
   reorderFeaturedArticles,
 } from '@/app/requests/blog/admin-actions';
-import { Inline } from '@/app/components/ui/Layout';
+import { Stack, Inline } from '@/app/components/ui/Layout';
 import { Text } from '@/app/components/ui/Text';
 import { Card } from '@/app/components/ui/Card';
 
@@ -156,13 +156,13 @@ export default function FeaturedArticlesManager({
   if (loading) {
     return (
       <Card nivel={2} densidade="compacta">
-        <div className="animate-pulse">
-          <div className="h-4 bg-theme-secondary rounded w-1/4 mb-4"></div>
-          <div className="space-y-2">
+        <Stack className="animate-pulse">
+          <div className="h-4 bg-theme-secondary rounded w-1/4"></div>
+          <Stack gap={2}>
             <div className="h-10 bg-theme-secondary rounded"></div>
             <div className="h-10 bg-theme-secondary rounded"></div>
-          </div>
-        </div>
+          </Stack>
+        </Stack>
       </Card>
     );
   }

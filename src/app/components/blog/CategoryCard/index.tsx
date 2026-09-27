@@ -3,6 +3,7 @@ import Link from 'next/link';
 import Image from '@/app/components/SmartImage';
 import { PiArrowRight } from 'react-icons/pi';
 import { Text } from '@/app/components/ui/Text';
+import { Stack } from '@/app/components/ui/Layout';
 
 interface CategoryCardProps {
   category: {
@@ -95,8 +96,8 @@ export function CategoryCard({
               {category.icon || '📚'}
             </div>
 
-            <div>
-              <h3 className="text-3xl font-bold text-white mb-2 drop-shadow-lg">
+            <Stack gap={2}>
+              <h3 className="text-3xl font-bold text-white drop-shadow-lg">
                 {category.name}
               </h3>
               <div className="flex items-center justify-between">
@@ -105,7 +106,7 @@ export function CategoryCard({
                 </span>
                 <PiArrowRight className="w-6 h-6 text-white group-hover:translate-x-2 transition-transform" />
               </div>
-            </div>
+            </Stack>
           </div>
         </div>
       </Link>

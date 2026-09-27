@@ -8,7 +8,7 @@ import Button from '@/app/components/Common/Button';
 import Input from '@/app/components/Common/Inputs';
 import Select from '@/app/components/Common/Select';
 import { ModelSchema, ModelField } from '@/app/hooks/admin/useDatabaseStudio';
-import { Inline } from '@/app/components/ui/Layout';
+import { Stack, Inline } from '@/app/components/ui/Layout';
 import { Text } from '@/app/components/ui/Text';
 import { NomeAcao } from '@/app/components/ui/NomeAcao';
 import { Card } from '@/app/components/ui/Card';
@@ -238,7 +238,7 @@ export default function FilterPanel({
       title="Filtros Avançados"
       maxWidth="2xl"
     >
-      <div className="space-y-6">
+      <Stack gap={6}>
         {/* Filtros ativos */}
         {Object.keys(activeFilters).length > 0 && (
           <Card densidade="compacta">
@@ -256,7 +256,7 @@ export default function FilterPanel({
               </Button>
             </div>
 
-            <div className="space-y-2">
+            <Stack gap={2}>
               {Object.entries(activeFilters).map(([field, value]) => (
                 <div
                   key={field}
@@ -284,7 +284,7 @@ export default function FilterPanel({
                   </button>
                 </div>
               ))}
-            </div>
+            </Stack>
           </Card>
         )}
 
@@ -368,7 +368,7 @@ export default function FilterPanel({
             Aplicar Filtros
           </Button>
         </Inline>
-      </div>
+      </Stack>
     </Modal>
   );
 }

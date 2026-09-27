@@ -28,7 +28,7 @@ import FloatingIcons from '../../../components/FloatingIcons';
 import AnimatedMusicalNotes from '../../../components/AnimatedMusicalNotes';
 import Image from '@/app/components/SmartImage';
 import { useTranslation } from '@/app/context/TranslationContext';
-import { Inline } from '@/app/components/ui/Layout';
+import { Stack, Inline } from '@/app/components/ui/Layout';
 import { Text } from '@/app/components/ui/Text';
 import { Card } from '@/app/components/ui/Card';
 
@@ -208,7 +208,7 @@ export function InstrumentsPageClient({
         </section>
 
         {/* Main Content */}
-        <div className="section-wrap space-y-12 ">
+        <Stack gap={12} className="section-wrap">
           {instruments.map((instrument) => {
             const Icon = getIcon(instrument.historicalData.iconName);
             const isInstrumentOpen = isInstrumentExpanded(instrument.id);
@@ -268,7 +268,7 @@ export function InstrumentsPageClient({
                       : 'max-h-0 opacity-0'
                   }`}
                 >
-                  <div className="py-4 px-2 md:p-8 space-y-8">
+                  <Stack gap={8} className="py-4 px-2 md:p-8">
                     {/* Brief Description */}
                     <Card nivel={2} className="relative overflow-hidden">
                       <div className="relative z-10">
@@ -281,11 +281,11 @@ export function InstrumentsPageClient({
                     {/* Main Content Grid */}
                     <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
                       {/* Left Column - Historical Info */}
-                      <div className="space-y-6">
+                      <Stack gap={6}>
                         {/* Detailed History */}
                         <Card nivel={2} className="relative overflow-hidden">
-                          <div className="relative z-10">
-                            <Inline gap={3} className="mb-4">
+                          <Stack className="relative z-10">
+                            <Inline gap={3}>
                               <div className="w-8 h-8 bg-gradient-to-br from-accent-blue to-accent-purple rounded-xl flex items-center justify-center">
                                 <PiClockCounterClockwise className="w-4 h-4 text-theme-primary" />
                               </div>
@@ -303,13 +303,13 @@ export function InstrumentsPageClient({
                             >
                               {instrument.historicalData.detailedHistory}
                             </Text>
-                          </div>
+                          </Stack>
                         </Card>
 
                         {/* Basic Info */}
                         <Card nivel={2} className="relative overflow-hidden">
-                          <div className="relative z-10">
-                            <Inline gap={3} className="mb-4">
+                          <Stack className="relative z-10">
+                            <Inline gap={3}>
                               <div className="w-8 h-8 bg-gradient-to-br from-accent-green to-accent-blue rounded-xl flex items-center justify-center">
                                 <PiMapPin className="w-4 h-4 text-theme-primary" />
                               </div>
@@ -319,7 +319,7 @@ export function InstrumentsPageClient({
                                 )}
                               </h3>
                             </Inline>
-                            <div className="space-y-3">
+                            <Stack gap={3}>
                               <div className="flex justify-between">
                                 <span className="text-theme-secondary">
                                   {t('instruments_jsx_span_children_0__origem')}
@@ -361,15 +361,15 @@ export function InstrumentsPageClient({
                                   {instrument.historicalData.category}
                                 </span>
                               </div>
-                            </div>
-                          </div>
+                            </Stack>
+                          </Stack>
                         </Card>
 
                         {/* Top Composer */}
                         {instrument.topComposers[0] && (
                           <Card nivel={2} className="relative overflow-hidden">
-                            <div className="relative z-10">
-                              <Inline gap={3} className="mb-4">
+                            <Stack className="relative z-10">
+                              <Inline gap={3}>
                                 <div className="w-8 h-8 bg-gradient-to-br from-brand-primary to-brand-secondary rounded-xl flex items-center justify-center">
                                   <PiMedal className="w-4 h-4 text-theme-primary" />
                                 </div>
@@ -423,13 +423,13 @@ export function InstrumentsPageClient({
                                   </Text>
                                 </div>
                               </Inline>
-                            </div>
+                            </Stack>
                           </Card>
                         )}
-                      </div>
+                      </Stack>
 
                       {/* Right Column - Expandable Sections */}
-                      <div className="space-y-4">
+                      <Stack>
                         {/* Characteristics */}
                         <div className="classical-card-2 overflow-hidden">
                           <button
@@ -470,7 +470,7 @@ export function InstrumentsPageClient({
                             }`}
                           >
                             <div className="px-6 pb-6 border-t border-theme-secondary">
-                              <div className="space-y-3 pt-4">
+                              <Stack gap={3} className="pt-4">
                                 {instrument.historicalData.characteristics.map(
                                   (char, i) => (
                                     <div
@@ -485,7 +485,7 @@ export function InstrumentsPageClient({
                                     </div>
                                   )
                                 )}
-                              </div>
+                              </Stack>
                             </div>
                           </div>
                         </div>
@@ -530,7 +530,7 @@ export function InstrumentsPageClient({
                             }`}
                           >
                             <div className="px-6 pb-6 border-t border-theme-secondary">
-                              <div className="space-y-4 pt-4">
+                              <Stack className="pt-4">
                                 {instrument.historicalData.evolution.map(
                                   (stage, i) => (
                                     <div
@@ -551,7 +551,7 @@ export function InstrumentsPageClient({
                                     </div>
                                   )
                                 )}
-                              </div>
+                              </Stack>
                             </div>
                           </div>
                         </div>
@@ -596,7 +596,7 @@ export function InstrumentsPageClient({
                             }`}
                           >
                             <div className="px-6 pb-6 border-t border-theme-secondary">
-                              <div className="space-y-3 pt-4">
+                              <Stack gap={3} className="pt-4">
                                 {instrument.historicalData.notableFeatures.map(
                                   (feature, i) => (
                                     <div
@@ -610,7 +610,7 @@ export function InstrumentsPageClient({
                                     </div>
                                   )
                                 )}
-                              </div>
+                              </Stack>
                             </div>
                           </div>
                         </div>
@@ -676,7 +676,7 @@ export function InstrumentsPageClient({
                             </div>
                           </div>
                         </div>
-                      </div>
+                      </Stack>
                     </div>
 
                     {/* Works Section */}
@@ -764,7 +764,7 @@ export function InstrumentsPageClient({
                                       )}
                                     </div>
 
-                                    <div className="space-y-2 text-sm mb-4">
+                                    <Stack gap={2} className="text-sm mb-4">
                                       {work.opOrCatalog && (
                                         <div className="flex items-center text-theme-secondary">
                                           <div className="w-4 h-4 bg-gradient-to-br from-accent-blue to-accent-purple rounded flex items-center justify-center mr-2">
@@ -797,7 +797,7 @@ export function InstrumentsPageClient({
                                           {work.mediaDuration}
                                         </div>
                                       )}
-                                    </div>
+                                    </Stack>
 
                                     <div className="flex items-center justify-between pt-4 border-t border-theme-secondary">
                                       <Link
@@ -844,7 +844,7 @@ export function InstrumentsPageClient({
                         </div>
                       </div>
                     </div>
-                  </div>
+                  </Stack>
                 </div>
 
                 {/* Hover glow effect */}
@@ -852,7 +852,7 @@ export function InstrumentsPageClient({
               </div>
             );
           })}
-        </div>
+        </Stack>
       </div>
 
       {/* Floating Elements */}

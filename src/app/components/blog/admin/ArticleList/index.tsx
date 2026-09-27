@@ -27,7 +27,7 @@ import {
 import { toast } from 'react-hot-toast';
 import Modal from '@/app/components/Modal';
 import Select from '@/app/components/Common/Select';
-import { Inline } from '@/app/components/ui/Layout';
+import { Stack, Inline } from '@/app/components/ui/Layout';
 import { Text } from '@/app/components/ui/Text';
 import { NomeAcao } from '@/app/components/ui/NomeAcao';
 import { Button } from '@/app/components/ui/Button';
@@ -232,7 +232,7 @@ export function ArticleList({
     <>
       {/* Search and Filters */}
       <Card densidade="compacta" className="mb-6">
-        <div className="space-y-4">
+        <Stack>
           {/* Search Bar */}
           <Inline gap={2}>
             <form onSubmit={handleSearch} className="flex-1 relative">
@@ -337,7 +337,7 @@ export function ArticleList({
               </div>
             </div>
           )}
-        </div>
+        </Stack>
       </Card>
 
       {/* Articles Grid */}

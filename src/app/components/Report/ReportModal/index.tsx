@@ -9,7 +9,7 @@ import Modal from '../../Modal';
 import { useToast } from '@/app/hooks/useToast';
 import { useTranslation } from '@/app/hooks/useTranslation';
 import { reportContent } from '@/app/requests/moderation';
-import { Inline } from '@/app/components/ui/Layout';
+import { Stack, Inline } from '@/app/components/ui/Layout';
 import { Text } from '@/app/components/ui/Text';
 import { Field } from '@/app/components/ui/Field';
 
@@ -157,10 +157,10 @@ export default function ReportModal({
           </div>
 
           {/* Form */}
-          <form onSubmit={handleSubmit} className="space-y-6">
+          <Stack gap={6} as="form" onSubmit={handleSubmit}>
             {/* Reason Selection */}
-            <div>
-              <label className="block text-sm font-medium text-theme-primary mb-3">
+            <Stack gap={3}>
+              <label className="block text-sm font-medium text-theme-primary">
                 {t('report_modal_motivo')}
               </label>
               <div className="space-y-2">
@@ -192,7 +192,7 @@ export default function ReportModal({
                   </label>
                 ))}
               </div>
-            </div>
+            </Stack>
 
             {/* Description */}
             <div>
@@ -215,14 +215,14 @@ export default function ReportModal({
             <div className="p-4 bg-accent-amber/10 border border-accent-amber/30 rounded-lg">
               <div className="flex items-start space-x-3">
                 <PiWarning className="w-5 h-5 text-accent-amber flex-shrink-0 mt-0.5" />
-                <div className="text-sm">
-                  <p className="font-medium text-accent-amber mb-1">
+                <Stack gap={1} className="text-sm">
+                  <p className="font-medium text-accent-amber">
                     {t('report_modal_importante')}
                   </p>
                   <p className="text-theme-secondary">
                     {t('report_modal_aviso')}
                   </p>
-                </div>
+                </Stack>
               </div>
             </div>
 
@@ -247,7 +247,7 @@ export default function ReportModal({
                   : t('report_modal_enviar')}
               </Button>
             </div>
-          </form>
+          </Stack>
         </div>
       </AnimatedItem>
     </Modal>

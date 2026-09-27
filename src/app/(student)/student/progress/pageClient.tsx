@@ -40,7 +40,7 @@ import Image from '@/app/components/SmartImage';
 import Link from 'next/link';
 import { useTranslation } from '@/app/context/TranslationContext';
 import dynamic from 'next/dynamic';
-import { Inline } from '@/app/components/ui/Layout';
+import { Stack, Inline } from '@/app/components/ui/Layout';
 import { Text } from '@/app/components/ui/Text';
 import { NomeAcao } from '@/app/components/ui/NomeAcao';
 import { Button } from '@/app/components/ui/Button';
@@ -342,7 +342,7 @@ export default function StudentProgressPageClient({
                 </div>
               </div>
 
-              <div className="space-y-3">
+              <Stack gap={3}>
                 <div className="flex justify-between items-center">
                   <span className="text-theme-secondary">{t('completed')}</span>
                   <span className="font-bold text-theme-primary">
@@ -369,7 +369,7 @@ export default function StudentProgressPageClient({
                     {progressData.stats.assignmentCompletionRate?.toFixed(1)}%
                   </span>
                 </div>
-              </div>
+              </Stack>
             </AnimatedCard>
 
             {/* Study Consistency */}
@@ -383,7 +383,7 @@ export default function StudentProgressPageClient({
                 </div>
               </div>
 
-              <div className="space-y-3">
+              <Stack gap={3}>
                 <div className="flex justify-between items-center">
                   <span className="text-theme-secondary">
                     {t('active_weeks')}
@@ -417,7 +417,7 @@ export default function StudentProgressPageClient({
                           : t('needs_focus')}
                   </span>
                 </div>
-              </div>
+              </Stack>
             </AnimatedCard>
 
             {/* Annotations */}
@@ -431,7 +431,7 @@ export default function StudentProgressPageClient({
                 </div>
               </div>
 
-              <div className="space-y-3">
+              <Stack gap={3}>
                 <div className="flex justify-between items-center">
                   <span className="text-theme-secondary">{t('total')}</span>
                   <span className="font-bold text-theme-primary">
@@ -458,7 +458,7 @@ export default function StudentProgressPageClient({
                     </span>
                   </div>
                 )}
-              </div>
+              </Stack>
             </AnimatedCard>
           </SequentialGrid>
         </AnimatedItem>
@@ -514,7 +514,7 @@ export default function StudentProgressPageClient({
                           </div>
                         </Inline>
 
-                        <div className="space-y-2">
+                        <Stack gap={2}>
                           <div className="flex justify-between text-sm">
                             <span className="text-theme-secondary">
                               {t('lessons')}
@@ -544,7 +544,7 @@ export default function StudentProgressPageClient({
                               </Inline>
                             </div>
                           )}
-                        </div>
+                        </Stack>
 
                         {teacher.specialties.length > 0 && (
                           <div className="mt-3 flex flex-wrap gap-1">
@@ -652,8 +652,8 @@ export default function StudentProgressPageClient({
 
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
               {/* Learned Works */}
-              <div>
-                <h4 className="font-bold text-theme-primary mb-4 flex items-center">
+              <Stack>
+                <h4 className="font-bold text-theme-primary flex items-center">
                   <PiCheckCircle className="w-5 h-5 mr-2 text-accent-green" />
                   {t('already_learned')} ({progressData.stats.learnedWorks})
                 </h4>
@@ -703,11 +703,11 @@ export default function StudentProgressPageClient({
                       </AnimatedItem>
                     ))}
                 </div>
-              </div>
+              </Stack>
 
               {/* Want to Learn */}
-              <div>
-                <h4 className="font-bold text-theme-primary mb-4 flex items-center">
+              <Stack>
+                <h4 className="font-bold text-theme-primary flex items-center">
                   <PiHeart className="w-5 h-5 mr-2 text-accent-blue" />
                   {t('want_to_learn')} ({progressData.stats.wantToLearnWorks})
                 </h4>
@@ -752,7 +752,7 @@ export default function StudentProgressPageClient({
                       </AnimatedItem>
                     ))}
                 </div>
-              </div>
+              </Stack>
             </div>
           </AnimatedCard>
         </AnimatedItem>

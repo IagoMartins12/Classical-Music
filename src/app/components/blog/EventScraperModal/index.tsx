@@ -36,7 +36,7 @@ import {
   ScraperJob,
 } from '@/app/services/scraper-api/scraper-api.types';
 import { useScrapers } from '@/app/hooks/useScrapers';
-import { Inline } from '@/app/components/ui/Layout';
+import { Stack, Inline } from '@/app/components/ui/Layout';
 import { Text } from '@/app/components/ui/Text';
 import { Card } from '@/app/components/ui/Card';
 
@@ -644,8 +644,8 @@ export default function EventScraperModal({
                 </Card>
 
                 {/* Eventos Novos */}
-                <div className="mb-4">
-                  <h4 className="text-sm font-bold text-theme-primary mb-3">
+                <Stack gap={3} className="mb-4">
+                  <h4 className="text-sm font-bold text-theme-primary">
                     Eventos Novos ({newEvents.length})
                   </h4>
                   <div className=" overflow-y-auto space-y-3">
@@ -663,7 +663,7 @@ export default function EventScraperModal({
                       </AnimatedItem>
                     ))}
                   </div>
-                </div>
+                </Stack>
 
                 {/* Seção de Duplicados */}
                 {duplicateEvents.length > 0 && (
@@ -717,8 +717,8 @@ export default function EventScraperModal({
             {/* STEP 4: PROCESSING */}
             {/* STEP 4: PROCESSING */}
             {currentStep === 'process' && (
-              <div className="p-6">
-                <div className="mb-6 text-center">
+              <Stack gap={6} className="p-6">
+                <div className="text-center">
                   <h3 className="text-lg font-bold text-theme-primary mb-2">
                     Importando Eventos
                   </h3>
@@ -809,7 +809,7 @@ export default function EventScraperModal({
                     </div>
                   ))}
                 </div>
-              </div>
+              </Stack>
             )}
 
             {/* STEP 5: RESULTS */}

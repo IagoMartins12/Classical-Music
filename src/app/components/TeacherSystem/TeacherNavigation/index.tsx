@@ -31,7 +31,7 @@ import { ThemeToggle } from '../../ThemeToggle';
 import NotificationBell from '../../Notification/NotificationBell';
 import { LanguageToggle } from '../../LanguageToggle';
 import { useTranslation } from '@/app/hooks/useTranslation';
-import { Inline } from '@/app/components/ui/Layout';
+import { Stack, Inline } from '@/app/components/ui/Layout';
 import { Text } from '@/app/components/ui/Text';
 import { NomeAcao } from '@/app/components/ui/NomeAcao';
 
@@ -543,7 +543,7 @@ export default function TeacherNavigation({ user }: TeacherNavigationProps) {
               </div>
 
               {/* Navigation Items */}
-              <nav className="space-y-2">
+              <Stack gap={2} as="nav">
                 {navigationItems.map((item) => (
                   <div key={item.label}>
                     {item.submenu ? (
@@ -576,7 +576,7 @@ export default function TeacherNavigation({ user }: TeacherNavigationProps) {
 
                         {/* Mobile Submenu */}
                         {activeSubmenu === item.label && (
-                          <div className="ml-4 mt-2 space-y-1">
+                          <Stack gap={1} className="ml-4 mt-2">
                             {item.submenu.map((subItem) => (
                               <Link
                                 key={subItem.label}
@@ -592,7 +592,7 @@ export default function TeacherNavigation({ user }: TeacherNavigationProps) {
                                 </Inline>
                               </Link>
                             ))}
-                          </div>
+                          </Stack>
                         )}
                       </div>
                     ) : (
@@ -619,7 +619,7 @@ export default function TeacherNavigation({ user }: TeacherNavigationProps) {
                     )}
                   </div>
                 ))}
-              </nav>
+              </Stack>
 
               <div className="mt-8 pt-6 border-t flex gap-4 justify-center border-theme-secondary">
                 <LanguageToggle className="" variant="compact" />

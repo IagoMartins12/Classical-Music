@@ -13,7 +13,7 @@ import {
   PiPlus,
   PiTrash,
 } from 'react-icons/pi';
-import { Inline } from '@/app/components/ui/Layout';
+import { Stack, Inline } from '@/app/components/ui/Layout';
 import { Card } from '@/app/components/ui/Card';
 
 export default function HistoryLoading() {
@@ -40,13 +40,13 @@ export default function HistoryLoading() {
 
         {/* Filters Skeleton */}
         <Card className="mb-8">
-          <div className="space-y-4">
+          <Stack>
             {/* Filter Toggle */}
             <div className="flex items-center justify-between">
-              <div className="space-y-2">
+              <Stack gap={2}>
                 <div className="h-5 w-16 bg-theme-elevated rounded"></div>
                 <div className="h-4 w-32 bg-theme-elevated rounded"></div>
-              </div>
+              </Stack>
               <Inline
                 gap={2}
                 className="h-10 w-24 bg-theme-secondary rounded-lg justify-center"
@@ -74,11 +74,11 @@ export default function HistoryLoading() {
               <div className="h-10 w-32 bg-gradient-to-r from-brand-primary/20 to-brand-secondary/20 rounded-lg"></div>
               <div className="h-10 w-20 bg-theme-secondary rounded-lg"></div>
             </div> */}
-          </div>
+          </Stack>
         </Card>
 
         {/* History Timeline Skeleton */}
-        <div className="space-y-6">
+        <Stack gap={6}>
           <div className="relative">
             {/* Timeline Line */}
             <div className="absolute left-6 top-0 bottom-0 w-0.5 bg-theme-secondary/50"></div>
@@ -87,7 +87,7 @@ export default function HistoryLoading() {
               <HistoryRecordSkeleton key={index} index={index} />
             ))}
           </div>
-        </div>
+        </Stack>
 
         {/* Pagination Skeleton */}
         <div className="flex justify-center mt-8">
@@ -161,19 +161,22 @@ function HistoryRecordSkeleton({ index }: { index: number }) {
             </Inline>
           </div>
 
-          <div className="space-y-2">
+          <Stack gap={2}>
             <div className="h-4 w-32 bg-theme-elevated rounded"></div>
             <div className="h-4 w-40 bg-theme-elevated rounded"></div>
             <div className="h-3 w-48 bg-theme-elevated rounded"></div>
-          </div>
+          </Stack>
 
           {/* Changes Summary */}
-          <div className="mt-3 p-3 bg-blue-50/10 border border-blue-200/20 rounded-lg">
-            <div className="flex items-center mb-2">
+          <Stack
+            gap={2}
+            className="mt-3 p-3 bg-blue-50/10 border border-blue-200/20 rounded-lg"
+          >
+            <div className="flex items-center">
               <PiNotePencil className="w-4 h-4 text-theme-primary/30 mr-1" />
               <div className="h-4 w-20 bg-blue-700/20 rounded"></div>
             </div>
-            <div className="space-y-2">
+            <Stack gap={2}>
               <div className="space-y-1">
                 <div className="h-3 w-24 bg-blue-700/20 rounded mb-1"></div>
                 <div className="pl-2 border-l-2 border-blue-300/30">
@@ -187,8 +190,8 @@ function HistoryRecordSkeleton({ index }: { index: number }) {
                   </div>
                 </div>
               </div>
-            </div>
-          </div>
+            </Stack>
+          </Stack>
 
           {/* Technical details for expanded state */}
           {index === 0 && (

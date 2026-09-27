@@ -12,7 +12,7 @@ import {
   PiTrash,
   PiUser,
 } from 'react-icons/pi';
-import { Inline } from '@/app/components/ui/Layout';
+import { Stack, Inline } from '@/app/components/ui/Layout';
 import { Card } from '@/app/components/ui/Card';
 
 export default function EditComposerLoading() {
@@ -68,18 +68,21 @@ export default function EditComposerLoading() {
           <div className="p-8 relative z-10">
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
               {/* Informações do Compositor */}
-              <div className="lg:col-span-2 space-y-6 order-2 md:order-1 lg:order-1">
-                <div className="space-y-3">
+              <Stack
+                gap={6}
+                className="lg:col-span-2 order-2 md:order-1 lg:order-1"
+              >
+                <Stack gap={3}>
                   <div className="flex items-start justify-between">
                     <div className="flex-1">
                       <Inline gap={3} className="mb-4">
                         <div className="w-10 h-10 bg-gradient-to-br from-accent-blue/20 to-accent-purple/20 rounded-xl flex items-center justify-center">
                           <PiPencilLine className="w-5 h-5 text-theme-primary/30" />
                         </div>
-                        <div className="space-y-2">
+                        <Stack gap={2}>
                           <div className="h-10 w-64 bg-gradient-to-r from-brand-primary/20 to-brand-secondary/20 rounded"></div>
                           <div className="h-5 w-48 bg-theme-elevated rounded"></div>
-                        </div>
+                        </Stack>
                       </Inline>
                     </div>
 
@@ -102,7 +105,7 @@ export default function EditComposerLoading() {
                       </Inline>
                     </Inline>
                   </div>
-                </div>
+                </Stack>
 
                 {/* Grid de informações */}
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -153,10 +156,10 @@ export default function EditComposerLoading() {
                       >
                         {item.icon}
                       </div>
-                      <div className="space-y-1">
+                      <Stack gap={1}>
                         <div className="h-4 w-20 bg-theme-elevated rounded"></div>
                         <div className="h-5 w-32 bg-gradient-to-r from-theme-primary/20 to-theme-secondary/20 rounded"></div>
-                      </div>
+                      </Stack>
                     </div>
                   ))}
 
@@ -165,19 +168,19 @@ export default function EditComposerLoading() {
                     <div className="w-8 h-8 bg-gradient-to-br from-accent-purple/20 to-accent-red/20 rounded-xl flex items-center justify-center mt-0.5">
                       <PiUser className="w-4 h-4 text-theme-primary/30" />
                     </div>
-                    <div className="space-y-1">
+                    <Stack gap={1}>
                       <div className="h-4 w-24 bg-theme-elevated rounded"></div>
                       <div className="h-5 w-48 bg-gradient-to-r from-theme-primary/20 to-theme-secondary/20 rounded"></div>
-                    </div>
+                    </Stack>
                   </div>
                 </div>
 
                 {/* Links Externos */}
-                <div className="border-t border-theme-secondary pt-6">
+                <Stack className="border-t border-theme-secondary pt-6">
                   <Inline
                     as="h3"
                     gap={2}
-                    className="text-lg font-semibold text-theme-primary classical-title mb-4"
+                    className="text-lg font-semibold text-theme-primary classical-title"
                   >
                     <PiArrowSquareOut className="w-5 h-5 text-accent-blue/30" />
                     <div className="h-5 w-28 bg-theme-elevated rounded"></div>
@@ -199,8 +202,8 @@ export default function EditComposerLoading() {
                       <div className="w-10 h-4 bg-theme-tertiary/30 rounded"></div>
                     </Inline>
                   </div>
-                </div>
-              </div>
+                </Stack>
+              </Stack>
 
               {/* Imagem do Compositor */}
               <div className="flex justify-center order-1 md:order-2 lg:order-2 lg:justify-end">
@@ -233,16 +236,16 @@ export default function EditComposerLoading() {
             </div>
           </Inline>
 
-          <div className="space-y-4">
+          <Stack>
             {Array.from({ length: 4 }).map((_, index) => (
-              <div key={index} className="space-y-2">
+              <Stack gap={2} key={index}>
                 <div className="h-4 bg-theme-elevated rounded"></div>
                 <div className="h-4 bg-theme-elevated rounded w-5/6"></div>
                 <div className="h-4 bg-theme-elevated rounded w-4/6"></div>
                 {index < 3 && <div className="h-2"></div>}
-              </div>
+              </Stack>
             ))}
-          </div>
+          </Stack>
         </Card>
       </div>
     </div>

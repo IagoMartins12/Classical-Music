@@ -32,7 +32,7 @@ import ArticlePreviewModal from '../ArticlePreviewModal';
 import FeaturedArticlesManager from '../FeaturedArticlesManager';
 import ComposerSearchInputSimple from '@/app/components/ComposerSearchInputSimple';
 import SimpleWorkSearchInput from '@/app/components/SimpleWorkSearchInput';
-import { Inline } from '@/app/components/ui/Layout';
+import { Stack, Inline } from '@/app/components/ui/Layout';
 import { Text } from '@/app/components/ui/Text';
 import { Field } from '@/app/components/ui/Field';
 import { NomeAcao } from '@/app/components/ui/NomeAcao';
@@ -618,7 +618,7 @@ export function ArticleForm({
 
       {/* TAB: CONTEÚDO */}
       {activeTab === 'content' && (
-        <div className="space-y-6">
+        <Stack gap={6}>
           {/* Título */}
           <div>
             <Field
@@ -783,7 +783,7 @@ export function ArticleForm({
           </div>
 
           {/* Tempo de Leitura */}
-          <div className="space-y-2">
+          <Stack gap={2}>
             <label className="block text-sm font-medium text-theme-primary">
               Tempo de Leitura
             </label>
@@ -818,8 +818,8 @@ export function ArticleForm({
                 </Text>
               </div>
             </div>
-          </div>
-        </div>
+          </Stack>
+        </Stack>
       )}
 
       {/* TAB: CONFIGURAÇÕES */}
@@ -942,8 +942,8 @@ export function ArticleForm({
               {/* 🆕 ABA: UPLOAD */}
               {backgroundMusicTab === 'upload' && (
                 <>
-                  <div>
-                    <label className="block text-sm font-medium text-theme-primary mb-2">
+                  <Stack gap={2}>
+                    <label className="block text-sm font-medium text-theme-primary">
                       Selecionar Arquivo de Áudio
                     </label>
                     <div className="border-2 border-dashed border-theme-secondary rounded-lg p-6 text-center hover:border-brand-primary transition-colors">
@@ -996,7 +996,7 @@ export function ArticleForm({
                         </label>
                       )}
                     </div>
-                  </div>
+                  </Stack>
 
                   {formData.backgroundMusic?.url && (
                     <input
@@ -1127,7 +1127,7 @@ export function ArticleForm({
 
       {/* 🆕 TAB: VINCULAÇÕES */}
       {activeTab === 'relations' && (
-        <div className="space-y-6">
+        <Stack gap={6}>
           {/* ✅ INFO BOX - Mostra quantos estão vinculados */}
           <div className="bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg p-4">
             <div className="flex items-center justify-between">
@@ -1168,7 +1168,7 @@ export function ArticleForm({
 
             {/* Lista de Compositores */}
             {composersData.length > 0 && (
-              <div className="space-y-2 mb-4">
+              <Stack gap={2} className="mb-4">
                 {composersData.map((composer) => (
                   <div
                     key={composer.id}
@@ -1203,7 +1203,7 @@ export function ArticleForm({
                     </button>
                   </div>
                 ))}
-              </div>
+              </Stack>
             )}
 
             {/* Adicionar Compositor */}
@@ -1240,7 +1240,7 @@ export function ArticleForm({
 
             {/* Lista de Obras */}
             {worksData.length > 0 && (
-              <div className="space-y-2 mb-4">
+              <Stack gap={2} className="mb-4">
                 {worksData.map((work) => (
                   <div
                     key={work.id}
@@ -1264,11 +1264,11 @@ export function ArticleForm({
                     </button>
                   </div>
                 ))}
-              </div>
+              </Stack>
             )}
 
             {/* Adicionar Obra */}
-            <div className="space-y-3">
+            <Stack gap={3}>
               {/* ✅ FILTRO DE COMPOSITOR (OPCIONAL) */}
               <div>
                 <label className="block text-sm font-medium text-theme-secondary mb-2">
@@ -1305,9 +1305,9 @@ export function ArticleForm({
                   <span>Adicionar</span>
                 </Inline>
               </div>
-            </div>
+            </Stack>
           </Card>
-        </div>
+        </Stack>
       )}
 
       {/* TAB: SEO */}

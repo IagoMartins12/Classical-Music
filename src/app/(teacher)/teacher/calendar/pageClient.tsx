@@ -943,7 +943,7 @@ export default function TeacherCalendarPageClient({
                     {t('conflicts_message', { count: conflicts.length })}
                   </Text>
 
-                  <div className="space-y-2">
+                  <Stack gap={2}>
                     {conflicts.slice(0, 3).map((conflict, index) => (
                       <div key={index} className="classical-card-2 p-3">
                         <Text
@@ -961,7 +961,7 @@ export default function TeacherCalendarPageClient({
                         </Text>
                       </div>
                     ))}
-                  </div>
+                  </Stack>
 
                   {conflicts.length > 3 && (
                     <Text papel="legenda" tom="fraco" as="p" className="mt-2">
@@ -981,8 +981,8 @@ export default function TeacherCalendarPageClient({
           onClose={() => setShowStatusUpdateModal(false)}
           maxWidth="md"
         >
-          <div className="p-6">
-            <Inline gap={3} className="mb-6">
+          <Stack gap={6} className="p-6">
+            <Inline gap={3}>
               <div
                 className={`w-12 h-12 rounded-full flex items-center justify-center ${
                   pendingStatusUpdate.newStatus === 'COMPLETED'
@@ -1014,11 +1014,11 @@ export default function TeacherCalendarPageClient({
               </div>
             </Inline>
 
-            <div className="bg-theme-tertiary rounded-lg p-4 mb-6">
+            <div className="bg-theme-tertiary rounded-lg p-4">
               <div className="flex items-start space-x-3">
                 <PiInfo className="w-8 h-8 text-accent-blue mt-0.5" />
-                <div className="text-sm">
-                  <p className="font-medium text-accent-blue mb-1">
+                <Stack gap={1} className="text-sm">
+                  <p className="font-medium text-accent-blue">
                     {t('status_confirmation')}
                   </p>
                   <p className="text-theme-secondary">
@@ -1029,7 +1029,7 @@ export default function TeacherCalendarPageClient({
                     {pendingStatusUpdate.newStatus === 'CANCELLED' &&
                       t('status_cancelled_message')}
                   </p>
-                </div>
+                </Stack>
               </div>
             </div>
 
@@ -1079,7 +1079,7 @@ export default function TeacherCalendarPageClient({
                 </span>
               </button>
             </Inline>
-          </div>
+          </Stack>
         </Modal>
       )}
 
@@ -1385,8 +1385,8 @@ function DayView({
   );
 
   return (
-    <div>
-      <div className="text-center mb-6">
+    <Stack gap={6}>
+      <div className="text-center">
         <div className="text-2xl font-bold text-theme-primary">
           {date.toLocaleDateString('pt-BR', {
             weekday: 'long',
@@ -1427,7 +1427,7 @@ function DayView({
                   <div className="flex-1">
                     <h3 className="font-bold text-lg mb-2">{event.title}</h3>
 
-                    <div className="space-y-2 text-sm">
+                    <Stack gap={2} className="text-sm">
                       <Inline gap={2}>
                         <PiClock className="w-4 h-4" />
                         <span>{formatEventTime(event.start, event.end)}</span>
@@ -1481,7 +1481,7 @@ function DayView({
                           </div>
                         </div>
                       )}
-                    </div>
+                    </Stack>
                   </div>
 
                   <div className="ml-4">
@@ -1493,7 +1493,7 @@ function DayView({
           })
         )}
       </div>
-    </div>
+    </Stack>
   );
 }
 
@@ -1622,11 +1622,11 @@ function EventDetailsModal({
             </div>
           )}
 
-          <div className="space-y-6">
+          <Stack gap={6}>
             {/* Basic Info */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <div>
-                <label className="text-sm font-medium text-theme-tertiary block mb-2">
+              <Stack gap={2}>
+                <label className="text-sm font-medium text-theme-tertiary block">
                   {t('date_and_time')}
                 </label>
                 <div className="text-theme-primary">
@@ -1635,11 +1635,11 @@ function EventDetailsModal({
                     {formatTime(event.start)} - {formatTime(event.end)}
                   </div>
                 </div>
-              </div>
+              </Stack>
 
               {event.student && (
-                <div>
-                  <label className="text-sm font-medium text-theme-tertiary block mb-2">
+                <Stack gap={2}>
+                  <label className="text-sm font-medium text-theme-tertiary block">
                     {t('student')}
                   </label>
                   <Inline gap={3}>
@@ -1667,34 +1667,34 @@ function EventDetailsModal({
                       </Text>
                     </div>
                   </Inline>
-                </div>
+                </Stack>
               )}
             </div>
 
             {/* Location */}
             {event.location && (
-              <div>
-                <label className="text-sm font-medium text-theme-tertiary block mb-2">
+              <Stack gap={2}>
+                <label className="text-sm font-medium text-theme-tertiary block">
                   {t('location')}
                 </label>
                 <div className="text-theme-primary">{event.location}</div>
-              </div>
+              </Stack>
             )}
 
             {/* Description */}
             {event.description && (
-              <div>
-                <label className="text-sm font-medium text-theme-tertiary block mb-2">
+              <Stack gap={2}>
+                <label className="text-sm font-medium text-theme-tertiary block">
                   {t('description')}
                 </label>
                 <div className="text-theme-primary">{event.description}</div>
-              </div>
+              </Stack>
             )}
 
             {/* Objectives */}
             {event.objectives && event.objectives.length > 0 && (
-              <div>
-                <label className="text-sm font-medium text-theme-tertiary block mb-2">
+              <Stack gap={2}>
+                <label className="text-sm font-medium text-theme-tertiary block">
                   {t('objectives')}
                 </label>
                 <div className="flex flex-wrap gap-2">
@@ -1707,13 +1707,13 @@ function EventDetailsModal({
                     </span>
                   ))}
                 </div>
-              </div>
+              </Stack>
             )}
 
             {/* Topics */}
             {event.details?.topics && event.details.topics.length > 0 && (
-              <div>
-                <label className="text-sm font-medium text-theme-tertiary block mb-2">
+              <Stack gap={2}>
+                <label className="text-sm font-medium text-theme-tertiary block">
                   {t('topics')}
                 </label>
                 <div className="flex flex-wrap gap-2">
@@ -1728,13 +1728,13 @@ function EventDetailsModal({
                     </Text>
                   ))}
                 </div>
-              </div>
+              </Stack>
             )}
 
             {/* Homework */}
             {event.details?.homework && (
-              <div>
-                <label className="text-sm font-medium text-theme-tertiary block mb-2">
+              <Stack gap={2}>
+                <label className="text-sm font-medium text-theme-tertiary block">
                   {t('homework')}
                 </label>
                 <div className="bg-gradient-to-r from-theme-elevated to-interactive-hover rounded-lg border border-theme-primary/20 p-4">
@@ -1742,13 +1742,13 @@ function EventDetailsModal({
                     {event.details.homework}
                   </div>
                 </div>
-              </div>
+              </Stack>
             )}
 
             {/* Teacher Notes */}
             {event.details?.teacherNotes && (
-              <div>
-                <label className="text-sm font-medium text-theme-tertiary block mb-2">
+              <Stack gap={2}>
+                <label className="text-sm font-medium text-theme-tertiary block">
                   {t('teacher_notes')}
                 </label>
                 <div className="bg-gradient-to-r from-theme-elevated to-interactive-hover rounded-lg border border-theme-primary/20 p-4">
@@ -1756,13 +1756,13 @@ function EventDetailsModal({
                     {event.details.teacherNotes}
                   </div>
                 </div>
-              </div>
+              </Stack>
             )}
 
             {/* 🆝 SEÇÃO DE AÇÕES RÁPIDAS PARA AULAS AGENDADAS */}
             {event.status === 'SCHEDULED' && !statusInfo.needsAttention && (
-              <div>
-                <label className="text-sm font-medium text-theme-tertiary block mb-3">
+              <Stack gap={3}>
+                <label className="text-sm font-medium text-theme-tertiary block">
                   {t('quick_actions')}
                 </label>
                 <div className="flex flex-wrap gap-3">
@@ -1794,7 +1794,7 @@ function EventDetailsModal({
                     <span>{t('cancel_lesson')}</span>
                   </Inline>
                 </div>
-              </div>
+              </Stack>
             )}
 
             {/* Actions */}
@@ -1827,7 +1827,7 @@ function EventDetailsModal({
                 )}
               </Inline>
             </div>
-          </div>
+          </Stack>
         </div>
       </AnimatedCard>
     </Modal>
@@ -1975,7 +1975,7 @@ function DayEventsModal({
                       </Inline>
 
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
-                        <div className="space-y-2 text-sm">
+                        <Stack gap={2} className="text-sm">
                           <Inline gap={2}>
                             <PiClock className="w-4 h-4" />
                             <span>
@@ -2007,11 +2007,11 @@ function DayEventsModal({
                               </span>
                             </Inline>
                           )}
-                        </div>
+                        </Stack>
 
                         {event.objectives && event.objectives.length > 0 && (
-                          <div>
-                            <label className="text-xs font-medium text-theme-tertiary block mb-1">
+                          <Stack gap={1}>
+                            <label className="text-xs font-medium text-theme-tertiary block">
                               {t('objectives')}
                             </label>
                             <div className="flex flex-wrap gap-1">
@@ -2031,7 +2031,7 @@ function DayEventsModal({
                                 </span>
                               )}
                             </div>
-                          </div>
+                          </Stack>
                         )}
                       </div>
 

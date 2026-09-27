@@ -33,7 +33,7 @@ import { useSmartFormChanges } from '@/app/hooks/useFormChanges';
 import Input from '../../Common/Inputs';
 import { useTranslation } from '@/app/hooks/useTranslation';
 import { searchWorks as findWorks } from '@/app/requests/catalog-search';
-import { Inline } from '@/app/components/ui/Layout';
+import { Stack, Inline } from '@/app/components/ui/Layout';
 import { Text } from '@/app/components/ui/Text';
 import { NomeAcao } from '@/app/components/ui/NomeAcao';
 
@@ -877,7 +877,7 @@ export default function CreateAnnotationModal({
       </div>
 
       {/* Form Content - Scrollable */}
-      <div className="px-0 py-6 md:p-6 space-y-6 overflow-y-auto">
+      <Stack gap={6} className="px-0 py-6 md:p-6 overflow-y-auto">
         {/* Title */}
         <div>
           <Input
@@ -1161,8 +1161,8 @@ export default function CreateAnnotationModal({
 
           {/* Suggested Tags */}
           {availableSuggestedTags.length > 0 && formData.tags.length < 10 && (
-            <div className="mb-3">
-              <Inline gap={2} className="mb-2">
+            <Stack gap={2} className="mb-3">
+              <Inline gap={2}>
                 <PiPlus className="w-4 h-4 text-theme-tertiary" />
                 <Text papel="rotulo" tom="suave" className="font-medium">
                   {t('create_modal_suggested_tags').replace(
@@ -1187,7 +1187,7 @@ export default function CreateAnnotationModal({
                   </Inline>
                 ))}
               </div>
-            </div>
+            </Stack>
           )}
 
           {errors.tags && (
@@ -1237,7 +1237,7 @@ export default function CreateAnnotationModal({
             </div>
           </button>
         </Inline>
-      </div>
+      </Stack>
 
       {/* Footer */}
       <Inline

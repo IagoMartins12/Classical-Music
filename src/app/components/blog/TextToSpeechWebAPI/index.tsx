@@ -9,7 +9,7 @@ import {
   PiSpeakerHigh,
   PiSquare,
 } from 'react-icons/pi';
-import { Inline } from '@/app/components/ui/Layout';
+import { Stack, Inline } from '@/app/components/ui/Layout';
 import { Text } from '@/app/components/ui/Text';
 import { Field } from '@/app/components/ui/Field';
 import { Card } from '@/app/components/ui/Card';
@@ -230,7 +230,7 @@ export function TextToSpeechWebAPI({ content }: TextToSpeechWebAPIProps) {
 
       {/* CONFIGURAÇÕES */}
       {showSettings && (
-        <div className="mb-4 p-4 bg-theme-elevated rounded-lg space-y-4">
+        <Stack className="mb-4 p-4 bg-theme-elevated rounded-lg">
           {/* Seleção de Voz */}
           <div>
             <Field.Selecao
@@ -280,7 +280,7 @@ export function TextToSpeechWebAPI({ content }: TextToSpeechWebAPIProps) {
               className="w-full"
             />
           </div>
-        </div>
+        </Stack>
       )}
 
       {/* CONTROLES */}

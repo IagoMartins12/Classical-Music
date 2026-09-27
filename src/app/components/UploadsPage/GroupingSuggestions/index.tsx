@@ -13,7 +13,7 @@ import {
   PiUsers,
 } from 'react-icons/pi';
 import { getScoreGroups } from '@/app/requests/uploads-client';
-import { Inline } from '@/app/components/ui/Layout';
+import { Stack, Inline } from '@/app/components/ui/Layout';
 import { Text } from '@/app/components/ui/Text';
 
 interface ScoreGroup {
@@ -166,7 +166,7 @@ export default function GroupingSuggestions({
   }
 
   return (
-    <div className="space-y-4">
+    <Stack>
       {hasExistingScores && (
         <>
           {/* Grupos do Usuário (EDITÁVEIS) */}
@@ -296,8 +296,8 @@ export default function GroupingSuggestions({
               <div className="bg-blue-50 border border-blue-200 rounded-lg p-3 mb-4">
                 <div className="flex items-start space-x-2">
                   <PiInfo className="w-4 h-4 text-blue-600 mt-0.5 flex-shrink-0" />
-                  <div className="text-xs text-blue-800">
-                    <p className="font-medium mb-1">
+                  <Stack gap={1} className="text-xs text-blue-800">
+                    <p className="font-medium">
                       💡 Grupos IMSLP são apenas referência
                     </p>
                     <p>
@@ -305,7 +305,7 @@ export default function GroupingSuggestions({
                       IMSLP. Suas partituras ficam organizadas em grupos
                       separados.
                     </p>
-                  </div>
+                  </Stack>
                 </div>
               </div>
             </div>
@@ -363,7 +363,7 @@ export default function GroupingSuggestions({
             <p className="font-medium mb-1">
               💡 Como funciona o novo agrupamento:
             </p>
-            <div className="space-y-1">
+            <Stack gap={1}>
               <p>
                 • <strong>Grupos IMSLP:</strong> Apenas referência, você não
                 pode editá-los
@@ -376,10 +376,10 @@ export default function GroupingSuggestions({
                 • <strong>Outros usuários:</strong> Cada usuário tem seus
                 próprios grupos
               </p>
-            </div>
+            </Stack>
           </Text>
         </div>
       </div>
-    </div>
+    </Stack>
   );
 }

@@ -15,7 +15,7 @@ import { useState } from 'react';
 import SectionTitle from '../Utils/SectionTitle';
 import { translateEpochWithHook } from '@/app/utils/translations/epochTranslationComposer';
 import { useTranslation } from '@/app/context/TranslationContext';
-import { Inline } from '@/app/components/ui/Layout';
+import { Stack, Inline } from '@/app/components/ui/Layout';
 import { Text } from '@/app/components/ui/Text';
 
 interface Composer {
@@ -100,7 +100,7 @@ const DiscoveryComposerCard = ({ composer }: { composer: Composer }) => {
 
           {/* Content Section */}
           <div className="px-5 pb-5 relative">
-            <div className="relative z-10 space-y-2 text-center">
+            <Stack gap={2} className="relative z-10 text-center">
               {/* Name */}
               <h3 className="text-sm font-bold text-theme-primary classical-title group-hover:text-orange-400 transition-colors duration-300 line-clamp-2">
                 {composer.name}
@@ -128,7 +128,7 @@ const DiscoveryComposerCard = ({ composer }: { composer: Composer }) => {
                   <PiEye className="w-2.5 h-2.5" />
                 </Inline>
               </div>
-            </div>
+            </Stack>
           </div>
 
           {/* Hover glow effect */}
@@ -169,7 +169,7 @@ const DiscoveryWorkCard = ({ work }: { work: Work }) => {
 
           {/* Content Section */}
           <div className="px-5 pb-5 relative">
-            <div className="relative z-10 space-y-2 text-center">
+            <Stack gap={2} className="relative z-10 text-center">
               {/* Title */}
               <h3 className="text-sm font-bold text-theme-primary classical-title group-hover:text-purple-400 transition-colors duration-300 line-clamp-2">
                 {formatTitle(work.title)}
@@ -206,7 +206,7 @@ const DiscoveryWorkCard = ({ work }: { work: Work }) => {
                   <PiMusicNotes className="w-2.5 h-2.5" />
                 </Inline>
               </div>
-            </div>
+            </Stack>
           </div>
 
           {/* Hover glow effect */}
@@ -234,8 +234,8 @@ const RandomDiscoveries: React.FC<RandomDiscoveriesProps> = ({
       />
 
       {/* Seção de Compositores */}
-      <div className="mb-12">
-        <div className="flex items-center gap-3 mb-6">
+      <Stack gap={6} className="mb-12">
+        <div className="flex items-center gap-3">
           <div className="w-8 h-8 bg-gradient-to-r from-orange-500 to-yellow-500 rounded-xl flex items-center justify-center">
             <PiUser className="w-4 h-4 text-white" />
           </div>
@@ -250,11 +250,11 @@ const RandomDiscoveries: React.FC<RandomDiscoveriesProps> = ({
             <DiscoveryComposerCard key={composer.id} composer={composer} />
           ))}
         </div>
-      </div>
+      </Stack>
 
       {/* Seção de Obras */}
-      <div className="mb-8">
-        <div className="flex items-center gap-3 mb-6">
+      <Stack gap={6} className="mb-8">
+        <div className="flex items-center gap-3">
           <div className="w-8 h-8 bg-gradient-to-r from-purple-500 to-blue-500 rounded-xl flex items-center justify-center">
             <PiMusicNotes className="w-4 h-4 text-white" />
           </div>
@@ -269,7 +269,7 @@ const RandomDiscoveries: React.FC<RandomDiscoveriesProps> = ({
             <DiscoveryWorkCard key={work.id} work={work} />
           ))}
         </div>
-      </div>
+      </Stack>
 
       {/* Background decoration */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">

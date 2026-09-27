@@ -31,7 +31,7 @@ import {
 import RecentActivity from '../components/Admin/Activity/RecentActivity';
 import BackupDashboardCard from '../components/Admin/Backup/BackupDashboardCard';
 import LoadingAdminState from '../components/Admin/Common/LoadingState';
-import { Inline } from '@/app/components/ui/Layout';
+import { Stack, Inline } from '@/app/components/ui/Layout';
 
 export default function AdminDashboardClient() {
   const { stats, loading, error, refreshStats } = useAdminStats();
@@ -112,7 +112,7 @@ export default function AdminDashboardClient() {
 
   return (
     <PageContainer showBackground={true}>
-      <div className="space-y-8">
+      <Stack gap={8}>
         <AnimatedContainer
           delay={0.1}
           staggerSpeed="normal"
@@ -256,7 +256,7 @@ export default function AdminDashboardClient() {
               <h3 className="text-xl font-bold text-theme-primary mb-6">
                 Estatísticas Rápidas
               </h3>
-              <div className="space-y-4">
+              <Stack>
                 <div className="flex items-center justify-between p-3 bg-theme-secondary rounded-xl">
                   <Inline gap={3}>
                     <PiShield className="w-5 h-5 text-accent-amber" />
@@ -292,7 +292,7 @@ export default function AdminDashboardClient() {
                     {stats.trends.last7Days.newAnnotations || 0}
                   </span>
                 </div>
-              </div>
+              </Stack>
             </AnimatedCard>
           </div>
 
@@ -317,7 +317,7 @@ export default function AdminDashboardClient() {
             {/* Recent Activity */}
           </div>
         </AnimatedContainer>
-      </div>
+      </Stack>
     </PageContainer>
   );
 }

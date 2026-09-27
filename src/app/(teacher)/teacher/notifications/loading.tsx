@@ -9,7 +9,7 @@ import {
   PiMusicNotes,
   PiUser,
 } from 'react-icons/pi';
-import { Inline } from '@/app/components/ui/Layout';
+import { Stack, Inline } from '@/app/components/ui/Layout';
 import { Card } from '@/app/components/ui/Card';
 
 export default function TeacherNotificationsLoading() {
@@ -192,10 +192,10 @@ function NotificationCardSkeleton({ index }: { index: number }) {
                 ></div>
 
                 {/* Message */}
-                <div className="space-y-1 mb-3">
+                <Stack gap={1} className="mb-3">
                   <div className="h-3 bg-theme-tertiary/20 rounded w-full"></div>
                   <div className="h-3 bg-theme-tertiary/20 rounded w-2/3"></div>
-                </div>
+                </Stack>
 
                 {/* Metadata */}
                 <Inline gap={4} className="text-sm">

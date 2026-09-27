@@ -34,7 +34,7 @@ import Input from '@/app/components/Common/Inputs';
 import Select from '@/app/components/Common/Select';
 import { useTranslation } from '@/app/context/TranslationContext';
 import Checkbox from '@/app/components/Common/Checkbox';
-import { Inline } from '@/app/components/ui/Layout';
+import { Stack, Inline } from '@/app/components/ui/Layout';
 import { Text } from '@/app/components/ui/Text';
 import { Field } from '@/app/components/ui/Field';
 
@@ -356,7 +356,7 @@ export default function ContactPageClient() {
                   </div>
                 )}
 
-                <form onSubmit={handleSubmit} className="space-y-6">
+                <Stack gap={6} as="form" onSubmit={handleSubmit}>
                   <div className="grid md:grid-cols-2 gap-6">
                     <div>
                       <Input
@@ -481,7 +481,7 @@ export default function ContactPageClient() {
                       </>
                     )}
                   </Inline>
-                </form>
+                </Stack>
               </AnimatedCard>
 
               {/* Contact Info */}
@@ -491,7 +491,7 @@ export default function ContactPageClient() {
                     {t('contact_jsx_h3_children_0__informações_contato')}
                   </h3>
 
-                  <div className="space-y-6">
+                  <Stack gap={6}>
                     <Inline gap={4}>
                       <div className="w-12 h-12 bg-gradient-to-br from-accent-blue to-accent-purple rounded-xl flex items-center justify-center">
                         <PiEnvelopeSimple className="w-6 h-6 text-theme-primary" />
@@ -533,7 +533,7 @@ export default function ContactPageClient() {
                         </p>
                       </div>
                     </Inline>
-                  </div>
+                  </Stack>
                 </AnimatedCard>
 
                 <AnimatedCard hover="lift" className="classical-card !p-8">
@@ -541,7 +541,7 @@ export default function ContactPageClient() {
                     {t('contact_jsx_h3_children_0__horário_atendimento')}
                   </h3>
 
-                  <div className="space-y-4">
+                  <Stack>
                     <div className="flex items-center justify-between">
                       <span className="text-theme-secondary">
                         {t('contact_jsx_span_children_0__segunda_sexta')}
@@ -566,7 +566,7 @@ export default function ContactPageClient() {
                         {t('contact_jsx_span_children_0__fechado')}
                       </span>
                     </div>
-                  </div>
+                  </Stack>
 
                   <div className="mt-6 p-4 bg-accent-blue/10 border border-accent-blue/20 rounded-lg">
                     <Inline gap={3}>
@@ -583,7 +583,7 @@ export default function ContactPageClient() {
                     {t('contact_jsx_h3_children_0__outros_canais')}
                   </h3>
 
-                  <div className="space-y-4">
+                  <Stack>
                     <Link
                       href="/faq"
                       className="flex items-center space-x-3 text-theme-secondary hover:text-brand-primary transition-colors"
@@ -613,7 +613,7 @@ export default function ContactPageClient() {
                         {t('contact_jsx_link_children_0__suporte_técnico')}
                       </span>
                     </Link>
-                  </div>
+                  </Stack>
                 </AnimatedCard>
               </div>
             </div>

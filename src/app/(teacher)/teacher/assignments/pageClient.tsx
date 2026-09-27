@@ -45,7 +45,7 @@ import Link from 'next/link';
 import Button from '@/app/components/Common/Button';
 import { useToast } from '@/app/hooks/useToast';
 import { useTranslation } from '@/app/context/TranslationContext';
-import { Inline } from '@/app/components/ui/Layout';
+import { Stack, Inline } from '@/app/components/ui/Layout';
 import { Text } from '@/app/components/ui/Text';
 import { Field } from '@/app/components/ui/Field';
 import { NomeAcao } from '@/app/components/ui/NomeAcao';
@@ -567,8 +567,8 @@ export default function TeacherAssignmentsPageClient({
 
                     {/* Progress Bar */}
                     {assignment.progress !== undefined && (
-                      <div className="mb-4">
-                        <div className="flex items-center justify-between mb-2">
+                      <Stack gap={2} className="mb-4">
+                        <div className="flex items-center justify-between">
                           <Text papel="rotulo" tom="fraco">
                             {t('progress_label')}
                           </Text>
@@ -588,7 +588,7 @@ export default function TeacherAssignmentsPageClient({
                             }}
                           />
                         </div>
-                      </div>
+                      </Stack>
                     )}
 
                     {/* Goals */}
@@ -821,8 +821,8 @@ export default function TeacherAssignmentsPageClient({
 
                     {/* Progress Bar */}
                     {assignment.progress !== undefined && (
-                      <div className="mb-4">
-                        <div className="flex items-center justify-between mb-2">
+                      <Stack gap={2} className="mb-4">
+                        <div className="flex items-center justify-between">
                           <Text papel="rotulo" tom="fraco">
                             {t('progress_label')}
                           </Text>
@@ -842,7 +842,7 @@ export default function TeacherAssignmentsPageClient({
                             }}
                           />
                         </div>
-                      </div>
+                      </Stack>
                     )}
 
                     {/* Goals */}
@@ -1335,8 +1335,8 @@ function CreateAssignmentModal({
   return (
     <Modal maxWidth="4xl" isOpen onClose={onClose}>
       <AnimatedCard hover="none">
-        <div className="p-6">
-          <div className="flex items-center justify-between mb-6">
+        <Stack gap={6} className="p-6">
+          <div className="flex items-center justify-between">
             <h2 className="text-xl font-bold text-theme-primary classical-title">
               {t('new_assignment_modal_title')}
             </h2>
@@ -1349,7 +1349,7 @@ function CreateAssignmentModal({
             </button>
           </div>
 
-          <div className="space-y-6">
+          <Stack gap={6}>
             {/* Basic Info */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
@@ -1481,10 +1481,10 @@ function CreateAssignmentModal({
             </div>
 
             {/* Goals Sections */}
-            <div className="space-y-4">
+            <Stack>
               {/* Practice Goals */}
-              <div>
-                <div className="flex items-center justify-between mb-2">
+              <Stack gap={2}>
+                <div className="flex items-center justify-between">
                   <label className="text-sm font-medium text-theme-primary">
                     {t('practice_goals')}
                   </label>
@@ -1499,7 +1499,7 @@ function CreateAssignmentModal({
                     <span>{t('add')}</span>
                   </Inline>
                 </div>
-                <div className="space-y-2">
+                <Stack gap={2}>
                   {createForm.practiceGoals.map(
                     (goal: string, index: number) => (
                       <Inline gap={2} key={index}>
@@ -1525,12 +1525,12 @@ function CreateAssignmentModal({
                       </Inline>
                     )
                   )}
-                </div>
-              </div>
+                </Stack>
+              </Stack>
 
               {/* Technical Goals */}
-              <div>
-                <div className="flex items-center justify-between mb-2">
+              <Stack gap={2}>
+                <div className="flex items-center justify-between">
                   <label className="text-sm font-medium text-theme-primary">
                     {t('technical_goals')}
                   </label>
@@ -1545,7 +1545,7 @@ function CreateAssignmentModal({
                     <span>{t('add')}</span>
                   </Inline>
                 </div>
-                <div className="space-y-2">
+                <Stack gap={2}>
                   {createForm.technicalGoals.map(
                     (goal: string, index: number) => (
                       <Inline gap={2} key={index}>
@@ -1571,9 +1571,9 @@ function CreateAssignmentModal({
                       </Inline>
                     )
                   )}
-                </div>
-              </div>
-            </div>
+                </Stack>
+              </Stack>
+            </Stack>
 
             {/* Actions */}
             <Inline
@@ -1607,8 +1607,8 @@ function CreateAssignmentModal({
                 <span>{loading ? t('creating_task') : t('create_task')}</span>
               </Inline>
             </Inline>
-          </div>
-        </div>
+          </Stack>
+        </Stack>
       </AnimatedCard>
     </Modal>
   );
@@ -1830,16 +1830,16 @@ function AssignmentDetailsModal({
           {/* Content Grid */}
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
             {/* Main Content */}
-            <div className="lg:col-span-2 space-y-6">
+            <Stack gap={6} className="lg:col-span-2">
               {/* Description */}
-              <div>
-                <label className="text-sm font-medium text-theme-tertiary block mb-2">
+              <Stack gap={2}>
+                <label className="text-sm font-medium text-theme-tertiary block">
                   Descrição
                 </label>
                 <div className="text-theme-primary whitespace-pre-wrap p-4 bg-theme-tertiary rounded-lg ">
                   {assignment.description}
                 </div>
-              </div>
+              </Stack>
 
               {/* Progress */}
               {assignment.progress !== undefined && (
@@ -1865,8 +1865,8 @@ function AssignmentDetailsModal({
 
               {/* 🆕 Seção de Vídeo */}
               {videoSubmission && (
-                <div>
-                  <label className="text-sm font-medium text-theme-tertiary block mb-3">
+                <Stack gap={3}>
+                  <label className="text-sm font-medium text-theme-tertiary block">
                     Vídeo da Performance
                   </label>
                   <div className="p-4 bg-theme-elevated rounded-lg">
@@ -1913,7 +1913,7 @@ function AssignmentDetailsModal({
                       Seu navegador não suporta a reprodução de vídeo.
                     </video>
                   </div>
-                </div>
+                </Stack>
               )}
 
               {/* Goals resumo */}
@@ -1965,25 +1965,28 @@ function AssignmentDetailsModal({
 
               {/* Submissão do aluno */}
               {(assignment.studentNotes || assignment.studentRating) && (
-                <div>
-                  <label className="text-sm font-medium text-theme-tertiary block mb-3">
+                <Stack gap={3}>
+                  <label className="text-sm font-medium text-theme-tertiary block">
                     Submissão do Aluno
                   </label>
-                  <div className="space-y-3">
+                  <Stack gap={3}>
                     {assignment.studentNotes && (
-                      <div className="p-3 bg-theme-secondary/5 rounded-lg border">
+                      <Stack
+                        gap={1}
+                        className="p-3 bg-theme-secondary/5 rounded-lg border"
+                      >
                         <Text
                           papel="rotulo"
                           tom="forte"
                           as="div"
-                          className="font-medium mb-1"
+                          className="font-medium"
                         >
                           Comentários:
                         </Text>
                         <Text papel="rotulo" tom="suave" as="div">
                           {assignment.studentNotes}
                         </Text>
-                      </div>
+                      </Stack>
                     )}
 
                     {assignment.studentRating && (
@@ -2019,13 +2022,13 @@ function AssignmentDetailsModal({
                         </Text>
                       </Inline>
                     )}
-                  </div>
-                </div>
+                  </Stack>
+                </Stack>
               )}
 
               {/* Teacher Feedback Section */}
-              <div>
-                <label className="text-sm font-medium text-theme-tertiary block mb-3">
+              <Stack gap={3}>
+                <label className="text-sm font-medium text-theme-tertiary block">
                   Seu Feedback
                 </label>
                 <div className="space-y-4">
@@ -2089,17 +2092,17 @@ function AssignmentDetailsModal({
                     </Inline>
                   </div>
                 </div>
-              </div>
-            </div>
+              </Stack>
+            </Stack>
 
             {/* Sidebar */}
-            <div className="space-y-4">
+            <Stack>
               {/* Quick Stats */}
               <Card nivel={2} densidade="compacta">
                 <h3 className="font-bold text-theme-primary mb-3 text-sm">
                   Informações
                 </h3>
-                <div className="space-y-2 text-xs">
+                <Stack gap={2} className="text-xs">
                   <div className="flex justify-between">
                     <span className="text-theme-tertiary">Criado:</span>
                     <span className="text-theme-primary">
@@ -2156,7 +2159,7 @@ function AssignmentDetailsModal({
                       </span>
                     </div>
                   )}
-                </div>
+                </Stack>
               </Card>
 
               {/* Quick Actions */}
@@ -2226,7 +2229,7 @@ function AssignmentDetailsModal({
                   <h3 className="font-bold text-theme-primary mb-3 text-sm">
                     Conquistas do Aluno
                   </h3>
-                  <div className="space-y-1">
+                  <Stack gap={1}>
                     {completedMilestones.slice(0, 4).map((key) => (
                       <Inline gap={2} key={key} className="text-xs">
                         <PiCheckCircle className="w-3 h-3 text-accent-green" />
@@ -2240,10 +2243,10 @@ function AssignmentDetailsModal({
                         +{completedMilestones.length - 4} mais...
                       </Text>
                     )}
-                  </div>
+                  </Stack>
                 </Card>
               )}
-            </div>
+            </Stack>
           </div>
         </div>
       </AnimatedCard>

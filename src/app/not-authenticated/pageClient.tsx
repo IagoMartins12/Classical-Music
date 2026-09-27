@@ -28,7 +28,7 @@ import { useAuth } from '../hooks/useAuth';
 import Footer from '../components/Footer';
 import Navbar from '../components/Navbar';
 import { useTranslation } from '../context/TranslationContext';
-import { Inline } from '@/app/components/ui/Layout';
+import { Stack, Inline } from '@/app/components/ui/Layout';
 import { Text } from '@/app/components/ui/Text';
 import { Button } from '@/app/components/ui/Button';
 import { Card } from '@/app/components/ui/Card';
@@ -406,8 +406,8 @@ export default function NotAuthenticated() {
                 </div>
 
                 {currentArea !== 'admin' && (
-                  <div className="mt-8 pt-6 border-t border-theme-secondary">
-                    <Text papel="rotulo" tom="fraco" as="p" className="mb-4">
+                  <Stack className="mt-8 pt-6 border-t border-theme-secondary">
+                    <Text papel="rotulo" tom="fraco" as="p">
                       {t('not_authenticated_jsx_p_children_0__não_tem_conta')}
                     </Text>
                     <div className="flex flex-col sm:flex-row gap-3 justify-center">
@@ -428,7 +428,7 @@ export default function NotAuthenticated() {
                         {t('not_authenticated_jsx_button_children_0__create')}
                       </Button>
                     </div>
-                  </div>
+                  </Stack>
                 )}
               </AnimatedCard>
 

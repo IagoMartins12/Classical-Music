@@ -33,7 +33,7 @@ import {
 import { useAdminAnalytics } from '@/app/hooks/admin/useAdminAnalytics';
 import LoadingAdminState from '../../Common/LoadingState';
 import { formatDuration, formatNumber } from '../../Utils';
-import { Inline } from '@/app/components/ui/Layout';
+import { Stack, Inline } from '@/app/components/ui/Layout';
 import { Text } from '@/app/components/ui/Text';
 
 export default function AdminAnalytics() {
@@ -228,8 +228,12 @@ export default function AdminAnalytics() {
             </Inline>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
               {analytics.insights.keyMetrics.map((metric, index) => (
-                <div key={index} className="p-4 bg-theme-secondary rounded-xl">
-                  <div className="flex items-center justify-between mb-2">
+                <Stack
+                  gap={2}
+                  key={index}
+                  className="p-4 bg-theme-secondary rounded-xl"
+                >
+                  <div className="flex items-center justify-between">
                     <Text papel="rotulo" tom="forte" className="font-medium">
                       {metric.metric}
                     </Text>
@@ -247,7 +251,7 @@ export default function AdminAnalytics() {
                   <div className="text-2xl font-bold text-theme-primary">
                     {metric.value}
                   </div>
-                </div>
+                </Stack>
               ))}
             </div>
           </AnimatedCard>
@@ -264,8 +268,8 @@ export default function AdminAnalytics() {
                 <span>Visão Geral do Engajamento</span>
               </Inline>
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-                <div className="p-4 bg-theme-secondary rounded-xl">
-                  <div className="flex items-center justify-between mb-2">
+                <Stack gap={2} className="p-4 bg-theme-secondary rounded-xl">
+                  <div className="flex items-center justify-between">
                     <Text papel="rotulo" tom="forte" className="font-medium">
                       Tempo Médio de Sessão
                     </Text>
@@ -284,10 +288,10 @@ export default function AdminAnalytics() {
                   <div className="text-2xl font-bold text-theme-primary">
                     {analytics.overview.engagement.avgSessionTime} min
                   </div>
-                </div>
+                </Stack>
 
-                <div className="p-4 bg-theme-secondary rounded-xl">
-                  <div className="flex items-center justify-between mb-2">
+                <Stack gap={2} className="p-4 bg-theme-secondary rounded-xl">
+                  <div className="flex items-center justify-between">
                     <Text papel="rotulo" tom="forte" className="font-medium">
                       Anotações/Dia
                     </Text>
@@ -314,10 +318,10 @@ export default function AdminAnalytics() {
                   <div className="text-2xl font-bold text-theme-primary">
                     {analytics.overview.engagement.annotationsPerDay}
                   </div>
-                </div>
+                </Stack>
 
-                <div className="p-4 bg-theme-secondary rounded-xl">
-                  <div className="flex items-center justify-between mb-2">
+                <Stack gap={2} className="p-4 bg-theme-secondary rounded-xl">
+                  <div className="flex items-center justify-between">
                     <Text papel="rotulo" tom="forte" className="font-medium">
                       % Usuários Ativos
                     </Text>
@@ -344,10 +348,10 @@ export default function AdminAnalytics() {
                   <div className="text-2xl font-bold text-theme-primary">
                     {analytics.overview.engagement.activePercentage}%
                   </div>
-                </div>
+                </Stack>
 
-                <div className="p-4 bg-theme-secondary rounded-xl">
-                  <div className="flex items-center justify-between mb-2">
+                <Stack gap={2} className="p-4 bg-theme-secondary rounded-xl">
+                  <div className="flex items-center justify-between">
                     <Text papel="rotulo" tom="forte" className="font-medium">
                       Anotações/Usuário
                     </Text>
@@ -374,7 +378,7 @@ export default function AdminAnalytics() {
                   <div className="text-2xl font-bold text-theme-primary">
                     {analytics.overview.engagement.avgAnnotationsPerUser}
                   </div>
-                </div>
+                </Stack>
               </div>
             </AnimatedCard>
           </AnimatedItem>
@@ -440,7 +444,7 @@ export default function AdminAnalytics() {
               <PiDatabase className="w-5 h-5 text-accent-blue" />
               <span>Obras Populares</span>
             </Inline>
-            <div className="space-y-3">
+            <Stack gap={3}>
               {analytics.charts.topPerformers.works
                 .slice(0, 5)
                 .map((work, index) => (
@@ -485,7 +489,7 @@ export default function AdminAnalytics() {
                     />
                   </Inline>
                 ))}
-            </div>
+            </Stack>
           </AnimatedCard>
 
           {/* Top Composers */}
@@ -498,7 +502,7 @@ export default function AdminAnalytics() {
               <PiUsers className="w-5 h-5 text-accent-green" />
               <span>Compositores Populares</span>
             </Inline>
-            <div className="space-y-3">
+            <Stack gap={3}>
               {analytics.charts.topPerformers.composers
                 .slice(0, 5)
                 .map((composer, index) => (
@@ -537,7 +541,7 @@ export default function AdminAnalytics() {
                     />
                   </Inline>
                 ))}
-            </div>
+            </Stack>
           </AnimatedCard>
 
           {/* Top Users */}
@@ -550,7 +554,7 @@ export default function AdminAnalytics() {
               <PiPulse className="w-5 h-5 text-accent-purple" />
               <span>Usuários Ativos</span>
             </Inline>
-            <div className="space-y-3">
+            <Stack gap={3}>
               {analytics.charts.topPerformers.users
                 .slice(0, 5)
                 .map((user, index) => (
@@ -587,7 +591,7 @@ export default function AdminAnalytics() {
                     />
                   </Inline>
                 ))}
-            </div>
+            </Stack>
           </AnimatedCard>
         </div>
 

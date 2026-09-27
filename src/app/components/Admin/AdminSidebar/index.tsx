@@ -33,6 +33,7 @@ import {
   PiUsers,
 } from 'react-icons/pi';
 import { Text } from '@/app/components/ui/Text';
+import { Stack } from '@/app/components/ui/Layout';
 
 interface SidebarSection {
   title: string;
@@ -384,14 +385,14 @@ export default function AdminSidebar() {
     <aside className="block w-full md:w-64 bg-theme-elevated border-r border-theme-primary h-[calc(100vh-80px)] overflow-y-auto">
       <div className="p-4 lg:p-6">
         {/* Sidebar Header */}
-        <div className="mb-6 lg:mb-8">
-          <h2 className="text-lg font-bold text-theme-primary mb-2">
+        <Stack gap={2} className="mb-6 lg:mb-8">
+          <h2 className="text-lg font-bold text-theme-primary">
             Painel Administrativo
           </h2>
           <Text papel="rotulo" tom="fraco" as="p">
             Gerencie toda a plataforma
           </Text>
-        </div>
+        </Stack>
 
         {/* Navigation Sections */}
         <nav className="space-y-4 lg:space-y-6">

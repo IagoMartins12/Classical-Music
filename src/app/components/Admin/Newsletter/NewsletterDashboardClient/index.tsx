@@ -27,7 +27,7 @@ import { useNewsletterStats } from '@/app/hooks/useNewsletterSubscription';
 import Button from '@/app/components/Common/Button';
 import Link from 'next/link';
 import LoadingAdminState from '../../Common/LoadingState';
-import { Inline } from '@/app/components/ui/Layout';
+import { Stack, Inline } from '@/app/components/ui/Layout';
 import { Text } from '@/app/components/ui/Text';
 
 interface QuickAction {
@@ -119,7 +119,7 @@ export default function NewsletterDashboardClient() {
 
   return (
     <PageContainer showBackground={true}>
-      <div className="space-y-8">
+      <Stack gap={8}>
         <AnimatedContainer
           delay={0.1}
           staggerSpeed="normal"
@@ -335,7 +335,7 @@ export default function NewsletterDashboardClient() {
 
               {stats?.recentSubscribers &&
               stats.recentSubscribers.length > 0 ? (
-                <div className="space-y-4">
+                <Stack>
                   {stats.recentSubscribers
                     .slice(0, 5)
                     .map((subscriber: any) => (
@@ -389,7 +389,7 @@ export default function NewsletterDashboardClient() {
                         </div>
                       </div>
                     ))}
-                </div>
+                </Stack>
               ) : (
                 <div className="text-center py-8">
                   <PiUsers className="w-12 h-12 text-theme-tertiary mx-auto mb-4" />
@@ -416,15 +416,16 @@ export default function NewsletterDashboardClient() {
 
               {stats?.topPerformingCampaigns &&
               stats.topPerformingCampaigns.length > 0 ? (
-                <div className="space-y-4">
+                <Stack>
                   {stats.topPerformingCampaigns
                     .slice(0, 5)
                     .map((campaign: any) => (
-                      <div
+                      <Stack
+                        gap={2}
                         key={campaign.id}
                         className="p-3 bg-theme-secondary rounded-lg"
                       >
-                        <div className="flex items-start justify-between mb-2">
+                        <div className="flex items-start justify-between">
                           <h4 className="font-medium text-theme-primary text-sm">
                             {campaign.name}
                           </h4>
@@ -436,12 +437,7 @@ export default function NewsletterDashboardClient() {
                               : 'Não enviada'}
                           </Text>
                         </div>
-                        <Text
-                          papel="legenda"
-                          tom="fraco"
-                          as="p"
-                          className="mb-2"
-                        >
+                        <Text papel="legenda" tom="fraco" as="p">
                           {campaign.subject}
                         </Text>
                         <div className="flex items-center justify-between">
@@ -459,9 +455,9 @@ export default function NewsletterDashboardClient() {
                             {campaign.emailsSent || 0} enviados
                           </Text>
                         </div>
-                      </div>
+                      </Stack>
                     ))}
-                </div>
+                </Stack>
               ) : (
                 <div className="text-center py-8">
                   <PiPaperPlaneRight className="w-12 h-12 text-theme-tertiary mx-auto mb-4" />
@@ -480,7 +476,7 @@ export default function NewsletterDashboardClient() {
             </AnimatedCard>
           </div>
         </AnimatedContainer>
-      </div>
+      </Stack>
     </PageContainer>
   );
 }

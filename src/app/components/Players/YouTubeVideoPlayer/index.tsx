@@ -10,7 +10,7 @@ import {
   PiUser,
   PiYoutubeLogo,
 } from 'react-icons/pi';
-import { Inline } from '@/app/components/ui/Layout';
+import { Stack, Inline } from '@/app/components/ui/Layout';
 
 interface YouTubePlayerProps {
   video: {
@@ -113,7 +113,7 @@ const YouTubeVideoPlayer: React.FC<YouTubePlayerProps> = ({
       </div>
 
       {/* Video Info */}
-      <div className="p-4 space-y-3">
+      <Stack gap={3} className="p-4">
         <div>
           <h4 className="text-white text-sm font-medium line-clamp-2">
             {video.title}
@@ -143,7 +143,7 @@ const YouTubeVideoPlayer: React.FC<YouTubePlayerProps> = ({
             <span>{t('youtube_button_span')}</span>
           </Inline>
         )}
-      </div>
+      </Stack>
 
       <style jsx>{`
         .line-clamp-2 {

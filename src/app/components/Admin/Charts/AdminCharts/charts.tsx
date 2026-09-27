@@ -17,7 +17,7 @@ import {
   Pie,
   Cell,
 } from 'recharts';
-import { Inline } from '@/app/components/ui/Layout';
+import { Stack, Inline } from '@/app/components/ui/Layout';
 import { Text } from '@/app/components/ui/Text';
 import { Card } from '@/app/components/ui/Card';
 
@@ -632,7 +632,7 @@ export const HorizontalBarChart = ({
           )}
         </div>
       )}
-      <div className="space-y-3">
+      <Stack gap={3}>
         {data.map((item, index) => {
           const maxValue = Math.max(
             ...data.map((d) => (typeof d.value === 'number' ? d.value : 0))
@@ -674,7 +674,7 @@ export const HorizontalBarChart = ({
             </Inline>
           );
         })}
-      </div>
+      </Stack>
     </div>
   );
 };

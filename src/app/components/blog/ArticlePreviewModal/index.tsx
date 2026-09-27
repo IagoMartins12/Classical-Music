@@ -5,6 +5,7 @@ import Image from '@/app/components/SmartImage';
 import { ArticleContent } from '../ArticleContent';
 import Modal from '../../Modal';
 import { Text } from '@/app/components/ui/Text';
+import { Stack } from '@/app/components/ui/Layout';
 
 interface ArticlePreviewModalProps {
   article: any;
@@ -116,10 +117,11 @@ export default function ArticlePreviewModal({
 
           {/* Tags */}
           {article.tags && article.tags.length > 0 && (
-            <div className="mt-8 pt-6 border-t border-theme-secondary">
-              <h3 className="text-sm font-medium text-theme-tertiary mb-3">
-                Tags:
-              </h3>
+            <Stack
+              gap={3}
+              className="mt-8 pt-6 border-t border-theme-secondary"
+            >
+              <h3 className="text-sm font-medium text-theme-tertiary">Tags:</h3>
               <div className="flex flex-wrap gap-2">
                 {article.tags.map((tag: string) => (
                   <Text
@@ -132,13 +134,13 @@ export default function ArticlePreviewModal({
                   </Text>
                 ))}
               </div>
-            </div>
+            </Stack>
           )}
 
           {/* Keywords (SEO) */}
           {article.keywords && article.keywords.length > 0 && (
-            <div className="mt-6">
-              <h3 className="text-sm font-medium text-theme-tertiary mb-3">
+            <Stack gap={3} className="mt-6">
+              <h3 className="text-sm font-medium text-theme-tertiary">
                 Keywords (SEO):
               </h3>
               <div className="flex flex-wrap gap-2">
@@ -153,7 +155,7 @@ export default function ArticlePreviewModal({
                   </Text>
                 ))}
               </div>
-            </div>
+            </Stack>
           )}
 
           {/* SEO Info */}

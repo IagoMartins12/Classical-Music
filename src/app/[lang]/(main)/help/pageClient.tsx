@@ -631,8 +631,8 @@ export default function HelpPage(): JSX.Element {
       <section className="py-8">
         <AnimatedContainer delay={0.1} staggerSpeed="fast">
           <div>
-            <div className="max-w-4xl mx-auto">
-              <div className="text-center mb-8">
+            <Stack gap={8} className="max-w-4xl mx-auto">
+              <div className="text-center">
                 <button
                   onClick={() => setSelectedCategory(null)}
                   className="inline-flex items-center text-brand-primary hover:text-brand-primary/80 mb-4 transition-colors"
@@ -658,7 +658,7 @@ export default function HelpPage(): JSX.Element {
                   </AnimatedItem>
                 ))}
               </div>
-            </div>
+            </Stack>
           </div>
         </AnimatedContainer>
       </section>
@@ -708,8 +708,8 @@ export default function HelpPage(): JSX.Element {
           <div className="">
             <div className="max-w-4xl mx-auto">
               <AnimatedCard hover="lift" className="classical-card p-8 mb-12">
-                <div className="text-center">
-                  <h2 className="text-2xl font-bold classical-title text-theme-primary mb-6">
+                <Stack gap={6} className="text-center">
+                  <h2 className="text-2xl font-bold classical-title text-theme-primary">
                     {t('help_jsx_h2_children_0__acesso_rápido')}
                   </h2>
                   <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
@@ -743,7 +743,7 @@ export default function HelpPage(): JSX.Element {
                       </span>
                     </Link>
                   </div>
-                </div>
+                </Stack>
               </AnimatedCard>
             </div>
           </div>

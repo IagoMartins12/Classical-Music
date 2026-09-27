@@ -14,7 +14,7 @@ import {
 import Button from '@/app/components/Common/Button';
 import Modal from '@/app/components/Modal';
 import { processTemplate } from '@/app/libs/newsletter/emailTemplates';
-import { Inline } from '@/app/components/ui/Layout';
+import { Stack, Inline } from '@/app/components/ui/Layout';
 import { Text } from '@/app/components/ui/Text';
 import { NomeAcao } from '@/app/components/ui/NomeAcao';
 
@@ -304,30 +304,30 @@ export default function TemplatePreviewModal({
             )}
 
             {viewMode === 'code' && (
-              <div className="max-w-4xl mx-auto space-y-6">
-                <div>
-                  <h4 className="font-medium text-theme-primary mb-3 flex items-center">
+              <Stack gap={6} className="max-w-4xl mx-auto">
+                <Stack gap={3}>
+                  <h4 className="font-medium text-theme-primary flex items-center">
                     <PiCode className="w-4 h-4 mr-2" />
                     HTML Source
                   </h4>
                   <pre className="text-theme-primary bg-theme-secondary p-4 rounded-lg text-xs overflow-x-auto font-mono">
                     {template.htmlContent}
                   </pre>
-                </div>
+                </Stack>
 
-                <div>
-                  <h4 className="font-medium text-theme-primary mb-3 flex items-center">
+                <Stack gap={3}>
+                  <h4 className="font-medium text-theme-primary flex items-center">
                     <PiEnvelopeSimple className="w-4 h-4 mr-2" />
                     Text Source
                   </h4>
                   <pre className="text-theme-primary bg-theme-secondary p-4 rounded-lg text-xs overflow-x-auto font-mono">
                     {template.textContent}
                   </pre>
-                </div>
+                </Stack>
 
                 {template.variables && template.variables.length > 0 && (
-                  <div>
-                    <h4 className="font-medium text-theme-primary mb-3">
+                  <Stack gap={3}>
+                    <h4 className="font-medium text-theme-primary">
                       Variáveis Disponíveis ({template.variables.length})
                     </h4>
                     <div className="flex flex-wrap gap-2">
@@ -340,9 +340,9 @@ export default function TemplatePreviewModal({
                         </span>
                       ))}
                     </div>
-                  </div>
+                  </Stack>
                 )}
-              </div>
+              </Stack>
             )}
           </div>
         </div>

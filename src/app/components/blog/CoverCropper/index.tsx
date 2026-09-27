@@ -16,7 +16,7 @@ import {
 } from 'react-icons/pi';
 import Button from '../../Common/Button';
 import Modal from '../../Modal';
-import { Inline } from '@/app/components/ui/Layout';
+import { Stack, Inline } from '@/app/components/ui/Layout';
 import { Text } from '@/app/components/ui/Text';
 
 interface CoverCropperProps {
@@ -253,7 +253,7 @@ export default function CoverCropper({
       <div className="w-full max-w-6xl my-8">
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
           {/* Editor Principal */}
-          <div className="lg:col-span-2 space-y-4">
+          <Stack className="lg:col-span-2">
             <div className="bg-theme-elevated rounded-xl p-6">
               <div className="flex items-center justify-between mb-4">
                 <h3 className="text-lg font-semibold text-theme-primary">
@@ -300,7 +300,7 @@ export default function CoverCropper({
               </div>
 
               {/* Controles */}
-              <div className="mt-4 space-y-4">
+              <Stack className="mt-4">
                 {/* Zoom */}
                 <div className="space-y-2">
                   <div className="flex items-center justify-between">
@@ -372,12 +372,12 @@ export default function CoverCropper({
                   💡 <strong>Dica:</strong> Use o grid (regra dos terços) para
                   posicionar elementos importantes
                 </Text>
-              </div>
+              </Stack>
             </div>
-          </div>
+          </Stack>
 
           {/* Preview e Ações */}
-          <div className="space-y-4">
+          <Stack>
             {/* Preview */}
             <div className="bg-theme-elevated rounded-xl p-6">
               <h3 className="text-lg font-semibold text-theme-primary mb-4">
@@ -499,8 +499,11 @@ export default function CoverCropper({
             </div>
 
             {/* Info adicional */}
-            <div className="p-3 bg-green-50 dark:bg-green-900/20 rounded-lg">
-              <p className="text-xs text-green-900 dark:text-green-100 font-medium mb-1">
+            <Stack
+              gap={1}
+              className="p-3 bg-green-50 dark:bg-green-900/20 rounded-lg"
+            >
+              <p className="text-xs text-green-900 dark:text-green-100 font-medium">
                 ✨ Recursos Disponíveis:
               </p>
               <ul className="text-xs text-green-800 dark:text-green-200 space-y-1">
@@ -509,8 +512,8 @@ export default function CoverCropper({
                 <li>• Grid de composição</li>
                 <li>• Preview responsivo</li>
               </ul>
-            </div>
-          </div>
+            </Stack>
+          </Stack>
         </div>
       </div>
 

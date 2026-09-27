@@ -34,7 +34,7 @@ import { useAuth } from '@/app/hooks/useAuth';
 // Importar componentes de animação
 import { AnimatedCard, AnimatedItem } from '../../animation/AnimatedComponents';
 import { useTranslation } from '@/app/context/TranslationContext';
-import { Inline } from '@/app/components/ui/Layout';
+import { Stack, Inline } from '@/app/components/ui/Layout';
 import { Text } from '@/app/components/ui/Text';
 
 type DifficultyLevel = 'BEGINNER' | 'INTERMEDIATE' | 'ADVANCED';
@@ -565,7 +565,7 @@ export const LearningCard = ({
         </Inline>
 
         {/* Details */}
-        <div className="space-y-3">
+        <Stack gap={3}>
           {item.difficulty && (
             <Inline gap={2}>
               <PiTrendUp className="w-4 h-4 text-theme-tertiary" />
@@ -610,8 +610,11 @@ export const LearningCard = ({
               )}
 
               {wantToLearnItem.motivation && (
-                <div className="bg-theme-secondary rounded-lg p-3 border-l-4 border-accent-blue">
-                  <Inline gap={2} className="mb-1">
+                <Stack
+                  gap={1}
+                  className="bg-theme-secondary rounded-lg p-3 border-l-4 border-accent-blue"
+                >
+                  <Inline gap={2}>
                     <PiHeart className="w-4 h-4 text-accent-blue" />
                     <Text papel="rotulo" tom="suave" className="font-medium">
                       {t('motivation_section')}
@@ -620,12 +623,15 @@ export const LearningCard = ({
                   <Text papel="rotulo" tom="fraco" as="p">
                     {wantToLearnItem.motivation}
                   </Text>
-                </div>
+                </Stack>
               )}
 
               {wantToLearnItem.notes && (
-                <div className="bg-theme-secondary rounded-lg p-3 border-l-4 border-accent-purple">
-                  <Inline gap={2} className="mb-1">
+                <Stack
+                  gap={1}
+                  className="bg-theme-secondary rounded-lg p-3 border-l-4 border-accent-purple"
+                >
+                  <Inline gap={2}>
                     <PiBookOpen className="w-4 h-4 text-accent-purple" />
                     <Text papel="rotulo" tom="suave" className="font-medium">
                       {t('notes_section')}
@@ -639,7 +645,7 @@ export const LearningCard = ({
                   >
                     {wantToLearnItem.notes}
                   </Text>
-                </div>
+                </Stack>
               )}
             </>
           ) : (
@@ -687,8 +693,11 @@ export const LearningCard = ({
               </Inline>
 
               {learnedItem.technicalChallenges && (
-                <div className="bg-theme-secondary rounded-lg p-3 border-l-4 border-accent-red">
-                  <Inline gap={2} className="mb-1">
+                <Stack
+                  gap={1}
+                  className="bg-theme-secondary rounded-lg p-3 border-l-4 border-accent-red"
+                >
+                  <Inline gap={2}>
                     <PiTrendUp className="w-4 h-4 text-accent-red" />
                     <Text papel="rotulo" tom="suave" className="font-medium">
                       {t('technical_challenges')}
@@ -702,12 +711,15 @@ export const LearningCard = ({
                   >
                     {learnedItem.technicalChallenges}
                   </Text>
-                </div>
+                </Stack>
               )}
 
               {learnedItem.musicalInsights && (
-                <div className="bg-theme-secondary rounded-lg p-3 border-l-4 border-accent-green">
-                  <Inline gap={2} className="mb-1">
+                <Stack
+                  gap={1}
+                  className="bg-theme-secondary rounded-lg p-3 border-l-4 border-accent-green"
+                >
+                  <Inline gap={2}>
                     <PiMedal className="w-4 h-4 text-accent-green" />
                     <Text papel="rotulo" tom="suave" className="font-medium">
                       {t('musical_insights')}
@@ -721,12 +733,15 @@ export const LearningCard = ({
                   >
                     {learnedItem.musicalInsights}
                   </Text>
-                </div>
+                </Stack>
               )}
 
               {learnedItem.notes && (
-                <div className="bg-theme-secondary rounded-lg p-3 border-l-4 border-accent-purple">
-                  <Inline gap={2} className="mb-1">
+                <Stack
+                  gap={1}
+                  className="bg-theme-secondary rounded-lg p-3 border-l-4 border-accent-purple"
+                >
+                  <Inline gap={2}>
                     <PiBookOpen className="w-4 h-4 text-accent-purple" />
                     <Text papel="rotulo" tom="suave" className="font-medium">
                       {t('notes_section')}
@@ -740,11 +755,11 @@ export const LearningCard = ({
                   >
                     {learnedItem.notes}
                   </Text>
-                </div>
+                </Stack>
               )}
             </>
           )}
-        </div>
+        </Stack>
 
         {/* Footer */}
         <div className="mt-4 pt-4 border-t border-theme-secondary flex items-center justify-between">

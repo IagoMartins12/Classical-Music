@@ -474,8 +474,8 @@ export default function ComposerWorks({
 
           {/* Tabs de WorkType */}
           {availableWorkTypes.length > 0 && (
-            <div className="mb-6">
-              <Inline gap={2} className="mb-3">
+            <Stack gap={3} className="mb-6">
+              <Inline gap={2}>
                 <PiStack className="w-4 h-4 text-theme-primary" />
                 <Text papel="rotulo" tom="forte" className="font-medium">
                   {t('filter_by_work_type')}
@@ -526,7 +526,7 @@ export default function ComposerWorks({
                   );
                 })}
               </div>
-            </div>
+            </Stack>
           )}
 
           {/* Barra de busca */}

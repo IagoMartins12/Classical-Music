@@ -14,6 +14,7 @@ import SimpleWorkSearchInput from '@/app/components/SimpleWorkSearchInput';
 import { findComposerById, getWorkById } from '@/app/requests/catalog-search';
 import { uploadBlogMedia } from '@/app/requests/blog/interactions';
 import { Text } from '@/app/components/ui/Text';
+import { Stack } from '@/app/components/ui/Layout';
 
 interface AudioPlayerModalProps {
   editor: Editor;
@@ -195,8 +196,8 @@ export function AudioPlayerModal({
 
         {activeTab === 'upload' && (
           <>
-            <div>
-              <label className="block text-sm font-medium text-theme-primary mb-2">
+            <Stack gap={2}>
+              <label className="block text-sm font-medium text-theme-primary">
                 Selecionar Arquivo de Áudio
               </label>
               <div className="border-2 border-dashed border-theme-secondary rounded-lg p-6 text-center hover:border-brand-primary transition-colors">
@@ -237,7 +238,7 @@ export function AudioPlayerModal({
                   </label>
                 )}
               </div>
-            </div>
+            </Stack>
 
             {audioUrl && (
               <Input
@@ -293,7 +294,7 @@ export function AudioPlayerModal({
         )}
 
         {(audioUrl || youtubeUrl) && (
-          <div className="border-t pt-4 space-y-4">
+          <Stack className="border-t pt-4">
             <h4 className="font-semibold text-theme-primary">
               📎 Vinculações Opcionais
             </h4>
@@ -324,7 +325,7 @@ export function AudioPlayerModal({
                 <p className="text-sm text-green-600 mt-1">✓ Vinculado</p>
               )}
             </div>
-          </div>
+          </Stack>
         )}
 
         <div className="flex justify-end space-x-2 pt-4">

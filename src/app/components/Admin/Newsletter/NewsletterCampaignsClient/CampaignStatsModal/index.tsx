@@ -18,7 +18,7 @@ import {
   HorizontalBarChart,
   MetricCard,
 } from '@/app/components/Admin/Charts/AdminCharts';
-import { Inline } from '@/app/components/ui/Layout';
+import { Stack, Inline } from '@/app/components/ui/Layout';
 import { Text } from '@/app/components/ui/Text';
 
 interface CampaignStatsModalProps {
@@ -302,7 +302,7 @@ export function CampaignStatsModal({
           )}
 
           {!loading && activeTab === 'overview' && (
-            <div className="space-y-6">
+            <Stack gap={6}>
               {/* Main Stats Cards */}
               <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
                 <MetricCard
@@ -335,11 +335,11 @@ export function CampaignStatsModal({
               </div>
 
               {/* Performance Comparison */}
-              <div className="bg-theme-secondary p-6 rounded-lg">
-                <h3 className="font-bold text-theme-primary mb-4">
+              <Stack className="bg-theme-secondary p-6 rounded-lg">
+                <h3 className="font-bold text-theme-primary">
                   Performance vs Média da Indústria
                 </h3>
-                <div className="space-y-4">
+                <Stack>
                   <div className="flex items-center justify-between">
                     <span className="text-theme-secondary">
                       Taxa de Abertura
@@ -392,8 +392,8 @@ export function CampaignStatsModal({
                       </span>
                     </Inline>
                   </div>
-                </div>
-              </div>
+                </Stack>
+              </Stack>
 
               {/* Performance por Dispositivo */}
               <div className="grid md:grid-cols-2 gap-6">
@@ -405,11 +405,11 @@ export function CampaignStatsModal({
                   />
                 </div>
 
-                <div className="bg-theme-secondary p-6 rounded-lg">
-                  <h3 className="font-bold text-theme-primary mb-4">
+                <Stack className="bg-theme-secondary p-6 rounded-lg">
+                  <h3 className="font-bold text-theme-primary">
                     Informações da Campanha
                   </h3>
-                  <div className="space-y-2 text-sm">
+                  <Stack gap={2} className="text-sm">
                     <div className="flex justify-between">
                       <span className="text-theme-tertiary">Status</span>
                       <span className="text-theme-primary">
@@ -440,13 +440,13 @@ export function CampaignStatsModal({
                         {campaign.template?.name || 'N/A'}
                       </span>
                     </div>
-                  </div>
-                </div>
+                  </Stack>
+                </Stack>
               </div>
 
               {/* Problemas de Entrega */}
-              <div className="bg-theme-secondary p-6 rounded-lg">
-                <h3 className="font-bold text-theme-primary mb-4">
+              <Stack className="bg-theme-secondary p-6 rounded-lg">
+                <h3 className="font-bold text-theme-primary">
                   Análise de Entrega
                 </h3>
                 <div className="grid md:grid-cols-3 gap-4">
@@ -475,13 +475,13 @@ export function CampaignStatsModal({
                     </div>
                   </div>
                 </div>
-              </div>
-            </div>
+              </Stack>
+            </Stack>
           )}
 
           {/* 🆕 ABA DE ENGAJAMENTO */}
           {!loading && activeTab === 'engagement' && (
-            <div className="space-y-6">
+            <Stack gap={6}>
               <div className="grid md:grid-cols-2 gap-6">
                 {/* Engajamento ao Longo do Tempo */}
                 <div className="bg-theme-secondary p-6 rounded-lg">
@@ -589,11 +589,11 @@ export function CampaignStatsModal({
               </div>
 
               {/* Análise de Tendências */}
-              <div className="bg-theme-secondary p-6 rounded-lg">
-                <h3 className="font-bold text-theme-primary mb-4">
+              <Stack className="bg-theme-secondary p-6 rounded-lg">
+                <h3 className="font-bold text-theme-primary">
                   Análise de Engajamento
                 </h3>
-                <div className="space-y-4 text-sm">
+                <Stack className="text-sm">
                   <div className="flex items-center justify-between p-3 bg-theme-tertiary rounded-lg">
                     <div className="flex items-center">
                       <PiTrendUp
@@ -650,16 +650,16 @@ export function CampaignStatsModal({
                       {rates.unsubscribeRate.toFixed(2)}%
                     </span>
                   </div>
-                </div>
-              </div>
-            </div>
+                </Stack>
+              </Stack>
+            </Stack>
           )}
 
           {/* 🆕 ABA DE TIMELINE */}
           {!loading && activeTab === 'timeline' && (
-            <div className="space-y-6">
-              <div className="bg-theme-secondary p-6 rounded-lg">
-                <h3 className="font-bold text-theme-primary mb-6">
+            <Stack gap={6}>
+              <Stack gap={6} className="bg-theme-secondary p-6 rounded-lg">
+                <h3 className="font-bold text-theme-primary">
                   Timeline da Campanha
                 </h3>
 
@@ -667,7 +667,7 @@ export function CampaignStatsModal({
                   {/* Linha vertical da timeline */}
                   <div className="absolute left-4 top-0 bottom-0 w-0.5 bg-theme-primary"></div>
 
-                  <div className="space-y-6">
+                  <Stack gap={6}>
                     {timelineData.map((event) => (
                       <div key={event.id} className="relative flex items-start">
                         {/* Ícone do evento */}
@@ -725,9 +725,9 @@ export function CampaignStatsModal({
                         </div>
                       </div>
                     ))}
-                  </div>
+                  </Stack>
                 </div>
-              </div>
+              </Stack>
 
               {/* Estatísticas da Timeline */}
               <div className="grid md:grid-cols-3 gap-4">
@@ -764,7 +764,7 @@ export function CampaignStatsModal({
                   </Text>
                 </div>
               </div>
-            </div>
+            </Stack>
           )}
         </div>
 

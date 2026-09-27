@@ -34,7 +34,7 @@ import {
   loadSharedReport,
 } from '@/app/requests/portal/shared-reports';
 import dynamic from 'next/dynamic';
-import { Inline } from '@/app/components/ui/Layout';
+import { Stack, Inline } from '@/app/components/ui/Layout';
 import { Text } from '@/app/components/ui/Text';
 import { Button } from '@/app/components/ui/Button';
 import { Card } from '@/app/components/ui/Card';
@@ -344,7 +344,7 @@ export default function StudentSharedReportPageClient({
               <h3 className="text-lg font-bold text-theme-primary mb-4">
                 Informações do Relatório
               </h3>
-              <div className="space-y-3">
+              <Stack gap={3}>
                 <div className="flex items-center justify-between">
                   <span className="text-theme-secondary flex items-center">
                     <PiCalendarBlank className="w-4 h-4 mr-2" />
@@ -376,7 +376,7 @@ export default function StudentSharedReportPageClient({
                     </span>
                   </div>
                 )}
-              </div>
+              </Stack>
             </AnimatedCard>
           </div>
         </AnimatedItem>
@@ -500,8 +500,8 @@ export default function StudentSharedReportPageClient({
         {/* Progress Evolution Charts */}
         {selectedSections.evolution && (
           <AnimatedItem direction="up" springType="gentle">
-            <div className="mb-8">
-              <h2 className="text-2xl font-bold text-theme-primary classical-title mb-6 flex items-center">
+            <Stack gap={6} className="mb-8">
+              <h2 className="text-2xl font-bold text-theme-primary classical-title flex items-center">
                 <PiTrendUp className="w-6 h-6 mr-3 text-brand-primary" />
                 Evolução do Progresso
               </h2>
@@ -527,15 +527,15 @@ export default function StudentSharedReportPageClient({
                   </div>
                 </AnimatedCard>
               </div>
-            </div>
+            </Stack>
           </AnimatedItem>
         )}
 
         {/* Skills Assessment */}
         {selectedSections.insights && (
           <AnimatedItem direction="up" springType="gentle">
-            <div className="mb-8">
-              <h2 className="text-2xl font-bold text-theme-primary classical-title mb-6 flex items-center">
+            <Stack gap={6} className="mb-8">
+              <h2 className="text-2xl font-bold text-theme-primary classical-title flex items-center">
                 <PiTarget className="w-6 h-6 mr-3 text-brand-primary" />
                 Avaliação de Habilidades
               </h2>
@@ -590,7 +590,7 @@ export default function StudentSharedReportPageClient({
                   </AnimatedCard>
                 </div>
               </div>
-            </div>
+            </Stack>
           </AnimatedItem>
         )}
 
@@ -644,7 +644,7 @@ export default function StudentSharedReportPageClient({
               </div>
 
               {/* Comments List */}
-              <div className="space-y-4">
+              <Stack>
                 {reportData.comments.map((comment) => (
                   <div
                     key={comment.id}
@@ -687,7 +687,7 @@ export default function StudentSharedReportPageClient({
                     Ainda não há comentários. Seja o primeiro a comentar!
                   </div>
                 )}
-              </div>
+              </Stack>
             </AnimatedCard>
           </AnimatedItem>
         )}

@@ -18,6 +18,7 @@ import { AdminUser } from '@/app/hooks/admin/useAdminUsers';
 import Modal from '@/app/components/Modal';
 import { updateAdminUser } from '@/app/requests/admin/users';
 import { Text } from '@/app/components/ui/Text';
+import { Stack } from '@/app/components/ui/Layout';
 
 interface UserEditModalProps {
   user: AdminUser;
@@ -257,7 +258,7 @@ export default function UserEditModal({
                 Alterações Pendentes
               </h3>
 
-              <div className="space-y-2 text-sm">
+              <Stack gap={2} className="text-sm">
                 {editData.role !== (user.role || 0) && (
                   <div className="flex justify-between">
                     <span className="text-theme-tertiary">Role:</span>
@@ -308,7 +309,7 @@ export default function UserEditModal({
                     </span>
                   </div>
                 )}
-              </div>
+              </Stack>
             </AnimatedCard>
           )}
         </div>

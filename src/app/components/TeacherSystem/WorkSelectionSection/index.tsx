@@ -22,7 +22,7 @@ import {
   getWorkById,
   searchWorks,
 } from '@/app/requests/catalog-search';
-import { Inline } from '@/app/components/ui/Layout';
+import { Stack, Inline } from '@/app/components/ui/Layout';
 import { Text } from '@/app/components/ui/Text';
 import { NomeAcao } from '@/app/components/ui/NomeAcao';
 import { Button } from '@/app/components/ui/Button';
@@ -290,7 +290,7 @@ export default function WorkSelectionSection({
 
   return (
     <AnimatedCard className="classical-card p-6 relative z-10">
-      <div className="space-y-6">
+      <Stack gap={6}>
         {/* Header */}
         <div className="flex items-center justify-between">
           <Inline gap={3}>
@@ -330,7 +330,7 @@ export default function WorkSelectionSection({
 
         {/* Lista de peças selecionadas */}
         {selectedWorks.length > 0 && (
-          <div className="space-y-3">
+          <Stack gap={3}>
             <Inline
               as="h4"
               gap={2}
@@ -438,7 +438,7 @@ export default function WorkSelectionSection({
                 </AnimatedItem>
               ))}
             </div>
-          </div>
+          </Stack>
         )}
 
         {/* Formulário para adicionar nova peça */}
@@ -464,7 +464,7 @@ export default function WorkSelectionSection({
                 </span>
               </button>
             ) : (
-              <div className="bg-brand-primary/5 border border-color-primary rounded-lg p-4 space-y-4">
+              <Stack className="bg-brand-primary/5 border border-color-primary rounded-lg p-4">
                 <div className="flex items-center justify-between">
                   <Inline
                     as="h4"
@@ -594,7 +594,7 @@ export default function WorkSelectionSection({
                     </Inline>
                   </Inline>
                 </div>
-              </div>
+              </Stack>
             )}
           </div>
         )}
@@ -604,15 +604,15 @@ export default function WorkSelectionSection({
           <div className="bg-accent-yellow/10 border border-accent-yellow/30 rounded-lg p-3">
             <div className="flex items-start space-x-3">
               <PiInfo className="w-5 h-5 text-accent-yellow mt-0.5 flex-shrink-0" />
-              <div className="text-sm">
-                <p className="font-medium text-accent-yellow mb-1">
+              <Stack gap={1} className="text-sm">
+                <p className="font-medium text-accent-yellow">
                   Limite de peças atingido
                 </p>
                 <p className="text-theme-secondary">
                   Você pode vincular no máximo {maxWorks} peças por aula. Para
                   adicionar uma nova peça, remova uma das existentes primeiro.
                 </p>
-              </div>
+              </Stack>
             </div>
           </div>
         )}
@@ -640,7 +640,7 @@ export default function WorkSelectionSection({
             </div>
           </div>
         )}
-      </div>
+      </Stack>
 
       {/* Modal de Seleção de Partitura */}
       {showScoreModal && currentWorkForScore && (

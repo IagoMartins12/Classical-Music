@@ -14,7 +14,7 @@ import {
   PiUser,
   PiUsers,
 } from 'react-icons/pi';
-import { Inline } from '@/app/components/ui/Layout';
+import { Stack, Inline } from '@/app/components/ui/Layout';
 
 export default function TeacherProfileLoading() {
   return (
@@ -85,57 +85,57 @@ export default function TeacherProfileLoading() {
             subtitle="Seus dados básicos e informações de contato"
           >
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <div className="space-y-4">
+              <Stack>
                 {/* Name */}
-                <div>
-                  <div className="h-3 w-16 bg-theme-tertiary/30 rounded mb-2"></div>
+                <Stack gap={2}>
+                  <div className="h-3 w-16 bg-theme-tertiary/30 rounded"></div>
                   <div className="h-5 w-48 bg-theme-primary/30 rounded"></div>
-                </div>
+                </Stack>
 
                 {/* Email */}
-                <div>
-                  <div className="h-3 w-12 bg-theme-tertiary/30 rounded mb-2"></div>
+                <Stack gap={2}>
+                  <div className="h-3 w-12 bg-theme-tertiary/30 rounded"></div>
                   <Inline gap={2}>
                     <PiEnvelopeSimple className="w-4 h-4 text-theme-tertiary/30" />
                     <div className="h-5 w-56 bg-theme-primary/30 rounded"></div>
                   </Inline>
-                </div>
+                </Stack>
 
                 {/* Phone */}
-                <div>
-                  <div className="h-3 w-16 bg-theme-tertiary/30 rounded mb-2"></div>
+                <Stack gap={2}>
+                  <div className="h-3 w-16 bg-theme-tertiary/30 rounded"></div>
                   <Inline gap={2}>
                     <PiPhone className="w-4 h-4 text-theme-tertiary/30" />
                     <div className="h-5 w-40 bg-theme-primary/30 rounded"></div>
                   </Inline>
-                </div>
-              </div>
+                </Stack>
+              </Stack>
 
-              <div className="space-y-4">
+              <Stack>
                 {/* Location */}
-                <div>
-                  <div className="h-3 w-20 bg-theme-tertiary/30 rounded mb-2"></div>
+                <Stack gap={2}>
+                  <div className="h-3 w-20 bg-theme-tertiary/30 rounded"></div>
                   <Inline gap={2}>
                     <PiMapPin className="w-4 h-4 text-theme-tertiary/30" />
                     <div className="h-5 w-44 bg-theme-primary/30 rounded"></div>
                   </Inline>
-                </div>
+                </Stack>
 
                 {/* Member since */}
-                <div>
-                  <div className="h-3 w-24 bg-theme-tertiary/30 rounded mb-2"></div>
+                <Stack gap={2}>
+                  <div className="h-3 w-24 bg-theme-tertiary/30 rounded"></div>
                   <div className="h-5 w-32 bg-theme-primary/30 rounded"></div>
-                </div>
+                </Stack>
 
                 {/* Status */}
-                <div>
-                  <div className="h-3 w-12 bg-theme-tertiary/30 rounded mb-2"></div>
+                <Stack gap={2}>
+                  <div className="h-3 w-12 bg-theme-tertiary/30 rounded"></div>
                   <Inline gap={2}>
                     <div className="h-6 w-16 bg-accent-green/20 border border-accent-green/30 rounded-full"></div>
                     <div className="h-6 w-20 bg-accent-green/20 border border-accent-green/30 rounded-full"></div>
                   </Inline>
-                </div>
-              </div>
+                </Stack>
+              </Stack>
             </div>
           </ProfileSectionSkeleton>
 
@@ -145,46 +145,46 @@ export default function TeacherProfileLoading() {
             title="Informações Profissionais"
             subtitle="Sua experiência, formação e conquistas"
           >
-            <div className="space-y-6">
+            <Stack gap={6}>
               {/* Bio */}
-              <div>
-                <div className="h-3 w-20 bg-theme-tertiary/30 rounded mb-2"></div>
-                <div className="space-y-2">
+              <Stack gap={2}>
+                <div className="h-3 w-20 bg-theme-tertiary/30 rounded"></div>
+                <Stack gap={2}>
                   <div className="h-4 bg-theme-primary/20 rounded w-full"></div>
                   <div className="h-4 bg-theme-primary/20 rounded w-5/6"></div>
                   <div className="h-4 bg-theme-primary/20 rounded w-4/6"></div>
-                </div>
-              </div>
+                </Stack>
+              </Stack>
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 {/* Experience */}
-                <div>
-                  <div className="h-3 w-24 bg-theme-tertiary/30 rounded mb-2"></div>
-                  <div className="space-y-2">
+                <Stack gap={2}>
+                  <div className="h-3 w-24 bg-theme-tertiary/30 rounded"></div>
+                  <Stack gap={2}>
                     <div className="h-3 bg-theme-primary/20 rounded w-full"></div>
                     <div className="h-3 bg-theme-primary/20 rounded w-3/4"></div>
-                  </div>
-                </div>
+                  </Stack>
+                </Stack>
 
                 {/* Education */}
-                <div>
-                  <div className="h-3 w-20 bg-theme-tertiary/30 rounded mb-2"></div>
-                  <div className="space-y-2">
+                <Stack gap={2}>
+                  <div className="h-3 w-20 bg-theme-tertiary/30 rounded"></div>
+                  <Stack gap={2}>
                     <div className="h-3 bg-theme-primary/20 rounded w-full"></div>
                     <div className="h-3 bg-theme-primary/20 rounded w-2/3"></div>
-                  </div>
-                </div>
+                  </Stack>
+                </Stack>
               </div>
 
               {/* Website */}
-              <div>
-                <div className="h-3 w-16 bg-theme-tertiary/30 rounded mb-2"></div>
+              <Stack gap={2}>
+                <div className="h-3 w-16 bg-theme-tertiary/30 rounded"></div>
                 <Inline gap={2}>
                   <PiGlobe className="w-4 h-4 text-brand-primary/30" />
                   <div className="h-4 w-48 bg-brand-primary/30 rounded"></div>
                 </Inline>
-              </div>
-            </div>
+              </Stack>
+            </Stack>
           </ProfileSectionSkeleton>
 
           {/* Teaching Configuration Skeleton */}
@@ -193,11 +193,11 @@ export default function TeacherProfileLoading() {
             title="Configurações de Ensino"
             subtitle="Seus instrumentos, especialidades e métodos de ensino"
           >
-            <div className="space-y-6">
+            <Stack gap={6}>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 {/* Instruments */}
-                <div>
-                  <div className="h-3 w-24 bg-theme-tertiary/30 rounded mb-3"></div>
+                <Stack gap={3}>
+                  <div className="h-3 w-24 bg-theme-tertiary/30 rounded"></div>
                   <div className="flex flex-wrap gap-2">
                     {Array.from({ length: 4 }).map((_, i) => (
                       <div
@@ -206,11 +206,11 @@ export default function TeacherProfileLoading() {
                       ></div>
                     ))}
                   </div>
-                </div>
+                </Stack>
 
                 {/* Specialties */}
-                <div>
-                  <div className="h-3 w-28 bg-theme-tertiary/30 rounded mb-3"></div>
+                <Stack gap={3}>
+                  <div className="h-3 w-28 bg-theme-tertiary/30 rounded"></div>
                   <div className="flex flex-wrap gap-2">
                     {Array.from({ length: 3 }).map((_, i) => (
                       <div
@@ -219,44 +219,44 @@ export default function TeacherProfileLoading() {
                       ></div>
                     ))}
                   </div>
-                </div>
+                </Stack>
               </div>
 
               {/* Methodology */}
-              <div>
-                <div className="h-3 w-24 bg-theme-tertiary/30 rounded mb-2"></div>
-                <div className="space-y-2">
+              <Stack gap={2}>
+                <div className="h-3 w-24 bg-theme-tertiary/30 rounded"></div>
+                <Stack gap={2}>
                   <div className="h-3 bg-theme-primary/20 rounded w-full"></div>
                   <div className="h-3 bg-theme-primary/20 rounded w-4/5"></div>
-                </div>
-              </div>
+                </Stack>
+              </Stack>
 
               <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                 {/* Duration */}
-                <div>
-                  <div className="h-3 w-24 bg-theme-tertiary/30 rounded mb-2"></div>
+                <Stack gap={2}>
+                  <div className="h-3 w-24 bg-theme-tertiary/30 rounded"></div>
                   <Inline gap={2}>
                     <PiClock className="w-4 h-4 text-theme-primary/30" />
                     <div className="h-4 w-20 bg-theme-primary/30 rounded"></div>
                   </Inline>
-                </div>
+                </Stack>
 
                 {/* Capacity */}
-                <div>
-                  <div className="h-3 w-32 bg-theme-tertiary/30 rounded mb-2"></div>
+                <Stack gap={2}>
+                  <div className="h-3 w-32 bg-theme-tertiary/30 rounded"></div>
                   <Inline gap={2}>
                     <PiUsers className="w-4 h-4 text-theme-primary/30" />
                     <div className="h-4 w-16 bg-theme-primary/30 rounded"></div>
                   </Inline>
-                </div>
+                </Stack>
 
                 {/* Timezone */}
-                <div>
-                  <div className="h-3 w-20 bg-theme-tertiary/30 rounded mb-2"></div>
+                <Stack gap={2}>
+                  <div className="h-3 w-20 bg-theme-tertiary/30 rounded"></div>
                   <div className="h-4 w-36 bg-theme-primary/30 rounded"></div>
-                </div>
+                </Stack>
               </div>
-            </div>
+            </Stack>
           </ProfileSectionSkeleton>
 
           {/* Public Profile Skeleton */}
@@ -265,29 +265,29 @@ export default function TeacherProfileLoading() {
             title="Perfil Público"
             subtitle="Configure sua visibilidade na página 'Conheça Nossos Professores'"
           >
-            <div className="space-y-4">
+            <Stack>
               {/* Status toggle */}
               <div className="flex items-center justify-between p-4 bg-gradient-to-r from-theme-elevated to-interactive-hover rounded-lg border border-theme-primary/20">
                 <Inline gap={3}>
                   <div className="w-10 h-10 bg-accent-green/20 rounded-full flex items-center justify-center">
                     <PiEye className="w-5 h-5 text-accent-green/50" />
                   </div>
-                  <div>
-                    <div className="h-4 w-24 bg-theme-primary/30 rounded mb-1"></div>
+                  <Stack gap={1}>
+                    <div className="h-4 w-24 bg-theme-primary/30 rounded"></div>
                     <div className="h-3 w-40 bg-theme-tertiary/30 rounded"></div>
-                  </div>
+                  </Stack>
                 </Inline>
                 <div className="w-11 h-6 bg-brand-primary/30 rounded-full"></div>
               </div>
 
               {/* Public bio */}
-              <div>
-                <div className="h-3 w-28 bg-theme-tertiary/30 rounded mb-2"></div>
-                <div className="space-y-2">
+              <Stack gap={2}>
+                <div className="h-3 w-28 bg-theme-tertiary/30 rounded"></div>
+                <Stack gap={2}>
                   <div className="h-3 bg-theme-primary/20 rounded w-full"></div>
                   <div className="h-3 bg-theme-primary/20 rounded w-3/4"></div>
-                </div>
-              </div>
+                </Stack>
+              </Stack>
 
               {/* Info box */}
               <div className="bg-gradient-to-r from-brand-primary/5 to-brand-secondary/5 rounded-lg border border-brand-primary/20 p-4">
@@ -295,13 +295,13 @@ export default function TeacherProfileLoading() {
                   <PiGlobe className="w-5 h-5 text-brand-primary/30" />
                   <div className="h-4 w-32 bg-theme-primary/30 rounded"></div>
                 </Inline>
-                <div className="space-y-1 mb-3">
+                <Stack gap={1} className="mb-3">
                   <div className="h-3 bg-theme-secondary/30 rounded w-5/6"></div>
                   <div className="h-3 bg-theme-secondary/30 rounded w-4/6"></div>
-                </div>
+                </Stack>
                 <div className="h-3 w-40 bg-brand-primary/30 rounded"></div>
               </div>
-            </div>
+            </Stack>
           </ProfileSectionSkeleton>
         </div>
       </div>
@@ -334,10 +334,10 @@ function ProfileSectionSkeleton({
             <div className="w-10 h-10 bg-gradient-to-br from-brand-primary/20 to-brand-secondary/20 rounded-lg flex items-center justify-center">
               {icon}
             </div>
-            <div>
-              <div className="h-5 w-48 bg-theme-primary/30 rounded mb-2"></div>
+            <Stack gap={2}>
+              <div className="h-5 w-48 bg-theme-primary/30 rounded"></div>
               <div className="h-3 w-64 bg-theme-tertiary/30 rounded"></div>
-            </div>
+            </Stack>
           </Inline>
 
           <div className="h-10 w-20 bg-theme-elevated border border-theme-secondary rounded-lg"></div>

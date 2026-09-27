@@ -25,6 +25,7 @@ import { formatNumber } from '../../Utils';
 import Image from '@/app/components/SmartImage';
 import { getAdminUserDetails } from '@/app/requests/admin/users';
 import { Text } from '@/app/components/ui/Text';
+import { Stack } from '@/app/components/ui/Layout';
 
 interface UserDetailsModalProps {
   user: AdminUser;
@@ -301,28 +302,18 @@ export default function UserDetailsModal({
                     Informações Pessoais
                   </h3>
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <div className="space-y-4">
-                      <div>
-                        <Text
-                          papel="legenda"
-                          tom="fraco"
-                          as="p"
-                          className="mb-1"
-                        >
+                    <Stack>
+                      <Stack gap={1}>
+                        <Text papel="legenda" tom="fraco" as="p">
                           Nome Completo
                         </Text>
                         <p className="text-theme-primary font-medium">
                           {`${detailsData.firstName || ''} ${detailsData.lastName || ''}`.trim() ||
                             'Não informado'}
                         </p>
-                      </div>
-                      <div>
-                        <Text
-                          papel="legenda"
-                          tom="fraco"
-                          as="p"
-                          className="mb-1"
-                        >
+                      </Stack>
+                      <Stack gap={1}>
+                        <Text papel="legenda" tom="fraco" as="p">
                           Username
                         </Text>
                         <p className="text-theme-primary font-medium">
@@ -330,72 +321,57 @@ export default function UserDetailsModal({
                             ? `@${detailsData.username}`
                             : 'Não informado'}
                         </p>
-                      </div>
-                      <div>
-                        <Text
-                          papel="legenda"
-                          tom="fraco"
-                          as="p"
-                          className="mb-1"
-                        >
+                      </Stack>
+                      <Stack gap={1}>
+                        <Text papel="legenda" tom="fraco" as="p">
                           Email
                         </Text>
                         <p className="text-theme-primary font-medium break-all">
                           {detailsData.email}
                         </p>
-                      </div>
+                      </Stack>
                       {detailsData.phone && (
-                        <div>
+                        <Stack gap={1}>
                           <Text
                             papel="legenda"
                             tom="fraco"
                             as="p"
-                            className="mb-1 flex items-center gap-1"
+                            className="flex items-center gap-1"
                           >
                             <PiPhone className="w-3 h-3" /> Telefone
                           </Text>
                           <p className="text-theme-primary font-medium">
                             {detailsData.phone}
                           </p>
-                        </div>
+                        </Stack>
                       )}
-                    </div>
-                    <div className="space-y-4">
-                      <div>
-                        <Text
-                          papel="legenda"
-                          tom="fraco"
-                          as="p"
-                          className="mb-1"
-                        >
+                    </Stack>
+                    <Stack>
+                      <Stack gap={1}>
+                        <Text papel="legenda" tom="fraco" as="p">
                           Tipo de Usuário
                         </Text>
                         <p className="text-theme-primary font-medium">
                           {formatUserType(detailsData.userType)}
                         </p>
-                      </div>
-                      <div>
-                        <Text
-                          papel="legenda"
-                          tom="fraco"
-                          as="p"
-                          className="mb-1"
-                        >
+                      </Stack>
+                      <Stack gap={1}>
+                        <Text papel="legenda" tom="fraco" as="p">
                           Nível de Experiência
                         </Text>
                         <p className="text-theme-primary font-medium">
                           {formatExperienceLevel(detailsData.experienceLevel)}
                         </p>
-                      </div>
+                      </Stack>
                       {(detailsData.city ||
                         detailsData.state ||
                         detailsData.country) && (
-                        <div>
+                        <Stack gap={1}>
                           <Text
                             papel="legenda"
                             tom="fraco"
                             as="p"
-                            className="mb-1 flex items-center gap-1"
+                            className="flex items-center gap-1"
                           >
                             <PiMapPin className="w-3 h-3" /> Localização
                           </Text>
@@ -408,32 +384,30 @@ export default function UserDetailsModal({
                               .filter(Boolean)
                               .join(', ')}
                           </p>
-                        </div>
+                        </Stack>
                       )}
                       {detailsData.practiceTimePerWeek && (
-                        <div>
-                          <Text
-                            papel="legenda"
-                            tom="fraco"
-                            as="p"
-                            className="mb-1"
-                          >
+                        <Stack gap={1}>
+                          <Text papel="legenda" tom="fraco" as="p">
                             Tempo de Prática Semanal
                           </Text>
                           <p className="text-theme-primary font-medium">
                             {detailsData.practiceTimePerWeek} minutos
                           </p>
-                        </div>
+                        </Stack>
                       )}
-                    </div>
+                    </Stack>
                   </div>
                   {detailsData.bio && (
-                    <div className="mt-4 pt-4 border-t border-theme-primary">
-                      <Text papel="legenda" tom="fraco" as="p" className="mb-2">
+                    <Stack
+                      gap={2}
+                      className="mt-4 pt-4 border-t border-theme-primary"
+                    >
+                      <Text papel="legenda" tom="fraco" as="p">
                         Biografia
                       </Text>
                       <p className="text-theme-primary">{detailsData.bio}</p>
-                    </div>
+                    </Stack>
                   )}
                 </AnimatedCard>
 
@@ -446,13 +420,11 @@ export default function UserDetailsModal({
                     </h3>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                       {detailsData.favoriteComposer && (
-                        <div className="p-4 bg-theme-secondary rounded-lg">
-                          <Text
-                            papel="legenda"
-                            tom="fraco"
-                            as="p"
-                            className="mb-2"
-                          >
+                        <Stack
+                          gap={2}
+                          className="p-4 bg-theme-secondary rounded-lg"
+                        >
+                          <Text papel="legenda" tom="fraco" as="p">
                             Compositor Favorito
                           </Text>
                           <div className="flex items-center gap-3">
@@ -476,22 +448,20 @@ export default function UserDetailsModal({
                               )}
                             </div>
                           </div>
-                        </div>
+                        </Stack>
                       )}
                       {detailsData.favoriteEpoch && (
-                        <div className="p-4 bg-theme-secondary rounded-lg">
-                          <Text
-                            papel="legenda"
-                            tom="fraco"
-                            as="p"
-                            className="mb-2"
-                          >
+                        <Stack
+                          gap={2}
+                          className="p-4 bg-theme-secondary rounded-lg"
+                        >
+                          <Text papel="legenda" tom="fraco" as="p">
                             Época Favorita
                           </Text>
                           <p className="font-bold text-theme-primary text-lg">
                             {detailsData.favoriteEpoch.name}
                           </p>
-                        </div>
+                        </Stack>
                       )}
                     </div>
                   </AnimatedCard>
@@ -525,22 +495,28 @@ export default function UserDetailsModal({
                         Score: {detailsData.stats.uploadScore}
                       </div>
                     </div>
-                    <div className="text-center p-4 bg-theme-secondary rounded-lg">
-                      <div className="text-3xl font-bold text-accent-red mb-1">
+                    <Stack
+                      gap={1}
+                      className="text-center p-4 bg-theme-secondary rounded-lg"
+                    >
+                      <div className="text-3xl font-bold text-accent-red">
                         {formatNumber(detailsData.stats.totalFavorites)}
                       </div>
                       <Text papel="rotulo" tom="fraco" as="div">
                         Favoritos
                       </Text>
-                    </div>
-                    <div className="text-center p-4 bg-theme-secondary rounded-lg">
-                      <div className="text-3xl font-bold text-accent-blue mb-1">
+                    </Stack>
+                    <Stack
+                      gap={1}
+                      className="text-center p-4 bg-theme-secondary rounded-lg"
+                    >
+                      <div className="text-3xl font-bold text-accent-blue">
                         {detailsData.joinedDaysAgo}
                       </div>
                       <Text papel="rotulo" tom="fraco" as="div">
                         Dias na plataforma
                       </Text>
-                    </div>
+                    </Stack>
                   </div>
                 </AnimatedCard>
               </div>
@@ -593,7 +569,7 @@ export default function UserDetailsModal({
                       <PiHeart className="w-5 h-5 text-accent-red" />
                       Obras Favoritas ({detailsData.favoriteWorks.length})
                     </h3>
-                    <div className="space-y-2">
+                    <Stack gap={2}>
                       {detailsData.favoriteWorks.map((fav, idx) => (
                         <div
                           key={idx}
@@ -607,7 +583,7 @@ export default function UserDetailsModal({
                           </Text>
                         </div>
                       ))}
-                    </div>
+                    </Stack>
                   </AnimatedCard>
                 )}
 
@@ -617,7 +593,7 @@ export default function UserDetailsModal({
                       <PiFileText className="w-5 h-5 text-accent-purple" />
                       Partituras Favoritas ({detailsData.favoriteScores.length})
                     </h3>
-                    <div className="space-y-2">
+                    <Stack gap={2}>
                       {detailsData.favoriteScores.map((score, idx) => (
                         <div
                           key={idx}
@@ -644,7 +620,7 @@ export default function UserDetailsModal({
                           </div>
                         </div>
                       ))}
-                    </div>
+                    </Stack>
                   </AnimatedCard>
                 )}
 
@@ -670,7 +646,7 @@ export default function UserDetailsModal({
                       <PiTarget className="w-5 h-5 text-accent-amber" />
                       Quer Aprender ({detailsData.wantToLearn.length})
                     </h3>
-                    <div className="space-y-2">
+                    <Stack gap={2}>
                       {detailsData.wantToLearn.map((item, idx) => (
                         <div
                           key={idx}
@@ -689,7 +665,7 @@ export default function UserDetailsModal({
                           </div>
                         </div>
                       ))}
-                    </div>
+                    </Stack>
                   </AnimatedCard>
                 )}
 
@@ -699,7 +675,7 @@ export default function UserDetailsModal({
                       <PiCheckCircle className="w-5 h-5 text-accent-green" />
                       Já Aprendeu ({detailsData.learned.length})
                     </h3>
-                    <div className="space-y-2">
+                    <Stack gap={2}>
                       {detailsData.learned.map((item, idx) => (
                         <div
                           key={idx}
@@ -718,7 +694,7 @@ export default function UserDetailsModal({
                           </div>
                         </div>
                       ))}
-                    </div>
+                    </Stack>
                   </AnimatedCard>
                 )}
 
@@ -742,13 +718,14 @@ export default function UserDetailsModal({
                   Anotações ({detailsData.annotations.length})
                 </h3>
                 {detailsData.annotations.length > 0 ? (
-                  <div className="space-y-3">
+                  <Stack gap={3}>
                     {detailsData.annotations.map((annotation) => (
-                      <div
+                      <Stack
+                        gap={2}
                         key={annotation.id}
                         className="p-4 bg-theme-secondary rounded-lg"
                       >
-                        <div className="flex items-start justify-between mb-2">
+                        <div className="flex items-start justify-between">
                           <div className="flex-1 min-w-0">
                             <p className="font-bold text-theme-primary">
                               {annotation.title}
@@ -766,9 +743,9 @@ export default function UserDetailsModal({
                           {annotation.content.substring(0, 150)}
                           {annotation.content.length > 150 && '...'}
                         </Text>
-                      </div>
+                      </Stack>
                     ))}
-                  </div>
+                  </Stack>
                 ) : (
                   <p className="text-center py-8 text-theme-tertiary">
                     Nenhuma anotação ainda
@@ -834,7 +811,7 @@ export default function UserDetailsModal({
                       <PiMedal className="w-5 h-5 text-accent-blue" />
                       Perfil de Professor
                     </h3>
-                    <div className="space-y-4">
+                    <Stack>
                       <div className="flex items-center gap-4 flex-wrap">
                         <div
                           className={`px-3 py-1 rounded-full text-sm font-medium ${
@@ -866,7 +843,7 @@ export default function UserDetailsModal({
                             Alunos ({detailsData.teacherProfile.students.length}
                             )
                           </Text>
-                          <div className="space-y-2">
+                          <Stack gap={2}>
                             {detailsData.teacherProfile.students
                               .slice(0, 10)
                               .map((rel: any, idx: number) => (
@@ -883,7 +860,7 @@ export default function UserDetailsModal({
                                   </Text>
                                 </div>
                               ))}
-                          </div>
+                          </Stack>
                           {detailsData.teacherProfile.students.length > 10 && (
                             <p className="text-sm text-theme-quaternary mt-2 text-center">
                               +{detailsData.teacherProfile.students.length - 10}{' '}
@@ -899,7 +876,7 @@ export default function UserDetailsModal({
                           Nenhum aluno cadastrado
                         </p>
                       )}
-                    </div>
+                    </Stack>
                   </AnimatedCard>
                 )}
 
@@ -909,19 +886,19 @@ export default function UserDetailsModal({
                       <PiBookOpen className="w-5 h-5 text-accent-green" />
                       Perfil de Estudante
                     </h3>
-                    <div className="space-y-4">
+                    <Stack>
                       {detailsData.studentProfile.teachers?.length > 0 && (
-                        <div>
+                        <Stack gap={3}>
                           <Text
                             papel="rotulo"
                             tom="forte"
                             as="p"
-                            className="font-medium mb-3"
+                            className="font-medium"
                           >
                             Professores (
                             {detailsData.studentProfile.teachers.length})
                           </Text>
-                          <div className="space-y-2">
+                          <Stack gap={2}>
                             {detailsData.studentProfile.teachers.map(
                               (rel: any, idx: number) => (
                                 <div
@@ -938,8 +915,8 @@ export default function UserDetailsModal({
                                 </div>
                               )
                             )}
-                          </div>
-                        </div>
+                          </Stack>
+                        </Stack>
                       )}
 
                       {(!detailsData.studentProfile.teachers ||
@@ -948,7 +925,7 @@ export default function UserDetailsModal({
                           Nenhum professor cadastrado
                         </p>
                       )}
-                    </div>
+                    </Stack>
                   </AnimatedCard>
                 )}
 

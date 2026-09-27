@@ -17,6 +17,7 @@ import { Text } from '@/app/components/ui/Text';
 import { NomeAcao } from '@/app/components/ui/NomeAcao';
 import { Button } from '@/app/components/ui/Button';
 import { Card } from '@/app/components/ui/Card';
+import { Stack } from '@/app/components/ui/Layout';
 
 interface ScorePreviewProps {
   score: IMSLPScore & {
@@ -326,14 +327,13 @@ const ScorePreview = React.memo(({ score }: ScorePreviewProps) => {
 
         {/* Copyright e notas */}
         {(score.copyright || score.notes) && (
-          <div className="mt-4 pt-4 border-t border-gray-100 dark:border-gray-700 space-y-3">
+          <Stack
+            gap={3}
+            className="mt-4 pt-4 border-t border-gray-100 dark:border-gray-700"
+          >
             {score.copyright && (
-              <div>
-                <Text
-                  papel="legenda"
-                  tom="fraco"
-                  className="font-medium block mb-1"
-                >
+              <Stack gap={1}>
+                <Text papel="legenda" tom="fraco" className="font-medium block">
                   Copyright
                 </Text>
                 <Text
@@ -343,16 +343,12 @@ const ScorePreview = React.memo(({ score }: ScorePreviewProps) => {
                 >
                   {score.copyright}
                 </Text>
-              </div>
+              </Stack>
             )}
 
             {score.notes && (
-              <div>
-                <Text
-                  papel="legenda"
-                  tom="fraco"
-                  className="font-medium block mb-1"
-                >
+              <Stack gap={1}>
+                <Text papel="legenda" tom="fraco" className="font-medium block">
                   Notas
                 </Text>
                 <Text
@@ -362,9 +358,9 @@ const ScorePreview = React.memo(({ score }: ScorePreviewProps) => {
                 >
                   {score.notes}
                 </Text>
-              </div>
+              </Stack>
             )}
-          </div>
+          </Stack>
         )}
 
         {/* Botão de ação adicional se disponível */}

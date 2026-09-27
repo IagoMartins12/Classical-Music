@@ -16,7 +16,7 @@ import Input from '@/app/components/Common/Inputs';
 import Modal from '@/app/components/Modal';
 import { useNewsletterAdmin } from '@/app/hooks/admin/useNewsletterAdmin';
 import LoadingAdminState from '../../../Common/LoadingState';
-import { Inline } from '@/app/components/ui/Layout';
+import { Stack, Inline } from '@/app/components/ui/Layout';
 import { Text } from '@/app/components/ui/Text';
 import { Field } from '@/app/components/ui/Field';
 
@@ -196,7 +196,7 @@ export default function SendTestCampaignModal({
     const { lists: selectedLists, totalEmails } = getSelectedListsInfo();
 
     return (
-      <div className="space-y-6">
+      <Stack gap={6}>
         {/* Header */}
         <div className="text-center">
           <div className="w-16 h-16 bg-gradient-to-br from-accent-amber to-accent-red rounded-full flex items-center justify-center mx-auto mb-4 shadow-theme-glow">
@@ -211,12 +211,12 @@ export default function SendTestCampaignModal({
         </div>
 
         {/* Campaign Info */}
-        <div className="bg-theme-secondary rounded-lg p-4">
-          <h4 className="font-medium text-theme-primary mb-3 flex items-center">
+        <Stack gap={3} className="bg-theme-secondary rounded-lg p-4">
+          <h4 className="font-medium text-theme-primary flex items-center">
             <PiEnvelopeSimple className="w-4 h-4 mr-2" />
             Informações da Campanha
           </h4>
-          <div className="space-y-2 text-sm">
+          <Stack gap={2} className="text-sm">
             <div className="flex justify-between">
               <span className="text-theme-tertiary">Nome:</span>
               <span className="text-theme-primary font-medium">
@@ -245,8 +245,8 @@ export default function SendTestCampaignModal({
                 {campaign.status === 'DRAFT' ? 'Rascunho' : campaign.status}
               </span>
             </div>
-          </div>
-        </div>
+          </Stack>
+        </Stack>
 
         {/* Test Lists Selection */}
         <div>
@@ -378,8 +378,8 @@ export default function SendTestCampaignModal({
         </div>
 
         {/* Send Mode */}
-        <div>
-          <h4 className="font-medium text-theme-primary mb-3">Modo de Envio</h4>
+        <Stack gap={3}>
+          <h4 className="font-medium text-theme-primary">Modo de Envio</h4>
           <div className="grid grid-cols-2 gap-4">
             <label
               className={`cursor-pointer p-4 rounded-lg border-2 transition-colors ${
@@ -439,7 +439,7 @@ export default function SendTestCampaignModal({
               </div>
             </label>
           </div>
-        </div>
+        </Stack>
 
         {/* Action Buttons */}
         <div className="flex space-x-4 pt-4">
@@ -457,7 +457,7 @@ export default function SendTestCampaignModal({
             Cancelar
           </Button>
         </div>
-      </div>
+      </Stack>
     );
   };
 
@@ -531,11 +531,14 @@ export default function SendTestCampaignModal({
 
         {/* Metadata */}
         {sendResult?.metadata && (
-          <div className="bg-theme-secondary rounded-lg p-4 mb-6 text-left">
-            <h4 className="font-medium text-theme-primary mb-3">
+          <Stack
+            gap={3}
+            className="bg-theme-secondary rounded-lg p-4 mb-6 text-left"
+          >
+            <h4 className="font-medium text-theme-primary">
               Detalhes do Envio
             </h4>
-            <div className="space-y-2 text-sm">
+            <Stack gap={2} className="text-sm">
               <div className="flex justify-between">
                 <span className="text-theme-tertiary">
                   Tempo de processamento:
@@ -558,16 +561,17 @@ export default function SendTestCampaignModal({
                   {sendResult.metadata.listsUsed.length}
                 </span>
               </div>
-            </div>
-          </div>
+            </Stack>
+          </Stack>
         )}
 
         {/* Errors */}
         {sendResult?.results.errors && sendResult.results.errors.length > 0 && (
-          <div className="bg-accent-red/10 border border-accent-red rounded-lg p-4 mb-6 text-left">
-            <h4 className="font-medium text-accent-red mb-3">
-              Erros Encontrados
-            </h4>
+          <Stack
+            gap={3}
+            className="bg-accent-red/10 border border-accent-red rounded-lg p-4 mb-6 text-left"
+          >
+            <h4 className="font-medium text-accent-red">Erros Encontrados</h4>
             <div className="space-y-1 text-sm max-h-32 overflow-y-auto">
               {sendResult.results.errors.map((error: string, index: number) => (
                 <div key={index} className="text-accent-red">
@@ -580,7 +584,7 @@ export default function SendTestCampaignModal({
                 </div>
               )}
             </div>
-          </div>
+          </Stack>
         )}
 
         <Button

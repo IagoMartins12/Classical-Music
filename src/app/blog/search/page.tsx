@@ -12,6 +12,7 @@ import {
 } from '@/app/requests/blog/taxonomy';
 import { Text } from '@/app/components/ui/Text';
 import { Card } from '@/app/components/ui/Card';
+import { Stack } from '@/app/components/ui/Layout';
 
 export const revalidate = 0; // Sem cache para busca
 
@@ -160,10 +161,10 @@ export default async function SearchPage({ searchParams }: PageProps) {
           {suggestions &&
             (suggestions.relatedTags.length > 0 ||
               suggestions.relatedCategories.length > 0) && (
-              <div className="space-y-3 mt-6">
+              <Stack gap={3} className="mt-6">
                 {suggestions.relatedTags.length > 0 && (
-                  <div>
-                    <Text papel="legenda" tom="fraco" as="p" className="mb-2">
+                  <Stack gap={2}>
+                    <Text papel="legenda" tom="fraco" as="p">
                       Tags relacionadas:
                     </Text>
                     <div className="flex flex-wrap gap-2">
@@ -177,12 +178,12 @@ export default async function SearchPage({ searchParams }: PageProps) {
                         </span>
                       ))}
                     </div>
-                  </div>
+                  </Stack>
                 )}
 
                 {suggestions.relatedCategories.length > 0 && (
-                  <div>
-                    <Text papel="legenda" tom="fraco" as="p" className="mb-2">
+                  <Stack gap={2}>
+                    <Text papel="legenda" tom="fraco" as="p">
                       Categorias relacionadas:
                     </Text>
                     <div className="flex flex-wrap gap-2">
@@ -199,9 +200,9 @@ export default async function SearchPage({ searchParams }: PageProps) {
                         )
                       )}
                     </div>
-                  </div>
+                  </Stack>
                 )}
-              </div>
+              </Stack>
             )}
         </Card>
       </div>

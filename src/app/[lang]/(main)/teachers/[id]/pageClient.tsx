@@ -30,7 +30,7 @@ import {
   AnimatedCard,
   AnimatedItem,
 } from '../../../../components/animation/AnimatedComponents';
-import { Inline } from '@/app/components/ui/Layout';
+import { Stack, Inline } from '@/app/components/ui/Layout';
 import { Text } from '@/app/components/ui/Text';
 import { NomeAcao } from '@/app/components/ui/NomeAcao';
 import { Button } from '@/app/components/ui/Button';
@@ -154,7 +154,7 @@ export default function PublicTeacherDetailsPageClient({
                 <div className="lg:col-span-2 space-y-6 order-2 md:order-1 lg:order-1">
                   {/* Nome e título */}
                   <AnimatedItem direction="up" springType="bouncy">
-                    <div className="space-y-3">
+                    <Stack gap={3}>
                       <div className="flex items-start justify-between">
                         <div className="flex-1">
                           <Inline gap={3}>
@@ -199,7 +199,7 @@ export default function PublicTeacherDetailsPageClient({
                           </Button>
                         </Inline>
                       </div>
-                    </div>
+                    </Stack>
                   </AnimatedItem>
 
                   {/* Stats Cards */}
@@ -360,7 +360,7 @@ export default function PublicTeacherDetailsPageClient({
 
                   {/* Botões de Contato */}
                   <AnimatedItem direction="right" springType="smooth">
-                    <div className="space-y-4 pt-4">
+                    <Stack className="pt-4">
                       <div className="flex flex-wrap gap-3">
                         {teacher.phone && (
                           <Inline
@@ -458,7 +458,7 @@ export default function PublicTeacherDetailsPageClient({
                             : 'Não está aceitando novos alunos no momento'}
                         </Text>
                       </Inline>
-                    </div>
+                    </Stack>
                   </AnimatedItem>
                 </div>
 
@@ -591,14 +591,17 @@ export default function PublicTeacherDetailsPageClient({
 
               {teacher.teachingPhilosophy && (
                 <AnimatedItem direction="up" springType="gentle">
-                  <div className="mt-6 p-4 bg-gradient-to-r from-theme-elevated to-interactive-hover rounded-xl border border-theme-primary">
-                    <h3 className="text-lg font-bold text-brand-primary mb-2">
+                  <Stack
+                    gap={2}
+                    className="mt-6 p-4 bg-gradient-to-r from-theme-elevated to-interactive-hover rounded-xl border border-theme-primary"
+                  >
+                    <h3 className="text-lg font-bold text-brand-primary">
                       Filosofia de Ensino
                     </h3>
                     <p className="text-theme-secondary">
                       {teacher.teachingPhilosophy}
                     </p>
-                  </div>
+                  </Stack>
                 </AnimatedItem>
               )}
             </div>
@@ -631,7 +634,7 @@ export default function PublicTeacherDetailsPageClient({
                       Preferências de Contato
                     </h3>
 
-                    <div className="space-y-3">
+                    <Stack gap={3}>
                       <Inline gap={3}>
                         <PiClock className="w-5 h-5 text-accent-blue" />
                         <span className="text-theme-secondary">
@@ -668,7 +671,7 @@ export default function PublicTeacherDetailsPageClient({
                           </strong>
                         </span>
                       </Inline>
-                    </div>
+                    </Stack>
                   </div>
                 </AnimatedItem>
 
@@ -679,7 +682,7 @@ export default function PublicTeacherDetailsPageClient({
                       Como Entrar em Contato
                     </h3>
 
-                    <div className="space-y-3">
+                    <Stack gap={3}>
                       {teacher.phone && (
                         <Inline
                           as="button"
@@ -717,7 +720,7 @@ export default function PublicTeacherDetailsPageClient({
                           <span>Visitar Website</span>
                         </Inline>
                       )}
-                    </div>
+                    </Stack>
                   </div>
                 </AnimatedItem>
               </div>

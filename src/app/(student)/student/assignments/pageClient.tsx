@@ -38,7 +38,7 @@ import ViewModeToggle, { ViewMode } from '@/app/components/ViewModeToggle';
 import { useRouter } from 'next/navigation';
 import { useTranslation } from '@/app/context/TranslationContext';
 import Button from '@/app/components/Common/Button';
-import { Inline } from '@/app/components/ui/Layout';
+import { Stack, Inline } from '@/app/components/ui/Layout';
 import { Text } from '@/app/components/ui/Text';
 import { Card } from '@/app/components/ui/Card';
 
@@ -403,7 +403,7 @@ export default function StudentAssignmentsPageClient({
           </Text>
 
           {/* Meta Info */}
-          <div className="space-y-2 mb-4">
+          <Stack gap={2} className="mb-4">
             <Text
               papel="rotulo"
               tom="suave"
@@ -474,13 +474,13 @@ export default function StudentAssignmentsPageClient({
                 })}
               </div>
             )}
-          </div>
+          </Stack>
 
           {/* Progress Bar */}
           {assignment.progress !== null &&
             assignment.progress !== undefined && (
-              <div className="mb-4">
-                <div className="flex items-center justify-between mb-1">
+              <Stack gap={1} className="mb-4">
+                <div className="flex items-center justify-between">
                   <Text papel="legenda" tom="fraco">
                     {t('student_assignments_progress_label')}
                   </Text>
@@ -502,13 +502,13 @@ export default function StudentAssignmentsPageClient({
                     }}
                   />
                 </div>
-              </div>
+              </Stack>
             )}
 
           {/* Goals Preview */}
           {assignment.practiceGoals.length > 0 && (
-            <div className="mb-4">
-              <Text papel="legenda" tom="fraco" as="div" className="mb-1">
+            <Stack gap={1} className="mb-4">
+              <Text papel="legenda" tom="fraco" as="div">
                 {t('student_assignments_objectives')}
               </Text>
               <div className="flex flex-wrap gap-1">
@@ -526,7 +526,7 @@ export default function StudentAssignmentsPageClient({
                   </Text>
                 )}
               </div>
-            </div>
+            </Stack>
           )}
 
           {/* Action Indicator */}
@@ -603,7 +603,7 @@ export default function StudentAssignmentsPageClient({
           </Text>
 
           {/* Meta Info */}
-          <div className="space-y-2 mb-4">
+          <Stack gap={2} className="mb-4">
             <Text
               papel="rotulo"
               tom="suave"
@@ -663,13 +663,13 @@ export default function StudentAssignmentsPageClient({
                 {t('student_assignments_estimated_time')}
               </Text>
             )}
-          </div>
+          </Stack>
 
           {/* Progress Bar */}
           {assignment.progress !== null &&
             assignment.progress !== undefined && (
-              <div className="mb-4">
-                <div className="flex items-center justify-between mb-1">
+              <Stack gap={1} className="mb-4">
+                <div className="flex items-center justify-between">
                   <Text papel="legenda" tom="fraco">
                     {t('student_assignments_progress_label')}
                   </Text>
@@ -691,13 +691,13 @@ export default function StudentAssignmentsPageClient({
                     }}
                   />
                 </div>
-              </div>
+              </Stack>
             )}
 
           {/* Goals Preview */}
           {assignment.practiceGoals.length > 0 && (
-            <div className="mb-4">
-              <Text papel="legenda" tom="fraco" as="div" className="mb-1">
+            <Stack gap={1} className="mb-4">
+              <Text papel="legenda" tom="fraco" as="div">
                 {t('student_assignments_objectives')}
               </Text>
               <div className="flex flex-wrap gap-1">
@@ -717,7 +717,7 @@ export default function StudentAssignmentsPageClient({
                   </Text>
                 )}
               </div>
-            </div>
+            </Stack>
           )}
 
           {/* Action Indicator */}

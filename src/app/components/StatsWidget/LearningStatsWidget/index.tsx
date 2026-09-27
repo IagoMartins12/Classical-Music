@@ -24,7 +24,7 @@ import { BadgeGrid } from '../../badges/BadgeSystem';
 import { useAchievementSystem } from '../../../hooks/useAchievements';
 import { useTranslation } from '@/app/context/TranslationContext';
 import { useLanguageStore } from '@/app/stores/useLanguageStore';
-import { Inline } from '@/app/components/ui/Layout';
+import { Stack, Inline } from '@/app/components/ui/Layout';
 import { Text } from '@/app/components/ui/Text';
 
 interface LearningStatsWidgetProps {
@@ -221,7 +221,7 @@ export default function LearningStatsWidget({
                 {t('next_achievements')}
               </h4>
             </Inline>
-            <div className="space-y-3">
+            <Stack gap={3}>
               {nextAchievements.slice(0, 2).map((badge) => {
                 const Icon = badge.icon;
                 const progressPercent = badge.maxProgress
@@ -268,7 +268,7 @@ export default function LearningStatsWidget({
                   </Inline>
                 );
               })}
-            </div>
+            </Stack>
           </AnimatedCard>
         )}
 
@@ -343,7 +343,7 @@ export default function LearningStatsWidget({
                 {t('diversity_title')}
               </h4>
             </Inline>
-            <div className="space-y-3">
+            <Stack gap={3}>
               <div className="flex justify-between">
                 <span className="text-theme-secondary">
                   {t('composers_label')}
@@ -360,7 +360,7 @@ export default function LearningStatsWidget({
                   {stats.completionRate.toFixed(0)}%
                 </span>
               </div>
-            </div>
+            </Stack>
           </AnimatedCard>
 
           {/* Performance */}
@@ -372,7 +372,7 @@ export default function LearningStatsWidget({
                   {t('performance_title')}
                 </h4>
               </Inline>
-              <div className="space-y-3">
+              <Stack gap={3}>
                 <div className="flex justify-between">
                   <span className="text-theme-secondary">
                     {t('performances_label')}
@@ -389,7 +389,7 @@ export default function LearningStatsWidget({
                     {stats.expertLevelCount}
                   </span>
                 </div>
-              </div>
+              </Stack>
             </AnimatedCard>
           )}
         </div>

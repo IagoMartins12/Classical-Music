@@ -9,6 +9,7 @@ import Input from '@/app/components/Common/Inputs';
 import Select from '@/app/components/Common/Select';
 import { useNewsletterAdmin } from '@/app/hooks/admin/useNewsletterAdmin';
 import { Field } from '@/app/components/ui/Field';
+import { Stack } from '@/app/components/ui/Layout';
 
 interface EditCampaignModalProps {
   isOpen: boolean;
@@ -470,8 +471,8 @@ const EditCampaignModal: React.FC<EditCampaignModalProps> = ({
           )}
 
           {/* Informações da Campanha */}
-          <div className="bg-theme-secondary p-4 rounded-lg">
-            <h4 className="font-semibold text-theme-primary mb-3">
+          <Stack gap={3} className="bg-theme-secondary p-4 rounded-lg">
+            <h4 className="font-semibold text-theme-primary">
               Informações da Campanha
             </h4>
             <div className="grid md:grid-cols-2 gap-4 text-sm">
@@ -514,7 +515,7 @@ const EditCampaignModal: React.FC<EditCampaignModalProps> = ({
                 </div>
               )}
             </div>
-          </div>
+          </Stack>
 
           {/* Botões */}
           <div className="flex space-x-4 pt-4">

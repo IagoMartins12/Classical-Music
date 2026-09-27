@@ -27,7 +27,7 @@ import {
   setCommentLiked,
   updateComment,
 } from '@/app/requests/blog/interactions';
-import { Inline } from '@/app/components/ui/Layout';
+import { Stack, Inline } from '@/app/components/ui/Layout';
 import { Text } from '@/app/components/ui/Text';
 import { Button } from '@/app/components/ui/Button';
 
@@ -620,11 +620,11 @@ export function CommentSection({
 
           {/* Comments List */}
           {loading ? (
-            <div className="space-y-4">
+            <Stack>
               {[1, 2, 3].map((i) => (
                 <div key={i} className="loading-skeleton h-24 rounded-lg" />
               ))}
-            </div>
+            </Stack>
           ) : comments.length === 0 ? (
             <div className="text-center py-12">
               <PiChatCircle className="w-16 h-16 text-theme-tertiary mx-auto mb-4" />
@@ -678,7 +678,7 @@ export function CommentSection({
             Por que você está denunciando este comentário?
           </p>
 
-          <div className="space-y-2">
+          <Stack gap={2}>
             {[
               'Conteúdo ofensivo ou impróprio',
               'Spam ou propaganda',
@@ -706,7 +706,7 @@ export function CommentSection({
                 </Text>
               </Inline>
             ))}
-          </div>
+          </Stack>
 
           {reportReason === 'Outro motivo' && (
             <textarea

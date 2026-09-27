@@ -17,6 +17,7 @@ import InternationalPhoneInput from '../../Common/InternationalPhoneInput';
 import { uploadAvatarRequest } from '@/app/requests/account-client';
 import { Text } from '@/app/components/ui/Text';
 import { Card } from '@/app/components/ui/Card';
+import { Stack } from '@/app/components/ui/Layout';
 
 const ProfileStep: React.FC = () => {
   const [isUploadingImage, setIsUploadingImage] = useState(false);
@@ -156,7 +157,7 @@ const ProfileStep: React.FC = () => {
         </p>
       </div>
 
-      <div className="max-w-lg mx-auto space-y-8">
+      <Stack gap={8} className="max-w-lg mx-auto">
         {/* Profile Picture */}
         <div className="text-center">
           <label className="block text-sm font-medium text-theme-secondary mb-4">
@@ -226,7 +227,7 @@ const ProfileStep: React.FC = () => {
             className="space-y-3"
           />
         </div>
-      </div>
+      </Stack>
 
       {/* Dicas e informações */}
       <div className="mt-8 space-y-4">

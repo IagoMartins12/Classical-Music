@@ -1,6 +1,6 @@
 // components/ScoreCardSkeleton.tsx - Skeleton para ScoreCard
 import React from 'react';
-import { Inline } from '@/app/components/ui/Layout';
+import { Stack, Inline } from '@/app/components/ui/Layout';
 import { Text } from '@/app/components/ui/Text';
 
 interface ScoreCardSkeletonProps {
@@ -55,7 +55,7 @@ const ScoreCardSkeleton = ({
           {/* Additional Info Skeleton (for thumbnails) */}
           {showThumbnail && (
             <div className="mt-4 pt-4 border-t border-theme-secondary/30">
-              <div className="space-y-2">
+              <Stack gap={2}>
                 <div className="flex justify-between items-center">
                   <div className="h-3 bg-theme-elevated rounded w-12"></div>
                   <div className="h-3 bg-gradient-to-r from-theme-elevated to-interactive-hover rounded w-32"></div>
@@ -64,7 +64,7 @@ const ScoreCardSkeleton = ({
                   <div className="h-3 bg-theme-elevated rounded w-14"></div>
                   <div className="h-3 bg-gradient-to-r from-theme-elevated to-interactive-hover rounded w-40"></div>
                 </div>
-              </div>
+              </Stack>
             </div>
           )}
         </div>
@@ -150,7 +150,7 @@ export const ScoreLoadingWithProgress = ({
 
         {/* Progress Bar */}
         {progress > 0 && (
-          <div className="space-y-2">
+          <Stack gap={2}>
             <Text
               papel="rotulo"
               tom="fraco"
@@ -169,7 +169,7 @@ export const ScoreLoadingWithProgress = ({
                 <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/30 to-transparent -skew-x-12 animate-shimmer"></div>
               </div>
             </div>
-          </div>
+          </Stack>
         )}
       </div>
 

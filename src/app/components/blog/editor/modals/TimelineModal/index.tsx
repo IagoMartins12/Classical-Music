@@ -14,6 +14,7 @@ import { uploadBlogMedia } from '@/app/requests/blog/interactions';
 import { Text } from '@/app/components/ui/Text';
 import { NomeAcao } from '@/app/components/ui/NomeAcao';
 import { Card } from '@/app/components/ui/Card';
+import { Stack } from '@/app/components/ui/Layout';
 
 interface TimelineModalProps {
   editor: Editor;
@@ -149,7 +150,7 @@ export function TimelineModal({
         </Card>
 
         {/* Eventos */}
-        <div className="space-y-4">
+        <Stack>
           <h4 className="text-sm font-semibold text-theme-primary">
             Eventos da Timeline
           </h4>
@@ -261,7 +262,7 @@ export function TimelineModal({
               </div>
             </Card>
           ))}
-        </div>
+        </Stack>
 
         <Button
           type="button"

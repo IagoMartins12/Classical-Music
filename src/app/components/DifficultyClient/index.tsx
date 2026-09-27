@@ -18,7 +18,7 @@ import {
   AnimatedCard,
 } from '../animation/AnimatedComponents';
 import Select from '../Common/Select';
-import { Inline } from '@/app/components/ui/Layout';
+import { Stack, Inline } from '@/app/components/ui/Layout';
 import { Text } from '@/app/components/ui/Text';
 import { NomeAcao } from '@/app/components/ui/NomeAcao';
 import { Card } from '@/app/components/ui/Card';
@@ -269,8 +269,8 @@ export default function DifficultyClient({
 
           {/* Level Filter */}
           {difficultyData.difficultyLevels.length > 0 && (
-            <div className="mb-6">
-              <label className="block text-sm font-medium text-theme-secondary mb-3">
+            <Stack gap={3} className="mb-6">
+              <label className="block text-sm font-medium text-theme-secondary">
                 Filtrar por Nível:
               </label>
               <div className="flex flex-wrap gap-2">
@@ -300,7 +300,7 @@ export default function DifficultyClient({
                   </button>
                 ))}
               </div>
-            </div>
+            </Stack>
           )}
 
           {/* Active Filters */}

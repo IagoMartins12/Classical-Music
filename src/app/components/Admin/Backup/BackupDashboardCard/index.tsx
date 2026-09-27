@@ -4,6 +4,7 @@ import Link from 'next/link';
 import { PiCheckCircle, PiHardDrive, PiWarning, PiX } from 'react-icons/pi';
 import { useBackup } from '@/app/hooks/admin/useBackup';
 import { Text } from '@/app/components/ui/Text';
+import { Stack } from '@/app/components/ui/Layout';
 
 /**
  * O estado do backup no painel inicial.
@@ -48,7 +49,7 @@ export default function BackupDashboardCard() {
           {impedimento}
         </Text>
       ) : ultimo ? (
-        <div className="space-y-1">
+        <Stack gap={1}>
           <p className="text-theme-primary flex items-center gap-2">
             <PiCheckCircle className="w-4 h-4 text-accent-green" />
             <span className="font-medium">
@@ -66,7 +67,7 @@ export default function BackupDashboardCard() {
             {ultimo.documentCount?.toLocaleString('pt-BR')} documentos ·{' '}
             {backup.data?.arquivos.length ?? 0} arquivo(s) guardado(s)
           </Text>
-        </div>
+        </Stack>
       ) : (
         <Text papel="rotulo" tom="suave" as="p" className="flex gap-2">
           <PiWarning className="w-4 h-4 text-accent-amber shrink-0 mt-0.5" />

@@ -2,7 +2,7 @@
 'use client';
 
 import { PiCalendarBlank, PiClock, PiMapPin } from 'react-icons/pi';
-import { Inline } from '@/app/components/ui/Layout';
+import { Stack, Inline } from '@/app/components/ui/Layout';
 import { Text } from '@/app/components/ui/Text';
 
 interface DayViewProps {
@@ -29,8 +29,8 @@ export default function DayView({ date, events, onEventClick }: DayViewProps) {
   };
 
   return (
-    <div>
-      <div className="text-center mb-6">
+    <Stack gap={6}>
+      <div className="text-center">
         <div className="text-2xl font-bold text-theme-primary">
           {date.toLocaleDateString('pt-BR', {
             weekday: 'long',
@@ -127,7 +127,7 @@ export default function DayView({ date, events, onEventClick }: DayViewProps) {
           ))
         )}
       </div>
-    </div>
+    </Stack>
   );
 }
 

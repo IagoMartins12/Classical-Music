@@ -7,7 +7,7 @@ import Modal from '..';
 import Button from '../../Common/Button';
 import { ConfirmationConfig } from '@/app/hooks/useModalConfirmation';
 import { useTranslation } from '@/app/hooks/useTranslation';
-import { Inline } from '@/app/components/ui/Layout';
+import { Stack, Inline } from '@/app/components/ui/Layout';
 
 interface ConfirmationModalProps {
   isOpen: boolean;
@@ -128,8 +128,8 @@ const ConfirmationModal: React.FC<ConfirmationModalProps> = ({
               <div className="w-5 h-5 bg-accent-red rounded-full flex items-center justify-center flex-shrink-0 mt-0.5">
                 <div className="w-2 h-2 bg-white rounded-full animate-pulse"></div>
               </div>
-              <div>
-                <h4 className="font-medium text-accent-red mb-1">
+              <Stack gap={1}>
+                <h4 className="font-medium text-accent-red">
                   {t('process_active_title')}
                 </h4>
                 <p className="text-sm text-accent-red/80">
@@ -144,7 +144,7 @@ const ConfirmationModal: React.FC<ConfirmationModalProps> = ({
                     t('process_active_description_generic')
                   )}
                 </p>
-              </div>
+              </Stack>
             </div>
           </div>
         )}
@@ -154,14 +154,14 @@ const ConfirmationModal: React.FC<ConfirmationModalProps> = ({
           <div className="bg-accent-amber/10 border border-accent-amber/20 rounded-lg p-4 mb-6">
             <div className="flex items-start space-x-3">
               <PiFloppyDisk className="w-5 h-5 text-accent-amber flex-shrink-0 mt-0.5" />
-              <div>
-                <h4 className="font-medium text-accent-amber mb-1">
+              <Stack gap={1}>
+                <h4 className="font-medium text-accent-amber">
                   {t('changes_detected_title')}
                 </h4>
                 <p className="text-sm text-accent-amber/80">
                   {t('changes_detected_description')}
                 </p>
-              </div>
+              </Stack>
             </div>
           </div>
         )}
@@ -170,14 +170,14 @@ const ConfirmationModal: React.FC<ConfirmationModalProps> = ({
           <div className="bg-accent-amber/10 border border-accent-amber/20 rounded-lg p-4 mb-6">
             <div className="flex items-start space-x-3">
               <PiFloppyDisk className="w-5 h-5 text-accent-amber flex-shrink-0 mt-0.5" />
-              <div>
-                <h4 className="font-medium text-accent-amber mb-1">
+              <Stack gap={1}>
+                <h4 className="font-medium text-accent-amber">
                   {t('possible_changes_title')}
                 </h4>
                 <p className="text-sm text-accent-amber/80">
                   {t('possible_changes_description')}
                 </p>
-              </div>
+              </Stack>
             </div>
           </div>
         )}

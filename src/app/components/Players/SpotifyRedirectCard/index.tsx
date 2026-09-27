@@ -11,7 +11,7 @@ import {
 import { AnimatedItem } from '../../animation/AnimatedComponents';
 import Image from '@/app/components/SmartImage';
 import { useTranslation } from '@/app/context/TranslationContext';
-import { Inline } from '@/app/components/ui/Layout';
+import { Stack, Inline } from '@/app/components/ui/Layout';
 import { Text } from '@/app/components/ui/Text';
 
 interface SpotifyRedirectCardProps {
@@ -151,7 +151,7 @@ const SpotifyRedirectCard: React.FC<SpotifyRedirectCardProps> = ({
 
             {/* Informações da Música */}
             <div className="flex-1 min-w-0">
-              <div className="space-y-2">
+              <Stack gap={2}>
                 {/* 🆕 Artistas com destaque para compositor/intérprete */}
                 <div>
                   <Text
@@ -193,7 +193,7 @@ const SpotifyRedirectCard: React.FC<SpotifyRedirectCardProps> = ({
                     </Inline>
                   )}
                 </Inline>
-              </div>
+              </Stack>
             </div>
           </div>
 

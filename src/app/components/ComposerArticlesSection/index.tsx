@@ -7,7 +7,7 @@ import { PiArrowRight, PiBookOpen, PiClock, PiUser } from 'react-icons/pi';
 import { AnimatedCard, AnimatedItem } from '../animation/AnimatedComponents';
 import type { BlogArticlePreview } from '@/app/requests/blog/composer-articles';
 import { useTranslation } from '@/app/hooks/useTranslation';
-import { Inline } from '@/app/components/ui/Layout';
+import { Stack, Inline } from '@/app/components/ui/Layout';
 import { Text } from '@/app/components/ui/Text';
 
 interface ComposerArticlesSectionProps {
@@ -84,7 +84,7 @@ export default function ComposerArticlesSection({
                 )}
 
                 {/* Content */}
-                <div className="p-5 space-y-3">
+                <Stack gap={3} className="p-5">
                   <h3 className="text-lg font-bold text-theme-primary line-clamp-2 group-hover:text-brand-primary transition-colors duration-300">
                     {article.title}
                   </h3>
@@ -117,7 +117,7 @@ export default function ComposerArticlesSection({
 
                     <PiArrowRight className="w-4 h-4 text-brand-primary group-hover:translate-x-1 transition-transform duration-300" />
                   </div>
-                </div>
+                </Stack>
               </div>
             </Link>
           </AnimatedItem>

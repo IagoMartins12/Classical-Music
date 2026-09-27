@@ -23,7 +23,7 @@ import { TeacherStudentsServerData } from './pageServer';
 import StudentCard from '@/app/components/TeacherSystem/StudentCard';
 import AddStudentModal from '@/app/components/TeacherSystem/AddStudentModal';
 import { useTranslation } from '@/app/context/TranslationContext';
-import { Inline } from '@/app/components/ui/Layout';
+import { Stack, Inline } from '@/app/components/ui/Layout';
 import { NomeAcao } from '@/app/components/ui/NomeAcao';
 import { Button } from '@/app/components/ui/Button';
 import { Card } from '@/app/components/ui/Card';
@@ -356,7 +356,7 @@ export default function TeacherStudentsPageClient({
         {/* Controls */}
         <AnimatedItem direction="up" springType="gentle">
           <AnimatedCard hover="none" className="classical-card p-6">
-            <div className="space-y-4">
+            <Stack>
               {/* Main Controls Row */}
               <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
                 {/* Tabs */}
@@ -466,7 +466,7 @@ export default function TeacherStudentsPageClient({
                   onViewModeChange={setViewMode}
                 />
               </div>
-            </div>
+            </Stack>
           </AnimatedCard>
         </AnimatedItem>
 

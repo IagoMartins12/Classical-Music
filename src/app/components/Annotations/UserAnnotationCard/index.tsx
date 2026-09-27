@@ -37,7 +37,7 @@ import CreateAnnotationModal from '@/app/components/Annotations/CreateAnnotation
 import Image from '@/app/components/SmartImage';
 import ConfirmDeleteModal from '../DeleteAnnotationModal';
 import { useTranslation } from '@/app/context/TranslationContext';
-import { Inline } from '@/app/components/ui/Layout';
+import { Stack, Inline } from '@/app/components/ui/Layout';
 import { Text } from '@/app/components/ui/Text';
 import { NomeAcao } from '@/app/components/ui/NomeAcao';
 
@@ -284,8 +284,8 @@ export default function UserAnnotationCard({
         <div className="p-4">
           <div className="grid grid-cols-12 gap-4 items-center">
             {/* Título e Obra */}
-            <div className="col-span-5">
-              <h3 className="font-semibold text-theme-primary text-sm mb-1 truncate">
+            <Stack gap={1} className="col-span-5">
+              <h3 className="font-semibold text-theme-primary text-sm truncate">
                 {currentAnnotation.title}
                 {currentAnnotation.isVerified && (
                   <PiSealCheck className="w-4 h-4 text-accent-green inline ml-2" />
@@ -306,7 +306,7 @@ export default function UserAnnotationCard({
                   - {workInfo.composer.name}
                 </span>
               </Text>
-            </div>
+            </Stack>
 
             {/* Categoria */}
             <div className="col-span-2">
@@ -449,7 +449,7 @@ export default function UserAnnotationCard({
               </div>
 
               {/* Informações da obra */}
-              <div className="space-y-1 mb-3">
+              <Stack gap={1} className="mb-3">
                 <Inline gap={2}>
                   <PiMusicNotes className="w-3 h-3 text-accent-blue" />
                   <span className="text-sm text-accent-blue hover:text-accent-purple transition-colors font-medium">
@@ -463,7 +463,7 @@ export default function UserAnnotationCard({
                     {workInfo.composer.fullName}
                   </Text>
                 </Inline>
-              </div>
+              </Stack>
 
               {/* Content preview */}
               <Text

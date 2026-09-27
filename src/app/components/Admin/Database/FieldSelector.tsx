@@ -8,7 +8,7 @@ import Button from '@/app/components/Common/Button';
 import Input from '@/app/components/Common/Inputs';
 import Checkbox from '@/app/components/Common/Checkbox';
 import { ModelSchema, ModelField } from '@/app/hooks/admin/useDatabaseStudio';
-import { Inline } from '@/app/components/ui/Layout';
+import { Stack, Inline } from '@/app/components/ui/Layout';
 import { Text } from '@/app/components/ui/Text';
 import { Card } from '@/app/components/ui/Card';
 
@@ -185,7 +185,7 @@ export default function FieldSelector({
       title="Selecionar Campos"
       maxWidth="3xl"
     >
-      <div className="space-y-6">
+      <Stack gap={6}>
         {/* Header com estatísticas */}
         <div className="grid grid-cols-4 gap-4">
           <Card densidade="compacta">
@@ -223,7 +223,7 @@ export default function FieldSelector({
         </div>
 
         {/* Controles */}
-        <div className="space-y-4">
+        <Stack>
           {/* Busca */}
           <div className="relative">
             <PiMagnifyingGlass className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-theme-tertiary" />
@@ -293,7 +293,7 @@ export default function FieldSelector({
               </Inline>
             </Inline>
           </div>
-        </div>
+        </Stack>
 
         {/* Lista de campos */}
         <Card
@@ -381,7 +381,7 @@ export default function FieldSelector({
             </Button>
           </Inline>
         </div>
-      </div>
+      </Stack>
     </Modal>
   );
 }

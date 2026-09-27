@@ -30,7 +30,7 @@ import {
 } from '../../../components/animation/AnimatedComponents';
 import AboutUsButton from '@/app/components/AboutUsButton';
 import { useTranslation } from '@/app/context/TranslationContext';
-import { Inline } from '@/app/components/ui/Layout';
+import { Stack, Inline } from '@/app/components/ui/Layout';
 import { Text } from '@/app/components/ui/Text';
 
 export default function AboutPage() {
@@ -154,7 +154,7 @@ export default function AboutPage() {
                   {t('about_mission_title')}
                 </h2>
 
-                <div className="space-y-6">
+                <Stack gap={6}>
                   <p className="text-lg text-theme-secondary leading-relaxed classical-body">
                     {t('about_mission_paragraph_1')}
                   </p>
@@ -170,16 +170,16 @@ export default function AboutPage() {
                     <div className="w-12 h-12 bg-brand-gradient rounded-xl flex items-center justify-center flex-shrink-0">
                       <PiHeart className="w-6 h-6 text-theme-primary" />
                     </div>
-                    <div>
-                      <h3 className="font-semibold text-theme-primary classical-title mb-2">
+                    <Stack gap={2}>
+                      <h3 className="font-semibold text-theme-primary classical-title">
                         {t('about_mission_highlight_title')}
                       </h3>
                       <p className="text-theme-secondary">
                         {t('about_mission_highlight_description')}
                       </p>
-                    </div>
+                    </Stack>
                   </AnimatedCard>
-                </div>
+                </Stack>
               </div>
 
               <div className="relative">
@@ -207,11 +207,11 @@ export default function AboutPage() {
                       </div>
                     </div>
 
-                    <div className="mt-8 pt-6 border-t border-theme-secondary">
-                      <h4 className="font-semibold text-theme-primary classical-title mb-4">
+                    <Stack className="mt-8 pt-6 border-t border-theme-secondary">
+                      <h4 className="font-semibold text-theme-primary classical-title">
                         {t('about_stats_resources_title')}
                       </h4>
-                      <div className="space-y-3">
+                      <Stack gap={3}>
                         <Inline gap={3}>
                           <div className="w-2 h-2 bg-brand-primary rounded-full"></div>
                           <Text papel="rotulo" tom="suave">
@@ -236,8 +236,8 @@ export default function AboutPage() {
                             {t('about_stats_resource_4')}
                           </Text>
                         </Inline>
-                      </div>
-                    </div>
+                      </Stack>
+                    </Stack>
                   </div>
                 </AnimatedCard>
               </div>

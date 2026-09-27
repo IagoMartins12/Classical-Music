@@ -15,6 +15,7 @@ import Modal from '../../Modal';
 import { legacyAuth } from '@/app/libs/api/compat';
 import { useTranslation } from '@/app/context/TranslationContext';
 import { Text } from '@/app/components/ui/Text';
+import { Stack } from '@/app/components/ui/Layout';
 
 interface ForgotPasswordModalProps {
   isOpen: boolean;
@@ -200,14 +201,14 @@ const ForgotPasswordModal: React.FC<ForgotPasswordModalProps> = ({
       </form>
 
       <div className="mt-6 text-center">
-        <div className="bg-theme-secondary rounded-lg p-4">
-          <h4 className="text-sm font-medium text-theme-primary mb-2">
+        <Stack gap={2} className="bg-theme-secondary rounded-lg p-4">
+          <h4 className="text-sm font-medium text-theme-primary">
             {t('forgot_password_modal_security_tip_title')}
           </h4>
           <Text papel="legenda" tom="fraco" as="p">
             {t('forgot_password_modal_security_tip_text')}
           </Text>
-        </div>
+        </Stack>
       </div>
     </>
   );
@@ -228,23 +229,23 @@ const ForgotPasswordModal: React.FC<ForgotPasswordModalProps> = ({
         </p>
       </div>
 
-      <div className="space-y-6">
+      <Stack gap={6}>
         <div className="bg-accent-green bg-opacity-10 border border-accent-green rounded-lg p-4">
           <div className="flex items-start">
             <PiEnvelopeSimple className="w-5 h-5 text-accent-green mr-3 mt-0.5 flex-shrink-0" />
-            <div>
-              <h4 className="font-medium text-accent-green mb-1">
+            <Stack gap={1}>
+              <h4 className="font-medium text-accent-green">
                 {t('forgot_password_success_check_title')}
               </h4>
               <p className="text-sm text-accent-green opacity-80">
                 {t('forgot_password_success_check_text')}{' '}
                 <strong>{state.email}</strong>
               </p>
-            </div>
+            </Stack>
           </div>
         </div>
 
-        <div className="bg-theme-secondary rounded-lg p-4 space-y-3">
+        <Stack gap={3} className="bg-theme-secondary rounded-lg p-4">
           <h4 className="text-sm font-medium text-theme-primary flex items-center">
             <PiClock className="w-4 h-4 mr-2" />
             {t('forgot_password_success_steps_title')}
@@ -263,7 +264,7 @@ const ForgotPasswordModal: React.FC<ForgotPasswordModalProps> = ({
               {t('forgot_password_success_step_3')}
             </li>
           </ul>
-        </div>
+        </Stack>
 
         <div className="space-y-3">
           <Button
@@ -283,7 +284,7 @@ const ForgotPasswordModal: React.FC<ForgotPasswordModalProps> = ({
             {t('forgot_password_success_close_button')}
           </button>
         </div>
-      </div>
+      </Stack>
     </>
   );
 
@@ -307,12 +308,12 @@ const ForgotPasswordModal: React.FC<ForgotPasswordModalProps> = ({
         </p>
       </div>
 
-      <div className="space-y-6">
+      <Stack gap={6}>
         <div className="bg-accent-red bg-opacity-10 border border-accent-red rounded-lg p-4">
           <div className="flex items-start">
             <PiWarningCircle className="w-5 h-5 text-accent-red mr-3 mt-0.5 flex-shrink-0" />
-            <div>
-              <h4 className="font-medium text-accent-red mb-1">
+            <Stack gap={1}>
+              <h4 className="font-medium text-accent-red">
                 {state.rateLimited
                   ? t('forgot_password_error_rate_limit_title')
                   : t('forgot_password_error_general_title')}
@@ -320,13 +321,13 @@ const ForgotPasswordModal: React.FC<ForgotPasswordModalProps> = ({
               <p className="text-sm text-accent-red opacity-80">
                 {state.error}
               </p>
-            </div>
+            </Stack>
           </div>
         </div>
 
         {state.rateLimited && (
-          <div className="bg-theme-secondary rounded-lg p-4">
-            <h4 className="text-sm font-medium text-theme-primary mb-2">
+          <Stack gap={2} className="bg-theme-secondary rounded-lg p-4">
+            <h4 className="text-sm font-medium text-theme-primary">
               {t('forgot_password_error_what_to_do')}
             </h4>
             <ul className="text-sm text-theme-tertiary space-y-1">
@@ -334,7 +335,7 @@ const ForgotPasswordModal: React.FC<ForgotPasswordModalProps> = ({
               <li>{t('forgot_password_error_check_email')}</li>
               <li>{t('forgot_password_error_contact')}</li>
             </ul>
-          </div>
+          </Stack>
         )}
 
         <div className="space-y-3">
@@ -361,7 +362,7 @@ const ForgotPasswordModal: React.FC<ForgotPasswordModalProps> = ({
             {t('forgot_password_modal_back_button')}
           </Button>
         </div>
-      </div>
+      </Stack>
     </>
   );
 

@@ -33,7 +33,7 @@ import {
   updateWorkMediaRequest,
   uploadWorkMediaFileRequest,
 } from '@/app/requests/work-media';
-import { Inline } from '@/app/components/ui/Layout';
+import { Stack, Inline } from '@/app/components/ui/Layout';
 import { Text } from '@/app/components/ui/Text';
 
 interface VideoAulaSectionProps {
@@ -826,8 +826,8 @@ const VideoAulaSection: React.FC<VideoAulaSectionProps> = ({
         {/* ✅ MODO DE EDIÇÃO PARA ESTADO VAZIO */}
         {showEditMode && canEditMedia ? (
           <div className="p-0 md:p-6">
-            <div className="rounded-xl p-4">
-              <h3 className="text-lg font-semibold text-theme-primary mb-4">
+            <Stack className="rounded-xl p-4">
+              <h3 className="text-lg font-semibold text-theme-primary">
                 {t('video_aula_adicionar')}
               </h3>
 
@@ -958,7 +958,7 @@ const VideoAulaSection: React.FC<VideoAulaSectionProps> = ({
                   </Button>
                 </Inline>
               </div>
-            </div>
+            </Stack>
           </div>
         ) : (
           /* ✅ ESTADO VAZIO - CONTEÚDO PRINCIPAL */
@@ -1056,8 +1056,8 @@ const VideoAulaSection: React.FC<VideoAulaSectionProps> = ({
       {/* Modo de edição */}
       {showEditMode && canEditMedia && (
         <div className="px-6 pb-6">
-          <div className="bg-purple-900/20 border border-purple-700/30 rounded-xl p-4">
-            <div className="flex items-center justify-between mb-4">
+          <Stack className="bg-purple-900/20 border border-purple-700/30 rounded-xl p-4">
+            <div className="flex items-center justify-between">
               <h3 className="text-lg font-semibold text-theme-primary">
                 {t('video_aula_editar_titulo')}
               </h3>
@@ -1221,7 +1221,7 @@ const VideoAulaSection: React.FC<VideoAulaSectionProps> = ({
                 </Button>
               </Inline>
             </div>
-          </div>
+          </Stack>
         </div>
       )}
 
@@ -1375,7 +1375,7 @@ const VideoAulaSection: React.FC<VideoAulaSectionProps> = ({
           </div>
 
           {/* Informações do vídeo */}
-          <div className="mt-4 space-y-3">
+          <Stack gap={3} className="mt-4">
             <div>
               <h4 className="text-theme-primary font-semibold text-lg">
                 {work.videoAulaTitle || `Video Aula: ${work.title}`}
@@ -1503,7 +1503,7 @@ const VideoAulaSection: React.FC<VideoAulaSectionProps> = ({
                   )}
               </div>
             )}
-          </div>
+          </Stack>
         </div>
       )}
     </AnimatedCard>

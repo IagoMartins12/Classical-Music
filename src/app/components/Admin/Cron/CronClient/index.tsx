@@ -25,6 +25,7 @@ import {
 } from '@/app/requests/admin/maintenance';
 import { Text } from '@/app/components/ui/Text';
 import { Button } from '@/app/components/ui/Button';
+import { Stack } from '@/app/components/ui/Layout';
 
 /**
  * As tarefas agendadas.
@@ -98,7 +99,7 @@ export default function CronClient() {
   }
 
   return (
-    <div className="space-y-6">
+    <Stack gap={6}>
       <header>
         <h1 className="text-2xl font-bold text-theme-primary classical-title">
           Tarefas agendadas
@@ -109,7 +110,7 @@ export default function CronClient() {
         </Text>
       </header>
 
-      <div className="space-y-3">
+      <Stack gap={3}>
         {(tarefas.data?.tasks ?? []).map((tarefa) => {
           const cronAtual = tarefa.schedule?.cron ?? '';
           const valor = rascunho[tarefa.id] ?? cronAtual;
@@ -237,7 +238,7 @@ export default function CronClient() {
             </section>
           );
         })}
-      </div>
-    </div>
+      </Stack>
+    </Stack>
   );
 }

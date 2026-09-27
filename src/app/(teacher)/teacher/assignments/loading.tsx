@@ -11,7 +11,7 @@ import {
   PiTarget,
   PiWarningCircle,
 } from 'react-icons/pi';
-import { Inline } from '@/app/components/ui/Layout';
+import { Stack, Inline } from '@/app/components/ui/Layout';
 import { Card } from '@/app/components/ui/Card';
 
 export default function TeacherAssignmentsLoading() {
@@ -174,21 +174,21 @@ function AssignmentCardSkeleton() {
       </div>
 
       {/* Description */}
-      <div className="space-y-2 mb-4">
+      <Stack gap={2} className="mb-4">
         <div className="h-3 bg-theme-elevated rounded w-full"></div>
         <div className="h-3 bg-theme-elevated rounded w-5/6"></div>
-      </div>
+      </Stack>
 
       {/* Progress bar */}
-      <div className="mb-4">
-        <div className="flex items-center justify-between mb-2">
+      <Stack gap={2} className="mb-4">
+        <div className="flex items-center justify-between">
           <div className="h-3 bg-theme-tertiary/30 rounded w-16"></div>
           <div className="h-3 bg-theme-tertiary/30 rounded w-8"></div>
         </div>
         <div className="w-full bg-theme-secondary rounded-full h-2">
           <div className="h-2 bg-gradient-to-r from-brand-primary/30 to-brand-secondary/30 rounded-full w-2/3"></div>
         </div>
-      </div>
+      </Stack>
 
       {/* Goals */}
       <div className="flex flex-wrap gap-2 mb-4">

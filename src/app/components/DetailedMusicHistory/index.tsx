@@ -15,7 +15,7 @@ import {
   PiTrendUp,
   PiUser,
 } from 'react-icons/pi';
-import { Inline } from '@/app/components/ui/Layout';
+import { Stack, Inline } from '@/app/components/ui/Layout';
 import { Text } from '@/app/components/ui/Text';
 import { Card } from '@/app/components/ui/Card';
 
@@ -287,14 +287,14 @@ const MedievalSection = memo<SectionProps>(({ isExpanded, onToggle }) => {
           <div className="w-8 h-8 bg-gradient-to-br from-accent-purple to-accent-red rounded-xl flex items-center justify-center flex-shrink-0 mt-0.5">
             <GiViolin className="w-4 h-4 text-theme-primary" />
           </div>
-          <div>
-            <h4 className="font-semibold text-theme-primary mb-2 classical-title">
+          <Stack gap={2}>
+            <h4 className="font-semibold text-theme-primary classical-title">
               {t('detailed_jsx_h4_children_0__instrumentos_tipicos_periodo')}
             </h4>
             <p className="text-theme-secondary leading-relaxed">
               {t('detailed_jsx_p_children_0__cordas_harpa_alaude')}
             </p>
-          </div>
+          </Stack>
         </div>
       </div>
     </AccordionSection>
@@ -362,14 +362,14 @@ const RenaissanceSection = memo<SectionProps>(({ isExpanded, onToggle }) => {
             <div className="w-8 h-8 bg-gradient-to-br from-accent-green to-accent-blue rounded-xl flex items-center justify-center flex-shrink-0 mt-0.5">
               <PiFileText className="w-4 h-4 text-theme-primary" />
             </div>
-            <div>
-              <h4 className="font-semibold text-theme-primary mb-2 classical-title">
+            <Stack gap={2}>
+              <h4 className="font-semibold text-theme-primary classical-title">
                 {t('detailed_jsx_h4_children_0__revolucao_imprensa')}
               </h4>
               <p className="text-theme-secondary leading-relaxed">
                 {t('detailed_jsx_p_children_0__invencao_imprensa_gutenberg')}
               </p>
-            </div>
+            </Stack>
           </div>
         </div>
       </div>
@@ -443,14 +443,14 @@ const BaroqueSection = memo<SectionProps>(({ isExpanded, onToggle }) => {
             <div className="w-8 h-8 bg-gradient-to-br from-accent-red to-accent-purple rounded-xl flex items-center justify-center flex-shrink-0 mt-0.5">
               <GiGrandPiano className="w-4 h-4 text-theme-primary" />
             </div>
-            <div>
-              <h4 className="font-semibold text-theme-primary mb-2 classical-title">
+            <Stack gap={2}>
+              <h4 className="font-semibold text-theme-primary classical-title">
                 {t('detailed_jsx_h4_children_0__nascimento_opera')}
               </h4>
               <p className="text-theme-secondary leading-relaxed">
                 {t('detailed_jsx_p_children_0__opera_nasceu_tentativa')}
               </p>
-            </div>
+            </Stack>
           </div>
         </div>
       </div>
@@ -628,7 +628,7 @@ const ModernSection = memo<SectionProps>(({ isExpanded, onToggle }) => {
                 {t('detailed_jsx_h4_children_0__revolucoes_harmonicas')}
               </span>
             </Inline>
-            <div className="space-y-4">
+            <Stack>
               <Card
                 nivel={2}
                 densidade="compacta"
@@ -653,7 +653,7 @@ const ModernSection = memo<SectionProps>(({ isExpanded, onToggle }) => {
                   {t('detailed_jsx_p_children_0__claude_debussy')}
                 </p>
               </Card>
-            </div>
+            </Stack>
           </div>
           <div className="space-y-6">
             <Inline
@@ -668,7 +668,7 @@ const ModernSection = memo<SectionProps>(({ isExpanded, onToggle }) => {
                 {t('detailed_jsx_h4_children_0__identidades_nacionais')}
               </span>
             </Inline>
-            <div className="space-y-4">
+            <Stack>
               <Card
                 nivel={2}
                 densidade="compacta"
@@ -691,7 +691,7 @@ const ModernSection = memo<SectionProps>(({ isExpanded, onToggle }) => {
                   {t('detailed_jsx_p_children_0__heitor_villa_lobos')}
                 </p>
               </Card>
-            </div>
+            </Stack>
           </div>
         </div>
 
@@ -700,14 +700,14 @@ const ModernSection = memo<SectionProps>(({ isExpanded, onToggle }) => {
             <div className="w-8 h-8 bg-gradient-to-br from-accent-purple to-accent-blue rounded-xl flex items-center justify-center flex-shrink-0 mt-0.5">
               <PiStar className="w-4 h-4 text-theme-primary" />
             </div>
-            <div>
-              <h4 className="font-semibold text-theme-primary mb-2 classical-title">
+            <Stack gap={2}>
+              <h4 className="font-semibold text-theme-primary classical-title">
                 {t('detailed_jsx_h4_children_0__experimentalismo_radical')}
               </h4>
               <p className="text-theme-secondary leading-relaxed">
                 {t('detailed_jsx_p_children_0__john_cage_levou')}
               </p>
-            </div>
+            </Stack>
           </div>
         </div>
       </div>
@@ -773,8 +773,8 @@ const ContemporarySection = memo<SectionProps>(({ isExpanded, onToggle }) => {
           </Card>
         </div>
 
-        <div className="bg-gradient-to-r from-accent-blue/10 to-accent-green/10 border-l-4 border-accent-blue rounded-xl p-6 text-center">
-          <div className="flex items-center justify-center mb-4">
+        <Stack className="bg-gradient-to-r from-accent-blue/10 to-accent-green/10 border-l-4 border-accent-blue rounded-xl p-6 text-center">
+          <div className="flex items-center justify-center">
             <div className="w-12 h-12 bg-gradient-to-br from-accent-blue to-accent-green rounded-2xl flex items-center justify-center">
               <PiStar className="w-6 h-6 text-theme-primary" />
             </div>
@@ -782,7 +782,7 @@ const ContemporarySection = memo<SectionProps>(({ isExpanded, onToggle }) => {
           <p className="text-theme-primary text-lg font-medium classical-subtitle italic">
             &quot;{t('detailed_jsx_p_children_0__musica_classica_nao')}&quot;
           </p>
-        </div>
+        </Stack>
       </div>
     </AccordionSection>
   );

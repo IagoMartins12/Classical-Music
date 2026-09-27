@@ -34,7 +34,7 @@ import StatsSkeleton, {
   ChartSkeleton,
   TopPerformersSkeleton,
 } from '../../Skeletons/StatsSkeleton';
-import { Inline } from '@/app/components/ui/Layout';
+import { Stack, Inline } from '@/app/components/ui/Layout';
 import { Text } from '@/app/components/ui/Text';
 
 const UserTypeTranslations = {
@@ -312,7 +312,7 @@ export default function UsersAnalytics() {
                 <PiUploadSimple className="w-5 h-5 text-accent-green" />
                 <span>Top Contribuidores</span>
               </Inline>
-              <div className="space-y-4">
+              <Stack>
                 {analytics.topContributors.length > 0 ? (
                   analytics.topContributors.slice(0, 5).map((user, index) => (
                     <Inline
@@ -355,7 +355,7 @@ export default function UsersAnalytics() {
                     </p>
                   </div>
                 )}
-              </div>
+              </Stack>
             </AnimatedCard>
 
             {/* User Types Detailed */}
@@ -368,7 +368,7 @@ export default function UsersAnalytics() {
                 <PiTarget className="w-5 h-5 text-accent-blue" />
                 <span>Tipos de Usuário</span>
               </Inline>
-              <div className="space-y-4">
+              <Stack>
                 {analytics.userTypes.map((type, index) => {
                   const typeName =
                     UserTypeTranslations[
@@ -376,11 +376,12 @@ export default function UsersAnalytics() {
                     ] || 'Outros';
 
                   return (
-                    <div
+                    <Stack
+                      gap={2}
                       key={`${type.type}-${index}`}
                       className="p-3 bg-theme-secondary rounded-xl"
                     >
-                      <div className="flex items-center justify-between mb-2">
+                      <div className="flex items-center justify-between">
                         <span className="font-medium text-theme-primary">
                           {typeName}
                         </span>
@@ -388,7 +389,7 @@ export default function UsersAnalytics() {
                           {formatNumber(type.count)}
                         </span>
                       </div>
-                      <div className="w-full bg-theme-primary h-2 rounded-full overflow-hidden mb-2">
+                      <div className="w-full bg-theme-primary h-2 rounded-full overflow-hidden">
                         <div
                           className="h-full bg-theme-tertiary rounded-full transition-all duration-1000"
                           style={{
@@ -405,10 +406,10 @@ export default function UsersAnalytics() {
                         <span>{type.percentage.toFixed(1)}% do total</span>
                         <span>{type.count} usuários</span>
                       </Text>
-                    </div>
+                    </Stack>
                   );
                 })}
-              </div>
+              </Stack>
             </AnimatedCard>
 
             {/* Engagement Metrics */}
@@ -421,7 +422,7 @@ export default function UsersAnalytics() {
                 <PiPulse className="w-5 h-5 text-accent-amber" />
                 <span>Métricas de Engajamento</span>
               </Inline>
-              <div className="space-y-4">
+              <Stack>
                 <div className="p-3 bg-theme-secondary rounded-xl">
                   <div className="flex items-center justify-between mb-2">
                     <Text papel="rotulo" tom="fraco">
@@ -469,7 +470,7 @@ export default function UsersAnalytics() {
                     </span>
                   </div>
                 </div>
-              </div>
+              </Stack>
             </AnimatedCard>
           </div>
         ) : null}
@@ -488,41 +489,53 @@ export default function UsersAnalytics() {
               </Inline>
 
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 lg:gap-6">
-                <div className="text-center p-4 bg-theme-secondary rounded-xl">
-                  <div className="text-2xl font-bold text-accent-green mb-2">
+                <Stack
+                  gap={2}
+                  className="text-center p-4 bg-theme-secondary rounded-xl"
+                >
+                  <div className="text-2xl font-bold text-accent-green">
                     {analytics.activeUsers.today}
                   </div>
                   <Text papel="rotulo" tom="fraco" as="div">
                     Ativos Hoje
                   </Text>
-                </div>
+                </Stack>
 
-                <div className="text-center p-4 bg-theme-secondary rounded-xl">
-                  <div className="text-2xl font-bold text-accent-blue mb-2">
+                <Stack
+                  gap={2}
+                  className="text-center p-4 bg-theme-secondary rounded-xl"
+                >
+                  <div className="text-2xl font-bold text-accent-blue">
                     {analytics.activeUsers.period}
                   </div>
                   <Text papel="rotulo" tom="fraco" as="div">
                     Ativos no Período
                   </Text>
-                </div>
+                </Stack>
 
-                <div className="text-center p-4 bg-theme-secondary rounded-xl">
-                  <div className="text-2xl font-bold text-accent-amber mb-2">
+                <Stack
+                  gap={2}
+                  className="text-center p-4 bg-theme-secondary rounded-xl"
+                >
+                  <div className="text-2xl font-bold text-accent-amber">
                     {analytics.newUsers.period}
                   </div>
                   <Text papel="rotulo" tom="fraco" as="div">
                     Novos no Período
                   </Text>
-                </div>
+                </Stack>
 
-                <div className="text-center p-4 bg-theme-secondary rounded-xl">
-                  <div className="text-2xl font-bold text-accent-purple mb-2">
+                <Stack
+                  gap={2}
+                  className="text-center p-4 bg-theme-secondary rounded-xl"
+                >
+                  <div className="text-2xl font-bold text-accent-purple">
                     {formatNumber(analytics.totalUsers)}
                   </div>
                   <Text papel="rotulo" tom="fraco" as="div">
                     Total
                   </Text>
-                </div>
+                </Stack>
               </div>
             </AnimatedCard>
           </AnimatedItem>

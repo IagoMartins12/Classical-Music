@@ -17,7 +17,7 @@ import Button from '@/app/components/Common/Button';
 import Modal from '@/app/components/Modal';
 import { formatDistanceToNow } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
-import { Inline } from '@/app/components/ui/Layout';
+import { Stack, Inline } from '@/app/components/ui/Layout';
 import { Text } from '@/app/components/ui/Text';
 
 interface VideoSubmission {
@@ -226,11 +226,11 @@ export default function AssignmentVideoViewer({
         {showDetails && !isFullscreen && (
           <div className="p-4 bg-theme-secondary border-t border-theme-primary">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div>
-                <h4 className="font-medium text-theme-primary mb-3">
+              <Stack gap={3}>
+                <h4 className="font-medium text-theme-primary">
                   Informações do Arquivo
                 </h4>
-                <div className="space-y-2 text-sm">
+                <Stack gap={2} className="text-sm">
                   <div className="flex justify-between">
                     <span className="text-theme-secondary">Nome original:</span>
                     <span className="font-mono text-theme-primary">
@@ -259,14 +259,14 @@ export default function AssignmentVideoViewer({
                       </span>
                     </div>
                   )}
-                </div>
-              </div>
+                </Stack>
+              </Stack>
 
-              <div>
-                <h4 className="font-medium text-theme-primary mb-3">
+              <Stack gap={3}>
+                <h4 className="font-medium text-theme-primary">
                   Informações da Tarefa
                 </h4>
-                <div className="space-y-2 text-sm">
+                <Stack gap={2} className="text-sm">
                   <div className="flex justify-between">
                     <span className="text-theme-secondary">Professor:</span>
                     <span className="text-theme-primary">
@@ -308,8 +308,8 @@ export default function AssignmentVideoViewer({
                       )}
                     </span>
                   </div>
-                </div>
-              </div>
+                </Stack>
+              </Stack>
             </div>
           </div>
         )}

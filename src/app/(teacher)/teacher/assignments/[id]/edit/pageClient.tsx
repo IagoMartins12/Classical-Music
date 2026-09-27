@@ -33,7 +33,7 @@ import WorkSelectionSection, {
 } from '@/app/components/TeacherSystem/WorkSelectionSection';
 import { useTranslation } from '@/app/context/TranslationContext';
 import { getWorkById } from '@/app/requests/catalog-search';
-import { Inline } from '@/app/components/ui/Layout';
+import { Stack, Inline } from '@/app/components/ui/Layout';
 import { Text } from '@/app/components/ui/Text';
 import { Field } from '@/app/components/ui/Field';
 import { NomeAcao } from '@/app/components/ui/NomeAcao';
@@ -383,9 +383,9 @@ export default function EditAssignmentPageClient({
           <div className="lg:col-span-2 order-2 lg:order-1">
             <AnimatedItem direction="up" springType="gentle">
               <AnimatedCard hover="none" className="classical-card p-6">
-                <form onSubmit={handleSubmit} className="space-y-8">
+                <Stack gap={8} as="form" onSubmit={handleSubmit}>
                   {/* Basic Info */}
-                  <div className="space-y-4">
+                  <Stack>
                     <h2 className="text-xl font-bold text-theme-primary classical-title">
                       {t('basic_info')}
                     </h2>
@@ -462,10 +462,10 @@ export default function EditAssignmentPageClient({
                         required
                       />
                     </div>
-                  </div>
+                  </Stack>
 
                   {/* Timing */}
-                  <div className="space-y-4">
+                  <Stack>
                     <h3 className="text-lg font-bold text-theme-primary classical-title">
                       {t('deadline_and_time')}
                     </h3>
@@ -502,10 +502,10 @@ export default function EditAssignmentPageClient({
                         />
                       </div>
                     </div>
-                  </div>
+                  </Stack>
 
                   {/* Practice Goals */}
-                  <div className="space-y-4">
+                  <Stack>
                     <div className="flex items-center justify-between">
                       <h3 className="text-lg font-bold text-theme-primary classical-title">
                         {t('practice_goals')}
@@ -522,7 +522,7 @@ export default function EditAssignmentPageClient({
                       </Inline>
                     </div>
 
-                    <div className="space-y-2">
+                    <Stack gap={2}>
                       {formData.practiceGoals.map((goal, index) => (
                         <Inline gap={2} key={index}>
                           <Input
@@ -553,8 +553,8 @@ export default function EditAssignmentPageClient({
                           )}
                         </Inline>
                       ))}
-                    </div>
-                  </div>
+                    </Stack>
+                  </Stack>
 
                   {/* 🆕 SEÇÃO DE PEÇAS MUSICAIS */}
                   <div className="space-y-4">
@@ -581,7 +581,7 @@ export default function EditAssignmentPageClient({
                   </div>
 
                   {/* Advanced Options */}
-                  <div className="space-y-4">
+                  <Stack>
                     <Inline
                       as="button"
                       gap={2}
@@ -612,10 +612,13 @@ export default function EditAssignmentPageClient({
                     </Inline>
 
                     {showAdvanced && (
-                      <div className="space-y-6 p-4 bg-theme-secondary/5 shadow-lg rounded-lg">
+                      <Stack
+                        gap={6}
+                        className="p-4 bg-theme-secondary/5 shadow-lg rounded-lg"
+                      >
                         {/* Technical Goals */}
-                        <div>
-                          <div className="flex items-center justify-between mb-2">
+                        <Stack gap={2}>
+                          <div className="flex items-center justify-between">
                             <label className="text-sm font-medium text-theme-primary">
                               {t('technical_goals')}
                             </label>
@@ -630,7 +633,7 @@ export default function EditAssignmentPageClient({
                               <span>{t('add')}</span>
                             </Inline>
                           </div>
-                          <div className="space-y-2">
+                          <Stack gap={2}>
                             {formData.technicalGoals.map((goal, index) => (
                               <Inline gap={2} key={index}>
                                 <Input
@@ -661,12 +664,12 @@ export default function EditAssignmentPageClient({
                                 )}
                               </Inline>
                             ))}
-                          </div>
-                        </div>
+                          </Stack>
+                        </Stack>
 
                         {/* Musical Goals */}
-                        <div>
-                          <div className="flex items-center justify-between mb-2">
+                        <Stack gap={2}>
+                          <div className="flex items-center justify-between">
                             <label className="text-sm font-medium text-theme-primary">
                               {t('musical_goals')}
                             </label>
@@ -681,7 +684,7 @@ export default function EditAssignmentPageClient({
                               <span>{t('add')}</span>
                             </Inline>
                           </div>
-                          <div className="space-y-2">
+                          <Stack gap={2}>
                             {formData.musicalGoals.map((goal, index) => (
                               <Inline gap={2} key={index}>
                                 <Input
@@ -712,12 +715,12 @@ export default function EditAssignmentPageClient({
                                 )}
                               </Inline>
                             ))}
-                          </div>
-                        </div>
+                          </Stack>
+                        </Stack>
 
                         {/* Exercises */}
-                        <div>
-                          <div className="flex items-center justify-between mb-2">
+                        <Stack gap={2}>
+                          <div className="flex items-center justify-between">
                             <label className="text-sm font-medium text-theme-primary">
                               {t('specific_exercises')}
                             </label>
@@ -732,7 +735,7 @@ export default function EditAssignmentPageClient({
                               <span>{t('add')}</span>
                             </Inline>
                           </div>
-                          <div className="space-y-2">
+                          <Stack gap={2}>
                             {formData.exercises.map((exercise, index) => (
                               <Inline gap={2} key={index}>
                                 <Input
@@ -763,11 +766,11 @@ export default function EditAssignmentPageClient({
                                 )}
                               </Inline>
                             ))}
-                          </div>
-                        </div>
-                      </div>
+                          </Stack>
+                        </Stack>
+                      </Stack>
                     )}
-                  </div>
+                  </Stack>
 
                   {/* Error Display */}
                   {error && (
@@ -826,7 +829,7 @@ export default function EditAssignmentPageClient({
                       </span>
                     </Inline>
                   </Inline>
-                </form>
+                </Stack>
               </AnimatedCard>
             </AnimatedItem>
           </div>
@@ -840,7 +843,7 @@ export default function EditAssignmentPageClient({
                   {t('assignment_info')}
                 </h3>
 
-                <div className="space-y-4">
+                <Stack>
                   <Inline gap={3}>
                     {assignment.student.image ? (
                       <div className="w-12 h-12 relative rounded-full overflow-hidden">
@@ -868,7 +871,7 @@ export default function EditAssignmentPageClient({
                   </Inline>
 
                   <div className="pt-4 border-t border-theme-secondary/20">
-                    <div className="space-y-2 text-sm">
+                    <Stack gap={2} className="text-sm">
                       <div className="flex justify-between">
                         <span className="text-theme-tertiary">
                           {t('status')}
@@ -915,9 +918,9 @@ export default function EditAssignmentPageClient({
                           </span>
                         </div>
                       )}
-                    </div>
+                    </Stack>
                   </div>
-                </div>
+                </Stack>
               </AnimatedCard>
             </AnimatedItem>
 
@@ -1033,7 +1036,7 @@ export default function EditAssignmentPageClient({
                     {t('linked_scores_legacy')}
                   </h3>
 
-                  <div className="space-y-2">
+                  <Stack gap={2}>
                     {assignment.workScores.map((score) => (
                       <div
                         key={score.id}
@@ -1047,7 +1050,7 @@ export default function EditAssignmentPageClient({
                         </div>
                       </div>
                     ))}
-                  </div>
+                  </Stack>
                 </AnimatedCard>
               </AnimatedItem>
             )}

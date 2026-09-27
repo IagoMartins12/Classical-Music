@@ -30,7 +30,7 @@ import { getComposerNationalityDisplay } from '../../../../../components/Utils/n
 import { useToast } from '@/app/hooks/useToast';
 import { deleteUpload } from '@/app/requests/uploads-client';
 import { useTranslation } from '@/app/context/TranslationContext';
-import { Inline } from '@/app/components/ui/Layout';
+import { Stack, Inline } from '@/app/components/ui/Layout';
 import { Text } from '@/app/components/ui/Text';
 
 interface EditComposerClientProps {
@@ -240,7 +240,7 @@ const EditComposerClient = ({
                 {/* Informações do Compositor */}
                 <div className="lg:col-span-2 space-y-6 order-2 md:order-1 lg:order-1">
                   <AnimatedItem direction="up" springType="bouncy">
-                    <div className="space-y-3">
+                    <Stack gap={3}>
                       <div className="flex flex-col sm:flex-row items-start justify-between">
                         <div className="flex-1">
                           <Inline gap={3} className="mb-4">
@@ -298,7 +298,7 @@ const EditComposerClient = ({
                           )}
                         </Inline>
                       </div>
-                    </div>
+                    </Stack>
                   </AnimatedItem>
 
                   {/* Grid de informações */}
@@ -480,11 +480,11 @@ const EditComposerClient = ({
                   {/* Links Externos */}
                   {(composer.wikipediaLink || composer.permLinkImslp) && (
                     <AnimatedItem direction="right" springType="smooth">
-                      <div className="border-t border-theme-secondary pt-6">
+                      <Stack className="border-t border-theme-secondary pt-6">
                         <Inline
                           as="h3"
                           gap={2}
-                          className="text-lg font-semibold text-theme-primary classical-title mb-4"
+                          className="text-lg font-semibold text-theme-primary classical-title"
                         >
                           <PiArrowSquareOut className="w-5 h-5 text-accent-blue" />
                           <span>{t('composer_info_external_links')}</span>
@@ -544,7 +544,7 @@ const EditComposerClient = ({
                             </Inline>
                           )}
                         </div>
-                      </div>
+                      </Stack>
                     </AnimatedItem>
                   )}
                 </div>

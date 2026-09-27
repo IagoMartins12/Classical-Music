@@ -16,7 +16,7 @@ import {
 } from '@/app/libs/ads/mediaUtils';
 import Button from '@/app/components/Common/Button';
 import Image from '@/app/components/SmartImage';
-import { Inline } from '@/app/components/ui/Layout';
+import { Stack, Inline } from '@/app/components/ui/Layout';
 import { Text } from '@/app/components/ui/Text';
 
 interface MediaPreviewProps {
@@ -228,8 +228,8 @@ export default function MediaPreview({
               </Text>
             </div>
 
-            <div>
-              <div className="font-medium text-theme-primary mb-1">Versões</div>
+            <Stack gap={1}>
+              <div className="font-medium text-theme-primary">Versões</div>
               <Inline gap={2} className="text-xs">
                 {hasImageVersions && (
                   <span className="px-2 py-1 bg-accent-green/10 text-accent-green rounded">
@@ -247,7 +247,7 @@ export default function MediaPreview({
                   </span>
                 )}
               </Inline>
-            </div>
+            </Stack>
           </div>
         </div>
       )}

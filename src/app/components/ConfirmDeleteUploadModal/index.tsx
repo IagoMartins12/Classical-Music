@@ -14,7 +14,7 @@ import {
 import { useTranslation } from '@/app/context/TranslationContext';
 import { getCascadeInfo } from '@/app/requests/uploads-client';
 import Button from '../Common/Button';
-import { Inline } from '@/app/components/ui/Layout';
+import { Stack, Inline } from '@/app/components/ui/Layout';
 import { Text } from '@/app/components/ui/Text';
 
 interface CascadeInfo {
@@ -159,7 +159,7 @@ export default function ConfirmDeleteUploadModal({
           </div>
         </Inline>
 
-        <div className="mb-6 space-y-4">
+        <Stack className="mb-6">
           <p className="text-theme-secondary">
             {t('delete_modal_confirm_text', {
               article: getItemTypeArticle(),
@@ -183,8 +183,11 @@ export default function ConfirmDeleteUploadModal({
 
           {/* Cascade information */}
           {!loadingCascadeInfo && hasCascadeItems ? (
-            <div className="p-4 bg-accent-amber/10 rounded-lg border border-accent-amber/20">
-              <div className="flex items-start space-x-2 mb-3">
+            <Stack
+              gap={3}
+              className="p-4 bg-accent-amber/10 rounded-lg border border-accent-amber/20"
+            >
+              <div className="flex items-start space-x-2">
                 <PiInfo className="w-4 h-4 text-accent-amber mt-0.5 flex-shrink-0" />
                 <div>
                   <div className="text-sm font-medium text-accent-amber mb-1">
@@ -196,18 +199,21 @@ export default function ConfirmDeleteUploadModal({
                 </div>
               </div>
 
-              <div className="space-y-3 text-sm">
+              <Stack gap={3} className="text-sm">
                 {/* Para compositor: mostrar obras */}
                 {itemType === 'composer' &&
                 cascadeInfo?.works &&
                 cascadeInfo.works.length > 0 ? (
-                  <div>
-                    <p className="font-medium text-theme-primary mb-2 flex items-center">
+                  <Stack gap={2}>
+                    <p className="font-medium text-theme-primary flex items-center">
                       {t('delete_modal_works_count', {
                         count: cascadeInfo.works.length,
                       })}
                     </p>
-                    <div className="space-y-1  overflow-y-auto bg-theme-secondary/30 rounded p-2">
+                    <Stack
+                      gap={1}
+                      className="overflow-y-auto bg-theme-secondary/30 rounded p-2"
+                    >
                       {cascadeInfo.works.slice(0, 4).map((work) => (
                         <Text
                           papel="legenda"
@@ -232,16 +238,16 @@ export default function ConfirmDeleteUploadModal({
                           })}
                         </Text>
                       ) : null}
-                    </div>
-                  </div>
+                    </Stack>
+                  </Stack>
                 ) : null}
 
                 {/* Para obra: mostrar partituras */}
                 {itemType === 'work' &&
                 cascadeInfo?.scores &&
                 cascadeInfo.scores.length > 0 ? (
-                  <div>
-                    <p className="font-medium text-theme-primary mb-2 flex items-center">
+                  <Stack gap={2}>
+                    <p className="font-medium text-theme-primary flex items-center">
                       {t('delete_modal_scores_count', {
                         count: cascadeInfo.scores.length,
                       })}
@@ -265,14 +271,14 @@ export default function ConfirmDeleteUploadModal({
                         </Text>
                       ) : null}
                     </div>
-                  </div>
+                  </Stack>
                 ) : null}
 
                 {/* Obras filhas */}
                 {cascadeInfo?.childWorks &&
                 cascadeInfo.childWorks.length > 0 ? (
-                  <div>
-                    <p className="font-medium text-theme-primary mb-2">
+                  <Stack gap={2}>
+                    <p className="font-medium text-theme-primary">
                       {t('delete_modal_child_works_count', {
                         count: cascadeInfo.childWorks.length,
                       })}
@@ -296,7 +302,7 @@ export default function ConfirmDeleteUploadModal({
                         </Text>
                       ))}
                     </div>
-                  </div>
+                  </Stack>
                 ) : null}
 
                 {/* Total geral */}
@@ -315,8 +321,8 @@ export default function ConfirmDeleteUploadModal({
                     </p>
                   </div>
                 ) : null}
-              </div>
-            </div>
+              </Stack>
+            </Stack>
           ) : null}
 
           {/* No cascade items */}
@@ -349,7 +355,7 @@ export default function ConfirmDeleteUploadModal({
               </div>
             </div>
           ) : null}
-        </div>
+        </Stack>
 
         <Inline gap={3} className="justify-end">
           <button

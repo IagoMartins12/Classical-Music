@@ -32,7 +32,7 @@ import { getAllEmailTemplates } from '@/app/libs/newsletter/emailTemplates';
 import CreateEditTemplateModal from './CreateEditTemplateModal';
 import TemplatePreviewModal from './TemplatePreviewModal';
 import LoadingAdminState from '../../Common/LoadingState';
-import { Inline } from '@/app/components/ui/Layout';
+import { Stack, Inline } from '@/app/components/ui/Layout';
 import { Text } from '@/app/components/ui/Text';
 
 interface FilterState {
@@ -206,7 +206,7 @@ export default function NewsletterTemplatesClient() {
 
   return (
     <PageContainer showBackground={true}>
-      <div className="space-y-8">
+      <Stack gap={8}>
         <AnimatedContainer
           delay={0.1}
           staggerSpeed="normal"
@@ -233,14 +233,14 @@ export default function NewsletterTemplatesClient() {
           <SequentialGrid cols={4} gap={6} delayBetweenItems={0.1}>
             <AnimatedCard className="classical-card p-6">
               <div className="flex items-center justify-between">
-                <div>
-                  <Text papel="rotulo" tom="fraco" as="p" className="mb-1">
+                <Stack gap={1}>
+                  <Text papel="rotulo" tom="fraco" as="p">
                     Total de Templates
                   </Text>
                   <p className="text-3xl font-bold text-theme-primary">
                     {templates.length}
                   </p>
-                </div>
+                </Stack>
                 <div className="w-12 h-12 bg-accent-blue/20 rounded-xl flex items-center justify-center">
                   <PiFileText className="w-6 h-6 text-accent-blue" />
                 </div>
@@ -249,14 +249,14 @@ export default function NewsletterTemplatesClient() {
 
             <AnimatedCard className="classical-card p-6">
               <div className="flex items-center justify-between">
-                <div>
-                  <Text papel="rotulo" tom="fraco" as="p" className="mb-1">
+                <Stack gap={1}>
+                  <Text papel="rotulo" tom="fraco" as="p">
                     Templates Ativos
                   </Text>
                   <p className="text-3xl font-bold text-accent-green">
                     {templates.filter((t) => t.isActive).length}
                   </p>
-                </div>
+                </Stack>
                 <div className="w-12 h-12 bg-accent-green/20 rounded-xl flex items-center justify-center">
                   <PiCheckCircle className="w-6 h-6 text-accent-green" />
                 </div>
@@ -265,14 +265,14 @@ export default function NewsletterTemplatesClient() {
 
             <AnimatedCard className="classical-card p-6">
               <div className="flex items-center justify-between">
-                <div>
-                  <Text papel="rotulo" tom="fraco" as="p" className="mb-1">
+                <Stack gap={1}>
+                  <Text papel="rotulo" tom="fraco" as="p">
                     Templates Padrão
                   </Text>
                   <p className="text-3xl font-bold text-accent-amber">
                     {templates.filter((t) => t.isDefault).length}
                   </p>
-                </div>
+                </Stack>
                 <div className="w-12 h-12 bg-accent-amber/20 rounded-xl flex items-center justify-center">
                   <PiStar className="w-6 h-6 text-accent-amber" />
                 </div>
@@ -281,14 +281,14 @@ export default function NewsletterTemplatesClient() {
 
             <AnimatedCard className="classical-card p-6">
               <div className="flex items-center justify-between">
-                <div>
-                  <Text papel="rotulo" tom="fraco" as="p" className="mb-1">
+                <Stack gap={1}>
+                  <Text papel="rotulo" tom="fraco" as="p">
                     Built-in
                   </Text>
                   <p className="text-3xl font-bold text-accent-purple">
                     {builtInTemplates.length}
                   </p>
-                </div>
+                </Stack>
                 <div className="w-12 h-12 bg-accent-purple/20 rounded-xl flex items-center justify-center">
                   <PiCode className="w-6 h-6 text-accent-purple" />
                 </div>
@@ -584,7 +584,7 @@ export default function NewsletterTemplatesClient() {
             )}
           </AnimatedCard>
         </AnimatedContainer>
-      </div>
+      </Stack>
 
       {/* Modals */}
       {showCreateModal && (

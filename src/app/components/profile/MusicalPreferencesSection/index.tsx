@@ -21,7 +21,7 @@ import { legacyCatalog } from '@/app/libs/api/compat';
 import { useAuth } from '@/app/hooks/useAuth';
 import { useSessionUpdate } from '@/app/hooks/useSessionUpdate';
 import { useTranslation } from '@/app/context/TranslationContext';
-import { Inline } from '@/app/components/ui/Layout';
+import { Stack, Inline } from '@/app/components/ui/Layout';
 import { Text } from '@/app/components/ui/Text';
 import { Card } from '@/app/components/ui/Card';
 
@@ -198,7 +198,7 @@ const MusicalPreferencesSection: React.FC<MusicalPreferencesSectionProps> = ({
   // Loading inicial
   if (isLoadingData) {
     return (
-      <div className="space-y-6">
+      <Stack gap={6}>
         <div className="flex items-center justify-between">
           <div>
             <h3 className="text-lg font-semibold text-theme-primary">
@@ -212,18 +212,18 @@ const MusicalPreferencesSection: React.FC<MusicalPreferencesSectionProps> = ({
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           {[...Array(4)].map((_, index) => (
-            <div key={index} className="animate-pulse">
-              <div className="h-4 bg-theme-secondary rounded w-24 mb-2" />
+            <Stack gap={2} key={index} className="animate-pulse">
+              <div className="h-4 bg-theme-secondary rounded w-24" />
               <div className="h-12 bg-theme-secondary rounded" />
-            </div>
+            </Stack>
           ))}
         </div>
-      </div>
+      </Stack>
     );
   }
 
   return (
-    <div className="space-y-6">
+    <Stack gap={6}>
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
@@ -306,8 +306,8 @@ const MusicalPreferencesSection: React.FC<MusicalPreferencesSectionProps> = ({
       </div>
 
       {/* Favorites */}
-      <div className="pt-6 border-t border-theme-secondary">
-        <Inline gap={2} className="mb-6">
+      <Stack gap={6} className="pt-6 border-t border-theme-secondary">
+        <Inline gap={2}>
           <PiHeart className="w-4 h-4 text-brand-primary" />
           <h4 className="font-medium text-theme-primary">
             {t('preferences_favorites')}
@@ -365,7 +365,7 @@ const MusicalPreferencesSection: React.FC<MusicalPreferencesSectionProps> = ({
             )}
           </div>
         </div>
-      </div>
+      </Stack>
 
       {/* Summary Card */}
       {formData.experienceLevel && formData.practiceTimePerWeek > 0 && (
@@ -409,7 +409,7 @@ const MusicalPreferencesSection: React.FC<MusicalPreferencesSectionProps> = ({
           </Text>
         </Card>
       )}
-    </div>
+    </Stack>
   );
 };
 

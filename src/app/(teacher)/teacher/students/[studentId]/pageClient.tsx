@@ -43,7 +43,7 @@ import { translateNivel } from '@/app/utils';
 import Select from '@/app/components/Common/Select';
 import Modal from '@/app/components/Modal';
 import { useTranslation } from '@/app/context/TranslationContext';
-import { Inline } from '@/app/components/ui/Layout';
+import { Stack, Inline } from '@/app/components/ui/Layout';
 import { Text } from '@/app/components/ui/Text';
 import { Field } from '@/app/components/ui/Field';
 import { NomeAcao } from '@/app/components/ui/NomeAcao';
@@ -184,8 +184,8 @@ function EditRelationshipModal({
 
   return (
     <Modal isOpen={isOpen} onClose={onClose} maxWidth="4xl">
-      <div className="p-6">
-        <div className="flex items-center justify-between mb-6">
+      <Stack gap={6} className="p-6">
+        <div className="flex items-center justify-between">
           <div>
             <h2 className="text-xl font-bold text-theme-primary classical-title">
               {t('edit_relationship_modal_title')}
@@ -196,7 +196,7 @@ function EditRelationshipModal({
           </div>
         </div>
 
-        <form onSubmit={handleSubmit} className="space-y-6">
+        <Stack gap={6} as="form" onSubmit={handleSubmit}>
           {/* Configurações Básicas */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <AnimatedCard className="classical-card p-4">
@@ -205,7 +205,7 @@ function EditRelationshipModal({
                 {t('lesson_settings')}
               </h3>
 
-              <div className="space-y-4">
+              <Stack>
                 <div className="grid grid-cols-2 gap-4">
                   <div>
                     <Select
@@ -250,8 +250,8 @@ function EditRelationshipModal({
                 </div>
 
                 {/* Dias Preferidos */}
-                <div>
-                  <label className="block text-sm font-medium text-theme-primary mb-2">
+                <Stack gap={2}>
+                  <label className="block text-sm font-medium text-theme-primary">
                     {t('preferred_days')}
                   </label>
                   <div className="grid grid-cols-2 gap-2">
@@ -276,11 +276,11 @@ function EditRelationshipModal({
                       </label>
                     ))}
                   </div>
-                </div>
+                </Stack>
 
                 {/* Horários Preferidos */}
-                <div>
-                  <label className="block text-sm font-medium text-theme-primary mb-2">
+                <Stack gap={2}>
+                  <label className="block text-sm font-medium text-theme-primary">
                     {t('preferred_times')}
                   </label>
                   <div className="grid grid-cols-3 gap-2">
@@ -308,8 +308,8 @@ function EditRelationshipModal({
                       </label>
                     ))}
                   </div>
-                </div>
-              </div>
+                </Stack>
+              </Stack>
             </AnimatedCard>
 
             <AnimatedCard className="classical-card p-4">
@@ -318,7 +318,7 @@ function EditRelationshipModal({
                 {t('study_plan')}
               </h3>
 
-              <div className="space-y-4">
+              <Stack>
                 {/* Áreas de Foco */}
                 <div>
                   <label className="block text-sm font-medium text-theme-primary mb-2">
@@ -346,7 +346,7 @@ function EditRelationshipModal({
 
                   {/* Selecionadas */}
                   {formData.currentFocus.length > 0 && (
-                    <div className="space-y-2">
+                    <Stack gap={2}>
                       <Text papel="rotulo" tom="suave" as="p">
                         {t('selected_areas')}
                       </Text>
@@ -367,15 +367,15 @@ function EditRelationshipModal({
                           </span>
                         ))}
                       </div>
-                    </div>
+                    </Stack>
                   )}
                 </div>
-              </div>
+              </Stack>
             </AnimatedCard>
           </div>
 
           {/* Campos de Texto */}
-          <div className="space-y-4">
+          <Stack>
             <div>
               <Field.Area
                 label={t('detailed_learning_plan')}
@@ -405,7 +405,7 @@ function EditRelationshipModal({
                 placeholder={t('teacher_notes_private_placeholder')}
               />
             </div>
-          </div>
+          </Stack>
 
           {/* Actions */}
           <div className="flex items-center justify-end gap-3 pt-6 border-t border-theme-secondary">
@@ -437,8 +437,8 @@ function EditRelationshipModal({
               )}
             </Button>
           </div>
-        </form>
-      </div>
+        </Stack>
+      </Stack>
     </Modal>
   );
 }
@@ -713,7 +713,7 @@ export default function TeacherStudentDetailPageClient({
                     <h2 className="text-2xl font-bold text-theme-primary classical-title mb-2">
                       {student.name}
                     </h2>
-                    <div className="space-y-1 text-sm">
+                    <Stack gap={1} className="text-sm">
                       <Inline gap={2} className="text-theme-secondary">
                         <PiEnvelopeSimple className="w-4 h-4" />
                         <span>{student.email}</span>
@@ -734,13 +734,13 @@ export default function TeacherStudentDetailPageClient({
                           </span>
                         </Inline>
                       )}
-                    </div>
+                    </Stack>
                   </div>
                 </Inline>
 
                 {/* Student Details Grid */}
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                  <div className="space-y-4">
+                  <Stack>
                     <div>
                       <label className="text-sm font-medium text-theme-tertiary">
                         {t('musical_level')}
@@ -769,9 +769,9 @@ export default function TeacherStudentDetailPageClient({
                         </p>
                       </div>
                     )}
-                  </div>
+                  </Stack>
 
-                  <div className="space-y-4">
+                  <Stack>
                     <div>
                       <label className="text-sm font-medium text-theme-tertiary">
                         {t('lesson_frequency')}
@@ -800,28 +800,31 @@ export default function TeacherStudentDetailPageClient({
                         {formatDate(student.createdAt)}
                       </p>
                     </div>
-                  </div>
+                  </Stack>
                 </div>
 
                 {/* Musical Goals */}
                 {studentProfile.musicalGoals &&
                   typeof studentProfile.musicalGoals === 'string' &&
                   studentProfile.musicalGoals.length > 0 && (
-                    <div className="mt-6 pt-6 border-t border-theme-secondary">
-                      <label className="text-sm font-medium text-theme-tertiary block mb-3">
+                    <Stack
+                      gap={3}
+                      className="mt-6 pt-6 border-t border-theme-secondary"
+                    >
+                      <label className="text-sm font-medium text-theme-tertiary block">
                         {t('musical_goals')}
                       </label>
                       <div className="text-theme-primary">
                         {studentProfile.musicalGoals}
                       </div>
-                    </div>
+                    </Stack>
                   )}
 
                 {/* Current Focus */}
                 {relationship.currentFocus &&
                   relationship.currentFocus.length > 0 && (
-                    <div className="mt-4">
-                      <label className="text-sm font-medium text-theme-tertiary block mb-3">
+                    <Stack gap={3} className="mt-4">
+                      <label className="text-sm font-medium text-theme-tertiary block">
                         {t('current_focus')}
                       </label>
                       <div className="flex flex-wrap gap-2">
@@ -836,7 +839,7 @@ export default function TeacherStudentDetailPageClient({
                           </Text>
                         ))}
                       </div>
-                    </div>
+                    </Stack>
                   )}
               </AnimatedCard>
             </AnimatedItem>
@@ -871,7 +874,7 @@ export default function TeacherStudentDetailPageClient({
                 </div>
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                  <div className="space-y-4">
+                  <Stack>
                     <Card nivel={2} densidade="compacta">
                       <Inline gap={3} className="mb-3">
                         <PiCalendarBlank className="w-5 h-5 text-brand-primary" />
@@ -879,7 +882,7 @@ export default function TeacherStudentDetailPageClient({
                           {t('lesson_frequency_title')}
                         </h4>
                       </Inline>
-                      <div className="space-y-2 text-sm">
+                      <Stack gap={2} className="text-sm">
                         <div className="flex justify-between">
                           <span className="text-theme-tertiary">
                             {t('per_week')}
@@ -899,7 +902,7 @@ export default function TeacherStudentDetailPageClient({
                             {relationship.lessonDuration} {t('minutes')}
                           </span>
                         </div>
-                      </div>
+                      </Stack>
                     </Card>
 
                     {relationship.preferredDays &&
@@ -926,9 +929,9 @@ export default function TeacherStudentDetailPageClient({
                           </div>
                         </Card>
                       )}
-                  </div>
+                  </Stack>
 
-                  <div className="space-y-4">
+                  <Stack>
                     {relationship.preferredTimes &&
                       relationship.preferredTimes.length > 0 && (
                         <Card nivel={2} densidade="compacta">
@@ -969,7 +972,7 @@ export default function TeacherStudentDetailPageClient({
                         </Text>
                       </Card>
                     )}
-                  </div>
+                  </Stack>
                 </div>
               </AnimatedCard>
             </AnimatedItem>
@@ -1067,7 +1070,7 @@ export default function TeacherStudentDetailPageClient({
                   </Link>
                 </div>
 
-                <div className="space-y-4">
+                <Stack>
                   {recentLessons.slice(0, 5).map((lesson) => (
                     <Card nivel={2} densidade="compacta" key={lesson.id}>
                       <div className="flex items-start justify-between">
@@ -1131,13 +1134,11 @@ export default function TeacherStudentDetailPageClient({
                           )}
 
                           {lesson.homework && (
-                            <div className="mt-2 p-2 bg-gradient-to-r from-theme-elevated to-interactive-hover rounded border border-theme-primary/20">
-                              <Text
-                                papel="legenda"
-                                tom="fraco"
-                                as="div"
-                                className="mb-1"
-                              >
+                            <Stack
+                              gap={1}
+                              className="mt-2 p-2 bg-gradient-to-r from-theme-elevated to-interactive-hover rounded border border-theme-primary/20"
+                            >
+                              <Text papel="legenda" tom="fraco" as="div">
                                 {t('homework_label')}
                               </Text>
                               <Text
@@ -1148,7 +1149,7 @@ export default function TeacherStudentDetailPageClient({
                               >
                                 {lesson.homework}
                               </Text>
-                            </div>
+                            </Stack>
                           )}
                         </div>
 
@@ -1170,7 +1171,7 @@ export default function TeacherStudentDetailPageClient({
                       </p>
                     </div>
                   )}
-                </div>
+                </Stack>
               </AnimatedCard>
             </AnimatedItem>
 
@@ -1280,7 +1281,7 @@ export default function TeacherStudentDetailPageClient({
                   </div>
                 </Inline>
 
-                <div className="space-y-3">
+                <Stack gap={3}>
                   {upcomingLessons.slice(0, 4).map((lesson) => (
                     <div key={lesson.id} className="classical-card-2 p-3">
                       <Inline gap={3}>
@@ -1320,7 +1321,7 @@ export default function TeacherStudentDetailPageClient({
                       </Text>
                     </div>
                   )}
-                </div>
+                </Stack>
 
                 {upcomingLessons.length > 0 && (
                   <Link
@@ -1351,7 +1352,7 @@ export default function TeacherStudentDetailPageClient({
                   </div>
                 </Inline>
 
-                <div className="space-y-3">
+                <Stack gap={3}>
                   {assignments
                     .filter((a) => !a.isCompleted)
                     .slice(0, 4)
@@ -1421,7 +1422,7 @@ export default function TeacherStudentDetailPageClient({
                       </Text>
                     </div>
                   )}
-                </div>
+                </Stack>
               </AnimatedCard>
             </AnimatedItem>
 
@@ -1439,7 +1440,7 @@ export default function TeacherStudentDetailPageClient({
                   </div>
                 </Inline>
 
-                <div className="space-y-3">
+                <Stack gap={3}>
                   <Link
                     href={`/teacher/lessons/create?studentId=${student.id}`}
                     className="w-full classical-card-2 p-3 text-left hover:border-brand-primary transition-all group block"
@@ -1496,7 +1497,7 @@ export default function TeacherStudentDetailPageClient({
                       </div>
                     </Inline>
                   </Link>
-                </div>
+                </Stack>
               </AnimatedCard>
             </AnimatedItem>
 

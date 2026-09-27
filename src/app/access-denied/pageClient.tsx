@@ -34,7 +34,7 @@ import AdminHeader from '../components/Admin/AdminHeader';
 import AdminSidebar from '../components/Admin/AdminSidebar';
 import Image from '@/app/components/SmartImage';
 import { useTranslation } from '../context/TranslationContext';
-import { Inline } from '@/app/components/ui/Layout';
+import { Stack, Inline } from '@/app/components/ui/Layout';
 import { Text } from '@/app/components/ui/Text';
 import { Card } from '@/app/components/ui/Card';
 
@@ -550,7 +550,7 @@ export default function AccessDenied() {
               </Inline>
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-left">
-                <div className="space-y-2">
+                <Stack gap={2}>
                   <Inline gap={2}>
                     <div className="w-2 h-2 bg-brand-primary rounded-full"></div>
                     <span className="text-theme-secondary">
@@ -567,8 +567,8 @@ export default function AccessDenied() {
                       )}
                     </span>
                   </Inline>
-                </div>
-                <div className="space-y-2">
+                </Stack>
+                <Stack gap={2}>
                   <Inline gap={2}>
                     <div className="w-2 h-2 bg-brand-primary rounded-full"></div>
                     <span className="text-theme-secondary">
@@ -585,7 +585,7 @@ export default function AccessDenied() {
                       )}
                     </span>
                   </Inline>
-                </div>
+                </Stack>
               </div>
 
               <div className="mt-6 pt-4 border-t border-theme-secondary">

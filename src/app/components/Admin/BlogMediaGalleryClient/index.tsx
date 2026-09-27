@@ -36,7 +36,7 @@ import {
 import Button from '@/app/components/Common/Button';
 import { MetricCard } from '@/app/components/Admin/Charts/AdminCharts';
 import Image from '@/app/components/SmartImage';
-import { Inline } from '@/app/components/ui/Layout';
+import { Stack, Inline } from '@/app/components/ui/Layout';
 import { Text } from '@/app/components/ui/Text';
 import { NomeAcao } from '@/app/components/ui/NomeAcao';
 
@@ -169,7 +169,7 @@ export default function BlogMediaGalleryClient() {
 
   return (
     <PageContainer showBackground={true}>
-      <div className="space-y-8">
+      <Stack gap={8}>
         <AnimatedContainer
           delay={0.1}
           staggerSpeed="normal"
@@ -527,7 +527,7 @@ export default function BlogMediaGalleryClient() {
             </AnimatedItem>
           )}
         </AnimatedContainer>
-      </div>
+      </Stack>
 
       {/* Preview Modal */}
       {showPreview && (
@@ -606,7 +606,7 @@ export default function BlogMediaGalleryClient() {
               </div>
 
               {/* Usage List */}
-              <div className="space-y-3">
+              <Stack gap={3}>
                 <h4 className="font-semibold text-theme-primary">
                   Usado em {showUsageDetails.usageCount} artigo
                   {showUsageDetails.usageCount !== 1 ? 's' : ''}:
@@ -647,7 +647,7 @@ export default function BlogMediaGalleryClient() {
                     </div>
                   </div>
                 ))}
-              </div>
+              </Stack>
             </div>
           </div>
         </div>

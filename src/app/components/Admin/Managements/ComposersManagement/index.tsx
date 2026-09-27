@@ -48,7 +48,7 @@ import { getPeriodLabel } from '@/app/utils/adminUtils';
 import PeriodSelector from '../../Common/PeriodSelector';
 import LoadingAdminState from '../../Common/LoadingState';
 import { mapStatsToChartData } from '@/app/utils/admin/adminDebug';
-import { Inline } from '@/app/components/ui/Layout';
+import { Stack, Inline } from '@/app/components/ui/Layout';
 import { Text } from '@/app/components/ui/Text';
 
 interface ComposerFilters {
@@ -388,7 +388,7 @@ export default function ComposersManagement() {
                     <PiTrendUp className="w-5 h-5 text-accent-red" />
                     <span>Mais Favoritados</span>
                   </Inline>
-                  <div className="space-y-3">
+                  <Stack gap={3}>
                     {stats.mostPopular.slice(0, 5).map((composer, index) => (
                       <Inline
                         gap={3}
@@ -422,7 +422,7 @@ export default function ComposersManagement() {
                         />
                       </Inline>
                     ))}
-                  </div>
+                  </Stack>
                 </AnimatedCard>
               </AnimatedItem>
             )}
@@ -439,7 +439,7 @@ export default function ComposersManagement() {
                     <PiMusicNotes className="w-5 h-5 text-accent-blue" />
                     <span>Mais Produtivos</span>
                   </Inline>
-                  <div className="space-y-3">
+                  <Stack gap={3}>
                     {stats.topByWorks.slice(0, 5).map((composer, index) => (
                       <Inline
                         gap={3}
@@ -472,7 +472,7 @@ export default function ComposersManagement() {
                         />
                       </Inline>
                     ))}
-                  </div>
+                  </Stack>
                 </AnimatedCard>
               </AnimatedItem>
             )}
@@ -528,7 +528,7 @@ export default function ComposersManagement() {
             </div>
 
             {/* Filtros Básicos */}
-            <div className="space-y-4 mb-6">
+            <Stack className="mb-6">
               {/* Busca */}
               <div className="relative w-full">
                 <PiMagnifyingGlass className="absolute left-3 top-1/2 transform -translate-y-1/2 text-theme-tertiary w-4 h-4" />
@@ -580,7 +580,7 @@ export default function ComposersManagement() {
                   Buscar
                 </Button>
               </div>
-            </div>
+            </Stack>
 
             {/* Filtros Avançados */}
             <div

@@ -38,7 +38,7 @@ import ViewModeToggle, { ViewMode } from '@/app/components/ViewModeToggle';
 import { useTeacherLessons } from '@/app/hooks/lessonsSystem/useTeacherLessons';
 import { translateNivel } from '@/app/utils';
 import { useTranslation } from '@/app/context/TranslationContext';
-import { Inline } from '@/app/components/ui/Layout';
+import { Stack, Inline } from '@/app/components/ui/Layout';
 import { Text } from '@/app/components/ui/Text';
 import { NomeAcao } from '@/app/components/ui/NomeAcao';
 import { Button } from '@/app/components/ui/Button';
@@ -689,8 +689,8 @@ export default function TeacherLessonsPageClient({
           <div className="flex items-start justify-between">
             <div className="flex-1">
               <div className="flex items-start justify-between mb-4">
-                <div>
-                  <h3 className="text-lg font-bold text-theme-primary mb-2">
+                <Stack gap={2}>
+                  <h3 className="text-lg font-bold text-theme-primary">
                     {lesson.title}
                   </h3>
                   <Inline gap={4} className="text-sm text-theme-secondary">
@@ -712,7 +712,7 @@ export default function TeacherLessonsPageClient({
                       </Inline>
                     )}
                   </Inline>
-                </div>
+                </Stack>
 
                 <Inline gap={3}>
                   <span
@@ -1202,7 +1202,7 @@ export default function TeacherLessonsPageClient({
 
         {/* Lessons List */}
         <AnimatedItem direction="up" springType="gentle">
-          <div className="space-y-4">
+          <Stack>
             {loading.lessons && lessons.length === 0 ? (
               <div className="text-center py-12">
                 <PiArrowsClockwise className="w-8 h-8 animate-spin text-brand-primary mx-auto mb-4" />
@@ -1264,7 +1264,7 @@ export default function TeacherLessonsPageClient({
                 </Inline>
               </div>
             )}
-          </div>
+          </Stack>
         </AnimatedItem>
       </AnimatedContainer>
     </PageContainer>

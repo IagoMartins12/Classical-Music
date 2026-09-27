@@ -41,7 +41,7 @@ import { useAdminInsights } from '@/app/hooks/admin/useAdminInsights';
 import toast from 'react-hot-toast';
 import { formatNumber } from '../../Utils';
 import LoadingAdminState from '../../Common/LoadingState';
-import { Inline } from '@/app/components/ui/Layout';
+import { Stack, Inline } from '@/app/components/ui/Layout';
 import { Text } from '@/app/components/ui/Text';
 
 // ===== UTILITY FUNCTIONS (Moved outside component for reusability) =====
@@ -277,14 +277,14 @@ export default function AdvancedInsightsAnalytics() {
                 </Text>
               </div>
 
-              <div className="text-center">
-                <div className="text-lg font-bold text-accent-purple mb-2">
+              <Stack gap={2} className="text-center">
+                <div className="text-lg font-bold text-accent-purple">
                   v{version}
                 </div>
                 <Text papel="rotulo" tom="fraco" as="div">
                   AI Engine
                 </Text>
-              </div>
+              </Stack>
 
               {lastUpdated && (
                 <div className="text-center">
@@ -321,21 +321,22 @@ export default function AdvancedInsightsAnalytics() {
                   .filter((anomaly) => anomaly.severity === 'critical')
                   .slice(0, 4)
                   .map((anomaly, index: number) => (
-                    <div
+                    <Stack
+                      gap={2}
                       key={index}
                       className="p-4 bg-accent-red/5 rounded-xl border border-accent-red/20"
                     >
-                      <h4 className="font-bold text-accent-red mb-2">
+                      <h4 className="font-bold text-accent-red">
                         {anomaly.metric}
                       </h4>
-                      <Text papel="rotulo" tom="suave" as="p" className="mb-2">
+                      <Text papel="rotulo" tom="suave" as="p">
                         Valor: {formatNumber(anomaly.value)} (desvio:{' '}
                         {anomaly.deviation.toFixed(1)}%)
                       </Text>
                       <Text papel="legenda" tom="fraco" as="p">
                         {anomaly.possibleCauses[0]}
                       </Text>
-                    </div>
+                    </Stack>
                   ))}
               </div>
             </AnimatedCard>
@@ -710,7 +711,7 @@ function OverviewSection({ insights, onRefreshModule, isGenerating }: any) {
             </Button>
           </div>
 
-          <div className="space-y-3">
+          <Stack gap={3}>
             <div className="flex justify-between items-center">
               <Text papel="rotulo" tom="suave">
                 Taxa de Progressão
@@ -750,7 +751,7 @@ function OverviewSection({ insights, onRefreshModule, isGenerating }: any) {
                 }
               </span>
             </div>
-          </div>
+          </Stack>
         </AnimatedCard>
 
         {/* Risk Monitoring */}
@@ -772,7 +773,7 @@ function OverviewSection({ insights, onRefreshModule, isGenerating }: any) {
             </Button>
           </div>
 
-          <div className="space-y-3">
+          <Stack gap={3}>
             <div className="flex justify-between items-center">
               <Text papel="rotulo" tom="suave">
                 Usuários em Risco
@@ -818,7 +819,7 @@ function OverviewSection({ insights, onRefreshModule, isGenerating }: any) {
                 /{insights.riskAssessment.systemHealthIndicators.length}
               </span>
             </div>
-          </div>
+          </Stack>
         </AnimatedCard>
 
         {/* Growth Potential */}
@@ -840,7 +841,7 @@ function OverviewSection({ insights, onRefreshModule, isGenerating }: any) {
             </Button>
           </div>
 
-          <div className="space-y-3">
+          <Stack gap={3}>
             <div className="flex justify-between items-center">
               <Text papel="rotulo" tom="suave">
                 Alto Impacto
@@ -871,7 +872,7 @@ function OverviewSection({ insights, onRefreshModule, isGenerating }: any) {
               </Text>
               <span className="font-bold text-accent-blue">Alto</span>
             </div>
-          </div>
+          </Stack>
         </AnimatedCard>
       </div>
 
@@ -957,18 +958,18 @@ function PredictionsSection({
           return (
             <AnimatedCard key={index} className="classical-card p-6">
               <div className="flex items-start justify-between mb-4">
-                <div>
-                  <h3 className="font-bold text-theme-primary mb-1">
+                <Stack gap={1}>
+                  <h3 className="font-bold text-theme-primary">
                     {prediction.metric}
                   </h3>
                   <Text papel="rotulo" tom="fraco" as="p">
                     Previsão para {prediction.timeframe}
                   </Text>
-                </div>
+                </Stack>
                 <TrendIcon className={`w-6 h-6 ${trendColor}`} />
               </div>
 
-              <div className="space-y-4">
+              <Stack>
                 <div className="flex items-center justify-between">
                   <Text papel="rotulo" tom="suave">
                     Atual
@@ -987,8 +988,8 @@ function PredictionsSection({
                   </span>
                 </div>
 
-                <div className="pt-3 border-t border-theme-secondary">
-                  <div className="flex items-center justify-between mb-2">
+                <Stack gap={2} className="pt-3 border-t border-theme-secondary">
+                  <div className="flex items-center justify-between">
                     <Text papel="legenda" tom="fraco">
                       Confiança da IA
                     </Text>
@@ -1002,13 +1003,13 @@ function PredictionsSection({
                       style={{ width: `${prediction.confidence}%` }}
                     />
                   </div>
-                </div>
+                </Stack>
 
-                <div className="pt-3 border-t border-theme-secondary">
-                  <Text papel="legenda" tom="fraco" as="p" className="mb-2">
+                <Stack gap={2} className="pt-3 border-t border-theme-secondary">
+                  <Text papel="legenda" tom="fraco" as="p">
                     Fatores chave:
                   </Text>
-                  <div className="space-y-1">
+                  <Stack gap={1}>
                     {prediction.factors
                       .slice(0, 3)
                       .map((factor: string, i: number) => (
@@ -1021,13 +1022,16 @@ function PredictionsSection({
                           <span>{factor}</span>
                         </Inline>
                       ))}
-                  </div>
-                </div>
+                  </Stack>
+                </Stack>
 
                 {prediction.historicalData &&
                   prediction.historicalData.length > 0 && (
-                    <div className="pt-3 border-t border-theme-secondary">
-                      <Text papel="legenda" tom="fraco" as="p" className="mb-2">
+                    <Stack
+                      gap={2}
+                      className="pt-3 border-t border-theme-secondary"
+                    >
+                      <Text papel="legenda" tom="fraco" as="p">
                         Tendência histórica:
                       </Text>
                       <div className="flex items-end space-x-1 h-8">
@@ -1052,9 +1056,9 @@ function PredictionsSection({
                           )
                         )}
                       </div>
-                    </div>
+                    </Stack>
                   )}
-              </div>
+              </Stack>
             </AnimatedCard>
           );
         })}
@@ -1107,11 +1111,15 @@ function EducationalEngagementSection({
           <span>🎯 Progressões de Aprendizado</span>
         </Inline>
 
-        <div className="space-y-4">
+        <Stack>
           {educational.learningProgressions.map(
             (progression: any, index: number) => (
-              <div key={index} className="p-4 bg-theme-secondary rounded-xl">
-                <div className="flex items-center justify-between mb-3">
+              <Stack
+                gap={3}
+                key={index}
+                className="p-4 bg-theme-secondary rounded-xl"
+              >
+                <div className="flex items-center justify-between">
                   <h4 className="font-bold text-theme-primary">
                     {progression.pathway}
                   </h4>
@@ -1125,7 +1133,7 @@ function EducationalEngagementSection({
                   </Inline>
                 </div>
 
-                <div className="w-full bg-theme-primary h-2 rounded-full overflow-hidden mb-3">
+                <div className="w-full bg-theme-primary h-2 rounded-full overflow-hidden">
                   <div
                     className="h-full bg-gradient-to-r from-accent-green to-accent-blue rounded-full transition-all duration-1000"
                     style={{ width: `${progression.successRate}%` }}
@@ -1133,8 +1141,8 @@ function EducationalEngagementSection({
                 </div>
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
-                  <div>
-                    <p className="text-theme-tertiary mb-1">
+                  <Stack gap={1}>
+                    <p className="text-theme-tertiary">
                       🚫 Pontos de abandono:
                     </p>
                     <ul className="space-y-1">
@@ -1152,11 +1160,9 @@ function EducationalEngagementSection({
                         )
                       )}
                     </ul>
-                  </div>
-                  <div>
-                    <p className="text-theme-tertiary mb-1">
-                      💡 Recomendações:
-                    </p>
+                  </Stack>
+                  <Stack gap={1}>
+                    <p className="text-theme-tertiary">💡 Recomendações:</p>
                     <ul className="space-y-1">
                       {progression.recommendations.map(
                         (rec: string, i: number) => (
@@ -1172,12 +1178,12 @@ function EducationalEngagementSection({
                         )
                       )}
                     </ul>
-                  </div>
+                  </Stack>
                 </div>
-              </div>
+              </Stack>
             )
           )}
-        </div>
+        </Stack>
       </AnimatedCard>
 
       {/* Composer Discovery Patterns */}
@@ -1194,11 +1200,15 @@ function EducationalEngagementSection({
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
           {educational.composerDiscoveryPatterns.map(
             (pattern: any, index: number) => (
-              <div key={index} className="p-4 bg-theme-secondary rounded-xl">
-                <h4 className="font-bold text-theme-primary mb-2">
+              <Stack
+                gap={2}
+                key={index}
+                className="p-4 bg-theme-secondary rounded-xl"
+              >
+                <h4 className="font-bold text-theme-primary">
                   {pattern.epoch}
                 </h4>
-                <div className="space-y-2 text-sm">
+                <Stack gap={2} className="text-sm">
                   <div>
                     <p className="text-theme-tertiary">
                       🚪 Compositores porta de entrada:
@@ -1224,8 +1234,8 @@ function EducationalEngagementSection({
                       {pattern.conversionRate}%
                     </span>
                   </div>
-                </div>
-              </div>
+                </Stack>
+              </Stack>
             )
           )}
         </div>
@@ -1244,9 +1254,12 @@ function EducationalEngagementSection({
             <span>⭐ Qualidade das Anotações</span>
           </Inline>
 
-          <div className="space-y-4">
-            <div className="text-center p-4 bg-theme-secondary rounded-xl">
-              <div className="text-3xl font-bold text-accent-blue mb-1">
+          <Stack>
+            <Stack
+              gap={1}
+              className="text-center p-4 bg-theme-secondary rounded-xl"
+            >
+              <div className="text-3xl font-bold text-accent-blue">
                 {educational.annotationQualityMetrics.avgHelpfulnessScore.toFixed(
                   1
                 )}
@@ -1255,13 +1268,13 @@ function EducationalEngagementSection({
               <Text papel="rotulo" tom="fraco" as="div">
                 Score Médio de Utilidade
               </Text>
-            </div>
+            </Stack>
 
-            <div>
-              <h4 className="font-medium text-theme-primary mb-2">
+            <Stack gap={2}>
+              <h4 className="font-medium text-theme-primary">
                 🏆 Top Contribuidores:
               </h4>
-              <div className="space-y-2">
+              <Stack gap={2}>
                 {educational.annotationQualityMetrics.topContributors
                   .slice(0, 5)
                   .map((contributor: any, index: number) => (
@@ -1282,9 +1295,9 @@ function EducationalEngagementSection({
                       </Inline>
                     </div>
                   ))}
-              </div>
-            </div>
-          </div>
+              </Stack>
+            </Stack>
+          </Stack>
         </AnimatedCard>
 
         {/* Study Session Analysis */}
@@ -1298,7 +1311,7 @@ function EducationalEngagementSection({
             <span>⏰ Padrões de Estudo</span>
           </Inline>
 
-          <div className="space-y-4">
+          <Stack>
             <div className="grid grid-cols-2 gap-4">
               <div className="text-center p-3 bg-theme-secondary rounded-xl">
                 <div className="text-xl font-bold text-accent-purple">
@@ -1318,11 +1331,11 @@ function EducationalEngagementSection({
               </div>
             </div>
 
-            <div>
-              <h4 className="font-medium text-theme-primary mb-2">
+            <Stack gap={2}>
+              <h4 className="font-medium text-theme-primary">
                 📅 Padrões Semanais:
               </h4>
-              <div className="space-y-1">
+              <Stack gap={1}>
                 {Object.entries(
                   educational.studySessionAnalysis.weeklyPatterns
                 ).map(([day, percentage]: [string, any]) => (
@@ -1343,11 +1356,11 @@ function EducationalEngagementSection({
                     </Inline>
                   </div>
                 ))}
-              </div>
-            </div>
+              </Stack>
+            </Stack>
 
-            <div>
-              <h4 className="font-medium text-theme-primary mb-2">
+            <Stack gap={2}>
+              <h4 className="font-medium text-theme-primary">
                 🌦️ Tendências Sazonais:
               </h4>
               <div className="grid grid-cols-2 gap-2 text-sm">
@@ -1362,8 +1375,8 @@ function EducationalEngagementSection({
                   </div>
                 ))}
               </div>
-            </div>
-          </div>
+            </Stack>
+          </Stack>
         </AnimatedCard>
       </div>
     </div>
@@ -1415,7 +1428,7 @@ function UserJourneySection({
           <span>👥 Jornadas Típicas por Perfil</span>
         </Inline>
 
-        <div className="space-y-6">
+        <Stack gap={6}>
           {userJourney.typicalJourneys.map((journey: any, index: number) => (
             <div key={index} className="p-4 bg-theme-secondary rounded-xl">
               <h4 className="font-bold text-theme-primary mb-4 capitalize">
@@ -1459,10 +1472,8 @@ function UserJourneySection({
 
               {/* Success Factors and Recommendations */}
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
-                <div>
-                  <p className="text-theme-tertiary mb-2">
-                    ✅ Fatores de Sucesso:
-                  </p>
+                <Stack gap={2}>
+                  <p className="text-theme-tertiary">✅ Fatores de Sucesso:</p>
                   <ul className="space-y-1">
                     {journey.successFactors.map((factor: string, i: number) => (
                       <Inline
@@ -1476,9 +1487,9 @@ function UserJourneySection({
                       </Inline>
                     ))}
                   </ul>
-                </div>
-                <div>
-                  <p className="text-theme-tertiary mb-2">💡 Recomendações:</p>
+                </Stack>
+                <Stack gap={2}>
+                  <p className="text-theme-tertiary">💡 Recomendações:</p>
                   <ul className="space-y-1">
                     {journey.recommendations.map((rec: string, i: number) => (
                       <Inline
@@ -1492,11 +1503,11 @@ function UserJourneySection({
                       </Inline>
                     ))}
                   </ul>
-                </div>
+                </Stack>
               </div>
             </div>
           ))}
-        </div>
+        </Stack>
       </AnimatedCard>
 
       {/* Conversion Funnels */}
@@ -1510,10 +1521,14 @@ function UserJourneySection({
           <span>🔄 Funis de Conversão</span>
         </Inline>
 
-        <div className="space-y-4">
+        <Stack>
           {userJourney.conversionFunnels.map((funnel: any, index: number) => (
-            <div key={index} className="p-4 bg-theme-secondary rounded-xl">
-              <div className="flex items-center justify-between mb-3">
+            <Stack
+              gap={3}
+              key={index}
+              className="p-4 bg-theme-secondary rounded-xl"
+            >
+              <div className="flex items-center justify-between">
                 <Inline gap={3}>
                   <Text papel="rotulo" tom="suave">
                     {funnel.from}
@@ -1541,7 +1556,7 @@ function UserJourneySection({
                 </Inline>
               </div>
 
-              <div className="w-full bg-theme-primary h-3 rounded-full overflow-hidden mb-3">
+              <div className="w-full bg-theme-primary h-3 rounded-full overflow-hidden">
                 <div
                   className={`h-full rounded-full transition-all duration-1000 ${
                     funnel.conversionRate >= 50
@@ -1554,8 +1569,8 @@ function UserJourneySection({
                 />
               </div>
 
-              <div>
-                <Text papel="legenda" tom="fraco" as="p" className="mb-1">
+              <Stack gap={1}>
+                <Text papel="legenda" tom="fraco" as="p">
                   🚀 Oportunidades de melhoria:
                 </Text>
                 <div className="flex flex-wrap gap-1">
@@ -1570,10 +1585,10 @@ function UserJourneySection({
                     )
                   )}
                 </div>
-              </div>
-            </div>
+              </Stack>
+            </Stack>
           ))}
-        </div>
+        </Stack>
       </AnimatedCard>
 
       {/* User Segments */}
@@ -1589,8 +1604,12 @@ function UserJourneySection({
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
           {userJourney.userSegments.map((segment: any, index: number) => (
-            <div key={index} className="p-4 bg-theme-secondary rounded-xl">
-              <div className="flex items-center justify-between mb-3">
+            <Stack
+              gap={3}
+              key={index}
+              className="p-4 bg-theme-secondary rounded-xl"
+            >
+              <div className="flex items-center justify-between">
                 <h4 className="font-bold text-theme-primary capitalize">
                   {segment.segment}
                 </h4>
@@ -1599,12 +1618,12 @@ function UserJourneySection({
                 </span>
               </div>
 
-              <div className="space-y-3">
-                <div>
-                  <Text papel="legenda" tom="fraco" as="p" className="mb-1">
+              <Stack gap={3}>
+                <Stack gap={1}>
+                  <Text papel="legenda" tom="fraco" as="p">
                     Características:
                   </Text>
-                  <div className="space-y-1">
+                  <Stack gap={1}>
                     {segment.characteristics.map((char: string, i: number) => (
                       <Inline
                         gap={1}
@@ -1615,8 +1634,8 @@ function UserJourneySection({
                         <span>{char}</span>
                       </Inline>
                     ))}
-                  </div>
-                </div>
+                  </Stack>
+                </Stack>
 
                 <div className="grid grid-cols-2 gap-2 text-xs">
                   <div className="text-center p-2 bg-theme-primary rounded">
@@ -1641,8 +1660,8 @@ function UserJourneySection({
                     {segment.growthPotential}
                   </p>
                 </div>
-              </div>
-            </div>
+              </Stack>
+            </Stack>
           ))}
         </div>
       </AnimatedCard>
@@ -1704,15 +1723,16 @@ function RiskAssessmentSection({
             </p>
           </div>
         ) : (
-          <div className="space-y-4">
+          <Stack>
             {riskAssessment.churnRiskUsers
               .slice(0, 10)
               .map((user: any, index: number) => (
-                <div
+                <Stack
+                  gap={3}
                   key={index}
                   className="p-4 bg-theme-secondary rounded-xl border-l-4 border-accent-red"
                 >
-                  <div className="flex items-start justify-between mb-3">
+                  <div className="flex items-start justify-between">
                     <div>
                       <h4 className="font-bold text-theme-primary">
                         {user.username}
@@ -1735,8 +1755,8 @@ function RiskAssessmentSection({
                   </div>
 
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
-                    <div>
-                      <p className="text-theme-tertiary mb-1">
+                    <Stack gap={1}>
+                      <p className="text-theme-tertiary">
                         ⚠️ Fatores de risco:
                       </p>
                       <ul className="space-y-1">
@@ -1752,11 +1772,9 @@ function RiskAssessmentSection({
                           </Inline>
                         ))}
                       </ul>
-                    </div>
-                    <div>
-                      <p className="text-theme-tertiary mb-1">
-                        💡 Ações sugeridas:
-                      </p>
+                    </Stack>
+                    <Stack gap={1}>
+                      <p className="text-theme-tertiary">💡 Ações sugeridas:</p>
                       <ul className="space-y-1">
                         {user.suggestedActions.map(
                           (action: string, i: number) => (
@@ -1772,11 +1790,11 @@ function RiskAssessmentSection({
                           )
                         )}
                       </ul>
-                    </div>
+                    </Stack>
                   </div>
-                </div>
+                </Stack>
               ))}
-          </div>
+          </Stack>
         )}
       </AnimatedCard>
 
@@ -1794,8 +1812,12 @@ function RiskAssessmentSection({
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
           {riskAssessment.systemHealthIndicators.map(
             (indicator: any, index: number) => (
-              <div key={index} className="p-4 bg-theme-secondary rounded-xl">
-                <div className="flex items-center justify-between mb-3">
+              <Stack
+                gap={3}
+                key={index}
+                className="p-4 bg-theme-secondary rounded-xl"
+              >
+                <div className="flex items-center justify-between">
                   <h4 className="font-medium text-theme-primary">
                     {indicator.metric}
                   </h4>
@@ -1810,7 +1832,7 @@ function RiskAssessmentSection({
                   />
                 </div>
 
-                <div className="text-center mb-3">
+                <div className="text-center">
                   <div
                     className={`text-2xl font-bold ${
                       indicator.status === 'healthy'
@@ -1848,7 +1870,7 @@ function RiskAssessmentSection({
                     {indicator.trend}
                   </span>
                 </Inline>
-              </div>
+              </Stack>
             )
           )}
         </div>
@@ -1941,9 +1963,9 @@ function GrowthOpportunitiesSection({
               </div>
             </div>
 
-            <div className="space-y-4">
-              <div>
-                <h4 className="text-sm font-medium text-theme-primary mb-2">
+            <Stack>
+              <Stack gap={2}>
+                <h4 className="text-sm font-medium text-theme-primary">
                   🎯 Resultados Esperados:
                 </h4>
                 <ul className="space-y-1">
@@ -1961,10 +1983,10 @@ function GrowthOpportunitiesSection({
                     )
                   )}
                 </ul>
-              </div>
+              </Stack>
 
-              <div>
-                <h4 className="text-sm font-medium text-theme-primary mb-2">
+              <Stack gap={2}>
+                <h4 className="text-sm font-medium text-theme-primary">
                   🛠️ Implementação:
                 </h4>
                 <ul className="space-y-1">
@@ -1982,7 +2004,7 @@ function GrowthOpportunitiesSection({
                       </Inline>
                     ))}
                 </ul>
-              </div>
+              </Stack>
 
               <div className="pt-3 border-t border-theme-secondary">
                 <div className="flex items-center justify-between text-sm">
@@ -2006,7 +2028,7 @@ function GrowthOpportunitiesSection({
                   </span>
                 </div>
               </div>
-            </div>
+            </Stack>
           </AnimatedCard>
         ))}
       </div>
@@ -2094,12 +2116,16 @@ function MonetizationSection({
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
           {monetization.userValueSegmentation.map(
             (segment: any, index: number) => (
-              <div key={index} className="p-4 bg-theme-secondary rounded-xl">
-                <h4 className="font-bold text-theme-primary mb-3">
+              <Stack
+                gap={3}
+                key={index}
+                className="p-4 bg-theme-secondary rounded-xl"
+              >
+                <h4 className="font-bold text-theme-primary">
                   {segment.segment}
                 </h4>
 
-                <div className="space-y-2 text-sm">
+                <Stack gap={2} className="text-sm">
                   <div className="flex justify-between">
                     <span className="text-theme-tertiary">Usuários:</span>
                     <span className="font-medium text-theme-primary">
@@ -2126,8 +2152,8 @@ function MonetizationSection({
                       {segment.growthPotential}
                     </p>
                   </div>
-                </div>
-              </div>
+                </Stack>
+              </Stack>
             )
           )}
         </div>
@@ -2144,40 +2170,42 @@ function MonetizationSection({
           <span>⚡ Oportunidades de Monetização</span>
         </Inline>
 
-        <div className="space-y-4">
+        <Stack>
           {monetization.monetizationOpportunities.map(
             (opportunity: any, index: number) => (
-              <div key={index} className="p-4 bg-theme-secondary rounded-xl">
-                <h4 className="font-bold text-theme-primary mb-3">
+              <Stack
+                gap={3}
+                key={index}
+                className="p-4 bg-theme-secondary rounded-xl"
+              >
+                <h4 className="font-bold text-theme-primary">
                   {opportunity.opportunity}
                 </h4>
 
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm">
-                  <div>
-                    <p className="text-theme-tertiary mb-1">
-                      💰 Receita Estimada:
-                    </p>
+                  <Stack gap={1}>
+                    <p className="text-theme-tertiary">💰 Receita Estimada:</p>
                     <p className="font-medium text-accent-green">
                       {opportunity.estimatedRevenue}
                     </p>
-                  </div>
-                  <div>
-                    <p className="text-theme-tertiary mb-1">💸 Investimento:</p>
+                  </Stack>
+                  <Stack gap={1}>
+                    <p className="text-theme-tertiary">💸 Investimento:</p>
                     <p className="font-medium text-accent-amber">
                       {opportunity.requiredInvestment}
                     </p>
-                  </div>
-                  <div>
-                    <p className="text-theme-tertiary mb-1">📊 Viabilidade:</p>
+                  </Stack>
+                  <Stack gap={1}>
+                    <p className="text-theme-tertiary">📊 Viabilidade:</p>
                     <p className="font-medium text-accent-blue">
                       {opportunity.feasibility}
                     </p>
-                  </div>
+                  </Stack>
                 </div>
-              </div>
+              </Stack>
             )
           )}
-        </div>
+        </Stack>
       </AnimatedCard>
     </div>
   );
@@ -2323,7 +2351,7 @@ function ContentPerformanceSection({
             <PiMedal className="w-5 h-5 text-accent-green" />
             <span>🏆 Top Performers</span>
           </Inline>
-          <div className="space-y-3">
+          <Stack gap={3}>
             {contentPerformance.topPerformers
               .slice(0, 5)
               .map((item: any, index: number) => (
@@ -2369,7 +2397,7 @@ function ContentPerformanceSection({
                   </div>
                 </div>
               ))}
-          </div>
+          </Stack>
         </AnimatedCard>
 
         {/* Underperformers */}
@@ -2382,7 +2410,7 @@ function ContentPerformanceSection({
             <PiTrendDown className="w-5 h-5 text-accent-amber" />
             <span>📈 Oportunidades de Melhoria</span>
           </Inline>
-          <div className="space-y-4">
+          <Stack>
             {contentPerformance.underperformers.map(
               (item: any, index: number) => (
                 <div key={index} className="p-4 bg-theme-secondary rounded-xl">
@@ -2390,11 +2418,11 @@ function ContentPerformanceSection({
                     {item.name}
                   </h4>
 
-                  <div className="mb-3">
-                    <Text papel="legenda" tom="fraco" as="p" className="mb-1">
+                  <Stack gap={1} className="mb-3">
+                    <Text papel="legenda" tom="fraco" as="p">
                       ⚠️ Problemas identificados:
                     </Text>
-                    <div className="space-y-1">
+                    <Stack gap={1}>
                       {item.issues.map((issue: string, i: number) => (
                         <Inline
                           gap={1}
@@ -2405,14 +2433,14 @@ function ContentPerformanceSection({
                           <span>{issue}</span>
                         </Inline>
                       ))}
-                    </div>
-                  </div>
+                    </Stack>
+                  </Stack>
 
-                  <div className="mb-3">
-                    <Text papel="legenda" tom="fraco" as="p" className="mb-1">
+                  <Stack gap={1} className="mb-3">
+                    <Text papel="legenda" tom="fraco" as="p">
                       💡 Sugestões IA:
                     </Text>
-                    <div className="space-y-1">
+                    <Stack gap={1}>
                       {item.suggestions.map((suggestion: string, i: number) => (
                         <Inline
                           gap={1}
@@ -2423,8 +2451,8 @@ function ContentPerformanceSection({
                           <span>{suggestion}</span>
                         </Inline>
                       ))}
-                    </div>
-                  </div>
+                    </Stack>
+                  </Stack>
 
                   <div className="p-2 bg-accent-blue/10 rounded text-xs text-accent-blue">
                     <strong>📊 Impacto esperado:</strong> {item.potentialImpact}
@@ -2432,7 +2460,7 @@ function ContentPerformanceSection({
                 </div>
               )
             )}
-          </div>
+          </Stack>
         </AnimatedCard>
       </div>
 
@@ -2446,7 +2474,7 @@ function ContentPerformanceSection({
           <PiLightning className="w-5 h-5 text-accent-purple" />
           <span>🎯 Recomendações de Otimização</span>
         </Inline>
-        <div className="space-y-3">
+        <Stack gap={3}>
           {contentPerformance.contentOptimization
             .sort((a: any, b: any) => b.priority - a.priority)
             .map((rec: any, index: number) => (
@@ -2488,7 +2516,7 @@ function ContentPerformanceSection({
                 </div>
               </div>
             ))}
-        </div>
+        </Stack>
       </AnimatedCard>
     </div>
   );
@@ -2623,11 +2651,11 @@ function AnomaliesSection({ anomalies, onRefreshModule, isGenerating }: any) {
                       </div>
                     </div>
 
-                    <div>
-                      <Text papel="rotulo" tom="suave" as="p" className="mb-2">
+                    <Stack gap={2}>
+                      <Text papel="rotulo" tom="suave" as="p">
                         🔍 Possíveis causas identificadas pela IA:
                       </Text>
-                      <div className="space-y-1">
+                      <Stack gap={1}>
                         {anomaly.possibleCauses.map(
                           (cause: string, i: number) => (
                             <Inline
@@ -2640,8 +2668,8 @@ function AnomaliesSection({ anomalies, onRefreshModule, isGenerating }: any) {
                             </Inline>
                           )
                         )}
-                      </div>
-                    </div>
+                      </Stack>
+                    </Stack>
 
                     {anomaly.affectedUsers && (
                       <div className="mt-3 p-3 bg-accent-amber/10 rounded-lg">

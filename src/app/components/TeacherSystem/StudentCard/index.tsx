@@ -16,7 +16,7 @@ import { translateNivel } from '@/app/utils';
 import { AnimatedCard } from '../../animation/AnimatedComponents';
 import { ViewMode } from '../../ViewModeToggle';
 import { TeacherStudentsServerData } from '@/app/(teacher)/teacher/students/pageServer';
-import { Inline } from '@/app/components/ui/Layout';
+import { Stack, Inline } from '@/app/components/ui/Layout';
 import { Text } from '@/app/components/ui/Text';
 
 interface StudentCardTranslations {
@@ -295,20 +295,15 @@ export default function StudentCard({
       {nextLesson && (
         <div className="mb-4 p-3 bg-theme-elevated to-interactive-hover rounded-lg">
           <div className="flex items-center justify-between">
-            <div>
-              <Text
-                papel="rotulo"
-                tom="forte"
-                as="div"
-                className="font-medium mb-1"
-              >
+            <Stack gap={1}>
+              <Text papel="rotulo" tom="forte" as="div" className="font-medium">
                 {translations.nextLesson}
               </Text>
               <Text papel="legenda" tom="fraco" as="div">
                 {formatDate(nextLesson.scheduledAt)} {translations.atTime}{' '}
                 {formatTime(nextLesson.scheduledAt)}
               </Text>
-            </div>
+            </Stack>
             <PiCalendarBlank className="w-4 h-4 text-brand-primary" />
           </div>
         </div>

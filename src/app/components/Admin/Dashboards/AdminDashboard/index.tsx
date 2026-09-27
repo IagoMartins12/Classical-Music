@@ -38,7 +38,7 @@ import {
   formatNumber,
   formatPercentage,
 } from '../../Utils';
-import { Inline } from '@/app/components/ui/Layout';
+import { Stack, Inline } from '@/app/components/ui/Layout';
 import { Text } from '@/app/components/ui/Text';
 
 // Tipos para melhor type safety
@@ -389,7 +389,7 @@ export default function AdminDashboard() {
                     <PiPulse className="w-5 h-5 text-accent-blue" />
                     <span>Usuários Mais Ativos</span>
                   </Inline>
-                  <div className="space-y-4">
+                  <Stack>
                     {safeGet(stats, 'topUsers.mostActive', [])
                       .slice(0, 5)
                       .map((user: any, index: number) => (
@@ -426,7 +426,7 @@ export default function AdminDashboard() {
                           </div>
                         </Inline>
                       ))}
-                  </div>
+                  </Stack>
                   <Button
                     variant="ghost"
                     size="sm"
@@ -447,7 +447,7 @@ export default function AdminDashboard() {
                     <PiUploadSimple className="w-5 h-5 text-accent-green" />
                     <span>Maiores Contribuidores</span>
                   </Inline>
-                  <div className="space-y-4">
+                  <Stack>
                     {safeGet(stats, 'topUsers.topContributors', [])
                       .slice(0, 5)
                       .map((user: any, index: number) => (
@@ -482,7 +482,7 @@ export default function AdminDashboard() {
                           </div>
                         </Inline>
                       ))}
-                  </div>
+                  </Stack>
                 </AnimatedCard>
 
                 {/* Top Annotators */}
@@ -495,7 +495,7 @@ export default function AdminDashboard() {
                     <PiChatCenteredText className="w-5 h-5 text-accent-amber" />
                     <span>Maiores Anotadores</span>
                   </Inline>
-                  <div className="space-y-4">
+                  <Stack>
                     {safeGet(stats, 'topUsers.topAnnotators', [])
                       .slice(0, 5)
                       .map((user: any, index: number) => (
@@ -531,7 +531,7 @@ export default function AdminDashboard() {
                           </div>
                         </Inline>
                       ))}
-                  </div>
+                  </Stack>
                 </AnimatedCard>
               </div>
             )}
@@ -549,7 +549,7 @@ export default function AdminDashboard() {
                     <PiMusicNotes className="w-5 h-5 text-accent-blue" />
                     <span>Obras Mais Populares</span>
                   </Inline>
-                  <div className="space-y-4">
+                  <Stack>
                     {safeGet(stats, 'content.popularWorks', [])
                       .slice(0, 8)
                       .map((work: any, index: number) => (
@@ -600,7 +600,7 @@ export default function AdminDashboard() {
                           </div>
                         </div>
                       ))}
-                  </div>
+                  </Stack>
                 </AnimatedCard>
 
                 {/* Popular Composers */}
@@ -613,7 +613,7 @@ export default function AdminDashboard() {
                     <PiUsers className="w-5 h-5 text-accent-green" />
                     <span>Compositores Mais Populares</span>
                   </Inline>
-                  <div className="space-y-4">
+                  <Stack>
                     {safeGet(stats, 'content.popularComposers', [])
                       .slice(0, 8)
                       .map((composer: any, index: number) => (
@@ -649,7 +649,7 @@ export default function AdminDashboard() {
                           </div>
                         </Inline>
                       ))}
-                  </div>
+                  </Stack>
                 </AnimatedCard>
               </div>
             )}
@@ -667,7 +667,7 @@ export default function AdminDashboard() {
                     <PiPulse className="w-5 h-5 text-accent-blue" />
                     <span>Atividade de Usuários</span>
                   </Inline>
-                  <div className="space-y-4">
+                  <Stack>
                     <div className="flex items-center justify-between p-3 bg-theme-secondary rounded-xl">
                       <div>
                         <p className="font-medium text-theme-primary">
@@ -713,7 +713,7 @@ export default function AdminDashboard() {
                         )}
                       </div>
                     </div>
-                  </div>
+                  </Stack>
                 </AnimatedCard>
 
                 {/* Most Studied Works */}
@@ -726,7 +726,7 @@ export default function AdminDashboard() {
                     <PiTarget className="w-5 h-5 text-accent-amber" />
                     <span>Obras Mais Estudadas</span>
                   </Inline>
-                  <div className="space-y-3">
+                  <Stack gap={3}>
                     {safeGet(stats, 'engagement.mostStudiedWorks', [])
                       .slice(0, 6)
                       .map((work: any, index: number) => (
@@ -770,7 +770,7 @@ export default function AdminDashboard() {
                           </div>
                         </div>
                       ))}
-                  </div>
+                  </Stack>
                 </AnimatedCard>
 
                 {/* Engagement Metrics */}
@@ -783,9 +783,12 @@ export default function AdminDashboard() {
                     <PiChartPie className="w-5 h-5 text-accent-green" />
                     <span>Métricas de Engajamento</span>
                   </Inline>
-                  <div className="space-y-4">
-                    <div className="p-3 bg-theme-secondary rounded-xl">
-                      <div className="flex items-center justify-between mb-2">
+                  <Stack>
+                    <Stack
+                      gap={2}
+                      className="p-3 bg-theme-secondary rounded-xl"
+                    >
+                      <div className="flex items-center justify-between">
                         <Text
                           papel="rotulo"
                           tom="forte"
@@ -814,10 +817,13 @@ export default function AdminDashboard() {
                           }}
                         />
                       </div>
-                    </div>
+                    </Stack>
 
-                    <div className="p-3 bg-theme-secondary rounded-xl">
-                      <div className="flex items-center justify-between mb-2">
+                    <Stack
+                      gap={2}
+                      className="p-3 bg-theme-secondary rounded-xl"
+                    >
+                      <div className="flex items-center justify-between">
                         <Text
                           papel="rotulo"
                           tom="forte"
@@ -850,8 +856,8 @@ export default function AdminDashboard() {
                           }}
                         />
                       </div>
-                    </div>
-                  </div>
+                    </Stack>
+                  </Stack>
                 </AnimatedCard>
               </div>
             )}
@@ -869,9 +875,12 @@ export default function AdminDashboard() {
                     <PiShield className="w-5 h-5 text-accent-green" />
                     <span>Qualidade dos Uploads</span>
                   </Inline>
-                  <div className="space-y-4">
-                    <div className="text-center p-4 bg-theme-secondary rounded-xl">
-                      <div className="text-3xl font-bold text-accent-green mb-2">
+                  <Stack>
+                    <Stack
+                      gap={2}
+                      className="text-center p-4 bg-theme-secondary rounded-xl"
+                    >
+                      <div className="text-3xl font-bold text-accent-green">
                         {formatPercentage(
                           safeGet(stats, 'quality.uploadApprovalRate', 0)
                         )}
@@ -879,10 +888,13 @@ export default function AdminDashboard() {
                       <Text papel="rotulo" tom="fraco" as="div">
                         Taxa de Aprovação
                       </Text>
-                    </div>
+                    </Stack>
 
-                    <div className="text-center p-4 bg-theme-secondary rounded-xl">
-                      <div className="text-3xl font-bold text-accent-blue mb-2">
+                    <Stack
+                      gap={2}
+                      className="text-center p-4 bg-theme-secondary rounded-xl"
+                    >
+                      <div className="text-3xl font-bold text-accent-blue">
                         {safeGet(stats, 'quality.avgUploadQuality', 0).toFixed(
                           1
                         )}
@@ -890,8 +902,8 @@ export default function AdminDashboard() {
                       <Text papel="rotulo" tom="fraco" as="div">
                         Score Médio de Qualidade
                       </Text>
-                    </div>
-                  </div>
+                    </Stack>
+                  </Stack>
                 </AnimatedCard>
 
                 {/* Verified Content */}
@@ -904,7 +916,7 @@ export default function AdminDashboard() {
                     <PiMedal className="w-5 h-5 text-accent-amber" />
                     <span>Conteúdo Verificado</span>
                   </Inline>
-                  <div className="space-y-3">
+                  <Stack gap={3}>
                     <div className="flex items-center justify-between p-3 bg-theme-secondary rounded-xl">
                       <Inline gap={2}>
                         <PiUsers className="w-4 h-4 text-accent-blue" />
@@ -958,7 +970,7 @@ export default function AdminDashboard() {
                         )}
                       </span>
                     </div>
-                  </div>
+                  </Stack>
                 </AnimatedCard>
 
                 {/* Content Completeness */}
@@ -971,9 +983,12 @@ export default function AdminDashboard() {
                     <PiDatabase className="w-5 h-5 text-accent-purple" />
                     <span>Completude do Conteúdo</span>
                   </Inline>
-                  <div className="space-y-4">
-                    <div className="p-3 bg-theme-secondary rounded-xl">
-                      <div className="flex items-center justify-between mb-2">
+                  <Stack>
+                    <Stack
+                      gap={2}
+                      className="p-3 bg-theme-secondary rounded-xl"
+                    >
+                      <div className="flex items-center justify-between">
                         <Text
                           papel="rotulo"
                           tom="forte"
@@ -1011,10 +1026,13 @@ export default function AdminDashboard() {
                           }}
                         />
                       </div>
-                    </div>
+                    </Stack>
 
-                    <div className="p-3 bg-theme-secondary rounded-xl">
-                      <div className="flex items-center justify-between mb-2">
+                    <Stack
+                      gap={2}
+                      className="p-3 bg-theme-secondary rounded-xl"
+                    >
+                      <div className="flex items-center justify-between">
                         <Text
                           papel="rotulo"
                           tom="forte"
@@ -1052,10 +1070,13 @@ export default function AdminDashboard() {
                           }}
                         />
                       </div>
-                    </div>
+                    </Stack>
 
-                    <div className="text-center p-3 bg-theme-secondary rounded-xl">
-                      <div className="text-2xl font-bold text-accent-amber mb-1">
+                    <Stack
+                      gap={1}
+                      className="text-center p-3 bg-theme-secondary rounded-xl"
+                    >
+                      <div className="text-2xl font-bold text-accent-amber">
                         {safeGet(
                           stats,
                           'quality.contentCompleteness.avgScoresPerWork',
@@ -1065,8 +1086,8 @@ export default function AdminDashboard() {
                       <Text papel="legenda" tom="fraco" as="div">
                         Partituras por Obra (média)
                       </Text>
-                    </div>
-                  </div>
+                    </Stack>
+                  </Stack>
                 </AnimatedCard>
               </div>
             )}

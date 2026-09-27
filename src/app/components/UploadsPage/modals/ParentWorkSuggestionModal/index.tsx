@@ -25,7 +25,7 @@ import {
 import Button from '@/app/components/Common/Button';
 import Modal from '@/app/components/Modal';
 import Checkbox from '@/app/components/Common/Checkbox';
-import { Inline } from '@/app/components/ui/Layout';
+import { Stack, Inline } from '@/app/components/ui/Layout';
 import { Text } from '@/app/components/ui/Text';
 import { Card } from '@/app/components/ui/Card';
 
@@ -135,7 +135,7 @@ const ParentWorkConfirmationModal: React.FC<{
           </Inline>
 
           {/* Content */}
-          <div className="space-y-4">
+          <Stack>
             <Card nivel={2} densidade="compacta" className="rounded-lg">
               <div className="flex items-start space-x-3">
                 <PiInfo className="w-5 h-5 text-theme-primary mt-0.5" />
@@ -155,7 +155,7 @@ const ParentWorkConfirmationModal: React.FC<{
                 </Text>
               </div>
             </Card>
-          </div>
+          </Stack>
 
           {/* Actions */}
           <Inline gap={3} className="justify-between mt-6">
@@ -570,15 +570,15 @@ const ParentWorkSuggestionModal: React.FC<ParentWorkSuggestionModalProps> = ({
                 >
                   <div className="flex items-start space-x-3">
                     <PiInfo className="w-5 h-5 text-black mt-0.5" />
-                    <div className="text-sm text-blue-800">
-                      <p className="font-medium mb-1">
+                    <Stack gap={1} className="text-sm text-blue-800">
+                      <p className="font-medium">
                         Campos que podem ser copiados
                       </p>
                       <p>
                         Apenas campos vazios serão preenchidos. Suas informações
                         já digitadas não serão sobrescritas.
                       </p>
-                    </div>
+                    </Stack>
                   </div>
                 </AnimatedCard>
 

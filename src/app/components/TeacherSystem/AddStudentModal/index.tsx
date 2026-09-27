@@ -21,7 +21,7 @@ import { StudentSearchResult } from '@/app/(teacher)/teacher/pageClient';
 import { Dispatch, SetStateAction, useState } from 'react';
 import Button from '../../Common/Button';
 import Checkbox from '../../Common/Checkbox';
-import { Inline } from '@/app/components/ui/Layout';
+import { Stack, Inline } from '@/app/components/ui/Layout';
 import { Text } from '@/app/components/ui/Text';
 import { Field } from '@/app/components/ui/Field';
 import { NomeAcao } from '@/app/components/ui/NomeAcao';
@@ -250,7 +250,7 @@ const AddStudentModal: React.FC<AddStudentModalProps> = ({
 
               {/* Search Results */}
               {searchResults.length > 0 && (
-                <div className="space-y-3">
+                <Stack gap={3}>
                   <h3 className="font-semibold text-theme-primary">
                     Resultados da busca ({searchResults.length})
                   </h3>
@@ -349,7 +349,7 @@ const AddStudentModal: React.FC<AddStudentModalProps> = ({
                       </div>
                     </Card>
                   ))}
-                </div>
+                </Stack>
               )}
 
               {/* RESULT AREA (altura fixa para evitar jumping) */}
@@ -404,7 +404,7 @@ const AddStudentModal: React.FC<AddStudentModalProps> = ({
             </>
           ) : (
             // 🆕 NOVA: SEÇÃO DE PLANO DE ESTUDOS
-            <div className="space-y-6">
+            <Stack gap={6}>
               {/* Student Info Header */}
               <div className="bg-brand-primary/5  rounded-lg p-4">
                 <div className="flex items-center justify-between">
@@ -432,7 +432,7 @@ const AddStudentModal: React.FC<AddStudentModalProps> = ({
                     Configurações de Aulas
                   </h4>
 
-                  <div className="space-y-4">
+                  <Stack>
                     <div className="grid grid-cols-2 gap-4">
                       <div>
                         <Select
@@ -477,8 +477,8 @@ const AddStudentModal: React.FC<AddStudentModalProps> = ({
                     </div>
 
                     {/* Dias Preferidos */}
-                    <div>
-                      <label className="block text-sm font-medium text-theme-primary mb-2">
+                    <Stack gap={2}>
+                      <label className="block text-sm font-medium text-theme-primary">
                         Dias Preferidos
                       </label>
                       <div className="grid grid-cols-2 gap-2">
@@ -506,11 +506,11 @@ const AddStudentModal: React.FC<AddStudentModalProps> = ({
                           </label>
                         ))}
                       </div>
-                    </div>
+                    </Stack>
 
                     {/* Horários Preferidos */}
-                    <div>
-                      <label className="block text-sm font-medium text-theme-primary mb-2">
+                    <Stack gap={2}>
+                      <label className="block text-sm font-medium text-theme-primary">
                         Horários Preferidos
                       </label>
                       <div className="grid grid-cols-3 gap-2">
@@ -542,8 +542,8 @@ const AddStudentModal: React.FC<AddStudentModalProps> = ({
                           </label>
                         ))}
                       </div>
-                    </div>
-                  </div>
+                    </Stack>
+                  </Stack>
                 </AnimatedCard>
 
                 {/* Configurações de Estudo */}
@@ -553,7 +553,7 @@ const AddStudentModal: React.FC<AddStudentModalProps> = ({
                     Plano de Estudos
                   </h4>
 
-                  <div className="space-y-4">
+                  <Stack>
                     {/* Frequência de Prática */}
                     <div>
                       <Select
@@ -613,7 +613,7 @@ const AddStudentModal: React.FC<AddStudentModalProps> = ({
 
                       {/* Selecionadas */}
                       {studyPlan.currentFocus.length > 0 && (
-                        <div className="space-y-2">
+                        <Stack gap={2}>
                           <Text papel="rotulo" tom="suave" as="p">
                             Áreas selecionadas:
                           </Text>
@@ -634,10 +634,10 @@ const AddStudentModal: React.FC<AddStudentModalProps> = ({
                               </span>
                             ))}
                           </div>
-                        </div>
+                        </Stack>
                       )}
                     </div>
-                  </div>
+                  </Stack>
                 </AnimatedCard>
               </div>
 
@@ -728,7 +728,7 @@ const AddStudentModal: React.FC<AddStudentModalProps> = ({
                   )}
                 </button>
               </div>
-            </div>
+            </Stack>
           )}
         </div>
       </AnimatedCard>

@@ -640,7 +640,7 @@ export default function WorkDetailsClient({
             <div className="p-4 md:p-8 relative z-10">
               <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
                 {/* Informações Principais */}
-                <div className="lg:col-span-3 space-y-6">
+                <Stack gap={6} className="lg:col-span-3">
                   {/* Título e Compositor */}
                   <div className="space-y-4">
                     <div className="flex items-start justify-between mb-4">
@@ -902,17 +902,17 @@ export default function WorkDetailsClient({
                   {/* 🆕 SEÇÃO DE RELAÇÕES DE COLEÇÃO */}
                   {(work.parentWork ||
                     (work.childWorks && work.childWorks.length > 0)) && (
-                    <div className="border-t border-theme-secondary pt-6">
+                    <Stack className="border-t border-theme-secondary pt-6">
                       <Inline
                         as="h2"
                         gap={2}
-                        className="text-lg font-semibold text-theme-primary classical-title mb-4"
+                        className="text-lg font-semibold text-theme-primary classical-title"
                       >
                         <PiStack className="w-5 h-5 text-accent-purple" />
                         <span>{t('work_details_relacoes_colecao')}</span>
                       </Inline>
 
-                      <div className="space-y-4">
+                      <Stack>
                         {/* Obra Pai (Se esta obra faz parte de uma coleção) */}
                         {work.parentWork && (
                           <div className="p-4 bg-theme-elevated rounded-xl">
@@ -1007,19 +1007,19 @@ export default function WorkDetailsClient({
                             </div>
                           </div>
                         )}
-                      </div>
-                    </div>
+                      </Stack>
+                    </Stack>
                   )}
 
                   {/* Informações Adicionais */}
                   {(work.firstPublishDate ||
                     work.dedicateTo ||
                     work.workStyle) && (
-                    <div className="border-t border-theme-secondary pt-6">
+                    <Stack className="border-t border-theme-secondary pt-6">
                       <Inline
                         as="h2"
                         gap={2}
-                        className="text-lg font-semibold text-theme-primary classical-title mb-4"
+                        className="text-lg font-semibold text-theme-primary classical-title"
                       >
                         <PiInfo className="w-5 h-5 text-accent-blue" />
                         <span>{t('work_details_informacoes_adicionais')}</span>
@@ -1078,29 +1078,29 @@ export default function WorkDetailsClient({
                           </div>
                         )}
                       </div>
-                    </div>
+                    </Stack>
                   )}
 
                   {/* ✅ Tags de Categorias e Gêneros - COM TRADUÇÕES */}
                   {work.workGenresArr &&
                     (work.categoryNames?.length > 0 ||
                       work.workGenresArr?.length > 0) && (
-                      <div className="border-t border-theme-secondary pt-6">
+                      <Stack className="border-t border-theme-secondary pt-6">
                         <Inline
                           as="h2"
                           gap={2}
-                          className="text-lg font-semibold text-theme-primary classical-title mb-4"
+                          className="text-lg font-semibold text-theme-primary classical-title"
                         >
                           <PiTag className="w-5 h-5 text-accent-green" />
                           <span>{t('work_details_categorias_generos')}</span>
                         </Inline>
-                        <div className="space-y-4">
+                        <Stack>
                           {work.categoryNames?.length > 0 && (
-                            <div>
+                            <Stack gap={3}>
                               <Text
                                 papel="rotulo"
                                 tom="fraco"
-                                className="font-medium block mb-3"
+                                className="font-medium block"
                               >
                                 {t('work_details_categorias')}
                               </Text>
@@ -1128,16 +1128,16 @@ export default function WorkDetailsClient({
                                   )
                                 )}
                               </div>
-                            </div>
+                            </Stack>
                           )}
 
                           {work.workGenresArr &&
                             work.workGenresArr.length > 0 && (
-                              <div>
+                              <Stack gap={3}>
                                 <Text
                                   papel="rotulo"
                                   tom="fraco"
-                                  className="font-medium block mb-3"
+                                  className="font-medium block"
                                 >
                                   {t('work_details_tipos_obra')}
                                 </Text>
@@ -1163,15 +1163,15 @@ export default function WorkDetailsClient({
                                     )
                                   )}
                                 </div>
-                              </div>
+                              </Stack>
                             )}
-                        </div>
-                      </div>
+                        </Stack>
+                      </Stack>
                     )}
-                </div>
+                </Stack>
 
                 {/* Sidebar com Player e Links */}
-                <div className="space-y-6">
+                <Stack gap={6}>
                   {/* Player de Áudio/Vídeo */}
                   {work.videoUrl && (
                     <Card nivel={2}>
@@ -1183,7 +1183,7 @@ export default function WorkDetailsClient({
                           {t('work_details_reproducao')}
                         </h3>
                       </Inline>
-                      <div className="space-y-3">
+                      <Stack gap={3}>
                         <Inline
                           as="button"
                           gap={2}
@@ -1225,7 +1225,7 @@ export default function WorkDetailsClient({
                             />
                           </svg>
                         </Inline>
-                      </div>
+                      </Stack>
                     </Card>
                   )}
 
@@ -1239,7 +1239,7 @@ export default function WorkDetailsClient({
                         {t('work_details_recursos_externos')}
                       </h3>
                     </Inline>
-                    <div className="space-y-3">
+                    <Stack gap={3}>
                       <Inline
                         as="a"
                         gap={2}
@@ -1264,7 +1264,7 @@ export default function WorkDetailsClient({
                           />
                         </svg>
                       </Inline>
-                    </div>
+                    </Stack>
                   </Card>
 
                   {/* ✅ Informações Técnicas - COM TRADUÇÕES */}
@@ -1277,7 +1277,7 @@ export default function WorkDetailsClient({
                         {t('work_details_detalhes_tecnicos')}
                       </h3>
                     </Inline>
-                    <div className="space-y-3 text-sm">
+                    <Stack gap={3} className="text-sm">
                       <div className="flex items-center justify-between">
                         <span className="font-medium text-theme-tertiary">
                           {t('work_details_tipo')}
@@ -1321,9 +1321,9 @@ export default function WorkDetailsClient({
                           {new Date(work.createdAt).toLocaleDateString('pt-BR')}
                         </Text>
                       </div>
-                    </div>
+                    </Stack>
                   </Card>
-                </div>
+                </Stack>
               </div>
             </div>
           </AnimatedCard>

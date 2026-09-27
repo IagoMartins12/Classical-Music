@@ -30,7 +30,7 @@ import Select from '@/app/components/Common/Select';
 import { useStudentCalendar } from '@/app/hooks/lessonsSystem/useStudentCalendar';
 import Modal from '@/app/components/Modal';
 import { useTranslation } from '@/app/context/TranslationContext';
-import { Inline } from '@/app/components/ui/Layout';
+import { Stack, Inline } from '@/app/components/ui/Layout';
 import { Text } from '@/app/components/ui/Text';
 import { Field } from '@/app/components/ui/Field';
 import { NomeAcao } from '@/app/components/ui/NomeAcao';
@@ -890,8 +890,8 @@ function DayView({
   );
 
   return (
-    <div>
-      <div className="text-center mb-6">
+    <Stack gap={6}>
+      <div className="text-center">
         <div className="text-2xl font-bold text-theme-primary">
           {date.toLocaleDateString('pt-BR', {
             weekday: 'long',
@@ -924,7 +924,7 @@ function DayView({
                 <div className="flex-1">
                   <h3 className="font-bold text-lg mb-2">{event.title}</h3>
 
-                  <div className="space-y-2 text-sm">
+                  <Stack gap={2} className="text-sm">
                     <Inline gap={2}>
                       <PiClock className="w-4 h-4" />
                       <span>{formatEventTime(event.start, event.end)}</span>
@@ -966,7 +966,7 @@ function DayView({
                         </div>
                       </div>
                     )}
-                  </div>
+                  </Stack>
                 </div>
 
                 <div className="ml-4">
@@ -977,7 +977,7 @@ function DayView({
           ))
         )}
       </div>
-    </div>
+    </Stack>
   );
 }
 
@@ -1021,8 +1021,8 @@ function StudentEventDetailsModal({
   return (
     <Modal isOpen onClose={onClose} maxWidth="4xl">
       <AnimatedCard hover="none">
-        <div className="p-6">
-          <div className="flex items-center justify-between mb-6">
+        <Stack gap={6} className="p-6">
+          <div className="flex items-center justify-between">
             <div>
               <h2 className="text-xl font-bold text-theme-primary classical-title">
                 {event.title}
@@ -1039,11 +1039,11 @@ function StudentEventDetailsModal({
             </div>
           </div>
 
-          <div className="space-y-6">
+          <Stack gap={6}>
             {/* Basic Info */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <div>
-                <label className="text-sm font-medium text-theme-tertiary block mb-2">
+              <Stack gap={2}>
+                <label className="text-sm font-medium text-theme-tertiary block">
                   {t('student_calendar_modal_date_time')}
                 </label>
                 <div className="text-theme-primary">
@@ -1052,11 +1052,11 @@ function StudentEventDetailsModal({
                     {formatTime(event.start)} - {formatTime(event.end)}
                   </div>
                 </div>
-              </div>
+              </Stack>
 
               {event.teacher && (
-                <div>
-                  <label className="text-sm font-medium text-theme-tertiary block mb-2">
+                <Stack gap={2}>
+                  <label className="text-sm font-medium text-theme-tertiary block">
                     {t('student_calendar_modal_teacher')}
                   </label>
                   <Inline gap={3}>
@@ -1081,24 +1081,24 @@ function StudentEventDetailsModal({
                       </div>
                     </div>
                   </Inline>
-                </div>
+                </Stack>
               )}
             </div>
 
             {/* Location */}
             {event.location && (
-              <div>
-                <label className="text-sm font-medium text-theme-tertiary block mb-2">
+              <Stack gap={2}>
+                <label className="text-sm font-medium text-theme-tertiary block">
                   {t('student_calendar_modal_location')}
                 </label>
                 <div className="text-theme-primary">{event.location}</div>
-              </div>
+              </Stack>
             )}
 
             {/* Objectives */}
             {event.objectives && event.objectives.length > 0 && (
-              <div>
-                <label className="text-sm font-medium text-theme-tertiary block mb-2">
+              <Stack gap={2}>
+                <label className="text-sm font-medium text-theme-tertiary block">
                   {t('student_calendar_modal_objectives')}
                 </label>
                 <div className="flex flex-wrap gap-2">
@@ -1111,13 +1111,13 @@ function StudentEventDetailsModal({
                     </span>
                   ))}
                 </div>
-              </div>
+              </Stack>
             )}
 
             {/* Public Notes */}
             {event.publicNotes && (
-              <div>
-                <label className="text-sm font-medium text-theme-tertiary block mb-2">
+              <Stack gap={2}>
+                <label className="text-sm font-medium text-theme-tertiary block">
                   {t('student_calendar_modal_teacher_notes')}
                 </label>
                 <div className="bg-gradient-to-r from-theme-elevated to-interactive-hover rounded-lg border border-theme-primary/20 p-4">
@@ -1125,25 +1125,25 @@ function StudentEventDetailsModal({
                     {event.publicNotes}
                   </div>
                 </div>
-              </div>
+              </Stack>
             )}
 
             {/* Homework */}
             {event.homework && (
-              <div>
-                <label className="text-sm font-medium text-theme-tertiary block mb-2">
+              <Stack gap={2}>
+                <label className="text-sm font-medium text-theme-tertiary block">
                   {t('student_calendar_modal_homework')}
                 </label>
                 <div className="bg-gradient-to-r from-theme-elevated to-interactive-hover rounded-lg border border-theme-primary/20 p-4">
                   <div className="text-theme-primary">{event.homework}</div>
                 </div>
-              </div>
+              </Stack>
             )}
 
             {/* Lesson Summary (if completed) */}
             {event.status === 'COMPLETED' && event.details?.lessonSummary && (
-              <div>
-                <label className="text-sm font-medium text-theme-tertiary block mb-2">
+              <Stack gap={2}>
+                <label className="text-sm font-medium text-theme-tertiary block">
                   {t('student_calendar_modal_lesson_summary')}
                 </label>
                 <div className="bg-gradient-to-r from-theme-elevated to-interactive-hover rounded-lg border border-theme-primary/20 p-4">
@@ -1151,14 +1151,14 @@ function StudentEventDetailsModal({
                     {event.details.lessonSummary}
                   </div>
                 </div>
-              </div>
+              </Stack>
             )}
 
             {/* Skills Worked */}
             {event.details?.skillsWorked &&
               event.details.skillsWorked.length > 0 && (
-                <div>
-                  <label className="text-sm font-medium text-theme-tertiary block mb-2">
+                <Stack gap={2}>
+                  <label className="text-sm font-medium text-theme-tertiary block">
                     {t('student_calendar_modal_skills_worked')}
                   </label>
                   <div className="flex flex-wrap gap-2">
@@ -1175,14 +1175,14 @@ function StudentEventDetailsModal({
                       )
                     )}
                   </div>
-                </div>
+                </Stack>
               )}
 
             {/* Improvements */}
             {event.details?.improvements &&
               event.details.improvements.length > 0 && (
-                <div>
-                  <label className="text-sm font-medium text-theme-tertiary block mb-2">
+                <Stack gap={2}>
+                  <label className="text-sm font-medium text-theme-tertiary block">
                     {t('student_calendar_modal_improvements')}
                   </label>
                   <div className="flex flex-wrap gap-2">
@@ -1197,13 +1197,13 @@ function StudentEventDetailsModal({
                       )
                     )}
                   </div>
-                </div>
+                </Stack>
               )}
 
             {/* Student Feedback */}
             {event.details?.studentFeedback && (
-              <div>
-                <label className="text-sm font-medium text-theme-tertiary block mb-2">
+              <Stack gap={2}>
+                <label className="text-sm font-medium text-theme-tertiary block">
                   {t('student_calendar_modal_student_feedback')}
                 </label>
                 <div className="bg-theme-tertiary rounded-md p-4">
@@ -1211,7 +1211,7 @@ function StudentEventDetailsModal({
                     {event.details.studentFeedback}
                   </div>
                 </div>
-              </div>
+              </Stack>
             )}
 
             {/* Actions */}
@@ -1238,8 +1238,8 @@ function StudentEventDetailsModal({
                 )}
               </Inline>
             </div>
-          </div>
-        </div>
+          </Stack>
+        </Stack>
       </AnimatedCard>
     </Modal>
   );
@@ -1268,8 +1268,8 @@ function FeedbackModal({
   return (
     <div className="fixed inset-0 bg-bg-overlay backdrop-blur-sm z-50 flex items-center justify-center p-4">
       <AnimatedCard hover="none" className="classical-card w-full max-w-lg">
-        <div className="p-6">
-          <div className="flex items-center justify-between mb-6">
+        <Stack gap={6} className="p-6">
+          <div className="flex items-center justify-between">
             <div>
               <h2 className="text-xl font-bold text-theme-primary classical-title">
                 {t('student_calendar_feedback_modal_title')}
@@ -1287,7 +1287,7 @@ function FeedbackModal({
             </button>
           </div>
 
-          <div className="space-y-4">
+          <Stack>
             <div>
               <Field.Area
                 label={t('student_calendar_feedback_modal_question')}
@@ -1334,8 +1334,8 @@ function FeedbackModal({
                 {t('student_calendar_feedback_modal_cancel')}
               </Button>
             </Inline>
-          </div>
-        </div>
+          </Stack>
+        </Stack>
       </AnimatedCard>
     </div>
   );

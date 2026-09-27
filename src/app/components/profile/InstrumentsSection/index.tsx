@@ -25,7 +25,7 @@ import {
 import { useSessionUpdate } from '@/app/hooks/useSessionUpdate';
 import { useTranslation } from '@/app/context/TranslationContext';
 import Checkbox from '../../Common/Checkbox';
-import { Inline } from '@/app/components/ui/Layout';
+import { Stack, Inline } from '@/app/components/ui/Layout';
 import { Text } from '@/app/components/ui/Text';
 import { Card } from '@/app/components/ui/Card';
 
@@ -266,7 +266,7 @@ const InstrumentsSection: React.FC<InstrumentsSectionProps> = ({ user }) => {
   // Loading inicial
   if (isLoadingData) {
     return (
-      <div className="space-y-6">
+      <Stack gap={6}>
         <div className="flex items-center justify-between">
           <div>
             <h3 className="text-lg font-semibold text-theme-primary">
@@ -278,7 +278,7 @@ const InstrumentsSection: React.FC<InstrumentsSectionProps> = ({ user }) => {
           </div>
         </div>
 
-        <div className="space-y-4">
+        <Stack>
           {[...Array(2)].map((_, index) => (
             <Card
               nivel={2}
@@ -295,15 +295,15 @@ const InstrumentsSection: React.FC<InstrumentsSectionProps> = ({ user }) => {
               </Inline>
             </Card>
           ))}
-        </div>
-      </div>
+        </Stack>
+      </Stack>
     );
   }
 
   const filteredInstruments = getFilteredAvailableInstruments();
 
   return (
-    <div className="space-y-6">
+    <Stack gap={6}>
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
@@ -349,7 +349,7 @@ const InstrumentsSection: React.FC<InstrumentsSectionProps> = ({ user }) => {
       </div>
 
       {/* Instruments List */}
-      <div className="space-y-4">
+      <Stack>
         {userInstruments.length === 0 ? (
           <div className="text-center py-8">
             <PiMusicNotes className="w-12 h-12 text-theme-tertiary mx-auto mb-3" />
@@ -469,7 +469,7 @@ const InstrumentsSection: React.FC<InstrumentsSectionProps> = ({ user }) => {
             </Card>
           ))
         )}
-      </div>
+      </Stack>
 
       {/* Add Instrument Form */}
       {isEditing && (
@@ -586,7 +586,7 @@ const InstrumentsSection: React.FC<InstrumentsSectionProps> = ({ user }) => {
           )}
         </div>
       )}
-    </div>
+    </Stack>
   );
 };
 

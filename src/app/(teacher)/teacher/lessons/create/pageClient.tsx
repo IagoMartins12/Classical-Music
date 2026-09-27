@@ -41,7 +41,7 @@ import WorkSelectionSection, {
 import { translateNivel } from '@/app/utils';
 import { useTranslation } from '@/app/context/TranslationContext';
 import { checkLessonConflicts } from '@/app/requests/portal/lesson-actions';
-import { Inline } from '@/app/components/ui/Layout';
+import { Stack, Inline } from '@/app/components/ui/Layout';
 import { Text } from '@/app/components/ui/Text';
 import { Field } from '@/app/components/ui/Field';
 import { NomeAcao } from '@/app/components/ui/NomeAcao';
@@ -201,7 +201,7 @@ function ConflictModal({
           </div>
         </Inline>
 
-        <div className="space-y-6">
+        <Stack gap={6}>
           {/* Conflitos de Horário */}
           {conflicts.hasTimeConflicts && conflicts.timeConflicts.length > 0 && (
             <div>
@@ -216,7 +216,7 @@ function ConflictModal({
                 </span>
               </Inline>
 
-              <div className="space-y-3">
+              <Stack gap={3}>
                 {conflicts.timeConflicts.map((conflict) => (
                   <div
                     key={conflict.id}
@@ -239,19 +239,19 @@ function ConflictModal({
                     </div>
                   </div>
                 ))}
-              </div>
+              </Stack>
 
               <div className="bg-theme-tertiary rounded-lg p-4 mt-4">
                 <div className="flex items-start space-x-3">
                   <PiInfo className="w-5 h-5 text-accent-red mt-0.5" />
-                  <div className="text-sm">
-                    <p className="font-medium text-accent-red mb-1">
+                  <Stack gap={1} className="text-sm">
+                    <p className="font-medium text-accent-red">
                       ⚠️ {t('cannot_create_lesson')}
                     </p>
                     <p className="text-theme-secondary">
                       {t('conflict_description')}
                     </p>
-                  </div>
+                  </Stack>
                 </div>
               </div>
             </div>
@@ -270,7 +270,7 @@ function ConflictModal({
               </Inline>
 
               <div className="bg-theme-tertiary rounded-lg p-4">
-                <div className="space-y-3">
+                <Stack gap={3}>
                   <div className="flex items-center justify-between">
                     <span className="text-theme-primary font-medium">
                       {conflicts.weeklyLimitWarning.studentName}
@@ -290,16 +290,16 @@ function ConflictModal({
                   </Text>
 
                   {conflicts.weeklyLimitWarning.upcomingLessons.length > 0 && (
-                    <div>
+                    <Stack gap={2}>
                       <Text
                         papel="rotulo"
                         tom="forte"
                         as="p"
-                        className="font-medium mb-2"
+                        className="font-medium"
                       >
                         {t('scheduled_lessons')}
                       </Text>
-                      <div className="space-y-1">
+                      <Stack gap={1}>
                         {conflicts.weeklyLimitWarning.upcomingLessons.map(
                           (lesson) => (
                             <Text
@@ -313,17 +313,17 @@ function ConflictModal({
                             </Text>
                           )
                         )}
-                      </div>
-                    </div>
+                      </Stack>
+                    </Stack>
                   )}
-                </div>
+                </Stack>
               </div>
 
               <div className="bg-theme-tertiary rounded-lg p-4 mt-4">
                 <div className="flex items-start space-x-3">
                   <PiInfo className="w-5 h-5 text-accent-blue mt-0.5" />
-                  <div className="text-sm">
-                    <p className="font-medium text-accent-blue mb-1">
+                  <Stack gap={1} className="text-sm">
+                    <p className="font-medium text-accent-blue">
                       ℹ️ {t('can_proceed')}
                     </p>
                     <p className="text-theme-secondary">
@@ -331,7 +331,7 @@ function ConflictModal({
                       {conflicts.weeklyLimitWarning.maxLessonsPerWeek}{' '}
                       {t('lesson_per_week')}
                     </p>
-                  </div>
+                  </Stack>
                 </div>
               </div>
             </div>
@@ -339,11 +339,11 @@ function ConflictModal({
 
           {/* Warnings Gerais */}
           {conflicts.warnings.length > 0 && (
-            <div>
-              <h3 className="text-lg font-semibold text-accent-blue mb-3">
+            <Stack gap={3}>
+              <h3 className="text-lg font-semibold text-accent-blue">
                 {t('additional_warnings')}
               </h3>
-              <div className="space-y-2">
+              <Stack gap={2}>
                 {conflicts.warnings.map((warning, index) => (
                   <Inline
                     gap={3}
@@ -354,10 +354,10 @@ function ConflictModal({
                     <span>{warning}</span>
                   </Inline>
                 ))}
-              </div>
-            </div>
+              </Stack>
+            </Stack>
           )}
-        </div>
+        </Stack>
 
         {/* Actions */}
         <Inline
@@ -942,9 +942,9 @@ export default function CreateLessonPageClient({
           <div className="lg:col-span-2">
             <AnimatedItem direction="up" springType="gentle">
               <AnimatedCard hover="none" className="classical-card p-6">
-                <form onSubmit={handleSubmit} className="space-y-8">
+                <Stack gap={8} as="form" onSubmit={handleSubmit}>
                   {/* Student Selection */}
-                  <div className="space-y-4">
+                  <Stack>
                     <h2 className="text-xl font-bold text-theme-primary classical-title">
                       {t('basic_information')}
                     </h2>
@@ -1053,10 +1053,10 @@ export default function CreateLessonPageClient({
                         placeholder={t('description_placeholder')}
                       />
                     </div>
-                  </div>
+                  </Stack>
 
                   {/* Schedule com INDICADOR DE CONFLITOS */}
-                  <div className="space-y-4">
+                  <Stack>
                     <h3 className="text-lg font-bold text-theme-primary classical-title">
                       {t('scheduling')}
                     </h3>
@@ -1075,7 +1075,7 @@ export default function CreateLessonPageClient({
 
                     {/* Warnings de conflitos */}
                     {conflicts && !checkingConflicts && (
-                      <div className="space-y-3">
+                      <Stack gap={3}>
                         {conflicts.hasTimeConflicts && (
                           <div className="border-red-400 rounded-lg p-3">
                             <Inline gap={3}>
@@ -1127,7 +1127,7 @@ export default function CreateLessonPageClient({
                               </Inline>
                             </div>
                           )}
-                      </div>
+                      </Stack>
                     )}
 
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
@@ -1203,7 +1203,7 @@ export default function CreateLessonPageClient({
                     </div>
 
                     {/* Recurrence - MELHORADO */}
-                    <div className="space-y-4">
+                    <Stack>
                       <Inline gap={3}>
                         <input
                           type="checkbox"
@@ -1338,20 +1338,20 @@ export default function CreateLessonPageClient({
                           <div className="bg-accent-green/10 border border-accent-green/30 rounded-lg p-4">
                             <div className="flex items-start space-x-3">
                               <PiCheckCircle className="w-5 h-5 text-accent-green mt-0.5" />
-                              <div className="text-sm">
-                                <p className="font-medium text-accent-green mb-1">
+                              <Stack gap={1} className="text-sm">
+                                <p className="font-medium text-accent-green">
                                   {t('simplified_renewal')}
                                 </p>
                                 <p className="text-theme-secondary">
                                   {t('renewal_description')}
                                 </p>
-                              </div>
+                              </Stack>
                             </div>
                           </div>
                         </div>
                       )}
-                    </div>
-                  </div>
+                    </Stack>
+                  </Stack>
 
                   {/* Seção de peças musicais */}
                   <div className="space-y-4">
@@ -1378,7 +1378,7 @@ export default function CreateLessonPageClient({
                   </div>
 
                   {/* Objectives */}
-                  <div className="space-y-4">
+                  <Stack>
                     <div className="flex items-center justify-between">
                       <h3 className="text-lg font-bold text-theme-primary classical-title">
                         {t('lesson_objectives')}
@@ -1395,7 +1395,7 @@ export default function CreateLessonPageClient({
                       </Inline>
                     </div>
 
-                    <div className="space-y-2">
+                    <Stack gap={2}>
                       {formData.objectives.map((objective, index) => (
                         <Inline gap={2} key={index}>
                           <Input
@@ -1426,11 +1426,11 @@ export default function CreateLessonPageClient({
                           )}
                         </Inline>
                       ))}
-                    </div>
-                  </div>
+                    </Stack>
+                  </Stack>
 
                   {/* Advanced Options */}
-                  <div className="space-y-4">
+                  <Stack>
                     <Inline
                       as="button"
                       gap={2}
@@ -1461,10 +1461,13 @@ export default function CreateLessonPageClient({
                     </Inline>
 
                     {showAdvanced && (
-                      <div className="space-y-6 p-4 bg-theme-secondary/5 rounded-lg">
+                      <Stack
+                        gap={6}
+                        className="p-4 bg-theme-secondary/5 rounded-lg"
+                      >
                         {/* Topics */}
-                        <div>
-                          <div className="flex items-center justify-between mb-2">
+                        <Stack gap={2}>
+                          <div className="flex items-center justify-between">
                             <label className="text-sm font-medium text-theme-primary">
                               {t('topics_to_cover')}
                             </label>
@@ -1479,7 +1482,7 @@ export default function CreateLessonPageClient({
                               <span>{t('add')}</span>
                             </Inline>
                           </div>
-                          <div className="space-y-2">
+                          <Stack gap={2}>
                             {formData.topics.map((topic, index) => (
                               <Inline gap={2} key={index}>
                                 <Input
@@ -1510,8 +1513,8 @@ export default function CreateLessonPageClient({
                                 )}
                               </Inline>
                             ))}
-                          </div>
-                        </div>
+                          </Stack>
+                        </Stack>
 
                         {/* Homework */}
                         <div>
@@ -1552,9 +1555,9 @@ export default function CreateLessonPageClient({
                             />
                           </div>
                         </div>
-                      </div>
+                      </Stack>
                     )}
-                  </div>
+                  </Stack>
 
                   {/* Error Display */}
                   {error && (
@@ -1623,7 +1626,7 @@ export default function CreateLessonPageClient({
                       </span>
                     </Inline>
                   </Inline>
-                </form>
+                </Stack>
               </AnimatedCard>
             </AnimatedItem>
           </div>
@@ -1638,7 +1641,7 @@ export default function CreateLessonPageClient({
                     {t('student_information')}
                   </h3>
 
-                  <div className="space-y-4">
+                  <Stack>
                     <Inline gap={3}>
                       {selectedStudent.image ? (
                         <div className="w-12 h-12 relative rounded-full overflow-hidden">
@@ -1665,7 +1668,7 @@ export default function CreateLessonPageClient({
                       </div>
                     </Inline>
 
-                    <div className="space-y-2 text-sm">
+                    <Stack gap={2} className="text-sm">
                       <div className="flex justify-between">
                         <span className="text-theme-tertiary">
                           {t('default_duration')}
@@ -1699,8 +1702,8 @@ export default function CreateLessonPageClient({
                             </span>
                           </div>
                         )}
-                    </div>
-                  </div>
+                    </Stack>
+                  </Stack>
                 </AnimatedCard>
               </AnimatedItem>
             )}

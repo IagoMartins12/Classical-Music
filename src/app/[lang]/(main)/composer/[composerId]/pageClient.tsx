@@ -44,7 +44,7 @@ import type { BlogArticlePreview } from '@/app/requests/blog/composer-articles';
 import ComposerArticlesSection from '@/app/components/ComposerArticlesSection';
 import { useSession } from '@/app/libs/session';
 import { canEditCatalog, canVerifyCatalog } from '@/app/utils/permissions';
-import { Inline } from '@/app/components/ui/Layout';
+import { Stack, Inline } from '@/app/components/ui/Layout';
 import { Text } from '@/app/components/ui/Text';
 
 interface ComposerDetailsClientProps {
@@ -291,7 +291,7 @@ export default function ComposerDetailsClient({
                 <div className="lg:col-span-2 space-y-6 order-2 lg:order-1">
                   {/* Nome e título */}
                   <AnimatedItem direction="up" springType="bouncy">
-                    <div className="space-y-3">
+                    <Stack gap={3}>
                       <div className="flex flex-col-reverse md:flex-row items-start justify-between">
                         <div className="flex-1 ">
                           <h1 className="text-4xl md:text-5xl font-bold text-gradient-brand classical-title leading-tight">
@@ -361,11 +361,11 @@ export default function ComposerDetailsClient({
                           )}
                         </Inline>
                       </div>
-                    </div>
+                    </Stack>
                   </AnimatedItem>
 
                   {composer.alternativeNames && (
-                    <div className="space-y-3">
+                    <Stack gap={3}>
                       <div className="flex items-start justify-between">
                         <div className="flex-1 flex-row ">
                           <p className="space-x-2 text-xl text-theme-secondary mt-3">
@@ -380,7 +380,7 @@ export default function ComposerDetailsClient({
                           </p>
                         </div>
                       </div>
-                    </div>
+                    </Stack>
                   )}
 
                   {/* Grid de informações */}
@@ -554,7 +554,7 @@ export default function ComposerDetailsClient({
 
                   {/* Recursos Externos */}
                   <AnimatedItem direction="right" springType="smooth">
-                    <div className="space-y-4 pt-4">
+                    <Stack className="pt-4">
                       <div className="flex flex-wrap gap-3">
                         {composer.wikipediaLink && (
                           <Inline
@@ -610,7 +610,7 @@ export default function ComposerDetailsClient({
                           </Inline>
                         )}
                       </div>
-                    </div>
+                    </Stack>
                   </AnimatedItem>
                 </div>
 

@@ -172,17 +172,17 @@ export default function UploadsPageLoading() {
         </div>
 
         {/* Content Sections */}
-        <div className="space-y-8">
+        <Stack gap={8}>
           {/* Composers Section */}
-          <div>
-            <Inline gap={3} className="mb-6">
+          <Stack gap={6}>
+            <Inline gap={3}>
               <div className="w-10 h-10 rounded-xl flex items-center justify-center">
                 <PiUser className="w-5 h-5 text-theme-primary/30" />
               </div>
-              <div className="space-y-2">
+              <Stack gap={2}>
                 <div className="h-8 w-48 bg-gradient-to-r from-theme-primary/20 to-theme-secondary/20 rounded"></div>
                 <div className="h-4 w-32 bg-theme-elevated rounded"></div>
-              </div>
+              </Stack>
             </Inline>
 
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -190,18 +190,18 @@ export default function UploadsPageLoading() {
                 <ComposerCardSkeleton key={i} />
               ))}
             </div>
-          </div>
+          </Stack>
 
           {/* Works Section */}
-          <div>
-            <Inline gap={3} className="mb-6">
+          <Stack gap={6}>
+            <Inline gap={3}>
               <div className="w-10 h-10 rounded-xl flex items-center justify-center">
                 <PiMusicNotes className="w-5 h-5 text-theme-primary/30" />
               </div>
-              <div className="space-y-2">
+              <Stack gap={2}>
                 <div className="h-8 w-32 bg-gradient-to-r from-theme-primary/20 to-theme-secondary/20 rounded"></div>
                 <div className="h-4 w-28 bg-theme-elevated rounded"></div>
-              </div>
+              </Stack>
             </Inline>
 
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -209,18 +209,18 @@ export default function UploadsPageLoading() {
                 <WorkCardSkeleton key={i} />
               ))}
             </div>
-          </div>
+          </Stack>
 
           {/* Scores Section */}
-          <div>
-            <Inline gap={3} className="mb-6">
+          <Stack gap={6}>
+            <Inline gap={3}>
               <div className="w-10 h-10 rounded-xl flex items-center justify-center">
                 <PiFileText className="w-5 h-5 text-theme-primary/30" />
               </div>
-              <div className="space-y-2">
+              <Stack gap={2}>
                 <div className="h-8 w-40 bg-gradient-to-r from-theme-primary/20 to-theme-secondary/20 rounded"></div>
                 <div className="h-4 w-36 bg-theme-elevated rounded"></div>
-              </div>
+              </Stack>
             </Inline>
 
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -228,8 +228,8 @@ export default function UploadsPageLoading() {
                 <ScoreCardSkeleton key={i} />
               ))}
             </div>
-          </div>
-        </div>
+          </Stack>
+        </Stack>
 
         {/* Pagination Skeleton */}
         <div className="flex justify-center mt-8">
@@ -410,7 +410,7 @@ function ScoreCardSkeleton() {
         {/* Score Details */}
         <div className="space-y-3 mb-4 flex-1">
           {/* Work info */}
-          <div className="text-center space-y-2">
+          <Stack gap={2} className="text-center">
             <div className="flex items-center justify-center">
               <PiMusicNotes className="w-4 h-4 text-accent-blue/30 mr-2" />
               <div className="h-4 w-32 bg-accent-blue/20 rounded"></div>
@@ -420,7 +420,7 @@ function ScoreCardSkeleton() {
               <PiUser className="w-4 h-4 text-theme-tertiary/30 mr-2" />
               <div className="h-4 w-28 bg-theme-elevated rounded"></div>
             </div>
-          </div>
+          </Stack>
 
           {/* File info */}
           <div className="text-center">

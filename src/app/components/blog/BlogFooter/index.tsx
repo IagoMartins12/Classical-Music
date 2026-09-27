@@ -9,7 +9,7 @@ import {
   PiTwitterLogo,
   PiYoutubeLogo,
 } from 'react-icons/pi';
-import { Inline } from '@/app/components/ui/Layout';
+import { Stack, Inline } from '@/app/components/ui/Layout';
 import { Text } from '@/app/components/ui/Text';
 import { Button } from '@/app/components/ui/Button';
 
@@ -71,7 +71,7 @@ export function BlogFooter() {
         {/* Main Footer Content */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 mb-8">
           {/* Brand Column */}
-          <div className="space-y-4">
+          <Stack>
             <Inline gap={3}>
               <PiMusicNotes className="w-8 h-8 text-brand-primary" />
               <div>
@@ -101,12 +101,12 @@ export function BlogFooter() {
                 </Link>
               ))}
             </Inline>
-          </div>
+          </Stack>
 
           {/* Links Columns */}
           {footerSections.map((section) => (
-            <div key={section.title}>
-              <h4 className="font-semibold text-theme-primary mb-4">
+            <Stack key={section.title}>
+              <h4 className="font-semibold text-theme-primary">
                 {section.title}
               </h4>
               <ul className="space-y-2">
@@ -121,7 +121,7 @@ export function BlogFooter() {
                   </li>
                 ))}
               </ul>
-            </div>
+            </Stack>
           ))}
         </div>
 

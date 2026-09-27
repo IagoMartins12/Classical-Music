@@ -10,6 +10,7 @@ import Input from '@/app/components/Common/Inputs';
 import Button from '@/app/components/Common/Button';
 import Checkbox from '@/app/components/Common/Checkbox';
 import { Card } from '@/app/components/ui/Card';
+import { Stack } from '@/app/components/ui/Layout';
 
 interface VideoComparisonModalProps {
   editor: Editor;
@@ -153,8 +154,8 @@ export function VideoComparisonModal({
         </Card>
 
         <div className="space-y-4 border-t border-theme-secondary pt-4">
-          <div>
-            <label className="block text-sm font-medium text-theme-primary mb-2">
+          <Stack gap={2}>
+            <label className="block text-sm font-medium text-theme-primary">
               Layout
             </label>
             <div className="flex space-x-2">
@@ -175,7 +176,7 @@ export function VideoComparisonModal({
                 Um sobre o Outro
               </Button>
             </div>
-          </div>
+          </Stack>
 
           <Checkbox
             label="Sincronizar reprodução (experimental)"

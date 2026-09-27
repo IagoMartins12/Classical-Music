@@ -5,7 +5,7 @@ import { useRouter } from 'next/navigation';
 import { PiFloppyDisk, PiTag, PiWarningCircle, PiX } from 'react-icons/pi';
 import { toast } from 'react-hot-toast';
 import { createTag, updateTag } from '@/app/requests/blog/admin-actions';
-import { Inline } from '@/app/components/ui/Layout';
+import { Stack, Inline } from '@/app/components/ui/Layout';
 import { Text } from '@/app/components/ui/Text';
 import { Field } from '@/app/components/ui/Field';
 import { Card } from '@/app/components/ui/Card';
@@ -109,14 +109,14 @@ export function TagForm({ mode, tag }: TagFormProps) {
   };
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-6">
+    <Stack gap={6} as="form" onSubmit={handleSubmit}>
       {/* Basic Info */}
       <Card>
         <h3 className="text-lg font-semibold text-theme-primary mb-4">
           Informações da Tag
         </h3>
 
-        <div className="space-y-4">
+        <Stack>
           {/* Name */}
           <div>
             <label className="block text-sm font-medium text-theme-primary mb-2">
@@ -226,7 +226,7 @@ export function TagForm({ mode, tag }: TagFormProps) {
               </Inline>
             )}
           </div>
-        </div>
+        </Stack>
 
         {/* Preview */}
         <Card nivel={2} className="mt-8 max-w-fit">
@@ -234,7 +234,7 @@ export function TagForm({ mode, tag }: TagFormProps) {
             Preview
           </h3>
 
-          <div className="space-y-4">
+          <Stack>
             {/* Badge Preview */}
             <div>
               <Text papel="legenda" tom="fraco" as="p" className="mb-2">
@@ -252,8 +252,8 @@ export function TagForm({ mode, tag }: TagFormProps) {
             </div>
 
             {/* Card Preview */}
-            <div>
-              <Text papel="legenda" tom="fraco" as="p" className="mb-2">
+            <Stack gap={2}>
+              <Text papel="legenda" tom="fraco" as="p">
                 Card:
               </Text>
               <Card densidade="compacta" className="max-w-xs">
@@ -284,8 +284,8 @@ export function TagForm({ mode, tag }: TagFormProps) {
                   </div>
                 </Inline>
               </Card>
-            </div>
-          </div>
+            </Stack>
+          </Stack>
         </Card>
 
         {/* Actions */}
@@ -320,6 +320,6 @@ export function TagForm({ mode, tag }: TagFormProps) {
           </Inline>
         </Inline>
       </Card>
-    </form>
+    </Stack>
   );
 }

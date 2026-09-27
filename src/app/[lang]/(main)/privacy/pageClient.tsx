@@ -29,7 +29,7 @@ import {
   FloatingElement,
 } from '../../../components/animation/AnimatedComponents';
 import { useTranslation } from '@/app/context/TranslationContext';
-import { Inline } from '@/app/components/ui/Layout';
+import { Stack, Inline } from '@/app/components/ui/Layout';
 import { Text } from '@/app/components/ui/Text';
 
 interface PrivacySection {
@@ -228,8 +228,8 @@ export default function PrivacyPage() {
                   <div className="w-16 h-16 bg-gradient-to-br from-accent-green to-accent-blue rounded-2xl flex items-center justify-center flex-shrink-0">
                     <PiShield className="w-8 h-8 text-theme-primary" />
                   </div>
-                  <div>
-                    <h2 className="text-2xl font-bold classical-title text-theme-primary mb-4">
+                  <Stack>
+                    <h2 className="text-2xl font-bold classical-title text-theme-primary">
                       {t(
                         'privacy_jsx_h2_children_0__compromisso_sua_privacidade'
                       )}
@@ -237,7 +237,7 @@ export default function PrivacyPage() {
                     <p className="text-lg text-theme-secondary classical-body leading-relaxed">
                       {t('privacy_jsx_p_children_0__music')}
                     </p>
-                  </div>
+                  </Stack>
                 </div>
               </AnimatedCard>
             </div>
@@ -250,14 +250,14 @@ export default function PrivacyPage() {
         <AnimatedContainer delay={0.1} staggerSpeed="fast">
           <div className="">
             <div className="max-w-4xl mx-auto">
-              <div className="text-center mb-12">
-                <h2 className="text-3xl font-bold classical-title text-theme-primary mb-4">
+              <Stack className="text-center mb-12">
+                <h2 className="text-3xl font-bold classical-title text-theme-primary">
                   {t('privacy_jsx_h2_children_0__tipos_dados_coletados')}
                 </h2>
                 <p className="text-xl text-theme-secondary">
                   {t('privacy_jsx_p_children_0__visão_geral_diferentes')}
                 </p>
-              </div>
+              </Stack>
 
               <SequentialGrid cols={2} gap={6} delayBetweenItems={0.1}>
                 {dataTypes.map((dataType, index) => (
@@ -321,7 +321,7 @@ export default function PrivacyPage() {
                           {section.title}
                         </h3>
 
-                        <div className="space-y-4">
+                        <Stack>
                           {section.content.map((paragraph, pIndex) => (
                             <p
                               key={pIndex}
@@ -330,7 +330,7 @@ export default function PrivacyPage() {
                               {paragraph}
                             </p>
                           ))}
-                        </div>
+                        </Stack>
                       </div>
                     </div>
                   </div>
@@ -358,7 +358,7 @@ export default function PrivacyPage() {
                     <p className="text-theme-secondary mb-6">
                       {t('privacy_jsx_p_children_0__exercer_qualquer_seus')}
                     </p>
-                    <div className="space-y-3">
+                    <Stack gap={3}>
                       <Inline gap={3}>
                         <PiEnvelopeSimple className="w-4 h-4 text-brand-primary" />
                         <span className="text-theme-secondary">
@@ -371,7 +371,7 @@ export default function PrivacyPage() {
                           {t('privacy_jsx_span_children_0__profile')}
                         </span>
                       </Inline>
-                    </div>
+                    </Stack>
                   </div>
                 </div>
               </AnimatedCard>

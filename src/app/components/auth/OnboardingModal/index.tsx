@@ -23,7 +23,7 @@ import {
   usePhoneValidation,
 } from '@/app/utils/phones_and_location/phoneValidation';
 import { useTranslation } from '@/app/context/TranslationContext';
-import { Inline } from '@/app/components/ui/Layout';
+import { Stack, Inline } from '@/app/components/ui/Layout';
 import { Text } from '@/app/components/ui/Text';
 
 interface OnboardingOptions {
@@ -320,8 +320,8 @@ const OnboardingModal: React.FC = () => {
       closeOnOverlayClick={false}
     >
       {/* Progress Bar */}
-      <div className="mb-8">
-        <div className="flex items-center justify-between mb-4">
+      <Stack className="mb-8">
+        <div className="flex items-center justify-between">
           <div>
             <h2 className="text-2xl font-bold text-theme-primary classical-title">
               {getStepTitle()}
@@ -338,7 +338,7 @@ const OnboardingModal: React.FC = () => {
             style={{ width: `${(step / 6) * 100}%` }}
           />
         </div>
-      </div>
+      </Stack>
 
       {/* 🆕 AVISO DE VALIDAÇÃO DE TELEFONE (se houver erro) */}
       {step === 5 && validationErrors.phone && (

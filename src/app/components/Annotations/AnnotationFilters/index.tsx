@@ -22,7 +22,7 @@ import {
 } from '@/app/stores/useAnnotationsStore';
 import { AnimatedCard, AnimatedItem } from '../../animation/AnimatedComponents';
 import { useTranslation } from '@/app/context/TranslationContext';
-import { Inline } from '@/app/components/ui/Layout';
+import { Stack, Inline } from '@/app/components/ui/Layout';
 import { Text } from '@/app/components/ui/Text';
 import { NomeAcao } from '@/app/components/ui/NomeAcao';
 
@@ -182,11 +182,11 @@ export default function AnnotationFiltersComponent({
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           {/* ✅ Dificuldade com traduções */}
-          <div>
+          <Stack gap={3}>
             <Inline
               as="label"
               gap={2}
-              className="text-sm font-medium text-theme-primary mb-3"
+              className="text-sm font-medium text-theme-primary"
             >
               <PiTarget className="w-4 h-4" />
               <span>{t('annotation_filters_nivel_dificuldade')}</span>
@@ -225,14 +225,14 @@ export default function AnnotationFiltersComponent({
                 );
               })}
             </div>
-          </div>
+          </Stack>
 
           {/* ✅ Abrangência com traduções */}
-          <div>
+          <Stack gap={3}>
             <Inline
               as="label"
               gap={2}
-              className="text-sm font-medium text-theme-primary mb-3"
+              className="text-sm font-medium text-theme-primary"
             >
               <PiStack className="w-4 h-4" />
               <span>{t('annotation_filters_abrangencia')}</span>
@@ -271,14 +271,14 @@ export default function AnnotationFiltersComponent({
                 );
               })}
             </div>
-          </div>
+          </Stack>
 
           {/* ✅ Ordenação com traduções */}
-          <div>
+          <Stack gap={3}>
             <Inline
               as="label"
               gap={2}
-              className="text-sm font-medium text-theme-primary mb-3"
+              className="text-sm font-medium text-theme-primary"
             >
               <PiTrendUp className="w-4 h-4" />
               <span>{t('annotation_filters_ordenar_por')}</span>
@@ -310,25 +310,25 @@ export default function AnnotationFiltersComponent({
                 );
               })}
             </div>
-          </div>
+          </Stack>
         </div>
 
         {/* ✅ Filtros de busca avançada com traduções */}
-        <div className="mt-6 pt-6 border-t border-theme-secondary">
+        <Stack gap={3} className="mt-6 pt-6 border-t border-theme-secondary">
           <Inline
             as="label"
             gap={2}
-            className="text-sm font-medium text-theme-primary mb-3"
+            className="text-sm font-medium text-theme-primary"
           >
             <PiMagnifyingGlass className="w-4 h-4" />
             <span>{t('annotation_filters_busca_avancada')}</span>
           </Inline>
           <div className="grid grid-cols-1 gap-4">
-            <div>
+            <Stack gap={2}>
               <Inline
                 as="label"
                 gap={1}
-                className="text-xs text-theme-tertiary mb-2"
+                className="text-xs text-theme-tertiary"
               >
                 <span>{t('annotation_filters_buscar_titulos')}</span>
               </Inline>
@@ -352,17 +352,17 @@ export default function AnnotationFiltersComponent({
                   </button>
                 )}
               </div>
-            </div>
+            </Stack>
           </div>
-        </div>
+        </Stack>
 
         {/* ✅ Resumo de filtros ativos com traduções */}
         {hasActiveFilters && (
-          <div className="mt-6 pt-6 border-t border-theme-secondary">
+          <Stack gap={3} className="mt-6 pt-6 border-t border-theme-secondary">
             <Inline
               as="label"
               gap={2}
-              className="text-sm font-medium text-theme-primary mb-3"
+              className="text-sm font-medium text-theme-primary"
             >
               <PiFunnel className="w-4 h-4" />
               <span>{t('annotation_filters_filtros_ativos')}</span>
@@ -458,7 +458,7 @@ export default function AnnotationFiltersComponent({
                 </Inline>
               )}
             </div>
-          </div>
+          </Stack>
         )}
 
         {/* ✅ Actions com traduções */}

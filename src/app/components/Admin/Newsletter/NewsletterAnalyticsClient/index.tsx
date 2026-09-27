@@ -21,7 +21,7 @@ import {
 import Button from '@/app/components/Common/Button';
 import { useNewsletterAnalytics } from '@/app/hooks/admin/useNewsletterAnalytics';
 import LoadingAdminState from '../../Common/LoadingState';
-import { Inline } from '@/app/components/ui/Layout';
+import { Stack, Inline } from '@/app/components/ui/Layout';
 import { Text } from '@/app/components/ui/Text';
 import { Field } from '@/app/components/ui/Field';
 
@@ -126,7 +126,7 @@ export default function NewsletterAnalyticsClient() {
 
   return (
     <PageContainer showBackground={true}>
-      <div className="space-y-8">
+      <Stack gap={8}>
         <AnimatedContainer
           delay={0.1}
           staggerSpeed="normal"
@@ -258,10 +258,10 @@ export default function NewsletterAnalyticsClient() {
 
             {/* Tab Content */}
             {activeTab === 'overview' && analytics && (
-              <div className="space-y-6">
+              <Stack gap={6}>
                 {/* Top Performing Campaigns */}
-                <div>
-                  <h3 className="text-xl font-bold text-theme-primary mb-4">
+                <Stack>
+                  <h3 className="text-xl font-bold text-theme-primary">
                     Campanhas com Melhor Performance
                   </h3>
                   <div className="overflow-x-auto">
@@ -334,11 +334,11 @@ export default function NewsletterAnalyticsClient() {
                       </tbody>
                     </table>
                   </div>
-                </div>
+                </Stack>
 
                 {/* Growth Chart Placeholder */}
-                <div className="bg-theme-secondary p-6 rounded-lg">
-                  <h3 className="text-xl font-bold text-theme-primary mb-4">
+                <Stack className="bg-theme-secondary p-6 rounded-lg">
+                  <h3 className="text-xl font-bold text-theme-primary">
                     Crescimento de Subscribers
                   </h3>
                   <div className="h-64 flex items-center justify-center text-theme-tertiary">
@@ -350,22 +350,22 @@ export default function NewsletterAnalyticsClient() {
                       </p>
                     </div>
                   </div>
-                </div>
-              </div>
+                </Stack>
+              </Stack>
             )}
 
             {activeTab === 'campaigns' && analytics && (
-              <div className="space-y-6">
+              <Stack gap={6}>
                 <h3 className="text-xl font-bold text-theme-primary">
                   Performance de Campanhas
                 </h3>
 
                 <div className="grid md:grid-cols-2 gap-6">
-                  <div className="bg-theme-secondary p-6 rounded-lg">
-                    <h4 className="font-medium text-theme-primary mb-4">
+                  <Stack className="bg-theme-secondary p-6 rounded-lg">
+                    <h4 className="font-medium text-theme-primary">
                       Estatísticas Gerais
                     </h4>
-                    <div className="space-y-3">
+                    <Stack gap={3}>
                       <div className="flex justify-between">
                         <span className="text-theme-tertiary">
                           Total de Campanhas
@@ -394,14 +394,14 @@ export default function NewsletterAnalyticsClient() {
                           {analytics.campaigns.scheduled}
                         </span>
                       </div>
-                    </div>
-                  </div>
+                    </Stack>
+                  </Stack>
 
-                  <div className="bg-theme-secondary p-6 rounded-lg">
-                    <h4 className="font-medium text-theme-primary mb-4">
+                  <Stack className="bg-theme-secondary p-6 rounded-lg">
+                    <h4 className="font-medium text-theme-primary">
                       Performance Média
                     </h4>
-                    <div className="space-y-3">
+                    <Stack gap={3}>
                       <div className="flex justify-between">
                         <span className="text-theme-tertiary">
                           Taxa de Entrega
@@ -434,24 +434,24 @@ export default function NewsletterAnalyticsClient() {
                           {analytics.engagement.avgBounceRate.toFixed(1)}%
                         </span>
                       </div>
-                    </div>
-                  </div>
+                    </Stack>
+                  </Stack>
                 </div>
-              </div>
+              </Stack>
             )}
 
             {activeTab === 'subscribers' && analytics && (
-              <div className="space-y-6">
+              <Stack gap={6}>
                 <h3 className="text-xl font-bold text-theme-primary">
                   Análise de Subscribers
                 </h3>
 
                 <div className="grid md:grid-cols-3 gap-6">
-                  <div className="bg-theme-secondary p-6 rounded-lg">
-                    <h4 className="font-medium text-theme-primary mb-4">
+                  <Stack className="bg-theme-secondary p-6 rounded-lg">
+                    <h4 className="font-medium text-theme-primary">
                       Status dos Subscribers
                     </h4>
-                    <div className="space-y-3">
+                    <Stack gap={3}>
                       <div className="flex justify-between">
                         <span className="text-theme-tertiary">Ativos</span>
                         <span className="text-accent-green font-medium">
@@ -470,14 +470,14 @@ export default function NewsletterAnalyticsClient() {
                           {analytics.subscribers.unsubscribed.toLocaleString()}
                         </span>
                       </div>
-                    </div>
-                  </div>
+                    </Stack>
+                  </Stack>
 
-                  <div className="bg-theme-secondary p-6 rounded-lg">
-                    <h4 className="font-medium text-theme-primary mb-4">
+                  <Stack className="bg-theme-secondary p-6 rounded-lg">
+                    <h4 className="font-medium text-theme-primary">
                       Crescimento
                     </h4>
-                    <div className="space-y-3">
+                    <Stack gap={3}>
                       <div className="flex justify-between">
                         <span className="text-theme-tertiary">
                           Novos (7 dias)
@@ -503,14 +503,14 @@ export default function NewsletterAnalyticsClient() {
                           {analytics.subscribers.growth.toFixed(1)}%
                         </span>
                       </div>
-                    </div>
-                  </div>
+                    </Stack>
+                  </Stack>
 
-                  <div className="bg-theme-secondary p-6 rounded-lg">
-                    <h4 className="font-medium text-theme-primary mb-4">
+                  <Stack className="bg-theme-secondary p-6 rounded-lg">
+                    <h4 className="font-medium text-theme-primary">
                       Engajamento
                     </h4>
-                    <div className="space-y-3">
+                    <Stack gap={3}>
                       <div className="flex justify-between">
                         <span className="text-theme-tertiary">
                           Alto Engajamento
@@ -535,14 +535,14 @@ export default function NewsletterAnalyticsClient() {
                           {analytics.subscribers.lowEngagement}
                         </span>
                       </div>
-                    </div>
-                  </div>
+                    </Stack>
+                  </Stack>
                 </div>
-              </div>
+              </Stack>
             )}
           </AnimatedCard>
         </AnimatedContainer>
-      </div>
+      </Stack>
     </PageContainer>
   );
 }

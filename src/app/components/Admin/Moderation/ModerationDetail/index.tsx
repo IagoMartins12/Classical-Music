@@ -28,7 +28,7 @@ import {
 import Button from '@/app/components/Common/Button';
 import { useAdminModeration } from '@/app/hooks/admin/useAdminModeration';
 import { useToast } from '@/app/hooks/useToast';
-import { Inline } from '@/app/components/ui/Layout';
+import { Stack, Inline } from '@/app/components/ui/Layout';
 import { Text } from '@/app/components/ui/Text';
 import { Field } from '@/app/components/ui/Field';
 
@@ -267,32 +267,28 @@ export default function ModerationDetail({ itemId }: ModerationDetailProps) {
                 Detalhes do Item
               </h3>
 
-              <div className="space-y-6">
-                <div>
-                  <h4 className="font-medium text-theme-primary mb-2">
-                    Descrição
-                  </h4>
+              <Stack gap={6}>
+                <Stack gap={2}>
+                  <h4 className="font-medium text-theme-primary">Descrição</h4>
                   <p className="text-theme-secondary bg-theme-secondary p-4 rounded-xl">
                     {item.content.description}
                   </p>
-                </div>
+                </Stack>
 
-                <div>
-                  <h4 className="font-medium text-theme-primary mb-2">
-                    Metadados
-                  </h4>
+                <Stack gap={2}>
+                  <h4 className="font-medium text-theme-primary">Metadados</h4>
                   <div className="bg-theme-secondary p-4 rounded-xl">
                     <pre className="text-sm text-theme-secondary">
                       {JSON.stringify(item.content.metadata, null, 2)}
                     </pre>
                   </div>
-                </div>
+                </Stack>
 
-                <div>
-                  <h4 className="font-medium text-theme-primary mb-2">
+                <Stack gap={2}>
+                  <h4 className="font-medium text-theme-primary">
                     Problemas Identificados
                   </h4>
-                  <div className="space-y-2">
+                  <Stack gap={2}>
                     {item.issues.map((issue: string, index: number) => (
                       <Inline
                         gap={2}
@@ -303,9 +299,9 @@ export default function ModerationDetail({ itemId }: ModerationDetailProps) {
                         <span className="text-theme-primary">{issue}</span>
                       </Inline>
                     ))}
-                  </div>
-                </div>
-              </div>
+                  </Stack>
+                </Stack>
+              </Stack>
             </AnimatedCard>
 
             {/* Reports */}
@@ -314,13 +310,14 @@ export default function ModerationDetail({ itemId }: ModerationDetailProps) {
                 Reports Recebidos
               </h3>
 
-              <div className="space-y-4">
+              <Stack>
                 {item.reports.map((report: any) => (
-                  <div
+                  <Stack
+                    gap={3}
                     key={report.id}
                     className="p-4 bg-theme-secondary rounded-xl"
                   >
-                    <div className="flex items-start justify-between mb-3">
+                    <div className="flex items-start justify-between">
                       <div>
                         <h5 className="font-medium text-theme-primary">
                           {report.reporter}
@@ -334,9 +331,9 @@ export default function ModerationDetail({ itemId }: ModerationDetailProps) {
                       </Text>
                     </div>
                     <p className="text-theme-secondary">{report.description}</p>
-                  </div>
+                  </Stack>
                 ))}
-              </div>
+              </Stack>
             </AnimatedCard>
 
             {/* Moderation Actions */}
@@ -345,7 +342,7 @@ export default function ModerationDetail({ itemId }: ModerationDetailProps) {
                 Ações de Moderação
               </h3>
 
-              <div className="space-y-6">
+              <Stack gap={6}>
                 <div>
                   <Field.Area
                     label="Notas da Moderação"
@@ -409,7 +406,7 @@ export default function ModerationDetail({ itemId }: ModerationDetailProps) {
                     Rejeitar Item
                   </Button>
                 </Inline>
-              </div>
+              </Stack>
             </AnimatedCard>
           </div>
 
@@ -481,7 +478,7 @@ export default function ModerationDetail({ itemId }: ModerationDetailProps) {
                 <span>Timeline</span>
               </Inline>
 
-              <div className="space-y-3">
+              <Stack gap={3}>
                 <div className="flex items-start space-x-3">
                   <div className="w-2 h-2 bg-accent-blue rounded-full mt-2"></div>
                   <div>
@@ -534,7 +531,7 @@ export default function ModerationDetail({ itemId }: ModerationDetailProps) {
                     </Text>
                   </div>
                 </div>
-              </div>
+              </Stack>
             </AnimatedCard>
 
             {/* Quick Stats */}
@@ -548,7 +545,7 @@ export default function ModerationDetail({ itemId }: ModerationDetailProps) {
                 <span>Estatísticas Rápidas</span>
               </Inline>
 
-              <div className="space-y-3">
+              <Stack gap={3}>
                 <div className="flex items-center justify-between text-sm">
                   <span className="text-theme-secondary">Tempo na fila</span>
                   <span className="font-medium text-theme-primary">
@@ -565,7 +562,7 @@ export default function ModerationDetail({ itemId }: ModerationDetailProps) {
                   <span className="text-theme-secondary">Score automático</span>
                   <span className="font-medium text-accent-green">8.5/10</span>
                 </div>
-              </div>
+              </Stack>
             </AnimatedCard>
           </div>
         </div>

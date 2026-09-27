@@ -25,6 +25,7 @@ import TermsAcceptance from '../TermsAcceptance';
 import { useTranslation } from '@/app/hooks/useTranslation';
 import { Language } from '@/app/stores/useLanguageStore';
 import { Text } from '@/app/components/ui/Text';
+import { Stack } from '@/app/components/ui/Layout';
 interface RegisterStep {
   step: 'form' | 'success' | 'confirmation-sent';
   userData?: {
@@ -437,21 +438,21 @@ const RegisterModal: React.FC = () => {
         </p>
       </div>
 
-      <div className="space-y-6">
+      <Stack gap={6}>
         {/* Status de login - não mostrar para usuários Google */}
         {!registerStep.userData?.isLoggedIn &&
           registerStep.userData?.registrationMethod !== 'google' && (
             <div className="bg-accent-amber bg-opacity-10 border border-accent-amber rounded-lg p-4">
               <div className="flex items-start">
                 <PiWarning className="w-5 h-5 text-accent-amber mr-3 mt-0.5 flex-shrink-0" />
-                <div>
-                  <h4 className="font-medium text-accent-amber mb-1">
+                <Stack gap={1}>
+                  <h4 className="font-medium text-accent-amber">
                     {t('register_success_login_manual_title')}
                   </h4>
                   <p className="text-sm text-accent-amber opacity-80">
                     {t('register_success_login_manual_text')}
                   </p>
-                </div>
+                </Stack>
               </div>
             </div>
           )}
@@ -468,11 +469,11 @@ const RegisterModal: React.FC = () => {
                   {t('register_success_google_verified_text')}{' '}
                   <strong>{registerStep.userData?.email}</strong>
                 </p>
-                <div className="text-xs text-accent-blue opacity-70 space-y-1">
+                <Stack gap={1} className="text-xs text-accent-blue opacity-70">
                   <p>{t('register_success_google_features')}</p>
                   <p>{t('register_success_google_immediate')}</p>
                   <p>{t('register_success_google_quick_login')}</p>
-                </div>
+                </Stack>
               </div>
             </div>
           </div>
@@ -487,7 +488,7 @@ const RegisterModal: React.FC = () => {
                   {t('register_success_email_sent_text')}{' '}
                   <strong>{registerStep.userData?.email}</strong>
                 </p>
-                <div className="text-xs text-accent-blue opacity-70 space-y-1">
+                <Stack gap={1} className="text-xs text-accent-blue opacity-70">
                   <p>
                     • <strong>{t('register_success_email_normal_use')}</strong>
                   </p>
@@ -497,13 +498,13 @@ const RegisterModal: React.FC = () => {
                   <p>
                     • <strong>{t('register_success_email_profile')}</strong>
                   </p>
-                </div>
+                </Stack>
               </div>
             </div>
           </div>
         )}
 
-        <div className="bg-theme-secondary rounded-lg p-4 space-y-3">
+        <Stack gap={3} className="bg-theme-secondary rounded-lg p-4">
           <h4 className="text-sm font-medium text-theme-primary flex items-center">
             <PiCheckCircle className="w-4 h-4 mr-2" />
             {t('register_success_next_steps')}
@@ -534,7 +535,7 @@ const RegisterModal: React.FC = () => {
                 : t('register_success_step_4_credentials')}
             </li>
           </ul>
-        </div>
+        </Stack>
 
         <div className="space-y-3">
           {registerStep.userData?.isLoggedIn ? (
@@ -583,7 +584,7 @@ const RegisterModal: React.FC = () => {
             </Text>
           )}
         </div>
-      </div>
+      </Stack>
     </>
   );
 

@@ -24,6 +24,7 @@ import { useAuth } from '@/app/hooks/useAuth';
 import { useTranslation } from '@/app/context/TranslationContext';
 import { Text } from '@/app/components/ui/Text';
 import { Card } from '@/app/components/ui/Card';
+import { Stack } from '@/app/components/ui/Layout';
 
 interface ConfirmationResult {
   success: boolean;
@@ -214,12 +215,12 @@ export default function ConfirmEmailChangePage() {
           <p className="text-theme-secondary mb-6">{result.message}</p>
 
           {result.data && (
-            <div className="bg-accent-green/10 border border-accent-green/20 rounded-lg p-6 mb-6">
-              <h3 className="font-semibold text-accent-green mb-4 flex items-center justify-center">
+            <Stack className="bg-accent-green/10 border border-accent-green/20 rounded-lg p-6 mb-6">
+              <h3 className="font-semibold text-accent-green flex items-center justify-center">
                 <PiEnvelopeSimple className="w-5 h-5 mr-2" />
                 {t('pages_token_jsx_h3_children_0__resumo_alteração')}
               </h3>
-              <div className="space-y-2 text-sm">
+              <Stack gap={2} className="text-sm">
                 <div className="flex justify-between">
                   <span className="text-theme-secondary">
                     {t('pages_token_jsx_span_children_0__email_anterior')}
@@ -236,8 +237,8 @@ export default function ConfirmEmailChangePage() {
                     {result.data.newEmail}
                   </span>
                 </div>
-              </div>
-            </div>
+              </Stack>
+            </Stack>
           )}
 
           {/* 🆕 NOVO: Aviso sobre logout necessário */}
@@ -267,8 +268,11 @@ export default function ConfirmEmailChangePage() {
             </div>
           </div>
 
-          <div className="bg-accent-blue/10 border border-accent-blue/20 rounded-lg p-4 mb-6">
-            <h4 className="font-medium text-accent-blue mb-2 flex items-center justify-center">
+          <Stack
+            gap={2}
+            className="bg-accent-blue/10 border border-accent-blue/20 rounded-lg p-4 mb-6"
+          >
+            <h4 className="font-medium text-accent-blue flex items-center justify-center">
               <PiCheckCircle className="w-4 h-4 mr-2" />
               {t('pages_token_jsx_h4_children_0__funcionalidades_restauradas')}
             </h4>
@@ -284,7 +288,7 @@ export default function ConfirmEmailChangePage() {
                 {t('pages_token_jsx_div_children_0__funcionalidades_premium')}
               </div>
             </div>
-          </div>
+          </Stack>
 
           <div className="space-y-3">
             {/* 🆕 NOVO: Botão para logout manual (caso queira acelerar) */}
@@ -354,7 +358,7 @@ export default function ConfirmEmailChangePage() {
 
         <p className="text-theme-secondary mb-6">{result.message}</p>
 
-        <div className="space-y-4">
+        <Stack>
           {result.errorCode === 'EXPIRED_TOKEN' && (
             <div className="bg-accent-amber/10 border border-accent-amber/20 rounded-lg p-4">
               <p className="text-accent-amber text-sm">
@@ -430,7 +434,7 @@ export default function ConfirmEmailChangePage() {
               {t('pages_token_jsx_button_children_0__voltar_ao_início')}
             </Button>
           </div>
-        </div>
+        </Stack>
       </div>
     );
   };

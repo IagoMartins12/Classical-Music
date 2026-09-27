@@ -17,7 +17,7 @@ import {
   getCachedMostReadArticles,
   getCachedCategories,
 } from '@/app/requests/blog/cached-blog-function';
-import { Inline } from '@/app/components/ui/Layout';
+import { Stack, Inline } from '@/app/components/ui/Layout';
 import { Text } from '@/app/components/ui/Text';
 import { Card } from '@/app/components/ui/Card';
 
@@ -200,7 +200,7 @@ export default async function BlogHomePage() {
                 <PiTrendUp className="w-5 h-5 mr-2 text-brand-primary" />
                 Mais Lidos
               </h3>
-              <div className="space-y-4">
+              <Stack>
                 {mostReadArticles.map((article, index) => (
                   <Link
                     key={article.id}
@@ -223,7 +223,7 @@ export default async function BlogHomePage() {
                     </div>
                   </Link>
                 ))}
-              </div>
+              </Stack>
             </Card>
           </div>
         </div>

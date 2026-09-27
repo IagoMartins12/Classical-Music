@@ -26,7 +26,7 @@ import {
 } from '@/app/libs/ads/mediaUtils';
 import ImageNext from 'next/image';
 import { removeAdMedia, uploadAdMedia } from '@/app/requests/admin/ads';
-import { Inline } from '@/app/components/ui/Layout';
+import { Stack, Inline } from '@/app/components/ui/Layout';
 import { Text } from '@/app/components/ui/Text';
 import { Card } from '@/app/components/ui/Card';
 
@@ -355,7 +355,7 @@ export default function MediaUploadModal({
 
         <div className="p-6">
           {activeTab === 'current' && (
-            <div className="space-y-6">
+            <Stack gap={6}>
               {/* Info sobre dimensões ideais */}
               <Card
                 densidade="compacta"
@@ -450,7 +450,7 @@ export default function MediaUploadModal({
                   </div>
 
                   {ad.imageUrl || ad.imageVersions ? (
-                    <div className="space-y-3">
+                    <Stack gap={3}>
                       <div className="relative overflow-hidden rounded-lg aspect-video bg-theme-secondary">
                         <ImageNext
                           width={50}
@@ -484,7 +484,7 @@ export default function MediaUploadModal({
                           {ad.mediaMetadata.originalDimensions.height}
                         </Text>
                       )}
-                    </div>
+                    </Stack>
                   ) : (
                     <div className="aspect-video border-2 border-dashed border-theme-primary rounded-lg flex items-center justify-center">
                       <div className="text-center text-theme-tertiary">
@@ -520,7 +520,7 @@ export default function MediaUploadModal({
                   </div>
 
                   {ad.videoUrl || ad.videoVersions ? (
-                    <div className="space-y-3">
+                    <Stack gap={3}>
                       <div className="relative overflow-hidden rounded-lg aspect-video bg-theme-secondary">
                         <video
                           src={
@@ -546,7 +546,7 @@ export default function MediaUploadModal({
                           </div>
                         )}
                       </div>
-                    </div>
+                    </Stack>
                   ) : (
                     <div className="aspect-video border-2 border-dashed border-theme-primary rounded-lg flex items-center justify-center">
                       <div className="text-center text-theme-tertiary">
@@ -557,7 +557,7 @@ export default function MediaUploadModal({
                   )}
                 </Card>
               </div>
-            </div>
+            </Stack>
           )}
 
           {activeTab === 'upload' && (
@@ -565,8 +565,8 @@ export default function MediaUploadModal({
               {/* Controles de upload */}
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 {/* Tipo de mídia */}
-                <div>
-                  <label className="block text-sm font-medium text-theme-primary mb-3">
+                <Stack gap={3}>
+                  <label className="block text-sm font-medium text-theme-primary">
                     Tipo de Mídia
                   </label>
                   <div className="flex space-x-4">
@@ -602,7 +602,7 @@ export default function MediaUploadModal({
                       </span>
                     </Inline>
                   </div>
-                </div>
+                </Stack>
 
                 {/* Qualidade */}
                 <div>
@@ -833,8 +833,8 @@ export default function MediaUploadModal({
               <Card densidade="compacta" className="bg-accent-blue/5">
                 <div className="flex items-start space-x-3">
                   <PiInfo className="w-5 h-5 text-accent-blue mt-0.5 flex-shrink-0" />
-                  <div>
-                    <h4 className="font-medium text-theme-primary mb-2">
+                  <Stack gap={2}>
+                    <h4 className="font-medium text-theme-primary">
                       🚀 Processamento Inteligente
                     </h4>
                     <ul className="text-sm text-theme-secondary space-y-1">
@@ -852,7 +852,7 @@ export default function MediaUploadModal({
                       <li>• Formato WebP para imagens (melhor compressão)</li>
                       <li>• Thumbnails automáticos para vídeos</li>
                     </ul>
-                  </div>
+                  </Stack>
                 </div>
               </Card>
             </div>

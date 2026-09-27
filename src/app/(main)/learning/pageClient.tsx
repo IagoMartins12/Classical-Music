@@ -38,7 +38,7 @@ import Link from 'next/link';
 import { useAdaptiveStats } from '@/app/hooks/useMobile';
 import Button from '@/app/components/Common/Button';
 import { useTranslation } from '@/app/context/TranslationContext';
-import { Inline } from '@/app/components/ui/Layout';
+import { Stack, Inline } from '@/app/components/ui/Layout';
 import { NomeAcao } from '@/app/components/ui/NomeAcao';
 
 type DifficultyLevel = 'BEGINNER' | 'INTERMEDIATE' | 'ADVANCED';
@@ -458,8 +458,8 @@ const LearningPageClient = ({ initialData }: LearningPageClientProps) => {
               {/* Filtros Expandidos */}
               {showFilters && (
                 <AnimatedItem direction="scale" springType="gentle">
-                  <div className="bg-theme-secondary rounded-xl p-4 border border-theme-primary">
-                    <div className="flex items-center justify-between mb-4">
+                  <Stack className="bg-theme-secondary rounded-xl p-4 border border-theme-primary">
+                    <div className="flex items-center justify-between">
                       <Inline
                         as="h3"
                         gap={2}
@@ -523,7 +523,7 @@ const LearningPageClient = ({ initialData }: LearningPageClientProps) => {
                         </div>
                       )}
                     </div>
-                  </div>
+                  </Stack>
                 </AnimatedItem>
               )}
             </div>

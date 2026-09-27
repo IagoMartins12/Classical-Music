@@ -35,7 +35,7 @@ import {
 import LoadingAdminState from '../../Common/LoadingState';
 import Select from '@/app/components/Common/Select';
 import Checkbox from '@/app/components/Common/Checkbox';
-import { Inline } from '@/app/components/ui/Layout';
+import { Stack, Inline } from '@/app/components/ui/Layout';
 import { Text } from '@/app/components/ui/Text';
 import { Field } from '@/app/components/ui/Field';
 
@@ -180,7 +180,7 @@ const CreateEditModal: React.FC<CreateEditModalProps> = ({
       confirmOnClose
       withouVerification
     >
-      <div className="space-y-6">
+      <Stack gap={6}>
         <div className="text-center">
           <div className="w-16 h-16 bg-gradient-to-br from-accent-blue to-accent-purple rounded-full flex items-center justify-center mx-auto mb-4 shadow-theme-glow">
             {isEditing ? (
@@ -257,8 +257,8 @@ const CreateEditModal: React.FC<CreateEditModalProps> = ({
 
           {/* Cor e Status */}
           <div className="grid grid-cols-2 gap-4">
-            <div>
-              <label className="block text-sm font-medium text-theme-primary mb-2">
+            <Stack gap={2}>
+              <label className="block text-sm font-medium text-theme-primary">
                 Cor da Lista
               </label>
               <Inline gap={3}>
@@ -277,7 +277,7 @@ const CreateEditModal: React.FC<CreateEditModalProps> = ({
                   disabled={loading}
                 />
               </Inline>
-            </div>
+            </Stack>
 
             <div>
               <label className="block text-sm font-medium text-theme-primary mb-2">
@@ -330,7 +330,7 @@ const CreateEditModal: React.FC<CreateEditModalProps> = ({
             </Button>
           </div>
         </form>
-      </div>
+      </Stack>
     </Modal>
   );
 };
@@ -436,11 +436,11 @@ const SendTestModal: React.FC<SendTestModalProps> = ({
         </div>
 
         {/* Listas Selecionadas */}
-        <div className="bg-theme-secondary rounded-lg p-4 mb-6">
-          <h4 className="font-medium text-theme-primary mb-3">
+        <Stack gap={3} className="bg-theme-secondary rounded-lg p-4 mb-6">
+          <h4 className="font-medium text-theme-primary">
             Listas Selecionadas:
           </h4>
-          <div className="space-y-2">
+          <Stack gap={2}>
             {lists.map((list) => (
               <div key={list.id} className="flex items-center justify-between">
                 <div className="flex items-center">
@@ -457,8 +457,8 @@ const SendTestModal: React.FC<SendTestModalProps> = ({
                 </Text>
               </div>
             ))}
-          </div>
-        </div>
+          </Stack>
+        </Stack>
 
         <form onSubmit={handleSubmit} className="space-y-6">
           {/* Template */}
@@ -496,8 +496,8 @@ const SendTestModal: React.FC<SendTestModalProps> = ({
           />
 
           {/* Variáveis de Teste */}
-          <div>
-            <label className="block text-sm font-medium text-theme-primary mb-2">
+          <Stack gap={2}>
+            <label className="block text-sm font-medium text-theme-primary">
               Variáveis de Teste
             </label>
             <div className="grid grid-cols-2 gap-4">
@@ -530,11 +530,11 @@ const SendTestModal: React.FC<SendTestModalProps> = ({
                 }
               />
             </div>
-          </div>
+          </Stack>
 
           {/* Modo de Envio */}
-          <div>
-            <label className="block text-sm font-medium text-theme-primary mb-3">
+          <Stack gap={3}>
+            <label className="block text-sm font-medium text-theme-primary">
               Modo de Envio
             </label>
             <div className="grid grid-cols-2 gap-4">
@@ -598,7 +598,7 @@ const SendTestModal: React.FC<SendTestModalProps> = ({
                 </div>
               </label>
             </div>
-          </div>
+          </Stack>
 
           {/* Botões */}
           <div className="flex space-x-4 pt-4">
@@ -824,7 +824,7 @@ export default function TestEmailListsManager() {
 
   return (
     <PageContainer showBackground={true}>
-      <div className="space-y-8">
+      <Stack gap={8}>
         <AnimatedContainer
           delay={0.1}
           staggerSpeed="normal"
@@ -852,56 +852,56 @@ export default function TestEmailListsManager() {
             <SequentialGrid cols={4} gap={6} delayBetweenItems={0.1}>
               <AnimatedCard className="classical-card p-6">
                 <div className="flex items-center justify-between">
-                  <div>
-                    <Text papel="rotulo" tom="fraco" as="p" className="mb-1">
+                  <Stack gap={1}>
+                    <Text papel="rotulo" tom="fraco" as="p">
                       Total de Listas
                     </Text>
                     <p className="text-3xl font-bold text-theme-primary">
                       {stats.total}
                     </p>
-                  </div>
+                  </Stack>
                   <PiEnvelopeSimple className="w-8 h-8 text-accent-blue" />
                 </div>
               </AnimatedCard>
 
               <AnimatedCard className="classical-card p-6">
                 <div className="flex items-center justify-between">
-                  <div>
-                    <Text papel="rotulo" tom="fraco" as="p" className="mb-1">
+                  <Stack gap={1}>
+                    <Text papel="rotulo" tom="fraco" as="p">
                       Listas Ativas
                     </Text>
                     <p className="text-3xl font-bold text-accent-green">
                       {stats.active}
                     </p>
-                  </div>
+                  </Stack>
                   <PiCheckCircle className="w-8 h-8 text-accent-green" />
                 </div>
               </AnimatedCard>
 
               <AnimatedCard className="classical-card p-6">
                 <div className="flex items-center justify-between">
-                  <div>
-                    <Text papel="rotulo" tom="fraco" as="p" className="mb-1">
+                  <Stack gap={1}>
+                    <Text papel="rotulo" tom="fraco" as="p">
                       Total de Emails
                     </Text>
                     <p className="text-3xl font-bold text-accent-purple">
                       {stats.totalEmails}
                     </p>
-                  </div>
+                  </Stack>
                   <PiUsers className="w-8 h-8 text-accent-purple" />
                 </div>
               </AnimatedCard>
 
               <AnimatedCard className="classical-card p-6">
                 <div className="flex items-center justify-between">
-                  <div>
-                    <Text papel="rotulo" tom="fraco" as="p" className="mb-1">
+                  <Stack gap={1}>
+                    <Text papel="rotulo" tom="fraco" as="p">
                       Usos Totais
                     </Text>
                     <p className="text-3xl font-bold text-accent-amber">
                       {stats.totalUses}
                     </p>
-                  </div>
+                  </Stack>
                   <PiPaperPlaneRight className="w-8 h-8 text-accent-amber" />
                 </div>
               </AnimatedCard>
@@ -1151,7 +1151,7 @@ export default function TestEmailListsManager() {
             </AnimatedCard>
           )}
         </AnimatedContainer>
-      </div>
+      </Stack>
 
       {/* Modals */}
       <CreateEditModal

@@ -19,6 +19,7 @@ import debounce from 'lodash/debounce';
 import { autocomplete } from '@/app/requests/blog/taxonomy';
 import { Text } from '@/app/components/ui/Text';
 import { NomeAcao } from '@/app/components/ui/NomeAcao';
+import { Stack } from '@/app/components/ui/Layout';
 
 interface SearchModalProps {
   isOpen: boolean;
@@ -207,14 +208,14 @@ export function SearchModal({ isOpen, onClose }: SearchModalProps) {
 
         {/* Resultados de pesquisa */}
         {!isLoading && showSuggestions && query.length >= 2 && (
-          <div className="space-y-6">
+          <Stack gap={6}>
             {/* Artigos */}
             {suggestions.articles.length > 0 && (
               <div>
                 <h3 className="text-sm font-semibold text-theme-tertiary mb-3 uppercase tracking-wider">
                   Artigos
                 </h3>
-                <div className="space-y-2">
+                <Stack gap={2}>
                   {suggestions.articles.slice(0, 3).map((article) => (
                     <Link
                       key={article.id}
@@ -242,7 +243,7 @@ export function SearchModal({ isOpen, onClose }: SearchModalProps) {
                       <PiArrowRight className="w-4 h-4 text-theme-tertiary group-hover:text-brand-primary transition-all group-hover:translate-x-1" />
                     </Link>
                   ))}
-                </div>
+                </Stack>
 
                 {/* Link para ver todos os resultados */}
                 <button
@@ -256,8 +257,8 @@ export function SearchModal({ isOpen, onClose }: SearchModalProps) {
 
             {/* Categorias */}
             {suggestions.categories.length > 0 && (
-              <div>
-                <h3 className="text-sm font-semibold text-theme-tertiary mb-3 uppercase tracking-wider">
+              <Stack gap={3}>
+                <h3 className="text-sm font-semibold text-theme-tertiary uppercase tracking-wider">
                   <PiFolder className="inline-block mr-2" />
                   Categorias
                 </h3>
@@ -273,13 +274,13 @@ export function SearchModal({ isOpen, onClose }: SearchModalProps) {
                     </button>
                   ))}
                 </div>
-              </div>
+              </Stack>
             )}
 
             {/* Tags */}
             {suggestions.tags.length > 0 && (
-              <div>
-                <h3 className="text-sm font-semibold text-theme-tertiary mb-3 uppercase tracking-wider">
+              <Stack gap={3}>
+                <h3 className="text-sm font-semibold text-theme-tertiary uppercase tracking-wider">
                   <PiHash className="inline-block mr-2" />
                   Tags
                 </h3>
@@ -295,32 +296,32 @@ export function SearchModal({ isOpen, onClose }: SearchModalProps) {
                     </button>
                   ))}
                 </div>
-              </div>
+              </Stack>
             )}
 
             {/* Nenhum resultado */}
             {suggestions.articles.length === 0 &&
               suggestions.categories.length === 0 &&
               suggestions.tags.length === 0 && (
-                <div className="text-center py-8">
-                  <p className="text-theme-tertiary mb-2">
+                <Stack gap={2} className="text-center py-8">
+                  <p className="text-theme-tertiary">
                     Nenhum resultado encontrado para &quot;{query}&quot;
                   </p>
                   <Text papel="rotulo" tom="fraco" as="p">
                     Tente usar termos diferentes ou navegue pelas categorias
                   </Text>
-                </div>
+                </Stack>
               )}
-          </div>
+          </Stack>
         )}
 
         {/* Estado inicial - sem query */}
         {(!query || query.length <= 1) && !showSuggestions && (
-          <div className="space-y-6">
+          <Stack gap={6}>
             {/* Pesquisas recentes */}
             {recentSearches.length > 0 && (
-              <div>
-                <div className="flex items-center justify-between mb-3">
+              <Stack gap={3}>
+                <div className="flex items-center justify-between">
                   <h3 className="text-sm font-semibold text-theme-tertiary uppercase tracking-wider">
                     <PiClock className="inline-block mr-2" />
                     Recentes
@@ -343,12 +344,12 @@ export function SearchModal({ isOpen, onClose }: SearchModalProps) {
                     </button>
                   ))}
                 </div>
-              </div>
+              </Stack>
             )}
 
             {/* Sugestões populares */}
-            <div>
-              <h3 className="text-sm font-semibold text-theme-tertiary mb-3 uppercase tracking-wider">
+            <Stack gap={3}>
+              <h3 className="text-sm font-semibold text-theme-tertiary uppercase tracking-wider">
                 <PiTrendUp className="inline-block mr-2" />
                 Populares
               </h3>
@@ -363,8 +364,8 @@ export function SearchModal({ isOpen, onClose }: SearchModalProps) {
                   </button>
                 ))}
               </div>
-            </div>
-          </div>
+            </Stack>
+          </Stack>
         )}
       </div>
     </Modal>

@@ -18,6 +18,7 @@ import { AnimatedItem } from '@/app/components/animation/AnimatedComponents';
 import AnimatedMusicalNotesClient from '@/app/components/AnimatedMusicalNotesClient';
 import { getServerSession } from '@/app/libs/api/server-session';
 import { Text } from '@/app/components/ui/Text';
+import { Stack } from '@/app/components/ui/Layout';
 
 export const metadata: Metadata = {
   title: 'Gerenciar Artigos - Blog Admin',
@@ -101,19 +102,19 @@ export default async function ArticlesAdminPage({ searchParams }: PageProps) {
             <AnimatedItem direction="up">
               <div className="classical-card group hover:shadow-xl transition-all duration-300 cursor-pointer">
                 <div className="flex items-center justify-between p-4">
-                  <div>
+                  <Stack gap={2}>
                     <Text
                       papel="legenda"
                       tom="fraco"
                       as="p"
-                      className="font-medium mb-2"
+                      className="font-medium"
                     >
                       Total
                     </Text>
                     <p className="text-2xl font-bold text-theme-primary">
                       {stats.total}
                     </p>
-                  </div>
+                  </Stack>
                   <div className="w-12 h-12 bg-gradient-to-br from-blue-500/20 to-blue-600/20 rounded-2xl flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
                     <PiFileText className="w-6 h-6 text-blue-500" />
                   </div>
@@ -124,19 +125,19 @@ export default async function ArticlesAdminPage({ searchParams }: PageProps) {
             <AnimatedItem direction="up">
               <div className="classical-card group hover:shadow-xl transition-all duration-300 cursor-pointer">
                 <div className="flex items-center justify-between p-4">
-                  <div>
+                  <Stack gap={2}>
                     <Text
                       papel="legenda"
                       tom="fraco"
                       as="p"
-                      className="font-medium mb-2"
+                      className="font-medium"
                     >
                       Publicados
                     </Text>
                     <p className="text-2xl font-bold text-theme-primary">
                       {stats.published}
                     </p>
-                  </div>
+                  </Stack>
                   <div className="w-12 h-12 bg-gradient-to-br from-green-500/20 to-green-600/20 rounded-2xl flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
                     <PiCheckCircle className="w-6 h-6 text-green-500" />
                   </div>
@@ -147,19 +148,19 @@ export default async function ArticlesAdminPage({ searchParams }: PageProps) {
             <AnimatedItem direction="up">
               <div className="classical-card group hover:shadow-xl transition-all duration-300 cursor-pointer">
                 <div className="flex items-center justify-between p-4">
-                  <div>
+                  <Stack gap={2}>
                     <Text
                       papel="legenda"
                       tom="fraco"
                       as="p"
-                      className="font-medium mb-2"
+                      className="font-medium"
                     >
                       Rascunhos
                     </Text>
                     <p className="text-2xl font-bold text-theme-primary">
                       {stats.draft}
                     </p>
-                  </div>
+                  </Stack>
                   <div className="w-12 h-12 bg-gradient-to-br from-yellow-500/20 to-yellow-600/20 rounded-2xl flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
                     <PiClock className="w-6 h-6 text-yellow-500" />
                   </div>
@@ -170,19 +171,19 @@ export default async function ArticlesAdminPage({ searchParams }: PageProps) {
             <AnimatedItem direction="up">
               <div className="classical-card group hover:shadow-xl transition-all duration-300 cursor-pointer">
                 <div className="flex items-center justify-between p-4">
-                  <div>
+                  <Stack gap={2}>
                     <Text
                       papel="legenda"
                       tom="fraco"
                       as="p"
-                      className="font-medium mb-2"
+                      className="font-medium"
                     >
                       Visualizações
                     </Text>
                     <p className="text-2xl font-bold text-theme-primary">
                       {(stats.totalViews / 1000).toFixed(1)}k
                     </p>
-                  </div>
+                  </Stack>
                   <div className="w-12 h-12 bg-gradient-to-br from-orange-500/20 to-orange-600/20 rounded-2xl flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
                     <PiEye className="w-6 h-6 text-orange-500" />
                   </div>

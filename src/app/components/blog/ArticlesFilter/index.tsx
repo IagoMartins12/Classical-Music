@@ -10,6 +10,7 @@ import { ArticleCardList } from '@/app/components/blog/ArticleCardList';
 import { Field } from '@/app/components/ui/Field';
 import { Button } from '@/app/components/ui/Button';
 import { Card } from '@/app/components/ui/Card';
+import { Stack } from '@/app/components/ui/Layout';
 
 interface Article {
   id: string;
@@ -106,7 +107,7 @@ export function ArticlesFilter({
     <>
       {/* Filters Bar */}
       <Card densidade="compacta" className="mb-6">
-        <div className="space-y-4">
+        <Stack>
           {/* Search & View Toggle */}
           <div className="flex items-center gap-3">
             <form onSubmit={handleSearch} className="flex-1 relative">
@@ -187,7 +188,7 @@ export function ArticlesFilter({
               </div>
             </div>
           )}
-        </div>
+        </Stack>
       </Card>
 
       {/* Results Info */}

@@ -1,3 +1,4 @@
+import { Stack } from '@/app/components/ui/Layout';
 type Composer = {
   id: number;
   name: string;
@@ -11,8 +12,8 @@ type Props = {
 
 export default function ComposerList({ composers, onSelect }: Props) {
   return (
-    <div className="p-4">
-      <h2 className="text-xl font-semibold mb-2">Compositores encontrados</h2>
+    <Stack gap={2} className="p-4">
+      <h2 className="text-xl font-semibold">Compositores encontrados</h2>
       <ul className="space-y-2">
         {composers.map((composer) => (
           <li
@@ -24,6 +25,6 @@ export default function ComposerList({ composers, onSelect }: Props) {
           </li>
         ))}
       </ul>
-    </div>
+    </Stack>
   );
 }

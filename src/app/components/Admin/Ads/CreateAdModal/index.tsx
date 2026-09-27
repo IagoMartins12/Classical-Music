@@ -17,7 +17,7 @@ import Input from '@/app/components/Common/Inputs';
 import Select from '@/app/components/Common/Select';
 import Checkbox from '@/app/components/Common/Checkbox';
 import { listInstruments } from '@/app/requests/admin/ads';
-import { Inline } from '@/app/components/ui/Layout';
+import { Stack, Inline } from '@/app/components/ui/Layout';
 import { Text } from '@/app/components/ui/Text';
 
 interface CreateAdModalProps {
@@ -346,9 +346,9 @@ export default function CreateAdModal({
         )}
 
         {/* Form */}
-        <form onSubmit={handleSubmit} className="p-6 space-y-6">
+        <Stack gap={6} as="form" onSubmit={handleSubmit} className="p-6">
           {/* Informações Básicas */}
-          <div className="space-y-4">
+          <Stack>
             <Inline
               as="h3"
               gap={2}
@@ -434,10 +434,10 @@ export default function CreateAdModal({
                 />
               </div>
             </div>
-          </div>
+          </Stack>
 
           {/* Segmentação */}
-          <div className="space-y-4">
+          <Stack>
             <Inline
               as="h3"
               gap={2}
@@ -503,10 +503,10 @@ export default function CreateAdModal({
                 </div>
               )}
             </div>
-          </div>
+          </Stack>
 
           {/* Link e Call-to-Action */}
-          <div className="space-y-4">
+          <Stack>
             <Inline
               as="h3"
               gap={2}
@@ -576,10 +576,10 @@ export default function CreateAdModal({
                 />
               </div>
             </div>
-          </div>
+          </Stack>
 
           {/* Dados do Anunciante */}
-          <div className="space-y-4">
+          <Stack>
             <h3 className="text-lg font-semibold text-theme-primary">
               Contato do Anunciante
             </h3>
@@ -621,10 +621,10 @@ export default function CreateAdModal({
                 />
               </div>
             </div>
-          </div>
+          </Stack>
 
           {/* Configurações */}
-          <div className="space-y-4">
+          <Stack>
             <h3 className="text-lg font-semibold text-theme-primary">
               Configurações
             </h3>
@@ -652,8 +652,8 @@ export default function CreateAdModal({
             </div>
 
             {/* Dispositivos */}
-            <div>
-              <label className="block text-sm font-medium text-theme-primary mb-2">
+            <Stack gap={2}>
+              <label className="block text-sm font-medium text-theme-primary">
                 Exibir em:
               </label>
               <div className="flex space-x-4">
@@ -691,8 +691,8 @@ export default function CreateAdModal({
                   />
                 </Inline>
               </div>
-            </div>
-          </div>
+            </Stack>
+          </Stack>
 
           {/* Actions */}
           <div className="flex justify-end space-x-3 pt-6 border-t border-theme-primary">
@@ -714,7 +714,7 @@ export default function CreateAdModal({
               Criar Anúncio
             </Button>
           </div>
-        </form>
+        </Stack>
       </div>
     </Modal>
   );

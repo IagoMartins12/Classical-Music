@@ -44,7 +44,7 @@ import { useAdminScores } from '@/app/hooks/admin/useAdminScores';
 import Image from '@/app/components/SmartImage';
 import LoadingAdminState from '../../Common/LoadingState';
 import Input from '@/app/components/Common/Inputs';
-import { Inline } from '@/app/components/ui/Layout';
+import { Stack, Inline } from '@/app/components/ui/Layout';
 import { Text } from '@/app/components/ui/Text';
 
 interface ScoreFilters {
@@ -319,8 +319,8 @@ export default function ScoresManagement() {
                 <span>Debug das Estatísticas</span>
               </Inline>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
-                <div>
-                  <h4 className="font-semibold text-theme-primary mb-2">
+                <Stack gap={2}>
+                  <h4 className="font-semibold text-theme-primary">
                     Dados Brutos:
                   </h4>
                   <pre className="bg-theme-secondary p-3 rounded text-xs overflow-auto">
@@ -337,7 +337,7 @@ export default function ScoresManagement() {
                       2
                     )}
                   </pre>
-                </div>
+                </Stack>
                 <div>
                   <h4 className="font-semibold text-theme-primary mb-2">
                     Por Fonte:
@@ -496,11 +496,12 @@ export default function ScoresManagement() {
               </Inline>
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                 {stats.mostAccessed.slice(0, 6).map((score, index) => (
-                  <div
+                  <Stack
+                    gap={3}
                     key={score.id}
                     className="p-4 bg-theme-secondary rounded-xl"
                   >
-                    <Inline gap={3} className="mb-3">
+                    <Inline gap={3}>
                       <Text
                         papel="rotulo"
                         tom="forte"
@@ -540,7 +541,7 @@ export default function ScoresManagement() {
                         onClick={() => router.push(`/admin/scores/${score.id}`)}
                       />
                     </Text>
-                  </div>
+                  </Stack>
                 ))}
               </div>
             </AnimatedCard>
@@ -715,7 +716,7 @@ export default function ScoresManagement() {
             )}
 
             {/* Lista de Partituras */}
-            <div className="space-y-4">
+            <Stack>
               {scores.map((score) => (
                 <div
                   key={score.id}
@@ -870,7 +871,7 @@ export default function ScoresManagement() {
                   </div>
                 </div>
               ))}
-            </div>
+            </Stack>
 
             {/* Pagination */}
             {pagination && (

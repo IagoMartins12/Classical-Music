@@ -3,7 +3,7 @@
 
 import { useTranslation } from '@/app/context/TranslationContext';
 import { PiBookOpen, PiClock, PiMusicNotes } from 'react-icons/pi';
-import { Inline } from '@/app/components/ui/Layout';
+import { Stack, Inline } from '@/app/components/ui/Layout';
 import { Text } from '@/app/components/ui/Text';
 import { Card } from '@/app/components/ui/Card';
 
@@ -39,8 +39,8 @@ export function NavigationTabs({ activeTab, onTabChange }: Props) {
     >
       <div className="relative z-10">
         {/* Header */}
-        <div className="text-center mb-8">
-          <Inline gap={3} className="justify-center mb-4">
+        <Stack className="text-center mb-8">
+          <Inline gap={3} className="justify-center">
             <div className="w-10 h-10 bg-gradient-to-br from-brand-primary to-brand-secondary rounded-xl flex items-center justify-center shadow-theme-glow">
               <PiMusicNotes className="w-5 h-5 text-theme-primary" />
             </div>
@@ -51,7 +51,7 @@ export function NavigationTabs({ activeTab, onTabChange }: Props) {
           <p className="text-theme-secondary classical-subtitle">
             {t('navigation_jsx_p_children_0__escolha_explorar')}
           </p>
-        </div>
+        </Stack>
 
         {/* Tabs */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">

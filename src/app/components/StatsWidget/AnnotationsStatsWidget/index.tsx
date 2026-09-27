@@ -26,7 +26,7 @@ import { BadgeGrid } from '../../badges/BadgeSystem';
 import { useAchievementSystem } from '../../../hooks/useAchievements';
 import { useTranslation } from '@/app/context/TranslationContext';
 import { useLanguageStore } from '@/app/stores/useLanguageStore';
-import { Inline } from '@/app/components/ui/Layout';
+import { Stack, Inline } from '@/app/components/ui/Layout';
 import { Text } from '@/app/components/ui/Text';
 
 interface AnnotationsStatsWidgetProps {
@@ -144,7 +144,7 @@ export default function AnnotationsStatsWidget({
                 {t('stats_widget_next_achievements')}
               </h4>
             </Inline>
-            <div className="space-y-3">
+            <Stack gap={3}>
               {nextAchievements.slice(0, 2).map((badge) => {
                 const Icon = badge.icon;
                 const progressPercent = badge.maxProgress
@@ -191,7 +191,7 @@ export default function AnnotationsStatsWidget({
                   </Inline>
                 );
               })}
-            </div>
+            </Stack>
           </AnimatedCard>
         )}
 

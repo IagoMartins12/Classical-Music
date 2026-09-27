@@ -63,7 +63,7 @@ export default function InstrumentsLoading() {
         </section>
 
         {/* Main Content Skeleton */}
-        <div className="section-wrap space-y-12">
+        <Stack gap={12} className="section-wrap">
           {/* Skeleton Instruments */}
           {[0, 1, 2, 3, 4, 5, 6].map((index) => (
             <div
@@ -91,10 +91,10 @@ export default function InstrumentsLoading() {
 
                 {/* Stats skeleton */}
                 <Inline gap={6}>
-                  <div className="text-center space-y-2">
+                  <Stack gap={2} className="text-center">
                     <div className="h-8 w-12 bg-interactive-hover rounded animate-shimmer"></div>
                     <div className="h-3 w-8 bg-interactive-hover rounded animate-shimmer"></div>
-                  </div>
+                  </Stack>
                   {/* <div className="text-center space-y-2">
                     <div className="h-8 w-12 bg-interactive-hover rounded animate-shimmer"></div>
                     <div className="h-3 w-12 bg-interactive-hover rounded animate-shimmer"></div>
@@ -104,7 +104,7 @@ export default function InstrumentsLoading() {
               </div>
             </div>
           ))}
-        </div>
+        </Stack>
       </div>
 
       {/* Floating Elements */}
@@ -183,7 +183,7 @@ export default function InstrumentsLoading() {
 // 'use client';
 
 // import { GiViolin, GiGrandPiano, GiHarp, GiPipeOrgan } from 'react-icons/gi';
-import { Inline } from '@/app/components/ui/Layout';
+import { Stack, Inline } from '@/app/components/ui/Layout';
 // //
 // const instruments = [
 //   { icon: GiGrandPiano, name: 'Piano', delay: 0 },

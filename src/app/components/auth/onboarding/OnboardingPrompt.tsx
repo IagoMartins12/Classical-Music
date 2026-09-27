@@ -7,7 +7,7 @@ import { useOnboardingModal, usePromptModal } from '@/app/stores/authStore';
 import { useUser } from '@/app/hooks/userStore';
 import { useTranslation } from '@/app/context/TranslationContext';
 import Button from '../../Common/Button';
-import { Inline } from '@/app/components/ui/Layout';
+import { Stack, Inline } from '@/app/components/ui/Layout';
 import { Text } from '@/app/components/ui/Text';
 import { NomeAcao } from '@/app/components/ui/NomeAcao';
 
@@ -47,8 +47,8 @@ const OnboardingPrompt = () => {
             {t('prompt_description')}
           </Text>
 
-          <div className="mb-8">
-            <div className="flex items-center justify-between mb-4">
+          <Stack className="mb-8">
+            <div className="flex items-center justify-between">
               <Text papel="rotulo" tom="fraco">
                 {t('prompt_step_of')} {step} {t('onboarding_modal_step_of')} 6
               </Text>
@@ -60,7 +60,7 @@ const OnboardingPrompt = () => {
                 style={{ width: `${(step / 6) * 100}%` }}
               />
             </div>
-          </div>
+          </Stack>
 
           <Inline gap={3}>
             <Button

@@ -21,6 +21,7 @@ import { useTranslation } from '@/app/context/TranslationContext';
 import { Language } from '@/app/utils/translations/serverTranslations';
 import { Button } from '@/app/components/ui/Button';
 import { Card } from '@/app/components/ui/Card';
+import { Stack } from '@/app/components/ui/Layout';
 
 interface MusicalFact {
   id: string;
@@ -271,8 +272,8 @@ const MusicalFacts: React.FC<MusicalFactsProps> = ({
   if (!mounted) {
     return (
       <section className="section-wrap relative !mb-8">
-        <div className="animate-pulse">
-          <div className="h-8 bg-gray-200 rounded mb-4"></div>
+        <Stack className="animate-pulse">
+          <div className="h-8 bg-gray-200 rounded"></div>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             {[...Array(4)].map((_, i) => (
               <Card nivel={2} key={i}>
@@ -288,7 +289,7 @@ const MusicalFacts: React.FC<MusicalFactsProps> = ({
               </Card>
             ))}
           </div>
-        </div>
+        </Stack>
       </section>
     );
   }

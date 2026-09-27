@@ -13,7 +13,7 @@ import {
   PiWarningCircle,
   PiX,
 } from 'react-icons/pi';
-import { Inline } from '@/app/components/ui/Layout';
+import { Stack, Inline } from '@/app/components/ui/Layout';
 import { Card } from '@/app/components/ui/Card';
 
 const WEEKDAYS = ['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb'];
@@ -194,11 +194,12 @@ function CalendarDaySkeleton({ delay = 0 }: { delay?: number }) {
   const eventCount = hasEvents ? Math.floor(Math.random() * 3) + 1 : 0;
 
   return (
-    <div
+    <Stack
+      gap={1}
       className="min-h-24 p-2 border border-theme-secondary/50 rounded-lg transition-all bg-theme-elevated/50 animate-pulse"
       style={{ animationDelay: `${delay}s` }}
     >
-      <div className="h-4 w-6 bg-theme-primary/30 rounded mb-1"></div>
+      <div className="h-4 w-6 bg-theme-primary/30 rounded"></div>
 
       <div className="space-y-1">
         {Array.from({ length: eventCount }).map((_, i) => (
@@ -218,6 +219,6 @@ function CalendarDaySkeleton({ delay = 0 }: { delay?: number }) {
           <div className="h-3 w-12 bg-theme-tertiary/30 rounded"></div>
         )}
       </div>
-    </div>
+    </Stack>
   );
 }

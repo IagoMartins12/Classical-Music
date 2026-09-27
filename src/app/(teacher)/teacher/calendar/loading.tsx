@@ -11,7 +11,7 @@ import {
   PiWarningCircle,
   PiX,
 } from 'react-icons/pi';
-import { Inline } from '@/app/components/ui/Layout';
+import { Stack, Inline } from '@/app/components/ui/Layout';
 import { Card } from '@/app/components/ui/Card';
 
 export default function TeacherCalendarLoading() {
@@ -161,14 +161,14 @@ export default function TeacherCalendarLoading() {
               <div className="h-5 bg-accent-red/20 rounded mb-2 w-64"></div>
               <div className="h-4 bg-theme-elevated rounded mb-4 w-80"></div>
 
-              <div className="space-y-2">
+              <Stack gap={2}>
                 {Array.from({ length: 2 }).map((_, i) => (
-                  <div key={i} className="classical-card-2 p-3">
-                    <div className="h-4 bg-theme-elevated rounded mb-1 w-32"></div>
+                  <Stack gap={1} key={i} className="classical-card-2 p-3">
+                    <div className="h-4 bg-theme-elevated rounded w-32"></div>
                     <div className="h-3 bg-theme-secondary/50 rounded w-24"></div>
-                  </div>
+                  </Stack>
                 ))}
-              </div>
+              </Stack>
             </div>
           </div>
         </Card>
@@ -216,7 +216,7 @@ function CalendarDaySkeleton({ index }: { index: number }) {
       </div>
 
       {hasEvents && (
-        <div className="space-y-1">
+        <Stack gap={1}>
           {Array.from({ length: Math.min(eventCount, 3) }).map((_, i) => (
             <div
               key={i}
@@ -227,7 +227,7 @@ function CalendarDaySkeleton({ index }: { index: number }) {
           {eventCount > 3 && (
             <div className="w-full h-5 bg-theme-elevated border border-dashed border-theme-secondary rounded text-xs animate-pulse"></div>
           )}
-        </div>
+        </Stack>
       )}
     </div>
   );

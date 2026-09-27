@@ -12,7 +12,7 @@ import Input from '@/app/components/Common/Inputs';
 import { useSmartFormChanges } from '@/app/hooks/useFormChanges';
 import { saveEvent } from '@/app/requests/calendar-requests';
 import Image from '@/app/components/SmartImage';
-import { Inline } from '@/app/components/ui/Layout';
+import { Stack, Inline } from '@/app/components/ui/Layout';
 import { Text } from '@/app/components/ui/Text';
 import { Field } from '@/app/components/ui/Field';
 
@@ -309,7 +309,7 @@ export default function CreateEventModal({
       </div>
 
       {/* Form Content */}
-      <div className="px-6 py-6 space-y-6 overflow-y-auto ">
+      <Stack gap={6} className="px-6 py-6 overflow-y-auto">
         {/* Title */}
         <div>
           <Input
@@ -456,8 +456,8 @@ export default function CreateEventModal({
             placeholder="https://exemplo.com/imagem.jpg"
           />
           {formData.imageUrl && (
-            <div className="mt-3">
-              <Text papel="rotulo" tom="suave" as="p" className="mb-2">
+            <Stack gap={2} className="mt-3">
+              <Text papel="rotulo" tom="suave" as="p">
                 Preview:
               </Text>
               <div className="relative w-full h-48 rounded-lg overflow-hidden border border-theme-secondary">
@@ -472,7 +472,7 @@ export default function CreateEventModal({
                   width={100}
                 />
               </div>
-            </div>
+            </Stack>
           )}
         </div>
 
@@ -507,7 +507,7 @@ export default function CreateEventModal({
             </Inline>
           </div>
         </div>
-      </div>
+      </Stack>
 
       {/* Footer */}
       <Inline

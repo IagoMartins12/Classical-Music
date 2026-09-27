@@ -27,7 +27,7 @@ import {
 import Button from '@/app/components/Common/Button';
 import Select from '@/app/components/Common/Select';
 import LoadingAdminState from '../../Common/LoadingState';
-import { Inline } from '@/app/components/ui/Layout';
+import { Stack, Inline } from '@/app/components/ui/Layout';
 import { Text } from '@/app/components/ui/Text';
 
 interface ReportStats {
@@ -255,7 +255,7 @@ export default function ReportsDashboard() {
             </Inline>
 
             {reportsByType.length > 0 ? (
-              <div className="space-y-4">
+              <Stack>
                 {reportsByType.map((item) => (
                   <div
                     key={item.entityType}
@@ -287,7 +287,7 @@ export default function ReportsDashboard() {
                     </Inline>
                   </div>
                 ))}
-              </div>
+              </Stack>
             ) : (
               <div className="text-center py-8 text-theme-tertiary">
                 <PiFlag className="w-12 h-12 mx-auto mb-4 opacity-50" />
@@ -308,7 +308,7 @@ export default function ReportsDashboard() {
             </Inline>
 
             {reportsByReason.length > 0 ? (
-              <div className="space-y-4">
+              <Stack>
                 {reportsByReason.map((item) => (
                   <div
                     key={item.reason}
@@ -340,7 +340,7 @@ export default function ReportsDashboard() {
                     </Inline>
                   </div>
                 ))}
-              </div>
+              </Stack>
             ) : (
               <div className="text-center py-8 text-theme-tertiary">
                 <PiWarningCircle className="w-12 h-12 mx-auto mb-4 opacity-50" />

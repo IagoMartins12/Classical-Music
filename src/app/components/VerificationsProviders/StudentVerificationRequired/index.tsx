@@ -23,7 +23,7 @@ import Button from '../../Common/Button';
 import { useEmailRefreshSimple } from '@/app/hooks/useEmailRefresh';
 import { Toaster } from 'react-hot-toast';
 import Navbar from '../../Navbar';
-import { Inline } from '@/app/components/ui/Layout';
+import { Stack, Inline } from '@/app/components/ui/Layout';
 import { Text } from '@/app/components/ui/Text';
 import { Card } from '@/app/components/ui/Card';
 
@@ -86,7 +86,7 @@ export default function StudentVerificationRequired({
                   <h3 className="text-lg font-bold text-theme-primary mb-3 classical-title">
                     {userName ? `Olá, ${userName}!` : 'Convite Pendente'}
                   </h3>
-                  <div className="space-y-3">
+                  <Stack gap={3}>
                     <p className="text-theme-secondary">
                       <strong className="text-brand-primary">Seu Email:</strong>{' '}
                       {userEmail}
@@ -98,7 +98,7 @@ export default function StudentVerificationRequired({
                       apenas alunos autorizados tenham acesso às informações
                       pedagógicas.
                     </Text>
-                  </div>
+                  </Stack>
                 </div>
               </div>
             </AnimatedCard>
@@ -169,7 +169,7 @@ export default function StudentVerificationRequired({
                   </h3>
                 </Inline>
 
-                <div className="text-left space-y-3">
+                <Stack gap={3} className="text-left">
                   <Inline gap={2}>
                     <div className="w-2 h-2 bg-accent-green rounded-full"></div>
                     <Text papel="rotulo" tom="suave">
@@ -194,7 +194,7 @@ export default function StudentVerificationRequired({
                       Funcionalidades completas
                     </Text>
                   </Inline>
-                </div>
+                </Stack>
               </AnimatedCard>
 
               {/* After approval */}
@@ -208,7 +208,7 @@ export default function StudentVerificationRequired({
                   </h3>
                 </Inline>
 
-                <div className="text-left space-y-2">
+                <Stack gap={2} className="text-left">
                   <Inline gap={2}>
                     <div className="w-2 h-2 bg-accent-green rounded-full"></div>
                     <Text papel="rotulo" tom="suave">
@@ -233,7 +233,7 @@ export default function StudentVerificationRequired({
                       Acesso completo à plataforma
                     </Text>
                   </Inline>
-                </div>
+                </Stack>
               </AnimatedCard>
             </div>
 
@@ -317,11 +317,11 @@ export default function StudentVerificationRequired({
               </Inline>
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div className="text-left">
-                  <h4 className="font-semibold text-theme-primary mb-3">
+                <Stack gap={3} className="text-left">
+                  <h4 className="font-semibold text-theme-primary">
                     Na plataforma:
                   </h4>
-                  <div className="space-y-2">
+                  <Stack gap={2}>
                     <Inline gap={2}>
                       <div className="w-2 h-2 bg-brand-primary rounded-full"></div>
                       <Text papel="rotulo" tom="suave">
@@ -346,14 +346,14 @@ export default function StudentVerificationRequired({
                         Personalizar seu perfil
                       </Text>
                     </Inline>
-                  </div>
-                </div>
+                  </Stack>
+                </Stack>
 
-                <div className="text-left">
-                  <h4 className="font-semibold text-theme-primary mb-3">
+                <Stack gap={3} className="text-left">
+                  <h4 className="font-semibold text-theme-primary">
                     Para acelerar o processo:
                   </h4>
-                  <div className="space-y-2">
+                  <Stack gap={2}>
                     <Inline gap={2}>
                       <div className="w-2 h-2 bg-accent-amber rounded-full"></div>
                       <Text papel="rotulo" tom="suave">
@@ -378,8 +378,8 @@ export default function StudentVerificationRequired({
                         Aguarde a notificação de aprovação
                       </Text>
                     </Inline>
-                  </div>
-                </div>
+                  </Stack>
+                </Stack>
               </div>
             </AnimatedCard>
 

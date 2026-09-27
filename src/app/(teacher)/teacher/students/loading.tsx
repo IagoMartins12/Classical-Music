@@ -13,7 +13,7 @@ import {
   PiUser,
   PiUsers,
 } from 'react-icons/pi';
-import { Inline } from '@/app/components/ui/Layout';
+import { Stack, Inline } from '@/app/components/ui/Layout';
 import { Card } from '@/app/components/ui/Card';
 
 export default function TeacherStudentsLoading() {
@@ -185,7 +185,7 @@ function StudentCardSkeleton() {
         <div className="h-3 bg-theme-elevated rounded mx-auto w-1/2"></div>
 
         {/* Details */}
-        <div className="space-y-2 pt-2">
+        <Stack gap={2} className="pt-2">
           <Inline gap={2} className="justify-center">
             <PiCalendarBlank className="w-3 h-3 text-theme-tertiary/30" />
             <div className="h-3 bg-theme-elevated rounded w-20"></div>
@@ -198,7 +198,7 @@ function StudentCardSkeleton() {
             <PiBookOpen className="w-3 h-3 text-theme-tertiary/30" />
             <div className="h-3 bg-theme-elevated rounded w-12"></div>
           </Inline>
-        </div>
+        </Stack>
 
         {/* Level tag */}
         <div className="pt-2">
@@ -206,15 +206,15 @@ function StudentCardSkeleton() {
         </div>
 
         {/* Progress */}
-        <div className="pt-2">
-          <div className="flex items-center justify-between mb-1">
+        <Stack gap={1} className="pt-2">
+          <div className="flex items-center justify-between">
             <div className="h-3 bg-theme-tertiary/30 rounded w-12"></div>
             <div className="h-3 bg-theme-tertiary/30 rounded w-8"></div>
           </div>
           <div className="w-full bg-theme-secondary rounded-full h-2">
             <div className="h-2 bg-gradient-to-r from-brand-primary/30 to-brand-secondary/30 rounded-full w-2/3"></div>
           </div>
-        </div>
+        </Stack>
 
         {/* Rating */}
         <div className="flex justify-center space-x-1 pt-2">

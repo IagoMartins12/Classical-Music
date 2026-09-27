@@ -162,7 +162,7 @@ const WorkCard: React.FC<workCardProps> = ({ work, goToWorkPage }) => {
           </div>
 
           {/* Action Section */}
-          <div className="space-y-3">
+          <Stack gap={3}>
             {/* Main Action Button */}
             <Link
               href={`/works/${work.id}`}
@@ -228,7 +228,7 @@ const WorkCard: React.FC<workCardProps> = ({ work, goToWorkPage }) => {
                 </button>
               </Inline>
             </div>
-          </div>
+          </Stack>
 
           {/* Hover glow effect */}
           <div className="absolute inset-0 bg-brand-gradient opacity-0 group-hover:opacity-5 transition-opacity duration-500 rounded-2xl pointer-events-none"></div>

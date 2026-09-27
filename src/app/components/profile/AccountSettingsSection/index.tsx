@@ -33,7 +33,7 @@ import {
 import DeleteAccountModal from '../../DeleteAccountModal';
 import EmailVerificationBanner2 from '../../EmailVerification/EmailVerificationBanner2';
 import { useTranslation } from '@/app/context/TranslationContext';
-import { Inline } from '@/app/components/ui/Layout';
+import { Stack, Inline } from '@/app/components/ui/Layout';
 import { Text } from '@/app/components/ui/Text';
 import { Card } from '@/app/components/ui/Card';
 
@@ -273,10 +273,10 @@ const AccountSettingsSection: React.FC<AccountSettingsSectionProps> = ({
   const renderLoginMethodInfo = () => {
     if (loginMethod.isLoading) {
       return (
-        <div className="animate-pulse">
-          <div className="h-4 bg-theme-secondary rounded w-32 mb-2"></div>
+        <Stack gap={2} className="animate-pulse">
+          <div className="h-4 bg-theme-secondary rounded w-32"></div>
           <div className="h-3 bg-theme-secondary rounded w-48"></div>
-        </div>
+        </Stack>
       );
     }
 
@@ -334,24 +334,24 @@ const AccountSettingsSection: React.FC<AccountSettingsSectionProps> = ({
 
       {/* Login Method Info */}
       {loginMethod.hasSocialLogin && (
-        <div>
-          <h3 className="text-lg font-semibold text-theme-primary mb-4">
+        <Stack>
+          <h3 className="text-lg font-semibold text-theme-primary">
             {t('account_auth_method')}
           </h3>
 
           <Card nivel={2} densidade="compacta">
             {renderLoginMethodInfo()}
           </Card>
-        </div>
+        </Stack>
       )}
 
       {/* Email Section */}
-      <div className="border-t border-theme-secondary pt-8">
-        <h3 className="text-lg font-semibold text-theme-primary mb-4">
+      <Stack className="border-t border-theme-secondary pt-8">
+        <h3 className="text-lg font-semibold text-theme-primary">
           {t('account_login_info')}
         </h3>
 
-        <div className="space-y-4">
+        <Stack>
           <div>
             <div className="flex items-center justify-between mb-2">
               <label className="block text-sm font-medium text-theme-secondary">
@@ -370,7 +370,7 @@ const AccountSettingsSection: React.FC<AccountSettingsSectionProps> = ({
             </div>
 
             {!isChangingEmail ? (
-              <div className="space-y-3">
+              <Stack gap={3}>
                 <Inline gap={3}>
                   <Input
                     value={user.email || ''}
@@ -391,8 +391,8 @@ const AccountSettingsSection: React.FC<AccountSettingsSectionProps> = ({
                   <div className="bg-accent-blue bg-opacity-10 border border-accent-blue rounded-lg p-4">
                     <div className="flex items-start">
                       <PiShield className="w-5 h-5 text-accent-blue mr-3 mt-0.5 flex-shrink-0" />
-                      <div>
-                        <h4 className="font-medium text-accent-blue mb-1">
+                      <Stack gap={1}>
+                        <h4 className="font-medium text-accent-blue">
                           {t('account_social_protected')}
                         </h4>
                         <p className="text-sm text-accent-blue opacity-90">
@@ -400,18 +400,18 @@ const AccountSettingsSection: React.FC<AccountSettingsSectionProps> = ({
                             providers: loginMethod.socialProviders.join(' e '),
                           })}
                         </p>
-                      </div>
+                      </Stack>
                     </div>
                   </div>
                 )}
-              </div>
+              </Stack>
             ) : (
               <Card nivel={2} densidade="compacta" className="space-y-4">
                 <div className="bg-accent-amber bg-opacity-10 border border-red-400 rounded-lg p-4">
                   <div className="flex items-start">
                     <PiWarning className="w-5 h-5 text-accent-amber mr-3 mt-0.5 flex-shrink-0" />
-                    <div>
-                      <h4 className="font-medium text-accent-amber mb-1">
+                    <Stack gap={1}>
+                      <h4 className="font-medium text-accent-amber">
                         {t('account_email_change_warning')}
                       </h4>
                       <ul className="text-sm text-accent-amber opacity-90 space-y-1">
@@ -421,7 +421,7 @@ const AccountSettingsSection: React.FC<AccountSettingsSectionProps> = ({
                         <li>{t('account_confirmation_email')}</li>
                         <li>{t('account_session_update')}</li>
                       </ul>
-                    </div>
+                    </Stack>
                   </div>
                 </div>
 
@@ -489,8 +489,8 @@ const AccountSettingsSection: React.FC<AccountSettingsSectionProps> = ({
               </Card>
             )}
           </div>
-        </div>
-      </div>
+        </Stack>
+      </Stack>
 
       {/* Password Section */}
       <div className="border-t border-theme-secondary pt-8">
@@ -553,14 +553,14 @@ const AccountSettingsSection: React.FC<AccountSettingsSectionProps> = ({
             <div className="bg-accent-amber bg-opacity-10 border border-accent-amber rounded-lg p-4 mb-4">
               <div className="flex items-start">
                 <PiInfo className="w-5 h-5 text-accent-amber mr-3 mt-0.5 flex-shrink-0" />
-                <div>
-                  <h4 className="font-medium text-accent-amber mb-1">
+                <Stack gap={1}>
+                  <h4 className="font-medium text-accent-amber">
                     {t('account_improve_security')}
                   </h4>
                   <p className="text-sm text-accent-amber opacity-90">
                     {t('account_define_password_description')}
                   </p>
-                </div>
+                </Stack>
               </div>
             </div>
           )}
@@ -610,7 +610,7 @@ const AccountSettingsSection: React.FC<AccountSettingsSectionProps> = ({
 
               {/* Password strength indicator */}
               {passwordData.newPassword && (
-                <div className="mt-2 space-y-2">
+                <Stack gap={2} className="mt-2">
                   <div className="flex items-center justify-between">
                     <Text papel="legenda" tom="suave">
                       {t('account_password_strength')}
@@ -638,7 +638,7 @@ const AccountSettingsSection: React.FC<AccountSettingsSectionProps> = ({
                       </ul>
                     </Text>
                   )}
-                </div>
+                </Stack>
               )}
             </div>
 
@@ -747,18 +747,21 @@ const AccountSettingsSection: React.FC<AccountSettingsSectionProps> = ({
             <div className="bg-accent-blue bg-opacity-10 border border-accent-blue rounded-lg p-4">
               <div className="flex items-start">
                 <PiInfo className="w-5 h-5 text-accent-blue mr-3 mt-0.5 flex-shrink-0" />
-                <div>
-                  <h4 className="font-medium text-accent-blue mb-2">
+                <Stack gap={2}>
+                  <h4 className="font-medium text-accent-blue">
                     {t('account_choose_type')}
                   </h4>
-                  <div className="space-y-2 text-sm text-accent-blue opacity-90">
+                  <Stack
+                    gap={2}
+                    className="text-sm text-accent-blue opacity-90"
+                  >
                     {USER_TYPE_OPTIONS.map((option) => (
                       <div key={option.value}>
                         <strong>{option.label}:</strong> {option.description}
                       </div>
                     ))}
-                  </div>
-                </div>
+                  </Stack>
+                </Stack>
               </div>
             </div>
 
@@ -798,8 +801,8 @@ const AccountSettingsSection: React.FC<AccountSettingsSectionProps> = ({
       </div>
 
       {/* Account Info */}
-      <div className="border-t border-theme-secondary pt-8">
-        <h3 className="text-lg font-semibold text-theme-primary mb-4">
+      <Stack className="border-t border-theme-secondary pt-8">
+        <h3 className="text-lg font-semibold text-theme-primary">
           {t('account_info')}
         </h3>
 
@@ -825,11 +828,11 @@ const AccountSettingsSection: React.FC<AccountSettingsSectionProps> = ({
             </Inline>
           </Card>
         </div>
-      </div>
+      </Stack>
 
       {/* Danger Zone */}
-      <div className="border-t border-accent-red pt-8">
-        <Inline gap={3} className="mb-4">
+      <Stack className="border-t border-accent-red pt-8">
+        <Inline gap={3}>
           <PiWarning className="w-5 h-5 text-accent-red" />
           <h3 className="text-lg font-semibold text-accent-red">
             {t('account_danger_zone')}
@@ -842,14 +845,14 @@ const AccountSettingsSection: React.FC<AccountSettingsSectionProps> = ({
           className="border border-accent-red bg-accent-red bg-opacity-5"
         >
           <div className="flex flex-col md:flex-row items-center gap-4 justify-between mb-4">
-            <div>
-              <h4 className="font-medium text-theme-primary mb-1">
+            <Stack gap={1}>
+              <h4 className="font-medium text-theme-primary">
                 {t('account_delete_permanent')}
               </h4>
               <Text papel="rotulo" tom="suave" as="p">
                 {t('account_delete_warning')}
               </Text>
-            </div>
+            </Stack>
 
             <Button
               variant="delete"
@@ -862,7 +865,7 @@ const AccountSettingsSection: React.FC<AccountSettingsSectionProps> = ({
             </Button>
           </div>
         </Card>
-      </div>
+      </Stack>
 
       {/* Delete Account Modal */}
       <DeleteAccountModal

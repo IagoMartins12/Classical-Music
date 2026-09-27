@@ -17,7 +17,7 @@ import {
   PiTrendUp,
   PiUser,
 } from 'react-icons/pi';
-import { Inline } from '@/app/components/ui/Layout';
+import { Stack, Inline } from '@/app/components/ui/Layout';
 
 export default function StudentProfileLoading() {
   return (
@@ -126,7 +126,7 @@ export default function StudentProfileLoading() {
             title="Configurações de Estudo"
             subtitle="Seus objetivos e preferências de aprendizado"
           >
-            <div className="space-y-6">
+            <Stack gap={6}>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div className="h-4 bg-theme-primary/30 rounded w-24 mb-2"></div>
                 <div className="h-4 bg-theme-primary/30 rounded w-32 mb-2"></div>
@@ -139,7 +139,7 @@ export default function StudentProfileLoading() {
                 <div className="h-4 bg-theme-primary/30 rounded w-28 mb-2"></div>
                 <div className="h-20 bg-theme-secondary/20 rounded"></div>
               </div>
-            </div>
+            </Stack>
           </ProfileSectionSkeleton>
 
           {/* Musical Preferences */}
@@ -169,7 +169,7 @@ export default function StudentProfileLoading() {
             <div className="space-y-4">
               <div className="h-4 bg-theme-primary/30 rounded w-32 mb-4"></div>
 
-              <div className="space-y-3">
+              <Stack gap={3}>
                 <div className="flex items-center justify-between p-3 bg-theme-secondary/5 rounded-lg">
                   <div className="h-4 bg-theme-primary/30 rounded w-40"></div>
                   <div className="h-5 w-12 bg-accent-green/20 rounded-full"></div>
@@ -178,7 +178,7 @@ export default function StudentProfileLoading() {
                   <div className="h-4 bg-theme-primary/30 rounded w-48"></div>
                   <div className="h-5 w-12 bg-accent-green/20 rounded-full"></div>
                 </div>
-              </div>
+              </Stack>
             </div>
           </ProfileSectionSkeleton>
 
@@ -191,10 +191,10 @@ export default function StudentProfileLoading() {
             title="Configurações de Comunicação"
             subtitle="Como você prefere ser contatado"
           >
-            <div>
-              <div className="h-4 bg-theme-primary/30 rounded w-40 mb-4"></div>
+            <Stack>
+              <div className="h-4 bg-theme-primary/30 rounded w-40"></div>
               <div className="h-10 bg-theme-elevated/30 rounded"></div>
-            </div>
+            </Stack>
           </ProfileSectionSkeleton>
 
           {/* My Repertoire */}
@@ -206,30 +206,31 @@ export default function StudentProfileLoading() {
           >
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               {/* Want to Learn */}
-              <div>
-                <div className="h-6 bg-theme-primary/30 rounded w-40 mb-4 flex items-center">
+              <Stack>
+                <div className="h-6 bg-theme-primary/30 rounded w-40 flex items-center">
                   <PiTarget className="w-5 h-5 mr-2 text-theme-tertiary/30" />
                 </div>
-                <div className="space-y-2">
+                <Stack gap={2}>
                   {Array.from({ length: 3 }).map((_, i) => (
-                    <div
+                    <Stack
+                      gap={1}
                       key={i}
                       className="p-3 bg-theme-secondary/10 rounded-lg border"
                     >
-                      <div className="h-4 bg-theme-primary/30 rounded w-32 mb-1"></div>
-                      <div className="h-3 bg-theme-tertiary/30 rounded w-24 mb-1"></div>
+                      <div className="h-4 bg-theme-primary/30 rounded w-32"></div>
+                      <div className="h-3 bg-theme-tertiary/30 rounded w-24"></div>
                       <div className="h-4 w-16 bg-accent-blue/10 rounded"></div>
-                    </div>
+                    </Stack>
                   ))}
-                </div>
-              </div>
+                </Stack>
+              </Stack>
 
               {/* Learned */}
-              <div>
-                <div className="h-6 bg-theme-primary/30 rounded w-32 mb-4 flex items-center">
+              <Stack>
+                <div className="h-6 bg-theme-primary/30 rounded w-32 flex items-center">
                   <PiCheck className="w-5 h-5 mr-2 text-theme-tertiary/30" />
                 </div>
-                <div className="space-y-2">
+                <Stack gap={2}>
                   {Array.from({ length: 3 }).map((_, i) => (
                     <div
                       key={i}
@@ -243,13 +244,13 @@ export default function StudentProfileLoading() {
                       </div>
                     </div>
                   ))}
-                </div>
-              </div>
+                </Stack>
+              </Stack>
             </div>
 
             {/* Statistics */}
-            <div className="mt-8 pt-6 border-t border-theme-secondary">
-              <div className="h-6 bg-theme-primary/30 rounded w-24 mb-4 flex items-center">
+            <Stack className="mt-8 pt-6 border-t border-theme-secondary">
+              <div className="h-6 bg-theme-primary/30 rounded w-24 flex items-center">
                 <PiTrendUp className="w-5 h-5 mr-2 text-theme-tertiary/30" />
               </div>
               <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
@@ -260,12 +261,12 @@ export default function StudentProfileLoading() {
                   </div>
                 ))}
               </div>
-            </div>
+            </Stack>
 
             {/* Active Teachers */}
-            <div className="mt-8 pt-6 border-t border-theme-secondary">
-              <div className="h-6 bg-theme-primary/30 rounded w-32 mb-4"></div>
-              <div className="space-y-3">
+            <Stack className="mt-8 pt-6 border-t border-theme-secondary">
+              <div className="h-6 bg-theme-primary/30 rounded w-32"></div>
+              <Stack gap={3}>
                 {Array.from({ length: 2 }).map((_, i) => (
                   <Inline
                     gap={3}
@@ -279,8 +280,8 @@ export default function StudentProfileLoading() {
                     </div>
                   </Inline>
                 ))}
-              </div>
-            </div>
+              </Stack>
+            </Stack>
           </ProfileSectionSkeleton>
         </div>
       </div>
@@ -315,10 +316,10 @@ function ProfileSectionSkeleton({
             >
               {icon}
             </div>
-            <div>
-              <div className="h-6 bg-theme-primary/30 rounded w-48 mb-2"></div>
+            <Stack gap={2}>
+              <div className="h-6 bg-theme-primary/30 rounded w-48"></div>
               <div className="h-3 bg-theme-tertiary/30 rounded w-64"></div>
-            </div>
+            </Stack>
           </Inline>
 
           <Inline
@@ -344,12 +345,12 @@ function ProfileFieldSkeleton({
   icon?: React.ReactNode;
 }) {
   return (
-    <div>
-      <div className="h-3 bg-theme-tertiary/30 rounded w-16 mb-2"></div>
+    <Stack gap={2}>
+      <div className="h-3 bg-theme-tertiary/30 rounded w-16"></div>
       <Inline gap={2}>
         {icon && <div className="text-theme-tertiary/30">{icon}</div>}
         <div className="h-4 bg-theme-primary/30 rounded flex-1 max-w-40"></div>
       </Inline>
-    </div>
+    </Stack>
   );
 }

@@ -10,7 +10,7 @@ import Button from '@/app/components/Common/Button';
 import ReportPriorityBadge from '../ReportPriorityBadge';
 import Modal from '../../Modal';
 import { getReportHistory } from '@/app/requests/moderation';
-import { Inline } from '@/app/components/ui/Layout';
+import { Stack, Inline } from '@/app/components/ui/Layout';
 import { Text } from '@/app/components/ui/Text';
 
 interface ReportHistoryModalProps {
@@ -145,7 +145,7 @@ export default function ReportHistoryModal({
               <p className="text-theme-secondary">Nenhum report encontrado</p>
             </div>
           ) : (
-            <div className="space-y-4">
+            <Stack>
               {reports.map((report) => (
                 <div
                   key={report.id}
@@ -211,7 +211,7 @@ export default function ReportHistoryModal({
                   )}
                 </div>
               ))}
-            </div>
+            </Stack>
           )}
 
           {/* Actions */}

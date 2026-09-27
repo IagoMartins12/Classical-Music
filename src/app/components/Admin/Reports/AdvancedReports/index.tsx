@@ -37,7 +37,7 @@ import { MetricCard } from '@/app/components/Admin/Charts/AdminCharts';
 import { useAdminReports } from '@/app/hooks/admin/useAdminReports';
 import { toast } from 'react-hot-toast';
 import LoadingAdminState from '../../Common/LoadingState';
-import { Inline } from '@/app/components/ui/Layout';
+import { Stack, Inline } from '@/app/components/ui/Layout';
 import { Text } from '@/app/components/ui/Text';
 
 export default function AdvancedReports() {
@@ -338,15 +338,15 @@ export default function AdvancedReports() {
       {/* Report Generation */}
       <AnimatedCard className="classical-card p-4 lg:p-6">
         <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4 mb-6">
-          <div>
-            <h3 className="text-xl font-bold text-theme-primary mb-2">
+          <Stack gap={2}>
+            <h3 className="text-xl font-bold text-theme-primary">
               Gerar Novo Relatório
             </h3>
             <p className="text-theme-secondary">
               Selecione o período e formato para gerar relatórios com dados
               reais da plataforma
             </p>
-          </div>
+          </Stack>
 
           <Inline gap={3}>
             <Select
@@ -378,8 +378,8 @@ export default function AdvancedReports() {
           <div className="mb-6 p-4 bg-accent-blue/10 border border-accent-blue/20 rounded-lg">
             <div className="flex items-start space-x-3">
               <PiInfo className="w-5 h-5 text-accent-blue mt-0.5" />
-              <div>
-                <h4 className="font-medium text-accent-blue mb-1">
+              <Stack gap={1}>
+                <h4 className="font-medium text-accent-blue">
                   Sobre relatórios PDF
                 </h4>
                 <Text papel="rotulo" tom="suave" as="p">
@@ -388,7 +388,7 @@ export default function AdvancedReports() {
                   <strong>Ctrl+P → Salvar como PDF</strong> no seu navegador
                   para obter o arquivo PDF final.
                 </Text>
-              </div>
+              </Stack>
             </div>
           </div>
         )}
@@ -466,7 +466,7 @@ export default function AdvancedReports() {
   );
 
   const renderResults = () => (
-    <div className="space-y-6">
+    <Stack gap={6}>
       <div className="flex items-center justify-between">
         <div>
           <h3 className="text-xl font-bold text-theme-primary">
@@ -622,7 +622,7 @@ export default function AdvancedReports() {
           </Button>
         </div>
       )}
-    </div>
+    </Stack>
   );
 
   // 🔄 RENDER DE MÉTRICAS REAIS
