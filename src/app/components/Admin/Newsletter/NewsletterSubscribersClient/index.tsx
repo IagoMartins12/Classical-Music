@@ -459,7 +459,7 @@ export default function NewsletterSubscribersClient() {
 
             {/* Subscribers Table */}
             <div className="overflow-x-auto">
-              <table className="w-full">
+              <table className="w-full tabela-empilha">
                 <thead>
                   <tr className="border-b border-theme-primary">
                     <th className="text-left py-3 px-2">
@@ -534,7 +534,7 @@ export default function NewsletterSubscribersClient() {
                             className="rounded border-theme-primary"
                           />
                         </td>
-                        <td className="py-3 px-2">
+                        <td data-rotulo="Subscriber" className="py-3 px-2">
                           <div>
                             <Inline gap={2}>
                               <span className="font-medium text-theme-primary">
@@ -567,14 +567,14 @@ export default function NewsletterSubscribersClient() {
                             </Text>
                           </div>
                         </td>
-                        <td className="py-3 px-2">
+                        <td data-rotulo="Status" className="py-3 px-2">
                           <span
                             className={`px-2 py-1 rounded-full text-xs font-medium ${statusColor}`}
                           >
                             {statusLabel}
                           </span>
                         </td>
-                        <td className="py-3 px-2">
+                        <td data-rotulo="Engajamento" className="py-3 px-2">
                           <div>
                             <span
                               className={`px-2 py-1 rounded-full text-xs font-medium ${engagement.color}`}
@@ -592,7 +592,7 @@ export default function NewsletterSubscribersClient() {
                             </Text>
                           </div>
                         </td>
-                        <td className="py-3 px-2">
+                        <td data-rotulo="Inscrição" className="py-3 px-2">
                           <div className="text-sm">
                             <div className="text-theme-primary">
                               {new Date(
@@ -604,7 +604,7 @@ export default function NewsletterSubscribersClient() {
                             </Text>
                           </div>
                         </td>
-                        <td className="py-3 px-2">
+                        <td data-rotulo="Ações" className="py-3 px-2">
                           <Inline gap={1}>
                             {/* 🆕 BOTÕES ATUALIZADOS COM HANDLERS */}
                             <Button

@@ -353,7 +353,7 @@ export default function AdStatsModal({
                     Páginas com Mais Impressões
                   </h3>
                   <div className="overflow-x-auto">
-                    <table className="w-full">
+                    <table className="w-full tabela-empilha">
                       <thead>
                         <tr className="border-b border-theme-primary">
                           <th className="text-left py-2 text-theme-primary font-medium">
@@ -396,13 +396,22 @@ export default function AdStatsModal({
                                     ''
                                   ) || '/'}
                                 </td>
-                                <td className="py-2 text-theme-secondary text-right">
+                                <td
+                                  data-rotulo="Impressões"
+                                  className="py-2 text-theme-secondary text-right"
+                                >
                                   {formatNumber(impressions)}
                                 </td>
-                                <td className="py-2 text-theme-secondary text-right">
+                                <td
+                                  data-rotulo="Cliques"
+                                  className="py-2 text-theme-secondary text-right"
+                                >
                                   {formatNumber(clicks)}
                                 </td>
-                                <td className="py-2 text-theme-secondary text-right">
+                                <td
+                                  data-rotulo="CTR"
+                                  className="py-2 text-theme-secondary text-right"
+                                >
                                   {formatPercentage(ctr)}%
                                 </td>
                               </tr>

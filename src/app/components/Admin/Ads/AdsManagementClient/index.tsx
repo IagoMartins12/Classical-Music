@@ -449,7 +449,7 @@ export default function AdsManagementClient() {
 
             {/* Ads Table */}
             <div className="overflow-x-auto">
-              <table className="w-full">
+              <table className="w-full tabela-empilha">
                 <thead>
                   <tr className="border-b border-theme-primary">
                     <th className="text-left py-3 px-2">
@@ -512,7 +512,7 @@ export default function AdsManagementClient() {
                             className="rounded border-theme-primary"
                           />
                         </td>
-                        <td className="py-3 px-2">
+                        <td data-rotulo="Anúncio" className="py-3 px-2">
                           <Inline gap={3}>
                             {ad.imageUrl ? (
                               <Image
@@ -556,7 +556,7 @@ export default function AdsManagementClient() {
                             </div>
                           </Inline>
                         </td>
-                        <td className="py-3 px-2">
+                        <td data-rotulo="Status" className="py-3 px-2">
                           <span
                             className={`px-2 py-1 rounded-full text-xs font-medium ${getStatusColor(
                               ad.status
@@ -565,12 +565,12 @@ export default function AdsManagementClient() {
                             {getStatusLabel(ad.status)}
                           </span>
                         </td>
-                        <td className="py-3 px-2">
+                        <td data-rotulo="Segmentação" className="py-3 px-2">
                           <Text papel="rotulo" tom="suave">
                             {getTargetTypeLabel(ad)}
                           </Text>
                         </td>
-                        <td className="py-3 px-2">
+                        <td data-rotulo="Mídia" className="py-3 px-2">
                           <Inline gap={1}>
                             {ad.imageUrl && <PiImage className="w-4 h-4" />}
                             {ad.videoUrl && (
@@ -581,7 +581,7 @@ export default function AdsManagementClient() {
                             )}
                           </Inline>
                         </td>
-                        <td className="py-3 px-2">
+                        <td data-rotulo="Performance" className="py-3 px-2">
                           <div className="text-sm">
                             <div className="text-theme-primary font-medium">
                               {ad.totalImpressions?.toLocaleString() || 0} imp.
@@ -591,7 +591,7 @@ export default function AdsManagementClient() {
                             </div>
                           </div>
                         </td>
-                        <td className="py-3 px-2">
+                        <td data-rotulo="Ações" className="py-3 px-2">
                           <Inline gap={1}>
                             {/* 🆕 Botão de clonagem */}
                             <Button

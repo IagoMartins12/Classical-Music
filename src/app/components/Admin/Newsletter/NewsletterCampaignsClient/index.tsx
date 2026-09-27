@@ -417,7 +417,7 @@ export default function NewsletterCampaignsClient() {
 
             {/* Campaigns Table */}
             <div className="overflow-x-auto">
-              <table className="w-full">
+              <table className="w-full tabela-empilha">
                 <thead>
                   <tr className="border-b border-theme-primary">
                     <th className="text-left py-3 px-2 text-theme-primary font-medium">
@@ -467,14 +467,14 @@ export default function NewsletterCampaignsClient() {
                             </Inline>
                           </div>
                         </td>
-                        <td className="py-3 px-2">
+                        <td data-rotulo="Status" className="py-3 px-2">
                           <span
                             className={`px-2 py-1 rounded-full text-xs font-medium ${statusColor}`}
                           >
                             {statusLabel}
                           </span>
                         </td>
-                        <td className="py-3 px-2">
+                        <td data-rotulo="Performance" className="py-3 px-2">
                           <div className="text-sm">
                             <div className="text-theme-primary font-medium">
                               {campaign.emailsSent?.toLocaleString() || 0}{' '}
@@ -495,7 +495,7 @@ export default function NewsletterCampaignsClient() {
                             </div>
                           </div>
                         </td>
-                        <td className="py-3 px-2">
+                        <td data-rotulo="Agendamento" className="py-3 px-2">
                           <div className="text-sm">
                             {campaign.scheduledAt ? (
                               <div>
@@ -533,7 +533,7 @@ export default function NewsletterCampaignsClient() {
                         </td>
 
                         {/* 🆕 AÇÕES ATUALIZADAS COM BOTÃO DE EDIÇÃO */}
-                        <td className="py-3 px-2">
+                        <td data-rotulo="Ações" className="py-3 px-2">
                           <Inline gap={1}>
                             {/* Estatísticas */}
                             <Button

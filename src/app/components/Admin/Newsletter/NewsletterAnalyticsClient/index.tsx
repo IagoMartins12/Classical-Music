@@ -260,7 +260,7 @@ export default function NewsletterAnalyticsClient() {
                     Campanhas com Melhor Performance
                   </h3>
                   <div className="overflow-x-auto">
-                    <table className="w-full">
+                    <table className="w-full tabela-empilha">
                       <thead>
                         <tr className="border-b border-theme-secondary">
                           <th className="text-left py-3 px-2 text-theme-primary font-medium">
@@ -296,10 +296,13 @@ export default function NewsletterAnalyticsClient() {
                                 </Text>
                               </div>
                             </td>
-                            <td className="py-3 px-2 text-theme-primary">
+                            <td
+                              data-rotulo="Enviados"
+                              className="py-3 px-2 text-theme-primary"
+                            >
                               {campaign.emailsSent?.toLocaleString() || 0}
                             </td>
-                            <td className="py-3 px-2">
+                            <td data-rotulo="Abertura" className="py-3 px-2">
                               <span className="font-medium">
                                 {(
                                   (campaign.emailsOpened /
@@ -309,7 +312,7 @@ export default function NewsletterAnalyticsClient() {
                                 %
                               </span>
                             </td>
-                            <td className="py-3 px-2">
+                            <td data-rotulo="Cliques" className="py-3 px-2">
                               <span className="font-medium">
                                 {(
                                   (campaign.emailsClicked /
@@ -319,7 +322,10 @@ export default function NewsletterAnalyticsClient() {
                                 %
                               </span>
                             </td>
-                            <td className="py-3 px-2 text-theme-tertiary">
+                            <td
+                              data-rotulo="Data"
+                              className="py-3 px-2 text-theme-tertiary"
+                            >
                               {new Date(campaign.sentAt).toLocaleDateString(
                                 'pt-BR'
                               )}

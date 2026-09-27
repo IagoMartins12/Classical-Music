@@ -1110,6 +1110,55 @@ body {
   }
 }
 
+/* Tabela que empilha no telefone (`tabela-empilha` no <table>). Rolagem
+   lateral é o pior jeito de ler registro em tela estreita: abaixo de 768px,
+   cada linha vira um bloco — o dado principal em cima, e cada coluna em
+   rótulo e valor (o rótulo vem do `data-rotulo` da célula). O cabeçalho sai
+   da tela mas continua para o leitor de tela. No desktop nada muda. */
+@media (max-width: 767px) {
+  .tabela-empilha thead {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+  }
+  .tabela-empilha,
+  .tabela-empilha tbody,
+  .tabela-empilha tr,
+  .tabela-empilha td {
+    display: block;
+    width: 100%;
+  }
+  .tabela-empilha tr {
+    padding-block: 0.75rem;
+    border-bottom: 1px solid var(--linha);
+  }
+  .tabela-empilha td {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    padding: 0.375rem 0 !important;
+    text-align: right;
+  }
+  .tabela-empilha td::before {
+    content: attr(data-rotulo);
+    flex-shrink: 0;
+    font-size: 0.8125rem;
+    color: var(--texto-fraco);
+    text-align: left;
+  }
+  .tabela-empilha td:first-child {
+    display: block;
+    text-align: left;
+  }
+  .tabela-empilha td:first-child::before {
+    content: none;
+  }
+}
+
 /* Diálogo e folha (`components/Modal`). No telefone a folha sobe de baixo,
    presa à borda — é onde o polegar está; a partir de 640px aparece no centro.
    320ms (`--t-folha`) na curva do sistema; nada disso com movimento reduzido. O véu não
