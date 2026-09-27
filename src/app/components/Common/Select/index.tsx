@@ -23,6 +23,8 @@ interface SelectProps extends Omit<
   placeholder?: string;
   containerClassName?: string;
   defaultValue?: string;
+  /** Ícone à esquerda, dentro do campo. */
+  icone?: React.ComponentType<React.SVGProps<SVGSVGElement>>;
 }
 
 const Select = forwardRef<HTMLSelectElement, SelectProps>(
@@ -37,6 +39,7 @@ const Select = forwardRef<HTMLSelectElement, SelectProps>(
       id,
       value,
       defaultValue,
+      icone,
       ...props
     },
     ref
@@ -112,6 +115,7 @@ const Select = forwardRef<HTMLSelectElement, SelectProps>(
             } as unknown as React.ChangeEvent<HTMLSelectElement>)
           }
           placeholder={placeholder}
+          icone={icone}
           disabled={props.disabled}
           invalido={!!error || props['aria-invalid'] === true}
           // Sem `label`, o nome vem do placeholder ou, sem ele, da primeira

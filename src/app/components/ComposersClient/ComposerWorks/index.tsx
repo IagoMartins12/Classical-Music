@@ -605,7 +605,6 @@ export default function ComposerWorks({
                     {filterOptions.instruments.length})
                   </label>
                   <div className="relative">
-                    <PiMusicNotes className="absolute left-4 top-1/2 transform -translate-y-1/2 w-4 h-4 text-theme-tertiary" />
                     <Select
                       options={[
                         { label: t('all_instruments'), value: '' },
@@ -616,7 +615,8 @@ export default function ComposerWorks({
                       ]}
                       value={selectedInstrument}
                       onChange={(e) => setSelectedInstrument(e.target.value)}
-                      className="input-classical w-full appearance-none pl-11"
+                      className="w-full"
+                      icone={PiMusicNotes}
                       disabled={loading}
                     />
                   </div>
@@ -629,7 +629,6 @@ export default function ComposerWorks({
                     )
                   </label>
                   <div className="relative">
-                    <PiPlaylist className="absolute left-4 top-1/2 transform -translate-y-1/2 w-4 h-4 text-theme-tertiary" />
                     <Select
                       options={[
                         { label: t('all_genres'), value: '' },
@@ -640,7 +639,8 @@ export default function ComposerWorks({
                       ]}
                       value={selectedGenre}
                       onChange={(e) => setSelectedGenre(e.target.value)}
-                      className="input-classical capitalize w-full appearance-none pl-11"
+                      className="capitalize w-full"
+                      icone={PiPlaylist}
                       disabled={loading}
                     />
                   </div>
@@ -653,7 +653,6 @@ export default function ComposerWorks({
                     {filterOptions.categories.length})
                   </label>
                   <div className="relative">
-                    <PiBookOpen className="absolute left-4 top-1/2 transform -translate-y-1/2 w-4 h-4 text-theme-tertiary" />
                     <Select
                       options={[
                         { label: t('all_categories'), value: '' },
@@ -664,7 +663,8 @@ export default function ComposerWorks({
                       ]}
                       value={selectedCategory}
                       onChange={(e) => setSelectedCategory(e.target.value)}
-                      className="input-classical w-full appearance-none pl-11"
+                      className="w-full"
+                      icone={PiBookOpen}
                       disabled={loading}
                     />
                   </div>

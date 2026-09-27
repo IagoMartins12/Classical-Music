@@ -244,7 +244,6 @@ export default function ComposersClient({
                 {t('client_jsx_label_children_0__filtrar_por_periodo')}
               </label>
               <div className="relative mt-2">
-                <PiClock className="absolute left-4 top-1/2 transform -translate-y-1/2 w-5 h-5 text-theme-tertiary" />
                 <Select
                   options={[
                     {
@@ -258,23 +257,9 @@ export default function ComposersClient({
                   ]}
                   value={selectedEpoch}
                   onChange={(e) => handleEpochChange(e.target.value)}
-                  className="input-classical pl-12 w-full appearance-none"
+                  className="w-full"
+                  icone={PiClock}
                 />
-                <div className="absolute right-4 top-1/2 transform -translate-y-1/2 pointer-events-none">
-                  <svg
-                    className="w-4 h-4 text-theme-tertiary"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M19 9l-7 7-7-7"
-                    />
-                  </svg>
-                </div>
               </div>
             </div>
           </div>

@@ -743,7 +743,6 @@ const WorksClient = memo(
                         {t('client_jsx_label_instrument')}
                       </label>
                       <div className="relative">
-                        <PiMusicNotes className="absolute left-4 top-1/2 transform -translate-y-1/2 w-4 h-4 text-theme-tertiary" />
                         <Select
                           options={[
                             {
@@ -759,7 +758,8 @@ const WorksClient = memo(
                           onChange={(e) =>
                             handleInstrumentFilter(e.target.value)
                           }
-                          className="input-classical pl-11 w-full appearance-none"
+                          className="w-full"
+                          icone={PiMusicNotes}
                           disabled={isPending}
                         />
                       </div>
@@ -771,7 +771,6 @@ const WorksClient = memo(
                         {t('client_jsx_label_epoch')}
                       </Text>
                       <div className="relative">
-                        <PiClock className="absolute left-4 top-1/2 transform -translate-y-1/2 w-4 h-4 text-theme-tertiary" />
                         <Select
                           options={[
                             {
@@ -788,7 +787,8 @@ const WorksClient = memo(
                           ]}
                           value={selectedEpoch}
                           onChange={(e) => handleEpochFilter(e.target.value)}
-                          className="input-classical pl-11 w-full appearance-none"
+                          className="w-full"
+                          icone={PiClock}
                           disabled={isPending}
                         />
                       </div>

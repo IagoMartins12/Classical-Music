@@ -11,9 +11,11 @@ import {
   useState,
 } from 'react';
 import type {
+  ComponentType,
   FocusEventHandler,
   KeyboardEvent as ReactKeyboardEvent,
   Ref,
+  SVGProps,
 } from 'react';
 import { PiCaretDown, PiCheck } from 'react-icons/pi';
 import { cx } from './cx';
@@ -57,6 +59,12 @@ export interface SelecaoProps {
   'aria-label'?: string;
   'aria-labelledby'?: string;
   'aria-describedby'?: string;
+  /**
+   * Ícone à esquerda, dentro do campo (o relógio do filtro de período, a nota
+   * do filtro de gênero). Fica dentro do botão: desenhado por fora, com
+   * `absolute`, ele ficava atrás do fundo do campo e só sobrava o recuo.
+   */
+  icone?: ComponentType<SVGProps<SVGSVGElement>>;
   /** Classes do botão (largura, altura). A aparência vem de `.input-classical`. */
   className?: string;
   onBlur?: FocusEventHandler<HTMLButtonElement>;
@@ -76,6 +84,7 @@ export function Selecao({
   name,
   disabled = false,
   invalido = false,
+  icone: Icone,
   className,
   onBlur,
   onFocus,
@@ -326,6 +335,12 @@ export function Selecao({
         )}
         {...aria}
       >
+        {Icone && (
+          <Icone
+            aria-hidden
+            className="-ml-1 h-5 w-5 shrink-0 text-texto-fraco"
+          />
+        )}
         <span
           className={cx(
             'flex-1 truncate',
