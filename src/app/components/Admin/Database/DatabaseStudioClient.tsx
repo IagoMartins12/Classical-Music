@@ -118,11 +118,11 @@ export default function DatabaseStudioClient() {
   };
 
   const categoryColors: Record<string, string> = {
-    core: 'from-blue-500 to-blue-600',
-    content: 'from-purple-500 to-purple-600',
-    social: 'from-pink-500 to-pink-600',
-    admin: 'from-amber-500 to-amber-600',
-    system: 'from-gray-500 to-gray-600',
+    core: 'bg-aviso',
+    content: 'fill-ouro',
+    social: 'fill-ouro',
+    admin: 'bg-atencao',
+    system: 'bg-texto-fraco',
   };
 
   const handleEdit = (record: any) => {
@@ -208,7 +208,7 @@ export default function DatabaseStudioClient() {
               <div className="mb-6">
                 <div className="flex items-center justify-between mb-4">
                   <Inline gap={2}>
-                    <div className="w-10 h-10 bg-gradient-to-br from-brand-primary to-brand-secondary rounded-xl flex items-center justify-center shadow-theme-glow">
+                    <div className="w-10 h-10 fill-ouro rounded-xl flex items-center justify-center shadow-theme-glow">
                       <PiDatabase className="w-5 h-5 text-white" />
                     </div>
                     <div>
@@ -266,8 +266,8 @@ export default function DatabaseStudioClient() {
                             onClick={() => selectModel(model.name)}
                             className={`w-full flex items-center justify-between p-2 rounded-lg transition-all group ${
                               selectedModel === model.name
-                                ? 'bg-gradient-to-r from-brand-primary to-brand-secondary text-white shadow-lg'
-                                : 'hover:bg-theme-secondary text-theme-primary'
+                                ? 'fill-ouro text-sobre-ouro shadow-lg'
+                                : 'hover:bg-sup-1 text-theme-primary'
                             }`}
                           >
                             <Inline gap={2} className="flex-1 min-w-0">
@@ -321,7 +321,7 @@ export default function DatabaseStudioClient() {
                       {selectedRecords.size > 0 && (
                         <Inline
                           gap={2}
-                          className="px-3 py-2 bg-brand-primary/10 border border-brand-primary/20 rounded-lg"
+                          className="px-3 py-2 bg-ouro/10 border border-ouro/20 rounded-lg"
                         >
                           <Text
                             papel="rotulo"
@@ -335,7 +335,7 @@ export default function DatabaseStudioClient() {
                             size="sm"
                             leftIcon={<PiTrash />}
                             onClick={handleDeleteMultipleClick}
-                            className="text-accent-red hover:bg-accent-red/10"
+                            className="text-erro hover:bg-erro/10"
                           >
                             Deletar
                           </Button>
@@ -360,13 +360,13 @@ export default function DatabaseStudioClient() {
                         onClick={() => setShowFieldSelector(true)}
                         className={
                           selectedFields.length > 0
-                            ? 'bg-brand-primary/10 text-brand-primary'
+                            ? 'bg-ouro/10 text-brand-primary'
                             : ''
                         }
                       >
                         Campos
                         {selectedFields.length > 0 && (
-                          <span className="ml-1 px-1.5 py-0.5 bg-brand-primary text-white rounded text-xs">
+                          <span className="ml-1 px-1.5 py-0.5 bg-ouro text-sobre-ouro rounded text-xs">
                             {selectedFields.length}
                           </span>
                         )}
@@ -379,13 +379,13 @@ export default function DatabaseStudioClient() {
                         onClick={() => setShowFilterPanel(true)}
                         className={
                           activeFilterCount > 0
-                            ? 'bg-brand-primary/10 text-brand-primary'
+                            ? 'bg-ouro/10 text-brand-primary'
                             : ''
                         }
                       >
                         Filtros
                         {activeFilterCount > 0 && (
-                          <span className="ml-1 px-1.5 py-0.5 bg-brand-primary text-white rounded text-xs">
+                          <span className="ml-1 px-1.5 py-0.5 bg-ouro text-sobre-ouro rounded text-xs">
                             {activeFilterCount}
                           </span>
                         )}
@@ -400,7 +400,7 @@ export default function DatabaseStudioClient() {
                           className={`p-2 rounded transition-colors ${
                             viewMode === 'table'
                               ? 'bg-theme-tertiary text-white'
-                              : 'text-theme-tertiary hover:text-theme-primary'
+                              : 'text-theme-tertiary hover:text-texto'
                           }`}
                         >
                           <PiListBullets className="w-4 h-4" />
@@ -411,7 +411,7 @@ export default function DatabaseStudioClient() {
                           className={`p-2 rounded transition-colors ${
                             viewMode === 'grid'
                               ? 'bg-theme-tertiary text-white'
-                              : 'text-theme-tertiary hover:text-theme-primary'
+                              : 'text-theme-tertiary hover:text-texto'
                           }`}
                         >
                           <PiSquaresFour className="w-4 h-4" />
@@ -461,7 +461,7 @@ export default function DatabaseStudioClient() {
                         <Inline
                           gap={2}
                           key={field}
-                          className="px-3 py-1 bg-brand-primary/10 text-brand-primary rounded-full text-sm"
+                          className="px-3 py-1 bg-ouro/10 text-brand-primary rounded-full text-sm"
                         >
                           <span className="font-medium">{field}:</span>
                           <span>
@@ -471,7 +471,7 @@ export default function DatabaseStudioClient() {
                           </span>
                           <button
                             onClick={() => removeFilter(field)}
-                            className="hover:text-accent-red transition-colors"
+                            className="hover:text-erro transition-colors"
                           >
                             <PiX className="w-3 h-3" />
                             <NomeAcao acao="fechar" />
@@ -482,7 +482,7 @@ export default function DatabaseStudioClient() {
                         variant="ghost"
                         size="sm"
                         onClick={clearFilters}
-                        className="text-accent-red hover:bg-accent-red/10"
+                        className="text-erro hover:bg-erro/10"
                       >
                         Limpar todos
                       </Button>
@@ -501,7 +501,7 @@ export default function DatabaseStudioClient() {
                     <div className="flex items-center justify-between">
                       <Inline gap={6}>
                         <Inline gap={2}>
-                          <div className="w-8 h-8 bg-brand-primary/10 rounded-lg flex items-center justify-center">
+                          <div className="w-8 h-8 bg-ouro/10 rounded-lg flex items-center justify-center">
                             <PiDatabase className="w-4 h-4 text-brand-primary" />
                           </div>
                           <div>
@@ -517,8 +517,8 @@ export default function DatabaseStudioClient() {
                         <div className="h-8 w-px bg-theme-primary" />
 
                         <Inline gap={2}>
-                          <div className="w-8 h-8 bg-green-500/10 rounded-lg flex items-center justify-center">
-                            <PiEye className="w-4 h-4 text-green-500" />
+                          <div className="w-8 h-8 bg-ok/10 rounded-lg flex items-center justify-center">
+                            <PiEye className="w-4 h-4 text-ok" />
                           </div>
                           <div>
                             <Text papel="legenda" tom="fraco" as="p">
@@ -533,8 +533,8 @@ export default function DatabaseStudioClient() {
                         <div className="h-8 w-px bg-theme-primary" />
 
                         <Inline gap={2}>
-                          <div className="w-8 h-8 bg-blue-500/10 rounded-lg flex items-center justify-center">
-                            <PiPencilSimple className="w-4 h-4 text-blue-500" />
+                          <div className="w-8 h-8 bg-aviso/10 rounded-lg flex items-center justify-center">
+                            <PiPencilSimple className="w-4 h-4 text-aviso" />
                           </div>
                           <div>
                             <Text papel="legenda" tom="fraco" as="p">
@@ -549,8 +549,8 @@ export default function DatabaseStudioClient() {
                         <div className="h-8 w-px bg-theme-primary" />
 
                         <Inline gap={2}>
-                          <div className="w-8 h-8 bg-purple-500/10 rounded-lg flex items-center justify-center">
-                            <PiMagnifyingGlass className="w-4 h-4 text-purple-500" />
+                          <div className="w-8 h-8 bg-ouro/10 rounded-lg flex items-center justify-center">
+                            <PiMagnifyingGlass className="w-4 h-4 text-ouro-texto" />
                           </div>
                           <div>
                             <Text papel="legenda" tom="fraco" as="p">
@@ -565,7 +565,7 @@ export default function DatabaseStudioClient() {
 
                       <Inline
                         gap={2}
-                        className="px-4 py-2 bg-brand-primary/10 rounded-lg"
+                        className="px-4 py-2 bg-ouro/10 rounded-lg"
                       >
                         <Text papel="rotulo" tom="ouro" className="font-medium">
                           {selectedFields.length === 0
@@ -651,14 +651,14 @@ export default function DatabaseStudioClient() {
                                 return (
                                   <th
                                     key={fieldName}
-                                    className="p-3 text-left text-xs font-bold text-theme-tertiary uppercase tracking-wider cursor-pointer hover:bg-theme-primary transition-colors"
+                                    className="p-3 text-left text-xs font-bold text-theme-tertiary uppercase tracking-wider cursor-pointer hover:bg-fundo transition-colors"
                                     onClick={() =>
                                       !isSensitive && setSort(fieldName)
                                     }
                                   >
                                     <Inline gap={1}>
                                       {isSensitive && (
-                                        <PiLock className="w-3 h-3 text-red-500" />
+                                        <PiLock className="w-3 h-3 text-erro" />
                                       )}
                                       <span>{fieldName}</span>
                                       {sortField === fieldName && (
@@ -679,8 +679,8 @@ export default function DatabaseStudioClient() {
                             {records.map((record, index) => (
                               <tr
                                 key={record.id}
-                                className={`border-t border-theme-primary hover:bg-theme-secondary transition-colors ${
-                                  index % 2 === 0 ? '' : 'bg-theme-secondary/50'
+                                className={`border-t border-theme-primary hover:bg-sup-1 transition-colors ${
+                                  index % 2 === 0 ? '' : 'bg-sup-1/50'
                                 }`}
                               >
                                 <td className="p-3">
@@ -738,7 +738,7 @@ export default function DatabaseStudioClient() {
                                       onClick={() =>
                                         handleDeleteClick(record.id)
                                       }
-                                      className="text-accent-red hover:bg-accent-red/10"
+                                      className="text-erro hover:bg-erro/10"
                                     />
                                   </Inline>
                                 </td>
@@ -808,7 +808,7 @@ export default function DatabaseStudioClient() {
             <AnimatedItem direction="up" springType="gentle" className="flex-1">
               <AnimatedCard className="classical-card h-full flex items-center justify-center">
                 <div className="text-center py-12">
-                  <div className="w-20 h-20 bg-gradient-to-br from-brand-primary to-brand-secondary rounded-3xl flex items-center justify-center shadow-theme-glow mx-auto mb-6">
+                  <div className="w-20 h-20 fill-ouro rounded-3xl flex items-center justify-center shadow-theme-glow mx-auto mb-6">
                     <PiDatabase className="w-10 h-10 text-white" />
                   </div>
                   <h3 className="text-2xl font-bold text-theme-primary mb-2">

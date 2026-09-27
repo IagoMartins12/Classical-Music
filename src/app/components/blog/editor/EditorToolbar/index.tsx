@@ -82,19 +82,19 @@ export function EditorToolbar({
       onClick={onClick}
       disabled={disabled}
       title={title}
-      className={`p-2 rounded hover:bg-gray-100 transition-colors ${
-        active ? 'bg-gray-200 text-blue-600' : 'text-gray-700'
+      className={`p-2 rounded hover:bg-sup-2 transition-colors ${
+        active ? 'bg-sup-2 text-aviso' : 'text-texto-suave'
       } ${disabled ? 'opacity-50 cursor-not-allowed' : ''}`}
     >
       {children}
     </button>
   );
 
-  const Divider = () => <div className="w-px h-6 bg-gray-300 mx-1" />;
+  const Divider = () => <div className="w-px h-6 bg-linha-forte mx-1" />;
 
   return (
     <>
-      <div className="flex flex-wrap items-center gap-1 p-2 border-b border-gray-300 bg-gray-50">
+      <div className="flex flex-wrap items-center gap-1 p-2 border-b border-linha bg-sup-2">
         {/* Undo/Redo */}
         <ToolbarButton
           onClick={() => editor.chain().focus().undo().run()}
@@ -263,8 +263,8 @@ export function EditorToolbar({
         <Divider />
 
         {/* Blocos Especiais */}
-        <div className="flex items-center gap-1 px-2 py-1 bg-blue-50 rounded">
-          <span className="text-xs font-medium text-blue-700">
+        <div className="flex items-center gap-1 px-2 py-1 bg-aviso/10 rounded">
+          <span className="text-xs font-medium text-aviso">
             Blocos Especiais:
           </span>
         </div>
@@ -273,43 +273,43 @@ export function EditorToolbar({
           onClick={() => setShowComposerModal(true)}
           title="Card de Compositor"
         >
-          <PiUser className="w-4 h-4 text-blue-600" />
+          <PiUser className="w-4 h-4 text-aviso" />
         </ToolbarButton>
         <ToolbarButton
           onClick={() => setShowWorkModal(true)}
           title="Card de Obra"
         >
-          <PiMusicNotes className="w-4 h-4 text-blue-600" />
+          <PiMusicNotes className="w-4 h-4 text-aviso" />
         </ToolbarButton>
         <ToolbarButton
           onClick={() => setShowScoreModal(true)}
           title="Visualizador de Partitura"
         >
-          <PiFileAudio className="w-4 h-4 text-blue-600" />
+          <PiFileAudio className="w-4 h-4 text-aviso" />
         </ToolbarButton>
         <ToolbarButton
           onClick={() => setShowAudioModal(true)}
           title="Player de Áudio"
         >
-          <PiMusicNotes className="w-4 h-4 text-purple-600" />
+          <PiMusicNotes className="w-4 h-4 text-ouro-texto" />
         </ToolbarButton>
         <ToolbarButton
           onClick={() => setShowTimelineModal(true)}
           title="Timeline"
         >
-          <PiClock className="w-4 h-4 text-green-600" />
+          <PiClock className="w-4 h-4 text-ok" />
         </ToolbarButton>
         <ToolbarButton
           onClick={() => setShowVideoComparisonModal(true)}
           title="Comparação de Vídeos"
         >
-          <PiColumns className="w-4 h-4 text-orange-600" />
+          <PiColumns className="w-4 h-4 text-atencao" />
         </ToolbarButton>
         <ToolbarButton
           onClick={() => setShowQuoteModal(true)}
           title="Citação Musical"
         >
-          <PiQuotes className="w-4 h-4 text-purple-600" />
+          <PiQuotes className="w-4 h-4 text-ouro-texto" />
         </ToolbarButton>
       </div>
 

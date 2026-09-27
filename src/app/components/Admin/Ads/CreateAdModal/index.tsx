@@ -299,7 +299,7 @@ export default function CreateAdModal({
         {/* Header */}
         <div className="flex items-center justify-between p-6 border-b border-theme-primary">
           <Inline gap={3}>
-            <div className="w-10 h-10 bg-gradient-to-br from-accent-purple to-accent-pink rounded-xl flex items-center justify-center">
+            <div className="w-10 h-10 fill-ouro rounded-xl flex items-center justify-center">
               <PiPlus className="w-5 h-5 text-white" />
             </div>
             <div>
@@ -314,9 +314,9 @@ export default function CreateAdModal({
         </div>
 
         {/* Alert sobre mídia */}
-        <div className="p-4 bg-accent-blue/10 border-l-4 border-accent-blue mx-6 mt-4 rounded">
+        <div className="border p-4 bg-aviso/10 border-aviso/40 mx-6 mt-4 rounded">
           <div className="flex items-start space-x-3">
-            <PiInfo className="w-5 h-5 text-accent-blue mt-0.5" />
+            <PiInfo className="w-5 h-5 text-aviso mt-0.5" />
             <div>
               <h4 className="font-medium text-theme-primary">Sobre a mídia</h4>
               <Text papel="rotulo" tom="suave" as="p" className="mt-1">
@@ -330,13 +330,11 @@ export default function CreateAdModal({
 
         {/* Conflict Warning */}
         {conflictInfo && (
-          <div className="p-4 bg-accent-red/10 border-l-4 border-accent-red mx-6 mt-4 rounded">
+          <div className="border p-4 bg-erro/10 border-erro/40 mx-6 mt-4 rounded">
             <div className="flex items-start space-x-3">
-              <PiTarget className="w-5 h-5 text-accent-red mt-0.5" />
+              <PiTarget className="w-5 h-5 text-erro mt-0.5" />
               <div>
-                <h4 className="font-medium text-accent-red">
-                  Conflito Detectado
-                </h4>
+                <h4 className="font-medium text-erro">Conflito Detectado</h4>
                 <Text papel="rotulo" tom="suave" as="p" className="mt-1">
                   {conflictInfo}
                 </Text>
@@ -368,10 +366,10 @@ export default function CreateAdModal({
                   onChange={(e) => handleInputChange('title', e.target.value)}
                   placeholder="Título do anúncio"
                   maxLength={100}
-                  className={errors.title ? 'border-accent-red' : ''}
+                  className={errors.title ? 'border-erro' : ''}
                 />
                 {errors.title && (
-                  <p className="text-accent-red text-sm mt-1">{errors.title}</p>
+                  <p className="text-erro text-sm mt-1">{errors.title}</p>
                 )}
               </div>
 
@@ -386,10 +384,10 @@ export default function CreateAdModal({
                   }
                   placeholder="Nome do anunciante"
                   maxLength={100}
-                  className={errors.advertiserName ? 'border-accent-red' : ''}
+                  className={errors.advertiserName ? 'border-erro' : ''}
                 />
                 {errors.advertiserName && (
-                  <p className="text-accent-red text-sm mt-1">
+                  <p className="text-erro text-sm mt-1">
                     {errors.advertiserName}
                   </p>
                 )}
@@ -485,7 +483,7 @@ export default function CreateAdModal({
                       handleInputChange('instrumentId', e.target.value)
                     }
                     className={`input-classical-2 w-full ${
-                      errors.instrumentId ? 'border-accent-red' : ''
+                      errors.instrumentId ? 'border-erro' : ''
                     }`}
                   >
                     <option value="">Selecione um instrumento</option>
@@ -496,7 +494,7 @@ export default function CreateAdModal({
                     ))}
                   </select>
                   {errors.instrumentId && (
-                    <p className="text-accent-red text-sm mt-1">
+                    <p className="text-erro text-sm mt-1">
                       {errors.instrumentId}
                     </p>
                   )}
@@ -546,7 +544,7 @@ export default function CreateAdModal({
                       ? '5511999999999'
                       : 'https://exemplo.com'
                   }
-                  className={errors.targetUrl ? 'border-accent-red' : ''}
+                  className={errors.targetUrl ? 'border-erro' : ''}
                 />
                 {formData.linkType === 'whatsapp' && (
                   <Text papel="legenda" tom="fraco" as="p" className="mt-1">
@@ -554,9 +552,7 @@ export default function CreateAdModal({
                   </Text>
                 )}
                 {errors.targetUrl && (
-                  <p className="text-accent-red text-sm mt-1">
-                    {errors.targetUrl}
-                  </p>
+                  <p className="text-erro text-sm mt-1">{errors.targetUrl}</p>
                 )}
               </div>
 

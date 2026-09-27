@@ -22,28 +22,28 @@ const UserTypeStep: React.FC = () => {
       label: t('user_type_music_student'),
       description: t('user_type_music_student_desc'),
       icon: PiGraduationCap,
-      color: 'bg-accent-blue',
+      color: 'bg-aviso',
     },
     {
       value: 'CASUAL_USER',
       label: t('user_type_casual_user'),
       description: t('user_type_casual_user_desc'),
       icon: GiMusicalScore,
-      color: 'bg-accent-green',
+      color: 'bg-ok',
     },
     {
       value: 'PROFESSIONAL',
       label: t('user_type_professional'),
       description: t('user_type_professional_desc'),
       icon: PiMicrophone,
-      color: 'bg-accent-purple',
+      color: 'bg-ouro',
     },
     {
       value: 'TEACHER',
       label: t('user_type_teacher'),
       description: t('user_type_teacher_desc'),
       icon: PiChalkboardTeacher,
-      color: 'bg-accent-amber',
+      color: 'bg-atencao',
     },
   ] as const;
 
@@ -72,16 +72,14 @@ const UserTypeStep: React.FC = () => {
               key={type.value}
               onClick={() => handleSelect(type.value)}
               className={`
-                classical-card p-6 text-left transition-all duration-300
-                hover:scale-105 focus:outline-none focus:ring-2 focus:ring-brand-primary
-                ${isSelected ? 'border-brand-primary shadow-theme-glow' : ''}
+                classical-card p-6 text-left transition-all duration-300 hover:scale-105 focus:outline-none focus:ring-2 focus:ring-ouro
+                ${isSelected ? 'border-ouro shadow-theme-glow' : ''}
               `}
             >
               <div className="flex items-start space-x-4 relative">
                 <div
                   className={`
-                  w-12 h-12 ${type.color} bg-opacity-20 rounded-full 
-                  flex items-center justify-center flex-shrink-0
+                  w-12 h-12 ${type.color} rounded-full flex items-center justify-center flex-shrink-0
                 `}
                 >
                   <Icon

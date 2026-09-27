@@ -69,7 +69,7 @@ export default function AdminDashboardClient() {
     return (
       <PageContainer showBackground={true}>
         <div className="text-center py-16">
-          <PiWarning className="w-16 h-16 text-accent-red mx-auto mb-4" />
+          <PiWarning className="w-16 h-16 text-erro mx-auto mb-4" />
           <h2 className="text-2xl font-bold text-theme-primary mb-2">
             Erro ao Carregar Dashboard
           </h2>
@@ -122,7 +122,7 @@ export default function AdminDashboardClient() {
           <AnimatedItem direction="up" springType="gentle">
             <div className="text-center py-8 lg:py-12">
               <div className="flex items-center justify-center mb-6">
-                <div className="w-16 h-16 bg-gradient-to-br from-brand-primary to-brand-secondary rounded-3xl flex items-center justify-center shadow-theme-glow">
+                <div className="w-16 h-16 fill-ouro rounded-3xl flex items-center justify-center shadow-theme-glow">
                   <PiChartBar className="w-8 h-8 text-white" />
                 </div>
               </div>
@@ -136,7 +136,7 @@ export default function AdminDashboardClient() {
               {/* Status Indicators */}
               <div className="flex flex-col sm:flex-row items-center justify-center gap-4 mt-6">
                 <Inline gap={2}>
-                  <div className="w-3 h-3 bg-accent-green rounded-full animate-pulse"></div>
+                  <div className="w-3 h-3 bg-ok rounded-full animate-pulse"></div>
                   <span className="text-theme-primary font-medium">
                     Sistema Online
                   </span>
@@ -259,36 +259,36 @@ export default function AdminDashboardClient() {
               <Stack>
                 <div className="flex items-center justify-between p-3 bg-theme-secondary rounded-xl">
                   <Inline gap={3}>
-                    <PiShield className="w-5 h-5 text-accent-amber" />
+                    <PiShield className="w-5 h-5 text-atencao" />
                     <span className="text-theme-primary text-sm lg:text-base">
                       Pendentes
                     </span>
                   </Inline>
-                  <span className="font-bold text-accent-amber">
+                  <span className="font-bold text-atencao">
                     {stats.moderation?.pendingItems || 0}
                   </span>
                 </div>
 
                 <div className="flex items-center justify-between p-3 bg-theme-secondary rounded-xl">
                   <Inline gap={3}>
-                    <PiDatabase className="w-5 h-5 text-accent-purple" />
+                    <PiDatabase className="w-5 h-5 text-ouro-texto" />
                     <span className="text-theme-primary text-sm lg:text-base">
                       Compositores
                     </span>
                   </Inline>
-                  <span className="font-bold text-accent-purple">
+                  <span className="font-bold text-ouro-texto">
                     {stats.overview.totalComposers || 0}
                   </span>
                 </div>
 
                 <div className="flex items-center justify-between p-3 bg-theme-secondary rounded-xl">
                   <Inline gap={3}>
-                    <PiTrendUp className="w-5 h-5 text-accent-green" />
+                    <PiTrendUp className="w-5 h-5 text-ok" />
                     <span className="text-theme-primary text-sm lg:text-base">
                       Anotações
                     </span>
                   </Inline>
-                  <span className="font-bold text-accent-green">
+                  <span className="font-bold text-ok">
                     {stats.trends.last7Days.newAnnotations || 0}
                   </span>
                 </div>

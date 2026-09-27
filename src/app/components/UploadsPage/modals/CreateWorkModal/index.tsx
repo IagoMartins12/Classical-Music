@@ -1033,7 +1033,7 @@ const CreateWorkModal = ({
             {/* Header */}
             <div className="flex items-center justify-between p-0 pt-4 pb-6 md:p-6 border-b border-theme-secondary">
               <Inline gap={3}>
-                <div className="w-10 h-10 bg-gradient-to-br from-accent-blue to-accent-green rounded-xl flex items-center justify-center">
+                <div className="w-10 h-10 bg-aviso rounded-xl flex items-center justify-center">
                   <PiMusicNotes className="w-5 h-5 text-theme-primary" />
                 </div>
                 <div>
@@ -1066,7 +1066,7 @@ const CreateWorkModal = ({
                         {t('modal_work_scraping_title')}
                       </Text>
                       {isEditingExternalSource && (
-                        <Inline gap={1} className="text-xs text-blue-600">
+                        <Inline gap={1} className="text-xs text-aviso">
                           <PiLock className="w-3 h-3" />
                           <span>Fonte IMSLP detectada automaticamente</span>
                         </Inline>
@@ -1085,10 +1085,10 @@ const CreateWorkModal = ({
                     />
 
                     {duplicateCheck.loading && (
-                      <div className="mt-2 p-2 bg-blue-50 border border-blue-200 rounded-lg">
+                      <div className="mt-2 p-2 bg-aviso/10 border border-aviso/30 rounded-lg">
                         <Inline gap={2}>
-                          <PiSpinnerGap className="w-4 h-4 animate-spin text-blue-600" />
-                          <span className="text-sm text-blue-800">
+                          <PiSpinnerGap className="w-4 h-4 animate-spin text-aviso" />
+                          <span className="text-sm text-aviso">
                             {t('modal_work_scraping_checking_duplicates')}
                           </span>
                         </Inline>
@@ -1098,34 +1098,34 @@ const CreateWorkModal = ({
                     {duplicateCheck.found && (
                       <Stack
                         gap={2}
-                        className="mt-2 p-3 bg-red-50 border border-red-200 rounded-lg"
+                        className="mt-2 p-3 bg-erro/10 border border-erro/30 rounded-lg"
                       >
                         <Inline gap={2}>
-                          <PiWarningCircle className="w-4 h-4 text-red-600" />
-                          <span className="text-sm font-medium text-red-800">
+                          <PiWarningCircle className="w-4 h-4 text-erro" />
+                          <span className="text-sm font-medium text-erro">
                             {duplicateCheck.duplicateType === 'url'
                               ? 'Duplicata encontrada por URL do IMSLP'
                               : 'Duplicata encontrada por título e compositor'}
                           </span>
                         </Inline>
                         <div className="space-y-1">
-                          <p className="text-sm text-red-700">
+                          <p className="text-sm text-erro">
                             <strong>Obra existente:</strong>{' '}
                             {duplicateCheck.work?.title}
                             {duplicateCheck.work?.subtitle &&
                               ` - ${duplicateCheck.work.subtitle}`}
                           </p>
-                          <p className="text-sm text-red-700">
+                          <p className="text-sm text-erro">
                             <strong>Compositor:</strong>{' '}
                             {duplicateCheck.work?.composerName}
                           </p>
                           {duplicateCheck.work?.opOrCatalog && (
-                            <p className="text-sm text-red-700">
+                            <p className="text-sm text-erro">
                               <strong>Op./Catálogo:</strong>{' '}
                               {duplicateCheck.work.opOrCatalog}
                             </p>
                           )}
-                          <p className="text-sm text-red-600 font-medium mt-2">
+                          <p className="text-sm text-erro font-medium mt-2">
                             {duplicateCheck.duplicateType === 'url'
                               ? 'Uma obra com este link do IMSLP já existe no sistema.'
                               : `Uma obra com o título "${duplicateCheck.work?.title}" deste compositor já existe no sistema.`}
@@ -1159,15 +1159,15 @@ const CreateWorkModal = ({
                     {scrapingResult && (
                       <Stack
                         gap={2}
-                        className="mt-4 p-3 bg-green-50 border border-green-200 rounded-lg"
+                        className="mt-4 p-3 bg-ok/10 border border-ok/30 rounded-lg"
                       >
                         <Inline gap={2}>
-                          <PiCheck className="w-4 h-4 text-green-600" />
-                          <span className="text-sm font-medium text-green-800">
+                          <PiCheck className="w-4 h-4 text-ok" />
+                          <span className="text-sm font-medium text-ok">
                             {t('modal_work_scraping_success')}
                           </span>
                         </Inline>
-                        <div className="text-xs text-green-700">
+                        <div className="text-xs text-ok">
                           {t('modal_work_scraping_source', {
                             source: scrapingResult.source,
                             quality: scrapingResult.data.pageQuality,
@@ -1178,10 +1178,10 @@ const CreateWorkModal = ({
                     )}
 
                     {isEditingExternalSource && (
-                      <div className="mt-3 p-3 bg-blue-50 border border-blue-200 rounded-lg">
+                      <div className="mt-3 p-3 bg-aviso/10 border border-aviso/30 rounded-lg">
                         <Inline gap={2}>
-                          <PiInfo className="w-4 h-4 text-blue-600" />
-                          <span className="text-sm text-blue-800">
+                          <PiInfo className="w-4 h-4 text-aviso" />
+                          <span className="text-sm text-aviso">
                             {t('modal_work_scraping_external_detected')}
                           </span>
                         </Inline>
@@ -1238,7 +1238,7 @@ const CreateWorkModal = ({
                         <Inline
                           as="p"
                           gap={1}
-                          className="text-red-500 text-sm font-medium mt-1"
+                          className="text-erro text-sm font-medium mt-1"
                         >
                           <PiWarningCircle className="w-4 h-4" />
                           <span>{errors.composerId}</span>
@@ -1350,10 +1350,10 @@ const CreateWorkModal = ({
                   {isPartOfCollection && (
                     <Stack className="border-t border-theme-secondary pt-4">
                       {/* Informação sobre compositor */}
-                      <div className="p-3 bg-blue-50 border border-blue-200 rounded-lg">
+                      <div className="p-3 bg-aviso/10 border border-aviso/30 rounded-lg">
                         <Inline gap={2}>
-                          <PiInfo className="w-4 h-4 text-blue-600" />
-                          <span className="text-sm text-blue-800">
+                          <PiInfo className="w-4 h-4 text-aviso" />
+                          <span className="text-sm text-aviso">
                             <strong>Importante:</strong> A obra da coleção deve
                             ser do mesmo compositor (
                             {formData.composerId
@@ -1386,10 +1386,7 @@ const CreateWorkModal = ({
                             disabled={loadingParentWork}
                           />
                           {loadingParentWork && (
-                            <Inline
-                              gap={2}
-                              className="mt-2 text-sm text-blue-600"
-                            >
+                            <Inline gap={2} className="mt-2 text-sm text-aviso">
                               <PiSpinnerGap className="w-4 h-4 animate-spin" />
                               <span>Verificando dados da obra pai...</span>
                             </Inline>
@@ -1604,7 +1601,7 @@ const CreateWorkModal = ({
                       leftIcon={<PiArrowSquareOut />}
                       disabled={scrapingResult}
                       className={
-                        scrapingResult ? 'bg-gray-50 cursor-not-allowed' : ''
+                        scrapingResult ? 'bg-sup-2 cursor-not-allowed' : ''
                       }
                     />
 
@@ -1654,7 +1651,7 @@ const CreateWorkModal = ({
                       {/* Spotify */}
                       <div className="space-y-3">
                         <Inline gap={2}>
-                          <PiSpotifyLogo className="w-5 h-5 text-green-400" />
+                          <PiSpotifyLogo className="w-5 h-5 text-ok" />
                           <h4 className="text-lg font-semibold text-theme-primary">
                             {t('modal_work_media_spotify_title')}
                           </h4>
@@ -1676,7 +1673,7 @@ const CreateWorkModal = ({
                       {/* YouTube */}
                       <div className="space-y-3">
                         <Inline gap={2}>
-                          <PiYoutubeLogo className="w-5 h-5 text-red-400" />
+                          <PiYoutubeLogo className="w-5 h-5 text-erro" />
                           <h4 className="text-lg font-semibold text-theme-primary">
                             {t('modal_work_media_youtube_title')}
                           </h4>
@@ -1698,7 +1695,7 @@ const CreateWorkModal = ({
                       {/* Custom Audio */}
                       <Stack gap={3}>
                         <Inline gap={2}>
-                          <PiMusicNotes className="w-5 h-5 text-blue-400" />
+                          <PiMusicNotes className="w-5 h-5 text-aviso" />
                           <h4 className="text-lg font-semibold text-theme-primary">
                             {t('modal_work_media_audio_title')}
                           </h4>
@@ -1727,7 +1724,7 @@ const CreateWorkModal = ({
                             <Inline
                               as="p"
                               gap={1}
-                              className="text-sm text-blue-400 mt-1"
+                              className="text-sm text-aviso mt-1"
                             >
                               <PiSpinnerGap className="w-4 h-4 animate-spin" />
                               <span>
@@ -1753,7 +1750,7 @@ const CreateWorkModal = ({
                         <Stack>
                           <div className="flex items-center justify-between">
                             <Inline gap={2}>
-                              <PiGraduationCap className="w-5 h-5 text-purple-400" />
+                              <PiGraduationCap className="w-5 h-5 text-ouro-texto" />
                               <h4 className="text-lg font-semibold text-theme-primary">
                                 {t('modal_work_media_video_lesson_title')}
                               </h4>
@@ -1781,7 +1778,7 @@ const CreateWorkModal = ({
                           </div>
 
                           {mediaData.hasVideoAula && (
-                            <div className="space-y-4 p-4 bg-purple-900/10 border border-purple-700/30 rounded-xl">
+                            <div className="space-y-4 p-4 bg-ouro/10 border border-ouro/30 rounded-xl">
                               {/* Type and Source */}
                               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                                 <div>
@@ -1884,7 +1881,7 @@ const CreateWorkModal = ({
                                     <Inline
                                       as="p"
                                       gap={1}
-                                      className="text-sm text-purple-400 mt-1"
+                                      className="text-sm text-ouro-texto mt-1"
                                     >
                                       <PiSpinnerGap className="w-4 h-4 animate-spin" />
                                       <span>

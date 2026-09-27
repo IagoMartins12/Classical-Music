@@ -357,7 +357,7 @@ export function BlogHeader() {
 
   return (
     <>
-      <header className="navbar-classical sticky top-0 z-50">
+      <header className="navbar-classical sticky top-0 z-barra">
         <nav aria-label="Navegação do blog" className="section-wrap-nav">
           <div className="flex items-center justify-between">
             {/* Logo */}
@@ -397,12 +397,10 @@ export function BlogHeader() {
                           relative px-3 py-2 rounded-lg font-medium transition-all duration-300 flex items-center space-x-1
                           ${
                             active
-                              ? 'text-brand-primary bg-interactive-active'
-                              : 'text-theme-secondary hover:text-brand-primary hover:bg-interactive-hover'
+                              ? 'text-brand-primary bg-ouro/10'
+                              : 'text-theme-secondary hover:text-ouro-texto hover:bg-ouro/10'
                           }
-                          after:absolute after:bottom-0 after:left-1/2 after:w-0 after:h-0.5 
-                          after:bg-brand-gradient after:transition-all after:duration-300
-                          hover:after:w-full hover:after:left-0
+                          after:absolute after:bottom-0 after:left-1/2 after:w-0 after:h-0.5 after:fill-ouro after:transition-all after:duration-300 hover:after:w-full hover:after:left-0
                           ${active ? 'after:w-full after:left-0' : ''}
                         `}
                       >
@@ -426,8 +424,8 @@ export function BlogHeader() {
                                   block p-3 rounded-lg transition-colors group
                                   ${
                                     pathname === item.href
-                                      ? 'bg-interactive-active text-brand-primary'
-                                      : 'hover:bg-interactive-hover'
+                                      ? 'bg-ouro/10 text-brand-primary'
+                                      : 'hover:bg-ouro/10'
                                   }
                                 `}
                                 onClick={() => setActiveSubmenu(null)}
@@ -438,7 +436,7 @@ export function BlogHeader() {
                                   ${
                                     pathname === item.href
                                       ? 'text-brand-primary'
-                                      : 'text-theme-primary group-hover:text-brand-primary'
+                                      : 'text-theme-primary group-hover:text-ouro-texto'
                                   }
                                 `}
                                 >
@@ -467,13 +465,11 @@ export function BlogHeader() {
                         relative px-3 py-2 rounded-lg font-medium transition-all duration-300
                         ${
                           active
-                            ? 'text-brand-primary bg-interactive-active'
-                            : 'text-theme-secondary hover:text-brand-primary hover:bg-interactive-hover'
+                            ? 'text-brand-primary bg-ouro/10'
+                            : 'text-theme-secondary hover:text-ouro-texto hover:bg-ouro/10'
                         }
                         ${label === 'Opus Atlas' ? 'text-transparent' : ''}
-                        after:absolute after:bottom-0 after:left-1/2 after:w-0 after:h-0.5 
-                        after:bg-brand-gradient after:transition-all after:duration-300
-                        hover:after:w-full hover:after:left-0
+                        after:absolute after:bottom-0 after:left-1/2 after:w-0 after:h-0.5 after:fill-ouro after:transition-all after:duration-300 hover:after:w-full hover:after:left-0
                         ${active ? 'after:w-full after:left-0' : ''}
                       `}
                     >
@@ -493,10 +489,10 @@ export function BlogHeader() {
               {/* Search Button */}
               <button
                 onClick={() => setIsSearchModalOpen(true)}
-                className="w-11 h-10 p-1.5 rounded-xl bg-theme-elevated hover:bg-theme-classical transition-all group flex items-center justify-center"
+                className="w-11 h-10 p-1.5 rounded-xl bg-theme-elevated hover:bg-sup-1 transition-all group flex items-center justify-center"
                 aria-label="Buscar (Ctrl+K)"
               >
-                <PiMagnifyingGlass className="w-4 h-4 text-theme-secondary group-hover:text-brand-primary transition-colors" />
+                <PiMagnifyingGlass className="w-4 h-4 text-theme-secondary group-hover:text-ouro-texto transition-colors" />
               </button>
 
               <ThemeToggle variant="navbar" className="hidden sm:block" />
@@ -508,7 +504,7 @@ export function BlogHeader() {
                     as="button"
                     gap={2}
                     onClick={toggleProfileMenu}
-                    className="p-2 rounded-lg hover:bg-interactive-hover transition-colors"
+                    className="p-2 rounded-lg hover:bg-ouro/10 transition-colors"
                   >
                     {user.image ? (
                       <Image
@@ -516,14 +512,14 @@ export function BlogHeader() {
                         width={32}
                         height={32}
                         alt={getUserDisplayName()}
-                        className="w-8 h-8 rounded-full object-cover border-2 border-brand-primary"
+                        className="w-8 h-8 rounded-full object-cover border-2 border-ouro"
                       />
                     ) : (
                       <Text
                         papel="rotulo"
                         tom="forte"
                         as="div"
-                        className="w-8 h-8 bg-brand-gradient rounded-full flex items-center justify-center font-semibold"
+                        className="w-8 h-8 fill-ouro rounded-full flex items-center justify-center font-semibold"
                       >
                         {getUserInitials()}
                       </Text>
@@ -560,8 +556,8 @@ export function BlogHeader() {
                           flex items-center space-x-2 w-full px-3 py-2 text-sm rounded-lg transition-all
                           ${
                             pathname === '/profile'
-                              ? 'text-brand-primary bg-interactive-active'
-                              : 'text-theme-secondary hover:text-brand-primary hover:bg-interactive-hover'
+                              ? 'text-brand-primary bg-ouro/10'
+                              : 'text-theme-secondary hover:text-ouro-texto hover:bg-ouro/10'
                           }
                         `}
                         onClick={() => setIsProfileOpen(false)}
@@ -577,8 +573,8 @@ export function BlogHeader() {
                           flex items-center space-x-2 w-full px-3 py-2 text-sm rounded-lg transition-all
                           ${
                             pathname === '/blog/liked'
-                              ? 'text-brand-primary bg-interactive-active'
-                              : 'text-theme-secondary hover:text-brand-primary hover:bg-interactive-hover'
+                              ? 'text-brand-primary bg-ouro/10'
+                              : 'text-theme-secondary hover:text-ouro-texto hover:bg-ouro/10'
                           }
                         `}
                         onClick={() => setIsProfileOpen(false)}
@@ -594,8 +590,8 @@ export function BlogHeader() {
                           flex items-center space-x-2 w-full px-3 py-2 text-sm rounded-lg transition-all
                           ${
                             pathname === '/blog/bookmarks'
-                              ? 'text-brand-primary bg-interactive-active'
-                              : 'text-theme-secondary hover:text-brand-primary hover:bg-interactive-hover'
+                              ? 'text-brand-primary bg-ouro/10'
+                              : 'text-theme-secondary hover:text-ouro-texto hover:bg-ouro/10'
                           }
                         `}
                         onClick={() => setIsProfileOpen(false)}
@@ -614,8 +610,8 @@ export function BlogHeader() {
                               flex items-center space-x-2 w-full px-3 py-2 text-sm rounded-lg transition-all
                               ${
                                 pathname === '/blog/admin/articles/create'
-                                  ? 'text-brand-primary bg-interactive-active'
-                                  : 'text-theme-secondary hover:text-brand-primary hover:bg-interactive-hover'
+                                  ? 'text-brand-primary bg-ouro/10'
+                                  : 'text-theme-secondary hover:text-ouro-texto hover:bg-ouro/10'
                               }
                             `}
                             onClick={() => setIsProfileOpen(false)}
@@ -630,8 +626,8 @@ export function BlogHeader() {
                               flex items-center space-x-2 w-full px-3 py-2 text-sm rounded-lg transition-all
                               ${
                                 pathname === '/blog/admin/articles'
-                                  ? 'text-brand-primary bg-interactive-active'
-                                  : 'text-theme-secondary hover:text-brand-primary hover:bg-interactive-hover'
+                                  ? 'text-brand-primary bg-ouro/10'
+                                  : 'text-theme-secondary hover:text-ouro-texto hover:bg-ouro/10'
                               }
                             `}
                             onClick={() => setIsProfileOpen(false)}
@@ -646,8 +642,8 @@ export function BlogHeader() {
                               flex items-center space-x-2 w-full px-3 py-2 text-sm rounded-lg transition-all
                               ${
                                 pathname === '/blog/admin/moderation'
-                                  ? 'text-brand-primary bg-interactive-active'
-                                  : 'text-theme-secondary hover:text-brand-primary hover:bg-interactive-hover'
+                                  ? 'text-brand-primary bg-ouro/10'
+                                  : 'text-theme-secondary hover:text-ouro-texto hover:bg-ouro/10'
                               }
                             `}
                             onClick={() => setIsProfileOpen(false)}
@@ -665,8 +661,8 @@ export function BlogHeader() {
                             flex items-center space-x-2 w-full px-3 py-2 text-sm rounded-lg transition-all
                             ${
                               pathname === '/admin'
-                                ? 'text-brand-primary bg-interactive-active'
-                                : 'text-theme-secondary hover:text-brand-primary hover:bg-interactive-hover'
+                                ? 'text-brand-primary bg-ouro/10'
+                                : 'text-theme-secondary hover:text-ouro-texto hover:bg-ouro/10'
                             }
                           `}
                           onClick={() => setIsProfileOpen(false)}
@@ -682,7 +678,7 @@ export function BlogHeader() {
                         as="button"
                         gap={2}
                         onClick={handleLogout}
-                        className="w-full px-3 py-2 text-sm text-theme-secondary hover:text-accent-red hover:bg-interactive-hover rounded-lg transition-all"
+                        className="w-full px-3 py-2 text-sm text-theme-secondary hover:text-erro hover:bg-ouro/10 rounded-lg transition-all"
                       >
                         <PiSignOut className="w-4 h-4" />
                         <span>Sair</span>
@@ -711,7 +707,7 @@ export function BlogHeader() {
               <button
                 ref={mobileButtonRef}
                 onClick={handleMobileButtonClick}
-                className="lg:hidden p-2 text-theme-secondary hover:text-brand-primary transition-colors"
+                className="lg:hidden p-2 text-theme-secondary hover:text-ouro-texto transition-colors"
                 aria-label="Menu"
               >
                 {isMenuOpen ? (
@@ -751,8 +747,8 @@ export function BlogHeader() {
                               flex-1 block px-4 py-3 rounded-lg font-medium transition-all
                               ${
                                 active
-                                  ? 'text-brand-primary bg-interactive-active'
-                                  : 'text-theme-secondary hover:text-brand-primary hover:bg-interactive-hover'
+                                  ? 'text-brand-primary bg-ouro/10'
+                                  : 'text-theme-secondary hover:text-ouro-texto hover:bg-ouro/10'
                               }
                             `}
                               onClick={handleMobileNavClick}
@@ -762,7 +758,7 @@ export function BlogHeader() {
                             <button
                               onClick={() => goToSubmenuView(label, submenu)}
                               aria-label={`Abrir ${label}`}
-                              className="ml-2 p-2 text-theme-tertiary hover:text-brand-primary transition-colors"
+                              className="ml-2 p-2 text-theme-tertiary hover:text-ouro-texto transition-colors"
                             >
                               <PiCaretRight className="w-5 h-5" />
                             </button>
@@ -775,8 +771,8 @@ export function BlogHeader() {
                             ${label === 'Opus Atlas' ? 'text-transparent' : ''}
                             ${
                               active
-                                ? 'text-brand-primary bg-interactive-active'
-                                : 'text-theme-secondary hover:text-brand-primary hover:bg-interactive-hover'
+                                ? 'text-brand-primary bg-ouro/10'
+                                : 'text-theme-secondary hover:text-ouro-texto hover:bg-ouro/10'
                             }
                           `}
                             onClick={handleMobileNavClick}
@@ -816,13 +812,13 @@ export function BlogHeader() {
                                   width={32}
                                   height={32}
                                   alt={getUserDisplayName()}
-                                  className="w-8 h-8 rounded-full object-cover border-2 border-brand-primary"
+                                  className="w-8 h-8 rounded-full object-cover border-2 border-ouro"
                                 />
                               ) : (
                                 <Text
                                   papel="rotulo"
                                   tom="forte"
-                                  className="w-8 h-8 bg-brand-gradient rounded-full flex items-center justify-center font-semibold"
+                                  className="w-8 h-8 fill-ouro rounded-full flex items-center justify-center font-semibold"
                                 >
                                   {getUserInitials()}
                                 </Text>
@@ -856,7 +852,7 @@ export function BlogHeader() {
                         <li>
                           <Link
                             href="/login"
-                            className="block w-full px-4 py-3 text-left rounded-lg font-medium text-theme-secondary hover:text-brand-primary hover:bg-interactive-hover transition-all"
+                            className="block w-full px-4 py-3 text-left rounded-lg font-medium text-theme-secondary hover:text-ouro-texto hover:bg-ouro/10 transition-all"
                             onClick={handleMobileNavClick}
                           >
                             Fazer Login
@@ -865,7 +861,7 @@ export function BlogHeader() {
                         <li>
                           <Link
                             href="/register"
-                            className="block w-full px-4 py-3 text-left rounded-lg font-medium text-brand-primary bg-brand-primary bg-opacity-10 hover:bg-opacity-20 transition-all"
+                            className="block w-full px-4 py-3 text-left rounded-lg font-medium text-brand-primary bg-ouro/10 hover:bg-opacity-20 transition-all"
                             onClick={handleMobileNavClick}
                           >
                             Criar Conta
@@ -901,7 +897,7 @@ export function BlogHeader() {
                         <button
                           onClick={goBackToMain}
                           aria-label="Voltar ao menu"
-                          className="p-2 mr-2 text-theme-tertiary hover:text-brand-primary transition-colors"
+                          className="p-2 mr-2 text-theme-tertiary hover:text-ouro-texto transition-colors"
                         >
                           <PiCaretLeft className="w-5 h-5" />
                         </button>
@@ -912,7 +908,7 @@ export function BlogHeader() {
 
                       <Inline
                         gap={3}
-                        className="px-4 py-3 bg-interactive-hover rounded-lg"
+                        className="px-4 py-3 bg-ouro/10 rounded-lg"
                       >
                         {user.image ? (
                           <Image
@@ -920,10 +916,10 @@ export function BlogHeader() {
                             width={40}
                             height={40}
                             alt={getUserDisplayName()}
-                            className="w-10 h-10 rounded-full object-cover border-2 border-brand-primary"
+                            className="w-10 h-10 rounded-full object-cover border-2 border-ouro"
                           />
                         ) : (
-                          <div className="w-10 h-10 bg-brand-gradient rounded-full flex items-center justify-center text-theme-primary font-semibold">
+                          <div className="w-10 h-10 fill-ouro rounded-full flex items-center justify-center text-theme-primary font-semibold">
                             {getUserInitials()}
                           </div>
                         )}
@@ -945,8 +941,8 @@ export function BlogHeader() {
                             flex items-center space-x-3 px-4 py-3 rounded-lg transition-all
                             ${
                               pathname === '/profile'
-                                ? 'text-brand-primary bg-interactive-active'
-                                : 'text-theme-secondary hover:text-brand-primary hover:bg-interactive-hover'
+                                ? 'text-brand-primary bg-ouro/10'
+                                : 'text-theme-secondary hover:text-ouro-texto hover:bg-ouro/10'
                             }
                           `}
                             onClick={handleMobileNavClick}
@@ -964,8 +960,8 @@ export function BlogHeader() {
                             flex items-center space-x-3 px-4 py-3 rounded-lg transition-all
                             ${
                               pathname === '/blog/liked'
-                                ? 'text-brand-primary bg-interactive-active'
-                                : 'text-theme-secondary hover:text-brand-primary hover:bg-interactive-hover'
+                                ? 'text-brand-primary bg-ouro/10'
+                                : 'text-theme-secondary hover:text-ouro-texto hover:bg-ouro/10'
                             }
                           `}
                             onClick={handleMobileNavClick}
@@ -983,8 +979,8 @@ export function BlogHeader() {
                             flex items-center space-x-3 px-4 py-3 rounded-lg transition-all
                             ${
                               pathname === '/blog/bookmarks'
-                                ? 'text-brand-primary bg-interactive-active'
-                                : 'text-theme-secondary hover:text-brand-primary hover:bg-interactive-hover'
+                                ? 'text-brand-primary bg-ouro/10'
+                                : 'text-theme-secondary hover:text-ouro-texto hover:bg-ouro/10'
                             }
                           `}
                             onClick={handleMobileNavClick}
@@ -1004,8 +1000,8 @@ export function BlogHeader() {
                                 flex items-center space-x-3 px-4 py-3 rounded-lg transition-all
                                 ${
                                   pathname === '/blog/admin/articles/create'
-                                    ? 'text-brand-primary bg-interactive-active'
-                                    : 'text-theme-secondary hover:text-brand-primary hover:bg-interactive-hover'
+                                    ? 'text-brand-primary bg-ouro/10'
+                                    : 'text-theme-secondary hover:text-ouro-texto hover:bg-ouro/10'
                                 }
                               `}
                                 onClick={handleMobileNavClick}
@@ -1022,8 +1018,8 @@ export function BlogHeader() {
                                 flex items-center space-x-3 px-4 py-3 rounded-lg transition-all
                                 ${
                                   pathname === '/blog/articles'
-                                    ? 'text-brand-primary bg-interactive-active'
-                                    : 'text-theme-secondary hover:text-brand-primary hover:bg-interactive-hover'
+                                    ? 'text-brand-primary bg-ouro/10'
+                                    : 'text-theme-secondary hover:text-ouro-texto hover:bg-ouro/10'
                                 }
                               `}
                                 onClick={handleMobileNavClick}
@@ -1040,8 +1036,8 @@ export function BlogHeader() {
                                 flex items-center space-x-3 px-4 py-3 rounded-lg transition-all
                                 ${
                                   pathname === '/blog/admin/moderation'
-                                    ? 'text-brand-primary bg-interactive-active'
-                                    : 'text-theme-secondary hover:text-brand-primary hover:bg-interactive-hover'
+                                    ? 'text-brand-primary bg-ouro/10'
+                                    : 'text-theme-secondary hover:text-ouro-texto hover:bg-ouro/10'
                                 }
                               `}
                                 onClick={handleMobileNavClick}
@@ -1058,7 +1054,7 @@ export function BlogHeader() {
                             as="button"
                             gap={3}
                             onClick={handleLogout}
-                            className="w-full px-4 py-3 text-accent-red hover:bg-interactive-hover rounded-lg transition-all"
+                            className="w-full px-4 py-3 text-erro hover:bg-ouro/10 rounded-lg transition-all"
                           >
                             <PiSignOut className="w-5 h-5" />
                             <span>Sair</span>
@@ -1081,7 +1077,7 @@ export function BlogHeader() {
                       <button
                         onClick={goBackToMain}
                         aria-label="Voltar ao menu"
-                        className="p-2 mr-2 text-theme-tertiary hover:text-brand-primary transition-colors"
+                        className="p-2 mr-2 text-theme-tertiary hover:text-ouro-texto transition-colors"
                       >
                         <PiCaretLeft className="w-5 h-5" />
                       </button>
@@ -1099,8 +1095,8 @@ export function BlogHeader() {
                             block px-4 py-3 rounded-lg transition-all
                             ${
                               pathname === item.href
-                                ? 'text-brand-primary bg-interactive-active'
-                                : 'text-theme-secondary hover:text-brand-primary hover:bg-interactive-hover'
+                                ? 'text-brand-primary bg-ouro/10'
+                                : 'text-theme-secondary hover:text-ouro-texto hover:bg-ouro/10'
                             }
                           `}
                             onClick={handleMobileNavClick}

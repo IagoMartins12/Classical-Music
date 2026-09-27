@@ -174,17 +174,17 @@ export default async function EditAssignmentPageServer({
         {
           value: 'low',
           label: 'Baixa',
-          color: 'text-accent-green',
+          color: 'text-ok',
         },
         {
           value: 'medium',
           label: 'Média',
-          color: 'text-accent-yellow',
+          color: 'text-atencao',
         },
         {
           value: 'high',
           label: 'Alta',
-          color: 'text-accent-red',
+          color: 'text-erro',
         },
       ],
     };

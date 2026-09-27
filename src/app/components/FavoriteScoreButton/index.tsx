@@ -94,7 +94,7 @@ const FavoriteModal = ({
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center">
+    <div className="fixed inset-0 z-dialogo flex items-center justify-center">
       {/* Backdrop */}
       <div
         className="absolute inset-0 bg-black/60 backdrop-blur-sm"
@@ -114,7 +114,7 @@ const FavoriteModal = ({
           </div>
           <button
             onClick={onClose}
-            className="w-8 h-8 bg-theme-elevated border border-theme-secondary rounded-xl flex items-center justify-center hover:bg-interactive-hover transition-colors"
+            className="w-8 h-8 bg-theme-elevated border border-theme-secondary rounded-xl flex items-center justify-center hover:bg-ouro/10 transition-colors"
           >
             <PiX className="w-4 h-4 text-theme-tertiary" />
             <NomeAcao acao="fechar" />
@@ -136,8 +136,8 @@ const FavoriteModal = ({
                   }
                   className={`w-8 h-8 rounded-xl flex items-center justify-center transition-all duration-300 ${
                     star <= personalRating
-                      ? 'bg-gradient-to-br from-accent-gold to-accent-orange text-theme-primary shadow-theme-glow'
-                      : 'bg-theme-elevated border border-theme-secondary text-theme-tertiary hover:bg-interactive-hover'
+                      ? 'fill-ouro text-theme-primary shadow-theme-glow'
+                      : 'bg-theme-elevated border border-theme-secondary text-theme-tertiary hover:bg-ouro/10'
                   }`}
                 >
                   {star <= personalRating ? (
@@ -172,7 +172,7 @@ const FavoriteModal = ({
               value={notes}
               onChange={(e) => setNotes(e.target.value)}
               placeholder="Adicione suas observações sobre esta partitura..."
-              className="w-full h-24 px-4 py-3 bg-theme-elevated border border-theme-secondary rounded-xl text-theme-primary placeholder-theme-tertiary resize-none focus:outline-none focus:border-brand-primary focus:shadow-theme-glow transition-all duration-300"
+              className="w-full h-24 px-4 py-3 bg-theme-elevated border border-theme-secondary rounded-xl text-theme-primary placeholder-texto-fraco resize-none focus:outline-none focus:border-ouro focus:shadow-[var(--sombra-2)] transition-all duration-300"
               maxLength={500}
             />
             <Text
@@ -196,12 +196,12 @@ const FavoriteModal = ({
                   as="span"
                   gap={1}
                   key={tag}
-                  className="px-3 py-1 bg-gradient-to-r from-brand-primary/10 to-brand-secondary/10 border border-brand-primary/30 text-brand-primary rounded-full text-xs font-medium"
+                  className="px-3 py-1 bg-ouro/10 border border-ouro/30 text-brand-primary rounded-full text-xs font-medium"
                 >
                   <span>{tag}</span>
                   <button
                     onClick={() => removeTag(tag)}
-                    className="w-4 h-4 hover:bg-brand-primary/20 rounded-full flex items-center justify-center"
+                    className="w-4 h-4 hover:bg-ouro/20 rounded-full flex items-center justify-center"
                   >
                     <PiX className="w-3 h-3" />
                     <NomeAcao acao="fechar" />
@@ -215,13 +215,13 @@ const FavoriteModal = ({
                 onChange={(e) => setNewTag(e.target.value)}
                 onKeyPress={(e) => e.key === 'Enter' && addTag()}
                 placeholder="Adicionar tag..."
-                className="flex-1 px-3 py-2 bg-theme-elevated border border-theme-secondary rounded-xl text-theme-primary placeholder-theme-tertiary text-sm focus:outline-none focus:border-brand-primary transition-all duration-300"
+                className="flex-1 px-3 py-2 bg-theme-elevated border border-theme-secondary rounded-xl text-theme-primary placeholder-texto-fraco text-sm focus:outline-none focus:border-ouro transition-all duration-300"
                 maxLength={20}
               />
               <button
                 onClick={addTag}
                 disabled={!newTag.trim() || tags.includes(newTag.trim())}
-                className="px-4 py-2 bg-gradient-to-r from-brand-primary to-brand-secondary text-theme-primary rounded-xl text-sm font-medium disabled:opacity-50 disabled:cursor-not-allowed hover:shadow-theme-glow transition-all duration-300"
+                className="px-4 py-2 fill-ouro text-theme-primary rounded-xl text-sm font-medium disabled:opacity-50 disabled:cursor-not-allowed hover:shadow-[var(--sombra-2)] transition-all duration-300"
               >
                 Adicionar
               </button>
@@ -233,7 +233,7 @@ const FavoriteModal = ({
         <div className="flex justify-end space-x-3 mt-8">
           <button
             onClick={onClose}
-            className="px-4 py-2 bg-theme-elevated border border-theme-secondary text-theme-secondary rounded-xl hover:bg-interactive-hover transition-colors"
+            className="px-4 py-2 bg-theme-elevated border border-theme-secondary text-theme-secondary rounded-xl hover:bg-ouro/10 transition-colors"
           >
             Cancelar
           </button>
@@ -241,7 +241,7 @@ const FavoriteModal = ({
             as="button"
             gap={2}
             onClick={handleSave}
-            className="px-6 py-2 bg-gradient-to-r from-brand-primary to-brand-secondary text-theme-primary rounded-xl font-medium hover:shadow-theme-glow transition-all duration-300"
+            className="px-6 py-2 fill-ouro text-theme-primary rounded-xl font-medium hover:shadow-[var(--sombra-2)] transition-all duration-300"
           >
             <PiCheck className="w-4 h-4" />
             <span>Salvar</span>
@@ -369,14 +369,14 @@ export default function FavoriteScoreButton({
 
     const variantClasses = {
       default: isFavorited
-        ? 'bg-gradient-to-br from-accent-red to-accent-pink text-theme-primary shadow-theme-glow border-2 border-accent-red/30'
-        : 'bg-theme-elevated border-2 border-theme-secondary text-theme-tertiary hover:border-accent-red/50 hover:text-accent-red hover:bg-interactive-hover',
+        ? 'bg-erro text-theme-primary shadow-theme-glow border-2 border-erro/30'
+        : 'bg-theme-elevated border-2 border-theme-secondary text-theme-tertiary hover:border-erro/50 hover:text-erro hover:bg-ouro/10',
       compact: isFavorited
-        ? 'bg-accent-red/20 border border-accent-red/30 text-accent-red'
-        : 'bg-theme-elevated border border-theme-secondary text-theme-tertiary hover:border-accent-red/30 hover:text-accent-red',
+        ? 'bg-erro/10 border border-erro/30 text-erro'
+        : 'bg-theme-elevated border border-theme-secondary text-theme-tertiary hover:border-erro/30 hover:text-erro',
       detailed: isFavorited
-        ? 'bg-gradient-to-br from-accent-red to-accent-pink text-theme-primary shadow-theme-glow'
-        : 'bg-theme-elevated border border-theme-secondary text-theme-tertiary hover:border-accent-red/50 hover:text-accent-red hover:bg-interactive-hover',
+        ? 'bg-erro text-theme-primary shadow-theme-glow'
+        : 'bg-theme-elevated border border-theme-secondary text-theme-tertiary hover:border-erro/50 hover:text-erro hover:bg-ouro/10',
     };
 
     return `${baseClasses} ${sizeClasses[size]} ${variantClasses[variant]} ${className}`;
@@ -415,7 +415,7 @@ export default function FavoriteScoreButton({
 
         {/* Badge de rating pessoal */}
         {isFavorited && favoriteData?.personalRating && size !== 'sm' && (
-          <div className="absolute -top-1 -right-1 w-5 h-5 bg-gradient-to-br from-accent-gold to-accent-orange rounded-full flex items-center justify-center">
+          <div className="absolute -top-1 -right-1 w-5 h-5 fill-ouro rounded-full flex items-center justify-center">
             <Text papel="legenda" tom="forte" className="font-bold">
               {favoriteData.personalRating}
             </Text>
@@ -426,7 +426,7 @@ export default function FavoriteScoreButton({
         {isFavorited && variant === 'detailed' && (
           <button
             onClick={() => setShowModal(true)}
-            className="absolute -bottom-2 -right-2 w-6 h-6 bg-gradient-to-br from-accent-blue to-accent-purple rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300 shadow-theme-medium"
+            className="absolute -bottom-2 -right-2 w-6 h-6 bg-aviso rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300 shadow-theme-medium"
             title="Editar favorito"
           >
             <PiPencilLine className="w-3 h-3 text-theme-primary" />

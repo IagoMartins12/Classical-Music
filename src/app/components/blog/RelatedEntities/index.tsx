@@ -66,9 +66,9 @@ export async function RelatedEntities({
                 <Link
                   key={composer.id}
                   href={`/composer/${composer.id}`}
-                  className="block p-3 rounded-lg bg-theme-elevated hover:bg-theme-classical transition-all group"
+                  className="block p-3 rounded-lg bg-theme-elevated hover:bg-sup-1 transition-all group"
                 >
-                  <div className="font-medium text-theme-primary group-hover:text-brand-primary transition-colors">
+                  <div className="font-medium text-theme-primary group-hover:text-ouro-texto transition-colors">
                     {composer.name}
                   </div>
                   <Text papel="rotulo" tom="fraco" as="div">
@@ -92,9 +92,9 @@ export async function RelatedEntities({
                 <Link
                   key={work.id}
                   href={`/works/${work.id}`}
-                  className="block p-3 rounded-lg bg-theme-elevated hover:bg-theme-classical transition-all group"
+                  className="block p-3 rounded-lg bg-theme-elevated hover:bg-sup-1 transition-all group"
                 >
-                  <div className="font-medium text-theme-primary group-hover:text-brand-primary transition-colors line-clamp-1">
+                  <div className="font-medium text-theme-primary group-hover:text-ouro-texto transition-colors line-clamp-1">
                     {work.title}
                   </div>
                   <Text papel="rotulo" tom="fraco" as="div">
@@ -118,9 +118,9 @@ export async function RelatedEntities({
                 <Link
                   key={score.id}
                   href={`/scores/${score.id}`}
-                  className="block p-3 rounded-lg bg-theme-elevated hover:bg-theme-classical transition-all group"
+                  className="block p-3 rounded-lg bg-theme-elevated hover:bg-sup-1 transition-all group"
                 >
-                  <div className="font-medium text-theme-primary group-hover:text-brand-primary transition-colors line-clamp-1">
+                  <div className="font-medium text-theme-primary group-hover:text-ouro-texto transition-colors line-clamp-1">
                     {score.title}
                   </div>
                   <Text papel="rotulo" tom="fraco" as="div">

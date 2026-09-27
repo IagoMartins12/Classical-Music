@@ -214,7 +214,7 @@ export default function CreateVenueModal({
       {/* Header */}
       <div className="px-6 py-4 border-b border-theme-secondary">
         <Inline gap={3}>
-          <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-brand-primary to-brand-secondary flex items-center justify-center shadow-theme-glow">
+          <div className="w-10 h-10 rounded-xl fill-ouro flex items-center justify-center shadow-theme-glow">
             <PiMapPin className="w-5 h-5 text-theme-primary" />
           </div>
           <div>
@@ -243,13 +243,13 @@ export default function CreateVenueModal({
               setFormData((prev) => ({ ...prev, name: e.target.value }))
             }
             className={`w-full input-classical-2 ${
-              errors.name ? '!border-red-400' : ''
+              errors.name ? '!border-erro' : ''
             }`}
             placeholder="Ex: Teatro Municipal de São Paulo"
             maxLength={200}
           />
           {errors.name && (
-            <p className="text-red-500 text-sm mt-1">{errors.name}</p>
+            <p className="text-erro text-sm mt-1">{errors.name}</p>
           )}
         </div>
 
@@ -265,12 +265,12 @@ export default function CreateVenueModal({
                 setFormData((prev) => ({ ...prev, city: e.target.value }))
               }
               className={`w-full input-classical-2 ${
-                errors.city ? '!border-red-400' : ''
+                errors.city ? '!border-erro' : ''
               }`}
               placeholder="Ex: São Paulo"
             />
             {errors.city && (
-              <p className="text-red-500 text-sm mt-1">{errors.city}</p>
+              <p className="text-erro text-sm mt-1">{errors.city}</p>
             )}
           </div>
 
@@ -284,13 +284,13 @@ export default function CreateVenueModal({
                 setFormData((prev) => ({ ...prev, state: e.target.value }))
               }
               className={`w-full input-classical-2 ${
-                errors.state ? '!border-red-400' : ''
+                errors.state ? '!border-erro' : ''
               }`}
               placeholder="Ex: SP"
               maxLength={2}
             />
             {errors.state && (
-              <p className="text-red-500 text-sm mt-1">{errors.state}</p>
+              <p className="text-erro text-sm mt-1">{errors.state}</p>
             )}
           </div>
         </div>

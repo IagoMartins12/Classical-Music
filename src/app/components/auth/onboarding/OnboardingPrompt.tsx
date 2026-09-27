@@ -30,13 +30,13 @@ const OnboardingPrompt = () => {
     <div
       className={`classical-card ${
         isOpen && !isOnboardingModalOpen
-          ? 'fixed bottom-0  right-0 z-50'
+          ? 'fixed bottom-0  right-0 z-aviso'
           : 'hidden'
-      } p-4 border-accent-amber !rounded-b-none bg-accent-amber bg-opacity-5 `}
+      } p-4 border-atencao !rounded-b-none bg-atencao/5 `}
     >
       <div className="flex items-start space-x-3">
-        <div className="w-10 h-10 bg-accent-amber bg-opacity-20 rounded-full flex items-center justify-center flex-shrink-0">
-          <PiUser className="w-5 h-5 text-accent-amber" />
+        <div className="w-10 h-10 bg-atencao/20 rounded-full flex items-center justify-center flex-shrink-0">
+          <PiUser className="w-5 h-5 text-atencao" />
         </div>
 
         <div className="flex-1">
@@ -56,7 +56,7 @@ const OnboardingPrompt = () => {
 
             <div className="w-full bg-theme-secondary rounded-full h-2">
               <div
-                className="bg-brand-gradient bg-[#d4af37] h-2 rounded-full transition-all duration-500 ease-out"
+                className="fill-ouro bg-[#d4af37] h-2 rounded-full transition-all duration-500 ease-out"
                 style={{ width: `${(step / 6) * 100}%` }}
               />
             </div>
@@ -81,7 +81,7 @@ const OnboardingPrompt = () => {
         </div>
         <button
           onClick={closePrompt}
-          className="p-1 text-theme-tertiary hover:text-theme-secondary transition-colors"
+          className="p-1 text-theme-tertiary hover:text-texto-suave transition-colors"
         >
           <PiX className="w-4 h-4" />
           <NomeAcao acao="fechar" />

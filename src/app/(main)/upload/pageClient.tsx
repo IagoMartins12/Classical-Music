@@ -687,7 +687,7 @@ const UploadsClient = ({
         <AnimatedItem direction="up" springType="gentle">
           <div className="text-center mb-8 py-16">
             <div className="flex items-center justify-center mb-6">
-              <div className="w-16 h-16 bg-gradient-to-br from-brand-primary to-brand-secondary rounded-3xl flex items-center justify-center shadow-theme-glow">
+              <div className="w-16 h-16 fill-ouro rounded-3xl flex items-center justify-center shadow-theme-glow">
                 <PiUploadSimple className="w-8 h-8 text-theme-primary" />
               </div>
             </div>
@@ -709,8 +709,8 @@ const UploadsClient = ({
                 onClick={() => handleTabChange('all')}
                 className={`px-4 py-2 rounded-lg text-sm font-medium transition-all whitespace-nowrap ${
                   selectedType === 'all'
-                    ? 'bg-brand-primary bg-theme-tertiary text-theme-primary shadow-md'
-                    : 'text-theme-tertiary hover:text-theme-primary'
+                    ? 'bg-ouro bg-theme-tertiary text-theme-primary shadow-md'
+                    : 'text-theme-tertiary hover:text-texto'
                 }`}
               >
                 {t('tabs_all')} ({stats.totalCount})
@@ -720,7 +720,7 @@ const UploadsClient = ({
                 className={`px-4 py-2 rounded-lg text-sm font-medium transition-all whitespace-nowrap ${
                   selectedType === 'composers'
                     ? 'bg-theme-tertiary text-theme-primary shadow-md'
-                    : 'text-theme-tertiary hover:text-theme-primary'
+                    : 'text-theme-tertiary hover:text-texto'
                 }`}
               >
                 {t('tabs_composers')} ({stats.composerCount})
@@ -730,7 +730,7 @@ const UploadsClient = ({
                 className={`px-4 py-2 rounded-lg text-sm font-medium transition-all whitespace-nowrap ${
                   selectedType === 'works'
                     ? 'bg-theme-tertiary text-theme-primary shadow-md'
-                    : 'text-theme-tertiary hover:text-theme-primary'
+                    : 'text-theme-tertiary hover:text-texto'
                 }`}
               >
                 {t('tabs_works')} ({stats.workCount})
@@ -740,7 +740,7 @@ const UploadsClient = ({
                 className={`px-4 py-2 rounded-lg text-sm font-medium transition-all whitespace-nowrap ${
                   selectedType === 'scores'
                     ? 'bg-theme-tertiary text-theme-primary shadow-md'
-                    : 'text-theme-tertiary hover:text-theme-primary'
+                    : 'text-theme-tertiary hover:text-texto'
                 }`}
               >
                 {t('tabs_scores')} ({stats.scoreCount})
@@ -798,7 +798,7 @@ const UploadsClient = ({
                     gap={2}
                     onClick={handleRefresh}
                     disabled={isRefreshing}
-                    className="px-4 py-3 rounded-lg transition-all font-medium bg-theme-elevated text-theme-primary border-theme-secondary hover:border-brand-primary hover:bg-interactive-hover disabled:opacity-50"
+                    className="px-4 py-3 rounded-lg transition-all font-medium bg-theme-elevated text-theme-primary border-theme-secondary hover:border-ouro hover:bg-ouro/10 disabled:opacity-50"
                     title="Atualizar lista"
                   >
                     <PiArrowsClockwise
@@ -810,17 +810,17 @@ const UploadsClient = ({
                     onClick={handleFiltersToggle}
                     className={`flex items-center space-x-2 px-4 py-3 rounded-lg w-full justify-center transition-all font-medium ${
                       showFilters
-                        ? 'bg-brand-primary text-theme-primary border-theme-primary border-2 border-brand-primary shadow-md'
+                        ? 'bg-ouro text-theme-primary border-theme-primary border-2 border-ouro shadow-md'
                         : hasActiveFilters
-                          ? 'text-accent-blue border-accent-blue/30 shadow-sm'
-                          : 'bg-theme-elevated text-theme-primary border-theme-secondary hover:border-brand-primary hover:bg-interactive-hover'
+                          ? 'text-aviso border-aviso/30 shadow-sm'
+                          : 'bg-theme-elevated text-theme-primary border-theme-secondary hover:border-ouro hover:bg-ouro/10'
                     }`}
                   >
                     <PiFunnel className="w-4 h-4" />
                     <span className="text-sm">
                       {t('filters_button')}
                       {hasActiveFilters && (
-                        <span className="ml-1 px-1.5 py-0.5 bg-accent-blue text-white text-xs rounded-full">
+                        <span className="ml-1 px-1.5 py-0.5 bg-aviso text-white text-xs rounded-full">
                           {
                             [
                               searchTerm && 'busca',
@@ -868,14 +868,14 @@ const UploadsClient = ({
                       {hasActiveFilters && (
                         <button
                           onClick={clearFilters}
-                          className="text-xs text-theme-tertiary hover:text-accent-red transition-colors px-2 py-1 rounded border border-theme-tertiary hover:border-accent-red"
+                          className="text-xs text-theme-tertiary hover:text-erro transition-colors px-2 py-1 rounded border border-linha hover:border-erro"
                         >
                           {t('filters_clear_all')}
                         </button>
                       )}
                       <button
                         onClick={() => setShowFilters(false)}
-                        className="w-6 h-6 rounded-full bg-theme-primary text-theme-tertiary hover:text-theme-primary transition-colors flex items-center justify-center"
+                        className="w-6 h-6 rounded-full bg-theme-primary text-theme-tertiary hover:text-texto transition-colors flex items-center justify-center"
                       >
                         <PiX className="w-4 h-4" />
                         <NomeAcao acao="fechar" />
@@ -1040,7 +1040,7 @@ const UploadsClient = ({
                 selectedType === 'composers' && (
                   <AnimatedItem direction="scale" springType="bouncy">
                     <div className="classical-card p-12 text-center">
-                      <div className="w-16 h-16 bg-theme-tertiary/20 rounded-full flex items-center justify-center mx-auto mb-6">
+                      <div className="w-16 h-16 bg-sup-2/20 rounded-full flex items-center justify-center mx-auto mb-6">
                         <PiUser className="w-8 h-8 text-theme-tertiary" />
                       </div>
                       <h3 className="text-xl font-bold text-theme-primary mb-2 classical-title">
@@ -1156,7 +1156,7 @@ const UploadsClient = ({
                 selectedType === 'works' && (
                   <AnimatedItem direction="scale" springType="bouncy">
                     <div className="classical-card p-12 text-center">
-                      <div className="w-16 h-16 bg-theme-tertiary/20 rounded-full flex items-center justify-center mx-auto mb-6">
+                      <div className="w-16 h-16 bg-sup-2/20 rounded-full flex items-center justify-center mx-auto mb-6">
                         <PiMusicNotes className="w-8 h-8 text-theme-tertiary" />
                       </div>
                       <h3 className="text-xl font-bold text-theme-primary mb-2 classical-title">
@@ -1272,7 +1272,7 @@ const UploadsClient = ({
                 selectedType === 'scores' && (
                   <AnimatedItem direction="scale" springType="bouncy">
                     <div className="classical-card p-12 text-center">
-                      <div className="w-16 h-16 bg-theme-tertiary/20 rounded-full flex items-center justify-center mx-auto mb-6">
+                      <div className="w-16 h-16 bg-sup-2/20 rounded-full flex items-center justify-center mx-auto mb-6">
                         <PiFileText className="w-8 h-8 text-theme-tertiary" />
                       </div>
                       <h3 className="text-xl font-bold text-theme-primary mb-2 classical-title">
@@ -1311,7 +1311,7 @@ const UploadsClient = ({
                 springType="bouncy"
               >
                 <div className="classical-card p-12 text-center">
-                  <div className="w-16 h-16 bg-theme-tertiary/20 rounded-full flex items-center justify-center mx-auto mb-6">
+                  <div className="w-16 h-16 bg-sup-2/20 rounded-full flex items-center justify-center mx-auto mb-6">
                     <PiMagnifyingGlass className="w-8 h-8 text-theme-tertiary" />
                   </div>
                   <h3 className="text-xl font-bold text-theme-primary mb-2 classical-title">
@@ -1334,7 +1334,7 @@ const UploadsClient = ({
           {stats.totalCount === 0 && (
             <AnimatedItem direction="scale" springType="bouncy">
               <div className="classical-card p-12 text-center">
-                <div className="w-16 h-16 bg-theme-tertiary/20 rounded-full flex items-center justify-center mx-auto mb-6">
+                <div className="w-16 h-16 bg-sup-2/20 rounded-full flex items-center justify-center mx-auto mb-6">
                   <PiUploadSimple className="w-8 h-8 text-theme-tertiary" />
                 </div>
                 <h3 className="text-xl font-bold text-theme-primary mb-2 classical-title">

@@ -190,7 +190,7 @@ export function ModerationList({
                   ${
                     isActive
                       ? ` text-brand-primary`
-                      : 'text-theme-secondary hover:bg-interactive-hover'
+                      : 'text-theme-secondary hover:bg-ouro/10'
                   }
                 `}
               >
@@ -236,11 +236,11 @@ export function ModerationList({
             return (
               <div
                 key={comment.id}
-                className="classical-card overflow-hidden hover:shadow-theme-medium transition-all relative"
+                className="classical-card overflow-hidden hover:shadow-[var(--sombra-1)] transition-all relative"
               >
                 {/* ✅ INDICADOR DE RESPOSTA */}
                 {isReply && (
-                  <div className="bg-theme-tertiary border-l-4  px-4 py-2">
+                  <div className="border bg-theme-tertiary px-4 py-2">
                     <Inline gap={2}>
                       <PiArrowBendUpLeft className="w-4 h-4" />
                       <span className="text-sm font-medium">
@@ -252,9 +252,9 @@ export function ModerationList({
 
                 {/* Flag Warning */}
                 {comment.isFlagged && (
-                  <div className="bg-yellow-500/10 border-b border-yellow-500/20 p-3">
+                  <div className="bg-atencao/10 border-b border-atencao/20 p-3">
                     <div className="flex items-start space-x-2">
-                      <PiWarning className="w-5 h-5 text-yellow-600 flex-shrink-0 mt-0.5" />
+                      <PiWarning className="w-5 h-5 text-atencao flex-shrink-0 mt-0.5" />
                       <div className="flex-1">
                         <Text
                           papel="rotulo"
@@ -359,7 +359,7 @@ export function ModerationList({
                   {comment.parent && (
                     <Stack
                       gap={1}
-                      className="mb-3 p-3 bg-theme-elevated rounded-lg border-l-4 border-brand-primary"
+                      className="border mb-3 p-3 bg-ouro/10 rounded-lg border-ouro/40"
                     >
                       <Text papel="legenda" tom="fraco" as="p">
                         Respondendo a{' '}
@@ -466,8 +466,8 @@ export function ModerationList({
 
                 {/* Processing Overlay */}
                 {processing === comment.id && (
-                  <div className="absolute inset-0 bg-theme-primary/50 backdrop-blur-sm flex items-center justify-center">
-                    <div className="w-8 h-8 border-2 border-brand-primary border-t-transparent rounded-full animate-spin"></div>
+                  <div className="absolute inset-0 bg-fundo/50 backdrop-blur-sm flex items-center justify-center">
+                    <div className="w-8 h-8 border-2 border-ouro border-t-transparent rounded-full animate-spin"></div>
                   </div>
                 )}
               </div>

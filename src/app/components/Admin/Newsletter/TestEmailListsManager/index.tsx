@@ -182,7 +182,7 @@ const CreateEditModal: React.FC<CreateEditModalProps> = ({
     >
       <Stack gap={6}>
         <div className="text-center">
-          <div className="w-16 h-16 bg-gradient-to-br from-accent-blue to-accent-purple rounded-full flex items-center justify-center mx-auto mb-4 shadow-theme-glow">
+          <div className="w-16 h-16 bg-aviso rounded-full flex items-center justify-center mx-auto mb-4 shadow-theme-glow">
             {isEditing ? (
               <PiPencilSimple className="w-8 h-8 text-white" />
             ) : (
@@ -237,11 +237,11 @@ const CreateEditModal: React.FC<CreateEditModalProps> = ({
               rows={8}
               disabled={loading}
               className={`w-full px-4 py-3 bg-theme-tertiary border ${
-                errors.emails ? 'border-accent-red' : 'border-theme-secondary'
-              } rounded-lg text-theme-primary placeholder-theme-tertiary focus:outline-none focus:border-brand-primary transition-colors resize-none font-mono text-sm`}
+                errors.emails ? 'border-erro' : 'border-theme-secondary'
+              } rounded-lg text-theme-primary placeholder-texto-fraco focus:outline-none focus:border-ouro transition-colors resize-none font-mono text-sm`}
             />
             {errors.emails && (
-              <p className="text-accent-red text-sm mt-1">{errors.emails}</p>
+              <p className="text-erro text-sm mt-1">{errors.emails}</p>
             )}
             {formData.emails.trim() && (
               <Text papel="rotulo" tom="fraco" as="p" className="mt-1">
@@ -291,7 +291,7 @@ const CreateEditModal: React.FC<CreateEditModalProps> = ({
                   }
                   disabled={loading}
                   className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${
-                    formData.isActive ? 'bg-accent-green' : 'bg-theme-secondary'
+                    formData.isActive ? 'bg-ok' : 'bg-theme-secondary'
                   }`}
                 >
                   <span
@@ -423,7 +423,7 @@ const SendTestModal: React.FC<SendTestModalProps> = ({
     return (
       <>
         <div className="text-center mb-6">
-          <div className="w-16 h-16 bg-gradient-to-br from-accent-amber to-accent-red rounded-full flex items-center justify-center mx-auto mb-4 shadow-theme-glow">
+          <div className="w-16 h-16 bg-atencao rounded-full flex items-center justify-center mx-auto mb-4 shadow-theme-glow">
             <PiPaperPlaneRight className="w-8 h-8 text-white" />
           </div>
           <h2 className="text-2xl font-bold text-theme-primary classical-title mb-2">
@@ -541,7 +541,7 @@ const SendTestModal: React.FC<SendTestModalProps> = ({
               <label
                 className={`cursor-pointer p-4 rounded-lg border-2 transition-colors ${
                   formData.sendMode === 'bulk'
-                    ? 'border-brand-primary bg-brand-primary bg-opacity-10'
+                    ? 'border-ouro bg-ouro/10'
                     : 'border-theme-secondary'
                 }`}
               >
@@ -570,7 +570,7 @@ const SendTestModal: React.FC<SendTestModalProps> = ({
               <label
                 className={`cursor-pointer p-4 rounded-lg border-2 transition-colors ${
                   formData.sendMode === 'individual'
-                    ? 'border-brand-primary bg-brand-primary bg-opacity-10'
+                    ? 'border-ouro bg-ouro/10'
                     : 'border-theme-secondary'
                 }`}
               >
@@ -627,7 +627,7 @@ const SendTestModal: React.FC<SendTestModalProps> = ({
 
   const renderSendingStep = () => (
     <div className="text-center py-8">
-      <div className="w-20 h-20 bg-gradient-to-br from-accent-amber to-accent-red rounded-full flex items-center justify-center mx-auto mb-6 shadow-theme-glow animate-pulse">
+      <div className="w-20 h-20 bg-atencao rounded-full flex items-center justify-center mx-auto mb-6 shadow-theme-glow animate-pulse">
         <PiPaperPlaneRight className="w-10 h-10 text-white animate-pulse" />
       </div>
       <h2 className="text-2xl font-bold text-theme-primary classical-title mb-4">
@@ -637,7 +637,7 @@ const SendTestModal: React.FC<SendTestModalProps> = ({
         Processando envio para as listas selecionadas
       </p>
       <div className="w-32 h-1 bg-theme-secondary rounded-full mx-auto overflow-hidden">
-        <div className="h-full bg-gradient-to-r from-accent-amber to-accent-red animate-pulse"></div>
+        <div className="h-full bg-atencao animate-pulse"></div>
       </div>
     </div>
   );
@@ -647,8 +647,8 @@ const SendTestModal: React.FC<SendTestModalProps> = ({
       <div
         className={`w-20 h-20 bg-gradient-to-br ${
           result?.results.successful === result?.results.total
-            ? 'from-accent-green to-accent-blue'
-            : 'from-accent-amber to-accent-red'
+            ? 'bg-ok'
+            : 'bg-atencao'
         } rounded-full flex items-center justify-center mx-auto mb-6 shadow-theme-glow`}
       >
         {result?.results.successful === result?.results.total ? (
@@ -668,23 +668,23 @@ const SendTestModal: React.FC<SendTestModalProps> = ({
 
       {result && (
         <div className="grid grid-cols-3 gap-4 mb-6">
-          <div className="bg-accent-green bg-opacity-10 border border-accent-green rounded-lg p-4">
-            <div className="text-2xl font-bold text-accent-green">
+          <div className="bg-ok/10 border border-ok rounded-lg p-4">
+            <div className="text-2xl font-bold text-ok">
               {result.results.successful}
             </div>
-            <div className="text-sm text-accent-green">Enviados</div>
+            <div className="text-sm text-ok">Enviados</div>
           </div>
-          <div className="bg-accent-red bg-opacity-10 border border-accent-red rounded-lg p-4">
-            <div className="text-2xl font-bold text-accent-red">
+          <div className="bg-erro/10 border border-erro rounded-lg p-4">
+            <div className="text-2xl font-bold text-erro">
               {result.results.failed}
             </div>
-            <div className="text-sm text-accent-red">Falhas</div>
+            <div className="text-sm text-erro">Falhas</div>
           </div>
-          <div className="bg-accent-blue bg-opacity-10 border border-accent-blue rounded-lg p-4">
-            <div className="text-2xl font-bold text-accent-blue">
+          <div className="bg-aviso/10 border border-aviso rounded-lg p-4">
+            <div className="text-2xl font-bold text-aviso">
               {result.results.successRate}%
             </div>
-            <div className="text-sm text-accent-blue">Taxa</div>
+            <div className="text-sm text-aviso">Taxa</div>
           </div>
         </div>
       )}
@@ -809,7 +809,7 @@ export default function TestEmailListsManager() {
     return (
       <PageContainer showBackground={true}>
         <div className="text-center py-16">
-          <PiWarningCircle className="w-16 h-16 text-accent-red mx-auto mb-4" />
+          <PiWarningCircle className="w-16 h-16 text-erro mx-auto mb-4" />
           <h2 className="text-2xl font-bold text-theme-primary mb-2">
             Erro ao Carregar
           </h2>
@@ -834,7 +834,7 @@ export default function TestEmailListsManager() {
           <AnimatedItem direction="up" springType="gentle">
             <div className="text-center py-8">
               <div className="flex items-center justify-center mb-6">
-                <div className="w-16 h-16 bg-gradient-to-br from-accent-purple to-accent-blue rounded-3xl flex items-center justify-center shadow-theme-glow">
+                <div className="w-16 h-16 fill-ouro rounded-3xl flex items-center justify-center shadow-theme-glow">
                   <PiEnvelopeSimple className="w-8 h-8 text-white" />
                 </div>
               </div>
@@ -860,7 +860,7 @@ export default function TestEmailListsManager() {
                       {stats.total}
                     </p>
                   </Stack>
-                  <PiEnvelopeSimple className="w-8 h-8 text-accent-blue" />
+                  <PiEnvelopeSimple className="w-8 h-8 text-aviso" />
                 </div>
               </AnimatedCard>
 
@@ -870,11 +870,9 @@ export default function TestEmailListsManager() {
                     <Text papel="rotulo" tom="fraco" as="p">
                       Listas Ativas
                     </Text>
-                    <p className="text-3xl font-bold text-accent-green">
-                      {stats.active}
-                    </p>
+                    <p className="text-3xl font-bold text-ok">{stats.active}</p>
                   </Stack>
-                  <PiCheckCircle className="w-8 h-8 text-accent-green" />
+                  <PiCheckCircle className="w-8 h-8 text-ok" />
                 </div>
               </AnimatedCard>
 
@@ -884,11 +882,11 @@ export default function TestEmailListsManager() {
                     <Text papel="rotulo" tom="fraco" as="p">
                       Total de Emails
                     </Text>
-                    <p className="text-3xl font-bold text-accent-purple">
+                    <p className="text-3xl font-bold text-ouro-texto">
                       {stats.totalEmails}
                     </p>
                   </Stack>
-                  <PiUsers className="w-8 h-8 text-accent-purple" />
+                  <PiUsers className="w-8 h-8 text-ouro-texto" />
                 </div>
               </AnimatedCard>
 
@@ -898,11 +896,11 @@ export default function TestEmailListsManager() {
                     <Text papel="rotulo" tom="fraco" as="p">
                       Usos Totais
                     </Text>
-                    <p className="text-3xl font-bold text-accent-amber">
+                    <p className="text-3xl font-bold text-atencao">
                       {stats.totalUses}
                     </p>
                   </Stack>
-                  <PiPaperPlaneRight className="w-8 h-8 text-accent-amber" />
+                  <PiPaperPlaneRight className="w-8 h-8 text-atencao" />
                 </div>
               </AnimatedCard>
             </SequentialGrid>
@@ -1043,7 +1041,7 @@ export default function TestEmailListsManager() {
                             <div
                               className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-medium ${
                                 list.isActive
-                                  ? 'bg-accent-green bg-opacity-20 text-accent-green'
+                                  ? 'bg-ok/10 text-ok'
                                   : 'bg-theme-secondary text-theme-tertiary'
                               }`}
                             >

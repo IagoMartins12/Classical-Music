@@ -54,13 +54,11 @@ const TermsAcceptance: React.FC<TermsAcceptanceProps> = ({
         className="space-y-6 leading-relaxed"
       >
         <Stack gap={2} className="rounded-lg p-4">
-          <h4 className="font-semibold text-accent-blue flex items-center">
+          <h4 className="font-semibold text-aviso flex items-center">
             <PiShield className="w-4 h-4 mr-2" />
             {t('privacy_policy_summary_title')}
           </h4>
-          <p className="text-accent-blue/90">
-            {t('privacy_policy_summary_text')}
-          </p>
+          <p className="text-aviso/90">{t('privacy_policy_summary_text')}</p>
         </Stack>
 
         <Stack gap={3}>
@@ -91,7 +89,7 @@ const TermsAcceptance: React.FC<TermsAcceptanceProps> = ({
             {t('privacy_policy_rights_title')}
           </h4>
           <div className="rounded-lg p-3">
-            <ul className="space-y-1 text-accent-green">
+            <ul className="space-y-1 text-ok">
               <li>{t('privacy_policy_right_access')}</li>
               <li>{t('privacy_policy_right_correction')}</li>
               <li>{t('privacy_policy_right_deletion')}</li>
@@ -127,12 +125,12 @@ const TermsAcceptance: React.FC<TermsAcceptanceProps> = ({
 
         <Stack
           gap={2}
-          className="bg-accent-amber/10 border border-accent-amber/30 rounded-lg p-4"
+          className="bg-atencao/10 border border-atencao/30 rounded-lg p-4"
         >
-          <h4 className="font-semibold text-accent-amber">
+          <h4 className="font-semibold text-atencao">
             {t('privacy_policy_contact_title')}
           </h4>
-          <p className="text-accent-amber/90">
+          <p className="text-atencao/90">
             {t('privacy_policy_contact_text')}
             <br />
             <strong>{t('privacy_policy_contact_email')}</strong>
@@ -153,13 +151,11 @@ const TermsAcceptance: React.FC<TermsAcceptanceProps> = ({
         className="space-y-6 leading-relaxed"
       >
         <Stack gap={2} className="bg-theme-elevated rounded-lg p-4">
-          <h4 className="font-semibold text-accent-purple flex items-center">
+          <h4 className="font-semibold text-ouro-texto flex items-center">
             <PiFileText className="w-4 h-4 mr-2" />
             {t('terms_of_use_summary_title')}
           </h4>
-          <p className="text-accent-purple/90">
-            {t('terms_of_use_summary_text')}
-          </p>
+          <p className="text-ouro-texto/90">{t('terms_of_use_summary_text')}</p>
         </Stack>
 
         <Stack gap={3}>
@@ -214,7 +210,7 @@ const TermsAcceptance: React.FC<TermsAcceptanceProps> = ({
             {t('terms_of_use_responsibilities_title')}
           </h4>
           <div className="rounded-lg p-3">
-            <ul className="space-y-1 text-accent-amber">
+            <ul className="space-y-1 text-atencao">
               <li>{t('terms_of_use_responsibility_security')}</li>
               <li>{t('terms_of_use_responsibility_respect')}</li>
               <li>{t('terms_of_use_responsibility_moderation')}</li>
@@ -235,12 +231,10 @@ const TermsAcceptance: React.FC<TermsAcceptanceProps> = ({
         </Stack>
 
         <Stack gap={2} className="rounded-lg p-4">
-          <h4 className="font-semibold text-accent-red">
+          <h4 className="font-semibold text-erro">
             {t('terms_of_use_limitations_title')}
           </h4>
-          <p className="text-accent-red/90">
-            {t('terms_of_use_limitations_text')}
-          </p>
+          <p className="text-erro/90">{t('terms_of_use_limitations_text')}</p>
         </Stack>
       </Text>
     ),
@@ -252,15 +246,15 @@ const TermsAcceptance: React.FC<TermsAcceptanceProps> = ({
         <div
           className={`
             flex items-start space-x-3 p-4 rounded-lg  transition-all cursor-pointer
-            ${accepted ? 'bg-accent-green/5' : 'bg-theme-secondary/20 '}
-            ${error ? 'border-red-500 border' : ''}
+            ${accepted ? 'bg-ok/5' : 'bg-sup-1/20 '}
+            ${error ? 'border-erro border' : ''}
             ${disabled ? 'opacity-50 cursor-not-allowed' : ''}
           `}
           onClick={handleCheckboxChange}
         >
           <div className="flex items-center">
             {accepted ? (
-              <PiCheckSquare className="w-5 h-5 text-accent-green" />
+              <PiCheckSquare className="w-5 h-5 text-ok" />
             ) : (
               <PiSquare className="w-5 h-5 text-theme-tertiary" />
             )}
@@ -275,7 +269,7 @@ const TermsAcceptance: React.FC<TermsAcceptanceProps> = ({
                   e.stopPropagation();
                   setShowTermsModal(true);
                 }}
-                className="text-brand-primary hover:text-brand-secondary font-medium underline inline-flex items-center"
+                className="text-brand-primary hover:text-ouro-texto font-medium underline inline-flex items-center"
                 disabled={disabled}
               >
                 {t('terms_acceptance_terms_link')}
@@ -287,7 +281,7 @@ const TermsAcceptance: React.FC<TermsAcceptanceProps> = ({
                   e.stopPropagation();
                   setShowPrivacyModal(true);
                 }}
-                className="text-brand-primary hover:text-brand-secondary font-medium underline inline-flex items-center"
+                className="text-brand-primary hover:text-ouro-texto font-medium underline inline-flex items-center"
                 disabled={disabled}
               >
                 {t('terms_acceptance_privacy_link')}
@@ -298,7 +292,7 @@ const TermsAcceptance: React.FC<TermsAcceptanceProps> = ({
 
         {/* Mensagem de Erro */}
         {error && (
-          <Inline gap={2} className="text-red-500 text-sm">
+          <Inline gap={2} className="text-erro text-sm">
             <PiWarningCircle className="w-4 h-4 flex-shrink-0" />
             <span>{error}</span>
           </Inline>

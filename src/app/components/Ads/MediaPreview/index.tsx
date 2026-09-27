@@ -92,24 +92,24 @@ export default function MediaPreview({
       value: 'desktop' as DeviceType,
       label: 'Desktop',
       icon: PiMonitor,
-      color: 'text-accent-blue',
-      bgColor: 'bg-accent-blue/10',
+      color: 'text-aviso',
+      bgColor: 'bg-aviso/10',
       description: '1200px+',
     },
     {
       value: 'tablet' as DeviceType,
       label: 'Tablet',
       icon: PiDeviceTablet,
-      color: 'text-accent-purple',
-      bgColor: 'bg-accent-purple/10',
+      color: 'text-ouro-texto',
+      bgColor: 'bg-ouro/10',
       description: '768px - 1199px',
     },
     {
       value: 'mobile' as DeviceType,
       label: 'Mobile',
       icon: PiDeviceMobile,
-      color: 'text-accent-green',
-      bgColor: 'bg-accent-green/10',
+      color: 'text-ok',
+      bgColor: 'bg-ok/10',
       description: '< 768px',
     },
   ];
@@ -127,7 +127,7 @@ export default function MediaPreview({
   return (
     <div className={`classical-card overflow-hidden ${className}`}>
       {/* Header */}
-      <div className="p-4 border-b border-theme-primary bg-theme-secondary/30">
+      <div className="p-4 border-b border-theme-primary bg-sup-1/30">
         <div className="flex items-center justify-between">
           <Inline gap={3}>
             <PiEye className="w-5 h-5 text-brand-primary" />
@@ -174,7 +174,7 @@ export default function MediaPreview({
       </div>
 
       {/* Device Selector */}
-      <div className="p-4 bg-theme-secondary/10">
+      <div className="p-4 bg-sup-1/10">
         <div className="grid grid-cols-3 gap-2">
           {deviceOptions.map((device) => {
             const Icon = device.icon;
@@ -189,7 +189,7 @@ export default function MediaPreview({
                   ${
                     isActive
                       ? `${device.bgColor} ${device.color} border-2 border-current shadow-lg transform scale-[1.02]`
-                      : 'bg-theme-elevated text-theme-secondary hover:bg-theme-secondary hover:text-theme-primary border-2 border-transparent'
+                      : 'bg-theme-elevated text-theme-secondary hover:bg-sup-1 hover:text-texto border-2 border-transparent'
                   }
                 `}
               >
@@ -204,7 +204,7 @@ export default function MediaPreview({
 
       {/* Details Panel */}
       {showDetails && (
-        <div className="p-4 bg-accent-blue/5 border-b border-theme-primary">
+        <div className="p-4 bg-aviso/5 border-b border-theme-primary">
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm">
             <div>
               <div className="font-medium text-theme-primary mb-1">
@@ -232,17 +232,17 @@ export default function MediaPreview({
               <div className="font-medium text-theme-primary">Versões</div>
               <Inline gap={2} className="text-xs">
                 {hasImageVersions && (
-                  <span className="px-2 py-1 bg-accent-green/10 text-accent-green rounded">
+                  <span className="px-2 py-1 bg-ok/10 text-ok rounded">
                     IMG ✓
                   </span>
                 )}
                 {hasVideoVersions && (
-                  <span className="px-2 py-1 bg-accent-purple/10 text-accent-purple rounded">
+                  <span className="px-2 py-1 bg-ouro/10 text-ouro-texto rounded">
                     VID ✓
                   </span>
                 )}
                 {!hasImageVersions && !hasVideoVersions && (
-                  <span className="px-2 py-1 bg-accent-amber/10 text-accent-amber rounded">
+                  <span className="px-2 py-1 bg-atencao/10 text-atencao rounded">
                     Original
                   </span>
                 )}
@@ -267,10 +267,10 @@ export default function MediaPreview({
             absolute inset-0 rounded-lg border-2 transition-all duration-300
             ${
               activeDevice === 'desktop'
-                ? 'border-accent-blue shadow-accent-blue/20'
+                ? 'border-aviso'
                 : activeDevice === 'tablet'
-                  ? 'border-accent-purple shadow-accent-purple/20'
-                  : 'border-accent-green shadow-accent-green/20'
+                  ? 'border-ouro'
+                  : 'border-ok'
             } shadow-lg
           `}
           >
@@ -310,7 +310,7 @@ export default function MediaPreview({
                   {/* CTA button simulation */}
                   {ad.ctaText && (
                     <div className="absolute bottom-4 right-4">
-                      <div className="bg-gradient-to-r from-yellow-400 to-yellow-600 text-black text-xs font-bold px-3 py-1 rounded-full shadow-lg">
+                      <div className="bg-atencao text-black text-xs font-bold px-3 py-1 rounded-full shadow-lg">
                         {ad.ctaText}
                       </div>
                     </div>
@@ -318,7 +318,7 @@ export default function MediaPreview({
                 </div>
               </div>
             ) : (
-              <div className="w-full h-full flex items-center justify-center bg-theme-secondary/20 rounded-md">
+              <div className="w-full h-full flex items-center justify-center bg-sup-1/20 rounded-md">
                 <div className="text-center text-theme-tertiary">
                   <div className="w-12 h-12 mx-auto mb-2 opacity-50">
                     {activeDevice === 'desktop' ? (
@@ -346,10 +346,10 @@ export default function MediaPreview({
               inline-flex items-center space-x-2 px-3 py-1 rounded-full text-xs font-medium
               ${
                 activeDevice === 'desktop'
-                  ? 'bg-accent-blue/10 text-accent-blue'
+                  ? 'bg-aviso/10 text-aviso'
                   : activeDevice === 'tablet'
-                    ? 'bg-accent-purple/10 text-accent-purple'
-                    : 'bg-accent-green/10 text-accent-green'
+                    ? 'bg-ouro/10 text-ouro-texto'
+                    : 'bg-ok/10 text-ok'
               }
             `}
             >
@@ -364,7 +364,7 @@ export default function MediaPreview({
       {/* Quality Info */}
       {(ad.imageQuality || ad.videoQuality) && (
         <div className="px-4 pb-4">
-          <div className="bg-theme-secondary/20 rounded-lg p-3 text-sm">
+          <div className="bg-sup-1/20 rounded-lg p-3 text-sm">
             <div className="flex items-center justify-between">
               <span className="text-theme-secondary">
                 Qualidade de processamento:
@@ -374,7 +374,7 @@ export default function MediaPreview({
               </span>
             </div>
             {ad.mediaMetadata?.processingError && (
-              <div className="mt-2 text-xs text-accent-amber">
+              <div className="mt-2 text-xs text-atencao">
                 ⚠️ Processamento com fallback:{' '}
                 {ad.mediaMetadata.processingError}
               </div>
@@ -391,9 +391,9 @@ export default function MediaPreview({
 
       {/* Usage Tips */}
       <div className="px-4 pb-4">
-        <div className="bg-accent-gold/5 border border-accent-gold/20 rounded-lg p-3">
+        <div className="bg-ouro/5 border border-ouro/20 rounded-lg p-3">
           <div className="flex items-start space-x-2">
-            <PiInfo className="w-4 h-4 text-accent-gold mt-0.5 flex-shrink-0" />
+            <PiInfo className="w-4 h-4 text-ouro-texto mt-0.5 flex-shrink-0" />
             <Text papel="legenda" tom="suave" as="div">
               <div className="font-medium text-theme-primary mb-1">
                 💡 Dicas de otimização

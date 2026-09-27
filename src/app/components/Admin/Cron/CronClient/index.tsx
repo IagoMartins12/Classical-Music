@@ -124,7 +124,7 @@ export default function CronClient() {
                       {tarefa.name}
                     </h2>
                     {tarefa.destructive && (
-                      <span className="inline-flex items-center gap-1 text-xs text-accent-red bg-accent-red/10 rounded-full px-2 py-0.5">
+                      <span className="inline-flex items-center gap-1 text-xs text-erro bg-erro/10 rounded-full px-2 py-0.5">
                         <PiWarning className="w-3 h-3" />
                         apaga dado
                       </span>

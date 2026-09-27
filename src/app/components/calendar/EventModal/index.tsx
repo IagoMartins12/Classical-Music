@@ -142,7 +142,7 @@ export default function EventModal({
 
         {/* Badge de Gratuito */}
         {event.isFree && (
-          <div className="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-green-100 text-green-800">
+          <div className="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-ok/10 text-ok">
             <PiTicket className="w-4 h-4 mr-1" />
             Entrada Gratuita
           </div>
@@ -172,8 +172,8 @@ export default function EventModal({
                       />
                     </div>
                   ) : (
-                    <div className="w-8 h-8 rounded-full bg-gray-200 flex items-center justify-center flex-shrink-0">
-                      <PiMusicNotes className="w-4 h-4 text-gray-500" />
+                    <div className="w-8 h-8 rounded-full bg-sup-2 flex items-center justify-center flex-shrink-0">
+                      <PiMusicNotes className="w-4 h-4 text-texto-fraco" />
                     </div>
                   )}
                   <span className="text-sm font-medium ">{composer.name}</span>
@@ -275,7 +275,7 @@ export default function EventModal({
         {/* Adicionar ao Calendário */}
         <div className="text-center">
           <button
-            className="text-sm text-blue-400 hover:text-blue-700 hover:underline"
+            className="text-sm text-aviso hover:text-aviso hover:underline"
             onClick={() => {
               // TODO: Implementar adição ao Google Calendar
               const title = encodeURIComponent(event.title);

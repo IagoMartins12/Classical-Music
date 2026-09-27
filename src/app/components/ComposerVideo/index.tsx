@@ -181,7 +181,7 @@ const ComposerVideo: React.FC<ComposerVideoProps> = ({
     <AnimatedCard hover="lift" className="classical-card p-8">
       <AnimatedItem direction="left" springType="smooth">
         <Inline gap={3} className="mb-6">
-          <div className="w-12 h-12 bg-gradient-to-br from-accent-red to-accent-purple rounded-2xl flex items-center justify-center">
+          <div className="w-12 h-12 bg-erro rounded-2xl flex items-center justify-center">
             <PiPlay className="w-6 h-6 text-theme-primary" />
           </div>
           <div className="flex-1">
@@ -207,7 +207,7 @@ const ComposerVideo: React.FC<ComposerVideoProps> = ({
             className="flex items-start justify-between"
           >
             <Inline gap={2}>
-              <div className="w-2 h-2 bg-accent-green rounded-full animate-pulse"></div>
+              <div className="w-2 h-2 bg-ok rounded-full animate-pulse"></div>
               <span>
                 {videoInfo.type === 'youtube' && 'YouTube'}
                 {videoInfo.type === 'vimeo' && 'Vimeo'}
@@ -218,7 +218,7 @@ const ComposerVideo: React.FC<ComposerVideoProps> = ({
               href={videoInfo.originalUrl}
               target="_blank"
               rel="noopener noreferrer"
-              className="text-brand-primary hover:text-brand-secondary transition-colors duration-200 font-medium"
+              className="text-brand-primary hover:text-ouro-texto transition-colors duration-200 font-medium"
             >
               {t('video_watch_original')}
             </a>
@@ -228,14 +228,14 @@ const ComposerVideo: React.FC<ComposerVideoProps> = ({
 
       {hasError && (
         <AnimatedItem direction="up" springType="gentle">
-          <div className="mt-4 p-4 bg-red-50 border border-red-200 rounded-xl">
+          <div className="mt-4 p-4 bg-erro/10 border border-erro/30 rounded-xl">
             <Inline gap={3}>
-              <PiWarningCircle className="w-5 h-5 text-red-600 flex-shrink-0" />
+              <PiWarningCircle className="w-5 h-5 text-erro flex-shrink-0" />
               <div>
-                <p className="text-red-800 font-medium">
+                <p className="text-erro font-medium">
                   {t('video_error_title')}
                 </p>
-                <p className="text-red-600 text-sm mt-1">
+                <p className="text-erro text-sm mt-1">
                   {t('video_error_message')}
                 </p>
               </div>

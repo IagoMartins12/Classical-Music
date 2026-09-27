@@ -23,9 +23,9 @@ const UploadFormValidation = ({
   className = '',
 }: UploadFormValidationProps) => {
   const getQualityColor = (score: number) => {
-    if (score >= 80) return 'text-accent-green';
-    if (score >= 60) return 'text-accent-amber';
-    return 'text-accent-red';
+    if (score >= 80) return 'text-ok';
+    if (score >= 60) return 'text-atencao';
+    return 'text-erro';
   };
 
   const getQualityLabel = (score: number) => {
@@ -37,11 +37,11 @@ const UploadFormValidation = ({
   if (!validation.errors.length && !validation.warnings.length) {
     return (
       <div
-        className={`bg-accent-green/10 border border-accent-green/20 rounded-lg p-4 ${className}`}
+        className={`bg-ok/10 border border-ok/20 rounded-lg p-4 ${className}`}
       >
         <Inline gap={2}>
-          <PiCheckCircle className="w-5 h-5 text-accent-green" />
-          <span className="text-sm font-medium text-accent-green">
+          <PiCheckCircle className="w-5 h-5 text-ok" />
+          <span className="text-sm font-medium text-ok">
             Validação bem-sucedida
           </span>
         </Inline>
@@ -54,7 +54,7 @@ const UploadFormValidation = ({
           </Text>
           <div className="w-24 h-2 bg-theme-secondary rounded-full">
             <div
-              className="h-2 bg-gradient-to-r from-accent-red via-accent-amber to-accent-green rounded-full transition-all duration-500"
+              className="h-2 bg-erro rounded-full transition-all duration-500"
               style={{ width: `${dataQuality}%` }}
             />
           </div>
@@ -69,11 +69,11 @@ const UploadFormValidation = ({
       {validation.errors.length > 0 && (
         <Stack
           gap={2}
-          className="bg-accent-red/10 border border-accent-red/20 rounded-lg p-4"
+          className="bg-erro/10 border border-erro/20 rounded-lg p-4"
         >
           <Inline gap={2}>
-            <PiWarningCircle className="w-5 h-5 text-accent-red" />
-            <span className="text-sm font-medium text-accent-red">
+            <PiWarningCircle className="w-5 h-5 text-erro" />
+            <span className="text-sm font-medium text-erro">
               Erros encontrados ({validation.errors.length})
             </span>
           </Inline>
@@ -81,7 +81,7 @@ const UploadFormValidation = ({
             {validation.errors.map((error, index) => (
               <li
                 key={index}
-                className="text-sm text-accent-red flex items-start space-x-2"
+                className="text-sm text-erro flex items-start space-x-2"
               >
                 <span className="text-xs mt-1">•</span>
                 <span>{error}</span>
@@ -95,11 +95,11 @@ const UploadFormValidation = ({
       {validation.warnings.length > 0 && (
         <Stack
           gap={2}
-          className="bg-accent-amber/10 border border-accent-amber/20 rounded-lg p-4"
+          className="bg-atencao/10 border border-atencao/20 rounded-lg p-4"
         >
           <Inline gap={2}>
-            <PiWarning className="w-5 h-5 text-accent-amber" />
-            <span className="text-sm font-medium text-accent-amber">
+            <PiWarning className="w-5 h-5 text-atencao" />
+            <span className="text-sm font-medium text-atencao">
               Avisos ({validation.warnings.length})
             </span>
           </Inline>
@@ -107,7 +107,7 @@ const UploadFormValidation = ({
             {validation.warnings.map((warning, index) => (
               <li
                 key={index}
-                className="text-sm text-accent-amber flex items-start space-x-2"
+                className="text-sm text-atencao flex items-start space-x-2"
               >
                 <span className="text-xs mt-1">•</span>
                 <span>{warning}</span>
@@ -118,10 +118,10 @@ const UploadFormValidation = ({
       )}
 
       {/* Data Quality */}
-      <div className="bg-accent-blue/10 border border-accent-blue/20 rounded-lg p-4">
+      <div className="bg-aviso/10 border border-aviso/20 rounded-lg p-4">
         <Inline gap={2} className="mb-2">
-          <PiInfo className="w-5 h-5 text-accent-blue" />
-          <span className="text-sm font-medium text-accent-blue">
+          <PiInfo className="w-5 h-5 text-aviso" />
+          <span className="text-sm font-medium text-aviso">
             Qualidade dos dados
           </span>
         </Inline>
@@ -134,7 +134,7 @@ const UploadFormValidation = ({
           </Text>
           <div className="w-32 h-2 bg-theme-secondary rounded-full">
             <div
-              className="h-2 bg-gradient-to-r from-accent-red via-accent-amber to-accent-green rounded-full transition-all duration-500"
+              className="h-2 bg-erro rounded-full transition-all duration-500"
               style={{ width: `${dataQuality}%` }}
             />
           </div>

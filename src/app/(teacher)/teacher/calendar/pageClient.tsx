@@ -396,20 +396,20 @@ export default function TeacherCalendarPageClient({
     needsAttention: boolean = false
   ) => {
     if (needsAttention) {
-      return ' border-red-400 text-red-400';
+      return ' border-erro text-erro';
     }
 
     switch (status) {
       case 'COMPLETED':
-        return 'border-green-400 text-green-400';
+        return 'border-ok text-ok';
       case 'CANCELLED':
-        return ' border-amber-600 text-amber-600';
+        return ' border-atencao text-atencao';
       case 'NO_SHOW':
-        return 'border-yellow-300 text-yellow-300';
+        return 'border-atencao/30 text-atencao';
       case 'RESCHEDULED':
-        return 'border-purple-300 text-purple-300';
+        return 'border-ouro/30 text-ouro-texto';
       default:
-        return 'border-blue-300 text-blue-300';
+        return 'border-aviso/30 text-aviso';
     }
   };
 
@@ -515,7 +515,7 @@ export default function TeacherCalendarPageClient({
       <PageContainer showBackground={true}>
         <div className="flex items-center justify-center min-h-screen">
           <Card densidade="larga" className="text-center max-w-md">
-            <div className="w-16 h-16 bg-gradient-to-br from-accent-red to-accent-purple rounded-3xl flex items-center justify-center mx-auto mb-6">
+            <div className="w-16 h-16 bg-erro rounded-3xl flex items-center justify-center mx-auto mb-6">
               <PiCalendarBlank className="w-8 h-8 text-theme-primary" />
             </div>
             <h1 className="text-xl font-bold text-theme-primary classical-title mb-4">
@@ -565,7 +565,7 @@ export default function TeacherCalendarPageClient({
         <AnimatedItem direction="up" springType="gentle">
           <div className="text-center mb-8 py-8">
             <div className="flex items-center justify-center mb-6">
-              <div className="w-16 h-16 bg-gradient-to-br from-brand-primary to-brand-secondary rounded-3xl flex items-center justify-center shadow-theme-glow">
+              <div className="w-16 h-16 fill-ouro rounded-3xl flex items-center justify-center shadow-theme-glow">
                 <PiCalendarBlank className="w-8 h-8 text-theme-primary" />
               </div>
             </div>
@@ -684,12 +684,12 @@ export default function TeacherCalendarPageClient({
           <AnimatedItem direction="up" springType="gentle">
             <AnimatedCard
               hover="lift"
-              className="classical-card p-4 mb-6 border-l-4 flex items-center justify-between !border-red-600"
+              className="border classical-card p-4 mb-6 flex items-center justify-between !border-erro/40"
             >
               <Inline gap={3}>
-                <PiWarning className="w-5 h-5 text-accent-red" />
+                <PiWarning className="w-5 h-5 text-erro" />
                 <div>
-                  <h4 className="font-semibold text-accent-red">
+                  <h4 className="font-semibold text-erro">
                     {t('attention_alert_title', {
                       count: viewStats.needsAttention,
                       plural: viewStats.needsAttention !== 1 ? 's' : '',
@@ -727,9 +727,9 @@ export default function TeacherCalendarPageClient({
                         : navigateWeek('prev')
                     }
                     disabled={loading.calendar}
-                    className="w-10 h-10 rounded-lg bg-theme-elevated border border-theme-secondary hover:border-brand-primary transition-all flex items-center justify-center group disabled:opacity-50"
+                    className="w-10 h-10 rounded-lg bg-theme-elevated border border-theme-secondary hover:border-ouro transition-all flex items-center justify-center group disabled:opacity-50"
                   >
-                    <PiCaretLeft className="w-5 h-5 text-theme-tertiary group-hover:text-brand-primary transition-colors" />
+                    <PiCaretLeft className="w-5 h-5 text-theme-tertiary group-hover:text-ouro-texto transition-colors" />
                     <NomeAcao acao="anterior" />
                   </button>
 
@@ -752,9 +752,9 @@ export default function TeacherCalendarPageClient({
                         : navigateWeek('next')
                     }
                     disabled={loading.calendar}
-                    className="w-10 h-10 rounded-lg bg-theme-elevated border border-theme-secondary hover:border-brand-primary transition-all flex items-center justify-center group disabled:opacity-50"
+                    className="w-10 h-10 rounded-lg bg-theme-elevated border border-theme-secondary hover:border-ouro transition-all flex items-center justify-center group disabled:opacity-50"
                   >
-                    <PiCaretRight className="w-5 h-5 text-theme-tertiary group-hover:text-brand-primary transition-colors" />
+                    <PiCaretRight className="w-5 h-5 text-theme-tertiary group-hover:text-ouro-texto transition-colors" />
                     <NomeAcao acao="proximo" />
                   </button>
                 </Inline>
@@ -796,7 +796,7 @@ export default function TeacherCalendarPageClient({
                     className={`px-3 py-2 rounded-lg text-sm font-medium transition-all ${
                       viewMode === 'month'
                         ? 'bg-theme-tertiary text-theme-primary shadow-md'
-                        : 'text-theme-tertiary hover:text-theme-primary'
+                        : 'text-theme-tertiary hover:text-texto'
                     }`}
                   >
                     {t('month')}
@@ -806,7 +806,7 @@ export default function TeacherCalendarPageClient({
                     className={`px-3 py-2 rounded-lg text-sm font-medium transition-all ${
                       viewMode === 'week'
                         ? 'bg-theme-tertiary text-theme-primary shadow-md'
-                        : 'text-theme-tertiary hover:text-theme-primary'
+                        : 'text-theme-tertiary hover:text-texto'
                     }`}
                   >
                     {t('week')}
@@ -816,7 +816,7 @@ export default function TeacherCalendarPageClient({
                     className={`px-3 py-2 rounded-lg text-sm font-medium transition-all ${
                       viewMode === 'day'
                         ? 'bg-theme-tertiary text-theme-primary shadow-md'
-                        : 'text-theme-tertiary hover:text-theme-primary'
+                        : 'text-theme-tertiary hover:text-texto'
                     }`}
                   >
                     {t('day')}
@@ -929,14 +929,14 @@ export default function TeacherCalendarPageClient({
           <AnimatedItem direction="up" springType="gentle">
             <AnimatedCard
               hover="lift"
-              className="classical-card p-6 border-l-4 border-accent-red"
+              className="border classical-card p-6 border-erro/40"
             >
               <div className="flex items-start space-x-4">
-                <div className="w-10 h-10 bg-accent-red/10 rounded-full flex items-center justify-center">
-                  <PiWarningCircle className="w-5 h-5 text-accent-red" />
+                <div className="w-10 h-10 bg-erro/10 rounded-full flex items-center justify-center">
+                  <PiWarningCircle className="w-5 h-5 text-erro" />
                 </div>
                 <div className="flex-1">
-                  <h3 className="font-bold text-accent-red mb-2">
+                  <h3 className="font-bold text-erro mb-2">
                     {t('conflicts_detected')}
                   </h3>
                   <Text papel="rotulo" tom="suave" as="p" className="mb-4">
@@ -986,10 +986,10 @@ export default function TeacherCalendarPageClient({
               <div
                 className={`w-12 h-12 rounded-full flex items-center justify-center ${
                   pendingStatusUpdate.newStatus === 'COMPLETED'
-                    ? 'bg-accent-green/10'
+                    ? 'bg-ok/10'
                     : pendingStatusUpdate.newStatus === 'NO_SHOW'
-                      ? 'bg-accent-yellow/10'
-                      : 'bg-accent-red/10'
+                      ? 'bg-atencao/10'
+                      : 'bg-erro/10'
                 }`}
               >
                 {pendingStatusUpdate.newStatus === 'COMPLETED' && (
@@ -1016,9 +1016,9 @@ export default function TeacherCalendarPageClient({
 
             <div className="bg-theme-tertiary rounded-lg p-4">
               <div className="flex items-start space-x-3">
-                <PiInfo className="w-8 h-8 text-accent-blue mt-0.5" />
+                <PiInfo className="w-8 h-8 text-aviso mt-0.5" />
                 <Stack gap={1} className="text-sm">
-                  <p className="font-medium text-accent-blue">
+                  <p className="font-medium text-aviso">
                     {t('status_confirmation')}
                   </p>
                   <p className="text-theme-secondary">
@@ -1047,10 +1047,10 @@ export default function TeacherCalendarPageClient({
                 disabled={updatingStatus}
                 className={`btn-classical-primary flex items-center space-x-2 ${
                   pendingStatusUpdate.newStatus === 'CANCELLED'
-                    ? 'bg-accent-red border-accent-red hover:bg-accent-red/90'
+                    ? 'bg-erro border-erro hover:bg-erro/90'
                     : pendingStatusUpdate.newStatus === 'COMPLETED'
-                      ? 'bg-accent-green border-accent-green hover:bg-accent-green/90'
-                      : 'bg-accent-yellow border-accent-yellow hover:bg-accent-yellow/90'
+                      ? 'bg-ok border-ok hover:bg-ok/90'
+                      : 'bg-atencao border-atencao hover:bg-atencao/90'
                 }`}
               >
                 {updatingStatus ? (
@@ -1187,13 +1187,13 @@ function MonthView({
           return (
             <div
               key={index}
-              className={`min-h-24 p-2 border border-theme-secondary/50 rounded-lg transition-all hover:border-brand-primary/30 ${
+              className={`min-h-24 p-2 border border-linha/50 rounded-lg transition-all hover:border-ouro/30 ${
                 isToday
-                  ? 'bg-brand-primary/5 border-brand-primary/30'
+                  ? 'bg-ouro/5 border-ouro/30'
                   : isCurrentMonth
-                    ? 'bg-theme-elevated/50'
-                    : 'bg-theme-secondary/20 opacity-60'
-              } ${hasAttentionEvents ? 'ring-1 ring-accent-red/40' : ''}`}
+                    ? 'bg-sup-elevada/50'
+                    : 'bg-sup-1/20 opacity-60'
+              } ${hasAttentionEvents ? 'ring-1 ring-erro/40' : ''}`}
             >
               <div
                 className={`text-sm font-medium mb-1 flex items-center justify-between ${
@@ -1206,7 +1206,7 @@ function MonthView({
               >
                 <span>{day.getDate()}</span>
                 {hasAttentionEvents && (
-                  <PiWarning className="w-3 h-3 text-accent-red" />
+                  <PiWarning className="w-3 h-3 text-erro" />
                 )}
               </div>
 
@@ -1223,7 +1223,7 @@ function MonthView({
                       )}`}
                     >
                       {statusInfo.needsAttention && (
-                        <PiWarning className="absolute -top-1 -right-1 w-2 h-2 text-accent-red" />
+                        <PiWarning className="absolute -top-1 -right-1 w-2 h-2 text-erro" />
                       )}
                       <div className="truncate">
                         {formatTime(event.start)} {event.title}
@@ -1235,7 +1235,7 @@ function MonthView({
                 {hasMoreThan3 && (
                   <button
                     onClick={() => onShowDayEvents(day, events)}
-                    className="w-full text-left p-1 rounded text-xs font-medium bg-theme-elevated hover:bg-brand-primary/10 text-theme-tertiary hover:text-brand-primary transition-all border border-dashed border-theme-secondary hover:border-brand-primary/30"
+                    className="w-full text-left p-1 rounded text-xs font-medium bg-theme-elevated hover:bg-ouro/10 text-theme-tertiary hover:text-ouro-texto transition-all border border-dashed border-theme-secondary hover:border-ouro/30"
                   >
                     <div className="truncate">
                       {t('more_lessons', {
@@ -1290,8 +1290,8 @@ function WeekView({
             <div
               className={`text-center p-4 ${
                 isToday
-                  ? 'bg-brand-primary/10 border-b border-brand-primary/30'
-                  : 'bg-theme-secondary/50 border-b border-theme-secondary/30'
+                  ? 'bg-ouro/10 border-b border-ouro/30'
+                  : 'bg-sup-1/50 border-b border-linha/30'
               }`}
             >
               <Inline
@@ -1332,7 +1332,7 @@ function WeekView({
                       )}`}
                     >
                       {statusInfo.needsAttention && (
-                        <div className="absolute -top-2 -right-2 w-6 h-6 bg-accent-red rounded-full flex items-center justify-center">
+                        <div className="absolute -top-2 -right-2 w-6 h-6 bg-erro rounded-full flex items-center justify-center">
                           <PiWarning className="w-3 h-3 text-white" />
                         </div>
                       )}
@@ -1419,7 +1419,7 @@ function DayView({
                 )}`}
               >
                 {statusInfo.needsAttention && (
-                  <div className="absolute -top-2 -right-2 w-6 h-6 bg-accent-red rounded-full flex items-center justify-center">
+                  <div className="absolute -top-2 -right-2 w-6 h-6 bg-erro rounded-full flex items-center justify-center">
                     <PiWarning className="w-3 h-3 text-white" />
                   </div>
                 )}
@@ -1448,7 +1448,7 @@ function DayView({
                       )}
 
                       {statusInfo.needsAttention && (
-                        <Inline gap={2} className="text-accent-red">
+                        <Inline gap={2} className="text-erro">
                           <PiWarning className="w-4 h-4" />
                           <span className="font-medium">
                             {t('overdue_hours', {
@@ -1550,7 +1550,7 @@ function EventDetailsModal({
                             : event.status}
                 </span>
                 {event.details?.isRecurring && (
-                  <span className="px-3 py-1 bg-accent-purple/10 border border-accent-purple/30 text-accent-purple rounded-full text-sm">
+                  <span className="px-3 py-1 bg-ouro/10 border border-ouro/30 text-ouro-texto rounded-full text-sm">
                     {t('recurring')}
                   </span>
                 )}
@@ -1558,7 +1558,7 @@ function EventDetailsModal({
                   <Inline
                     as="span"
                     gap={1}
-                    className="px-3 py-1 bg-accent-red/10 border border-accent-red/30 text-accent-red rounded-full text-sm"
+                    className="px-3 py-1 bg-erro/10 border border-erro/30 text-erro rounded-full text-sm"
                   >
                     <PiWarning className="w-3 h-3" />
                     <span>{t('needs_attention')}</span>
@@ -1570,11 +1570,11 @@ function EventDetailsModal({
 
           {/* 🆕 ALERTA DE ATENÇÃO EXPANDIDO E MELHORADO */}
           {statusInfo.needsAttention && (
-            <div className="mb-6 p-6 border border-red-600 rounded-lg bg-accent-red/5">
+            <div className="mb-6 p-6 border border-erro rounded-lg bg-erro/5">
               <Stack gap={4} className="items-center text-center">
-                <PiWarning className="w-12 h-12 text-accent-red" />
+                <PiWarning className="w-12 h-12 text-erro" />
                 <div>
-                  <h4 className="font-bold text-accent-red text-lg mb-2">
+                  <h4 className="font-bold text-erro text-lg mb-2">
                     {t('lesson_needs_attention')}
                   </h4>
                   <Text papel="rotulo" tom="suave" as="p" className="mb-1">
@@ -1594,7 +1594,7 @@ function EventDetailsModal({
                     as="button"
                     gap={2}
                     onClick={() => onUpdateStatus(event.id, 'COMPLETED')}
-                    className="btn-classical-primary bg-accent-green border-accent-green hover:bg-accent-green/90 text-white px-4 py-2"
+                    className="btn-classical-primary bg-ok border-ok hover:bg-ok/90 text-white px-4 py-2"
                   >
                     <PiCheck className="w-4 h-4" />
                     <span>{t('mark_completed')}</span>
@@ -1603,7 +1603,7 @@ function EventDetailsModal({
                     as="button"
                     gap={2}
                     onClick={() => onUpdateStatus(event.id, 'NO_SHOW')}
-                    className="btn-classical-secondary bg-accent-yellow/10 border-accent-yellow text-accent-yellow hover:bg-accent-yellow/20 px-4 py-2"
+                    className="btn-classical-secondary bg-atencao/10 border-atencao text-atencao hover:bg-atencao/20 px-4 py-2"
                   >
                     <PiUser className="w-4 h-4" />
                     <span>{t('student_absent')}</span>
@@ -1612,7 +1612,7 @@ function EventDetailsModal({
                     as="button"
                     gap={2}
                     onClick={() => onUpdateStatus(event.id, 'CANCELLED')}
-                    className="btn-classical-secondary bg-accent-red/10 border-accent-red text-accent-red hover:bg-accent-red/20 px-4 py-2"
+                    className="btn-classical-secondary bg-erro/10 border-erro text-erro hover:bg-erro/20 px-4 py-2"
                   >
                     <PiX className="w-4 h-4" />
                     <span>{t('was_cancelled')}</span>
@@ -1654,7 +1654,7 @@ function EventDetailsModal({
                         />
                       </div>
                     ) : (
-                      <div className="w-8 h-8 bg-gradient-to-br from-brand-primary to-brand-secondary rounded-full flex items-center justify-center">
+                      <div className="w-8 h-8 fill-ouro rounded-full flex items-center justify-center">
                         <PiUser className="w-4 h-4 text-theme-primary" />
                       </div>
                     )}
@@ -1701,7 +1701,7 @@ function EventDetailsModal({
                   {event.objectives.map((objective, index) => (
                     <span
                       key={index}
-                      className="px-3 py-1 bg-accent-blue/10 border border-accent-blue/30 text-accent-blue rounded-full text-sm"
+                      className="px-3 py-1 bg-aviso/10 border border-aviso/30 text-aviso rounded-full text-sm"
                     >
                       {objective}
                     </span>
@@ -1737,7 +1737,7 @@ function EventDetailsModal({
                 <label className="text-sm font-medium text-theme-tertiary block">
                   {t('homework')}
                 </label>
-                <div className="bg-gradient-to-r from-theme-elevated to-interactive-hover rounded-lg border border-theme-primary/20 p-4">
+                <div className="bg-sup-elevada rounded-lg border border-linha/20 p-4">
                   <div className="text-theme-primary">
                     {event.details.homework}
                   </div>
@@ -1751,7 +1751,7 @@ function EventDetailsModal({
                 <label className="text-sm font-medium text-theme-tertiary block">
                   {t('teacher_notes')}
                 </label>
-                <div className="bg-gradient-to-r from-theme-elevated to-interactive-hover rounded-lg border border-theme-primary/20 p-4">
+                <div className="bg-sup-elevada rounded-lg border border-linha/20 p-4">
                   <div className="text-theme-primary whitespace-pre-wrap">
                     {event.details.teacherNotes}
                   </div>
@@ -1770,7 +1770,7 @@ function EventDetailsModal({
                     as="button"
                     gap={2}
                     onClick={() => onUpdateStatus(event.id, 'COMPLETED')}
-                    className="btn-classical-secondary bg-accent-green/10 border-accent-green text-accent-green hover:bg-accent-green/20 text-sm"
+                    className="btn-classical-secondary bg-ok/10 border-ok text-ok hover:bg-ok/20 text-sm"
                   >
                     <PiCheck className="w-4 h-4" />
                     <span>{t('complete_lesson')}</span>
@@ -1779,7 +1779,7 @@ function EventDetailsModal({
                     as="button"
                     gap={2}
                     onClick={() => onUpdateStatus(event.id, 'NO_SHOW')}
-                    className="btn-classical-secondary bg-accent-yellow/10 border-accent-yellow text-accent-yellow hover:bg-accent-yellow/20 text-sm"
+                    className="btn-classical-secondary bg-atencao/10 border-atencao text-atencao hover:bg-atencao/20 text-sm"
                   >
                     <PiUser className="w-4 h-4" />
                     <span>{t('mark_absent')}</span>
@@ -1788,7 +1788,7 @@ function EventDetailsModal({
                     as="button"
                     gap={2}
                     onClick={() => onUpdateStatus(event.id, 'CANCELLED')}
-                    className="btn-classical-secondary bg-accent-red/10 border-accent-red text-accent-red hover:bg-accent-red/20 text-sm"
+                    className="btn-classical-secondary bg-erro/10 border-erro text-erro hover:bg-erro/20 text-sm"
                   >
                     <PiX className="w-4 h-4" />
                     <span>{t('cancel_lesson')}</span>
@@ -1801,7 +1801,7 @@ function EventDetailsModal({
             <div className="flex items-center justify-between pt-6 border-t border-theme-secondary">
               <Link
                 href={`/teacher/lessons/${event.id}`}
-                className="text-brand-primary hover:text-brand-secondary text-sm font-medium transition-colors flex items-center space-x-1"
+                className="text-brand-primary hover:text-ouro-texto text-sm font-medium transition-colors flex items-center space-x-1"
               >
                 <PiEye className="w-4 h-4" />
                 <span>{t('view_full_details')}</span>
@@ -1813,8 +1813,8 @@ function EventDetailsModal({
                     href={`/teacher/lessons/${event.id}`}
                     className={`text-sm font-medium transition-colors flex items-center space-x-1 ${
                       statusInfo.needsAttention
-                        ? 'text-accent-red hover:text-accent-red/80'
-                        : 'text-accent-blue hover:text-accent-purple'
+                        ? 'text-erro hover:text-erro/80'
+                        : 'text-aviso hover:text-ouro-texto'
                     }`}
                   >
                     <PiPencilLine className="w-4 h-4" />
@@ -1891,7 +1891,7 @@ function DayEventsModal({
                   plural: events.length !== 1 ? 's' : '',
                 })}
                 {eventsNeedingAttention.length > 0 && (
-                  <span className="text-accent-red">
+                  <span className="text-erro">
                     {' '}
                     •{' '}
                     {t('need_attention_count', {
@@ -1903,7 +1903,7 @@ function DayEventsModal({
             </div>
             <button
               onClick={onClose}
-              className="w-8 h-8 rounded-lg bg-theme-elevated hover:bg-theme-secondary transition-colors flex items-center justify-center"
+              className="w-8 h-8 rounded-lg bg-theme-elevated hover:bg-sup-1 transition-colors flex items-center justify-center"
             >
               <PiX className="w-4 h-4 text-theme-tertiary" />
               <NomeAcao acao="fechar" />
@@ -1912,11 +1912,11 @@ function DayEventsModal({
 
           {/* Alerta geral se houver eventos precisando de atenção */}
           {eventsNeedingAttention.length > 0 && (
-            <div className="mb-6 p-4 bg-accent-red/5 border border-accent-red/20 rounded-lg">
+            <div className="mb-6 p-4 bg-erro/5 border border-erro/20 rounded-lg">
               <Inline gap={3}>
-                <PiWarning className="w-5 h-5 text-accent-red" />
+                <PiWarning className="w-5 h-5 text-erro" />
                 <div>
-                  <h4 className="font-semibold text-accent-red">
+                  <h4 className="font-semibold text-erro">
                     {t('attention_general_alert', {
                       count: eventsNeedingAttention.length,
                       plural: eventsNeedingAttention.length !== 1 ? 's' : '',
@@ -1966,7 +1966,7 @@ function DayEventsModal({
                           <Inline
                             as="span"
                             gap={1}
-                            className="px-2 py-1 bg-accent-red/20 text-accent-red rounded-full text-xs"
+                            className="px-2 py-1 bg-erro/10 text-erro rounded-full text-xs"
                           >
                             <PiWarning className="w-3 h-3" />
                             <span>{t('needs_attention')}</span>
@@ -1998,7 +1998,7 @@ function DayEventsModal({
                           )}
 
                           {statusInfo.needsAttention && (
-                            <Inline gap={2} className="text-accent-red">
+                            <Inline gap={2} className="text-erro">
                               <PiWarning className="w-4 h-4" />
                               <span className="font-medium text-xs">
                                 {t('overdue_hours', {
@@ -2041,7 +2041,7 @@ function DayEventsModal({
                           as="button"
                           gap={1}
                           onClick={() => onEventClick(event)}
-                          className="text-brand-primary hover:text-brand-secondary text-sm font-medium transition-colors"
+                          className="text-brand-primary hover:text-ouro-texto text-sm font-medium transition-colors"
                         >
                           <PiEye className="w-4 h-4" />
                           <span>{t('view_details')}</span>
@@ -2051,7 +2051,7 @@ function DayEventsModal({
                           <>
                             <Link
                               href={`/teacher/lessons/${event.id}`}
-                              className="text-accent-blue hover:text-accent-purple text-sm font-medium transition-colors flex items-center space-x-1"
+                              className="text-aviso hover:text-ouro-texto text-sm font-medium transition-colors flex items-center space-x-1"
                             >
                               <PiPencilLine className="w-4 h-4" />
                               <span>{t('edit')}</span>
@@ -2066,7 +2066,7 @@ function DayEventsModal({
                                   onClick={() =>
                                     onUpdateStatus(event.id, 'COMPLETED')
                                   }
-                                  className="text-accent-green hover:text-accent-green/80 text-sm font-medium transition-colors"
+                                  className="text-ok hover:text-ok/80 text-sm font-medium transition-colors"
                                 >
                                   <PiCheck className="w-4 h-4" />
                                   <span>{t('event_status_completed')}</span>
@@ -2078,7 +2078,7 @@ function DayEventsModal({
                                   onClick={() =>
                                     onUpdateStatus(event.id, 'NO_SHOW')
                                   }
-                                  className="text-accent-yellow hover:text-accent-yellow/80 text-sm font-medium transition-colors"
+                                  className="text-atencao hover:text-atencao/80 text-sm font-medium transition-colors"
                                 >
                                   <PiUser className="w-4 h-4" />
                                   <span>{t('event_status_no_show')}</span>
@@ -2090,7 +2090,7 @@ function DayEventsModal({
                               as="button"
                               gap={1}
                               onClick={() => onCancelEvent(event.id)}
-                              className="text-accent-red hover:text-accent-red/80 text-sm font-medium transition-colors"
+                              className="text-erro hover:text-erro/80 text-sm font-medium transition-colors"
                             >
                               <PiTrash className="w-4 h-4" />
                               <span>{t('cancel_lesson')}</span>

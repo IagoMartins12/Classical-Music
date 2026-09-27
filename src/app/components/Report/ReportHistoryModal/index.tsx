@@ -87,15 +87,15 @@ export default function ReportHistoryModal({
     const config = {
       pending: {
         label: 'Pendente',
-        color: 'text-accent-amber bg-accent-amber/10',
+        color: 'text-atencao bg-atencao/10',
       },
       approved: {
         label: 'Aprovado',
-        color: 'text-accent-green bg-accent-green/10',
+        color: 'text-ok bg-ok/10',
       },
       rejected: {
         label: 'Rejeitado',
-        color: 'text-accent-red bg-accent-red/10',
+        color: 'text-erro bg-erro/10',
       },
     };
     const statusConfig =
@@ -119,8 +119,8 @@ export default function ReportHistoryModal({
           {/* Header */}
           <div className="flex items-center justify-between mb-6">
             <Inline gap={3}>
-              <div className="w-10 h-10 bg-accent-blue/20 rounded-xl flex items-center justify-center">
-                <PiFlag className="w-5 h-5 text-accent-blue" />
+              <div className="w-10 h-10 bg-aviso/20 rounded-xl flex items-center justify-center">
+                <PiFlag className="w-5 h-5 text-aviso" />
               </div>
               <div>
                 <h2 className="text-xl font-bold text-theme-primary">
@@ -136,7 +136,7 @@ export default function ReportHistoryModal({
           {/* Content */}
           {loading ? (
             <div className="text-center py-8">
-              <div className="w-8 h-8 border-4 border-brand-primary/30 border-t-brand-primary rounded-full animate-spin mx-auto mb-4"></div>
+              <div className="w-8 h-8 border-4 border-ouro/30 border-t-ouro rounded-full animate-spin mx-auto mb-4"></div>
               <p className="text-theme-secondary">Carregando histórico...</p>
             </div>
           ) : reports.length === 0 ? (

@@ -89,8 +89,8 @@ export default function VerificationModal({
           {/* Header */}
           <div className="flex items-center justify-between mb-6">
             <Inline gap={3}>
-              <div className="w-10 h-10 bg-accent-blue/20 rounded-xl flex items-center justify-center">
-                <PiShield className="w-5 h-5 text-accent-blue" />
+              <div className="w-10 h-10 bg-aviso/20 rounded-xl flex items-center justify-center">
+                <PiShield className="w-5 h-5 text-aviso" />
               </div>
               <div>
                 <h2 className="text-xl font-bold text-theme-primary">
@@ -113,7 +113,7 @@ export default function VerificationModal({
                 <span
                   className={`inline-flex items-center space-x-1 px-2 py-1 rounded-full text-xs font-medium ${
                     currentVerificationStatus
-                      ? 'bg-accent-blue/20 text-accent-blue'
+                      ? 'bg-aviso/10 text-aviso'
                       : 'bg-theme-tertiary text-theme-secondary'
                   }`}
                 >

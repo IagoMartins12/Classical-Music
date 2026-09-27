@@ -350,7 +350,7 @@ const BulkInsertWorksModal = ({
             {/* Header */}
             <div className="flex items-center justify-between p-6 border-b border-theme-secondary">
               <Inline gap={3}>
-                <div className="w-10 h-10 bg-gradient-to-br from-accent-blue to-accent-green rounded-xl flex items-center justify-center">
+                <div className="w-10 h-10 bg-aviso rounded-xl flex items-center justify-center">
                   <PiMusicNotes className="w-5 h-5 text-theme-primary" />
                 </div>
                 <div>
@@ -371,7 +371,7 @@ const BulkInsertWorksModal = ({
                       key={step}
                       className={`w-3 h-3 rounded-full transition-colors ${
                         currentStep === step
-                          ? 'bg-gray-400'
+                          ? 'bg-linha-forte'
                           : index <
                               [
                                 'discover',
@@ -379,7 +379,7 @@ const BulkInsertWorksModal = ({
                                 'process',
                                 'results',
                               ].indexOf(currentStep)
-                            ? 'bg-green-400'
+                            ? 'bg-ok'
                             : 'bg-theme-secondary'
                       }`}
                     />
@@ -394,7 +394,7 @@ const BulkInsertWorksModal = ({
               {currentStep === 'discover' && (
                 <div className="p-6 text-center">
                   <AnimatedCard className="classical-card-2 p-8 max-w-md mx-auto">
-                    <div className="w-16 h-16 bg-gradient-to-br from-accent-blue to-accent-green rounded-full flex items-center justify-center mx-auto mb-6">
+                    <div className="w-16 h-16 bg-aviso rounded-full flex items-center justify-center mx-auto mb-6">
                       <PiMagnifyingGlass className="w-8 h-8 text-theme-primary" />
                     </div>
 
@@ -413,7 +413,7 @@ const BulkInsertWorksModal = ({
                         papel="legenda"
                         tom="fraco"
                         as="div"
-                        className="p-3 bg-theme-secondary/10 rounded-lg"
+                        className="p-3 bg-sup-1/10 rounded-lg"
                       >
                         <Inline gap={2} className="mb-1">
                           <PiInfo className="w-3 h-3" />
@@ -467,7 +467,7 @@ const BulkInsertWorksModal = ({
                         </Text>
                       </div>
                       <div className="text-center">
-                        <div className="text-2xl font-bold text-accent-green">
+                        <div className="text-2xl font-bold text-ok">
                           {stats.new}
                         </div>
                         <Text papel="legenda" tom="fraco" as="div">
@@ -475,7 +475,7 @@ const BulkInsertWorksModal = ({
                         </Text>
                       </div>
                       <div className="text-center">
-                        <div className="text-2xl font-bold text-accent-amber">
+                        <div className="text-2xl font-bold text-atencao">
                           {stats.existing}
                         </div>
                         <Text papel="legenda" tom="fraco" as="div">
@@ -538,10 +538,10 @@ const BulkInsertWorksModal = ({
                         <div
                           className={`classical-card-simple mr-4 rounded-lg p-4 transition-all ${
                             work.alreadyExists
-                              ? 'bg-accent-amber/5 border-accent-amber/20'
+                              ? 'bg-atencao/5 border-atencao/20'
                               : work.selected
-                                ? 'bg-brand-primary/5 border-brand-primary/30'
-                                : 'bg-theme-elevated border-theme-secondary hover:border-theme-primary'
+                                ? 'bg-ouro/5 border-ouro/30'
+                                : 'bg-theme-elevated border-theme-secondary hover:border-linha'
                           }`}
                         >
                           <div className="flex items-center justify-between">
@@ -552,7 +552,7 @@ const BulkInsertWorksModal = ({
                                 checked={work.selected}
                                 disabled={work.alreadyExists}
                                 onChange={() => toggleWorkSelection(work.id)}
-                                className="w-4 h-4 text-brand-primary bg-theme-elevated border-theme-secondary rounded focus:ring-brand-primary"
+                                className="w-4 h-4 text-brand-primary bg-theme-elevated border-theme-secondary rounded focus:ring-ouro"
                               />
 
                               {/* Work info */}
@@ -576,7 +576,7 @@ const BulkInsertWorksModal = ({
                               {/* Status badges */}
                               <Inline gap={2}>
                                 {work.alreadyExists && (
-                                  <span className="text-xs bg-accent-amber/20 text-accent-amber px-2 py-1 rounded-full">
+                                  <span className="text-xs bg-atencao/10 text-atencao px-2 py-1 rounded-full">
                                     {t('bulk_work_exists')}
                                   </span>
                                 )}
@@ -585,14 +585,14 @@ const BulkInsertWorksModal = ({
                                   href={work.imslpUrl}
                                   target="_blank"
                                   rel="noopener noreferrer"
-                                  className="text-theme-tertiary hover:text-accent-blue"
+                                  className="text-theme-tertiary hover:text-aviso"
                                 >
                                   <PiArrowSquareOut className="w-4 h-4" />
                                 </a>
 
                                 <button
                                   onClick={() => removeWork(work.id)}
-                                  className="text-theme-tertiary hover:text-accent-red"
+                                  className="text-theme-tertiary hover:text-erro"
                                   title={t('bulk_remove_work')}
                                 >
                                   <PiTrash className="w-4 h-4" />
@@ -653,11 +653,11 @@ const BulkInsertWorksModal = ({
                         key={work.tempId}
                         className={`classical-card-simple rounded-lg p-4 transition-all ${
                           work.status === 'success'
-                            ? 'bg-accent-green/5 border-accent-green/20'
+                            ? 'bg-ok/5 border-ok/20'
                             : work.status === 'error'
-                              ? 'bg-accent-red/5 border-accent-red/20'
+                              ? 'bg-erro/5 border-erro/20'
                               : work.status === 'processing'
-                                ? 'bg-brand-primary/5 border-brand-primary/30'
+                                ? 'bg-ouro/5 border-ouro/30'
                                 : 'bg-theme-elevated border-theme-secondary'
                         }`}
                       >
@@ -673,12 +673,12 @@ const BulkInsertWorksModal = ({
                               <PiSpinnerGap className="w-5 h-5 text-brand-primary animate-spin" />
                             )}
                             {work.status === 'success' && (
-                              <div className="w-5 h-5 rounded-full bg-accent-green flex items-center justify-center">
+                              <div className="w-5 h-5 rounded-full bg-ok flex items-center justify-center">
                                 <PiCheck className="w-3 h-3 text-white" />
                               </div>
                             )}
                             {work.status === 'error' && (
-                              <div className="w-5 h-5 rounded-full bg-accent-red flex items-center justify-center">
+                              <div className="w-5 h-5 rounded-full bg-erro flex items-center justify-center">
                                 <PiX className="w-3 h-3 text-white" />
                               </div>
                             )}
@@ -692,9 +692,9 @@ const BulkInsertWorksModal = ({
                             <p
                               className={`text-xs ${
                                 work.status === 'success'
-                                  ? 'text-accent-green'
+                                  ? 'text-ok'
                                   : work.status === 'error'
-                                    ? 'text-accent-red'
+                                    ? 'text-erro'
                                     : work.status === 'processing'
                                       ? 'text-brand-primary'
                                       : 'text-theme-tertiary'
@@ -716,7 +716,7 @@ const BulkInsertWorksModal = ({
                           {work.status === 'processing' && (
                             <div className="flex-shrink-0">
                               <div className="w-16 bg-theme-secondary rounded-full h-1">
-                                <div className="bg-brand-primary h-1 rounded-full animate-pulse w-8"></div>
+                                <div className="bg-ouro h-1 rounded-full animate-pulse w-8"></div>
                               </div>
                             </div>
                           )}
@@ -737,7 +737,7 @@ const BulkInsertWorksModal = ({
 
                     <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-4">
                       <div className="text-center">
-                        <div className="text-2xl font-bold text-accent-green">
+                        <div className="text-2xl font-bold text-ok">
                           {
                             processResults.filter((r) => r.status === 'success')
                               .length
@@ -748,7 +748,7 @@ const BulkInsertWorksModal = ({
                         </Text>
                       </div>
                       <div className="text-center">
-                        <div className="text-2xl font-bold text-accent-red">
+                        <div className="text-2xl font-bold text-erro">
                           {
                             processResults.filter((r) => r.status === 'error')
                               .length
@@ -759,7 +759,7 @@ const BulkInsertWorksModal = ({
                         </Text>
                       </div>
                       <div className="text-center">
-                        <div className="text-2xl font-bold text-accent-amber">
+                        <div className="text-2xl font-bold text-atencao">
                           {
                             processResults.filter(
                               (r) => r.status === 'duplicate'
@@ -794,24 +794,24 @@ const BulkInsertWorksModal = ({
                         key={result.tempId}
                         className={`rounded-lg border p-3 ${
                           result.status === 'success'
-                            ? 'bg-accent-green/5 border border-green-300'
+                            ? 'bg-ok/5 border border-ok/30'
                             : result.status === 'error'
-                              ? 'bg-accent-red/5 border border-red-300'
+                              ? 'bg-erro/5 border border-erro/30'
                               : result.status === 'duplicate'
-                                ? 'bg-accent-amber/5 border-amber-300'
+                                ? 'bg-atencao/5 border-atencao/30'
                                 : 'bg-theme-elevated border-theme-secondary'
                         }`}
                       >
                         <Inline gap={3}>
                           <div className="flex-shrink-0 mt-0.5">
                             {result.status === 'success' && (
-                              <PiCheck className="w-4 h-4 text-accent-green" />
+                              <PiCheck className="w-4 h-4 text-ok" />
                             )}
                             {result.status === 'error' && (
-                              <PiX className="w-4 h-4 text-accent-red" />
+                              <PiX className="w-4 h-4 text-erro" />
                             )}
                             {result.status === 'duplicate' && (
-                              <PiWarningCircle className="w-4 h-4 text-accent-amber" />
+                              <PiWarningCircle className="w-4 h-4 text-atencao" />
                             )}
                           </div>
 

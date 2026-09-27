@@ -402,12 +402,12 @@ export const getPriorityColor = (priority: NotificationPriority): string => {
   switch (priority) {
     case 'CRITICAL':
     case 'HIGH':
-      return 'accent-red';
+      return 'erro';
     case 'MEDIUM':
-      return 'accent-amber';
+      return 'atencao';
     case 'LOW':
     default:
-      return 'accent-blue';
+      return 'aviso';
   }
 };
 

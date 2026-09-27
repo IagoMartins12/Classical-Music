@@ -40,7 +40,7 @@ const ListComposersCards: React.FC<listComposersCardsProps> = ({
                 ? 'opacity-100 scale-100 group-hover:scale-105 group-hover:-translate-y-3'
                 : 'opacity-95 scale-100'
             }
-            hover:shadow-theme-glow
+            hover:shadow-[var(--sombra-2)]
           `}
         >
           {/* Image Container */}
@@ -56,7 +56,7 @@ const ListComposersCards: React.FC<listComposersCardsProps> = ({
 
             {/* Gradient Overlays */}
             <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/10 to-transparent opacity-0 group-hover:opacity-100 transition-all duration-500"></div>
-            <div className="absolute inset-0 bg-gradient-to-br from-brand-primary/20 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-all duration-700"></div>
+            <div className="absolute inset-0 bg-ouro/20 opacity-0 group-hover:opacity-100 transition-all duration-700"></div>
 
             {/* Floating Action Buttons */}
             <Stack
@@ -79,7 +79,7 @@ const ListComposersCards: React.FC<listComposersCardsProps> = ({
             {/* Period Badge */}
             {composer.epochName && (
               <div className="absolute top-3 left-3 opacity-0 group-hover:opacity-100 transition-all duration-300 transform -translate-y-2 group-hover:translate-y-0">
-                <span className="inline-flex items-center px-2 py-1 bg-brand-primary/20 backdrop-blur-md border border-brand-primary/30 rounded-full text-xs font-medium text-white">
+                <span className="inline-flex items-center px-2 py-1 bg-ouro/20 backdrop-blur-md border border-ouro/30 rounded-full text-xs font-medium text-white">
                   <PiCalendarBlank className="w-2.5 h-2.5 mr-1" />
                   {translateEpochWithHook(composer.epochName, t)}
                 </span>
@@ -99,7 +99,7 @@ const ListComposersCards: React.FC<listComposersCardsProps> = ({
 
             {/* Name and Info */}
             <div className="relative z-10">
-              <h3 className="font-bold flex items-center gap-2 text-theme-primary mb-3 text-sm classical-title group-hover:text-brand-primary transition-colors duration-300 line-clamp-2 leading-tight">
+              <h3 className="font-bold flex items-center gap-2 text-theme-primary mb-3 text-sm classical-title group-hover:text-ouro-texto transition-colors duration-300 line-clamp-2 leading-tight">
                 {composer.fullName || composer.name}
                 <VerificationBadge
                   verified={composer.isVerified}
@@ -110,16 +110,16 @@ const ListComposersCards: React.FC<listComposersCardsProps> = ({
               {/* Action Bar */}
               <div className="flex items-center justify-between pt-3 border-t border-theme-secondary">
                 <div className="flex items-center space-x-1.5">
-                  <div className="w-1.5 h-1.5 bg-brand-primary rounded-full animate-pulse"></div>
+                  <div className="w-1.5 h-1.5 bg-ouro rounded-full animate-pulse"></div>
                   <Text papel="legenda" tom="fraco" className="font-medium">
                     {t('see_works')}
                   </Text>
                 </div>
 
                 {/* Arrow indicator */}
-                <div className="w-5 h-5 border border-theme-primary rounded-full flex items-center justify-center group-hover:border-brand-primary group-hover:bg-brand-primary/10 transition-all duration-300">
+                <div className="w-5 h-5 border border-theme-primary rounded-full flex items-center justify-center group-hover:border-ouro group-hover:bg-ouro/10 transition-all duration-300">
                   <svg
-                    className="w-2.5 h-2.5 text-theme-primary group-hover:text-brand-primary transition-all duration-300 transform group-hover:translate-x-0.5"
+                    className="w-2.5 h-2.5 text-theme-primary group-hover:text-ouro-texto transition-all duration-300 transform group-hover:translate-x-0.5"
                     fill="none"
                     stroke="currentColor"
                     viewBox="0 0 24 24"
@@ -136,18 +136,18 @@ const ListComposersCards: React.FC<listComposersCardsProps> = ({
             </div>
 
             {/* Hover Glow Effect */}
-            <div className="absolute inset-0 bg-brand-gradient opacity-0 group-hover:opacity-5 transition-opacity duration-500 rounded-b-2xl"></div>
+            <div className="absolute inset-0 fill-ouro opacity-0 group-hover:opacity-5 transition-opacity duration-500 rounded-b-2xl"></div>
           </div>
 
           {/* Active State Indicator */}
           {isActive && (
-            <div className="absolute inset-0 border-2 border-brand-primary/50 rounded-2xl pointer-events-none">
-              <div className="absolute top-2 left-2 w-3 h-3 bg-brand-primary rounded-full shadow-brand-glow animate-pulse"></div>
+            <div className="absolute inset-0 border-2 border-ouro/50 rounded-2xl pointer-events-none">
+              <div className="absolute top-2 left-2 w-3 h-3 bg-ouro rounded-full animate-pulse"></div>
             </div>
           )}
 
           {/* Floating mini badge for interaction feedback */}
-          <div className="absolute -top-1 -right-1 w-3 h-3 bg-brand-gradient rounded-full opacity-0 group-hover:opacity-100 transition-all duration-300 scale-50 group-hover:scale-100 shadow-brand-glow"></div>
+          <div className="absolute -top-1 -right-1 w-3 h-3 fill-ouro rounded-full opacity-0 group-hover:opacity-100 transition-all duration-300 scale-50 group-hover:scale-100"></div>
         </div>
       </Link>
     </div>

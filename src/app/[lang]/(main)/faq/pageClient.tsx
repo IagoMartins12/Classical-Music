@@ -291,12 +291,12 @@ export default function FAQPage(): JSX.Element {
     <PageContainer showBackground={true} className="classical-theme">
       {/* Hero Section */}
       <section className="relative overflow-hidden py-16">
-        <div className="absolute inset-0 bg-gradient-to-br from-brand-primary/5 via-accent-purple/5 to-accent-blue/5"></div>
+        <div className="absolute inset-0 bg-ouro/5"></div>
         <AnimatedContainer delay={0.1} staggerSpeed="normal">
           <div className="relative section-wrap">
             <div className="text-center max-w-4xl mx-auto">
               <AnimatedItem direction="scale" springType="bouncy">
-                <div className="inline-flex items-center px-6 py-3 bg-gradient-to-r from-brand-primary/20 to-brand-secondary/20 border border-brand-primary/30 rounded-full mb-8">
+                <div className="inline-flex items-center px-6 py-3 bg-ouro/20 border border-ouro/30 rounded-full mb-8">
                   <PiQuestion className="w-5 h-5 text-brand-primary mr-2" />
                   <span className="text-brand-primary font-medium">
                     {t('faq_jsx_span_children_0__central_ajuda')}
@@ -351,8 +351,8 @@ export default function FAQPage(): JSX.Element {
                     onClick={() => setActiveCategory(category)}
                     className={`px-4 py-2 rounded-lg font-medium transition-all duration-300 ${
                       activeCategory === category
-                        ? 'bg-brand-gradient text-theme-primary'
-                        : 'bg-theme-elevated text-theme-secondary hover:text-brand-primary hover:bg-interactive-hover'
+                        ? 'fill-ouro text-theme-primary'
+                        : 'bg-theme-elevated text-theme-secondary hover:text-ouro-texto hover:bg-ouro/10'
                     }`}
                   >
                     {category}
@@ -396,7 +396,7 @@ export default function FAQPage(): JSX.Element {
                       >
                         <div className="flex items-center justify-between">
                           <Inline gap={4}>
-                            <div className="w-12 h-12 bg-gradient-to-br from-accent-blue to-accent-purple rounded-xl flex items-center justify-center flex-shrink-0">
+                            <div className="w-12 h-12 bg-aviso rounded-xl flex items-center justify-center flex-shrink-0">
                               <item.icon className="w-6 h-6 text-theme-primary" />
                             </div>
                             <div className="flex-grow">
@@ -426,7 +426,7 @@ export default function FAQPage(): JSX.Element {
                       {expandedItems.has(item.id) && (
                         <div className="px-6 pb-6 pt-4 md:pt-0">
                           <div className="pl-0 md:pl-16">
-                            <div className="border-l-2 border-brand-primary/20 pl-4">
+                            <div className="border-l-2 border-ouro/20 pl-4">
                               <p className="text-theme-secondary leading-relaxed">
                                 {item.answer}
                               </p>
@@ -445,13 +445,13 @@ export default function FAQPage(): JSX.Element {
 
       {/* Contact Section */}
       <section className=" relative overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-to-r from-brand-primary/10 via-accent-purple/5 to-accent-blue/10"></div>
+        <div className="absolute inset-0 bg-ouro/10"></div>
         <AnimatedContainer delay={0.1} staggerSpeed="normal">
           <AnimatedCard
             hover="lift"
             className="classical-card p-12 text-center max-w-4xl mx-auto"
           >
-            <div className="w-20 h-20 bg-brand-gradient rounded-3xl flex items-center justify-center mx-auto mb-8">
+            <div className="w-20 h-20 fill-ouro rounded-3xl flex items-center justify-center mx-auto mb-8">
               <PiChatCircle className="w-10 h-10 text-theme-primary" />
             </div>
 
@@ -504,25 +504,25 @@ export default function FAQPage(): JSX.Element {
 
       {/* Floating Elements */}
       <FloatingElement
-        className="top-16 left-16 text-6xl text-brand-primary/5"
+        className="top-16 left-16 text-6xl text-ouro-texto/5"
         delay={0}
       >
         <PiMusicNotes />
       </FloatingElement>
       <FloatingElement
-        className="bottom-16 right-16 text-5xl text-accent-purple/5"
+        className="bottom-16 right-16 text-5xl text-ouro-texto/5"
         delay={2}
       >
         <GiGrandPiano />
       </FloatingElement>
       <FloatingElement
-        className="top-1/3 right-24 text-4xl text-accent-blue/5"
+        className="top-1/3 right-24 text-4xl text-aviso/5"
         delay={1}
       >
         <PiQuestion />
       </FloatingElement>
       <FloatingElement
-        className="bottom-1/3 left-24 text-4xl text-brand-secondary/5"
+        className="bottom-1/3 left-24 text-4xl text-ouro-texto/5"
         delay={3}
       >
         <PiScroll />

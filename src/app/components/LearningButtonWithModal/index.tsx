@@ -115,12 +115,11 @@ const LearningButtonWithModal = ({
           },
           icon: isActive ? PiTarget : PiBookOpen,
           colors: {
-            active:
-              'from-blue-500/20 to-blue-600/20 border-blue-500/50 text-blue-600 shadow-blue-500/20',
+            active: 'bg-aviso/10 border-aviso/50 text-aviso',
             inactive:
-              'border-theme-primary/30 text-theme-primary hover:border-blue-500/50 hover:text-blue-600',
-            levelBg: 'bg-blue-50 border-blue-200',
-            levelText: 'text-blue-700',
+              'border-linha/30 text-theme-primary hover:border-aviso/50 hover:text-aviso',
+            levelBg: 'bg-aviso/10 border-aviso/30',
+            levelText: 'text-aviso',
           },
           levelLabels: [
             t('learning_priority_baixa'),
@@ -139,12 +138,11 @@ const LearningButtonWithModal = ({
           },
           icon: isActive ? PiCheckCircle : PiBookOpen,
           colors: {
-            active:
-              'from-green-500/20 to-green-600/20 border-green-500/50 text-green-600 shadow-green-500/20',
+            active: 'bg-ok/10 border-ok/50 text-ok',
             inactive:
-              'border-theme-primary/30 text-theme-primary hover:border-green-500/50 hover:text-green-600',
-            levelBg: 'bg-green-50 border-green-200',
-            levelText: 'text-green-700',
+              'border-linha/30 text-theme-primary hover:border-ok/50 hover:text-ok',
+            levelBg: 'bg-ok/10 border-ok/30',
+            levelText: 'text-ok',
           },
           levelLabels: [
             t('learning_mastery_iniciante'),
@@ -185,7 +183,7 @@ const LearningButtonWithModal = ({
     if (isActive) {
       return `${baseClasses} bg-gradient-to-r ${config?.colors.active} shadow-lg`;
     } else {
-      return `${baseClasses} bg-theme-elevated/80 ${config?.colors.inactive}`;
+      return `${baseClasses} bg-sup-elevada/80 ${config?.colors.inactive}`;
     }
   };
 
@@ -330,8 +328,8 @@ const LearningButtonWithModal = ({
               key={i}
               className={`w-2.5 h-2.5 ${
                 i < currentLevel
-                  ? 'fill-current text-yellow-400'
-                  : 'text-gray-300'
+                  ? 'fill-current text-atencao'
+                  : 'text-texto-fraco'
               }`}
             />
           ) : (
@@ -339,8 +337,8 @@ const LearningButtonWithModal = ({
               key={i}
               className={`w-2.5 h-2.5 ${
                 i < currentLevel
-                  ? 'fill-current text-yellow-400'
-                  : 'text-gray-300'
+                  ? 'fill-current text-atencao'
+                  : 'text-texto-fraco'
               }`}
             />
           )

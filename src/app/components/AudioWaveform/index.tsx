@@ -382,8 +382,8 @@ const AudioWaveform: React.FC<AudioWaveformProps> = ({
       {/* Loading indicator quando não inicializado */}
       {!isInitialized && !initError && (
         <div className="absolute inset-0 flex items-center justify-center bg-gray-800/50 rounded-lg">
-          <Inline gap={2} className="text-gray-400">
-            <div className="w-4 h-4 border-2 border-gray-400 border-t-transparent rounded-full animate-spin" />
+          <Inline gap={2} className="text-texto-fraco">
+            <div className="w-4 h-4 border-2 border-linha-forte border-t-transparent rounded-full animate-spin" />
             <span className="text-xs">Inicializando waveform...</span>
           </Inline>
         </div>
@@ -392,7 +392,7 @@ const AudioWaveform: React.FC<AudioWaveformProps> = ({
       {/* Error indicator */}
       {initError && (
         <div className="absolute inset-0 flex items-center justify-center bg-gray-800/50 rounded-lg">
-          <Inline gap={2} className="text-red-400">
+          <Inline gap={2} className="text-erro">
             <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
               <path
                 fillRule="evenodd"

@@ -166,7 +166,7 @@ export default function ConfirmEmailChangePage() {
       return (
         <div className="text-center">
           <div className="flex justify-center mb-6">
-            <div className="w-16 h-16 bg-brand-gradient rounded-full flex items-center justify-center shadow-theme-glow animate-pulse">
+            <div className="w-16 h-16 fill-ouro rounded-full flex items-center justify-center shadow-theme-glow animate-pulse">
               <PiSpinnerGap className="w-8 h-8 text-theme-primary animate-spin" />
             </div>
           </div>
@@ -184,8 +184,8 @@ export default function ConfirmEmailChangePage() {
       return (
         <div className="text-center">
           <div className="flex justify-center mb-6">
-            <div className="w-16 h-16 bg-accent-red/10 rounded-full flex items-center justify-center">
-              <PiWarning className="w-8 h-8 text-accent-red" />
+            <div className="w-16 h-16 bg-erro/10 rounded-full flex items-center justify-center">
+              <PiWarning className="w-8 h-8 text-erro" />
             </div>
           </div>
           <h2 className="text-2xl font-bold text-theme-primary classical-title mb-4">
@@ -205,7 +205,7 @@ export default function ConfirmEmailChangePage() {
       return (
         <div className="text-center">
           <div className="flex justify-center mb-6">
-            <div className="w-16 h-16 bg-gradient-to-br from-accent-green to-accent-blue rounded-full flex items-center justify-center shadow-theme-glow animate-pulse">
+            <div className="w-16 h-16 bg-ok rounded-full flex items-center justify-center shadow-theme-glow animate-pulse">
               <PiCheckCircle className="w-8 h-8 text-white" />
             </div>
           </div>
@@ -215,8 +215,8 @@ export default function ConfirmEmailChangePage() {
           <p className="text-theme-secondary mb-6">{result.message}</p>
 
           {result.data && (
-            <Stack className="bg-accent-green/10 border border-accent-green/20 rounded-lg p-6 mb-6">
-              <h3 className="font-semibold text-accent-green flex items-center justify-center">
+            <Stack className="bg-ok/10 border border-ok/20 rounded-lg p-6 mb-6">
+              <h3 className="font-semibold text-ok flex items-center justify-center">
                 <PiEnvelopeSimple className="w-5 h-5 mr-2" />
                 {t('pages_token_jsx_h3_children_0__resumo_alteração')}
               </h3>
@@ -242,25 +242,25 @@ export default function ConfirmEmailChangePage() {
           )}
 
           {/* 🆕 NOVO: Aviso sobre logout necessário */}
-          <div className="bg-accent-amber/10 border border-accent-amber/20 rounded-lg p-4 mb-6">
+          <div className="bg-atencao/10 border border-atencao/20 rounded-lg p-4 mb-6">
             <div className="flex items-start">
-              <PiSignOut className="w-5 h-5 text-accent-amber mr-3 mt-0.5 flex-shrink-0" />
+              <PiSignOut className="w-5 h-5 text-atencao mr-3 mt-0.5 flex-shrink-0" />
               <div>
-                <h4 className="font-medium text-accent-amber mb-2">
+                <h4 className="font-medium text-atencao mb-2">
                   {t('pages_token_jsx_h4_children_0__logout_necessário')}
                 </h4>
-                <p className="text-sm text-accent-amber opacity-90 mb-3">
+                <p className="text-sm text-atencao opacity-90 mb-3">
                   {t('pages_token_jsx_p_children_0__logout_segurança')}
                 </p>
                 {isLoggingOut ? (
-                  <div className="flex items-center justify-center text-accent-amber">
+                  <div className="flex items-center justify-center text-atencao">
                     <PiSpinnerGap className="w-4 h-4 animate-spin mr-2" />
                     <span className="text-sm">
                       {t('pages_token_jsx_span_children_0__fazendo_logout')}
                     </span>
                   </div>
                 ) : (
-                  <div className="text-xs text-accent-amber opacity-70">
+                  <div className="text-xs text-atencao opacity-70">
                     {t('pages_token_jsx_div_children_0__logout_automático')}
                   </div>
                 )}
@@ -270,13 +270,13 @@ export default function ConfirmEmailChangePage() {
 
           <Stack
             gap={2}
-            className="bg-accent-blue/10 border border-accent-blue/20 rounded-lg p-4 mb-6"
+            className="bg-aviso/10 border border-aviso/20 rounded-lg p-4 mb-6"
           >
-            <h4 className="font-medium text-accent-blue flex items-center justify-center">
+            <h4 className="font-medium text-aviso flex items-center justify-center">
               <PiCheckCircle className="w-4 h-4 mr-2" />
               {t('pages_token_jsx_h4_children_0__funcionalidades_restauradas')}
             </h4>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-2 text-xs text-accent-blue">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-2 text-xs text-aviso">
               <div>
                 {t('pages_token_jsx_div_children_0__upload_compositores')}
               </div>
@@ -341,8 +341,8 @@ export default function ConfirmEmailChangePage() {
     return (
       <div className="text-center">
         <div className="flex justify-center mb-6">
-          <div className="w-16 h-16 bg-accent-red/10 rounded-full flex items-center justify-center">
-            <PiWarning className="w-8 h-8 text-accent-red" />
+          <div className="w-16 h-16 bg-erro/10 rounded-full flex items-center justify-center">
+            <PiWarning className="w-8 h-8 text-erro" />
           </div>
         </div>
 
@@ -360,24 +360,24 @@ export default function ConfirmEmailChangePage() {
 
         <Stack>
           {result.errorCode === 'EXPIRED_TOKEN' && (
-            <div className="bg-accent-amber/10 border border-accent-amber/20 rounded-lg p-4">
-              <p className="text-accent-amber text-sm">
+            <div className="bg-atencao/10 border border-atencao/20 rounded-lg p-4">
+              <p className="text-atencao text-sm">
                 {t('pages_token_jsx_p_children_0__link_expirado_dica')}
               </p>
             </div>
           )}
 
           {result.errorCode === 'EMAIL_TAKEN' && (
-            <div className="bg-accent-red/10 border border-accent-red/20 rounded-lg p-4">
-              <p className="text-accent-red text-sm">
+            <div className="bg-erro/10 border border-erro/20 rounded-lg p-4">
+              <p className="text-erro text-sm">
                 {t('pages_token_jsx_p_children_0__email_indisponível_dica')}
               </p>
             </div>
           )}
 
           {result.errorCode === 'USED_TOKEN' && (
-            <div className="bg-accent-green/10 border border-accent-green/20 rounded-lg p-4">
-              <p className="text-accent-green text-sm">
+            <div className="bg-ok/10 border border-ok/20 rounded-lg p-4">
+              <p className="text-ok text-sm">
                 {t('pages_token_jsx_p_children_0__link_já_usado')}
               </p>
             </div>
@@ -440,13 +440,13 @@ export default function ConfirmEmailChangePage() {
   };
 
   return (
-    <div className="min-h-screen bg-theme-background flex items-center justify-center p-4">
+    <div className="min-h-screen bg-fundo flex items-center justify-center p-4">
       <div className="max-w-xl w-full">
         <Card densidade="larga">
           {/* Header with logo */}
           <div className="text-center mb-8">
             <div className="flex justify-center mb-4">
-              <div className="w-12 h-12 bg-brand-gradient rounded-full flex items-center justify-center shadow-theme-glow">
+              <div className="w-12 h-12 fill-ouro rounded-full flex items-center justify-center shadow-theme-glow">
                 <GiGrandPiano className="w-6 h-6 text-theme-primary" />
               </div>
             </div>

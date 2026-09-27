@@ -108,7 +108,7 @@ export default async function BlogHomePage() {
             <Link
               key={category.id}
               href={`/blog/category/${category.slug}`}
-              className="classical-card overflow-hidden group hover:shadow-theme-large transition-all"
+              className="classical-card overflow-hidden group hover:shadow-[var(--sombra-2)] transition-all"
             >
               {/* Image/Background */}
               <div className="relative h-40 overflow-hidden">
@@ -138,7 +138,7 @@ export default async function BlogHomePage() {
 
               {/* Content */}
               <div className="p-5">
-                <h3 className="text-lg font-bold text-theme-primary mb-2 group-hover:text-brand-primary transition-colors line-clamp-1">
+                <h3 className="text-lg font-bold text-theme-primary mb-2 group-hover:text-ouro-texto transition-colors line-clamp-1">
                   {category.name}
                 </h3>
 
@@ -211,7 +211,7 @@ export default async function BlogHomePage() {
                       {index + 1}
                     </div>
                     <div className="flex-1 min-w-0">
-                      <h4 className="font-medium text-theme-primary group-hover:text-brand-primary transition-colors line-clamp-2 mb-1">
+                      <h4 className="font-medium text-theme-primary group-hover:text-ouro-texto transition-colors line-clamp-2 mb-1">
                         {article.title}
                       </h4>
                       <Inline gap={2} className="text-xs text-theme-tertiary">

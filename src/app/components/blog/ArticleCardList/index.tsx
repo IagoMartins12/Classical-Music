@@ -46,7 +46,7 @@ export function ArticleCardList({ article }: ArticleCardListProps) {
   }`.trim();
 
   return (
-    <article className="classical-card overflow-hidden group hover:shadow-theme-large transition-all">
+    <article className="classical-card overflow-hidden group hover:shadow-[var(--sombra-2)] transition-all">
       <div className="flex flex-col md:flex-row">
         {/* Image */}
         <Link
@@ -61,11 +61,11 @@ export function ArticleCardList({ article }: ArticleCardListProps) {
               className="object-cover group-hover:scale-110 transition-transform duration-500"
             />
           ) : (
-            <div className="absolute inset-0 bg-gradient-hero flex items-center justify-center text-6xl">
+            <div className="absolute inset-0 flex items-center justify-center text-6xl">
               🎼
             </div>
           )}
-          <div className="absolute inset-0 bg-gradient-overlay opacity-0 group-hover:opacity-100 transition-opacity" />
+          <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity" />
         </Link>
 
         {/* Content */}
@@ -94,7 +94,7 @@ export function ArticleCardList({ article }: ArticleCardListProps) {
 
           {/* Title */}
           <Link href={`/blog/${article.slug}`} className="mb-3">
-            <h3 className="text-2xl font-bold text-theme-primary line-clamp-2 group-hover:text-brand-primary transition-colors">
+            <h3 className="text-2xl font-bold text-theme-primary line-clamp-2 group-hover:text-ouro-texto transition-colors">
               {article.title}
             </h3>
           </Link>

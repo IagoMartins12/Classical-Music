@@ -123,7 +123,7 @@ export default function NationalitySelect({
           className={`
             input-classical-2 !pl-11 pr-20 w-full
             ${disabled ? 'cursor-not-allowed opacity-50' : 'cursor-text'}
-            ${error ? 'border-red-500' : ''}
+            ${error ? 'border-erro' : ''}
             ${value ? 'text-theme-primary font-medium' : ''}
           `}
         />
@@ -136,7 +136,7 @@ export default function NationalitySelect({
             <button
               type="button"
               onClick={handleClear}
-              className="p-1 text-theme-tertiary hover:text-theme-primary transition-colors"
+              className="p-1 text-theme-tertiary hover:text-texto transition-colors"
             >
               <PiX className="w-4 h-4" />
               <NomeAcao acao="fechar" />
@@ -154,16 +154,16 @@ export default function NationalitySelect({
       </div>
 
       {/* Error message */}
-      {error && <p className="text-red-500 text-xs mt-1">{error}</p>}
+      {error && <p className="text-erro text-xs mt-1">{error}</p>}
 
       {/* Dropdown */}
       {isOpen && !disabled && (
         <div
           ref={dropdownRef}
-          className="absolute top-full left-0 right-0 mt-2 bg-theme-elevated border border-theme-secondary rounded-xl shadow-xl z-[200] max-h-80 overflow-hidden"
+          className="absolute top-full left-0 right-0 mt-2 bg-theme-elevated border border-theme-secondary rounded-xl shadow-xl z-menu max-h-80 overflow-hidden"
         >
           {/* Search header */}
-          <div className="flex items-center gap-2 px-4 py-3 bg-theme-secondary/10 border-b border-theme-secondary">
+          <div className="flex items-center gap-2 px-4 py-3 bg-sup-1/10 border-b border-theme-secondary">
             <PiMagnifyingGlass className="w-4 h-4 text-brand-primary" />
             <Text papel="rotulo" tom="suave" className="font-medium">
               {searchTerm ? getMessage(searchTerm) : getMessage()}
@@ -178,11 +178,10 @@ export default function NationalitySelect({
                   key={nationality.id}
                   onClick={() => handleNationalitySelect(nationality)}
                   className={`
-                    w-full text-left px-4 py-3 hover:bg-interactive-hover transition-colors duration-200 
-                    border-b border-color-primary last:border-b-0 border-theme-secondary/50
+                    w-full text-left px-4 py-3 hover:bg-ouro/10 transition-colors duration-200 border-b border-color-primary last:border-b-0 border-linha/50
                     ${
                       value === nationality.name
-                        ? 'bg-brand-primary/10 text-brand-primary font-medium'
+                        ? 'bg-ouro/10 text-brand-primary font-medium'
                         : 'text-theme-primary'
                     }
                   `}
@@ -205,7 +204,7 @@ export default function NationalitySelect({
 
                     {value === nationality.name && (
                       <div className="ml-3 flex-shrink-0">
-                        <div className="w-2 h-2 bg-brand-primary rounded-full"></div>
+                        <div className="w-2 h-2 bg-ouro rounded-full"></div>
                       </div>
                     )}
                   </div>

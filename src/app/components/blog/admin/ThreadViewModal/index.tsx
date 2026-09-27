@@ -119,20 +119,20 @@ export function ThreadViewModal({
   const getStatusBadge = (status: string) => {
     switch (status) {
       case 'PENDING':
-        return { label: 'Pendente', color: 'bg-blue-500/20 text-blue-600' };
+        return { label: 'Pendente', color: 'bg-aviso/10 text-aviso' };
       case 'APPROVED':
-        return { label: 'Aprovado', color: 'bg-green-500/20 text-green-600' };
+        return { label: 'Aprovado', color: 'bg-ok/10 text-ok' };
       case 'REJECTED':
-        return { label: 'Rejeitado', color: 'bg-red-500/20 text-red-600' };
+        return { label: 'Rejeitado', color: 'bg-erro/10 text-erro' };
       case 'SPAM':
-        return { label: 'Spam', color: 'bg-orange-500/20 text-orange-600' };
+        return { label: 'Spam', color: 'bg-atencao/10 text-atencao' };
       case 'FLAGGED':
         return {
           label: 'Denunciado',
-          color: 'bg-yellow-500/20 text-yellow-600',
+          color: 'bg-atencao/10 text-atencao',
         };
       default:
-        return { label: status, color: 'bg-gray-500/20 text-gray-600' };
+        return { label: status, color: 'bg-linha-forte/20 text-texto-suave' };
     }
   };
 
@@ -144,20 +144,18 @@ export function ThreadViewModal({
       <div
         key={comment.id}
         className={`${depth > 0 ? 'ml-8 mt-4' : 'mt-4'} ${
-          isHighlighted ? 'rounded-lg p-4 bg-brand-primary/5' : ''
+          isHighlighted ? 'rounded-lg p-4 bg-ouro/5' : ''
         }`}
       >
         {/* Flag Warning */}
         {comment.isFlagged && (
-          <div className="bg-yellow-500/10 border-l-4 border-yellow-500 p-3 mb-3 rounded">
+          <div className="border bg-atencao/10 border-atencao/40 p-3 mb-3 rounded">
             <div className="flex items-start space-x-2">
-              <PiWarning className="w-5 h-5 text-yellow-600 flex-shrink-0 mt-0.5" />
+              <PiWarning className="w-5 h-5 text-atencao flex-shrink-0 mt-0.5" />
               <div className="flex-1">
-                <p className="text-sm font-medium text-yellow-700">
-                  Denunciado
-                </p>
+                <p className="text-sm font-medium text-atencao">Denunciado</p>
                 {comment.flagReason && (
-                  <p className="text-xs text-yellow-600 mt-1">
+                  <p className="text-xs text-atencao mt-1">
                     Motivo: {comment.flagReason}
                   </p>
                 )}
@@ -317,16 +315,16 @@ export function ThreadViewModal({
                 Artigo: {articleTitle}
               </Text>
             </Stack>
-            <div className="bg-blue-50 dark:bg-blue-900/10 border border-blue-200 dark:border-blue-800 rounded-lg p-4">
+            <div className="bg-aviso/10 dark:bg-aviso/10 border border-aviso/30 dark:border-aviso rounded-lg p-4">
               <div className="flex items-start gap-3">
-                <div className="w-10 h-10 bg-blue-500/20 rounded-lg flex items-center justify-center flex-shrink-0">
-                  <PiArrowBendUpLeft className="w-5 h-5 text-blue-600" />
+                <div className="w-10 h-10 bg-aviso/20 rounded-lg flex items-center justify-center flex-shrink-0">
+                  <PiArrowBendUpLeft className="w-5 h-5 text-aviso" />
                 </div>
                 <div className="flex-1">
-                  <h3 className="font-semibold text-blue-900 dark:text-blue-100 mb-1">
+                  <h3 className="font-semibold text-aviso dark:text-aviso mb-1">
                     Thread Completa
                   </h3>
-                  <p className="text-sm text-blue-700 dark:text-blue-300">
+                  <p className="text-sm text-aviso dark:text-aviso">
                     Visualize toda a conversa e modere diretamente daqui. O
                     comentário destacado é o que você selecionou.
                   </p>

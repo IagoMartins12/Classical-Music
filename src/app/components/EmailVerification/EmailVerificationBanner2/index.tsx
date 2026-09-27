@@ -87,20 +87,20 @@ const EmailVerificationBanner2: React.FC<EmailVerificationBannerProps> = ({
   // Set colors based on type
   switch (bannerType) {
     case 'warning':
-      bgColor = 'bg-accent-amber/10';
-      textColor = 'text-accent-amber';
-      borderColor = 'border-accent-amber/20';
+      bgColor = 'bg-atencao/10';
+      textColor = 'text-atencao';
+      borderColor = 'border-atencao/20';
       break;
     case 'success':
-      bgColor = 'bg-accent-green/10';
-      textColor = 'text-accent-green';
-      borderColor = 'border-accent-green/20';
+      bgColor = 'bg-ok/10';
+      textColor = 'text-ok';
+      borderColor = 'border-ok/20';
       break;
     case 'info':
     default:
-      bgColor = 'bg-accent-blue/10';
-      textColor = 'text-accent-blue';
-      borderColor = 'border-accent-blue/20';
+      bgColor = 'bg-aviso/10';
+      textColor = 'text-aviso';
+      borderColor = 'border-aviso/20';
       break;
   }
 
@@ -132,7 +132,7 @@ const EmailVerificationBanner2: React.FC<EmailVerificationBannerProps> = ({
                   onClick={handleResendVerification}
                   isLoading={isResending}
                   leftIcon={<PiArrowsClockwise />}
-                  className={`border-accent-amber text-accent-amber hover:bg-accent-amber hover:text-black`}
+                  className={`border-atencao text-atencao hover:bg-atencao hover:text-black`}
                 >
                   {t('email_banner_resend')}
                 </Button>
@@ -145,7 +145,7 @@ const EmailVerificationBanner2: React.FC<EmailVerificationBannerProps> = ({
                   variant="ghost"
                   size="sm"
                   onClick={handleDismiss}
-                  className={`${textColor} hover:bg-accent-green/20`}
+                  className={`${textColor} hover:bg-ok/20`}
                 >
                   {t('email_banner_understood')}
                 </Button>
@@ -165,7 +165,7 @@ const EmailVerificationBanner2: React.FC<EmailVerificationBannerProps> = ({
 
       {/* Progress indicator for unverified email */}
       {bannerType === 'warning' && !isEmailVerified && (
-        <div className="mt-4 pt-3 border-t border-accent-amber/20">
+        <div className="mt-4 pt-3 border-t border-atencao/20">
           <div className="flex items-center text-xs">
             <span className={`${textColor} opacity-75`}>
               {t('email_banner_email')} <strong>{user.email}</strong>

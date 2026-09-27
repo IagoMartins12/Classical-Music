@@ -154,13 +154,13 @@ export default function LearnedVideoViewer({
   const getDifficultyColor = (difficulty?: string): string => {
     switch (difficulty) {
       case 'BEGINNER':
-        return 'bg-green-100 text-green-800';
+        return 'bg-ok/10 text-ok';
       case 'INTERMEDIATE':
-        return 'bg-yellow-100 text-yellow-800';
+        return 'bg-atencao/10 text-atencao';
       case 'ADVANCED':
-        return 'bg-red-100 text-red-800';
+        return 'bg-erro/10 text-erro';
       default:
-        return 'bg-gray-100 text-gray-800';
+        return 'bg-sup-2 text-texto';
     }
   };
 
@@ -389,8 +389,8 @@ export default function LearnedVideoViewer({
                     <span
                       className={`px-2 py-1 rounded text-xs font-medium ${
                         videoData.isPublic
-                          ? 'bg-green-100 text-green-800'
-                          : 'bg-gray-100 text-gray-800'
+                          ? 'bg-ok/10 text-ok'
+                          : 'bg-sup-2 text-texto'
                       }`}
                     >
                       {videoData.isPublic ? 'Público' : 'Privado'}
@@ -408,9 +408,9 @@ export default function LearnedVideoViewer({
                   <div className="flex justify-between">
                     <span className="text-theme-secondary">Maestria:</span>
                     <Inline gap={2}>
-                      <div className="w-16 bg-gray-200 rounded-full h-2">
+                      <div className="w-16 bg-sup-2 rounded-full h-2">
                         <div
-                          className="bg-blue-500 h-2 rounded-full"
+                          className="bg-aviso h-2 rounded-full"
                           style={{ width: `${learned.mastery}%` }}
                         />
                       </div>
@@ -443,8 +443,8 @@ export default function LearnedVideoViewer({
                               key={star}
                               className={`w-3 h-3 ${
                                 star <= learned.enjoyment!
-                                  ? 'text-yellow-400 fill-current'
-                                  : 'text-gray-300'
+                                  ? 'text-atencao fill-current'
+                                  : 'text-texto-fraco'
                               }`}
                             />
                           ) : (
@@ -452,8 +452,8 @@ export default function LearnedVideoViewer({
                               key={star}
                               className={`w-3 h-3 ${
                                 star <= learned.enjoyment!
-                                  ? 'text-yellow-400 fill-current'
-                                  : 'text-gray-300'
+                                  ? 'text-atencao fill-current'
+                                  : 'text-texto-fraco'
                               }`}
                             />
                           )
@@ -475,8 +475,8 @@ export default function LearnedVideoViewer({
                     <span
                       className={`px-2 py-1 rounded text-xs font-medium ${
                         learned.wouldRecommend
-                          ? 'bg-green-100 text-green-800'
-                          : 'bg-red-100 text-red-800'
+                          ? 'bg-ok/10 text-ok'
+                          : 'bg-erro/10 text-erro'
                       }`}
                     >
                       {learned.wouldRecommend ? 'Sim' : 'Não'}

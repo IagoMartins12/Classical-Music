@@ -111,7 +111,7 @@ export function TagList({ tags: tags }: TagListProps) {
         {filteredTags.map((tag) => (
           <Card
             key={tag.id}
-            className="hover:shadow-theme-medium transition-all group"
+            className="hover:shadow-[var(--sombra-1)] transition-all group"
           >
             {/* Tag Header */}
             <div className="flex items-start justify-between mb-4">
@@ -132,7 +132,7 @@ export function TagList({ tags: tags }: TagListProps) {
                 <Link
                   href={`/blog/tag/${tag.slug}`}
                   target="_blank"
-                  className="p-2 rounded-lg hover:bg-interactive-hover text-theme-tertiary hover:text-brand-primary transition-all"
+                  className="p-2 rounded-lg hover:bg-ouro/10 text-theme-tertiary hover:text-ouro-texto transition-all"
                   title="Ver tag"
                 >
                   <PiEye className="w-4 h-4" />
@@ -140,7 +140,7 @@ export function TagList({ tags: tags }: TagListProps) {
 
                 <Link
                   href={`/blog/admin/tags/edit/${tag.id}`}
-                  className="p-2 rounded-lg hover:bg-interactive-hover text-theme-tertiary hover:text-blue-500 transition-all"
+                  className="p-2 rounded-lg hover:bg-ouro/10 text-theme-tertiary hover:text-aviso transition-all"
                   title="Editar"
                 >
                   <PiNotePencil className="w-4 h-4" />
@@ -148,7 +148,7 @@ export function TagList({ tags: tags }: TagListProps) {
 
                 <button
                   onClick={() => setDeleteModal(tag.id)}
-                  className="p-2 rounded-lg hover:bg-interactive-hover text-theme-tertiary hover:text-red-500 transition-all"
+                  className="p-2 rounded-lg hover:bg-ouro/10 text-theme-tertiary hover:text-erro transition-all"
                   title="Deletar"
                   disabled={tag._count.articles > 0}
                 >
@@ -201,11 +201,11 @@ export function TagList({ tags: tags }: TagListProps) {
 
       {/* Delete Modal */}
       {deleteModal && (
-        <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4">
+        <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-dialogo p-4">
           <div className="bg-theme-secondary rounded-2xl max-w-md w-full p-6 shadow-2xl">
             <div className="flex items-start space-x-4">
-              <div className="w-12 h-12 rounded-full bg-red-500/20 flex items-center justify-center flex-shrink-0">
-                <PiWarningCircle className="w-6 h-6 text-red-500" />
+              <div className="w-12 h-12 rounded-full bg-erro/20 flex items-center justify-center flex-shrink-0">
+                <PiWarningCircle className="w-6 h-6 text-erro" />
               </div>
 
               <div className="flex-1">
@@ -219,8 +219,8 @@ export function TagList({ tags: tags }: TagListProps) {
 
                 {(tags.find((t) => t.id === deleteModal)?._count.articles ??
                   0) > 0 && (
-                  <div className="mb-4 p-3 bg-red-500/10 border border-red-500/20 rounded-lg">
-                    <p className="text-sm text-red-600">
+                  <div className="mb-4 p-3 bg-erro/10 border border-erro/20 rounded-lg">
+                    <p className="text-sm text-erro">
                       ⚠️ Esta tag possui{' '}
                       {tags.find((t) => t.id === deleteModal)?._count.articles}{' '}
                       artigos. Remova a tag dos artigos primeiro.
@@ -231,14 +231,14 @@ export function TagList({ tags: tags }: TagListProps) {
                 <Inline gap={3}>
                   <button
                     onClick={() => setDeleteModal(null)}
-                    className="flex-1 px-4 py-2 rounded-lg bg-theme-elevated hover:bg-interactive-hover text-theme-primary transition-all"
+                    className="flex-1 px-4 py-2 rounded-lg bg-theme-elevated hover:bg-ouro/10 text-theme-primary transition-all"
                     disabled={deleting}
                   >
                     Cancelar
                   </button>
                   <button
                     onClick={() => handleDelete(deleteModal)}
-                    className="flex-1 px-4 py-2 rounded-lg bg-red-500 hover:bg-red-600 text-white transition-all disabled:opacity-50"
+                    className="flex-1 px-4 py-2 rounded-lg bg-erro hover:bg-erro text-white transition-all disabled:opacity-50"
                     disabled={
                       deleting ||
                       (tags.find((t) => t.id === deleteModal)?._count

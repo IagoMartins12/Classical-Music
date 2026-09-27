@@ -168,9 +168,9 @@ export default function MultiSelect({
         className={`
           relative cursor-pointer border rounded-xl px-4 py-3 bg-theme-elevated
           transition-all duration-200 min-h-[48px] flex items-center
-          ${isDisabled ? 'cursor-not-allowed opacity-50' : 'hover:border-brand-primary/50'}
-          ${error ? 'border-red-300' : 'border-theme-secondary'}
-          ${isOpen ? 'border-brand-primary ring-2 ring-brand-primary/20' : ''}
+          ${isDisabled ? 'cursor-not-allowed opacity-50' : 'hover:border-ouro/50'}
+          ${error ? 'border-erro/30' : 'border-theme-secondary'}
+          ${isOpen ? 'border-ouro ring-2 ring-ouro/20' : ''}
         `}
         onClick={handleToggleDropdown}
       >
@@ -186,13 +186,13 @@ export default function MultiSelect({
                 papel="legenda"
                 tom="ouro"
                 key={value}
-                className="inline-flex items-center capitalize gap-1 bg-brand-primary/10 px-2 py-1 rounded-lg font-medium"
+                className="inline-flex items-center capitalize gap-1 bg-ouro/10 px-2 py-1 rounded-lg font-medium"
               >
                 {value}
                 <button
                   type="button"
                   onClick={(e) => handleRemoveSelected(value, e)}
-                  className="hover:bg-brand-primary/20 rounded p-0.5 transition-colors"
+                  className="hover:bg-ouro/20 rounded p-0.5 transition-colors"
                   disabled={isDisabled}
                 >
                   <PiX className="w-3 h-3" />
@@ -207,13 +207,13 @@ export default function MultiSelect({
                   papel="legenda"
                   tom="ouro"
                   key={value}
-                  className="inline-flex capitalize items-center gap-1 bg-brand-primary/10 px-2 py-1 rounded-lg font-medium"
+                  className="inline-flex capitalize items-center gap-1 bg-ouro/10 px-2 py-1 rounded-lg font-medium"
                 >
                   {value}
                   <button
                     type="button"
                     onClick={(e) => handleRemoveSelected(value, e)}
-                    className="hover:bg-brand-primary/20 rounded p-0.5 transition-colors"
+                    className="hover:bg-ouro/20 rounded p-0.5 transition-colors"
                     disabled={isDisabled}
                   >
                     <PiX className="w-3 h-3" />
@@ -234,7 +234,7 @@ export default function MultiSelect({
             <button
               type="button"
               onClick={handleClearAll}
-              className="p-1 hover:bg-theme-secondary/20 rounded transition-colors"
+              className="p-1 hover:bg-sup-1/20 rounded transition-colors"
               disabled={isDisabled}
             >
               <PiX className="w-4 h-4 text-theme-tertiary" />
@@ -248,13 +248,13 @@ export default function MultiSelect({
       </div>
 
       {/* Error Message */}
-      {error && <p className="text-red-500 text-xs mt-1">{error}</p>}
+      {error && <p className="text-erro text-xs mt-1">{error}</p>}
 
       {/* Dropdown */}
       {isOpen && (
         <div
           ref={dropdownRef}
-          className="absolute top-full left-0 right-0 mt-2 bg-theme-elevated border border-theme-secondary rounded-xl shadow-xl z-[500] max-h-80 overflow-hidden"
+          className="absolute top-full left-0 right-0 mt-2 bg-theme-elevated border border-theme-secondary rounded-xl shadow-xl z-menu max-h-80 overflow-hidden"
         >
           {/* Search Input */}
           <div className="p-3 border-b border-theme-secondary">
@@ -271,7 +271,7 @@ export default function MultiSelect({
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
                 onKeyDown={handleKeyDown}
-                className="w-full pl-10 pr-4 py-2 bg-theme-primary border border-theme-secondary rounded-lg text-sm focus:outline-none focus:border-brand-primary focus:ring-2 focus:ring-brand-primary/20"
+                className="w-full pl-10 pr-4 py-2 bg-theme-primary border border-theme-secondary rounded-lg text-sm focus:outline-none focus:border-ouro focus:ring-2 focus:ring-ouro/20"
               />
             </div>
           </div>
@@ -292,10 +292,10 @@ export default function MultiSelect({
                     onChange([...selectedValues, newValue]);
                     setSearchTerm('');
                   }}
-                  className="w-full text-left px-4 py-3 hover:bg-interactive-hover transition-colors duration-200 flex items-center gap-2 border-b border-theme-secondary/50 bg-green-50 dark:bg-green-900/20"
+                  className="w-full text-left px-4 py-3 hover:bg-ouro/10 transition-colors duration-200 flex items-center gap-2 border-b border-linha/50 bg-ok/10 dark:bg-ok/20"
                 >
-                  <PiPlus className="w-4 h-4 text-green-600" />
-                  <span className="text-sm font-medium text-green-600">
+                  <PiPlus className="w-4 h-4 text-ok" />
+                  <span className="text-sm font-medium text-ok">
                     Criar &quot;{searchTerm}&quot; e adicionar
                   </span>
                 </button>
@@ -321,9 +321,8 @@ export default function MultiSelect({
                     type="button"
                     onClick={(e) => handleOptionClick(option, e)}
                     className={`
-                      w-full text-left px-4 py-3 hover:bg-interactive-hover transition-colors duration-200 
-                      flex items-center justify-between border-b last:border-b-0 border-theme-secondary/50
-                      ${isSelected ? 'bg-brand-primary/5 text-brand-primary' : 'text-theme-primary'}
+                      w-full text-left px-4 py-3 hover:bg-ouro/10 transition-colors duration-200 flex items-center justify-between border-b last:border-b-0 border-linha/50
+                      ${isSelected ? 'bg-ouro/5 text-brand-primary' : 'text-theme-primary'}
                     `}
                   >
                     <span className="text-sm capitalize">{option}</span>
@@ -338,7 +337,7 @@ export default function MultiSelect({
 
           {/* Footer with count */}
           {selectedValues.length > 0 && (
-            <div className="px-4 py-2 border-t border-theme-secondary bg-theme-secondary/5">
+            <div className="px-4 py-2 border-t border-theme-secondary bg-sup-1/5">
               <Text papel="legenda" tom="suave" as="p">
                 {selectedValues.length}{' '}
                 {selectedValues.length === 1

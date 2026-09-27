@@ -193,7 +193,7 @@ export function TextToSpeechWebAPI({ content }: TextToSpeechWebAPIProps) {
     <Card className="my-8">
       <div className="flex items-center justify-between mb-4">
         <Inline gap={3}>
-          <div className="p-3 bg-brand-primary rounded-lg">
+          <div className="p-3 bg-ouro rounded-lg">
             <PiSpeakerHigh className="w-6 h-6 text-white" />
           </div>
           <div>
@@ -206,7 +206,7 @@ export function TextToSpeechWebAPI({ content }: TextToSpeechWebAPIProps) {
 
         <button
           onClick={() => setShowSettings(!showSettings)}
-          className="p-2 hover:bg-theme-classical rounded-lg transition-colors"
+          className="p-2 hover:bg-sup-1 rounded-lg transition-colors"
           title="Configurações"
         >
           <PiGear className="w-5 h-5 text-theme-secondary" />
@@ -218,7 +218,7 @@ export function TextToSpeechWebAPI({ content }: TextToSpeechWebAPIProps) {
         <div className="mb-4">
           <div className="w-full bg-theme-secondary h-2 rounded-full overflow-hidden">
             <div
-              className="h-full bg-brand-primary transition-all duration-300"
+              className="h-full bg-ouro transition-all duration-300"
               style={{ width: `${progress}%` }}
             />
           </div>
@@ -320,7 +320,7 @@ export function TextToSpeechWebAPI({ content }: TextToSpeechWebAPIProps) {
               as="button"
               gap={2}
               onClick={handleStop}
-              className="btn-classical-secondary !bg-red-500 hover:!bg-red-600 !text-white"
+              className="btn-classical-secondary !bg-erro hover:!bg-erro !text-white"
             >
               <PiSquare className="w-5 h-5" />
               <span>Parar</span>

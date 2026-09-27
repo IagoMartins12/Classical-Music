@@ -75,9 +75,9 @@ const ASSIGNMENT_TYPES = {
 };
 
 const PRIORITY_COLORS = {
-  low: 'bg-accent-green/10 border-accent-green/30 text-accent-green',
-  medium: 'bg-accent-yellow/10 border-accent-yellow/30 text-accent-yellow',
-  high: 'bg-accent-red/10 border-accent-red/30 text-accent-red',
+  low: 'bg-ok/10 border-ok/30 text-ok',
+  medium: 'bg-atencao/10 border-atencao/30 text-atencao',
+  high: 'bg-erro/10 border-erro/30 text-erro',
 };
 
 const PRIORITY_LABELS = {
@@ -333,11 +333,11 @@ export default function TeacherAssignmentsPageClient({
   };
 
   const getStatusColor = (assignment: TeacherAssignment) => {
-    if (assignment.isOverdue) return ' border-red-400 text-red-400';
-    if (assignment.isCompleted) return 'border-green-400 text-green-400';
+    if (assignment.isOverdue) return ' border-erro text-erro';
+    if (assignment.isCompleted) return 'border-ok text-ok';
     if (assignment.status === 'IN_PROGRESS')
-      return 'border-blue-300 text-blue-300';
-    return ' border-yellow-30 text-yellow-300';
+      return 'border-aviso/30 text-aviso';
+    return ' border-atencao/30 text-atencao';
   };
 
   const getStatusText = (assignment: TeacherAssignment) => {
@@ -422,14 +422,14 @@ export default function TeacherAssignmentsPageClient({
           key={assignment.id}
           hover="lift"
           className={`classical-card ${
-            statusInfo.needsAttention ? ' border !border-red-400' : ''
+            statusInfo.needsAttention ? ' border !border-erro' : ''
           }`}
           delay={index * 0.05}
         >
           {/* Indicativo de atenção necessária */}
           {statusInfo.needsAttention && (
-            <div className="absolute -top-2 -right-2 w-6 h-6 bg-accent-red rounded-full flex items-center justify-center">
-              <PiWarning className="w-3 h-3 text-red-600" />
+            <div className="absolute -top-2 -right-2 w-6 h-6 bg-erro rounded-full flex items-center justify-center">
+              <PiWarning className="w-3 h-3 text-erro" />
             </div>
           )}
 
@@ -457,7 +457,7 @@ export default function TeacherAssignmentsPageClient({
                                   />
                                 </div>
                               ) : (
-                                <div className="w-10 h-10 md:w-12 md:h-12 bg-gradient-to-br from-brand-primary to-brand-secondary rounded-full flex items-center justify-center">
+                                <div className="w-10 h-10 md:w-12 md:h-12 fill-ouro rounded-full flex items-center justify-center">
                                   <PiUser className="w-5 h-5 md:w-6 md:h-6 text-theme-primary" />
                                 </div>
                               )}
@@ -494,7 +494,7 @@ export default function TeacherAssignmentsPageClient({
                             {/* 🆕 WORK SCORE INDICATOR */}
                             {hasScores && (
                               <div
-                                className="w-5 h-5 md:w-6 md:h-6 bg-accent-purple/10 border border-accent-purple/30 text-accent-purple rounded-full flex items-center justify-center"
+                                className="w-5 h-5 md:w-6 md:h-6 bg-ouro/10 border border-ouro/30 text-ouro-texto rounded-full flex items-center justify-center"
                                 title={t('has_scores')}
                               >
                                 <PiMusicNotes className="w-3 h-3" />
@@ -508,15 +508,15 @@ export default function TeacherAssignmentsPageClient({
                                   setSelectedAssignment(assignment);
                                   setShowAssignmentModal(true);
                                 }}
-                                className="w-7 h-7 md:w-8 md:h-8 rounded-lg bg-theme-elevated hover:bg-interactive-hover transition-colors flex items-center justify-center group"
+                                className="w-7 h-7 md:w-8 md:h-8 rounded-lg bg-theme-elevated hover:bg-ouro/10 transition-colors flex items-center justify-center group"
                               >
-                                <PiEye className="w-3 h-3 md:w-4 md:h-4 text-theme-tertiary group-hover:text-brand-primary transition-colors" />
+                                <PiEye className="w-3 h-3 md:w-4 md:h-4 text-theme-tertiary group-hover:text-ouro-texto transition-colors" />
                                 <NomeAcao acao="ver" />
                               </button>
 
                               <Link href={`assignments/${assignment.id}/edit`}>
-                                <button className="w-7 h-7 md:w-8 md:h-8 rounded-lg bg-theme-elevated hover:bg-interactive-hover transition-colors flex items-center justify-center group">
-                                  <PiNotePencil className="w-3 h-3 md:w-4 md:h-4 text-theme-tertiary group-hover:text-brand-primary transition-colors" />
+                                <button className="w-7 h-7 md:w-8 md:h-8 rounded-lg bg-theme-elevated hover:bg-ouro/10 transition-colors flex items-center justify-center group">
+                                  <PiNotePencil className="w-3 h-3 md:w-4 md:h-4 text-theme-tertiary group-hover:text-ouro-texto transition-colors" />
                                   <NomeAcao acao="editar" />
                                 </button>
                               </Link>
@@ -598,7 +598,7 @@ export default function TeacherAssignmentsPageClient({
                           as="span"
                           gap={1}
                           key={idx}
-                          className="px-2 py-1 bg-accent-blue/10 border border-accent-blue/30 text-accent-blue rounded text-xs"
+                          className="px-2 py-1 bg-aviso/10 border border-aviso/30 text-aviso rounded text-xs"
                         >
                           <PiTarget className="w-3 h-3" />
                           <span>{goal}</span>
@@ -611,7 +611,7 @@ export default function TeacherAssignmentsPageClient({
                             as="span"
                             gap={1}
                             key={idx}
-                            className="px-2 py-1 bg-accent-green/10 border border-accent-green/30 text-accent-green rounded text-xs"
+                            className="px-2 py-1 bg-ok/10 border border-ok/30 text-ok rounded text-xs"
                           >
                             <PiMusicNotes className="w-3 h-3" />
                             <span>{goal}</span>
@@ -658,7 +658,7 @@ export default function TeacherAssignmentsPageClient({
                         </Inline>
                       )}
                       {hasScores && (
-                        <Inline gap={1} className="text-accent-purple">
+                        <Inline gap={1} className="text-ouro-texto">
                           <PiMusicNotes className="w-3 h-3 md:w-4 md:h-4" />
                           <span>
                             {t('scores_count', {
@@ -673,12 +673,9 @@ export default function TeacherAssignmentsPageClient({
 
                     {/* Alerta para tarefas que precisam de atenção */}
                     {statusInfo.needsAttention && (
-                      <Inline
-                        gap={1}
-                        className="justify-center mt-3 text-accent-red"
-                      >
-                        <PiWarning className="w-4 h-4 text-red-600" />
-                        <span className="font-semibold text-red-600">
+                      <Inline gap={1} className="justify-center mt-3 text-erro">
+                        <PiWarning className="w-4 h-4 text-erro" />
+                        <span className="font-semibold text-erro">
                           {t('needs_status_update')}
                         </span>
                       </Inline>
@@ -712,14 +709,14 @@ export default function TeacherAssignmentsPageClient({
           key={assignment.id}
           hover="lift"
           className={`classical-card ${
-            statusInfo.needsAttention ? ' border !border-red-400' : ''
+            statusInfo.needsAttention ? ' border !border-erro' : ''
           }`}
           delay={index * 0.05}
         >
           {/* Indicativo de atenção necessária */}
           {statusInfo.needsAttention && (
-            <div className="absolute -top-2 -right-2 w-6 h-6 bg-accent-red rounded-full flex items-center justify-center">
-              <PiWarning className="w-3 h-3 text-red-600" />
+            <div className="absolute -top-2 -right-2 w-6 h-6 bg-erro rounded-full flex items-center justify-center">
+              <PiWarning className="w-3 h-3 text-erro" />
             </div>
           )}
 
@@ -740,7 +737,7 @@ export default function TeacherAssignmentsPageClient({
                         />
                       </div>
                     ) : (
-                      <div className="w-10 h-10 md:w-12 md:h-12 bg-gradient-to-br from-brand-primary to-brand-secondary rounded-full flex items-center justify-center">
+                      <div className="w-10 h-10 md:w-12 md:h-12 fill-ouro rounded-full flex items-center justify-center">
                         <PiUser className="w-5 h-5 md:w-6 md:h-6 text-theme-primary" />
                       </div>
                     )}
@@ -852,7 +849,7 @@ export default function TeacherAssignmentsPageClient({
                           as="span"
                           gap={1}
                           key={idx}
-                          className="px-2 py-1 bg-accent-blue/10 border border-accent-blue/30 text-accent-blue rounded text-xs"
+                          className="px-2 py-1 bg-aviso/10 border border-aviso/30 text-aviso rounded text-xs"
                         >
                           <PiTarget className="w-3 h-3" />
                           <span>{goal}</span>
@@ -865,7 +862,7 @@ export default function TeacherAssignmentsPageClient({
                             as="span"
                             gap={1}
                             key={idx}
-                            className="px-2 py-1 bg-accent-green/10 border border-accent-green/30 text-accent-green rounded text-xs"
+                            className="px-2 py-1 bg-ok/10 border border-ok/30 text-ok rounded text-xs"
                           >
                             <PiMusicNotes className="w-3 h-3" />
                             <span>{goal}</span>
@@ -915,12 +912,9 @@ export default function TeacherAssignmentsPageClient({
 
                     {/* Alerta para tarefas que precisam de atenção */}
                     {statusInfo.needsAttention && (
-                      <Inline
-                        gap={1}
-                        className="justify-center mt-3 text-accent-red"
-                      >
-                        <PiWarning className="w-4 h-4 text-red-600" />
-                        <span className="font-semibold text-red-600">
+                      <Inline gap={1} className="justify-center mt-3 text-erro">
+                        <PiWarning className="w-4 h-4 text-erro" />
+                        <span className="font-semibold text-erro">
                           {t('needs_status_update')}
                         </span>
                       </Inline>
@@ -936,15 +930,15 @@ export default function TeacherAssignmentsPageClient({
                     setSelectedAssignment(assignment);
                     setShowAssignmentModal(true);
                   }}
-                  className="w-7 h-7 md:w-8 md:h-8 rounded-lg bg-theme-elevated hover:bg-interactive-hover transition-colors flex items-center justify-center group"
+                  className="w-7 h-7 md:w-8 md:h-8 rounded-lg bg-theme-elevated hover:bg-ouro/10 transition-colors flex items-center justify-center group"
                 >
-                  <PiEye className="w-3 h-3 md:w-4 md:h-4 text-theme-tertiary group-hover:text-brand-primary transition-colors" />
+                  <PiEye className="w-3 h-3 md:w-4 md:h-4 text-theme-tertiary group-hover:text-ouro-texto transition-colors" />
                   <NomeAcao acao="ver" />
                 </button>
 
                 <Link href={`assignments/${assignment.id}/edit`}>
-                  <button className="w-7 h-7 md:w-8 md:h-8 rounded-lg bg-theme-elevated hover:bg-interactive-hover transition-colors flex items-center justify-center group">
-                    <PiNotePencil className="w-3 h-3 md:w-4 md:h-4 text-theme-tertiary group-hover:text-brand-primary transition-colors" />
+                  <button className="w-7 h-7 md:w-8 md:h-8 rounded-lg bg-theme-elevated hover:bg-ouro/10 transition-colors flex items-center justify-center group">
+                    <PiNotePencil className="w-3 h-3 md:w-4 md:h-4 text-theme-tertiary group-hover:text-ouro-texto transition-colors" />
                     <NomeAcao acao="editar" />
                   </button>
                 </Link>
@@ -972,7 +966,7 @@ export default function TeacherAssignmentsPageClient({
       <PageContainer showBackground={true}>
         <div className="flex items-center justify-center min-h-screen">
           <Card densidade="larga" className="text-center max-w-md">
-            <div className="w-16 h-16 bg-gradient-to-br from-accent-red to-accent-purple rounded-3xl flex items-center justify-center mx-auto mb-6">
+            <div className="w-16 h-16 bg-erro rounded-3xl flex items-center justify-center mx-auto mb-6">
               <PiClipboardText className="w-8 h-8 text-theme-primary" />
             </div>
             <h1 className="text-xl font-bold text-theme-primary classical-title mb-4">
@@ -1020,7 +1014,7 @@ export default function TeacherAssignmentsPageClient({
         <AnimatedItem direction="up" springType="gentle">
           <div className="text-center mb-8 py-8">
             <div className="flex items-center justify-center mb-6">
-              <div className="w-16 h-16 bg-gradient-to-br from-brand-primary to-brand-secondary rounded-3xl flex items-center justify-center shadow-theme-glow">
+              <div className="w-16 h-16 fill-ouro rounded-3xl flex items-center justify-center shadow-theme-glow">
                 <PiClipboardText className="w-8 h-8 text-theme-primary" />
               </div>
             </div>
@@ -1052,7 +1046,7 @@ export default function TeacherAssignmentsPageClient({
                   {searchTerm && (
                     <button
                       onClick={() => setSearchTerm('')}
-                      className="absolute right-3 top-1/2 transform -translate-y-1/2 text-theme-tertiary hover:text-theme-primary transition-colors"
+                      className="absolute right-3 top-1/2 transform -translate-y-1/2 text-theme-tertiary hover:text-texto transition-colors"
                     >
                       <PiX className="w-4 h-4" />
                       <NomeAcao acao="fechar" />
@@ -1109,10 +1103,10 @@ export default function TeacherAssignmentsPageClient({
                 <button
                   onClick={refreshAssignments}
                   disabled={loading.assignments}
-                  className="w-10 h-10 rounded-lg bg-theme-elevated border border-theme-secondary hover:border-brand-primary transition-all flex items-center justify-center group"
+                  className="w-10 h-10 rounded-lg bg-theme-elevated border border-theme-secondary hover:border-ouro transition-all flex items-center justify-center group"
                 >
                   <PiArrowsClockwise
-                    className={`w-4 h-4 text-theme-tertiary group-hover:text-brand-primary transition-all ${
+                    className={`w-4 h-4 text-theme-tertiary group-hover:text-ouro-texto transition-all ${
                       loading.assignments ? 'animate-spin' : ''
                     }`}
                   />
@@ -1133,7 +1127,7 @@ export default function TeacherAssignmentsPageClient({
                     })}
                   </span>
                   {searchTerm && (
-                    <span className="px-2 py-1 bg-brand-primary/10 text-brand-primary rounded">
+                    <span className="px-2 py-1 bg-ouro/10 text-brand-primary rounded">
                       &quot;{searchTerm}&quot;
                     </span>
                   )}
@@ -1146,7 +1140,7 @@ export default function TeacherAssignmentsPageClient({
                     setSelectedStudent('all');
                     setSortBy('due_date');
                   }}
-                  className="text-sm text-theme-tertiary hover:text-theme-primary transition-colors"
+                  className="text-sm text-theme-tertiary hover:text-texto transition-colors"
                 >
                   {t('clear_filters')}
                 </button>
@@ -1342,7 +1336,7 @@ function CreateAssignmentModal({
             </h2>
             <button
               onClick={onClose}
-              className="w-8 h-8 rounded-lg bg-theme-elevated hover:bg-interactive-hover transition-colors flex items-center justify-center"
+              className="w-8 h-8 rounded-lg bg-theme-elevated hover:bg-ouro/10 transition-colors flex items-center justify-center"
             >
               <PiX className="w-4 h-4 text-theme-tertiary" />
               <NomeAcao acao="fechar" />
@@ -1493,7 +1487,7 @@ function CreateAssignmentModal({
                     gap={1}
                     type="button"
                     onClick={() => addGoal('practiceGoals')}
-                    className="text-brand-primary hover:text-brand-secondary text-sm"
+                    className="text-brand-primary hover:text-ouro-texto text-sm"
                   >
                     <PiPlus className="w-3 h-3" />
                     <span>{t('add')}</span>
@@ -1516,7 +1510,7 @@ function CreateAssignmentModal({
                           <button
                             type="button"
                             onClick={() => removeGoal('practiceGoals', index)}
-                            className="text-accent-red"
+                            className="text-erro"
                           >
                             <PiX className="w-4 h-4" />
                             <NomeAcao acao="fechar" />
@@ -1539,7 +1533,7 @@ function CreateAssignmentModal({
                     gap={1}
                     type="button"
                     onClick={() => addGoal('technicalGoals')}
-                    className="text-brand-primary hover:text-brand-secondary text-sm"
+                    className="text-brand-primary hover:text-ouro-texto text-sm"
                   >
                     <PiPlus className="w-3 h-3" />
                     <span>{t('add')}</span>
@@ -1562,7 +1556,7 @@ function CreateAssignmentModal({
                           <button
                             type="button"
                             onClick={() => removeGoal('technicalGoals', index)}
-                            className="text-accent-red"
+                            className="text-erro"
                           >
                             <PiX className="w-4 h-4" />
                             <NomeAcao acao="fechar" />
@@ -1659,13 +1653,11 @@ function AssignmentDetailsModal({
   };
 
   const getStatusColor = (assignment: TeacherAssignment) => {
-    if (assignment.isOverdue)
-      return 'bg-accent-red/10 border-accent-red/30 text-accent-red';
-    if (assignment.isCompleted)
-      return 'bg-accent-green/10 border-accent-green/30 text-accent-green';
+    if (assignment.isOverdue) return 'bg-erro/10 border-erro/30 text-erro';
+    if (assignment.isCompleted) return 'bg-ok/10 border-ok/30 text-ok';
     if (assignment.status === 'IN_PROGRESS')
-      return 'bg-accent-blue/10 border-accent-blue/30 text-accent-blue';
-    return 'bg-accent-yellow/10 border-accent-yellow/30 text-accent-yellow';
+      return 'bg-aviso/10 border-aviso/30 text-aviso';
+    return 'bg-atencao/10 border-atencao/30 text-atencao';
   };
 
   const getStatusText = (assignment: TeacherAssignment) => {
@@ -1728,7 +1720,7 @@ function AssignmentDetailsModal({
                     />
                   </div>
                 ) : (
-                  <div className="w-16 h-16 bg-gradient-to-br from-brand-primary to-brand-secondary rounded-full flex items-center justify-center">
+                  <div className="w-16 h-16 fill-ouro rounded-full flex items-center justify-center">
                     <PiUser className="w-8 h-8 text-theme-primary" />
                   </div>
                 )}
@@ -1793,7 +1785,7 @@ function AssignmentDetailsModal({
                     <Inline
                       as="span"
                       gap={1}
-                      className="px-2 py-1 bg-accent-purple/10 border border-accent-purple/30 text-accent-purple rounded text-xs"
+                      className="px-2 py-1 bg-ouro/10 border border-ouro/30 text-ouro-texto rounded text-xs"
                     >
                       <PiVideoCamera className="w-3 h-3" />
                       <span>Vídeo</span>
@@ -1805,7 +1797,7 @@ function AssignmentDetailsModal({
                       <Inline
                         as="span"
                         gap={1}
-                        className="px-2 py-1 bg-accent-blue/10 border border-accent-blue/30 text-accent-blue rounded text-xs"
+                        className="px-2 py-1 bg-aviso/10 border border-aviso/30 text-aviso rounded text-xs"
                       >
                         <PiMusicNotes className="w-3 h-3" />
                         <span>{assignment.workScoreIds.length}</span>
@@ -1816,7 +1808,7 @@ function AssignmentDetailsModal({
                     <Inline
                       as="span"
                       gap={1}
-                      className="px-2 py-1 bg-accent-green/10 border border-accent-green/30 text-accent-green rounded text-xs"
+                      className="px-2 py-1 bg-ok/10 border border-ok/30 text-ok rounded text-xs"
                     >
                       <PiTarget className="w-3 h-3" />
                       <span>{completedMilestones.length} conquistas</span>
@@ -1873,7 +1865,7 @@ function AssignmentDetailsModal({
                     <div className="flex items-center justify-between mb-3">
                       <Inline gap={3}>
                         <div className="w-10 h-10 rounded-lg flex items-center justify-center">
-                          <PiVideoCamera className="w-5 h-5 text-accent-purple" />
+                          <PiVideoCamera className="w-5 h-5 text-ouro-texto" />
                         </div>
                         <div>
                           <Text
@@ -1928,9 +1920,9 @@ function AssignmentDetailsModal({
                       <Inline
                         gap={2}
                         key={idx}
-                        className="text-sm p-2 bg-accent-blue/5 border border-accent-blue/20 rounded"
+                        className="text-sm p-2 bg-aviso/5 border border-aviso/20 rounded"
                       >
-                        <PiTarget className="w-3 h-3 text-accent-blue" />
+                        <PiTarget className="w-3 h-3 text-aviso" />
                         <span className="text-theme-primary truncate">
                           {goal}
                         </span>
@@ -1940,9 +1932,9 @@ function AssignmentDetailsModal({
                       <Inline
                         gap={2}
                         key={idx}
-                        className="text-sm p-2 bg-accent-green/5 border border-accent-green/20 rounded"
+                        className="text-sm p-2 bg-ok/5 border border-ok/20 rounded"
                       >
-                        <PiMusicNotes className="w-3 h-3 text-accent-green" />
+                        <PiMusicNotes className="w-3 h-3 text-ok" />
                         <span className="text-theme-primary truncate">
                           {goal}
                         </span>
@@ -1973,7 +1965,7 @@ function AssignmentDetailsModal({
                     {assignment.studentNotes && (
                       <Stack
                         gap={1}
-                        className="p-3 bg-theme-secondary/5 rounded-lg border"
+                        className="p-3 bg-sup-1/5 rounded-lg border"
                       >
                         <Text
                           papel="rotulo"
@@ -2001,7 +1993,7 @@ function AssignmentDetailsModal({
                                 key={star}
                                 className={`w-4 h-4 ${
                                   star <= assignment.studentRating!
-                                    ? 'text-accent-yellow fill-current'
+                                    ? 'text-atencao fill-current'
                                     : 'text-theme-tertiary'
                                 }`}
                               />
@@ -2010,7 +2002,7 @@ function AssignmentDetailsModal({
                                 key={star}
                                 className={`w-4 h-4 ${
                                   star <= assignment.studentRating!
-                                    ? 'text-accent-yellow fill-current'
+                                    ? 'text-atencao fill-current'
                                     : 'text-theme-tertiary'
                                 }`}
                               />
@@ -2050,13 +2042,13 @@ function AssignmentDetailsModal({
                           <button
                             key={star}
                             onClick={() => setRating(star)}
-                            className="w-5 h-5 text-theme-tertiary hover:text-accent-yellow transition-colors"
+                            className="w-5 h-5 text-theme-tertiary hover:text-atencao transition-colors"
                           >
                             {star <= rating ? (
                               <PiStarFill
                                 className={`w-4 h-4 ${
                                   star <= rating
-                                    ? 'text-accent-yellow fill-current'
+                                    ? 'text-atencao fill-current'
                                     : ''
                                 }`}
                               />
@@ -2064,7 +2056,7 @@ function AssignmentDetailsModal({
                               <PiStar
                                 className={`w-4 h-4 ${
                                   star <= rating
-                                    ? 'text-accent-yellow fill-current'
+                                    ? 'text-atencao fill-current'
                                     : ''
                                 }`}
                               />
@@ -2143,7 +2135,7 @@ function AssignmentDetailsModal({
                     assignment.workScoreIds.length > 0 && (
                       <div className="flex justify-between">
                         <span className="text-theme-tertiary">Partituras:</span>
-                        <span className="text-accent-blue">
+                        <span className="text-aviso">
                           {assignment.workScoreIds.length}
                         </span>
                       </div>
@@ -2154,7 +2146,7 @@ function AssignmentDetailsModal({
                       <span className="text-theme-tertiary">
                         Vídeo enviado em:
                       </span>
-                      <span className="text-accent-purple">
+                      <span className="text-ouro-texto">
                         {formatDateTime(videoSubmission.uploadedAt)}
                       </span>
                     </div>
@@ -2232,7 +2224,7 @@ function AssignmentDetailsModal({
                   <Stack gap={1}>
                     {completedMilestones.slice(0, 4).map((key) => (
                       <Inline gap={2} key={key} className="text-xs">
-                        <PiCheckCircle className="w-3 h-3 text-accent-green" />
+                        <PiCheckCircle className="w-3 h-3 text-ok" />
                         <span className="text-theme-primary">
                           {milestoneLabels[key] || key}
                         </span>

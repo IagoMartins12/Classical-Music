@@ -245,7 +245,7 @@ export default function AdModal({ ad, onClose, onTrackEvent }: AdModalProps) {
         <div className="ad-content">
           {/* Premium badge */}
           <div className="absolute -top-2 left-1/2 transform -translate-x-1/2">
-            <div className="bg-gradient-to-r from-yellow-400 to-yellow-600 text-black text-xs font-bold px-3 py-1 rounded-full shadow-lg">
+            <div className="bg-atencao text-black text-xs font-bold px-3 py-1 rounded-full shadow-lg">
               ✨
             </div>
           </div>
@@ -274,7 +274,7 @@ export default function AdModal({ ad, onClose, onTrackEvent }: AdModalProps) {
 
           {/* Advertiser info */}
           <div className="text-center mb-8">
-            <div className="inline-flex items-center space-x-2 px-4 py-2 bg-theme-secondary/50 rounded-full backdrop-blur">
+            <div className="inline-flex items-center space-x-2 px-4 py-2 bg-sup-1/50 rounded-full backdrop-blur">
               <PiMusicNotes className="w-4 h-4 text-brand-primary" />
               <Text papel="rotulo" tom="forte" className="font-medium">
                 {ad.advertiserName}
@@ -284,7 +284,7 @@ export default function AdModal({ ad, onClose, onTrackEvent }: AdModalProps) {
                   href={ad.advertiserWebsite}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="text-brand-primary hover:text-brand-secondary transition-colors"
+                  className="text-brand-primary hover:text-ouro-texto transition-colors"
                   onClick={(e) => {
                     e.stopPropagation();
                     onTrackEvent('modal_website_click');
@@ -324,7 +324,7 @@ export default function AdModal({ ad, onClose, onTrackEvent }: AdModalProps) {
           <div className="flex justify-center space-x-4 mt-6 text-sm">
             <button
               onClick={handleClose}
-              className="text-theme-tertiary hover:text-theme-primary transition-colors"
+              className="text-theme-tertiary hover:text-texto transition-colors"
             >
               Fechar
             </button>
@@ -336,7 +336,7 @@ export default function AdModal({ ad, onClose, onTrackEvent }: AdModalProps) {
                 href={ad.advertiserWebsite}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="text-theme-tertiary hover:text-brand-primary transition-colors"
+                className="text-theme-tertiary hover:text-ouro-texto transition-colors"
                 onClick={(e) => {
                   e.stopPropagation();
                   onTrackEvent('modal_learn_more_click');
@@ -350,9 +350,9 @@ export default function AdModal({ ad, onClose, onTrackEvent }: AdModalProps) {
 
           {/* Progress bar (tempo restante) */}
           <div className="mt-8 px-4">
-            <div className="w-full bg-theme-secondary/30 h-1 rounded-full overflow-hidden">
+            <div className="w-full bg-sup-1/30 h-1 rounded-full overflow-hidden">
               <div
-                className="h-full bg-gradient-to-r from-brand-primary to-brand-secondary rounded-full transition-all duration-300 ease-out"
+                className="h-full fill-ouro rounded-full transition-all duration-300 ease-out"
                 style={{
                   animation: 'progressBar 15s linear forwards',
                   transformOrigin: 'left',
@@ -371,10 +371,10 @@ export default function AdModal({ ad, onClose, onTrackEvent }: AdModalProps) {
         </div>
 
         {/* Decorative elements */}
-        <div className="absolute -top-2 -left-2 w-6 h-6 border-l-4 border-t-4 border-brand-primary opacity-30 transform -rotate-45" />
-        <div className="absolute -top-2 -right-2 w-6 h-6 border-r-4 border-t-4 border-brand-primary opacity-30 transform rotate-45" />
-        <div className="absolute -bottom-2 -left-2 w-6 h-6 border-l-4 border-b-4 border-brand-primary opacity-30 transform rotate-45" />
-        <div className="absolute -bottom-2 -right-2 w-6 h-6 border-r-4 border-b-4 border-brand-primary opacity-30 transform -rotate-45" />
+        <div className="absolute -top-2 -left-2 w-6 h-6 border-l-4 border-t-4 border-ouro opacity-30 transform -rotate-45" />
+        <div className="absolute -top-2 -right-2 w-6 h-6 border-r-4 border-t-4 border-ouro opacity-30 transform rotate-45" />
+        <div className="absolute -bottom-2 -left-2 w-6 h-6 border-l-4 border-b-4 border-ouro opacity-30 transform rotate-45" />
+        <div className="absolute -bottom-2 -right-2 w-6 h-6 border-r-4 border-b-4 border-ouro opacity-30 transform -rotate-45" />
       </div>
 
       <style jsx>{`

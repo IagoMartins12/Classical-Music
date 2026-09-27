@@ -165,7 +165,7 @@ export default function LearningStatsWidget({
         className={`classical-card p-6 mt-4 ${className}`}
       >
         <div className="text-center">
-          <div className="w-16 h-16 bg-gradient-to-br from-brand-primary to-brand-secondary rounded-2xl flex items-center justify-center mx-auto mb-4">
+          <div className="w-16 h-16 fill-ouro rounded-2xl flex items-center justify-center mx-auto mb-4">
             <PiTarget className="w-8 h-8 text-white" />
           </div>
           <h3 className="text-xl font-bold text-theme-primary mb-2">
@@ -216,7 +216,7 @@ export default function LearningStatsWidget({
         {nextAchievements.length > 0 && (
           <AnimatedCard hover="lift" className="classical-card p-6">
             <Inline gap={3} className="mb-4">
-              <PiTarget className="w-5 h-5 text-accent-green" />
+              <PiTarget className="w-5 h-5 text-ok" />
               <h4 className="font-semibold text-theme-primary">
                 {t('next_achievements')}
               </h4>
@@ -289,7 +289,7 @@ export default function LearningStatsWidget({
                   className={`p-4 rounded-xl transition-all text-theme-primary hover:scale-105 ${
                     cta.priority === 'high'
                       ? 'bg-theme-tertiary'
-                      : 'bg-theme-elevated border-theme-primary hover:border-brand-primary'
+                      : 'bg-theme-elevated border-theme-primary hover:border-ouro'
                   }`}
                 >
                   <div className="font-medium mb-1">{cta.title}</div>
@@ -338,7 +338,7 @@ export default function LearningStatsWidget({
           {/* Diversidade */}
           <AnimatedCard hover="lift" className="classical-card p-6">
             <Inline gap={3} className="mb-4">
-              <PiMusicNotes className="w-5 h-5 text-accent-blue" />
+              <PiMusicNotes className="w-5 h-5 text-aviso" />
               <h4 className="font-semibold text-theme-primary">
                 {t('diversity_title')}
               </h4>
@@ -356,7 +356,7 @@ export default function LearningStatsWidget({
                 <span className="text-theme-secondary">
                   {t('completion_rate')}
                 </span>
-                <span className="font-medium text-accent-green">
+                <span className="font-medium text-ok">
                   {stats.completionRate.toFixed(0)}%
                 </span>
               </div>
@@ -367,7 +367,7 @@ export default function LearningStatsWidget({
           {stats.publicPerformances > 0 && (
             <AnimatedCard hover="lift" className="classical-card p-6">
               <Inline gap={3} className="mb-4">
-                <PiUsers className="w-5 h-5 text-accent-purple" />
+                <PiUsers className="w-5 h-5 text-ouro-texto" />
                 <h4 className="font-semibold text-theme-primary">
                   {t('performance_title')}
                 </h4>
@@ -377,7 +377,7 @@ export default function LearningStatsWidget({
                   <span className="text-theme-secondary">
                     {t('performances_label')}
                   </span>
-                  <span className="font-medium text-accent-purple">
+                  <span className="font-medium text-ouro-texto">
                     {stats.publicPerformances}
                   </span>
                 </div>
@@ -385,7 +385,7 @@ export default function LearningStatsWidget({
                   <span className="text-theme-secondary">
                     {t('expert_works')}
                   </span>
-                  <span className="font-medium text-accent-green">
+                  <span className="font-medium text-ok">
                     {stats.expertLevelCount}
                   </span>
                 </div>

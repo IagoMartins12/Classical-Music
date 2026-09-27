@@ -138,12 +138,12 @@ export default function TermsPage() {
     <PageContainer showBackground={true}>
       {/* Hero Section */}
       <section className="relative overflow-hidden py-16">
-        <div className="absolute inset-0 bg-gradient-to-br from-brand-primary/5 via-accent-purple/5 to-accent-blue/5"></div>
+        <div className="absolute inset-0 bg-ouro/5"></div>
         <AnimatedContainer delay={0.1} staggerSpeed="normal">
           <div className="relative ">
             <div className="text-center max-w-4xl mx-auto">
               <AnimatedItem direction="scale" springType="bouncy">
-                <div className="inline-flex items-center px-6 py-3 bg-gradient-to-r from-brand-primary/20 to-brand-secondary/20 border border-brand-primary/30 rounded-full mb-8">
+                <div className="inline-flex items-center px-6 py-3 bg-ouro/20 border border-ouro/30 rounded-full mb-8">
                   <PiFileText className="w-5 h-5 text-brand-primary mr-2" />
                   <span className="text-brand-primary font-medium">
                     {t('terms_jsx_span_children_0__termos_legais')}
@@ -188,14 +188,14 @@ export default function TermsPage() {
             <div className="max-w-4xl mx-auto">
               <AnimatedCard hover="lift" className="classical-card !p-8 md:p-8">
                 <div className="flex flex-col md:flex-row items-start space-x-4">
-                  <div className="w-16 h-16 bg-gradient-to-br from-accent-blue to-accent-purple rounded-2xl flex items-center justify-center flex-shrink-0">
+                  <div className="w-16 h-16 bg-aviso rounded-2xl flex items-center justify-center flex-shrink-0">
                     <PiScales className="w-8 h-8 text-theme-primary" />
                   </div>
                   <Stack>
                     <h2 className="text-xl md:text-2xl font-bold classical-title text-theme-primary">
                       {t('terms_jsx_h2_children_0__welcome')}
                     </h2>
-                    <p className="text-md md:text-lg text-theme-secondary classical-body leading-relaxed">
+                    <p className="text-base md:text-lg text-theme-secondary classical-body leading-relaxed">
                       {t('terms_jsx_p_children_0__create')}
                     </p>
                   </Stack>
@@ -220,7 +220,7 @@ export default function TermsPage() {
                 >
                   <div className="classical-card !p-8 md:p-8">
                     <div className="flex flex-col md:flex-row items-start space-x-4">
-                      <div className="w-14 h-14 bg-gradient-to-br from-accent-blue to-accent-purple rounded-xl flex items-center justify-center flex-shrink-0">
+                      <div className="w-14 h-14 bg-aviso rounded-xl flex items-center justify-center flex-shrink-0">
                         <section.icon className="w-7 h-7 text-theme-primary" />
                       </div>
 
@@ -256,7 +256,7 @@ export default function TermsPage() {
             <div className="max-w-4xl mx-auto">
               <AnimatedCard hover="lift" className="classical-card !p-8 md:p-8">
                 <div className="flex items-start flex-col md:flex-row space-x-4">
-                  <div className="w-12 h-12 bg-gradient-to-br from-accent-amber to-accent-red rounded-xl flex items-center justify-center flex-shrink-0">
+                  <div className="w-12 h-12 bg-atencao rounded-xl flex items-center justify-center flex-shrink-0">
                     <PiWarningCircle className="w-6 h-6 text-theme-primary" />
                   </div>
                   <Stack>
@@ -265,7 +265,7 @@ export default function TermsPage() {
                     </h3>
                     <ul className="space-y-3 text-theme-secondary">
                       <li className="flex items-start space-x-2">
-                        <PiCheck className="w-4 h-4 text-accent-green mt-0.5 flex-shrink-0" />
+                        <PiCheck className="w-4 h-4 text-ok mt-0.5 flex-shrink-0" />
                         <span>
                           {t(
                             'terms_jsx_span_children_0__opus_atlas_plataforma'
@@ -273,7 +273,7 @@ export default function TermsPage() {
                         </span>
                       </li>
                       <li className="flex items-start space-x-2">
-                        <PiCheck className="w-4 h-4 text-accent-green mt-0.5 flex-shrink-0" />
+                        <PiCheck className="w-4 h-4 text-ok mt-0.5 flex-shrink-0" />
                         <span>
                           {t(
                             'terms_jsx_span_children_0__respeitamos_direitos_autorais'
@@ -281,13 +281,13 @@ export default function TermsPage() {
                         </span>
                       </li>
                       <li className="flex items-start space-x-2">
-                        <PiCheck className="w-4 h-4 text-accent-green mt-0.5 flex-shrink-0" />
+                        <PiCheck className="w-4 h-4 text-ok mt-0.5 flex-shrink-0" />
                         <span>
                           {t('terms_jsx_span_children_0__valorizar_qualidade')}
                         </span>
                       </li>
                       <li className="flex items-start space-x-2">
-                        <PiCheck className="w-4 h-4 text-accent-green mt-0.5 flex-shrink-0" />
+                        <PiCheck className="w-4 h-4 text-ok mt-0.5 flex-shrink-0" />
                         <span>
                           {t(
                             'terms_jsx_span_children_0__promovemos_comunidade_colaborativa'
@@ -305,7 +305,7 @@ export default function TermsPage() {
 
       {/* Contact and Related Links */}
       <section className=" relative overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-to-r from-brand-primary/10 via-accent-purple/5 to-accent-blue/10"></div>
+        <div className="absolute inset-0 bg-ouro/10"></div>
 
         <AnimatedContainer delay={0.1} staggerSpeed="normal">
           <div className="relative ">
@@ -314,7 +314,7 @@ export default function TermsPage() {
                 hover="lift"
                 className="classical-card p-12 text-center"
               >
-                <div className="w-20 h-20 bg-brand-gradient rounded-3xl flex items-center justify-center mx-auto mb-8">
+                <div className="w-20 h-20 fill-ouro rounded-3xl flex items-center justify-center mx-auto mb-8">
                   <PiEnvelopeSimple className="w-10 h-10 text-theme-primary" />
                 </div>
 
@@ -352,7 +352,7 @@ export default function TermsPage() {
                 >
                   <Link
                     href="/faq"
-                    className="flex items-center space-x-2 text-theme-tertiary hover:text-brand-primary transition-colors"
+                    className="flex items-center space-x-2 text-theme-tertiary hover:text-ouro-texto transition-colors"
                   >
                     <PiFileText className="w-4 h-4" />
                     <span className="text-sm">
@@ -361,7 +361,7 @@ export default function TermsPage() {
                   </Link>
                   <Link
                     href="/help"
-                    className="flex items-center space-x-2 text-theme-tertiary hover:text-brand-primary transition-colors"
+                    className="flex items-center space-x-2 text-theme-tertiary hover:text-ouro-texto transition-colors"
                   >
                     <PiUser className="w-4 h-4" />
                     <span className="text-sm">
@@ -377,25 +377,25 @@ export default function TermsPage() {
 
       {/* Floating Elements */}
       <FloatingElement
-        className="top-16 left-16 text-6xl text-brand-primary/5"
+        className="top-16 left-16 text-6xl text-ouro-texto/5"
         delay={0}
       >
         <PiMusicNotes />
       </FloatingElement>
       <FloatingElement
-        className="bottom-16 right-16 text-5xl text-accent-purple/5"
+        className="bottom-16 right-16 text-5xl text-ouro-texto/5"
         delay={2}
       >
         <GiGrandPiano />
       </FloatingElement>
       <FloatingElement
-        className="top-1/3 right-24 text-4xl text-accent-blue/5"
+        className="top-1/3 right-24 text-4xl text-aviso/5"
         delay={1}
       >
         <PiScales />
       </FloatingElement>
       <FloatingElement
-        className="bottom-1/3 left-24 text-4xl text-brand-secondary/5"
+        className="bottom-1/3 left-24 text-4xl text-ouro-texto/5"
         delay={3}
       >
         <PiScroll />

@@ -173,7 +173,7 @@ export default function ComposersClient({
               direction="scale"
               className="flex items-center justify-center mb-6"
             >
-              <div className="w-16 h-16 bg-gradient-to-br from-brand-primary to-brand-secondary rounded-2xl flex items-center justify-center shadow-theme-glow">
+              <div className="w-16 h-16 fill-ouro rounded-2xl flex items-center justify-center shadow-theme-glow">
                 <PiUser className="w-8 h-8 text-theme-primary" />
               </div>
             </AnimatedItem>
@@ -230,7 +230,7 @@ export default function ComposersClient({
                 {searchTerm && (
                   <button
                     onClick={() => handleSearchChange('')}
-                    className="absolute right-4 top-1/2 transform -translate-y-1/2 text-theme-tertiary hover:text-theme-primary transition-colors"
+                    className="absolute right-4 top-1/2 transform -translate-y-1/2 text-theme-tertiary hover:text-texto transition-colors"
                   >
                     ✕
                   </button>
@@ -299,7 +299,7 @@ export default function ComposersClient({
                   </span>
                 )}
                 {selectedEpoch && (
-                  <span className="text-accent-purple">
+                  <span className="text-ouro-texto">
                     {' '}
                     {t('client_jsx_span_children_0__do_periodo')} &quot;
                     <span className="font-medium">
@@ -365,12 +365,12 @@ export default function ComposersClient({
                 ))}
               </SequentialGrid>
             ) : (
-              <div className="divide-y divide-theme-secondary flex flex-col gap-4 py-4 mx-4">
+              <div className="divide-y divide-linha flex flex-col gap-4 py-4 mx-4">
                 {composers.map((composer, index) => (
                   <AnimatedItem
                     key={composer.id}
                     direction="left"
-                    className="classical-card p-4 hover:bg-interactive-hover transition-all duration-300 group"
+                    className="classical-card p-4 hover:bg-ouro/10 transition-all duration-300 group"
                     style={{
                       animationDelay: `${index * 0.1}s`,
                       animationFillMode: 'backwards',
@@ -389,7 +389,7 @@ export default function ComposersClient({
               springType="bouncy"
             >
               <div className="classical-card p-12 text-center">
-                <div className="w-16 h-16 bg-theme-tertiary/20 rounded-full flex items-center justify-center mx-auto mb-6">
+                <div className="w-16 h-16 bg-sup-2/20 rounded-full flex items-center justify-center mx-auto mb-6">
                   <PiMagnifyingGlass className="w-8 h-8 text-theme-tertiary" />
                 </div>
 
@@ -419,7 +419,7 @@ export default function ComposersClient({
           {isPending && (
             <AnimatedItem
               direction="scale"
-              className="absolute inset-0 bg-theme-overlay backdrop-blur-sm flex items-center justify-center z-10 rounded-2xl"
+              className="absolute inset-0 bg-veu backdrop-blur-sm flex items-center justify-center z-10 rounded-2xl"
             >
               <Card densidade="larga" className="text-center">
                 <LoadingSpinner size="lg" />

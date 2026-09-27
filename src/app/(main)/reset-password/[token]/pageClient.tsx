@@ -131,24 +131,24 @@ export default function ResetPasswordPage() {
     if (minutesLeft > 30) {
       return {
         text: t('time_minutes').replace('{count}', minutesLeft.toString()),
-        color: 'text-accent-green',
+        color: 'text-ok',
       };
     } else if (minutesLeft > 10) {
       return {
         text: t('time_minutes').replace('{count}', minutesLeft.toString()),
-        color: 'text-accent-amber',
+        color: 'text-atencao',
       };
     } else {
       return {
         text: t('time_minutes').replace('{count}', minutesLeft.toString()),
-        color: 'text-accent-red',
+        color: 'text-erro',
       };
     }
   };
 
   const renderValidatingStep = () => (
     <div className="text-center">
-      <div className="w-20 h-20 bg-gradient-to-br from-brand-primary to-accent-purple rounded-full flex items-center justify-center mx-auto mb-6 shadow-theme-glow animate-pulse">
+      <div className="w-20 h-20 fill-ouro rounded-full flex items-center justify-center mx-auto mb-6 shadow-theme-glow animate-pulse">
         <PiSpinnerGap className="w-10 h-10 text-white animate-spin" />
       </div>
       <h1 className="text-3xl font-bold text-theme-primary classical-title mb-4">
@@ -168,7 +168,7 @@ export default function ResetPasswordPage() {
     return (
       <>
         <div className="text-center mb-8">
-          <div className="w-16 h-16 bg-gradient-to-br from-accent-red to-accent-amber rounded-full flex items-center justify-center mx-auto mb-4 shadow-theme-glow">
+          <div className="w-16 h-16 bg-erro rounded-full flex items-center justify-center mx-auto mb-4 shadow-theme-glow">
             <PiLock className="w-8 h-8 text-white" />
           </div>
           <h1 className="text-3xl font-bold text-theme-primary classical-title mb-2">
@@ -214,7 +214,7 @@ export default function ResetPasswordPage() {
         <form onSubmit={handleSubmit} className="space-y-6">
           {/* Erro geral */}
           {error && (
-            <div className="p-3 rounded-lg bg-accent-red bg-opacity-10 border border-accent-red text-accent-red text-sm">
+            <div className="p-3 rounded-lg bg-erro/10 border border-erro text-erro text-sm">
               <div className="flex items-center">
                 <PiWarningCircle className="w-4 h-4 mr-2 flex-shrink-0" />
                 <span>{error}</span>
@@ -235,7 +235,7 @@ export default function ResetPasswordPage() {
                 <button
                   type="button"
                   onClick={() => setShowPassword(!showPassword)}
-                  className="text-theme-tertiary hover:text-theme-primary"
+                  className="text-theme-tertiary hover:text-texto"
                 >
                   {showPassword ? (
                     <PiEyeSlash className="w-4 h-4" />
@@ -268,21 +268,21 @@ export default function ResetPasswordPage() {
                   <div
                     className={`h-full rounded-full transition-all duration-300 ${
                       passwordStrength.score <= 2
-                        ? 'bg-accent-red'
+                        ? 'bg-erro'
                         : passwordStrength.score <= 3
-                          ? 'bg-accent-amber'
+                          ? 'bg-atencao'
                           : passwordStrength.score <= 4
-                            ? 'bg-accent-blue'
-                            : 'bg-accent-green'
+                            ? 'bg-aviso'
+                            : 'bg-ok'
                     }`}
                     style={{ width: `${(passwordStrength.score / 6) * 100}%` }}
                   ></div>
                 </div>
                 {passwordStrength.errors.length > 0 && (
-                  <ul className="mt-2 text-xs text-accent-red space-y-1">
+                  <ul className="mt-2 text-xs text-erro space-y-1">
                     {passwordStrength.errors.map((error, index) => (
                       <li key={index} className="flex items-center">
-                        <span className="w-1 h-1 bg-accent-red rounded-full mr-2"></span>
+                        <span className="w-1 h-1 bg-erro rounded-full mr-2"></span>
                         {error}
                       </li>
                     ))}
@@ -305,7 +305,7 @@ export default function ResetPasswordPage() {
                 <button
                   type="button"
                   onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-                  className="text-theme-tertiary hover:text-theme-primary"
+                  className="text-theme-tertiary hover:text-texto"
                 >
                   {showConfirmPassword ? (
                     <PiEyeSlash className="w-4 h-4" />
@@ -329,12 +329,12 @@ export default function ResetPasswordPage() {
           {/* Dicas de Segurança */}
           <Stack
             gap={2}
-            className="bg-accent-blue bg-opacity-10 border border-accent-blue rounded-lg p-4"
+            className="bg-aviso/10 border border-aviso rounded-lg p-4"
           >
-            <h4 className="text-sm font-medium text-accent-blue">
+            <h4 className="text-sm font-medium text-aviso">
               {t('security_tips_title')}
             </h4>
-            <ul className="text-xs text-accent-blue opacity-80 space-y-1">
+            <ul className="text-xs text-aviso opacity-80 space-y-1">
               <li>{t('security_tip_1')}</li>
               <li>{t('security_tip_2')}</li>
               <li>{t('security_tip_3')}</li>
@@ -359,7 +359,7 @@ export default function ResetPasswordPage() {
         <div className="mt-6 text-center">
           <Link
             href="/"
-            className="text-sm text-theme-tertiary hover:text-brand-primary transition-colors"
+            className="text-sm text-theme-tertiary hover:text-ouro-texto transition-colors"
           >
             {t('back_to_login_link')}
           </Link>
@@ -370,7 +370,7 @@ export default function ResetPasswordPage() {
 
   const renderSuccessStep = () => (
     <div className="text-center">
-      <div className="w-20 h-20 bg-gradient-to-br from-accent-green to-accent-blue rounded-full flex items-center justify-center mx-auto mb-6 shadow-theme-glow animate-bounce">
+      <div className="w-20 h-20 bg-ok rounded-full flex items-center justify-center mx-auto mb-6 shadow-theme-glow animate-bounce">
         <PiCheckCircle className="w-10 h-10 text-white" />
       </div>
       <h1 className="text-3xl font-bold text-theme-primary classical-title mb-4">
@@ -380,16 +380,11 @@ export default function ResetPasswordPage() {
         {t('success_subtitle')}
       </p>
 
-      <Stack
-        gap={2}
-        className="bg-accent-green bg-opacity-10 border border-accent-green rounded-xl p-6 mb-8"
-      >
-        <h3 className="text-xl font-semibold text-accent-green">
+      <Stack gap={2} className="bg-ok/10 border border-ok rounded-xl p-6 mb-8">
+        <h3 className="text-xl font-semibold text-ok">
           {t('success_all_done')}
         </h3>
-        <p className="text-accent-green opacity-80">
-          {t('success_description')}
-        </p>
+        <p className="text-ok opacity-80">{t('success_description')}</p>
       </Stack>
 
       <div className="grid md:grid-cols-2 gap-4">
@@ -416,7 +411,7 @@ export default function ResetPasswordPage() {
 
   const renderErrorStep = () => (
     <div className="text-center">
-      <div className="w-20 h-20 bg-gradient-to-br from-accent-red to-accent-amber rounded-full flex items-center justify-center mx-auto mb-6 shadow-theme-glow">
+      <div className="w-20 h-20 bg-erro rounded-full flex items-center justify-center mx-auto mb-6 shadow-theme-glow">
         <PiWarningCircle className="w-10 h-10 text-white" />
       </div>
       <h1 className="text-3xl font-bold text-theme-primary classical-title mb-4">
@@ -428,15 +423,15 @@ export default function ResetPasswordPage() {
 
       <Stack
         gap={3}
-        className="bg-accent-red bg-opacity-10 border border-accent-red rounded-xl p-6 mb-8"
+        className="bg-erro/10 border border-erro rounded-xl p-6 mb-8"
       >
         <div className="flex items-center justify-center">
-          <PiWarningCircle className="w-5 h-5 text-accent-red mr-2" />
-          <span className="font-medium text-accent-red">
+          <PiWarningCircle className="w-5 h-5 text-erro mr-2" />
+          <span className="font-medium text-erro">
             {getErrorTitle(pageState.errorCode)}
           </span>
         </div>
-        <p className="text-accent-red opacity-80 text-sm">
+        <p className="text-erro opacity-80 text-sm">
           {getErrorDescription(pageState.errorCode)}
         </p>
       </Stack>
@@ -519,13 +514,13 @@ export default function ResetPasswordPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-theme-primary via-theme-secondary to-theme-tertiary flex items-center justify-center p-4">
+    <div className="min-h-screen bg-fundo flex items-center justify-center p-4">
       {/* Background Decorations */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        <div className="absolute -top-10 -left-10 w-40 h-40 bg-brand-primary opacity-10 rounded-full blur-3xl"></div>
-        <div className="absolute -bottom-10 -right-10 w-60 h-60 bg-accent-purple opacity-10 rounded-full blur-3xl"></div>
+        <div className="absolute -top-10 -left-10 w-40 h-40 opacity-10 rounded-full blur-3xl"></div>
+        <div className="absolute -bottom-10 -right-10 w-60 h-60 opacity-10 rounded-full blur-3xl"></div>
         <GiGrandPiano className="absolute top-20 right-20 w-12 h-12 text-brand-primary opacity-5 rotate-12" />
-        <GiGrandPiano className="absolute bottom-20 left-20 w-16 h-16 text-accent-purple opacity-5 -rotate-12" />
+        <GiGrandPiano className="absolute bottom-20 left-20 w-16 h-16 text-ouro-texto opacity-5 -rotate-12" />
       </div>
 
       <div className="relative w-full max-w-2xl">

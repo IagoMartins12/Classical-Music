@@ -64,17 +64,17 @@ export function HistoryComposerCard({ composer }: Props) {
   return (
     <Link
       href={`/composer/${composer.id}`}
-      className="block classical-card-simple p-4 hover:shadow-theme-glow transition-all duration-500 hover:scale-105 group relative overflow-hidden"
+      className="block classical-card-simple p-4 hover:shadow-[var(--sombra-2)] transition-all duration-500 hover:scale-105 group relative overflow-hidden"
     >
       <div className="relative z-10">
         <Inline gap={3} className="mb-3">
           {/* Portrait */}
-          <div className="w-12 h-12 bg-gradient-to-br from-accent-blue to-accent-purple rounded-xl flex items-center justify-center shadow-theme-medium flex-shrink-0 group-hover:scale-110 transition-transform duration-500">
+          <div className="w-12 h-12 bg-aviso rounded-xl flex items-center justify-center shadow-theme-medium flex-shrink-0 group-hover:scale-110 transition-transform duration-500">
             {composer.portraitUrl ? (
               <Image
                 src={composer.portraitUrl}
                 alt={composer.fullName}
-                className="w-12 h-12 rounded-lg object-cover border-2 border-theme-inverse/20"
+                className="w-12 h-12 rounded-lg object-cover border-2 border-texto/20"
                 width={20}
                 height={20}
               />
@@ -88,7 +88,7 @@ export function HistoryComposerCard({ composer }: Props) {
 
           {/* Name and Link Icon */}
           <div className="flex-1 min-w-0">
-            <h4 className="font-semibold text-theme-primary classical-title group-hover:text-brand-primary transition-colors duration-300 line-clamp-1">
+            <h4 className="font-semibold text-theme-primary classical-title group-hover:text-ouro-texto transition-colors duration-300 line-clamp-1">
               {composer.fullName}
             </h4>
             {lifespan && (
@@ -105,7 +105,7 @@ export function HistoryComposerCard({ composer }: Props) {
           </div>
 
           {/* Link indicator */}
-          <div className="w-6 h-6 bg-interactive-hover border border-theme-secondary rounded-lg flex items-center justify-center opacity-0 group-hover:opacity-100 group-hover:bg-brand-primary/10 group-hover:border-brand-primary/30 group-hover:text-brand-primary transition-all duration-300">
+          <div className="w-6 h-6 bg-ouro/10 border border-theme-secondary rounded-lg flex items-center justify-center opacity-0 group-hover:opacity-100 group-hover:bg-ouro/10 group-hover:border-ouro/30 group-hover:text-ouro-texto transition-all duration-300">
             <PiArrowSquareOut className="w-3 h-3" />
           </div>
         </Inline>
@@ -116,7 +116,7 @@ export function HistoryComposerCard({ composer }: Props) {
             papel="legenda"
             tom="suave"
             as="p"
-            className="leading-relaxed line-clamp-2 group-hover:text-theme-primary transition-colors duration-300"
+            className="leading-relaxed line-clamp-2 group-hover:text-texto transition-colors duration-300"
           >
             {biography.length > 150
               ? `${biography.substring(0, 150)}...`
@@ -127,14 +127,14 @@ export function HistoryComposerCard({ composer }: Props) {
         {/* Bottom indicator */}
         <div className="flex items-center justify-between mt-3 pt-2 border-t border-theme-secondary">
           <Inline gap={1}>
-            <div className="w-1.5 h-1.5 bg-brand-primary rounded-full animate-pulse"></div>
+            <div className="w-1.5 h-1.5 bg-ouro rounded-full animate-pulse"></div>
             <Text papel="legenda" tom="fraco" className="font-medium">
               Ver detalhes
             </Text>
           </Inline>
 
           <svg
-            className="w-3 h-3 text-theme-tertiary group-hover:text-brand-primary group-hover:translate-x-0.5 transition-all duration-300"
+            className="w-3 h-3 text-theme-tertiary group-hover:text-ouro-texto group-hover:translate-x-0.5 transition-all duration-300"
             fill="none"
             stroke="currentColor"
             viewBox="0 0 24 24"
@@ -150,7 +150,7 @@ export function HistoryComposerCard({ composer }: Props) {
       </div>
 
       {/* Hover glow effect */}
-      <div className="absolute inset-0 bg-brand-gradient opacity-0 group-hover:opacity-5 transition-opacity duration-500 rounded-xl pointer-events-none"></div>
+      <div className="absolute inset-0 fill-ouro opacity-0 group-hover:opacity-5 transition-opacity duration-500 rounded-xl pointer-events-none"></div>
     </Link>
   );
 }

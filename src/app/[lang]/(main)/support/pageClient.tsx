@@ -57,11 +57,11 @@ interface Solution {
 const getPriorityColor = (priority: string): string => {
   switch (priority) {
     case 'high':
-      return 'text-accent-red';
+      return 'text-erro';
     case 'medium':
-      return 'text-accent-amber';
+      return 'text-atencao';
     case 'low':
-      return 'text-accent-green';
+      return 'text-ok';
     default:
       return 'text-theme-secondary';
   }
@@ -83,7 +83,7 @@ export default function SupportPage(): JSX.Element {
       title: t('support_category_login_account_title'),
       description: t('support_category_login_account_description'),
       icon: PiGear,
-      color: 'from-blue-500 to-purple-500',
+      color: 'bg-aviso',
       solutions: [
         {
           id: 'forgot-password',
@@ -140,7 +140,7 @@ export default function SupportPage(): JSX.Element {
       title: t('support_category_onboarding_profile_title'),
       description: t('support_category_onboarding_profile_description'),
       icon: PiUser,
-      color: 'from-green-500 to-blue-500',
+      color: 'bg-ok',
       solutions: [
         {
           id: 'phone-validation',
@@ -186,7 +186,7 @@ export default function SupportPage(): JSX.Element {
       title: t('support_category_search_navigation_title'),
       description: t('support_category_search_navigation_description'),
       icon: PiGlobe,
-      color: 'from-purple-500 to-pink-500',
+      color: 'fill-ouro',
       solutions: [
         {
           id: 'search-no-results',
@@ -232,7 +232,7 @@ export default function SupportPage(): JSX.Element {
       title: t('support_category_media_players_title'),
       description: t('support_category_media_players_description'),
       icon: PiHeadphones,
-      color: 'from-orange-500 to-red-500',
+      color: 'bg-atencao',
       solutions: [
         {
           id: 'spotify-not-playing',
@@ -279,7 +279,7 @@ export default function SupportPage(): JSX.Element {
       title: t('support_category_uploads_system_title'),
       description: t('support_category_uploads_system_description'),
       icon: PiUploadSimple,
-      color: 'from-red-500 to-purple-500',
+      color: 'bg-erro',
       solutions: [
         {
           id: 'upload-failed',
@@ -340,7 +340,7 @@ export default function SupportPage(): JSX.Element {
       title: t('support_category_teacher_student_title'),
       description: t('support_category_teacher_student_description'),
       icon: PiUserCheck,
-      color: 'from-indigo-500 to-blue-500',
+      color: 'bg-aviso',
       solutions: [
         {
           id: 'teacher-access-denied',
@@ -388,7 +388,7 @@ export default function SupportPage(): JSX.Element {
       title: t('support_category_favorites_annotations_title'),
       description: t('support_category_favorites_annotations_description'),
       icon: PiHeart,
-      color: 'from-pink-500 to-red-500',
+      color: 'fill-ouro',
       solutions: [
         {
           id: 'favorites-not-saving',
@@ -436,7 +436,7 @@ export default function SupportPage(): JSX.Element {
       title: t('support_category_performance_title'),
       description: t('support_category_performance_description'),
       icon: PiPulse,
-      color: 'from-yellow-500 to-orange-500',
+      color: 'bg-atencao',
       solutions: [
         {
           id: 'slow-loading',
@@ -485,7 +485,7 @@ export default function SupportPage(): JSX.Element {
       title: t('support_category_mobile_issues_title'),
       description: t('support_category_mobile_issues_description'),
       icon: PiDeviceMobile,
-      color: 'from-teal-500 to-green-500',
+      color: 'bg-ok',
       solutions: [
         {
           id: 'mobile-layout',
@@ -537,12 +537,12 @@ export default function SupportPage(): JSX.Element {
     <PageContainer showBackground={true} className="classical-theme">
       {/* Hero Section */}
       <section className="relative overflow-hidden py-16">
-        <div className="absolute inset-0 bg-gradient-to-br from-brand-primary/5 via-accent-purple/5 to-accent-blue/5"></div>
+        <div className="absolute inset-0 bg-ouro/5"></div>
         <AnimatedContainer delay={0.1} staggerSpeed="normal">
           <div className="relative p">
             <div className="text-center max-w-4xl mx-auto">
               <AnimatedItem direction="scale" springType="bouncy">
-                <div className="inline-flex items-center px-6 py-3 bg-gradient-to-r from-brand-primary/20 to-brand-secondary/20 border border-brand-primary/30 rounded-full mb-8">
+                <div className="inline-flex items-center px-6 py-3 bg-ouro/20 border border-ouro/30 rounded-full mb-8">
                   <PiWrench className="w-5 h-5 text-brand-primary mr-2" />
                   <span className="text-brand-primary font-medium">
                     {t(
@@ -595,7 +595,7 @@ export default function SupportPage(): JSX.Element {
                       key={category.id}
                       className={`classical-card p-6 group flex flex-col items-center justify-center cursor-pointer transition-all  ${
                         selectedCategory === category.id
-                          ? 'ring-2 ring-brand-primary'
+                          ? 'ring-2 ring-ouro'
                           : ''
                       }`}
                       onClick={() => setSelectedCategory(category.id)}
@@ -644,7 +644,7 @@ export default function SupportPage(): JSX.Element {
                       <div className="text-center">
                         <button
                           onClick={() => setSelectedCategory(null)}
-                          className="inline-flex items-center text-brand-primary hover:text-brand-primary/80 mb-4 transition-colors"
+                          className="inline-flex items-center text-brand-primary hover:text-ouro-texto/80 mb-4 transition-colors"
                         >
                           <PiArrowRight className="w-4 h-4 mr-2 rotate-180" />
                           {t('support_pagecontainer_animatedcontainer_voltar')}
@@ -668,11 +668,11 @@ export default function SupportPage(): JSX.Element {
                             <div className="classical-card overflow-hidden">
                               <button
                                 onClick={() => toggleSolution(solution.id)}
-                                className="w-full p-2 pb-6 md:p-6 text-left focus:outline-none hover:bg-theme-elevated/50 transition-colors cursor-pointer"
+                                className="w-full p-2 pb-6 md:p-6 text-left focus:outline-none hover:bg-sup-elevada/50 transition-colors cursor-pointer"
                               >
                                 <div className="flex items-center justify-between">
                                   <Inline gap={4}>
-                                    <div className="w-8 h-8 bg-gradient-to-r from-accent-red to-accent-amber rounded-lg flex items-center justify-center flex-shrink-0">
+                                    <div className="w-8 h-8 bg-erro rounded-lg flex items-center justify-center flex-shrink-0">
                                       <span className="text-white font-bold text-sm">
                                         !
                                       </span>
@@ -756,11 +756,11 @@ export default function SupportPage(): JSX.Element {
 
                               {expandedSolution === solution.id &&
                                 solution.steps && (
-                                  <div className="px-0 md:px-6 pb-6 border-t border-theme-secondary/20">
+                                  <div className="px-0 md:px-6 pb-6 border-t border-linha/20">
                                     <div className="pt-4">
-                                      <div className="border-brand-primary/20 pl-4">
+                                      <div className="border-ouro/20 pl-4">
                                         <h5 className="font-semibold classical-title text-theme-primary mb-4 flex items-center">
-                                          <span className="w-6 h-6 bg-brand-primary text-white rounded-full flex items-center justify-center text-sm font-medium mr-2">
+                                          <span className="w-6 h-6 bg-ouro text-sobre-ouro rounded-full flex items-center justify-center text-sm font-medium mr-2">
                                             ✓
                                           </span>
                                           {t(
@@ -774,7 +774,7 @@ export default function SupportPage(): JSX.Element {
                                                 key={stepIndex}
                                                 className="flex items-start space-x-3"
                                               >
-                                                <span className="w-7 h-7 bg-brand-primary text-white rounded-full flex items-center justify-center text-sm font-medium flex-shrink-0 mt-0.5">
+                                                <span className="w-7 h-7 bg-ouro text-sobre-ouro rounded-full flex items-center justify-center text-sm font-medium flex-shrink-0 mt-0.5">
                                                   {stepIndex + 1}
                                                 </span>
                                                 <span className="text-theme-secondary classical-body leading-relaxed">
@@ -785,12 +785,12 @@ export default function SupportPage(): JSX.Element {
                                           )}
                                         </ol>
 
-                                        <div className="mt-6 pt-4 border-t border-theme-secondary/10">
+                                        <div className="mt-6 pt-4 border-t border-linha/10">
                                           <button
                                             onClick={() =>
                                               setExpandedSolution(null)
                                             }
-                                            className="text-brand-primary hover:text-brand-primary/80 text-sm font-medium transition-colors"
+                                            className="text-brand-primary hover:text-ouro-texto/80 text-sm font-medium transition-colors"
                                           >
                                             {t(
                                               'support_animatedcontainer_animateditem_fechar'
@@ -816,7 +816,7 @@ export default function SupportPage(): JSX.Element {
 
       {/* Emergency Contact */}
       <section className="py-8 relative overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-to-r from-brand-primary/10 via-accent-purple/5 to-accent-blue/10"></div>
+        <div className="absolute inset-0 bg-ouro/10"></div>
 
         <AnimatedContainer delay={0.1} staggerSpeed="normal">
           <div className="relative ">
@@ -824,7 +824,7 @@ export default function SupportPage(): JSX.Element {
               hover="lift"
               className="classical-card p-12 text-center max-w-4xl mx-auto"
             >
-              <div className="w-20 h-20 bg-brand-gradient rounded-3xl flex items-center justify-center mx-auto mb-8">
+              <div className="w-20 h-20 fill-ouro rounded-3xl flex items-center justify-center mx-auto mb-8">
                 <PiChatCircle className="w-10 h-10 text-theme-primary" />
               </div>
 
@@ -878,25 +878,25 @@ export default function SupportPage(): JSX.Element {
 
       {/* Floating Elements */}
       <FloatingElement
-        className="top-16 left-16 text-6xl text-brand-primary/5"
+        className="top-16 left-16 text-6xl text-ouro-texto/5"
         delay={0}
       >
         <PiMusicNotes />
       </FloatingElement>
       <FloatingElement
-        className="bottom-16 right-16 text-5xl text-accent-purple/5"
+        className="bottom-16 right-16 text-5xl text-ouro-texto/5"
         delay={2}
       >
         <GiGrandPiano />
       </FloatingElement>
       <FloatingElement
-        className="top-1/3 right-24 text-4xl text-accent-blue/5"
+        className="top-1/3 right-24 text-4xl text-aviso/5"
         delay={1}
       >
         <PiDesktop />
       </FloatingElement>
       <FloatingElement
-        className="bottom-1/3 left-24 text-4xl text-brand-secondary/5"
+        className="bottom-1/3 left-24 text-4xl text-ouro-texto/5"
         delay={3}
       >
         <PiScroll />

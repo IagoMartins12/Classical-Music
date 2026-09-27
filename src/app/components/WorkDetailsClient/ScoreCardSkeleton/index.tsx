@@ -18,7 +18,7 @@ const ScoreCardSkeleton = ({
         {/* Thumbnail Skeleton */}
         {showThumbnail && (
           <div className="w-24 h-32 flex-shrink-0">
-            <div className="w-full h-full bg-gradient-to-br from-theme-elevated to-interactive-hover rounded-xl border-2 border-theme-primary/20"></div>
+            <div className="w-full h-full bg-sup-elevada rounded-xl border-2 border-linha/20"></div>
           </div>
         )}
 
@@ -27,15 +27,15 @@ const ScoreCardSkeleton = ({
           <div className="flex items-start justify-between gap-4 mb-2">
             <div className="flex-1">
               {/* Title Skeleton */}
-              <div className="h-5 bg-gradient-to-r from-theme-elevated to-interactive-hover rounded-lg mb-2 w-3/4"></div>
+              <div className="h-5 bg-sup-elevada rounded-lg mb-2 w-3/4"></div>
 
               {/* Subtitle Skeleton */}
-              <div className="h-3 bg-gradient-to-r from-theme-elevated to-interactive-hover rounded-lg mb-3 w-1/2"></div>
+              <div className="h-3 bg-sup-elevada rounded-lg mb-3 w-1/2"></div>
             </div>
 
             {/* Download Button Skeleton */}
             <div className="flex-shrink-0">
-              <div className="w-24 h-8 bg-gradient-to-r from-brand-primary/20 to-brand-secondary/20 rounded-xl"></div>
+              <div className="w-24 h-8 bg-ouro/20 rounded-xl"></div>
             </div>
           </div>
 
@@ -47,22 +47,22 @@ const ScoreCardSkeleton = ({
                 {/* Icon Skeleton */}
                 <div className="w-5 h-5 bg-theme-elevated rounded-lg"></div>
                 {/* Text Skeleton */}
-                <div className="h-3 bg-gradient-to-r from-theme-elevated to-interactive-hover rounded w-16"></div>
+                <div className="h-3 bg-sup-elevada rounded w-16"></div>
               </div>
             ))}
           </div>
 
           {/* Additional Info Skeleton (for thumbnails) */}
           {showThumbnail && (
-            <div className="mt-4 pt-4 border-t border-theme-secondary/30">
+            <div className="mt-4 pt-4 border-t border-linha/30">
               <Stack gap={2}>
                 <div className="flex justify-between items-center">
                   <div className="h-3 bg-theme-elevated rounded w-12"></div>
-                  <div className="h-3 bg-gradient-to-r from-theme-elevated to-interactive-hover rounded w-32"></div>
+                  <div className="h-3 bg-sup-elevada rounded w-32"></div>
                 </div>
                 <div className="flex justify-between items-center">
                   <div className="h-3 bg-theme-elevated rounded w-14"></div>
-                  <div className="h-3 bg-gradient-to-r from-theme-elevated to-interactive-hover rounded w-40"></div>
+                  <div className="h-3 bg-sup-elevada rounded w-40"></div>
                 </div>
               </Stack>
             </div>
@@ -124,13 +124,13 @@ export const ScoreLoadingWithProgress = ({
       className={`classical-card overflow-hidden animate-fade-in-up ${className}`}
     >
       {/* Header */}
-      <div className="border-b border-theme-secondary p-8 bg-gradient-to-r from-theme-elevated to-interactive-hover">
+      <div className="border-b border-theme-secondary p-8 bg-sup-elevada">
         <Inline gap={3} className="mb-4">
-          <div className="w-12 h-12 bg-gradient-to-br from-brand-primary to-brand-secondary rounded-2xl flex items-center justify-center">
+          <div className="w-12 h-12 fill-ouro rounded-2xl flex items-center justify-center">
             <div className="relative">
               <div className="w-6 h-6 border-4 border-white/30 border-t-white rounded-full animate-spin"></div>
               <div
-                className="absolute inset-0 w-6 h-6 border-4 border-transparent border-r-brand-secondary rounded-full animate-spin"
+                className="absolute inset-0 w-6 h-6 border-4 border-transparent border-r-ouro rounded-full animate-spin"
                 style={{
                   animationDirection: 'reverse',
                   animationDuration: '1.5s',
@@ -160,9 +160,9 @@ export const ScoreLoadingWithProgress = ({
               <span>Progresso</span>
               <span>{Math.round(progress)}%</span>
             </Text>
-            <div className="w-full bg-theme-elevated border border-theme-primary/20 rounded-full h-3 overflow-hidden">
+            <div className="w-full bg-theme-elevated border border-linha/20 rounded-full h-3 overflow-hidden">
               <div
-                className="bg-gradient-to-r from-brand-primary to-brand-secondary h-full rounded-full transition-all duration-500 relative overflow-hidden"
+                className="fill-ouro h-full rounded-full transition-all duration-500 relative overflow-hidden"
                 style={{ width: `${Math.max(progress, 5)}%` }}
               >
                 {/* Animated shimmer inside progress bar */}
@@ -181,9 +181,9 @@ export const ScoreLoadingWithProgress = ({
       )}
 
       {/* Decorative elements */}
-      <div className="absolute bottom-4 right-4 w-2 h-2 bg-brand-primary/30 rounded-full animate-pulse"></div>
+      <div className="absolute bottom-4 right-4 w-2 h-2 bg-ouro/30 rounded-full animate-pulse"></div>
       <div
-        className="absolute top-1/2 left-4 w-1.5 h-1.5 bg-accent-purple/40 rounded-full animate-pulse"
+        className="absolute top-1/2 left-4 w-1.5 h-1.5 bg-ouro/40 rounded-full animate-pulse"
         style={{ animationDelay: '1s' }}
       ></div>
     </div>

@@ -255,7 +255,7 @@ export function ArticleList({
               <PiFunnel className="w-4 h-4" />
               <span>Filtros</span>
               {hasActiveFilters && (
-                <span className="w-2 h-2 bg-brand-primary rounded-full"></span>
+                <span className="w-2 h-2 bg-ouro rounded-full"></span>
               )}
             </button>
 
@@ -360,7 +360,7 @@ export function ArticleList({
             {articles.map((article) => (
               <div
                 key={article.id}
-                className="classical-card overflow-hidden hover:shadow-theme-large transition-all group"
+                className="classical-card overflow-hidden hover:shadow-[var(--sombra-2)] transition-all group"
               >
                 <div className="flex">
                   {/* Cover Image */}
@@ -380,7 +380,7 @@ export function ArticleList({
 
                     {/* Featured Badge */}
                     {article.isFeatured && (
-                      <div className="absolute top-2 left-2 px-2 py-1 bg-yellow-500 text-white text-xs font-bold rounded">
+                      <div className="absolute top-2 left-2 px-2 py-1 bg-atencao text-white text-xs font-bold rounded">
                         ⭐ Destaque
                       </div>
                     )}
@@ -392,12 +392,12 @@ export function ArticleList({
                           px-2 py-1 rounded text-xs font-medium
                           ${
                             article.status === 'PUBLISHED'
-                              ? 'bg-green-500 text-white'
+                              ? 'bg-ok text-white'
                               : article.status === 'DRAFT'
-                                ? 'bg-gray-500 text-white'
+                                ? 'bg-linha-forte text-white'
                                 : article.status === 'REVIEW'
-                                  ? 'bg-yellow-500 text-white'
-                                  : 'bg-red-500 text-white'
+                                  ? 'bg-atencao text-white'
+                                  : 'bg-erro text-white'
                           }
                         `}
                       >
@@ -447,7 +447,7 @@ export function ArticleList({
                               actionMenu === article.id ? null : article.id
                             )
                           }
-                          className="p-2 rounded-lg hover:bg-interactive-hover text-theme-tertiary transition-all"
+                          className="p-2 rounded-lg hover:bg-ouro/10 text-theme-tertiary transition-all"
                         >
                           <PiDotsThreeVertical className="w-4 h-4" />
                           <NomeAcao acao="maisOpcoes" />
@@ -457,7 +457,7 @@ export function ArticleList({
                           <div className="absolute top-0 right-7 mt-1 w-48 bg-theme-tertiary rounded-lg shadow-xl border border-theme-secondary z-10">
                             <Link
                               href={`/blog/admin/articles/${article.id}/edit`}
-                              className="flex items-center space-x-2 px-4 py-2 hover:bg-interactive-hover text-theme-secondary"
+                              className="flex items-center space-x-2 px-4 py-2 hover:bg-ouro/10 text-theme-secondary"
                             >
                               <PiNotePencil className="w-4 h-4" />
                               <span>Editar</span>
@@ -467,7 +467,7 @@ export function ArticleList({
                               <Link
                                 href={`/blog/${article.slug}`}
                                 target="_blank"
-                                className="flex items-center space-x-2 px-4 py-2 hover:bg-interactive-hover text-theme-secondary"
+                                className="flex items-center space-x-2 px-4 py-2 hover:bg-ouro/10 text-theme-secondary"
                               >
                                 <PiEye className="w-4 h-4" />
                                 <span>Ver Publicado</span>
@@ -478,7 +478,7 @@ export function ArticleList({
                               as="button"
                               gap={2}
                               onClick={() => handleDuplicate(article.id)}
-                              className="w-full px-4 py-2 hover:bg-interactive-hover text-theme-secondary"
+                              className="w-full px-4 py-2 hover:bg-ouro/10 text-theme-secondary"
                             >
                               <PiCopy className="w-4 h-4" />
                               <span>Duplicar</span>
@@ -488,7 +488,7 @@ export function ArticleList({
                               as="button"
                               gap={2}
                               onClick={() => setDeleteModal(article.id)}
-                              className="w-full px-4 py-2 hover:bg-red-500/10 text-red-500 rounded-b-lg"
+                              className="w-full px-4 py-2 hover:bg-erro/10 text-erro rounded-b-lg"
                             >
                               <PiTrash className="w-4 h-4" />
                               <span>Deletar</span>
@@ -563,7 +563,7 @@ export function ArticleList({
                         >
                           <Link
                             href={`/blog/admin/articles/${article.id}/edit`}
-                            className="p-2 rounded-lg hover:bg-interactive-hover text-theme-tertiary hover:text-blue-500 transition-all"
+                            className="p-2 rounded-lg hover:bg-ouro/10 text-theme-tertiary hover:text-aviso transition-all"
                             title="Editar"
                           >
                             <PiNotePencil className="w-4 h-4" />
@@ -573,7 +573,7 @@ export function ArticleList({
                             <Link
                               href={`/blog/${article.slug}`}
                               target="_blank"
-                              className="p-2 rounded-lg hover:bg-interactive-hover text-theme-tertiary hover:text-green-500 transition-all"
+                              className="p-2 rounded-lg hover:bg-ouro/10 text-theme-tertiary hover:text-ok transition-all"
                               title="Ver"
                             >
                               <PiEye className="w-4 h-4" />
@@ -582,7 +582,7 @@ export function ArticleList({
 
                           <button
                             onClick={() => setDeleteModal(article.id)}
-                            className="p-2 rounded-lg hover:bg-interactive-hover text-theme-tertiary hover:text-red-500 transition-all"
+                            className="p-2 rounded-lg hover:bg-ouro/10 text-theme-tertiary hover:text-erro transition-all"
                             title="Deletar"
                           >
                             <PiTrash className="w-4 h-4" />
@@ -642,8 +642,8 @@ export function ArticleList({
                             px-3 py-2 rounded-lg font-medium transition-all
                             ${
                               pagination.page === page
-                                ? 'bg-brand-primary text-white'
-                                : 'bg-theme-elevated text-theme-secondary hover:bg-interactive-hover'
+                                ? 'bg-ouro text-sobre-ouro'
+                                : 'bg-theme-elevated text-theme-secondary hover:bg-ouro/10'
                             }
                           `}
                         >
@@ -675,8 +675,8 @@ export function ArticleList({
         <Modal isOpen onClose={() => setDeleteModal(null)} maxWidth="lg">
           <div className=" rounded-2xl max-w-md w-full p-6 ">
             <div className="flex items-start space-x-4">
-              <div className="w-12 h-12 rounded-full bg-red-500/20 flex items-center justify-center flex-shrink-0">
-                <PiWarningCircle className="w-6 h-6 text-red-500" />
+              <div className="w-12 h-12 rounded-full bg-erro/20 flex items-center justify-center flex-shrink-0">
+                <PiWarningCircle className="w-6 h-6 text-erro" />
               </div>
 
               <div className="flex-1">
@@ -692,14 +692,14 @@ export function ArticleList({
                 <Inline gap={3}>
                   <button
                     onClick={() => setDeleteModal(null)}
-                    className="flex-1 px-4 py-2 rounded-lg bg-theme-elevated hover:bg-interactive-hover text-theme-primary transition-all"
+                    className="flex-1 px-4 py-2 rounded-lg bg-theme-elevated hover:bg-ouro/10 text-theme-primary transition-all"
                     disabled={deleting}
                   >
                     Cancelar
                   </button>
                   <button
                     onClick={() => handleDelete(deleteModal)}
-                    className="flex-1 px-4 py-2 rounded-lg bg-red-500 hover:bg-red-600 text-white transition-all disabled:opacity-50"
+                    className="flex-1 px-4 py-2 rounded-lg bg-erro hover:bg-erro text-white transition-all disabled:opacity-50"
                     disabled={deleting}
                   >
                     {deleting ? 'Deletando...' : 'Deletar'}

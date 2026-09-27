@@ -118,7 +118,7 @@ export default function ReportsDashboard() {
         <AnimatedItem direction="up" springType="gentle">
           <div className="text-center mb-8 py-16">
             <div className="flex items-center justify-center mb-6">
-              <div className="w-16 h-16 bg-gradient-to-br from-accent-red to-accent-amber rounded-3xl flex items-center justify-center shadow-theme-glow">
+              <div className="w-16 h-16 bg-erro rounded-3xl flex items-center justify-center shadow-theme-glow">
                 <PiFlag className="w-8 h-8 text-theme-primary" />
               </div>
             </div>
@@ -185,7 +185,7 @@ export default function ReportsDashboard() {
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
             <AnimatedCard className="classical-card p-6 text-center">
               <div className="flex items-center justify-center mb-4">
-                <div className="w-12 h-12 bg-gradient-to-br from-accent-blue to-accent-purple rounded-2xl flex items-center justify-center">
+                <div className="w-12 h-12 bg-aviso rounded-2xl flex items-center justify-center">
                   <PiFlag className="w-6 h-6 text-theme-primary" />
                 </div>
               </div>
@@ -199,7 +199,7 @@ export default function ReportsDashboard() {
 
             <AnimatedCard className="classical-card p-6 text-center">
               <div className="flex items-center justify-center mb-4">
-                <div className="w-12 h-12 bg-gradient-to-br from-accent-amber to-accent-red rounded-2xl flex items-center justify-center">
+                <div className="w-12 h-12 bg-atencao rounded-2xl flex items-center justify-center">
                   <PiClock className="w-6 h-6 text-theme-primary" />
                 </div>
               </div>
@@ -213,7 +213,7 @@ export default function ReportsDashboard() {
 
             <AnimatedCard className="classical-card p-6 text-center">
               <div className="flex items-center justify-center mb-4">
-                <div className="w-12 h-12 bg-gradient-to-br from-accent-green to-accent-blue rounded-2xl flex items-center justify-center">
+                <div className="w-12 h-12 bg-ok rounded-2xl flex items-center justify-center">
                   <PiCheckCircle className="w-6 h-6 text-theme-primary" />
                 </div>
               </div>
@@ -227,7 +227,7 @@ export default function ReportsDashboard() {
 
             <AnimatedCard className="classical-card p-6 text-center">
               <div className="flex items-center justify-center mb-4">
-                <div className="w-12 h-12 bg-gradient-to-br from-accent-red to-accent-purple rounded-2xl flex items-center justify-center">
+                <div className="w-12 h-12 bg-erro rounded-2xl flex items-center justify-center">
                   <PiXCircle className="w-6 h-6 text-theme-primary" />
                 </div>
               </div>
@@ -250,7 +250,7 @@ export default function ReportsDashboard() {
               gap={2}
               className="text-xl font-bold text-theme-primary mb-6"
             >
-              <PiUsers className="w-5 h-5 text-accent-blue" />
+              <PiUsers className="w-5 h-5 text-aviso" />
               <span>Reports por Tipo</span>
             </Inline>
 
@@ -262,7 +262,7 @@ export default function ReportsDashboard() {
                     className="flex items-center justify-between"
                   >
                     <Inline gap={3}>
-                      <div className="w-8 h-8 bg-gradient-to-br from-accent-blue to-accent-purple rounded-lg flex items-center justify-center">
+                      <div className="w-8 h-8 bg-aviso rounded-lg flex items-center justify-center">
                         {getTypeIcon(item.entityType)}
                       </div>
                       <span className="font-medium text-theme-primary">
@@ -275,7 +275,7 @@ export default function ReportsDashboard() {
                       </span>
                       <div className="w-16 h-2 bg-theme-secondary rounded-full overflow-hidden">
                         <div
-                          className="h-full bg-gradient-to-r from-accent-blue to-accent-purple rounded-full transition-all duration-500"
+                          className="h-full bg-aviso rounded-full transition-all duration-500"
                           style={{
                             width: `${
                               (item._count.id / (stats?.pendingReports || 1)) *
@@ -303,7 +303,7 @@ export default function ReportsDashboard() {
               gap={2}
               className="text-xl font-bold text-theme-primary mb-6"
             >
-              <PiWarningCircle className="w-5 h-5 text-accent-red" />
+              <PiWarningCircle className="w-5 h-5 text-erro" />
               <span>Reports por Motivo</span>
             </Inline>
 
@@ -315,7 +315,7 @@ export default function ReportsDashboard() {
                     className="flex items-center justify-between"
                   >
                     <Inline gap={3}>
-                      <div className="w-8 h-8 bg-gradient-to-br from-accent-red to-accent-amber rounded-lg flex items-center justify-center">
+                      <div className="w-8 h-8 bg-erro rounded-lg flex items-center justify-center">
                         <PiFlag className="w-4 h-4 text-theme-primary" />
                       </div>
                       <span className="font-medium text-theme-primary">
@@ -328,7 +328,7 @@ export default function ReportsDashboard() {
                       </span>
                       <div className="w-16 h-2 bg-theme-secondary rounded-full overflow-hidden">
                         <div
-                          className="h-full bg-gradient-to-r from-accent-red to-accent-amber rounded-full transition-all duration-500"
+                          className="h-full bg-erro rounded-full transition-all duration-500"
                           style={{
                             width: `${
                               (item._count.id / (stats?.pendingReports || 1)) *
@@ -354,7 +354,7 @@ export default function ReportsDashboard() {
         <AnimatedItem direction="up" springType="gentle">
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             <AnimatedCard className="classical-card p-6 text-center">
-              <div className="w-12 h-12 bg-gradient-to-br from-accent-red to-accent-amber rounded-2xl flex items-center justify-center mx-auto mb-4">
+              <div className="w-12 h-12 bg-erro rounded-2xl flex items-center justify-center mx-auto mb-4">
                 <PiClock className="w-6 h-6 text-theme-primary" />
               </div>
               <h3 className="text-lg font-bold text-theme-primary mb-2">
@@ -373,7 +373,7 @@ export default function ReportsDashboard() {
             </AnimatedCard>
 
             <AnimatedCard className="classical-card p-6 text-center">
-              <div className="w-12 h-12 bg-gradient-to-br from-accent-blue to-accent-purple rounded-2xl flex items-center justify-center mx-auto mb-4">
+              <div className="w-12 h-12 bg-aviso rounded-2xl flex items-center justify-center mx-auto mb-4">
                 <PiUsers className="w-6 h-6 text-theme-primary" />
               </div>
               <h3 className="text-lg font-bold text-theme-primary mb-2">
@@ -394,7 +394,7 @@ export default function ReportsDashboard() {
             </AnimatedCard>
 
             <AnimatedCard className="classical-card p-6 text-center">
-              <div className="w-12 h-12 bg-gradient-to-br from-accent-green to-accent-blue rounded-2xl flex items-center justify-center mx-auto mb-4">
+              <div className="w-12 h-12 bg-ok rounded-2xl flex items-center justify-center mx-auto mb-4">
                 <PiTrendUp className="w-6 h-6 text-theme-primary" />
               </div>
               <h3 className="text-lg font-bold text-theme-primary mb-2">

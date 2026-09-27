@@ -108,7 +108,7 @@ function AchievementToastContainer({
   onHide,
 }: AchievementToastContainerProps) {
   return (
-    <div className="fixed top-4 right-4 z-[60] space-y-3 pointer-events-none">
+    <div className="fixed top-4 right-4 z-aviso space-y-3 pointer-events-none">
       {achievements.map((achievement) => (
         <AchievementToast
           key={achievement.toastId}
@@ -171,28 +171,28 @@ function AchievementToast({ achievement, onClose }: AchievementToastProps) {
   // Cores por raridade
   const rarityConfig = {
     COMMON: {
-      gradient: 'from-slate-400 to-slate-600',
+      gradient: 'bg-texto-fraco',
       icon: PiMedal,
       label: 'Comum',
-      border: 'border-slate-400/30',
+      border: 'border-linha-forte/30',
     },
     RARE: {
-      gradient: 'from-blue-400 to-blue-600',
+      gradient: 'bg-aviso',
       icon: PiStar,
       label: 'Raro',
-      border: 'border-blue-400/30',
+      border: 'border-aviso/30',
     },
     EPIC: {
-      gradient: 'from-purple-400 to-purple-600',
+      gradient: 'fill-ouro',
       icon: PiLightning,
       label: 'Épico',
-      border: 'border-purple-400/30',
+      border: 'border-ouro/30',
     },
     LEGENDARY: {
-      gradient: 'from-amber-400 to-amber-600',
+      gradient: 'bg-atencao',
       icon: PiShield,
       label: 'Lendário',
-      border: 'border-amber-400/30',
+      border: 'border-atencao/30',
     },
   };
 
@@ -207,7 +207,7 @@ function AchievementToast({ achievement, onClose }: AchievementToastProps) {
       }`}
     >
       <div
-        className={`bg-theme-elevated border-2 ${config?.border} rounded-2xl shadow-2xl p-5 min-w-[350px] max-w-[420px] backdrop-blur-sm bg-opacity-98 shadow-theme-glow relative overflow-hidden`}
+        className={`bg-theme-elevated border-2 ${config?.border} rounded-2xl shadow-2xl p-5 min-w-[350px] max-w-[420px] backdrop-blur-sm shadow-theme-glow relative overflow-hidden`}
       >
         {/* Header */}
         <Inline gap={4} className="mb-4 relative z-10">
@@ -233,7 +233,7 @@ function AchievementToast({ achievement, onClose }: AchievementToastProps) {
                   {[...Array(3)].map((_, i) => (
                     <PiStar
                       key={i}
-                      className="w-3 h-3 text-amber-400 animate-pulse"
+                      className="w-3 h-3 text-atencao animate-pulse"
                     />
                   ))}
                 </div>
@@ -246,7 +246,7 @@ function AchievementToast({ achievement, onClose }: AchievementToastProps) {
 
           <button
             onClick={handleClose}
-            className="w-7 h-7 rounded-full bg-theme-secondary hover:bg-theme-primary flex items-center justify-center transition-colors text-theme-tertiary hover:text-theme-primary"
+            className="w-7 h-7 rounded-full bg-theme-secondary hover:bg-fundo flex items-center justify-center transition-colors text-theme-tertiary hover:text-texto"
           >
             <PiX className="w-4 h-4" />
             <NomeAcao acao="fechar" />
@@ -349,10 +349,10 @@ export const useAchievementDemo = () => {
         rarity: 'COMMON' as const,
         unlocked: true,
         color: {
-          from: 'from-slate-400',
-          to: 'to-slate-600',
-          border: 'border-slate-400/30',
-          text: 'text-slate-600',
+          from: 'bg-texto-fraco',
+          to: 'bg-texto-fraco',
+          border: 'border-linha-forte/30',
+          text: 'text-texto-suave',
         },
       },
       RARE: {
@@ -365,10 +365,10 @@ export const useAchievementDemo = () => {
         rarity: 'RARE' as const,
         unlocked: true,
         color: {
-          from: 'from-blue-400',
-          to: 'to-blue-600',
-          border: 'border-blue-400/30',
-          text: 'text-blue-600',
+          from: 'bg-aviso',
+          to: 'bg-aviso',
+          border: 'border-aviso/30',
+          text: 'text-aviso',
         },
       },
       EPIC: {
@@ -381,10 +381,10 @@ export const useAchievementDemo = () => {
         rarity: 'EPIC' as const,
         unlocked: true,
         color: {
-          from: 'from-purple-400',
-          to: 'to-purple-600',
-          border: 'border-purple-400/30',
-          text: 'text-purple-600',
+          from: 'fill-ouro',
+          to: 'fill-ouro',
+          border: 'border-ouro/30',
+          text: 'text-ouro-texto',
         },
       },
       LEGENDARY: {
@@ -397,10 +397,10 @@ export const useAchievementDemo = () => {
         rarity: 'LEGENDARY' as const,
         unlocked: true,
         color: {
-          from: 'from-amber-400',
-          to: 'to-amber-600',
-          border: 'border-amber-400/30',
-          text: 'text-amber-600',
+          from: 'bg-atencao',
+          to: 'bg-atencao',
+          border: 'border-atencao/30',
+          text: 'text-atencao',
         },
       },
     };
@@ -419,28 +419,28 @@ export const useBackendAchievements = () => {
     // Converter dados do backend para formato do toast
     const rarityColors = {
       COMMON: {
-        from: 'from-slate-400',
-        to: 'to-slate-600',
-        border: 'border-slate-400/30',
-        text: 'text-slate-600',
+        from: 'bg-texto-fraco',
+        to: 'bg-texto-fraco',
+        border: 'border-linha-forte/30',
+        text: 'text-texto-suave',
       },
       RARE: {
-        from: 'from-blue-400',
-        to: 'to-blue-600',
-        border: 'border-blue-400/30',
-        text: 'text-blue-600',
+        from: 'bg-aviso',
+        to: 'bg-aviso',
+        border: 'border-aviso/30',
+        text: 'text-aviso',
       },
       EPIC: {
-        from: 'from-purple-400',
-        to: 'to-purple-600',
-        border: 'border-purple-400/30',
-        text: 'text-purple-600',
+        from: 'fill-ouro',
+        to: 'fill-ouro',
+        border: 'border-ouro/30',
+        text: 'text-ouro-texto',
       },
       LEGENDARY: {
-        from: 'from-amber-400',
-        to: 'to-amber-600',
-        border: 'border-amber-400/30',
-        text: 'text-amber-600',
+        from: 'bg-atencao',
+        to: 'bg-atencao',
+        border: 'border-atencao/30',
+        text: 'text-atencao',
       },
     };
 

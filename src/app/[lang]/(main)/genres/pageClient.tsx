@@ -125,12 +125,12 @@ export default function GenresClient({ genres }: GenresClientProps) {
   };
 
   return (
-    <div className="bg-gradient-primary">
+    <div className="">
       {/* Background Pattern */}
       <div className="absolute inset-0 pointer-events-none opacity-5">
-        <div className="absolute top-20 left-20 w-64 h-64 bg-brand-gradient rounded-full blur-3xl"></div>
-        <div className="absolute bottom-40 right-32 w-48 h-48 bg-accent-purple/30 rounded-full blur-2xl"></div>
-        <div className="absolute top-1/2 left-1/4 w-32 h-32 bg-accent-blue/20 rounded-full blur-xl"></div>
+        <div className="absolute top-20 left-20 w-64 h-64 rounded-full blur-3xl"></div>
+        <div className="absolute bottom-40 right-32 w-48 h-48 rounded-full blur-2xl"></div>
+        <div className="absolute top-1/2 left-1/4 w-32 h-32 rounded-full blur-xl"></div>
       </div>
 
       <Stack gap={8} className="section-wrap relative z-10">
@@ -140,7 +140,7 @@ export default function GenresClient({ genres }: GenresClientProps) {
 
           <div className="relative z-10">
             <div className="flex items-center justify-center mb-6">
-              <div className="w-16 h-16 bg-gradient-to-br from-accent-purple to-brand-secondary rounded-2xl flex items-center justify-center shadow-theme-glow">
+              <div className="w-16 h-16 fill-ouro rounded-2xl flex items-center justify-center shadow-theme-glow">
                 <PiTag className="w-8 h-8 text-theme-primary" />
               </div>
             </div>
@@ -205,7 +205,7 @@ export default function GenresClient({ genres }: GenresClientProps) {
             {searchTerm && (
               <button
                 onClick={clearSearch}
-                className="absolute right-4 top-1/2 transform -translate-y-1/2 text-theme-tertiary hover:text-theme-primary transition-colors"
+                className="absolute right-4 top-1/2 transform -translate-y-1/2 text-theme-tertiary hover:text-texto transition-colors"
               >
                 <PiX className="w-5 h-5" />
                 <NomeAcao acao="fechar" />
@@ -255,9 +255,9 @@ export default function GenresClient({ genres }: GenresClientProps) {
                 {/* Section Header - Clicável para expandir/colapsar */}
                 <button
                   onClick={() => toggleSection(letter)}
-                  className="flex items-center mb-4 w-full text-left hover:bg-interactive-hover rounded-lg p-2 -m-2 transition-all duration-300 group"
+                  className="flex items-center mb-4 w-full text-left hover:bg-ouro/10 rounded-lg p-2 -m-2 transition-all duration-300 group"
                 >
-                  <div className="w-12 h-12 bg-brand-gradient rounded-xl flex items-center justify-center mr-4">
+                  <div className="w-12 h-12 fill-ouro rounded-xl flex items-center justify-center mr-4">
                     <span className="text-xl font-bold text-theme-primary">
                       {letter}
                     </span>
@@ -298,18 +298,18 @@ export default function GenresClient({ genres }: GenresClientProps) {
                             onClick={() =>
                               handleGenreSelect(genre.id, genre.name)
                             }
-                            className="classical-card p-4 text-left hover:shadow-theme-glow hover:scale-105 transition-all duration-300 group animate-fade-in-up"
+                            className="classical-card p-4 text-left hover:shadow-[var(--sombra-2)] hover:scale-105 transition-all duration-300 group animate-fade-in-up"
                             style={{
                               animationDelay: `${index * 0.05}s`,
                               animationFillMode: 'backwards',
                             }}
                           >
                             <div className="flex cursor-pointer items-center">
-                              <div className="w-10 h-10 bg-accent-purple/20 rounded-lg flex items-center justify-center mr-3 group-hover:bg-accent-purple/30 transition-colors">
-                                <PiMusicNotes className="w-5 h-5 text-accent-purple" />
+                              <div className="w-10 h-10 bg-ouro/20 rounded-lg flex items-center justify-center mr-3 group-hover:bg-ouro/30 transition-colors">
+                                <PiMusicNotes className="w-5 h-5 text-ouro-texto" />
                               </div>
                               <div className="flex-1 min-w-0">
-                                <h3 className="font-medium capitalize text-theme-primary group-hover:text-brand-primary transition-colors truncate">
+                                <h3 className="font-medium capitalize text-theme-primary group-hover:text-ouro-texto transition-colors truncate">
                                   {genre.name}
                                 </h3>
                               </div>
@@ -340,15 +340,15 @@ export default function GenresClient({ genres }: GenresClientProps) {
                             onClick={() =>
                               handleGenreSelect(genre.id, genre.name)
                             }
-                            className="w-full p-4 text-left hover:bg-interactive-hover transition-all duration-300 rounded-lg group animate-fade-in-up border border-transparent hover:border-theme-primary"
+                            className="w-full p-4 text-left hover:bg-ouro/10 transition-all duration-300 rounded-lg group animate-fade-in-up border border-transparent hover:border-linha"
                             style={{
                               animationDelay: `${index * 0.02}s`,
                               animationFillMode: 'backwards',
                             }}
                           >
                             <div className="flex items-center">
-                              <PiMusicNotes className="w-5 h-5 text-accent-purple mr-4" />
-                              <span className="font-medium capitalize text-theme-primary group-hover:text-brand-primary transition-colors">
+                              <PiMusicNotes className="w-5 h-5 text-ouro-texto mr-4" />
+                              <span className="font-medium capitalize text-theme-primary group-hover:text-ouro-texto transition-colors">
                                 {genre.name}
                               </span>
                               <div className="ml-auto opacity-0 group-hover:opacity-100 transition-opacity">
@@ -379,7 +379,7 @@ export default function GenresClient({ genres }: GenresClientProps) {
         ) : (
           // Empty State
           <div className="classical-card p-12 text-center">
-            <div className="w-16 h-16 bg-theme-tertiary/20 rounded-full flex items-center justify-center mx-auto mb-6">
+            <div className="w-16 h-16 bg-sup-2/20 rounded-full flex items-center justify-center mx-auto mb-6">
               <PiTag className="w-8 h-8 text-theme-tertiary" />
             </div>
             <h3 className="text-xl font-bold text-theme-primary mb-2 classical-title">

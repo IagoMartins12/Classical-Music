@@ -180,9 +180,9 @@ export default function BackupManagementClient() {
       {impedimento && (
         <Card
           densidade="compacta"
-          className="flex gap-3 border-l-4 border-accent-amber"
+          className="border flex gap-3 border-atencao/40 bg-atencao/10"
         >
-          <PiWarning className="w-5 h-5 text-accent-amber shrink-0 mt-0.5" />
+          <PiWarning className="w-5 h-5 text-atencao shrink-0 mt-0.5" />
           <div>
             <p className="text-theme-primary font-medium">
               O backup não pode rodar ainda
@@ -272,7 +272,7 @@ export default function BackupManagementClient() {
           </div>
         </div>
 
-        <div className="max-h-[28rem] overflow-y-auto divide-y divide-theme-secondary">
+        <div className="max-h-[28rem] overflow-y-auto divide-y divide-linha">
           {colecoes.map((colecao) => {
             const marcada = selecionadas.has(colecao.name);
             const limite = selecionadas.get(colecao.name) ?? null;
@@ -335,7 +335,7 @@ export default function BackupManagementClient() {
               Nenhum arquivo ainda.
             </Text>
           ) : (
-            <ul className="divide-y divide-theme-secondary">
+            <ul className="divide-y divide-linha">
               {backup.data?.arquivos.map((arquivo) => (
                 <li
                   key={arquivo.key}
@@ -380,15 +380,15 @@ export default function BackupManagementClient() {
               Nenhuma execução registrada.
             </Text>
           ) : (
-            <ul className="divide-y divide-theme-secondary">
+            <ul className="divide-y divide-linha">
               {backup.data?.execucoes.map((execucao) => (
                 <li key={execucao.id} className="flex gap-3 py-2.5">
                   {execucao.status === 'ok' ? (
-                    <PiCheckCircle className="w-4 h-4 text-accent-green shrink-0 mt-0.5" />
+                    <PiCheckCircle className="w-4 h-4 text-ok shrink-0 mt-0.5" />
                   ) : execucao.status === 'failed' ? (
-                    <PiX className="w-4 h-4 text-accent-red shrink-0 mt-0.5" />
+                    <PiX className="w-4 h-4 text-erro shrink-0 mt-0.5" />
                   ) : (
-                    <PiClock className="w-4 h-4 text-accent-amber shrink-0 mt-0.5" />
+                    <PiClock className="w-4 h-4 text-atencao shrink-0 mt-0.5" />
                   )}
 
                   <div className="min-w-0">
@@ -397,7 +397,7 @@ export default function BackupManagementClient() {
                       {execucao.verifiedAt && ' · verificado'}
                     </Text>
                     {execucao.error && (
-                      <p className="text-accent-red text-xs mt-0.5">
+                      <p className="text-erro text-xs mt-0.5">
                         {execucao.error}
                       </p>
                     )}

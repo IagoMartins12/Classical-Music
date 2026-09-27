@@ -199,7 +199,7 @@ export default function SendTestCampaignModal({
       <Stack gap={6}>
         {/* Header */}
         <div className="text-center">
-          <div className="w-16 h-16 bg-gradient-to-br from-accent-amber to-accent-red rounded-full flex items-center justify-center mx-auto mb-4 shadow-theme-glow">
+          <div className="w-16 h-16 bg-atencao rounded-full flex items-center justify-center mx-auto mb-4 shadow-theme-glow">
             <PiPaperPlaneRight className="w-8 h-8 text-white" />
           </div>
           <h2 className="text-2xl font-bold text-theme-primary classical-title mb-2">
@@ -238,8 +238,8 @@ export default function SendTestCampaignModal({
               <span
                 className={`px-2 py-1 rounded-full text-xs ${
                   campaign.status === 'DRAFT'
-                    ? 'bg-accent-amber/20 text-accent-amber'
-                    : 'bg-accent-blue/20 text-accent-blue'
+                    ? 'bg-atencao/10 text-atencao'
+                    : 'bg-aviso/10 text-aviso'
                 }`}
               >
                 {campaign.status === 'DRAFT' ? 'Rascunho' : campaign.status}
@@ -268,8 +268,8 @@ export default function SendTestCampaignModal({
                 key={list.id}
                 className={`flex items-center justify-between p-3 rounded-lg border-2 cursor-pointer transition-colors ${
                   formData.selectedListIds.includes(list.id)
-                    ? 'border-brand-primary bg-brand-primary/10'
-                    : 'border-theme-secondary hover:border-theme-primary'
+                    ? 'border-ouro bg-ouro/10'
+                    : 'border-theme-secondary hover:border-linha'
                 }`}
               >
                 <Inline gap={3}>
@@ -312,7 +312,7 @@ export default function SendTestCampaignModal({
           </div>
 
           {selectedLists.length > 0 && (
-            <div className="mt-3 p-3 bg-brand-primary/10 border border-brand-primary rounded-lg">
+            <div className="mt-3 p-3 bg-ouro/10 border border-ouro rounded-lg">
               <Text papel="rotulo" tom="ouro" as="div">
                 <strong>Selecionado:</strong> {selectedLists.length} lista(s) •{' '}
                 {totalEmails} email(s) únicos
@@ -384,8 +384,8 @@ export default function SendTestCampaignModal({
             <label
               className={`cursor-pointer p-4 rounded-lg border-2 transition-colors ${
                 formData.sendMode === 'bulk'
-                  ? 'border-brand-primary bg-brand-primary/10'
-                  : 'border-theme-secondary hover:border-theme-primary'
+                  ? 'border-ouro bg-ouro/10'
+                  : 'border-theme-secondary hover:border-linha'
               }`}
             >
               <input
@@ -413,8 +413,8 @@ export default function SendTestCampaignModal({
             <label
               className={`cursor-pointer p-4 rounded-lg border-2 transition-colors ${
                 formData.sendMode === 'individual'
-                  ? 'border-brand-primary bg-brand-primary/10'
-                  : 'border-theme-secondary hover:border-theme-primary'
+                  ? 'border-ouro bg-ouro/10'
+                  : 'border-theme-secondary hover:border-linha'
               }`}
             >
               <input
@@ -463,7 +463,7 @@ export default function SendTestCampaignModal({
 
   const renderSendingStep = () => (
     <div className="text-center py-12">
-      <div className="w-20 h-20 bg-gradient-to-br from-accent-amber to-accent-red rounded-full flex items-center justify-center mx-auto mb-6 shadow-theme-glow animate-pulse">
+      <div className="w-20 h-20 bg-atencao rounded-full flex items-center justify-center mx-auto mb-6 shadow-theme-glow animate-pulse">
         <PiPaperPlaneRight className="w-10 h-10 text-white" />
       </div>
       <h2 className="text-2xl font-bold text-theme-primary classical-title mb-4">
@@ -473,7 +473,7 @@ export default function SendTestCampaignModal({
         Processando envio da campanha &quot;{campaign.name}&quot;
       </p>
       <div className="w-32 h-1 bg-theme-secondary rounded-full mx-auto overflow-hidden">
-        <div className="h-full bg-gradient-to-r from-accent-amber to-accent-red animate-pulse"></div>
+        <div className="h-full bg-atencao animate-pulse"></div>
       </div>
       <Text papel="rotulo" tom="fraco" as="p" className="mt-4">
         Modo: {formData.sendMode === 'bulk' ? 'Lote' : 'Individual'}
@@ -489,9 +489,7 @@ export default function SendTestCampaignModal({
       <div className="text-center">
         <div
           className={`w-20 h-20 bg-gradient-to-br ${
-            isSuccess
-              ? 'from-accent-green to-accent-blue'
-              : 'from-accent-amber to-accent-red'
+            isSuccess ? 'bg-ok' : 'bg-atencao'
           } rounded-full flex items-center justify-center mx-auto mb-6 shadow-theme-glow`}
         >
           {isSuccess ? (
@@ -509,23 +507,23 @@ export default function SendTestCampaignModal({
 
         {/* Results Grid */}
         <div className="grid grid-cols-3 gap-4 mb-6">
-          <div className="bg-accent-green/10 border border-accent-green rounded-lg p-4">
-            <div className="text-2xl font-bold text-accent-green">
+          <div className="bg-ok/10 border border-ok rounded-lg p-4">
+            <div className="text-2xl font-bold text-ok">
               {sendResult?.results.successful}
             </div>
-            <div className="text-sm text-accent-green">Enviados</div>
+            <div className="text-sm text-ok">Enviados</div>
           </div>
-          <div className="bg-accent-red/10 border border-accent-red rounded-lg p-4">
-            <div className="text-2xl font-bold text-accent-red">
+          <div className="bg-erro/10 border border-erro rounded-lg p-4">
+            <div className="text-2xl font-bold text-erro">
               {sendResult?.results.failed}
             </div>
-            <div className="text-sm text-accent-red">Falhas</div>
+            <div className="text-sm text-erro">Falhas</div>
           </div>
-          <div className="bg-accent-blue/10 border border-accent-blue rounded-lg p-4">
-            <div className="text-2xl font-bold text-accent-blue">
+          <div className="bg-aviso/10 border border-aviso rounded-lg p-4">
+            <div className="text-2xl font-bold text-aviso">
               {sendResult?.results.successRate}%
             </div>
-            <div className="text-sm text-accent-blue">Taxa</div>
+            <div className="text-sm text-aviso">Taxa</div>
           </div>
         </div>
 
@@ -569,19 +567,17 @@ export default function SendTestCampaignModal({
         {sendResult?.results.errors && sendResult.results.errors.length > 0 && (
           <Stack
             gap={3}
-            className="bg-accent-red/10 border border-accent-red rounded-lg p-4 mb-6 text-left"
+            className="bg-erro/10 border border-erro rounded-lg p-4 mb-6 text-left"
           >
-            <h4 className="font-medium text-accent-red">Erros Encontrados</h4>
+            <h4 className="font-medium text-erro">Erros Encontrados</h4>
             <div className="space-y-1 text-sm max-h-32 overflow-y-auto">
               {sendResult.results.errors.map((error: string, index: number) => (
-                <div key={index} className="text-accent-red">
+                <div key={index} className="text-erro">
                   {error}
                 </div>
               ))}
               {sendResult.results.hasMoreErrors && (
-                <div className="text-accent-red font-medium">
-                  ... e mais erros
-                </div>
+                <div className="text-erro font-medium">... e mais erros</div>
               )}
             </div>
           </Stack>

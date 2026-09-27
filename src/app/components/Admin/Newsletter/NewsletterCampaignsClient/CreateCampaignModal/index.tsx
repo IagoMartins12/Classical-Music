@@ -238,9 +238,9 @@ export default function CreateCampaignModal({
                   key={step.id}
                   className={`flex items-center space-x-2 px-3 py-2 rounded-lg cursor-pointer transition-colors whitespace-nowrap ${
                     currentStep === step.id
-                      ? 'bg-brand-primary text-white'
+                      ? 'bg-ouro text-sobre-ouro'
                       : currentStep > step.id
-                        ? 'bg-green-700 text-white'
+                        ? 'bg-ok text-white'
                         : 'bg-theme-secondary text-theme-tertiary'
                   }`}
                   onClick={() => setCurrentStep(step.id)}
@@ -344,7 +344,7 @@ export default function CreateCampaignModal({
                       }
                       className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${
                         form.useCustomTemplate
-                          ? 'bg-brand-primary'
+                          ? 'bg-ouro'
                           : 'bg-theme-secondary'
                       }`}
                     >
@@ -412,7 +412,7 @@ export default function CreateCampaignModal({
                                   {selectedTemplate.name}
                                 </h5>
                                 {selectedTemplate.isDefault && (
-                                  <span className="px-2 py-1 bg-accent-amber/20 text-accent-amber rounded-full text-xs flex items-center">
+                                  <span className="px-2 py-1 bg-atencao/10 text-atencao rounded-full text-xs flex items-center">
                                     <PiStar className="w-3 h-3 mr-1" />
                                     Padrão
                                   </span>
@@ -562,8 +562,8 @@ export default function CreateCampaignModal({
                 </div>
 
                 {selectedTemplate && (
-                  <div className="p-4 bg-accent-blue/10 border border-accent-blue/20 rounded-lg">
-                    <p className="text-sm text-accent-blue">
+                  <div className="p-4 bg-aviso/10 border border-aviso/20 rounded-lg">
+                    <p className="text-sm text-aviso">
                       <strong>💡 Configurações do Template:</strong> As
                       configurações acima sobrescreverão as configurações padrão
                       do template selecionado.
@@ -681,12 +681,12 @@ export default function CreateCampaignModal({
 
                 <Stack
                   gap={2}
-                  className="p-4 bg-accent-blue/10 border border-accent-blue/20 rounded-lg"
+                  className="p-4 bg-aviso/10 border border-aviso/20 rounded-lg"
                 >
-                  <h4 className="font-medium text-accent-blue">
+                  <h4 className="font-medium text-aviso">
                     📊 Estimativa de Alcance
                   </h4>
-                  <p className="text-sm text-accent-blue/80">
+                  <p className="text-sm text-aviso/80">
                     Com as configurações atuais, esta campanha será enviada para
                     aproximadamente <strong>todos os subscribers ativos</strong>
                     .
@@ -764,7 +764,7 @@ export default function CreateCampaignModal({
               </h3>
               <button
                 onClick={() => setShowPreview(false)}
-                className="text-theme-tertiary hover:text-theme-primary transition-colors"
+                className="text-theme-tertiary hover:text-texto transition-colors"
               >
                 <PiX className="w-6 h-6" />
                 <NomeAcao acao="fechar" />

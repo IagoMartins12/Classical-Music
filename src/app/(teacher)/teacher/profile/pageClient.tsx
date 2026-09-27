@@ -440,11 +440,11 @@ export default function TeacherProfilePageClient({
   const getStatusDisplay = (status: TeacherStatus) => {
     switch (status) {
       case TeacherStatus.ACTIVE:
-        return { label: t('status_active'), color: 'accent-green' };
+        return { label: t('status_active'), color: 'ok' };
       case TeacherStatus.PENDING:
-        return { label: t('status_pending'), color: 'accent-yellow' };
+        return { label: t('status_pending'), color: 'atencao' };
       case TeacherStatus.INACTIVE:
-        return { label: t('status_inactive'), color: 'accent-red' };
+        return { label: t('status_inactive'), color: 'erro' };
       default:
         return { label: status || 'Desconhecido', color: 'theme-tertiary' };
     }
@@ -456,7 +456,7 @@ export default function TeacherProfilePageClient({
       <PageContainer showBackground={true}>
         <div className="flex items-center justify-center min-h-screen">
           <Card densidade="larga" className="text-center max-w-md">
-            <div className="w-16 h-16 bg-gradient-to-br from-accent-red to-accent-purple rounded-3xl flex items-center justify-center mx-auto mb-6">
+            <div className="w-16 h-16 bg-erro rounded-3xl flex items-center justify-center mx-auto mb-6">
               <PiUser className="w-8 h-8 text-theme-primary" />
             </div>
             <h1 className="text-xl font-bold text-theme-primary classical-title mb-4">
@@ -487,7 +487,7 @@ export default function TeacherProfilePageClient({
         <AnimatedItem direction="up" springType="gentle">
           <div className="text-center mb-8 py-8">
             <div className="flex items-center justify-center mb-6">
-              <div className="w-16 h-16 bg-gradient-to-br from-brand-primary to-brand-secondary rounded-3xl flex items-center justify-center shadow-theme-glow">
+              <div className="w-16 h-16 fill-ouro rounded-3xl flex items-center justify-center shadow-theme-glow">
                 <PiUser className="w-8 h-8 text-theme-primary" />
               </div>
             </div>
@@ -505,15 +505,13 @@ export default function TeacherProfilePageClient({
           <AnimatedItem direction="up" springType="gentle">
             <AnimatedCard
               hover="lift"
-              className="classical-card p-4 mb-6 border-l-4 border-accent-green"
+              className="border classical-card p-4 mb-6 border-ok/40"
             >
               <Inline gap={3}>
-                <div className="w-8 h-8 bg-accent-green/10 rounded-full flex items-center justify-center">
-                  <PiCheck className="w-4 h-4 text-accent-green" />
+                <div className="w-8 h-8 bg-ok/10 rounded-full flex items-center justify-center">
+                  <PiCheck className="w-4 h-4 text-ok" />
                 </div>
-                <div className="text-accent-green font-medium">
-                  {successMessage}
-                </div>
+                <div className="text-ok font-medium">{successMessage}</div>
               </Inline>
             </AnimatedCard>
           </AnimatedItem>
@@ -524,18 +522,18 @@ export default function TeacherProfilePageClient({
           <AnimatedItem direction="up" springType="gentle">
             <AnimatedCard
               hover="lift"
-              className="classical-card p-4 mb-6 border-l-4 border-accent-red"
+              className="border classical-card p-4 mb-6 border-erro/40"
             >
               <div className="flex items-center justify-between">
                 <Inline gap={3}>
-                  <div className="w-8 h-8 bg-accent-red/10 rounded-full flex items-center justify-center">
-                    <PiX className="w-4 h-4 text-accent-red" />
+                  <div className="w-8 h-8 bg-erro/10 rounded-full flex items-center justify-center">
+                    <PiX className="w-4 h-4 text-erro" />
                   </div>
-                  <div className="text-accent-red font-medium">{error}</div>
+                  <div className="text-erro font-medium">{error}</div>
                 </Inline>
                 <button
                   onClick={() => setError('')}
-                  className="text-accent-red hover:text-accent-red/70 transition-colors"
+                  className="text-erro hover:text-erro/70 transition-colors"
                 >
                   <PiX className="w-4 h-4" />
                   <NomeAcao acao="fechar" />
@@ -552,7 +550,7 @@ export default function TeacherProfilePageClient({
             <div className="p-6">
               <div className="flex items-center justify-between mb-6">
                 <Inline gap={3}>
-                  <div className="w-10 h-10 bg-gradient-to-br from-brand-primary to-brand-secondary rounded-lg flex items-center justify-center">
+                  <div className="w-10 h-10 fill-ouro rounded-lg flex items-center justify-center">
                     <PiUser className="w-5 h-5 text-theme-primary" />
                   </div>
                   <div>
@@ -633,17 +631,17 @@ export default function TeacherProfilePageClient({
                     {phoneError &&
                       phoneValidation.showError &&
                       phoneValidation.error && (
-                        <div className="p-4 bg-red-50 border border-red-200 rounded-lg flex items-start space-x-3 mt-4">
-                          <PiWarningCircle className="w-5 h-5 text-red-600 flex-shrink-0 mt-0.5" />
+                        <div className="p-4 bg-erro/10 border border-erro/30 rounded-lg flex items-start space-x-3 mt-4">
+                          <PiWarningCircle className="w-5 h-5 text-erro flex-shrink-0 mt-0.5" />
                           <div>
-                            <h4 className="text-sm font-medium text-red-800">
+                            <h4 className="text-sm font-medium text-erro">
                               {t('phone_invalid')}
                             </h4>
-                            <p className="text-sm text-red-700 mt-1">
+                            <p className="text-sm text-erro mt-1">
                               {phoneValidation.error}
                             </p>
                             {phoneValidation.progressMessage && (
-                              <p className="text-xs text-red-600 mt-1">
+                              <p className="text-xs text-erro mt-1">
                                 {phoneValidation.progressMessage}
                               </p>
                             )}
@@ -795,7 +793,7 @@ export default function TeacherProfilePageClient({
                           </div>
                         )}
                         {data?.isVerified && (
-                          <div className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-accent-green/10 text-accent-green">
+                          <div className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-ok/10 text-ok">
                             <PiCheck className="w-3 h-3 mr-1" />
                             {t('verified')}
                           </div>
@@ -813,7 +811,7 @@ export default function TeacherProfilePageClient({
             <div className="p-6">
               <div className="flex items-center justify-between mb-6">
                 <Inline gap={3}>
-                  <div className="w-10 h-10 bg-gradient-to-br from-accent-purple to-accent-blue rounded-lg flex items-center justify-center">
+                  <div className="w-10 h-10 fill-ouro rounded-lg flex items-center justify-center">
                     <PiMedal className="w-5 h-5 text-theme-primary" />
                   </div>
                   <div>
@@ -1022,7 +1020,7 @@ export default function TeacherProfilePageClient({
                           href={data.website}
                           target="_blank"
                           rel="noopener noreferrer"
-                          className="text-brand-primary hover:text-brand-secondary transition-colors"
+                          className="text-brand-primary hover:text-ouro-texto transition-colors"
                         >
                           <PiGlobe className="w-4 h-4" />
                           <span>{data.website}</span>
@@ -1063,7 +1061,7 @@ export default function TeacherProfilePageClient({
             <div className="p-6">
               <div className="flex items-center justify-between mb-6">
                 <Inline gap={3}>
-                  <div className="w-10 h-10 bg-gradient-to-br from-accent-green to-accent-blue rounded-lg flex items-center justify-center">
+                  <div className="w-10 h-10 bg-ok rounded-lg flex items-center justify-center">
                     <PiMusicNotes className="w-5 h-5 text-theme-primary" />
                   </div>
                   <div>
@@ -1106,14 +1104,14 @@ export default function TeacherProfilePageClient({
                           as="span"
                           gap={2}
                           key={instrument}
-                          className="px-3 py-1 bg-accent-blue/10 border border-accent-blue/30 text-accent-blue rounded-full text-sm"
+                          className="px-3 py-1 bg-aviso/10 border border-aviso/30 text-aviso rounded-full text-sm"
                         >
                           <span>{instrument}</span>
                           <button
                             onClick={() =>
                               removeFromArray('instruments', instrument)
                             }
-                            className="text-accent-blue/70 hover:text-accent-red transition-colors"
+                            className="text-aviso/70 hover:text-erro transition-colors"
                             disabled={saving}
                           >
                             <PiX className="w-3 h-3" />
@@ -1136,7 +1134,7 @@ export default function TeacherProfilePageClient({
                             )
                           }
                           disabled={saving}
-                          className="px-3 py-1 bg-theme-elevated hover:bg-interactive-hover border border-theme-secondary hover:border-brand-primary text-theme-secondary hover:text-brand-primary rounded-full text-sm transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+                          className="px-3 py-1 bg-theme-elevated hover:bg-ouro/10 border border-theme-secondary hover:border-ouro text-theme-secondary hover:text-ouro-texto rounded-full text-sm transition-all disabled:opacity-50 disabled:cursor-not-allowed"
                         >
                           + {instrument}
                         </button>
@@ -1154,14 +1152,14 @@ export default function TeacherProfilePageClient({
                           as="span"
                           gap={2}
                           key={specialty}
-                          className="px-3 py-1 bg-accent-purple/10 border border-accent-purple/30 text-accent-purple rounded-full text-sm"
+                          className="px-3 py-1 bg-ouro/10 border border-ouro/30 text-ouro-texto rounded-full text-sm"
                         >
                           <span>{specialty}</span>
                           <button
                             onClick={() =>
                               removeFromArray('specialties', specialty)
                             }
-                            className="text-accent-purple/70 hover:text-accent-red transition-colors"
+                            className="text-ouro-texto/70 hover:text-erro transition-colors"
                             disabled={saving}
                           >
                             <PiX className="w-3 h-3" />
@@ -1184,7 +1182,7 @@ export default function TeacherProfilePageClient({
                             )
                           }
                           disabled={saving}
-                          className="px-3 py-1 bg-theme-elevated hover:bg-interactive-hover border border-theme-secondary hover:border-brand-primary text-theme-secondary hover:text-brand-primary rounded-full text-sm transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+                          className="px-3 py-1 bg-theme-elevated hover:bg-ouro/10 border border-theme-secondary hover:border-ouro text-theme-secondary hover:text-ouro-texto rounded-full text-sm transition-all disabled:opacity-50 disabled:cursor-not-allowed"
                         >
                           + {specialty}
                         </button>
@@ -1229,7 +1227,7 @@ export default function TeacherProfilePageClient({
                                 }
                               }}
                               disabled={saving}
-                              className="w-4 h-4 text-brand-primary border-theme-secondary rounded focus:ring-brand-primary disabled:opacity-50"
+                              className="w-4 h-4 text-brand-primary border-theme-secondary rounded focus:ring-ouro disabled:opacity-50"
                             />
                             <Text papel="rotulo" tom="forte">
                               {ageGroup.label}
@@ -1266,7 +1264,7 @@ export default function TeacherProfilePageClient({
                                 }
                               }}
                               disabled={saving}
-                              className="w-4 h-4 text-brand-primary border-theme-secondary rounded focus:ring-brand-primary disabled:opacity-50"
+                              className="w-4 h-4 text-brand-primary border-theme-secondary rounded focus:ring-ouro disabled:opacity-50"
                             />
                             <Text papel="rotulo" tom="forte">
                               {skillLevel.label}
@@ -1381,7 +1379,7 @@ export default function TeacherProfilePageClient({
                             {data.instruments.map((instrument) => (
                               <span
                                 key={instrument}
-                                className="px-3 py-1 bg-accent-blue/10 border border-accent-blue/30 text-accent-blue rounded-full text-sm"
+                                className="px-3 py-1 bg-aviso/10 border border-aviso/30 text-aviso rounded-full text-sm"
                               >
                                 {instrument}
                               </span>
@@ -1405,7 +1403,7 @@ export default function TeacherProfilePageClient({
                             {data.specialties.map((specialty) => (
                               <span
                                 key={specialty}
-                                className="px-3 py-1 bg-accent-purple/10 border border-accent-purple/30 text-accent-purple rounded-full text-sm"
+                                className="px-3 py-1 bg-ouro/10 border border-ouro/30 text-ouro-texto rounded-full text-sm"
                               >
                                 {specialty}
                               </span>
@@ -1442,7 +1440,7 @@ export default function TeacherProfilePageClient({
                             {data.ageGroups.map((ageGroup) => (
                               <span
                                 key={ageGroup}
-                                className="px-3 py-1 bg-accent-green/10 border border-accent-green/30 text-accent-green rounded-full text-sm"
+                                className="px-3 py-1 bg-ok/10 border border-ok/30 text-ok rounded-full text-sm"
                               >
                                 {ageGroup}
                               </span>
@@ -1466,7 +1464,7 @@ export default function TeacherProfilePageClient({
                             {data.skillLevels.map((skillLevel) => (
                               <span
                                 key={skillLevel}
-                                className="px-3 py-1 bg-accent-orange/10 border border-accent-orange/30 text-accent-orange rounded-full text-sm"
+                                className="px-3 py-1 bg-atencao/10 border border-atencao/30 text-atencao rounded-full text-sm"
                               >
                                 {skillLevel}
                               </span>
@@ -1557,7 +1555,7 @@ export default function TeacherProfilePageClient({
             <div className="p-6">
               <div className="flex items-center justify-between mb-6">
                 <Inline gap={3}>
-                  <div className="w-10 h-10 bg-gradient-to-br from-accent-yellow to-accent-orange rounded-lg flex items-center justify-center">
+                  <div className="w-10 h-10 bg-atencao rounded-lg flex items-center justify-center">
                     <PiGlobe className="w-5 h-5 text-theme-primary" />
                   </div>
                   <div>
@@ -1590,17 +1588,17 @@ export default function TeacherProfilePageClient({
 
               {editingSection === 'public' ? (
                 <Stack gap={6}>
-                  <div className="flex items-center justify-between p-4 bg-gradient-to-r from-theme-elevated to-interactive-hover rounded-lg bg-theme-elevated border-theme-primary/20">
+                  <div className="flex items-center justify-between p-4 bg-sup-elevada rounded-lg bg-theme-elevated border-linha/20">
                     <Inline gap={3}>
                       <div
                         className={`w-10 h-10 rounded-full flex items-center justify-center ${
                           publicForm.isPublicProfile
-                            ? 'bg-accent-green/20'
+                            ? 'bg-ok/20'
                             : 'bg-theme-secondary'
                         }`}
                       >
                         {publicForm.isPublicProfile ? (
-                          <PiEye className="w-5 h-5 text-accent-green" />
+                          <PiEye className="w-5 h-5 text-ok" />
                         ) : (
                           <PiEyeSlash className="w-5 h-5 text-theme-tertiary" />
                         )}
@@ -1689,17 +1687,17 @@ export default function TeacherProfilePageClient({
                 </Stack>
               ) : (
                 <Stack>
-                  <div className="flex items-center justify-between p-4 bg-gradient-to-r from-theme-elevated to-interactive-hover rounded-lg bg-theme-elevated border-theme-primary/20">
+                  <div className="flex items-center justify-between p-4 bg-sup-elevada rounded-lg bg-theme-elevated border-linha/20">
                     <Inline gap={3}>
                       <div
                         className={`w-10 h-10 rounded-full flex items-center justify-center ${
                           data?.isPublicProfile
-                            ? 'bg-accent-green/20'
+                            ? 'bg-ok/20'
                             : 'bg-theme-secondary'
                         }`}
                       >
                         {data?.isPublicProfile ? (
-                          <PiEye className="w-5 h-5 text-accent-green" />
+                          <PiEye className="w-5 h-5 text-ok" />
                         ) : (
                           <PiEyeSlash className="w-5 h-5 text-theme-tertiary" />
                         )}
@@ -1718,7 +1716,7 @@ export default function TeacherProfilePageClient({
                     <div
                       className={`px-3 py-1 rounded-full text-sm font-medium ${
                         data?.isPublicProfile
-                          ? 'bg-accent-green/10 text-accent-green'
+                          ? 'bg-ok/10 text-ok'
                           : 'bg-theme-secondary text-theme-tertiary'
                       }`}
                     >
@@ -1739,7 +1737,7 @@ export default function TeacherProfilePageClient({
                         </div>
                       )}
 
-                      <div className="bg-gradient-to-r from-brand-primary/5 to-brand-secondary/5 rounded-lg bg-theme-elevated border-brand-primary/20 p-4">
+                      <div className="bg-ouro/5 rounded-lg bg-theme-elevated border-ouro/20 p-4">
                         <Inline gap={3} className="mb-2">
                           <PiGlobe className="w-5 h-5 text-brand-primary" />
                           <div className="font-medium text-theme-primary">
@@ -1758,7 +1756,7 @@ export default function TeacherProfilePageClient({
                           href={`/teachers/${teacherProfile.id}`}
                           target="_blank"
                           rel="noopener noreferrer"
-                          className="text-brand-primary hover:text-brand-secondary text-sm font-medium transition-colors"
+                          className="text-brand-primary hover:text-ouro-texto text-sm font-medium transition-colors"
                         >
                           {t('view_public_profile')}
                         </a>

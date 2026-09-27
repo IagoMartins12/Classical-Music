@@ -138,7 +138,7 @@ const ForgotPasswordModal: React.FC<ForgotPasswordModalProps> = ({
     <>
       <div className="text-center mb-8">
         <div className="flex justify-center mb-4">
-          <div className="w-16 h-16 bg-gradient-to-br from-accent-amber to-accent-red rounded-full flex items-center justify-center shadow-theme-glow">
+          <div className="w-16 h-16 bg-atencao rounded-full flex items-center justify-center shadow-theme-glow">
             <PiEnvelopeSimple className="w-8 h-8 text-white" />
           </div>
         </div>
@@ -152,7 +152,7 @@ const ForgotPasswordModal: React.FC<ForgotPasswordModalProps> = ({
 
       <form onSubmit={handleSubmit} className="space-y-6">
         {state.error && (
-          <div className="p-3 rounded-lg bg-accent-red bg-opacity-10 border border-accent-red text-accent-red text-sm">
+          <div className="p-3 rounded-lg bg-erro/10 border border-erro text-erro text-sm">
             <div className="flex items-center">
               <PiWarningCircle className="w-4 h-4 mr-2 flex-shrink-0" />
               <span>{state.error}</span>
@@ -217,7 +217,7 @@ const ForgotPasswordModal: React.FC<ForgotPasswordModalProps> = ({
     <>
       <div className="text-center mb-8">
         <div className="flex justify-center mb-4">
-          <div className="w-16 h-16 bg-gradient-to-br from-accent-green to-accent-blue rounded-full flex items-center justify-center shadow-theme-glow">
+          <div className="w-16 h-16 bg-ok rounded-full flex items-center justify-center shadow-theme-glow">
             <PiCheckCircle className="w-8 h-8 text-white" />
           </div>
         </div>
@@ -230,14 +230,14 @@ const ForgotPasswordModal: React.FC<ForgotPasswordModalProps> = ({
       </div>
 
       <Stack gap={6}>
-        <div className="bg-accent-green bg-opacity-10 border border-accent-green rounded-lg p-4">
+        <div className="bg-ok/10 border border-ok rounded-lg p-4">
           <div className="flex items-start">
-            <PiEnvelopeSimple className="w-5 h-5 text-accent-green mr-3 mt-0.5 flex-shrink-0" />
+            <PiEnvelopeSimple className="w-5 h-5 text-ok mr-3 mt-0.5 flex-shrink-0" />
             <Stack gap={1}>
-              <h4 className="font-medium text-accent-green">
+              <h4 className="font-medium text-ok">
                 {t('forgot_password_success_check_title')}
               </h4>
-              <p className="text-sm text-accent-green opacity-80">
+              <p className="text-sm text-ok opacity-80">
                 {t('forgot_password_success_check_text')}{' '}
                 <strong>{state.email}</strong>
               </p>
@@ -279,7 +279,7 @@ const ForgotPasswordModal: React.FC<ForgotPasswordModalProps> = ({
 
           <button
             onClick={handleClose}
-            className="w-full text-sm text-theme-tertiary hover:text-theme-primary transition-colors"
+            className="w-full text-sm text-theme-tertiary hover:text-texto transition-colors"
           >
             {t('forgot_password_success_close_button')}
           </button>
@@ -292,7 +292,7 @@ const ForgotPasswordModal: React.FC<ForgotPasswordModalProps> = ({
     <>
       <div className="text-center mb-8">
         <div className="flex justify-center mb-4">
-          <div className="w-16 h-16 bg-gradient-to-br from-accent-red to-accent-amber rounded-full flex items-center justify-center shadow-theme-glow">
+          <div className="w-16 h-16 bg-erro rounded-full flex items-center justify-center shadow-theme-glow">
             <PiWarningCircle className="w-8 h-8 text-white" />
           </div>
         </div>
@@ -309,18 +309,16 @@ const ForgotPasswordModal: React.FC<ForgotPasswordModalProps> = ({
       </div>
 
       <Stack gap={6}>
-        <div className="bg-accent-red bg-opacity-10 border border-accent-red rounded-lg p-4">
+        <div className="bg-erro/10 border border-erro rounded-lg p-4">
           <div className="flex items-start">
-            <PiWarningCircle className="w-5 h-5 text-accent-red mr-3 mt-0.5 flex-shrink-0" />
+            <PiWarningCircle className="w-5 h-5 text-erro mr-3 mt-0.5 flex-shrink-0" />
             <Stack gap={1}>
-              <h4 className="font-medium text-accent-red">
+              <h4 className="font-medium text-erro">
                 {state.rateLimited
                   ? t('forgot_password_error_rate_limit_title')
                   : t('forgot_password_error_general_title')}
               </h4>
-              <p className="text-sm text-accent-red opacity-80">
-                {state.error}
-              </p>
+              <p className="text-sm text-erro opacity-80">{state.error}</p>
             </Stack>
           </div>
         </div>

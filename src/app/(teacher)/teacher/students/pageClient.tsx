@@ -290,7 +290,7 @@ export default function TeacherStudentsPageClient({
       <PageContainer showBackground={true}>
         <div className="flex items-center justify-center min-h-screen">
           <Card densidade="larga" className="text-center max-w-md">
-            <div className="w-16 h-16 bg-gradient-to-br from-accent-red to-accent-purple rounded-3xl flex items-center justify-center mx-auto mb-6">
+            <div className="w-16 h-16 bg-erro rounded-3xl flex items-center justify-center mx-auto mb-6">
               <PiXCircle className="w-8 h-8 text-theme-primary" />
             </div>
             <h1 className="text-xl font-bold text-theme-primary classical-title mb-4">
@@ -340,7 +340,7 @@ export default function TeacherStudentsPageClient({
         <AnimatedItem direction="up" springType="gentle">
           <div className="text-center mb-8 py-8">
             <div className="flex items-center justify-center mb-6">
-              <div className="w-16 h-16 bg-gradient-to-br from-brand-primary to-brand-secondary rounded-3xl flex items-center justify-center shadow-theme-glow">
+              <div className="w-16 h-16 fill-ouro rounded-3xl flex items-center justify-center shadow-theme-glow">
                 <PiUsers className="w-8 h-8 text-theme-primary" />
               </div>
             </div>
@@ -366,7 +366,7 @@ export default function TeacherStudentsPageClient({
                     className={`px-4 py-2 rounded-lg text-sm font-medium transition-all whitespace-nowrap ${
                       activeTab === 'all'
                         ? 'bg-theme-tertiary text-theme-primary shadow-md'
-                        : 'text-theme-tertiary hover:text-theme-primary'
+                        : 'text-theme-tertiary hover:text-texto'
                     }`}
                   >
                     {t('tabs_all')} ({summary.total})
@@ -376,7 +376,7 @@ export default function TeacherStudentsPageClient({
                     className={`px-4 py-2 rounded-lg text-sm font-medium transition-all whitespace-nowrap ${
                       activeTab === 'active'
                         ? 'bg-theme-tertiary text-theme-primary shadow-md'
-                        : 'text-theme-tertiary hover:text-theme-primary'
+                        : 'text-theme-tertiary hover:text-texto'
                     }`}
                   >
                     {t('tabs_active')} ({filteredStats.active})
@@ -386,7 +386,7 @@ export default function TeacherStudentsPageClient({
                     className={`px-4 py-2 rounded-lg text-sm font-medium transition-all whitespace-nowrap ${
                       activeTab === 'inactive'
                         ? 'bg-theme-tertiary text-theme-primary shadow-md'
-                        : 'text-theme-tertiary hover:text-theme-primary'
+                        : 'text-theme-tertiary hover:text-texto'
                     }`}
                   >
                     {t('tabs_inactive')} ({filteredStats.inactive})
@@ -396,7 +396,7 @@ export default function TeacherStudentsPageClient({
                     className={`px-4 py-2 rounded-lg text-sm font-medium transition-all whitespace-nowrap ${
                       activeTab === 'paused'
                         ? 'bg-theme-tertiary text-theme-primary shadow-md'
-                        : 'text-theme-tertiary hover:text-theme-primary'
+                        : 'text-theme-tertiary hover:text-texto'
                     }`}
                   >
                     {t('tabs_paused')} ({filteredStats.paused})
@@ -418,10 +418,10 @@ export default function TeacherStudentsPageClient({
                   <button
                     onClick={refreshStudents}
                     disabled={loading.students}
-                    className="w-10 h-10 rounded-lg bg-theme-elevated border border-theme-secondary hover:border-brand-primary transition-all flex items-center justify-center group"
+                    className="w-10 h-10 rounded-lg bg-theme-elevated border border-theme-secondary hover:border-ouro transition-all flex items-center justify-center group"
                   >
                     <PiArrowsClockwise
-                      className={`w-4 h-4 text-theme-tertiary group-hover:text-brand-primary transition-all ${
+                      className={`w-4 h-4 text-theme-tertiary group-hover:text-ouro-texto transition-all ${
                         loading.students ? 'animate-spin' : ''
                       }`}
                     />
@@ -485,7 +485,7 @@ export default function TeacherStudentsPageClient({
           <AnimatedItem direction="up" springType="gentle" className="mt-4">
             {filteredAndSortedStudents.length === 0 ? (
               <div className="text-center py-16">
-                <div className="w-16 h-16 bg-theme-tertiary/20 rounded-2xl flex items-center justify-center mx-auto mb-6">
+                <div className="w-16 h-16 bg-sup-2/20 rounded-2xl flex items-center justify-center mx-auto mb-6">
                   <PiUsers className="w-8 h-8 text-theme-tertiary" />
                 </div>
                 <h3 className="text-xl font-bold text-theme-primary classical-title mb-2">

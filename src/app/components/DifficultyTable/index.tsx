@@ -28,7 +28,7 @@ export default function DifficultyTable({
   if (works.length === 0) {
     return (
       <div className="classical-card p-12 text-center">
-        <div className="w-16 h-16 bg-theme-tertiary/20 rounded-full flex items-center justify-center mx-auto mb-6">
+        <div className="w-16 h-16 bg-sup-2/20 rounded-full flex items-center justify-center mx-auto mb-6">
           <PiMusicNotes className="w-8 h-8 text-theme-tertiary" />
         </div>
         <h3 className="text-xl font-bold text-theme-primary mb-2 classical-title">
@@ -45,9 +45,9 @@ export default function DifficultyTable({
   const getDifficultyDisplay = (work: DifficultyWork) => {
     // ✅ SISTEMA HÍBRIDO DE EXIBIÇÃO
     const enumColors = {
-      BEGINNER: 'text-green-500 bg-green-500/10 border-green-500/30',
-      INTERMEDIATE: 'text-blue-500 bg-blue-500/10 border-blue-500/30',
-      ADVANCED: 'text-purple-500 bg-purple-500/10 border-purple-500/30',
+      BEGINNER: 'text-ok bg-ok/10 border-ok/30',
+      INTERMEDIATE: 'text-aviso bg-aviso/10 border-aviso/30',
+      ADVANCED: 'text-ouro-texto bg-ouro/10 border-ouro/30',
     };
 
     const enumIcons = {
@@ -68,7 +68,7 @@ export default function DifficultyTable({
       <div className="p-6 border-b border-theme-secondary">
         <div className="flex items-center justify-between">
           <div className="flex items-center">
-            <div className="w-10 h-10 bg-gradient-to-br from-brand-primary to-accent-green rounded-xl flex items-center justify-center mr-3">
+            <div className="w-10 h-10 fill-ouro rounded-xl flex items-center justify-center mr-3">
               <PiMedal className="w-5 h-5 text-theme-primary" />
             </div>
             <div>
@@ -106,14 +106,14 @@ export default function DifficultyTable({
               </th>
             </tr>
           </thead>
-          <tbody className="divide-y divide-theme-secondary">
+          <tbody className="divide-y divide-linha">
             {works.map((work, index) => (
               <AnimatedItem
                 key={work.id}
                 direction="left"
                 hover="lift"
                 component="tr"
-                className="group hover:bg-interactive-hover transition-all duration-300"
+                className="group hover:bg-ouro/10 transition-all duration-300"
                 style={{
                   animationDelay: `${index * 0.05}s`,
                   animationFillMode: 'backwards',
@@ -136,7 +136,7 @@ export default function DifficultyTable({
 
                     {/* Badge Detalhado (IMSLP) - Se disponível */}
                     {work.imslpDifficultyLevel && (
-                      <div className="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium border-2 border-dashed border-gray-300 text-gray-600 bg-gray-50 max-w-fit">
+                      <div className="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium border-2 border-dashed border-linha text-texto-suave bg-sup-2 max-w-fit">
                         <PiMedal className="w-3 h-3 mr-1" />
                         {work.imslpDifficultySystem || 'IMSLP'}{' '}
                         {work.imslpDifficultyLevel}
@@ -150,7 +150,7 @@ export default function DifficultyTable({
                   <div>
                     <Link
                       href={`/works/${work.id}`}
-                      className="font-semibold text-theme-primary hover:text-brand-primary transition-colors group-hover:text-brand-primary line-clamp-2"
+                      className="font-semibold text-theme-primary hover:text-ouro-texto transition-colors group-hover:text-ouro-texto line-clamp-2"
                     >
                       {work.title}
                     </Link>
@@ -175,13 +175,13 @@ export default function DifficultyTable({
                 {/* Compositor */}
                 <td className="py-4 px-6">
                   <div className="flex items-center">
-                    <div className="w-8 h-8 bg-gradient-to-br from-accent-blue to-accent-purple rounded-full flex items-center justify-center mr-2">
+                    <div className="w-8 h-8 bg-aviso rounded-full flex items-center justify-center mr-2">
                       <PiUser className="w-3 h-3 text-theme-primary" />
                     </div>
                     <div>
                       <Link
                         href={`/composer/${work.composer.id}`}
-                        className="font-medium text-theme-primary hover:text-accent-blue transition-colors text-sm"
+                        className="font-medium text-theme-primary hover:text-aviso transition-colors text-sm"
                       >
                         {work.composer.fullName || work.composer.name}
                       </Link>
@@ -215,7 +215,7 @@ export default function DifficultyTable({
                             href={score.downloadUrl || work.imslpPermlink}
                             target="_blank"
                             rel="noopener noreferrer"
-                            className="inline-flex items-center px-2 py-1 bg-accent-green/10 border border-accent-green/30 text-accent-green rounded text-xs font-medium hover:bg-accent-green/20 transition-all duration-300"
+                            className="inline-flex items-center px-2 py-1 bg-ok/10 border border-ok/30 text-ok rounded text-xs font-medium hover:bg-ok/20 transition-all duration-300"
                           >
                             <PiDownloadSimple className="w-3 h-3 mr-1" />
                             {score.fileFormat}
@@ -232,7 +232,7 @@ export default function DifficultyTable({
                         href={work.imslpPermlink}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="inline-flex items-center px-2 py-1 bg-brand-primary/10 border border-brand-primary/30 text-brand-primary rounded text-xs font-medium hover:bg-brand-primary/20 transition-all duration-300"
+                        className="inline-flex items-center px-2 py-1 bg-ouro/10 border border-ouro/30 text-brand-primary rounded text-xs font-medium hover:bg-ouro/20 transition-all duration-300"
                       >
                         <PiArrowSquareOut className="w-3 h-3 mr-1" />
                         IMSLP
@@ -247,9 +247,9 @@ export default function DifficultyTable({
       </div>
 
       {isPending && (
-        <div className="absolute inset-0 bg-theme-overlay backdrop-blur-sm flex items-center justify-center">
+        <div className="absolute inset-0 bg-veu backdrop-blur-sm flex items-center justify-center">
           <Card className="text-center">
-            <div className="w-8 h-8 border-4 border-brand-primary border-t-transparent rounded-full animate-spin mx-auto mb-3"></div>
+            <div className="w-8 h-8 border-4 border-ouro border-t-transparent rounded-full animate-spin mx-auto mb-3"></div>
             <Text papel="rotulo" tom="forte" as="p" className="font-medium">
               Carregando...
             </Text>

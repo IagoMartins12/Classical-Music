@@ -61,9 +61,9 @@ export default function StudentCard({
   const isPaused = relationship.isActive && !!relationship.pausedAt;
 
   const getStatusColor = () => {
-    if (isActive) return 'accent-green';
-    if (isPaused) return 'accent-yellow';
-    return 'accent-red';
+    if (isActive) return 'ok';
+    if (isPaused) return 'atencao';
+    return 'erro';
   };
 
   const getStatusText = () => {
@@ -90,7 +90,7 @@ export default function StudentCard({
           {/* Avatar */}
           <div className="relative w-12 h-12 flex-shrink-0">
             {student.image ? (
-              <div className="relative w-full h-full rounded-full overflow-hidden border-2 border-brand-primary/20">
+              <div className="relative w-full h-full rounded-full overflow-hidden border-2 border-ouro/20">
                 <Image
                   src={student.image}
                   alt={student.name}
@@ -100,7 +100,7 @@ export default function StudentCard({
                 />
               </div>
             ) : (
-              <div className="w-full h-full bg-gradient-to-br from-brand-primary to-brand-secondary rounded-full flex items-center justify-center border-2 border-brand-primary/20">
+              <div className="w-full h-full fill-ouro rounded-full flex items-center justify-center border-2 border-ouro/20">
                 <PiUser className="w-6 h-6 text-theme-primary" />
               </div>
             )}
@@ -187,8 +187,8 @@ export default function StudentCard({
                 disabled={isToggling}
                 className={`w-8 h-8 rounded-lg border transition-all flex items-center justify-center ${
                   isPaused
-                    ? 'border-accent-green/30 hover:bg-accent-green/10 hover:border-accent-green text-accent-green'
-                    : 'border-accent-yellow/30 hover:bg-accent-yellow/10 hover:border-accent-yellow text-accent-yellow'
+                    ? 'border-ok/30 hover:bg-ok/10 hover:border-ok text-ok'
+                    : 'border-atencao/30 hover:bg-atencao/10 hover:border-atencao text-atencao'
                 }`}
                 title={isPaused ? translations.reactivate : translations.pause}
               >
@@ -203,10 +203,10 @@ export default function StudentCard({
 
               <Link
                 href={`/teacher/students/${student.id}`}
-                className="w-8 h-8 rounded-lg bg-theme-elevated border border-theme-secondary hover:border-brand-primary transition-all flex items-center justify-center group"
+                className="w-8 h-8 rounded-lg bg-theme-elevated border border-theme-secondary hover:border-ouro transition-all flex items-center justify-center group"
                 title={translations.viewDetails}
               >
-                <PiEye className="w-4 h-4 text-theme-tertiary group-hover:text-brand-primary transition-colors" />
+                <PiEye className="w-4 h-4 text-theme-tertiary group-hover:text-ouro-texto transition-colors" />
               </Link>
             </Inline>
           </Inline>
@@ -223,7 +223,7 @@ export default function StudentCard({
         <Inline gap={4}>
           <div className="relative w-16 h-16">
             {student.image ? (
-              <div className="relative w-full h-full rounded-full overflow-hidden border-2 border-brand-primary/20">
+              <div className="relative w-full h-full rounded-full overflow-hidden border-2 border-ouro/20">
                 <Image
                   src={student.image}
                   alt={student.name}
@@ -233,7 +233,7 @@ export default function StudentCard({
                 />
               </div>
             ) : (
-              <div className="w-full h-full bg-gradient-to-br from-brand-primary to-brand-secondary rounded-full flex items-center justify-center border-2 border-brand-primary/20">
+              <div className="w-full h-full fill-ouro rounded-full flex items-center justify-center border-2 border-ouro/20">
                 <PiUser className="w-8 h-8 text-theme-primary" />
               </div>
             )}
@@ -293,7 +293,7 @@ export default function StudentCard({
 
       {/* Next Lesson */}
       {nextLesson && (
-        <div className="mb-4 p-3 bg-theme-elevated to-interactive-hover rounded-lg">
+        <div className="mb-4 p-3 bg-theme-elevated bg-ouro/10 rounded-lg">
           <div className="flex items-center justify-between">
             <Stack gap={1}>
               <Text papel="rotulo" tom="forte" as="div" className="font-medium">
@@ -316,8 +316,8 @@ export default function StudentCard({
           disabled={isToggling}
           className={`flex-1 btn-classical-secondary text-sm flex items-center justify-center space-x-2 ${
             isPaused
-              ? 'hover:bg-accent-green/10 hover:border-accent-green/30 hover:text-accent-green'
-              : 'hover:bg-accent-yellow/10 hover:border-accent-yellow/30 hover:text-accent-yellow'
+              ? 'hover:bg-ok/10 hover:border-ok/30 hover:text-ok'
+              : 'hover:bg-atencao/10 hover:border-atencao/30 hover:text-atencao'
           }`}
         >
           {isToggling ? (

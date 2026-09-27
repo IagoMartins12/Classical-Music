@@ -156,7 +156,7 @@ export default function DeclineStudentInvitePage() {
     if (!confirmDecline && state.status === 'loading') {
       return (
         <div className="text-center">
-          <div className="w-20 h-20 bg-gradient-to-br from-accent-amber to-accent-red rounded-full flex items-center justify-center mx-auto mb-6 shadow-theme-glow">
+          <div className="w-20 h-20 bg-atencao rounded-full flex items-center justify-center mx-auto mb-6 shadow-theme-glow">
             <PiWarningCircle className="w-10 h-10 text-theme-primary" />
           </div>
           <h1 className="text-3xl font-bold text-theme-primary classical-title mb-4">
@@ -167,10 +167,10 @@ export default function DeclineStudentInvitePage() {
           </p>
 
           <Stack className="bg-theme-elevated rounded-xl p-6 mb-8">
-            <h3 className="text-xl font-semibold text-accent-amber">
+            <h3 className="text-xl font-semibold text-atencao">
               {t('pages_token_jsx_h3_children_0__ação_irreversível')}
             </h3>
-            <Stack gap={3} className="text-accent-amber opacity-90 text-left">
+            <Stack gap={3} className="text-atencao opacity-90 text-left">
               <p
                 className="text-sm"
                 dangerouslySetInnerHTML={{
@@ -195,10 +195,10 @@ export default function DeclineStudentInvitePage() {
           </Stack>
 
           <Stack gap={3} className="bg-theme-elevated rounded-xl p-6 mb-8">
-            <h4 className="font-medium text-accent-blue">
+            <h4 className="font-medium text-aviso">
               {t('pages_token_jsx_h4_children_0__alternativas')}
             </h4>
-            <p className="text-accent-blue opacity-80 text-sm">
+            <p className="text-aviso opacity-80 text-sm">
               {t('pages_token_jsx_p_children_0__alternativas_texto')}
             </p>
           </Stack>
@@ -219,7 +219,7 @@ export default function DeclineStudentInvitePage() {
                 size="lg"
                 onClick={() => setConfirmDecline(true)}
                 leftIcon={<PiX />}
-                className="bg-gradient-to-r from-accent-red to-accent-amber"
+                className="bg-erro"
               >
                 {t('pages_token_jsx_button_children_0__confirmar_recusa')}
               </Button>
@@ -233,7 +233,7 @@ export default function DeclineStudentInvitePage() {
       case 'loading':
         return (
           <div className="text-center">
-            <div className="w-20 h-20 bg-gradient-to-br from-accent-amber to-accent-red rounded-full flex items-center justify-center mx-auto mb-6 shadow-theme-glow animate-pulse">
+            <div className="w-20 h-20 bg-atencao rounded-full flex items-center justify-center mx-auto mb-6 shadow-theme-glow animate-pulse">
               <PiSpinnerGap className="w-10 h-10 text-theme-primary animate-spin" />
             </div>
             <h1 className="text-3xl font-bold text-theme-primary classical-title mb-4">
@@ -242,7 +242,7 @@ export default function DeclineStudentInvitePage() {
             <p className="text-theme-secondary text-lg">{state.message}</p>
             <div className="mt-8">
               <div className="w-32 h-1 bg-theme-secondary rounded-full mx-auto overflow-hidden">
-                <div className="h-full bg-gradient-to-r from-accent-amber to-accent-red rounded-full animate-pulse"></div>
+                <div className="h-full bg-atencao rounded-full animate-pulse"></div>
               </div>
             </div>
           </div>
@@ -251,7 +251,7 @@ export default function DeclineStudentInvitePage() {
       case 'success':
         return (
           <div className="text-center">
-            <div className="w-20 h-20 bg-gradient-to-br from-accent-blue to-theme-primary rounded-full flex items-center justify-center mx-auto mb-6 shadow-theme-glow">
+            <div className="w-20 h-20 bg-aviso rounded-full flex items-center justify-center mx-auto mb-6 shadow-theme-glow">
               <PiCheckCircle className="w-10 h-10 text-theme-primary" />
             </div>
             <h1 className="text-3xl font-bold text-theme-primary classical-title mb-4">
@@ -260,9 +260,9 @@ export default function DeclineStudentInvitePage() {
             <p className="text-theme-secondary text-lg mb-6">{state.message}</p>
 
             {state.user && state.teacher && (
-              <div className="bg-theme-secondary bg-opacity-50 border border-theme-secondary rounded-xl p-6 mb-8">
+              <div className="bg-theme-secondary border border-theme-secondary rounded-xl p-6 mb-8">
                 <div className="flex items-center justify-center mb-4">
-                  <div className="w-12 h-12 bg-gradient-to-br from-theme-primary to-accent-blue rounded-full flex items-center justify-center mr-3">
+                  <div className="w-12 h-12 bg-fundo rounded-full flex items-center justify-center mr-3">
                     <PiUser className="w-6 h-6 text-theme-primary" />
                   </div>
                   <div>
@@ -280,7 +280,7 @@ export default function DeclineStudentInvitePage() {
                   </div>
                 </div>
 
-                <div className="bg-theme-primary bg-opacity-10 rounded-lg p-4 mt-4">
+                <div className="bg-theme-primary rounded-lg p-4 mt-4">
                   <Text
                     papel="rotulo"
                     tom="forte"
@@ -298,14 +298,14 @@ export default function DeclineStudentInvitePage() {
 
             <Stack
               gap={3}
-              className="bg-accent-blue bg-opacity-10 border border-accent-blue rounded-xl p-6 mb-8"
+              className="bg-aviso/10 border border-aviso rounded-xl p-6 mb-8"
             >
-              <h4 className="font-medium text-accent-blue">
+              <h4 className="font-medium text-aviso">
                 {t('pages_token_jsx_h4_children_0__e_agora')}
               </h4>
               <Stack
                 gap={2}
-                className="text-accent-blue opacity-80 text-sm text-left"
+                className="text-aviso opacity-80 text-sm text-left"
               >
                 <p>
                   {t('pages_token_jsx_p_children_0__pode_continuar_estudando')}
@@ -347,7 +347,7 @@ export default function DeclineStudentInvitePage() {
       case 'already-processed':
         return (
           <div className="text-center">
-            <div className="w-20 h-20 bg-gradient-to-br from-theme-primary to-accent-blue rounded-full flex items-center justify-center mx-auto mb-6 shadow-theme-glow">
+            <div className="w-20 h-20 bg-fundo rounded-full flex items-center justify-center mx-auto mb-6 shadow-theme-glow">
               <PiCheckCircle className="w-10 h-10 text-theme-primary" />
             </div>
             <h1 className="text-3xl font-bold text-theme-primary classical-title mb-4">
@@ -355,7 +355,7 @@ export default function DeclineStudentInvitePage() {
             </h1>
             <p className="text-theme-secondary text-lg mb-6">{state.message}</p>
 
-            <div className="bg-theme-secondary bg-opacity-50 border border-theme-secondary rounded-xl p-6 mb-8">
+            <div className="bg-theme-secondary border border-theme-secondary rounded-xl p-6 mb-8">
               <p className="text-theme-primary opacity-80">
                 {t('pages_token_jsx_p_children_0__convite_já_processado')}
               </p>
@@ -385,7 +385,7 @@ export default function DeclineStudentInvitePage() {
       case 'error':
         return (
           <div className="text-center">
-            <div className="w-20 h-20 bg-gradient-to-br from-accent-red to-accent-amber rounded-full flex items-center justify-center mx-auto mb-6 shadow-theme-glow">
+            <div className="w-20 h-20 bg-erro rounded-full flex items-center justify-center mx-auto mb-6 shadow-theme-glow">
               <PiWarningCircle className="w-10 h-10 text-theme-primary" />
             </div>
             <h1 className="text-3xl font-bold text-theme-primary classical-title mb-4">
@@ -395,15 +395,15 @@ export default function DeclineStudentInvitePage() {
 
             <Stack
               gap={3}
-              className="bg-accent-red bg-opacity-10 border border-accent-red rounded-xl p-6 mb-8"
+              className="bg-erro/10 border border-erro rounded-xl p-6 mb-8"
             >
               <div className="flex items-center justify-center">
-                <PiWarningCircle className="w-5 h-5 text-accent-red mr-2" />
-                <span className="font-medium text-accent-red">
+                <PiWarningCircle className="w-5 h-5 text-erro mr-2" />
+                <span className="font-medium text-erro">
                   {getErrorTitle(state.errorCode, t)}
                 </span>
               </div>
-              <p className="text-accent-red opacity-80 text-sm">
+              <p className="text-erro opacity-80 text-sm">
                 {getErrorDescription(state.errorCode, t)}
               </p>
             </Stack>
@@ -434,13 +434,13 @@ export default function DeclineStudentInvitePage() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-theme-primary via-theme-secondary to-theme-tertiary flex items-center justify-center p-4">
+    <div className="min-h-screen bg-fundo flex items-center justify-center p-4">
       {/* Background Decorations */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        <div className="absolute -top-10 -left-10 w-40 h-40 bg-accent-amber opacity-10 rounded-full blur-3xl"></div>
-        <div className="absolute -bottom-10 -right-10 w-60 h-60 bg-accent-red opacity-10 rounded-full blur-3xl"></div>
-        <GiGrandPiano className="absolute top-20 right-20 w-12 h-12 text-accent-amber opacity-5 rotate-12" />
-        <GiGrandPiano className="absolute bottom-20 left-20 w-16 h-16 text-accent-red opacity-5 -rotate-12" />
+        <div className="absolute -top-10 -left-10 w-40 h-40 opacity-10 rounded-full blur-3xl"></div>
+        <div className="absolute -bottom-10 -right-10 w-60 h-60 opacity-10 rounded-full blur-3xl"></div>
+        <GiGrandPiano className="absolute top-20 right-20 w-12 h-12 text-atencao opacity-5 rotate-12" />
+        <GiGrandPiano className="absolute bottom-20 left-20 w-16 h-16 text-erro opacity-5 -rotate-12" />
       </div>
 
       <div className="relative w-full max-w-2xl">

@@ -142,7 +142,7 @@ export function TranslationLoadingModal({
             <GiGClef />
           </div>
           <div
-            className="absolute bottom-4 left-4 text-4xl text-accent-purple animate-pulse"
+            className="absolute bottom-4 left-4 text-4xl text-ouro-texto animate-pulse"
             style={{ animationDelay: '1s' }}
           >
             <PiMusicNotes />
@@ -150,9 +150,9 @@ export function TranslationLoadingModal({
         </div>
 
         {/* Gradiente decorativo */}
-        <div className="absolute -top-20 -right-20 w-40 h-40 bg-brand-gradient rounded-full blur-3xl opacity-20 animate-pulse" />
+        <div className="absolute -top-20 -right-20 w-40 h-40 rounded-full blur-3xl opacity-20 animate-pulse" />
         <div
-          className="absolute -bottom-20 -left-20 w-32 h-32 bg-accent-purple/30 rounded-full blur-2xl opacity-30 animate-pulse"
+          className="absolute -bottom-20 -left-20 w-32 h-32 rounded-full blur-2xl opacity-30 animate-pulse"
           style={{ animationDelay: '0.5s' }}
         />
 
@@ -161,7 +161,7 @@ export function TranslationLoadingModal({
           <div className="mb-6 flex justify-center">
             <div className="relative">
               {/* Círculo externo rotativo */}
-              <div className="w-20 h-20 border-4 border-brand-primary/20 border-t-brand-primary rounded-full animate-spin" />
+              <div className="w-20 h-20 border-4 border-ouro/20 border-t-ouro rounded-full animate-spin" />
 
               {/* Ícone central */}
               <div className="absolute inset-0 flex items-center justify-center">
@@ -172,13 +172,13 @@ export function TranslationLoadingModal({
 
               {/* Partículas musicais flutuantes */}
               <div
-                className="absolute -top-2 -right-2 w-4 h-4 text-accent-purple animate-bounce"
+                className="absolute -top-2 -right-2 w-4 h-4 text-ouro-texto animate-bounce"
                 style={{ animationDelay: '0.2s' }}
               >
                 <PiMusicNotes />
               </div>
               <div
-                className="absolute -bottom-2 -left-2 w-3 h-3 text-accent-blue animate-bounce"
+                className="absolute -bottom-2 -left-2 w-3 h-3 text-aviso animate-bounce"
                 style={{ animationDelay: '0.8s' }}
               >
                 <PiMusicNotes />
@@ -228,7 +228,7 @@ export function TranslationLoadingModal({
 
             <div className="w-full h-2 bg-theme-elevated rounded-full overflow-hidden">
               <div
-                className="h-full bg-brand-gradient rounded-full transition-all duration-200 ease-out relative overflow-hidden"
+                className="h-full fill-ouro rounded-full transition-all duration-200 ease-out relative overflow-hidden"
                 style={{ width: `${progress}%` }}
               >
                 {/* Shimmer effect mais rápido */}
@@ -244,7 +244,7 @@ export function TranslationLoadingModal({
                 key={index}
                 className={`w-2 h-2 rounded-full transition-all duration-200 ${
                   index <= currentStep
-                    ? 'bg-brand-primary shadow-theme-glow'
+                    ? 'bg-ouro shadow-theme-glow'
                     : 'bg-theme-secondary'
                 }`}
               />
@@ -252,7 +252,7 @@ export function TranslationLoadingModal({
           </div>
 
           {/* Nota motivacional */}
-          <div className="mt-6 p-4 bg-gradient-to-r from-brand-primary/5 to-brand-secondary/5 border-l-4 border-brand-primary rounded-xl">
+          <div className="border mt-6 p-4 bg-ouro/5 border-ouro/40 rounded-xl">
             <Text papel="rotulo" tom="suave" as="p" className="italic">
               {currentLanguage === 'pt'
                 ? '"A música é a linguagem universal da humanidade."'

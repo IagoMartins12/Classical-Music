@@ -47,7 +47,7 @@ export default function DayEventsListModal({
       <div className="p-6">
         {/* Header */}
         <div className="mb-6 text-center">
-          <div className="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-br from-accent-blue to-accent-purple rounded-2xl mb-4">
+          <div className="inline-flex items-center justify-center w-16 h-16 bg-aviso rounded-2xl mb-4">
             <PiMusicNotes className="w-8 h-8 text-white" />
           </div>
           <h2 className="text-2xl font-bold text-theme-primary classical-title mb-2">
@@ -78,7 +78,7 @@ export default function DayEventsListModal({
             >
               <button
                 onClick={() => handleEventClick(event)}
-                className={`w-full text-left p-4 rounded-lg transition-all hover:scale-101 border-l-4 bg-theme-elevated hover:bg-interactive-hover ${getEventBorderColor(event.type, event.isFree)}`}
+                className={`border w-full text-left p-4 rounded-lg transition-all hover:scale-101 bg-theme-elevated hover:bg-ouro/10 ${getEventBorderColor(event.type, event.isFree)}`}
               >
                 <div className="flex items-start justify-between gap-3">
                   <div className="flex-1 min-w-0">
@@ -89,7 +89,7 @@ export default function DayEventsListModal({
                         {formatEventTime(event.start)}
                       </Text>
                       {event.isFree && (
-                        <span className="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-accent-green/10 border border-accent-green/30 text-accent-green">
+                        <span className="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-ok/10 border border-ok/30 text-ok">
                           Gratuito
                         </span>
                       )}
@@ -160,33 +160,33 @@ export default function DayEventsListModal({
 }
 
 function getEventBorderColor(type: string, isFree: boolean): string {
-  if (isFree) return 'border-accent-green';
+  if (isFree) return 'border-ok';
 
   const colors: Record<string, string> = {
-    OPERA: 'border-accent-purple',
-    RECITAL: 'border-accent-pink',
-    CHAMBER_MUSIC: 'border-accent-green',
-    CHOIR: 'border-accent-orange',
+    OPERA: 'border-ouro',
+    RECITAL: 'border-ouro',
+    CHAMBER_MUSIC: 'border-ok',
+    CHOIR: 'border-atencao',
     OPEN_REHEARSAL: 'border-accent-gray',
-    CONCERT: 'border-accent-blue',
+    CONCERT: 'border-aviso',
   };
 
-  return colors[type] || 'border-accent-blue';
+  return colors[type] || 'border-aviso';
 }
 
 function getEventBadgeColor(type: string, isFree: boolean): string {
-  if (isFree) return 'bg-accent-green/10 text-accent-green';
+  if (isFree) return 'bg-ok/10 text-ok';
 
   const colors: Record<string, string> = {
-    OPERA: 'bg-accent-purple/10 text-accent-purple',
-    RECITAL: 'bg-accent-pink/10 text-accent-pink',
-    CHAMBER_MUSIC: 'bg-accent-green/10 text-accent-green',
-    CHOIR: 'bg-accent-orange/10 text-accent-orange',
+    OPERA: 'bg-ouro/10 text-ouro-texto',
+    RECITAL: 'bg-ouro/10 text-ouro-texto',
+    CHAMBER_MUSIC: 'bg-ok/10 text-ok',
+    CHOIR: 'bg-atencao/10 text-atencao',
     OPEN_REHEARSAL: 'bg-accent-gray/10 text-accent-gray',
-    CONCERT: 'bg-accent-blue/10 text-accent-blue',
+    CONCERT: 'bg-aviso/10 text-aviso',
   };
 
-  return colors[type] || 'bg-accent-blue/10 text-accent-blue';
+  return colors[type] || 'bg-aviso/10 text-aviso';
 }
 
 function getEventTypeLabel(type: string): string {

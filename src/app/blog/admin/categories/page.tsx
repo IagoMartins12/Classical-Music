@@ -45,7 +45,7 @@ export default async function CategoriesAdminPage() {
               direction="scale"
               className="flex items-center justify-center mb-6"
             >
-              <div className="w-16 h-16 bg-gradient-to-br from-brand-primary to-brand-secondary rounded-2xl flex items-center justify-center shadow-theme-glow">
+              <div className="w-16 h-16 fill-ouro rounded-2xl flex items-center justify-center shadow-theme-glow">
                 <PiStack className="w-8 h-8 text-theme-primary" />
               </div>
             </AnimatedItem>
@@ -95,8 +95,8 @@ export default async function CategoriesAdminPage() {
                       {stats.totalCategories}
                     </p>
                   </Stack>
-                  <div className="w-16 h-16 bg-gradient-to-br from-blue-500/20 to-blue-600/20 rounded-2xl flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
-                    <PiSquaresFour className="w-8 h-8 text-blue-500" />
+                  <div className="w-16 h-16 bg-aviso/20 rounded-2xl flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
+                    <PiSquaresFour className="w-8 h-8 text-aviso" />
                   </div>
                 </div>
               </div>
@@ -119,8 +119,8 @@ export default async function CategoriesAdminPage() {
                       {stats.activeCategories}
                     </p>
                   </Stack>
-                  <div className="w-16 h-16 bg-gradient-to-br from-green-500/20 to-green-600/20 rounded-2xl flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
-                    <PiTag className="w-8 h-8 text-green-500" />
+                  <div className="w-16 h-16 bg-ok/20 rounded-2xl flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
+                    <PiTag className="w-8 h-8 text-ok" />
                   </div>
                 </div>
               </div>
@@ -143,8 +143,8 @@ export default async function CategoriesAdminPage() {
                       {stats.totalArticles}
                     </p>
                   </Stack>
-                  <div className="w-16 h-16 bg-gradient-to-br from-purple-500/20 to-purple-600/20 rounded-2xl flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
-                    <PiSquaresFour className="w-8 h-8 text-purple-500" />
+                  <div className="w-16 h-16 bg-ouro/20 rounded-2xl flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
+                    <PiSquaresFour className="w-8 h-8 text-ouro-texto" />
                   </div>
                 </div>
               </div>

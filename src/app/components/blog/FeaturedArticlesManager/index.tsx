@@ -171,7 +171,7 @@ export default function FeaturedArticlesManager({
     <Card nivel={2} densidade="compacta">
       <div className="flex items-center justify-between mb-4">
         <h3 className="text-sm font-medium text-theme-primary flex items-center">
-          <PiStarFill className="w-4 h-4 mr-2 text-yellow-500" />
+          <PiStarFill className="w-4 h-4 mr-2 text-atencao" />
           Artigos em Destaque
         </h3>
         <Text papel="legenda" tom="fraco">
@@ -183,13 +183,13 @@ export default function FeaturedArticlesManager({
       <Inline
         as="label"
         gap={3}
-        className="p-3 bg-theme-elevated rounded-lg cursor-pointer hover:bg-interactive-hover transition-colors mb-4"
+        className="p-3 bg-theme-elevated rounded-lg cursor-pointer hover:bg-ouro/10 transition-colors mb-4"
       >
         <input
           type="checkbox"
           checked={isFeatured}
           onChange={(e) => handleToggleFeatured(e.target.checked)}
-          className="w-5 h-5 text-brand-primary border-theme-secondary rounded focus:ring-brand-primary focus:ring-2"
+          className="w-5 h-5 text-brand-primary border-theme-secondary rounded focus:ring-ouro focus:ring-2"
           disabled={!isFeatured && displayArticles.length >= 5}
         />
         <div className="flex-1">
@@ -197,7 +197,7 @@ export default function FeaturedArticlesManager({
             Marcar como destaque
           </Text>
           {!isFeatured && displayArticles.length >= 5 && (
-            <p className="text-xs text-red-600 mt-1">
+            <p className="text-xs text-erro mt-1">
               Máximo de 5 destaques atingido. Remova um para adicionar.
             </p>
           )}
@@ -219,7 +219,7 @@ export default function FeaturedArticlesManager({
                 key={article.id}
                 className={`flex items-center justify-between p-3 rounded-lg border ${
                   isCurrentArticle
-                    ? 'bg-brand-primary/10 border-brand-primary'
+                    ? 'bg-ouro/10 border-ouro'
                     : 'bg-theme-elevated border-theme-secondary'
                 }`}
               >
@@ -250,7 +250,7 @@ export default function FeaturedArticlesManager({
                     className={`p-2 rounded transition-colors ${
                       index === 0
                         ? 'opacity-30 cursor-not-allowed'
-                        : 'hover:bg-theme-secondary/20 text-theme-tertiary hover:text-theme-primary'
+                        : 'hover:bg-sup-1/20 text-theme-tertiary hover:text-texto'
                     }`}
                     title="Mover para cima"
                   >
@@ -263,7 +263,7 @@ export default function FeaturedArticlesManager({
                     className={`p-2 rounded transition-colors ${
                       index === displayArticles.length - 1
                         ? 'opacity-30 cursor-not-allowed'
-                        : 'hover:bg-theme-secondary/20 text-theme-tertiary hover:text-theme-primary'
+                        : 'hover:bg-sup-1/20 text-theme-tertiary hover:text-texto'
                     }`}
                     title="Mover para baixo"
                   >

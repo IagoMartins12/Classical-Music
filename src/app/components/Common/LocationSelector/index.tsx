@@ -251,11 +251,11 @@ const ElegantSelectWithSearch: React.FC<SelectWithSearchProps> = ({
   useEffect(() => {
     if (containerRef.current) {
       if (isOpen) {
-        containerRef.current.style.zIndex = '9999';
+        containerRef.current.style.zIndex = 'var(--z-menu)';
       } else {
         setTimeout(() => {
           if (containerRef.current) {
-            containerRef.current.style.zIndex = '1';
+            containerRef.current.style.zIndex = 'var(--z-elevado)';
           }
         }, 200);
       }
@@ -292,7 +292,11 @@ const ElegantSelectWithSearch: React.FC<SelectWithSearchProps> = ({
   const displayValue = isOpen ? searchTerm : selectedOption?.label || '';
 
   return (
-    <div ref={containerRef} className="relative" style={{ zIndex: 1 }}>
+    <div
+      ref={containerRef}
+      className="relative"
+      style={{ zIndex: 'var(--z-elevado)' }}
+    >
       <div className="relative">
         {leftIcon && (
           <div className="absolute left-4 top-1/2 transform -translate-y-1/2 z-10">
@@ -313,9 +317,9 @@ const ElegantSelectWithSearch: React.FC<SelectWithSearchProps> = ({
             ${
               disabled
                 ? 'cursor-not-allowed opacity-50'
-                : 'cursor-pointer hover:border-brand-primary'
+                : 'cursor-pointer hover:border-ouro'
             }
-            ${isOpen ? 'border-brand-primary' : ''}
+            ${isOpen ? 'border-ouro' : ''}
             ${
               selectedOption
                 ? 'text-theme-primary font-medium'
@@ -334,9 +338,9 @@ const ElegantSelectWithSearch: React.FC<SelectWithSearchProps> = ({
             <button
               type="button"
               onClick={handleClear}
-              className="p-1 hover:bg-theme-secondary hover:bg-opacity-30 rounded-full transition-colors"
+              className="p-1 hover:bg-sup-1 hover:bg-opacity-30 rounded-full transition-colors"
             >
-              <PiX className="w-3 h-3 text-theme-tertiary hover:text-theme-primary" />
+              <PiX className="w-3 h-3 text-theme-tertiary hover:text-texto" />
               <NomeAcao acao="fechar" />
             </button>
           )}
@@ -352,10 +356,10 @@ const ElegantSelectWithSearch: React.FC<SelectWithSearchProps> = ({
         <div
           ref={dropdownRef}
           className="absolute top-full left-0 right-0 mt-2 bg-theme-elevated border border-theme-secondary rounded-xl shadow-2xl max-h-80 overflow-hidden"
-          style={{ zIndex: 10000 }}
+          style={{ zIndex: 'var(--z-menu)' }}
         >
           {headerLabel && (
-            <div className="flex items-center gap-2 px-4 py-3 bg-theme-secondary/10 border-b border-theme-secondary">
+            <div className="flex items-center gap-2 px-4 py-3 bg-sup-1/10 border-b border-theme-secondary">
               {headerIcon}
               <Text papel="rotulo" tom="suave" className="font-medium">
                 {headerLabel}
@@ -369,7 +373,7 @@ const ElegantSelectWithSearch: React.FC<SelectWithSearchProps> = ({
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
               placeholder={searchPlaceholder}
-              className="w-full px-3 py-2 text-sm bg-theme-secondary bg-opacity-50 border border-theme-secondary rounded-md focus:outline-none focus:border-brand-primary transition-colors"
+              className="w-full px-3 py-2 text-sm bg-theme-secondary border border-theme-secondary rounded-md focus:outline-none focus:border-ouro transition-colors"
               autoFocus
             />
           </div>
@@ -377,7 +381,7 @@ const ElegantSelectWithSearch: React.FC<SelectWithSearchProps> = ({
           {isLoading && (
             <div className="flex items-center justify-center py-8">
               <Inline gap={2} className="text-theme-secondary">
-                <div className="w-4 h-4 border-2 border-brand-primary border-t-transparent rounded-full animate-spin"></div>
+                <div className="w-4 h-4 border-2 border-ouro border-t-transparent rounded-full animate-spin"></div>
                 <span className="text-sm">Carregando opções...</span>
               </Inline>
             </div>
@@ -392,11 +396,10 @@ const ElegantSelectWithSearch: React.FC<SelectWithSearchProps> = ({
                     type="button"
                     onClick={() => handleSelect(option.value)}
                     className={`
-                      w-full text-left px-4 py-3 hover:bg-interactive-hover transition-colors duration-200 
-                      border-b last:border-b-0 border-theme-secondary
+                      w-full text-left px-4 py-3 hover:bg-ouro/10 transition-colors duration-200 border-b last:border-b-0 border-theme-secondary
                       ${
                         value === option.value
-                          ? 'bg-brand-primary/10 text-brand-primary font-medium'
+                          ? 'bg-ouro/10 text-brand-primary font-medium'
                           : 'text-theme-primary'
                       }
                     `}
@@ -841,7 +844,7 @@ const LocationSelector: React.FC<LocationSelectorProps> = ({
 
       {/* Feedback de erro */}
       {hasError && (
-        <div className="text-xs text-red-500 mt-2">
+        <div className="text-xs text-erro mt-2">
           Erro ao carregar dados. Usando dados básicos.
         </div>
       )}

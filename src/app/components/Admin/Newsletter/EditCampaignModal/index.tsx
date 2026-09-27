@@ -232,33 +232,33 @@ const EditCampaignModal: React.FC<EditCampaignModalProps> = ({
       case 'DRAFT':
         return {
           icon: PiPencilSimple,
-          color: 'text-accent-blue',
+          color: 'text-aviso',
           message: 'Campanha em rascunho - todos os campos podem ser editados',
         };
       case 'SCHEDULED':
         return {
           icon: PiClock,
-          color: 'text-accent-purple',
+          color: 'text-ouro-texto',
           message:
             'Campanha agendada - apenas data de envio e notas podem ser alteradas',
         };
       case 'PAUSED':
         return {
           icon: PiWarning,
-          color: 'text-accent-amber',
+          color: 'text-atencao',
           message: 'Campanha pausada - pode reagendar ou adicionar notas',
         };
       case 'CANCELLED':
       case 'FAILED':
         return {
           icon: PiWarning,
-          color: 'text-accent-red',
+          color: 'text-erro',
           message: 'Campanha pode ser editada para reenvio',
         };
       case 'SENT':
         return {
           icon: PiGear,
-          color: 'text-accent-green',
+          color: 'text-ok',
           message: 'Campanha enviada - apenas notas podem ser adicionadas',
         };
       default:
@@ -284,7 +284,7 @@ const EditCampaignModal: React.FC<EditCampaignModalProps> = ({
       <div className="space-y-6">
         {/* Header */}
         <div className="text-center">
-          <div className="w-16 h-16 bg-gradient-to-br from-accent-green to-accent-blue rounded-full flex items-center justify-center mx-auto mb-4 shadow-theme-glow">
+          <div className="w-16 h-16 bg-ok rounded-full flex items-center justify-center mx-auto mb-4 shadow-theme-glow">
             <PiPencilSimple className="w-8 h-8 text-white" />
           </div>
           <h2 className="text-2xl font-bold text-theme-primary classical-title mb-2">
@@ -302,8 +302,8 @@ const EditCampaignModal: React.FC<EditCampaignModalProps> = ({
         </div>
 
         {errors.general && (
-          <div className="bg-accent-red/10 border border-accent-red p-4 rounded-lg">
-            <p className="text-accent-red text-sm">{errors.general}</p>
+          <div className="bg-erro/10 border border-erro p-4 rounded-lg">
+            <p className="text-erro text-sm">{errors.general}</p>
           </div>
         )}
 
@@ -481,11 +481,11 @@ const EditCampaignModal: React.FC<EditCampaignModalProps> = ({
                 <span
                   className={`ml-2 font-medium ${
                     campaign.status === 'SENT'
-                      ? 'text-accent-green'
+                      ? 'text-ok'
                       : campaign.status === 'SCHEDULED'
-                        ? 'text-accent-purple'
+                        ? 'text-ouro-texto'
                         : campaign.status === 'DRAFT'
-                          ? 'text-accent-blue'
+                          ? 'text-aviso'
                           : 'text-theme-primary'
                   }`}
                 >

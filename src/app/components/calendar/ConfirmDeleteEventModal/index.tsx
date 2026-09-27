@@ -40,7 +40,7 @@ export default function ConfirmDeleteEventModal({
   if (!mounted || !isOpen) return null;
 
   const modalContent = (
-    <div className="fixed inset-0 z-[9999] flex items-center justify-center p-4">
+    <div className="fixed inset-0 z-dialogo flex items-center justify-center p-4">
       <div
         className="absolute inset-0 bg-black/50 backdrop-blur-sm transition-opacity duration-300"
         onClick={!isLoading ? onClose : undefined}
@@ -51,8 +51,8 @@ export default function ConfirmDeleteEventModal({
         className="relative bg-theme-primary rounded-xl shadow-xl max-w-md w-full p-6 border border-theme-secondary"
       >
         <Inline gap={3} className="mb-4">
-          <div className="w-12 h-12 bg-accent-red/10 rounded-xl flex items-center justify-center">
-            <PiWarning className="w-6 h-6 text-accent-red" />
+          <div className="w-12 h-12 bg-erro/10 rounded-xl flex items-center justify-center">
+            <PiWarning className="w-6 h-6 text-erro" />
           </div>
           <div>
             <h3 className="text-lg font-bold text-theme-primary">
@@ -79,7 +79,7 @@ export default function ConfirmDeleteEventModal({
           <button
             onClick={onClose}
             disabled={isLoading}
-            className="px-4 py-2 rounded-lg border border-theme-secondary text-theme-secondary hover:bg-theme-secondary transition-colors disabled:opacity-50"
+            className="px-4 py-2 rounded-lg border border-theme-secondary text-theme-secondary hover:bg-sup-1 transition-colors disabled:opacity-50"
           >
             Cancelar
           </button>
@@ -88,7 +88,7 @@ export default function ConfirmDeleteEventModal({
             gap={2}
             onClick={onConfirm}
             disabled={isLoading}
-            className="px-4 py-2 bg-accent-red text-white rounded-lg hover:bg-red-600 transition-colors disabled:opacity-50"
+            className="px-4 py-2 bg-erro text-white rounded-lg hover:bg-erro transition-colors disabled:opacity-50"
           >
             {isLoading ? (
               <>

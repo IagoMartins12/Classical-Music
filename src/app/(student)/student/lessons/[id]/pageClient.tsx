@@ -207,15 +207,15 @@ export default function StudentLessonDetailPageClient({
   const getStatusColor = (status: string) => {
     switch (status) {
       case 'COMPLETED':
-        return 'bg-accent-green/10 border-accent-green/30 text-accent-green';
+        return 'bg-ok/10 border-ok/30 text-ok';
       case 'CANCELLED':
-        return 'bg-accent-red/10 border-accent-red/30 text-accent-red';
+        return 'bg-erro/10 border-erro/30 text-erro';
       case 'NO_SHOW':
-        return 'bg-accent-yellow/10 border-accent-yellow/30 text-accent-yellow';
+        return 'bg-atencao/10 border-atencao/30 text-atencao';
       case 'SCHEDULED':
-        return 'bg-accent-blue/10 border-accent-blue/30 text-accent-blue';
+        return 'bg-aviso/10 border-aviso/30 text-aviso';
       default:
-        return 'bg-theme-secondary/10 border-theme-secondary/30 text-theme-secondary';
+        return 'bg-sup-1/10 border-linha/30 text-theme-secondary';
     }
   };
 
@@ -235,7 +235,7 @@ export default function StudentLessonDetailPageClient({
       <PageContainer showBackground={true}>
         <div className="flex items-center justify-center min-h-screen">
           <Card densidade="larga" className="text-center max-w-md">
-            <div className="w-16 h-16 bg-gradient-to-br from-accent-red to-accent-purple rounded-3xl flex items-center justify-center mx-auto mb-6">
+            <div className="w-16 h-16 bg-erro rounded-3xl flex items-center justify-center mx-auto mb-6">
               <PiBookOpen className="w-8 h-8 text-theme-primary" />
             </div>
             <h1 className="text-xl font-bold text-theme-primary classical-title mb-4">
@@ -292,7 +292,7 @@ export default function StudentLessonDetailPageClient({
             <Inline gap={4}>
               <Link
                 href="/student/lessons"
-                className="w-10 h-10 rounded-lg bg-theme-elevated hover:bg-interactive-hover transition-colors flex items-center justify-center"
+                className="w-10 h-10 rounded-lg bg-theme-elevated hover:bg-ouro/10 transition-colors flex items-center justify-center"
               >
                 <PiArrowLeft className="w-5 h-5 text-theme-tertiary" />
               </Link>
@@ -321,7 +321,7 @@ export default function StudentLessonDetailPageClient({
                     as="button"
                     gap={2}
                     onClick={() => handleStudentAction('absence')}
-                    className="btn-classical-secondary text-accent-red border-accent-red/30 hover:bg-accent-red/10 text-sm"
+                    className="btn-classical-secondary text-erro border-erro/30 hover:bg-erro/10 text-sm"
                   >
                     <PiUserMinus className="w-4 h-4" />
                     <span>{t('cannot_attend')}</span>
@@ -330,7 +330,7 @@ export default function StudentLessonDetailPageClient({
                     as="button"
                     gap={2}
                     onClick={() => handleStudentAction('reschedule')}
-                    className="btn-classical-secondary text-accent-blue border-accent-blue/30 hover:bg-accent-blue/10 text-sm"
+                    className="btn-classical-secondary text-aviso border-aviso/30 hover:bg-aviso/10 text-sm"
                   >
                     <PiCalendarBlank className="w-4 h-4" />
                     <span>{t('reschedule')}</span>
@@ -401,7 +401,7 @@ export default function StudentLessonDetailPageClient({
                   {/* Recurrence Info */}
                   {lesson.isRecurring && (
                     <Stack gap={2} className="bg-theme-elevated rounded-lg p-4">
-                      <Inline gap={2} className="text-accent-blue">
+                      <Inline gap={2} className="text-aviso">
                         <PiRepeat className="w-4 h-4" />
                         <span className="font-medium">
                           {t('recurring_lesson')}
@@ -443,7 +443,7 @@ export default function StudentLessonDetailPageClient({
                   {lesson.objectives.length > 0 ? (
                     lesson.objectives.map((objective, index) => (
                       <div key={index} className="flex items-start space-x-2">
-                        <div className="w-2 h-2 bg-brand-primary rounded-full mt-2"></div>
+                        <div className="w-2 h-2 bg-ouro rounded-full mt-2"></div>
                         <span className="text-theme-secondary">
                           {objective}
                         </span>
@@ -482,7 +482,7 @@ export default function StudentLessonDetailPageClient({
                         lesson.topics.map((topic, index) => (
                           <span
                             key={index}
-                            className="px-3 py-1 bg-accent-blue/10 border border-accent-blue/30 text-accent-blue rounded-full text-sm"
+                            className="px-3 py-1 bg-aviso/10 border border-aviso/30 text-aviso rounded-full text-sm"
                           >
                             {topic}
                           </span>
@@ -504,7 +504,7 @@ export default function StudentLessonDetailPageClient({
                         lesson.techniques.map((technique, index) => (
                           <span
                             key={index}
-                            className="px-3 py-1 bg-accent-purple/10 border border-accent-purple/30 text-accent-purple rounded-full text-sm"
+                            className="px-3 py-1 bg-ouro/10 border border-ouro/30 text-ouro-texto rounded-full text-sm"
                           >
                             {technique}
                           </span>
@@ -639,7 +639,7 @@ export default function StudentLessonDetailPageClient({
                       ) : (
                         <button
                           onClick={() => setIsEditingFeedback(true)}
-                          className="w-full p-4 border-2 border-dashed border-theme-secondary/30 rounded-lg text-theme-tertiary hover:border-brand-primary/50 hover:text-brand-primary transition-colors"
+                          className="w-full p-4 border-2 border-dashed border-linha/30 rounded-lg text-theme-tertiary hover:border-ouro/50 hover:text-ouro-texto transition-colors"
                         >
                           {t('add_feedback')}
                         </button>
@@ -654,7 +654,7 @@ export default function StudentLessonDetailPageClient({
                         <h3 className="font-medium text-theme-primary">
                           {t('your_feedback')}
                         </h3>
-                        <div className="bg-accent-yellow/5 border border-accent-yellow/20 rounded-lg p-4">
+                        <div className="bg-atencao/5 border border-atencao/20 rounded-lg p-4">
                           <p className="text-theme-secondary whitespace-pre-wrap">
                             {lesson.studentFeedback}
                           </p>
@@ -697,7 +697,7 @@ export default function StudentLessonDetailPageClient({
                       />
                     </div>
                   ) : (
-                    <div className="w-16 h-16 bg-gradient-to-br from-brand-primary to-brand-secondary rounded-full flex items-center justify-center">
+                    <div className="w-16 h-16 fill-ouro rounded-full flex items-center justify-center">
                       <PiUser className="w-8 h-8 text-theme-primary" />
                     </div>
                   )}
@@ -736,21 +736,19 @@ export default function StudentLessonDetailPageClient({
                   <div
                     className={`p-4 rounded-lg ${
                       lesson.studentPresent
-                        ? 'bg-accent-green/10 border border-accent-green/30'
-                        : 'bg-accent-red/10 border border-accent-red/30'
+                        ? 'bg-ok/10 border border-ok/30'
+                        : 'bg-erro/10 border border-erro/30'
                     }`}
                   >
                     <Inline gap={2} className="mb-2">
                       {lesson.studentPresent ? (
-                        <PiUser className="w-5 h-5 text-accent-green" />
+                        <PiUser className="w-5 h-5 text-ok" />
                       ) : (
-                        <PiUserMinus className="w-5 h-5 text-accent-red" />
+                        <PiUserMinus className="w-5 h-5 text-erro" />
                       )}
                       <span
                         className={`font-medium ${
-                          lesson.studentPresent
-                            ? 'text-accent-green'
-                            : 'text-accent-red'
+                          lesson.studentPresent ? 'text-ok' : 'text-erro'
                         }`}
                       >
                         {lesson.studentPresent ? t('present') : t('absent')}
@@ -804,7 +802,7 @@ export default function StudentLessonDetailPageClient({
                           {lesson.skillsWorked.map((skill, index) => (
                             <span
                               key={index}
-                              className="px-2 py-1 bg-accent-blue/10 text-accent-blue text-xs rounded"
+                              className="px-2 py-1 bg-aviso/10 text-aviso text-xs rounded"
                             >
                               {skill}
                             </span>
@@ -822,7 +820,7 @@ export default function StudentLessonDetailPageClient({
                           {lesson.improvements.map((improvement, index) => (
                             <span
                               key={index}
-                              className="px-2 py-1 bg-accent-green/10 text-accent-green text-xs rounded"
+                              className="px-2 py-1 bg-ok/10 text-ok text-xs rounded"
                             >
                               {improvement}
                             </span>
@@ -840,7 +838,7 @@ export default function StudentLessonDetailPageClient({
                           {lesson.challenges.map((challenge, index) => (
                             <span
                               key={index}
-                              className="px-2 py-1 bg-accent-yellow/10 text-accent-yellow text-xs rounded"
+                              className="px-2 py-1 bg-atencao/10 text-atencao text-xs rounded"
                             >
                               {challenge}
                             </span>
@@ -875,8 +873,8 @@ export default function StudentLessonDetailPageClient({
                             <span
                               className={`px-2 py-1 text-xs rounded ${
                                 assignment.isCompleted
-                                  ? 'text-green-400'
-                                  : 'text-yellow-400'
+                                  ? 'text-ok'
+                                  : 'text-atencao'
                               }`}
                             >
                               {translatePendingAssignments(
@@ -953,15 +951,13 @@ export default function StudentLessonDetailPageClient({
             <Inline gap={3} className="mb-6">
               <div
                 className={`w-12 h-12 rounded-full flex items-center justify-center ${
-                  studentActionType === 'absence'
-                    ? 'bg-accent-red/10'
-                    : 'bg-accent-blue/10'
+                  studentActionType === 'absence' ? 'bg-erro/10' : 'bg-aviso/10'
                 }`}
               >
                 {studentActionType === 'absence' ? (
-                  <PiUserMinus className="w-6 h-6 text-accent-red" />
+                  <PiUserMinus className="w-6 h-6 text-erro" />
                 ) : (
-                  <PiCalendarBlank className="w-6 h-6 text-accent-blue" />
+                  <PiCalendarBlank className="w-6 h-6 text-aviso" />
                 )}
               </div>
               <div>
@@ -994,11 +990,11 @@ export default function StudentLessonDetailPageClient({
                   />
                 </div>
 
-                <div className="bg-accent-blue/10 border border-accent-blue/30 rounded-lg p-4 mb-6">
+                <div className="bg-aviso/10 border border-aviso/30 rounded-lg p-4 mb-6">
                   <div className="flex items-start space-x-3">
-                    <PiInfo className="w-5 h-5 text-accent-blue mt-0.5" />
+                    <PiInfo className="w-5 h-5 text-aviso mt-0.5" />
                     <Stack gap={1} className="text-sm">
-                      <p className="font-medium text-accent-blue">
+                      <p className="font-medium text-aviso">
                         {t('confirmation')}
                       </p>
                       <p className="text-theme-secondary">
@@ -1024,7 +1020,7 @@ export default function StudentLessonDetailPageClient({
                     disabled={loadingStudentAction}
                     className={`btn-classical-primary flex items-center space-x-2 ${
                       studentActionType === 'absence'
-                        ? 'bg-accent-red border-accent-red hover:bg-accent-red/90'
+                        ? 'bg-erro border-erro hover:bg-erro/90'
                         : ''
                     }`}
                   >
@@ -1043,8 +1039,8 @@ export default function StudentLessonDetailPageClient({
               </>
             ) : (
               <div className="text-center py-6">
-                <div className="w-16 h-16 bg-accent-green/10 rounded-full flex items-center justify-center mx-auto mb-4">
-                  <PiCheck className="w-8 h-8 text-accent-green" />
+                <div className="w-16 h-16 bg-ok/10 rounded-full flex items-center justify-center mx-auto mb-4">
+                  <PiCheck className="w-8 h-8 text-ok" />
                 </div>
                 <h3 className="text-lg font-bold text-theme-primary mb-2">
                   {t('message_sent')}

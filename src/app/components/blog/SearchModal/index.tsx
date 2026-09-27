@@ -192,7 +192,7 @@ export function SearchModal({ isOpen, onClose }: SearchModalProps) {
           />
           <button
             onClick={onClose}
-            className="absolute right-3 top-1/2 -translate-y-1/2 p-2 text-theme-tertiary hover:text-theme-primary transition-colors"
+            className="absolute right-3 top-1/2 -translate-y-1/2 p-2 text-theme-tertiary hover:text-texto transition-colors"
           >
             <PiX className="w-5 h-5" />
             <NomeAcao acao="fechar" />
@@ -224,7 +224,7 @@ export function SearchModal({ isOpen, onClose }: SearchModalProps) {
                         saveRecentSearch(query);
                         onClose();
                       }}
-                      className="flex items-center gap-3 p-3 rounded-lg hover:bg-theme-elevated transition-all group"
+                      className="flex items-center gap-3 p-3 rounded-lg hover:bg-sup-elevada transition-all group"
                     >
                       {article.coverImage && (
                         <Image
@@ -236,11 +236,11 @@ export function SearchModal({ isOpen, onClose }: SearchModalProps) {
                         />
                       )}
                       <div className="flex-1 min-w-0">
-                        <p className="text-theme-primary group-hover:text-brand-primary transition-colors truncate">
+                        <p className="text-theme-primary group-hover:text-ouro-texto transition-colors truncate">
                           {article.title}
                         </p>
                       </div>
-                      <PiArrowRight className="w-4 h-4 text-theme-tertiary group-hover:text-brand-primary transition-all group-hover:translate-x-1" />
+                      <PiArrowRight className="w-4 h-4 text-theme-tertiary group-hover:text-ouro-texto transition-all group-hover:translate-x-1" />
                     </Link>
                   ))}
                 </Stack>
@@ -248,7 +248,7 @@ export function SearchModal({ isOpen, onClose }: SearchModalProps) {
                 {/* Link para ver todos os resultados */}
                 <button
                   onClick={() => handleSearch()}
-                  className="mt-3 w-full py-2 text-center text-brand-primary hover:text-brand-secondary transition-colors text-sm font-medium"
+                  className="mt-3 w-full py-2 text-center text-brand-primary hover:text-ouro-texto transition-colors text-sm font-medium"
                 >
                   Ver todos os resultados para &quot;{query}&quot;
                 </button>
@@ -267,7 +267,7 @@ export function SearchModal({ isOpen, onClose }: SearchModalProps) {
                     <button
                       key={category.id}
                       onClick={() => handleCategoryClick(category.slug)}
-                      className="px-4 py-2 rounded-full text-sm bg-theme-elevated hover:bg-brand-primary hover:text-white transition-all"
+                      className="px-4 py-2 rounded-full text-sm bg-theme-elevated hover:bg-ouro hover:text-white transition-all"
                       style={{ borderColor: category.color }}
                     >
                       {category.icon} {category.name}
@@ -289,7 +289,7 @@ export function SearchModal({ isOpen, onClose }: SearchModalProps) {
                     <button
                       key={tag.id}
                       onClick={() => handleTagClick(tag.slug)}
-                      className="px-3 py-1 rounded-full text-sm bg-theme-elevated hover:bg-theme-classical transition-all"
+                      className="px-3 py-1 rounded-full text-sm bg-theme-elevated hover:bg-sup-1 transition-all"
                       style={{ color: tag.color || undefined }}
                     >
                       #{tag.name}
@@ -328,7 +328,7 @@ export function SearchModal({ isOpen, onClose }: SearchModalProps) {
                   </h3>
                   <button
                     onClick={clearRecentSearches}
-                    className="text-xs text-theme-tertiary hover:text-accent-red transition-colors"
+                    className="text-xs text-theme-tertiary hover:text-erro transition-colors"
                   >
                     Limpar
                   </button>
@@ -338,7 +338,7 @@ export function SearchModal({ isOpen, onClose }: SearchModalProps) {
                     <button
                       key={term}
                       onClick={() => handleSearch(term)}
-                      className="px-3 py-2 rounded-lg bg-theme-elevated hover:bg-theme-classical text-sm transition-all"
+                      className="px-3 py-2 rounded-lg bg-theme-elevated hover:bg-sup-1 text-sm transition-all"
                     >
                       {term}
                     </button>
@@ -358,7 +358,7 @@ export function SearchModal({ isOpen, onClose }: SearchModalProps) {
                   <button
                     key={term}
                     onClick={() => handleSearch(term)}
-                    className="px-3 py-2 rounded-lg bg-theme-elevated hover:bg-brand-primary hover:text-white text-sm transition-all"
+                    className="px-3 py-2 rounded-lg bg-theme-elevated hover:bg-ouro hover:text-white text-sm transition-all"
                   >
                     {term}
                   </button>

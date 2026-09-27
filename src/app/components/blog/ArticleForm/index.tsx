@@ -574,8 +574,8 @@ export function ArticleForm({
             onClick={() => setActiveTab('content')}
             className={`py-4 px-1 border-b-2 font-medium text-sm transition-colors ${
               activeTab === 'content'
-                ? 'border-brand-primary text-brand-primary'
-                : 'border-transparent text-theme-secondary hover:text-theme-primary hover:border-theme-secondary'
+                ? 'border-ouro text-brand-primary'
+                : 'border-transparent text-theme-secondary hover:text-texto hover:border-linha'
             }`}
           >
             Conteúdo
@@ -585,8 +585,8 @@ export function ArticleForm({
             onClick={() => setActiveTab('settings')}
             className={`py-4 px-1 border-b-2 font-medium text-sm transition-colors ${
               activeTab === 'settings'
-                ? 'border-brand-primary text-brand-primary'
-                : 'border-transparent text-theme-secondary hover:text-theme-primary hover:border-theme-secondary'
+                ? 'border-ouro text-brand-primary'
+                : 'border-transparent text-theme-secondary hover:text-texto hover:border-linha'
             }`}
           >
             Configurações
@@ -596,8 +596,8 @@ export function ArticleForm({
             onClick={() => setActiveTab('relations')}
             className={`py-4 px-1 border-b-2 font-medium text-sm transition-colors ${
               activeTab === 'relations'
-                ? 'border-brand-primary text-brand-primary'
-                : 'border-transparent text-theme-secondary hover:text-theme-primary hover:border-theme-secondary'
+                ? 'border-ouro text-brand-primary'
+                : 'border-transparent text-theme-secondary hover:text-texto hover:border-linha'
             }`}
           >
             Vinculações
@@ -607,8 +607,8 @@ export function ArticleForm({
             onClick={() => setActiveTab('seo')}
             className={`py-4 px-1 border-b-2 font-medium text-sm transition-colors ${
               activeTab === 'seo'
-                ? 'border-brand-primary text-brand-primary'
-                : 'border-transparent text-theme-secondary hover:text-theme-primary hover:border-theme-secondary'
+                ? 'border-ouro text-brand-primary'
+                : 'border-transparent text-theme-secondary hover:text-texto hover:border-linha'
             }`}
           >
             SEO
@@ -629,7 +629,7 @@ export function ArticleForm({
               placeholder="Digite o título do artigo..."
             />
             {errors.title && (
-              <p className="mt-1 text-sm text-red-600 dark:text-red-400">
+              <p className="mt-1 text-sm text-erro dark:text-erro">
                 {errors.title}
               </p>
             )}
@@ -655,7 +655,7 @@ export function ArticleForm({
               />
             </Inline>
             {errors.slug && (
-              <p className="mt-1 text-sm text-red-600 dark:text-red-400">
+              <p className="mt-1 text-sm text-erro dark:text-erro">
                 {errors.slug}
               </p>
             )}
@@ -704,14 +704,14 @@ export function ArticleForm({
                 <button
                   type="button"
                   onClick={handleRemoveCover}
-                  className="absolute top-2 right-2 p-2 bg-red-600 text-white rounded-full hover:bg-red-700 transition-colors shadow-theme-medium"
+                  className="absolute top-2 right-2 p-2 bg-erro text-white rounded-full hover:bg-erro transition-colors shadow-theme-medium"
                 >
                   <PiX className="w-4 h-4" />
                   <NomeAcao acao="fechar" />
                 </button>
               </div>
             ) : (
-              <div className="border-2 border-dashed border-theme-secondary rounded-lg p-12 text-center hover:border-brand-primary transition-colors">
+              <div className="border-2 border-dashed border-theme-secondary rounded-lg p-12 text-center hover:border-ouro transition-colors">
                 <input
                   type="file"
                   id="cover-upload"
@@ -787,14 +787,14 @@ export function ArticleForm({
             <label className="block text-sm font-medium text-theme-primary">
               Tempo de Leitura
             </label>
-            <div className="flex items-center gap-4 p-4 bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg">
-              <PiClock className="text-blue-600 w-5 h-5 flex-shrink-0" />
+            <div className="flex items-center gap-4 p-4 bg-aviso/10 dark:bg-aviso/20 border border-aviso/30 dark:border-aviso rounded-lg">
+              <PiClock className="text-aviso w-5 h-5 flex-shrink-0" />
               <div className="flex-1">
-                <p className="text-sm font-medium text-blue-900 dark:text-blue-100 mb-2">
+                <p className="text-sm font-medium text-aviso dark:text-aviso mb-2">
                   Tempo estimado automaticamente:{' '}
                   <strong>{calculateReadTime()} min</strong>
                 </p>
-                <p className="text-xs text-blue-700 dark:text-blue-300">
+                <p className="text-xs text-aviso dark:text-aviso">
                   Calculado com base no conteúdo (palavras, imagens, vídeos)
                 </p>
               </div>
@@ -919,8 +919,8 @@ export function ArticleForm({
                 onClick={() => setBackgroundMusicTab('upload')}
                 className={`flex-1 px-4 py-2 text-sm font-medium transition-colors ${
                   backgroundMusicTab === 'upload'
-                    ? 'border-b-2 border-brand-primary text-brand-primary'
-                    : 'text-theme-tertiary hover:text-theme-primary'
+                    ? 'border-b-2 border-ouro text-brand-primary'
+                    : 'text-theme-tertiary hover:text-texto'
                 }`}
               >
                 📤 Fazer Upload
@@ -930,8 +930,8 @@ export function ArticleForm({
                 onClick={() => setBackgroundMusicTab('link')}
                 className={`flex-1 px-4 py-2 text-sm font-medium transition-colors ${
                   backgroundMusicTab === 'link'
-                    ? 'border-b-2 border-brand-primary text-brand-primary'
-                    : 'text-theme-tertiary hover:text-theme-primary'
+                    ? 'border-b-2 border-ouro text-brand-primary'
+                    : 'text-theme-tertiary hover:text-texto'
                 }`}
               >
                 🔗 Link Externo
@@ -946,7 +946,7 @@ export function ArticleForm({
                     <label className="block text-sm font-medium text-theme-primary">
                       Selecionar Arquivo de Áudio
                     </label>
-                    <div className="border-2 border-dashed border-theme-secondary rounded-lg p-6 text-center hover:border-brand-primary transition-colors">
+                    <div className="border-2 border-dashed border-theme-secondary rounded-lg p-6 text-center hover:border-ouro transition-colors">
                       <input
                         type="file"
                         id="background-audio-upload"
@@ -958,8 +958,8 @@ export function ArticleForm({
 
                       {formData.backgroundMusic?.url && !uploadingAudio ? (
                         <div className="space-y-3">
-                          <PiMusicNotes className="w-12 h-12 text-green-600 mx-auto" />
-                          <p className="text-sm text-green-700 font-medium">
+                          <PiMusicNotes className="w-12 h-12 text-ok mx-auto" />
+                          <p className="text-sm text-ok font-medium">
                             ✓ Áudio carregado com sucesso
                           </p>
                           {formData.backgroundMusic?.title && (
@@ -969,7 +969,7 @@ export function ArticleForm({
                           )}
                           <label
                             htmlFor="background-audio-upload"
-                            className="inline-block cursor-pointer text-sm text-brand-primary hover:text-brand-secondary underline"
+                            className="inline-block cursor-pointer text-sm text-brand-primary hover:text-ouro-texto underline"
                           >
                             Alterar áudio
                           </label>
@@ -1129,30 +1129,30 @@ export function ArticleForm({
       {activeTab === 'relations' && (
         <Stack gap={6}>
           {/* ✅ INFO BOX - Mostra quantos estão vinculados */}
-          <div className="bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg p-4">
+          <div className="bg-aviso/10 dark:bg-aviso/20 border border-aviso/30 dark:border-aviso rounded-lg p-4">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm font-medium text-blue-900 dark:text-blue-100">
+                <p className="text-sm font-medium text-aviso dark:text-aviso">
                   Vinculações atuais
                 </p>
-                <p className="text-xs text-blue-700 dark:text-blue-300 mt-1">
+                <p className="text-xs text-aviso dark:text-aviso mt-1">
                   Estes itens serão salvos junto com o artigo
                 </p>
               </div>
               <Inline gap={4}>
                 <div className="text-center">
-                  <p className="text-2xl font-bold text-blue-600">
+                  <p className="text-2xl font-bold text-aviso">
                     {formData.composerIds.length}
                   </p>
-                  <p className="text-xs text-blue-700 dark:text-blue-300">
+                  <p className="text-xs text-aviso dark:text-aviso">
                     Compositor{formData.composerIds.length !== 1 ? 'es' : ''}
                   </p>
                 </div>
                 <div className="text-center">
-                  <p className="text-2xl font-bold text-blue-600">
+                  <p className="text-2xl font-bold text-aviso">
                     {formData.workIds.length}
                   </p>
-                  <p className="text-xs text-blue-700 dark:text-blue-300">
+                  <p className="text-xs text-aviso dark:text-aviso">
                     Obra{formData.workIds.length !== 1 ? 's' : ''}
                   </p>
                 </div>
@@ -1196,7 +1196,7 @@ export function ArticleForm({
                     <button
                       type="button"
                       onClick={() => handleRemoveComposer(composer.id)}
-                      className="p-2 text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-lg transition-colors"
+                      className="p-2 text-erro hover:bg-erro/10 dark:hover:bg-erro/20 rounded-lg transition-colors"
                     >
                       <PiTrash className="w-4 h-4" />
                       <NomeAcao acao="excluir" />
@@ -1257,7 +1257,7 @@ export function ArticleForm({
                     <button
                       type="button"
                       onClick={() => handleRemoveWork(work.id)}
-                      className="p-2 text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-lg transition-colors"
+                      className="p-2 text-erro hover:bg-erro/10 dark:hover:bg-erro/20 rounded-lg transition-colors"
                     >
                       <PiTrash className="w-4 h-4" />
                       <NomeAcao acao="excluir" />

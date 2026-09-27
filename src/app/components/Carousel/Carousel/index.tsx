@@ -87,7 +87,7 @@ const Carousel: React.FC<ModernCarouselProps> = ({
         {/* Container principal com tema */}
         <div className="relative overflow-hidden rounded-3xl py-8 px-2">
           {/* Background gradient usando tema */}
-          <div className="absolute inset-0 bg-gradient-to-r from-transparent via-theme-elevated/30 to-transparent rounded-3xl"></div>
+          <div className="absolute inset-0 bg-sup-elevada rounded-3xl"></div>
 
           <div className="relative">
             {/* Controles de navegação - escondidos no mobile */}

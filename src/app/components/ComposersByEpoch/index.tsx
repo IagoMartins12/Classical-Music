@@ -87,8 +87,8 @@ const EpochCard = ({ epoch }: { epoch: Epoch }) => {
 
     return (
       epochData[epochName as keyof typeof epochData] || {
-        gradient: 'from-brand-primary/30 to-brand-secondary/30',
-        border: 'border-brand-primary/40',
+        gradient: 'bg-ouro/30',
+        border: 'border-ouro/40',
         icon: '🎵',
         accent: 'text-brand-primary',
         image: '/epochs/default.jpg',
@@ -107,10 +107,7 @@ const EpochCard = ({ epoch }: { epoch: Epoch }) => {
       {/* Círculo principal */}
       <div
         className={`
-          relative w-40 h-40 mx-auto rounded-full overflow-hidden
-          border-3 border-theme-primary 
-          transition-all duration-500 ease-out
-          group-hover:scale-105 group-hover:shadow-theme-glow
+          relative w-40 h-40 mx-auto rounded-full overflow-hidden border border-theme-primary transition-all duration-500 ease-out group-hover:scale-105 group-hover:shadow-[var(--sombra-2)]
           
         `}
       >
@@ -143,7 +140,7 @@ const EpochCard = ({ epoch }: { epoch: Epoch }) => {
         </div>
 
         {/* Brilho decorativo */}
-        <div className="absolute inset-0 rounded-full bg-brand-gradient opacity-0 group-hover:opacity-10 transition-opacity duration-500"></div>
+        <div className="absolute inset-0 rounded-full fill-ouro opacity-0 group-hover:opacity-10 transition-opacity duration-500"></div>
       </div>
 
       {/* Informações da época - sempre visível */}
@@ -173,7 +170,7 @@ const EpochCard = ({ epoch }: { epoch: Epoch }) => {
                 ? `/composers?epoch=${epoch.id}`
                 : `/composers`
             }
-            className=" flex items-center justify-between w-full px-4 py-3 bg-theme-tertiary rounded-xl text-theme-primary font-medium hover:bg-interactive-hover hover:border-brand-primary hover:text-brand-primary transition-all duration-300 shadow-theme-sm"
+            className=" flex items-center justify-between w-full px-4 py-3 bg-theme-tertiary rounded-xl text-theme-primary font-medium hover:bg-ouro/10 hover:border-ouro hover:text-ouro-texto transition-all duration-300 shadow-theme-sm"
           >
             <div className="flex items-center gap-3">
               <div className="w-8 h-8 bg-white/20 rounded-lg hidden md:flex items-center justify-center">
@@ -208,7 +205,7 @@ const EpochCard = ({ epoch }: { epoch: Epoch }) => {
             href={
               epoch.name !== 'Todos' ? `/works?epoch=${epoch.id}` : `/works`
             }
-            className="group/btn flex items-center justify-between w-full px-4 py-3 bg-theme-tertiary rounded-xl text-theme-primary font-medium hover:bg-interactive-hover hover:border-brand-primary hover:text-brand-primary transition-all duration-300 shadow-theme-sm"
+            className="group/btn flex items-center justify-between w-full px-4 py-3 bg-theme-tertiary rounded-xl text-theme-primary font-medium hover:bg-ouro/10 hover:border-ouro hover:text-ouro-texto transition-all duration-300 shadow-theme-sm"
           >
             <div className="flex items-center gap-3">
               <div className="w-8 h-8 bg-white/20 rounded-lg hidden md:flex items-center justify-center">
@@ -294,9 +291,9 @@ const ComposersByEpoch: React.FC<ComposersByEpochProps> = ({ epochs }) => {
 
       {/* Background decoration */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        <div className="absolute top-20 right-20 w-32 h-32 bg-gradient-to-r from-purple-500/10 to-violet-500/10 rounded-full blur-3xl"></div>
-        <div className="absolute bottom-20 left-20 w-40 h-40 bg-gradient-to-r from-violet-500/10 to-purple-500/10 rounded-full blur-3xl"></div>
-        <div className="absolute top-1/2 right-1/4 w-24 h-24 bg-gradient-to-r from-blue-500/10 to-cyan-500/10 rounded-full blur-2xl animate-pulse"></div>
+        <div className="absolute top-20 right-20 w-32 h-32 rounded-full blur-3xl"></div>
+        <div className="absolute bottom-20 left-20 w-40 h-40 rounded-full blur-3xl"></div>
+        <div className="absolute top-1/2 right-1/4 w-24 h-24 bg-aviso/10 rounded-full blur-2xl animate-pulse"></div>
       </div>
     </section>
   );

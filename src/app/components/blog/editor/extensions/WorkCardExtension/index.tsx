@@ -35,7 +35,7 @@ const WorkCardComponent = (props: any) => {
         >
           <button
             onClick={handleDelete}
-            className="p-2 text-red-600 hover:bg-red-50 rounded transition-colors"
+            className="p-2 text-erro hover:bg-erro/10 rounded transition-colors"
             title="Remover"
           >
             <PiTrash className="w-4 h-4" />
@@ -43,9 +43,9 @@ const WorkCardComponent = (props: any) => {
         </Inline>
       )}
 
-      <Card className="border-l-4 border-accent-purple">
+      <Card className="border border-ouro/40 bg-ouro/10">
         <div className="flex items-start space-x-4">
-          <div className="p-3 bg-accent-purple rounded-lg shadow-theme-medium">
+          <div className="p-3 bg-ouro rounded-lg shadow-theme-medium">
             <PiMusicNotes className="w-8 h-8 text-white" />
           </div>
 
@@ -62,7 +62,7 @@ const WorkCardComponent = (props: any) => {
                 href={`/works/${workId}`}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="inline-flex items-center px-4 py-2 bg-accent-purple text-white rounded-lg hover:opacity-90 transition-opacity shadow-theme-small"
+                className="inline-flex items-center px-4 py-2 bg-ouro text-sobre-ouro rounded-lg hover:opacity-90 transition-opacity shadow-theme-small"
               >
                 Ver Obra →
               </Link>
@@ -70,7 +70,7 @@ const WorkCardComponent = (props: any) => {
                 href={`/works/${workId}#scores`}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="inline-flex items-center px-4 py-2 bg-theme-elevated border border-accent-purple text-accent-purple rounded-lg hover:bg-interactive-hover transition-colors"
+                className="inline-flex items-center px-4 py-2 bg-theme-elevated border border-ouro text-ouro-texto rounded-lg hover:bg-ouro/10 transition-colors"
               >
                 Ver Partituras
               </Link>

@@ -71,7 +71,7 @@ const CarouselCard: React.FC<CarouselCardProps> = ({
             {/* Period Badge */}
             {item.epochName && (
               <div className="absolute top-4 left-4 opacity-0 group-hover:opacity-100 transition-all duration-300 transform -translate-y-2 group-hover:translate-y-0">
-                <span className="inline-flex items-center px-3 py-1 bg-brand-primary/20 backdrop-blur-md border border-brand-primary/30 rounded-full text-xs font-medium text-white">
+                <span className="inline-flex items-center px-3 py-1 bg-ouro/20 backdrop-blur-md border border-ouro/30 rounded-full text-xs font-medium text-white">
                   <PiCalendarBlank className="w-3 h-3 mr-1" />
                   {translateEpochWithHook(
                     translateEpochWithHook(item.epochName, t),
@@ -94,7 +94,7 @@ const CarouselCard: React.FC<CarouselCardProps> = ({
 
             {/* Name and Info */}
             <div className="relative z-10">
-              <h3 className="font-bold !flex items-center gap-2 text-theme-primary text-lg classical-title mb-2 group-hover:text-brand-primary transition-colors duration-300 line-clamp-2">
+              <h3 className="font-bold !flex items-center gap-2 text-theme-primary text-lg classical-title mb-2 group-hover:text-ouro-texto transition-colors duration-300 line-clamp-2">
                 {item.fullName || item.name}
 
                 <VerificationBadge verified={item.isVerified} variant="icon" />
@@ -133,16 +133,16 @@ const CarouselCard: React.FC<CarouselCardProps> = ({
               {/* Action Bar */}
               <div className="flex items-center justify-between pt-4 border-t border-theme-secondary">
                 <Inline gap={2}>
-                  <div className="w-2 h-2 bg-brand-primary rounded-full animate-pulse"></div>
+                  <div className="w-2 h-2 bg-ouro rounded-full animate-pulse"></div>
                   <Text papel="legenda" tom="fraco" className="font-medium">
                     {t('home_quick_actions_explore')}
                   </Text>
                 </Inline>
 
                 {/* Arrow indicator */}
-                <div className="w-6 h-6 border border-theme-primary rounded-full flex items-center justify-center group-hover:border-brand-primary group-hover:bg-brand-primary/10 transition-all duration-300">
+                <div className="w-6 h-6 border border-theme-primary rounded-full flex items-center justify-center group-hover:border-ouro group-hover:bg-ouro/10 transition-all duration-300">
                   <svg
-                    className="w-3 h-3 text-theme-primary group-hover:text-brand-primary transition-all duration-300 transform group-hover:translate-x-0.5"
+                    className="w-3 h-3 text-theme-primary group-hover:text-ouro-texto transition-all duration-300 transform group-hover:translate-x-0.5"
                     fill="none"
                     stroke="currentColor"
                     viewBox="0 0 24 24"
@@ -159,7 +159,7 @@ const CarouselCard: React.FC<CarouselCardProps> = ({
             </div>
 
             {/* Hover Glow Effect */}
-            <div className="absolute inset-0 bg-brand-gradient opacity-0 group-hover:opacity-5 transition-opacity duration-500 rounded-b-2xl"></div>
+            <div className="absolute inset-0 fill-ouro opacity-0 group-hover:opacity-5 transition-opacity duration-500 rounded-b-2xl"></div>
           </div>
         </div>
       </Link>

@@ -99,13 +99,13 @@ export default function PublicTeacherDetailsPageClient({
       : teacher.fullBio;
 
   return (
-    <div className="bg-gradient-primary">
+    <div className="">
       {/* Background Pattern */}
       <div className="absolute inset-0 pointer-events-none opacity-5">
-        <div className="absolute top-20 left-20 w-64 h-64 bg-brand-gradient rounded-full blur-3xl"></div>
-        <div className="absolute bottom-40 right-32 w-48 h-48 bg-accent-purple/30 rounded-full blur-2xl"></div>
-        <div className="absolute top-1/2 left-1/4 w-32 h-32 bg-accent-blue/20 rounded-full blur-xl"></div>
-        <div className="absolute bottom-20 left-10 w-40 h-40 bg-brand-secondary/20 rounded-full blur-2xl"></div>
+        <div className="absolute top-20 left-20 w-64 h-64 rounded-full blur-3xl"></div>
+        <div className="absolute bottom-40 right-32 w-48 h-48 rounded-full blur-2xl"></div>
+        <div className="absolute top-1/2 left-1/4 w-32 h-32 rounded-full blur-xl"></div>
+        <div className="absolute bottom-20 left-10 w-40 h-40 rounded-full blur-2xl"></div>
       </div>
 
       <div className="section-wrap space-y-8 relative z-10">
@@ -118,7 +118,7 @@ export default function PublicTeacherDetailsPageClient({
           >
             <Link
               href="/teachers"
-              className="hover:text-brand-primary transition-colors duration-300 font-medium"
+              className="hover:text-ouro-texto transition-colors duration-300 font-medium"
             >
               Professores
             </Link>
@@ -147,7 +147,10 @@ export default function PublicTeacherDetailsPageClient({
           className="flex flex-col gap-4"
         >
           {/* Header Principal */}
-          <AnimatedCard hover="lift" className="classical-card relative z-50">
+          <AnimatedCard
+            hover="lift"
+            className="classical-card relative z-elevado"
+          >
             <div className="p-8 relative z-10">
               <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
                 {/* Informações do Professor */}
@@ -162,7 +165,7 @@ export default function PublicTeacherDetailsPageClient({
                               {teacher.name}
                             </h1>
                             {teacher.isVerified && (
-                              <div className="w-8 h-8 bg-accent-green rounded-full flex items-center justify-center">
+                              <div className="w-8 h-8 bg-ok rounded-full flex items-center justify-center">
                                 <PiCheckCircle className="w-5 h-5 text-theme-primary" />
                               </div>
                             )}
@@ -207,7 +210,7 @@ export default function PublicTeacherDetailsPageClient({
                     <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
                       {/* Experiência */}
                       <div className="flex items-start space-x-3 group">
-                        <div className="w-10 h-10 bg-gradient-to-br from-accent-green to-accent-blue rounded-xl flex items-center justify-center mt-0.5 group-hover:scale-110 transition-transform duration-300">
+                        <div className="w-10 h-10 bg-ok rounded-xl flex items-center justify-center mt-0.5 group-hover:scale-110 transition-transform duration-300">
                           <PiClock className="w-5 h-5 text-theme-primary" />
                         </div>
                         <div>
@@ -222,7 +225,7 @@ export default function PublicTeacherDetailsPageClient({
 
                       {/* Alunos */}
                       <div className="flex items-start space-x-3 group">
-                        <div className="w-10 h-10 bg-gradient-to-br from-brand-primary to-brand-secondary rounded-xl flex items-center justify-center mt-0.5 group-hover:scale-110 transition-transform duration-300">
+                        <div className="w-10 h-10 fill-ouro rounded-xl flex items-center justify-center mt-0.5 group-hover:scale-110 transition-transform duration-300">
                           <PiUsers className="w-5 h-5 text-theme-primary" />
                         </div>
                         <div>
@@ -238,7 +241,7 @@ export default function PublicTeacherDetailsPageClient({
                       {/* Avaliação */}
                       {teacher.averageRating && (
                         <div className="flex items-start space-x-3 group">
-                          <div className="w-10 h-10 bg-gradient-to-br from-accent-yellow to-accent-orange rounded-xl flex items-center justify-center mt-0.5 group-hover:scale-110 transition-transform duration-300">
+                          <div className="w-10 h-10 bg-atencao rounded-xl flex items-center justify-center mt-0.5 group-hover:scale-110 transition-transform duration-300">
                             <PiStar className="w-5 h-5 text-theme-primary" />
                           </div>
                           <div>
@@ -254,7 +257,7 @@ export default function PublicTeacherDetailsPageClient({
 
                       {/* Aulas */}
                       <div className="flex items-start space-x-3 group">
-                        <div className="w-10 h-10 bg-gradient-to-br from-accent-purple to-accent-pink rounded-xl flex items-center justify-center mt-0.5 group-hover:scale-110 transition-transform duration-300">
+                        <div className="w-10 h-10 fill-ouro rounded-xl flex items-center justify-center mt-0.5 group-hover:scale-110 transition-transform duration-300">
                           <PiMusicNotes className="w-5 h-5 text-theme-primary" />
                         </div>
                         <div>
@@ -275,7 +278,7 @@ export default function PublicTeacherDetailsPageClient({
                       {/* Localização */}
                       {teacher.location && (
                         <div className="flex items-start space-x-3 group">
-                          <div className="w-8 h-8 bg-gradient-to-br from-accent-blue to-accent-purple rounded-xl flex items-center justify-center mt-0.5 group-hover:scale-110 transition-transform duration-300">
+                          <div className="w-8 h-8 bg-aviso rounded-xl flex items-center justify-center mt-0.5 group-hover:scale-110 transition-transform duration-300">
                             <PiMapPin className="w-4 h-4 text-theme-primary" />
                           </div>
                           <div>
@@ -296,7 +299,7 @@ export default function PublicTeacherDetailsPageClient({
 
                       {/* Desde quando ensina */}
                       <div className="flex items-start space-x-3 group">
-                        <div className="w-8 h-8 bg-gradient-to-br from-accent-green to-accent-blue rounded-xl flex items-center justify-center mt-0.5 group-hover:scale-110 transition-transform duration-300">
+                        <div className="w-8 h-8 bg-ok rounded-xl flex items-center justify-center mt-0.5 group-hover:scale-110 transition-transform duration-300">
                           <PiCalendarBlank className="w-4 h-4 text-theme-primary" />
                         </div>
                         <div>
@@ -317,7 +320,7 @@ export default function PublicTeacherDetailsPageClient({
                       {/* Taxa de Conclusão */}
                       {teacher.completionRate && (
                         <div className="flex items-start space-x-3 group">
-                          <div className="w-8 h-8 bg-gradient-to-br from-accent-green to-accent-blue rounded-xl flex items-center justify-center mt-0.5 group-hover:scale-110 transition-transform duration-300">
+                          <div className="w-8 h-8 bg-ok rounded-xl flex items-center justify-center mt-0.5 group-hover:scale-110 transition-transform duration-300">
                             <PiTrendUp className="w-4 h-4 text-theme-primary" />
                           </div>
                           <div>
@@ -338,7 +341,7 @@ export default function PublicTeacherDetailsPageClient({
 
                       {/* Responde em */}
                       <div className="flex items-start space-x-3 group">
-                        <div className="w-8 h-8 bg-gradient-to-br from-brand-primary to-brand-secondary rounded-xl flex items-center justify-center mt-0.5 group-hover:scale-110 transition-transform duration-300">
+                        <div className="w-8 h-8 fill-ouro rounded-xl flex items-center justify-center mt-0.5 group-hover:scale-110 transition-transform duration-300">
                           <PiChatCircle className="w-4 h-4 text-theme-primary" />
                         </div>
                         <div>
@@ -443,13 +446,13 @@ export default function PublicTeacherDetailsPageClient({
                       {/* Status de disponibilidade */}
                       <Inline
                         gap={3}
-                        className="p-4 bg-gradient-to-r from-theme-elevated to-interactive-hover rounded-xl border border-theme-primary"
+                        className="p-4 bg-sup-elevada rounded-xl border border-theme-primary"
                       >
                         <div
                           className={`w-3 h-3 rounded-full ${
                             teacher.contactPreferences.acceptingStudents
-                              ? 'bg-accent-green'
-                              : 'bg-accent-red'
+                              ? 'bg-ok'
+                              : 'bg-erro'
                           }`}
                         ></div>
                         <Text papel="rotulo" tom="suave" as="p">
@@ -480,10 +483,10 @@ export default function PublicTeacherDetailsPageClient({
                           priority
                           onError={() => setImageError(true)}
                         />
-                        <div className="absolute inset-0 bg-brand-gradient opacity-0 group-hover:opacity-10 transition-opacity duration-500"></div>
+                        <div className="absolute inset-0 fill-ouro opacity-0 group-hover:opacity-10 transition-opacity duration-500"></div>
                       </div>
                     ) : (
-                      <div className="w-64 h-80 bg-gradient-card border border-theme-primary rounded-2xl flex items-center justify-center shadow-theme-glow group-hover:scale-105 transition-all duration-500">
+                      <div className="w-64 h-80 fundo-sup-1 border border-theme-primary rounded-2xl flex items-center justify-center shadow-theme-glow group-hover:scale-105 transition-all duration-500">
                         <div className="text-center text-theme-tertiary">
                           <PiUser className="w-16 h-16 mx-auto mb-4 opacity-50" />
                           <p className="text-sm">Sem imagem disponível</p>
@@ -503,7 +506,7 @@ export default function PublicTeacherDetailsPageClient({
               <div className="p-8">
                 <AnimatedItem direction="up" springType="bouncy">
                   <Inline gap={3} className="mb-6">
-                    <div className="w-12 h-12 bg-gradient-to-br from-accent-purple to-accent-blue rounded-2xl flex items-center justify-center">
+                    <div className="w-12 h-12 fill-ouro rounded-2xl flex items-center justify-center">
                       <PiMusicNotes className="w-6 h-6 text-theme-primary" />
                     </div>
                     <div>
@@ -523,9 +526,9 @@ export default function PublicTeacherDetailsPageClient({
                       <Text
                         papel="rotulo"
                         tom="ouro"
-                        className="inline-flex items-center px-4 py-2 bg-gradient-to-r from-brand-primary/10 to-brand-secondary/10 border border-brand-primary/30 rounded-full font-medium shadow-theme-small hover:shadow-theme-medium transition-all duration-300 hover:scale-105 group"
+                        className="inline-flex items-center px-4 py-2 bg-ouro/10 border border-ouro/30 rounded-full font-medium shadow-theme-small hover:shadow-[var(--sombra-1)] transition-all duration-300 hover:scale-105 group"
                       >
-                        <div className="w-4 h-4 bg-gradient-to-br from-brand-primary to-brand-secondary rounded-full flex items-center justify-center mr-2 group-hover:scale-110 transition-transform duration-300">
+                        <div className="w-4 h-4 fill-ouro rounded-full flex items-center justify-center mr-2 group-hover:scale-110 transition-transform duration-300">
                           <PiMusicNotes className="w-3 h-3 text-theme-primary" />
                         </div>
                         {specialty}
@@ -539,8 +542,8 @@ export default function PublicTeacherDetailsPageClient({
                       hover="scale"
                       springType="bouncy"
                     >
-                      <span className="inline-flex items-center px-4 py-2 bg-gradient-to-r from-accent-blue/10 to-accent-purple/10 border border-accent-blue/30 rounded-full text-sm font-medium text-accent-blue shadow-theme-small hover:shadow-theme-medium transition-all duration-300 hover:scale-105 group">
-                        <div className="w-4 h-4 bg-gradient-to-br from-accent-blue to-accent-purple rounded-full flex items-center justify-center mr-2 group-hover:scale-110 transition-transform duration-300">
+                      <span className="inline-flex items-center px-4 py-2 bg-aviso/10 border border-aviso/30 rounded-full text-sm font-medium text-aviso shadow-theme-small hover:shadow-[var(--sombra-1)] transition-all duration-300 hover:scale-105 group">
+                        <div className="w-4 h-4 bg-aviso rounded-full flex items-center justify-center mr-2 group-hover:scale-110 transition-transform duration-300">
                           <PiTarget className="w-3 h-3 text-theme-primary" />
                         </div>
                         {instrument}
@@ -557,7 +560,7 @@ export default function PublicTeacherDetailsPageClient({
             <div className="p-8">
               <AnimatedItem direction="left" springType="smooth">
                 <Inline gap={3} className="mb-6">
-                  <div className="w-12 h-12 bg-gradient-to-br from-accent-green to-accent-blue rounded-2xl flex items-center justify-center">
+                  <div className="w-12 h-12 bg-ok rounded-2xl flex items-center justify-center">
                     <PiBookOpen className="w-6 h-6 text-theme-primary" />
                   </div>
                   <div className="flex-1">
@@ -593,7 +596,7 @@ export default function PublicTeacherDetailsPageClient({
                 <AnimatedItem direction="up" springType="gentle">
                   <Stack
                     gap={2}
-                    className="mt-6 p-4 bg-gradient-to-r from-theme-elevated to-interactive-hover rounded-xl border border-theme-primary"
+                    className="mt-6 p-4 bg-sup-elevada rounded-xl border border-theme-primary"
                   >
                     <h3 className="text-lg font-bold text-brand-primary">
                       Filosofia de Ensino
@@ -612,7 +615,7 @@ export default function PublicTeacherDetailsPageClient({
             <div className="p-8">
               <AnimatedItem direction="up" springType="bouncy">
                 <Inline gap={3} className="mb-6">
-                  <div className="w-12 h-12 bg-gradient-to-br from-accent-green to-accent-blue rounded-2xl flex items-center justify-center">
+                  <div className="w-12 h-12 bg-ok rounded-2xl flex items-center justify-center">
                     <PiChatCircle className="w-6 h-6 text-theme-primary" />
                   </div>
                   <div>
@@ -636,7 +639,7 @@ export default function PublicTeacherDetailsPageClient({
 
                     <Stack gap={3}>
                       <Inline gap={3}>
-                        <PiClock className="w-5 h-5 text-accent-blue" />
+                        <PiClock className="w-5 h-5 text-aviso" />
                         <span className="text-theme-secondary">
                           Responde em até{' '}
                           <strong>
@@ -646,7 +649,7 @@ export default function PublicTeacherDetailsPageClient({
                       </Inline>
 
                       <Inline gap={3}>
-                        <PiChatCircle className="w-5 h-5 text-accent-green" />
+                        <PiChatCircle className="w-5 h-5 text-ok" />
                         <span className="text-theme-secondary">
                           Prefere contato por{' '}
                           <strong>
@@ -662,7 +665,7 @@ export default function PublicTeacherDetailsPageClient({
                       </Inline>
 
                       <Inline gap={3}>
-                        <PiClock className="w-5 h-5 text-accent-purple" />
+                        <PiClock className="w-5 h-5 text-ouro-texto" />
                         <span className="text-theme-secondary">
                           Aulas de{' '}
                           <strong>
@@ -727,7 +730,7 @@ export default function PublicTeacherDetailsPageClient({
 
               {/* Aviso sobre Disponibilidade */}
               <AnimatedItem direction="up" springType="gentle">
-                <div className="mt-6 p-4 bg-gradient-to-r from-theme-elevated to-interactive-hover rounded-xl border border-theme-primary">
+                <div className="mt-6 p-4 bg-sup-elevada rounded-xl border border-theme-primary">
                   <div className="flex items-start space-x-3">
                     <PiInfo className="w-5 h-5 text-brand-primary mt-1" />
                     <div>

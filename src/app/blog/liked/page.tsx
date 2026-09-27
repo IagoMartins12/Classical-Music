@@ -52,7 +52,7 @@ export default async function LikedPage() {
               direction="scale"
               className="flex items-center justify-center mb-6"
             >
-              <div className="w-16 h-16 bg-gradient-to-br from-brand-primary to-brand-secondary rounded-2xl flex items-center justify-center shadow-theme-glow">
+              <div className="w-16 h-16 fill-ouro rounded-2xl flex items-center justify-center shadow-theme-glow">
                 <PiHeart className="w-8 h-8 text-theme-primary" />
               </div>
             </AnimatedItem>

@@ -83,11 +83,11 @@ export default function AdminFooter() {
   const getStatusColor = (status: string) => {
     switch (status) {
       case 'good':
-        return 'text-accent-green';
+        return 'text-ok';
       case 'warning':
-        return 'text-accent-amber';
+        return 'text-atencao';
       case 'error':
-        return 'text-accent-red';
+        return 'text-erro';
       default:
         return 'text-theme-tertiary';
     }
@@ -96,11 +96,11 @@ export default function AdminFooter() {
   const getStatusBg = (status: string) => {
     switch (status) {
       case 'good':
-        return 'bg-accent-green/20';
+        return 'bg-ok/20';
       case 'warning':
-        return 'bg-accent-amber/20';
+        return 'bg-atencao/20';
       case 'error':
-        return 'bg-accent-red/20';
+        return 'bg-erro/20';
       default:
         return 'bg-theme-secondary';
     }
@@ -173,7 +173,7 @@ export default function AdminFooter() {
               {/* System Status Indicator */}
               <Inline gap={2}>
                 <Inline gap={1}>
-                  <div className="w-2 h-2 bg-accent-green rounded-full animate-pulse"></div>
+                  <div className="w-2 h-2 bg-ok rounded-full animate-pulse"></div>
                   <Text papel="rotulo" tom="suave">
                     Sistema Operacional
                   </Text>
@@ -196,13 +196,13 @@ export default function AdminFooter() {
 
             {/* Quick Links */}
             <Inline gap={4}>
-              <button className="text-xs text-theme-tertiary hover:text-theme-primary transition-colors">
+              <button className="text-xs text-theme-tertiary hover:text-texto transition-colors">
                 Documentação
               </button>
-              <button className="text-xs text-theme-tertiary hover:text-theme-primary transition-colors">
+              <button className="text-xs text-theme-tertiary hover:text-texto transition-colors">
                 Suporte
               </button>
-              <button className="text-xs text-theme-tertiary hover:text-theme-primary transition-colors">
+              <button className="text-xs text-theme-tertiary hover:text-texto transition-colors">
                 Changelog
               </button>
             </Inline>

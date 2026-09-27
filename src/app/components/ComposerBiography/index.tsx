@@ -62,7 +62,7 @@ export default function ComposerBiography({
           {[...Array(6)].map((_, index) => (
             <div
               key={index}
-              className="h-4 bg-gradient-to-r from-theme-elevated via-interactive-hover to-theme-elevated rounded-full animate-shimmer"
+              className="h-4 bg-sup-elevada rounded-full animate-shimmer"
               style={{
                 width: `${Math.random() * 30 + 70}%`,
                 animationDelay: `${index * 0.1}s`,
@@ -95,13 +95,13 @@ export default function ComposerBiography({
     return (
       <div className="rounded-2xl p-6 flex justify-center">
         <div className="flex flex-col gap-4 justify-center items-center space-x-4">
-          <div className="w-10 h-10 bg-accent-red/20 border border-accent-red/40 rounded-xl flex items-center justify-center flex-shrink-0">
-            <PiWarningCircle className="w-5 h-5 text-accent-red" />
+          <div className="w-10 h-10 bg-erro/20 border border-erro/40 rounded-xl flex items-center justify-center flex-shrink-0">
+            <PiWarningCircle className="w-5 h-5 text-erro" />
           </div>
           <div className="flex-1 items-center justify-center">
             <Inline gap={2} className="mb-2">
-              <PiX className="w-4 h-4 text-accent-red" />
-              <p className="text-accent-red font-semibold">
+              <PiX className="w-4 h-4 text-erro" />
+              <p className="text-erro font-semibold">
                 {t('error_generating_bio')}
               </p>
             </Inline>
@@ -163,29 +163,27 @@ export default function ComposerBiography({
 
       {/* Warning se houver fallback */}
       {warning && (
-        <div className="mb-6 p-3 bg-gradient-to-r from-accent-orange/10 to-accent-red/10 border border-accent-orange/30 rounded-xl">
+        <div className="mb-6 p-3 bg-atencao/10 border border-atencao/30 rounded-xl">
           <Inline gap={2}>
-            <PiWarningCircle className="w-4 h-4 text-accent-orange" />
-            <span className="text-accent-orange text-sm font-medium">
-              {warning}
-            </span>
+            <PiWarningCircle className="w-4 h-4 text-atencao" />
+            <span className="text-atencao text-sm font-medium">{warning}</span>
           </Inline>
         </div>
       )}
 
       {/* ✅ Mostrar erro como warning se tiver biografia para fallback */}
       {error && displayBio && (
-        <div className="mb-6 p-3 bg-gradient-to-r from-accent-orange/10 to-accent-red/10 border border-accent-orange/30 rounded-xl">
+        <div className="mb-6 p-3 bg-atencao/10 border border-atencao/30 rounded-xl">
           <div className="flex items-center justify-between">
             <Inline gap={2}>
-              <PiWarningCircle className="w-4 h-4 text-accent-orange" />
-              <span className="text-accent-orange text-sm font-medium">
+              <PiWarningCircle className="w-4 h-4 text-atencao" />
+              <span className="text-atencao text-sm font-medium">
                 Translation error - showing previous version
               </span>
             </Inline>
             <button
               onClick={handleRetry}
-              className="text-xs px-2 py-1 bg-accent-orange/20 text-accent-orange rounded hover:bg-accent-orange/30 transition-colors"
+              className="text-xs px-2 py-1 bg-atencao/10 text-atencao rounded hover:bg-atencao/30 transition-colors"
             >
               Try again
             </button>
@@ -196,7 +194,7 @@ export default function ComposerBiography({
       {/* Conteúdo da biografia */}
       <div className="relative">
         {/* Decoração de fundo */}
-        <div className="absolute top-0 right-0 w-32 h-32 bg-brand-gradient opacity-5 rounded-full blur-3xl"></div>
+        <div className="absolute top-0 right-0 w-32 h-32 opacity-5 rounded-full blur-3xl"></div>
 
         <Text
           papel="corpo"
@@ -212,16 +210,16 @@ export default function ComposerBiography({
         </Text>
 
         {/* Gradient fade no final */}
-        <div className="absolute bottom-0 left-0 right-0 h-8 bg-gradient-to-t from-theme-primary to-transparent pointer-events-none"></div>
+        <div className="absolute bottom-0 left-0 right-0 h-8 bg-fundo pointer-events-none"></div>
       </div>
 
       {/* Linha decorativa */}
       <div className="mt-6 pt-6 border-t border-theme-secondary">
         <Inline gap={2} className="justify-center text-theme-tertiary">
-          <div className="w-1 h-1 bg-brand-primary rounded-full animate-pulse"></div>
+          <div className="w-1 h-1 bg-ouro rounded-full animate-pulse"></div>
           <PiMusicNotes className="w-4 h-4" />
           <div
-            className="w-1 h-1 bg-brand-primary rounded-full animate-pulse"
+            className="w-1 h-1 bg-ouro rounded-full animate-pulse"
             style={{ animationDelay: '0.5s' }}
           ></div>
         </Inline>

@@ -700,9 +700,7 @@ const LearningModal = () => {
           <Inline gap={3}>
             <div
               className={`w-10 h-10 rounded-xl bg-gradient-to-br ${
-                config.color === 'blue'
-                  ? 'from-accent-blue to-brand-primary'
-                  : 'from-accent-green to-brand-primary'
+                config.color === 'blue' ? 'bg-aviso' : 'bg-ok'
               } flex items-center justify-center shadow-theme-glow`}
             >
               <config.icon className="w-5 h-5 text-theme-primary" />
@@ -979,7 +977,7 @@ const LearningModal = () => {
                     onChange={(e) =>
                       updateLearnedForm({ wouldRecommend: e.target.checked })
                     }
-                    className="w-4 h-4 text-accent-green border-theme-secondary rounded focus:ring-brand-primary"
+                    className="w-4 h-4 text-ok border-theme-secondary rounded focus:ring-ouro"
                   />
                   <label
                     htmlFor="wouldRecommend"
@@ -996,7 +994,7 @@ const LearningModal = () => {
                     onChange={(e) =>
                       updateLearnedForm({ publicPerformance: e.target.checked })
                     }
-                    className="w-4 h-4 text-accent-green border-theme-secondary rounded focus:ring-brand-primary"
+                    className="w-4 h-4 text-ok border-theme-secondary rounded focus:ring-ouro"
                   />
                   <label
                     htmlFor="publicPerformance"
@@ -1021,10 +1019,10 @@ const LearningModal = () => {
 
           {/* NOVA SEÇÃO: Progresso de Aprendizado */}
           {availableMilestones.length > 0 && type === 'want-to-learn' && (
-            <div className="border-2 border-dashed border-theme-secondary rounded-xl p-6 bg-gradient-to-br from-theme-elevated/50 to-interactive-hover/30">
+            <div className="border-2 border-dashed border-theme-secondary rounded-xl p-6 bg-sup-elevada">
               <div className="flex items-center justify-between mb-4">
                 <Inline gap={3}>
-                  <div className="w-8 h-8 bg-gradient-to-br from-accent-blue to-accent-green rounded-xl flex items-center justify-center">
+                  <div className="w-8 h-8 bg-aviso rounded-xl flex items-center justify-center">
                     <PiTarget className="w-4 h-4 text-theme-primary" />
                   </div>
                   <div>
@@ -1057,10 +1055,10 @@ const LearningModal = () => {
                   <div
                     className={`h-2 rounded-full transition-all ${
                       currentProgress >= 100
-                        ? 'bg-green-400'
+                        ? 'bg-ok'
                         : currentProgress >= 50
-                          ? 'bg-blue-400'
-                          : 'bg-yellow-400'
+                          ? 'bg-aviso'
+                          : 'bg-atencao'
                     }`}
                     style={{ width: `${currentProgress}%` }}
                   />
@@ -1071,10 +1069,10 @@ const LearningModal = () => {
 
           {/* ✅ NOVA SEÇÃO DE VÍDEO - LAYOUT MELHORADO */}
           {type === 'learned' && (
-            <div className="border-2 border-dashed border-theme-secondary rounded-xl p-6 bg-gradient-to-br from-theme-elevated/50 to-interactive-hover/30">
+            <div className="border-2 border-dashed border-theme-secondary rounded-xl p-6 bg-sup-elevada">
               <div className="flex items-center justify-between mb-4">
                 <Inline gap={3}>
-                  <div className="w-8 h-8 bg-gradient-to-br from-accent-purple to-accent-blue rounded-xl flex items-center justify-center">
+                  <div className="w-8 h-8 fill-ouro rounded-xl flex items-center justify-center">
                     <PiVideoCamera className="w-4 h-4 text-theme-primary" />
                   </div>
                   <div>
@@ -1111,7 +1109,7 @@ const LearningModal = () => {
                       {currentLearnedItem?.videoUrl && (
                         <button
                           onClick={handleDeleteVideo}
-                          className="text-accent-red hover:text-accent-red/80 text-sm"
+                          className="text-erro hover:text-erro/80 text-sm"
                         >
                           <PiTrashSimple className="w-4 h-4" />
                           <NomeAcao acao="excluir" />
@@ -1140,7 +1138,7 @@ const LearningModal = () => {
                     />
                     <label
                       htmlFor="video-replace"
-                      className="text-sm text-theme-tertiary hover:text-brand-primary cursor-pointer underline transition-colors duration-200"
+                      className="text-sm text-theme-tertiary hover:text-ouro-texto cursor-pointer underline transition-colors duration-200"
                     >
                       {t('replace_video')}
                     </label>
@@ -1158,10 +1156,10 @@ const LearningModal = () => {
                   />
                   <label
                     htmlFor="video-upload"
-                    className="w-full border-2 border-dashed border-theme-secondary hover:border-brand-primary rounded-xl p-4 text-center transition-all duration-300 hover:bg-brand-primary/5 group cursor-pointer block"
+                    className="w-full border-2 border-dashed border-theme-secondary hover:border-ouro rounded-xl p-4 text-center transition-all duration-300 hover:bg-ouro/5 group cursor-pointer block"
                   >
                     <Stack gap={2} className="items-center">
-                      <div className="w-12 h-12 shadow-md border-brand-primary/30 rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
+                      <div className="w-12 h-12 shadow-md border-ouro/30 rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
                         <PiPlus className="w-6 h-6 text-brand-primary" />
                       </div>
                       <div>
@@ -1193,13 +1191,13 @@ const LearningModal = () => {
               {uploadError && (
                 <Inline
                   gap={2}
-                  className="mt-4 p-3 border border-red-400 rounded-lg"
+                  className="mt-4 p-3 border border-erro rounded-lg"
                 >
-                  <PiWarningCircle className="w-4 h-4 text-red-400" />
-                  <span className="text-accent-red text-sm">{uploadError}</span>
+                  <PiWarningCircle className="w-4 h-4 text-erro" />
+                  <span className="text-erro text-sm">{uploadError}</span>
                   <button
                     onClick={clearVideoError}
-                    className="ml-auto text-red-400 hover:text-accent-red/80"
+                    className="ml-auto text-erro hover:text-erro/80"
                   >
                     <PiX className="w-4 h-4" />
                     <NomeAcao acao="fechar" />
@@ -1210,10 +1208,10 @@ const LearningModal = () => {
           )}
 
           {/* Seção de Partitura */}
-          <div className="border-2 border-dashed border-theme-secondary rounded-xl p-6 bg-gradient-to-br from-theme-elevated/50 to-interactive-hover/30">
+          <div className="border-2 border-dashed border-theme-secondary rounded-xl p-6 bg-sup-elevada">
             <div className="flex items-center justify-between mb-4">
               <Inline gap={3}>
-                <div className="w-8 h-8 bg-gradient-to-br from-accent-purple to-accent-blue rounded-xl flex items-center justify-center">
+                <div className="w-8 h-8 fill-ouro rounded-xl flex items-center justify-center">
                   <PiFileText className="w-4 h-4 text-theme-primary" />
                 </div>
                 <div>
@@ -1233,7 +1231,7 @@ const LearningModal = () => {
               <div className="bg-theme-elevated rounded-xl p-4 border border-theme-primary">
                 <div className="flex items-center justify-between">
                   <Inline gap={3}>
-                    <div className="w-10 h-10 bg-gradient-to-br from-brand-primary to-brand-secondary rounded-lg flex items-center justify-center">
+                    <div className="w-10 h-10 fill-ouro rounded-lg flex items-center justify-center">
                       <PiMusicNotes className="w-5 h-5 text-theme-primary" />
                     </div>
                     <div className="flex-1">
@@ -1261,7 +1259,7 @@ const LearningModal = () => {
                         href={selectedWorkScore.downloadUrl}
                         target="_blank"
                         title={t('download_button')}
-                        className="btn-classical-secondary-sm text-accent-purple border-accent-purple/30 hover:bg-accent-purple/10"
+                        className="btn-classical-secondary-sm text-ouro-texto border-ouro/30 hover:bg-ouro/10"
                       >
                         <PiDownloadSimple className="w-5 h-5 text-theme-primary" />
                       </Inline>
@@ -1283,7 +1281,7 @@ const LearningModal = () => {
                     <button
                       title={t('remove_button')}
                       onClick={handleRemoveScore}
-                      className="btn-classical-outline-sm text-accent-red border-accent-red hover:bg-accent-red hover:text-theme-primary"
+                      className="btn-classical-outline-sm text-erro border-erro hover:bg-erro hover:text-texto"
                     >
                       <PiX className="w-5 h-5 text-theme-primary" />
                     </button>
@@ -1295,10 +1293,10 @@ const LearningModal = () => {
                     selectedWorkScore.id && (
                     <div className="mt-3  rounded-lg">
                       <Inline gap={2}>
-                        <div className="w-4 h-4 bg-accent-green rounded-full flex items-center justify-center">
+                        <div className="w-4 h-4 bg-ok rounded-full flex items-center justify-center">
                           <span className="text-xs">💡</span>
                         </div>
-                        <span className="text-xs md:text-sm text-green-400 font-medium">
+                        <span className="text-xs md:text-sm text-ok font-medium">
                           {t('score_suggestion')} &quot;
                           {type === 'want-to-learn'
                             ? t('already_learned')
@@ -1312,10 +1310,10 @@ const LearningModal = () => {
             ) : (
               <button
                 onClick={handleAddScore}
-                className="w-full border-2 border-dashed border-theme-secondary hover:border-brand-primary rounded-xl p-4 text-center transition-all duration-300 hover:bg-brand-primary/5 group"
+                className="w-full border-2 border-dashed border-theme-secondary hover:border-ouro rounded-xl p-4 text-center transition-all duration-300 hover:bg-ouro/5 group"
               >
                 <Stack gap={2} className="items-center">
-                  <div className="w-12 h-12 bg-gradient-to-br from-brand-primary/20 to-brand-secondary/20 border-2 border-brand-primary/30 rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
+                  <div className="w-12 h-12 bg-ouro/20 border-2 border-ouro/30 rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
                     <PiPlus className="w-6 h-6 text-brand-primary" />
                   </div>
                   <div>
@@ -1484,7 +1482,7 @@ const LearningModal = () => {
       >
         <div className="p-4 px-0 md:p-6">
           <Inline gap={3} className="mb-4">
-            <div className="w-12 h-12 bg-gradient-to-br from-accent-green to-brand-primary rounded-xl flex items-center justify-center">
+            <div className="w-12 h-12 bg-ok rounded-xl flex items-center justify-center">
               <PiArrowRight className="w-6 h-6 text-theme-primary" />
             </div>
             <div>
@@ -1559,10 +1557,10 @@ const LearningModal = () => {
                     <div
                       className={`h-3 rounded-full transition-all ${
                         currentProgress >= 100
-                          ? 'bg-green-400'
+                          ? 'bg-ok'
                           : currentProgress >= 50
-                            ? 'bg-blue-400'
-                            : 'bg-yellow-400'
+                            ? 'bg-aviso'
+                            : 'bg-atencao'
                       }`}
                       style={{ width: `${currentProgress}%` }}
                     />
@@ -1589,13 +1587,13 @@ const LearningModal = () => {
                     className={`flex items-center space-x-3 p-4 rounded-xl transition-all cursor-pointer border-2 ${
                       isCompleted
                         ? 'border-color-primary '
-                        : 'border-theme-secondary hover:border-brand-primary/50 hover:bg-brand-primary/5'
+                        : 'border-theme-secondary hover:border-ouro/50 hover:bg-ouro/5'
                     }`}
                     onClick={() => handleMilestoneToggle(milestone.key)}
                   >
                     <div className={`flex-shrink-0 ${milestone.color}`}>
                       {isCompleted ? (
-                        <PiCheckCircle className="w-6 h-6 text-accent-green" />
+                        <PiCheckCircle className="w-6 h-6 text-ok" />
                       ) : (
                         <Icon className="w-6 h-6" />
                       )}

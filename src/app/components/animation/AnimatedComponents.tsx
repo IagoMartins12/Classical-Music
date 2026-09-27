@@ -577,19 +577,15 @@ export const PageContainer: React.FC<PageContainerProps> = ({
 
   return (
     <div
-      className={[
-        showBackground ? 'bg-gradient-primary' : '',
-        'relative',
-        className,
-      ]
+      className={[showBackground ? '' : '', 'relative', className]
         .filter(Boolean)
         .join(' ')}
     >
       {showBackground && (
         <div className="absolute inset-0 pointer-events-none opacity-5">
-          <div className="absolute top-20 left-20 w-64 h-64 bg-brand-gradient rounded-full blur-3xl anim-floating" />
+          <div className="absolute top-20 left-20 w-64 h-64 rounded-full blur-3xl anim-floating" />
           <div
-            className="absolute bottom-40 right-32 w-48 h-48 bg-accent-purple/30 rounded-full blur-2xl anim-floating"
+            className="absolute bottom-40 right-32 w-48 h-48 rounded-full blur-2xl anim-floating"
             style={{ animationDelay: '2s' }}
           />
         </div>
@@ -632,7 +628,7 @@ interface LoadingSpinnerProps {
 
 export const LoadingSpinner: React.FC<LoadingSpinnerProps> = ({
   size = 'md',
-  color = 'border-brand-primary',
+  color = 'border-ouro',
   className = '',
 }) => {
   useEffect(() => {

@@ -205,11 +205,11 @@ export default function ComposersManagement() {
   const getQualityColor = (quality?: string) => {
     switch (quality) {
       case 'high':
-        return 'text-accent-green';
+        return 'text-ok';
       case 'medium':
-        return 'text-accent-amber';
+        return 'text-atencao';
       case 'low':
-        return 'text-accent-red';
+        return 'text-erro';
       default:
         return 'text-theme-tertiary';
     }
@@ -243,7 +243,7 @@ export default function ComposersManagement() {
         <AnimatedItem direction="up" springType="gentle">
           <div className="text-center mb-8 py-12">
             <div className="flex items-center justify-center mb-6">
-              <div className="w-16 h-16 bg-gradient-to-br from-accent-blue to-accent-purple rounded-3xl flex items-center justify-center shadow-theme-glow">
+              <div className="w-16 h-16 bg-aviso rounded-3xl flex items-center justify-center shadow-theme-glow">
                 <PiUsers className="w-8 h-8 text-theme-primary" />
               </div>
             </div>
@@ -385,7 +385,7 @@ export default function ComposersManagement() {
                     gap={2}
                     className="text-xl font-bold text-theme-primary mb-6"
                   >
-                    <PiTrendUp className="w-5 h-5 text-accent-red" />
+                    <PiTrendUp className="w-5 h-5 text-erro" />
                     <span>Mais Favoritados</span>
                   </Inline>
                   <Stack gap={3}>
@@ -399,7 +399,7 @@ export default function ComposersManagement() {
                           papel="rotulo"
                           tom="forte"
                           as="div"
-                          className="w-8 h-8 bg-gradient-to-br from-accent-red to-accent-amber rounded-lg flex items-center justify-center font-bold"
+                          className="w-8 h-8 bg-erro rounded-lg flex items-center justify-center font-bold"
                         >
                           {index + 1}
                         </Text>
@@ -436,7 +436,7 @@ export default function ComposersManagement() {
                     gap={2}
                     className="text-xl font-bold text-theme-primary mb-6"
                   >
-                    <PiMusicNotes className="w-5 h-5 text-accent-blue" />
+                    <PiMusicNotes className="w-5 h-5 text-aviso" />
                     <span>Mais Produtivos</span>
                   </Inline>
                   <Stack gap={3}>
@@ -450,7 +450,7 @@ export default function ComposersManagement() {
                           papel="rotulo"
                           tom="forte"
                           as="div"
-                          className="w-8 h-8 bg-gradient-to-br from-accent-blue to-accent-purple rounded-lg flex items-center justify-center font-bold"
+                          className="w-8 h-8 bg-aviso rounded-lg flex items-center justify-center font-bold"
                         >
                           {index + 1}
                         </Text>
@@ -691,8 +691,8 @@ export default function ComposersManagement() {
 
             {/* Bulk Actions */}
             {selectedComposers.size > 0 && (
-              <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between p-3 md:p-4 bg-accent-blue/10 border border-accent-blue rounded-xl mb-6 gap-3">
-                <span className="text-sm md:text-base text-accent-blue font-medium">
+              <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between p-3 md:p-4 bg-aviso/10 border border-aviso rounded-xl mb-6 gap-3">
+                <span className="text-sm md:text-base text-aviso font-medium">
                   {selectedComposers.size} selecionado
                   {selectedComposers.size > 1 ? 's' : ''}
                 </span>
@@ -735,7 +735,7 @@ export default function ComposersManagement() {
               {composers.map((composer) => (
                 <div
                   key={composer.id}
-                  className="p-3 md:p-4 bg-theme-secondary rounded-xl hover:bg-theme-primary/50 transition-colors"
+                  className="p-3 md:p-4 bg-theme-secondary rounded-xl hover:bg-fundo/50 transition-colors"
                 >
                   <div className="flex items-start gap-3 md:gap-4">
                     {/* Checkbox */}
@@ -751,7 +751,7 @@ export default function ComposersManagement() {
                         }
                         setSelectedComposers(newSelected);
                       }}
-                      className="w-4 h-4 text-brand-primary bg-theme-secondary border-theme-primary rounded focus:ring-brand-primary focus:ring-2 mt-1 flex-shrink-0"
+                      className="w-4 h-4 text-brand-primary bg-theme-secondary border-theme-primary rounded focus:ring-ouro focus:ring-2 mt-1 flex-shrink-0"
                     />
 
                     {/* Imagem */}
@@ -765,7 +765,7 @@ export default function ComposersManagement() {
                           className="w-12 h-12 md:w-16 md:h-16 rounded-xl object-cover"
                         />
                       ) : (
-                        <div className="w-12 h-12 md:w-16 md:h-16 rounded-xl bg-theme-primary/20 flex items-center justify-center">
+                        <div className="w-12 h-12 md:w-16 md:h-16 rounded-xl bg-fundo/20 flex items-center justify-center">
                           <PiUsers className="w-6 h-6 md:w-8 md:h-8 text-theme-tertiary" />
                         </div>
                       )}
@@ -779,7 +779,7 @@ export default function ComposersManagement() {
                           {composer.name}
                         </h4>
                         {composer.isVerified && (
-                          <PiCheckCircle className="w-4 h-4 md:w-5 md:h-5 text-accent-green flex-shrink-0" />
+                          <PiCheckCircle className="w-4 h-4 md:w-5 md:h-5 text-ok flex-shrink-0" />
                         )}
                       </div>
 
@@ -797,7 +797,7 @@ export default function ComposersManagement() {
                           </span>
                         )}
                         {!composer.hasValidImage && (
-                          <span className="bg-accent-red/10 text-accent-red px-2 py-0.5 rounded">
+                          <span className="bg-erro/10 text-erro px-2 py-0.5 rounded">
                             Sem imagem
                           </span>
                         )}
@@ -833,7 +833,7 @@ export default function ComposersManagement() {
                           <PiMusicNotes className="w-3 h-3 md:w-4 md:h-4 flex-shrink-0" />
                           <span
                             className={
-                              composer.worksCount === 0 ? 'text-accent-red' : ''
+                              composer.worksCount === 0 ? 'text-erro' : ''
                             }
                           >
                             {composer.worksCount} obras
@@ -882,9 +882,7 @@ export default function ComposersManagement() {
                           )
                         }
                         className={
-                          composer.isVerified
-                            ? 'text-accent-red'
-                            : 'text-accent-green'
+                          composer.isVerified ? 'text-erro' : 'text-ok'
                         }
                         title={
                           composer.isVerified
@@ -899,14 +897,14 @@ export default function ComposersManagement() {
                         onClick={() =>
                           handleDeleteComposer(composer.id, composer.name)
                         }
-                        className="text-accent-red hover:bg-accent-red/10"
+                        className="text-erro hover:bg-erro/10"
                         title="Deletar"
                       />
                     </div>
                   </div>
 
                   {/* Ações - Mobile */}
-                  <div className="flex md:hidden items-center gap-2 mt-3 pt-3 border-t border-theme-primary/10">
+                  <div className="flex md:hidden items-center gap-2 mt-3 pt-3 border-t border-linha/10">
                     <Button
                       variant="ghost"
                       size="sm"
@@ -932,9 +930,7 @@ export default function ComposersManagement() {
                         handleVerifyComposer(composer.id, !composer.isVerified)
                       }
                       className={`flex-1 ${
-                        composer.isVerified
-                          ? 'text-accent-red'
-                          : 'text-accent-green'
+                        composer.isVerified ? 'text-erro' : 'text-ok'
                       }`}
                     >
                       {composer.isVerified ? (
@@ -949,7 +945,7 @@ export default function ComposersManagement() {
                       onClick={() =>
                         handleDeleteComposer(composer.id, composer.name)
                       }
-                      className="flex-1 text-accent-red hover:bg-accent-red/10"
+                      className="flex-1 text-erro hover:bg-erro/10"
                     >
                       <PiTrash className="w-4 h-4" />
                     </Button>

@@ -334,7 +334,7 @@ const OnboardingModal: React.FC = () => {
 
         <div className="w-full bg-theme-secondary rounded-full h-2">
           <div
-            className="bg-brand-gradient bg-[#d4af37] h-2 rounded-full transition-all duration-500 ease-out"
+            className="fill-ouro bg-[#d4af37] h-2 rounded-full transition-all duration-500 ease-out"
             style={{ width: `${(step / 6) * 100}%` }}
           />
         </div>
@@ -342,17 +342,15 @@ const OnboardingModal: React.FC = () => {
 
       {/* 🆕 AVISO DE VALIDAÇÃO DE TELEFONE (se houver erro) */}
       {step === 5 && validationErrors.phone && (
-        <div className="mb-6 p-4 bg-red-50 border border-red-200 rounded-lg flex items-start space-x-3">
-          <PiPhone className="w-5 h-5 text-red-600 flex-shrink-0 mt-0.5" />
+        <div className="mb-6 p-4 bg-erro/10 border border-erro/30 rounded-lg flex items-start space-x-3">
+          <PiPhone className="w-5 h-5 text-erro flex-shrink-0 mt-0.5" />
           <div>
-            <h4 className="text-sm font-medium text-red-800">
+            <h4 className="text-sm font-medium text-erro">
               {t('onboarding_modal_phone_invalid_title')}
             </h4>
-            <p className="text-sm text-red-700 mt-1">
-              {validationErrors.phone}
-            </p>
+            <p className="text-sm text-erro mt-1">{validationErrors.phone}</p>
             {phoneValidation.progressMessage && (
-              <p className="text-xs text-red-600 mt-1">
+              <p className="text-xs text-erro mt-1">
                 {phoneValidation.progressMessage}
               </p>
             )}
@@ -412,7 +410,7 @@ const OnboardingModal: React.FC = () => {
               as="button"
               gap={1}
               onClick={handleStartOver}
-              className="text-xs text-theme-tertiary hover:text-accent-red transition-colors"
+              className="text-xs text-theme-tertiary hover:text-erro transition-colors"
             >
               <PiWarningCircle className="w-3 h-3" />
               <span>{t('onboarding_modal_start_over')}</span>

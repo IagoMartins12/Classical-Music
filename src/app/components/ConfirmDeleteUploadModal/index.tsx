@@ -41,15 +41,15 @@ interface ConfirmDeleteUploadModalProps {
 const TYPE_CONFIG = {
   composer: {
     icon: PiUser,
-    color: 'from-accent-purple to-accent-blue',
+    color: 'fill-ouro',
   },
   work: {
     icon: PiMusicNotes,
-    color: 'from-accent-blue to-accent-green',
+    color: 'bg-aviso',
   },
   score: {
     icon: PiFileText,
-    color: 'from-accent-green to-accent-amber',
+    color: 'bg-ok',
   },
 };
 
@@ -129,7 +129,7 @@ export default function ConfirmDeleteUploadModal({
   // };
 
   const modalContent = (
-    <div className="fixed inset-0 z-[9999] flex items-center justify-center p-4">
+    <div className="fixed inset-0 z-dialogo flex items-center justify-center p-4">
       <div
         className="absolute inset-0 bg-black/50 backdrop-blur-sm transition-opacity duration-300"
         onClick={!isLoading ? onClose : undefined}
@@ -140,8 +140,8 @@ export default function ConfirmDeleteUploadModal({
         className="relative bg-theme-primary rounded-xl shadow-xl max-w-lg w-full p-6 border border-theme-secondary overflow-y-auto"
       >
         <Inline gap={3} className="mb-4">
-          <div className="w-12 h-12 bg-accent-red/10 rounded-xl flex items-center justify-center relative">
-            <PiWarning className="w-6 h-6 text-accent-red" />
+          <div className="w-12 h-12 bg-erro/10 rounded-xl flex items-center justify-center relative">
+            <PiWarning className="w-6 h-6 text-erro" />
             {/* Ícone do tipo no canto */}
             <div
               className={`absolute -bottom-1 -right-1 w-5 h-5 bg-gradient-to-br ${typeConfig.color} rounded-full flex items-center justify-center`}
@@ -172,10 +172,10 @@ export default function ConfirmDeleteUploadModal({
           {loadingCascadeInfo ? (
             <Inline
               gap={2}
-              className="p-3 bg-accent-blue/10 rounded-lg border border-accent-blue/20"
+              className="p-3 bg-aviso/10 rounded-lg border border-aviso/20"
             >
-              <PiSpinnerGap className="w-4 h-4 text-accent-blue animate-spin" />
-              <span className="text-sm text-accent-blue">
+              <PiSpinnerGap className="w-4 h-4 text-aviso animate-spin" />
+              <span className="text-sm text-aviso">
                 {t('delete_modal_checking_related')}
               </span>
             </Inline>
@@ -185,12 +185,12 @@ export default function ConfirmDeleteUploadModal({
           {!loadingCascadeInfo && hasCascadeItems ? (
             <Stack
               gap={3}
-              className="p-4 bg-accent-amber/10 rounded-lg border border-accent-amber/20"
+              className="p-4 bg-atencao/10 rounded-lg border border-atencao/20"
             >
               <div className="flex items-start space-x-2">
-                <PiInfo className="w-4 h-4 text-accent-amber mt-0.5 flex-shrink-0" />
+                <PiInfo className="w-4 h-4 text-atencao mt-0.5 flex-shrink-0" />
                 <div>
-                  <div className="text-sm font-medium text-accent-amber mb-1">
+                  <div className="text-sm font-medium text-atencao mb-1">
                     {t('delete_modal_cascade_warning')}
                   </div>
                   <Text papel="legenda" tom="suave" as="p" className="mb-3">
@@ -212,7 +212,7 @@ export default function ConfirmDeleteUploadModal({
                     </p>
                     <Stack
                       gap={1}
-                      className="overflow-y-auto bg-theme-secondary/30 rounded p-2"
+                      className="overflow-y-auto bg-sup-1/30 rounded p-2"
                     >
                       {cascadeInfo.works.slice(0, 4).map((work) => (
                         <Text
@@ -224,7 +224,7 @@ export default function ConfirmDeleteUploadModal({
                         >
                           <span>• {work.title}</span>
                           {work.scoresCount > 0 ? (
-                            <span className="text-accent-amber">
+                            <span className="text-atencao">
                               {work.scoresCount}{' '}
                               {getScoreText(work.scoresCount)}
                             </span>
@@ -252,7 +252,7 @@ export default function ConfirmDeleteUploadModal({
                         count: cascadeInfo.scores.length,
                       })}
                     </p>
-                    <div className="space-y-1 max-h-24 overflow-y-auto bg-theme-secondary/30 rounded p-2">
+                    <div className="space-y-1 max-h-24 overflow-y-auto bg-sup-1/30 rounded p-2">
                       {cascadeInfo.scores.slice(0, 4).map((score) => (
                         <Text
                           papel="legenda"
@@ -283,7 +283,7 @@ export default function ConfirmDeleteUploadModal({
                         count: cascadeInfo.childWorks.length,
                       })}
                     </p>
-                    <div className="space-y-1 max-h-20 overflow-y-auto bg-theme-secondary/30 rounded p-2">
+                    <div className="space-y-1 max-h-20 overflow-y-auto bg-sup-1/30 rounded p-2">
                       {cascadeInfo.childWorks.slice(0, 3).map((childWork) => (
                         <Text
                           papel="legenda"
@@ -294,7 +294,7 @@ export default function ConfirmDeleteUploadModal({
                         >
                           <span>• {childWork.title}</span>
                           {childWork.scoresCount > 0 ? (
-                            <span className="text-accent-amber">
+                            <span className="text-atencao">
                               {childWork.scoresCount}{' '}
                               {getScoreText(childWork.scoresCount)}
                             </span>
@@ -308,8 +308,8 @@ export default function ConfirmDeleteUploadModal({
                 {/* Total geral */}
                 {cascadeInfo?.totalScores !== undefined &&
                 cascadeInfo.totalScores >= 0 ? (
-                  <div className="pt-2 border-t border-accent-amber/20">
-                    <p className="text-xs font-medium text-accent-amber">
+                  <div className="pt-2 border-t border-atencao/20">
+                    <p className="text-xs font-medium text-atencao">
                       {cascadeInfo.totalWorks && cascadeInfo.totalWorks > 0
                         ? t('delete_modal_total_summary_with_works', {
                             scores: cascadeInfo.totalScores,
@@ -329,10 +329,10 @@ export default function ConfirmDeleteUploadModal({
           {!loadingCascadeInfo &&
           !hasCascadeItems &&
           (itemType === 'composer' || itemType === 'work') ? (
-            <div className="p-3 bg-accent-green/10 rounded-lg border border-accent-green/20">
+            <div className="p-3 bg-ok/10 rounded-lg border border-ok/20">
               <Inline gap={2}>
-                <PiInfo className="w-4 h-4 text-accent-green" />
-                <span className="text-sm text-accent-green">
+                <PiInfo className="w-4 h-4 text-ok" />
+                <span className="text-sm text-ok">
                   {t('delete_modal_no_related_items')}
                 </span>
               </Inline>
@@ -341,10 +341,10 @@ export default function ConfirmDeleteUploadModal({
 
           {/* Warning for score */}
           {itemType === 'score' ? (
-            <div className="bg-accent-red/5 border border-accent-red/20 rounded-lg p-3">
+            <div className="bg-erro/5 border border-erro/20 rounded-lg p-3">
               <div className="flex items-start space-x-2">
-                <PiWarning className="w-4 h-4 text-accent-red mt-0.5 flex-shrink-0" />
-                <div className="text-sm text-accent-red">
+                <PiWarning className="w-4 h-4 text-erro mt-0.5 flex-shrink-0" />
+                <div className="text-sm text-erro">
                   <p className="font-medium">
                     {t('delete_modal_score_warning_title')}
                   </p>
@@ -361,7 +361,7 @@ export default function ConfirmDeleteUploadModal({
           <button
             onClick={onClose}
             disabled={isLoading}
-            className="px-4 py-2 rounded-lg border border-theme-secondary text-theme-secondary hover:bg-theme-secondary transition-colors disabled:opacity-50"
+            className="px-4 py-2 rounded-lg border border-theme-secondary text-theme-secondary hover:bg-sup-1 transition-colors disabled:opacity-50"
           >
             {t('delete_modal_cancel')}
           </button>

@@ -139,11 +139,11 @@ export default function ModerationDetail({ itemId }: ModerationDetailProps) {
   const getPriorityColor = (priority: string) => {
     switch (priority) {
       case 'urgent':
-        return 'text-accent-red bg-accent-red/10';
+        return 'text-erro bg-erro/10';
       case 'high':
-        return 'text-accent-amber bg-accent-amber/10';
+        return 'text-atencao bg-atencao/10';
       case 'normal':
-        return 'text-accent-blue bg-accent-blue/10';
+        return 'text-aviso bg-aviso/10';
       case 'low':
         return 'text-theme-tertiary bg-theme-secondary';
       default:
@@ -170,7 +170,7 @@ export default function ModerationDetail({ itemId }: ModerationDetailProps) {
     return (
       <PageContainer showBackground={true}>
         <div className="text-center py-16">
-          <PiWarning className="w-16 h-16 text-accent-red mx-auto mb-4" />
+          <PiWarning className="w-16 h-16 text-erro mx-auto mb-4" />
           <h2 className="text-2xl font-bold text-theme-primary mb-2">
             Item não encontrado
           </h2>
@@ -208,7 +208,7 @@ export default function ModerationDetail({ itemId }: ModerationDetailProps) {
               </Button>
               <div className="h-6 w-px bg-theme-secondary" />
               <Inline gap={3}>
-                <div className="w-12 h-12 bg-gradient-to-br from-accent-blue to-accent-purple rounded-xl flex items-center justify-center">
+                <div className="w-12 h-12 bg-aviso rounded-xl flex items-center justify-center">
                   <TypeIcon className="w-6 h-6 text-theme-primary" />
                 </div>
                 <div>
@@ -293,9 +293,9 @@ export default function ModerationDetail({ itemId }: ModerationDetailProps) {
                       <Inline
                         gap={2}
                         key={index}
-                        className="p-3 bg-accent-amber/10 border border-accent-amber rounded-lg"
+                        className="p-3 bg-atencao/10 border border-atencao rounded-lg"
                       >
-                        <PiWarning className="w-4 h-4 text-accent-amber" />
+                        <PiWarning className="w-4 h-4 text-atencao" />
                         <span className="text-theme-primary">{issue}</span>
                       </Inline>
                     ))}
@@ -401,7 +401,7 @@ export default function ModerationDetail({ itemId }: ModerationDetailProps) {
                     leftIcon={<PiX />}
                     onClick={handleReject}
                     disabled={processing || !rejectionReason}
-                    className="flex-1 text-accent-red hover:bg-accent-red/10"
+                    className="flex-1 text-erro hover:bg-erro/10"
                   >
                     Rejeitar Item
                   </Button>
@@ -419,13 +419,13 @@ export default function ModerationDetail({ itemId }: ModerationDetailProps) {
                 gap={2}
                 className="text-lg font-bold text-theme-primary mb-4"
               >
-                <PiUser className="w-5 h-5 text-accent-blue" />
+                <PiUser className="w-5 h-5 text-aviso" />
                 <span>Informações do Uploader</span>
               </Inline>
 
               <div className="space-y-4">
                 <Inline gap={3}>
-                  <div className="w-10 h-10 bg-gradient-to-br from-accent-blue to-accent-purple rounded-lg flex items-center justify-center">
+                  <div className="w-10 h-10 bg-aviso rounded-lg flex items-center justify-center">
                     <PiUser className="w-5 h-5 text-theme-primary" />
                   </div>
                   <div>
@@ -440,13 +440,13 @@ export default function ModerationDetail({ itemId }: ModerationDetailProps) {
 
                 <div className="grid grid-cols-2 gap-3 text-sm">
                   <div className="text-center p-2 bg-theme-secondary rounded-lg">
-                    <div className="font-bold text-accent-green">
+                    <div className="font-bold text-ok">
                       {item.uploader.uploadScore.toFixed(1)}
                     </div>
                     <div className="text-theme-tertiary">Score</div>
                   </div>
                   <div className="text-center p-2 bg-theme-secondary rounded-lg">
-                    <div className="font-bold text-accent-blue">
+                    <div className="font-bold text-aviso">
                       {item.qualityScore.toFixed(1)}
                     </div>
                     <div className="text-theme-tertiary">Qualidade</div>
@@ -474,13 +474,13 @@ export default function ModerationDetail({ itemId }: ModerationDetailProps) {
                 gap={2}
                 className="text-lg font-bold text-theme-primary mb-4"
               >
-                <PiCalendarBlank className="w-5 h-5 text-accent-green" />
+                <PiCalendarBlank className="w-5 h-5 text-ok" />
                 <span>Timeline</span>
               </Inline>
 
               <Stack gap={3}>
                 <div className="flex items-start space-x-3">
-                  <div className="w-2 h-2 bg-accent-blue rounded-full mt-2"></div>
+                  <div className="w-2 h-2 bg-aviso rounded-full mt-2"></div>
                   <div>
                     <Text
                       papel="rotulo"
@@ -498,7 +498,7 @@ export default function ModerationDetail({ itemId }: ModerationDetailProps) {
 
                 {item.reports.map((report: any) => (
                   <div key={report.id} className="flex items-start space-x-3">
-                    <div className="w-2 h-2 bg-accent-amber rounded-full mt-2"></div>
+                    <div className="w-2 h-2 bg-atencao rounded-full mt-2"></div>
                     <div>
                       <Text
                         papel="rotulo"
@@ -516,7 +516,7 @@ export default function ModerationDetail({ itemId }: ModerationDetailProps) {
                 ))}
 
                 <div className="flex items-start space-x-3">
-                  <div className="w-2 h-2 bg-accent-green rounded-full mt-2"></div>
+                  <div className="w-2 h-2 bg-ok rounded-full mt-2"></div>
                   <div>
                     <Text
                       papel="rotulo"
@@ -541,7 +541,7 @@ export default function ModerationDetail({ itemId }: ModerationDetailProps) {
                 gap={2}
                 className="text-lg font-bold text-theme-primary mb-4"
               >
-                <PiInfo className="w-5 h-5 text-accent-purple" />
+                <PiInfo className="w-5 h-5 text-ouro-texto" />
                 <span>Estatísticas Rápidas</span>
               </Inline>
 
@@ -560,7 +560,7 @@ export default function ModerationDetail({ itemId }: ModerationDetailProps) {
                 </div>
                 <div className="flex items-center justify-between text-sm">
                   <span className="text-theme-secondary">Score automático</span>
-                  <span className="font-medium text-accent-green">8.5/10</span>
+                  <span className="font-medium text-ok">8.5/10</span>
                 </div>
               </Stack>
             </AnimatedCard>

@@ -192,8 +192,8 @@ const PersistenceErrorBoundary: React.FC<{ children: React.ReactNode }> = ({
 
   if (hasError) {
     return (
-      <div className="fixed top-4 right-4 z-50 bg-accent-amber bg-opacity-20 border border-accent-amber rounded-lg p-3 max-w-sm">
-        <p className="text-sm text-accent-amber">
+      <div className="fixed top-4 right-4 z-aviso bg-atencao/20 border border-atencao rounded-lg p-3 max-w-sm">
+        <p className="text-sm text-atencao">
           ⚠️ Armazenamento limitado. Dados serão salvos temporariamente.
         </p>
       </div>

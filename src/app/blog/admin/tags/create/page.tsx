@@ -26,7 +26,7 @@ export default async function CreateTagPage() {
         <div className="mb-8">
           <Link
             href="/blog/admin/tags"
-            className="inline-flex items-center text-sm text-theme-secondary hover:text-brand-primary mb-4 transition-colors"
+            className="inline-flex items-center text-sm text-theme-secondary hover:text-ouro-texto mb-4 transition-colors"
           >
             <PiArrowLeft className="w-4 h-4 mr-2" />
             Voltar para tags

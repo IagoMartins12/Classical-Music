@@ -59,7 +59,7 @@ const AccordionSection = memo<AccordionSectionProps>(
     }, [id, onToggle]);
 
     return (
-      <div className="mb-6 classical-card overflow-hidden hover:shadow-theme-glow transition-all duration-200 will-change-transform">
+      <div className="mb-6 classical-card overflow-hidden hover:shadow-[var(--sombra-2)] transition-all duration-200 will-change-transform">
         {/* Header - Always Visible */}
         <div
           className="p-2 sm:p-6 cursor-pointer select-none group"
@@ -73,7 +73,7 @@ const AccordionSection = memo<AccordionSectionProps>(
                 {icon}
               </div>
               <div>
-                <h3 className="text-2xl font-bold text-theme-primary classical-title group-hover:text-brand-primary transition-colors duration-200">
+                <h3 className="text-2xl font-bold text-theme-primary classical-title group-hover:text-ouro-texto transition-colors duration-200">
                   {title}
                 </h3>
                 <Text papel="rotulo" tom="fraco" as="p">
@@ -135,19 +135,19 @@ const TimelineOverview = memo<SectionProps>(({ isExpanded, onToggle }) => {
       period: t('detailed_jsx_h4_children_0__musica_antiga'),
       years: t('detailed_jsx_span_children_0__c_500_1600'),
       sub: t('detailed_jsx_span_children_0__medieval_renascentista'),
-      gradient: 'from-accent-gold to-brand-secondary',
+      gradient: 'fill-ouro',
     },
     {
       period: t('detailed_jsx_h4_children_0__pratica_comum'),
       years: t('detailed_jsx_span_children_0__c_1600_1910'),
       sub: t('detailed_jsx_span_children_0__barroco_classico_romantico'),
-      gradient: 'from-accent-blue to-accent-purple',
+      gradient: 'bg-aviso',
     },
     {
       period: t('detailed_jsx_h4_children_0__moderno_contemporaneo'),
       years: t('detailed_jsx_span_children_0__c_1890_presente'),
       sub: t('detailed_jsx_span_children_0__seculo_xx_xxi'),
-      gradient: 'from-accent-green to-accent-blue',
+      gradient: 'bg-ok',
     },
   ];
 
@@ -157,7 +157,7 @@ const TimelineOverview = memo<SectionProps>(({ isExpanded, onToggle }) => {
       icon={<PiLock className="w-6 h-6 text-theme-primary" />}
       title={t('detailed_jsx_h3_children_0__periodos_historicos')}
       subtitle={t('detailed_jsx_p_children_0__divisao_cronologica')}
-      gradient="from-accent-blue to-accent-purple"
+      gradient="bg-aviso"
       isExpanded={isExpanded}
       onToggle={onToggle}
     >
@@ -172,7 +172,7 @@ const TimelineOverview = memo<SectionProps>(({ isExpanded, onToggle }) => {
             >
               <PiClock className="w-4 h-4 text-theme-primary" />
             </div>
-            <h4 className="font-bold text-lg text-theme-primary classical-title mb-2 group-hover:text-brand-primary transition-colors duration-200">
+            <h4 className="font-bold text-lg text-theme-primary classical-title mb-2 group-hover:text-ouro-texto transition-colors duration-200">
               {era.period}
             </h4>
             <p
@@ -202,7 +202,7 @@ const OriginsSection = memo<SectionProps>(({ isExpanded, onToggle }) => {
       icon={<PiScroll className="w-6 h-6 text-theme-primary" />}
       title={t('detailed_jsx_h3_children_0__origens_antigas')}
       subtitle={t('detailed_jsx_p_children_0__fundamentos_musica_ocidental')}
-      gradient="from-accent-gold to-brand-secondary"
+      gradient="fill-ouro"
       isExpanded={isExpanded}
       onToggle={onToggle}
     >
@@ -210,9 +210,9 @@ const OriginsSection = memo<SectionProps>(({ isExpanded, onToggle }) => {
         <p className="text-lg leading-relaxed mb-6">
           {t('detailed_jsx_p_children_0__origem_musica_classica')}
         </p>
-        <div className="bg-gradient-to-r from-accent-gold/10 to-brand-secondary/10 border-l-4 border-accent-gold rounded-xl p-6 my-6 transform transition-all duration-200 hover:scale-101">
+        <div className="border bg-ouro/10 border-ouro/40 rounded-xl p-6 my-6 transform transition-all duration-200 hover:scale-101">
           <div className="flex items-start space-x-3">
-            <div className="w-8 h-8 bg-gradient-to-br from-accent-gold to-brand-secondary rounded-xl flex items-center justify-center flex-shrink-0 mt-0.5">
+            <div className="w-8 h-8 fill-ouro rounded-xl flex items-center justify-center flex-shrink-0 mt-0.5">
               <PiStar className="w-4 h-4 text-theme-primary" />
             </div>
             <div>
@@ -240,7 +240,7 @@ const MedievalSection = memo<SectionProps>(({ isExpanded, onToggle }) => {
       icon={<PiMusicNotes className="w-6 h-6 text-theme-primary" />}
       title={t('detailed_jsx_h3_children_0__mundo_medieval')}
       subtitle={t('detailed_jsx_p_children_0__nascimento_musica_organizada')}
-      gradient="from-accent-purple to-accent-red"
+      gradient="fill-ouro"
       isExpanded={isExpanded}
       onToggle={onToggle}
     >
@@ -251,7 +251,7 @@ const MedievalSection = memo<SectionProps>(({ isExpanded, onToggle }) => {
             gap={2}
             className="text-xl font-semibold text-theme-primary classical-title mb-4"
           >
-            <div className="w-6 h-6 bg-gradient-to-br from-accent-blue to-accent-purple rounded-lg flex items-center justify-center">
+            <div className="w-6 h-6 bg-aviso rounded-lg flex items-center justify-center">
               <PiMusicNotes className="w-3 h-3 text-theme-primary" />
             </div>
             <span>{t('detailed_jsx_h4_children_0__canto_gregoriano')}</span>
@@ -269,7 +269,7 @@ const MedievalSection = memo<SectionProps>(({ isExpanded, onToggle }) => {
             gap={2}
             className="text-xl font-semibold text-theme-primary classical-title mb-4"
           >
-            <div className="w-6 h-6 bg-gradient-to-br from-accent-green to-accent-blue rounded-lg flex items-center justify-center">
+            <div className="w-6 h-6 bg-ok rounded-lg flex items-center justify-center">
               <PiTrendUp className="w-3 h-3 text-theme-primary" />
             </div>
             <span>{t('detailed_jsx_h4_children_0__revolucao_polifonia')}</span>
@@ -282,9 +282,9 @@ const MedievalSection = memo<SectionProps>(({ isExpanded, onToggle }) => {
           </p>
         </div>
       </div>
-      <div className="mt-8 bg-gradient-to-r from-accent-purple/10 to-accent-red/10 border-l-4 border-accent-purple rounded-xl p-6">
+      <div className="border mt-8 bg-ouro/10 border-ouro/40 rounded-xl p-6">
         <div className="flex items-start space-x-3">
-          <div className="w-8 h-8 bg-gradient-to-br from-accent-purple to-accent-red rounded-xl flex items-center justify-center flex-shrink-0 mt-0.5">
+          <div className="w-8 h-8 fill-ouro rounded-xl flex items-center justify-center flex-shrink-0 mt-0.5">
             <GiViolin className="w-4 h-4 text-theme-primary" />
           </div>
           <Stack gap={2}>
@@ -313,7 +313,7 @@ const RenaissanceSection = memo<SectionProps>(({ isExpanded, onToggle }) => {
       icon={<PiGlobe className="w-6 h-6 text-theme-primary" />}
       title={t('detailed_jsx_h3_children_0__renascimento_humanizacao')}
       subtitle={t('detailed_jsx_p_children_0__era_humanismo_expressao')}
-      gradient="from-accent-green to-accent-blue"
+      gradient="bg-ok"
       isExpanded={isExpanded}
       onToggle={onToggle}
     >
@@ -328,10 +328,10 @@ const RenaissanceSection = memo<SectionProps>(({ isExpanded, onToggle }) => {
             className="group hover:scale-102 transition-all duration-200"
           >
             <Inline gap={3} className="mb-4">
-              <div className="w-8 h-8 bg-gradient-to-br from-accent-green to-accent-blue rounded-xl flex items-center justify-center group-hover:scale-105 transition-transform duration-200">
+              <div className="w-8 h-8 bg-ok rounded-xl flex items-center justify-center group-hover:scale-105 transition-transform duration-200">
                 <PiUser className="w-4 h-4 text-theme-primary" />
               </div>
-              <h4 className="text-xl font-semibold text-theme-primary classical-title group-hover:text-brand-primary transition-colors duration-200">
+              <h4 className="text-xl font-semibold text-theme-primary classical-title group-hover:text-ouro-texto transition-colors duration-200">
                 {t('detailed_jsx_h4_children_0__mestres_franco_flamengos')}
               </h4>
             </Inline>
@@ -344,10 +344,10 @@ const RenaissanceSection = memo<SectionProps>(({ isExpanded, onToggle }) => {
             className="group hover:scale-102 transition-all duration-200"
           >
             <Inline gap={3} className="mb-4">
-              <div className="w-8 h-8 bg-gradient-to-br from-accent-blue to-accent-purple rounded-xl flex items-center justify-center group-hover:scale-105 transition-transform duration-200">
+              <div className="w-8 h-8 bg-aviso rounded-xl flex items-center justify-center group-hover:scale-105 transition-transform duration-200">
                 <PiMusicNotes className="w-4 h-4 text-theme-primary" />
               </div>
-              <h4 className="text-xl font-semibold text-theme-primary classical-title group-hover:text-brand-primary transition-colors duration-200">
+              <h4 className="text-xl font-semibold text-theme-primary classical-title group-hover:text-ouro-texto transition-colors duration-200">
                 {t('detailed_jsx_h4_children_0__madrigal_italiano')}
               </h4>
             </Inline>
@@ -357,9 +357,9 @@ const RenaissanceSection = memo<SectionProps>(({ isExpanded, onToggle }) => {
           </Card>
         </div>
 
-        <div className="bg-gradient-to-r from-accent-green/10 to-accent-blue/10 border-l-4 border-accent-green rounded-xl p-6">
+        <div className="border bg-ok/10 border-ok/40 rounded-xl p-6">
           <div className="flex items-start space-x-3">
-            <div className="w-8 h-8 bg-gradient-to-br from-accent-green to-accent-blue rounded-xl flex items-center justify-center flex-shrink-0 mt-0.5">
+            <div className="w-8 h-8 bg-ok rounded-xl flex items-center justify-center flex-shrink-0 mt-0.5">
               <PiFileText className="w-4 h-4 text-theme-primary" />
             </div>
             <Stack gap={2}>
@@ -387,17 +387,17 @@ const BaroqueSection = memo<SectionProps>(({ isExpanded, onToggle }) => {
     {
       name: 'Johann Sebastian Bach',
       description: t('detailed_jsx_p_children_0__johann_sebastian_bach'),
-      gradient: 'from-accent-red to-accent-purple',
+      gradient: 'bg-erro',
     },
     {
       name: 'George Frideric Handel',
       description: t('detailed_jsx_p_children_0__george_frideric_handel'),
-      gradient: 'from-accent-purple to-accent-blue',
+      gradient: 'fill-ouro',
     },
     {
       name: 'Antonio Vivaldi',
       description: t('detailed_jsx_p_children_0__antonio_vivaldi'),
-      gradient: 'from-accent-blue to-accent-green',
+      gradient: 'bg-aviso',
     },
   ];
 
@@ -407,7 +407,7 @@ const BaroqueSection = memo<SectionProps>(({ isExpanded, onToggle }) => {
       icon={<PiMusicNotes className="w-6 h-6 text-theme-primary" />}
       title={t('detailed_jsx_h3_children_0__barroco_era_gigantes')}
       subtitle={t('detailed_jsx_p_children_0__grandiosidade_virtuosismo')}
-      gradient="from-accent-red to-accent-purple"
+      gradient="bg-erro"
       isExpanded={isExpanded}
       onToggle={onToggle}
     >
@@ -429,7 +429,7 @@ const BaroqueSection = memo<SectionProps>(({ isExpanded, onToggle }) => {
                 >
                   <PiUser className="w-4 h-4 text-theme-primary" />
                 </div>
-                <h4 className="font-semibold text-theme-primary classical-title group-hover:text-brand-primary transition-colors duration-200">
+                <h4 className="font-semibold text-theme-primary classical-title group-hover:text-ouro-texto transition-colors duration-200">
                   {composer.name}
                 </h4>
               </Inline>
@@ -438,9 +438,9 @@ const BaroqueSection = memo<SectionProps>(({ isExpanded, onToggle }) => {
           ))}
         </div>
 
-        <div className="bg-gradient-to-r from-accent-red/10 to-accent-purple/10 border-l-4 border-accent-red rounded-xl p-6">
+        <div className="border bg-erro/10 border-erro/40 rounded-xl p-6">
           <div className="flex items-start space-x-3">
-            <div className="w-8 h-8 bg-gradient-to-br from-accent-red to-accent-purple rounded-xl flex items-center justify-center flex-shrink-0 mt-0.5">
+            <div className="w-8 h-8 bg-erro rounded-xl flex items-center justify-center flex-shrink-0 mt-0.5">
               <GiGrandPiano className="w-4 h-4 text-theme-primary" />
             </div>
             <Stack gap={2}>
@@ -468,17 +468,17 @@ const ClassicalSection = memo<SectionProps>(({ isExpanded, onToggle }) => {
     {
       name: 'Joseph Haydn',
       description: t('detailed_jsx_p_children_0__joseph_haydn'),
-      gradient: 'from-accent-blue to-accent-purple',
+      gradient: 'bg-aviso',
     },
     {
       name: 'Wolfgang Amadeus Mozart',
       description: t('detailed_jsx_p_children_0__wolfgang_amadeus_mozart'),
-      gradient: 'from-accent-purple to-accent-red',
+      gradient: 'fill-ouro',
     },
     {
       name: 'Ludwig van Beethoven',
       description: t('detailed_jsx_p_children_0__ludwig_van_beethoven'),
-      gradient: 'from-accent-red to-accent-green',
+      gradient: 'bg-erro',
     },
   ];
 
@@ -488,7 +488,7 @@ const ClassicalSection = memo<SectionProps>(({ isExpanded, onToggle }) => {
       icon={<PiUser className="w-6 h-6 text-theme-primary" />}
       title={t('detailed_jsx_h3_children_0__classicismo_busca_perfeicao')}
       subtitle={t('detailed_jsx_p_children_0__equilibrio_clareza_perfeicao')}
-      gradient="from-accent-blue to-accent-purple"
+      gradient="bg-aviso"
       isExpanded={isExpanded}
       onToggle={onToggle}
     >
@@ -510,7 +510,7 @@ const ClassicalSection = memo<SectionProps>(({ isExpanded, onToggle }) => {
                 >
                   <PiStar className="w-4 h-4 text-theme-primary" />
                 </div>
-                <h4 className="font-semibold text-theme-primary classical-title group-hover:text-brand-primary transition-colors duration-200">
+                <h4 className="font-semibold text-theme-primary classical-title group-hover:text-ouro-texto transition-colors duration-200">
                   {composer.name}
                 </h4>
               </Inline>
@@ -533,22 +533,22 @@ const RomanticSection = memo<SectionProps>(({ isExpanded, onToggle }) => {
     {
       name: 'Franz Schubert',
       description: t('detailed_jsx_p_children_0__franz_schubert'),
-      gradient: 'from-accent-red to-accent-purple',
+      gradient: 'bg-erro',
     },
     {
       name: 'Frédéric Chopin',
       description: t('detailed_jsx_p_children_0__frederic_chopin'),
-      gradient: 'from-accent-purple to-accent-blue',
+      gradient: 'fill-ouro',
     },
     {
       name: 'Franz Liszt',
       description: t('detailed_jsx_p_children_0__franz_liszt'),
-      gradient: 'from-accent-blue to-accent-green',
+      gradient: 'bg-aviso',
     },
     {
       name: 'Richard Wagner',
       description: t('detailed_jsx_p_children_0__richard_wagner'),
-      gradient: 'from-accent-green to-accent-red',
+      gradient: 'bg-ok',
     },
   ];
 
@@ -558,7 +558,7 @@ const RomanticSection = memo<SectionProps>(({ isExpanded, onToggle }) => {
       icon={<PiMusicNotes className="w-6 h-6 text-theme-primary" />}
       title={t('detailed_jsx_h3_children_0__romantismo_musica_coracao')}
       subtitle={t('detailed_jsx_p_children_0__individualismo_emocao_expressao')}
-      gradient="from-accent-red to-accent-purple"
+      gradient="bg-erro"
       isExpanded={isExpanded}
       onToggle={onToggle}
     >
@@ -580,7 +580,7 @@ const RomanticSection = memo<SectionProps>(({ isExpanded, onToggle }) => {
                 >
                   <PiUser className="w-4 h-4 text-theme-primary" />
                 </div>
-                <h4 className="font-semibold text-theme-primary classical-title group-hover:text-brand-primary transition-colors duration-200">
+                <h4 className="font-semibold text-theme-primary classical-title group-hover:text-ouro-texto transition-colors duration-200">
                   {composer.name}
                 </h4>
               </Inline>
@@ -605,7 +605,7 @@ const ModernSection = memo<SectionProps>(({ isExpanded, onToggle }) => {
       icon={<PiBookOpen className="w-6 h-6 text-theme-primary" />}
       title={t('detailed_jsx_h3_children_0__seculo_xx_revolucao')}
       subtitle={t('detailed_jsx_p_children_0__quebra_paradigmas_novas')}
-      gradient="from-accent-purple to-accent-blue"
+      gradient="fill-ouro"
       isExpanded={isExpanded}
       onToggle={onToggle}
     >
@@ -621,7 +621,7 @@ const ModernSection = memo<SectionProps>(({ isExpanded, onToggle }) => {
               gap={2}
               className="text-xl font-semibold text-theme-primary classical-title mb-4"
             >
-              <div className="w-6 h-6 bg-gradient-to-br from-accent-purple to-accent-blue rounded-lg flex items-center justify-center">
+              <div className="w-6 h-6 fill-ouro rounded-lg flex items-center justify-center">
                 <PiTrendUp className="w-3 h-3 text-theme-primary" />
               </div>
               <span>
@@ -661,7 +661,7 @@ const ModernSection = memo<SectionProps>(({ isExpanded, onToggle }) => {
               gap={2}
               className="text-xl font-semibold text-theme-primary classical-title mb-4"
             >
-              <div className="w-6 h-6 bg-gradient-to-br from-accent-green to-accent-blue rounded-lg flex items-center justify-center">
+              <div className="w-6 h-6 bg-ok rounded-lg flex items-center justify-center">
                 <PiGlobe className="w-3 h-3 text-theme-primary" />
               </div>
               <span>
@@ -695,9 +695,9 @@ const ModernSection = memo<SectionProps>(({ isExpanded, onToggle }) => {
           </div>
         </div>
 
-        <div className="bg-gradient-to-r from-accent-purple/10 to-accent-blue/10 border-l-4 border-accent-purple rounded-xl p-6">
+        <div className="border bg-ouro/10 border-ouro/40 rounded-xl p-6">
           <div className="flex items-start space-x-3">
-            <div className="w-8 h-8 bg-gradient-to-br from-accent-purple to-accent-blue rounded-xl flex items-center justify-center flex-shrink-0 mt-0.5">
+            <div className="w-8 h-8 fill-ouro rounded-xl flex items-center justify-center flex-shrink-0 mt-0.5">
               <PiStar className="w-4 h-4 text-theme-primary" />
             </div>
             <Stack gap={2}>
@@ -729,7 +729,7 @@ const ContemporarySection = memo<SectionProps>(({ isExpanded, onToggle }) => {
       subtitle={t(
         'detailed_jsx_p_children_0__convergencia_estilos_tecnologias'
       )}
-      gradient="from-accent-blue to-accent-green"
+      gradient="bg-aviso"
       isExpanded={isExpanded}
       onToggle={onToggle}
     >
@@ -744,10 +744,10 @@ const ContemporarySection = memo<SectionProps>(({ isExpanded, onToggle }) => {
             className="group hover:scale-102 transition-all duration-200"
           >
             <Inline gap={3} className="mb-4">
-              <div className="w-8 h-8 bg-gradient-to-br from-accent-blue to-accent-green rounded-xl flex items-center justify-center group-hover:scale-105 transition-transform duration-200">
+              <div className="w-8 h-8 bg-aviso rounded-xl flex items-center justify-center group-hover:scale-105 transition-transform duration-200">
                 <PiClock className="w-4 h-4 text-theme-primary" />
               </div>
-              <h4 className="font-semibold text-theme-primary classical-title group-hover:text-brand-primary transition-colors duration-200">
+              <h4 className="font-semibold text-theme-primary classical-title group-hover:text-ouro-texto transition-colors duration-200">
                 {t('detailed_jsx_h4_children_0__retorno_simplicidade')}
               </h4>
             </Inline>
@@ -760,10 +760,10 @@ const ContemporarySection = memo<SectionProps>(({ isExpanded, onToggle }) => {
             className="group hover:scale-102 transition-all duration-200"
           >
             <Inline gap={3} className="mb-4">
-              <div className="w-8 h-8 bg-gradient-to-br from-accent-green to-accent-blue rounded-xl flex items-center justify-center group-hover:scale-105 transition-transform duration-200">
+              <div className="w-8 h-8 bg-ok rounded-xl flex items-center justify-center group-hover:scale-105 transition-transform duration-200">
                 <PiTrendUp className="w-4 h-4 text-theme-primary" />
               </div>
-              <h4 className="font-semibold text-theme-primary classical-title group-hover:text-brand-primary transition-colors duration-200">
+              <h4 className="font-semibold text-theme-primary classical-title group-hover:text-ouro-texto transition-colors duration-200">
                 {t('detailed_jsx_h4_children_0__tecnologia_ia')}
               </h4>
             </Inline>
@@ -773,9 +773,9 @@ const ContemporarySection = memo<SectionProps>(({ isExpanded, onToggle }) => {
           </Card>
         </div>
 
-        <Stack className="bg-gradient-to-r from-accent-blue/10 to-accent-green/10 border-l-4 border-accent-blue rounded-xl p-6 text-center">
+        <Stack className="border bg-aviso/10 border-aviso/40 rounded-xl p-6 text-center">
           <div className="flex items-center justify-center">
-            <div className="w-12 h-12 bg-gradient-to-br from-accent-blue to-accent-green rounded-2xl flex items-center justify-center">
+            <div className="w-12 h-12 bg-aviso rounded-2xl flex items-center justify-center">
               <PiStar className="w-6 h-6 text-theme-primary" />
             </div>
           </div>
@@ -800,7 +800,7 @@ const PopularMusicSection = memo<SectionProps>(({ isExpanded, onToggle }) => {
       icon={<PiMusicNotes className="w-6 h-6 text-theme-primary" />}
       title={t('detailed_jsx_h3_children_0__musica_erudita_popular')}
       subtitle={t('detailed_jsx_p_children_0__fronteiras_dissolvem_qualidade')}
-      gradient="from-accent-green to-accent-blue"
+      gradient="bg-ok"
       isExpanded={isExpanded}
       onToggle={onToggle}
     >
@@ -815,10 +815,10 @@ const PopularMusicSection = memo<SectionProps>(({ isExpanded, onToggle }) => {
             className="group hover:scale-102 transition-all duration-200"
           >
             <Inline gap={3} className="mb-4">
-              <div className="w-8 h-8 bg-gradient-to-br from-accent-green to-accent-blue rounded-xl flex items-center justify-center group-hover:scale-105 transition-transform duration-200">
+              <div className="w-8 h-8 bg-ok rounded-xl flex items-center justify-center group-hover:scale-105 transition-transform duration-200">
                 <PiUser className="w-4 h-4 text-theme-primary" />
               </div>
-              <h4 className="font-semibold text-theme-primary classical-title group-hover:text-brand-primary transition-colors duration-200">
+              <h4 className="font-semibold text-theme-primary classical-title group-hover:text-ouro-texto transition-colors duration-200">
                 {t(
                   'detailed_jsx_h4_children_0__caracteristicas_musica_erudita'
                 )}
@@ -826,7 +826,7 @@ const PopularMusicSection = memo<SectionProps>(({ isExpanded, onToggle }) => {
             </Inline>
             <ul className="text-sm space-y-2 leading-relaxed">
               <li className="flex items-start space-x-2">
-                <div className="w-1.5 h-1.5 bg-accent-green rounded-full mt-2 flex-shrink-0"></div>
+                <div className="w-1.5 h-1.5 bg-ok rounded-full mt-2 flex-shrink-0"></div>
                 <span>
                   {t(
                     'detailed_jsx_li_children_0__maior_complexidade_harmonica'
@@ -834,27 +834,27 @@ const PopularMusicSection = memo<SectionProps>(({ isExpanded, onToggle }) => {
                 </span>
               </li>
               <li className="flex items-start space-x-2">
-                <div className="w-1.5 h-1.5 bg-accent-green rounded-full mt-2 flex-shrink-0"></div>
+                <div className="w-1.5 h-1.5 bg-ok rounded-full mt-2 flex-shrink-0"></div>
                 <span>{t('detailed_jsx_li_children_0__mais_modulacoes')}</span>
               </li>
               <li className="flex items-start space-x-2">
-                <div className="w-1.5 h-1.5 bg-accent-green rounded-full mt-2 flex-shrink-0"></div>
+                <div className="w-1.5 h-1.5 bg-ok rounded-full mt-2 flex-shrink-0"></div>
                 <span>{t('detailed_jsx_li_children_0__menos_repeticao')}</span>
               </li>
               <li className="flex items-start space-x-2">
-                <div className="w-1.5 h-1.5 bg-accent-green rounded-full mt-2 flex-shrink-0"></div>
+                <div className="w-1.5 h-1.5 bg-ok rounded-full mt-2 flex-shrink-0"></div>
                 <span>
                   {t('detailed_jsx_li_children_0__frases_musicais_vastas')}
                 </span>
               </li>
               <li className="flex items-start space-x-2">
-                <div className="w-1.5 h-1.5 bg-accent-green rounded-full mt-2 flex-shrink-0"></div>
+                <div className="w-1.5 h-1.5 bg-ok rounded-full mt-2 flex-shrink-0"></div>
                 <span>
                   {t('detailed_jsx_li_children_0__obras_maior_duracao')}
                 </span>
               </li>
               <li className="flex items-start space-x-2">
-                <div className="w-1.5 h-1.5 bg-accent-green rounded-full mt-2 flex-shrink-0"></div>
+                <div className="w-1.5 h-1.5 bg-ok rounded-full mt-2 flex-shrink-0"></div>
                 <span>
                   {t(
                     'detailed_jsx_li_children_0__tradicionalmente_instrumentos'
@@ -868,40 +868,40 @@ const PopularMusicSection = memo<SectionProps>(({ isExpanded, onToggle }) => {
             className="group hover:scale-102 transition-all duration-200"
           >
             <Inline gap={3} className="mb-4">
-              <div className="w-8 h-8 bg-gradient-to-br from-accent-blue to-accent-purple rounded-xl flex items-center justify-center group-hover:scale-105 transition-transform duration-200">
+              <div className="w-8 h-8 bg-aviso rounded-xl flex items-center justify-center group-hover:scale-105 transition-transform duration-200">
                 <PiMusicNotes className="w-4 h-4 text-theme-primary" />
               </div>
-              <h4 className="font-semibold text-theme-primary classical-title group-hover:text-brand-primary transition-colors duration-200">
+              <h4 className="font-semibold text-theme-primary classical-title group-hover:text-ouro-texto transition-colors duration-200">
                 {t('detailed_jsx_h4_children_0__pontes_entre_mundos')}
               </h4>
             </Inline>
             <ul className="text-sm space-y-2 leading-relaxed">
               <li className="flex items-start space-x-2">
-                <div className="w-1.5 h-1.5 bg-accent-blue rounded-full mt-2 flex-shrink-0"></div>
+                <div className="w-1.5 h-1.5 bg-aviso rounded-full mt-2 flex-shrink-0"></div>
                 <span>
                   {t('detailed_jsx_li_children_0__jazz_complexidade')}
                 </span>
               </li>
               <li className="flex items-start space-x-2">
-                <div className="w-1.5 h-1.5 bg-accent-blue rounded-full mt-2 flex-shrink-0"></div>
+                <div className="w-1.5 h-1.5 bg-aviso rounded-full mt-2 flex-shrink-0"></div>
                 <span>{t('detailed_jsx_li_children_0__rock_progressivo')}</span>
               </li>
               <li className="flex items-start space-x-2">
-                <div className="w-1.5 h-1.5 bg-accent-blue rounded-full mt-2 flex-shrink-0"></div>
+                <div className="w-1.5 h-1.5 bg-aviso rounded-full mt-2 flex-shrink-0"></div>
                 <span>{t('detailed_jsx_li_children_0__choro_brasileiro')}</span>
               </li>
               <li className="flex items-start space-x-2">
-                <div className="w-1.5 h-1.5 bg-accent-blue rounded-full mt-2 flex-shrink-0"></div>
+                <div className="w-1.5 h-1.5 bg-aviso rounded-full mt-2 flex-shrink-0"></div>
                 <span>{t('detailed_jsx_li_children_0__tom_jobim')}</span>
               </li>
               <li className="flex items-start space-x-2">
-                <div className="w-1.5 h-1.5 bg-accent-blue rounded-full mt-2 flex-shrink-0"></div>
+                <div className="w-1.5 h-1.5 bg-aviso rounded-full mt-2 flex-shrink-0"></div>
                 <span>
                   {t('detailed_jsx_li_children_0__villa_lobos_bebendo')}
                 </span>
               </li>
               <li className="flex items-start space-x-2">
-                <div className="w-1.5 h-1.5 bg-accent-blue rounded-full mt-2 flex-shrink-0"></div>
+                <div className="w-1.5 h-1.5 bg-aviso rounded-full mt-2 flex-shrink-0"></div>
                 <span>
                   {t('detailed_jsx_li_children_0__guitarra_eletrica')}
                 </span>
@@ -910,9 +910,9 @@ const PopularMusicSection = memo<SectionProps>(({ isExpanded, onToggle }) => {
           </Card>
         </div>
 
-        <div className="bg-gradient-to-r from-accent-green/10 to-accent-blue/10 border-l-4 border-accent-green rounded-xl p-6">
+        <div className="border bg-ok/10 border-ok/40 rounded-xl p-6">
           <div className="flex items-start space-x-3">
-            <div className="w-8 h-8 bg-gradient-to-br from-accent-green to-accent-blue rounded-xl flex items-center justify-center flex-shrink-0 mt-0.5">
+            <div className="w-8 h-8 bg-ok rounded-xl flex items-center justify-center flex-shrink-0 mt-0.5">
               <PiStar className="w-4 h-4 text-theme-primary" />
             </div>
             <div>
@@ -949,16 +949,16 @@ export function DetailedMusicHistory(): JSX.Element {
   }, []);
 
   return (
-    <div className="w-full bg-gradient-primary py-4 md:py-20 lg:py-20 relative overflow-hidden">
+    <div className="w-full py-4 md:py-20 lg:py-20 relative overflow-hidden">
       {/* Background Pattern Otimizado */}
       <div className="absolute inset-0 pointer-events-none opacity-5 will-change-auto">
-        <div className="absolute top-40 left-40 w-32 md:w-96 max-w-full h-96 bg-brand-gradient rounded-full blur-3xl animate-pulse"></div>
+        <div className="absolute top-40 left-40 w-32 md:w-96 max-w-full h-96 rounded-full blur-3xl animate-pulse"></div>
         <div
-          className="absolute bottom-60 right-60 w-64 h-64 bg-accent-purple/30 rounded-full blur-2xl animate-pulse"
+          className="absolute bottom-60 right-60 w-64 h-64 rounded-full blur-2xl animate-pulse"
           style={{ animationDelay: '1s' }}
         ></div>
         <div
-          className="absolute top-1/3 left-1/4 w-48 h-48 bg-accent-blue/20 rounded-full blur-xl animate-pulse"
+          className="absolute top-1/3 left-1/4 w-48 h-48 rounded-full blur-xl animate-pulse"
           style={{ animationDelay: '2s' }}
         ></div>
       </div>

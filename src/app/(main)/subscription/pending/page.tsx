@@ -14,7 +14,7 @@ export default function SubscriptionPendingPage() {
       <div className="max-w-2xl w-full">
         <div className="bg-theme-elevated rounded-2xl shadow-theme-large p-8 md:p-12 text-center">
           {/* Pending Icon */}
-          <div className="w-24 h-24 bg-gradient-to-br from-amber-500 to-orange-500 rounded-full flex items-center justify-center mx-auto mb-8 animate-pulse">
+          <div className="w-24 h-24 bg-atencao rounded-full flex items-center justify-center mx-auto mb-8 animate-pulse">
             <PiClock className="w-12 h-12 text-white" />
           </div>
 
@@ -28,10 +28,10 @@ export default function SubscriptionPendingPage() {
           </p>
 
           {/* Info Box */}
-          <div className="bg-amber-500/10 border border-amber-500/30 rounded-xl p-6 mb-8 text-left">
+          <div className="bg-atencao/10 border border-atencao/30 rounded-xl p-6 mb-8 text-left">
             <div className="flex items-start gap-4">
-              <div className="w-12 h-12 bg-amber-500/20 rounded-lg flex items-center justify-center flex-shrink-0">
-                <PiEnvelopeSimple className="w-6 h-6 text-amber-500" />
+              <div className="w-12 h-12 bg-atencao/20 rounded-lg flex items-center justify-center flex-shrink-0">
+                <PiEnvelopeSimple className="w-6 h-6 text-atencao" />
               </div>
               <div className="flex-1">
                 <h3 className="text-lg font-semibold text-theme-primary mb-2">
@@ -39,24 +39,24 @@ export default function SubscriptionPendingPage() {
                 </h3>
                 <ul className="space-y-2 text-theme-secondary">
                   <li className="flex items-center gap-2">
-                    <span className="w-1.5 h-1.5 bg-amber-500 rounded-full flex-shrink-0"></span>
+                    <span className="w-1.5 h-1.5 bg-atencao rounded-full flex-shrink-0"></span>
                     <span>
                       Aguarde a confirmação do pagamento (pode levar alguns
                       minutos)
                     </span>
                   </li>
                   <li className="flex items-center gap-2">
-                    <span className="w-1.5 h-1.5 bg-amber-500 rounded-full flex-shrink-0"></span>
+                    <span className="w-1.5 h-1.5 bg-atencao rounded-full flex-shrink-0"></span>
                     <span>Você receberá um email assim que for aprovado</span>
                   </li>
                   <li className="flex items-center gap-2">
-                    <span className="w-1.5 h-1.5 bg-amber-500 rounded-full flex-shrink-0"></span>
+                    <span className="w-1.5 h-1.5 bg-atencao rounded-full flex-shrink-0"></span>
                     <span>
                       Se for boleto, o pagamento pode levar até 2 dias úteis
                     </span>
                   </li>
                   <li className="flex items-center gap-2">
-                    <span className="w-1.5 h-1.5 bg-amber-500 rounded-full flex-shrink-0"></span>
+                    <span className="w-1.5 h-1.5 bg-atencao rounded-full flex-shrink-0"></span>
                     <span>Para PIX, a confirmação é quase instantânea</span>
                   </li>
                 </ul>

@@ -60,14 +60,14 @@ const DetailedMusicHistorySkeleton = () => {
   ];
 
   return (
-    <div className="w-full bg-gradient-primary py-0 md:py-20 lg:py-20 relative overflow-hidden">
+    <div className="w-full py-0 md:py-20 lg:py-20 relative overflow-hidden">
       <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Accordion Sections Skeleton */}
         <Stack gap={6}>
           {skeletonSections.map((section, index) => (
             <div
               key={section.id}
-              className="classical-card overflow-hidden hover:shadow-theme-glow transition-all duration-200 animate-shimmer"
+              className="classical-card overflow-hidden hover:shadow-[var(--sombra-2)] transition-all duration-200 animate-shimmer"
               style={{ animationDelay: `${index * 0.1}s` }}
             >
               {/* Header */}
@@ -80,7 +80,7 @@ const DetailedMusicHistorySkeleton = () => {
                       {section.icon}
                     </div>
                     <Stack gap={2}>
-                      <div className="h-8 w-80 bg-gradient-to-r from-theme-primary/20 to-theme-secondary/20 rounded animate-pulse"></div>
+                      <div className="h-8 w-80 bg-fundo rounded animate-pulse"></div>
                       <div className="h-4 w-64 bg-theme-elevated rounded animate-pulse"></div>
                     </Stack>
                   </Inline>
@@ -104,9 +104,9 @@ const DetailedMusicHistorySkeleton = () => {
 
 const LoadingMusicHistorySkeleton = () => {
   return (
-    <div className=" bg-gradient-primary">
+    <div className=" ">
       {/* Hero Skeleton */}
-      <div className="relative overflow-hidden bg-gradient-primary pt-8 md:pt-24 lg:pt-24 flex items-center">
+      <div className="relative overflow-hidden pt-8 md:pt-24 lg:pt-24 flex items-center">
         {/* Animated musical notes */}
         <AnimatedMusicalNotes />
 
@@ -114,29 +114,29 @@ const LoadingMusicHistorySkeleton = () => {
           <div className="text-center">
             {/* Floating Icons Skeleton */}
             <Inline gap={6} className="justify-center mb-8">
-              <div className="w-16 h-16 bg-gradient-to-br from-accent-blue/20 to-accent-purple/20 rounded-2xl flex items-center justify-center shadow-theme-glow animate-shimmer">
-                <div className="w-8 h-8 bg-theme-inverse/20 rounded-lg animate-pulse"></div>
+              <div className="w-16 h-16 bg-aviso/20 rounded-2xl flex items-center justify-center shadow-theme-glow animate-shimmer">
+                <div className="w-8 h-8 bg-texto/20 rounded-lg animate-pulse"></div>
               </div>
               <div
-                className="w-20 h-20 bg-gradient-to-br from-brand-primary/20 to-brand-secondary/20 rounded-2xl flex items-center justify-center shadow-theme-glow animate-shimmer"
+                className="w-20 h-20 bg-ouro/20 rounded-2xl flex items-center justify-center shadow-theme-glow animate-shimmer"
                 style={{ animationDelay: '0.2s' }}
               >
-                <div className="w-10 h-10 bg-theme-inverse/20 rounded-lg animate-pulse"></div>
+                <div className="w-10 h-10 bg-texto/20 rounded-lg animate-pulse"></div>
               </div>
               <div
-                className="w-16 h-16 bg-gradient-to-br from-accent-purple/20 to-accent-red/20 rounded-2xl flex items-center justify-center shadow-theme-glow animate-shimmer"
+                className="w-16 h-16 bg-ouro/20 rounded-2xl flex items-center justify-center shadow-theme-glow animate-shimmer"
                 style={{ animationDelay: '0.4s' }}
               >
-                <div className="w-8 h-8 bg-theme-inverse/20 rounded-lg animate-pulse"></div>
+                <div className="w-8 h-8 bg-texto/20 rounded-lg animate-pulse"></div>
               </div>
             </Inline>
 
             {/* Title Skeleton */}
             <Stack gap={6} className="mb-8">
               <div className="space-y-4">
-                <div className="h-16 bg-gradient-to-r from-theme-elevated to-interactive-hover border border-theme-primary rounded-2xl mx-auto max-w-2xl animate-shimmer shadow-theme-medium"></div>
+                <div className="h-16 bg-sup-elevada border border-theme-primary rounded-2xl mx-auto max-w-2xl animate-shimmer shadow-theme-medium"></div>
                 <div
-                  className="h-12 bg-gradient-to-r from-brand-primary/10 to-brand-secondary/10 border border-brand-primary/30 rounded-xl mx-auto max-w-xl animate-shimmer"
+                  className="h-12 bg-ouro/10 border border-ouro/30 rounded-xl mx-auto max-w-xl animate-shimmer"
                   style={{ animationDelay: '0.2s' }}
                 ></div>
               </div>
@@ -145,11 +145,11 @@ const LoadingMusicHistorySkeleton = () => {
             {/* Subtitle Skeleton */}
             <div className="space-y-4 mb-8">
               <div
-                className="h-6 bg-gradient-to-r from-theme-elevated to-interactive-hover border border-theme-secondary rounded-lg mx-auto max-w-4xl animate-shimmer"
+                className="h-6 bg-sup-elevada border border-theme-secondary rounded-lg mx-auto max-w-4xl animate-shimmer"
                 style={{ animationDelay: '0.3s' }}
               ></div>
               <div
-                className="h-6 bg-gradient-to-r from-theme-elevated to-interactive-hover border border-theme-secondary rounded-lg mx-auto max-w-3xl animate-shimmer"
+                className="h-6 bg-sup-elevada border border-theme-secondary rounded-lg mx-auto max-w-3xl animate-shimmer"
                 style={{ animationDelay: '0.4s' }}
               ></div>
             </div>
@@ -179,8 +179,8 @@ const LoadingMusicHistorySkeleton = () => {
         <Card densidade="larga" className="animate-shimmer">
           <div className="text-center mb-8">
             <Inline gap={3} className="justify-center mb-4">
-              <div className="w-10 h-10 bg-gradient-to-br from-brand-primary/20 to-brand-secondary/20 rounded-xl"></div>
-              <div className="h-6 w-48 bg-gradient-to-r from-theme-elevated to-interactive-hover border border-theme-primary rounded-lg"></div>
+              <div className="w-10 h-10 bg-ouro/20 rounded-xl"></div>
+              <div className="h-6 w-48 bg-sup-elevada border border-theme-primary rounded-lg"></div>
             </Inline>
             <div className="h-4 w-64 bg-theme-elevated rounded mx-auto"></div>
           </div>
@@ -193,9 +193,9 @@ const LoadingMusicHistorySkeleton = () => {
                 style={{ animationDelay: `${index * 0.1}s` }}
               >
                 <div className="flex items-start space-x-4">
-                  <div className="w-14 h-14 bg-gradient-to-br from-theme-elevated to-interactive-hover border border-theme-primary rounded-2xl"></div>
+                  <div className="w-14 h-14 bg-sup-elevada border border-theme-primary rounded-2xl"></div>
                   <div className="flex-1 space-y-3">
-                    <div className="h-6 bg-gradient-to-r from-brand-primary/20 to-brand-secondary/20 rounded"></div>
+                    <div className="h-6 bg-ouro/20 rounded"></div>
                     <div className="h-4 bg-theme-elevated rounded w-4/5"></div>
                     <div className="h-3 bg-theme-elevated rounded w-3/5"></div>
                   </div>
@@ -220,11 +220,11 @@ const LoadingMusicHistorySkeleton = () => {
               <div className="flex-1 space-y-8">
                 {/* Header */}
                 <div className="relative flex justify-center lg:justify-start">
-                  <div className="inline-flex items-center px-12 py-4 rounded-2xl bg-gradient-to-r from-brand-primary/20 to-brand-secondary/20 border border-brand-primary/30 shadow-theme-glow backdrop-blur-md">
-                    <div className="w-12 h-12 bg-theme-inverse/20 rounded-xl mr-4"></div>
+                  <div className="inline-flex items-center px-12 py-4 rounded-2xl bg-ouro/20 border border-ouro/30 shadow-theme-glow backdrop-blur-md">
+                    <div className="w-12 h-12 bg-texto/20 rounded-xl mr-4"></div>
                     <Stack gap={2}>
-                      <div className="h-8 w-48 bg-theme-primary/30 rounded"></div>
-                      <div className="h-4 w-32 bg-theme-inverse/20 rounded"></div>
+                      <div className="h-8 w-48 bg-fundo/30 rounded"></div>
+                      <div className="h-4 w-32 bg-texto/20 rounded"></div>
                     </Stack>
                   </div>
                 </div>
@@ -232,8 +232,8 @@ const LoadingMusicHistorySkeleton = () => {
                 {/* Description */}
                 <Card densidade="larga" className="group">
                   <Inline gap={3} className="mb-4">
-                    <div className="w-8 h-8 bg-gradient-to-br from-accent-blue/20 to-accent-purple/20 rounded-xl"></div>
-                    <div className="h-5 w-32 bg-gradient-to-r from-theme-primary/20 to-theme-secondary/20 rounded"></div>
+                    <div className="w-8 h-8 bg-aviso/20 rounded-xl"></div>
+                    <div className="h-5 w-32 bg-fundo rounded"></div>
                   </Inline>
                   <Stack gap={3}>
                     <div className="h-4 bg-theme-elevated rounded"></div>
@@ -247,24 +247,24 @@ const LoadingMusicHistorySkeleton = () => {
                 <div className="classical-card overflow-hidden">
                   <Stack gap={6} className="p-6">
                     <Inline gap={3}>
-                      <div className="w-10 h-10 bg-gradient-to-br from-brand-primary/20 to-brand-secondary/20 rounded-2xl"></div>
-                      <div className="h-6 w-48 bg-gradient-to-r from-theme-primary/20 to-theme-secondary/20 rounded"></div>
+                      <div className="w-10 h-10 bg-ouro/20 rounded-2xl"></div>
+                      <div className="h-6 w-48 bg-fundo rounded"></div>
                     </Inline>
 
                     <div className="grid md:grid-cols-2 gap-6">
                       {[1, 2, 3, 4].map((item) => (
                         <Stack key={item}>
                           <Inline gap={3}>
-                            <div className="w-8 h-8 bg-gradient-to-br from-accent-blue/20 to-accent-purple/20 rounded-xl"></div>
+                            <div className="w-8 h-8 bg-aviso/20 rounded-xl"></div>
                             <div className="h-5 w-24 bg-theme-elevated rounded"></div>
                           </Inline>
                           <Stack gap={3}>
                             {[1, 2, 3].map((subItem) => (
                               <div
                                 key={subItem}
-                                className="flex items-start space-x-3 p-3 bg-gradient-to-r from-theme-elevated to-interactive-hover border border-theme-primary/20 rounded-xl"
+                                className="flex items-start space-x-3 p-3 bg-sup-elevada border border-linha/20 rounded-xl"
                               >
-                                <div className="w-2 h-2 bg-accent-blue/30 rounded-full mt-2"></div>
+                                <div className="w-2 h-2 bg-aviso/30 rounded-full mt-2"></div>
                                 <div className="flex-1 space-y-2">
                                   <div className="h-3 bg-theme-elevated rounded"></div>
                                   <div className="h-3 bg-theme-elevated rounded w-4/5"></div>
@@ -283,9 +283,9 @@ const LoadingMusicHistorySkeleton = () => {
               <div className="flex-1 w-full lg:max-w-md">
                 <Card className="sticky top-6">
                   <Inline gap={3} className="mb-6">
-                    <div className="w-10 h-10 bg-gradient-to-br from-accent-blue/20 to-accent-purple/20 rounded-xl"></div>
+                    <div className="w-10 h-10 bg-aviso/20 rounded-xl"></div>
                     <Stack gap={2}>
-                      <div className="h-5 w-32 bg-gradient-to-r from-theme-primary/20 to-theme-secondary/20 rounded"></div>
+                      <div className="h-5 w-32 bg-fundo rounded"></div>
                       <div className="h-3 w-24 bg-theme-elevated rounded"></div>
                     </Stack>
                   </Inline>
@@ -298,9 +298,9 @@ const LoadingMusicHistorySkeleton = () => {
                         style={{ animationDelay: `${composer * 0.1}s` }}
                       >
                         <Inline gap={3} className="mb-3">
-                          <div className="w-12 h-12 bg-gradient-to-br from-accent-blue/20 to-accent-purple/20 rounded-xl shadow-theme-medium flex-shrink-0"></div>
+                          <div className="w-12 h-12 bg-aviso/20 rounded-xl shadow-theme-medium flex-shrink-0"></div>
                           <div className="flex-1 space-y-2">
-                            <div className="h-4 bg-gradient-to-r from-theme-primary/20 to-theme-secondary/20 rounded"></div>
+                            <div className="h-4 bg-fundo rounded"></div>
                             <div className="h-3 bg-theme-elevated rounded w-2/3"></div>
                           </div>
                           <div className="w-6 h-6 bg-theme-elevated border border-theme-secondary rounded-lg"></div>
@@ -311,7 +311,7 @@ const LoadingMusicHistorySkeleton = () => {
                         </Stack>
                         <div className="flex items-center justify-between mt-3 pt-2 border-t border-theme-secondary">
                           <Inline gap={1}>
-                            <div className="w-1.5 h-1.5 bg-brand-primary/30 rounded-full"></div>
+                            <div className="w-1.5 h-1.5 bg-ouro/30 rounded-full"></div>
                             <div className="h-3 w-16 bg-theme-elevated rounded"></div>
                           </Inline>
                           <div className="w-3 h-3 bg-theme-elevated rounded"></div>
@@ -335,9 +335,9 @@ const LoadingMusicHistorySkeleton = () => {
               style={{ animationDelay: `${section * 0.3}s` }}
             >
               <Inline gap={3}>
-                <div className="w-12 h-12 bg-gradient-to-br from-accent-gold/20 to-brand-secondary/20 rounded-2xl"></div>
+                <div className="w-12 h-12 bg-ouro/20 rounded-2xl"></div>
                 <Stack gap={2}>
-                  <div className="h-6 w-64 bg-gradient-to-r from-theme-primary/20 to-theme-secondary/20 rounded"></div>
+                  <div className="h-6 w-64 bg-fundo rounded"></div>
                   <div className="h-4 w-48 bg-theme-elevated rounded"></div>
                 </Stack>
               </Inline>
@@ -352,8 +352,8 @@ const LoadingMusicHistorySkeleton = () => {
                 {[1, 2].map((card) => (
                   <Card nivel={2} key={card}>
                     <Inline gap={3} className="mb-4">
-                      <div className="w-8 h-8 bg-gradient-to-br from-accent-blue/20 to-accent-purple/20 rounded-xl"></div>
-                      <div className="h-5 w-32 bg-gradient-to-r from-theme-primary/20 to-theme-secondary/20 rounded"></div>
+                      <div className="w-8 h-8 bg-aviso/20 rounded-xl"></div>
+                      <div className="h-5 w-32 bg-fundo rounded"></div>
                     </Inline>
                     <Stack gap={3}>
                       <div className="h-3 bg-theme-elevated rounded"></div>
@@ -369,17 +369,17 @@ const LoadingMusicHistorySkeleton = () => {
       </div>
 
       {/* Floating Elements */}
-      <div className="fixed top-20 left-4 w-2 h-2 bg-brand-primary/30 rounded-full animate-pulse"></div>
+      <div className="fixed top-20 left-4 w-2 h-2 bg-ouro/30 rounded-full animate-pulse"></div>
       <div
-        className="fixed top-40 right-8 w-1.5 h-1.5 bg-accent-purple/40 rounded-full animate-pulse"
+        className="fixed top-40 right-8 w-1.5 h-1.5 bg-ouro/40 rounded-full animate-pulse"
         style={{ animationDelay: '1s' }}
       ></div>
       <div
-        className="fixed bottom-32 left-8 w-1 h-1 bg-brand-secondary/50 rounded-full animate-pulse"
+        className="fixed bottom-32 left-8 w-1 h-1 bg-ouro/50 rounded-full animate-pulse"
         style={{ animationDelay: '2s' }}
       ></div>
       <div
-        className="fixed bottom-20 right-4 w-1.5 h-1.5 bg-accent-blue/30 rounded-full animate-pulse"
+        className="fixed bottom-20 right-4 w-1.5 h-1.5 bg-aviso/30 rounded-full animate-pulse"
         style={{ animationDelay: '0.5s' }}
       ></div>
 

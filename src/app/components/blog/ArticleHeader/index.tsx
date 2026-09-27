@@ -59,7 +59,7 @@ export function ArticleHeader({ article, isAdmin }: ArticleHeaderProps) {
             href={`/autor/${
               article.author.username || article.author.firstName
             }`}
-            className="flex items-center space-x-3 hover:text-brand-primary transition-colors"
+            className="flex items-center space-x-3 hover:text-ouro-texto transition-colors"
           >
             {article.author.image ? (
               <Image
@@ -120,7 +120,7 @@ export function ArticleHeader({ article, isAdmin }: ArticleHeaderProps) {
               <Link
                 key={tag.tag.slug}
                 href={`/blog/tag/${tag.tag.slug}`}
-                className="px-3 py-1 rounded-full text-xs font-medium bg-theme-elevated hover:bg-theme-classical transition-all"
+                className="px-3 py-1 rounded-full text-xs font-medium bg-theme-elevated hover:bg-sup-1 transition-all"
                 style={{
                   color: tag.tag.color || 'var(--text-secondary)',
                 }}

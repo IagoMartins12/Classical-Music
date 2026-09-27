@@ -21,14 +21,14 @@ export function NavigationTabs({ activeTab, onTabChange }: Props) {
       label: t('navigation_tabs_0__label'),
       description: t('navigation_tabs_0__description'),
       icon: PiBookOpen,
-      gradient: 'from-brand-primary to-brand-secondary',
+      gradient: 'fill-ouro',
     },
     {
       id: 'timeline' as const,
       label: t('navigation_tabs_1__label'),
       description: t('navigation_tabs_1__description'),
       icon: PiClock,
-      gradient: 'from-accent-purple to-accent-blue',
+      gradient: 'fill-ouro',
     },
   ];
 
@@ -41,7 +41,7 @@ export function NavigationTabs({ activeTab, onTabChange }: Props) {
         {/* Header */}
         <Stack className="text-center mb-8">
           <Inline gap={3} className="justify-center">
-            <div className="w-10 h-10 bg-gradient-to-br from-brand-primary to-brand-secondary rounded-xl flex items-center justify-center shadow-theme-glow">
+            <div className="w-10 h-10 fill-ouro rounded-xl flex items-center justify-center shadow-theme-glow">
               <PiMusicNotes className="w-5 h-5 text-theme-primary" />
             </div>
             <h2 className="text-2xl font-bold text-theme-primary classical-title">
@@ -67,8 +67,8 @@ export function NavigationTabs({ activeTab, onTabChange }: Props) {
                   relative group p-6 rounded-2xl border-2 transition-all duration-500 text-left overflow-hidden
                   ${
                     isActive
-                      ? 'border-brand-primary bg-gradient-to-br from-brand-primary/5 to-brand-secondary/5 shadow-theme-glow scale-105'
-                      : 'border-theme-secondary hover:border-theme-primary hover:bg-interactive-hover hover:scale-102'
+                      ? 'border-ouro bg-ouro/5 shadow-theme-glow scale-105'
+                      : 'border-theme-secondary hover:border-linha hover:bg-ouro/10 hover:scale-102'
                   }
                   animate-fade-in-up
                 `}
@@ -85,7 +85,7 @@ export function NavigationTabs({ activeTab, onTabChange }: Props) {
 
                 {/* Active indicator */}
                 {isActive && (
-                  <div className="absolute left-0 top-4 bottom-4 w-1 bg-brand-gradient rounded-full"></div>
+                  <div className="absolute left-0 top-4 bottom-4 w-1 fill-ouro rounded-full"></div>
                 )}
 
                 <div className="relative z-10 flex items-start space-x-4">
@@ -96,7 +96,7 @@ export function NavigationTabs({ activeTab, onTabChange }: Props) {
                       ${
                         isActive
                           ? `bg-gradient-to-br ${tab.gradient} text-theme-primary shadow-theme-glow`
-                          : 'bg-theme-elevated border border-theme-secondary text-theme-primary group-hover:border-theme-primary'
+                          : 'bg-theme-elevated border border-theme-secondary text-theme-primary group-hover:border-linha'
                       }
                       group-hover:scale-110
                     `}
@@ -112,7 +112,7 @@ export function NavigationTabs({ activeTab, onTabChange }: Props) {
                         ${
                           isActive
                             ? 'text-brand-primary'
-                            : 'text-theme-primary group-hover:text-brand-primary'
+                            : 'text-theme-primary group-hover:text-ouro-texto'
                         }
                       `}
                     >
@@ -124,7 +124,7 @@ export function NavigationTabs({ activeTab, onTabChange }: Props) {
                         ${
                           isActive
                             ? 'text-theme-primary'
-                            : 'text-theme-secondary group-hover:text-theme-primary'
+                            : 'text-theme-secondary group-hover:text-texto'
                         }
                       `}
                     >
@@ -134,7 +134,7 @@ export function NavigationTabs({ activeTab, onTabChange }: Props) {
                     {/* Active state indicator */}
                     {isActive && (
                       <Inline gap={2} className="mt-3">
-                        <div className="w-2 h-2 bg-brand-primary rounded-full animate-pulse"></div>
+                        <div className="w-2 h-2 bg-ouro rounded-full animate-pulse"></div>
                         <Text
                           papel="legenda"
                           tom="ouro"
@@ -154,8 +154,8 @@ export function NavigationTabs({ activeTab, onTabChange }: Props) {
                       w-8 h-8 rounded-xl flex items-center justify-center transition-all duration-300
                       ${
                         isActive
-                          ? 'bg-brand-primary/20 text-brand-primary'
-                          : 'text-theme-tertiary group-hover:text-theme-primary group-hover:bg-interactive-hover'
+                          ? 'bg-ouro/10 text-brand-primary'
+                          : 'text-theme-tertiary group-hover:text-texto group-hover:bg-ouro/10'
                       }
                     `}
                   >
@@ -178,7 +178,7 @@ export function NavigationTabs({ activeTab, onTabChange }: Props) {
                 </div>
 
                 {/* Hover effect */}
-                <div className="absolute inset-0 bg-brand-gradient opacity-0 group-hover:opacity-5 transition-opacity duration-500 rounded-2xl pointer-events-none"></div>
+                <div className="absolute inset-0 fill-ouro opacity-0 group-hover:opacity-5 transition-opacity duration-500 rounded-2xl pointer-events-none"></div>
               </button>
             );
           })}
@@ -186,13 +186,13 @@ export function NavigationTabs({ activeTab, onTabChange }: Props) {
 
         {/* Bottom decoration */}
         <Inline gap={2} className="justify-center mt-8">
-          <div className="w-1 h-1 bg-brand-primary rounded-full animate-pulse"></div>
+          <div className="w-1 h-1 bg-ouro rounded-full animate-pulse"></div>
           <div
-            className="w-2 h-2 bg-accent-purple rounded-full animate-pulse"
+            className="w-2 h-2 bg-ouro rounded-full animate-pulse"
             style={{ animationDelay: '0.5s' }}
           ></div>
           <div
-            className="w-1 h-1 bg-brand-primary rounded-full animate-pulse"
+            className="w-1 h-1 bg-ouro rounded-full animate-pulse"
             style={{ animationDelay: '1s' }}
           ></div>
         </Inline>

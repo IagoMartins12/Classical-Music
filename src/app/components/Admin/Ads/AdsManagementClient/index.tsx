@@ -174,15 +174,15 @@ export default function AdsManagementClient() {
   const getStatusColor = (status: string) => {
     switch (status) {
       case 'ACTIVE':
-        return 'text-accent-green bg-accent-green/10';
+        return 'text-ok bg-ok/10';
       case 'PAUSED':
-        return 'text-accent-amber bg-accent-amber/10';
+        return 'text-atencao bg-atencao/10';
       case 'DRAFT':
         return 'text-theme-tertiary bg-theme-secondary';
       case 'SCHEDULED':
-        return 'text-accent-blue bg-accent-blue/10';
+        return 'text-aviso bg-aviso/10';
       case 'EXPIRED':
-        return 'text-accent-red bg-accent-red/10';
+        return 'text-erro bg-erro/10';
       default:
         return 'text-theme-tertiary bg-theme-secondary';
     }
@@ -255,7 +255,7 @@ export default function AdsManagementClient() {
           <AnimatedItem direction="up" springType="gentle">
             <div className="text-center py-8">
               <div className="flex items-center justify-center mb-6">
-                <div className="w-16 h-16 bg-gradient-to-br from-accent-purple to-accent-pink rounded-3xl flex items-center justify-center shadow-theme-glow">
+                <div className="w-16 h-16 fill-ouro rounded-3xl flex items-center justify-center shadow-theme-glow">
                   <PiTarget className="w-8 h-8 text-white" />
                 </div>
               </div>
@@ -281,8 +281,8 @@ export default function AdsManagementClient() {
                       {stats.totalAds}
                     </p>
                   </Stack>
-                  <div className="w-12 h-12 bg-accent-blue/20 rounded-xl flex items-center justify-center">
-                    <PiTarget className="w-6 h-6 text-accent-blue" />
+                  <div className="w-12 h-12 bg-aviso/20 rounded-xl flex items-center justify-center">
+                    <PiTarget className="w-6 h-6 text-aviso" />
                   </div>
                 </div>
               </AnimatedCard>
@@ -293,12 +293,12 @@ export default function AdsManagementClient() {
                     <Text papel="rotulo" tom="fraco" as="p">
                       Ativos
                     </Text>
-                    <p className="text-3xl font-bold text-accent-green">
+                    <p className="text-3xl font-bold text-ok">
                       {stats.activeAds}
                     </p>
                   </Stack>
-                  <div className="w-12 h-12 bg-accent-green/20 rounded-xl flex items-center justify-center">
-                    <PiPlay className="w-6 h-6 text-accent-green" />
+                  <div className="w-12 h-12 bg-ok/20 rounded-xl flex items-center justify-center">
+                    <PiPlay className="w-6 h-6 text-ok" />
                   </div>
                 </div>
               </AnimatedCard>
@@ -309,12 +309,12 @@ export default function AdsManagementClient() {
                     <Text papel="rotulo" tom="fraco" as="p">
                       Impressões (30d)
                     </Text>
-                    <p className="text-3xl font-bold text-accent-purple">
+                    <p className="text-3xl font-bold text-ouro-texto">
                       {stats.impressions30d.toLocaleString()}
                     </p>
                   </Stack>
-                  <div className="w-12 h-12 bg-accent-purple/20 rounded-xl flex items-center justify-center">
-                    <PiEye className="w-6 h-6 text-accent-purple" />
+                  <div className="w-12 h-12 bg-ouro/20 rounded-xl flex items-center justify-center">
+                    <PiEye className="w-6 h-6 text-ouro-texto" />
                   </div>
                 </div>
               </AnimatedCard>
@@ -325,12 +325,12 @@ export default function AdsManagementClient() {
                     <Text papel="rotulo" tom="fraco" as="p">
                       CTR Médio
                     </Text>
-                    <p className="text-3xl font-bold text-accent-amber">
+                    <p className="text-3xl font-bold text-atencao">
                       {stats.avgCTR.toFixed(2)}%
                     </p>
                   </Stack>
-                  <div className="w-12 h-12 bg-accent-amber/20 rounded-xl flex items-center justify-center">
-                    <PiTrendUp className="w-6 h-6 text-accent-amber" />
+                  <div className="w-12 h-12 bg-atencao/20 rounded-xl flex items-center justify-center">
+                    <PiTrendUp className="w-6 h-6 text-atencao" />
                   </div>
                 </div>
               </AnimatedCard>
@@ -351,7 +351,7 @@ export default function AdsManagementClient() {
                     onChange={(e) =>
                       handleFilterChange('search', e.target.value)
                     }
-                    className="w-full pl-10 pr-4 py-2 bg-theme-secondary border border-theme-primary rounded-lg text-theme-primary placeholder-theme-tertiary focus:outline-none focus:ring-2 focus:ring-brand-primary"
+                    className="w-full pl-10 pr-4 py-2 bg-theme-secondary border border-theme-primary rounded-lg text-theme-primary placeholder-texto-fraco focus:outline-none focus:ring-2 focus:ring-ouro"
                   />
                 </div>
 
@@ -415,7 +415,7 @@ export default function AdsManagementClient() {
 
             {/* Bulk Actions */}
             {selectedAds.length > 0 && (
-              <div className="flex items-center gap-2 p-3 bg-brand-primary/10 border border-brand-primary rounded-lg mb-4">
+              <div className="flex items-center gap-2 p-3 bg-ouro/10 border border-ouro rounded-lg mb-4">
                 <Text papel="rotulo" tom="forte" className="font-medium">
                   {selectedAds.length} selecionado(s)
                 </Text>
@@ -441,7 +441,7 @@ export default function AdsManagementClient() {
                     size="sm"
                     leftIcon={<PiTrash />}
                     onClick={() => handleBulkAction('delete')}
-                    className="text-accent-red hover:text-accent-red"
+                    className="text-erro hover:text-erro"
                   >
                     Deletar
                   </Button>
@@ -496,7 +496,7 @@ export default function AdsManagementClient() {
                     return (
                       <tr
                         key={ad.id}
-                        className="border-b border-theme-secondary hover:bg-theme-secondary/50"
+                        className="border-b border-theme-secondary hover:bg-sup-1/50"
                       >
                         <td className="py-3 px-2">
                           <Input
@@ -536,7 +536,7 @@ export default function AdsManagementClient() {
                                 </h3>
                                 {!hasMedia(ad) && (
                                   <PiWarning
-                                    className="w-4 h-4 text-accent-amber"
+                                    className="w-4 h-4 text-atencao"
                                     title="Sem mídia"
                                   />
                                 )}
@@ -575,13 +575,13 @@ export default function AdsManagementClient() {
                         <td className="py-3 px-2">
                           <Inline gap={1}>
                             {ad.imageUrl && (
-                              <PiImage className="w-4 h-4 text-accent-green" />
+                              <PiImage className="w-4 h-4 text-ok" />
                             )}
                             {ad.videoUrl && (
-                              <PiVideoCamera className="w-4 h-4 text-accent-blue" />
+                              <PiVideoCamera className="w-4 h-4 text-aviso" />
                             )}
                             {!hasMedia(ad) && (
-                              <span className="text-xs text-accent-red">
+                              <span className="text-xs text-erro">
                                 Sem mídia
                               </span>
                             )}
@@ -606,7 +606,7 @@ export default function AdsManagementClient() {
                               leftIcon={<PiCopy />}
                               onClick={() => handleCloneAd(ad)}
                               title="Clonar anúncio"
-                              className="text-accent-purple hover:text-accent-purple"
+                              className="text-ouro-texto hover:text-ouro-texto"
                             />
                             <Button
                               variant="ghost"
@@ -614,9 +614,7 @@ export default function AdsManagementClient() {
                               leftIcon={<PiUploadSimple />}
                               onClick={() => setMediaAd(ad)}
                               title="Gerenciar mídia"
-                              className={
-                                !hasMedia(ad) ? 'text-accent-amber' : ''
-                              }
+                              className={!hasMedia(ad) ? 'text-atencao' : ''}
                             />
                             <Button
                               variant="ghost"
@@ -659,7 +657,7 @@ export default function AdsManagementClient() {
                               size="sm"
                               leftIcon={<PiTrash />}
                               onClick={() => handleDeleteAd(ad.id)}
-                              className="text-accent-red hover:text-accent-red"
+                              className="text-erro hover:text-erro"
                               title="Deletar"
                             />
                           </Inline>

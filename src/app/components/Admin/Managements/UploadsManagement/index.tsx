@@ -118,12 +118,12 @@ const ActivityDetailModal = ({
   const EntityIcon = getEntityIcon(activity.entityType);
 
   return (
-    <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4">
+    <div className="fixed inset-0 bg-black/50 z-dialogo flex items-center justify-center p-4">
       <div className="bg-theme-elevated rounded-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto">
         {/* Header */}
         <div className="flex items-center justify-between p-6 border-b border-theme-secondary">
           <Inline gap={3}>
-            <div className="w-12 h-12 bg-gradient-to-br from-accent-purple to-accent-blue rounded-xl flex items-center justify-center">
+            <div className="w-12 h-12 fill-ouro rounded-xl flex items-center justify-center">
               <EntityIcon className="w-6 h-6 text-theme-primary" />
             </div>
             <div>
@@ -208,7 +208,7 @@ const ActivityDetailModal = ({
                       {activity.entityDetails.name}
                     </h4>
                     {activity.entityDetails.isVerified && (
-                      <span className="inline-flex items-center space-x-1 text-xs bg-accent-green/10 text-accent-green px-2 py-1 rounded">
+                      <span className="inline-flex items-center space-x-1 text-xs bg-ok/10 text-ok px-2 py-1 rounded">
                         <span>Verificado</span>
                       </span>
                     )}
@@ -437,11 +437,11 @@ export default function UploadsManagement() {
   const getActionColor = (action: string) => {
     switch (action) {
       case 'create':
-        return 'text-accent-green bg-accent-green/10';
+        return 'text-ok bg-ok/10';
       case 'update':
-        return 'text-accent-blue bg-accent-blue/10';
+        return 'text-aviso bg-aviso/10';
       case 'delete':
-        return 'text-accent-red bg-accent-red/10';
+        return 'text-erro bg-erro/10';
       default:
         return 'text-theme-tertiary bg-theme-secondary';
     }
@@ -483,7 +483,7 @@ export default function UploadsManagement() {
         <AnimatedItem direction="up" springType="gentle">
           <div className="text-center mb-8 py-16">
             <div className="flex items-center justify-center mb-6">
-              <div className="w-16 h-16 bg-gradient-to-br from-accent-purple to-accent-blue rounded-3xl flex items-center justify-center shadow-theme-glow">
+              <div className="w-16 h-16 fill-ouro rounded-3xl flex items-center justify-center shadow-theme-glow">
                 <PiUploadSimple className="w-8 h-8 text-theme-primary" />
               </div>
             </div>
@@ -601,7 +601,7 @@ export default function UploadsManagement() {
                 gap={2}
                 className="text-xl font-bold text-theme-primary mb-6"
               >
-                <PiTarget className="w-5 h-5 text-accent-purple" />
+                <PiTarget className="w-5 h-5 text-ouro-texto" />
                 <span>
                   Principais Contribuidores ({getPeriodLabel(period)})
                 </span>
@@ -618,7 +618,7 @@ export default function UploadsManagement() {
                         papel="rotulo"
                         tom="forte"
                         as="div"
-                        className="w-8 h-8 bg-gradient-to-br from-accent-purple to-accent-blue rounded-lg flex items-center justify-center font-bold"
+                        className="w-8 h-8 fill-ouro rounded-lg flex items-center justify-center font-bold"
                       >
                         {index + 1}
                       </Text>
@@ -632,9 +632,9 @@ export default function UploadsManagement() {
                       </div>
                     </Inline>
                     <div className="flex items-center justify-between">
-                      <div className="w-full bg-theme-primary/20 rounded-full h-2">
+                      <div className="w-full bg-fundo/20 rounded-full h-2">
                         <div
-                          className="bg-gradient-to-r from-accent-purple to-accent-blue h-2 rounded-full transition-all duration-500"
+                          className="fill-ouro h-2 rounded-full transition-all duration-500"
                           style={{
                             width: `${Math.min(
                               (user.count / (stats.byUser[0]?.count || 1)) *
@@ -670,7 +670,7 @@ export default function UploadsManagement() {
                 gap={2}
                 className="text-xl font-bold text-theme-primary mb-6"
               >
-                <PiClock className="w-5 h-5 text-accent-blue" />
+                <PiClock className="w-5 h-5 text-aviso" />
                 <span>Atividade Recente</span>
               </Inline>
               <Stack gap={3}>
@@ -680,10 +680,10 @@ export default function UploadsManagement() {
                     <Inline
                       gap={4}
                       key={activity.id}
-                      className="p-3 bg-theme-secondary rounded-xl hover:bg-theme-primary/50 transition-colors cursor-pointer"
+                      className="p-3 bg-theme-secondary rounded-xl hover:bg-fundo/50 transition-colors cursor-pointer"
                       onClick={() => handleActivityClick(activity)}
                     >
-                      <div className="w-10 h-10 bg-gradient-to-br from-accent-blue to-accent-purple rounded-lg flex items-center justify-center">
+                      <div className="w-10 h-10 bg-aviso rounded-lg flex items-center justify-center">
                         <EntityIcon className="w-5 h-5 text-theme-primary" />
                       </div>
                       <div className="flex-1 min-w-0">
@@ -850,8 +850,8 @@ export default function UploadsManagement() {
 
             {/* Bulk Actions */}
             {selectedUploads.size > 0 && (
-              <div className="flex items-center justify-between p-4 bg-accent-purple/10 border border-accent-purple rounded-xl mb-6">
-                <span className="text-accent-purple font-medium">
+              <div className="flex items-center justify-between p-4 bg-ouro/10 border border-ouro rounded-xl mb-6">
+                <span className="text-ouro-texto font-medium">
                   {selectedUploads.size} uploads selecionados
                 </span>
                 <Inline gap={2}>
@@ -888,7 +888,7 @@ export default function UploadsManagement() {
                 return (
                   <div
                     key={upload.id}
-                    className="p-4 bg-theme-secondary rounded-xl hover:bg-theme-primary/50 transition-colors"
+                    className="p-4 bg-theme-secondary rounded-xl hover:bg-fundo/50 transition-colors"
                   >
                     <div className="flex items-start space-x-4">
                       <input
@@ -903,10 +903,10 @@ export default function UploadsManagement() {
                           }
                           setSelectedUploads(newSelected);
                         }}
-                        className="w-4 h-4 text-brand-primary bg-theme-secondary border-theme-primary rounded focus:ring-brand-primary focus:ring-2 mt-1"
+                        className="w-4 h-4 text-brand-primary bg-theme-secondary border-theme-primary rounded focus:ring-ouro focus:ring-2 mt-1"
                       />
 
-                      <div className="w-12 h-12 bg-gradient-to-br from-accent-purple to-accent-blue rounded-xl flex items-center justify-center flex-shrink-0">
+                      <div className="w-12 h-12 fill-ouro rounded-xl flex items-center justify-center flex-shrink-0">
                         <EntityIcon className="w-6 h-6 text-theme-primary" />
                       </div>
 

@@ -98,7 +98,7 @@ export function BookmarksPageClient({ categories }: BookmarksPageClientProps) {
     return (
       <div className="flex items-center justify-center min-h-[400px]">
         <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-brand-primary mx-auto mb-4"></div>
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-ouro mx-auto mb-4"></div>
           <p className="text-theme-secondary">Carregando artigos salvos...</p>
         </div>
       </div>
@@ -140,8 +140,8 @@ export function BookmarksPageClient({ categories }: BookmarksPageClientProps) {
               onClick={() => handleCategoryChange('all')}
               className={`px-4 py-2 rounded-lg text-sm font-medium transition-all ${
                 selectedCategory === 'all'
-                  ? 'bg-brand-primary text-white shadow-theme-glow'
-                  : 'bg-theme-elevated text-theme-secondary hover:bg-interactive-hover'
+                  ? 'bg-ouro text-sobre-ouro shadow-theme-glow'
+                  : 'bg-theme-elevated text-theme-secondary hover:bg-ouro/10'
               }`}
             >
               Todas
@@ -245,8 +245,8 @@ export function BookmarksPageClient({ categories }: BookmarksPageClientProps) {
                           onClick={() => handlePageChange(p)}
                           className={`px-4 py-2 rounded-lg font-medium transition-all ${
                             page === p
-                              ? 'bg-brand-primary text-white shadow-theme-glow'
-                              : 'bg-theme-elevated text-theme-secondary hover:bg-interactive-hover'
+                              ? 'bg-ouro text-sobre-ouro shadow-theme-glow'
+                              : 'bg-theme-elevated text-theme-secondary hover:bg-ouro/10'
                           }`}
                         >
                           {p}

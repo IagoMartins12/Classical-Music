@@ -24,6 +24,13 @@
   --color-atencao: var(--atencao);
   --color-aviso: var(--aviso);
 
+  /* Superfícies como cor chapada, para quem precisa de opacidade ou variante
+     (`hover:bg-sup-2`, `bg-sup-1/60`). O degradê fica em `.sup-*`/`.fundo-sup-*`. */
+  --color-sup-1: var(--sup-1-b);
+  --color-sup-2: var(--sup-2-b);
+  --color-sup-elevada: var(--sup-2-a);
+  --color-veu: var(--bg-overlay);
+
   --radius-controle: var(--r-controle);
   --radius-card: var(--r-card);
   --radius-folha: var(--r-folha);
@@ -191,12 +198,7 @@
   --t-resposta: 180ms;
   --t-entrada: 240ms;
 
-  /* --- Camadas: cinco níveis nomeados, no lugar de z-[9999]. --- */
-  --z-conteudo: 10;
-  --z-barra: 20;
-  --z-menu: 30;
-  --z-dialogo: 40;
-  --z-aviso: 50;
+  /* --- Camadas: ver o bloco "Camadas" abaixo do `@theme` (10 a 400). --- */
 
   /* --- Contêineres --- */
   --largura-texto: 720px;
@@ -344,6 +346,41 @@
   --fonte-display: var(--fonte-display-next), 'EB Garamond', Georgia, serif;
   --fonte-sans: var(--fonte-sans-next), system-ui, -apple-system, sans-serif;
   --fonte-mono: var(--fonte-mono-next), ui-monospace, monospace;
+}
+
+/* =========================================================================
+   Camadas: cinco níveis com nome, no lugar de `z-[9999]` (14 lugares),
+   `z-[500]`, `z-[200]` e afins — número grande é sempre alguém que precisou
+   passar por cima de algo sem saber o quê.
+
+   conteúdo elevado · barra fixa · menu suspenso · diálogo e folha · aviso
+
+   Os valores pulam de cem em cem, e não de dez em dez: dentro das páginas o
+   conteúdo já usa `z-10` a `z-50` (card com menu aberto, botão sobre a capa),
+   e com a barra em 20 esse conteúdo passaria por cima dela ao rolar. Com a
+   barra em 100, todo `z-*` de conteúdo fica abaixo sem ser tocado.
+   ========================================================================= */
+:root {
+  --z-elevado: 10;
+  --z-barra: 100;
+  --z-menu: 200;
+  --z-dialogo: 300;
+  --z-aviso: 400;
+}
+@utility z-elevado {
+  z-index: var(--z-elevado);
+}
+@utility z-barra {
+  z-index: var(--z-barra);
+}
+@utility z-menu {
+  z-index: var(--z-menu);
+}
+@utility z-dialogo {
+  z-index: var(--z-dialogo);
+}
+@utility z-aviso {
+  z-index: var(--z-aviso);
 }
 
 /* As classes do sistema moram em `@layer components`, abaixo dos utilitários.

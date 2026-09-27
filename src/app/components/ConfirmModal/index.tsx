@@ -32,33 +32,33 @@ export interface ConfirmModalProps {
 const TYPE_CONFIG = {
   danger: {
     icon: PiTrash,
-    color: 'text-accent-red',
-    bgColor: 'bg-accent-red/10',
-    borderColor: 'border-accent-red/30',
+    color: 'text-erro',
+    bgColor: 'bg-erro/10',
+    borderColor: 'border-erro/30',
     buttonVariant: 'delete' as const,
     defaultConfirmText: 'Deletar',
   },
   warning: {
     icon: PiWarning,
-    color: 'text-accent-amber',
-    bgColor: 'bg-accent-amber/10',
-    borderColor: 'border-accent-amber/30',
+    color: 'text-atencao',
+    bgColor: 'bg-atencao/10',
+    borderColor: 'border-atencao/30',
     buttonVariant: 'primary' as const,
     defaultConfirmText: 'Continuar',
   },
   info: {
     icon: PiInfo,
-    color: 'text-accent-blue',
-    bgColor: 'bg-accent-blue/10',
-    borderColor: 'border-accent-blue/30',
+    color: 'text-aviso',
+    bgColor: 'bg-aviso/10',
+    borderColor: 'border-aviso/30',
     buttonVariant: 'primary' as const,
     defaultConfirmText: 'OK',
   },
   question: {
     icon: PiQuestion,
     color: 'text-brand-primary',
-    bgColor: 'bg-brand-primary/10',
-    borderColor: 'border-brand-primary/30',
+    bgColor: 'bg-ouro/10',
+    borderColor: 'border-ouro/30',
     buttonVariant: 'primary' as const,
     defaultConfirmText: 'Sim',
   },
@@ -111,7 +111,7 @@ export default function ConfirmModal({
   const isLoadingState = isLoading || processing;
 
   const modalContent = (
-    <div className="fixed inset-0 z-[9999] flex items-center justify-center p-4">
+    <div className="fixed inset-0 z-dialogo flex items-center justify-center p-4">
       <div
         className="absolute inset-0 bg-black/50 backdrop-blur-sm transition-opacity duration-300"
         onClick={!isLoadingState ? onClose : undefined}

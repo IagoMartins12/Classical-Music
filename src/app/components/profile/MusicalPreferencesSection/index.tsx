@@ -320,7 +320,7 @@ const MusicalPreferencesSection: React.FC<MusicalPreferencesSectionProps> = ({
               {t('preferences_favorite_composer')}
             </label>
             {!isEditing ? (
-              <div className="input-classical bg-theme-secondary bg-opacity-50">
+              <div className="input-classical bg-theme-secondary">
                 {getComposerName(formData.favoriteComposerId)}
               </div>
             ) : (
@@ -345,7 +345,7 @@ const MusicalPreferencesSection: React.FC<MusicalPreferencesSectionProps> = ({
               {t('preferences_favorite_period')}
             </label>
             {!isEditing ? (
-              <div className="input-classical bg-theme-secondary bg-opacity-50">
+              <div className="input-classical bg-theme-secondary">
                 {getEpochName(formData.favoriteEpochId)}
               </div>
             ) : (
@@ -372,7 +372,7 @@ const MusicalPreferencesSection: React.FC<MusicalPreferencesSectionProps> = ({
         <Card
           nivel={2}
           densidade="compacta"
-          className="bg-brand-primary bg-opacity-5 border border-brand-primary border-opacity-30"
+          className="bg-ouro/5 border border-ouro/30"
         >
           <h4 className="font-medium text-brand-primary mb-2">
             {t('preferences_profile_summary')}

@@ -159,22 +159,7 @@ export const LanguageToggle: React.FC<LanguageToggleProps> = ({
           disabled={isTranslating}
           className={`
             ${getVariantClasses()}
-            relative
-            bg-theme-elevated
-            border border-theme-primary
-            rounded-xl
-            hover:border-theme-accent
-            hover:bg-interactive-hover
-            active:scale-95
-            transition-all duration-300
-            group
-            disabled:opacity-50
-            disabled:cursor-not-allowed
-            focus:outline-none
-            focus:ring-2
-            focus:ring-brand-primary/50
-            focus:ring-offset-2
-            focus:ring-offset-bg-primary
+            relative bg-theme-elevated border border-theme-primary rounded-xl hover:border-ouro hover:bg-ouro/10 active:scale-95 transition-all duration-300 group disabled:opacity-50 disabled:cursor-not-allowed focus:outline-none focus:ring-2 focus:ring-ouro/50 focus:ring-offset-2 focus:ring-offset-bg-primary
             ${isTranslating ? 'animate-pulse cursor-wait' : ''}
           `}
           aria-label={`Alterar para ${
@@ -183,7 +168,7 @@ export const LanguageToggle: React.FC<LanguageToggleProps> = ({
           title={`Trocar para ${language === 'pt' ? 'English' : 'Português'}`}
         >
           {/* Background gradient effect */}
-          <div className="absolute inset-0 bg-brand-gradient opacity-0 group-hover:opacity-10 rounded-xl transition-opacity duration-300" />
+          <div className="absolute inset-0 fill-ouro opacity-0 group-hover:opacity-10 rounded-xl transition-opacity duration-300" />
 
           {/* Flag container - mesma estrutura do ThemeToggle */}
           {getCurrentFlag()}
@@ -191,17 +176,17 @@ export const LanguageToggle: React.FC<LanguageToggleProps> = ({
           {/* Loading indicator */}
           {isTranslating && (
             <div className="absolute inset-0 flex items-center justify-center">
-              <div className="w-4 h-4 border-2 border-brand-primary border-t-transparent rounded-full animate-spin" />
+              <div className="w-4 h-4 border-2 border-ouro border-t-transparent rounded-full animate-spin" />
             </div>
           )}
 
           {/* 🆕 Indicador de sistema (apenas se showSystemIndicator = true) */}
           {showSystemIndicator && !hasUserPreference && (
-            <div className="absolute -top-1 -left-1 w-2 h-2 bg-accent-blue rounded-full opacity-75 animate-pulse" />
+            <div className="absolute -top-1 -left-1 w-2 h-2 bg-aviso rounded-full opacity-75 animate-pulse" />
           )}
 
           {/* Subtle animation indicator */}
-          <div className="absolute -top-1 -right-1 w-2 h-2 bg-accent-green rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-300 animate-pulse" />
+          <div className="absolute -top-1 -right-1 w-2 h-2 bg-ok rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-300 animate-pulse" />
         </button>
       </div>
     </>
@@ -238,13 +223,13 @@ export const LanguageDropdown: React.FC<{
         as="button"
         gap={2}
         onClick={() => setIsOpen(!isOpen)}
-        className="px-3 py-2 bg-theme-elevated border border-theme-primary rounded-lg hover:bg-interactive-hover transition-colors duration-200 disabled:opacity-50"
+        className="px-3 py-2 bg-theme-elevated border border-theme-primary rounded-lg hover:bg-ouro/10 transition-colors duration-200 disabled:opacity-50"
       >
         <div className="relative">
           <PiGlobe className="w-4 h-4 text-brand-primary" />
           {/* 🆕 Indicador de sistema */}
           {showSystemIndicator && !hasUserPreference && (
-            <div className="absolute -top-1 -right-1 w-1.5 h-1.5 bg-accent-blue rounded-full opacity-75" />
+            <div className="absolute -top-1 -right-1 w-1.5 h-1.5 bg-aviso rounded-full opacity-75" />
           )}
         </div>
         {currentLanguage && (
@@ -300,10 +285,10 @@ export const LanguageDropdown: React.FC<{
                   setIsOpen(false);
                 }}
                 className={`
-                  flex items-center space-x-3 w-full px-4 py-3 text-left hover:bg-interactive-hover transition-colors duration-200
+                  flex items-center space-x-3 w-full px-4 py-3 text-left hover:bg-ouro/10 transition-colors duration-200
                   ${
                     lang.code === language
-                      ? 'bg-brand-primary/10 text-brand-primary'
+                      ? 'bg-ouro/10 text-brand-primary'
                       : 'text-theme-primary'
                   }
                 `}
@@ -311,7 +296,7 @@ export const LanguageDropdown: React.FC<{
                 {lang.flag}
                 <span className="font-medium">{lang.name}</span>
                 {lang.code === language && (
-                  <div className="ml-auto w-2 h-2 bg-brand-primary rounded-full" />
+                  <div className="ml-auto w-2 h-2 bg-ouro rounded-full" />
                 )}
               </button>
             ))}

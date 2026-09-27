@@ -98,25 +98,25 @@ const Footer: React.FC = () => {
       icon: PiXLogo,
       href: 'https://x.com/Opus_Atlas',
       label: 'Twitter / X',
-      color: 'hover:text-sky-500',
+      color: 'hover:text-aviso',
     },
     {
       icon: PiInstagramLogo,
       href: 'https://www.instagram.com/opusatlas/',
       label: 'Instagram',
-      color: 'hover:text-pink-500',
+      color: 'hover:text-ouro-texto',
     },
     {
       icon: PiLinkedinLogo,
       href: 'https://www.linkedin.com/company/opus-atlas/about/',
       label: 'LinkedIn',
-      color: 'hover:text-blue-600',
+      color: 'hover:text-aviso',
     },
     {
       icon: PiTiktokLogo,
       href: 'https://www.tiktok.com/@opusatlas5',
       label: 'Tik tok',
-      color: 'hover:text-blue-600',
+      color: 'hover:text-aviso',
     },
   ];
 
@@ -162,7 +162,7 @@ const Footer: React.FC = () => {
     if (success) {
       return (
         <div className="space-y-3">
-          <Inline gap={2} className="text-accent-green">
+          <Inline gap={2} className="text-ok">
             <PiCheck className="w-4 h-4" />
             <span className="text-sm font-medium">
               {status === 'RESUBSCRIBED'
@@ -172,8 +172,8 @@ const Footer: React.FC = () => {
           </Inline>
 
           {status === 'PENDING' && (
-            <div className="bg-accent-blue bg-opacity-10 border border-accent-blue rounded-lg p-3">
-              <p className="text-accent-blue text-sm">
+            <div className="bg-aviso/10 border border-aviso rounded-lg p-3">
+              <p className="text-aviso text-sm">
                 {t('footer_jsx_p_children_0__confirm')}
               </p>
             </div>
@@ -181,7 +181,7 @@ const Footer: React.FC = () => {
 
           <button
             onClick={handleReset}
-            className="text-xs text-theme-tertiary hover:text-theme-primary underline"
+            className="text-xs text-theme-tertiary hover:text-texto underline"
           >
             {t('footer_jsx_button_children_0__email')}
           </button>
@@ -192,9 +192,9 @@ const Footer: React.FC = () => {
     if (error) {
       return (
         <Stack gap={3}>
-          <Inline gap={2} className="text-accent-red">
-            <PiWarningCircle className="w-4 h-4 mt-0.5 text-red-600 flex-shrink-0" />
-            <p className="text-sm text-red-500 mt-1">{error}</p>
+          <Inline gap={2} className="text-erro">
+            <PiWarningCircle className="w-4 h-4 mt-0.5 text-erro flex-shrink-0" />
+            <p className="text-sm text-erro mt-1">{error}</p>
           </Inline>
 
           {/* 🆕 OPÇÕES BASEADAS NO TIPO DE ERRO */}
@@ -203,7 +203,7 @@ const Footer: React.FC = () => {
               <button
                 onClick={handleResendConfirmation}
                 disabled={loading}
-                className="text-xs bg-accent-amber bg-opacity-20 text-accent-amber px-2 py-1 rounded hover:bg-opacity-30 transition-colors disabled:opacity-50"
+                className="text-xs bg-atencao/10 text-atencao px-2 py-1 rounded hover:bg-opacity-30 transition-colors disabled:opacity-50"
               >
                 <PiArrowsClockwise className="w-3 h-3 inline mr-1" />
                 {t('footer_jsx_button_children_2__send')}
@@ -212,7 +212,7 @@ const Footer: React.FC = () => {
 
             <button
               onClick={handleReset}
-              className="text-xs text-theme-tertiary hover:text-theme-primary underline"
+              className="text-xs text-theme-tertiary hover:text-texto underline"
             >
               {t('footer_jsx_button_children_0__tentar_novamente')}
             </button>
@@ -225,7 +225,7 @@ const Footer: React.FC = () => {
   };
 
   return (
-    <footer className="  bg-gradient-to-b from-theme-primary to-theme-secondary border-t border-theme-secondary">
+    <footer className="  bg-fundo border-t border-theme-secondary">
       <div className="">
         {/* Main Footer Content */}
         <div className="section-wrap py-16">
@@ -281,7 +281,7 @@ const Footer: React.FC = () => {
                     <Link
                       href={href}
                       target="_blank"
-                      className="flex items-center space-x-2 text-sm text-theme-tertiary hover:text-brand-primary transition-colors duration-300 group"
+                      className="flex items-center space-x-2 text-sm text-theme-tertiary hover:text-ouro-texto transition-colors duration-300 group"
                     >
                       <Icon className="w-4 h-4 group-hover:scale-110 transition-transform" />
                       <span>{label}</span>
@@ -302,7 +302,7 @@ const Footer: React.FC = () => {
                   <li key={label}>
                     <Link
                       href={href}
-                      className="text-sm text-theme-tertiary hover:text-brand-primary transition-colors duration-300"
+                      className="text-sm text-theme-tertiary hover:text-ouro-texto transition-colors duration-300"
                     >
                       {label}
                     </Link>
@@ -322,7 +322,7 @@ const Footer: React.FC = () => {
                   <li key={label}>
                     <Link
                       href={href}
-                      className="text-sm text-theme-tertiary hover:text-brand-primary transition-colors duration-300"
+                      className="text-sm text-theme-tertiary hover:text-ouro-texto transition-colors duration-300"
                     >
                       {label}
                     </Link>
@@ -355,7 +355,7 @@ const Footer: React.FC = () => {
         {/* 🆕 NEWSLETTER SECTION ATUALIZADA */}
         <div className="border-t border-theme-secondary" id="newsletter">
           <div className="section-wrap py-8">
-            <Card className="bg-gradient-to-r from-brand-primary/5 to-accent-purple/5 border border-brand-primary/20">
+            <Card className="bg-ouro/5 border border-ouro/20">
               <div className="flex flex-col lg:flex-row items-start lg:items-center justify-between space-y-6 lg:space-y-0 lg:space-x-8">
                 <div className="flex-1">
                   <h3 className="text-lg font-semibold text-theme-primary flex items-center mb-2">
@@ -388,15 +388,15 @@ const Footer: React.FC = () => {
                         disabled={loading}
                         className={`px-4 py-2 bg-theme-tertiary border ${
                           formErrors.email
-                            ? 'border-accent-red'
+                            ? 'border-erro'
                             : 'border-theme-secondary'
-                        } rounded-lg text-sm focus:outline-none focus:border-brand-primary transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex-1 min-w-0`}
+                        } rounded-lg text-sm focus:outline-none focus:border-ouro transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex-1 min-w-0`}
                       />
                     </div>
 
                     {/* 🆕 ERROS DE VALIDAÇÃO */}
                     {(formErrors.email || formErrors.firstName) && (
-                      <div className="text-xs text-accent-red">
+                      <div className="text-xs text-erro">
                         {formErrors.email || formErrors.firstName}
                       </div>
                     )}
@@ -426,7 +426,7 @@ const Footer: React.FC = () => {
               </div>
 
               {/* Privacy note */}
-              <div className="mt-4 pt-4 border-t border-theme-secondary/50">
+              <div className="mt-4 pt-4 border-t border-linha/50">
                 <Text papel="legenda" tom="fraco" as="p">
                   {t('footer_jsx_p_children_0__email')}
                   <br />
@@ -463,7 +463,7 @@ const Footer: React.FC = () => {
               <Inline gap={6} className="text-sm text-theme-tertiary">
                 <span className="flex items-center">
                   {t('footer_jsx_span_children_0__feito')}
-                  <PiHeart className="w-4 h-4 mx-1 text-accent-red" />{' '}
+                  <PiHeart className="w-4 h-4 mx-1 text-erro" />{' '}
                   {t('footer_jsx_span_children_3__music')}
                 </span>
               </Inline>

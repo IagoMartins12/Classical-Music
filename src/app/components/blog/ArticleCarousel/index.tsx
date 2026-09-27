@@ -122,7 +122,7 @@ export function ArticleCarousel({ articles }: ArticleCarouselProps) {
       {canScrollLeft && (
         <button
           onClick={() => scroll('left')}
-          className="absolute left-0 top-1/2 -translate-y-1/2 z-10 w-10 h-10 bg-theme-secondary/90 hover:bg-theme-secondary backdrop-blur-sm rounded-full flex items-center justify-center text-theme-primary shadow-lg opacity-0 group-hover:opacity-100 transition-all duration-300 -translate-x-1/2"
+          className="absolute left-0 top-1/2 -translate-y-1/2 z-10 w-10 h-10 bg-sup-1/90 hover:bg-sup-1 backdrop-blur-sm rounded-full flex items-center justify-center text-theme-primary shadow-lg opacity-0 group-hover:opacity-100 transition-all duration-300 -translate-x-1/2"
           aria-label="Anterior"
         >
           <PiCaretLeft className="w-6 h-6" />
@@ -155,7 +155,7 @@ export function ArticleCarousel({ articles }: ArticleCarouselProps) {
       {canScrollRight && (
         <button
           onClick={() => scroll('right')}
-          className="absolute right-0 top-1/2 -translate-y-1/2 z-10 w-10 h-10 bg-theme-secondary/90 hover:bg-theme-secondary backdrop-blur-sm rounded-full flex items-center justify-center text-theme-primary shadow-lg opacity-0 group-hover:opacity-100 transition-all duration-300 translate-x-1/2"
+          className="absolute right-0 top-1/2 -translate-y-1/2 z-10 w-10 h-10 bg-sup-1/90 hover:bg-sup-1 backdrop-blur-sm rounded-full flex items-center justify-center text-theme-primary shadow-lg opacity-0 group-hover:opacity-100 transition-all duration-300 translate-x-1/2"
           aria-label="Próximo"
         >
           <PiCaretRight className="w-6 h-6" />
@@ -183,8 +183,8 @@ export function ArticleCarousel({ articles }: ArticleCarouselProps) {
                 }}
                 className={`h-1.5 rounded-full transition-all duration-300 ${
                   isActive
-                    ? 'w-8 bg-brand-primary'
-                    : 'w-1.5 bg-theme-tertiary hover:bg-theme-secondary'
+                    ? 'w-8 bg-ouro'
+                    : 'w-1.5 bg-theme-tertiary hover:bg-sup-1'
                 }`}
                 aria-label={`Ir para página ${index + 1}`}
               />

@@ -23,7 +23,7 @@ export default function Portal({
       portalContainer = document.createElement('div');
       portalContainer.id = containerId;
       portalContainer.style.position = 'relative';
-      portalContainer.style.zIndex = '999999';
+      portalContainer.style.zIndex = 'var(--z-dialogo)';
       document.body.appendChild(portalContainer);
     }
 

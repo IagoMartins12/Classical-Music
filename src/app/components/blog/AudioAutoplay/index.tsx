@@ -476,7 +476,7 @@ export function AudioAutoplay({
         {/* Play/Pause */}
         <button
           onClick={togglePlayPause}
-          className="flex-shrink-0 w-10 h-10 flex items-center justify-center bg-brand-primary text-theme-primary rounded-full hover:bg-brand-secondary transition-colors"
+          className="flex-shrink-0 w-10 h-10 flex items-center justify-center bg-ouro text-theme-primary rounded-full hover:bg-ouro transition-colors"
           title={status === 'playing' ? 'Pausar' : 'Tocar'}
         >
           {status === 'playing' ? (
@@ -525,7 +525,7 @@ export function AudioAutoplay({
         {/* Mute */}
         <button
           onClick={toggleMute}
-          className="flex-shrink-0 p-2 hover:bg-theme-classical rounded-full transition-colors"
+          className="flex-shrink-0 p-2 hover:bg-sup-1 rounded-full transition-colors"
           title={status === 'muted' ? 'Ativar som' : 'Silenciar'}
         >
           {status === 'muted' ? (
@@ -542,8 +542,8 @@ export function AudioAutoplay({
     <>
       {/* BANNER DE AVISO */}
       {showBanner && (
-        <div className="fixed top-20 left-1/2 transform -translate-x-1/2 z-50 max-w-md w-full mx-4">
-          <div className="bg-gradient-to-r from-brand-primary to-accent-purple text-theme-primary p-4 rounded-lg shadow-2xl backdrop-blur-sm">
+        <div className="fixed top-20 left-1/2 transform -translate-x-1/2 z-aviso max-w-md w-full mx-4">
+          <div className="fill-ouro text-theme-primary p-4 rounded-lg shadow-2xl backdrop-blur-sm">
             <div className="flex items-start space-x-3">
               <div className="flex-shrink-0 mt-0.5">
                 <PiSpeakerHigh className="w-6 h-6" />
@@ -576,13 +576,13 @@ export function AudioAutoplay({
 
       {/* PLAYER MOBILE (expansível) */}
       {(status === 'playing' || status === 'muted') && !showBanner && (
-        <div className="lg:hidden w-full fixed bottom-20 left-0 right-0 z-40">
+        <div className="lg:hidden w-full fixed bottom-20 left-0 right-0 z-barra">
           {showMobilePlayer ? (
             <div className="animate-slide-up">
               <div className="flex justify-end items-center mb-2">
                 <button
                   onClick={() => setShowMobilePlayer(false)}
-                  className="text-theme-tertiary hover:text-theme-primary transition-colors"
+                  className="text-theme-tertiary hover:text-texto transition-colors"
                   aria-label="Recolher player"
                 >
                   <svg
@@ -607,7 +607,7 @@ export function AudioAutoplay({
               as="button"
               gap={2}
               onClick={() => setShowMobilePlayer(true)}
-              className="w-full classical-card-simple rounded-t-lg shadow-xl py-3 px-4 justify-center hover:bg-theme-classical transition-colors"
+              className="w-full classical-card-simple rounded-t-lg shadow-xl py-3 px-4 justify-center hover:bg-sup-1 transition-colors"
               aria-label="Expandir player de áudio"
             >
               <svg
@@ -629,15 +629,15 @@ export function AudioAutoplay({
               {status === 'playing' && (
                 <div className="flex space-x-1">
                   <div
-                    className="w-1 h-3 bg-brand-primary rounded-full animate-pulse"
+                    className="w-1 h-3 bg-ouro rounded-full animate-pulse"
                     style={{ animationDelay: '0s' }}
                   />
                   <div
-                    className="w-1 h-3 bg-brand-primary rounded-full animate-pulse"
+                    className="w-1 h-3 bg-ouro rounded-full animate-pulse"
                     style={{ animationDelay: '0.2s' }}
                   />
                   <div
-                    className="w-1 h-3 bg-brand-primary rounded-full animate-pulse"
+                    className="w-1 h-3 bg-ouro rounded-full animate-pulse"
                     style={{ animationDelay: '0.4s' }}
                   />
                 </div>
@@ -649,13 +649,13 @@ export function AudioAutoplay({
 
       {/* CONTROLE DESKTOP */}
       {(status === 'playing' || status === 'muted') && !showBanner && (
-        <div className="hidden lg:block fixed bottom-8 right-8 z-40">
+        <div className="hidden lg:block fixed bottom-8 right-8 z-barra">
           {showPlayer ? (
             <div className="w-80">
               <div className="flex justify-end mb-2">
                 <button
                   onClick={() => setShowPlayer(false)}
-                  className="text-theme-tertiary hover:text-theme-primary transition-colors"
+                  className="text-theme-tertiary hover:text-texto transition-colors"
                 >
                   <PiX className="w-5 h-5" />
                   <NomeAcao acao="fechar" />
@@ -682,7 +682,7 @@ export function AudioAutoplay({
                   e.stopPropagation();
                   toggleMute();
                 }}
-                className="p-2 hover:bg-theme-classical rounded-full transition-colors"
+                className="p-2 hover:bg-sup-1 rounded-full transition-colors"
                 title={status === 'muted' ? 'Ativar som' : 'Silenciar'}
               >
                 {status === 'muted' ? (
@@ -696,15 +696,15 @@ export function AudioAutoplay({
                 <Inline gap={2}>
                   <div className="flex space-x-1">
                     <div
-                      className="w-1 h-4 bg-brand-primary rounded-full animate-pulse"
+                      className="w-1 h-4 bg-ouro rounded-full animate-pulse"
                       style={{ animationDelay: '0s' }}
                     />
                     <div
-                      className="w-1 h-4 bg-brand-primary rounded-full animate-pulse"
+                      className="w-1 h-4 bg-ouro rounded-full animate-pulse"
                       style={{ animationDelay: '0.2s' }}
                     />
                     <div
-                      className="w-1 h-4 bg-brand-primary rounded-full animate-pulse"
+                      className="w-1 h-4 bg-ouro rounded-full animate-pulse"
                       style={{ animationDelay: '0.4s' }}
                     />
                   </div>

@@ -82,7 +82,7 @@ export default async function TeacherLayout({
       <FavoritesProvider>
         {/* 🆕 NOTIFICATION MANAGER - Gerencia notificações em background */}
         <NotificationManager userRole="teacher" userId={session.user.id}>
-          <div className="min-h-screen bg-gradient-primary">
+          <div className="min-h-screen">
             {/* Navigation */}
             <TeacherNavigation user={session.user} />
 

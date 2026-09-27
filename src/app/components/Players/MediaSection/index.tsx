@@ -612,7 +612,7 @@ const MediaSection: React.FC<MediaSectionProps> = ({
       <div className="p-2 md:p-8 pb-6">
         <div className="flex flex-col sm:flex-row  items-center justify-between">
           <Inline gap={3}>
-            <div className="w-10 h-10 bg-gradient-to-br from-accent-purple to-accent-blue rounded-xl flex items-center justify-center">
+            <div className="w-10 h-10 fill-ouro rounded-xl flex items-center justify-center">
               <PiMusicNotes className="w-5 h-5 text-theme-primary" />
             </div>
             <div>
@@ -667,20 +667,20 @@ const MediaSection: React.FC<MediaSectionProps> = ({
       {/* MODO DE EDIÇÃO COM VALIDAÇÃO MELHORADA */}
       {showEditMode && canEditMedia && (
         <div className="px-8 pb-6">
-          <AnimatedCard className="bg-blue-900/20 border border-blue-700/30 p-4">
+          <AnimatedCard className="bg-aviso/20 border border-aviso/30 p-4">
             <h3 className="text-lg font-semibold text-theme-primary mb-4">
               {t('media_adicionar_manual')}
             </h3>
 
             {/* ALERTA MELHORADO - Mais claro sobre a necessidade da busca */}
             {!hasSearchBeenMade && (
-              <div className="mb-4 bg-amber-900/20 border border-amber-700/30 rounded-xl p-4 flex items-start space-x-3">
-                <PiWarningCircle className="w-5 h-5 text-amber-400 mt-0.5 flex-shrink-0" />
+              <div className="mb-4 bg-atencao/20 border border-atencao/30 rounded-xl p-4 flex items-start space-x-3">
+                <PiWarningCircle className="w-5 h-5 text-atencao mt-0.5 flex-shrink-0" />
                 <div>
-                  <p className="text-amber-300 font-medium">
+                  <p className="text-atencao font-medium">
                     {t('media_busca_necessaria')}
                   </p>
-                  <p className="text-amber-400 text-sm mt-1">
+                  <p className="text-atencao text-sm mt-1">
                     {t('media_busca_instrucoes')}{' '}
                     <strong>&quot;{t('media_carregar')}&quot;</strong>{' '}
                     {t('media_busca_instrucoes_2')}
@@ -729,11 +729,11 @@ const MediaSection: React.FC<MediaSectionProps> = ({
 
                 {/* Mostrar áudio existente com opção de deletar */}
                 {mediaData.customAudio && (
-                  <div className="mb-3 p-3 bg-green-900/20 border border-green-700/30 rounded-lg">
+                  <div className="mb-3 p-3 bg-ok/20 border border-ok/30 rounded-lg">
                     <div className="flex items-center justify-between">
                       <Inline gap={2}>
-                        <PiDatabase className="w-4 h-4 text-green-400" />
-                        <span className="text-sm text-green-300">
+                        <PiDatabase className="w-4 h-4 text-ok" />
+                        <span className="text-sm text-ok">
                           {work.customAudioSource === 'upload'
                             ? t('media_audio_salvo')
                             : `${t('media_fonte_alternativa')} ${
@@ -748,7 +748,7 @@ const MediaSection: React.FC<MediaSectionProps> = ({
                           type="button"
                           onClick={deleteCustomAudio}
                           disabled={isUploading || !hasSearchBeenMade}
-                          className="text-xs px-2 py-1 rounded bg-red-600 text-white hover:bg-red-700 disabled:opacity-50"
+                          className="text-xs px-2 py-1 rounded bg-erro text-white hover:bg-erro disabled:opacity-50"
                         >
                           <PiTrash className="w-3 h-3" />
                           <span>{t('media_deletar')}</span>
@@ -785,7 +785,7 @@ const MediaSection: React.FC<MediaSectionProps> = ({
                     </Text>
                   )}
                 {editData.removeCustomAudio && (
-                  <p className="text-sm text-red-400 mt-1">
+                  <p className="text-sm text-erro mt-1">
                     ⚠️ {t('media_audio_removido')}
                   </p>
                 )}
@@ -859,7 +859,7 @@ const MediaSection: React.FC<MediaSectionProps> = ({
         {shouldShowSearchingIndicator && (
           <AnimatedItem direction="up" delay={0.1}>
             <div className="text-center py-12">
-              <div className="w-16 h-16 bg-gradient-to-br from-accent-purple to-accent-blue rounded-2xl flex items-center justify-center mx-auto mb-6">
+              <div className="w-16 h-16 fill-ouro rounded-2xl flex items-center justify-center mx-auto mb-6">
                 <PiArrowsClockwise className="w-8 h-8 text-theme-primary animate-spin" />
               </div>
               <h3 className="text-xl font-semibold text-theme-primary mb-3">
@@ -873,7 +873,7 @@ const MediaSection: React.FC<MediaSectionProps> = ({
         {shouldShowLoadButton && (
           <AnimatedItem direction="up" delay={0.1}>
             <div className="text-center py-12">
-              <div className="w-16 h-16 bg-gradient-to-br from-accent-purple to-accent-blue rounded-2xl flex items-center justify-center mx-auto mb-6">
+              <div className="w-16 h-16 fill-ouro rounded-2xl flex items-center justify-center mx-auto mb-6">
                 <PiMagnifyingGlass className="w-8 h-8 text-theme-primary" />
               </div>
               <h3 className="text-xl font-semibold text-theme-primary mb-3">
@@ -899,8 +899,8 @@ const MediaSection: React.FC<MediaSectionProps> = ({
         {shouldShowNoMediaMessage && (
           <AnimatedItem direction="up" delay={0.1}>
             <div className="text-center py-12">
-              <div className="w-16 h-16 bg-gradient-to-br from-gray-600 to-gray-500 rounded-2xl flex items-center justify-center mx-auto mb-6">
-                <PiMusicNotes className="w-8 h-8 text-gray-300" />
+              <div className="w-16 h-16 bg-texto-fraco rounded-2xl flex items-center justify-center mx-auto mb-6">
+                <PiMusicNotes className="w-8 h-8 text-texto-fraco" />
               </div>
               <h3 className="text-xl font-semibold text-theme-primary mb-3">
                 {t('media_sem_midia')}
@@ -934,7 +934,7 @@ const MediaSection: React.FC<MediaSectionProps> = ({
                   <AnimatedItem direction="up" delay={0.1}>
                     <div className="space-y-4">
                       <Inline gap={2}>
-                        <PiSpotifyLogo className="w-5 h-5 text-green-400" />
+                        <PiSpotifyLogo className="w-5 h-5 text-ok" />
                         <h3 className="text-lg font-semibold text-theme-primary classical-title">
                           {t('media_spotify')}
                         </h3>
@@ -964,7 +964,7 @@ const MediaSection: React.FC<MediaSectionProps> = ({
                   <AnimatedItem direction="up" delay={0.2}>
                     <div className="space-y-4">
                       <Inline gap={2}>
-                        <PiMusicNotes className="w-5 h-5 text-accent-green" />
+                        <PiMusicNotes className="w-5 h-5 text-ok" />
                         <h3 className="text-lg font-semibold text-theme-primary classical-title">
                           {t('media_reproducao_audio')}
                         </h3>
@@ -985,7 +985,7 @@ const MediaSection: React.FC<MediaSectionProps> = ({
                   <AnimatedItem direction="up" delay={0.3}>
                     <div className="space-y-4">
                       <Inline gap={2}>
-                        <PiYoutubeLogo className="w-5 h-5 text-red-400" />
+                        <PiYoutubeLogo className="w-5 h-5 text-erro" />
                         <h3 className="text-lg font-semibold text-theme-primary classical-title">
                           {t('media_youtube')}
                         </h3>
@@ -1018,7 +1018,7 @@ const MediaSection: React.FC<MediaSectionProps> = ({
                     <AnimatedItem direction="up" delay={0.2}>
                       <div className="space-y-4">
                         <Inline gap={2}>
-                          <PiSpotifyLogo className="w-5 h-5 text-green-400" />
+                          <PiSpotifyLogo className="w-5 h-5 text-ok" />
                           <h3 className="text-lg font-semibold text-theme-primary classical-title">
                             {t('media_spotify')}
                           </h3>
@@ -1049,7 +1049,7 @@ const MediaSection: React.FC<MediaSectionProps> = ({
                     <AnimatedItem direction="up" delay={0.1}>
                       <div className="space-y-4">
                         <Inline gap={2}>
-                          <PiMusicNotes className="w-5 h-5 text-accent-green" />
+                          <PiMusicNotes className="w-5 h-5 text-ok" />
                           <h3 className="text-lg font-semibold text-theme-primary classical-title">
                             {t('media_reproducao_audio')}
                           </h3>
@@ -1072,7 +1072,7 @@ const MediaSection: React.FC<MediaSectionProps> = ({
                     <AnimatedItem direction="up" delay={0.3}>
                       <div className="space-y-4">
                         <Inline gap={2}>
-                          <PiYoutubeLogo className="w-5 h-5 text-red-400" />
+                          <PiYoutubeLogo className="w-5 h-5 text-erro" />
                           <h3 className="text-lg font-semibold text-theme-primary classical-title">
                             {t('media_youtube')}
                           </h3>
@@ -1103,14 +1103,14 @@ const MediaSection: React.FC<MediaSectionProps> = ({
           <AnimatedItem direction="up" delay={0.1}>
             <Inline
               gap={3}
-              className="mt-6 bg-blue-900/20 border border-blue-700/30 rounded-xl p-4"
+              className="mt-6 bg-aviso/20 border border-aviso/30 rounded-xl p-4"
             >
-              <PiArrowsClockwise className="w-5 h-5 text-blue-400 animate-spin" />
+              <PiArrowsClockwise className="w-5 h-5 text-aviso animate-spin" />
               <div className="flex-1">
-                <p className="text-blue-300 text-sm font-medium">
+                <p className="text-aviso text-sm font-medium">
                   {t('media_atualizando_para')} &quot;{work.title}&quot;...
                 </p>
-                <p className="text-blue-400 text-xs mt-1">
+                <p className="text-aviso text-xs mt-1">
                   🎵 Spotify • 📺 YouTube • 🎼 Fontes de Áudio
                 </p>
               </div>
@@ -1121,13 +1121,13 @@ const MediaSection: React.FC<MediaSectionProps> = ({
         {/* Mensagem de Erro */}
         {searchError && hasSearchBeenMade && (
           <AnimatedItem direction="up" delay={0.5}>
-            <div className="mt-6 bg-red-900/20 border border-red-700/30 rounded-xl p-4 flex items-start space-x-3">
-              <PiWarningCircle className="w-5 h-5 text-red-400 mt-0.5 flex-shrink-0" />
+            <div className="mt-6 bg-erro/20 border border-erro/30 rounded-xl p-4 flex items-start space-x-3">
+              <PiWarningCircle className="w-5 h-5 text-erro mt-0.5 flex-shrink-0" />
               <div>
-                <p className="text-red-300 text-sm font-medium">
+                <p className="text-erro text-sm font-medium">
                   {t('media_erro_busca')}
                 </p>
-                <p className="text-red-400 text-sm mt-1">{searchError}</p>
+                <p className="text-erro text-sm mt-1">{searchError}</p>
               </div>
             </div>
           </AnimatedItem>
@@ -1136,10 +1136,10 @@ const MediaSection: React.FC<MediaSectionProps> = ({
         {/* Resumo das Fontes Encontradas */}
         {hasAnyMedia && !isSearching && (
           <AnimatedItem direction="up" delay={0.6}>
-            <div className="mt-6 bg-gradient-to-r from-green-900/10 to-blue-900/10 border border-green-700/20 rounded-xl p-4">
+            <div className="mt-6 bg-ok/10 border border-ok/20 rounded-xl p-4">
               <Inline gap={4} className="text-sm">
                 <Inline gap={2}>
-                  <div className="w-2 h-2 bg-green-400 rounded-full"></div>
+                  <div className="w-2 h-2 bg-ok rounded-full"></div>
                   <span className="text-theme-secondary">
                     {t('media_disponivel')}
                   </span>
@@ -1147,28 +1147,28 @@ const MediaSection: React.FC<MediaSectionProps> = ({
 
                 <Inline gap={4}>
                   {mediaData.spotify && (
-                    <Inline gap={1} className="text-green-400">
+                    <Inline gap={1} className="text-ok">
                       <PiSpotifyLogo className="w-3 h-3" />
                       <span>Spotify</span>
                     </Inline>
                   )}
 
                   {mediaData.youtube && (
-                    <Inline gap={1} className="text-red-400">
+                    <Inline gap={1} className="text-erro">
                       <PiYoutubeLogo className="w-3 h-3" />
                       <span>YouTube</span>
                     </Inline>
                   )}
 
                   {mediaData.customAudio && (
-                    <Inline gap={1} className="text-blue-400">
+                    <Inline gap={1} className="text-aviso">
                       <PiMusicNotes className="w-3 h-3" />
                       <span>Áudio</span>
                     </Inline>
                   )}
 
                   {mediaData.alternativeAudio.length > 0 && (
-                    <Inline gap={1} className="text-purple-400">
+                    <Inline gap={1} className="text-ouro-texto">
                       <PiMusicNotes className="w-3 h-3" />
                       <span>
                         {mediaData.alternativeAudio.length}{' '}

@@ -104,7 +104,7 @@ export function SearchResults({
             {hasFilters && (
               <Link
                 href="/blog/search"
-                className="mt-4 block text-center text-sm text-brand-primary hover:text-brand-secondary"
+                className="mt-4 block text-center text-sm text-brand-primary hover:text-ouro-texto"
               >
                 Limpar filtros
               </Link>
@@ -144,7 +144,7 @@ export function SearchResults({
           {hasFilters && (
             <Link
               href="/blog/search"
-              className="mt-4 block text-center text-sm text-brand-primary hover:text-brand-secondary"
+              className="mt-4 block text-center text-sm text-brand-primary hover:text-ouro-texto"
             >
               Limpar filtros
             </Link>

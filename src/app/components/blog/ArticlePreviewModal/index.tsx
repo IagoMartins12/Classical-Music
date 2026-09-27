@@ -98,10 +98,10 @@ export default function ArticlePreviewModal({
                 <span
                   className={`text-xs font-medium px-2 py-1 rounded ${
                     article.status === 'PUBLISHED'
-                      ? 'bg-green-100 text-green-800 dark:bg-green-900/20 dark:text-green-400'
+                      ? 'bg-ok/10 text-ok dark:bg-ok/20 dark:text-ok'
                       : article.status === 'DRAFT'
-                        ? 'bg-gray-100 text-gray-800 dark:bg-gray-900/20 dark:text-gray-400'
-                        : 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900/20 dark:text-yellow-400'
+                        ? 'bg-sup-2 text-texto dark:bg-gray-900/20 dark:text-texto-fraco'
+                        : 'bg-atencao/10 text-atencao dark:bg-atencao/20 dark:text-atencao'
                   }`}
                 >
                   {article.status}
@@ -128,7 +128,7 @@ export default function ArticlePreviewModal({
                     papel="legenda"
                     tom="ouro"
                     key={tag}
-                    className="px-3 py-1 bg-brand-primary/10 rounded-full font-medium"
+                    className="px-3 py-1 bg-ouro/10 rounded-full font-medium"
                   >
                     #{tag}
                   </Text>
@@ -149,7 +149,7 @@ export default function ArticlePreviewModal({
                     papel="legenda"
                     tom="suave"
                     key={keyword}
-                    className="px-3 py-1 bg-gray-100 dark:bg-gray-800 rounded-full"
+                    className="px-3 py-1 bg-sup-2 dark:bg-gray-800 rounded-full"
                   >
                     {keyword}
                   </Text>
@@ -160,26 +160,26 @@ export default function ArticlePreviewModal({
 
           {/* SEO Info */}
           {(article.metaTitle || article.metaDescription) && (
-            <div className="mt-8 p-4 bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg">
-              <h3 className="text-sm font-medium text-blue-900 dark:text-blue-100 mb-2">
+            <div className="mt-8 p-4 bg-aviso/10 dark:bg-aviso/20 border border-aviso/30 dark:border-aviso rounded-lg">
+              <h3 className="text-sm font-medium text-aviso dark:text-aviso mb-2">
                 Informações de SEO:
               </h3>
               {article.metaTitle && (
                 <div className="mb-2">
-                  <span className="text-xs text-blue-700 dark:text-blue-300">
+                  <span className="text-xs text-aviso dark:text-aviso">
                     Meta Título:
                   </span>
-                  <p className="text-sm text-blue-900 dark:text-blue-100">
+                  <p className="text-sm text-aviso dark:text-aviso">
                     {article.metaTitle}
                   </p>
                 </div>
               )}
               {article.metaDescription && (
                 <div>
-                  <span className="text-xs text-blue-700 dark:text-blue-300">
+                  <span className="text-xs text-aviso dark:text-aviso">
                     Meta Descrição:
                   </span>
-                  <p className="text-sm text-blue-900 dark:text-blue-100">
+                  <p className="text-sm text-aviso dark:text-aviso">
                     {article.metaDescription}
                   </p>
                 </div>

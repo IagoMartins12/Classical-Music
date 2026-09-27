@@ -187,11 +187,11 @@ export default async function GenresPage({ params }: LangPageProps) {
     const t = errorContent[language];
 
     return (
-      <div className="bg-gradient-primary flex items-center justify-center p-4">
+      <div className="flex items-center justify-center p-4">
         <Card densidade="larga" className="text-center max-w-md w-full">
-          <div className="w-16 h-16 bg-accent-red/20 rounded-full flex items-center justify-center mx-auto mb-6">
+          <div className="w-16 h-16 bg-erro/20 rounded-full flex items-center justify-center mx-auto mb-6">
             <svg
-              className="w-8 h-8 text-accent-red"
+              className="w-8 h-8 text-erro"
               fill="none"
               stroke="currentColor"
               viewBox="0 0 24 24"

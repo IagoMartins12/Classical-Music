@@ -379,7 +379,7 @@ const AccountSettingsSection: React.FC<AccountSettingsSectionProps> = ({
                     className="flex-1"
                   />
                   {user.emailVerified && (
-                    <Inline gap={1} className="text-accent-green text-sm">
+                    <Inline gap={1} className="text-ok text-sm">
                       <PiCheck className="w-4 h-4" />
                       <span>{t('account_verified')}</span>
                     </Inline>
@@ -388,14 +388,14 @@ const AccountSettingsSection: React.FC<AccountSettingsSectionProps> = ({
 
                 {/* 🆕 NOVO: Aviso para usuários com login social */}
                 {!canChangeEmail && !loginMethod.isLoading && (
-                  <div className="bg-accent-blue bg-opacity-10 border border-accent-blue rounded-lg p-4">
+                  <div className="bg-aviso/10 border border-aviso rounded-lg p-4">
                     <div className="flex items-start">
-                      <PiShield className="w-5 h-5 text-accent-blue mr-3 mt-0.5 flex-shrink-0" />
+                      <PiShield className="w-5 h-5 text-aviso mr-3 mt-0.5 flex-shrink-0" />
                       <Stack gap={1}>
-                        <h4 className="font-medium text-accent-blue">
+                        <h4 className="font-medium text-aviso">
                           {t('account_social_protected')}
                         </h4>
-                        <p className="text-sm text-accent-blue opacity-90">
+                        <p className="text-sm text-aviso opacity-90">
                           {t('account_social_protected_description', {
                             providers: loginMethod.socialProviders.join(' e '),
                           })}
@@ -407,14 +407,14 @@ const AccountSettingsSection: React.FC<AccountSettingsSectionProps> = ({
               </Stack>
             ) : (
               <Card nivel={2} densidade="compacta" className="space-y-4">
-                <div className="bg-accent-amber bg-opacity-10 border border-red-400 rounded-lg p-4">
+                <div className="bg-atencao/10 border border-erro rounded-lg p-4">
                   <div className="flex items-start">
-                    <PiWarning className="w-5 h-5 text-accent-amber mr-3 mt-0.5 flex-shrink-0" />
+                    <PiWarning className="w-5 h-5 text-atencao mr-3 mt-0.5 flex-shrink-0" />
                     <Stack gap={1}>
-                      <h4 className="font-medium text-accent-amber">
+                      <h4 className="font-medium text-atencao">
                         {t('account_email_change_warning')}
                       </h4>
-                      <ul className="text-sm text-accent-amber opacity-90 space-y-1">
+                      <ul className="text-sm text-atencao opacity-90 space-y-1">
                         <li>{t('account_email_verify_new')}</li>
                         <li>{t('account_upload_disabled')}</li>
                         <li>{t('account_limited_features')}</li>
@@ -525,19 +525,19 @@ const AccountSettingsSection: React.FC<AccountSettingsSectionProps> = ({
           loginMethod.hasSocialLogin &&
           !isChangingPassword &&
           !loginMethod.isLoading && (
-            <div className="bg-accent-blue bg-opacity-10 border border-accent-blue rounded-lg p-4 mb-4">
+            <div className="bg-aviso/10 border border-aviso rounded-lg p-4 mb-4">
               <div className="flex items-start">
-                <PiShield className="w-5 h-5 text-accent-blue mr-3 mt-0.5 flex-shrink-0" />
+                <PiShield className="w-5 h-5 text-aviso mr-3 mt-0.5 flex-shrink-0" />
                 <div>
-                  <h4 className="font-medium text-accent-blue mb-1">
+                  <h4 className="font-medium text-aviso mb-1">
                     {t('account_social_only')}
                   </h4>
-                  <p className="text-sm text-accent-blue opacity-90">
+                  <p className="text-sm text-aviso opacity-90">
                     {t('account_social_only_description', {
                       providers: loginMethod.socialProviders.join(' e '),
                     })}
                   </p>
-                  <div className="mt-3 text-xs text-accent-blue opacity-80">
+                  <div className="mt-3 text-xs text-aviso opacity-80">
                     {t('account_continue_google')}
                   </div>
                 </div>
@@ -550,14 +550,14 @@ const AccountSettingsSection: React.FC<AccountSettingsSectionProps> = ({
           !loginMethod.hasSocialLogin &&
           !isChangingPassword &&
           !loginMethod.isLoading && (
-            <div className="bg-accent-amber bg-opacity-10 border border-accent-amber rounded-lg p-4 mb-4">
+            <div className="bg-atencao/10 border border-atencao rounded-lg p-4 mb-4">
               <div className="flex items-start">
-                <PiInfo className="w-5 h-5 text-accent-amber mr-3 mt-0.5 flex-shrink-0" />
+                <PiInfo className="w-5 h-5 text-atencao mr-3 mt-0.5 flex-shrink-0" />
                 <Stack gap={1}>
-                  <h4 className="font-medium text-accent-amber">
+                  <h4 className="font-medium text-atencao">
                     {t('account_improve_security')}
                   </h4>
-                  <p className="text-sm text-accent-amber opacity-90">
+                  <p className="text-sm text-atencao opacity-90">
                     {t('account_define_password_description')}
                   </p>
                 </Stack>
@@ -737,24 +737,21 @@ const AccountSettingsSection: React.FC<AccountSettingsSectionProps> = ({
                   {t('account_type_description')}
                 </Text>
               </div>
-              <div className="w-12 h-12 bg-gradient-to-br from-brand-primary to-brand-secondary rounded-xl flex items-center justify-center">
+              <div className="w-12 h-12 fill-ouro rounded-xl flex items-center justify-center">
                 <PiUser className="w-6 h-6 text-theme-primary" />
               </div>
             </div>
           </Card>
         ) : (
           <Card nivel={2} densidade="compacta" className="space-y-4">
-            <div className="bg-accent-blue bg-opacity-10 border border-accent-blue rounded-lg p-4">
+            <div className="bg-aviso/10 border border-aviso rounded-lg p-4">
               <div className="flex items-start">
-                <PiInfo className="w-5 h-5 text-accent-blue mr-3 mt-0.5 flex-shrink-0" />
+                <PiInfo className="w-5 h-5 text-aviso mr-3 mt-0.5 flex-shrink-0" />
                 <Stack gap={2}>
-                  <h4 className="font-medium text-accent-blue">
+                  <h4 className="font-medium text-aviso">
                     {t('account_choose_type')}
                   </h4>
-                  <Stack
-                    gap={2}
-                    className="text-sm text-accent-blue opacity-90"
-                  >
+                  <Stack gap={2} className="text-sm text-aviso opacity-90">
                     {USER_TYPE_OPTIONS.map((option) => (
                       <div key={option.value}>
                         <strong>{option.label}:</strong> {option.description}
@@ -812,16 +809,16 @@ const AccountSettingsSection: React.FC<AccountSettingsSectionProps> = ({
               {t('account_status')}
             </h4>
             <Inline gap={2} className="flex-wrap">
-              <span className="inline-flex px-2 py-1 text-xs bg-green-100 text-green-800 rounded-full">
+              <span className="inline-flex px-2 py-1 text-xs bg-ok/10 text-ok rounded-full">
                 {t('account_active')}
               </span>
               {user.emailVerified && (
-                <span className="inline-flex px-2 py-1 text-xs bg-blue-100 text-blue-800 rounded-full">
+                <span className="inline-flex px-2 py-1 text-xs bg-aviso/10 text-aviso rounded-full">
                   {t('account_email_verified')}
                 </span>
               )}
               {loginMethod.hasSocialLogin && (
-                <span className="inline-flex px-2 py-1 text-xs bg-purple-100 text-purple-800 rounded-full">
+                <span className="inline-flex px-2 py-1 text-xs bg-ouro/10 text-ouro-texto rounded-full">
                   {t('account_social_login')}
                 </span>
               )}
@@ -831,10 +828,10 @@ const AccountSettingsSection: React.FC<AccountSettingsSectionProps> = ({
       </Stack>
 
       {/* Danger Zone */}
-      <Stack className="border-t border-accent-red pt-8">
+      <Stack className="border-t border-erro pt-8">
         <Inline gap={3}>
-          <PiWarning className="w-5 h-5 text-accent-red" />
-          <h3 className="text-lg font-semibold text-accent-red">
+          <PiWarning className="w-5 h-5 text-erro" />
+          <h3 className="text-lg font-semibold text-erro">
             {t('account_danger_zone')}
           </h3>
         </Inline>
@@ -842,7 +839,7 @@ const AccountSettingsSection: React.FC<AccountSettingsSectionProps> = ({
         <Card
           nivel={2}
           densidade="compacta"
-          className="border border-accent-red bg-accent-red bg-opacity-5"
+          className="border border-erro bg-erro/5"
         >
           <div className="flex flex-col md:flex-row items-center gap-4 justify-between mb-4">
             <Stack gap={1}>

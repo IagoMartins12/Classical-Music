@@ -61,12 +61,12 @@ export function ComposerTimelineCard({
       {/* Card */}
       <Link
         href={`/composer/${composer.id}`}
-        className={`w-[90%] lg:w-[42%] classical-card p-6 hover:shadow-theme-glow transition-all duration-500 transform hover:scale-105 group relative overflow-hidden ${
+        className={`w-[90%] lg:w-[42%] classical-card p-6 hover:shadow-[var(--sombra-2)] transition-all duration-500 transform hover:scale-105 group relative overflow-hidden ${
           isLeft ? 'lg:mr-auto' : 'lg:ml-auto'
         }`}
       >
         {/* Background decoration */}
-        <div className="absolute top-4 right-4 text-4xl text-brand-primary/5">
+        <div className="absolute top-4 right-4 text-4xl text-ouro-texto/5">
           <PiMusicNotes />
         </div>
 
@@ -82,7 +82,7 @@ export function ComposerTimelineCard({
                   alt={composer.fullName}
                   width={56}
                   height={56}
-                  className="w-16 h-16 rounded-xl object-cover border-2 border-theme-inverse/20"
+                  className="w-16 h-16 rounded-xl object-cover border-2 border-texto/20"
                   onError={(e) => {
                     const target = e.target as HTMLImageElement;
                     target.style.display = 'none';
@@ -99,7 +99,7 @@ export function ComposerTimelineCard({
 
             {/* Name + Epoch */}
             <div className="flex-1 min-w-0">
-              <h3 className="text-lg font-semibold text-theme-primary classical-title group-hover:text-brand-primary transition-colors duration-300 line-clamp-2">
+              <h3 className="text-lg font-semibold text-theme-primary classical-title group-hover:text-ouro-texto transition-colors duration-300 line-clamp-2">
                 {composer.fullName}
               </h3>
               <span
@@ -112,10 +112,10 @@ export function ComposerTimelineCard({
           </Inline>
 
           {/* Lifespan */}
-          <div className="flex items-center justify-between mb-4 p-3 bg-gradient-to-r from-theme-elevated to-interactive-hover border border-theme-primary rounded-xl">
+          <div className="flex items-center justify-between mb-4 p-3 bg-sup-elevada border border-theme-primary rounded-xl">
             <div className="flex items-center text-theme-secondary">
               <div className="w-6 h-6 border-theme-primary rounded-lg flex items-center justify-center mr-2">
-                <PiCalendarBlank className="w-4 h-4 text-accent-blue" />
+                <PiCalendarBlank className="w-4 h-4 text-aviso" />
               </div>
               <span className="font-medium text-sm">
                 {getLifespan(composer)}
@@ -176,19 +176,19 @@ export function ComposerTimelineCard({
         </div>
 
         {/* Hover glow effect */}
-        <div className="absolute inset-0 bg-brand-gradient opacity-0 group-hover:opacity-5 transition-opacity duration-500 rounded-2xl pointer-events-none"></div>
+        <div className="absolute inset-0 fill-ouro opacity-0 group-hover:opacity-5 transition-opacity duration-500 rounded-2xl pointer-events-none"></div>
       </Link>
 
       {/* Timeline Dot */}
       <div
         className={`absolute left-0 lg:left-1/2 transform lg:-translate-x-1/2 w-6 h-6 ${composer.dotColorClass} rounded-full border-4 border-theme-primary shadow-theme-glow z-10 group-hover:scale-125 transition-transform duration-300`}
       >
-        <div className="absolute inset-1 bg-theme-inverse/20 rounded-full animate-pulse"></div>
+        <div className="absolute inset-1 bg-texto/20 rounded-full animate-pulse"></div>
       </div>
 
       {/* Connector Line */}
       <div
-        className={`absolute left-3 lg:left-1/2 transform lg:-translate-x-1/2 w-12 lg:w-20 h-0.5 bg-gradient-to-r from-theme-primary to-transparent ${
+        className={`absolute left-3 lg:left-1/2 transform lg:-translate-x-1/2 w-12 lg:w-20 h-0.5 bg-fundo ${
           isLeft ? 'lg:ml-3' : 'lg:-ml-3'
         } ${isLeft ? 'lg:rotate-12' : 'lg:-rotate-12'} z-0`}
         style={{

@@ -220,13 +220,13 @@ export function CategoryForm({ mode, category }: CategoryFormProps) {
               value={formData.name}
               onChange={(e) => handleNameChange(e.target.value)}
               className={`input-classical w-full ${
-                errors.name ? 'border-red-500' : ''
+                errors.name ? 'border-erro' : ''
               }`}
               placeholder="Ex: Análise Musical"
               maxLength={50}
             />
             {errors.name && (
-              <Inline as="p" gap={1} className="text-sm text-red-500 mt-1">
+              <Inline as="p" gap={1} className="text-sm text-erro mt-1">
                 <PiWarningCircle className="w-4 h-4" />
                 <span>{errors.name}</span>
               </Inline>
@@ -252,14 +252,14 @@ export function CategoryForm({ mode, category }: CategoryFormProps) {
                   setFormData((prev) => ({ ...prev, slug: e.target.value }))
                 }
                 className={`input-classical flex-1 ${
-                  errors.slug ? 'border-red-500' : ''
+                  errors.slug ? 'border-erro' : ''
                 }`}
                 placeholder="analise-musical"
                 maxLength={60}
               />
             </Inline>
             {errors.slug && (
-              <Inline as="p" gap={1} className="text-sm text-red-500 mt-1">
+              <Inline as="p" gap={1} className="text-sm text-erro mt-1">
                 <PiWarningCircle className="w-4 h-4" />
                 <span>{errors.slug}</span>
               </Inline>
@@ -366,7 +366,7 @@ export function CategoryForm({ mode, category }: CategoryFormProps) {
               />
             </Inline>
             {errors.color && (
-              <Inline as="p" gap={1} className="text-sm text-red-500 mt-1">
+              <Inline as="p" gap={1} className="text-sm text-erro mt-1">
                 <PiWarningCircle className="w-4 h-4" />
                 <span>{errors.color}</span>
               </Inline>
@@ -411,7 +411,7 @@ export function CategoryForm({ mode, category }: CategoryFormProps) {
               <button
                 type="button"
                 onClick={handleRemoveImage}
-                className="absolute top-2 right-2 p-2 bg-red-500 hover:bg-red-600 text-white rounded-lg transition-all"
+                className="absolute top-2 right-2 p-2 bg-erro hover:bg-erro text-white rounded-lg transition-all"
               >
                 <PiTrash className="w-4 h-4" />
                 <NomeAcao acao="excluir" />
@@ -420,13 +420,13 @@ export function CategoryForm({ mode, category }: CategoryFormProps) {
           ) : (
             <div
               onClick={() => !uploading && fileInputRef.current?.click()}
-              className={`border-2 border-dashed border-theme-secondary rounded-lg p-8 text-center hover:border-brand-primary hover:bg-interactive-hover transition-all ${
+              className={`border-2 border-dashed border-theme-secondary rounded-lg p-8 text-center hover:border-ouro hover:bg-ouro/10 transition-all ${
                 uploading ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'
               }`}
             >
               {uploading ? (
                 <Stack gap={2} className="items-center">
-                  <div className="w-8 h-8 border-2 border-brand-primary border-t-transparent rounded-full animate-spin"></div>
+                  <div className="w-8 h-8 border-2 border-ouro border-t-transparent rounded-full animate-spin"></div>
                   <Text papel="rotulo" tom="suave" as="p">
                     Enviando imagem...
                   </Text>

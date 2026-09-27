@@ -49,12 +49,12 @@ export default function MonthView({
           return (
             <div
               key={index}
-              className={`min-h-24 p-2 border rounded-lg transition-all hover:border-brand-primary/30 ${
+              className={`min-h-24 p-2 border rounded-lg transition-all hover:border-ouro/30 ${
                 isToday
-                  ? 'bg-brand-primary/5 border-brand-primary/30'
+                  ? 'bg-ouro/5 border-ouro/30'
                   : isCurrentMonth
-                    ? 'bg-theme-elevated/50 border-theme-secondary/50'
-                    : 'bg-theme-secondary/20 border-theme-secondary/50 opacity-60'
+                    ? 'bg-sup-elevada/50 border-linha/50'
+                    : 'bg-sup-1/20 border-linha/50 opacity-60'
               }`}
             >
               {/* Day number */}
@@ -92,7 +92,7 @@ export default function MonthView({
                 {hasMoreThan2Events && (
                   <button
                     onClick={() => onDayClick(day, events)} // ✅ ABRIR MODAL
-                    className="w-full text-left p-1 rounded text-xs font-medium bg-brand-primary/20 hover:bg-brand-primary/30 transition-all text-brand-primary"
+                    className="w-full text-left p-1 rounded text-xs font-medium bg-ouro/10 hover:bg-ouro/30 transition-all text-brand-primary"
                   >
                     +{events.length - 2} mais evento
                     {events.length - 2 !== 1 ? 's' : ''}
@@ -108,16 +108,16 @@ export default function MonthView({
 }
 
 function getEventColor(type: string, isFree: boolean): string {
-  if (isFree) return 'bg-accent-green';
+  if (isFree) return 'bg-ok';
 
   const colors: Record<string, string> = {
-    OPERA: 'bg-accent-purple',
-    RECITAL: 'bg-accent-pink',
-    CHAMBER_MUSIC: 'bg-accent-green',
-    CHOIR: 'bg-accent-orange',
+    OPERA: 'bg-ouro',
+    RECITAL: 'bg-ouro',
+    CHAMBER_MUSIC: 'bg-ok',
+    CHOIR: 'bg-atencao',
     OPEN_REHEARSAL: 'bg-accent-gray',
-    CONCERT: 'bg-accent-blue',
+    CONCERT: 'bg-aviso',
   };
 
-  return colors[type] || 'bg-accent-blue';
+  return colors[type] || 'bg-aviso';
 }

@@ -260,8 +260,8 @@ function EditRelationshipModal({
                         key={day.value}
                         className={`flex items-center gap-2 p-2 border rounded-lg cursor-pointer transition-all ${
                           formData.preferredDays.includes(day.value)
-                            ? 'border-brand-primary bg-brand-primary/10 text-brand-primary'
-                            : 'border-theme-secondary hover:border-theme-primary'
+                            ? 'border-ouro bg-ouro/10 text-brand-primary'
+                            : 'border-theme-secondary hover:border-linha'
                         }`}
                       >
                         <input
@@ -289,8 +289,8 @@ function EditRelationshipModal({
                         key={time.value}
                         className={`flex items-center justify-center p-2 border rounded-lg cursor-pointer transition-all ${
                           formData.preferredTimes.includes(time.value)
-                            ? 'border-brand-primary bg-brand-primary/10 text-brand-primary'
-                            : 'border-theme-secondary hover:border-theme-primary'
+                            ? 'border-ouro bg-ouro/10 text-brand-primary'
+                            : 'border-theme-secondary hover:border-linha'
                         }`}
                       >
                         <input
@@ -334,8 +334,8 @@ function EditRelationshipModal({
                         onClick={() => handleAddFocusArea(area)}
                         className={`px-3 py-1 text-xs rounded-full border transition-all ${
                           formData.currentFocus.includes(area)
-                            ? 'border-brand-primary bg-brand-primary text-white'
-                            : 'border-theme-secondary text-theme-secondary hover:border-brand-primary hover:text-brand-primary'
+                            ? 'border-ouro bg-ouro text-sobre-ouro'
+                            : 'border-theme-secondary text-theme-secondary hover:border-ouro hover:text-ouro-texto'
                         }`}
                         disabled={formData.currentFocus.includes(area)}
                       >
@@ -354,13 +354,13 @@ function EditRelationshipModal({
                         {formData.currentFocus.map((focus) => (
                           <span
                             key={focus}
-                            className="inline-flex items-center gap-2 px-3 py-1 bg-brand-primary text-white text-sm rounded-full"
+                            className="inline-flex items-center gap-2 px-3 py-1 bg-ouro text-sobre-ouro text-sm rounded-full"
                           >
                             {focus}
                             <button
                               type="button"
                               onClick={() => handleRemoveFocusArea(focus)}
-                              className="hover:text-red-200"
+                              className="hover:text-erro"
                             >
                               ×
                             </button>
@@ -495,9 +495,9 @@ export default function TeacherStudentDetailPageClient({
   const isPaused = relationship.isActive && !!relationship.pausedAt;
 
   const getStatusColor = () => {
-    if (isActive) return 'accent-green';
-    if (isPaused) return 'accent-yellow';
-    return 'accent-red';
+    if (isActive) return 'ok';
+    if (isPaused) return 'atencao';
+    return 'erro';
   };
 
   const getStatusText = () => {
@@ -575,14 +575,14 @@ export default function TeacherStudentDetailPageClient({
           >
             <Link
               href="/teacher"
-              className="hover:text-brand-primary transition-colors duration-300 font-medium"
+              className="hover:text-ouro-texto transition-colors duration-300 font-medium"
             >
               {t('breadcrumb_dashboard')}
             </Link>
             <PiCaretRight className="w-4 h-4" />
             <Link
               href="/teacher/students"
-              className="hover:text-brand-primary transition-colors duration-300 font-medium"
+              className="hover:text-ouro-texto transition-colors duration-300 font-medium"
             >
               {t('breadcrumb_students')}
             </Link>
@@ -599,9 +599,9 @@ export default function TeacherStudentDetailPageClient({
             <Inline gap={4} className="w-full sm:w-auto">
               <Link
                 href="/teacher/students"
-                className="w-10 h-10 rounded-lg bg-theme-elevated border border-theme-secondary hover:border-brand-primary transition-all flex items-center justify-center group"
+                className="w-10 h-10 rounded-lg bg-theme-elevated border border-theme-secondary hover:border-ouro transition-all flex items-center justify-center group"
               >
-                <PiArrowLeft className="w-5 h-5 text-theme-tertiary group-hover:text-brand-primary transition-colors" />
+                <PiArrowLeft className="w-5 h-5 text-theme-tertiary group-hover:text-ouro-texto transition-colors" />
               </Link>
               <div>
                 <h1 className="text-3xl md:text-4xl font-bold text-gradient-brand classical-title">
@@ -627,8 +627,8 @@ export default function TeacherStudentDetailPageClient({
                 disabled={loading.toggleStatus}
                 className={`btn-classical-secondary flex items-center space-x-2 ${
                   isPaused
-                    ? 'hover:bg-accent-green/10 hover:border-accent-green/30 hover:text-accent-green'
-                    : 'hover:bg-accent-yellow/10 hover:border-accent-yellow/30 hover:text-accent-yellow'
+                    ? 'hover:bg-ok/10 hover:border-ok/30 hover:text-ok'
+                    : 'hover:bg-atencao/10 hover:border-atencao/30 hover:text-atencao'
                 }`}
               >
                 {loading.toggleStatus ? (
@@ -662,16 +662,16 @@ export default function TeacherStudentDetailPageClient({
           <AnimatedItem direction="up" springType="gentle">
             <AnimatedCard
               hover="lift"
-              className="classical-card p-4 border-l-4 border-accent-red mb-6"
+              className="border classical-card p-4 border-erro/40 mb-6"
             >
               <div className="flex items-center justify-between">
                 <Inline gap={3}>
-                  <PiXCircle className="w-5 h-5 text-accent-red" />
-                  <span className="text-accent-red font-medium">{error}</span>
+                  <PiXCircle className="w-5 h-5 text-erro" />
+                  <span className="text-erro font-medium">{error}</span>
                 </Inline>
                 <button
                   onClick={clearError}
-                  className="text-accent-red hover:text-accent-red/80 transition-colors"
+                  className="text-erro hover:text-erro/80 transition-colors"
                 >
                   <PiX className="w-4 h-4" />
                   <NomeAcao acao="fechar" />
@@ -692,7 +692,7 @@ export default function TeacherStudentDetailPageClient({
                   {/* Avatar */}
                   <div className="relative w-20 h-20">
                     {student.image ? (
-                      <div className="relative w-full h-full rounded-full overflow-hidden border-3 border-brand-primary/20">
+                      <div className="relative w-full h-full rounded-full overflow-hidden border border-ouro/20">
                         <Image
                           src={student.image}
                           alt={student.name}
@@ -702,7 +702,7 @@ export default function TeacherStudentDetailPageClient({
                         />
                       </div>
                     ) : (
-                      <div className="w-full h-full bg-gradient-to-br from-brand-primary to-brand-secondary rounded-full flex items-center justify-center border-3 border-brand-primary/20">
+                      <div className="w-full h-full fill-ouro rounded-full flex items-center justify-center border border-ouro/20">
                         <PiUser className="w-10 h-10 text-theme-primary" />
                       </div>
                     )}
@@ -833,7 +833,7 @@ export default function TeacherStudentDetailPageClient({
                             papel="rotulo"
                             tom="ouro"
                             key={index}
-                            className="px-3 py-1 bg-brand-primary/10 border border-brand-primary/30 rounded-full"
+                            className="px-3 py-1 bg-ouro/10 border border-ouro/30 rounded-full"
                           >
                             {focus}
                           </Text>
@@ -849,7 +849,7 @@ export default function TeacherStudentDetailPageClient({
               <AnimatedCard hover="lift" className="classical-card p-6">
                 <div className="flex items-center justify-between mb-6">
                   <Inline gap={3}>
-                    <div className="w-10 h-10 bg-gradient-to-br from-accent-blue to-accent-purple rounded-xl flex items-center justify-center">
+                    <div className="w-10 h-10 bg-aviso rounded-xl flex items-center justify-center">
                       <PiUserCheck className="w-5 h-5 text-theme-primary" />
                     </div>
                     <div>
@@ -909,7 +909,7 @@ export default function TeacherStudentDetailPageClient({
                       relationship.preferredDays.length > 0 && (
                         <Card nivel={2} densidade="compacta">
                           <Inline gap={3} className="mb-3">
-                            <PiCalendarBlank className="w-5 h-5 text-accent-green" />
+                            <PiCalendarBlank className="w-5 h-5 text-ok" />
                             <h4 className="font-semibold text-theme-primary">
                               {t('preferred_days')}
                             </h4>
@@ -920,7 +920,7 @@ export default function TeacherStudentDetailPageClient({
                               return (
                                 <span
                                   key={day}
-                                  className="px-2 py-1 bg-accent-green/10 border border-accent-green/30 text-accent-green rounded text-sm"
+                                  className="px-2 py-1 bg-ok/10 border border-ok/30 text-ok rounded text-sm"
                                 >
                                   {dayLabel}
                                 </span>
@@ -936,7 +936,7 @@ export default function TeacherStudentDetailPageClient({
                       relationship.preferredTimes.length > 0 && (
                         <Card nivel={2} densidade="compacta">
                           <Inline gap={3} className="mb-3">
-                            <PiClock className="w-5 h-5 text-accent-blue" />
+                            <PiClock className="w-5 h-5 text-aviso" />
                             <h4 className="font-semibold text-theme-primary">
                               {t('preferred_times')}
                             </h4>
@@ -945,7 +945,7 @@ export default function TeacherStudentDetailPageClient({
                             {relationship.preferredTimes.map((time) => (
                               <span
                                 key={time}
-                                className="px-2 py-1 bg-accent-blue/10 border border-accent-blue/30 text-accent-blue rounded text-sm font-mono"
+                                className="px-2 py-1 bg-aviso/10 border border-aviso/30 text-aviso rounded text-sm font-mono"
                               >
                                 {time}
                               </span>
@@ -957,7 +957,7 @@ export default function TeacherStudentDetailPageClient({
                     {relationship.learningPlan && (
                       <Card nivel={2} densidade="compacta">
                         <Inline gap={3} className="mb-3">
-                          <PiBookOpen className="w-5 h-5 text-accent-purple" />
+                          <PiBookOpen className="w-5 h-5 text-ouro-texto" />
                           <h4 className="font-semibold text-theme-primary">
                             {t('learning_plan')}
                           </h4>
@@ -984,7 +984,7 @@ export default function TeacherStudentDetailPageClient({
                   hover="scale"
                   className="classical-card p-6 text-center"
                 >
-                  <div className="w-12 h-12 bg-gradient-to-br from-brand-primary to-brand-secondary rounded-xl flex items-center justify-center mx-auto mb-3">
+                  <div className="w-12 h-12 fill-ouro rounded-xl flex items-center justify-center mx-auto mb-3">
                     <PiBookOpen className="w-6 h-6 text-theme-primary" />
                   </div>
                   <div className="text-2xl font-bold text-theme-primary mb-1">
@@ -999,7 +999,7 @@ export default function TeacherStudentDetailPageClient({
                   hover="scale"
                   className="classical-card p-6 text-center"
                 >
-                  <div className="w-12 h-12 bg-gradient-to-br from-accent-green to-accent-blue rounded-xl flex items-center justify-center mx-auto mb-3">
+                  <div className="w-12 h-12 bg-ok rounded-xl flex items-center justify-center mx-auto mb-3">
                     <PiCheckCircle className="w-6 h-6 text-theme-primary" />
                   </div>
                   <div className="text-2xl font-bold text-theme-primary mb-1">
@@ -1014,7 +1014,7 @@ export default function TeacherStudentDetailPageClient({
                   hover="scale"
                   className="classical-card p-6 text-center"
                 >
-                  <div className="w-12 h-12 bg-gradient-to-br from-accent-purple to-accent-red rounded-xl flex items-center justify-center mx-auto mb-3">
+                  <div className="w-12 h-12 fill-ouro rounded-xl flex items-center justify-center mx-auto mb-3">
                     <PiClock className="w-6 h-6 text-theme-primary" />
                   </div>
                   <div className="text-2xl font-bold text-theme-primary mb-1">
@@ -1047,7 +1047,7 @@ export default function TeacherStudentDetailPageClient({
               <AnimatedCard hover="lift" className="classical-card p-6">
                 <div className="flex items-center justify-between mb-6">
                   <Inline gap={3}>
-                    <div className="w-10 h-10 bg-gradient-to-br from-accent-green to-accent-blue rounded-xl flex items-center justify-center">
+                    <div className="w-10 h-10 bg-ok rounded-xl flex items-center justify-center">
                       <PiClock className="w-5 h-5 text-theme-primary" />
                     </div>
                     <div>
@@ -1063,7 +1063,7 @@ export default function TeacherStudentDetailPageClient({
                   </Inline>
                   <Link
                     href={`/teacher/lessons?studentId=${student.id}`}
-                    className="text-brand-primary hover:text-brand-secondary text-sm font-medium transition-colors flex items-center space-x-1"
+                    className="text-brand-primary hover:text-ouro-texto text-sm font-medium transition-colors flex items-center space-x-1"
                   >
                     <span>{t('see_all')}</span>
                     <PiCaretRight className="w-4 h-4" />
@@ -1082,10 +1082,10 @@ export default function TeacherStudentDetailPageClient({
                             <span
                               className={`px-2 py-1 rounded-full text-xs font-medium ${
                                 lesson.status === 'COMPLETED'
-                                  ? 'bg-accent-green/10 border border-accent-green/30 text-accent-green'
+                                  ? 'bg-ok/10 border border-ok/30 text-ok'
                                   : lesson.status === 'CANCELLED'
-                                    ? 'bg-accent-red/10 border border-accent-red/30 text-accent-red'
-                                    : 'bg-accent-blue/10 border border-accent-blue/30 text-accent-blue'
+                                    ? 'bg-erro/10 border border-erro/30 text-erro'
+                                    : 'bg-aviso/10 border border-aviso/30 text-aviso'
                               }`}
                             >
                               {lesson.status === 'COMPLETED'
@@ -1136,7 +1136,7 @@ export default function TeacherStudentDetailPageClient({
                           {lesson.homework && (
                             <Stack
                               gap={1}
-                              className="mt-2 p-2 bg-gradient-to-r from-theme-elevated to-interactive-hover rounded border border-theme-primary/20"
+                              className="mt-2 p-2 bg-sup-elevada rounded border border-linha/20"
                             >
                               <Text papel="legenda" tom="fraco" as="div">
                                 {t('homework_label')}
@@ -1155,9 +1155,9 @@ export default function TeacherStudentDetailPageClient({
 
                         <Link
                           href={`/teacher/lessons/${lesson.id}`}
-                          className="w-8 h-8 rounded-lg bg-theme-elevated border border-theme-secondary hover:border-brand-primary transition-all flex items-center justify-center ml-4"
+                          className="w-8 h-8 rounded-lg bg-theme-elevated border border-theme-secondary hover:border-ouro transition-all flex items-center justify-center ml-4"
                         >
-                          <PiEye className="w-4 h-4 text-theme-tertiary hover:text-brand-primary transition-colors" />
+                          <PiEye className="w-4 h-4 text-theme-tertiary hover:text-ouro-texto transition-colors" />
                         </Link>
                       </div>
                     </Card>
@@ -1180,7 +1180,7 @@ export default function TeacherStudentDetailPageClient({
               <AnimatedCard hover="lift" className="classical-card p-6">
                 <div className="flex items-center justify-between mb-4">
                   <Inline gap={3}>
-                    <div className="w-10 h-10 bg-gradient-to-br from-accent-purple to-accent-red rounded-xl flex items-center justify-center">
+                    <div className="w-10 h-10 fill-ouro rounded-xl flex items-center justify-center">
                       <PiChatCenteredText className="w-5 h-5 text-theme-primary" />
                     </div>
                     <div>
@@ -1196,12 +1196,12 @@ export default function TeacherStudentDetailPageClient({
                   <button
                     onClick={() => setEditingNotes(!editingNotes)}
                     disabled={loading.updateNotes}
-                    className="w-8 h-8 rounded-lg bg-theme-elevated border border-theme-secondary hover:border-brand-primary transition-all flex items-center justify-center"
+                    className="w-8 h-8 rounded-lg bg-theme-elevated border border-theme-secondary hover:border-ouro transition-all flex items-center justify-center"
                   >
                     {loading.updateNotes ? (
                       <PiArrowsClockwise className="w-4 h-4 animate-spin text-theme-tertiary" />
                     ) : (
-                      <PiPencilLine className="w-4 h-4 text-theme-tertiary hover:text-brand-primary transition-colors" />
+                      <PiPencilLine className="w-4 h-4 text-theme-tertiary hover:text-ouro-texto transition-colors" />
                     )}
                   </button>
                 </div>
@@ -1246,7 +1246,7 @@ export default function TeacherStudentDetailPageClient({
                     </Inline>
                   </div>
                 ) : (
-                  <div className="bg-theme-elevated border-theme-primary/20 p-4">
+                  <div className="bg-theme-elevated border-linha/20 p-4">
                     {teacherNotes ? (
                       <p className="text-theme-primary whitespace-pre-wrap">
                         {teacherNotes}
@@ -1268,7 +1268,7 @@ export default function TeacherStudentDetailPageClient({
             <AnimatedItem direction="up" springType="gentle">
               <AnimatedCard hover="lift" className="classical-card p-6">
                 <Inline gap={3} className="mb-4">
-                  <div className="w-8 h-8 bg-gradient-to-br from-accent-blue to-accent-purple rounded-lg flex items-center justify-center">
+                  <div className="w-8 h-8 bg-aviso rounded-lg flex items-center justify-center">
                     <PiCalendarBlank className="w-4 h-4 text-theme-primary" />
                   </div>
                   <div>
@@ -1285,7 +1285,7 @@ export default function TeacherStudentDetailPageClient({
                   {upcomingLessons.slice(0, 4).map((lesson) => (
                     <div key={lesson.id} className="classical-card-2 p-3">
                       <Inline gap={3}>
-                        <div className="w-2 h-12 bg-brand-primary rounded-full"></div>
+                        <div className="w-2 h-12 bg-ouro rounded-full"></div>
                         <div className="flex-1">
                           <Text
                             papel="rotulo"
@@ -1299,13 +1299,13 @@ export default function TeacherStudentDetailPageClient({
                             {formatDate(lesson.scheduledAt)} •{' '}
                             {formatTime(lesson.scheduledAt)}
                           </Text>
-                          <div className="text-xs text-accent-blue">
+                          <div className="text-xs text-aviso">
                             {lesson.duration}min
                           </div>
                         </div>
                         <Link
                           href={`/teacher/lessons/${lesson.id}`}
-                          className="w-6 h-6 rounded bg-theme-elevated hover:bg-interactive-hover transition-colors flex items-center justify-center"
+                          className="w-6 h-6 rounded bg-theme-elevated hover:bg-ouro/10 transition-colors flex items-center justify-center"
                         >
                           <PiEye className="w-3 h-3 text-theme-tertiary" />
                         </Link>
@@ -1326,7 +1326,7 @@ export default function TeacherStudentDetailPageClient({
                 {upcomingLessons.length > 0 && (
                   <Link
                     href={`/teacher/lessons?studentId=${student.id}`}
-                    className="mt-4 block text-center text-brand-primary hover:text-brand-secondary text-sm font-medium transition-colors"
+                    className="mt-4 block text-center text-brand-primary hover:text-ouro-texto text-sm font-medium transition-colors"
                   >
                     {t('see_all_lessons')}
                   </Link>
@@ -1338,7 +1338,7 @@ export default function TeacherStudentDetailPageClient({
             <AnimatedItem direction="up" springType="gentle">
               <AnimatedCard hover="lift" className="classical-card p-6">
                 <Inline gap={3} className="mb-4">
-                  <div className="w-8 h-8 bg-gradient-to-br from-accent-green to-accent-blue rounded-lg flex items-center justify-center">
+                  <div className="w-8 h-8 bg-ok rounded-lg flex items-center justify-center">
                     <PiFileText className="w-4 h-4 text-theme-primary" />
                   </div>
                   <div>
@@ -1380,10 +1380,10 @@ export default function TeacherStudentDetailPageClient({
                           <span
                             className={`px-2 py-1 rounded-full text-xs font-medium ml-2 ${
                               assignment.priority === 'high'
-                                ? 'bg-accent-red/10 border border-accent-red/30 text-accent-red'
+                                ? 'bg-erro/10 border border-erro/30 text-erro'
                                 : assignment.priority === 'medium'
-                                  ? 'bg-accent-yellow/10 border border-accent-yellow/30 text-accent-yellow'
-                                  : 'bg-accent-green/10 border border-accent-green/30 text-accent-green'
+                                  ? 'bg-atencao/10 border border-atencao/30 text-atencao'
+                                  : 'bg-ok/10 border border-ok/30 text-ok'
                             }`}
                           >
                             {assignment.priority === 'high'
@@ -1416,7 +1416,7 @@ export default function TeacherStudentDetailPageClient({
 
                   {assignments.filter((a) => !a.isCompleted).length === 0 && (
                     <div className="text-center py-4">
-                      <PiCheckCircle className="w-8 h-8 text-accent-green mx-auto mb-2" />
+                      <PiCheckCircle className="w-8 h-8 text-ok mx-auto mb-2" />
                       <Text papel="rotulo" tom="fraco" as="p">
                         {t('all_assignments_completed')}
                       </Text>
@@ -1430,7 +1430,7 @@ export default function TeacherStudentDetailPageClient({
             <AnimatedItem direction="up" springType="gentle">
               <AnimatedCard hover="lift" className="classical-card p-6">
                 <Inline gap={3} className="mb-4">
-                  <div className="w-8 h-8 bg-gradient-to-br from-accent-purple to-accent-red rounded-lg flex items-center justify-center">
+                  <div className="w-8 h-8 fill-ouro rounded-lg flex items-center justify-center">
                     <PiGear className="w-4 h-4 text-theme-primary" />
                   </div>
                   <div>
@@ -1443,14 +1443,14 @@ export default function TeacherStudentDetailPageClient({
                 <Stack gap={3}>
                   <Link
                     href={`/teacher/lessons/create?studentId=${student.id}`}
-                    className="w-full classical-card-2 p-3 text-left hover:border-brand-primary transition-all group block"
+                    className="w-full classical-card-2 p-3 text-left hover:border-ouro transition-all group block"
                   >
                     <Inline gap={3}>
-                      <div className="w-8 h-8 bg-gradient-to-br from-accent-green to-accent-blue rounded-lg flex items-center justify-center">
+                      <div className="w-8 h-8 bg-ok rounded-lg flex items-center justify-center">
                         <PiPlus className="w-4 h-4 text-theme-primary" />
                       </div>
                       <div>
-                        <div className="font-medium text-theme-primary group-hover:text-brand-primary transition-colors">
+                        <div className="font-medium text-theme-primary group-hover:text-ouro-texto transition-colors">
                           {t('schedule_lesson')}
                         </div>
                         <Text papel="legenda" tom="fraco" as="div">
@@ -1462,14 +1462,14 @@ export default function TeacherStudentDetailPageClient({
 
                   <Link
                     href={`/teacher/assignments/create?studentId=${student.id}`}
-                    className="w-full classical-card-2 p-3 text-left hover:border-brand-primary transition-all group block"
+                    className="w-full classical-card-2 p-3 text-left hover:border-ouro transition-all group block"
                   >
                     <Inline gap={3}>
-                      <div className="w-8 h-8 bg-gradient-to-br from-brand-primary to-brand-secondary rounded-lg flex items-center justify-center">
+                      <div className="w-8 h-8 fill-ouro rounded-lg flex items-center justify-center">
                         <PiFileText className="w-4 h-4 text-theme-primary" />
                       </div>
                       <div>
-                        <div className="font-medium text-theme-primary group-hover:text-brand-primary transition-colors">
+                        <div className="font-medium text-theme-primary group-hover:text-ouro-texto transition-colors">
                           {t('create_assignment')}
                         </div>
                         <Text papel="legenda" tom="fraco" as="div">
@@ -1481,14 +1481,14 @@ export default function TeacherStudentDetailPageClient({
 
                   <Link
                     href={`/teacher/students/${student.id}/progress`}
-                    className="w-full classical-card-2 p-3 text-left hover:border-brand-primary transition-all group block"
+                    className="w-full classical-card-2 p-3 text-left hover:border-ouro transition-all group block"
                   >
                     <Inline gap={3}>
-                      <div className="w-8 h-8 bg-gradient-to-br from-accent-blue to-accent-purple rounded-lg flex items-center justify-center">
+                      <div className="w-8 h-8 bg-aviso rounded-lg flex items-center justify-center">
                         <PiChartBar className="w-4 h-4 text-theme-primary" />
                       </div>
                       <div>
-                        <div className="font-medium text-theme-primary group-hover:text-brand-primary transition-colors">
+                        <div className="font-medium text-theme-primary group-hover:text-ouro-texto transition-colors">
                           {t('detailed_report')}
                         </div>
                         <Text papel="legenda" tom="fraco" as="div">

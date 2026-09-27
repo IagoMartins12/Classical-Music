@@ -167,16 +167,16 @@ const HistoryClient = ({
   const getActionIcon = (action: string, changes?: any) => {
     // Ícone especial para bulk import
     if (changes?.bulkImport) {
-      return <PiDatabase className="w-4 h-4 text-purple-600" />;
+      return <PiDatabase className="w-4 h-4 text-ouro-texto" />;
     }
 
     switch (action) {
       case 'create':
-        return <PiPlus className="w-4 h-4 text-green-600" />;
+        return <PiPlus className="w-4 h-4 text-ok" />;
       case 'update':
-        return <PiNotePencil className="w-4 h-4 text-blue-600" />;
+        return <PiNotePencil className="w-4 h-4 text-aviso" />;
       case 'delete':
-        return <PiTrash className="w-4 h-4 text-red-600" />;
+        return <PiTrash className="w-4 h-4 text-erro" />;
       default:
         return <PiPulse className="w-4 h-4 text-theme-tertiary" />;
     }
@@ -218,54 +218,54 @@ const HistoryClient = ({
   const getActionColor = (action: string, changes?: any) => {
     // Cor especial para bulk import
     if (changes?.bulkImport) {
-      return 'bg-purple-50 text-purple-700 border-purple-200';
+      return 'bg-ouro/10 text-ouro-texto border-ouro/30';
     }
 
     switch (action) {
       case 'create':
-        return 'bg-green-50 text-green-700 border-green-200';
+        return 'bg-ok/10 text-ok border-ok/30';
       case 'update':
-        return 'bg-blue-50 text-blue-700 border-blue-200';
+        return 'bg-aviso/10 text-aviso border-aviso/30';
       case 'delete':
-        return 'bg-red-50 text-red-700 border-red-200';
+        return 'bg-erro/10 text-erro border-erro/30';
       default:
-        return 'bg-theme-secondary text-theme-tertiary border-theme-tertiary/30';
+        return 'bg-theme-secondary text-theme-tertiary border-linha/30';
     }
   };
 
   const getTimelineDotColor = (action: string, changes?: any) => {
     // Cor especial para bulk import
     if (changes?.bulkImport) {
-      return 'from-purple-400 to-purple-600';
+      return 'fill-ouro';
     }
 
     switch (action) {
       case 'create':
-        return 'from-green-400 to-green-600';
+        return 'bg-ok';
       case 'update':
-        return 'from-blue-400 to-blue-600';
+        return 'bg-aviso';
       case 'delete':
-        return 'from-red-400 to-red-600';
+        return 'bg-erro';
       default:
-        return 'from-accent-blue to-accent-purple';
+        return 'bg-aviso';
     }
   };
 
   const getCardBorderColor = (action: string, changes?: any) => {
     // Cor especial para bulk import
     if (changes?.bulkImport) {
-      return 'border-l-4 border-l-purple-500';
+      return 'border border-ouro/40 bg-ouro/10';
     }
 
     switch (action) {
       case 'create':
-        return 'border-l-4 border-l-green-500';
+        return 'border border-ok/40 bg-ok/10';
       case 'update':
-        return 'border-l-4 border-l-blue-500';
+        return 'border border-aviso/40 bg-aviso/10';
       case 'delete':
-        return 'border-l-4 border-l-red-500';
+        return 'border border-erro/40 bg-erro/10';
       default:
-        return 'border-l-4 border-l-gray-300';
+        return 'border border-linha';
     }
   };
 
@@ -276,8 +276,8 @@ const HistoryClient = ({
     if (changes.bulkImport) {
       const bulk = changes.bulkImport;
       return (
-        <div className="mt-3 p-3 bg-purple-50 border border-purple-200 rounded-lg">
-          <h5 className="text-sm font-medium text-purple-700 mb-3 flex items-center">
+        <div className="mt-3 p-3 bg-ouro/10 border border-ouro/30 rounded-lg">
+          <h5 className="text-sm font-medium text-ouro-texto mb-3 flex items-center">
             <PiDatabase className="w-4 h-4 mr-1" />
             {t('history_bulk_import_title')}
           </h5>
@@ -285,41 +285,41 @@ const HistoryClient = ({
           {/* Estatísticas */}
           <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mb-3">
             <div className="text-center p-2 bg-white rounded">
-              <div className="text-lg font-bold text-green-600">
+              <div className="text-lg font-bold text-ok">
                 {bulk.successfulWorks}
               </div>
-              <div className="text-xs text-green-700">
+              <div className="text-xs text-ok">
                 {t('history_bulk_stats_success')}
               </div>
             </div>
             <div className="text-center p-2 bg-white rounded">
-              <div className="text-lg font-bold text-red-600">
+              <div className="text-lg font-bold text-erro">
                 {bulk.failedWorks}
               </div>
-              <div className="text-xs text-red-700">
+              <div className="text-xs text-erro">
                 {t('history_bulk_stats_errors')}
               </div>
             </div>
             <div className="text-center p-2 bg-white rounded">
-              <div className="text-lg font-bold text-yellow-600">
+              <div className="text-lg font-bold text-atencao">
                 {bulk.duplicateWorks}
               </div>
-              <div className="text-xs text-yellow-700">
+              <div className="text-xs text-atencao">
                 {t('history_bulk_stats_duplicates')}
               </div>
             </div>
             <div className="text-center p-2 bg-white rounded">
-              <div className="text-lg font-bold text-purple-600">
+              <div className="text-lg font-bold text-ouro-texto">
                 {bulk.totalWorks}
               </div>
-              <div className="text-xs text-purple-700">
+              <div className="text-xs text-ouro-texto">
                 {t('history_bulk_stats_total')}
               </div>
             </div>
           </div>
 
           {/* Compositor */}
-          <div className="text-sm text-purple-700 mb-2">
+          <div className="text-sm text-ouro-texto mb-2">
             <span className="font-medium">
               {t('history_bulk_composer_label')}
             </span>{' '}
@@ -329,7 +329,7 @@ const HistoryClient = ({
           {/* Lista de obras criadas (primeiras 5) */}
           {bulk.worksCreated && bulk.worksCreated.length > 0 && (
             <Stack gap={1}>
-              <div className="text-xs font-medium text-purple-700">
+              <div className="text-xs font-medium text-ouro-texto">
                 {t('history_bulk_works_created')}
               </div>
               <Stack gap={1}>
@@ -338,14 +338,14 @@ const HistoryClient = ({
                   .map((work: any, index: number) => (
                     <div
                       key={index}
-                      className="text-xs text-purple-600 flex items-center"
+                      className="text-xs text-ouro-texto flex items-center"
                     >
-                      <PiCheck className="w-3 h-3 mr-1 text-green-500" />
+                      <PiCheck className="w-3 h-3 mr-1 text-ok" />
                       {work.title}
                     </div>
                   ))}
                 {bulk.worksCreated.length > 5 && (
-                  <div className="text-xs text-purple-600">
+                  <div className="text-xs text-ouro-texto">
                     {t('history_bulk_additional_works').replace(
                       '{count}',
                       (bulk.worksCreated.length - 5).toString()
@@ -363,9 +363,9 @@ const HistoryClient = ({
       return (
         <Stack
           gap={2}
-          className="mt-3 p-3 bg-green-50 border border-green-200 rounded-lg"
+          className="mt-3 p-3 bg-ok/10 border border-ok/30 rounded-lg"
         >
-          <h5 className="text-sm font-medium text-green-700 flex items-center">
+          <h5 className="text-sm font-medium text-ok flex items-center">
             <PiPlus className="w-4 h-4 mr-1" />
             {t('history_changes_created_title')}
           </h5>
@@ -373,7 +373,7 @@ const HistoryClient = ({
             {Object.entries(changes.created)
               .slice(0, 5)
               .map(([key, value]) => (
-                <div key={key} className="text-xs text-green-600">
+                <div key={key} className="text-xs text-ok">
                   <span className="font-medium">{formatFieldName(key)}:</span>{' '}
                   {formatValue(value)}
                 </div>
@@ -387,9 +387,9 @@ const HistoryClient = ({
       return (
         <Stack
           gap={2}
-          className="mt-3 p-3 bg-red-50 border border-red-200 rounded-lg"
+          className="mt-3 p-3 bg-erro/10 border border-erro/30 rounded-lg"
         >
-          <h5 className="text-sm font-medium text-red-700 flex items-center">
+          <h5 className="text-sm font-medium text-erro flex items-center">
             <PiTrash className="w-4 h-4 mr-1" />
             {t('history_changes_deleted_title')}
           </h5>
@@ -397,7 +397,7 @@ const HistoryClient = ({
             {Object.entries(changes.deleted)
               .slice(0, 5)
               .map(([key, value]) => (
-                <div key={key} className="text-xs text-red-600">
+                <div key={key} className="text-xs text-erro">
                   <span className="font-medium">{formatFieldName(key)}:</span>{' '}
                   {formatValue(value)}
                 </div>
@@ -421,26 +421,26 @@ const HistoryClient = ({
       return (
         <Stack
           gap={2}
-          className="mt-3 p-3 bg-blue-50 border border-blue-200 rounded-lg"
+          className="mt-3 p-3 bg-aviso/10 border border-aviso/30 rounded-lg"
         >
-          <h5 className="text-sm font-medium text-blue-700 flex items-center">
+          <h5 className="text-sm font-medium text-aviso flex items-center">
             <PiNotePencil className="w-4 h-4 mr-1" />
             {t('history_changes_updated_title')}
           </h5>
           <Stack gap={2}>
             {changesList.slice(0, 5).map(([key, change]: [string, any]) => (
               <Stack gap={1} key={key} className="text-xs">
-                <div className="font-medium text-blue-700">
+                <div className="font-medium text-aviso">
                   {formatFieldName(key)}:
                 </div>
-                <div className="pl-2 border-l-2 border-blue-300">
-                  <div className="text-red-600 flex items-center">
+                <div className="pl-2 border-l-2 border-aviso/30">
+                  <div className="text-erro flex items-center">
                     <span className="w-8 text-xs">
                       {t('history_changes_from')}
                     </span>
                     <span>{formatValue(change.from)}</span>
                   </div>
-                  <div className="text-green-600 flex items-center">
+                  <div className="text-ok flex items-center">
                     <span className="w-8 text-xs">
                       {t('history_changes_to')}
                     </span>
@@ -450,7 +450,7 @@ const HistoryClient = ({
               </Stack>
             ))}
             {changesList.length > 5 && (
-              <div className="text-xs text-blue-600">
+              <div className="text-xs text-aviso">
                 {t('history_changes_additional').replace(
                   '{count}',
                   (changesList.length - 5).toString()
@@ -510,7 +510,7 @@ const HistoryClient = ({
         <AnimatedItem direction="up" springType="gentle">
           <div className="text-center mb-8 py-16">
             <div className="flex items-center justify-center mb-6">
-              <div className="w-16 h-16 bg-gradient-to-br from-accent-blue to-accent-purple rounded-3xl flex items-center justify-center shadow-theme-glow">
+              <div className="w-16 h-16 bg-aviso rounded-3xl flex items-center justify-center shadow-theme-glow">
                 <PiClock className="w-8 h-8 text-theme-primary" />
               </div>
             </div>
@@ -544,7 +544,7 @@ const HistoryClient = ({
                   as="button"
                   gap={2}
                   onClick={() => setShowFilters(!showFilters)}
-                  className="px-4 py-2 bg-theme-secondary hover:bg-theme-tertiary text-theme-primary rounded-lg transition-colors"
+                  className="px-4 py-2 bg-theme-secondary hover:bg-sup-2 text-theme-primary rounded-lg transition-colors"
                 >
                   <PiFunnel className="w-4 h-4" />
                   <span>{t('history_filters_button')}</span>
@@ -696,7 +696,7 @@ const HistoryClient = ({
                               {record.changes && (
                                 <button
                                   onClick={() => toggleExpanded(record.id)}
-                                  className="w-6 h-6 rounded-full bg-theme-secondary hover:bg-theme-tertiary text-theme-tertiary hover:text-theme-primary transition-colors flex items-center justify-center"
+                                  className="w-6 h-6 rounded-full bg-theme-secondary hover:bg-sup-2 text-theme-tertiary hover:text-texto transition-colors flex items-center justify-center"
                                 >
                                   {expandedItems.has(record.id) ? (
                                     <PiCaretUp className="w-3 h-3" />
@@ -813,8 +813,8 @@ const HistoryClient = ({
                     }}
                     className={`px-4 py-2 rounded-lg transition-colors ${
                       page === i + 1
-                        ? 'bg-brand-primary text-theme-primary'
-                        : 'bg-theme-secondary text-theme-tertiary hover:bg-theme-tertiary'
+                        ? 'bg-ouro text-theme-primary'
+                        : 'bg-theme-secondary text-theme-tertiary hover:bg-sup-2'
                     }`}
                   >
                     {i + 1}

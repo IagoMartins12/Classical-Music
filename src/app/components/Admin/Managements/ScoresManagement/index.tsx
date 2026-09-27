@@ -173,13 +173,13 @@ export default function ScoresManagement() {
   const getSourceColor = (source: string) => {
     switch (source) {
       case 'IMSLP':
-        return 'text-accent-blue bg-accent-blue/10';
+        return 'text-aviso bg-aviso/10';
       case 'CUSTOM':
-        return 'text-accent-green bg-accent-green/10';
+        return 'text-ok bg-ok/10';
       case 'UPLOAD':
-        return 'text-accent-purple bg-accent-purple/10';
+        return 'text-ouro-texto bg-ouro/10';
       case 'MANUAL':
-        return 'text-accent-amber bg-accent-amber/10';
+        return 'text-atencao bg-atencao/10';
       default:
         return 'text-theme-tertiary bg-theme-secondary';
     }
@@ -211,9 +211,9 @@ export default function ScoresManagement() {
   };
 
   const getQualityColor = (score: number) => {
-    if (score >= 8) return 'text-accent-green';
-    if (score >= 6) return 'text-accent-amber';
-    if (score >= 4) return 'text-accent-red';
+    if (score >= 8) return 'text-ok';
+    if (score >= 6) return 'text-atencao';
+    if (score >= 4) return 'text-erro';
     return 'text-theme-tertiary';
   };
 
@@ -228,18 +228,14 @@ export default function ScoresManagement() {
             <PiStarFill
               key={i}
               className={`w-3 h-3 ${
-                i < stars
-                  ? 'text-accent-amber fill-current'
-                  : 'text-theme-tertiary'
+                i < stars ? 'text-atencao fill-current' : 'text-theme-tertiary'
               }`}
             />
           ) : (
             <PiStar
               key={i}
               className={`w-3 h-3 ${
-                i < stars
-                  ? 'text-accent-amber fill-current'
-                  : 'text-theme-tertiary'
+                i < stars ? 'text-atencao fill-current' : 'text-theme-tertiary'
               }`}
             />
           )
@@ -282,7 +278,7 @@ export default function ScoresManagement() {
         <AnimatedItem direction="up" springType="gentle">
           <div className="text-center mb-8 py-16">
             <div className="flex items-center justify-center mb-6">
-              <div className="w-16 h-16 bg-gradient-to-br from-accent-amber to-accent-red rounded-3xl flex items-center justify-center shadow-theme-glow">
+              <div className="w-16 h-16 bg-atencao rounded-3xl flex items-center justify-center shadow-theme-glow">
                 <PiFileText className="w-8 h-8 text-theme-primary" />
               </div>
             </div>
@@ -309,11 +305,11 @@ export default function ScoresManagement() {
         {/* 🆕 Painel de Debug */}
         {showDebug && stats && (
           <AnimatedItem direction="up" springType="gentle">
-            <AnimatedCard className="classical-card p-6 mb-8 border-2 border-accent-amber/30">
+            <AnimatedCard className="classical-card p-6 mb-8 border-2 border-atencao/30">
               <Inline
                 as="h3"
                 gap={2}
-                className="text-lg font-bold text-accent-amber mb-4"
+                className="text-lg font-bold text-atencao mb-4"
               >
                 <PiWarningCircle className="w-5 h-5" />
                 <span>Debug das Estatísticas</span>
@@ -491,7 +487,7 @@ export default function ScoresManagement() {
                 gap={2}
                 className="text-xl font-bold text-theme-primary mb-6"
               >
-                <PiTarget className="w-5 h-5 text-accent-amber" />
+                <PiTarget className="w-5 h-5 text-atencao" />
                 <span>Partituras Mais Acessadas</span>
               </Inline>
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
@@ -506,7 +502,7 @@ export default function ScoresManagement() {
                         papel="rotulo"
                         tom="forte"
                         as="div"
-                        className="w-8 h-8 bg-gradient-to-br from-accent-amber to-accent-red rounded-lg flex items-center justify-center font-bold"
+                        className="w-8 h-8 bg-atencao rounded-lg flex items-center justify-center font-bold"
                       >
                         {index + 1}
                       </Text>
@@ -675,8 +671,8 @@ export default function ScoresManagement() {
 
             {/* Bulk Actions */}
             {selectedScores.size > 0 && (
-              <div className="flex items-center justify-between p-4 bg-accent-amber/10 border border-accent-amber rounded-xl mb-6">
-                <span className="text-accent-amber font-medium">
+              <div className="flex items-center justify-between p-4 bg-atencao/10 border border-atencao rounded-xl mb-6">
+                <span className="text-atencao font-medium">
                   {selectedScores.size} partituras selecionadas
                 </span>
                 <Inline gap={2}>
@@ -720,7 +716,7 @@ export default function ScoresManagement() {
               {scores.map((score) => (
                 <div
                   key={score.id}
-                  className="p-4 bg-theme-secondary rounded-xl hover:bg-theme-primary/50 transition-colors"
+                  className="p-4 bg-theme-secondary rounded-xl hover:bg-fundo/50 transition-colors"
                 >
                   <div className="flex items-start space-x-4">
                     <input
@@ -735,7 +731,7 @@ export default function ScoresManagement() {
                         }
                         setSelectedScores(newSelected);
                       }}
-                      className="w-4 h-4 text-brand-primary bg-theme-secondary border-theme-primary rounded focus:ring-brand-primary focus:ring-2 mt-1"
+                      className="w-4 h-4 text-brand-primary bg-theme-secondary border-theme-primary rounded focus:ring-ouro focus:ring-2 mt-1"
                     />
 
                     {score.thumbnailUrl && (
@@ -764,9 +760,9 @@ export default function ScoresManagement() {
                           {score.source}
                         </span>
                         {score.isActive ? (
-                          <PiCheckCircle className="w-5 h-5 text-accent-green" />
+                          <PiCheckCircle className="w-5 h-5 text-ok" />
                         ) : (
-                          <PiPause className="w-5 h-5 text-accent-red" />
+                          <PiPause className="w-5 h-5 text-erro" />
                         )}
                       </Inline>
 
@@ -860,11 +856,7 @@ export default function ScoresManagement() {
                         onClick={() =>
                           handleToggleActive(score.id, score.isActive)
                         }
-                        className={
-                          score.isActive
-                            ? 'text-accent-red'
-                            : 'text-accent-green'
-                        }
+                        className={score.isActive ? 'text-erro' : 'text-ok'}
                         title={score.isActive ? 'Desativar' : 'Ativar'}
                       />
                     </Inline>

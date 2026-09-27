@@ -171,7 +171,7 @@ export default function DifficultyClient({
 
           <div className="relative z-10">
             <div className="flex items-center justify-center mb-6">
-              <div className="w-20 h-20 bg-gradient-to-br from-brand-primary to-accent-purple rounded-3xl flex items-center justify-center shadow-theme-glow">
+              <div className="w-20 h-20 fill-ouro rounded-3xl flex items-center justify-center shadow-theme-glow">
                 <PiTrendUp className="w-10 h-10 text-theme-primary" />
               </div>
             </div>
@@ -188,7 +188,7 @@ export default function DifficultyClient({
             <AnimatedItem hover="scale">
               <button
                 onClick={() => setShowInfo(!showInfo)}
-                className="inline-flex items-center space-x-2 px-4 py-2 bg-accent-blue/10 border border-accent-blue/30 text-accent-blue rounded-full text-sm font-medium hover:bg-accent-blue/20 transition-all duration-300"
+                className="inline-flex items-center space-x-2 px-4 py-2 bg-aviso/10 border border-aviso/30 text-aviso rounded-full text-sm font-medium hover:bg-aviso/20 transition-all duration-300"
               >
                 <PiInfo className="w-4 h-4" />
                 <span>Sobre os Níveis de Dificuldade</span>
@@ -212,7 +212,7 @@ export default function DifficultyClient({
         {/* Search and Filters */}
         <AnimatedCard
           hover="none"
-          className="classical-card p-6 relative z-[200]"
+          className="classical-card p-6 relative z-elevado"
         >
           <div className="flex items-center justify-between mb-6">
             <div>
@@ -258,7 +258,7 @@ export default function DifficultyClient({
                 <button
                   type="button"
                   onClick={() => setSearchTerm('')}
-                  className="absolute right-4 top-1/2 transform -translate-y-1/2 text-theme-tertiary hover:text-theme-primary transition-colors"
+                  className="absolute right-4 top-1/2 transform -translate-y-1/2 text-theme-tertiary hover:text-texto transition-colors"
                 >
                   <PiX className="w-5 h-5" />
                   <NomeAcao acao="fechar" />
@@ -278,8 +278,8 @@ export default function DifficultyClient({
                   onClick={() => handleLevelChange('all')}
                   className={`px-3 py-1.5 rounded-full text-sm font-medium transition-all duration-300 ${
                     selectedLevel === 'all'
-                      ? 'bg-brand-primary text-theme-inverse'
-                      : 'bg-theme-elevated border border-theme-secondary text-theme-secondary hover:border-brand-primary hover:text-brand-primary'
+                      ? 'bg-ouro text-sobre-ouro'
+                      : 'bg-theme-elevated border border-theme-secondary text-theme-secondary hover:border-ouro hover:text-ouro-texto'
                   }`}
                   disabled={isPending}
                 >
@@ -291,8 +291,8 @@ export default function DifficultyClient({
                     onClick={() => handleLevelChange(level.level)}
                     className={`px-3 py-1.5 rounded-full text-sm font-medium transition-all duration-300 ${
                       selectedLevel === level.level
-                        ? 'bg-brand-primary text-theme-inverse'
-                        : 'bg-theme-elevated border border-theme-secondary text-theme-secondary hover:border-brand-primary hover:text-brand-primary'
+                        ? 'bg-ouro text-sobre-ouro'
+                        : 'bg-theme-elevated border border-theme-secondary text-theme-secondary hover:border-ouro hover:text-ouro-texto'
                     }`}
                     disabled={isPending}
                   >
@@ -314,12 +314,12 @@ export default function DifficultyClient({
                 <Text
                   papel="rotulo"
                   tom="ouro"
-                  className="inline-flex items-center gap-2 px-3 py-1 bg-brand-primary/10 border border-brand-primary/30 rounded-full"
+                  className="inline-flex items-center gap-2 px-3 py-1 bg-ouro/10 border border-ouro/30 rounded-full"
                 >
                   Busca: &quot;{searchParams.search}&quot;
                   <button
                     onClick={() => updateSearchParams({ search: undefined })}
-                    className="hover:text-brand-secondary transition-colors"
+                    className="hover:text-ouro-texto transition-colors"
                   >
                     <PiX className="w-3 h-3" />
                     <NomeAcao acao="fechar" />
@@ -329,7 +329,7 @@ export default function DifficultyClient({
 
               <button
                 onClick={clearFilters}
-                className="text-sm text-accent-red hover:text-accent-red/80 underline font-medium"
+                className="text-sm text-erro hover:text-erro/80 underline font-medium"
               >
                 Limpar todos os filtros
               </button>
@@ -374,9 +374,9 @@ export default function DifficultyClient({
         {/* Loading Overlay */}
         {isPending && (
           <AnimatedItem direction="scale" springType="gentle">
-            <div className="fixed inset-0 bg-theme-overlay backdrop-blur-sm flex items-center justify-center z-[300]">
+            <div className="fixed inset-0 bg-veu backdrop-blur-sm flex items-center justify-center z-dialogo">
               <Card densidade="larga" className="text-center">
-                <div className="w-12 h-12 border-4 border-brand-primary border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
+                <div className="w-12 h-12 border-4 border-ouro border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
                 <p className="text-theme-primary font-medium">
                   Carregando obras...
                 </p>

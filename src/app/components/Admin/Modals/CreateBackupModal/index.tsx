@@ -67,12 +67,12 @@ export default function CreateBackupModal({
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 z-50 bg-theme-overlay backdrop-blur-sm flex items-center justify-center p-4">
+    <div className="fixed inset-0 z-dialogo bg-veu backdrop-blur-sm flex items-center justify-center p-4">
       <div className="classical-card max-w-2xl w-full max-h-[80vh] overflow-y-auto">
         {/* Header */}
         <div className="flex items-center justify-between p-6 border-b border-theme-secondary">
           <Inline gap={3}>
-            <div className="w-10 h-10 bg-gradient-to-br from-accent-blue to-accent-purple rounded-xl flex items-center justify-center">
+            <div className="w-10 h-10 bg-aviso rounded-xl flex items-center justify-center">
               <PiDownloadSimple className="w-5 h-5 text-theme-primary" />
             </div>
             <div>
@@ -86,7 +86,7 @@ export default function CreateBackupModal({
           </Inline>
           <button
             onClick={onClose}
-            className="p-2 rounded-lg text-theme-tertiary hover:text-theme-primary hover:bg-theme-secondary transition-all"
+            className="p-2 rounded-lg text-theme-tertiary hover:text-texto hover:bg-sup-1 transition-all"
           >
             <PiX className="w-5 h-5" />
             <NomeAcao acao="fechar" />
@@ -148,7 +148,7 @@ export default function CreateBackupModal({
               <Inline
                 as="label"
                 gap={3}
-                className="p-3 bg-theme-secondary rounded-xl hover:bg-theme-primary/50 transition-all cursor-pointer"
+                className="p-3 bg-theme-secondary rounded-xl hover:bg-fundo/50 transition-all cursor-pointer"
               >
                 <Input
                   type="checkbox"
@@ -159,9 +159,9 @@ export default function CreateBackupModal({
                       includeDatabase: e.target.checked,
                     }))
                   }
-                  className="w-4 h-4 text-brand-primary bg-theme-secondary border-theme-primary rounded focus:ring-brand-primary focus:ring-2"
+                  className="w-4 h-4 text-brand-primary bg-theme-secondary border-theme-primary rounded focus:ring-ouro focus:ring-2"
                 />
-                <PiDatabase className="w-5 h-5 text-accent-blue" />
+                <PiDatabase className="w-5 h-5 text-aviso" />
                 <div>
                   <div className="font-medium text-theme-primary">Database</div>
                   <Text papel="legenda" tom="fraco" as="div">
@@ -173,7 +173,7 @@ export default function CreateBackupModal({
               <Inline
                 as="label"
                 gap={3}
-                className="p-3 bg-theme-secondary rounded-xl hover:bg-theme-primary/50 transition-all cursor-pointer"
+                className="p-3 bg-theme-secondary rounded-xl hover:bg-fundo/50 transition-all cursor-pointer"
               >
                 <Input
                   type="checkbox"
@@ -184,9 +184,9 @@ export default function CreateBackupModal({
                       includeFiles: e.target.checked,
                     }))
                   }
-                  className="w-4 h-4 text-brand-primary bg-theme-secondary border-theme-primary rounded focus:ring-brand-primary focus:ring-2"
+                  className="w-4 h-4 text-brand-primary bg-theme-secondary border-theme-primary rounded focus:ring-ouro focus:ring-2"
                 />
-                <PiHardDrive className="w-5 h-5 text-accent-green" />
+                <PiHardDrive className="w-5 h-5 text-ok" />
                 <div>
                   <div className="font-medium text-theme-primary">Arquivos</div>
                   <Text papel="legenda" tom="fraco" as="div">
@@ -212,7 +212,7 @@ export default function CreateBackupModal({
                       compression: e.target.checked,
                     }))
                   }
-                  className="w-4 h-4 text-brand-primary bg-theme-secondary border-theme-primary rounded focus:ring-brand-primary focus:ring-2"
+                  className="w-4 h-4 text-brand-primary bg-theme-secondary border-theme-primary rounded focus:ring-ouro focus:ring-2"
                 />
                 <span className="text-theme-primary">Compressão</span>
               </Inline>
@@ -227,7 +227,7 @@ export default function CreateBackupModal({
                       encryption: e.target.checked,
                     }))
                   }
-                  className="w-4 h-4 text-brand-primary bg-theme-secondary border-theme-primary rounded focus:ring-brand-primary focus:ring-2"
+                  className="w-4 h-4 text-brand-primary bg-theme-secondary border-theme-primary rounded focus:ring-ouro focus:ring-2"
                 />
                 <span className="text-theme-primary">Criptografia</span>
               </Inline>

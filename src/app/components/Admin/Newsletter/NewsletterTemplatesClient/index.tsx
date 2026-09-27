@@ -160,15 +160,15 @@ export default function NewsletterTemplatesClient() {
   const getTemplateTypeColor = (type: string) => {
     switch (type) {
       case 'WELCOME':
-        return 'text-accent-green bg-accent-green/10';
+        return 'text-ok bg-ok/10';
       case 'ACCOUNT_CONFIRMATION':
-        return 'text-accent-blue bg-accent-blue/10';
+        return 'text-aviso bg-aviso/10';
       case 'PASSWORD_RESET':
-        return 'text-accent-red bg-accent-red/10';
+        return 'text-erro bg-erro/10';
       case 'WEEKLY_DIGEST':
-        return 'text-accent-purple bg-accent-purple/10';
+        return 'text-ouro-texto bg-ouro/10';
       case 'NEW_COMPOSER':
-        return 'text-accent-amber bg-accent-amber/10';
+        return 'text-atencao bg-atencao/10';
       case 'CAMPAIGN_CUSTOM':
         return 'text-theme-primary bg-theme-secondary';
       default:
@@ -216,7 +216,7 @@ export default function NewsletterTemplatesClient() {
           <AnimatedItem direction="up" springType="gentle">
             <div className="text-center py-8">
               <div className="flex items-center justify-center mb-6">
-                <div className="w-16 h-16 bg-gradient-to-br from-accent-green to-accent-blue rounded-3xl flex items-center justify-center shadow-theme-glow">
+                <div className="w-16 h-16 bg-ok rounded-3xl flex items-center justify-center shadow-theme-glow">
                   <PiFileText className="w-8 h-8 text-white" />
                 </div>
               </div>
@@ -241,8 +241,8 @@ export default function NewsletterTemplatesClient() {
                     {templates.length}
                   </p>
                 </Stack>
-                <div className="w-12 h-12 bg-accent-blue/20 rounded-xl flex items-center justify-center">
-                  <PiFileText className="w-6 h-6 text-accent-blue" />
+                <div className="w-12 h-12 bg-aviso/20 rounded-xl flex items-center justify-center">
+                  <PiFileText className="w-6 h-6 text-aviso" />
                 </div>
               </div>
             </AnimatedCard>
@@ -253,12 +253,12 @@ export default function NewsletterTemplatesClient() {
                   <Text papel="rotulo" tom="fraco" as="p">
                     Templates Ativos
                   </Text>
-                  <p className="text-3xl font-bold text-accent-green">
+                  <p className="text-3xl font-bold text-ok">
                     {templates.filter((t) => t.isActive).length}
                   </p>
                 </Stack>
-                <div className="w-12 h-12 bg-accent-green/20 rounded-xl flex items-center justify-center">
-                  <PiCheckCircle className="w-6 h-6 text-accent-green" />
+                <div className="w-12 h-12 bg-ok/20 rounded-xl flex items-center justify-center">
+                  <PiCheckCircle className="w-6 h-6 text-ok" />
                 </div>
               </div>
             </AnimatedCard>
@@ -269,12 +269,12 @@ export default function NewsletterTemplatesClient() {
                   <Text papel="rotulo" tom="fraco" as="p">
                     Templates Padrão
                   </Text>
-                  <p className="text-3xl font-bold text-accent-amber">
+                  <p className="text-3xl font-bold text-atencao">
                     {templates.filter((t) => t.isDefault).length}
                   </p>
                 </Stack>
-                <div className="w-12 h-12 bg-accent-amber/20 rounded-xl flex items-center justify-center">
-                  <PiStar className="w-6 h-6 text-accent-amber" />
+                <div className="w-12 h-12 bg-atencao/20 rounded-xl flex items-center justify-center">
+                  <PiStar className="w-6 h-6 text-atencao" />
                 </div>
               </div>
             </AnimatedCard>
@@ -285,12 +285,12 @@ export default function NewsletterTemplatesClient() {
                   <Text papel="rotulo" tom="fraco" as="p">
                     Built-in
                   </Text>
-                  <p className="text-3xl font-bold text-accent-purple">
+                  <p className="text-3xl font-bold text-ouro-texto">
                     {builtInTemplates.length}
                   </p>
                 </Stack>
-                <div className="w-12 h-12 bg-accent-purple/20 rounded-xl flex items-center justify-center">
-                  <PiCode className="w-6 h-6 text-accent-purple" />
+                <div className="w-12 h-12 bg-ouro/20 rounded-xl flex items-center justify-center">
+                  <PiCode className="w-6 h-6 text-ouro-texto" />
                 </div>
               </div>
             </AnimatedCard>
@@ -300,7 +300,7 @@ export default function NewsletterTemplatesClient() {
           <AnimatedCard className="classical-card p-6">
             <div className="flex items-center justify-between mb-4">
               <Inline gap={3}>
-                <PiCode className="w-5 h-5 text-accent-purple" />
+                <PiCode className="w-5 h-5 text-ouro-texto" />
                 <h3 className="text-lg font-bold text-theme-primary">
                   Templates Built-in Disponíveis
                 </h3>
@@ -320,7 +320,7 @@ export default function NewsletterTemplatesClient() {
                     >
                       {getTemplateTypeName(type)}
                     </span>
-                    <PiCode className="w-4 h-4 text-accent-purple" />
+                    <PiCode className="w-4 h-4 text-ouro-texto" />
                   </div>
                   <h4 className="font-medium text-theme-primary text-sm mb-1">
                     {template.description}
@@ -331,8 +331,8 @@ export default function NewsletterTemplatesClient() {
                 </div>
               ))}
             </div>
-            <div className="mt-4 p-3 bg-accent-blue/10 border border-accent-blue/20 rounded-lg">
-              <p className="text-sm text-accent-blue">
+            <div className="mt-4 p-3 bg-aviso/10 border border-aviso/20 rounded-lg">
+              <p className="text-sm text-aviso">
                 <strong>ℹ️ Dica:</strong> Templates built-in são criados
                 automaticamente quando você usa um tipo de template nas
                 campanhas. Você pode criar templates personalizados baseados
@@ -355,7 +355,7 @@ export default function NewsletterTemplatesClient() {
                     onChange={(e) =>
                       handleFilterChange('search', e.target.value)
                     }
-                    className="w-full pl-10 pr-4 py-2 bg-theme-secondary border border-theme-primary rounded-lg text-theme-primary placeholder-theme-tertiary focus:outline-none focus:ring-2 focus:ring-brand-primary"
+                    className="w-full pl-10 pr-4 py-2 bg-theme-secondary border border-theme-primary rounded-lg text-theme-primary placeholder-texto-fraco focus:outline-none focus:ring-2 focus:ring-ouro"
                   />
                 </div>
 
@@ -426,7 +426,7 @@ export default function NewsletterTemplatesClient() {
                               </span>
 
                               {template.isDefault && (
-                                <span className="px-2 py-1 bg-accent-amber/20 text-accent-amber rounded-full text-xs font-medium flex items-center">
+                                <span className="px-2 py-1 bg-atencao/10 text-atencao rounded-full text-xs font-medium flex items-center">
                                   <PiStar className="w-3 h-3 mr-1" />
                                   Padrão
                                 </span>
@@ -435,7 +435,7 @@ export default function NewsletterTemplatesClient() {
                               <span
                                 className={`px-2 py-1 rounded-full text-xs font-medium ${
                                   template.isActive
-                                    ? 'bg-accent-green/20 text-accent-green'
+                                    ? 'bg-ok/10 text-ok'
                                     : 'bg-theme-secondary text-theme-tertiary'
                                 }`}
                               >
@@ -517,9 +517,7 @@ export default function NewsletterTemplatesClient() {
                             size="sm"
                             leftIcon={<PiStar />}
                             onClick={() => handleToggleDefault(template)}
-                            className={
-                              template.isDefault ? 'text-accent-amber' : ''
-                            }
+                            className={template.isDefault ? 'text-atencao' : ''}
                             title={
                               template.isDefault
                                 ? 'Remover como padrão'
@@ -538,9 +536,7 @@ export default function NewsletterTemplatesClient() {
                             }
                             onClick={() => handleToggleStatus(template)}
                             className={
-                              template.isActive
-                                ? 'text-accent-red'
-                                : 'text-accent-green'
+                              template.isActive ? 'text-erro' : 'text-ok'
                             }
                             title={template.isActive ? 'Desativar' : 'Ativar'}
                           />
@@ -549,7 +545,7 @@ export default function NewsletterTemplatesClient() {
                             size="sm"
                             leftIcon={<PiTrash />}
                             onClick={() => handleDelete(template)}
-                            className="text-accent-red hover:text-accent-red"
+                            className="text-erro hover:text-erro"
                             title="Deletar"
                           />
                         </Inline>

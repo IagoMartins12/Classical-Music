@@ -89,7 +89,7 @@ export default function NotAuthenticated() {
             title: t('not_authenticated_suggestion_login_teacher'),
             description: t('not_authenticated_suggestion_login_teacher_desc'),
             icon: PiUser,
-            color: 'from-brand-primary to-brand-secondary',
+            color: 'fill-ouro',
             action: () => openLogin(),
           },
           {
@@ -97,7 +97,7 @@ export default function NotAuthenticated() {
             description: t('not_authenticated_suggestion_request_teacher_desc'),
             href: '/contact',
             icon: PiEnvelopeSimple,
-            color: 'from-accent-purple to-accent-blue',
+            color: 'fill-ouro',
           },
           {
             title: t('not_authenticated_suggestion_explore_encyclopedia'),
@@ -106,7 +106,7 @@ export default function NotAuthenticated() {
             ),
             href: '/composers',
             icon: PiBookOpen,
-            color: 'from-accent-green to-accent-blue',
+            color: 'bg-ok',
           },
         ];
         break;
@@ -117,14 +117,14 @@ export default function NotAuthenticated() {
             title: t('not_authenticated_suggestion_login_student'),
             description: t('not_authenticated_suggestion_login_student_desc'),
             icon: PiUser,
-            color: 'from-accent-green to-accent-blue',
+            color: 'bg-ok',
             action: () => openLogin(),
           },
           {
             title: t('not_authenticated_suggestion_create_student'),
             description: t('not_authenticated_suggestion_create_student_desc'),
             icon: PiUserPlus,
-            color: 'from-brand-primary to-brand-secondary',
+            color: 'fill-ouro',
             action: () => openRegister(),
           },
           {
@@ -132,7 +132,7 @@ export default function NotAuthenticated() {
             description: t('not_authenticated_suggestion_know_platform_desc'),
             href: '/about-us',
             icon: PiCompass,
-            color: 'from-accent-purple to-accent-red',
+            color: 'fill-ouro',
           },
         ];
         break;
@@ -143,7 +143,7 @@ export default function NotAuthenticated() {
             title: t('not_authenticated_suggestion_admin_login'),
             description: t('not_authenticated_suggestion_admin_login_desc'),
             icon: PiUser,
-            color: 'from-accent-red to-accent-purple',
+            color: 'bg-erro',
             action: () => openLogin(),
           },
           {
@@ -151,7 +151,7 @@ export default function NotAuthenticated() {
             description: t('not_authenticated_suggestion_home_desc'),
             href: '/',
             icon: PiHouse,
-            color: 'from-brand-primary to-brand-secondary',
+            color: 'fill-ouro',
           },
         ];
         break;
@@ -162,14 +162,14 @@ export default function NotAuthenticated() {
             title: t('not_authenticated_suggestion_login'),
             description: t('not_authenticated_suggestion_login_desc'),
             icon: PiUser,
-            color: 'from-brand-primary to-brand-secondary',
+            color: 'fill-ouro',
             action: () => openLogin(),
           },
           {
             title: t('not_authenticated_suggestion_create_free'),
             description: t('not_authenticated_suggestion_create_free_desc'),
             icon: PiUserPlus,
-            color: 'from-accent-green to-accent-blue',
+            color: 'bg-ok',
             action: () => openRegister(),
           },
           {
@@ -177,7 +177,7 @@ export default function NotAuthenticated() {
             description: t('not_authenticated_suggestion_explore_public_desc'),
             href: '/composers',
             icon: PiBookOpen,
-            color: 'from-accent-purple to-accent-blue',
+            color: 'fill-ouro',
           },
         ];
     }
@@ -250,22 +250,22 @@ export default function NotAuthenticated() {
 
       {/* Evitar renderizar se estiver carregando ou se o usuário estiver autenticado */}
       {isAuthenticated ? (
-        <div className="classical-theme min-h-screen flex items-center justify-center">
+        <main className="classical-theme min-h-screen flex items-center justify-center">
           <Inline gap={3}>
-            <div className="w-8 h-8 border-2 border-brand-primary border-t-transparent rounded-full animate-spin"></div>
+            <div className="w-8 h-8 border-2 border-ouro border-t-transparent rounded-full animate-spin"></div>
             <span className="text-theme-secondary">
               {t('not_authenticated_jsx_span_children_0__redirecionando')}
             </span>
           </Inline>
-        </div>
+        </main>
       ) : (
-        <div className="classical-theme min-h-screen flex items-center justify-center relative overflow-hidden">
+        <main className="classical-theme min-h-screen flex items-center justify-center relative overflow-hidden">
           {/* Background Pattern */}
           <AnimatedMusicalNotes />
           <div className="absolute inset-0 pointer-events-none opacity-5">
-            <div className="absolute top-20 left-20 w-64 h-64 bg-brand-gradient rounded-full blur-3xl"></div>
-            <div className="absolute bottom-40 right-32 w-48 h-48 bg-accent-blue/30 rounded-full blur-2xl"></div>
-            <div className="absolute top-1/2 left-1/4 w-32 h-32 bg-accent-purple/20 rounded-full blur-xl"></div>
+            <div className="absolute top-20 left-20 w-64 h-64 rounded-full blur-3xl"></div>
+            <div className="absolute bottom-40 right-32 w-48 h-48 rounded-full blur-2xl"></div>
+            <div className="absolute top-1/2 left-1/4 w-32 h-32 rounded-full blur-xl"></div>
           </div>
 
           <div className="section-wrap relative z-10">
@@ -293,7 +293,7 @@ export default function NotAuthenticated() {
               {/* Lock Icon */}
               <AnimatedItem direction="scale" springType="bouncy">
                 <div className="relative mb-8">
-                  <div className="w-32 h-32 mx-auto bg-gradient-to-br from-brand-primary/20 to-accent-blue/20 rounded-full flex items-center justify-center classical-card border-2 border-brand-primary/30 shadow-theme-glow">
+                  <div className="w-32 h-32 mx-auto bg-ouro/20 rounded-full flex items-center justify-center classical-card border-2 border-ouro/30 shadow-theme-glow">
                     <PiLock className="w-16 h-16 text-brand-primary" />
                   </div>
                 </div>
@@ -312,7 +312,7 @@ export default function NotAuthenticated() {
                   <p className="text-xl md:text-2xl text-theme-secondary mb-4 leading-relaxed max-w-2xl mx-auto">
                     {getDescription()} 🎼
                   </p>
-                  <div className="inline-flex items-center px-4 py-2 bg-brand-primary/10 rounded-full text-brand-primary font-medium">
+                  <div className="inline-flex items-center px-4 py-2 bg-ouro/10 rounded-full text-brand-primary font-medium">
                     <PiMusicNotes className="w-4 h-4 mr-2" />
                     {getTitle()}
                   </div>
@@ -337,9 +337,9 @@ export default function NotAuthenticated() {
                         >
                           <suggestion.icon className="w-8 h-8 text-brand-primary" />
                         </div>
-                        <h3 className="text-xl font-bold text-theme-primary mb-2 classical-title group-hover:text-brand-primary transition-colors">
+                        <h2 className="text-xl font-bold text-theme-primary mb-2 classical-title group-hover:text-ouro-texto transition-colors">
                           {suggestion.title}
-                        </h3>
+                        </h2>
                         <Text
                           papel="rotulo"
                           tom="suave"
@@ -359,9 +359,9 @@ export default function NotAuthenticated() {
                         >
                           <suggestion.icon className="w-8 h-8 text-brand-primary" />
                         </div>
-                        <h3 className="text-xl font-bold text-theme-primary mb-2 classical-title group-hover:text-brand-primary transition-colors">
+                        <h2 className="text-xl font-bold text-theme-primary mb-2 classical-title group-hover:text-ouro-texto transition-colors">
                           {suggestion.title}
-                        </h3>
+                        </h2>
                         <Text
                           papel="rotulo"
                           tom="suave"
@@ -382,24 +382,24 @@ export default function NotAuthenticated() {
                 className="classical-card p-8 max-w-3xl mx-auto mb-12"
               >
                 <Inline gap={3} className="mb-6">
-                  <div className="w-12 h-12 bg-gradient-to-br from-accent-green/20 to-accent-blue/20 rounded-xl flex items-center justify-center">
+                  <div className="w-12 h-12 bg-ok/20 rounded-xl flex items-center justify-center">
                     {currentArea === 'teacher' ? (
-                      <PiUsers className="w-6 h-6 text-accent-green" />
+                      <PiUsers className="w-6 h-6 text-ok" />
                     ) : currentArea === 'student' ? (
-                      <PiGraduationCap className="w-6 h-6 text-accent-blue" />
+                      <PiGraduationCap className="w-6 h-6 text-aviso" />
                     ) : (
                       <PiMusicNotes className="w-6 h-6 text-brand-primary" />
                     )}
                   </div>
-                  <h3 className="text-2xl font-bold text-theme-primary classical-title">
+                  <h2 className="text-2xl font-bold text-theme-primary classical-title">
                     {t('not_authenticated_jsx_h3_children_0__terá_acesso')}
-                  </h3>
+                  </h2>
                 </Inline>
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-left">
                   {getBenefits().map((benefit, index) => (
                     <Inline gap={3} key={index}>
-                      <div className="w-2 h-2 bg-brand-primary rounded-full flex-shrink-0"></div>
+                      <div className="w-2 h-2 bg-ouro rounded-full flex-shrink-0"></div>
                       <span className="text-theme-secondary">{benefit}</span>
                     </Inline>
                   ))}
@@ -483,18 +483,18 @@ export default function NotAuthenticated() {
           </div>
 
           {/* Decorative Elements */}
-          <div className="absolute top-4 left-4 w-12 h-12 bg-brand-primary/10 rounded-2xl flex items-center justify-center opacity-40">
+          <div className="absolute top-4 left-4 w-12 h-12 bg-ouro/10 rounded-2xl flex items-center justify-center opacity-40">
             <PiLock className="w-6 h-6 text-brand-primary" />
           </div>
 
-          <div className="absolute bottom-4 right-4 w-16 h-16 bg-brand-gradient/10 rounded-3xl flex items-center justify-center opacity-50">
+          <div className="absolute bottom-4 right-4 w-16 h-16 bg-ouro/10 rounded-3xl flex items-center justify-center opacity-50">
             <PiMusicNotes className="w-8 h-8 text-brand-primary" />
           </div>
 
-          <div className="absolute top-1/3 right-8 w-8 h-8 bg-accent-blue/10 rounded-xl flex items-center justify-center opacity-30">
-            <PiMusicNotes className="w-4 h-4 text-accent-blue" />
+          <div className="absolute top-1/3 right-8 w-8 h-8 bg-aviso/10 rounded-xl flex items-center justify-center opacity-30">
+            <PiMusicNotes className="w-4 h-4 text-aviso" />
           </div>
-        </div>
+        </main>
       )}
       <Footer />
     </>

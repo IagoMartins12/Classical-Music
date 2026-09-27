@@ -32,7 +32,7 @@ const HeroMainPage = () => {
             <h2 className="text-2xl lg:text-3xl font-bold mb-3 leading-tight">
               {t('heroMainPage_link_musica')}
             </h2>
-            <p className="text-gray-200 text-base lg:text-lg mb-4 leading-relaxed line-clamp-3 md:line-clamp-none">
+            <p className="text-texto-fraco text-base lg:text-lg mb-4 leading-relaxed line-clamp-3 md:line-clamp-none">
               {t('heroMainPage_banner_1')}
             </p>
             <div className="inline-flex items-center px-6 py-3 bg-white/20 backdrop-blur-sm border border-white/30 rounded-full text-white font-semibold transition-all duration-300 group/btn">
@@ -81,7 +81,7 @@ const HeroMainPage = () => {
               <h3 className="text-lg font-bold mb-2">
                 {t('heroMainPage_link_instrumentação_clássica')}
               </h3>
-              <p className="text-gray-200 text-sm mb-3 leading-snug">
+              <p className="text-texto-fraco text-sm mb-3 leading-snug">
                 {t('heroMainPage_link_musica_1')}
               </p>
               <div className="inline-flex items-center text-sm font-semibold text-white  transition-colors group/div">
@@ -128,7 +128,7 @@ const HeroMainPage = () => {
               <h3 className="text-lg font-bold mb-2">
                 {t('heroMainPage_link_nossa_missão')}
               </h3>
-              <p className="text-gray-200 text-sm mb-3 leading-snug">
+              <p className="text-texto-fraco text-sm mb-3 leading-snug">
                 {t('heroMainPage_banner_3')}
               </p>
               <div className="inline-flex items-center text-sm font-semibold text-white  transition-colors group/link">

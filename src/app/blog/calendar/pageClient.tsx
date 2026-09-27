@@ -126,7 +126,7 @@ export default function CalendarPageClient({
         {/* Header */}
         <div className="text-center mb-8 py-8">
           <div className="flex items-center justify-center mb-6">
-            <div className="w-16 h-16 bg-gradient-to-br from-brand-primary to-brand-secondary rounded-3xl flex items-center justify-center shadow-theme-glow">
+            <div className="w-16 h-16 fill-ouro rounded-3xl flex items-center justify-center shadow-theme-glow">
               <PiCalendarBlank className="w-8 h-8 text-theme-primary" />
             </div>
           </div>
@@ -190,8 +190,8 @@ export default function CalendarPageClient({
         {/* Calendário */}
         <div className="relative">
           {isLoading && (
-            <div className="absolute inset-0 bg-opacity-75 flex items-center justify-center z-10 rounded-lg">
-              <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
+            <div className="absolute inset-0 flex items-center justify-center z-10 rounded-lg">
+              <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-aviso"></div>
             </div>
           )}
 
@@ -277,13 +277,13 @@ export default function CalendarPageClient({
 // Componente: Legenda de Cores
 function EventLegend() {
   const legendItems = [
-    { color: 'bg-green-500', label: 'Gratuito', icon: '🎁' },
-    { color: 'bg-blue-500', label: 'Concerto', icon: '🎼' },
-    { color: 'bg-purple-500', label: 'Ópera', icon: '🎭' },
-    { color: 'bg-pink-500', label: 'Recital', icon: '🎹' },
-    { color: 'bg-emerald-500', label: 'Câmara', icon: '🎻' },
-    { color: 'bg-amber-500', label: 'Coral', icon: '🎤' },
-    { color: 'bg-gray-500', label: 'Ensaio', icon: '📝' },
+    { color: 'bg-ok', label: 'Gratuito', icon: '🎁' },
+    { color: 'bg-aviso', label: 'Concerto', icon: '🎼' },
+    { color: 'bg-ouro', label: 'Ópera', icon: '🎭' },
+    { color: 'bg-ouro', label: 'Recital', icon: '🎹' },
+    { color: 'bg-ok', label: 'Câmara', icon: '🎻' },
+    { color: 'bg-atencao', label: 'Coral', icon: '🎤' },
+    { color: 'bg-linha-forte', label: 'Ensaio', icon: '📝' },
   ];
 
   return (

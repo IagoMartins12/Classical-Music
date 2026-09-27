@@ -332,22 +332,22 @@ const UniversalAudioPlayer: React.FC<UniversalAudioPlayerProps> = ({
   const getSourceIcon = (source: AudioSource): JSX.Element => {
     switch (source.type) {
       case 'youtube-audio':
-        return <PiYoutubeLogo className="w-4 h-4 text-red-400" />;
+        return <PiYoutubeLogo className="w-4 h-4 text-erro" />;
       case 'custom-audio':
-        return <PiUploadSimple className="w-4 h-4 text-blue-400" />;
+        return <PiUploadSimple className="w-4 h-4 text-aviso" />;
       case 'alternative-saved':
-        return <PiDatabase className="w-4 h-4 text-green-400" />;
+        return <PiDatabase className="w-4 h-4 text-ok" />;
       case 'alternative-fresh':
-        return <PiMusicNotes className="w-4 h-4 text-purple-400" />;
+        return <PiMusicNotes className="w-4 h-4 text-ouro-texto" />;
       default:
-        return <PiMusicNotes className="w-4 h-4 text-gray-400" />;
+        return <PiMusicNotes className="w-4 h-4 text-texto-fraco" />;
     }
   };
 
   const getAudioCover = (): JSX.Element => {
     if (currentSource?.type === 'custom-audio') {
       return (
-        <div className="w-20 h-20 bg-gradient-to-br from-blue-600 to-purple-600 rounded-lg flex items-center justify-center shadow-lg">
+        <div className="w-20 h-20 bg-aviso rounded-lg flex items-center justify-center shadow-lg">
           <PiUploadSimple className="w-8 h-8 text-white" />
         </div>
       );
@@ -355,7 +355,7 @@ const UniversalAudioPlayer: React.FC<UniversalAudioPlayerProps> = ({
 
     if (currentSource?.type === 'alternative-saved') {
       return (
-        <div className="w-20 h-20 bg-gradient-to-br from-green-600 to-blue-600 rounded-lg flex items-center justify-center shadow-lg">
+        <div className="w-20 h-20 bg-ok rounded-lg flex items-center justify-center shadow-lg">
           <PiDatabase className="w-8 h-8 text-white" />
         </div>
       );
@@ -363,15 +363,15 @@ const UniversalAudioPlayer: React.FC<UniversalAudioPlayerProps> = ({
 
     if (currentSource?.type === 'alternative-fresh') {
       return (
-        <div className="w-20 h-20 bg-gradient-to-br from-purple-600 to-pink-600 rounded-lg flex items-center justify-center shadow-lg">
+        <div className="w-20 h-20 fill-ouro rounded-lg flex items-center justify-center shadow-lg">
           <PiMusicNotes className="w-8 h-8 text-white" />
         </div>
       );
     }
 
     return (
-      <div className="w-20 h-20 bg-gradient-to-br from-gray-700 to-gray-600 rounded-lg flex items-center justify-center">
-        <PiMusicNotes className="w-8 h-8 text-gray-400" />
+      <div className="w-20 h-20 bg-texto-fraco rounded-lg flex items-center justify-center">
+        <PiMusicNotes className="w-8 h-8 text-texto-fraco" />
       </div>
     );
   };
@@ -380,8 +380,8 @@ const UniversalAudioPlayer: React.FC<UniversalAudioPlayerProps> = ({
     return (
       <div className="bg-gray-800 rounded-xl p-6 border border-gray-700">
         <div className="text-center">
-          <div className="w-12 h-12 border-4 border-blue-500 border-t-transparent rounded-full animate-spin mx-auto mb-4" />
-          <p className="text-gray-400 text-sm">
+          <div className="w-12 h-12 border-4 border-aviso border-t-transparent rounded-full animate-spin mx-auto mb-4" />
+          <p className="text-texto-fraco text-sm">
             {t('universal_audio_player_inicializando')}
           </p>
         </div>
@@ -407,14 +407,14 @@ const UniversalAudioPlayer: React.FC<UniversalAudioPlayerProps> = ({
   }
 
   return (
-    <div className="bg-gradient-to-r from-gray-900 to-gray-800 rounded-xl border border-gray-700 overflow-hidden">
+    <div className="bg-texto-fraco rounded-xl border border-linha-forte overflow-hidden">
       {/* Header */}
       <div className="p-6 pb-4">
         <div className="flex items-start space-x-4">
           <div className="relative">
             {getAudioCover()}
             {isPlaying && (
-              <div className="absolute inset-0 rounded-lg border-2 border-green-400 animate-pulse" />
+              <div className="absolute inset-0 rounded-lg border-2 border-ok animate-pulse" />
             )}
           </div>
 
@@ -422,12 +422,12 @@ const UniversalAudioPlayer: React.FC<UniversalAudioPlayerProps> = ({
             <h3 className="text-white font-semibold truncate text-lg">
               {work.title}
             </h3>
-            <p className="text-gray-400 text-sm">{work.composer.fullName}</p>
+            <p className="text-texto-fraco text-sm">{work.composer.fullName}</p>
 
             {currentSource && (
               <Inline gap={2} className="mt-2">
                 {getSourceIcon(currentSource)}
-                <span className="text-xs text-gray-300">
+                <span className="text-xs text-texto-fraco">
                   {currentSource.label}
                 </span>
               </Inline>
@@ -446,7 +446,7 @@ const UniversalAudioPlayer: React.FC<UniversalAudioPlayerProps> = ({
                 onClick={() => selectAudioSource(source)}
                 className={`flex items-center space-x-2 px-3 py-2 rounded-lg text-sm whitespace-nowrap transition-colors ${
                   currentSource === source
-                    ? 'bg-blue-600 text-white'
+                    ? 'bg-aviso text-white'
                     : 'bg-gray-700 text-gray-300 hover:bg-gray-600'
                 }`}
               >
@@ -454,7 +454,7 @@ const UniversalAudioPlayer: React.FC<UniversalAudioPlayerProps> = ({
                 <span>{source.label}</span>
                 {source.isPersistent && (
                   <PiDatabase
-                    className="w-3 h-3 text-green-400"
+                    className="w-3 h-3 text-ok"
                     title={t('universal_audio_player_banco')}
                   />
                 )}
@@ -474,7 +474,7 @@ const UniversalAudioPlayer: React.FC<UniversalAudioPlayerProps> = ({
             isPlaying={isPlaying}
             onSeek={handleSeek}
             height={80}
-            className="rounded-lg border border-gray-600"
+            className="rounded-lg border border-linha-forte"
           />
         </div>
       )}
@@ -486,7 +486,7 @@ const UniversalAudioPlayer: React.FC<UniversalAudioPlayerProps> = ({
           <button
             onClick={togglePlay}
             disabled={isLoading || !currentSource}
-            className="w-14 h-14 bg-blue-600 hover:bg-blue-700 rounded-full flex items-center justify-center text-white transition-colors shadow-lg hover:shadow-xl transform hover:scale-105 disabled:opacity-50"
+            className="w-14 h-14 bg-aviso hover:bg-aviso rounded-full flex items-center justify-center text-white transition-colors shadow-lg hover:shadow-xl transform hover:scale-105 disabled:opacity-50"
           >
             {isLoading ? (
               <div className="w-6 h-6 border-2 border-white border-t-transparent rounded-full animate-spin" />
@@ -499,7 +499,7 @@ const UniversalAudioPlayer: React.FC<UniversalAudioPlayerProps> = ({
 
           {/* Time info */}
           <div className="flex-1">
-            <div className="flex justify-between text-xs text-gray-400">
+            <div className="flex justify-between text-xs text-texto-fraco">
               <span>{formatTime(currentTime)}</span>
               <span>
                 {formatTime(duration || currentSource?.duration || 0)}
@@ -511,7 +511,7 @@ const UniversalAudioPlayer: React.FC<UniversalAudioPlayerProps> = ({
           <Inline gap={2}>
             <button
               onClick={toggleMute}
-              className="p-2 text-gray-400 hover:text-white transition-colors"
+              className="p-2 text-texto-fraco hover:text-white transition-colors"
             >
               {isMuted ? (
                 <PiSpeakerX className="w-4 h-4" />

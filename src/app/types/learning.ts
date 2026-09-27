@@ -38,9 +38,9 @@ export const getDifficultyLabel = (difficulty?: DifficultyLevel): string => {
 
 export const getDifficultyColor = (difficulty?: DifficultyLevel): string => {
   const colors = {
-    BEGINNER: 'text-accent-green border-accent-green/30 bg-accent-green/10',
-    INTERMEDIATE: 'text-accent-blue border-accent-blue/30 bg-accent-blue/10',
-    ADVANCED: 'text-accent-red border-accent-red/30 bg-accent-red/10',
+    BEGINNER: 'text-ok border-ok/30 bg-ok/10',
+    INTERMEDIATE: 'text-aviso border-aviso/30 bg-aviso/10',
+    ADVANCED: 'text-erro border-erro/30 bg-erro/10',
   };
   return difficulty
     ? colors[difficulty]

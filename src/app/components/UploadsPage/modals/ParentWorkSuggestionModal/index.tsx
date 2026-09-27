@@ -121,8 +121,8 @@ const ParentWorkConfirmationModal: React.FC<{
         <div className="p-6">
           {/* Header */}
           <Inline gap={3} className="mb-6">
-            <div className="w-10 h-10 rounded-xl bg-blue-100 flex items-center justify-center">
-              <PiStack className="w-5 h-5 text-blue-600" />
+            <div className="w-10 h-10 rounded-xl bg-aviso/10 flex items-center justify-center">
+              <PiStack className="w-5 h-5 text-aviso" />
             </div>
             <div>
               <h2 className="text-xl font-bold text-theme-primary">
@@ -410,13 +410,13 @@ const ParentWorkSuggestionModal: React.FC<ParentWorkSuggestionModalProps> = ({
   }, [fieldSuggestions]);
 
   const categoryLabels = {
-    catalog: { title: 'Catálogo', icon: PiBookOpen, color: 'text-blue-600' },
-    musical: { title: 'Musical', icon: PiMusicNotes, color: 'text-purple-600' },
-    metadata: { title: 'Metadados', icon: PiInfo, color: 'text-green-600' },
+    catalog: { title: 'Catálogo', icon: PiBookOpen, color: 'text-aviso' },
+    musical: { title: 'Musical', icon: PiMusicNotes, color: 'text-ouro-texto' },
+    metadata: { title: 'Metadados', icon: PiInfo, color: 'text-ok' },
     classification: {
       title: 'Classificação',
       icon: PiTag,
-      color: 'text-orange-600',
+      color: 'text-atencao',
     },
   };
 
@@ -565,12 +565,12 @@ const ParentWorkSuggestionModal: React.FC<ParentWorkSuggestionModalProps> = ({
               <div className="space-y-6">
                 {/* Info */}
                 <AnimatedCard
-                  className="bg-blue-50 border-blue-200 p-4"
+                  className="bg-aviso/10 border-aviso/30 p-4"
                   hover="none"
                 >
                   <div className="flex items-start space-x-3">
                     <PiInfo className="w-5 h-5 text-black mt-0.5" />
-                    <Stack gap={1} className="text-sm text-blue-800">
+                    <Stack gap={1} className="text-sm text-aviso">
                       <p className="font-medium">
                         Campos que podem ser copiados
                       </p>
@@ -652,7 +652,7 @@ const ParentWorkSuggestionModal: React.FC<ParentWorkSuggestionModalProps> = ({
                                 className={`p-3 rounded-lg  transition-all cursor-pointer ${
                                   isSelected
                                     ? 'bg-theme-tertiary'
-                                    : 'border-theme-secondary border-2 bg-theme-elevated hover:border-theme-primary'
+                                    : 'border-theme-secondary border-2 bg-theme-elevated hover:border-linha'
                                 }`}
                                 onClick={() =>
                                   handleFieldToggle(suggestion.key)

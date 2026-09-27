@@ -88,7 +88,7 @@ export default function FavoritesStatsWidget({
         className={`classical-card p-6 ${className} mt-4`}
       >
         <div className="text-center">
-          <div className="w-16 h-16 bg-gradient-to-br from-brand-primary to-brand-secondary rounded-2xl flex items-center justify-center mx-auto mb-4">
+          <div className="w-16 h-16 fill-ouro rounded-2xl flex items-center justify-center mx-auto mb-4">
             <PiHeart className="w-8 h-8 text-white" />
           </div>
           <h3 className="text-xl font-bold text-theme-primary mb-2">
@@ -140,7 +140,7 @@ export default function FavoritesStatsWidget({
         {nextAchievements.length > 0 && (
           <AnimatedCard hover="lift" className="classical-card p-6 mt-4">
             <Inline gap={3} className="mb-4">
-              <PiTarget className="w-5 h-5 text-accent-blue" />
+              <PiTarget className="w-5 h-5 text-aviso" />
               <h4 className="font-semibold text-theme-primary">
                 {t('stats_widget_next_achievements')}
               </h4>
@@ -213,7 +213,7 @@ export default function FavoritesStatsWidget({
                   className={`p-4 rounded-xl transition-all text-theme-primary hover:scale-105 ${
                     cta.priority === 'high'
                       ? 'bg-theme-tertiary'
-                      : 'bg-theme-elevated border-theme-primary hover:border-brand-primary'
+                      : 'bg-theme-elevated border-theme-primary hover:border-ouro'
                   }`}
                 >
                   <div className="font-medium mb-1">{cta.title}</div>
@@ -259,7 +259,7 @@ export default function FavoritesStatsWidget({
         {stats.topComposerWorks > 1 && (
           <AnimatedCard hover="lift" className="classical-card p-6">
             <Inline gap={3} className="mb-4">
-              <PiTrendUp className="w-5 h-5 text-accent-green" />
+              <PiTrendUp className="w-5 h-5 text-ok" />
               <h4 className="font-semibold text-theme-primary">
                 {t('stats_widget_favorite_composer')}
               </h4>

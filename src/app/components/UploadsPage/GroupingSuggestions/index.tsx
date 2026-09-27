@@ -143,9 +143,9 @@ export default function GroupingSuggestions({
 
   if (loading) {
     return (
-      <div className="bg-theme-secondary/10 rounded-xl p-4 border border-theme-primary/20">
+      <div className="bg-sup-1/10 rounded-xl p-4 border border-linha/20">
         <Inline gap={3} className="justify-center py-4">
-          <div className="w-5 h-5 border-2 border-brand-primary/30 border-t-brand-primary rounded-full animate-spin"></div>
+          <div className="w-5 h-5 border-2 border-ouro/30 border-t-ouro rounded-full animate-spin"></div>
           <Text papel="rotulo" tom="suave">
             Analisando grupos existentes...
           </Text>
@@ -156,8 +156,8 @@ export default function GroupingSuggestions({
 
   if (error) {
     return (
-      <div className="bg-red-50 border border-red-200 rounded-xl p-4">
-        <Inline gap={2} className="text-red-800">
+      <div className="bg-erro/10 border border-erro/30 rounded-xl p-4">
+        <Inline gap={2} className="text-erro">
           <PiArrowsClockwise className="w-4 h-4" />
           <span className="text-sm">{error}</span>
         </Inline>
@@ -177,9 +177,9 @@ export default function GroupingSuggestions({
                 gap={2}
                 className="text-sm font-semibold text-theme-primary mb-3"
               >
-                <PiUsers className="w-4 h-4 text-accent-green" />
+                <PiUsers className="w-4 h-4 text-ok" />
                 <span>Seus Grupos Existentes</span>
-                <span className="px-2 py-0.5 bg-accent-green/20 text-accent-green rounded-full text-xs">
+                <span className="px-2 py-0.5 bg-ok/10 text-ok rounded-full text-xs">
                   {userGroups.length}
                 </span>
               </Inline>
@@ -199,8 +199,8 @@ export default function GroupingSuggestions({
                         p-3 rounded-lg border-2 transition-all duration-200 text-left
                         ${
                           isSelected
-                            ? 'border-accent-green bg-accent-green/10 text-accent-green'
-                            : 'border-theme-secondary bg-theme-elevated hover:border-accent-green hover:bg-accent-green/5'
+                            ? 'border-ok bg-ok/10 text-ok'
+                            : 'border-theme-secondary bg-theme-elevated hover:border-ok hover:bg-ok/5'
                         }
                       `}
                     >
@@ -211,7 +211,7 @@ export default function GroupingSuggestions({
                             w-8 h-8 rounded-lg flex items-center justify-center
                             ${
                               isSelected
-                                ? 'bg-accent-green text-theme-primary'
+                                ? 'bg-ok text-theme-primary'
                                 : 'bg-theme-secondary text-theme-tertiary'
                             }
                           `}
@@ -230,9 +230,7 @@ export default function GroupingSuggestions({
                           </div>
                         </Inline>
 
-                        {isSelected && (
-                          <PiCheck className="w-5 h-5 text-accent-green" />
-                        )}
+                        {isSelected && <PiCheck className="w-5 h-5 text-ok" />}
                       </div>
                     </button>
                   );
@@ -249,12 +247,12 @@ export default function GroupingSuggestions({
                 gap={2}
                 className="text-sm font-semibold text-theme-primary mb-3"
               >
-                <PiMusicNotes className="w-4 h-4 text-accent-blue" />
+                <PiMusicNotes className="w-4 h-4 text-aviso" />
                 <span>Grupos Existentes (IMSLP)</span>
                 <Text
                   papel="legenda"
                   tom="fraco"
-                  className="px-2 py-0.5 bg-theme-tertiary/20 rounded-full"
+                  className="px-2 py-0.5 bg-sup-2/20 rounded-full"
                 >
                   Apenas referência
                 </Text>
@@ -293,10 +291,10 @@ export default function GroupingSuggestions({
                 })}
               </div>
 
-              <div className="bg-blue-50 border border-blue-200 rounded-lg p-3 mb-4">
+              <div className="bg-aviso/10 border border-aviso/30 rounded-lg p-3 mb-4">
                 <div className="flex items-start space-x-2">
-                  <PiInfo className="w-4 h-4 text-blue-600 mt-0.5 flex-shrink-0" />
-                  <Stack gap={1} className="text-xs text-blue-800">
+                  <PiInfo className="w-4 h-4 text-aviso mt-0.5 flex-shrink-0" />
+                  <Stack gap={1} className="text-xs text-aviso">
                     <p className="font-medium">
                       💡 Grupos IMSLP são apenas referência
                     </p>
@@ -337,10 +335,10 @@ export default function GroupingSuggestions({
               ) + 1;
             onGroupSelect(nextIndex, '');
           }}
-          className="w-full p-3 rounded-lg border-2 border-dashed border-brand-primary text-brand-primary hover:bg-brand-primary/5 transition-all duration-200 text-left"
+          className="w-full p-3 rounded-lg border-2 border-dashed border-ouro text-brand-primary hover:bg-ouro/5 transition-all duration-200 text-left"
         >
           <Inline gap={3}>
-            <div className="w-8 h-8 bg-brand-primary/20 rounded-lg flex items-center justify-center">
+            <div className="w-8 h-8 bg-ouro/20 rounded-lg flex items-center justify-center">
               <PiPlus className="w-4 h-4 text-brand-primary" />
             </div>
             <div>
@@ -356,7 +354,7 @@ export default function GroupingSuggestions({
       </div>
 
       {/* Info Helper Atualizado */}
-      <div className="bg-theme-secondary/10 rounded-lg p-3 border border-theme-primary/20">
+      <div className="bg-sup-1/10 rounded-lg p-3 border border-linha/20">
         <div className="flex items-start space-x-2">
           <PiInfo className="w-4 h-4 text-theme-tertiary mt-0.5 flex-shrink-0" />
           <Text papel="legenda" tom="fraco" as="div">

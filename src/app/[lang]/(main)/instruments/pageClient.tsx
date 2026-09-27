@@ -143,9 +143,9 @@ export function InstrumentsPageClient({
 
   if (hasError) {
     return (
-      <div className=" flex items-center justify-center bg-gradient-primary">
+      <div className=" flex items-center justify-center">
         <div className="text-center">
-          <div className="w-20 h-20 bg-gradient-to-br from-brand-primary to-brand-secondary rounded-2xl flex items-center justify-center mx-auto mb-6 shadow-theme-glow">
+          <div className="w-20 h-20 fill-ouro rounded-2xl flex items-center justify-center mx-auto mb-6 shadow-theme-glow">
             <PiMusicNotes className="w-10 h-10 text-theme-primary" />
           </div>
           <h2 className="text-2xl font-bold mb-2 text-theme-primary classical-title">
@@ -160,27 +160,27 @@ export function InstrumentsPageClient({
   }
 
   return (
-    <div className="w-full  bg-gradient-primary">
+    <div className="w-full">
       {/* Background Pattern */}
       <div className="fixed inset-0 pointer-events-none opacity-5 z-0">
-        <div className="absolute top-20 left-20 w-64 h-64 bg-brand-gradient rounded-full blur-3xl animate-pulse"></div>
+        <div className="absolute top-20 left-20 w-64 h-64 rounded-full blur-3xl animate-pulse"></div>
         <div
-          className="absolute bottom-40 right-32 w-48 h-48 bg-accent-purple/30 rounded-full blur-2xl animate-pulse"
+          className="absolute bottom-40 right-32 w-48 h-48 rounded-full blur-2xl animate-pulse"
           style={{ animationDelay: '1s' }}
         ></div>
         <div
-          className="absolute top-1/2 left-1/4 w-32 h-32 bg-accent-blue/20 rounded-full blur-xl animate-pulse"
+          className="absolute top-1/2 left-1/4 w-32 h-32 rounded-full blur-xl animate-pulse"
           style={{ animationDelay: '2s' }}
         ></div>
         <div
-          className="absolute bottom-20 left-10 w-40 h-40 bg-brand-secondary/20 rounded-full blur-2xl animate-pulse"
+          className="absolute bottom-20 left-10 w-40 h-40 rounded-full blur-2xl animate-pulse"
           style={{ animationDelay: '0.5s' }}
         ></div>
       </div>
 
       <div className="relative z-10">
         {/* Hero Section */}
-        <section className="relative overflow-hidden bg-gradient-primary pt-24 flex items-center">
+        <section className="relative overflow-hidden pt-24 flex items-center">
           <AnimatedMusicalNotes />
 
           <div className="section-wrap mx-auto relative z-10">
@@ -219,18 +219,18 @@ export function InstrumentsPageClient({
                 className="classical-card group relative overflow-hidden  animate-fade-in-up"
               >
                 <div
-                  className="flex items-center justify-between  px-0 py-2 md:px-8 md:py-6 cursor-pointer transition-all duration-300 hover:bg-interactive-hover relative z-10"
+                  className="flex items-center justify-between px-0 py-2 md:px-8 md:py-6 cursor-pointer transition-all duration-300 hover:bg-ouro/10 relative z-10"
                   onClick={() => toggleInstrument(instrument.id)}
                 >
                   <Inline gap={6}>
-                    <div className="w-20 h-20 bg-gradient-to-br from-brand-primary to-brand-secondary rounded-2xl flex items-center justify-center shadow-theme-glow group-hover:scale-110 transition-transform duration-500">
+                    <div className="w-20 h-20 fill-ouro rounded-2xl flex items-center justify-center shadow-theme-glow group-hover:scale-110 transition-transform duration-500">
                       <Icon className="w-10 h-10 text-theme-primary" />
                     </div>
                     <div className="flex-1">
-                      <h2 className="text-3xl text-theme-primary classical-title mb-2 group-hover:text-brand-primary transition-colors duration-300">
+                      <h2 className="text-3xl text-theme-primary classical-title mb-2 group-hover:text-ouro-texto transition-colors duration-300">
                         {instrument.historicalData.name}
                       </h2>
-                      <p className="text-theme-secondary text-md md:text-lg classical-subtitle mb-1">
+                      <p className="text-theme-secondary text-base md:text-lg classical-subtitle mb-1">
                         {instrument.historicalData.category} •{' '}
                         {instrument.historicalData.origin}
                       </p>
@@ -250,7 +250,7 @@ export function InstrumentsPageClient({
                       </Text>
                     </div>
 
-                    <div className="w-8 h-8 bg-interactive-hover rounded-xl flex items-center justify-center transition-all duration-300 group-hover:bg-brand-primary/20">
+                    <div className="w-8 h-8 bg-ouro/10 rounded-xl flex items-center justify-center transition-all duration-300 group-hover:bg-ouro/20">
                       {isInstrumentOpen ? (
                         <PiArrowsIn className="w-4 h-4 text-theme-primary" />
                       ) : (
@@ -272,7 +272,7 @@ export function InstrumentsPageClient({
                     {/* Brief Description */}
                     <Card nivel={2} className="relative overflow-hidden">
                       <div className="relative z-10">
-                        <p className="text-theme-secondary text-md md:text-lg leading-relaxed classical-body">
+                        <p className="text-theme-secondary text-base md:text-lg leading-relaxed classical-body">
                           {instrument.historicalData.description}
                         </p>
                       </div>
@@ -286,7 +286,7 @@ export function InstrumentsPageClient({
                         <Card nivel={2} className="relative overflow-hidden">
                           <Stack className="relative z-10">
                             <Inline gap={3}>
-                              <div className="w-8 h-8 bg-gradient-to-br from-accent-blue to-accent-purple rounded-xl flex items-center justify-center">
+                              <div className="w-8 h-8 bg-aviso rounded-xl flex items-center justify-center">
                                 <PiClockCounterClockwise className="w-4 h-4 text-theme-primary" />
                               </div>
                               <h3 className="text-xl font-bold text-theme-primary classical-title">
@@ -310,7 +310,7 @@ export function InstrumentsPageClient({
                         <Card nivel={2} className="relative overflow-hidden">
                           <Stack className="relative z-10">
                             <Inline gap={3}>
-                              <div className="w-8 h-8 bg-gradient-to-br from-accent-green to-accent-blue rounded-xl flex items-center justify-center">
+                              <div className="w-8 h-8 bg-ok rounded-xl flex items-center justify-center">
                                 <PiMapPin className="w-4 h-4 text-theme-primary" />
                               </div>
                               <h3 className="text-xl font-bold text-theme-primary classical-title">
@@ -370,7 +370,7 @@ export function InstrumentsPageClient({
                           <Card nivel={2} className="relative overflow-hidden">
                             <Stack className="relative z-10">
                               <Inline gap={3}>
-                                <div className="w-8 h-8 bg-gradient-to-br from-brand-primary to-brand-secondary rounded-xl flex items-center justify-center">
+                                <div className="w-8 h-8 fill-ouro rounded-xl flex items-center justify-center">
                                   <PiMedal className="w-4 h-4 text-theme-primary" />
                                 </div>
                                 <h3 className="text-xl font-bold text-theme-primary classical-title">
@@ -395,11 +395,11 @@ export function InstrumentsPageClient({
                                       }
                                       width={56}
                                       height={56}
-                                      className="w-14 h-14 rounded-full border-2 border-brand-primary/30 shadow-theme-medium"
+                                      className="w-14 h-14 rounded-full border-2 border-ouro/30 shadow-theme-medium"
                                     />
                                   </Link>
                                 ) : (
-                                  <div className="w-14 h-14 bg-gradient-to-br from-brand-primary to-brand-secondary rounded-full flex items-center justify-center border-2 border-brand-primary/30 shadow-theme-medium">
+                                  <div className="w-14 h-14 fill-ouro rounded-full flex items-center justify-center border-2 border-ouro/30 shadow-theme-medium">
                                     <PiUser className="w-7 h-7 text-theme-primary" />
                                   </div>
                                 )}
@@ -436,10 +436,10 @@ export function InstrumentsPageClient({
                             onClick={() =>
                               toggleSection(instrument.id, 'characteristics')
                             }
-                            className="w-full flex items-center justify-between p-6 text-left transition-all duration-300 hover:bg-interactive-hover group/button"
+                            className="w-full flex items-center justify-between p-6 text-left transition-all duration-300 hover:bg-ouro/10 group/button"
                           >
                             <Inline gap={3}>
-                              <div className="w-8 h-8 bg-gradient-to-br from-accent-blue to-accent-purple rounded-xl flex items-center justify-center group-hover/button:scale-110 transition-transform duration-300">
+                              <div className="w-8 h-8 bg-aviso rounded-xl flex items-center justify-center group-hover/button:scale-110 transition-transform duration-300">
                                 <PiLightbulb className="w-4 h-4 text-theme-primary" />
                               </div>
                               <h3 className="text-xl font-bold text-theme-primary classical-title">
@@ -449,10 +449,10 @@ export function InstrumentsPageClient({
                               </h3>
                             </Inline>
                             <div
-                              className={`w-8 h-8 bg-interactive-hover rounded-xl flex items-center justify-center transition-all duration-300 ${
+                              className={`w-8 h-8 bg-ouro/10 rounded-xl flex items-center justify-center transition-all duration-300 ${
                                 isExpanded(instrument.id, 'characteristics')
-                                  ? 'rotate-180 bg-brand-primary/20'
-                                  : 'group-hover/button:bg-brand-primary/10'
+                                  ? 'rotate-180 bg-ouro/20'
+                                  : 'group-hover/button:bg-ouro/10'
                               }`}
                             >
                               {isExpanded(instrument.id, 'characteristics') ? (
@@ -475,11 +475,11 @@ export function InstrumentsPageClient({
                                   (char, i) => (
                                     <div
                                       key={i}
-                                      className="flex items-start space-x-3 p-3 bg-gradient-to-r from-accent-blue/5 to-accent-purple/5 border border-accent-blue/20 rounded-xl hover:border-accent-blue/40 transition-all duration-300 group/item"
+                                      className="flex items-start space-x-3 p-3 bg-aviso/5 border border-aviso/20 rounded-xl hover:border-aviso/40 transition-all duration-300 group/item"
                                       style={{ animationDelay: `${i * 0.1}s` }}
                                     >
-                                      <div className="w-2 h-2 bg-accent-blue rounded-full mt-2 flex-shrink-0 group-hover/item:scale-150 transition-transform duration-300" />
-                                      <span className="text-theme-secondary leading-relaxed group-hover/item:text-theme-primary transition-colors duration-300">
+                                      <div className="w-2 h-2 bg-aviso rounded-full mt-2 flex-shrink-0 group-hover/item:scale-150 transition-transform duration-300" />
+                                      <span className="text-theme-secondary leading-relaxed group-hover/item:text-texto transition-colors duration-300">
                                         {char}
                                       </span>
                                     </div>
@@ -496,10 +496,10 @@ export function InstrumentsPageClient({
                             onClick={() =>
                               toggleSection(instrument.id, 'evolution')
                             }
-                            className="w-full flex items-center justify-between p-6 text-left transition-all duration-300 hover:bg-interactive-hover group/button"
+                            className="w-full flex items-center justify-between p-6 text-left transition-all duration-300 hover:bg-ouro/10 group/button"
                           >
                             <Inline gap={3}>
-                              <div className="w-8 h-8 bg-gradient-to-br from-accent-green to-accent-blue rounded-xl flex items-center justify-center group-hover/button:scale-110 transition-transform duration-300">
+                              <div className="w-8 h-8 bg-ok rounded-xl flex items-center justify-center group-hover/button:scale-110 transition-transform duration-300">
                                 <PiTrendUp className="w-4 h-4 text-theme-primary" />
                               </div>
                               <h3 className="text-xl font-bold text-theme-primary classical-title">
@@ -509,10 +509,10 @@ export function InstrumentsPageClient({
                               </h3>
                             </Inline>
                             <div
-                              className={`w-8 h-8 bg-interactive-hover rounded-xl flex items-center justify-center transition-all duration-300 ${
+                              className={`w-8 h-8 bg-ouro/10 rounded-xl flex items-center justify-center transition-all duration-300 ${
                                 isExpanded(instrument.id, 'evolution')
-                                  ? 'rotate-180 bg-brand-primary/20'
-                                  : 'group-hover/button:bg-brand-primary/10'
+                                  ? 'rotate-180 bg-ouro/20'
+                                  : 'group-hover/button:bg-ouro/10'
                               }`}
                             >
                               {isExpanded(instrument.id, 'evolution') ? (
@@ -535,17 +535,17 @@ export function InstrumentsPageClient({
                                   (stage, i) => (
                                     <div
                                       key={i}
-                                      className="flex items-start space-x-3 p-3 bg-gradient-to-r from-accent-green/5 to-accent-blue/5 border border-accent-green/20 rounded-xl hover:border-accent-green/40 transition-all duration-300 group/item"
+                                      className="flex items-start space-x-3 p-3 bg-ok/5 border border-ok/20 rounded-xl hover:border-ok/40 transition-all duration-300 group/item"
                                     >
                                       <Text
                                         papel="rotulo"
                                         tom="forte"
                                         as="div"
-                                        className="flex items-center justify-center w-7 h-7 bg-gradient-to-br from-accent-green to-accent-blue rounded-full font-bold flex-shrink-0 group-hover/item:scale-110 transition-transform duration-300"
+                                        className="flex items-center justify-center w-7 h-7 bg-ok rounded-full font-bold flex-shrink-0 group-hover/item:scale-110 transition-transform duration-300"
                                       >
                                         {i + 1}
                                       </Text>
-                                      <div className="text-theme-secondary group-hover/item:text-theme-primary transition-colors duration-300">
+                                      <div className="text-theme-secondary group-hover/item:text-texto transition-colors duration-300">
                                         {stage}
                                       </div>
                                     </div>
@@ -562,10 +562,10 @@ export function InstrumentsPageClient({
                             onClick={() =>
                               toggleSection(instrument.id, 'features')
                             }
-                            className="w-full flex items-center justify-between p-6 text-left transition-all duration-300 hover:bg-interactive-hover group/button"
+                            className="w-full flex items-center justify-between p-6 text-left transition-all duration-300 hover:bg-ouro/10 group/button"
                           >
                             <Inline gap={3}>
-                              <div className="w-8 h-8 bg-gradient-to-br from-accent-purple to-accent-red rounded-xl flex items-center justify-center group-hover/button:scale-110 transition-transform duration-300">
+                              <div className="w-8 h-8 fill-ouro rounded-xl flex items-center justify-center group-hover/button:scale-110 transition-transform duration-300">
                                 <PiStarFill className="w-4 h-4 text-theme-primary" />
                               </div>
                               <h3 className="text-xl font-bold text-theme-primary classical-title">
@@ -575,10 +575,10 @@ export function InstrumentsPageClient({
                               </h3>
                             </Inline>
                             <div
-                              className={`w-8 h-8 bg-interactive-hover rounded-xl flex items-center justify-center transition-all duration-300 ${
+                              className={`w-8 h-8 bg-ouro/10 rounded-xl flex items-center justify-center transition-all duration-300 ${
                                 isExpanded(instrument.id, 'features')
-                                  ? 'rotate-180 bg-brand-primary/20'
-                                  : 'group-hover/button:bg-brand-primary/10'
+                                  ? 'rotate-180 bg-ouro/20'
+                                  : 'group-hover/button:bg-ouro/10'
                               }`}
                             >
                               {isExpanded(instrument.id, 'features') ? (
@@ -601,10 +601,10 @@ export function InstrumentsPageClient({
                                   (feature, i) => (
                                     <div
                                       key={i}
-                                      className="flex items-start space-x-3 p-3 bg-gradient-to-r from-accent-purple/5 to-accent-red/5 border border-accent-purple/20 rounded-xl hover:border-accent-purple/40 transition-all duration-300 group/item"
+                                      className="flex items-start space-x-3 p-3 bg-ouro/5 border border-ouro/20 rounded-xl hover:border-ouro/40 transition-all duration-300 group/item"
                                     >
-                                      <div className="w-2 h-2 bg-accent-purple rounded-full mt-2 flex-shrink-0 group-hover/item:scale-150 transition-transform duration-300" />
-                                      <span className="text-theme-secondary leading-relaxed group-hover/item:text-theme-primary transition-colors duration-300">
+                                      <div className="w-2 h-2 bg-ouro rounded-full mt-2 flex-shrink-0 group-hover/item:scale-150 transition-transform duration-300" />
+                                      <span className="text-theme-secondary leading-relaxed group-hover/item:text-texto transition-colors duration-300">
                                         {feature}
                                       </span>
                                     </div>
@@ -621,10 +621,10 @@ export function InstrumentsPageClient({
                             onClick={() =>
                               toggleSection(instrument.id, 'performers')
                             }
-                            className="w-full flex items-center justify-between p-6 text-left transition-all duration-300 hover:bg-interactive-hover group/button"
+                            className="w-full flex items-center justify-between p-6 text-left transition-all duration-300 hover:bg-ouro/10 group/button"
                           >
                             <Inline gap={3}>
-                              <div className="w-8 h-8 bg-gradient-to-br from-brand-primary to-brand-secondary rounded-xl flex items-center justify-center group-hover/button:scale-110 transition-transform duration-300">
+                              <div className="w-8 h-8 fill-ouro rounded-xl flex items-center justify-center group-hover/button:scale-110 transition-transform duration-300">
                                 <PiStarFill className="w-4 h-4 text-theme-primary" />
                               </div>
                               <h3 className="text-xl font-bold text-theme-primary classical-title">
@@ -634,10 +634,10 @@ export function InstrumentsPageClient({
                               </h3>
                             </Inline>
                             <div
-                              className={`w-8 h-8 bg-interactive-hover rounded-xl flex items-center justify-center transition-all duration-300 ${
+                              className={`w-8 h-8 bg-ouro/10 rounded-xl flex items-center justify-center transition-all duration-300 ${
                                 isExpanded(instrument.id, 'performers')
-                                  ? 'rotate-180 bg-brand-primary/20'
-                                  : 'group-hover/button:bg-brand-primary/10'
+                                  ? 'rotate-180 bg-ouro/20'
+                                  : 'group-hover/button:bg-ouro/10'
                               }`}
                             >
                               {isExpanded(instrument.id, 'performers') ? (
@@ -660,11 +660,11 @@ export function InstrumentsPageClient({
                                   (performer, i) => (
                                     <div
                                       key={i}
-                                      className="classical-card-simple rounded-xl p-4 text-theme-secondary hover:text-theme-primary hover:border-brand-primary/30 transition-all duration-300 group/performer"
+                                      className="classical-card-simple rounded-xl p-4 text-theme-secondary hover:text-texto hover:border-ouro/30 transition-all duration-300 group/performer"
                                       style={{ animationDelay: `${i * 0.05}s` }}
                                     >
                                       <Inline gap={3}>
-                                        <div className="w-2 h-2 bg-brand-primary rounded-full group-hover/performer:scale-150 transition-transform duration-300" />
+                                        <div className="w-2 h-2 bg-ouro rounded-full group-hover/performer:scale-150 transition-transform duration-300" />
                                         <span className="font-medium">
                                           {performer}
                                         </span>
@@ -683,10 +683,10 @@ export function InstrumentsPageClient({
                     <div className="classical-card-2 overflow-hidden">
                       <button
                         onClick={() => toggleSection(instrument.id, 'works')}
-                        className="w-full flex items-center justify-between p-6 text-left transition-all duration-300 hover:bg-interactive-hover group/button"
+                        className="w-full flex items-center justify-between p-6 text-left transition-all duration-300 hover:bg-ouro/10 group/button"
                       >
                         <Inline gap={3}>
-                          <div className="w-10 h-10 bg-gradient-to-br from-brand-primary to-brand-secondary rounded-xl flex items-center justify-center group-hover/button:scale-110 transition-transform duration-300">
+                          <div className="w-10 h-10 fill-ouro rounded-xl flex items-center justify-center group-hover/button:scale-110 transition-transform duration-300">
                             <PiMusicNotes className="w-5 h-5 text-theme-primary" />
                           </div>
                           <div>
@@ -704,10 +704,10 @@ export function InstrumentsPageClient({
                           </div>
                         </Inline>
                         <div
-                          className={`w-8 h-8 bg-interactive-hover rounded-xl flex items-center justify-center transition-all duration-300 ${
+                          className={`w-8 h-8 bg-ouro/10 rounded-xl flex items-center justify-center transition-all duration-300 ${
                             isExpanded(instrument.id, 'works')
-                              ? 'rotate-180 bg-brand-primary/20'
-                              : 'group-hover/button:bg-brand-primary/10'
+                              ? 'rotate-180 bg-ouro/20'
+                              : 'group-hover/button:bg-ouro/10'
                           }`}
                         >
                           {isExpanded(instrument.id, 'works') ? (
@@ -744,7 +744,7 @@ export function InstrumentsPageClient({
                                     <div className="flex items-start justify-between mb-4">
                                       <div className="flex-1 min-w-0">
                                         <Link href={`/works/${work.id}`}>
-                                          <h4 className="text-theme-primary font-bold text-lg line-clamp-2 group-hover/work:text-brand-primary transition-colors duration-300 classical-title">
+                                          <h4 className="text-theme-primary font-bold text-lg line-clamp-2 group-hover/work:text-ouro-texto transition-colors duration-300 classical-title">
                                             {work.title}
                                           </h4>
                                         </Link>
@@ -758,8 +758,8 @@ export function InstrumentsPageClient({
                                         </Text>
                                       </div>
                                       {work.videoUrl && (
-                                        <div className="ml-2 w-8 h-8 bg-accent-red/20 hover:bg-accent-red/40 rounded-full flex items-center justify-center transition-all duration-300 group-hover/work:scale-110">
-                                          <PiPlay className="w-3 h-3 text-accent-red" />
+                                        <div className="ml-2 w-8 h-8 bg-erro/20 hover:bg-erro/40 rounded-full flex items-center justify-center transition-all duration-300 group-hover/work:scale-110">
+                                          <PiPlay className="w-3 h-3 text-erro" />
                                         </div>
                                       )}
                                     </div>
@@ -767,7 +767,7 @@ export function InstrumentsPageClient({
                                     <Stack gap={2} className="text-sm mb-4">
                                       {work.opOrCatalog && (
                                         <div className="flex items-center text-theme-secondary">
-                                          <div className="w-4 h-4 bg-gradient-to-br from-accent-blue to-accent-purple rounded flex items-center justify-center mr-2">
+                                          <div className="w-4 h-4 bg-aviso rounded flex items-center justify-center mr-2">
                                             <PiMusicNotes className="w-3 h-3 text-theme-primary" />
                                           </div>
                                           {work.opOrCatalog}
@@ -775,7 +775,7 @@ export function InstrumentsPageClient({
                                       )}
                                       {work.compositionYear && (
                                         <div className="flex items-center text-theme-secondary">
-                                          <div className="w-4 h-4 bg-gradient-to-br from-accent-green to-accent-blue rounded flex items-center justify-center mr-2">
+                                          <div className="w-4 h-4 bg-ok rounded flex items-center justify-center mr-2">
                                             <PiCalendar className="w-3 h-3 text-theme-primary" />
                                           </div>
                                           {work.compositionYear}
@@ -783,7 +783,7 @@ export function InstrumentsPageClient({
                                       )}
                                       {work.tone && (
                                         <div className="flex items-center text-theme-secondary">
-                                          <div className="w-4 h-4 bg-gradient-to-br from-accent-purple to-accent-red rounded flex items-center justify-center mr-2">
+                                          <div className="w-4 h-4 fill-ouro rounded flex items-center justify-center mr-2">
                                             <PiMusicNote className="w-3 h-3 text-theme-primary" />
                                           </div>
                                           {work.tone}
@@ -791,7 +791,7 @@ export function InstrumentsPageClient({
                                       )}
                                       {work.mediaDuration && (
                                         <div className="flex items-center text-theme-secondary">
-                                          <div className="w-4 h-4 bg-gradient-to-br from-brand-primary to-brand-secondary rounded flex items-center justify-center mr-2">
+                                          <div className="w-4 h-4 fill-ouro rounded flex items-center justify-center mr-2">
                                             <PiClock className="w-3 h-3 text-theme-primary" />
                                           </div>
                                           {work.mediaDuration}
@@ -810,10 +810,10 @@ export function InstrumentsPageClient({
                                             alt={work.composer.name}
                                             width={32}
                                             height={32}
-                                            className="w-8 h-8 rounded-full border-2 border-brand-primary/30 shadow-theme-medium"
+                                            className="w-8 h-8 rounded-full border-2 border-ouro/30 shadow-theme-medium"
                                           />
                                         ) : (
-                                          <div className="w-8 h-8 bg-gradient-to-br from-brand-primary to-brand-secondary rounded-full flex items-center justify-center border-2 border-brand-primary/30">
+                                          <div className="w-8 h-8 fill-ouro rounded-full flex items-center justify-center border-2 border-ouro/30">
                                             <PiUser className="w-3 h-3 text-theme-primary" />
                                           </div>
                                         )}
@@ -832,9 +832,9 @@ export function InstrumentsPageClient({
                                         href={`/works/${work.id}`}
                                         target="_blank"
                                         rel="noopener noreferrer"
-                                        className="w-8 h-8 bg-interactive-hover hover:bg-brand-primary/20 rounded-xl flex items-center justify-center transition-all duration-300 group-hover/work:scale-110"
+                                        className="w-8 h-8 bg-ouro/10 hover:bg-ouro/20 rounded-xl flex items-center justify-center transition-all duration-300 group-hover/work:scale-110"
                                       >
-                                        <PiArrowSquareOut className="w-3 h-3 text-theme-primary hover:text-brand-primary transition-colors duration-300" />
+                                        <PiArrowSquareOut className="w-3 h-3 text-theme-primary hover:text-ouro-texto transition-colors duration-300" />
                                       </Link>
                                     </div>
                                   </div>
@@ -848,7 +848,7 @@ export function InstrumentsPageClient({
                 </div>
 
                 {/* Hover glow effect */}
-                <div className="absolute inset-0 bg-brand-gradient opacity-0 group-hover:opacity-5 transition-opacity duration-500 rounded-2xl pointer-events-none"></div>
+                <div className="absolute inset-0 fill-ouro opacity-0 group-hover:opacity-5 transition-opacity duration-500 rounded-2xl pointer-events-none"></div>
               </div>
             );
           })}
@@ -856,17 +856,17 @@ export function InstrumentsPageClient({
       </div>
 
       {/* Floating Elements */}
-      <div className="fixed top-20 left-4 w-2 h-2 bg-brand-primary/30 rounded-full animate-pulse z-20"></div>
+      <div className="fixed top-20 left-4 w-2 h-2 bg-ouro/30 rounded-full animate-pulse z-20"></div>
       <div
-        className="fixed top-40 right-8 w-1.5 h-1.5 bg-accent-purple/40 rounded-full animate-pulse z-20"
+        className="fixed top-40 right-8 w-1.5 h-1.5 bg-ouro/40 rounded-full animate-pulse z-20"
         style={{ animationDelay: '1s' }}
       ></div>
       <div
-        className="fixed bottom-32 left-8 w-1 h-1 bg-brand-secondary/50 rounded-full animate-pulse z-20"
+        className="fixed bottom-32 left-8 w-1 h-1 bg-ouro/50 rounded-full animate-pulse z-20"
         style={{ animationDelay: '2s' }}
       ></div>
       <div
-        className="fixed bottom-20 right-4 w-1.5 h-1.5 bg-accent-blue/30 rounded-full animate-pulse z-20"
+        className="fixed bottom-20 right-4 w-1.5 h-1.5 bg-aviso/30 rounded-full animate-pulse z-20"
         style={{ animationDelay: '0.5s' }}
       ></div>
     </div>

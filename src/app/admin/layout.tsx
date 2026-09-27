@@ -24,7 +24,7 @@ export default function AdminLayout({
   return (
     <AdsProvider>
       <FavoritesProvider>
-        <div className="min-h-screen bg-gradient-primary">
+        <div className="min-h-screen">
           <AdminLayoutClient>{children}</AdminLayoutClient>
 
           {/* Toaster específico para área admin */}

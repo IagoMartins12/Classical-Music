@@ -378,11 +378,11 @@ export const AlertUtils = {
   getAlertColor: (type: Alert['type']) => {
     switch (type) {
       case 'critical':
-        return 'text-accent-red bg-accent-red/10 border-accent-red';
+        return 'text-erro bg-erro/10 border-erro';
       case 'warning':
-        return 'text-accent-amber bg-accent-amber/10 border-accent-amber';
+        return 'text-atencao bg-atencao/10 border-atencao';
       case 'info':
-        return 'text-accent-blue bg-accent-blue/10 border-accent-blue';
+        return 'text-aviso bg-aviso/10 border-aviso';
       default:
         return 'text-theme-tertiary bg-theme-secondary border-theme-secondary';
     }
@@ -416,11 +416,11 @@ export const LogUtils = {
   getLogLevelColor: (level: LogEntry['level']) => {
     switch (level) {
       case 'error':
-        return 'text-accent-red';
+        return 'text-erro';
       case 'warn':
-        return 'text-accent-amber';
+        return 'text-atencao';
       case 'info':
-        return 'text-accent-blue';
+        return 'text-aviso';
       case 'debug':
         return 'text-theme-tertiary';
       default:

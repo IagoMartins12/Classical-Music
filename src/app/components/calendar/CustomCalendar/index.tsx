@@ -183,9 +183,9 @@ export default function CustomCalendar({
             <Inline gap={2}>
               <button
                 onClick={goToPrevious}
-                className="w-10 h-10 rounded-lg bg-theme-elevated border border-theme-secondary hover:border-brand-primary transition-all flex items-center justify-center group"
+                className="w-10 h-10 rounded-lg bg-theme-elevated border border-theme-secondary hover:border-ouro transition-all flex items-center justify-center group"
               >
-                <PiCaretLeft className="w-5 h-5 text-theme-tertiary group-hover:text-brand-primary transition-colors" />
+                <PiCaretLeft className="w-5 h-5 text-theme-tertiary group-hover:text-ouro-texto transition-colors" />
                 <NomeAcao acao="anterior" />
               </button>
 
@@ -197,9 +197,9 @@ export default function CustomCalendar({
 
               <button
                 onClick={goToNext}
-                className="w-10 h-10 rounded-lg bg-theme-elevated border border-theme-secondary hover:border-brand-primary transition-all flex items-center justify-center group"
+                className="w-10 h-10 rounded-lg bg-theme-elevated border border-theme-secondary hover:border-ouro transition-all flex items-center justify-center group"
               >
-                <PiCaretRight className="w-5 h-5 text-theme-tertiary group-hover:text-brand-primary transition-colors" />
+                <PiCaretRight className="w-5 h-5 text-theme-tertiary group-hover:text-ouro-texto transition-colors" />
                 <NomeAcao acao="proximo" />
               </button>
             </Inline>
@@ -216,7 +216,7 @@ export default function CustomCalendar({
               className={`px-3 py-2 rounded-lg text-sm font-medium transition-all ${
                 view === 'month'
                   ? 'bg-theme-tertiary text-theme-primary shadow-md'
-                  : 'text-theme-tertiary hover:text-theme-primary'
+                  : 'text-theme-tertiary hover:text-texto'
               }`}
             >
               Mês
@@ -226,7 +226,7 @@ export default function CustomCalendar({
               className={`px-3 py-2 rounded-lg text-sm font-medium transition-all ${
                 view === 'week'
                   ? 'bg-theme-tertiary text-theme-primary shadow-md'
-                  : 'text-theme-tertiary hover:text-theme-primary'
+                  : 'text-theme-tertiary hover:text-texto'
               }`}
             >
               Semana
@@ -236,7 +236,7 @@ export default function CustomCalendar({
               className={`px-3 py-2 rounded-lg text-sm font-medium transition-all ${
                 view === 'day'
                   ? 'bg-theme-tertiary text-theme-primary shadow-md'
-                  : 'text-theme-tertiary hover:text-theme-primary'
+                  : 'text-theme-tertiary hover:text-texto'
               }`}
             >
               Dia

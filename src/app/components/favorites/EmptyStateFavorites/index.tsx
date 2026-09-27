@@ -136,7 +136,7 @@ const EmptyStateFavorites: React.FC<emptyStatesProps> = ({
     >
       <div className="max-w-none lg:max-w-3xl mx-auto">
         {/* Ícone */}
-        <div className="w-16 h-16 bg-gradient-to-br from-theme-secondary to-theme-elevated rounded-3xl flex items-center justify-center mx-auto mb-6">
+        <div className="w-16 h-16 bg-sup-1 rounded-3xl flex items-center justify-center mx-auto mb-6">
           <IconComponent className="w-8 h-8 text-theme-tertiary" />
         </div>
 
@@ -259,7 +259,7 @@ const EmptyStateFavorites: React.FC<emptyStatesProps> = ({
 
           {/* Dica */}
           {config?.tip && (
-            <div className="mt-8 p-4 bg-gradient-to-r from-theme-elevated to-interactive-hover rounded-xl border border-theme-primary">
+            <div className="mt-8 p-4 bg-sup-elevada rounded-xl border border-theme-primary">
               <div className="flex items-start space-x-3">
                 <div className="w-10 h-8 md:w-6 md:h-6 rounded-lg flex items-center justify-center mt-0.5">
                   <PiStar className="w-5 h-5text-theme-primary" />

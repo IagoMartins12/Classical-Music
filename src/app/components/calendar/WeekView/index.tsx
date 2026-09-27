@@ -41,7 +41,7 @@ export default function WeekView({
               key={index}
               className={`text-center p-3 rounded-lg ${
                 isToday
-                  ? 'bg-brand-primary/10 border border-brand-primary/30'
+                  ? 'bg-ouro/10 border border-ouro/30'
                   : 'bg-theme-elevated'
               }`}
             >
@@ -93,16 +93,16 @@ export default function WeekView({
 }
 
 function getEventColor(type: string, isFree: boolean): string {
-  if (isFree) return 'bg-accent-green';
+  if (isFree) return 'bg-ok';
 
   const colors: Record<string, string> = {
-    OPERA: 'bg-accent-purple',
-    RECITAL: 'bg-accent-pink',
-    CHAMBER_MUSIC: 'bg-accent-green',
-    CHOIR: 'bg-accent-orange',
+    OPERA: 'bg-ouro',
+    RECITAL: 'bg-ouro',
+    CHAMBER_MUSIC: 'bg-ok',
+    CHOIR: 'bg-atencao',
     OPEN_REHEARSAL: 'bg-accent-gray',
-    CONCERT: 'bg-accent-blue',
+    CONCERT: 'bg-aviso',
   };
 
-  return colors[type] || 'bg-accent-blue';
+  return colors[type] || 'bg-aviso';
 }

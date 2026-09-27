@@ -66,7 +66,7 @@ export default async function ArticlesAdminPage({ searchParams }: PageProps) {
               direction="scale"
               className="flex items-center justify-center mb-6"
             >
-              <div className="w-16 h-16 bg-gradient-to-br from-brand-primary to-brand-secondary rounded-2xl flex items-center justify-center shadow-theme-glow">
+              <div className="w-16 h-16 fill-ouro rounded-2xl flex items-center justify-center shadow-theme-glow">
                 <PiFileText className="w-8 h-8 text-theme-primary" />
               </div>
             </AnimatedItem>
@@ -115,8 +115,8 @@ export default async function ArticlesAdminPage({ searchParams }: PageProps) {
                       {stats.total}
                     </p>
                   </Stack>
-                  <div className="w-12 h-12 bg-gradient-to-br from-blue-500/20 to-blue-600/20 rounded-2xl flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
-                    <PiFileText className="w-6 h-6 text-blue-500" />
+                  <div className="w-12 h-12 bg-aviso/20 rounded-2xl flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
+                    <PiFileText className="w-6 h-6 text-aviso" />
                   </div>
                 </div>
               </div>
@@ -138,8 +138,8 @@ export default async function ArticlesAdminPage({ searchParams }: PageProps) {
                       {stats.published}
                     </p>
                   </Stack>
-                  <div className="w-12 h-12 bg-gradient-to-br from-green-500/20 to-green-600/20 rounded-2xl flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
-                    <PiCheckCircle className="w-6 h-6 text-green-500" />
+                  <div className="w-12 h-12 bg-ok/20 rounded-2xl flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
+                    <PiCheckCircle className="w-6 h-6 text-ok" />
                   </div>
                 </div>
               </div>
@@ -161,8 +161,8 @@ export default async function ArticlesAdminPage({ searchParams }: PageProps) {
                       {stats.draft}
                     </p>
                   </Stack>
-                  <div className="w-12 h-12 bg-gradient-to-br from-yellow-500/20 to-yellow-600/20 rounded-2xl flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
-                    <PiClock className="w-6 h-6 text-yellow-500" />
+                  <div className="w-12 h-12 bg-atencao/20 rounded-2xl flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
+                    <PiClock className="w-6 h-6 text-atencao" />
                   </div>
                 </div>
               </div>
@@ -184,8 +184,8 @@ export default async function ArticlesAdminPage({ searchParams }: PageProps) {
                       {(stats.totalViews / 1000).toFixed(1)}k
                     </p>
                   </Stack>
-                  <div className="w-12 h-12 bg-gradient-to-br from-orange-500/20 to-orange-600/20 rounded-2xl flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
-                    <PiEye className="w-6 h-6 text-orange-500" />
+                  <div className="w-12 h-12 bg-atencao/20 rounded-2xl flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
+                    <PiEye className="w-6 h-6 text-atencao" />
                   </div>
                 </div>
               </div>

@@ -120,20 +120,20 @@ const FavoriteButton = ({
 
     const variants = {
       default: isFavorited
-        ? 'bg-gradient-to-r from-red-500/20 to-red-600/20 border-red-500/50 text-red-500 shadow-red-500/20 shadow-lg'
-        : 'bg-theme-elevated/80 border-theme-primary/30 text-theme-primary hover:bg-interactive-hover hover:border-red-500/50 hover:text-red-500/80',
+        ? 'bg-erro/10 border-erro/50 text-erro shadow-lg'
+        : 'bg-sup-elevada/80 border-linha/30 text-theme-primary hover:bg-ouro/10 hover:border-erro/50 hover:text-erro/80',
 
       small: isFavorited
-        ? 'bg-red-500/20 border-red-500/40 text-red-500'
-        : 'bg-theme-elevated/60 border-theme-secondary/40 text-theme-tertiary hover:text-red-500 hover:border-red-500/40',
+        ? 'bg-erro/10 border-erro/40 text-erro'
+        : 'bg-sup-elevada/60 border-linha/40 text-theme-tertiary hover:text-erro hover:border-erro/40',
 
       large: isFavorited
-        ? 'bg-gradient-to-br from-red-500/15 to-red-600/15 border-red-500/40 text-red-500 shadow-theme-glow'
-        : 'bg-gradient-to-br from-theme-elevated to-interactive-hover border-theme-primary text-theme-primary hover:border-red-500/50 hover:text-red-500 shadow-theme-medium',
+        ? 'bg-erro/10 border-erro/40 text-erro shadow-theme-glow'
+        : 'bg-sup-elevada border-theme-primary text-theme-primary hover:border-erro/50 hover:text-erro shadow-theme-medium',
 
       minimal: isFavorited
-        ? 'bg-transparent border-transparent text-red-500'
-        : 'bg-transparent border-transparent text-theme-tertiary hover:text-red-500',
+        ? 'bg-transparent border-transparent text-erro'
+        : 'bg-transparent border-transparent text-theme-tertiary hover:text-erro',
     };
 
     // 🔥 regra extra para mobile quando highlightMobile = true
@@ -219,7 +219,7 @@ const FavoriteButton = ({
     const pulseRadius = typeButton === 'square' ? '' : 'rounded-full';
     return (
       <div
-        className={`absolute inset-0 ${pulseRadius} bg-red-500/20 animate-ping opacity-75`}
+        className={`absolute inset-0 ${pulseRadius} bg-erro/20 animate-ping opacity-75`}
       ></div>
     );
   };
@@ -236,7 +236,7 @@ const FavoriteButton = ({
             animationDuration: '0.6s',
           }}
         >
-          <PiHeart className="w-2 h-2 text-red-500" />
+          <PiHeart className="w-2 h-2 text-erro" />
         </div>
       ))}
     </div>
@@ -248,13 +248,7 @@ const FavoriteButton = ({
         className={`
           ${sizeClasses[size]} 
           ${typeButton === 'circle' ? 'rounded-full ' : ' '} 
-          bg-theme-elevated/60 
-          border 
-          border-theme-secondary/40 
-          text-theme-tertiary 
-          flex 
-          items-center 
-          justify-center
+          bg-sup-elevada/60 border border-linha/40 text-theme-tertiary flex items-center justify-center
           ${className}
         `}
         style={style}

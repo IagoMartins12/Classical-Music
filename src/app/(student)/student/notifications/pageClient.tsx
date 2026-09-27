@@ -198,11 +198,11 @@ export default function StudentNotificationsPageClient({
       return <PiMusicNotes className="w-5 h-5" />;
 
     if (priority === 'HIGH' || priority === 'CRITICAL') {
-      return <PiWarning className="w-5 h-5 text-accent-red" />;
+      return <PiWarning className="w-5 h-5 text-erro" />;
     } else if (priority === 'MEDIUM') {
-      return <PiClock className="w-5 h-5 text-accent-amber" />;
+      return <PiClock className="w-5 h-5 text-atencao" />;
     } else {
-      return <PiInfo className="w-5 h-5 text-accent-blue" />;
+      return <PiInfo className="w-5 h-5 text-aviso" />;
     }
   };
 
@@ -210,11 +210,11 @@ export default function StudentNotificationsPageClient({
     switch (priority) {
       case 'HIGH':
       case 'CRITICAL':
-        return 'border-l-accent-red bg-gradient-to-r from-accent-red/5 to-transparent';
+        return 'border-l-erro bg-erro/5';
       case 'MEDIUM':
-        return 'border-l-accent-amber bg-gradient-to-r from-accent-amber/5 to-transparent';
+        return 'border-l-atencao bg-atencao/5';
       default:
-        return 'border-l-accent-green bg-gradient-to-r from-accent-green/5 to-transparent';
+        return 'border-l-ok bg-ok/5';
     }
   };
 
@@ -256,7 +256,7 @@ export default function StudentNotificationsPageClient({
       <PageContainer showBackground={true}>
         <div className="flex items-center justify-center min-h-screen">
           <Card densidade="larga" className="text-center max-w-md">
-            <PiWarning className="w-16 h-16 text-accent-red mx-auto mb-4" />
+            <PiWarning className="w-16 h-16 text-erro mx-auto mb-4" />
             <h1 className="text-xl font-bold text-theme-primary mb-2">
               {t('error_loading')}
             </h1>
@@ -281,7 +281,7 @@ export default function StudentNotificationsPageClient({
         <AnimatedItem direction="up" springType="gentle">
           <div className="text-center mb-8 py-8">
             <div className="flex items-center justify-center mb-6">
-              <div className="w-16 h-16 bg-gradient-to-br from-accent-green to-accent-blue rounded-3xl flex items-center justify-center shadow-theme-glow">
+              <div className="w-16 h-16 bg-ok rounded-3xl flex items-center justify-center shadow-theme-glow">
                 <PiBell className="w-8 h-8 text-theme-primary" />
               </div>
             </div>
@@ -314,8 +314,8 @@ export default function StudentNotificationsPageClient({
                     onClick={() => setFilter(filterType)}
                     className={`flex items-center space-x-2 px-3 py-2 rounded-lg transition-all ${
                       filter === filterType
-                        ? 'bg-accent-green text-theme-primary border border-accent-green'
-                        : 'bg-theme-elevated text-theme-secondary hover:bg-interactive-hover border border-theme-secondary'
+                        ? 'bg-ok text-theme-primary border border-ok'
+                        : 'bg-theme-elevated text-theme-secondary hover:bg-ouro/10 border border-theme-secondary'
                     }`}
                   >
                     {getFilterIcon(filterType)}
@@ -367,11 +367,11 @@ export default function StudentNotificationsPageClient({
                   <AnimatedCard
                     key={notification.id}
                     hover="lift"
-                    className={`classical-card border-l-4 ${getPriorityColor(
+                    className={`border classical-card ${getPriorityColor(
                       notification.priority
                     )} ${
                       notification.status === 'UNREAD'
-                        ? 'ring-1 ring-accent-green/20'
+                        ? 'ring-1 ring-ok/20'
                         : ''
                     }`}
                   >
@@ -414,10 +414,10 @@ export default function StudentNotificationsPageClient({
                                   className={`px-2 py-1 rounded-full text-xs ${
                                     notification.priority === 'HIGH' ||
                                     notification.priority === 'CRITICAL'
-                                      ? 'bg-accent-red/10 text-accent-red'
+                                      ? 'bg-erro/10 text-erro'
                                       : notification.priority === 'MEDIUM'
-                                        ? 'bg-accent-amber/10 text-accent-amber'
-                                        : 'bg-accent-green/10 text-accent-green'
+                                        ? 'bg-atencao/10 text-atencao'
+                                        : 'bg-ok/10 text-ok'
                                   }`}
                                 >
                                   {getPriorityLabel(notification.priority)}
@@ -448,10 +448,10 @@ export default function StudentNotificationsPageClient({
                               {notification.status === 'UNREAD' && (
                                 <button
                                   onClick={() => markAsRead(notification.id)}
-                                  className="p-2 rounded-lg hover:bg-interactive-hover transition-colors"
+                                  className="p-2 rounded-lg hover:bg-ouro/10 transition-colors"
                                   title={t('mark_read')}
                                 >
-                                  <PiCheck className="w-4 h-4 text-theme-tertiary hover:text-accent-green" />
+                                  <PiCheck className="w-4 h-4 text-theme-tertiary hover:text-ok" />
                                 </button>
                               )}
                             </Inline>

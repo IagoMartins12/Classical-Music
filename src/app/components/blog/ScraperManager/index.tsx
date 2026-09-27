@@ -26,7 +26,7 @@ export default function ScraperManager() {
         {scrapers.map((scraper) => (
           <AnimatedCard
             key={scraper.id}
-            className="classical-card-simple p-6 cursor-pointer transition-all hover:border-brand-primary hover:shadow-theme-glow"
+            className="classical-card-simple p-6 cursor-pointer transition-all hover:border-ouro hover:shadow-[var(--sombra-2)]"
             onClick={() => handleRunScraper(scraper.id)}
           >
             <div className="flex items-start justify-between mb-4">

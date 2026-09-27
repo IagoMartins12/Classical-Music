@@ -187,10 +187,10 @@ export const usePasswordReset = () => {
 
   // Obter cor da força da senha
   const getPasswordStrengthColor = useCallback((score: number): string => {
-    if (score <= 2) return 'text-accent-red';
-    if (score <= 3) return 'text-accent-amber';
-    if (score <= 4) return 'text-accent-blue';
-    return 'text-accent-green';
+    if (score <= 2) return 'text-erro';
+    if (score <= 3) return 'text-atencao';
+    if (score <= 4) return 'text-aviso';
+    return 'text-ok';
   }, []);
 
   // Obter texto da força da senha

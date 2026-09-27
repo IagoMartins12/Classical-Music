@@ -171,7 +171,7 @@ export default async function SearchPage({ searchParams }: PageProps) {
                       {suggestions.relatedTags.map((tag: TagSuggestion) => (
                         <span
                           key={tag.id}
-                          className="px-3 py-1 rounded-full text-sm bg-theme-elevated hover:bg-theme-classical transition-all"
+                          className="px-3 py-1 rounded-full text-sm bg-theme-elevated hover:bg-sup-1 transition-all"
                           style={{ color: tag.color || undefined }}
                         >
                           #{tag.name}
@@ -192,7 +192,7 @@ export default async function SearchPage({ searchParams }: PageProps) {
                           <Link
                             key={category.id}
                             href={`/blog/category/${category.slug}`}
-                            className="px-3 py-1 rounded-full text-sm bg-theme-elevated hover:bg-theme-classical transition-all"
+                            className="px-3 py-1 rounded-full text-sm bg-theme-elevated hover:bg-sup-1 transition-all"
                             style={{ color: category.color || undefined }}
                           >
                             {category.icon} {category.name}

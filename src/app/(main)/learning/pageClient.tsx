@@ -335,7 +335,7 @@ const LearningPageClient = ({ initialData }: LearningPageClientProps) => {
         <AnimatedItem direction="up" springType="gentle">
           <div className="text-center mb-8 py-16">
             <div className="flex items-center justify-center mb-6">
-              <div className="w-16 h-16 bg-gradient-to-br from-brand-primary to-brand-secondary rounded-3xl flex items-center justify-center shadow-theme-glow">
+              <div className="w-16 h-16 fill-ouro rounded-3xl flex items-center justify-center shadow-theme-glow">
                 <PiTarget className="w-8 h-8 text-theme-primary" />
               </div>
             </div>
@@ -361,7 +361,7 @@ const LearningPageClient = ({ initialData }: LearningPageClientProps) => {
                     className={`px-4 py-2 rounded-lg text-sm font-medium transition-all ${
                       activeTab === 'all'
                         ? 'bg-theme-tertiary text-theme-primary shadow-md'
-                        : 'text-theme-tertiary hover:text-theme-primary'
+                        : 'text-theme-tertiary hover:text-texto'
                     }`}
                   >
                     {t('tab_all')} ({stats.totalItems})
@@ -371,7 +371,7 @@ const LearningPageClient = ({ initialData }: LearningPageClientProps) => {
                     className={`px-4 py-2 rounded-lg text-sm font-medium transition-all ${
                       activeTab === 'want-to-learn'
                         ? 'bg-theme-tertiary text-theme-primary shadow-md'
-                        : 'text-theme-tertiary hover:text-theme-primary'
+                        : 'text-theme-tertiary hover:text-texto'
                     }`}
                   >
                     {t('tab_want_to_learn')} ({stats.wantToLearnCount})
@@ -381,7 +381,7 @@ const LearningPageClient = ({ initialData }: LearningPageClientProps) => {
                     className={`px-4 py-2 rounded-lg text-sm font-medium transition-all ${
                       activeTab === 'learned'
                         ? 'bg-theme-tertiary text-theme-primary shadow-md'
-                        : 'text-theme-tertiary hover:text-theme-primary'
+                        : 'text-theme-tertiary hover:text-texto'
                     }`}
                   >
                     {t('tab_learned')} ({stats.learnedCount})
@@ -407,17 +407,17 @@ const LearningPageClient = ({ initialData }: LearningPageClientProps) => {
                     onClick={() => setShowFilters(!showFilters)}
                     className={`flex items-center space-x-2 px-4 py-3 rounded-lg border transition-all font-medium ${
                       showFilters
-                        ? 'bg-brand-primary text-theme-primary border-brand-primary shadow-md'
+                        ? 'bg-ouro text-theme-primary border-ouro shadow-md'
                         : hasActiveFilters
-                          ? 'bg-accent-blue/10 text-accent-blue border-accent-blue/30 shadow-sm'
-                          : 'bg-theme-elevated text-theme-primary border-theme-secondary hover:border-brand-primary hover:bg-interactive-hover'
+                          ? 'bg-aviso/10 text-aviso border-aviso/30 shadow-sm'
+                          : 'bg-theme-elevated text-theme-primary border-theme-secondary hover:border-ouro hover:bg-ouro/10'
                     }`}
                   >
                     <PiFunnel className="w-4 h-4" />
                     <span className="text-sm">
                       {t('filters_button')}
                       {hasActiveFilters && (
-                        <span className="ml-1 px-1.5 py-0.5 bg-accent-blue text-white text-xs rounded-full">
+                        <span className="ml-1 px-1.5 py-0.5 bg-aviso text-white text-xs rounded-full">
                           {
                             [
                               searchQuery && 'busca',
@@ -472,14 +472,14 @@ const LearningPageClient = ({ initialData }: LearningPageClientProps) => {
                         {hasActiveFilters && (
                           <button
                             onClick={clearFilters}
-                            className="text-xs text-theme-tertiary hover:text-accent-red transition-colors px-2 py-1 rounded border border-theme-tertiary hover:border-accent-red"
+                            className="text-xs text-theme-tertiary hover:text-erro transition-colors px-2 py-1 rounded border border-linha hover:border-erro"
                           >
                             {t('clear_all_filters')}
                           </button>
                         )}
                         <button
                           onClick={() => setShowFilters(false)}
-                          className="w-6 h-6 rounded-full bg-theme-primary text-theme-tertiary hover:text-theme-primary transition-colors flex items-center justify-center"
+                          className="w-6 h-6 rounded-full bg-theme-primary text-theme-tertiary hover:text-texto transition-colors flex items-center justify-center"
                         >
                           <PiX className="w-4 h-4" />
                           <NomeAcao acao="fechar" />
@@ -538,7 +538,7 @@ const LearningPageClient = ({ initialData }: LearningPageClientProps) => {
             className="mt-8 classical-card"
           >
             <div className="text-center py-16">
-              <div className="w-24 h-24 bg-gradient-to-br from-theme-secondary to-theme-primary rounded-full flex items-center justify-center mx-auto mb-6 shadow-lg">
+              <div className="w-24 h-24 bg-sup-1 rounded-full flex items-center justify-center mx-auto mb-6 shadow-lg">
                 <PiTarget className="w-12 h-12 text-theme-tertiary" />
               </div>
               <h3 className="text-2xl font-bold text-theme-primary mb-4">
@@ -593,7 +593,7 @@ const LearningPageClient = ({ initialData }: LearningPageClientProps) => {
                       key="want-to-learn"
                     >
                       <Inline gap={3} className="mb-6">
-                        <div className="w-10 h-10 bg-gradient-to-br from-accent-blue to-accent-purple rounded-xl flex items-center justify-center">
+                        <div className="w-10 h-10 bg-aviso rounded-xl flex items-center justify-center">
                           <PiTarget className="w-5 h-5 text-theme-primary" />
                         </div>
                         <div>
@@ -673,7 +673,7 @@ const LearningPageClient = ({ initialData }: LearningPageClientProps) => {
                       key="learned"
                     >
                       <Inline gap={3} className="mb-6">
-                        <div className="w-10 h-10 bg-gradient-to-br from-accent-green to-accent-blue rounded-xl flex items-center justify-center">
+                        <div className="w-10 h-10 bg-ok rounded-xl flex items-center justify-center">
                           <PiCheckCircle className="w-5 h-5 text-theme-primary" />
                         </div>
                         <div>

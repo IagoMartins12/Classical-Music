@@ -38,7 +38,7 @@ const WorkCardList: React.FC<workCardListProps> = ({ work }) => {
       <Inline gap={4} className="flex-1 min-w-0">
         {/* Musical icon */}
         <div className="relative w-10 h-10 flex-shrink-0">
-          <div className="w-full h-full bg-gradient-to-br from-brand-primary to-brand-secondary rounded-xl flex items-center justify-center group-hover:scale-110 transition-all duration-300 shadow-theme-sm group-hover:shadow-theme-glow">
+          <div className="w-full h-full fill-ouro rounded-xl flex items-center justify-center group-hover:scale-110 transition-all duration-300 shadow-theme-sm group-hover:shadow-[var(--sombra-2)]">
             <PiMusicNotes className="w-5 h-5 text-theme-primary" />
           </div>
         </div>
@@ -48,7 +48,7 @@ const WorkCardList: React.FC<workCardListProps> = ({ work }) => {
           {/* Title and opus */}
           <div className="flex items-start gap-3 mb-1">
             <div className="inline-flex items-center py-0.5">
-              <h3 className="font-bold flex items-center gap-2 ml-1 text-theme-primary classical-title group-hover:text-brand-primary transition-colors duration-300  flex-1">
+              <h3 className="font-bold flex items-center gap-2 ml-1 text-theme-primary classical-title group-hover:text-ouro-texto transition-colors duration-300 flex-1">
                 {work.title}
                 <VerificationBadge verified={work.isVerified} variant="icon" />
               </h3>
@@ -59,7 +59,7 @@ const WorkCardList: React.FC<workCardListProps> = ({ work }) => {
                 <Text
                   papel="legenda"
                   tom="suave"
-                  className="inline-flex items-center px-2 py-0.5 bg-theme-elevated border border-theme-primary/30 rounded-md font-medium flex-shrink-0"
+                  className="inline-flex items-center px-2 py-0.5 bg-theme-elevated border border-linha/30 rounded-md font-medium flex-shrink-0"
                 >
                   <PiBookOpen className="w-2.5 h-2.5 mr-1" />
                   {work.opOrCatalog}
@@ -85,7 +85,7 @@ const WorkCardList: React.FC<workCardListProps> = ({ work }) => {
           <Inline gap={2} className="mb-2">
             <Link
               href={`/composer/${work.composer.id}`}
-              className="inline-flex items-center text-sm text-accent-blue hover:text-accent-purple transition-colors font-medium"
+              className="inline-flex items-center text-sm text-aviso hover:text-ouro-texto transition-colors font-medium"
               onClick={(e) => e.stopPropagation()}
             >
               <PiUser className="w-3 h-3 mr-1" />
@@ -118,14 +118,14 @@ const WorkCardList: React.FC<workCardListProps> = ({ work }) => {
 
             {work.compositionYear && (
               <div className="flex items-center">
-                <PiCalendarBlank className="w-3 h-3 mr-1 text-accent-green" />
+                <PiCalendarBlank className="w-3 h-3 mr-1 text-ok" />
                 <span>{work.compositionYear}</span>
               </div>
             )}
 
             {work.mediaDuration && (
               <div className="flex items-center">
-                <PiClock className="w-3 h-3 mr-1 text-accent-purple" />
+                <PiClock className="w-3 h-3 mr-1 text-ouro-texto" />
                 <span>{formatDuration(work.mediaDuration)}</span>
               </div>
             )}
@@ -151,20 +151,20 @@ const WorkCardList: React.FC<workCardListProps> = ({ work }) => {
           as="div"
           className="hidden md:flex items-center space-x-2"
         >
-          <div className="w-1.5 h-1.5 bg-brand-primary rounded-full animate-pulse"></div>
+          <div className="w-1.5 h-1.5 bg-ouro rounded-full animate-pulse"></div>
           <span className="font-medium">
             {t('cardlist_jsx_span_explore_work')}
           </span>
         </Text>
 
         {/* Arrow */}
-        <div className="w-8 h-8 border border-theme-primary rounded-full flex items-center justify-center group-hover:border-brand-primary group-hover:bg-brand-primary/10 transition-all duration-300">
-          <PiCaretRight className="w-4 h-4 text-theme-primary group-hover:text-brand-primary transition-all duration-300 transform group-hover:translate-x-0.5" />
+        <div className="w-8 h-8 border border-theme-primary rounded-full flex items-center justify-center group-hover:border-ouro group-hover:bg-ouro/10 transition-all duration-300">
+          <PiCaretRight className="w-4 h-4 text-theme-primary group-hover:text-ouro-texto transition-all duration-300 transform group-hover:translate-x-0.5" />
         </div>
       </Inline>
 
       {/* Hover background effect */}
-      <div className="absolute inset-0 bg-brand-gradient opacity-0 group-hover:opacity-5 transition-opacity duration-300 rounded-lg pointer-events-none"></div>
+      <div className="absolute inset-0 fill-ouro opacity-0 group-hover:opacity-5 transition-opacity duration-300 rounded-lg pointer-events-none"></div>
     </div>
   );
 };

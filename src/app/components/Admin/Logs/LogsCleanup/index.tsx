@@ -185,7 +185,7 @@ export default function LogsCleanup({ onClose }: LogsCleanupProps) {
       {/* Limpeza Automática */}
       <AnimatedCard className="classical-card p-6">
         <div className="flex items-start space-x-4">
-          <div className="w-12 h-12 bg-gradient-to-br from-accent-amber to-accent-red rounded-xl flex items-center justify-center">
+          <div className="w-12 h-12 bg-atencao rounded-xl flex items-center justify-center">
             <PiClock className="w-6 h-6 text-theme-primary" />
           </div>
 
@@ -304,8 +304,8 @@ export default function LogsCleanup({ onClose }: LogsCleanupProps) {
                   key={date}
                   className={`flex items-center justify-between p-3 rounded-lg border transition-colors cursor-pointer ${
                     selectedDates.has(date)
-                      ? 'bg-accent-blue/10 border-accent-blue'
-                      : 'bg-theme-secondary border-theme-secondary hover:bg-theme-primary/50'
+                      ? 'bg-aviso/10 border-aviso'
+                      : 'bg-theme-secondary border-theme-secondary hover:bg-fundo/50'
                   }`}
                   onClick={() => toggleDateSelection(date)}
                 >
@@ -314,7 +314,7 @@ export default function LogsCleanup({ onClose }: LogsCleanupProps) {
                       type="checkbox"
                       checked={selectedDates.has(date)}
                       onChange={() => toggleDateSelection(date)}
-                      className="w-4 h-4 text-accent-blue rounded focus:ring-accent-blue"
+                      className="w-4 h-4 text-aviso rounded focus:ring-aviso"
                     />
                     <div>
                       <p className="font-medium text-theme-primary">
@@ -346,9 +346,9 @@ export default function LogsCleanup({ onClose }: LogsCleanupProps) {
 
           {/* Ações para Seleção */}
           {selectedDates.size > 0 && (
-            <div className="flex items-center justify-between p-4 bg-accent-blue/10 border border-accent-blue rounded-xl">
+            <div className="flex items-center justify-between p-4 bg-aviso/10 border border-aviso rounded-xl">
               <div>
-                <p className="font-medium text-accent-blue">
+                <p className="font-medium text-aviso">
                   {selectedDates.size} arquivo(s) selecionado(s)
                 </p>
                 <Text papel="rotulo" tom="fraco" as="p">
@@ -380,7 +380,7 @@ export default function LogsCleanup({ onClose }: LogsCleanupProps) {
                   leftIcon={<PiTrash />}
                   onClick={() => setShowConfirmDialog(true)}
                   disabled={!!actionLoading}
-                  className="bg-accent-red hover:bg-accent-red/80"
+                  className="bg-erro hover:bg-erro/80"
                 >
                   Deletar Selecionados
                 </Button>
@@ -392,10 +392,10 @@ export default function LogsCleanup({ onClose }: LogsCleanupProps) {
 
       {/* Dialog de Confirmação */}
       {showConfirmDialog && (
-        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-dialogo">
           <AnimatedCard className="classical-card p-6 max-w-md mx-4">
             <div className="text-center">
-              <div className="w-16 h-16 bg-gradient-to-br from-accent-red to-accent-amber rounded-full flex items-center justify-center mx-auto mb-4">
+              <div className="w-16 h-16 bg-erro rounded-full flex items-center justify-center mx-auto mb-4">
                 <PiWarning className="w-8 h-8 text-theme-primary" />
               </div>
 
@@ -407,7 +407,7 @@ export default function LogsCleanup({ onClose }: LogsCleanupProps) {
                 Tem certeza que deseja deletar{' '}
                 <strong>{selectedDates.size}</strong> arquivo(s) de log?
                 <br />
-                <span className="text-accent-red text-sm mt-2 block">
+                <span className="text-erro text-sm mt-2 block">
                   Esta ação não pode ser desfeita!
                 </span>
               </p>
@@ -433,7 +433,7 @@ export default function LogsCleanup({ onClose }: LogsCleanupProps) {
                   }
                   onClick={handleDeleteSelected}
                   disabled={!!actionLoading}
-                  className="flex-1 bg-accent-red hover:bg-accent-red/80"
+                  className="flex-1 bg-erro hover:bg-erro/80"
                 >
                   {actionLoading === 'delete' ? 'Deletando...' : 'Deletar'}
                 </Button>

@@ -105,26 +105,26 @@ export default function LogsAudit() {
   };
 
   const getActivityColor = (type: string) => {
-    if (type === 'UPLOAD') return 'text-accent-blue'; // 🆕
-    if (type.includes('FAVORITE')) return 'text-accent-red';
-    if (type.includes('LEARNED')) return 'text-accent-green';
-    if (type.includes('WANT_TO_LEARN')) return 'text-accent-blue';
-    if (type.includes('ANNOTATION')) return 'text-accent-purple';
-    if (type.includes('REPORT')) return 'text-accent-amber';
-    if (type.includes('VIDEO')) return 'text-accent-blue';
-    return 'text-accent-blue';
+    if (type === 'UPLOAD') return 'text-aviso'; // 🆕
+    if (type.includes('FAVORITE')) return 'text-erro';
+    if (type.includes('LEARNED')) return 'text-ok';
+    if (type.includes('WANT_TO_LEARN')) return 'text-aviso';
+    if (type.includes('ANNOTATION')) return 'text-ouro-texto';
+    if (type.includes('REPORT')) return 'text-atencao';
+    if (type.includes('VIDEO')) return 'text-aviso';
+    return 'text-aviso';
   };
 
   const getStatusColor = (status?: string) => {
     switch (status) {
       case 'success':
-        return 'text-accent-green bg-accent-green/10';
+        return 'text-ok bg-ok/10';
       case 'warning':
-        return 'text-accent-amber bg-accent-amber/10';
+        return 'text-atencao bg-atencao/10';
       case 'error':
-        return 'text-accent-red bg-accent-red/10';
+        return 'text-erro bg-erro/10';
       default:
-        return 'text-accent-blue bg-accent-blue/10';
+        return 'text-aviso bg-aviso/10';
     }
   };
 
@@ -176,7 +176,7 @@ export default function LogsAudit() {
         <AnimatedItem direction="up" springType="gentle">
           <div className="text-center mb-8 py-16">
             <div className="flex items-center justify-center mb-6">
-              <div className="w-16 h-16 bg-gradient-to-br from-accent-blue to-accent-purple rounded-3xl flex items-center justify-center shadow-theme-glow">
+              <div className="w-16 h-16 bg-aviso rounded-3xl flex items-center justify-center shadow-theme-glow">
                 <PiPulse className="w-8 h-8 text-theme-primary" />
               </div>
             </div>
@@ -190,7 +190,7 @@ export default function LogsAudit() {
             {/* Status Summary */}
             <Inline gap={8} className="justify-center mt-6">
               <div className="text-center">
-                <div className="text-2xl font-bold text-accent-blue">
+                <div className="text-2xl font-bold text-aviso">
                   {formatNumber(activityPagination.total)}
                 </div>
                 <Text papel="rotulo" tom="fraco" as="div">
@@ -268,8 +268,8 @@ export default function LogsAudit() {
             {(activityFilters.search ||
               activityFilters.type ||
               activityFilters.period) && (
-              <div className="flex items-center justify-between p-3 mt-4 bg-accent-blue/10 border border-accent-blue rounded-lg">
-                <Inline gap={2} className="text-sm text-accent-blue">
+              <div className="flex items-center justify-between p-3 mt-4 bg-aviso/10 border border-aviso rounded-lg">
+                <Inline gap={2} className="text-sm text-aviso">
                   <PiFunnel className="w-4 h-4" />
                   <span>
                     Filtros ativos:{' '}
@@ -335,7 +335,7 @@ export default function LogsAudit() {
                     return (
                       <div
                         key={activity.id}
-                        className="p-4 bg-theme-secondary rounded-xl hover:bg-theme-primary/50 transition-colors"
+                        className="p-4 bg-theme-secondary rounded-xl hover:bg-fundo/50 transition-colors"
                       >
                         <div className="flex items-start space-x-4">
                           <div

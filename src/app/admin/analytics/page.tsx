@@ -17,7 +17,7 @@ export default function AdminAnalyticsPage() {
   return (
     <Suspense
       fallback={
-        <div className="min-h-screen bg-gradient-primary">
+        <div className="min-h-screen">
           <LoadingAdminState loadingName="analytics" />
         </div>
       }

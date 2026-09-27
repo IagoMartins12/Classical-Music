@@ -49,8 +49,8 @@ export default function VerificationButton({
           ${sizeClasses[size]}
           ${
             variant === 'minimal'
-              ? 'bg-transparent border-2 border-theme-primary text-theme-primary hover:bg-theme-primary hover:text-theme-primary'
-              : 'bg-interactive-hover border border-theme-primary text-theme-primary hover:bg-brand-primary/20 hover:border-brand-primary hover:text-brand-primary'
+              ? 'bg-transparent border-2 border-theme-primary text-theme-primary hover:bg-fundo hover:text-texto'
+              : 'bg-ouro/10 border border-theme-primary text-theme-primary hover:bg-ouro/20 hover:border-ouro hover:text-ouro-texto'
           }
           rounded-xl hover:scale-110 transition-all duration-300 flex items-center justify-center group gap-2
         `}

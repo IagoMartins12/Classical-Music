@@ -183,7 +183,7 @@ const Modal = forwardRef<ModalRef, ModalProps>(
     const modalContent = (
       <>
         {/* Modal Principal */}
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-0 sm:p-4 ">
+        <div className="fixed inset-0 z-dialogo flex items-center justify-center p-0 sm:p-4 ">
           {/* Overlay - só mostra se não for modal grande em mobile */}
           {!isLargeModal && (
             <div
@@ -229,7 +229,7 @@ const Modal = forwardRef<ModalRef, ModalProps>(
                 {showCloseButton && (
                   <button
                     onClick={handleClose}
-                    className="p-2 text-theme-tertiary hover:text-brand-primary hover:bg-interactive-hover rounded-lg transition-all"
+                    className="p-2 text-theme-tertiary hover:text-ouro-texto hover:bg-ouro/10 rounded-lg transition-all"
                     aria-label="Fechar modal"
                   >
                     <PiX className="w-5 h-5" />

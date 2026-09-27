@@ -390,9 +390,7 @@ const PersonalInfoSection: React.FC<PersonalInfoSectionProps> = ({
             disabled={!isEditing}
             placeholder={t('personal_info_bio_placeholder')}
             className={`input-classical !px-8 w-full h-24 resize-none ${
-              !isEditing
-                ? 'bg-theme-secondary bg-opacity-50 cursor-not-allowed'
-                : ''
+              !isEditing ? 'bg-theme-secondary cursor-not-allowed' : ''
             }`}
             maxLength={500}
           />
@@ -400,9 +398,7 @@ const PersonalInfoSection: React.FC<PersonalInfoSectionProps> = ({
         <Text papel="legenda" tom="fraco" as="p" className="mt-1">
           {formData.bio.length}/500 {t('personal_info_bio_characters')}
         </Text>
-        {errors.bio && (
-          <p className="text-xs text-accent-red mt-1">{errors.bio}</p>
-        )}
+        {errors.bio && <p className="text-xs text-erro mt-1">{errors.bio}</p>}
       </div>
 
       {/* 🔧 TELEFONE COM VALIDAÇÃO APRIMORADA */}
@@ -419,17 +415,15 @@ const PersonalInfoSection: React.FC<PersonalInfoSectionProps> = ({
 
         {/* 🆕 AVISO DE VALIDAÇÃO DE TELEFONE (se editando e houver erro) */}
         {errors.phone && phoneValidation.showError && phoneValidation.error && (
-          <div className="p-4 bg-red-50 border border-red-200 rounded-lg flex items-start space-x-3">
-            <PiWarningCircle className="w-5 h-5 text-red-600 flex-shrink-0 mt-0.5" />
+          <div className="p-4 bg-erro/10 border border-erro/30 rounded-lg flex items-start space-x-3">
+            <PiWarningCircle className="w-5 h-5 text-erro flex-shrink-0 mt-0.5" />
             <div>
-              <h4 className="text-sm font-medium text-red-800">
+              <h4 className="text-sm font-medium text-erro">
                 {t('personal_info_phone_invalid')}
               </h4>
-              <p className="text-sm text-red-700 mt-1">
-                {phoneValidation.error}
-              </p>
+              <p className="text-sm text-erro mt-1">{phoneValidation.error}</p>
               {phoneValidation.progressMessage && (
-                <p className="text-xs text-red-600 mt-1">
+                <p className="text-xs text-erro mt-1">
                   {phoneValidation.progressMessage}
                 </p>
               )}

@@ -41,7 +41,7 @@ export function CategoryCard({
         >
           {category.icon || '📚'}
         </div>
-        <h3 className="font-semibold text-theme-primary mb-1 group-hover:text-brand-primary transition-colors">
+        <h3 className="font-semibold text-theme-primary mb-1 group-hover:text-ouro-texto transition-colors">
           {category.name}
         </h3>
         <Text papel="rotulo" tom="fraco" as="p">
@@ -55,7 +55,7 @@ export function CategoryCard({
     return (
       <Link
         href={`/blog/category/${category.slug}`}
-        className="classical-card overflow-hidden group hover:shadow-theme-large transition-all"
+        className="classical-card overflow-hidden group hover:shadow-[var(--sombra-2)] transition-all"
       >
         {/* Large Image */}
         <div className="relative h-64 overflow-hidden">
@@ -117,7 +117,7 @@ export function CategoryCard({
   return (
     <Link
       href={`/blog/category/${category.slug}`}
-      className="classical-card overflow-hidden group hover:shadow-theme-large transition-all"
+      className="classical-card overflow-hidden group hover:shadow-[var(--sombra-2)] transition-all"
     >
       {/* Image Header */}
       <div className="relative h-40 overflow-hidden">
@@ -161,7 +161,7 @@ export function CategoryCard({
 
         {/* Article Count */}
         <div className="absolute top-4 right-4">
-          <div className="px-3 py-1 rounded-lg bg-white/90 backdrop-blur-sm text-xs font-bold text-gray-900">
+          <div className="px-3 py-1 rounded-lg bg-white/90 backdrop-blur-sm text-xs font-bold text-texto">
             {category._count.articles}
           </div>
         </div>
@@ -169,7 +169,7 @@ export function CategoryCard({
 
       {/* Content */}
       <div className="p-5">
-        <h3 className="text-lg font-bold text-theme-primary mb-2 group-hover:text-brand-primary transition-colors line-clamp-1">
+        <h3 className="text-lg font-bold text-theme-primary mb-2 group-hover:text-ouro-texto transition-colors line-clamp-1">
           {category.name}
         </h3>
 

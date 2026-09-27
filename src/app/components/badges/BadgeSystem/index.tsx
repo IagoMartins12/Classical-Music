@@ -51,28 +51,28 @@ export interface Badge {
 // Configuração de cores por raridade
 const RARITY_COLORS = {
   COMMON: {
-    from: 'from-slate-400',
-    to: 'to-slate-600',
-    border: 'border-slate-400/30',
-    text: 'text-slate-600',
+    from: 'bg-texto-fraco',
+    to: 'bg-texto-fraco',
+    border: 'border-linha-forte/30',
+    text: 'text-texto-suave',
   },
   RARE: {
-    from: 'from-blue-400',
-    to: 'to-blue-600',
-    border: 'border-blue-400/30',
-    text: 'text-blue-600',
+    from: 'bg-aviso',
+    to: 'bg-aviso',
+    border: 'border-aviso/30',
+    text: 'text-aviso',
   },
   EPIC: {
-    from: 'from-purple-400',
-    to: 'to-purple-600',
-    border: 'border-purple-400/30',
-    text: 'text-purple-600',
+    from: 'fill-ouro',
+    to: 'fill-ouro',
+    border: 'border-ouro/30',
+    text: 'text-ouro-texto',
   },
   LEGENDARY: {
-    from: 'from-amber-400',
-    to: 'to-amber-600',
-    border: 'border-amber-400/30',
-    text: 'text-amber-600',
+    from: 'bg-atencao',
+    to: 'bg-atencao',
+    border: 'border-atencao/30',
+    text: 'text-atencao',
   },
 };
 
@@ -399,12 +399,12 @@ export function BadgeComponent({
         ${
           badge.unlocked
             ? `bg-gradient-to-br border-color-primary shadow-lg ${badge.color?.border}`
-            : 'bg-theme-secondary border-2 border-theme-primary/20'
+            : 'bg-theme-secondary border-2 border-linha/20'
         }
         border-2
         flex items-center justify-center
         relative overflow-hidden
-        ${badge.unlocked ? 'shadow-glow' : ''}
+        ${badge.unlocked ? '' : ''}
       `}
       >
         <Icon
@@ -445,11 +445,7 @@ export function BadgeComponent({
                      opacity-0 group-hover:opacity-100 transition-opacity duration-300 
                      pointer-events-none z-50"
       >
-        <div
-          className=" bg-theme-primary text-theme-inverse-text px-3 py-2 rounded-lg 
-                       text-sm font-medium shadow-lg border border-theme-primary/20
-                       max-w-64 w-32 text-center"
-        >
+        <div className=" bg-theme-primary text-sobre-ouro px-3 py-2 rounded-lg text-sm font-medium shadow-lg border border-linha/20 max-w-64 w-32 text-center">
           <div className="font-bold">{badge.name}</div>
           <div className="text-xs opacity-90 mt-1">{badge.description}</div>
           {badge.maxProgress && !badge.unlocked && (
@@ -514,7 +510,7 @@ export function BadgeGrid({
         </div>
 
         {/* Resumo de conquistas */}
-        <div className="pt-4 border-t border-theme-primary/20">
+        <div className="pt-4 border-t border-linha/20">
           <div className="flex items-center justify-between text-sm">
             <span className="text-theme-secondary">
               Próxima conquista: {nextBadges[0]?.name || 'Todas desbloqueadas!'}

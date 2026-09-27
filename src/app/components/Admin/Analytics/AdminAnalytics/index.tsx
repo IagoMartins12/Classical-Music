@@ -111,11 +111,11 @@ export default function AdminAnalytics() {
   const getRecommendationColor = (type: string) => {
     switch (type) {
       case 'warning':
-        return 'text-accent-red bg-accent-red/10 border-accent-red';
+        return 'text-erro bg-erro/10 border-erro';
       case 'success':
-        return 'text-accent-green bg-accent-green/10 border-accent-green';
+        return 'text-ok bg-ok/10 border-ok';
       default:
-        return 'text-accent-blue bg-accent-blue/10 border-accent-blue';
+        return 'text-aviso bg-aviso/10 border-aviso';
     }
   };
 
@@ -131,7 +131,7 @@ export default function AdminAnalytics() {
     return (
       <PageContainer showBackground={true}>
         <div className="text-center py-16">
-          <PiWarning className="w-16 h-16 text-accent-red mx-auto mb-4" />
+          <PiWarning className="w-16 h-16 text-erro mx-auto mb-4" />
           <h2 className="text-2xl font-bold text-theme-primary mb-2">
             Erro ao Carregar Analytics
           </h2>
@@ -159,7 +159,7 @@ export default function AdminAnalytics() {
         <AnimatedItem direction="up" springType="gentle">
           <div className="text-center mb-8 py-16">
             <div className="flex items-center justify-center mb-6">
-              <div className="w-16 h-16 bg-gradient-to-br from-brand-primary to-brand-secondary rounded-3xl flex items-center justify-center shadow-theme-glow">
+              <div className="w-16 h-16 fill-ouro rounded-3xl flex items-center justify-center shadow-theme-glow">
                 <PiChartBar className="w-8 h-8 text-theme-primary" />
               </div>
             </div>
@@ -173,7 +173,7 @@ export default function AdminAnalytics() {
             {/* Status e controles */}
             <div className="flex flex-col sm:flex-row items-center justify-center gap-4 mt-6">
               <Inline gap={2}>
-                <div className="w-3 h-3 bg-accent-green rounded-full animate-pulse"></div>
+                <div className="w-3 h-3 bg-ok rounded-full animate-pulse"></div>
                 <span className="text-theme-primary font-medium">
                   Dados em Tempo Real
                 </span>
@@ -223,7 +223,7 @@ export default function AdminAnalytics() {
               gap={2}
               className="text-xl font-bold text-theme-primary mb-6"
             >
-              <PiTarget className="w-5 h-5 text-accent-blue" />
+              <PiTarget className="w-5 h-5 text-aviso" />
               <span>Insights Principais</span>
             </Inline>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
@@ -239,9 +239,7 @@ export default function AdminAnalytics() {
                     </Text>
                     <span
                       className={`text-xs font-medium ${
-                        metric.isPositive
-                          ? 'text-accent-green'
-                          : 'text-accent-red'
+                        metric.isPositive ? 'text-ok' : 'text-erro'
                       }`}
                     >
                       {metric.isPositive ? '+' : ''}
@@ -264,7 +262,7 @@ export default function AdminAnalytics() {
                 gap={2}
                 className="text-xl font-bold text-theme-primary mb-6"
               >
-                <PiPulse className="w-5 h-5 text-accent-green" />
+                <PiPulse className="w-5 h-5 text-ok" />
                 <span>Visão Geral do Engajamento</span>
               </Inline>
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
@@ -273,7 +271,7 @@ export default function AdminAnalytics() {
                     <Text papel="rotulo" tom="forte" className="font-medium">
                       Tempo Médio de Sessão
                     </Text>
-                    <span className="text-xs font-medium text-accent-blue">
+                    <span className="text-xs font-medium text-aviso">
                       {(analytics.charts.engagementMetrics.find(
                         (m) => m.metric === 'Tempo Médio de Sessão'
                       )?.trend ?? 0 > 0)
@@ -300,8 +298,8 @@ export default function AdminAnalytics() {
                         (analytics.charts.engagementMetrics.find(
                           (m) => m.metric === 'Anotações/Dia'
                         )?.trend ?? 0 > 0)
-                          ? 'text-accent-green'
-                          : 'text-accent-red'
+                          ? 'text-ok'
+                          : 'text-erro'
                       }`}
                     >
                       {(analytics.charts.engagementMetrics.find(
@@ -330,8 +328,8 @@ export default function AdminAnalytics() {
                         (analytics.charts.engagementMetrics.find(
                           (m) => m.metric === '% Usuários Ativos'
                         )?.trend ?? 0 > 0)
-                          ? 'text-accent-green'
-                          : 'text-accent-red'
+                          ? 'text-ok'
+                          : 'text-erro'
                       }`}
                     >
                       {(analytics.charts.engagementMetrics.find(
@@ -360,8 +358,8 @@ export default function AdminAnalytics() {
                         (analytics.charts.engagementMetrics.find(
                           (m) => m.metric === 'Anotações/Usuário'
                         )?.trend ?? 0 > 0)
-                          ? 'text-accent-green'
-                          : 'text-accent-red'
+                          ? 'text-ok'
+                          : 'text-erro'
                       }`}
                     >
                       {(analytics.charts.engagementMetrics.find(
@@ -441,7 +439,7 @@ export default function AdminAnalytics() {
               gap={2}
               className="text-lg font-bold text-theme-primary mb-4"
             >
-              <PiDatabase className="w-5 h-5 text-accent-blue" />
+              <PiDatabase className="w-5 h-5 text-aviso" />
               <span>Obras Populares</span>
             </Inline>
             <Stack gap={3}>
@@ -457,7 +455,7 @@ export default function AdminAnalytics() {
                       papel="rotulo"
                       tom="forte"
                       as="div"
-                      className="w-8 h-8 bg-gradient-to-br from-accent-blue to-accent-purple rounded-lg flex items-center justify-center font-bold"
+                      className="w-8 h-8 bg-aviso rounded-lg flex items-center justify-center font-bold"
                     >
                       {index + 1}
                     </Text>
@@ -499,7 +497,7 @@ export default function AdminAnalytics() {
               gap={2}
               className="text-lg font-bold text-theme-primary mb-4"
             >
-              <PiUsers className="w-5 h-5 text-accent-green" />
+              <PiUsers className="w-5 h-5 text-ok" />
               <span>Compositores Populares</span>
             </Inline>
             <Stack gap={3}>
@@ -515,7 +513,7 @@ export default function AdminAnalytics() {
                       papel="rotulo"
                       tom="forte"
                       as="div"
-                      className="w-8 h-8 bg-gradient-to-br from-accent-green to-accent-blue rounded-lg flex items-center justify-center font-bold"
+                      className="w-8 h-8 bg-ok rounded-lg flex items-center justify-center font-bold"
                     >
                       {index + 1}
                     </Text>
@@ -551,7 +549,7 @@ export default function AdminAnalytics() {
               gap={2}
               className="text-lg font-bold text-theme-primary mb-4"
             >
-              <PiPulse className="w-5 h-5 text-accent-purple" />
+              <PiPulse className="w-5 h-5 text-ouro-texto" />
               <span>Usuários Ativos</span>
             </Inline>
             <Stack gap={3}>
@@ -567,7 +565,7 @@ export default function AdminAnalytics() {
                       papel="rotulo"
                       tom="forte"
                       as="div"
-                      className="w-8 h-8 bg-gradient-to-br from-accent-purple to-accent-blue rounded-lg flex items-center justify-center font-bold"
+                      className="w-8 h-8 fill-ouro rounded-lg flex items-center justify-center font-bold"
                     >
                       {index + 1}
                     </Text>
@@ -604,7 +602,7 @@ export default function AdminAnalytics() {
                 gap={2}
                 className="text-xl font-bold text-theme-primary mb-6"
               >
-                <PiTarget className="w-5 h-5 text-accent-amber" />
+                <PiTarget className="w-5 h-5 text-atencao" />
                 <span>Recomendações</span>
               </Inline>
               <div className="space-y-4">
@@ -613,7 +611,7 @@ export default function AdminAnalytics() {
                   return (
                     <div
                       key={index}
-                      className={`p-4 border-l-4 rounded-xl ${getRecommendationColor(
+                      className={`border p-4 rounded-xl ${getRecommendationColor(
                         rec.type
                       )}`}
                     >
@@ -650,7 +648,7 @@ export default function AdminAnalytics() {
               onClick={() => router.push('/admin/users')}
             >
               <div className="flex flex-col items-center justify-center">
-                <PiUsers className="w-8 h-8 mb-3 text-accent-blue" />
+                <PiUsers className="w-8 h-8 mb-3 text-aviso" />
                 <span className="font-bold mb-2">Gerenciar Usuários</span>
                 <Text papel="rotulo" tom="fraco" className="text-center">
                   {formatNumber(analytics.overview.users.total)} usuários
@@ -665,7 +663,7 @@ export default function AdminAnalytics() {
               onClick={() => router.push('/admin/content')}
             >
               <div className="flex flex-col items-center justify-center">
-                <PiDatabase className="w-8 h-8 mb-3 text-accent-green" />
+                <PiDatabase className="w-8 h-8 mb-3 text-ok" />
                 <span className="font-bold mb-2">Gerenciar Conteúdo</span>
                 <Text papel="rotulo" tom="fraco" className="text-center">
                   {formatNumber(analytics.overview.content.works)} obras
@@ -681,7 +679,7 @@ export default function AdminAnalytics() {
             >
               <div className="flex flex-col items-center justify-center">
                 {' '}
-                <PiTrendUp className="w-8 h-8 mb-3 text-accent-purple" />
+                <PiTrendUp className="w-8 h-8 mb-3 text-ouro-texto" />
                 <span className="font-bold mb-2">Insights Avançados</span>
                 <Text papel="rotulo" tom="fraco" className="text-center">
                   Análises e predições
@@ -695,7 +693,7 @@ export default function AdminAnalytics() {
               onClick={() => router.push('/admin/system')}
             >
               <div className="flex flex-col items-center justify-center">
-                <PiLightning className="w-8 h-8 mb-3 text-accent-amber" />
+                <PiLightning className="w-8 h-8 mb-3 text-atencao" />
                 <span className="font-bold mb-2">Sistema</span>
                 <Text papel="rotulo" tom="fraco" className="text-center">
                   Performance {analytics.overview.system.performance.toFixed(1)}

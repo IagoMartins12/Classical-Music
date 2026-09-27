@@ -68,7 +68,7 @@ export function HeroCarousel({ articles }: { articles: Article[] }) {
   if (!mounted) {
     return (
       <div className="relative rounded-2xl overflow-hidden shadow-theme-large h-[500px] md:h-[600px] bg-theme-elevated animate-pulse">
-        <div className="absolute inset-0 bg-gradient-hero" />
+        <div className="absolute inset-0" />
       </div>
     );
   }
@@ -102,11 +102,11 @@ export function HeroCarousel({ articles }: { articles: Article[] }) {
             priority
           />
         ) : (
-          <div className="absolute inset-0 bg-gradient-hero" />
+          <div className="absolute inset-0" />
         )}
 
         {/* Overlay */}
-        <div className="absolute inset-0 bg-gradient-overlay" />
+        <div className="absolute inset-0" />
 
         {/* Content */}
         <div className="absolute inset-0 flex items-end">
@@ -133,20 +133,20 @@ export function HeroCarousel({ articles }: { articles: Article[] }) {
 
               {/* Title */}
               <Link href={`/blog/${currentArticle.slug}`}>
-                <h2 className="text-4xl md:text-5xl lg:text-6xl font-bold text-white mb-4 hover:text-brand-secondary transition-colors line-clamp-2">
+                <h2 className="text-4xl md:text-5xl lg:text-6xl font-bold text-white mb-4 hover:text-ouro-texto transition-colors line-clamp-2">
                   {currentArticle.title}
                 </h2>
               </Link>
 
               {/* Description */}
               {currentArticle.description && (
-                <p className="text-lg text-gray-200 mb-6 line-clamp-2">
+                <p className="text-lg text-texto-fraco mb-6 line-clamp-2">
                   {currentArticle.description}
                 </p>
               )}
 
               {/* Meta */}
-              <div className="flex flex-wrap items-center gap-4 text-sm text-gray-300">
+              <div className="flex flex-wrap items-center gap-4 text-sm text-texto-fraco">
                 {authorName && (
                   <Inline gap={2}>
                     <PiUser className="w-4 h-4" />
@@ -216,7 +216,7 @@ export function HeroCarousel({ articles }: { articles: Article[] }) {
                 aria-hidden="true"
                 className={`transition-all ${
                   index === currentIndex
-                    ? 'w-8 h-2 bg-brand-primary'
+                    ? 'w-8 h-2 bg-ouro'
                     : 'w-2 h-2 bg-white/50 group-hover:bg-white/80'
                 } rounded-full`}
               />

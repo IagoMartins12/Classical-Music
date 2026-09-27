@@ -129,7 +129,7 @@ export default function EditArticlePage() {
   if (loading) {
     return (
       <div className="flex items-center justify-center min-h-screen bg-theme-primary">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-brand-primary"></div>
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-ouro"></div>
       </div>
     );
   }
@@ -143,7 +143,7 @@ export default function EditArticlePage() {
           </h2>
           <Link
             href="/blog/admin/articles"
-            className="text-brand-primary hover:text-brand-secondary transition-colors"
+            className="text-brand-primary hover:text-ouro-texto transition-colors"
           >
             Voltar para artigos
           </Link>
@@ -160,7 +160,7 @@ export default function EditArticlePage() {
           <div>
             <Link
               href="/blog/admin/articles"
-              className="inline-flex items-center text-sm text-theme-secondary hover:text-brand-primary mb-4 transition-colors"
+              className="inline-flex items-center text-sm text-theme-secondary hover:text-ouro-texto mb-4 transition-colors"
             >
               <PiArrowLeft className="w-4 h-4 mr-2" />
               Voltar para artigos

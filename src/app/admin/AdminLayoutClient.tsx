@@ -76,7 +76,7 @@ export default function AdminLayoutClient({
         {/* Mobile Sidebar */}
         <div
           id="admin-sidebar"
-          className={`lg:hidden fixed inset-y-0 left-0 z-50 w-72 bg-theme-elevated border-r border-theme-primary transform transition-transform duration-300 ease-in-out ${
+          className={`lg:hidden fixed inset-y-0 left-0 z-dialogo w-72 bg-theme-elevated border-r border-theme-primary transform transition-transform duration-300 ease-in-out ${
             sidebarOpen ? 'translate-x-0' : '-translate-x-full'
           }`}
           style={{ top: '80px' }} // Account for header height
@@ -89,7 +89,7 @@ export default function AdminLayoutClient({
         {/* Mobile Overlay */}
         {sidebarOpen && (
           <div
-            className="lg:hidden fixed inset-0 bg-black/50 backdrop-blur-sm z-40"
+            className="lg:hidden fixed inset-0 bg-black/50 backdrop-blur-sm z-menu"
             style={{ top: '80px' }} // Account for header height
             onClick={() => setSidebarOpen(false)}
           />

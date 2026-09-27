@@ -124,13 +124,13 @@ export function ArticlesFilter({
             <button
               onClick={() => setShowFilters(!showFilters)}
               className={`btn-classical-secondary flex items-center space-x-2 ${
-                hasActiveFilters ? 'ring-2 ring-brand-primary' : ''
+                hasActiveFilters ? 'ring-2 ring-ouro' : ''
               }`}
             >
               <PiFunnel className="w-4 h-4" />
               <span>Filtros</span>
               {hasActiveFilters && (
-                <span className="w-2 h-2 bg-brand-primary rounded-full"></span>
+                <span className="w-2 h-2 bg-ouro rounded-full"></span>
               )}
             </button>
 
@@ -266,8 +266,8 @@ export function ArticlesFilter({
                           onClick={() => updateParams({ page: p.toString() })}
                           className={`px-4 py-2 rounded-lg font-medium transition-all ${
                             pagination.page === p
-                              ? 'bg-brand-primary text-white shadow-theme-glow'
-                              : 'bg-theme-elevated text-theme-secondary hover:bg-interactive-hover'
+                              ? 'bg-ouro text-sobre-ouro shadow-theme-glow'
+                              : 'bg-theme-elevated text-theme-secondary hover:bg-ouro/10'
                           }`}
                         >
                           {p}

@@ -23,13 +23,13 @@ const SectionTitle: React.FC<SectionTitleProps> = ({
   const getAccentClasses = () => {
     switch (accent) {
       case 'purple':
-        return 'from-accent-purple to-accent-blue';
+        return 'fill-ouro';
       case 'blue':
-        return 'from-accent-blue to-accent-purple';
+        return 'bg-aviso';
       case 'green':
-        return 'from-accent-green to-accent-blue';
+        return 'bg-ok';
       default:
-        return 'from-brand-primary to-brand-secondary';
+        return 'fill-ouro';
     }
   };
 
@@ -62,7 +62,7 @@ const SectionTitle: React.FC<SectionTitleProps> = ({
         {linkHref && (
           <Link
             href={linkHref}
-            className="flex justify-center items-center px-6 py-3 bg-theme-elevated border border-theme-primary rounded-xl text-theme-primary hover:text-brand-primary hover:border-brand-primary hover:bg-interactive-hover hover:scale-105 transition-all duration-300 group shadow-theme-sm hover:shadow-theme-md font-medium"
+            className="flex justify-center items-center px-6 py-3 bg-theme-elevated border border-theme-primary rounded-xl text-theme-primary hover:text-ouro-texto hover:border-ouro hover:bg-ouro/10 hover:scale-105 transition-all duration-300 group shadow-theme-sm hover:shadow-[var(--sombra-1)] font-medium"
           >
             {linkText}
             <PiArrowRight className="ml-2 w-4 h-4 transition-transform group-hover:translate-x-1" />
@@ -72,7 +72,7 @@ const SectionTitle: React.FC<SectionTitleProps> = ({
 
       {/* Decorative line */}
       <div className="relative">
-        <div className="h-px bg-border-secondary"></div>
+        <div className="h-px bg-linha"></div>
         <div
           className={`absolute left-0 top-0 w-20 h-px bg-gradient-to-r ${getAccentClasses()}`}
         ></div>

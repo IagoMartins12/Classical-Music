@@ -101,7 +101,7 @@ export default function NotFound() {
 
               {/* Mobile Sidebar */}
               <div
-                className={`lg:hidden fixed inset-y-0 left-0 z-50 w-72 bg-theme-elevated border-r border-theme-primary transform transition-transform duration-300 ease-in-out ${
+                className={`lg:hidden fixed inset-y-0 left-0 z-dialogo w-72 bg-theme-elevated border-r border-theme-primary transform transition-transform duration-300 ease-in-out ${
                   showAdminSidebar ? 'translate-x-0' : '-translate-x-full'
                 }`}
                 style={{ top: '80px' }}
@@ -117,9 +117,9 @@ export default function NotFound() {
                 {/* Background Pattern */}
                 <AnimatedMusicalNotes />
                 <div className="absolute inset-0 pointer-events-none opacity-5">
-                  <div className="absolute top-20 left-20 w-64 h-64 bg-brand-gradient rounded-full blur-3xl"></div>
-                  <div className="absolute bottom-40 right-32 w-48 h-48 bg-accent-purple/30 rounded-full blur-2xl"></div>
-                  <div className="absolute top-1/2 left-1/4 w-32 h-32 bg-accent-blue/20 rounded-full blur-xl"></div>
+                  <div className="absolute top-20 left-20 w-64 h-64 rounded-full blur-3xl"></div>
+                  <div className="absolute bottom-40 right-32 w-48 h-48 rounded-full blur-2xl"></div>
+                  <div className="absolute top-1/2 left-1/4 w-32 h-32 rounded-full blur-xl"></div>
                 </div>
 
                 <div className="section-wrap relative z-10">
@@ -189,12 +189,12 @@ export default function NotFound() {
                           className="classical-card p-6"
                         >
                           <Link href={suggestion.href} className="block group">
-                            <div className="w-16 h-16 bg-gradient-to-br from-brand-primary/20 to-brand-secondary/20 rounded-2xl flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform duration-300">
+                            <div className="w-16 h-16 bg-ouro/20 rounded-2xl flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform duration-300">
                               <suggestion.icon className="w-8 h-8 text-brand-primary" />
                             </div>
-                            <h3 className="text-xl font-bold text-theme-primary mb-2 classical-title group-hover:text-brand-primary transition-colors">
+                            <h2 className="text-xl font-bold text-theme-primary mb-2 classical-title group-hover:text-ouro-texto transition-colors">
                               {suggestion.title}
-                            </h3>
+                            </h2>
                             <Text
                               papel="rotulo"
                               tom="suave"
@@ -243,18 +243,18 @@ export default function NotFound() {
                 </div>
 
                 {/* Decorative Elements */}
-                <div className="absolute top-4 left-4 w-12 h-12 bg-accent-purple/10 rounded-2xl flex items-center justify-center opacity-40">
-                  <PiMusicNotes className="w-6 h-6 text-accent-purple" />
+                <div className="absolute top-4 left-4 w-12 h-12 bg-ouro/10 rounded-2xl flex items-center justify-center opacity-40">
+                  <PiMusicNotes className="w-6 h-6 text-ouro-texto" />
                 </div>
 
-                <div className="absolute bottom-4 right-4 w-16 h-16 bg-brand-gradient/10 rounded-3xl flex items-center justify-center opacity-50">
+                <div className="absolute bottom-4 right-4 w-16 h-16 bg-ouro/10 rounded-3xl flex items-center justify-center opacity-50">
                   <PiMusicNotes className="w-8 h-8 text-brand-primary" />
                 </div>
               </div>
               {/* Mobile Overlay */}
               {showAdminSidebar && (
                 <div
-                  className="lg:hidden fixed inset-0 bg-black/50 backdrop-blur-sm z-40"
+                  className="lg:hidden fixed inset-0 bg-black/50 backdrop-blur-sm z-menu"
                   style={{ top: '80px' }}
                   onClick={() => setShowAdminSidebar(false)}
                 />
@@ -422,15 +422,15 @@ export default function NotFound() {
       {/* Conteúdo principal da página 404 */}
       {currentArea !== 'admin' && (
         <>
-          <div
+          <main
             className={`classical-theme min-h-screen flex items-center justify-center relative overflow-hidden`}
           >
             {/* Background Pattern */}
             <AnimatedMusicalNotes />
             <div className="absolute inset-0 pointer-events-none opacity-5">
-              <div className="absolute top-20 left-20 w-64 h-64 bg-brand-gradient rounded-full blur-3xl"></div>
-              <div className="absolute bottom-40 right-32 w-48 h-48 bg-accent-purple/30 rounded-full blur-2xl"></div>
-              <div className="absolute top-1/2 left-1/4 w-32 h-32 bg-accent-blue/20 rounded-full blur-xl"></div>
+              <div className="absolute top-20 left-20 w-64 h-64 rounded-full blur-3xl"></div>
+              <div className="absolute bottom-40 right-32 w-48 h-48 rounded-full blur-2xl"></div>
+              <div className="absolute top-1/2 left-1/4 w-32 h-32 rounded-full blur-xl"></div>
             </div>
 
             <div className="section-wrap relative z-10">
@@ -497,12 +497,12 @@ export default function NotFound() {
                       className="classical-card p-6"
                     >
                       <Link href={suggestion.href} className="block group">
-                        <div className="w-16 h-16 bg-gradient-to-br from-brand-primary/20 to-brand-secondary/20 rounded-2xl flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform duration-300">
+                        <div className="w-16 h-16 bg-ouro/20 rounded-2xl flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform duration-300">
                           <suggestion.icon className="w-8 h-8 text-brand-primary" />
                         </div>
-                        <h3 className="text-xl font-bold text-theme-primary mb-2 classical-title group-hover:text-brand-primary transition-colors">
+                        <h2 className="text-xl font-bold text-theme-primary mb-2 classical-title group-hover:text-ouro-texto transition-colors">
                           {suggestion.title}
-                        </h3>
+                        </h2>
                         <Text
                           papel="rotulo"
                           tom="suave"
@@ -564,14 +564,14 @@ export default function NotFound() {
             </div>
 
             {/* Decorative Elements */}
-            <div className="absolute top-4 left-4 w-12 h-12 bg-accent-purple/10 rounded-2xl flex items-center justify-center opacity-40">
-              <PiMusicNotes className="w-6 h-6 text-accent-purple" />
+            <div className="absolute top-4 left-4 w-12 h-12 bg-ouro/10 rounded-2xl flex items-center justify-center opacity-40">
+              <PiMusicNotes className="w-6 h-6 text-ouro-texto" />
             </div>
 
-            <div className="absolute bottom-4 right-4 w-16 h-16 bg-brand-gradient/10 rounded-3xl flex items-center justify-center opacity-50">
+            <div className="absolute bottom-4 right-4 w-16 h-16 bg-ouro/10 rounded-3xl flex items-center justify-center opacity-50">
               <PiMusicNotes className="w-8 h-8 text-brand-primary" />
             </div>
-          </div>
+          </main>
           <Footer />
         </>
       )}

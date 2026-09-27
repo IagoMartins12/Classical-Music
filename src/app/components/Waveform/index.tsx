@@ -292,8 +292,8 @@ const Waveform: React.FC<WaveformProps> = ({
       {/* Loading muito simples */}
       {!waveformReady && (
         <div className="absolute inset-0 bg-gray-800/50 rounded-lg flex items-center justify-center">
-          <Inline gap={2} className="text-blue-400">
-            <div className="w-4 h-4 border-2 border-blue-400 border-t-transparent rounded-full animate-spin"></div>
+          <Inline gap={2} className="text-aviso">
+            <div className="w-4 h-4 border-2 border-aviso border-t-transparent rounded-full animate-spin"></div>
             <span className="text-sm">
               {language === 'en' ? 'Loading... ' : 'Carregando...'}
             </span>
@@ -314,9 +314,9 @@ const Waveform: React.FC<WaveformProps> = ({
       {isPlaying && waveformReady && (
         <Inline
           gap={1}
-          className="absolute top-1 right-2 text-xs text-green-400 bg-gray-900/70 px-2 py-1 rounded"
+          className="absolute top-1 right-2 text-xs text-ok bg-gray-900/70 px-2 py-1 rounded"
         >
-          <div className="w-2 h-2 bg-green-400 rounded-full animate-pulse"></div>
+          <div className="w-2 h-2 bg-ok rounded-full animate-pulse"></div>
           <span> {language === 'en' ? 'Playing' : 'Tocando'}</span>
         </Inline>
       )}

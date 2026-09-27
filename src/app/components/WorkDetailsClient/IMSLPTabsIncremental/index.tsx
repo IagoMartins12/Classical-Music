@@ -106,42 +106,42 @@ const TABS = [
     labelKey: 'imslp_tabs_partituras',
     icon: PiMusicNotes,
     type: 'scores',
-    gradient: 'from-brand-primary to-brand-secondary',
+    gradient: 'fill-ouro',
   },
   {
     id: 'parts',
     labelKey: 'imslp_tabs_partes',
     icon: PiFileText,
     type: 'parts',
-    gradient: 'from-accent-blue to-accent-purple',
+    gradient: 'bg-aviso',
   },
   {
     id: 'arrangements',
     labelKey: 'imslp_tabs_arranjos',
     icon: PiMusicNotes,
     type: 'arrangements',
-    gradient: 'from-accent-green to-accent-blue',
+    gradient: 'bg-ok',
   },
   {
     id: 'librettos',
     labelKey: 'imslp_tabs_libretos',
     icon: PiFileText,
     type: 'librettos',
-    gradient: 'from-accent-purple to-accent-red',
+    gradient: 'fill-ouro',
   },
   {
     id: 'others',
     labelKey: 'imslp_tabs_outros',
     icon: PiFileText,
     type: 'others',
-    gradient: 'from-accent-red to-accent-purple',
+    gradient: 'bg-erro',
   },
   {
     id: 'sources',
     labelKey: 'imslp_tabs_arquivos_fonte',
     icon: PiFileText,
     type: 'sources',
-    gradient: 'from-accent-purple to-accent-blue',
+    gradient: 'fill-ouro',
   },
 ] as const;
 
@@ -150,7 +150,7 @@ const SourceBadge = React.memo(
   ({ source }: { source: 'IMSLP' | 'UPLOAD' | 'CUSTOM'; t: any }) => {
     if (source === 'IMSLP') {
       return (
-        <div className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200">
+        <div className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-aviso/10 text-aviso dark:bg-aviso/20 dark:text-aviso">
           <PiBookOpen className="w-3 h-3 mr-1" />
           IMSLP
         </div>
@@ -158,7 +158,7 @@ const SourceBadge = React.memo(
     }
 
     return (
-      <div className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200">
+      <div className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-ok/10 text-ok dark:bg-ok/20 dark:text-ok">
         <PiTarget className="w-3 h-3 mr-1" />
         Opus Atlas
       </div>
@@ -193,7 +193,7 @@ const ScoreCardWithBadge = React.memo(
           relative 
           ${
             isMostFavorited
-              ? 'border-2 border-yellow-400 rounded-xl shadow-yellow-400/30 shadow-xl ring-1 ring-yellow-300/50 bg-gradient-to-r from-yellow-400/5 to-yellow-600/5 p-1'
+              ? 'border-2 border-atencao rounded-xl shadow-xl ring-1 ring-atencao/50 bg-atencao/5 p-1'
               : ''
           }
         `}
@@ -204,7 +204,7 @@ const ScoreCardWithBadge = React.memo(
             className="absolute -top-3 -left-3 z-20 group/crown"
             title={t('score_card_favorita_comunidade')}
           >
-            <div className="w-10 h-10 bg-gradient-to-br from-yellow-400 via-yellow-500 to-yellow-600 border-2 border-yellow-300 text-yellow-900 rounded-full font-medium shadow-xl backdrop-blur-sm flex items-center justify-center ring-2 ring-yellow-400/40 animate-pulse hover:animate-none transition-all duration-300 hover:scale-110">
+            <div className="w-10 h-10 bg-atencao border-2 border-atencao/30 text-atencao rounded-full font-medium shadow-xl backdrop-blur-sm flex items-center justify-center ring-2 ring-atencao/40 animate-pulse hover:animate-none transition-all duration-300 hover:scale-110">
               <span className="text-lg filter drop-shadow-sm">👑</span>
             </div>
 
@@ -644,7 +644,7 @@ export default function IMSLPTabsIncremental({
           className="items-center py-8 border-t border-theme-secondary"
         >
           <div className="text-center">
-            <div className="w-16 h-16 bg-gradient-to-br from-accent-green to-accent-blue rounded-2xl flex items-center justify-center mx-auto mb-4">
+            <div className="w-16 h-16 bg-ok rounded-2xl flex items-center justify-center mx-auto mb-4">
               <PiTarget className="w-8 h-8 text-theme-primary" />
             </div>
             <h3 className="text-lg font-semibold text-theme-primary mb-2">
@@ -779,11 +779,11 @@ export default function IMSLPTabsIncremental({
       <AnimatedContainer delay={0.1} staggerSpeed="normal">
         <div className="overflow-hidden animate-fade-in-up">
           {/* Header */}
-          <div className="border-b border-theme-secondary bg-gradient-to-r from-theme-primary to-theme-elevated">
+          <div className="border-b border-theme-secondary bg-fundo">
             <div className="p-2 md:p-6">
               <div className="flex items-center justify-between">
                 <Inline gap={3}>
-                  <div className="w-12 h-12 bg-gradient-to-br from-brand-primary to-brand-secondary rounded-2xl flex items-center justify-center">
+                  <div className="w-12 h-12 fill-ouro rounded-2xl flex items-center justify-center">
                     <PiMusicNotes className="w-6 h-6 text-theme-primary" />
                   </div>
                   <div className="flex-1">
@@ -838,8 +838,8 @@ export default function IMSLPTabsIncremental({
                           flex items-center gap-3 px-6 py-4 cursor-pointer text-sm font-medium  transition-all duration-300 whitespace-nowrap flex-shrink-0 animate-fade-in-up relative
                           ${
                             isActive
-                              ? 'border-0 md:border-b-2 border-brand-primary text-brand-primary bg-gradient-to-t from-brand-primary/10 to-transparent'
-                              : 'border-b-2 border-transparent text-theme-tertiary hover:text-theme-primary hover:border-theme-primary hover:bg-interactive-hover'
+                              ? 'border-0 md:border-b-2 border-ouro text-brand-primary bg-ouro/10'
+                              : 'border-b-2 border-transparent text-theme-tertiary hover:text-texto hover:border-linha hover:bg-ouro/10'
                           }
                         `}
                         style={{ animationDelay: `${index * 0.1}s` }}
@@ -859,7 +859,7 @@ export default function IMSLPTabsIncremental({
                           <span
                             className={`px-2 py-1 rounded-full text-xs font-bold transition-all duration-300 ${
                               isActive
-                                ? 'bg-brand-primary/20 text-brand-primary border border-brand-primary/30'
+                                ? 'bg-ouro/10 text-brand-primary border border-ouro/30'
                                 : 'bg-theme-elevated text-theme-tertiary border border-theme-secondary'
                             }`}
                           >
@@ -868,15 +868,15 @@ export default function IMSLPTabsIncremental({
 
                           {tabStats.hasMore ? (
                             <Inline gap={1}>
-                              <div className="w-1 h-1 bg-accent-blue rounded-full animate-pulse"></div>
+                              <div className="w-1 h-1 bg-aviso rounded-full animate-pulse"></div>
                               {isActive && (
-                                <span className="text-xs text-accent-blue font-medium">
+                                <span className="text-xs text-aviso font-medium">
                                   +{tabStats.remaining}
                                 </span>
                               )}
                             </Inline>
                           ) : (
-                            <div className="w-1 h-1 bg-accent-green rounded-full"></div>
+                            <div className="w-1 h-1 bg-ok rounded-full"></div>
                           )}
                         </Inline>
                       </button>
@@ -901,7 +901,7 @@ export default function IMSLPTabsIncremental({
                       {scoreGroup.groupTitle && (
                         <div className="border-b border-theme-secondary pb-3">
                           <Inline gap={3}>
-                            <div className="w-8 h-8 bg-gradient-to-br from-accent-blue to-accent-purple rounded-xl flex items-center justify-center">
+                            <div className="w-8 h-8 bg-aviso rounded-xl flex items-center justify-center">
                               <PiMusicNotes className="w-4 h-4 text-theme-primary" />
                             </div>
                             <h3 className="text-lg font-semibold text-theme-primary classical-title">
@@ -1063,7 +1063,7 @@ export default function IMSLPTabsIncremental({
                           gap={2}
                           className="text-lg font-semibold text-theme-primary"
                         >
-                          <PiBookOpen className="w-5 h-5 text-accent-blue" />
+                          <PiBookOpen className="w-5 h-5 text-aviso" />
                           <span>{t('imslp_tabs_preview_partitura')}</span>
                         </Inline>
                         <SourceBadge source={selectedScore.source} t={t} />
@@ -1103,9 +1103,9 @@ export default function IMSLPTabsIncremental({
 // ✅ COMPONENTES AUXILIARES OTIMIZADOS
 const LoadingState = React.memo(({ t }: { t: any }) => (
   <div className="classical-card overflow-hidden animate-fade-in-up">
-    <div className="border-b border-theme-secondary p-8 bg-gradient-to-r from-theme-elevated to-interactive-hover">
+    <div className="border-b border-theme-secondary p-8 bg-sup-elevada">
       <Inline gap={3}>
-        <div className="w-12 h-12 bg-gradient-to-br from-brand-primary to-brand-secondary rounded-2xl flex items-center justify-center">
+        <div className="w-12 h-12 fill-ouro rounded-2xl flex items-center justify-center">
           <PiMusicNotes className="w-6 h-6 text-theme-primary" />
         </div>
         <div>
@@ -1121,9 +1121,9 @@ const LoadingState = React.memo(({ t }: { t: any }) => (
     <div className="p-8">
       <Inline gap={3} className="justify-center py-12">
         <div className="relative">
-          <div className="w-8 h-8 border-4 border-brand-primary/30 border-t-brand-primary rounded-full animate-spin"></div>
+          <div className="w-8 h-8 border-4 border-ouro/30 border-t-ouro rounded-full animate-spin"></div>
           <div
-            className="absolute inset-0 w-8 h-8 border-4 border-transparent border-r-brand-secondary rounded-full animate-spin"
+            className="absolute inset-0 w-8 h-8 border-4 border-transparent border-r-ouro rounded-full animate-spin"
             style={{ animationDirection: 'reverse', animationDuration: '1.5s' }}
           ></div>
         </div>
@@ -1147,9 +1147,9 @@ const ErrorState = React.memo(
     t: any;
   }) => (
     <div className="classical-card overflow-hidden animate-fade-in-up">
-      <div className="border-b border-theme-secondary p-8 bg-gradient-to-r from-theme-elevated to-interactive-hover">
+      <div className="border-b border-theme-secondary p-8 bg-sup-elevada">
         <Inline gap={3}>
-          <div className="w-12 h-12 bg-gradient-to-br from-accent-red to-accent-purple rounded-2xl flex items-center justify-center">
+          <div className="w-12 h-12 bg-erro rounded-2xl flex items-center justify-center">
             <PiWarningCircle className="w-6 h-6 text-theme-primary" />
           </div>
           <div>
@@ -1163,13 +1163,13 @@ const ErrorState = React.memo(
         </Inline>
       </div>
       <div className="p-8">
-        <div className="bg-gradient-to-r from-accent-red/10 to-accent-red/5 border border-accent-red/30 rounded-2xl p-6">
+        <div className="bg-erro/10 border border-erro/30 rounded-2xl p-6">
           <div className="flex items-start space-x-4">
-            <div className="w-10 h-10 bg-accent-red/20 border border-accent-red/40 rounded-xl flex items-center justify-center flex-shrink-0">
-              <PiWarningCircle className="w-5 h-5 text-accent-red" />
+            <div className="w-10 h-10 bg-erro/20 border border-erro/40 rounded-xl flex items-center justify-center flex-shrink-0">
+              <PiWarningCircle className="w-5 h-5 text-erro" />
             </div>
             <div className="flex-1">
-              <p className="text-accent-red font-medium mb-2">{error}</p>
+              <p className="text-erro font-medium mb-2">{error}</p>
               {onRefetch && (
                 <Inline
                   as="button"
@@ -1193,7 +1193,7 @@ ErrorState.displayName = 'ErrorState';
 const EmptyState = React.memo(({ t }: { t: any }) => (
   <Card densidade="larga">
     <div className="text-center py-16">
-      <div className="w-16 h-16 bg-theme-tertiary/20 rounded-2xl flex items-center justify-center mx-auto mb-6">
+      <div className="w-16 h-16 bg-sup-2/20 rounded-2xl flex items-center justify-center mx-auto mb-6">
         <PiMusicNotes className="w-8 h-8 text-theme-tertiary" />
       </div>
       <h3 className="text-xl font-bold text-theme-primary classical-title mb-2">
@@ -1209,7 +1209,7 @@ EmptyState.displayName = 'EmptyState';
 
 const EmptyTabState = React.memo(({ t }: { t: any }) => (
   <div className="text-center py-16">
-    <div className="w-16 h-16 bg-theme-tertiary/20 rounded-2xl flex items-center justify-center mx-auto mb-6">
+    <div className="w-16 h-16 bg-sup-2/20 rounded-2xl flex items-center justify-center mx-auto mb-6">
       <PiMusicNotes className="w-8 h-8 text-theme-tertiary" />
     </div>
     <h3 className="text-xl font-bold text-theme-primary classical-title mb-2">

@@ -521,7 +521,7 @@ export const MetricCard = ({
         {change && (
           <div
             className={`flex items-center space-x-1 mt-2 ${
-              change.isPositive ? 'text-accent-green' : 'text-accent-red'
+              change.isPositive ? 'text-ok' : 'text-erro'
             }`}
           >
             <span className="text-sm font-medium">
@@ -580,7 +580,7 @@ export const DataDebugger = ({ data, title }: { data: any; title: string }) => {
   if (process.env.NODE_ENV !== 'development') return null;
 
   return (
-    <div className="mt-2 p-2 bg-gray-100 rounded text-xs">
+    <div className="mt-2 p-2 bg-sup-2 rounded text-xs">
       <strong>{title} Debug:</strong>
       <pre className="mt-1 text-xs overflow-x-auto">
         {JSON.stringify(data, null, 2)}

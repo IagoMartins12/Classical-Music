@@ -118,13 +118,13 @@ export function ArticleInteractions({
 
   if (isMobile) {
     return (
-      <div className="fixed bottom-0 left-0 right-0 bg-theme-secondary border-t border-theme-secondary backdrop-blur-lg z-40">
+      <div className="fixed bottom-0 left-0 right-0 bg-theme-secondary border-t border-theme-secondary backdrop-blur-lg z-barra">
         <div className="section-wrap py-3">
           <div className="flex items-center justify-around">
             <button
               onClick={handleLike}
               className={`flex flex-col items-center space-y-1 ${
-                isLiked ? 'text-red-500' : 'text-theme-secondary'
+                isLiked ? 'text-erro' : 'text-theme-secondary'
               }`}
             >
               {isLiked ? (
@@ -190,8 +190,8 @@ export function ArticleInteractions({
             disabled={loading}
             className={`hidden md:flex items-center gap-2 px-4 py-2 rounded-lg transition-all ${
               isLiked
-                ? 'bg-red-100 text-red-600 dark:bg-red-900/30'
-                : 'bg-theme-elevated hover:bg-theme-classical text-theme-secondary'
+                ? 'bg-erro/10 text-erro dark:bg-erro/30'
+                : 'bg-theme-elevated hover:bg-sup-1 text-theme-secondary'
             }`}
           >
             {isLiked ? (
@@ -208,8 +208,8 @@ export function ArticleInteractions({
             disabled={loading}
             className={`hidden md:flex items-center gap-2 px-4 py-2 rounded-lg transition-all ${
               isSaved
-                ? 'bg-brand-primary/20 text-brand-primary'
-                : 'bg-theme-elevated hover:bg-theme-classical text-theme-secondary'
+                ? 'bg-ouro/10 text-brand-primary'
+                : 'bg-theme-elevated hover:bg-sup-1 text-theme-secondary'
             }`}
           >
             {isSaved ? (
@@ -223,7 +223,7 @@ export function ArticleInteractions({
           {/* Comment Button */}
           <button
             onClick={scrollToComments}
-            className="flex items-center gap-2 px-4 py-2 rounded-lg bg-theme-elevated hover:bg-theme-classical text-theme-secondary transition-all"
+            className="flex items-center gap-2 px-4 py-2 rounded-lg bg-theme-elevated hover:bg-sup-1 text-theme-secondary transition-all"
           >
             <PiChatCircle className="w-5 h-5" />
             <span className="font-medium inline">Comentar</span>
@@ -233,7 +233,7 @@ export function ArticleInteractions({
         {/* Share Button */}
         <button
           onClick={() => onOpenShareModal?.()}
-          className=" hidden md:flex items-center gap-2 px-4 py-2 rounded-lg bg-theme-elevated hover:bg-theme-classical text-theme-secondary transition-all"
+          className=" hidden md:flex items-center gap-2 px-4 py-2 rounded-lg bg-theme-elevated hover:bg-sup-1 text-theme-secondary transition-all"
         >
           <PiShareNetwork className="w-5 h-5" />
           <span className="font-medium hidden sm:inline">Compartilhar</span>

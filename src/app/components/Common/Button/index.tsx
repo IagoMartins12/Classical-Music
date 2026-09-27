@@ -31,34 +31,26 @@ const Button: React.FC<ButtonProps> = ({
   ...props
 }) => {
   const baseClasses = `
-    inline-flex cursor-pointer items-center justify-center font-medium rounded-lg
-    transition-all duration-300 focus:outline-none focus:ring-2 
-    focus:ring-brand-primary focus:ring-opacity-50 disabled:opacity-50 
-    disabled:cursor-not-allowed relative overflow-hidden
+    inline-flex cursor-pointer items-center justify-center font-medium rounded-lg transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-ouro focus:ring-opacity-50 disabled:opacity-50 disabled:cursor-not-allowed relative overflow-hidden
   `;
 
   const variants = {
     primary: 'btn-classical-primary',
     secondary: 'btn-classical-secondary',
     delete: `
-      btn-classical-secondary !bg-red-700 text-white font-bold
-      focus:ring-red-500 focus:ring-opacity-50
+      btn-classical-secondary !bg-erro text-white font-bold focus:ring-erro focus:ring-opacity-50
     `,
     outline: `
-      bg-transparent border-2 border-theme-accent text-brand-primary
-      hover:bg-brand-primary hover:text-theme-inverse hover:border-brand-primary
+      bg-transparent border-2 border-theme-accent text-brand-primary hover:bg-ouro hover:text-sobre-ouro hover:border-ouro
     `,
     ghost: `
-      bg-transparent text-theme-secondary hover:text-brand-primary 
-      hover:bg-interactive-hover
+      bg-transparent text-theme-secondary hover:text-ouro-texto hover:bg-ouro/10
     `,
     google: `
-      bg-white text-gray-700 border border-gray-300 hover:bg-gray-50
-      focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50
+      bg-white text-texto-suave border border-linha hover:bg-sup-2 focus:ring-2 focus:ring-aviso focus:ring-opacity-50
     `,
     success: `
-      bg-green-600 text-white hover:bg-green-700
-      focus:ring-2 focus:ring-green-500 focus:ring-opacity-50
+      bg-ok text-white hover:bg-ok focus:ring-2 focus:ring-ok focus:ring-opacity-50
     `,
   };
 

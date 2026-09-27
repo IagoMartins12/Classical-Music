@@ -78,7 +78,7 @@ const UploadComposerCard = ({
     return (
       <Card
         densidade="compacta"
-        className="group relative hover:shadow-theme-glow transition-all duration-300"
+        className="group relative hover:shadow-[var(--sombra-2)] transition-all duration-300"
       >
         <div className="flex flex-col-reverse md:flex-row gap-2 items-center justify-between w-full">
           {/* Left section - Portrait and basic info */}
@@ -90,7 +90,7 @@ const UploadComposerCard = ({
               )}
 
               {portraitUrl && !imageError ? (
-                <div className="relative w-full h-full rounded-full overflow-hidden border-2 border-brand-primary/20 group-hover:border-brand-primary/50 transition-all duration-300">
+                <div className="relative w-full h-full rounded-full overflow-hidden border-2 border-ouro/20 group-hover:border-ouro/50 transition-all duration-300">
                   <Image
                     src={portraitUrl}
                     alt={item.title}
@@ -103,13 +103,13 @@ const UploadComposerCard = ({
                     sizes="48px"
                   />
                   {!imageLoaded && (
-                    <div className="absolute inset-0 bg-gradient-to-br from-brand-primary to-brand-secondary rounded-full flex items-center justify-center">
+                    <div className="absolute inset-0 fill-ouro rounded-full flex items-center justify-center">
                       <PiUser className="w-5 h-5 text-theme-inverse" />
                     </div>
                   )}
                 </div>
               ) : (
-                <div className="w-full h-full bg-gradient-to-br from-brand-primary to-brand-secondary rounded-full flex items-center justify-center border-2 border-brand-primary/20 group-hover:border-brand-primary/50 transition-all duration-300">
+                <div className="w-full h-full fill-ouro rounded-full flex items-center justify-center border-2 border-ouro/20 group-hover:border-ouro/50 transition-all duration-300">
                   <PiUser className="w-5 h-5 text-theme-inverse" />
                 </div>
               )}
@@ -122,7 +122,7 @@ const UploadComposerCard = ({
                 className="block group/link"
                 onClick={(e) => e.stopPropagation()}
               >
-                <h3 className="text-base font-bold text-theme-primary classical-title group-hover/link:text-brand-primary transition-colors duration-300 truncate hover:underline">
+                <h3 className="text-base font-bold text-theme-primary classical-title group-hover/link:text-ouro-texto transition-colors duration-300 truncate hover:underline">
                   {item.title}
                 </h3>
                 {item.isVerified && (
@@ -160,7 +160,7 @@ const UploadComposerCard = ({
                   <Inline
                     as="span"
                     gap={1}
-                    className="text-xs font-medium text-accent-green md:px-2 md:py-1 bg-accent-green/10 rounded-full"
+                    className="text-xs font-medium text-ok md:px-2 md:py-1 bg-ok/10 rounded-full"
                   >
                     <PiMusicNotes className="w-3 h-3" />
                     <span>{t('card_works_badge')}</span>
@@ -168,7 +168,7 @@ const UploadComposerCard = ({
                 )}
 
                 {item.verificationStatus === 'verified' && (
-                  <span className="text-xs font-medium text-accent-green px-2 py-1 bg-accent-green/10 rounded-full">
+                  <span className="text-xs font-medium text-ok px-2 py-1 bg-ok/10 rounded-full">
                     {t('card_verified_badge')}
                   </span>
                 )}
@@ -183,7 +183,7 @@ const UploadComposerCard = ({
                 href={`https://imslp.org/wiki/${item.imslpId}`}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="items-center hidden md:inline-flex  px-2 py-1 bg-accent-green/10 border border-accent-green/20 text-accent-green rounded-md text-xs font-medium hover:bg-accent-green/20 hover:scale-105 transition-all duration-300"
+                className="items-center hidden md:inline-flex px-2 py-1 bg-ok/10 border border-ok/20 text-ok rounded-md text-xs font-medium hover:bg-ok/20 hover:scale-105 transition-all duration-300"
                 onClick={(e) => e.stopPropagation()}
               >
                 IMSLP
@@ -196,7 +196,7 @@ const UploadComposerCard = ({
               {item.isIMSLP && onBulkInsertWorks && (
                 <button
                   onClick={onBulkInsertWorks}
-                  className="w-8 h-8 rounded-lg bg-theme-secondary hover:bg-accent-green/10 text-theme-tertiary hover:text-accent-green transition-colors flex items-center justify-center"
+                  className="w-8 h-8 rounded-lg bg-theme-secondary hover:bg-ok/10 text-theme-tertiary hover:text-ok transition-colors flex items-center justify-center"
                   title={t('card_import_all_works')}
                 >
                   <PiMusicNotes className="w-4 h-4" />
@@ -205,7 +205,7 @@ const UploadComposerCard = ({
 
               <button
                 onClick={onEdit}
-                className="w-8 h-8 rounded-lg bg-theme-secondary hover:bg-accent-blue/10 text-theme-tertiary hover:text-accent-blue transition-colors flex items-center justify-center"
+                className="w-8 h-8 rounded-lg bg-theme-secondary hover:bg-aviso/10 text-theme-tertiary hover:text-aviso transition-colors flex items-center justify-center"
               >
                 <PiNotePencil className="w-4 h-4" />
                 <NomeAcao acao="editar" />
@@ -214,7 +214,7 @@ const UploadComposerCard = ({
               <button
                 onClick={handleDeleteClick}
                 disabled={isDeleting}
-                className={`w-8 h-8 rounded-lg bg-theme-secondary hover:bg-accent-red/10 text-theme-tertiary hover:text-accent-red transition-colors flex items-center justify-center ${
+                className={`w-8 h-8 rounded-lg bg-theme-secondary hover:bg-erro/10 text-theme-tertiary hover:text-erro transition-colors flex items-center justify-center ${
                   isDeleting ? 'opacity-50 cursor-not-allowed' : ''
                 }`}
               >
@@ -230,7 +230,7 @@ const UploadComposerCard = ({
 
   return (
     <div className="group cursor-pointer select-none h-full">
-      <div className="classical-card h-full overflow-hidden transition-all duration-700 ease-out group-hover:scale-105 group-hover:-translate-y-2 hover:shadow-theme-glow">
+      <div className="classical-card h-full overflow-hidden transition-all duration-700 ease-out group-hover:scale-105 group-hover:-translate-y-2 hover:shadow-[var(--sombra-2)]">
         {/* Portrait Section */}
         <div className="relative p-6 pb-4">
           <Link
@@ -246,7 +246,7 @@ const UploadComposerCard = ({
                 )}
 
                 {portraitUrl && !imageError ? (
-                  <div className="relative w-full h-full rounded-full overflow-hidden border-3 border-brand-primary/20 group-hover/portrait:border-brand-primary/50 transition-all duration-500 group-hover/portrait:scale-110">
+                  <div className="relative w-full h-full rounded-full overflow-hidden border border-ouro/20 group-hover/portrait:border-ouro/50 transition-all duration-500 group-hover/portrait:scale-110">
                     <Image
                       src={portraitUrl}
                       alt={item.title}
@@ -259,13 +259,13 @@ const UploadComposerCard = ({
                       sizes="(max-width: 768px) 96px, 112px"
                     />
                     {!imageLoaded && (
-                      <div className="absolute inset-0 bg-gradient-to-br from-brand-primary to-brand-secondary rounded-full flex items-center justify-center">
+                      <div className="absolute inset-0 fill-ouro rounded-full flex items-center justify-center">
                         <PiUser className="w-8 h-8 md:w-10 md:h-10 text-theme-inverse" />
                       </div>
                     )}
                   </div>
                 ) : (
-                  <div className="w-full h-full bg-gradient-to-br from-brand-primary to-brand-secondary rounded-full flex items-center justify-center border-3 border-brand-primary/20 group-hover/portrait:border-brand-primary/50 transition-all duration-500 group-hover/portrait:scale-110">
+                  <div className="w-full h-full fill-ouro rounded-full flex items-center justify-center border border-ouro/20 group-hover/portrait:border-ouro/50 transition-all duration-500 group-hover/portrait:scale-110">
                     <PiUser className="w-8 h-8 md:w-10 md:h-10 text-theme-inverse" />
                   </div>
                 )}
@@ -282,7 +282,7 @@ const UploadComposerCard = ({
             {item.isIMSLP && onBulkInsertWorks && (
               <button
                 onClick={onBulkInsertWorks}
-                className="w-8 h-8 rounded-lg bg-theme-elevated hover:bg-accent-green/10 text-theme-tertiary hover:text-accent-green transition-colors flex items-center justify-center shadow-theme-medium"
+                className="w-8 h-8 rounded-lg bg-theme-elevated hover:bg-ok/10 text-theme-tertiary hover:text-ok transition-colors flex items-center justify-center shadow-theme-medium"
                 title={t('card_import_all_works')}
               >
                 <PiMusicNotes className="w-4 h-4" />
@@ -291,7 +291,7 @@ const UploadComposerCard = ({
 
             <button
               onClick={onEdit}
-              className="w-8 h-8 rounded-lg bg-theme-elevated hover:bg-accent-blue/10 text-theme-tertiary hover:text-accent-blue transition-colors flex items-center justify-center shadow-theme-medium"
+              className="w-8 h-8 rounded-lg bg-theme-elevated hover:bg-aviso/10 text-theme-tertiary hover:text-aviso transition-colors flex items-center justify-center shadow-theme-medium"
             >
               <PiNotePencil className="w-4 h-4" />
               <NomeAcao acao="editar" />
@@ -300,7 +300,7 @@ const UploadComposerCard = ({
             <button
               onClick={handleDeleteClick}
               disabled={isDeleting}
-              className={`w-8 h-8 rounded-lg bg-theme-elevated hover:bg-accent-red/10 text-theme-tertiary hover:text-accent-red transition-colors flex items-center justify-center shadow-theme-medium ${
+              className={`w-8 h-8 rounded-lg bg-theme-elevated hover:bg-erro/10 text-theme-tertiary hover:text-erro transition-colors flex items-center justify-center shadow-theme-medium ${
                 isDeleting ? 'opacity-50 cursor-not-allowed' : ''
               }`}
             >
@@ -323,7 +323,7 @@ const UploadComposerCard = ({
                 className="block group/link"
                 onClick={(e) => e.stopPropagation()}
               >
-                <h3 className="text-lg font-bold text-theme-primary classical-title group-hover/link:text-brand-primary transition-colors duration-300 line-clamp-2 hover:underline">
+                <h3 className="text-lg font-bold text-theme-primary classical-title group-hover/link:text-ouro-texto transition-colors duration-300 line-clamp-2 hover:underline">
                   {item.title}
                 </h3>
               </Link>
@@ -335,7 +335,7 @@ const UploadComposerCard = ({
                 <Inline
                   as="span"
                   gap={1}
-                  className="text-xs font-medium text-accent-blue px-2 py-1 bg-accent-blue/10 rounded-full"
+                  className="text-xs font-medium text-aviso px-2 py-1 bg-aviso/10 rounded-full"
                 >
                   <PiArrowSquareOut className="w-3 h-3" />
                   <span>IMSLP</span>
@@ -347,7 +347,7 @@ const UploadComposerCard = ({
                 <Inline
                   as="span"
                   gap={1}
-                  className="text-xs font-medium text-accent-green px-2 py-1 bg-accent-green/10 rounded-full"
+                  className="text-xs font-medium text-ok px-2 py-1 bg-ok/10 rounded-full"
                 >
                   <PiMusicNotes className="w-3 h-3" />
                   <span>{t('card_works_badge')}</span>
@@ -355,7 +355,7 @@ const UploadComposerCard = ({
               )}
 
               {item.verificationStatus === 'verified' && (
-                <span className="text-xs font-medium text-accent-green px-2 py-1 bg-accent-green/10 rounded-full">
+                <span className="text-xs font-medium text-ok px-2 py-1 bg-ok/10 rounded-full">
                   {t('card_verified_badge')}
                 </span>
               )}
@@ -364,10 +364,10 @@ const UploadComposerCard = ({
                 <span
                   className={`text-xs font-medium px-2 py-1 rounded-full ${
                     item.dataQuality === 'high'
-                      ? 'text-accent-green bg-accent-green/10'
+                      ? 'text-ok bg-ok/10'
                       : item.dataQuality === 'medium'
-                        ? 'text-accent-amber bg-accent-amber/10'
-                        : 'text-accent-red bg-accent-red/10'
+                        ? 'text-atencao bg-atencao/10'
+                        : 'text-erro bg-erro/10'
                   }`}
                 >
                   {getDataQualityText(item.dataQuality)}
@@ -381,7 +381,7 @@ const UploadComposerCard = ({
                 <Text
                   papel="legenda"
                   tom="ouro"
-                  className="inline-flex items-center px-3 py-1 bg-brand-primary/10 border border-brand-primary/20 rounded-full font-medium hover:bg-brand-primary/20 transition-colors duration-300"
+                  className="inline-flex items-center px-3 py-1 bg-ouro/10 border border-ouro/20 rounded-full font-medium hover:bg-ouro/20 transition-colors duration-300"
                 >
                   <PiMusicNotes className="w-3 h-3 mr-1" />
                   {item.epochName}
@@ -396,7 +396,7 @@ const UploadComposerCard = ({
                   href={`https://imslp.org/wiki/${item.imslpId}`}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="inline-flex items-center px-3 py-1 bg-accent-green/10 border border-accent-green/20 text-accent-green rounded-full text-xs font-medium hover:bg-accent-green/20 hover:scale-105 transition-all duration-300 group/link"
+                  className="inline-flex items-center px-3 py-1 bg-ok/10 border border-ok/20 text-ok rounded-full text-xs font-medium hover:bg-ok/20 hover:scale-105 transition-all duration-300 group/link"
                   onClick={(e) => e.stopPropagation()}
                 >
                   IMSLP
@@ -418,11 +418,11 @@ const UploadComposerCard = ({
           </div>
 
           {/* Hover glow effect */}
-          <div className="absolute inset-0 bg-brand-gradient opacity-0 group-hover:opacity-5 transition-opacity duration-500 rounded-b-2xl"></div>
+          <div className="absolute inset-0 fill-ouro opacity-0 group-hover:opacity-5 transition-opacity duration-500 rounded-b-2xl"></div>
         </div>
 
         {/* Floating mini indicator */}
-        <div className="absolute -top-1 -right-1 w-3 h-3 bg-brand-gradient rounded-full  transition-all duration-300 scale-50 group-hover:scale-100 shadow-brand-glow"></div>
+        <div className="absolute -top-1 -right-1 w-3 h-3 fill-ouro rounded-full transition-all duration-300 scale-50 group-hover:scale-100"></div>
       </div>
 
       {/* Modal de confirmação de delete */}

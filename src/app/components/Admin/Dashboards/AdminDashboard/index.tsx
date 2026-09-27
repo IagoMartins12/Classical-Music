@@ -137,7 +137,7 @@ export default function AdminDashboard() {
       <PageContainer showBackground={true}>
         <div className="flex items-center justify-center min-h-[50vh]">
           <AnimatedCard className="classical-card p-8 text-center max-w-md">
-            <div className="w-16 h-16 bg-gradient-to-br from-accent-red to-accent-amber rounded-3xl flex items-center justify-center mx-auto mb-4">
+            <div className="w-16 h-16 bg-erro rounded-3xl flex items-center justify-center mx-auto mb-4">
               <PiShield className="w-8 h-8 text-theme-primary" />
             </div>
             <h3 className="text-xl font-bold text-theme-primary mb-2">
@@ -173,7 +173,7 @@ export default function AdminDashboard() {
         <AnimatedItem direction="up" springType="gentle">
           <div className="text-center mb-8 py-16">
             <div className="flex items-center justify-center mb-6">
-              <div className="w-20 h-20 bg-gradient-to-br from-accent-blue to-accent-purple rounded-3xl flex items-center justify-center shadow-theme-glow">
+              <div className="w-20 h-20 bg-aviso rounded-3xl flex items-center justify-center shadow-theme-glow">
                 <PiChartBar className="w-10 h-10 text-theme-primary" />
               </div>
             </div>
@@ -237,10 +237,10 @@ export default function AdminDashboard() {
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
                 {/* Usuários */}
                 <AnimatedCard className="classical-card p-6 text-center relative overflow-hidden">
-                  <div className="absolute top-0 right-0 w-20 h-20 bg-gradient-to-br from-accent-blue/20 to-accent-purple/20 rounded-full -mr-10 -mt-10" />
+                  <div className="absolute top-0 right-0 w-20 h-20 bg-aviso/20 rounded-full -mr-10 -mt-10" />
                   <div className="relative">
                     <div className="flex items-center justify-center mb-4">
-                      <div className="w-12 h-12 bg-gradient-to-br from-accent-blue to-accent-purple rounded-2xl flex items-center justify-center">
+                      <div className="w-12 h-12 bg-aviso rounded-2xl flex items-center justify-center">
                         <PiUsers className="w-6 h-6 text-theme-primary" />
                       </div>
                     </div>
@@ -276,10 +276,10 @@ export default function AdminDashboard() {
 
                 {/* Obras */}
                 <AnimatedCard className="classical-card p-6 text-center relative overflow-hidden">
-                  <div className="absolute top-0 right-0 w-20 h-20 bg-gradient-to-br from-accent-green/20 to-accent-blue/20 rounded-full -mr-10 -mt-10" />
+                  <div className="absolute top-0 right-0 w-20 h-20 bg-ok/20 rounded-full -mr-10 -mt-10" />
                   <div className="relative">
                     <div className="flex items-center justify-center mb-4">
-                      <div className="w-12 h-12 bg-gradient-to-br from-accent-green to-accent-blue rounded-2xl flex items-center justify-center">
+                      <div className="w-12 h-12 bg-ok rounded-2xl flex items-center justify-center">
                         <PiMusicNotes className="w-6 h-6 text-theme-primary" />
                       </div>
                     </div>
@@ -315,10 +315,10 @@ export default function AdminDashboard() {
 
                 {/* Anotações */}
                 <AnimatedCard className="classical-card p-6 text-center relative overflow-hidden">
-                  <div className="absolute top-0 right-0 w-20 h-20 bg-gradient-to-br from-accent-amber/20 to-accent-red/20 rounded-full -mr-10 -mt-10" />
+                  <div className="absolute top-0 right-0 w-20 h-20 bg-atencao/20 rounded-full -mr-10 -mt-10" />
                   <div className="relative">
                     <div className="flex items-center justify-center mb-4">
-                      <div className="w-12 h-12 bg-gradient-to-br from-accent-amber to-accent-red rounded-2xl flex items-center justify-center">
+                      <div className="w-12 h-12 bg-atencao rounded-2xl flex items-center justify-center">
                         <PiChatCenteredText className="w-6 h-6 text-theme-primary" />
                       </div>
                     </div>
@@ -365,8 +365,8 @@ export default function AdminDashboard() {
                     onClick={() => setActiveSection(section.id)}
                     className={`flex items-center space-x-2 px-4 py-2 rounded-xl transition-all ${
                       activeSection === section.id
-                        ? 'bg-gradient-to-r from-brand-primary to-brand-secondary text-theme-primary shadow-lg'
-                        : 'text-theme-tertiary hover:text-theme-primary hover:bg-theme-secondary'
+                        ? 'fill-ouro text-theme-primary shadow-lg'
+                        : 'text-theme-tertiary hover:text-texto hover:bg-sup-1'
                     }`}
                   >
                     <section.icon className="w-4 h-4" />
@@ -386,7 +386,7 @@ export default function AdminDashboard() {
                     gap={2}
                     className="text-xl font-bold text-theme-primary mb-6"
                   >
-                    <PiPulse className="w-5 h-5 text-accent-blue" />
+                    <PiPulse className="w-5 h-5 text-aviso" />
                     <span>Usuários Mais Ativos</span>
                   </Inline>
                   <Stack>
@@ -402,7 +402,7 @@ export default function AdminDashboard() {
                             papel="rotulo"
                             tom="forte"
                             as="div"
-                            className="w-8 h-8 bg-gradient-to-br from-accent-blue to-accent-purple rounded-lg flex items-center justify-center font-bold"
+                            className="w-8 h-8 bg-aviso rounded-lg flex items-center justify-center font-bold"
                           >
                             {index + 1}
                           </Text>
@@ -444,7 +444,7 @@ export default function AdminDashboard() {
                     gap={2}
                     className="text-xl font-bold text-theme-primary mb-6"
                   >
-                    <PiUploadSimple className="w-5 h-5 text-accent-green" />
+                    <PiUploadSimple className="w-5 h-5 text-ok" />
                     <span>Maiores Contribuidores</span>
                   </Inline>
                   <Stack>
@@ -460,7 +460,7 @@ export default function AdminDashboard() {
                             papel="rotulo"
                             tom="forte"
                             as="div"
-                            className="w-8 h-8 bg-gradient-to-br from-accent-green to-accent-blue rounded-lg flex items-center justify-center font-bold"
+                            className="w-8 h-8 bg-ok rounded-lg flex items-center justify-center font-bold"
                           >
                             {index + 1}
                           </Text>
@@ -473,7 +473,7 @@ export default function AdminDashboard() {
                             </Text>
                           </div>
                           <div className="text-right">
-                            <p className="text-sm font-medium text-accent-green">
+                            <p className="text-sm font-medium text-ok">
                               Score: {user?.qualityScore || 0}
                             </p>
                             <Text papel="legenda" tom="fraco" as="p">
@@ -492,7 +492,7 @@ export default function AdminDashboard() {
                     gap={2}
                     className="text-xl font-bold text-theme-primary mb-6"
                   >
-                    <PiChatCenteredText className="w-5 h-5 text-accent-amber" />
+                    <PiChatCenteredText className="w-5 h-5 text-atencao" />
                     <span>Maiores Anotadores</span>
                   </Inline>
                   <Stack>
@@ -508,7 +508,7 @@ export default function AdminDashboard() {
                             papel="rotulo"
                             tom="forte"
                             as="div"
-                            className="w-8 h-8 bg-gradient-to-br from-accent-amber to-accent-red rounded-lg flex items-center justify-center font-bold"
+                            className="w-8 h-8 bg-atencao rounded-lg flex items-center justify-center font-bold"
                           >
                             {index + 1}
                           </Text>
@@ -521,7 +521,7 @@ export default function AdminDashboard() {
                             </Text>
                           </div>
                           <div className="text-right">
-                            <p className="text-sm font-medium text-accent-amber">
+                            <p className="text-sm font-medium text-atencao">
                               {formatPercentage(user?.avgHelpfulRatio || 0)}{' '}
                               úteis
                             </p>
@@ -546,7 +546,7 @@ export default function AdminDashboard() {
                     gap={2}
                     className="text-xl font-bold text-theme-primary mb-6"
                   >
-                    <PiMusicNotes className="w-5 h-5 text-accent-blue" />
+                    <PiMusicNotes className="w-5 h-5 text-aviso" />
                     <span>Obras Mais Populares</span>
                   </Inline>
                   <Stack>
@@ -561,7 +561,7 @@ export default function AdminDashboard() {
                             papel="legenda"
                             tom="forte"
                             as="div"
-                            className="w-6 h-6 bg-gradient-to-br from-accent-blue to-accent-purple rounded-lg flex items-center justify-center font-bold flex-shrink-0 mt-0.5"
+                            className="w-6 h-6 bg-aviso rounded-lg flex items-center justify-center font-bold flex-shrink-0 mt-0.5"
                           >
                             {index + 1}
                           </Text>
@@ -579,19 +579,19 @@ export default function AdminDashboard() {
                             </Text>
                             <Inline gap={4} className="mt-2">
                               <Inline gap={1}>
-                                <PiHeart className="w-3 h-3 text-accent-red" />
+                                <PiHeart className="w-3 h-3 text-erro" />
                                 <Text papel="legenda" tom="fraco">
                                   {work?.favoritesCount || 0}
                                 </Text>
                               </Inline>
                               <Inline gap={1}>
-                                <PiChatCenteredText className="w-3 h-3 text-accent-blue" />
+                                <PiChatCenteredText className="w-3 h-3 text-aviso" />
                                 <Text papel="legenda" tom="fraco">
                                   {work?.annotationsCount || 0}
                                 </Text>
                               </Inline>
                               <Inline gap={1}>
-                                <PiFileText className="w-3 h-3 text-accent-green" />
+                                <PiFileText className="w-3 h-3 text-ok" />
                                 <Text papel="legenda" tom="fraco">
                                   {work?.scoreCount || 0}
                                 </Text>
@@ -610,7 +610,7 @@ export default function AdminDashboard() {
                     gap={2}
                     className="text-xl font-bold text-theme-primary mb-6"
                   >
-                    <PiUsers className="w-5 h-5 text-accent-green" />
+                    <PiUsers className="w-5 h-5 text-ok" />
                     <span>Compositores Mais Populares</span>
                   </Inline>
                   <Stack>
@@ -626,7 +626,7 @@ export default function AdminDashboard() {
                             papel="legenda"
                             tom="forte"
                             as="div"
-                            className="w-6 h-6 bg-gradient-to-br from-accent-green to-accent-blue rounded-lg flex items-center justify-center font-bold"
+                            className="w-6 h-6 bg-ok rounded-lg flex items-center justify-center font-bold"
                           >
                             {index + 1}
                           </Text>
@@ -639,7 +639,7 @@ export default function AdminDashboard() {
                             </Text>
                           </div>
                           <div className="text-right">
-                            <p className="text-sm font-medium text-accent-green">
+                            <p className="text-sm font-medium text-ok">
                               {composer?.totalFavorites || 0} favoritos
                             </p>
                             <Text papel="legenda" tom="fraco" as="p">
@@ -664,7 +664,7 @@ export default function AdminDashboard() {
                     gap={2}
                     className="text-xl font-bold text-theme-primary mb-6"
                   >
-                    <PiPulse className="w-5 h-5 text-accent-blue" />
+                    <PiPulse className="w-5 h-5 text-aviso" />
                     <span>Atividade de Usuários</span>
                   </Inline>
                   <Stack>
@@ -677,7 +677,7 @@ export default function AdminDashboard() {
                           Últimas 24 horas
                         </Text>
                       </div>
-                      <div className="text-2xl font-bold text-accent-green">
+                      <div className="text-2xl font-bold text-ok">
                         {formatNumber(
                           safeGet(stats, 'engagement.dailyActiveUsers', 0)
                         )}
@@ -692,7 +692,7 @@ export default function AdminDashboard() {
                           Últimos 7 dias
                         </Text>
                       </div>
-                      <div className="text-2xl font-bold text-accent-blue">
+                      <div className="text-2xl font-bold text-aviso">
                         {formatNumber(
                           safeGet(stats, 'engagement.weeklyActiveUsers', 0)
                         )}
@@ -707,7 +707,7 @@ export default function AdminDashboard() {
                           Últimos 30 dias
                         </Text>
                       </div>
-                      <div className="text-2xl font-bold text-accent-purple">
+                      <div className="text-2xl font-bold text-ouro-texto">
                         {formatNumber(
                           safeGet(stats, 'engagement.monthlyActiveUsers', 0)
                         )}
@@ -723,7 +723,7 @@ export default function AdminDashboard() {
                     gap={2}
                     className="text-xl font-bold text-theme-primary mb-6"
                   >
-                    <PiTarget className="w-5 h-5 text-accent-amber" />
+                    <PiTarget className="w-5 h-5 text-atencao" />
                     <span>Obras Mais Estudadas</span>
                   </Inline>
                   <Stack gap={3}>
@@ -738,7 +738,7 @@ export default function AdminDashboard() {
                             papel="legenda"
                             tom="forte"
                             as="div"
-                            className="w-6 h-6 bg-gradient-to-br from-accent-amber to-accent-red rounded-lg flex items-center justify-center font-bold flex-shrink-0 mt-0.5"
+                            className="w-6 h-6 bg-atencao rounded-lg flex items-center justify-center font-bold flex-shrink-0 mt-0.5"
                           >
                             {index + 1}
                           </Text>
@@ -760,7 +760,7 @@ export default function AdminDashboard() {
                               {work?.composer || 'Compositor desconhecido'}
                             </Text>
                             <Inline gap={3} className="mt-1">
-                              <span className="text-xs text-accent-amber font-medium">
+                              <span className="text-xs text-atencao font-medium">
                                 {formatDuration(work?.totalMinutes || 0)}
                               </span>
                               <Text papel="legenda" tom="fraco">
@@ -780,7 +780,7 @@ export default function AdminDashboard() {
                     gap={2}
                     className="text-xl font-bold text-theme-primary mb-6"
                   >
-                    <PiChartPie className="w-5 h-5 text-accent-green" />
+                    <PiChartPie className="w-5 h-5 text-ok" />
                     <span>Métricas de Engajamento</span>
                   </Inline>
                   <Stack>
@@ -796,7 +796,7 @@ export default function AdminDashboard() {
                         >
                           Sessões por Usuário
                         </Text>
-                        <span className="text-lg font-bold text-accent-blue">
+                        <span className="text-lg font-bold text-aviso">
                           {formatNumber(
                             safeGet(stats, 'engagement.avgSessionsPerUser', 0)
                           )}
@@ -804,7 +804,7 @@ export default function AdminDashboard() {
                       </div>
                       <div className="w-full bg-theme-primary h-2 rounded-full overflow-hidden">
                         <div
-                          className="h-full bg-gradient-to-r from-accent-blue to-accent-purple rounded-full transition-all duration-1000"
+                          className="h-full bg-aviso rounded-full transition-all duration-1000"
                           style={{
                             width: `${Math.min(
                               safeGet(
@@ -831,7 +831,7 @@ export default function AdminDashboard() {
                         >
                           Anotações por Obra
                         </Text>
-                        <span className="text-lg font-bold text-accent-green">
+                        <span className="text-lg font-bold text-ok">
                           {formatNumber(
                             safeGet(
                               stats,
@@ -843,7 +843,7 @@ export default function AdminDashboard() {
                       </div>
                       <div className="w-full bg-theme-primary h-2 rounded-full overflow-hidden">
                         <div
-                          className="h-full bg-gradient-to-r from-accent-green to-accent-blue rounded-full transition-all duration-1000"
+                          className="h-full bg-ok rounded-full transition-all duration-1000"
                           style={{
                             width: `${Math.min(
                               safeGet(
@@ -872,7 +872,7 @@ export default function AdminDashboard() {
                     gap={2}
                     className="text-xl font-bold text-theme-primary mb-6"
                   >
-                    <PiShield className="w-5 h-5 text-accent-green" />
+                    <PiShield className="w-5 h-5 text-ok" />
                     <span>Qualidade dos Uploads</span>
                   </Inline>
                   <Stack>
@@ -880,7 +880,7 @@ export default function AdminDashboard() {
                       gap={2}
                       className="text-center p-4 bg-theme-secondary rounded-xl"
                     >
-                      <div className="text-3xl font-bold text-accent-green">
+                      <div className="text-3xl font-bold text-ok">
                         {formatPercentage(
                           safeGet(stats, 'quality.uploadApprovalRate', 0)
                         )}
@@ -894,7 +894,7 @@ export default function AdminDashboard() {
                       gap={2}
                       className="text-center p-4 bg-theme-secondary rounded-xl"
                     >
-                      <div className="text-3xl font-bold text-accent-blue">
+                      <div className="text-3xl font-bold text-aviso">
                         {safeGet(stats, 'quality.avgUploadQuality', 0).toFixed(
                           1
                         )}
@@ -913,13 +913,13 @@ export default function AdminDashboard() {
                     gap={2}
                     className="text-xl font-bold text-theme-primary mb-6"
                   >
-                    <PiMedal className="w-5 h-5 text-accent-amber" />
+                    <PiMedal className="w-5 h-5 text-atencao" />
                     <span>Conteúdo Verificado</span>
                   </Inline>
                   <Stack gap={3}>
                     <div className="flex items-center justify-between p-3 bg-theme-secondary rounded-xl">
                       <Inline gap={2}>
-                        <PiUsers className="w-4 h-4 text-accent-blue" />
+                        <PiUsers className="w-4 h-4 text-aviso" />
                         <Text
                           papel="rotulo"
                           tom="forte"
@@ -928,7 +928,7 @@ export default function AdminDashboard() {
                           Compositores
                         </Text>
                       </Inline>
-                      <span className="text-lg font-bold text-accent-blue">
+                      <span className="text-lg font-bold text-aviso">
                         {formatNumber(
                           safeGet(stats, 'quality.verifiedContent.composers', 0)
                         )}
@@ -937,7 +937,7 @@ export default function AdminDashboard() {
 
                     <div className="flex items-center justify-between p-3 bg-theme-secondary rounded-xl">
                       <Inline gap={2}>
-                        <PiMusicNotes className="w-4 h-4 text-accent-green" />
+                        <PiMusicNotes className="w-4 h-4 text-ok" />
                         <Text
                           papel="rotulo"
                           tom="forte"
@@ -946,7 +946,7 @@ export default function AdminDashboard() {
                           Obras
                         </Text>
                       </Inline>
-                      <span className="text-lg font-bold text-accent-green">
+                      <span className="text-lg font-bold text-ok">
                         {formatNumber(
                           safeGet(stats, 'quality.verifiedContent.works', 0)
                         )}
@@ -955,7 +955,7 @@ export default function AdminDashboard() {
 
                     <div className="flex items-center justify-between p-3 bg-theme-secondary rounded-xl">
                       <Inline gap={2}>
-                        <PiFileText className="w-4 h-4 text-accent-amber" />
+                        <PiFileText className="w-4 h-4 text-atencao" />
                         <Text
                           papel="rotulo"
                           tom="forte"
@@ -964,7 +964,7 @@ export default function AdminDashboard() {
                           Partituras
                         </Text>
                       </Inline>
-                      <span className="text-lg font-bold text-accent-amber">
+                      <span className="text-lg font-bold text-atencao">
                         {formatNumber(
                           safeGet(stats, 'quality.verifiedContent.scores', 0)
                         )}
@@ -980,7 +980,7 @@ export default function AdminDashboard() {
                     gap={2}
                     className="text-xl font-bold text-theme-primary mb-6"
                   >
-                    <PiDatabase className="w-5 h-5 text-accent-purple" />
+                    <PiDatabase className="w-5 h-5 text-ouro-texto" />
                     <span>Completude do Conteúdo</span>
                   </Inline>
                   <Stack>
@@ -996,7 +996,7 @@ export default function AdminDashboard() {
                         >
                           Compositores com Bio
                         </Text>
-                        <span className="text-lg font-bold text-accent-purple">
+                        <span className="text-lg font-bold text-ouro-texto">
                           {formatNumber(
                             safeGet(
                               stats,
@@ -1008,7 +1008,7 @@ export default function AdminDashboard() {
                       </div>
                       <div className="w-full bg-theme-primary h-2 rounded-full overflow-hidden">
                         <div
-                          className="h-full bg-gradient-to-r from-accent-purple to-accent-blue rounded-full transition-all duration-1000"
+                          className="h-full fill-ouro rounded-full transition-all duration-1000"
                           style={{
                             width: `${Math.min(
                               (safeGet(
@@ -1040,7 +1040,7 @@ export default function AdminDashboard() {
                         >
                           Obras com Partituras
                         </Text>
-                        <span className="text-lg font-bold text-accent-green">
+                        <span className="text-lg font-bold text-ok">
                           {formatNumber(
                             safeGet(
                               stats,
@@ -1052,7 +1052,7 @@ export default function AdminDashboard() {
                       </div>
                       <div className="w-full bg-theme-primary h-2 rounded-full overflow-hidden">
                         <div
-                          className="h-full bg-gradient-to-r from-accent-green to-accent-blue rounded-full transition-all duration-1000"
+                          className="h-full bg-ok rounded-full transition-all duration-1000"
                           style={{
                             width: `${Math.min(
                               (safeGet(
@@ -1076,7 +1076,7 @@ export default function AdminDashboard() {
                       gap={1}
                       className="text-center p-3 bg-theme-secondary rounded-xl"
                     >
-                      <div className="text-2xl font-bold text-accent-amber">
+                      <div className="text-2xl font-bold text-atencao">
                         {safeGet(
                           stats,
                           'quality.contentCompleteness.avgScoresPerWork',
@@ -1100,7 +1100,7 @@ export default function AdminDashboard() {
                   className="h-auto p-6 flex-col"
                   onClick={() => router.push('/uploads/moderation')}
                 >
-                  <PiShield className="w-8 h-8 mb-3 text-accent-red" />
+                  <PiShield className="w-8 h-8 mb-3 text-erro" />
                   <span className="font-bold mb-2">Moderação</span>
                   <Text papel="rotulo" tom="fraco" className="text-center">
                     Gerenciar uploads e reports pendentes
@@ -1112,7 +1112,7 @@ export default function AdminDashboard() {
                   className="h-auto p-6 flex-col"
                   onClick={() => router.push('/admin/users')}
                 >
-                  <PiUsers className="w-8 h-8 mb-3 text-accent-blue" />
+                  <PiUsers className="w-8 h-8 mb-3 text-aviso" />
                   <span className="font-bold mb-2">Usuários</span>
                   <Text papel="rotulo" tom="fraco" className="text-center">
                     Visualizar e gerenciar usuários
@@ -1124,7 +1124,7 @@ export default function AdminDashboard() {
                   className="h-auto p-6 flex-col"
                   onClick={() => router.push('/admin/reports')}
                 >
-                  <PiChartBar className="w-8 h-8 mb-3 text-accent-green" />
+                  <PiChartBar className="w-8 h-8 mb-3 text-ok" />
                   <span className="font-bold mb-2">Relatórios</span>
                   <Text papel="rotulo" tom="fraco" className="text-center">
                     Análises detalhadas e métricas
@@ -1136,7 +1136,7 @@ export default function AdminDashboard() {
         ) : (
           <div className="flex items-center justify-center min-h-[50vh]">
             <AnimatedCard className="classical-card p-8 text-center max-w-md">
-              <div className="w-16 h-16 bg-gradient-to-br from-accent-amber to-accent-red rounded-3xl flex items-center justify-center mx-auto mb-4">
+              <div className="w-16 h-16 bg-atencao rounded-3xl flex items-center justify-center mx-auto mb-4">
                 <PiDatabase className="w-8 h-8 text-theme-primary" />
               </div>
               <h3 className="text-xl font-bold text-theme-primary mb-2">

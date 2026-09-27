@@ -18,7 +18,7 @@ export function Breadcrumb({ items }: BreadcrumbProps) {
           <Link
             href="/blog"
             aria-label="Início do blog"
-            className="flex items-center text-theme-tertiary hover:text-brand-primary transition-colors"
+            className="flex items-center text-theme-tertiary hover:text-ouro-texto transition-colors"
           >
             <PiHouse className="w-4 h-4" />
           </Link>
@@ -29,7 +29,7 @@ export function Breadcrumb({ items }: BreadcrumbProps) {
             {item.href ? (
               <Link
                 href={item.href}
-                className="text-theme-tertiary hover:text-brand-primary transition-colors"
+                className="text-theme-tertiary hover:text-ouro-texto transition-colors"
               >
                 {item.label}
               </Link>

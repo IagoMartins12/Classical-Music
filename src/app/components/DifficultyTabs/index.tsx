@@ -25,7 +25,7 @@ export default function DifficultyTabs({
   return (
     <Card>
       <div className="flex items-center mb-6">
-        <div className="w-10 h-10 bg-gradient-to-br from-accent-blue to-accent-purple rounded-xl flex items-center justify-center mr-3">
+        <div className="w-10 h-10 bg-aviso rounded-xl flex items-center justify-center mr-3">
           <PiMusicNotes className="w-5 h-5 text-theme-primary" />
         </div>
         <div>
@@ -46,13 +46,13 @@ export default function DifficultyTabs({
             disabled={isPending}
             className={`flex items-center space-x-2 px-4 py-3 rounded-xl font-medium transition-all duration-300 border ${
               selectedInstrument === 'all'
-                ? 'bg-brand-gradient text-theme-inverse border-brand-primary shadow-theme-glow'
-                : 'bg-theme-elevated border-theme-secondary text-theme-secondary hover:border-brand-primary hover:text-brand-primary hover:bg-brand-primary/5'
+                ? 'fill-ouro text-sobre-ouro border-ouro shadow-theme-glow'
+                : 'bg-theme-elevated border-theme-secondary text-theme-secondary hover:border-ouro hover:text-ouro-texto hover:bg-ouro/5'
             } ${isPending ? 'cursor-not-allowed opacity-50' : ''}`}
           >
             <PiSquaresFour className="w-4 h-4" />
             <span>Todos</span>
-            <span className="px-2 py-0.5 text-xs bg-theme-overlay rounded-full">
+            <span className="px-2 py-0.5 text-xs bg-veu rounded-full">
               {totalWorks}
             </span>
           </button>
@@ -73,13 +73,13 @@ export default function DifficultyTabs({
               disabled={isPending}
               className={`flex items-center space-x-2 px-4 py-3 rounded-xl font-medium transition-all duration-300 border ${
                 selectedInstrument === instrument.id
-                  ? 'bg-brand-gradient text-theme-inverse border-brand-primary shadow-theme-glow'
-                  : 'bg-theme-elevated border-theme-secondary text-theme-secondary hover:border-brand-primary hover:text-brand-primary hover:bg-brand-primary/5'
+                  ? 'fill-ouro text-sobre-ouro border-ouro shadow-theme-glow'
+                  : 'bg-theme-elevated border-theme-secondary text-theme-secondary hover:border-ouro hover:text-ouro-texto hover:bg-ouro/5'
               } ${isPending ? 'cursor-not-allowed opacity-50' : ''}`}
             >
               <PiMusicNotes className="w-4 h-4" />
               <span>{instrument.name}</span>
-              <span className="px-2 py-0.5 text-xs bg-theme-overlay rounded-full">
+              <span className="px-2 py-0.5 text-xs bg-veu rounded-full">
                 {instrument.workCount}
               </span>
             </button>

@@ -100,7 +100,7 @@ const PrivacySection: React.FC<PrivacySectionProps> = ({
       disabled={disabled}
       className={`
         relative inline-flex h-6 w-11 items-center rounded-full transition-colors
-        ${checked ? 'bg-brand-primary' : 'bg-theme-secondary'}
+        ${checked ? 'bg-ouro' : 'bg-theme-secondary'}
         ${disabled ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'}
       `}
     >
@@ -257,7 +257,7 @@ const PrivacySection: React.FC<PrivacySectionProps> = ({
       <Card
         nivel={2}
         densidade="compacta"
-        className="bg-brand-primary bg-opacity-5 border border-brand-primary border-opacity-30"
+        className="bg-ouro/5 border border-ouro/30"
       >
         <h4 className="font-medium text-brand-primary mb-2">
           {t('privacy_summary')}
@@ -291,11 +291,7 @@ const PrivacySection: React.FC<PrivacySectionProps> = ({
       </Card>
 
       {/* Info Box */}
-      <Card
-        nivel={2}
-        densidade="compacta"
-        className="bg-theme-secondary bg-opacity-20"
-      >
+      <Card nivel={2} densidade="compacta" className="bg-theme-secondary">
         <h4 className="font-medium text-theme-primary mb-2">
           {t('privacy_security_info')}
         </h4>

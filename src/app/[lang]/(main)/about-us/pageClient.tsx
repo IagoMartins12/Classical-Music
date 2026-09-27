@@ -90,12 +90,12 @@ export default function AboutPage() {
     <PageContainer showBackground={true} className="classical-theme">
       {/* Hero Section */}
       <section className="relative overflow-hidden py-16">
-        <div className="absolute inset-0 bg-gradient-to-br from-brand-primary/5 via-accent-purple/5 to-accent-blue/5"></div>
+        <div className="absolute inset-0 bg-ouro/5"></div>
         <AnimatedContainer delay={0.1} staggerSpeed="normal">
           <div className="relative section-wrap">
             <div className="text-center max-w-4xl mx-auto">
               <AnimatedItem direction="scale" springType="bouncy">
-                <div className="inline-flex items-center px-6 py-3 bg-gradient-to-r from-brand-primary/20 to-brand-secondary/20 border border-brand-primary/30 rounded-full mb-8">
+                <div className="inline-flex items-center px-6 py-3 bg-ouro/20 border border-ouro/30 rounded-full mb-8">
                   <GiGrandPiano className="w-5 h-5 text-brand-primary mr-2" />
                   <span className="text-brand-primary font-medium">
                     {t('about_hero_badge')}
@@ -143,9 +143,9 @@ export default function AboutPage() {
           <div className="section-wrap">
             <div className="grid lg:grid-cols-2 gap-16 items-center">
               <div className="space-y-8">
-                <div className="inline-flex items-center px-4 py-2 bg-gradient-to-r from-accent-blue/20 to-accent-purple/20 border border-accent-blue/30 rounded-full">
-                  <PiTarget className="w-4 h-4 text-accent-blue mr-2" />
-                  <span className="text-accent-blue font-medium text-sm">
+                <div className="inline-flex items-center px-4 py-2 bg-aviso/20 border border-aviso/30 rounded-full">
+                  <PiTarget className="w-4 h-4 text-aviso mr-2" />
+                  <span className="text-aviso font-medium text-sm">
                     {t('about_mission_badge')}
                   </span>
                 </div>
@@ -165,9 +165,9 @@ export default function AboutPage() {
 
                   <AnimatedCard
                     hover="lift"
-                    className="flex items-start space-x-4 p-6 bg-gradient-to-r from-brand-primary/5 to-brand-secondary/5 border border-brand-primary/20 rounded-2xl"
+                    className="flex items-start space-x-4 p-6 bg-ouro/5 border border-ouro/20 rounded-2xl"
                   >
-                    <div className="w-12 h-12 bg-brand-gradient rounded-xl flex items-center justify-center flex-shrink-0">
+                    <div className="w-12 h-12 fill-ouro rounded-xl flex items-center justify-center flex-shrink-0">
                       <PiHeart className="w-6 h-6 text-theme-primary" />
                     </div>
                     <Stack gap={2}>
@@ -213,25 +213,25 @@ export default function AboutPage() {
                       </h4>
                       <Stack gap={3}>
                         <Inline gap={3}>
-                          <div className="w-2 h-2 bg-brand-primary rounded-full"></div>
+                          <div className="w-2 h-2 bg-ouro rounded-full"></div>
                           <Text papel="rotulo" tom="suave">
                             {t('about_stats_resource_1')}
                           </Text>
                         </Inline>
                         <Inline gap={3}>
-                          <div className="w-2 h-2 bg-accent-blue rounded-full"></div>
+                          <div className="w-2 h-2 bg-aviso rounded-full"></div>
                           <Text papel="rotulo" tom="suave">
                             {t('about_stats_resource_2')}
                           </Text>
                         </Inline>
                         <Inline gap={3}>
-                          <div className="w-2 h-2 bg-accent-purple rounded-full"></div>
+                          <div className="w-2 h-2 bg-ouro rounded-full"></div>
                           <Text papel="rotulo" tom="suave">
                             {t('about_stats_resource_3')}
                           </Text>
                         </Inline>
                         <Inline gap={3}>
-                          <div className="w-2 h-2 bg-accent-green rounded-full"></div>
+                          <div className="w-2 h-2 bg-ok rounded-full"></div>
                           <Text papel="rotulo" tom="suave">
                             {t('about_stats_resource_4')}
                           </Text>
@@ -247,13 +247,13 @@ export default function AboutPage() {
       </section>
 
       {/* Features Section */}
-      <section className="py-8 bg-gradient-to-b from-transparent to-theme-secondary/30">
+      <section className="py-8 bg-sup-1">
         <AnimatedContainer delay={0.1} staggerSpeed="fast">
           <div className="section-wrap">
             <div className="text-center mb-16">
-              <div className="inline-flex items-center px-4 py-2 bg-gradient-to-r from-accent-purple/20 to-accent-blue/20 border border-accent-purple/30 rounded-full mb-6">
-                <PiStar className="w-4 h-4 text-accent-purple mr-2" />
-                <span className="text-accent-purple font-medium text-sm">
+              <div className="inline-flex items-center px-4 py-2 bg-ouro/20 border border-ouro/30 rounded-full mb-6">
+                <PiStar className="w-4 h-4 text-ouro-texto mr-2" />
+                <span className="text-ouro-texto font-medium text-sm">
                   {t('about_features_badge')}
                 </span>
               </div>
@@ -287,7 +287,7 @@ export default function AboutPage() {
         <AnimatedContainer delay={0.1} staggerSpeed="normal">
           <div className="section-wrap">
             <div className="text-center mb-16">
-              <div className="inline-flex items-center px-4 py-2 bg-gradient-to-r from-brand-primary/20 to-brand-secondary/20 border border-brand-primary/30 rounded-full mb-6">
+              <div className="inline-flex items-center px-4 py-2 bg-ouro/20 border border-ouro/30 rounded-full mb-6">
                 <PiHeart className="w-4 h-4 text-brand-primary mr-2" />
                 <Text papel="rotulo" tom="ouro" className="font-medium">
                   {t('about_values_badge')}
@@ -316,7 +316,7 @@ export default function AboutPage() {
 
       {/* CTA Section */}
       <section className="py-8 relative overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-to-r from-brand-primary/10 via-accent-purple/5 to-accent-blue/10"></div>
+        <div className="absolute inset-0 bg-ouro/10"></div>
 
         <AnimatedContainer delay={0.1} staggerSpeed="normal">
           <div className="relative section-wrap">
@@ -324,7 +324,7 @@ export default function AboutPage() {
               hover="lift"
               className="classical-card p-12 text-center max-w-4xl mx-auto"
             >
-              <div className="w-20 h-20 bg-brand-gradient rounded-3xl flex items-center justify-center mx-auto mb-8">
+              <div className="w-20 h-20 fill-ouro rounded-3xl flex items-center justify-center mx-auto mb-8">
                 <PiMetronome className="w-10 h-10 text-theme-primary" />
               </div>
 
@@ -372,25 +372,25 @@ export default function AboutPage() {
 
       {/* Floating Elements */}
       <FloatingElement
-        className="top-16 left-16 text-6xl text-brand-primary/5"
+        className="top-16 left-16 text-6xl text-ouro-texto/5"
         delay={0}
       >
         <PiMusicNotes />
       </FloatingElement>
       <FloatingElement
-        className="bottom-16 right-16 text-5xl text-accent-purple/5"
+        className="bottom-16 right-16 text-5xl text-ouro-texto/5"
         delay={2}
       >
         <GiGrandPiano />
       </FloatingElement>
       <FloatingElement
-        className="top-1/3 right-24 text-4xl text-accent-blue/5"
+        className="top-1/3 right-24 text-4xl text-aviso/5"
         delay={1}
       >
         <PiScroll />
       </FloatingElement>
       <FloatingElement
-        className="bottom-1/3 left-24 text-4xl text-brand-secondary/5"
+        className="bottom-1/3 left-24 text-4xl text-ouro-texto/5"
         delay={3}
       >
         <PiMetronome />
@@ -411,7 +411,7 @@ interface FeatureCardProps {
 function FeatureCard({ feature }: FeatureCardProps) {
   return (
     <AnimatedCard hover="lift" className="classical-card p-6">
-      <div className="w-16 h-16 bg-gradient-to-br from-accent-blue to-accent-purple rounded-2xl flex items-center justify-center mb-6">
+      <div className="w-16 h-16 bg-aviso rounded-2xl flex items-center justify-center mb-6">
         <feature.icon className="w-8 h-8 text-theme-primary" />
       </div>
 
@@ -440,12 +440,12 @@ function ValueCard({ value }: ValueCardProps) {
     <div className="text-center group">
       <AnimatedItem
         hover="scale"
-        className="w-20 h-20 bg-gradient-to-br from-brand-primary to-brand-secondary rounded-3xl flex items-center justify-center mx-auto mb-6"
+        className="w-20 h-20 fill-ouro rounded-3xl flex items-center justify-center mx-auto mb-6"
       >
         <value.icon className="w-10 h-10 text-theme-primary" />
       </AnimatedItem>
 
-      <h3 className="text-2xl font-semibold text-theme-primary classical-title mb-4 group-hover:text-brand-primary transition-colors duration-300">
+      <h3 className="text-2xl font-semibold text-theme-primary classical-title mb-4 group-hover:text-ouro-texto transition-colors duration-300">
         {value.title}
       </h3>
 

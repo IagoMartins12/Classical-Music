@@ -32,44 +32,44 @@ const CATEGORY_CONFIG = {
   TECHNIQUE: {
     label: 'Técnica',
     icon: PiTarget,
-    color: 'from-accent-red to-accent-purple',
-    bgColor: 'bg-accent-red/10 border-accent-red/30 text-accent-red',
+    color: 'bg-erro',
+    bgColor: 'bg-erro/10 border-erro/30 text-erro',
   },
   INTERPRETATION: {
     label: 'Interpretação',
     icon: PiMusicNotes,
-    color: 'from-accent-blue to-accent-purple',
-    bgColor: 'bg-accent-blue/10 border-accent-blue/30 text-accent-blue',
+    color: 'bg-aviso',
+    bgColor: 'bg-aviso/10 border-aviso/30 text-aviso',
   },
   PRACTICE_TIP: {
     label: 'Dicas',
     icon: PiBookOpen,
-    color: 'from-accent-green to-accent-blue',
-    bgColor: 'bg-accent-green/10 border-accent-green/30 text-accent-green',
+    color: 'bg-ok',
+    bgColor: 'bg-ok/10 border-ok/30 text-ok',
   },
   THEORY: {
     label: 'Teoria',
     icon: PiStack,
-    color: 'from-accent-purple to-accent-blue',
-    bgColor: 'bg-accent-purple/10 border-accent-purple/30 text-accent-purple',
+    color: 'fill-ouro',
+    bgColor: 'bg-ouro/10 border-ouro/30 text-ouro-texto',
   },
   PERFORMANCE: {
     label: 'Performance',
     icon: PiMusicNotes,
-    color: 'from-brand-primary to-brand-secondary',
-    bgColor: 'bg-brand-primary/10 border-brand-primary/30 text-brand-primary',
+    color: 'fill-ouro',
+    bgColor: 'bg-ouro/10 border-ouro/30 text-brand-primary',
   },
   HISTORICAL: {
     label: 'Contexto',
     icon: PiMedal,
-    color: 'from-accent-purple to-accent-red',
-    bgColor: 'bg-accent-purple/10 border-accent-purple/30 text-accent-purple',
+    color: 'fill-ouro',
+    bgColor: 'bg-ouro/10 border-ouro/30 text-ouro-texto',
   },
   GENERAL: {
     label: 'Geral',
     icon: PiChatCenteredText,
-    color: 'from-theme-primary to-theme-secondary',
-    bgColor: 'bg-theme-primary/10 border-theme-primary/30 text-theme-primary',
+    color: 'bg-fundo',
+    bgColor: 'bg-fundo/10 border-linha/30 text-theme-primary',
   },
 };
 
@@ -130,8 +130,7 @@ export default function AnnotationsStatsWidget({
                     >
                       <div
                         className={`w-8 h-8 rounded-lg bg-gradient-to-br ${
-                          config?.color ||
-                          'from-theme-primary to-theme-secondary'
+                          config?.color || 'bg-fundo'
                         } flex items-center justify-center`}
                       >
                         <Icon className="w-4 h-4 text-theme-primary" />
@@ -150,11 +149,10 @@ export default function AnnotationsStatsWidget({
                             %)
                           </Text>
                         </div>
-                        <div className="w-full bg-theme-elevated border border-theme-primary/20 rounded-full h-1.5">
+                        <div className="w-full bg-theme-elevated border border-linha/20 rounded-full h-1.5">
                           <div
                             className={`bg-gradient-to-r ${
-                              config?.color ||
-                              'from-theme-primary to-theme-secondary'
+                              config?.color || 'bg-fundo'
                             } h-1.5 rounded-full transition-all duration-500`}
                             style={{ width: `${percentage}%` }}
                           ></div>
@@ -198,7 +196,7 @@ export default function AnnotationsStatsWidget({
                   >
                     <Inline
                       gap={3}
-                      className="p-3 classical-card-simple rounded-xl group hover:border-brand-primary/50 transition-all"
+                      className="p-3 classical-card-simple rounded-xl group hover:border-ouro/50 transition-all"
                     >
                       <Inline gap={2}>
                         <div
@@ -207,7 +205,7 @@ export default function AnnotationsStatsWidget({
                           <Icon className="w-4 h-4" />
                         </div>
                         {annotation.isVerified && (
-                          <PiSealCheck className="w-4 h-4 text-accent-green" />
+                          <PiSealCheck className="w-4 h-4 text-ok" />
                         )}
                       </Inline>
                       <div className="flex-1 min-w-0">
@@ -215,7 +213,7 @@ export default function AnnotationsStatsWidget({
                           papel="rotulo"
                           tom="forte"
                           as="div"
-                          className="font-medium truncate group-hover:text-brand-primary transition-colors"
+                          className="font-medium truncate group-hover:text-ouro-texto transition-colors"
                         >
                           {annotation.title}
                         </Text>
@@ -276,7 +274,7 @@ export default function AnnotationsStatsWidget({
                           papel="rotulo"
                           tom="forte"
                           as="div"
-                          className="font-medium truncate group-hover:text-brand-primary transition-colors"
+                          className="font-medium truncate group-hover:text-ouro-texto transition-colors"
                         >
                           {work.title}
                         </Text>
@@ -342,7 +340,7 @@ export default function AnnotationsStatsWidget({
       {totalAnnotations < 5 && (
         <AnimatedCard hover="lift" className="classical-card-2">
           <div className="p-6 text-center">
-            <div className="w-12 h-12 bg-gradient-to-br from-accent-green to-accent-blue rounded-2xl flex items-center justify-center mx-auto mb-4">
+            <div className="w-12 h-12 bg-ok rounded-2xl flex items-center justify-center mx-auto mb-4">
               <PiChatCenteredText className="w-6 h-6 text-theme-primary" />
             </div>
             <h4 className="font-semibold text-theme-primary mb-2">
@@ -354,7 +352,7 @@ export default function AnnotationsStatsWidget({
             </Text>
             <Link
               href="/works"
-              className="inline-flex items-center space-x-2 text-sm text-brand-primary hover:text-brand-secondary font-medium transition-colors"
+              className="inline-flex items-center space-x-2 text-sm text-brand-primary hover:text-ouro-texto font-medium transition-colors"
             >
               <span>Explorar Obras</span>
               <PiMusicNotes className="w-4 h-4" />

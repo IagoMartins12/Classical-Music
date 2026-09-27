@@ -175,8 +175,8 @@ export function AudioPlayerModal({
             onClick={() => handleTabChange('upload')}
             className={`flex-1 px-4 py-2 text-sm font-medium transition-colors ${
               activeTab === 'upload'
-                ? 'border-b-2 border-brand-primary text-brand-primary'
-                : 'text-theme-tertiary hover:text-theme-primary'
+                ? 'border-b-2 border-ouro text-brand-primary'
+                : 'text-theme-tertiary hover:text-texto'
             }`}
           >
             📤 Fazer Upload
@@ -186,8 +186,8 @@ export function AudioPlayerModal({
             onClick={() => handleTabChange('youtube')}
             className={`flex-1 px-4 py-2 text-sm font-medium transition-colors ${
               activeTab === 'youtube'
-                ? 'border-b-2 border-brand-primary text-brand-primary'
-                : 'text-theme-tertiary hover:text-theme-primary'
+                ? 'border-b-2 border-ouro text-brand-primary'
+                : 'text-theme-tertiary hover:text-texto'
             }`}
           >
             🎥 Link do YouTube
@@ -200,7 +200,7 @@ export function AudioPlayerModal({
               <label className="block text-sm font-medium text-theme-primary">
                 Selecionar Arquivo de Áudio
               </label>
-              <div className="border-2 border-dashed border-theme-secondary rounded-lg p-6 text-center hover:border-brand-primary transition-colors">
+              <div className="border-2 border-dashed border-theme-secondary rounded-lg p-6 text-center hover:border-ouro transition-colors">
                 <input
                   type="file"
                   id="audio-upload"
@@ -212,8 +212,8 @@ export function AudioPlayerModal({
 
                 {audioUrl && !uploading ? (
                   <div className="space-y-3">
-                    <PiMusicNotes className="w-12 h-12 text-green-600 mx-auto" />
-                    <p className="text-sm text-green-700 font-medium">
+                    <PiMusicNotes className="w-12 h-12 text-ok mx-auto" />
+                    <p className="text-sm text-ok font-medium">
                       ✓ Áudio carregado com sucesso
                     </p>
                     <Text papel="legenda" tom="fraco" as="p">
@@ -221,7 +221,7 @@ export function AudioPlayerModal({
                     </Text>
                     <label
                       htmlFor="audio-upload"
-                      className="inline-block cursor-pointer text-sm text-brand-primary hover:text-brand-secondary underline"
+                      className="inline-block cursor-pointer text-sm text-brand-primary hover:text-ouro-texto underline"
                     >
                       Alterar áudio
                     </label>
@@ -275,10 +275,8 @@ export function AudioPlayerModal({
             />
 
             {youtubeUrl && extractYouTubeId(youtubeUrl) && (
-              <div className="p-4 bg-green-50 border border-green-200 rounded-lg">
-                <p className="text-sm text-green-800 mb-2">
-                  ✓ Link válido do YouTube
-                </p>
+              <div className="p-4 bg-ok/10 border border-ok/30 rounded-lg">
+                <p className="text-sm text-ok mb-2">✓ Link válido do YouTube</p>
                 <iframe
                   width="100%"
                   height="200"
@@ -308,7 +306,7 @@ export function AudioPlayerModal({
                 onComposerSelect={handleComposerSelect}
               />
               {composerData && (
-                <p className="text-sm text-green-600 mt-1">✓ Vinculado</p>
+                <p className="text-sm text-ok mt-1">✓ Vinculado</p>
               )}
             </div>
 
@@ -321,9 +319,7 @@ export function AudioPlayerModal({
                 onWorkSelect={handleWorkSelect}
                 filterByComposer={selectedComposer}
               />
-              {workData && (
-                <p className="text-sm text-green-600 mt-1">✓ Vinculado</p>
-              )}
+              {workData && <p className="text-sm text-ok mt-1">✓ Vinculado</p>}
             </div>
           </Stack>
         )}

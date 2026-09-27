@@ -61,7 +61,7 @@ const UploadWorkCard = ({
     return (
       <Card
         densidade="compacta"
-        className="group relative hover:shadow-theme-glow transition-all duration-300"
+        className="group relative hover:shadow-[var(--sombra-2)] transition-all duration-300"
       >
         <Link
           href={`/works/${item.id}`}
@@ -70,20 +70,20 @@ const UploadWorkCard = ({
           {/* Left section - Work info */}
           <Inline gap={4} className="flex-1 min-w-0">
             {/* Icon */}
-            <div className="w-12 h-12 bg-gradient-to-br from-accent-blue to-accent-green rounded-xl flex items-center justify-center flex-shrink-0">
+            <div className="w-12 h-12 bg-aviso rounded-xl flex items-center justify-center flex-shrink-0">
               <PiMusicNotes className="w-6 h-6 text-theme-primary" />
             </div>
 
             {/* Main info */}
             <div className="flex-1 min-w-0">
-              <h3 className="text-base font-bold text-theme-primary classical-title group-hover:text-brand-primary transition-colors duration-300 truncate">
+              <h3 className="text-base font-bold text-theme-primary classical-title group-hover:text-ouro-texto transition-colors duration-300 truncate">
                 {item.title}
               </h3>
 
               <Inline gap={4} className="mt-1 flex-wrap">
                 {/* Composer */}
                 {item.composerName && (
-                  <span className="inline-flex items-center text-sm text-accent-blue font-medium">
+                  <span className="inline-flex items-center text-sm text-aviso font-medium">
                     <PiUser className="w-3 h-3 mr-1" />
                     {item.composerName}
                   </span>
@@ -115,7 +115,7 @@ const UploadWorkCard = ({
 
                 {/* Status badges */}
                 {item.isIMSLP && (
-                  <span className="text-xs font-medium text-accent-blue px-2 py-1 bg-accent-blue/10 rounded-full">
+                  <span className="text-xs font-medium text-aviso px-2 py-1 bg-aviso/10 rounded-full">
                     IMSLP
                   </span>
                 )}
@@ -124,7 +124,7 @@ const UploadWorkCard = ({
                   <Inline
                     as="span"
                     gap={1}
-                    className="text-xs font-medium text-accent-green px-2 py-1 bg-accent-green/10 rounded-full"
+                    className="text-xs font-medium text-ok px-2 py-1 bg-ok/10 rounded-full"
                   >
                     <PiShield className="w-3 h-3" />
                     <span>{t('card_verified_badge')}</span>
@@ -139,7 +139,7 @@ const UploadWorkCard = ({
             {item.imslpId && (
               <div
                 rel="noopener noreferrer"
-                className="inline-flex items-center px-2 py-1 bg-accent-green/10 border border-accent-green/20 text-accent-green rounded-md text-xs font-medium hover:bg-accent-green/20 hover:scale-105 transition-all duration-300"
+                className="inline-flex items-center px-2 py-1 bg-ok/10 border border-ok/20 text-ok rounded-md text-xs font-medium hover:bg-ok/20 hover:scale-105 transition-all duration-300"
                 onClick={(e) => e.stopPropagation()}
               >
                 IMSLP
@@ -149,7 +149,7 @@ const UploadWorkCard = ({
             <Inline gap={1} className="-300">
               <button
                 onClick={handleEditClick}
-                className="w-8 h-8 rounded-lg bg-theme-secondary hover:bg-accent-blue/10 text-theme-tertiary hover:text-accent-blue transition-colors flex items-center justify-center"
+                className="w-8 h-8 rounded-lg bg-theme-secondary hover:bg-aviso/10 text-theme-tertiary hover:text-aviso transition-colors flex items-center justify-center"
               >
                 <PiNotePencil className="w-4 h-4" />
                 <NomeAcao acao="editar" />
@@ -158,7 +158,7 @@ const UploadWorkCard = ({
               <button
                 onClick={handleDeleteClick}
                 disabled={isDeleting}
-                className={`w-8 h-8 rounded-lg bg-theme-secondary hover:bg-accent-red/10 text-theme-tertiary hover:text-accent-red transition-colors flex items-center justify-center ${
+                className={`w-8 h-8 rounded-lg bg-theme-secondary hover:bg-erro/10 text-theme-tertiary hover:text-erro transition-colors flex items-center justify-center ${
                   isDeleting ? 'opacity-50 cursor-not-allowed' : ''
                 }`}
               >
@@ -175,7 +175,7 @@ const UploadWorkCard = ({
   return (
     <div className="group cursor-pointer select-none h-full">
       <Link href={`/works/${item.id}`} className="block h-full">
-        <div className="classical-card h-full flex flex-col overflow-hidden transition-all duration-700 ease-out group-hover:scale-105 group-hover:-translate-y-2 hover:shadow-theme-glow">
+        <div className="classical-card h-full flex flex-col overflow-hidden transition-all duration-700 ease-out group-hover:scale-105 group-hover:-translate-y-2 hover:shadow-[var(--sombra-2)]">
           {/* Header Section */}
           <div className="relative p-2 md:p-6 pb-4 border-b border-theme-secondary">
             {/* Background pattern */}
@@ -188,7 +188,7 @@ const UploadWorkCard = ({
             >
               <button
                 onClick={handleEditClick}
-                className="w-8 h-8 rounded-lg bg-theme-elevated hover:bg-accent-blue/10 text-theme-tertiary hover:text-accent-blue transition-colors flex items-center justify-center shadow-theme-medium"
+                className="w-8 h-8 rounded-lg bg-theme-elevated hover:bg-aviso/10 text-theme-tertiary hover:text-aviso transition-colors flex items-center justify-center shadow-theme-medium"
               >
                 <PiNotePencil className="w-4 h-4" />
                 <NomeAcao acao="editar" />
@@ -197,7 +197,7 @@ const UploadWorkCard = ({
               <button
                 onClick={handleDeleteClick}
                 disabled={isDeleting}
-                className={`w-8 h-8 rounded-lg bg-theme-elevated hover:bg-accent-red/10 text-theme-tertiary hover:text-accent-red transition-colors flex items-center justify-center shadow-theme-medium ${
+                className={`w-8 h-8 rounded-lg bg-theme-elevated hover:bg-erro/10 text-theme-tertiary hover:text-erro transition-colors flex items-center justify-center shadow-theme-medium ${
                   isDeleting ? 'opacity-50 cursor-not-allowed' : ''
                 }`}
               >
@@ -208,17 +208,17 @@ const UploadWorkCard = ({
 
             <div className="relative z-10">
               {/* Title */}
-              <h3 className="text-lg font-bold text-theme-primary classical-title mb-3 line-clamp-2 group-hover:text-brand-primary transition-colors duration-300 leading-tight">
+              <h3 className="text-lg font-bold text-theme-primary classical-title mb-3 line-clamp-2 group-hover:text-ouro-texto transition-colors duration-300 leading-tight">
                 {item.title}
               </h3>
 
               {/* Composer */}
               {item.composerName && (
                 <div className="flex items-center mb-4">
-                  <div className="w-6 h-6 bg-gradient-to-br from-accent-blue to-accent-purple rounded-full flex items-center justify-center mr-2">
+                  <div className="w-6 h-6 bg-aviso rounded-full flex items-center justify-center mr-2">
                     <PiUser className="w-3 h-3 text-theme-primary" />
                   </div>
-                  <span className="text-sm text-accent-blue hover:text-accent-purple transition-colors font-medium">
+                  <span className="text-sm text-aviso hover:text-ouro-texto transition-colors font-medium">
                     {item.composerName}
                   </span>
                 </div>
@@ -269,7 +269,7 @@ const UploadWorkCard = ({
                 <Text
                   papel="legenda"
                   tom="ouro"
-                  className="inline-flex items-center px-2 py-1 bg-brand-primary/10 border border-brand-primary/30 rounded-full font-medium"
+                  className="inline-flex items-center px-2 py-1 bg-ouro/10 border border-ouro/30 rounded-full font-medium"
                 >
                   <PiClock className="w-2.5 h-2.5 mr-1" />
                   {item.epochName}
@@ -277,13 +277,13 @@ const UploadWorkCard = ({
               )}
 
               {item.isIMSLP && (
-                <span className="inline-flex items-center px-2 py-1 bg-accent-blue/10 border border-accent-blue/30 text-accent-blue rounded-full text-xs font-medium">
+                <span className="inline-flex items-center px-2 py-1 bg-aviso/10 border border-aviso/30 text-aviso rounded-full text-xs font-medium">
                   IMSLP
                 </span>
               )}
 
               {item.verificationStatus === 'verified' && (
-                <span className="inline-flex items-center px-2 py-1 bg-accent-green/10 border border-accent-green/30 text-accent-green rounded-full text-xs font-medium">
+                <span className="inline-flex items-center px-2 py-1 bg-ok/10 border border-ok/30 text-ok rounded-full text-xs font-medium">
                   <PiShield className="w-2.5 h-2.5 mr-1" />
                   {t('card_verified_badge')}
                 </span>
@@ -305,7 +305,7 @@ const UploadWorkCard = ({
                 {item.imslpId && (
                   <Inline
                     gap={1}
-                    className="text-accent-green hover:text-accent-blue text-sm font-medium transition-colors"
+                    className="text-ok hover:text-aviso text-sm font-medium transition-colors"
                     onClick={(e) => e.stopPropagation()}
                   >
                     <span>IMSLP</span>
@@ -315,11 +315,11 @@ const UploadWorkCard = ({
             </Stack>
 
             {/* Hover glow effect */}
-            <div className="absolute inset-0 bg-brand-gradient opacity-0 group-hover:opacity-5 transition-opacity duration-500 rounded-2xl pointer-events-none"></div>
+            <div className="absolute inset-0 fill-ouro opacity-0 group-hover:opacity-5 transition-opacity duration-500 rounded-2xl pointer-events-none"></div>
           </div>
 
           {/* Floating mini indicator */}
-          <div className="absolute -top-1 -right-1 w-3 h-3 bg-brand-gradient rounded-full opacity-0 group-hover:opacity-100 transition-all duration-300 scale-50 group-hover:scale-100 shadow-brand-glow"></div>
+          <div className="absolute -top-1 -right-1 w-3 h-3 fill-ouro rounded-full opacity-0 group-hover:opacity-100 transition-all duration-300 scale-50 group-hover:scale-100"></div>
         </div>
       </Link>
 

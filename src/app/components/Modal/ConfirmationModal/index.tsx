@@ -38,7 +38,7 @@ const ConfirmationModal: React.FC<ConfirmationModalProps> = ({
           confirmLabel: t('unsaved_changes_confirm'),
           cancelLabel: t('unsaved_changes_cancel'),
           icon: (
-            <div className="w-12 h-12 bg-gradient-to-br from-accent-amber to-accent-red rounded-full flex items-center justify-center">
+            <div className="w-12 h-12 bg-atencao rounded-full flex items-center justify-center">
               <PiWarning className="w-6 h-6 text-white" />
             </div>
           ),
@@ -57,7 +57,7 @@ const ConfirmationModal: React.FC<ConfirmationModalProps> = ({
           confirmLabel: t('ongoing_process_confirm'),
           cancelLabel: t('ongoing_process_cancel'),
           icon: (
-            <div className="w-12 h-12 bg-gradient-to-br from-accent-red to-accent-purple rounded-full flex items-center justify-center">
+            <div className="w-12 h-12 bg-erro rounded-full flex items-center justify-center">
               <PiX className="w-6 h-6 text-white" />
             </div>
           ),
@@ -71,7 +71,7 @@ const ConfirmationModal: React.FC<ConfirmationModalProps> = ({
           confirmLabel: t('danger_confirm'),
           cancelLabel: t('danger_cancel'),
           icon: (
-            <div className="w-12 h-12 bg-gradient-to-br from-accent-red to-accent-purple rounded-full flex items-center justify-center">
+            <div className="w-12 h-12 bg-erro rounded-full flex items-center justify-center">
               <PiTrash className="w-6 h-6 text-white" />
             </div>
           ),
@@ -86,7 +86,7 @@ const ConfirmationModal: React.FC<ConfirmationModalProps> = ({
           confirmLabel: t('custom_confirm'),
           cancelLabel: t('custom_cancel'),
           icon: (
-            <div className="w-12 h-12 bg-gradient-to-br from-brand-primary to-brand-secondary rounded-full flex items-center justify-center">
+            <div className="w-12 h-12 fill-ouro rounded-full flex items-center justify-center">
               <PiWarning className="w-6 h-6 text-white" />
             </div>
           ),
@@ -123,16 +123,16 @@ const ConfirmationModal: React.FC<ConfirmationModalProps> = ({
 
         {/* Informações adicionais para processo em andamento */}
         {config?.type === 'ongoing-process' && (
-          <div className="bg-accent-red/10 border border-accent-red/20 rounded-lg p-4 mb-6">
+          <div className="bg-erro/10 border border-erro/20 rounded-lg p-4 mb-6">
             <div className="flex items-start space-x-3">
-              <div className="w-5 h-5 bg-accent-red rounded-full flex items-center justify-center flex-shrink-0 mt-0.5">
+              <div className="w-5 h-5 bg-erro rounded-full flex items-center justify-center flex-shrink-0 mt-0.5">
                 <div className="w-2 h-2 bg-white rounded-full animate-pulse"></div>
               </div>
               <Stack gap={1}>
-                <h4 className="font-medium text-accent-red">
+                <h4 className="font-medium text-erro">
                   {t('process_active_title')}
                 </h4>
-                <p className="text-sm text-accent-red/80">
+                <p className="text-sm text-erro/80">
                   {config?.processName ? (
                     <>
                       {t('process_active_description').replace(
@@ -151,14 +151,14 @@ const ConfirmationModal: React.FC<ConfirmationModalProps> = ({
 
         {/* Informações adicionais para alterações não salvas */}
         {config?.type === 'unsaved-changes' && (
-          <div className="bg-accent-amber/10 border border-accent-amber/20 rounded-lg p-4 mb-6">
+          <div className="bg-atencao/10 border border-atencao/20 rounded-lg p-4 mb-6">
             <div className="flex items-start space-x-3">
-              <PiFloppyDisk className="w-5 h-5 text-accent-amber flex-shrink-0 mt-0.5" />
+              <PiFloppyDisk className="w-5 h-5 text-atencao flex-shrink-0 mt-0.5" />
               <Stack gap={1}>
-                <h4 className="font-medium text-accent-amber">
+                <h4 className="font-medium text-atencao">
                   {t('changes_detected_title')}
                 </h4>
-                <p className="text-sm text-accent-amber/80">
+                <p className="text-sm text-atencao/80">
                   {t('changes_detected_description')}
                 </p>
               </Stack>
@@ -167,14 +167,14 @@ const ConfirmationModal: React.FC<ConfirmationModalProps> = ({
         )}
 
         {config?.type === 'general-no-verification' && (
-          <div className="bg-accent-amber/10 border border-accent-amber/20 rounded-lg p-4 mb-6">
+          <div className="bg-atencao/10 border border-atencao/20 rounded-lg p-4 mb-6">
             <div className="flex items-start space-x-3">
-              <PiFloppyDisk className="w-5 h-5 text-accent-amber flex-shrink-0 mt-0.5" />
+              <PiFloppyDisk className="w-5 h-5 text-atencao flex-shrink-0 mt-0.5" />
               <Stack gap={1}>
-                <h4 className="font-medium text-accent-amber">
+                <h4 className="font-medium text-atencao">
                   {t('possible_changes_title')}
                 </h4>
-                <p className="text-sm text-accent-amber/80">
+                <p className="text-sm text-atencao/80">
                   {t('possible_changes_description')}
                 </p>
               </Stack>
@@ -201,9 +201,9 @@ const ConfirmationModal: React.FC<ConfirmationModalProps> = ({
             isLoading={isLoading}
             className={`min-w-[140px] ${
               finalConfig.confirmVariant === 'danger'
-                ? 'bg-gradient-to-r from-accent-red to-accent-red/80 hover:from-accent-red/90 hover:to-accent-red/70 text-white border-accent-red shadow-lg hover:shadow-accent-red/25'
+                ? 'bg-erro text-white border-erro shadow-lg'
                 : finalConfig.confirmVariant === 'warning'
-                  ? 'bg-gradient-to-r from-accent-amber to-accent-amber/80 hover:from-accent-amber/90 hover:to-accent-amber/70 text-white border-accent-amber shadow-lg hover:shadow-accent-amber/25'
+                  ? 'bg-atencao text-white border-atencao shadow-lg'
                   : ''
             }`}
           >

@@ -52,8 +52,8 @@ export default function TeacherVerificationRequired({
             {/* Main Icon */}
             <AnimatedItem direction="scale" springType="bouncy">
               <div className="relative mb-8">
-                <div className="w-32 h-32 mx-auto bg-gradient-to-br from-accent-blue/20 to-accent-purple/20 rounded-full flex items-center justify-center classical-card border-2 border-accent-blue/30 shadow-theme-glow">
-                  <PiUserCheck className="w-16 h-16 text-accent-blue" />
+                <div className="w-32 h-32 mx-auto bg-aviso/20 rounded-full flex items-center justify-center classical-card border-2 border-aviso/30 shadow-theme-glow">
+                  <PiUserCheck className="w-16 h-16 text-aviso" />
                 </div>
               </div>
             </AnimatedItem>
@@ -78,8 +78,8 @@ export default function TeacherVerificationRequired({
               className="classical-card p-8 mb-8 max-w-2xl mx-auto"
             >
               <div className="flex items-start space-x-4">
-                <div className="w-12 h-12 bg-gradient-to-br from-accent-blue/20 to-accent-purple/20 rounded-xl flex items-center justify-center flex-shrink-0">
-                  <PiEnvelopeSimple className="w-6 h-6 text-accent-blue" />
+                <div className="w-12 h-12 bg-aviso/20 rounded-xl flex items-center justify-center flex-shrink-0">
+                  <PiEnvelopeSimple className="w-6 h-6 text-aviso" />
                 </div>
                 <div className="text-left flex-1">
                   <h3 className="text-lg font-bold text-theme-primary mb-3 classical-title">
@@ -159,8 +159,8 @@ export default function TeacherVerificationRequired({
               {/* Current Status */}
               <AnimatedCard hover="lift" className="classical-card p-6">
                 <Inline gap={3} className="mb-4">
-                  <div className="w-10 h-10 bg-gradient-to-br from-accent-blue/20 to-accent-purple/20 rounded-xl flex items-center justify-center">
-                    <PiEnvelopeSimple className="w-5 h-5 text-accent-blue" />
+                  <div className="w-10 h-10 bg-aviso/20 rounded-xl flex items-center justify-center">
+                    <PiEnvelopeSimple className="w-5 h-5 text-aviso" />
                   </div>
                   <h3 className="text-xl font-bold text-theme-primary classical-title">
                     Status Atual
@@ -169,13 +169,13 @@ export default function TeacherVerificationRequired({
 
                 <Stack gap={3} className="text-left">
                   <Inline gap={2}>
-                    <div className="w-2 h-2 bg-accent-blue rounded-full"></div>
+                    <div className="w-2 h-2 bg-aviso rounded-full"></div>
                     <Text papel="rotulo" tom="suave">
                       Convite enviado para seu email
                     </Text>
                   </Inline>
                   <Inline gap={2}>
-                    <div className="w-2 h-2 bg-accent-amber rounded-full"></div>
+                    <div className="w-2 h-2 bg-atencao rounded-full"></div>
                     <Text papel="rotulo" tom="suave">
                       Aguardando sua aceitação
                     </Text>
@@ -198,8 +198,8 @@ export default function TeacherVerificationRequired({
               {/* After approval */}
               <AnimatedCard hover="lift" className="classical-card p-6">
                 <Inline gap={3} className="mb-4">
-                  <div className="w-10 h-10 bg-gradient-to-br from-accent-green/20 to-accent-blue/20 rounded-xl flex items-center justify-center">
-                    <PiUserCheck className="w-5 h-5 text-accent-green" />
+                  <div className="w-10 h-10 bg-ok/20 rounded-xl flex items-center justify-center">
+                    <PiUserCheck className="w-5 h-5 text-ok" />
                   </div>
                   <h3 className="text-xl font-bold text-theme-primary classical-title">
                     Após a Aprovação
@@ -208,25 +208,25 @@ export default function TeacherVerificationRequired({
 
                 <Stack gap={2} className="text-left">
                   <Inline gap={2}>
-                    <div className="w-2 h-2 bg-accent-green rounded-full"></div>
+                    <div className="w-2 h-2 bg-ok rounded-full"></div>
                     <Text papel="rotulo" tom="suave">
                       Gerenciar alunos e aulas
                     </Text>
                   </Inline>
                   <Inline gap={2}>
-                    <div className="w-2 h-2 bg-accent-green rounded-full"></div>
+                    <div className="w-2 h-2 bg-ok rounded-full"></div>
                     <Text papel="rotulo" tom="suave">
                       Criar cronogramas personalizados
                     </Text>
                   </Inline>
                   <Inline gap={2}>
-                    <div className="w-2 h-2 bg-accent-green rounded-full"></div>
+                    <div className="w-2 h-2 bg-ok rounded-full"></div>
                     <Text papel="rotulo" tom="suave">
                       Acompanhar progresso dos alunos
                     </Text>
                   </Inline>
                   <Inline gap={2}>
-                    <div className="w-2 h-2 bg-accent-green rounded-full"></div>
+                    <div className="w-2 h-2 bg-ok rounded-full"></div>
                     <Text papel="rotulo" tom="suave">
                       Sistema completo de avaliação
                     </Text>
@@ -241,8 +241,8 @@ export default function TeacherVerificationRequired({
               className="classical-card p-6 max-w-3xl mx-auto mb-8"
             >
               <Inline gap={3} className="mb-6">
-                <div className="w-10 h-10 bg-gradient-to-br from-accent-purple/20 to-accent-blue/20 rounded-xl flex items-center justify-center">
-                  <PiCaretRight className="w-5 h-5 text-accent-purple" />
+                <div className="w-10 h-10 bg-ouro/20 rounded-xl flex items-center justify-center">
+                  <PiCaretRight className="w-5 h-5 text-ouro-texto" />
                 </div>
                 <h3 className="text-lg font-bold text-theme-primary classical-title">
                   Como Funciona o Processo
@@ -250,8 +250,8 @@ export default function TeacherVerificationRequired({
               </Inline>
 
               <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-                <div className="text-center p-4 bg-gradient-to-br from-theme-elevated to-interactive-hover rounded-lg border border-theme-primary/20">
-                  <div className="w-8 h-8 bg-accent-blue rounded-full flex items-center justify-center mx-auto mb-2">
+                <div className="text-center p-4 bg-sup-elevada rounded-lg border border-linha/20">
+                  <div className="w-8 h-8 bg-aviso rounded-full flex items-center justify-center mx-auto mb-2">
                     <span className="text-white text-sm font-bold">1</span>
                   </div>
                   <h4 className="font-medium text-theme-primary text-sm mb-1">
@@ -262,8 +262,8 @@ export default function TeacherVerificationRequired({
                   </Text>
                 </div>
 
-                <div className="text-center p-4 bg-gradient-to-br from-theme-elevated to-interactive-hover rounded-lg border border-accent-amber/20">
-                  <div className="w-8 h-8 bg-accent-amber rounded-full flex items-center justify-center mx-auto mb-2">
+                <div className="text-center p-4 bg-sup-elevada rounded-lg border border-atencao/20">
+                  <div className="w-8 h-8 bg-atencao rounded-full flex items-center justify-center mx-auto mb-2">
                     <span className="text-white text-sm font-bold">2</span>
                   </div>
                   <h4 className="font-medium text-theme-primary text-sm mb-1">
@@ -274,7 +274,7 @@ export default function TeacherVerificationRequired({
                   </Text>
                 </div>
 
-                <div className="text-center p-4 bg-gradient-to-br from-theme-elevated to-interactive-hover rounded-lg border border-theme-secondary/20">
+                <div className="text-center p-4 bg-sup-elevada rounded-lg border border-linha/20">
                   <div className="w-8 h-8 bg-theme-tertiary rounded-full flex items-center justify-center mx-auto mb-2">
                     <span className="text-white text-sm font-bold">3</span>
                   </div>
@@ -286,8 +286,8 @@ export default function TeacherVerificationRequired({
                   </Text>
                 </div>
 
-                <div className="text-center p-4 bg-gradient-to-br from-theme-elevated to-interactive-hover rounded-lg border border-accent-green/20">
-                  <div className="w-8 h-8 bg-accent-green rounded-full flex items-center justify-center mx-auto mb-2">
+                <div className="text-center p-4 bg-sup-elevada rounded-lg border border-ok/20">
+                  <div className="w-8 h-8 bg-ok rounded-full flex items-center justify-center mx-auto mb-2">
                     <span className="text-white text-sm font-bold">4</span>
                   </div>
                   <h4 className="font-medium text-theme-primary text-sm mb-1">
@@ -306,8 +306,8 @@ export default function TeacherVerificationRequired({
               className="classical-card p-6 max-w-3xl mx-auto"
             >
               <div className="flex items-start space-x-4">
-                <div className="w-10 h-10 bg-gradient-to-br from-accent-purple/20 to-accent-red/20 rounded-xl flex items-center justify-center flex-shrink-0">
-                  <PiWarning className="w-5 h-5 text-accent-purple" />
+                <div className="w-10 h-10 bg-ouro/20 rounded-xl flex items-center justify-center flex-shrink-0">
+                  <PiWarning className="w-5 h-5 text-ouro-texto" />
                 </div>
                 <div className="text-left flex-1">
                   <h3 className="text-lg font-bold text-theme-primary mb-3 classical-title">
@@ -329,7 +329,7 @@ export default function TeacherVerificationRequired({
                   <div className="mt-4">
                     <Link
                       href="/contact"
-                      className="inline-flex items-center space-x-2 text-brand-primary hover:text-brand-secondary transition-colors font-medium"
+                      className="inline-flex items-center space-x-2 text-brand-primary hover:text-ouro-texto transition-colors font-medium"
                     >
                       <PiChatCircle className="w-4 h-4" />
                       <span>Entrar em contato com suporte</span>
@@ -357,11 +357,11 @@ export default function TeacherVerificationRequired({
         </div>
 
         {/* Decorative Elements */}
-        <div className="absolute top-4 left-4 w-12 h-12 bg-accent-blue/10 rounded-2xl flex items-center justify-center opacity-40">
-          <PiMusicNotes className="w-6 h-6 text-accent-blue" />
+        <div className="absolute top-4 left-4 w-12 h-12 bg-aviso/10 rounded-2xl flex items-center justify-center opacity-40">
+          <PiMusicNotes className="w-6 h-6 text-aviso" />
         </div>
 
-        <div className="absolute bottom-4 right-4 w-16 h-16 bg-brand-gradient/10 rounded-3xl flex items-center justify-center opacity-50">
+        <div className="absolute bottom-4 right-4 w-16 h-16 bg-ouro/10 rounded-3xl flex items-center justify-center opacity-50">
           <PiUserCheck className="w-8 h-8 text-brand-primary" />
         </div>
       </div>

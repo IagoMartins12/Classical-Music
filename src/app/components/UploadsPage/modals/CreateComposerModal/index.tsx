@@ -915,7 +915,7 @@ const CreateComposerModal = ({
           {/* Header */}
           <div className="flex items-center justify-between p-0 pt-4 pb-6 md:p-6 border-b border-theme-secondary">
             <Inline gap={3}>
-              <div className="w-10 h-10 bg-gradient-to-br from-accent-purple to-accent-blue rounded-xl flex items-center justify-center">
+              <div className="w-10 h-10 fill-ouro rounded-xl flex items-center justify-center">
                 <PiUser className="w-5 h-5 text-theme-primary" />
               </div>
               <div>
@@ -990,10 +990,10 @@ const CreateComposerModal = ({
                       />
 
                       {duplicateCheck.loading && (
-                        <div className="mt-2 p-2 bg-blue-50 border border-blue-200 rounded-lg">
+                        <div className="mt-2 p-2 bg-aviso/10 border border-aviso/30 rounded-lg">
                           <Inline gap={2}>
                             <PiSpinnerGap className="w-4 h-4 animate-spin text-theme-primary font-bold" />
-                            <span className="text-sm text-blue-800">
+                            <span className="text-sm text-aviso">
                               {t('modal_composer_scraping_checking_duplicates')}
                             </span>
                           </Inline>
@@ -1003,15 +1003,15 @@ const CreateComposerModal = ({
                       {duplicateCheck.found && (
                         <Stack
                           gap={2}
-                          className="mt-2 p-3 bg-red-50 border border-red-200 rounded-lg"
+                          className="mt-2 p-3 bg-erro/10 border border-erro/30 rounded-lg"
                         >
                           <Inline gap={2}>
-                            <PiWarningCircle className="w-4 h-4 text-red-600" />
-                            <span className="text-sm font-medium text-red-800">
+                            <PiWarningCircle className="w-4 h-4 text-erro" />
+                            <span className="text-sm font-medium text-erro">
                               {t('modal_composer_scraping_duplicate_found')}
                             </span>
                           </Inline>
-                          <div className="text-sm text-red-700">
+                          <div className="text-sm text-erro">
                             <p className="mb-1">
                               <strong>
                                 {t('modal_composer_scraping_duplicate_reason', {
@@ -1104,15 +1104,15 @@ const CreateComposerModal = ({
                       {scrapingResult && (
                         <Stack
                           gap={2}
-                          className="mt-4 p-3 bg-green-50 border border-green-200 rounded-lg"
+                          className="mt-4 p-3 bg-ok/10 border border-ok/30 rounded-lg"
                         >
                           <Inline gap={2}>
-                            <PiCheck className="w-4 h-4 text-green-600" />
-                            <span className="text-sm font-medium text-green-800">
+                            <PiCheck className="w-4 h-4 text-ok" />
+                            <span className="text-sm font-medium text-ok">
                               {t('modal_composer_scraping_success')}
                             </span>
                           </Inline>
-                          <div className="text-xs text-green-700">
+                          <div className="text-xs text-ok">
                             {t('modal_composer_scraping_quality', {
                               source: scrapingResult.source,
                               quality: scrapingResult.data.pageQuality,
@@ -1124,10 +1124,10 @@ const CreateComposerModal = ({
                       )}
 
                       {isEditingExternalSource && (
-                        <div className="mt-3 p-3 bg-blue-50 border border-blue-200 rounded-lg">
+                        <div className="mt-3 p-3 bg-aviso/10 border border-aviso/30 rounded-lg">
                           <Inline gap={2}>
-                            <PiInfo className="w-4 h-4 text-blue-600" />
-                            <span className="text-sm text-blue-800">
+                            <PiInfo className="w-4 h-4 text-aviso" />
+                            <span className="text-sm text-aviso">
                               {t('modal_composer_scraping_external_edit', {
                                 source:
                                   dataSource === 'imslp'
@@ -1223,7 +1223,7 @@ const CreateComposerModal = ({
                         handleInputChange('birthDate', e.target.value)
                       }
                       className={`input-classical-2 w-full ${
-                        errors.birthDate ? 'border-red-500' : ''
+                        errors.birthDate ? 'border-erro' : ''
                       }`}
                     />
                   </div>
@@ -1238,7 +1238,7 @@ const CreateComposerModal = ({
                         handleInputChange('deathDate', e.target.value)
                       }
                       className={`input-classical-2 w-full ${
-                        errors.deathDate ? 'border-red-500' : ''
+                        errors.deathDate ? 'border-erro' : ''
                       }`}
                     />
 
@@ -1383,7 +1383,7 @@ const CreateComposerModal = ({
                                 e.target.checked
                               )
                             }
-                            className="w-4 h-4 text-brand-primary bg-theme-secondary border-theme-tertiary rounded focus:ring-brand-primary"
+                            className="w-4 h-4 text-brand-primary bg-theme-secondary border-linha rounded focus:ring-ouro"
                           />
                           <label
                             htmlFor={`role-${role.id}`}
@@ -1445,7 +1445,7 @@ const CreateComposerModal = ({
                       disabled={isFieldLocked('wikipediaLink')}
                       className={
                         isFieldLocked('wikipediaLink')
-                          ? 'bg-gray-50 cursor-not-allowed'
+                          ? 'bg-sup-2 cursor-not-allowed'
                           : ''
                       }
                     />
@@ -1477,7 +1477,7 @@ const CreateComposerModal = ({
                       disabled={isFieldLocked('permLinkImslp')}
                       className={
                         isFieldLocked('permLinkImslp')
-                          ? 'bg-gray-50 cursor-not-allowed'
+                          ? 'bg-sup-2 cursor-not-allowed'
                           : ''
                       }
                     />
@@ -1555,8 +1555,8 @@ const CreateComposerModal = ({
                     onClick={() => setBiographyTab('pt')}
                     className={`flex-1 px-4 py-3 font-semibold transition-all ${
                       biographyTab === 'pt'
-                        ? 'border-b-2 border-brand-primary text-brand-primary'
-                        : 'text-theme-tertiary hover:text-theme-primary'
+                        ? 'border-b-2 border-ouro text-brand-primary'
+                        : 'text-theme-tertiary hover:text-texto'
                     }`}
                   >
                     🇧🇷 Português
@@ -1566,8 +1566,8 @@ const CreateComposerModal = ({
                     onClick={() => setBiographyTab('en')}
                     className={`flex-1 px-4 py-3 font-semibold transition-all ${
                       biographyTab === 'en'
-                        ? 'border-b-2 border-brand-primary text-brand-primary'
-                        : 'text-theme-tertiary hover:text-theme-primary'
+                        ? 'border-b-2 border-ouro text-brand-primary'
+                        : 'text-theme-tertiary hover:text-texto'
                     }`}
                   >
                     🇺🇸 English
@@ -1579,8 +1579,8 @@ const CreateComposerModal = ({
                   <div
                     className={`mb-4 p-3 rounded-xl flex items-center space-x-2 ${
                       bioMessage.type === 'success'
-                        ? 'bg-accent-green/10 border border-accent-green/30 text-accent-green'
-                        : 'bg-accent-red/10 border border-accent-red/30 text-accent-red'
+                        ? 'bg-ok/10 border border-ok/30 text-ok'
+                        : 'bg-erro/10 border border-erro/30 text-erro'
                     }`}
                   >
                     {bioMessage.type === 'success' ? (
@@ -1656,7 +1656,7 @@ const CreateComposerModal = ({
                       setBioMessage({ type: '', text: '' });
                     }}
                     disabled={!biographies[biographyTab]}
-                    className="px-4 py-2 bg-theme-elevated text-theme-tertiary rounded-lg font-medium hover:bg-interactive-hover transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+                    className="px-4 py-2 bg-theme-elevated text-theme-tertiary rounded-lg font-medium hover:bg-ouro/10 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
                   >
                     Limpar
                   </button>
@@ -1715,7 +1715,7 @@ const CreateComposerModal = ({
                         </div>
                       </Inline>
                       {biographies.pt && (
-                        <PiCheck className="w-5 h-5 text-accent-green" />
+                        <PiCheck className="w-5 h-5 text-ok" />
                       )}
                     </div>
                   </div>
@@ -1739,7 +1739,7 @@ const CreateComposerModal = ({
                         </div>
                       </Inline>
                       {biographies.en && (
-                        <PiCheck className="w-5 h-5 text-accent-green" />
+                        <PiCheck className="w-5 h-5 text-ok" />
                       )}
                     </div>
                   </div>

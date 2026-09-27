@@ -6,7 +6,7 @@ interface LoadingProps {
 }
 const LoadingAdminState: React.FC<LoadingProps> = ({ loadingName }) => {
   return (
-    <div className="fixed inset-0 bg-theme-overlay backdrop-blur-sm flex items-center justify-center z-50">
+    <div className="fixed inset-0 bg-veu backdrop-blur-sm flex items-center justify-center z-dialogo">
       <Card
         densidade="larga"
         className="flex items-center justify-center flex-col text-center"

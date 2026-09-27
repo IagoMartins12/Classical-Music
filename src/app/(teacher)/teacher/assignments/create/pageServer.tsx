@@ -137,17 +137,17 @@ export default async function CreateAssignmentPageServer({
         {
           value: 'low',
           label: 'Baixa',
-          color: 'text-accent-green',
+          color: 'text-ok',
         },
         {
           value: 'medium',
           label: 'Média',
-          color: 'text-accent-yellow',
+          color: 'text-atencao',
         },
         {
           value: 'high',
           label: 'Alta',
-          color: 'text-accent-red',
+          color: 'text-erro',
         },
       ],
     };
@@ -189,9 +189,9 @@ export default async function CreateAssignmentPageServer({
               },
             ],
             priorityLevels: [
-              { value: 'low', label: 'Baixa', color: 'text-accent-green' },
-              { value: 'medium', label: 'Média', color: 'text-accent-yellow' },
-              { value: 'high', label: 'Alta', color: 'text-accent-red' },
+              { value: 'low', label: 'Baixa', color: 'text-ok' },
+              { value: 'medium', label: 'Média', color: 'text-atencao' },
+              { value: 'high', label: 'Alta', color: 'text-erro' },
             ],
           }}
           errorMessage="Erro ao carregar dados. Tente recarregar a página."

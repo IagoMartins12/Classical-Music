@@ -227,15 +227,15 @@ export const formatPercentage = (value: number): string => {
 export const getSubscriptionStatusColor = (status: string): string => {
   switch (status) {
     case 'ACTIVE':
-      return 'text-accent-green';
+      return 'text-ok';
     case 'PENDING':
-      return 'text-accent-amber';
+      return 'text-atencao';
     case 'UNSUBSCRIBED':
       return 'text-theme-tertiary';
     case 'BOUNCED':
-      return 'text-accent-red';
+      return 'text-erro';
     case 'BLOCKED':
-      return 'text-accent-red';
+      return 'text-erro';
     default:
       return 'text-theme-secondary';
   }

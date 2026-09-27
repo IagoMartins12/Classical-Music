@@ -122,8 +122,8 @@ export default function ShareButton({
           ${sizeClasses[size]}
           ${
             variant === 'minimal'
-              ? 'bg-transparent border-2 border-theme-primary text-theme-primary hover:bg-theme-primary hover:text-theme-primary'
-              : 'bg-interactive-hover border border-theme-primary text-theme-primary hover:bg-brand-primary/20 hover:border-brand-primary hover:text-brand-primary'
+              ? 'bg-transparent border-2 border-theme-primary text-theme-primary hover:bg-fundo hover:text-texto'
+              : 'bg-ouro/10 border border-theme-primary text-theme-primary hover:bg-ouro/20 hover:border-ouro hover:text-ouro-texto'
           }
           rounded-xl hover:scale-110 transition-all duration-300 flex items-center justify-center group
         `}
@@ -151,7 +151,7 @@ export default function ShareButton({
               </h3>
               <button
                 onClick={() => setIsOpen(false)}
-                className="w-8 h-8 bg-interactive-hover rounded-lg flex items-center justify-center text-theme-tertiary hover:text-theme-primary transition-colors"
+                className="w-8 h-8 bg-ouro/10 rounded-lg flex items-center justify-center text-theme-tertiary hover:text-texto transition-colors"
               >
                 <PiX className="w-4 h-4" />
                 <NomeAcao acao="fechar" />
@@ -159,7 +159,7 @@ export default function ShareButton({
             </div>
 
             {/* Título da página */}
-            <div className="mb-4 p-3 bg-gradient-card rounded-xl border border-theme-secondary">
+            <div className="mb-4 p-3 fundo-sup-1 rounded-xl border border-theme-secondary">
               <h4 className="font-medium text-theme-primary text-sm mb-1">
                 {title}
               </h4>
@@ -193,8 +193,8 @@ export default function ShareButton({
                     w-10 h-10 rounded-xl flex items-center justify-center transition-all duration-300
                     ${
                       copied
-                        ? 'bg-accent-green text-theme-primary'
-                        : 'bg-interactive-hover border border-theme-primary text-theme-primary hover:bg-brand-primary/20'
+                        ? 'bg-ok text-theme-primary'
+                        : 'bg-ouro/10 border border-theme-primary text-theme-primary hover:bg-ouro/20'
                     }
                   `}
                 >
@@ -206,7 +206,7 @@ export default function ShareButton({
                 </button>
               </Inline>
               {copied && (
-                <p className="text-accent-green text-xs mt-1 flex items-center">
+                <p className="text-ok text-xs mt-1 flex items-center">
                   <PiCheck className="w-3 h-3 mr-1" />
                   {t('share_link_copiado')}
                 </p>
@@ -223,7 +223,7 @@ export default function ShareButton({
                   as="button"
                   gap={3}
                   onClick={() => handleShare('whatsapp')}
-                  className="p-3 bg-green-500/10 border border-green-500/30 rounded-xl text-green-500 hover:bg-green-500/20 transition-all duration-300 group"
+                  className="p-3 bg-ok/10 border border-ok/30 rounded-xl text-ok hover:bg-ok/20 transition-all duration-300 group"
                 >
                   <PiWhatsappLogo className="w-5 h-5 group-hover:scale-110 transition-transform" />
                   <span className="text-sm font-medium">
@@ -235,7 +235,7 @@ export default function ShareButton({
                   as="button"
                   gap={3}
                   onClick={() => handleShare('twitter')}
-                  className="p-3 bg-blue-400/10 border border-blue-400/30 rounded-xl text-blue-400 hover:bg-blue-400/20 transition-all duration-300 group"
+                  className="p-3 bg-aviso/10 border border-aviso/30 rounded-xl text-aviso hover:bg-aviso/20 transition-all duration-300 group"
                 >
                   <PiTwitterLogo className="w-5 h-5 group-hover:scale-110 transition-transform" />
                   <span className="text-sm font-medium">
@@ -247,7 +247,7 @@ export default function ShareButton({
                   as="button"
                   gap={3}
                   onClick={() => handleShare('facebook')}
-                  className="p-3 bg-blue-600/10 border border-blue-600/30 rounded-xl text-blue-600 hover:bg-blue-600/20 transition-all duration-300 group"
+                  className="p-3 bg-aviso/10 border border-aviso/30 rounded-xl text-aviso hover:bg-aviso/20 transition-all duration-300 group"
                 >
                   <PiFacebookLogo className="w-5 h-5 group-hover:scale-110 transition-transform" />
                   <span className="text-sm font-medium">
@@ -259,7 +259,7 @@ export default function ShareButton({
                   as="button"
                   gap={3}
                   onClick={() => handleShare('telegram')}
-                  className="p-3 bg-blue-500/10 border border-blue-500/30 rounded-xl text-blue-500 hover:bg-blue-500/20 transition-all duration-300 group"
+                  className="p-3 bg-aviso/10 border border-aviso/30 rounded-xl text-aviso hover:bg-aviso/20 transition-all duration-300 group"
                 >
                   <PiTelegramLogo className="w-5 h-5 group-hover:scale-110 transition-transform" />
                   <span className="text-sm font-medium">

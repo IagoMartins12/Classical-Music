@@ -9,7 +9,7 @@ export function HeroSection() {
   const { t } = useTranslation({ sections: ['pages/music-history'] });
 
   return (
-    <section className="relative overflow-hidden bg-gradient-primary pt-8 md:pt-24 lg:pt-24 flex items-center">
+    <section className="relative overflow-hidden pt-8 md:pt-24 lg:pt-24 flex items-center">
       {/* Animated musical notes */}
       <AnimatedMusicalNotes />
       <div className="section-wrap mx-auto relative z-10">

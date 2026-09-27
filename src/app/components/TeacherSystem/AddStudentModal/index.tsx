@@ -262,7 +262,7 @@ const AddStudentModal: React.FC<AddStudentModalProps> = ({
                           {/* Avatar */}
                           <div className="relative w-10 h-10">
                             {student.image ? (
-                              <div className="relative w-full h-full rounded-full overflow-hidden border-2 border-brand-primary/20">
+                              <div className="relative w-full h-full rounded-full overflow-hidden border-2 border-ouro/20">
                                 <Image
                                   src={student.image}
                                   alt={student.name}
@@ -272,7 +272,7 @@ const AddStudentModal: React.FC<AddStudentModalProps> = ({
                                 />
                               </div>
                             ) : (
-                              <div className="w-full h-full bg-gradient-to-br from-brand-primary to-brand-secondary rounded-full flex items-center justify-center border-2 border-brand-primary/20">
+                              <div className="w-full h-full fill-ouro rounded-full flex items-center justify-center border-2 border-ouro/20">
                                 <PiUser className="w-5 h-5 text-theme-primary" />
                               </div>
                             )}
@@ -303,7 +303,7 @@ const AddStudentModal: React.FC<AddStudentModalProps> = ({
                         {/* Action Button */}
                         <div>
                           {student.isAlreadyStudent ? (
-                            <span className="px-3 py-1 bg-accent-green/10 border border-accent-green/30 text-accent-green rounded-full text-xs font-medium">
+                            <span className="px-3 py-1 bg-ok/10 border border-ok/30 text-ok rounded-full text-xs font-medium">
                               Já é seu aluno
                             </span>
                           ) : (
@@ -406,10 +406,10 @@ const AddStudentModal: React.FC<AddStudentModalProps> = ({
             // 🆕 NOVA: SEÇÃO DE PLANO DE ESTUDOS
             <Stack gap={6}>
               {/* Student Info Header */}
-              <div className="bg-brand-primary/5  rounded-lg p-4">
+              <div className="bg-ouro/5 rounded-lg p-4">
                 <div className="flex items-center justify-between">
                   <Inline gap={3}>
-                    <div className="w-12 h-12 bg-gradient-to-br from-brand-primary to-brand-secondary rounded-full flex items-center justify-center">
+                    <div className="w-12 h-12 fill-ouro rounded-full flex items-center justify-center">
                       <PiUser className="w-6 h-6 text-theme-primary" />
                     </div>
                     <div>
@@ -487,8 +487,8 @@ const AddStudentModal: React.FC<AddStudentModalProps> = ({
                             key={day.value}
                             className={`flex items-center gap-2 p-2 border rounded-lg cursor-pointer transition-all ${
                               studyPlan.preferredDays.includes(day.value)
-                                ? 'border-brand-primary bg-brand-primary/10 text-brand-primary'
-                                : 'border-theme-secondary hover:border-theme-primary'
+                                ? 'border-ouro bg-ouro/10 text-brand-primary'
+                                : 'border-theme-secondary hover:border-linha'
                             }`}
                           >
                             <Checkbox
@@ -519,8 +519,8 @@ const AddStudentModal: React.FC<AddStudentModalProps> = ({
                             key={time.value}
                             className={`flex items-center justify-center p-2 border rounded-lg cursor-pointer transition-all ${
                               studyPlan.preferredTimes.includes(time.value)
-                                ? 'border-brand-primary bg-brand-primary/10 text-brand-primary'
-                                : 'border-theme-secondary hover:border-theme-primary'
+                                ? 'border-ouro bg-ouro/10 text-brand-primary'
+                                : 'border-theme-secondary hover:border-linha'
                             }`}
                           >
                             <input
@@ -601,8 +601,8 @@ const AddStudentModal: React.FC<AddStudentModalProps> = ({
                             onClick={() => handleAddFocusArea(area)}
                             className={`px-3 py-1 text-xs rounded-full border transition-all ${
                               studyPlan.currentFocus.includes(area)
-                                ? 'border-brand-primary bg-brand-primary '
-                                : 'border-theme-secondary text-theme-secondary hover:border-brand-primary hover:text-brand-primary'
+                                ? 'border-ouro bg-ouro '
+                                : 'border-theme-secondary text-theme-secondary hover:border-ouro hover:text-ouro-texto'
                             }`}
                             disabled={studyPlan.currentFocus.includes(area)}
                           >
@@ -621,13 +621,13 @@ const AddStudentModal: React.FC<AddStudentModalProps> = ({
                             {studyPlan.currentFocus.map((focus) => (
                               <span
                                 key={focus}
-                                className="inline-flex items-center gap-2 px-3 py-1 bg-brand-primary  text-sm rounded-full"
+                                className="inline-flex items-center gap-2 px-3 py-1 bg-ouro text-sm rounded-full"
                               >
                                 {focus}
                                 <button
                                   type="button"
                                   onClick={() => handleRemoveFocusArea(focus)}
-                                  className="hover:text-red-200"
+                                  className="hover:text-erro"
                                 >
                                   ×
                                 </button>
@@ -717,7 +717,7 @@ const AddStudentModal: React.FC<AddStudentModalProps> = ({
                 >
                   {loading ? (
                     <>
-                      <div className="w-4 h-4 border-2 border-theme-primary/30 border-t-theme-primary rounded-full animate-spin"></div>
+                      <div className="w-4 h-4 border-2 border-linha/30 border-t-linha rounded-full animate-spin"></div>
                       <span>Adicionando...</span>
                     </>
                   ) : (

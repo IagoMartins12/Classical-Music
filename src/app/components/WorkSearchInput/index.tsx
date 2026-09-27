@@ -461,11 +461,11 @@ const WorkSearchInput: React.FC<WorkSearchInputProps> = ({
             (w) => w.composer.id === stableFilterByComposer
           ))
       ) {
-        return { icon: PiUser, color: 'text-accent-purple' };
+        return { icon: PiUser, color: 'text-ouro-texto' };
       }
 
       if (hasComposerFilter) {
-        return { icon: PiFunnel, color: 'text-accent-blue' };
+        return { icon: PiFunnel, color: 'text-aviso' };
       }
 
       return { icon: PiTrendUp, color: 'text-brand-primary' };
@@ -485,13 +485,13 @@ const WorkSearchInput: React.FC<WorkSearchInputProps> = ({
       {selectedWorkData ? (
         <div
           className={`w-full p-3 border rounded-lg bg-theme-elevated ${
-            error ? 'border-red-500' : 'border-theme-secondary'
+            error ? 'border-erro' : 'border-theme-secondary'
           } ${disabled ? 'opacity-50 cursor-not-allowed' : ''}`}
         >
           <div className="flex items-center justify-between">
             <Inline gap={3}>
-              <div className="w-8 h-8 bg-accent-blue/20 rounded-lg flex items-center justify-center">
-                <PiCheck className="w-4 h-4 text-accent-blue" />
+              <div className="w-8 h-8 bg-aviso/20 rounded-lg flex items-center justify-center">
+                <PiCheck className="w-4 h-4 text-aviso" />
               </div>
               <div>
                 <Text papel="rotulo" tom="forte" as="p" className="font-medium">
@@ -507,7 +507,7 @@ const WorkSearchInput: React.FC<WorkSearchInputProps> = ({
               <button
                 type="button"
                 onClick={handleClearSelection}
-                className="text-theme-tertiary hover:text-accent-red transition-colors p-1"
+                className="text-theme-tertiary hover:text-erro transition-colors p-1"
               >
                 ×
               </button>
@@ -528,7 +528,7 @@ const WorkSearchInput: React.FC<WorkSearchInputProps> = ({
               placeholder={placeholder}
               disabled={disabled}
               className={`input-classical-2 w-full !pl-10 pr-10 ${
-                error ? 'border-red-500' : ''
+                error ? 'border-erro' : ''
               } ${disabled ? 'opacity-50 cursor-not-allowed' : ''}`}
             />
             {isLoading && (
@@ -580,20 +580,20 @@ const WorkSearchInput: React.FC<WorkSearchInputProps> = ({
                         key={`${work.id}-${i}`}
                         type="button"
                         onClick={() => handleWorkSelect(work)}
-                        className="w-full text-left p-3 rounded-lg hover:bg-theme-secondary transition-colors group"
+                        className="w-full text-left p-3 rounded-lg hover:bg-sup-1 transition-colors group"
                       >
                         <Inline gap={3}>
                           <div
                             className={`w-8 h-8 rounded-lg flex items-center justify-center group-hover:scale-105 transition-transform ${
                               isUserWork
-                                ? 'bg-accent-purple/20 group-hover:bg-accent-purple/30'
-                                : 'bg-accent-blue/20 group-hover:bg-accent-blue/30'
+                                ? 'bg-ouro/20 group-hover:bg-ouro/30'
+                                : 'bg-aviso/20 group-hover:bg-aviso/30'
                             }`}
                           >
                             {isUserWork ? (
-                              <PiStar className="w-4 h-4 text-accent-purple" />
+                              <PiStar className="w-4 h-4 text-ouro-texto" />
                             ) : (
-                              <PiMusicNotes className="w-4 h-4 text-accent-blue" />
+                              <PiMusicNotes className="w-4 h-4 text-aviso" />
                             )}
                           </div>
                           <div className="flex-1 min-w-0">
@@ -607,7 +607,7 @@ const WorkSearchInput: React.FC<WorkSearchInputProps> = ({
                                 {work.title}
                               </Text>
                               {isUserWork && (
-                                <span className="text-xs bg-accent-purple/20 text-accent-purple px-1.5 py-0.5 rounded">
+                                <span className="text-xs bg-ouro/10 text-ouro-texto px-1.5 py-0.5 rounded">
                                   Sua
                                 </span>
                               )}
@@ -659,11 +659,7 @@ const WorkSearchInput: React.FC<WorkSearchInputProps> = ({
       {/* Mensagem de erro */}
       {error && (
         <div>
-          <Inline
-            as="p"
-            gap={1}
-            className="text-red-500 text-sm font-medium mt-1"
-          >
+          <Inline as="p" gap={1} className="text-erro text-sm font-medium mt-1">
             <PiWarningCircle className="w-4 h-4" />
             <span>{error}</span>
           </Inline>
@@ -687,7 +683,7 @@ const WorkSearchInput: React.FC<WorkSearchInputProps> = ({
             )}
             {stableUserSuggestions.length > 0 && (
               <Inline as="span" gap={1}>
-                <PiUser className="w-3 h-3 text-accent-purple" />
+                <PiUser className="w-3 h-3 text-ouro-texto" />
                 <span>{stableUserSuggestions.length} obra(s) sua(s)</span>
               </Inline>
             )}

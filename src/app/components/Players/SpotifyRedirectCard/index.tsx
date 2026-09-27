@@ -79,9 +79,9 @@ const SpotifyRedirectCard: React.FC<SpotifyRedirectCardProps> = ({
 
   return (
     <AnimatedItem hover="none" springType="bouncy">
-      <div className="bg-gradient-to-br from-green-900/20 to-green-800/20 border border-green-700/30 rounded-xl overflow-hidden hover:border-green-600/50 transition-all duration-300 hover:shadow-green-500/20 hover:shadow-lg">
+      <div className="bg-ok/20 border border-ok/30 rounded-xl overflow-hidden hover:border-ok/50 transition-all duration-300 hover:shadow-lg">
         {/* Header com Logo Spotify */}
-        <div className="p-4 border-b border-green-700/30 bg-green-900/10">
+        <div className="p-4 border-b border-ok/30 bg-ok/10">
           <div className="flex items-center justify-between">
             <Inline gap={3}>
               <div className="w-8 h-8 bg-[#1db954] rounded-lg flex items-center justify-center">
@@ -91,7 +91,7 @@ const SpotifyRedirectCard: React.FC<SpotifyRedirectCardProps> = ({
                 <h4 className="text-theme-primary font-semibold text-sm">
                   {t('spotify_card_disponivel')}
                 </h4>
-                <p className="text-green-400 text-xs">
+                <p className="text-ok text-xs">
                   {t('spotify_card_ouvir_completa')}
                 </p>
               </div>
@@ -101,7 +101,7 @@ const SpotifyRedirectCard: React.FC<SpotifyRedirectCardProps> = ({
             <Inline gap={3}>
               {/* Duração */}
               {spotify.duration > 0 && (
-                <Inline gap={1} className="text-green-400">
+                <Inline gap={1} className="text-ok">
                   <PiClock className="w-3 h-3" />
                   <span className="text-xs font-medium">
                     {formatDuration(spotify.duration)}
@@ -124,7 +124,7 @@ const SpotifyRedirectCard: React.FC<SpotifyRedirectCardProps> = ({
                     height={80}
                     src={thumbnailUrl}
                     alt={spotify.albumName}
-                    className="w-20 h-20 rounded-lg object-cover shadow-lg border border-green-700/30"
+                    className="w-20 h-20 rounded-lg object-cover shadow-lg border border-ok/30"
                     onError={(e) => {
                       console.warn(
                         'Erro ao carregar thumbnail do Spotify:',
@@ -137,14 +137,14 @@ const SpotifyRedirectCard: React.FC<SpotifyRedirectCardProps> = ({
 
                   {/* 🆕 Indicador de qualidade da imagem */}
                   {spotify.thumbnail && (
-                    <div className="absolute -top-1 -right-1 w-4 h-4 bg-[#1db954] rounded-full flex items-center justify-center border border-green-900">
+                    <div className="absolute -top-1 -right-1 w-4 h-4 bg-[#1db954] rounded-full flex items-center justify-center border border-ok">
                       <div className="w-2 h-2 bg-white rounded-full"></div>
                     </div>
                   )}
                 </div>
               ) : (
-                <div className="w-20 h-20 bg-gradient-to-br from-green-800/50 to-green-700/50 rounded-lg flex items-center justify-center border border-green-700/30">
-                  <PiSpotifyLogo className="w-8 h-8 text-green-400" />
+                <div className="w-20 h-20 bg-ok/50 rounded-lg flex items-center justify-center border border-ok/30">
+                  <PiSpotifyLogo className="w-8 h-8 text-ok" />
                 </div>
               )}
             </div>
@@ -165,7 +165,7 @@ const SpotifyRedirectCard: React.FC<SpotifyRedirectCardProps> = ({
 
                   {/* 🆕 Indicador visual se tem intérprete */}
                   {artistInfo.hasInterpreter && (
-                    <p className="text-green-400 text-xs">
+                    <p className="text-ok text-xs">
                       {t('spotify_card_compositor_interprete')}
                     </p>
                   )}
@@ -181,14 +181,14 @@ const SpotifyRedirectCard: React.FC<SpotifyRedirectCardProps> = ({
                 </div>
 
                 {/* 🆕 Informações adicionais expandidas */}
-                <Inline gap={3} className="text-xs text-gray-400">
+                <Inline gap={3} className="text-xs text-texto-fraco">
                   {/* Preview disponível */}
                   {spotify.previewUrl && (
                     <Inline
                       gap={1}
                       title={t('spotify_card_preview_disponivel')}
                     >
-                      <div className="w-2 h-2 bg-blue-400 rounded-full"></div>
+                      <div className="w-2 h-2 bg-aviso rounded-full"></div>
                       <span>{t('spotify_card_preview_30s')}</span>
                     </Inline>
                   )}
@@ -199,18 +199,18 @@ const SpotifyRedirectCard: React.FC<SpotifyRedirectCardProps> = ({
 
           {/* 🆕 Preview Player (se disponível) - Melhorado */}
           {spotify.previewUrl && (
-            <div className="mt-4 p-3 bg-green-900/10 rounded-lg border border-green-700/20">
+            <div className="mt-4 p-3 bg-ok/10 rounded-lg border border-ok/20">
               <Inline gap={3}>
-                <div className="w-8 h-8 bg-green-600 rounded-full flex items-center justify-center">
+                <div className="w-8 h-8 bg-ok rounded-full flex items-center justify-center">
                   <PiMusicNotes className="w-4 h-4 text-white" />
                 </div>
                 <div className="flex-1">
                   <div className="flex items-center justify-between mb-1">
-                    <p className="text-green-300 text-sm font-medium">
+                    <p className="text-ok text-sm font-medium">
                       {t('spotify_card_preview_30s')}
                     </p>
                     {spotify.duration > 0 && (
-                      <span className="text-xs text-green-400">
+                      <span className="text-xs text-ok">
                         {t('spotify_card_musica_completa')}{' '}
                         {formatDuration(spotify.duration)}
                       </span>
@@ -254,7 +254,7 @@ const SpotifyRedirectCard: React.FC<SpotifyRedirectCardProps> = ({
                   )}`}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="text-xs text-green-400 hover:text-green-300 transition-colors"
+                  className="text-xs text-ok hover:text-ok transition-colors"
                 >
                   {t('spotify_card_ver_album')} {spotify.albumName}
                 </a>

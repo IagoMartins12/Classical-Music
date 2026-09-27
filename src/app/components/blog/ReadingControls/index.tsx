@@ -136,14 +136,14 @@ export function ReadingControls({
           <div className="flex items-center justify-center flex-col gap-4">
             <button
               onClick={() => handleFontSizeChange(-2)}
-              className="flex-1 w-14 py-2 bg-theme-elevated hover:bg-theme-classical rounded-lg text-xs font-medium transition-all"
+              className="flex-1 w-14 py-2 bg-theme-elevated hover:bg-sup-1 rounded-lg text-xs font-medium transition-all"
               disabled={fontSize <= 14}
             >
               A-
             </button>
             <button
               onClick={() => handleFontSizeChange(2)}
-              className="flex-1 w-14 py-2 bg-theme-elevated hover:bg-theme-classical rounded-lg text-xs font-medium transition-all"
+              className="flex-1 w-14 py-2 bg-theme-elevated hover:bg-sup-1 rounded-lg text-xs font-medium transition-all"
               disabled={fontSize >= 24}
             >
               A+

@@ -236,13 +236,13 @@ export default function ComposerDetailsClient({
   const secondaryRoles = composer.roleNames || [];
 
   return (
-    <div className="bg-gradient-primary">
+    <div className="">
       {/* Background Pattern */}
       <div className="absolute inset-0 pointer-events-none opacity-5">
-        <div className="absolute top-20 left-20 w-64 h-64 bg-brand-gradient rounded-full blur-3xl"></div>
-        <div className="absolute bottom-40 right-32 w-48 h-48 bg-accent-purple/30 rounded-full blur-2xl"></div>
-        <div className="absolute top-1/2 left-1/4 w-32 h-32 bg-accent-blue/20 rounded-full blur-xl"></div>
-        <div className="absolute bottom-20 left-10 w-40 h-40 bg-brand-secondary/20 rounded-full blur-2xl"></div>
+        <div className="absolute top-20 left-20 w-64 h-64 rounded-full blur-3xl"></div>
+        <div className="absolute bottom-40 right-32 w-48 h-48 rounded-full blur-2xl"></div>
+        <div className="absolute top-1/2 left-1/4 w-32 h-32 rounded-full blur-xl"></div>
+        <div className="absolute bottom-20 left-10 w-40 h-40 rounded-full blur-2xl"></div>
       </div>
 
       <div className="section-wrap space-y-8 relative z-10 ">
@@ -255,7 +255,7 @@ export default function ComposerDetailsClient({
           >
             <Link
               href="/composers"
-              className="hover:text-brand-primary transition-colors duration-300 font-medium"
+              className="hover:text-ouro-texto transition-colors duration-300 font-medium"
             >
               {t('breadcrumb_composers')}
             </Link>
@@ -284,7 +284,10 @@ export default function ComposerDetailsClient({
           className="flex flex-col gap-4"
         >
           {/* Header Principal */}
-          <AnimatedCard hover="lift" className="classical-card relative z-50">
+          <AnimatedCard
+            hover="lift"
+            className="classical-card relative z-elevado"
+          >
             <div className=" p-2 md:p-8 relative z-10">
               <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
                 {/* Informações do Compositor */}
@@ -389,7 +392,7 @@ export default function ComposerDetailsClient({
                       {/* Nascimento */}
                       {composer.birthDate && (
                         <div className="flex items-start space-x-3 group">
-                          <div className="w-8 h-8 bg-gradient-to-br from-accent-green to-accent-blue rounded-xl flex items-center justify-center mt-0.5 group-hover:scale-110 transition-transform duration-300">
+                          <div className="w-8 h-8 bg-ok rounded-xl flex items-center justify-center mt-0.5 group-hover:scale-110 transition-transform duration-300">
                             <PiCalendarBlank className="w-4 h-4 text-theme-primary" />
                           </div>
                           <div>
@@ -411,7 +414,7 @@ export default function ComposerDetailsClient({
                       {/* Falecimento ou Idade */}
                       {composer.deathDate ? (
                         <div className="flex items-start space-x-3 group">
-                          <div className="w-8 h-8 bg-gradient-to-br from-accent-red to-accent-purple rounded-xl flex items-center justify-center mt-0.5 group-hover:scale-110 transition-transform duration-300">
+                          <div className="w-8 h-8 bg-erro rounded-xl flex items-center justify-center mt-0.5 group-hover:scale-110 transition-transform duration-300">
                             <PiCalendarBlank className="w-4 h-4 text-theme-primary" />
                           </div>
                           <div>
@@ -440,7 +443,7 @@ export default function ComposerDetailsClient({
                       ) : (
                         composer.birthDate && (
                           <div className="flex items-start space-x-3 group">
-                            <div className="w-8 h-8 bg-gradient-to-br from-accent-green to-accent-blue rounded-xl flex items-center justify-center mt-0.5 group-hover:scale-110 transition-transform duration-300">
+                            <div className="w-8 h-8 bg-ok rounded-xl flex items-center justify-center mt-0.5 group-hover:scale-110 transition-transform duration-300">
                               <PiHeart className="w-4 h-4 text-theme-primary" />
                             </div>
                             <div>
@@ -454,7 +457,7 @@ export default function ComposerDetailsClient({
                               </Text>
                               <p className="text-theme-primary font-semibold">
                                 {lifeSpan} {t('years_suffix')}
-                                <span className="text-accent-green ml-2 text-sm">
+                                <span className="text-ok ml-2 text-sm">
                                   {t('alive_status')}
                                 </span>
                               </p>
@@ -465,7 +468,7 @@ export default function ComposerDetailsClient({
 
                       {/* Época */}
                       <div className="flex items-start space-x-3 group">
-                        <div className="w-8 h-8 bg-gradient-to-br from-brand-primary to-brand-secondary rounded-xl flex items-center justify-center mt-0.5 group-hover:scale-110 transition-transform duration-300">
+                        <div className="w-8 h-8 fill-ouro rounded-xl flex items-center justify-center mt-0.5 group-hover:scale-110 transition-transform duration-300">
                           <PiMapPin className="w-4 h-4 text-theme-primary" />
                         </div>
                         <div>
@@ -486,7 +489,7 @@ export default function ComposerDetailsClient({
                       {/* Papel Principal */}
                       {composer.primaryRoleName && (
                         <div className="flex items-start space-x-3 group">
-                          <div className="w-8 h-8 bg-gradient-to-br from-accent-blue to-accent-purple rounded-xl flex items-center justify-center mt-0.5 group-hover:scale-110 transition-transform duration-300">
+                          <div className="w-8 h-8 bg-aviso rounded-xl flex items-center justify-center mt-0.5 group-hover:scale-110 transition-transform duration-300">
                             <PiUser className="w-4 h-4 text-theme-primary" />
                           </div>
                           <div>
@@ -510,7 +513,7 @@ export default function ComposerDetailsClient({
 
                       {nationalityDisplay && (
                         <div className="flex items-start space-x-3 group">
-                          <div className="w-8 h-8 bg-gradient-to-br from-accent-blue to-accent-purple rounded-xl flex items-center justify-center mt-0.5 group-hover:scale-110 transition-transform duration-300">
+                          <div className="w-8 h-8 bg-aviso rounded-xl flex items-center justify-center mt-0.5 group-hover:scale-110 transition-transform duration-300">
                             {nationalityDisplay.flag}
                           </div>
                           <div>
@@ -531,7 +534,7 @@ export default function ComposerDetailsClient({
 
                       {composer.instruments && (
                         <div className="flex items-start space-x-3 group">
-                          <div className="w-8 h-8 pl-2 pr-2 bg-gradient-to-br from-accent-blue to-accent-purple rounded-xl flex items-center justify-center mt-0.5 group-hover:scale-110 transition-transform duration-300">
+                          <div className="w-8 h-8 pl-2 pr-2 bg-aviso rounded-xl flex items-center justify-center mt-0.5 group-hover:scale-110 transition-transform duration-300">
                             <PiUser className="w-4 h-4 text-theme-primary" />
                           </div>
                           <div className="flex flex-col ">
@@ -632,10 +635,10 @@ export default function ComposerDetailsClient({
                           priority
                           onError={() => setImageError(true)}
                         />
-                        <div className="absolute inset-0 bg-brand-gradient opacity-0 group-hover:opacity-10 transition-opacity duration-500"></div>
+                        <div className="absolute inset-0 fill-ouro opacity-0 group-hover:opacity-10 transition-opacity duration-500"></div>
                       </div>
                     ) : (
-                      <div className="w-64 h-80 bg-gradient-card border border-theme-primary rounded-2xl flex items-center justify-center shadow-theme-glow group-hover:scale-105 transition-all duration-500">
+                      <div className="w-64 h-80 fundo-sup-1 border border-theme-primary rounded-2xl flex items-center justify-center shadow-theme-glow group-hover:scale-105 transition-all duration-500">
                         <div className="text-center text-theme-tertiary">
                           <PiUser className="w-16 h-16 mx-auto mb-4 opacity-50" />
                           <p className="text-sm">{t('no_image_available')}</p>
@@ -656,7 +659,7 @@ export default function ComposerDetailsClient({
             >
               <AnimatedItem direction="up" springType="bouncy">
                 <Inline gap={3} className="mb-6">
-                  <div className="w-12 h-12 bg-gradient-to-br from-accent-purple to-accent-blue rounded-2xl flex items-center justify-center">
+                  <div className="w-12 h-12 fill-ouro rounded-2xl flex items-center justify-center">
                     <PiUsers className="w-6 h-6 text-theme-primary" />
                   </div>
                   <div>
@@ -673,8 +676,8 @@ export default function ComposerDetailsClient({
               <div className="flex flex-wrap gap-3">
                 {secondaryRoles.map((role, index) => (
                   <AnimatedItem key={index} hover="scale" springType="bouncy">
-                    <span className="inline-flex items-center px-4 py-2 bg-gradient-to-r from-accent-blue/10 to-accent-purple/10 border border-accent-blue/30 rounded-full text-sm font-medium text-accent-blue shadow-theme-small hover:shadow-theme-medium transition-all duration-300 hover:scale-105 group">
-                      <div className="w-4 h-4 bg-gradient-to-br from-accent-blue to-accent-purple rounded-full flex items-center justify-center mr-2 group-hover:scale-110 transition-transform duration-300">
+                    <span className="inline-flex items-center px-4 py-2 bg-aviso/10 border border-aviso/30 rounded-full text-sm font-medium text-aviso shadow-theme-small hover:shadow-[var(--sombra-1)] transition-all duration-300 hover:scale-105 group">
+                      <div className="w-4 h-4 bg-aviso rounded-full flex items-center justify-center mr-2 group-hover:scale-110 transition-transform duration-300">
                         <PiMusicNotes className="w-3 h-3 text-theme-primary" />
                       </div>
 
@@ -686,13 +689,13 @@ export default function ComposerDetailsClient({
 
               {secondaryRoles.length > 5 && (
                 <AnimatedItem direction="up" springType="gentle">
-                  <div className="mt-6 p-4 bg-gradient-to-r from-theme-elevated to-interactive-hover rounded-xl border border-theme-primary">
+                  <div className="mt-6 p-4 bg-sup-elevada rounded-xl border border-theme-primary">
                     <Text papel="rotulo" tom="suave" as="p">
                       <strong className="text-brand-primary">
                         {composer.name}
                       </strong>{' '}
                       {t('versatility_text_part1')}{' '}
-                      <strong className="text-accent-green">
+                      <strong className="text-ok">
                         {secondaryRoles.length} {t('versatility_text_part2')}
                       </strong>{' '}
                       {t('versatility_text_part3')}
@@ -707,7 +710,7 @@ export default function ComposerDetailsClient({
           <AnimatedCard hover="lift" className="classical-card p-8">
             <AnimatedItem direction="left" springType="smooth">
               <Inline gap={3} className="mb-6">
-                <div className="w-12 h-12 bg-gradient-to-br from-accent-green to-accent-blue rounded-2xl flex items-center justify-center">
+                <div className="w-12 h-12 bg-ok rounded-2xl flex items-center justify-center">
                   <PiBookOpen className="w-6 h-6 text-theme-primary" />
                 </div>
                 <div className="flex-1">
@@ -716,7 +719,7 @@ export default function ComposerDetailsClient({
                   </h2>
                 </div>
                 <div className="relative group">
-                  <div className="w-8 h-8 bg-interactive-hover rounded-full flex items-center justify-center cursor-help">
+                  <div className="w-8 h-8 bg-ouro/10 rounded-full flex items-center justify-center cursor-help">
                     <PiInfo className="w-4 h-4 text-theme-tertiary" />
                   </div>
                   {/* Tooltip */}
@@ -727,7 +730,7 @@ export default function ComposerDetailsClient({
                     className="absolute bottom-full right-0 mb-2 px-3 py-2 bg-theme-elevated border border-theme-primary rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none whitespace-nowrap z-10 shadow-theme-medium"
                   >
                     {t('biography_ai_tooltip')}
-                    <div className="absolute top-full right-3 w-0 h-0 border-l-4 border-r-4 border-t-4 border-transparent border-t-theme-elevated"></div>
+                    <div className="absolute top-full right-3 w-0 h-0 border-l-4 border-r-4 border-t-4 border-transparent border-t-sup-elevada"></div>
                   </Text>
                 </div>
               </Inline>

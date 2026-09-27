@@ -35,9 +35,9 @@ const ScoreViewerComponent = (props: any) => {
       onMouseEnter={() => setShowControls(true)}
       onMouseLeave={() => setShowControls(false)}
     >
-      <div className="classical-card overflow-hidden border-l-4 border-accent-green">
+      <div className="border classical-card overflow-hidden border-ok/40">
         {/* Header */}
-        <div className="bg-accent-green text-white px-6 py-4">
+        <div className="bg-ok text-white px-6 py-4">
           <div className="flex items-center justify-between">
             <Inline gap={3}>
               <PiFile className="w-6 h-6" />
@@ -54,7 +54,7 @@ const ScoreViewerComponent = (props: any) => {
               {showControls && (
                 <button
                   onClick={handleDelete}
-                  className="p-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors"
+                  className="p-2 bg-erro text-white rounded-lg hover:bg-erro transition-colors"
                   title="Remover"
                 >
                   <PiTrash className="w-4 h-4" />
@@ -86,13 +86,13 @@ const ScoreViewerComponent = (props: any) => {
         {/* Viewer */}
         <div
           className={`bg-theme-elevated ${
-            isFullscreen ? 'fixed inset-0 z-50' : 'relative'
+            isFullscreen ? 'fixed inset-0 z-dialogo' : 'relative'
           }`}
         >
           {isFullscreen && (
             <button
               onClick={() => setIsFullscreen(false)}
-              className="absolute top-4 right-4 z-10 p-2 bg-theme-primary/80 backdrop-blur text-theme-inverse rounded-lg hover:bg-theme-primary transition-colors shadow-theme-large"
+              className="absolute top-4 right-4 z-10 p-2 bg-fundo/80 backdrop-blur text-theme-inverse rounded-lg hover:bg-fundo transition-colors shadow-theme-large"
             >
               Fechar
             </button>
@@ -115,7 +115,7 @@ const ScoreViewerComponent = (props: any) => {
               href={`/works/${workId}#scores`}
               target="_blank"
               rel="noopener noreferrer"
-              className="text-accent-green hover:text-brand-primary font-medium transition-colors"
+              className="text-ok hover:text-ouro-texto font-medium transition-colors"
             >
               Ver partitura completa no Opus Atlas →
             </a>

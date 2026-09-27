@@ -313,17 +313,17 @@ export const getProgressTrend = (
 };
 
 export const getEngagementColor = (score: number): string => {
-  if (score >= 4) return 'accent-green';
-  if (score >= 3) return 'accent-blue';
-  if (score >= 2) return 'accent-yellow';
-  return 'accent-red';
+  if (score >= 4) return 'ok';
+  if (score >= 3) return 'aviso';
+  if (score >= 2) return 'atencao';
+  return 'erro';
 };
 
 export const getAttendanceColor = (rate: number): string => {
-  if (rate >= 90) return 'accent-green';
-  if (rate >= 80) return 'accent-blue';
-  if (rate >= 70) return 'accent-yellow';
-  return 'accent-red';
+  if (rate >= 90) return 'ok';
+  if (rate >= 80) return 'aviso';
+  if (rate >= 70) return 'atencao';
+  return 'erro';
 };
 
 export const getDifficultyLabel = (level: string): string => {

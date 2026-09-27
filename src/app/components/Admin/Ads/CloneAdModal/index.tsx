@@ -309,7 +309,7 @@ export default function CloneAdModal({
         {/* Header */}
         <div className="flex items-center justify-between p-6 border-b border-theme-primary">
           <Inline gap={3}>
-            <div className="w-10 h-10 bg-gradient-to-br from-accent-purple to-accent-pink rounded-xl flex items-center justify-center">
+            <div className="w-10 h-10 fill-ouro rounded-xl flex items-center justify-center">
               <PiCopy className="w-5 h-5 text-white" />
             </div>
             <div>
@@ -325,9 +325,9 @@ export default function CloneAdModal({
 
         {/* Alert sobre mídia */}
         {hasMedia && (
-          <div className="p-4 bg-accent-green/10 border-l-4 border-accent-green mx-6 mt-4 rounded">
+          <div className="border p-4 bg-ok/10 border-ok/40 mx-6 mt-4 rounded">
             <div className="flex items-start space-x-3">
-              <PiInfo className="w-5 h-5 text-accent-green mt-0.5" />
+              <PiInfo className="w-5 h-5 text-ok mt-0.5" />
               <div>
                 <h4 className="font-medium text-theme-primary">
                   Mídia será clonada
@@ -343,9 +343,9 @@ export default function CloneAdModal({
         )}
 
         {!hasMedia && (
-          <div className="p-4 bg-accent-amber/10 border-l-4 border-accent-amber mx-6 mt-4 rounded">
+          <div className="border p-4 bg-atencao/10 border-atencao/40 mx-6 mt-4 rounded">
             <div className="flex items-start space-x-3">
-              <PiWarning className="w-5 h-5 text-accent-amber mt-0.5" />
+              <PiWarning className="w-5 h-5 text-atencao mt-0.5" />
               <div>
                 <h4 className="font-medium text-theme-primary">
                   Sem mídia para clonar
@@ -361,11 +361,11 @@ export default function CloneAdModal({
 
         {/* Conflict Warning - Atualizado para mostrar detalhes */}
         {conflictInfo && (
-          <div className="p-4 bg-accent-red/10 border-l-4 border-accent-red mx-6 mt-4 rounded">
+          <div className="border p-4 bg-erro/10 border-erro/40 mx-6 mt-4 rounded">
             <div className="flex items-start space-x-3">
-              <PiTarget className="w-5 h-5 text-accent-red mt-0.5" />
+              <PiTarget className="w-5 h-5 text-erro mt-0.5" />
               <div className="flex-1">
-                <h4 className="font-medium text-accent-red mb-2">
+                <h4 className="font-medium text-erro mb-2">
                   Conflitos Detectados
                 </h4>
 
@@ -382,9 +382,9 @@ export default function CloneAdModal({
                         (conflict: any, index: number) => (
                           <div
                             key={index}
-                            className="p-3 bg-white/50 rounded border border-accent-red/20"
+                            className="p-3 bg-white/50 rounded border border-erro/20"
                           >
-                            <div className="font-medium text-sm text-accent-red mb-1">
+                            <div className="font-medium text-sm text-erro mb-1">
                               {conflict.type.replace(/_/g, ' ')}
                             </div>
                             <Text
@@ -411,7 +411,7 @@ export default function CloneAdModal({
 
                             {conflict.affectedFields &&
                               conflict.affectedFields.length > 0 && (
-                                <div className="text-xs text-accent-red mt-1">
+                                <div className="text-xs text-erro mt-1">
                                   Campos afetados:{' '}
                                   {conflict.affectedFields.join(', ')}
                                 </div>
@@ -426,9 +426,9 @@ export default function CloneAdModal({
                   conflictInfo.suggestions.length > 0 && (
                     <Stack
                       gap={2}
-                      className="mt-4 p-3 bg-accent-blue/10 rounded border border-accent-blue/20"
+                      className="mt-4 p-3 bg-aviso/10 rounded border border-aviso/20"
                     >
-                      <h5 className="font-medium text-sm text-accent-blue">
+                      <h5 className="font-medium text-sm text-aviso">
                         Sugestões:
                       </h5>
                       <ul className="text-xs text-theme-secondary space-y-1">

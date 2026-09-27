@@ -394,7 +394,7 @@ export default function CreateAssignmentPageClient({
       <PageContainer showBackground={true}>
         <div className="flex items-center justify-center min-h-screen">
           <Card densidade="larga" className="text-center max-w-md">
-            <div className="w-16 h-16 bg-gradient-to-br from-accent-red to-accent-purple rounded-3xl flex items-center justify-center mx-auto mb-6">
+            <div className="w-16 h-16 bg-erro rounded-3xl flex items-center justify-center mx-auto mb-6">
               <PiWarningCircle className="w-8 h-8 text-theme-primary" />
             </div>
             <h1 className="text-xl font-bold text-theme-primary classical-title mb-4">
@@ -421,9 +421,9 @@ export default function CreateAssignmentPageClient({
             <Inline gap={4}>
               <Link
                 href="/teacher/assignments"
-                className="w-10 h-10 rounded-lg bg-theme-elevated border border-theme-secondary hover:border-brand-primary transition-all flex items-center justify-center group"
+                className="w-10 h-10 rounded-lg bg-theme-elevated border border-theme-secondary hover:border-ouro transition-all flex items-center justify-center group"
               >
-                <PiArrowLeft className="w-4 h-4 text-theme-tertiary group-hover:text-brand-primary transition-colors" />
+                <PiArrowLeft className="w-4 h-4 text-theme-tertiary group-hover:text-ouro-texto transition-colors" />
               </Link>
               <div>
                 <h1 className="text-3xl font-bold text-gradient-brand classical-title">
@@ -465,14 +465,12 @@ export default function CreateAssignmentPageClient({
                           updateFormData('studentUserId', e.target.value)
                         }
                         className={`input-classical w-full ${
-                          validationErrors.studentUserId
-                            ? '!border-red-400'
-                            : ''
+                          validationErrors.studentUserId ? '!border-erro' : ''
                         }`}
                         required
                       />
                       {validationErrors.studentUserId && (
-                        <p className="text-red-500 text-sm mt-1">
+                        <p className="text-erro text-sm mt-1">
                           {validationErrors.studentUserId}
                         </p>
                       )}
@@ -501,14 +499,12 @@ export default function CreateAssignmentPageClient({
                                 updateFormData('lessonId', e.target.value)
                               }
                               className={`input-classical w-full ${
-                                validationErrors.lessonId
-                                  ? '!border-red-400'
-                                  : ''
+                                validationErrors.lessonId ? '!border-erro' : ''
                               }`}
                               required
                             />
                             {validationErrors.lessonId && (
-                              <p className="text-red-500 text-sm mt-1">
+                              <p className="text-erro text-sm mt-1">
                                 {validationErrors.lessonId}
                               </p>
                             )}
@@ -578,13 +574,13 @@ export default function CreateAssignmentPageClient({
                           updateFormData('title', e.target.value)
                         }
                         className={`input-classical w-full ${
-                          validationErrors.title ? '!border-red-400' : ''
+                          validationErrors.title ? '!border-erro' : ''
                         }`}
                         placeholder={t('title_placeholder')}
                         required
                       />
                       {validationErrors.title && (
-                        <p className="text-red-500 text-sm mt-1">
+                        <p className="text-erro text-sm mt-1">
                           {validationErrors.title}
                         </p>
                       )}
@@ -608,14 +604,14 @@ export default function CreateAssignmentPageClient({
                         }
                         rows={4}
                         className={`input-classical w-full ${
-                          validationErrors.description ? '!border-red-400' : ''
+                          validationErrors.description ? '!border-erro' : ''
                         }`}
                         placeholder={t('description_placeholder')}
                         maxLength={1000}
                         required
                       />
                       {validationErrors.description && (
-                        <p className="text-red-500 text-sm mt-1">
+                        <p className="text-erro text-sm mt-1">
                           {validationErrors.description}
                         </p>
                       )}
@@ -645,12 +641,12 @@ export default function CreateAssignmentPageClient({
                             updateFormData('dueDate', e.target.value)
                           }
                           className={`input-classical w-full ${
-                            validationErrors.dueDate ? '!border-red-400' : ''
+                            validationErrors.dueDate ? '!border-erro' : ''
                           }`}
                           min={new Date().toISOString().slice(0, 10)}
                         />
                         {validationErrors.dueDate && (
-                          <p className="text-red-500 text-sm mt-1">
+                          <p className="text-erro text-sm mt-1">
                             {validationErrors.dueDate}
                           </p>
                         )}
@@ -672,13 +668,11 @@ export default function CreateAssignmentPageClient({
                           max={300}
                           step={5}
                           className={`input-classical w-full ${
-                            validationErrors.estimatedTime
-                              ? '!border-red-400'
-                              : ''
+                            validationErrors.estimatedTime ? '!border-erro' : ''
                           }`}
                         />
                         {validationErrors.estimatedTime && (
-                          <p className="text-red-500 text-sm mt-1">
+                          <p className="text-erro text-sm mt-1">
                             {validationErrors.estimatedTime}
                           </p>
                         )}
@@ -697,7 +691,7 @@ export default function CreateAssignmentPageClient({
                         gap={1}
                         type="button"
                         onClick={() => addArrayField('practiceGoals')}
-                        className="text-brand-primary hover:text-brand-secondary text-sm"
+                        className="text-brand-primary hover:text-ouro-texto text-sm"
                       >
                         <PiPlus className="w-3 h-3" />
                         <span>{t('add')}</span>
@@ -726,7 +720,7 @@ export default function CreateAssignmentPageClient({
                               onClick={() =>
                                 removeArrayField('practiceGoals', index)
                               }
-                              className="text-accent-red"
+                              className="text-erro"
                             >
                               <PiX className="w-4 h-4" />
                               <NomeAcao acao="fechar" />
@@ -768,7 +762,7 @@ export default function CreateAssignmentPageClient({
                       gap={2}
                       type="button"
                       onClick={() => setShowAdvanced(!showAdvanced)}
-                      className="text-brand-primary hover:text-brand-secondary"
+                      className="text-brand-primary hover:text-ouro-texto"
                     >
                       <span>{t('advanced_options')}</span>
                       <div
@@ -795,7 +789,7 @@ export default function CreateAssignmentPageClient({
                     {showAdvanced && (
                       <Stack
                         gap={6}
-                        className="p-4 bg-theme-secondary/5 shadow-lg rounded-lg"
+                        className="p-4 bg-sup-1/5 shadow-lg rounded-lg"
                       >
                         {/* Technical Goals */}
                         <Stack gap={2}>
@@ -837,7 +831,7 @@ export default function CreateAssignmentPageClient({
                                     onClick={() =>
                                       removeArrayField('technicalGoals', index)
                                     }
-                                    className="text-accent-red"
+                                    className="text-erro"
                                   >
                                     <PiX className="w-4 h-4" />
                                     <NomeAcao acao="fechar" />
@@ -888,7 +882,7 @@ export default function CreateAssignmentPageClient({
                                     onClick={() =>
                                       removeArrayField('musicalGoals', index)
                                     }
-                                    className="text-accent-red"
+                                    className="text-erro"
                                   >
                                     <PiX className="w-4 h-4" />
                                     <NomeAcao acao="fechar" />
@@ -939,7 +933,7 @@ export default function CreateAssignmentPageClient({
                                     onClick={() =>
                                       removeArrayField('exercises', index)
                                     }
-                                    className="text-accent-red"
+                                    className="text-erro"
                                   >
                                     <PiX className="w-4 h-4" />
                                     <NomeAcao acao="fechar" />
@@ -955,19 +949,19 @@ export default function CreateAssignmentPageClient({
 
                   {/* Error Display */}
                   {error && (
-                    <div className="bg-accent-red/10 border border-accent-red/30 rounded-lg p-4">
+                    <div className="bg-erro/10 border border-erro/30 rounded-lg p-4">
                       <Inline gap={3}>
-                        <PiWarningCircle className="w-5 h-5 text-accent-red" />
+                        <PiWarningCircle className="w-5 h-5 text-erro" />
                         <div>
-                          <p className="text-accent-red font-medium">
+                          <p className="text-erro font-medium">
                             {t('error_creating')}
                           </p>
-                          <p className="text-accent-red/80 text-sm">{error}</p>
+                          <p className="text-erro/80 text-sm">{error}</p>
                         </div>
                         <button
                           type="button"
                           onClick={clearError}
-                          className="ml-auto text-accent-red"
+                          className="ml-auto text-erro"
                         >
                           <PiX className="w-4 h-4" />
                           <NomeAcao acao="fechar" />
@@ -1038,7 +1032,7 @@ export default function CreateAssignmentPageClient({
                           />
                         </div>
                       ) : (
-                        <div className="w-12 h-12 bg-gradient-to-br from-brand-primary to-brand-secondary rounded-full flex items-center justify-center">
+                        <div className="w-12 h-12 fill-ouro rounded-full flex items-center justify-center">
                           <PiUser className="w-6 h-6 text-theme-primary" />
                         </div>
                       )}
@@ -1101,10 +1095,10 @@ export default function CreateAssignmentPageClient({
                       <Inline
                         gap={3}
                         key={work.workId}
-                        className="p-3 bg-theme-elevated/50 rounded-lg"
+                        className="p-3 bg-sup-elevada/50 rounded-lg"
                       >
-                        <div className="w-8 h-8 bg-accent-blue/20 rounded-lg flex items-center justify-center flex-shrink-0">
-                          <PiMusicNotes className="w-4 h-4 text-accent-blue" />
+                        <div className="w-8 h-8 bg-aviso/20 rounded-lg flex items-center justify-center flex-shrink-0">
+                          <PiMusicNotes className="w-4 h-4 text-aviso" />
                         </div>
                         <div className="flex-1 min-w-0">
                           <Text
@@ -1124,7 +1118,7 @@ export default function CreateAssignmentPageClient({
                             {t('composer')}: {work.composerName}
                           </Text>
                           {work.scoreId && (
-                            <p className="text-xs text-accent-green">
+                            <p className="text-xs text-ok">
                               {t('piece_with_score')}
                             </p>
                           )}
@@ -1132,14 +1126,14 @@ export default function CreateAssignmentPageClient({
                         <Text
                           papel="legenda"
                           tom="suave"
-                          className="bg-theme-secondary/20 px-2 py-1 rounded"
+                          className="bg-sup-1/20 px-2 py-1 rounded"
                         >
                           #{index + 1}
                         </Text>
                       </Inline>
                     ))}
 
-                    <div className="mt-3 p-3 bg-brand-primary/5 border border-brand-primary/20 rounded-lg">
+                    <div className="mt-3 p-3 bg-ouro/5 border border-ouro/20 rounded-lg">
                       <Text papel="legenda" tom="suave" as="div">
                         <div className="flex justify-between">
                           <span>{t('total_pieces')}</span>
@@ -1177,8 +1171,8 @@ export default function CreateAssignmentPageClient({
                         key={type.value}
                         className={`p-3 rounded-lg bg-theme-elevated transition-all ${
                           isSelected
-                            ? 'bg-brand-primary/10  border border-theme-primary'
-                            : 'bg-theme-secondary/5 border-theme-secondary/20'
+                            ? 'bg-ouro/10 border border-theme-primary'
+                            : 'bg-sup-1/5 border-linha/20'
                         }`}
                       >
                         <Inline gap={2} className="mb-1">
@@ -1233,7 +1227,7 @@ export default function CreateAssignmentPageClient({
                     <p>{t('clear_deadlines')}</p>
                   </div>
                   <div className="flex items-start space-x-2">
-                    <PiWarningCircle className="w-4 h-4 text-accent-red mt-0.5 flex-shrink-0" />
+                    <PiWarningCircle className="w-4 h-4 text-erro mt-0.5 flex-shrink-0" />
                     <p>{t('fill_required_fields')}</p>
                   </div>
                 </Text>

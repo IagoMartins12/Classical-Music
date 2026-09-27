@@ -305,7 +305,7 @@ const InternationalPhoneInput: React.FC<InternationalPhoneInputProps> = ({
         </label>
       )}
 
-      <div className="relative z-[120]">
+      <div className="relative z-elevado">
         <div className="flex">
           {/* 🌍 Seletor de País */}
           <div className="relative">
@@ -319,9 +319,9 @@ const InternationalPhoneInput: React.FC<InternationalPhoneInputProps> = ({
                 ${
                   disabled
                     ? 'cursor-not-allowed opacity-50'
-                    : 'cursor-pointer hover:border-brand-primary'
+                    : 'cursor-pointer hover:border-ouro'
                 }
-                ${isOpen ? 'border-brand-primary' : ''}
+                ${isOpen ? 'border-ouro' : ''}
               `}
             >
               {currentCountry && (
@@ -349,10 +349,10 @@ const InternationalPhoneInput: React.FC<InternationalPhoneInputProps> = ({
             {isOpen && !disabled && (
               <div
                 ref={dropdownRef}
-                className="absolute top-full left-0 w-80 mt-1 bg-theme-elevated border border-theme-secondary rounded-xl shadow-xl z-[500] max-h-80 overflow-hidden"
+                className="absolute top-full left-0 w-80 mt-1 bg-theme-elevated border border-theme-secondary rounded-xl shadow-xl z-menu max-h-80 overflow-hidden"
               >
                 {/* 🏷️ Header */}
-                <div className="flex items-center gap-2 px-4 py-3 bg-theme-secondary/10 border-b border-theme-secondary">
+                <div className="flex items-center gap-2 px-4 py-3 bg-sup-1/10 border-b border-theme-secondary">
                   <PiGlobe className="w-4 h-4 text-brand-primary" />
                   <Text papel="rotulo" tom="suave" className="font-medium">
                     Selecionar País
@@ -366,7 +366,7 @@ const InternationalPhoneInput: React.FC<InternationalPhoneInputProps> = ({
                     value={searchTerm}
                     onChange={(e) => setSearchTerm(e.target.value)}
                     placeholder="Buscar país, código ou DDD..."
-                    className="w-full px-3 py-2 text-sm bg-theme-secondary bg-opacity-50 border border-theme-secondary rounded-md focus:outline-none focus:border-brand-primary transition-colors"
+                    className="w-full px-3 py-2 text-sm bg-theme-secondary border border-theme-secondary rounded-md focus:outline-none focus:border-ouro transition-colors"
                     autoFocus
                   />
                 </div>
@@ -379,7 +379,7 @@ const InternationalPhoneInput: React.FC<InternationalPhoneInputProps> = ({
                       {!searchTerm &&
                         filteredCountries.some((c) => c.popular) && (
                           <>
-                            <div className="px-4 py-2 bg-brand-primary/5">
+                            <div className="px-4 py-2 bg-ouro/5">
                               <Text
                                 papel="legenda"
                                 tom="ouro"
@@ -401,7 +401,7 @@ const InternationalPhoneInput: React.FC<InternationalPhoneInputProps> = ({
                                 />
                               ))}
 
-                            <div className="px-4 py-2 bg-theme-secondary/5 border-t border-theme-secondary">
+                            <div className="px-4 py-2 bg-sup-1/5 border-t border-theme-secondary">
                               <Text
                                 papel="legenda"
                                 tom="suave"
@@ -464,15 +464,11 @@ const InternationalPhoneInput: React.FC<InternationalPhoneInputProps> = ({
               disabled={disabled}
               className={`
                 input-classical !rounded-l-none w-full pr-10
-                ${error ? 'border-accent-red focus:border-accent-red' : ''}
-                ${
-                  warningMessage
-                    ? 'border-orange-400 focus:border-orange-400'
-                    : ''
-                }
+                ${error ? 'border-erro focus:border-erro' : ''}
+                ${warningMessage ? 'border-atencao focus:border-atencao' : ''}
                 ${
                   disabled
-                    ? 'bg-theme-secondary bg-opacity-50 cursor-not-allowed text-theme-tertiary'
+                    ? 'bg-theme-secondary cursor-not-allowed text-theme-tertiary'
                     : ''
                 }
               `}
@@ -487,7 +483,7 @@ const InternationalPhoneInput: React.FC<InternationalPhoneInputProps> = ({
                   onChange('');
                   setWarningMessage('');
                 }}
-                className="absolute right-3 top-1/2 transform -translate-y-1/2 text-theme-tertiary hover:text-theme-primary transition-colors"
+                className="absolute right-3 top-1/2 transform -translate-y-1/2 text-theme-tertiary hover:text-texto transition-colors"
               >
                 <PiX className="w-4 h-4" />
                 <NomeAcao acao="fechar" />
@@ -501,7 +497,7 @@ const InternationalPhoneInput: React.FC<InternationalPhoneInputProps> = ({
           <Inline
             as="p"
             gap={1}
-            className="text-xs text-orange-600 mt-1 animate-pulse"
+            className="text-xs text-atencao mt-1 animate-pulse"
           >
             <span>⚠️</span>
             <span>{warningMessage}</span>
@@ -510,7 +506,7 @@ const InternationalPhoneInput: React.FC<InternationalPhoneInputProps> = ({
 
         {/* ❌ Erro */}
         {error && !warningMessage && (
-          <Inline as="p" gap={1} className="text-xs text-accent-red mt-1">
+          <Inline as="p" gap={1} className="text-xs text-erro mt-1">
             <span>⚠️</span>
             <span>{error}</span>
           </Inline>
@@ -541,11 +537,10 @@ const CountryOption: React.FC<{
     type="button"
     onClick={onClick}
     className={`
-      w-full text-left px-4 py-3 hover:bg-interactive-hover transition-colors duration-200 
-      border-b last:border-b-0 border-theme-secondary
+      w-full text-left px-4 py-3 hover:bg-ouro/10 transition-colors duration-200 border-b last:border-b-0 border-theme-secondary
       ${
         isSelected
-          ? 'bg-brand-primary/10 text-brand-primary font-medium'
+          ? 'bg-ouro/10 text-brand-primary font-medium'
           : 'text-theme-primary'
       }
     `}
@@ -564,7 +559,7 @@ const CountryOption: React.FC<{
         <Text
           papel="legenda"
           tom="ouro"
-          className="inline-flex items-center px-2 py-1 rounded-full bg-brand-primary/10 flex-shrink-0 ml-2"
+          className="inline-flex items-center px-2 py-1 rounded-full bg-ouro/10 flex-shrink-0 ml-2"
         >
           Popular
         </Text>

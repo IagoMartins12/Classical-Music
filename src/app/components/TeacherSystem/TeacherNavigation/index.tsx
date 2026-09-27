@@ -230,14 +230,14 @@ export default function TeacherNavigation({ user }: TeacherNavigationProps) {
   return (
     <>
       {/* Top Navigation Bar */}
-      <nav className="sticky top-0 z-50 bg-theme-elevated/80 backdrop-blur-xl border-b border-theme-secondary">
+      <nav className="sticky top-0 z-barra bg-sup-elevada/80 backdrop-blur-xl border-b border-theme-secondary">
         <div className="section-wrap py-3">
           <div className="flex items-center justify-between">
             {/* Logo and Brand */}
             <Inline gap={4}>
               <button
                 onClick={() => setIsSidebarOpen(!isSidebarOpen)}
-                className="lg:hidden p-2 rounded-lg hover:bg-interactive-hover transition-colors"
+                className="lg:hidden p-2 rounded-lg hover:bg-ouro/10 transition-colors"
               >
                 {isSidebarOpen ? (
                   <PiX className="w-5 h-5 text-theme-secondary" />
@@ -285,8 +285,8 @@ export default function TeacherNavigation({ user }: TeacherNavigationProps) {
                           relative px-3 py-2 rounded-lg font-medium transition-all duration-300 flex items-center space-x-2
                           ${
                             item.active
-                              ? 'text-brand-primary bg-brand-primary/10'
-                              : 'text-theme-secondary hover:text-brand-primary hover:bg-interactive-hover'
+                              ? 'text-brand-primary bg-ouro/10'
+                              : 'text-theme-secondary hover:text-ouro-texto hover:bg-ouro/10'
                           }
                         `}
                       >
@@ -307,17 +307,17 @@ export default function TeacherNavigation({ user }: TeacherNavigationProps) {
                               <Link
                                 key={subItem.label}
                                 href={subItem.href}
-                                className="block p-3 rounded-lg hover:bg-interactive-hover transition-colors group"
+                                className="block p-3 rounded-lg hover:bg-ouro/10 transition-colors group"
                                 onClick={() => setActiveSubmenu(null)}
                               >
                                 <Inline gap={3}>
                                   {subItem.icon && (
-                                    <div className="w-8 h-8 bg-brand-primary/10 rounded-lg flex items-center justify-center">
+                                    <div className="w-8 h-8 bg-ouro/10 rounded-lg flex items-center justify-center">
                                       <subItem.icon className="w-4 h-4 text-brand-primary" />
                                     </div>
                                   )}
                                   <div className="flex-1">
-                                    <div className="font-medium text-theme-primary group-hover:text-brand-primary transition-colors">
+                                    <div className="font-medium text-theme-primary group-hover:text-ouro-texto transition-colors">
                                       {subItem.label}
                                     </div>
                                     {subItem.description && (
@@ -332,7 +332,7 @@ export default function TeacherNavigation({ user }: TeacherNavigationProps) {
                                     )}
                                   </div>
                                   {subItem.badge && (
-                                    <span className="px-2 py-1 bg-accent-blue/20 text-accent-blue text-xs rounded-full">
+                                    <span className="px-2 py-1 bg-aviso/10 text-aviso text-xs rounded-full">
                                       {subItem.badge}
                                     </span>
                                   )}
@@ -350,15 +350,15 @@ export default function TeacherNavigation({ user }: TeacherNavigationProps) {
                         relative px-3 py-2 rounded-lg font-medium transition-all duration-300 flex items-center space-x-2
                         ${
                           item.active
-                            ? 'text-brand-primary bg-brand-primary/10 '
-                            : 'text-theme-secondary hover:text-brand-primary hover:bg-interactive-hover'
+                            ? 'text-brand-primary bg-ouro/10 '
+                            : 'text-theme-secondary hover:text-ouro-texto hover:bg-ouro/10'
                         }
                       `}
                     >
                       <item.icon className="w-4 h-4" />
                       <span>{item.label}</span>
                       {item.badge && (
-                        <span className="px-2 py-1 bg-accent-blue/20 text-accent-blue text-xs rounded-full">
+                        <span className="px-2 py-1 bg-aviso/10 text-aviso text-xs rounded-full">
                           {item.badge}
                         </span>
                       )}
@@ -382,7 +382,7 @@ export default function TeacherNavigation({ user }: TeacherNavigationProps) {
                   as="button"
                   gap={2}
                   onClick={() => setIsProfileOpen(!isProfileOpen)}
-                  className="p-2 rounded-lg hover:bg-interactive-hover transition-colors group"
+                  className="p-2 rounded-lg hover:bg-ouro/10 transition-colors group"
                 >
                   {user.image ? (
                     <Image
@@ -390,14 +390,14 @@ export default function TeacherNavigation({ user }: TeacherNavigationProps) {
                       width={32}
                       height={32}
                       alt={getUserDisplayName()}
-                      className="w-8 h-8 rounded-full object-cover border-2 border-brand-primary/20 group-hover:border-brand-primary/50 transition-all"
+                      className="w-8 h-8 rounded-full object-cover border-2 border-ouro/20 group-hover:border-ouro/50 transition-all"
                     />
                   ) : (
                     <Text
                       papel="rotulo"
                       tom="forte"
                       as="div"
-                      className="w-8 h-8 bg-brand-gradient rounded-full flex items-center justify-center font-semibold border-2 border-brand-primary/20 group-hover:border-brand-primary/50 transition-all"
+                      className="w-8 h-8 fill-ouro rounded-full flex items-center justify-center font-semibold border-2 border-ouro/20 group-hover:border-ouro/50 transition-all"
                     >
                       {getUserInitials()}
                     </Text>
@@ -413,7 +413,7 @@ export default function TeacherNavigation({ user }: TeacherNavigationProps) {
                       {getUserDisplayName()}
                     </Text>
                     {!user.onboardingCompleted && (
-                      <p className="text-xs text-accent-amber">
+                      <p className="text-xs text-atencao">
                         {t('profile_complete_prompt')}
                       </p>
                     )}
@@ -437,7 +437,7 @@ export default function TeacherNavigation({ user }: TeacherNavigationProps) {
                         <Text
                           papel="legenda"
                           tom="ouro"
-                          className="px-2 py-1 bg-brand-primary/10 rounded-full"
+                          className="px-2 py-1 bg-ouro/10 rounded-full"
                         >
                           {t('profile_role_teacher')}
                         </Text>
@@ -445,7 +445,7 @@ export default function TeacherNavigation({ user }: TeacherNavigationProps) {
                       {!user.onboardingCompleted && (
                         <button
                           onClick={open}
-                          className="mt-2 w-full text-left px-2 py-1 bg-accent-amber/10 text-accent-amber text-xs rounded-lg hover:bg-accent-amber/20 transition-colors"
+                          className="mt-2 w-full text-left px-2 py-1 bg-atencao/10 text-atencao text-xs rounded-lg hover:bg-atencao/20 transition-colors"
                         >
                           {t('profile_complete_action')}
                         </button>
@@ -455,7 +455,7 @@ export default function TeacherNavigation({ user }: TeacherNavigationProps) {
                     {/* Menu Items */}
                     <Link
                       href="/teacher/profile"
-                      className="flex items-center space-x-2 w-full px-3 py-2 text-sm text-theme-secondary hover:text-brand-primary hover:bg-interactive-hover rounded-lg transition-all"
+                      className="flex items-center space-x-2 w-full px-3 py-2 text-sm text-theme-secondary hover:text-ouro-texto hover:bg-ouro/10 rounded-lg transition-all"
                       onClick={() => setIsProfileOpen(false)}
                     >
                       <PiUser className="w-4 h-4" />
@@ -464,7 +464,7 @@ export default function TeacherNavigation({ user }: TeacherNavigationProps) {
 
                     <Link
                       href="/teacher/notifications"
-                      className="flex items-center space-x-2 w-full px-3 py-2 text-sm text-theme-secondary hover:text-brand-primary hover:bg-interactive-hover rounded-lg transition-all"
+                      className="flex items-center space-x-2 w-full px-3 py-2 text-sm text-theme-secondary hover:text-ouro-texto hover:bg-ouro/10 rounded-lg transition-all"
                       onClick={() => setIsProfileOpen(false)}
                     >
                       <PiBell className="w-4 h-4" />
@@ -473,7 +473,7 @@ export default function TeacherNavigation({ user }: TeacherNavigationProps) {
 
                     <Link
                       href="/teacher/history"
-                      className="flex items-center space-x-2 w-full px-3 py-2 text-sm text-theme-secondary hover:text-brand-primary hover:bg-interactive-hover rounded-lg transition-all"
+                      className="flex items-center space-x-2 w-full px-3 py-2 text-sm text-theme-secondary hover:text-ouro-texto hover:bg-ouro/10 rounded-lg transition-all"
                       onClick={() => setIsProfileOpen(false)}
                     >
                       <PiPulse className="w-4 h-4" />
@@ -482,7 +482,7 @@ export default function TeacherNavigation({ user }: TeacherNavigationProps) {
 
                     <Link
                       href="/"
-                      className="flex items-center space-x-2 w-full px-3 py-2 text-sm text-theme-secondary hover:text-brand-primary hover:bg-interactive-hover rounded-lg transition-all"
+                      className="flex items-center space-x-2 w-full px-3 py-2 text-sm text-theme-secondary hover:text-ouro-texto hover:bg-ouro/10 rounded-lg transition-all"
                       onClick={() => setIsProfileOpen(false)}
                     >
                       <PiHouse className="w-4 h-4" />
@@ -495,7 +495,7 @@ export default function TeacherNavigation({ user }: TeacherNavigationProps) {
                       as="button"
                       gap={2}
                       onClick={handleLogout}
-                      className="w-full px-3 py-2 text-sm text-accent-red hover:bg-accent-red/10 rounded-lg transition-all"
+                      className="w-full px-3 py-2 text-sm text-erro hover:bg-erro/10 rounded-lg transition-all"
                     >
                       <PiSignOut className="w-4 h-4" />
                       <span>{t('profile_menu_logout')}</span>
@@ -510,7 +510,7 @@ export default function TeacherNavigation({ user }: TeacherNavigationProps) {
 
       {/* Mobile Sidebar */}
       {isSidebarOpen && (
-        <div className="fixed inset-0 z-50 lg:hidden">
+        <div className="fixed inset-0 z-dialogo lg:hidden">
           {/* Backdrop */}
           <div
             className="absolute inset-0 bg-black/50 backdrop-blur-sm"
@@ -535,7 +535,7 @@ export default function TeacherNavigation({ user }: TeacherNavigationProps) {
                 </div>
                 <button
                   onClick={closeSidebar}
-                  className="p-2 rounded-lg hover:bg-interactive-hover transition-colors"
+                  className="p-2 rounded-lg hover:bg-ouro/10 transition-colors"
                 >
                   <PiX className="w-5 h-5 text-theme-secondary" />
                   <NomeAcao acao="fechar" />
@@ -558,8 +558,8 @@ export default function TeacherNavigation({ user }: TeacherNavigationProps) {
                             w-full flex items-center justify-between px-3 py-2 rounded-lg font-medium transition-all duration-300
                             ${
                               item.active
-                                ? 'text-brand-primary bg-brand-primary/10 border border-brand-primary/20'
-                                : 'text-theme-secondary hover:text-brand-primary hover:bg-interactive-hover'
+                                ? 'text-brand-primary bg-ouro/10 border border-ouro/20'
+                                : 'text-theme-secondary hover:text-ouro-texto hover:bg-ouro/10'
                             }
                           `}
                         >
@@ -581,7 +581,7 @@ export default function TeacherNavigation({ user }: TeacherNavigationProps) {
                               <Link
                                 key={subItem.label}
                                 href={subItem.href}
-                                className="block px-3 py-2 text-sm text-theme-tertiary hover:text-brand-primary hover:bg-interactive-hover rounded-lg transition-colors"
+                                className="block px-3 py-2 text-sm text-theme-tertiary hover:text-ouro-texto hover:bg-ouro/10 rounded-lg transition-colors"
                                 onClick={closeSidebar}
                               >
                                 <Inline gap={2}>
@@ -602,8 +602,8 @@ export default function TeacherNavigation({ user }: TeacherNavigationProps) {
                           flex items-center space-x-3 px-3 py-2 rounded-lg font-medium transition-all duration-300
                           ${
                             item.active
-                              ? 'text-brand-primary bg-brand-primary/10 border border-brand-primary/20'
-                              : 'text-theme-secondary hover:text-brand-primary hover:bg-interactive-hover'
+                              ? 'text-brand-primary bg-ouro/10 border border-ouro/20'
+                              : 'text-theme-secondary hover:text-ouro-texto hover:bg-ouro/10'
                           }
                         `}
                         onClick={closeSidebar}
@@ -611,7 +611,7 @@ export default function TeacherNavigation({ user }: TeacherNavigationProps) {
                         <item.icon className="w-4 h-4" />
                         <span>{item.label}</span>
                         {item.badge && (
-                          <span className="px-2 py-1 bg-accent-blue/20 text-accent-blue text-xs rounded-full ml-auto">
+                          <span className="px-2 py-1 bg-aviso/10 text-aviso text-xs rounded-full ml-auto">
                             {item.badge}
                           </span>
                         )}

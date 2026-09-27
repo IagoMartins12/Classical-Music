@@ -57,7 +57,7 @@ export default function DayView({ date, events, onEventClick }: DayViewProps) {
             <button
               key={event.id}
               onClick={() => onEventClick(event)}
-              className={`w-full text-left p-6 rounded-lg transition-all hover:scale-105 border-l-4 bg-theme-elevated hover:bg-interactive-hover ${getEventBorderColor(event.type, event.isFree)}`}
+              className={`border w-full text-left p-6 rounded-lg transition-all hover:scale-105 bg-theme-elevated hover:bg-ouro/10 ${getEventBorderColor(event.type, event.isFree)}`}
             >
               <div className="flex items-start justify-between">
                 <div className="flex-1">
@@ -111,8 +111,8 @@ export default function DayView({ date, events, onEventClick }: DayViewProps) {
                     <span
                       className={`inline-flex items-center px-2 py-1 rounded-md text-xs font-medium ${
                         event.isFree
-                          ? 'bg-accent-green/10 border border-accent-green/30 text-accent-green'
-                          : 'bg-accent-blue/10 border border-accent-blue/30 text-accent-blue'
+                          ? 'bg-ok/10 border border-ok/30 text-ok'
+                          : 'bg-aviso/10 border border-aviso/30 text-aviso'
                       }`}
                     >
                       {event.isFree ? '🎫 Gratuito' : '🎫 Ingresso'}
@@ -132,18 +132,18 @@ export default function DayView({ date, events, onEventClick }: DayViewProps) {
 }
 
 function getEventBorderColor(type: string, isFree: boolean): string {
-  if (isFree) return 'border-accent-green';
+  if (isFree) return 'border-ok';
 
   const colors: Record<string, string> = {
-    OPERA: 'border-accent-purple',
-    RECITAL: 'border-accent-pink',
-    CHAMBER_MUSIC: 'border-accent-green',
-    CHOIR: 'border-accent-orange',
+    OPERA: 'border-ouro',
+    RECITAL: 'border-ouro',
+    CHAMBER_MUSIC: 'border-ok',
+    CHOIR: 'border-atencao',
     OPEN_REHEARSAL: 'border-accent-gray',
-    CONCERT: 'border-accent-blue',
+    CONCERT: 'border-aviso',
   };
 
-  return colors[type] || 'border-accent-blue';
+  return colors[type] || 'border-aviso';
 }
 
 function getEventTypeLabel(type: string): string {

@@ -111,7 +111,7 @@ export default function Error({ error, reset }: ErrorProps) {
 
               {/* Mobile Sidebar */}
               <div
-                className={`lg:hidden fixed inset-y-0 left-0 z-50 w-72 bg-theme-elevated border-r border-theme-primary transform transition-transform duration-300 ease-in-out ${
+                className={`lg:hidden fixed inset-y-0 left-0 z-dialogo w-72 bg-theme-elevated border-r border-theme-primary transform transition-transform duration-300 ease-in-out ${
                   showAdminSidebar ? 'translate-x-0' : '-translate-x-full'
                 }`}
                 style={{ top: '80px' }}
@@ -124,7 +124,7 @@ export default function Error({ error, reset }: ErrorProps) {
               {/* Mobile Overlay */}
               {showAdminSidebar && (
                 <div
-                  className="lg:hidden fixed inset-0 bg-black/50 backdrop-blur-sm z-40"
+                  className="lg:hidden fixed inset-0 bg-black/50 backdrop-blur-sm z-menu"
                   style={{ top: '80px' }}
                   onClick={() => setShowAdminSidebar(false)}
                 />
@@ -175,7 +175,7 @@ export default function Error({ error, reset }: ErrorProps) {
       {renderNavigation()}
 
       {/* Conteúdo principal da página de erro */}
-      <div
+      <main
         className={`classical-theme min-h-screen flex items-center justify-center relative overflow-hidden ${
           currentArea === 'admin' ? 'lg:ml-72' : ''
         }`}
@@ -183,9 +183,9 @@ export default function Error({ error, reset }: ErrorProps) {
         {/* Background Pattern */}
         <AnimatedMusicalNotes />
         <div className="absolute inset-0 pointer-events-none opacity-5">
-          <div className="absolute top-20 left-20 w-64 h-64 bg-brand-gradient rounded-full blur-3xl"></div>
-          <div className="absolute bottom-40 right-32 w-48 h-48 bg-accent-red/30 rounded-full blur-2xl"></div>
-          <div className="absolute top-1/2 left-1/4 w-32 h-32 bg-accent-blue/20 rounded-full blur-xl"></div>
+          <div className="absolute top-20 left-20 w-64 h-64 rounded-full blur-3xl"></div>
+          <div className="absolute bottom-40 right-32 w-48 h-48 rounded-full blur-2xl"></div>
+          <div className="absolute top-1/2 left-1/4 w-32 h-32 rounded-full blur-xl"></div>
         </div>
 
         <div className="section-wrap relative z-10">
@@ -218,8 +218,8 @@ export default function Error({ error, reset }: ErrorProps) {
             {/* Error Icon */}
             <AnimatedItem direction="scale" springType="bouncy">
               <div className="relative mb-8">
-                <div className="w-32 h-32 mx-auto bg-gradient-to-br from-accent-red/20 to-accent-purple/20 rounded-full flex items-center justify-center classical-card border-2 border-accent-red/30 shadow-theme-glow">
-                  <PiWarning className="w-16 h-16 text-accent-red" />
+                <div className="w-32 h-32 mx-auto bg-erro/20 rounded-full flex items-center justify-center classical-card border-2 border-erro/30 shadow-theme-glow">
+                  <PiWarning className="w-16 h-16 text-erro" />
                 </div>
               </div>
             </AnimatedItem>
@@ -276,24 +276,24 @@ export default function Error({ error, reset }: ErrorProps) {
               className="classical-card p-6 max-w-3xl mx-auto mb-8"
             >
               <Inline gap={3} className="mb-4">
-                <div className="w-10 h-10 bg-gradient-to-br from-accent-blue/20 to-accent-green/20 rounded-xl flex items-center justify-center">
-                  <PiMusicNotes className="w-5 h-5 text-accent-blue" />
+                <div className="w-10 h-10 bg-aviso/20 rounded-xl flex items-center justify-center">
+                  <PiMusicNotes className="w-5 h-5 text-aviso" />
                 </div>
-                <h3 className="text-xl font-bold text-theme-primary classical-title">
+                <h2 className="text-xl font-bold text-theme-primary classical-title">
                   {t('error_jsx_h3_children_0__que_voce_pode_fazer')}
-                </h3>
+                </h2>
               </Inline>
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-left">
                 <Stack gap={2}>
                   <Inline gap={2}>
-                    <div className="w-2 h-2 bg-brand-primary rounded-full"></div>
+                    <div className="w-2 h-2 bg-ouro rounded-full"></div>
                     <span className="text-theme-secondary">
                       {t('error_jsx_span_children_0__recarregar_pagina')}
                     </span>
                   </Inline>
                   <Inline gap={2}>
-                    <div className="w-2 h-2 bg-brand-primary rounded-full"></div>
+                    <div className="w-2 h-2 bg-ouro rounded-full"></div>
                     <span className="text-theme-secondary">
                       {t('error_jsx_span_children_0__verificar_conexao')}
                     </span>
@@ -301,13 +301,13 @@ export default function Error({ error, reset }: ErrorProps) {
                 </Stack>
                 <Stack gap={2}>
                   <Inline gap={2}>
-                    <div className="w-2 h-2 bg-brand-primary rounded-full"></div>
+                    <div className="w-2 h-2 bg-ouro rounded-full"></div>
                     <span className="text-theme-secondary">
                       {t('error_jsx_span_children_0__tentar_mais_tarde')}
                     </span>
                   </Inline>
                   <Inline gap={2}>
-                    <div className="w-2 h-2 bg-brand-primary rounded-full"></div>
+                    <div className="w-2 h-2 bg-ouro rounded-full"></div>
                     <span className="text-theme-secondary">
                       {t('error_jsx_span_children_0__voltar_pagina_anterior')}
                     </span>
@@ -331,10 +331,10 @@ export default function Error({ error, reset }: ErrorProps) {
         </div>
 
         {/* Decorative Elements */}
-        <div className="absolute bottom-4 right-4 w-16 h-16 bg-brand-gradient/10 rounded-3xl flex items-center justify-center opacity-50">
+        <div className="absolute bottom-4 right-4 w-16 h-16 bg-ouro/10 rounded-3xl flex items-center justify-center opacity-50">
           <PiMusicNotes className="w-8 h-8 text-brand-primary" />
         </div>
-      </div>
+      </main>
     </>
   );
 }

@@ -76,7 +76,7 @@ export default function AdminHeader({ onMenuClick }: AdminHeaderProps) {
 
   return (
     <>
-      <div className="bg-theme-elevated border-b border-theme-primary sticky top-0 z-50 backdrop-blur-lg bg-opacity-95">
+      <div className="bg-theme-elevated border-b border-theme-primary sticky top-0 z-barra backdrop-blur-lg">
         <div className="px-6 py-3">
           <div className="flex items-center justify-between py-3 lg:py-4">
             {/* Logo/Title + Mobile Menu Button */}
@@ -85,7 +85,7 @@ export default function AdminHeader({ onMenuClick }: AdminHeaderProps) {
               <button
                 id="menu-button"
                 onClick={onMenuClick}
-                className="lg:hidden p-2 rounded-lg text-theme-tertiary hover:text-theme-primary hover:bg-theme-secondary transition-all"
+                className="lg:hidden p-2 rounded-lg text-theme-tertiary hover:text-texto hover:bg-sup-1 transition-all"
               >
                 <PiList className="w-5 h-5" />
                 <NomeAcao acao="menu" />
@@ -94,9 +94,9 @@ export default function AdminHeader({ onMenuClick }: AdminHeaderProps) {
               {/* Logo */}
               <Link
                 href="/admin"
-                className="flex items-center space-x-2 lg:space-x-3 text-theme-primary hover:text-brand-primary transition-colors"
+                className="flex items-center space-x-2 lg:space-x-3 text-theme-primary hover:text-ouro-texto transition-colors"
               >
-                <div className="w-8 h-8 lg:w-10 lg:h-10 bg-gradient-to-br from-accent-red to-accent-amber rounded-xl flex items-center justify-center shadow-lg">
+                <div className="w-8 h-8 lg:w-10 lg:h-10 bg-erro rounded-xl flex items-center justify-center shadow-lg">
                   <PiShield className="w-4 h-4 lg:w-6 lg:h-6 text-theme-primary" />
                 </div>
                 <div className="hidden sm:block">
@@ -117,8 +117,8 @@ export default function AdminHeader({ onMenuClick }: AdminHeaderProps) {
                     href={item.href}
                     className={`flex items-center space-x-2 px-3 py-2 rounded-lg transition-all text-sm ${
                       item.isActive
-                        ? 'bg-gradient-to-r from-brand-primary to-brand-secondary text-theme-primary shadow-md'
-                        : 'text-theme-tertiary hover:text-theme-primary hover:bg-theme-secondary'
+                        ? 'fill-ouro text-theme-primary shadow-md'
+                        : 'text-theme-tertiary hover:text-texto hover:bg-sup-1'
                     }`}
                   >
                     <item.icon className="w-4 h-4" />
@@ -133,7 +133,7 @@ export default function AdminHeader({ onMenuClick }: AdminHeaderProps) {
               <div className="hidden md:flex items-center space-x-1">
                 <Link
                   href="/admin/settings"
-                  className="p-2 rounded-lg text-theme-tertiary hover:text-theme-primary hover:bg-theme-secondary transition-all"
+                  className="p-2 rounded-lg text-theme-tertiary hover:text-texto hover:bg-sup-1 transition-all"
                   title="Configurações"
                 >
                   <PiGear className="w-4 h-4 lg:w-5 lg:h-5" />
@@ -144,9 +144,9 @@ export default function AdminHeader({ onMenuClick }: AdminHeaderProps) {
               <div className="relative">
                 <button
                   onClick={() => setShowUserMenu(!showUserMenu)}
-                  className="flex items-center space-x-2 lg:space-x-3 p-1.5 lg:p-2 rounded-lg hover:bg-theme-secondary transition-all"
+                  className="flex items-center space-x-2 lg:space-x-3 p-1.5 lg:p-2 rounded-lg hover:bg-sup-1 transition-all"
                 >
-                  <div className="w-7 h-7 lg:w-8 lg:h-8 bg-gradient-to-br from-accent-blue to-accent-purple rounded-lg flex items-center justify-center">
+                  <div className="w-7 h-7 lg:w-8 lg:h-8 bg-aviso rounded-lg flex items-center justify-center">
                     <span className="text-xs lg:text-sm font-bold text-theme-primary">
                       {session.user.firstName?.charAt(0) ||
                         session.user.email?.charAt(0) ||
@@ -193,7 +193,7 @@ export default function AdminHeader({ onMenuClick }: AdminHeaderProps) {
 
                     <Link
                       href="/"
-                      className="flex items-center space-x-3 px-4 py-2 text-theme-secondary hover:text-theme-primary hover:bg-theme-secondary transition-all text-sm"
+                      className="flex items-center space-x-3 px-4 py-2 text-theme-secondary hover:text-texto hover:bg-sup-1 transition-all text-sm"
                       onClick={() => setShowUserMenu(false)}
                     >
                       <PiHouse className="w-4 h-4" />
@@ -206,7 +206,7 @@ export default function AdminHeader({ onMenuClick }: AdminHeaderProps) {
                       as="button"
                       gap={3}
                       onClick={handleSignOut}
-                      className="px-4 py-2 text-accent-red hover:bg-accent-red/10 transition-all w-full text-sm"
+                      className="px-4 py-2 text-erro hover:bg-erro/10 transition-all w-full text-sm"
                     >
                       <PiSignOut className="w-4 h-4" />
                       <span>Sair</span>

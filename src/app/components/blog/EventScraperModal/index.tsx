@@ -404,7 +404,7 @@ export default function EventScraperModal({
           {/* Header */}
           <div className="flex items-center justify-between p-6 border-b border-theme-secondary">
             <Inline gap={3}>
-              <div className="w-10 h-10 bg-gradient-to-br from-accent-blue to-accent-green rounded-xl flex items-center justify-center">
+              <div className="w-10 h-10 bg-aviso rounded-xl flex items-center justify-center">
                 <PiMagnifyingGlass className="w-5 h-5 text-theme-primary" />
               </div>
               <div>
@@ -432,7 +432,7 @@ export default function EventScraperModal({
                   key={step}
                   className={`w-3 h-3 rounded-full transition-colors ${
                     currentStep === step
-                      ? 'bg-brand-primary'
+                      ? 'bg-ouro'
                       : index <
                           (
                             [
@@ -443,7 +443,7 @@ export default function EventScraperModal({
                               'results',
                             ] as Step[]
                           ).indexOf(currentStep)
-                        ? 'bg-green-400'
+                        ? 'bg-ok'
                         : 'bg-theme-secondary'
                   }`}
                 />
@@ -466,8 +466,8 @@ export default function EventScraperModal({
                       key={scraper.id}
                       className={`classical-card-simple p-6 cursor-pointer transition-all ${
                         selectedScraperId === scraper.id
-                          ? 'border-brand-primary shadow-theme-glow'
-                          : 'hover:border-brand-primary/50'
+                          ? 'border-ouro shadow-theme-glow'
+                          : 'hover:border-ouro/50'
                       }`}
                       onClick={() => setSelectedScraperId(scraper.id)}
                     >
@@ -498,8 +498,8 @@ export default function EventScraperModal({
                         <div
                           className={`w-5 h-5 rounded-full border-2 flex items-center justify-center ${
                             selectedScraperId === scraper.id
-                              ? 'border-brand-primary bg-brand-primary'
-                              : 'border-theme-tertiary'
+                              ? 'border-ouro bg-ouro'
+                              : 'border-linha'
                           }`}
                         >
                           {selectedScraperId === scraper.id && (
@@ -588,9 +588,9 @@ export default function EventScraperModal({
                   <Card
                     nivel={2}
                     densidade="compacta"
-                    className="text-center bg-green-50/5"
+                    className="text-center bg-ok/5"
                   >
-                    <div className="text-2xl font-bold text-green-500">
+                    <div className="text-2xl font-bold text-ok">
                       {stats.new}
                     </div>
                     <Text papel="legenda" tom="suave" as="div">
@@ -600,9 +600,9 @@ export default function EventScraperModal({
                   <Card
                     nivel={2}
                     densidade="compacta"
-                    className="text-center bg-yellow-50/5"
+                    className="text-center bg-atencao/5"
                   >
-                    <div className="text-2xl font-bold text-yellow-500">
+                    <div className="text-2xl font-bold text-atencao">
                       {stats.existing}
                     </div>
                     <Text papel="legenda" tom="suave" as="div">
@@ -612,9 +612,9 @@ export default function EventScraperModal({
                   <Card
                     nivel={2}
                     densidade="compacta"
-                    className="text-center bg-blue-50/5"
+                    className="text-center bg-aviso/5"
                   >
-                    <div className="text-2xl font-bold text-blue-500">
+                    <div className="text-2xl font-bold text-aviso">
                       {stats.selected}
                     </div>
                     <Text papel="legenda" tom="suave" as="div">
@@ -670,10 +670,10 @@ export default function EventScraperModal({
                   <div className="mt-6">
                     <button
                       onClick={() => setShowDuplicates(!showDuplicates)}
-                      className="w-full classical-card-simple p-4 flex items-center justify-between hover:border-yellow-500/30 transition-colors"
+                      className="w-full classical-card-simple p-4 flex items-center justify-between hover:border-atencao/30 transition-colors"
                     >
                       <Inline gap={2}>
-                        <PiEye className="w-4 h-4 text-yellow-500" />
+                        <PiEye className="w-4 h-4 text-atencao" />
                         <Text
                           papel="rotulo"
                           tom="forte"
@@ -691,7 +691,7 @@ export default function EventScraperModal({
 
                     {showDuplicates && (
                       <AnimatedItem direction="down" springType="smooth">
-                        <div className="mt-3  overflow-y-auto space-y-3 border-l-4 border-yellow-500/30 pl-4">
+                        <div className="border mt-3 overflow-y-auto space-y-3 border-atencao/30 pl-4 bg-atencao/10">
                           {duplicateEvents.map((event) => (
                             <AnimatedItem
                               key={event.id}
@@ -757,11 +757,11 @@ export default function EventScraperModal({
                       key={event.tempId}
                       className={`classical-card-simple rounded-lg p-4 transition-all ${
                         event.status === 'success'
-                          ? 'bg-accent-green/5 border-accent-green/20'
+                          ? 'bg-ok/5 border-ok/20'
                           : event.status === 'error'
-                            ? 'bg-accent-red/5 border-accent-red/20'
+                            ? 'bg-erro/5 border-erro/20'
                             : event.status === 'processing'
-                              ? 'bg-brand-primary/5 border-brand-primary/30'
+                              ? 'bg-ouro/5 border-ouro/30'
                               : 'bg-theme-elevated border-theme-secondary'
                       }`}
                     >
@@ -776,12 +776,12 @@ export default function EventScraperModal({
                             <PiSpinnerGap className="w-5 h-5 text-brand-primary animate-spin" />
                           )}
                           {event.status === 'success' && (
-                            <div className="w-5 h-5 rounded-full bg-accent-green flex items-center justify-center">
+                            <div className="w-5 h-5 rounded-full bg-ok flex items-center justify-center">
                               <PiCheck className="w-3 h-3 text-white" />
                             </div>
                           )}
                           {event.status === 'error' && (
-                            <div className="w-5 h-5 rounded-full bg-accent-red flex items-center justify-center">
+                            <div className="w-5 h-5 rounded-full bg-erro flex items-center justify-center">
                               <PiX className="w-3 h-3 text-white" />
                             </div>
                           )}
@@ -794,9 +794,9 @@ export default function EventScraperModal({
                           <p
                             className={`text-xs ${
                               event.status === 'success'
-                                ? 'text-accent-green'
+                                ? 'text-ok'
                                 : event.status === 'error'
-                                  ? 'text-accent-red'
+                                  ? 'text-erro'
                                   : event.status === 'processing'
                                     ? 'text-brand-primary'
                                     : 'text-theme-tertiary'
@@ -816,7 +816,7 @@ export default function EventScraperModal({
             {currentStep === 'results' && (
               <div className="p-6">
                 <div className="text-center mb-6">
-                  <div className="w-16 h-16 bg-gradient-to-br from-accent-green to-accent-blue rounded-full flex items-center justify-center mx-auto mb-4">
+                  <div className="w-16 h-16 bg-ok rounded-full flex items-center justify-center mx-auto mb-4">
                     <PiCheck className="w-8 h-8 text-white" />
                   </div>
                   <h3 className="text-lg font-bold text-theme-primary mb-2">
@@ -835,9 +835,9 @@ export default function EventScraperModal({
                   <Card
                     nivel={2}
                     densidade="compacta"
-                    className="text-center bg-green-500/5"
+                    className="text-center bg-ok/5"
                   >
-                    <div className="text-2xl font-bold text-green-500">
+                    <div className="text-2xl font-bold text-ok">
                       {
                         processResults.filter((r) => r.status === 'success')
                           .length
@@ -850,9 +850,9 @@ export default function EventScraperModal({
                   <Card
                     nivel={2}
                     densidade="compacta"
-                    className="text-center bg-red-500/5"
+                    className="text-center bg-erro/5"
                   >
-                    <div className="text-2xl font-bold text-red-500">
+                    <div className="text-2xl font-bold text-erro">
                       {
                         processResults.filter((r) => r.status === 'error')
                           .length
@@ -865,9 +865,9 @@ export default function EventScraperModal({
                   <Card
                     nivel={2}
                     densidade="compacta"
-                    className="text-center bg-yellow-500/5"
+                    className="text-center bg-atencao/5"
                   >
-                    <div className="text-2xl font-bold text-yellow-500">
+                    <div className="text-2xl font-bold text-atencao">
                       {
                         processResults.filter(
                           (r) =>
@@ -887,23 +887,23 @@ export default function EventScraperModal({
                       key={result.tempId}
                       className={`classical-card-simple p-3 rounded ${
                         result.status === 'success'
-                          ? 'bg-green-500/5'
+                          ? 'bg-ok/5'
                           : result.status === 'error'
-                            ? 'bg-red-500/5'
-                            : 'bg-yellow-500/5'
+                            ? 'bg-erro/5'
+                            : 'bg-atencao/5'
                       }`}
                     >
                       <div className="flex items-center justify-between">
                         <Inline gap={2}>
                           {result.status === 'success' && (
-                            <PiCheck className="w-4 h-4 text-green-500" />
+                            <PiCheck className="w-4 h-4 text-ok" />
                           )}
                           {result.status === 'error' && (
-                            <PiX className="w-4 h-4 text-red-500" />
+                            <PiX className="w-4 h-4 text-erro" />
                           )}
                           {(result.status === 'duplicate' ||
                             result.status === 'skipped') && (
-                            <PiWarningCircle className="w-4 h-4 text-yellow-500" />
+                            <PiWarningCircle className="w-4 h-4 text-atencao" />
                           )}
                           <Text papel="rotulo" tom="forte">
                             {result.title}
@@ -912,10 +912,10 @@ export default function EventScraperModal({
                         <span
                           className={`text-xs ${
                             result.status === 'success'
-                              ? 'text-green-500'
+                              ? 'text-ok'
                               : result.status === 'error'
-                                ? 'text-red-500'
-                                : 'text-yellow-500'
+                                ? 'text-erro'
+                                : 'text-atencao'
                           }`}
                         >
                           {result.message}
@@ -954,17 +954,17 @@ const EventCard = ({
   <div
     className={`classical-card-simple rounded-lg p-4 ${
       isDuplicate
-        ? 'opacity-60 bg-yellow-500/5 border-yellow-500/20'
+        ? 'opacity-60 bg-atencao/5 border-atencao/20'
         : event.selected
-          ? 'border-brand-primary shadow-theme-glow'
+          ? 'border-ouro shadow-theme-glow'
           : ''
     }`}
   >
     <div className="flex items-start space-x-4">
       <div className="flex-shrink-0 pt-1">
         {isDuplicate ? (
-          <div className="w-5 h-5 rounded bg-yellow-500/20 flex items-center justify-center">
-            <PiWarningCircle className="w-3 h-3 text-yellow-500" />
+          <div className="w-5 h-5 rounded bg-atencao/20 flex items-center justify-center">
+            <PiWarningCircle className="w-3 h-3 text-atencao" />
           </div>
         ) : (
           <Checkbox
@@ -990,7 +990,7 @@ const EventCard = ({
         <div className="flex items-start justify-between mb-2">
           <h4 className="font-bold text-theme-primary">{event.title}</h4>
           {isDuplicate && (
-            <span className="text-xs bg-yellow-500/20 text-yellow-500 px-2 py-1 rounded ml-2 flex-shrink-0">
+            <span className="text-xs bg-atencao/10 text-atencao px-2 py-1 rounded ml-2 flex-shrink-0">
               Já existe
             </span>
           )}
@@ -1041,7 +1041,7 @@ const EventCard = ({
           href={event.externalUrl}
           target="_blank"
           rel="noopener noreferrer"
-          className="text-theme-tertiary hover:text-accent-blue"
+          className="text-theme-tertiary hover:text-aviso"
           title="Ver evento"
         >
           <PiArrowSquareOut className="w-4 h-4" />
@@ -1052,7 +1052,7 @@ const EventCard = ({
             href={event.ticketUrl}
             target="_blank"
             rel="noopener noreferrer"
-            className="text-theme-tertiary hover:text-accent-green"
+            className="text-theme-tertiary hover:text-ok"
             title="Comprar ingresso"
           >
             <PiShoppingCart className="w-4 h-4" />
@@ -1062,7 +1062,7 @@ const EventCard = ({
         {!isDuplicate && (
           <button
             onClick={() => removeEvent(event.id)}
-            className="text-theme-tertiary hover:text-accent-red"
+            className="text-theme-tertiary hover:text-erro"
             title="Remover"
           >
             <PiTrash className="w-4 h-4" />

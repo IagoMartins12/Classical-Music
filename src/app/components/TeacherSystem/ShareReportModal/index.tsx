@@ -270,15 +270,15 @@ export default function ShareReportModal({
                     key={option.key}
                     className={`relative p-4 border rounded-lg cursor-pointer transition-all ${
                       isSelected
-                        ? 'border-brand-primary bg-brand-primary/10'
-                        : 'border-theme-secondary hover:border-theme-primary bg-theme-elevated'
+                        ? 'border-ouro bg-ouro/10'
+                        : 'border-theme-secondary hover:border-linha bg-theme-elevated'
                     }`}
                   >
                     <div className="flex items-start space-x-3">
                       <div
                         className={`w-8 h-8 rounded-lg flex items-center justify-center ${
                           isSelected
-                            ? 'bg-brand-primary text-white'
+                            ? 'bg-ouro text-sobre-ouro'
                             : 'bg-theme-secondary text-theme-tertiary'
                         }`}
                       >
@@ -297,7 +297,7 @@ export default function ShareReportModal({
                       <div
                         className={`w-5 h-5 rounded border-2 flex items-center justify-center ${
                           isSelected
-                            ? 'bg-brand-primary border-brand-primary'
+                            ? 'bg-ouro border-ouro'
                             : 'border-theme-secondary'
                         }`}
                       >
@@ -409,7 +409,7 @@ export default function ShareReportModal({
         </div>
 
         {selectedCount === 0 && (
-          <div className="text-center text-accent-red text-sm mt-2">
+          <div className="text-center text-erro text-sm mt-2">
             Selecione pelo menos uma seção para compartilhar
           </div>
         )}

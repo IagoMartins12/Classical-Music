@@ -176,9 +176,7 @@ function ConflictModal({
         <Inline gap={3} className="mb-6">
           <div
             className={`w-12 h-12 rounded-full flex items-center justify-center ${
-              conflicts.hasTimeConflicts
-                ? 'bg-accent-red/10'
-                : 'bg-accent-yellow/10'
+              conflicts.hasTimeConflicts ? 'bg-erro/10' : 'bg-atencao/10'
             }`}
           >
             {conflicts.hasTimeConflicts ? (
@@ -220,11 +218,11 @@ function ConflictModal({
                 {conflicts.timeConflicts.map((conflict) => (
                   <div
                     key={conflict.id}
-                    className="bg-accent-red/5 bg-theme-tertiary rounded-lg p-4"
+                    className="bg-erro/5 bg-theme-tertiary rounded-lg p-4"
                   >
                     <div className="flex items-center justify-between">
                       <div>
-                        <p className="font-medium text-accent-red">
+                        <p className="font-medium text-erro">
                           {conflict.title}
                         </p>
                         <Text papel="rotulo" tom="fraco" as="p">
@@ -235,7 +233,7 @@ function ConflictModal({
                           {t('student')}: {conflict.studentName}
                         </Text>
                       </div>
-                      <PiWarningCircle className="w-5 h-5 text-accent-red" />
+                      <PiWarningCircle className="w-5 h-5 text-erro" />
                     </div>
                   </div>
                 ))}
@@ -243,9 +241,9 @@ function ConflictModal({
 
               <div className="bg-theme-tertiary rounded-lg p-4 mt-4">
                 <div className="flex items-start space-x-3">
-                  <PiInfo className="w-5 h-5 text-accent-red mt-0.5" />
+                  <PiInfo className="w-5 h-5 text-erro mt-0.5" />
                   <Stack gap={1} className="text-sm">
-                    <p className="font-medium text-accent-red">
+                    <p className="font-medium text-erro">
                       ⚠️ {t('cannot_create_lesson')}
                     </p>
                     <p className="text-theme-secondary">
@@ -263,7 +261,7 @@ function ConflictModal({
               <Inline
                 as="h3"
                 gap={2}
-                className="text-lg font-semibold text-accent-yellow mb-4"
+                className="text-lg font-semibold text-atencao mb-4"
               >
                 <PiWarning className="w-5 h-5" />
                 <span>{t('weekly_limit_exceeded')}</span>
@@ -275,7 +273,7 @@ function ConflictModal({
                     <span className="text-theme-primary font-medium">
                       {conflicts.weeklyLimitWarning.studentName}
                     </span>
-                    <span className="text-accent-yellow font-bold">
+                    <span className="text-atencao font-bold">
                       {conflicts.weeklyLimitWarning.currentLessons}/
                       {conflicts.weeklyLimitWarning.maxLessonsPerWeek} aulas
                     </span>
@@ -321,9 +319,9 @@ function ConflictModal({
 
               <div className="bg-theme-tertiary rounded-lg p-4 mt-4">
                 <div className="flex items-start space-x-3">
-                  <PiInfo className="w-5 h-5 text-accent-blue mt-0.5" />
+                  <PiInfo className="w-5 h-5 text-aviso mt-0.5" />
                   <Stack gap={1} className="text-sm">
-                    <p className="font-medium text-accent-blue">
+                    <p className="font-medium text-aviso">
                       ℹ️ {t('can_proceed')}
                     </p>
                     <p className="text-theme-secondary">
@@ -340,7 +338,7 @@ function ConflictModal({
           {/* Warnings Gerais */}
           {conflicts.warnings.length > 0 && (
             <Stack gap={3}>
-              <h3 className="text-lg font-semibold text-accent-blue">
+              <h3 className="text-lg font-semibold text-aviso">
                 {t('additional_warnings')}
               </h3>
               <Stack gap={2}>
@@ -350,7 +348,7 @@ function ConflictModal({
                     key={index}
                     className="text-sm text-theme-secondary"
                   >
-                    <PiInfo className="w-4 h-4 text-accent-blue" />
+                    <PiInfo className="w-4 h-4 text-aviso" />
                     <span>{warning}</span>
                   </Inline>
                 ))}
@@ -379,7 +377,7 @@ function ConflictModal({
               gap={2}
               onClick={onConfirm}
               disabled={loading}
-              className="btn-classical-primary bg-accent-yellow hover:bg-accent-yellow/80"
+              className="btn-classical-primary bg-atencao hover:bg-atencao/80"
             >
               {loading ? (
                 <PiArrowsClockwise className="w-4 h-4 animate-spin" />
@@ -894,7 +892,7 @@ export default function CreateLessonPageClient({
       <PageContainer showBackground={true}>
         <div className="flex items-center justify-center min-h-screen">
           <Card densidade="larga" className="text-center max-w-md">
-            <div className="w-16 h-16 bg-gradient-to-br from-accent-red to-accent-purple rounded-3xl flex items-center justify-center mx-auto mb-6">
+            <div className="w-16 h-16 bg-erro rounded-3xl flex items-center justify-center mx-auto mb-6">
               <PiWarningCircle className="w-8 h-8 text-theme-primary" />
             </div>
             <h1 className="text-xl font-bold text-theme-primary classical-title mb-4">
@@ -921,9 +919,9 @@ export default function CreateLessonPageClient({
             <Inline gap={4}>
               <Link
                 href="/teacher/lessons"
-                className="w-10 h-10 rounded-lg bg-theme-elevated border border-theme-secondary hover:border-brand-primary transition-all flex items-center justify-center group"
+                className="w-10 h-10 rounded-lg bg-theme-elevated border border-theme-secondary hover:border-ouro transition-all flex items-center justify-center group"
               >
-                <PiArrowLeft className="w-4 h-4 text-theme-tertiary group-hover:text-brand-primary transition-colors" />
+                <PiArrowLeft className="w-4 h-4 text-theme-tertiary group-hover:text-ouro-texto transition-colors" />
               </Link>
               <div>
                 <h1 className="text-3xl font-bold text-gradient-brand classical-title">
@@ -965,9 +963,7 @@ export default function CreateLessonPageClient({
                           updateFormData('studentUserId', e.target.value)
                         }
                         className={`input-classical w-full ${
-                          validationErrors.studentUserId
-                            ? '!border-red-400'
-                            : ''
+                          validationErrors.studentUserId ? '!border-erro' : ''
                         }`}
                         error={validationErrors.studentUserId}
                         required
@@ -988,7 +984,7 @@ export default function CreateLessonPageClient({
                               />
                             </div>
                           ) : (
-                            <div className="w-12 h-12 bg-gradient-to-br from-brand-primary to-brand-secondary rounded-full flex items-center justify-center">
+                            <div className="w-12 h-12 fill-ouro rounded-full flex items-center justify-center">
                               <PiUser className="w-6 h-6 text-theme-primary" />
                             </div>
                           )}
@@ -1021,7 +1017,7 @@ export default function CreateLessonPageClient({
                             updateFormData('title', e.target.value)
                           }
                           className={`input-classical w-full ${
-                            validationErrors.title ? '!border-red-400' : ''
+                            validationErrors.title ? '!border-erro' : ''
                           }`}
                           placeholder={t('lesson_title_placeholder')}
                           required
@@ -1065,8 +1061,8 @@ export default function CreateLessonPageClient({
                     {checkingConflicts && (
                       <div className=" rounded-lg p-3">
                         <Inline gap={3}>
-                          <PiArrowsClockwise className="w-4 h-4 animate-spin text-accent-blue" />
-                          <span className="text-sm text-accent-blue">
+                          <PiArrowsClockwise className="w-4 h-4 animate-spin text-aviso" />
+                          <span className="text-sm text-aviso">
                             {t('checking_conflicts')}
                           </span>
                         </Inline>
@@ -1077,11 +1073,11 @@ export default function CreateLessonPageClient({
                     {conflicts && !checkingConflicts && (
                       <Stack gap={3}>
                         {conflicts.hasTimeConflicts && (
-                          <div className="border-red-400 rounded-lg p-3">
+                          <div className="border-erro rounded-lg p-3">
                             <Inline gap={3}>
-                              <PiXCircle className="w-4 h-4 text-accent-red" />
+                              <PiXCircle className="w-4 h-4 text-erro" />
                               <div className="text-sm">
-                                <p className="font-medium text-accent-red">
+                                <p className="font-medium text-erro">
                                   {t('time_conflict_detected')}
                                 </p>
                                 <p className="text-theme-secondary">
@@ -1095,11 +1091,11 @@ export default function CreateLessonPageClient({
 
                         {conflicts.hasWeeklyLimitExceeded &&
                           !conflicts.hasTimeConflicts && (
-                            <div className=" border border-yellow-400 rounded-lg p-3">
+                            <div className=" border border-atencao rounded-lg p-3">
                               <Inline gap={3}>
-                                <PiWarning className="w-4 h-4 text-accent-yellow" />
+                                <PiWarning className="w-4 h-4 text-atencao" />
                                 <div className="text-sm">
-                                  <p className="font-medium text-accent-yellow">
+                                  <p className="font-medium text-atencao">
                                     {t('weekly_limit_reached')}
                                   </p>
                                   <p className="text-theme-secondary">
@@ -1120,8 +1116,8 @@ export default function CreateLessonPageClient({
                           !conflicts.hasWeeklyLimitExceeded && (
                             <div className=" rounded-lg p-3">
                               <Inline gap={3}>
-                                <PiCheckCircle className="w-4 h-4 text-green-400" />
-                                <span className="text-sm text-green-300">
+                                <PiCheckCircle className="w-4 h-4 text-ok" />
+                                <span className="text-sm text-ok">
                                   {t('no_conflicts_detected')}
                                 </span>
                               </Inline>
@@ -1140,9 +1136,7 @@ export default function CreateLessonPageClient({
                           onChange={(e) => handleDateTimeChange(e.target.value)}
                           min={getMinDateTime()}
                           className={`input-classical w-full ${
-                            validationErrors.scheduledAt
-                              ? '!border-red-400'
-                              : ''
+                            validationErrors.scheduledAt ? '!border-erro' : ''
                           }`}
                           required
                         />
@@ -1150,7 +1144,7 @@ export default function CreateLessonPageClient({
                           <Inline
                             as="p"
                             gap={1}
-                            className="text-red-500 text-sm mt-1"
+                            className="text-erro text-sm mt-1"
                           >
                             <PiWarningCircle className="w-3 h-3" />
                             <span>{validationErrors.scheduledAt}</span>
@@ -1178,11 +1172,11 @@ export default function CreateLessonPageClient({
                           max={240}
                           step={15}
                           className={`input-classical w-full ${
-                            validationErrors.duration ? '!border-red-400' : ''
+                            validationErrors.duration ? '!border-erro' : ''
                           }`}
                         />
                         {validationErrors.duration && (
-                          <p className="text-red-500 text-sm mt-1">
+                          <p className="text-erro text-sm mt-1">
                             {validationErrors.duration}
                           </p>
                         )}
@@ -1212,7 +1206,7 @@ export default function CreateLessonPageClient({
                           onChange={(e) =>
                             updateFormData('isRecurring', e.target.checked)
                           }
-                          className="w-4 h-4 text-brand-primary bg-theme-elevated border-theme-secondary rounded focus:ring-brand-primary"
+                          className="w-4 h-4 text-brand-primary bg-theme-elevated border-theme-secondary rounded focus:ring-ouro"
                         />
                         <Inline
                           as="label"
@@ -1226,7 +1220,7 @@ export default function CreateLessonPageClient({
                       </Inline>
 
                       {formData.isRecurring && (
-                        <div className="space-y-4 p-6 bg-gradient-to-br from-brand-primary/5 to-brand-secondary/5 border border-brand-primary/20 rounded-lg">
+                        <div className="space-y-4 p-6 bg-ouro/5 border border-ouro/20 rounded-lg">
                           <Inline gap={3} className="mb-4">
                             <PiInfo className="w-5 h-5 text-brand-primary" />
                             <Text papel="rotulo" tom="suave" as="div">
@@ -1278,13 +1272,13 @@ export default function CreateLessonPageClient({
                                 }
                                 className={`input-classical w-full ${
                                   validationErrors.recurrenceEnd
-                                    ? '!border-red-400'
+                                    ? '!border-erro'
                                     : ''
                                 }`}
                                 required
                               />
                               {validationErrors.recurrenceEnd && (
-                                <p className="text-red-500 text-sm mt-1">
+                                <p className="text-erro text-sm mt-1">
                                   {validationErrors.recurrenceEnd}
                                 </p>
                               )}
@@ -1306,7 +1300,7 @@ export default function CreateLessonPageClient({
                           {formData.scheduledAt &&
                             formData.recurrenceEnd &&
                             formData.recurrenceType !== 'NONE' && (
-                              <div className="bg-theme-elevated/50 rounded-lg p-4 border border-theme-secondary/30">
+                              <div className="bg-sup-elevada/50 rounded-lg p-4 border border-linha/30">
                                 <Inline gap={3}>
                                   <PiCalendarBlank className="w-5 h-5 text-brand-primary" />
                                   <div>
@@ -1335,11 +1329,11 @@ export default function CreateLessonPageClient({
                             )}
 
                           {/* Renovação fácil info */}
-                          <div className="bg-accent-green/10 border border-accent-green/30 rounded-lg p-4">
+                          <div className="bg-ok/10 border border-ok/30 rounded-lg p-4">
                             <div className="flex items-start space-x-3">
-                              <PiCheckCircle className="w-5 h-5 text-accent-green mt-0.5" />
+                              <PiCheckCircle className="w-5 h-5 text-ok mt-0.5" />
                               <Stack gap={1} className="text-sm">
-                                <p className="font-medium text-accent-green">
+                                <p className="font-medium text-ok">
                                   {t('simplified_renewal')}
                                 </p>
                                 <p className="text-theme-secondary">
@@ -1388,7 +1382,7 @@ export default function CreateLessonPageClient({
                         gap={1}
                         type="button"
                         onClick={() => addArrayField('objectives')}
-                        className="text-brand-primary hover:text-brand-secondary text-sm"
+                        className="text-brand-primary hover:text-ouro-texto text-sm"
                       >
                         <PiPlus className="w-3 h-3" />
                         <span>{t('add')}</span>
@@ -1418,7 +1412,7 @@ export default function CreateLessonPageClient({
                               onClick={() =>
                                 removeArrayField('objectives', index)
                               }
-                              className="text-accent-red"
+                              className="text-erro"
                             >
                               <PiX className="w-4 h-4" />
                               <NomeAcao acao="fechar" />
@@ -1436,7 +1430,7 @@ export default function CreateLessonPageClient({
                       gap={2}
                       type="button"
                       onClick={() => setShowAdvanced(!showAdvanced)}
-                      className="text-brand-primary hover:text-brand-secondary"
+                      className="text-brand-primary hover:text-ouro-texto"
                     >
                       <span>{t('advanced_options')}</span>
                       <div
@@ -1461,10 +1455,7 @@ export default function CreateLessonPageClient({
                     </Inline>
 
                     {showAdvanced && (
-                      <Stack
-                        gap={6}
-                        className="p-4 bg-theme-secondary/5 rounded-lg"
-                      >
+                      <Stack gap={6} className="p-4 bg-sup-1/5 rounded-lg">
                         {/* Topics */}
                         <Stack gap={2}>
                           <div className="flex items-center justify-between">
@@ -1505,7 +1496,7 @@ export default function CreateLessonPageClient({
                                     onClick={() =>
                                       removeArrayField('topics', index)
                                     }
-                                    className="text-accent-red"
+                                    className="text-erro"
                                   >
                                     <PiX className="w-4 h-4" />
                                     <NomeAcao acao="fechar" />
@@ -1561,19 +1552,19 @@ export default function CreateLessonPageClient({
 
                   {/* Error Display */}
                   {error && (
-                    <div className="bg-accent-red/10 border border-accent-red/30 rounded-lg p-4">
+                    <div className="bg-erro/10 border border-erro/30 rounded-lg p-4">
                       <Inline gap={3}>
-                        <PiWarningCircle className="w-5 h-5 text-accent-red" />
+                        <PiWarningCircle className="w-5 h-5 text-erro" />
                         <div>
-                          <p className="text-accent-red font-medium">
+                          <p className="text-erro font-medium">
                             {t('error_creating_lesson')}
                           </p>
-                          <p className="text-accent-red/80 text-sm">{error}</p>
+                          <p className="text-erro/80 text-sm">{error}</p>
                         </div>
                         <button
                           type="button"
                           onClick={clearError}
-                          className="ml-auto text-accent-red"
+                          className="ml-auto text-erro"
                         >
                           <PiX className="w-4 h-4" />
                           <NomeAcao acao="fechar" />
@@ -1654,7 +1645,7 @@ export default function CreateLessonPageClient({
                           />
                         </div>
                       ) : (
-                        <div className="w-12 h-12 bg-gradient-to-br from-brand-primary to-brand-secondary rounded-full flex items-center justify-center">
+                        <div className="w-12 h-12 fill-ouro rounded-full flex items-center justify-center">
                           <PiUser className="w-6 h-6 text-theme-primary" />
                         </div>
                       )}
@@ -1726,10 +1717,10 @@ export default function CreateLessonPageClient({
                       <Inline
                         gap={3}
                         key={work.workId}
-                        className="p-3 bg-theme-elevated/50 rounded-lg"
+                        className="p-3 bg-sup-elevada/50 rounded-lg"
                       >
-                        <div className="w-8 h-8 bg-accent-blue/20 rounded-lg flex items-center justify-center flex-shrink-0">
-                          <PiMusicNotes className="w-4 h-4 text-accent-blue" />
+                        <div className="w-8 h-8 bg-aviso/20 rounded-lg flex items-center justify-center flex-shrink-0">
+                          <PiMusicNotes className="w-4 h-4 text-aviso" />
                         </div>
                         <div className="flex-1 min-w-0">
                           <Text
@@ -1749,7 +1740,7 @@ export default function CreateLessonPageClient({
                             {work.composerName}
                           </Text>
                           {work.scoreId && (
-                            <p className="text-xs text-accent-green">
+                            <p className="text-xs text-ok">
                               ✓ {t('with_score')}
                             </p>
                           )}
@@ -1757,14 +1748,14 @@ export default function CreateLessonPageClient({
                         <Text
                           papel="legenda"
                           tom="suave"
-                          className="bg-theme-secondary/20 px-2 py-1 rounded"
+                          className="bg-sup-1/20 px-2 py-1 rounded"
                         >
                           #{index + 1}
                         </Text>
                       </Inline>
                     ))}
 
-                    <div className="mt-3 p-3 bg-brand-primary/5 border border-brand-primary/20 rounded-lg">
+                    <div className="mt-3 p-3 bg-ouro/5 border border-ouro/20 rounded-lg">
                       <Text papel="legenda" tom="suave" as="div">
                         <div className="flex justify-between">
                           <span>{t('total_works')}</span>
@@ -1811,7 +1802,7 @@ export default function CreateLessonPageClient({
                     <p>{t('tip_recurrence_works')}</p>
                   </div>
                   <div className="flex items-start space-x-2">
-                    <PiWarningCircle className="w-4 h-4 text-accent-red mt-0.5 flex-shrink-0" />
+                    <PiWarningCircle className="w-4 h-4 text-erro mt-0.5 flex-shrink-0" />
                     <p>{t('tip_required_fields')}</p>
                   </div>
                 </Text>

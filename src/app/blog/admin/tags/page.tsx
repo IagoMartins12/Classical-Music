@@ -56,7 +56,7 @@ export default async function TagsAdminPage({ searchParams }: PageProps) {
               direction="scale"
               className="flex items-center justify-center mb-6"
             >
-              <div className="w-16 h-16 bg-gradient-to-br from-brand-primary to-brand-secondary rounded-2xl flex items-center justify-center shadow-theme-glow">
+              <div className="w-16 h-16 fill-ouro rounded-2xl flex items-center justify-center shadow-theme-glow">
                 <PiTag className="w-8 h-8 text-theme-primary" />
               </div>
             </AnimatedItem>
@@ -105,11 +105,11 @@ export default async function TagsAdminPage({ searchParams }: PageProps) {
                       {stats.totalTags}
                     </p>
                   </Stack>
-                  <div className="w-16 h-16 bg-gradient-to-br from-purple-500/20 to-purple-600/20 rounded-2xl flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
-                    <PiTag className="w-8 h-8 text-purple-500" />
+                  <div className="w-16 h-16 bg-ouro/20 rounded-2xl flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
+                    <PiTag className="w-8 h-8 text-ouro-texto" />
                   </div>
                 </div>
-                <div className="h-2 bg-gradient-to-r from-purple-500 to-purple-600 rounded-b-xl"></div>
+                <div className="h-2 fill-ouro rounded-b-xl"></div>
               </div>
             </AnimatedItem>
 
@@ -129,11 +129,11 @@ export default async function TagsAdminPage({ searchParams }: PageProps) {
                       {stats.tagsWithArticles}
                     </p>
                   </Stack>
-                  <div className="w-16 h-16 bg-gradient-to-br from-green-500/20 to-green-600/20 rounded-2xl flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
-                    <PiTrendUp className="w-8 h-8 text-green-500" />
+                  <div className="w-16 h-16 bg-ok/20 rounded-2xl flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
+                    <PiTrendUp className="w-8 h-8 text-ok" />
                   </div>
                 </div>
-                <div className="h-2 bg-gradient-to-r from-green-500 to-green-600 rounded-b-xl"></div>
+                <div className="h-2 bg-ok rounded-b-xl"></div>
               </div>
             </AnimatedItem>
 
@@ -153,11 +153,11 @@ export default async function TagsAdminPage({ searchParams }: PageProps) {
                       {(stats.totalArticles / stats.totalTags || 0).toFixed(1)}
                     </p>
                   </Stack>
-                  <div className="w-16 h-16 bg-gradient-to-br from-blue-500/20 to-blue-600/20 rounded-2xl flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
-                    <PiTag className="w-8 h-8 text-blue-500" />
+                  <div className="w-16 h-16 bg-aviso/20 rounded-2xl flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
+                    <PiTag className="w-8 h-8 text-aviso" />
                   </div>
                 </div>
-                <div className="h-2 bg-gradient-to-r from-blue-500 to-blue-600 rounded-b-xl"></div>
+                <div className="h-2 bg-aviso rounded-b-xl"></div>
               </div>
             </AnimatedItem>
           </div>

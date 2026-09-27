@@ -219,7 +219,7 @@ export default function GenreSearchInput({
   };
 
   return (
-    <div className={`relative ${isOpen ? 'z-[9999]' : 'z-[200]'}`}>
+    <div className={`relative ${isOpen ? 'z-menu' : 'z-elevado'}`}>
       {/* Input Field */}
       <div className="relative">
         <PiTag className="absolute left-4 top-1/2 transform -translate-y-1/2 w-4 h-4 text-theme-tertiary" />
@@ -242,7 +242,7 @@ export default function GenreSearchInput({
           {selectedGenre && (
             <button
               onClick={handleClear}
-              className="text-theme-tertiary hover:text-theme-primary transition-colors"
+              className="text-theme-tertiary hover:text-texto transition-colors"
               title="Limpar seleção"
             >
               <PiX className="w-4 h-4" />
@@ -251,7 +251,7 @@ export default function GenreSearchInput({
 
           <button
             onClick={() => setIsOpen(!isOpen)}
-            className="text-theme-tertiary hover:text-theme-primary transition-colors"
+            className="text-theme-tertiary hover:text-texto transition-colors"
           >
             <PiCaretDown
               className={`w-4 h-4 transition-transform ${
@@ -266,7 +266,7 @@ export default function GenreSearchInput({
       {/* Backdrop (para garantir que cliques fora fechem o dropdown) */}
       {isOpen && (
         <div
-          className="fixed inset-0 z-[300]"
+          className="fixed inset-0 z-elevado"
           onClick={() => {
             setIsOpen(false);
             setSearchTerm('');
@@ -278,7 +278,7 @@ export default function GenreSearchInput({
       {isOpen && (
         <div
           ref={dropdownRef}
-          className="absolute classical-card-simple top-full left-0 right-0 mt-2 bg-theme-surface border border-theme-primary rounded-lg shadow-theme-glow z-[9999] max-h-80 overflow-hidden"
+          className="absolute classical-card-simple top-full left-0 right-0 mt-2 bg-sup-1 border border-theme-primary rounded-lg shadow-theme-glow z-menu max-h-80 overflow-hidden"
           style={{
             boxShadow:
               '0 25px 50px -12px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(212, 175, 55, 0.3)',
@@ -306,7 +306,7 @@ export default function GenreSearchInput({
           {isLoading && (
             <div className="px-4 py-3 text-center text-theme-secondary">
               <div className="flex items-center justify-center">
-                <div className="w-4 h-4 border-2 border-brand-primary border-t-transparent rounded-full animate-spin mr-2"></div>
+                <div className="w-4 h-4 border-2 border-ouro border-t-transparent rounded-full animate-spin mr-2"></div>
                 {t('genre_search_jsx_loading')}
               </div>
             </div>
@@ -321,10 +321,10 @@ export default function GenreSearchInput({
                     <button
                       key={genre.id}
                       onClick={() => handleGenreSelect(genre)}
-                      className={`w-full px-4 py-3 text-left hover:bg-interactive-hover transition-colors border-b border-theme-secondary/50 last:border-b-0 ${
+                      className={`w-full px-4 py-3 text-left hover:bg-ouro/10 transition-colors border-b border-linha/50 last:border-b-0 ${
                         genre.originalName === selectedGenre ||
                         genre.name === selectedGenre
-                          ? 'bg-brand-primary/10 text-brand-primary font-medium'
+                          ? 'bg-ouro/10 text-brand-primary font-medium'
                           : 'text-theme-primary'
                       }`}
                     >
@@ -334,7 +334,7 @@ export default function GenreSearchInput({
                         </span>
                         {(genre.originalName === selectedGenre ||
                           genre.name === selectedGenre) && (
-                          <div className="ml-auto w-2 h-2 bg-brand-primary rounded-full"></div>
+                          <div className="ml-auto w-2 h-2 bg-ouro rounded-full"></div>
                         )}
                       </div>
                     </button>
@@ -343,7 +343,7 @@ export default function GenreSearchInput({
                   {/* "Ver todos os gêneros" button */}
                   <button
                     onClick={handleViewAllGenres}
-                    className="w-full px-4 py-3 text-left hover:bg-interactive-hover transition-colors border-t border-theme-secondary bg-theme-elevated"
+                    className="w-full px-4 py-3 text-left hover:bg-ouro/10 transition-colors border-t border-theme-secondary bg-theme-elevated"
                   >
                     <div className="flex items-center text-brand-primary">
                       <PiArrowSquareOut className="w-4 h-4 mr-3" />
@@ -364,7 +364,7 @@ export default function GenreSearchInput({
                   </p>
                   <button
                     onClick={handleViewAllGenres}
-                    className="text-brand-primary hover:text-brand-secondary underline text-sm mt-2"
+                    className="text-brand-primary hover:text-ouro-texto underline text-sm mt-2"
                   >
                     {t('genre_search_jsx_view_all_available')}
                   </button>

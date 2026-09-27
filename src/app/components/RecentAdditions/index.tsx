@@ -46,7 +46,7 @@ const RecentAdditions: React.FC<RecentAdditionsProps> = ({
           <h3 className="text-xl font-bold text-theme-primary classical-title">
             {t('recent_additions_composers_section')}
           </h3>
-          <div className="flex-1 h-px bg-gradient-to-r from-orange-500/20 to-transparent"></div>
+          <div className="flex-1 h-px bg-atencao/20"></div>
         </div>
 
         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-4 gap-4">
@@ -61,7 +61,7 @@ const RecentAdditions: React.FC<RecentAdditionsProps> = ({
           <h3 className="text-xl font-bold text-theme-primary classical-title">
             {t('recent_additions_works_section')}
           </h3>
-          <div className="flex-1 h-px bg-gradient-to-r from-purple-500/20 to-transparent"></div>
+          <div className="flex-1 h-px bg-ouro/20"></div>
         </div>
 
         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-4 gap-4">
@@ -73,8 +73,8 @@ const RecentAdditions: React.FC<RecentAdditionsProps> = ({
 
       {/* Background decoration */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        <div className="absolute top-16 right-16 w-32 h-32 bg-gradient-to-r from-green-500/10 to-emerald-500/10 rounded-full blur-3xl"></div>
-        <div className="absolute bottom-16 left-16 w-24 h-24 bg-gradient-to-r from-emerald-500/10 to-green-500/10 rounded-full blur-3xl"></div>
+        <div className="absolute top-16 right-16 w-32 h-32 bg-ok/10 rounded-full blur-3xl"></div>
+        <div className="absolute bottom-16 left-16 w-24 h-24 bg-ok/10 rounded-full blur-3xl"></div>
       </div>
     </section>
   );

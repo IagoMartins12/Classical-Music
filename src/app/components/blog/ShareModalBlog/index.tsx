@@ -36,7 +36,7 @@ export function ShareModalBlog({
     {
       name: 'WhatsApp',
       icon: PiWhatsappLogo,
-      color: 'bg-green-500 hover:bg-green-600',
+      color: 'bg-ok hover:bg-ok',
       action: () => {
         window.open(
           `https://wa.me/?text=${encodedTitle}%20${encodedUrl}`,
@@ -47,7 +47,7 @@ export function ShareModalBlog({
     {
       name: 'Facebook',
       icon: PiFacebookLogo,
-      color: 'bg-blue-600 hover:bg-blue-700',
+      color: 'bg-aviso hover:bg-aviso',
       action: () => {
         window.open(
           `https://www.facebook.com/sharer/sharer.php?u=${encodedUrl}`,
@@ -59,7 +59,7 @@ export function ShareModalBlog({
     {
       name: 'Twitter',
       icon: PiTwitterLogo,
-      color: 'bg-sky-500 hover:bg-sky-600',
+      color: 'bg-aviso hover:bg-aviso',
       action: () => {
         window.open(
           `https://twitter.com/intent/tweet?text=${encodedTitle}&url=${encodedUrl}`,
@@ -71,7 +71,7 @@ export function ShareModalBlog({
     {
       name: 'LinkedIn',
       icon: PiLinkedinLogo,
-      color: 'bg-blue-700 hover:bg-blue-800',
+      color: 'bg-aviso hover:bg-aviso/20',
       action: () => {
         window.open(
           `https://www.linkedin.com/sharing/share-offsite/?url=${encodedUrl}`,
@@ -141,8 +141,8 @@ export function ShareModalBlog({
               onClick={copyToClipboard}
               className={`px-4 py-2 rounded-lg font-medium transition-all ${
                 copied
-                  ? 'bg-green-500 text-white'
-                  : 'bg-brand-primary text-white hover:opacity-90'
+                  ? 'bg-ok text-white'
+                  : 'bg-ouro text-sobre-ouro hover:opacity-90'
               }`}
             >
               {copied ? (

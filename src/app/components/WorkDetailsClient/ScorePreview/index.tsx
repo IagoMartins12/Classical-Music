@@ -30,7 +30,7 @@ const SourceBadge = React.memo(
   ({ source }: { source: 'IMSLP' | 'UPLOAD' | 'CUSTOM'; t: any }) => {
     if (source === 'IMSLP') {
       return (
-        <div className="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200 border border-blue-200 dark:border-blue-700">
+        <div className="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold bg-aviso/10 text-aviso dark:bg-aviso/20 dark:text-aviso border border-aviso/30 dark:border-aviso">
           <PiBookOpen className="w-3 h-3 mr-1.5" />
           IMSLP
         </div>
@@ -38,7 +38,7 @@ const SourceBadge = React.memo(
     }
 
     return (
-      <div className="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200 border border-green-200 dark:border-green-700">
+      <div className="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold bg-ok/10 text-ok dark:bg-ok/20 dark:text-ok border border-ok/30 dark:border-ok">
         <PiTarget className="w-3 h-3 mr-1.5" />
         Opus Atlas
       </div>
@@ -66,15 +66,15 @@ const ImageZoomModal = React.memo(
 
     return (
       <div
-        className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-sm"
+        className="fixed inset-0 z-dialogo flex items-center justify-center bg-black/80 backdrop-blur-sm"
         onClick={onClose}
       >
         <div className="relative max-w-[90vw] max-h-[90vh] p-4">
           <button
             onClick={onClose}
-            className="absolute -top-2 -right-2 z-10 bg-white dark:bg-gray-800 rounded-full p-2 shadow-lg hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
+            className="absolute -top-2 -right-2 z-10 bg-white dark:bg-gray-800 rounded-full p-2 shadow-lg hover:bg-sup-2 dark:hover:bg-gray-700 transition-colors"
           >
-            <PiX className="w-5 h-5 text-gray-600 dark:text-gray-300" />
+            <PiX className="w-5 h-5 text-texto-suave dark:text-texto-fraco" />
             <NomeAcao acao="fechar" />
           </button>
 
@@ -187,11 +187,11 @@ const ScorePreview = React.memo(({ score }: ScorePreviewProps) => {
         {/* Preview da Partitura com zoom melhorado */}
         <div className="mb-6">
           {score.thumbnailUrl && !imageError ? (
-            <div className="relative group overflow-hidden rounded-lg shadow-sm bg-gray-50 dark:bg-gray-800">
+            <div className="relative group overflow-hidden rounded-lg shadow-sm bg-sup-2 dark:bg-gray-800">
               {/* Loading placeholder */}
               {isImageLoading && (
-                <div className="absolute inset-0 flex items-center justify-center bg-gray-100 dark:bg-gray-700 animate-pulse">
-                  <PiFileText className="w-12 h-12 text-gray-400" />
+                <div className="absolute inset-0 flex items-center justify-center bg-sup-2 dark:bg-gray-700 animate-pulse">
+                  <PiFileText className="w-12 h-12 text-texto-fraco" />
                 </div>
               )}
 
@@ -213,7 +213,7 @@ const ScorePreview = React.memo(({ score }: ScorePreviewProps) => {
                 {/* Overlay de zoom no hover */}
                 <div className="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-all duration-300 flex items-center justify-center opacity-0 group-hover:opacity-100 rounded-lg">
                   <div className="bg-white/90 dark:bg-gray-800/90 rounded-full p-3 transform scale-75 group-hover:scale-100 transition-transform duration-300">
-                    <PiMagnifyingGlassPlus className="w-6 h-6 text-gray-700 dark:text-gray-300" />
+                    <PiMagnifyingGlassPlus className="w-6 h-6 text-texto-suave dark:text-texto-fraco" />
                   </div>
                 </div>
               </div>
@@ -227,13 +227,13 @@ const ScorePreview = React.memo(({ score }: ScorePreviewProps) => {
               </div>
             </div>
           ) : (
-            <div className="mb-6 bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-800 dark:to-gray-700 rounded-lg p-8 text-center border-2 border-dashed border-gray-200 dark:border-gray-600">
-              <PiFileText className="w-16 h-16 text-gray-400 mx-auto mb-3" />
+            <div className="mb-6 bg-texto-fraco rounded-lg p-8 text-center border-2 border-dashed border-linha dark:border-linha-forte">
+              <PiFileText className="w-16 h-16 text-texto-fraco mx-auto mb-3" />
               <p className="text-theme-secondary font-medium">
                 {t('score_preview_preview_indisponivel')}
               </p>
               {imageError && (
-                <p className="text-xs text-gray-500 mt-1">
+                <p className="text-xs text-texto-fraco mt-1">
                   {t('score_preview_erro_carregar')}
                 </p>
               )}
@@ -271,7 +271,7 @@ const ScorePreview = React.memo(({ score }: ScorePreviewProps) => {
                 Avaliação
               </span>
               <div className="flex items-center gap-1">
-                <PiStarFill className="w-3 h-3 text-yellow-500 fill-current" />
+                <PiStarFill className="w-3 h-3 text-atencao fill-current" />
                 <span className="text-theme-primary font-semibold">
                   {formatRating(score.rating)}
                 </span>
@@ -298,7 +298,7 @@ const ScorePreview = React.memo(({ score }: ScorePreviewProps) => {
 
         {/* Informações adicionais */}
         {(score.editor || score.publisher) && (
-          <div className="mt-4 pt-4 border-t border-gray-100 dark:border-gray-700">
+          <div className="mt-4 pt-4 border-t border-linha dark:border-linha-forte">
             <div className="grid grid-cols-1 gap-2 text-sm">
               {score.editor && (
                 <div className="flex justify-between">
@@ -329,7 +329,7 @@ const ScorePreview = React.memo(({ score }: ScorePreviewProps) => {
         {(score.copyright || score.notes) && (
           <Stack
             gap={3}
-            className="mt-4 pt-4 border-t border-gray-100 dark:border-gray-700"
+            className="mt-4 pt-4 border-t border-linha dark:border-linha-forte"
           >
             {score.copyright && (
               <Stack gap={1}>
@@ -365,7 +365,7 @@ const ScorePreview = React.memo(({ score }: ScorePreviewProps) => {
 
         {/* Botão de ação adicional se disponível */}
         {score.downloadUrl && (
-          <div className="mt-6 pt-4 border-t border-gray-100 dark:border-gray-700">
+          <div className="mt-6 pt-4 border-t border-linha dark:border-linha-forte">
             <Button
               variante="primario"
               type="submit"

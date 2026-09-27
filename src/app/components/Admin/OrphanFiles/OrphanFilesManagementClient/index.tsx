@@ -61,49 +61,49 @@ const CATEGORY_TABS = [
     label: 'Locais',
     icon: PiMonitor,
     description: 'Arquivos locais do servidor',
-    color: 'text-blue-500',
+    color: 'text-aviso',
   },
   {
     value: 'cloudinary' as const,
     label: 'Cloudinary',
     icon: PiCloud,
     description: 'Arquivos no Cloudinary',
-    color: 'text-purple-500',
+    color: 'text-ouro-texto',
   },
   {
     value: 'assignments' as const,
     label: 'Tarefas',
     icon: PiFileText,
     description: 'Vídeos de tarefas',
-    color: 'text-green-500',
+    color: 'text-ok',
   },
   {
     value: 'learned' as const,
     label: 'Performances',
     icon: PiPlay,
     description: 'Vídeos de performance',
-    color: 'text-red-500',
+    color: 'text-erro',
   },
   {
     value: 'profiles' as const,
     label: 'Perfis',
     icon: PiUsers,
     description: 'Fotos de usuários',
-    color: 'text-indigo-500',
+    color: 'text-aviso',
   },
   {
     value: 'composers' as const,
     label: 'Compositores',
     icon: PiUser,
     description: 'Retratos de compositores',
-    color: 'text-pink-500',
+    color: 'text-ouro-texto',
   },
   {
     value: 'works' as const,
     label: 'Obras',
     icon: PiMusicNotes,
     description: 'Mídia de obras',
-    color: 'text-yellow-500',
+    color: 'text-atencao',
   },
 ];
 
@@ -152,25 +152,25 @@ const CloudinaryFileItem = ({
 
   const getCategoryColor = (category: CloudinaryFileCategory): string => {
     const colors: Record<CloudinaryFileCategory, string> = {
-      assignments: 'bg-green-500',
-      learned: 'bg-red-500',
-      scores: 'bg-blue-500',
-      'works-audio': 'bg-yellow-500',
-      'works-video': 'bg-purple-500',
-      advertisements: 'bg-pink-500',
-      profiles: 'bg-indigo-500',
-      composers: 'bg-cyan-500',
-      unknown: 'bg-gray-500',
+      assignments: 'bg-ok',
+      learned: 'bg-erro',
+      scores: 'bg-aviso',
+      'works-audio': 'bg-atencao',
+      'works-video': 'bg-ouro',
+      advertisements: 'bg-ouro',
+      profiles: 'bg-aviso',
+      composers: 'bg-aviso',
+      unknown: 'bg-linha-forte',
     };
-    return colors[category] || 'bg-gray-500';
+    return colors[category] || 'bg-linha-forte';
   };
 
   return (
     <div
       className={`p-4 border rounded-lg transition-all cursor-pointer ${
         isSelected
-          ? 'border-brand-primary bg-brand-primary/5'
-          : 'border-theme-primary hover:border-theme-secondary hover:bg-theme-secondary'
+          ? 'border-ouro bg-ouro/5'
+          : 'border-theme-primary hover:border-linha hover:bg-sup-1'
       }`}
       onClick={() => onToggleSelection(file.publicId)}
     >
@@ -187,7 +187,7 @@ const CloudinaryFileItem = ({
 
           {/* Ícone do Tipo */}
           <div className="flex-shrink-0">
-            <IconComponent className="w-5 h-5 text-purple-500" />
+            <IconComponent className="w-5 h-5 text-ouro-texto" />
           </div>
 
           {/* Informações do Arquivo */}
@@ -203,7 +203,7 @@ const CloudinaryFileItem = ({
               >
                 {getCategoryDisplayName(file.category)}
               </span>
-              <span className="text-xs px-2 py-1 rounded bg-purple-100 text-purple-800">
+              <span className="text-xs px-2 py-1 rounded bg-ouro/10 text-ouro-texto">
                 Cloudinary
               </span>
             </Inline>
@@ -384,7 +384,7 @@ export default function OrphanFilesManagementClient() {
     return (
       <PageContainer showBackground={true}>
         <div className="text-center py-16">
-          <PiWarning className="w-16 h-16 text-accent-red mx-auto mb-4" />
+          <PiWarning className="w-16 h-16 text-erro mx-auto mb-4" />
           <h2 className="text-2xl font-bold text-theme-primary mb-2">
             Erro ao Carregar Sistema
           </h2>
@@ -413,7 +413,7 @@ export default function OrphanFilesManagementClient() {
           <AnimatedItem direction="up" springType="gentle">
             <div className="text-center py-8 lg:py-12">
               <div className="flex items-center justify-center mb-6">
-                <div className="w-16 h-16 bg-gradient-to-br from-brand-primary to-brand-secondary rounded-3xl flex items-center justify-center shadow-theme-glow">
+                <div className="w-16 h-16 fill-ouro rounded-3xl flex items-center justify-center shadow-theme-glow">
                   <PiStack className="w-8 h-8 text-white" />
                 </div>
               </div>
@@ -480,7 +480,7 @@ export default function OrphanFilesManagementClient() {
                       className={`flex items-center space-x-2 px-3 py-2 rounded-lg transition-all text-sm ${
                         isActive
                           ? 'bg-theme-tertiary text-theme-primary shadow-lg'
-                          : 'text-theme-secondary hover:bg-theme-primary hover:text-theme-primary'
+                          : 'text-theme-secondary hover:bg-fundo hover:text-texto'
                       }`}
                       onClick={() => handleTabChange(tab.value)}
                       disabled={isScanning}
@@ -493,7 +493,7 @@ export default function OrphanFilesManagementClient() {
                         <span
                           className={`text-xs px-1.5 py-0.5 rounded-full ${
                             isActive
-                              ? 'bg-accent-red text-white'
+                              ? 'bg-erro text-white'
                               : 'bg-theme-tertiary text-theme-primary'
                           }`}
                         >
@@ -545,8 +545,8 @@ export default function OrphanFilesManagementClient() {
                           key={option.value}
                           className={`px-3 py-1 rounded-lg text-sm transition-colors ${
                             scanType === option.value
-                              ? 'bg-brand-primary text-white'
-                              : 'bg-theme-secondary text-theme-secondary hover:bg-theme-primary'
+                              ? 'bg-ouro text-sobre-ouro'
+                              : 'bg-theme-secondary text-theme-secondary hover:bg-fundo'
                           }`}
                           onClick={() => setScanType(option.value)}
                           disabled={isScanning}
@@ -784,8 +784,8 @@ export default function OrphanFilesManagementClient() {
                                 key={file.relativePath}
                                 className={`p-4 border rounded-lg transition-all cursor-pointer ${
                                   isSelected
-                                    ? 'border-brand-primary bg-brand-primary/5'
-                                    : 'border-theme-primary hover:border-theme-secondary hover:bg-theme-secondary'
+                                    ? 'border-ouro bg-ouro/5'
+                                    : 'border-theme-primary hover:border-linha hover:bg-sup-1'
                                 }`}
                                 onClick={() =>
                                   toggleFileSelection(file.relativePath)
@@ -802,7 +802,7 @@ export default function OrphanFilesManagementClient() {
                                     </div>
 
                                     <div className="flex-shrink-0">
-                                      <IconComponent className="w-5 h-5 text-blue-500" />
+                                      <IconComponent className="w-5 h-5 text-aviso" />
                                     </div>
 
                                     <div className="min-w-0 flex-1">
@@ -810,7 +810,7 @@ export default function OrphanFilesManagementClient() {
                                         <p className="font-medium text-theme-primary truncate">
                                           {file.name}
                                         </p>
-                                        <span className="text-xs px-2 py-1 rounded bg-blue-100 text-blue-800">
+                                        <span className="text-xs px-2 py-1 rounded bg-aviso/10 text-aviso">
                                           Local
                                         </span>
                                       </Inline>

@@ -88,7 +88,7 @@ export default function AccessDenied() {
 
               {/* Mobile Sidebar */}
               <div
-                className={`lg:hidden fixed inset-y-0 left-0 z-50 w-72 bg-theme-elevated border-r border-theme-primary transform transition-transform duration-300 ease-in-out ${
+                className={`lg:hidden fixed inset-y-0 left-0 z-dialogo w-72 bg-theme-elevated border-r border-theme-primary transform transition-transform duration-300 ease-in-out ${
                   showAdminSidebar ? 'translate-x-0' : '-translate-x-full'
                 }`}
                 style={{ top: '80px' }}
@@ -101,7 +101,7 @@ export default function AccessDenied() {
               {/* Mobile Overlay */}
               {showAdminSidebar && (
                 <div
-                  className="lg:hidden fixed inset-0 bg-black/50 backdrop-blur-sm z-40"
+                  className="lg:hidden fixed inset-0 bg-black/50 backdrop-blur-sm z-menu"
                   style={{ top: '80px' }}
                   onClick={() => setShowAdminSidebar(false)}
                 />
@@ -217,21 +217,21 @@ export default function AccessDenied() {
           description: t('acess_denied_suggestion_fazer_login_desc'),
           href: '/login',
           icon: PiUser,
-          color: 'from-brand-primary to-brand-secondary',
+          color: 'fill-ouro',
         },
         {
           title: t('acess_denied_suggestion_explorar_enciclopedia'),
           description: t('acess_denied_suggestion_explorar_enciclopedia_desc'),
           href: '/composers',
           icon: PiBookOpen,
-          color: 'from-accent-blue to-accent-purple',
+          color: 'bg-aviso',
         },
         {
           title: t('acess_denied_suggestion_pagina_inicial'),
           description: t('acess_denied_suggestion_pagina_inicial_desc'),
           href: '/',
           icon: PiHouse,
-          color: 'from-accent-green to-accent-blue',
+          color: 'bg-ok',
         },
       ];
     }
@@ -247,7 +247,7 @@ export default function AccessDenied() {
           description: t('acess_denied_suggestion_explorar_pecas_desc'),
           href: '/student',
           icon: PiPianoKeys,
-          color: 'from-accent-green to-accent-blue',
+          color: 'bg-ok',
         });
 
         if (currentArea === 'teacher') {
@@ -258,7 +258,7 @@ export default function AccessDenied() {
             ),
             href: '/contact',
             icon: PiEnvelopeSimple,
-            color: 'from-accent-purple to-accent-red',
+            color: 'fill-ouro',
           });
         }
         break;
@@ -269,7 +269,7 @@ export default function AccessDenied() {
           description: t('acess_denied_suggestion_area_professor_desc'),
           href: '/teacher',
           icon: PiUsers,
-          color: 'from-brand-primary to-brand-secondary',
+          color: 'fill-ouro',
         });
 
         if (currentArea === 'admin') {
@@ -280,7 +280,7 @@ export default function AccessDenied() {
             ),
             href: '/contact',
             icon: PiEnvelopeSimple,
-            color: 'from-accent-red to-accent-purple',
+            color: 'bg-erro',
           });
         }
         break;
@@ -291,7 +291,7 @@ export default function AccessDenied() {
           description: t('acess_denied_suggestion_painel_admin_desc'),
           href: '/admin',
           icon: PiGear,
-          color: 'from-accent-red to-accent-purple',
+          color: 'bg-erro',
         });
         break;
     }
@@ -302,7 +302,7 @@ export default function AccessDenied() {
       description: t('acess_denied_suggestion_explorar_enciclopedia_desc'),
       href: '/composers',
       icon: PiBookOpen,
-      color: 'from-accent-blue to-accent-purple',
+      color: 'bg-aviso',
     });
 
     if (currentArea !== 'main') {
@@ -311,7 +311,7 @@ export default function AccessDenied() {
         description: t('acess_denied_suggestion_pagina_inicial_desc'),
         href: '/',
         icon: PiHouse,
-        color: 'from-accent-green to-accent-blue',
+        color: 'bg-ok',
       });
     }
 
@@ -354,11 +354,11 @@ export default function AccessDenied() {
       case 'teacher':
         return 'text-brand-primary';
       case 'student':
-        return 'text-accent-green';
+        return 'text-ok';
       case 'admin':
-        return 'text-accent-red';
+        return 'text-erro';
       default:
-        return 'text-accent-purple';
+        return 'text-ouro-texto';
     }
   };
 
@@ -368,7 +368,7 @@ export default function AccessDenied() {
       {renderNavigation()}
 
       {/* Conteúdo principal da página de acesso negado */}
-      <div
+      <main
         className={`classical-theme min-h-screen flex items-center justify-center relative overflow-hidden ${
           currentArea === 'admin' ? 'lg:ml-72' : ''
         }`}
@@ -376,9 +376,9 @@ export default function AccessDenied() {
         {/* Background Pattern */}
         <AnimatedMusicalNotes />
         <div className="absolute inset-0 pointer-events-none opacity-5">
-          <div className="absolute top-20 left-20 w-64 h-64 bg-brand-gradient rounded-full blur-3xl"></div>
-          <div className="absolute bottom-40 right-32 w-48 h-48 bg-accent-red/30 rounded-full blur-2xl"></div>
-          <div className="absolute top-1/2 left-1/4 w-32 h-32 bg-accent-blue/20 rounded-full blur-xl"></div>
+          <div className="absolute top-20 left-20 w-64 h-64 rounded-full blur-3xl"></div>
+          <div className="absolute bottom-40 right-32 w-48 h-48 rounded-full blur-2xl"></div>
+          <div className="absolute top-1/2 left-1/4 w-32 h-32 rounded-full blur-xl"></div>
         </div>
 
         <div className="section-wrap relative z-10">
@@ -408,7 +408,7 @@ export default function AccessDenied() {
             {/* Shield Icon */}
             <AnimatedItem direction="scale" springType="bouncy">
               <div className="relative mb-8">
-                <div className="w-32 h-32 mx-auto bg-gradient-to-br from-accent-red/20 to-accent-purple/20 rounded-full flex items-center justify-center classical-card border-2 border-accent-red/30 shadow-theme-glow">
+                <div className="w-32 h-32 mx-auto bg-erro/20 rounded-full flex items-center justify-center classical-card border-2 border-erro/30 shadow-theme-glow">
                   <PiLock className={`w-16 h-16 ${getIconColor()}`} />
                 </div>
               </div>
@@ -441,10 +441,10 @@ export default function AccessDenied() {
                       height={20}
                       src={session.user.image}
                       alt={getUserDisplayName()}
-                      className="w-12 h-12 rounded-full object-cover border-2 border-brand-primary/20"
+                      className="w-12 h-12 rounded-full object-cover border-2 border-ouro/20"
                     />
                   ) : (
-                    <div className="w-12 h-12 bg-brand-gradient rounded-full flex items-center justify-center text-theme-primary font-semibold">
+                    <div className="w-12 h-12 fill-ouro rounded-full flex items-center justify-center text-theme-primary font-semibold">
                       {getUserDisplayName()[0]?.toUpperCase() || 'U'}
                     </div>
                   )}
@@ -458,7 +458,7 @@ export default function AccessDenied() {
                     <Text
                       papel="legenda"
                       tom="ouro"
-                      className="inline-block px-2 py-1 bg-brand-primary/10 rounded-full mt-1"
+                      className="inline-block px-2 py-1 bg-ouro/10 rounded-full mt-1"
                     >
                       {getRoleLabel()}
                     </Text>
@@ -488,9 +488,9 @@ export default function AccessDenied() {
                     >
                       <suggestion.icon className="w-8 h-8 text-brand-primary" />
                     </div>
-                    <h3 className="text-xl font-bold text-theme-primary mb-2 classical-title group-hover:text-brand-primary transition-colors">
+                    <h2 className="text-xl font-bold text-theme-primary mb-2 classical-title group-hover:text-ouro-texto transition-colors">
                       {suggestion.title}
-                    </h3>
+                    </h2>
                     <Text
                       papel="rotulo"
                       tom="suave"
@@ -541,18 +541,18 @@ export default function AccessDenied() {
               className="classical-card p-6 max-w-2xl mx-auto mb-8"
             >
               <Inline gap={3} className="mb-4">
-                <div className="w-10 h-10 bg-gradient-to-br from-accent-blue/20 to-accent-green/20 rounded-xl flex items-center justify-center">
-                  <PiEnvelopeSimple className="w-5 h-5 text-accent-blue" />
+                <div className="w-10 h-10 bg-aviso/20 rounded-xl flex items-center justify-center">
+                  <PiEnvelopeSimple className="w-5 h-5 text-aviso" />
                 </div>
-                <h3 className="text-xl font-bold text-theme-primary classical-title">
+                <h2 className="text-xl font-bold text-theme-primary classical-title">
                   {t('acess_denied_jsx_h3_children_0__precisa_ajuda')}
-                </h3>
+                </h2>
               </Inline>
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-left">
                 <Stack gap={2}>
                   <Inline gap={2}>
-                    <div className="w-2 h-2 bg-brand-primary rounded-full"></div>
+                    <div className="w-2 h-2 bg-ouro rounded-full"></div>
                     <span className="text-theme-secondary">
                       {t(
                         'acess_denied_jsx_span_children_0__verifique_suas_permissões'
@@ -560,7 +560,7 @@ export default function AccessDenied() {
                     </span>
                   </Inline>
                   <Inline gap={2}>
-                    <div className="w-2 h-2 bg-brand-primary rounded-full"></div>
+                    <div className="w-2 h-2 bg-ouro rounded-full"></div>
                     <span className="text-theme-secondary">
                       {t(
                         'acess_denied_jsx_span_children_0__entre_contato_conosco'
@@ -570,7 +570,7 @@ export default function AccessDenied() {
                 </Stack>
                 <Stack gap={2}>
                   <Inline gap={2}>
-                    <div className="w-2 h-2 bg-brand-primary rounded-full"></div>
+                    <div className="w-2 h-2 bg-ouro rounded-full"></div>
                     <span className="text-theme-secondary">
                       {t(
                         'acess_denied_jsx_span_children_0__explore_enciclopédia'
@@ -578,7 +578,7 @@ export default function AccessDenied() {
                     </span>
                   </Inline>
                   <Inline gap={2}>
-                    <div className="w-2 h-2 bg-brand-primary rounded-full"></div>
+                    <div className="w-2 h-2 bg-ouro rounded-full"></div>
                     <span className="text-theme-secondary">
                       {t(
                         'acess_denied_jsx_span_children_0__solicite_acesso_adequado'
@@ -591,7 +591,7 @@ export default function AccessDenied() {
               <div className="mt-6 pt-4 border-t border-theme-secondary">
                 <Link
                   href="/contact"
-                  className="text-brand-primary hover:text-brand-secondary transition-colors font-medium"
+                  className="text-brand-primary hover:text-ouro-texto transition-colors font-medium"
                 >
                   {t(
                     'acess_denied_jsx_link_children_0__entre_contato_solicitar'
@@ -616,14 +616,14 @@ export default function AccessDenied() {
         </div>
 
         {/* Decorative Elements */}
-        <div className="absolute top-4 left-4 w-12 h-12 bg-accent-red/10 rounded-2xl flex items-center justify-center opacity-40">
-          <PiShield className="w-6 h-6 text-accent-red" />
+        <div className="absolute top-4 left-4 w-12 h-12 bg-erro/10 rounded-2xl flex items-center justify-center opacity-40">
+          <PiShield className="w-6 h-6 text-erro" />
         </div>
 
-        <div className="absolute bottom-4 right-4 w-16 h-16 bg-brand-gradient/10 rounded-3xl flex items-center justify-center opacity-50">
+        <div className="absolute bottom-4 right-4 w-16 h-16 bg-ouro/10 rounded-3xl flex items-center justify-center opacity-50">
           <PiMusicNotes className="w-8 h-8 text-brand-primary" />
         </div>
-      </div>
+      </main>
     </>
   );
 }

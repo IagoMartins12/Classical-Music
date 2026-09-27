@@ -124,7 +124,7 @@ export default async function StudentLayout({
       <FavoritesProvider>
         {/* 🆕 NOTIFICATION MANAGER - Gerencia notificações em background */}
         <NotificationManager userRole="student" userId={session.user.id}>
-          <div className="min-h-screen bg-gradient-primary">
+          <div className="min-h-screen">
             {/* Navigation */}
             <StudentNavigation user={session.user} />
 

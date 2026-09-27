@@ -669,15 +669,15 @@ const VideoAulaSection: React.FC<VideoAulaSectionProps> = ({
   const getPlatformIcon = (platform: string) => {
     switch (platform) {
       case 'youtube':
-        return <PiYoutubeLogo className="w-4 h-4 text-red-400" />;
+        return <PiYoutubeLogo className="w-4 h-4 text-erro" />;
       case 'instagram':
       case 'instagram-reel':
-        return <PiInstagramLogo className="w-4 h-4 text-pink-400" />;
+        return <PiInstagramLogo className="w-4 h-4 text-ouro-texto" />;
       case 'tiktok':
         return <PiTiktokLogo className="w-4 h-4 text-black dark:text-white" />;
       case 'local':
       case 'direct':
-        return <PiVideoCamera className="w-4 h-4 text-blue-400" />;
+        return <PiVideoCamera className="w-4 h-4 text-aviso" />;
       default:
         return <PiArrowSquareOut className="w-4 h-4 text-theme-tertiary" />;
     }
@@ -797,7 +797,7 @@ const VideoAulaSection: React.FC<VideoAulaSectionProps> = ({
         <div className="p-2 pb-6 md:p-6 border-b border-theme-secondary ">
           <div className="flex items-center justify-between">
             <Inline gap={3}>
-              <div className="w-10 h-10 bg-gradient-to-br from-accent-purple to-accent-blue rounded-xl flex items-center justify-center">
+              <div className="w-10 h-10 fill-ouro rounded-xl flex items-center justify-center">
                 <PiMusicNotes className="w-5 h-5 text-theme-primary" />
               </div>
               <div>
@@ -1000,10 +1000,10 @@ const VideoAulaSection: React.FC<VideoAulaSectionProps> = ({
   return (
     <AnimatedCard hover="lift" className="classical-card overflow-hidden">
       {/* Header */}
-      <div className="p-6 border-b border-theme-secondary bg-gradient-to-r from-blue-900/10 to-purple-800/10">
+      <div className="p-6 border-b border-theme-secondary bg-aviso/10">
         <div className="flex items-center justify-between">
           <Inline gap={3}>
-            <div className="w-10 h-10 bg-gradient-to-br from-accent-purple to-accent-blue rounded-xl flex items-center justify-center">
+            <div className="w-10 h-10 fill-ouro rounded-xl flex items-center justify-center">
               <PiMusicNotes className="w-5 h-5 text-theme-primary" />
             </div>
             <div>
@@ -1043,7 +1043,7 @@ const VideoAulaSection: React.FC<VideoAulaSectionProps> = ({
                       window.open(url, '_blank', 'noopener,noreferrer');
                     }
                   }}
-                  className="text-blue-400 hover:text-blue-300 transition-colors p-2 hover:bg-blue-400/10 rounded-lg"
+                  className="text-aviso hover:text-aviso transition-colors p-2 hover:bg-aviso/10 rounded-lg"
                   title={t('video_aula_abrir_nova_aba')}
                 >
                   <PiArrowSquareOut className="w-5 h-5" />
@@ -1056,7 +1056,7 @@ const VideoAulaSection: React.FC<VideoAulaSectionProps> = ({
       {/* Modo de edição */}
       {showEditMode && canEditMedia && (
         <div className="px-6 pb-6">
-          <Stack className="bg-purple-900/20 border border-purple-700/30 rounded-xl p-4">
+          <Stack className="bg-ouro/20 border border-ouro/30 rounded-xl p-4">
             <div className="flex items-center justify-between">
               <h3 className="text-lg font-semibold text-theme-primary">
                 {t('video_aula_editar_titulo')}
@@ -1069,7 +1069,7 @@ const VideoAulaSection: React.FC<VideoAulaSectionProps> = ({
                   leftIcon={<PiTrash />}
                   onClick={deleteVideoAula}
                   disabled={isUploading}
-                  className="text-red-400 hover:text-red-300 hover:bg-red-400/10"
+                  className="text-erro hover:text-erro hover:bg-erro/10"
                 >
                   {isUploading
                     ? t('video_aula_deletando')
@@ -1171,7 +1171,7 @@ const VideoAulaSection: React.FC<VideoAulaSectionProps> = ({
                     </Text>
                   )}
                   {work.videoAulaFile && !editData.videoAulaFile && (
-                    <p className="text-sm text-green-400 mt-1">
+                    <p className="text-sm text-ok mt-1">
                       📁 {t('video_aula_arquivo_atual')}{' '}
                       {work.videoAulaFile.split('/').pop()}
                     </p>
@@ -1261,10 +1261,10 @@ const VideoAulaSection: React.FC<VideoAulaSectionProps> = ({
                       priority={videoInfo.platform === 'youtube'}
                     />
                   ) : (
-                    <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-blue-100 to-purple-100 dark:from-blue-900 dark:to-purple-900">
+                    <div className="w-full h-full flex items-center justify-center bg-aviso">
                       <div className="text-center">
-                        <PiGraduationCap className="w-16 h-16 lg:w-20 lg:h-20 text-blue-400 mx-auto mb-4 animate-pulse" />
-                        <p className="text-sm font-medium text-blue-600 dark:text-blue-300">
+                        <PiGraduationCap className="w-16 h-16 lg:w-20 lg:h-20 text-aviso mx-auto mb-4 animate-pulse" />
+                        <p className="text-sm font-medium text-aviso dark:text-aviso">
                           {videoInfo.displayType}
                         </p>
                       </div>
@@ -1274,9 +1274,9 @@ const VideoAulaSection: React.FC<VideoAulaSectionProps> = ({
                   <div className={getOverlayClasses()}>
                     <div className={getPlayButtonClasses()}>
                       {videoInfo.canEmbed ? (
-                        <PiPlay className="w-6 h-6 lg:w-8 lg:h-8 text-blue-600 ml-1" />
+                        <PiPlay className="w-6 h-6 lg:w-8 lg:h-8 text-aviso ml-1" />
                       ) : (
-                        <PiArrowSquareOut className="w-5 h-5 lg:w-6 lg:h-6 text-blue-600" />
+                        <PiArrowSquareOut className="w-5 h-5 lg:w-6 lg:h-6 text-aviso" />
                       )}
                     </div>
                   </div>
@@ -1292,7 +1292,7 @@ const VideoAulaSection: React.FC<VideoAulaSectionProps> = ({
 
                   {videoInfo.platform === 'youtube' && (
                     <div className="absolute top-3 left-3">
-                      <div className="bg-red-600/90 backdrop-blur-sm rounded px-2 py-1">
+                      <div className="bg-erro/90 backdrop-blur-sm rounded px-2 py-1">
                         <span className="text-white text-xs font-bold">
                           {t('video_aula_hd')}
                         </span>
@@ -1302,7 +1302,7 @@ const VideoAulaSection: React.FC<VideoAulaSectionProps> = ({
 
                   {videoInfo.platform === 'local' && (
                     <div className="absolute top-3 left-3">
-                      <div className="bg-green-600/90 backdrop-blur-sm rounded px-2 py-1">
+                      <div className="bg-ok/90 backdrop-blur-sm rounded px-2 py-1">
                         <span className="text-white text-xs font-bold">
                           {t('video_aula_local')}
                         </span>
@@ -1314,7 +1314,7 @@ const VideoAulaSection: React.FC<VideoAulaSectionProps> = ({
                   {(videoInfo.platform === 'tiktok' ||
                     videoInfo.platform === 'instagram') && (
                     <div className="absolute top-3 left-3">
-                      <div className="bg-gradient-to-r from-purple-600 to-pink-600 backdrop-blur-sm rounded px-2 py-1">
+                      <div className="fill-ouro backdrop-blur-sm rounded px-2 py-1">
                         <span className="text-white text-xs font-bold">
                           {t('video_aula_externo')}
                         </span>
@@ -1413,7 +1413,7 @@ const VideoAulaSection: React.FC<VideoAulaSectionProps> = ({
                   gap={1}
                   href={work.videoAulaFile}
                   download
-                  className="text-blue-400 hover:text-blue-300 transition-colors hover:bg-blue-400/10 px-2 py-1 rounded"
+                  className="text-aviso hover:text-aviso transition-colors hover:bg-aviso/10 px-2 py-1 rounded"
                   title={t('video_aula_download')}
                 >
                   <PiDownloadSimple className="w-4 h-4" />
@@ -1495,7 +1495,7 @@ const VideoAulaSection: React.FC<VideoAulaSectionProps> = ({
                       gap={1}
                       href={work.videoAulaFile}
                       download
-                      className="text-blue-400 hover:text-blue-300 transition-colors hover:bg-blue-400/10 px-3 py-2 rounded text-sm"
+                      className="text-aviso hover:text-aviso transition-colors hover:bg-aviso/10 px-3 py-2 rounded text-sm"
                     >
                       <PiDownloadSimple className="w-4 h-4" />
                       <span>{t('video_aula_download')}</span>

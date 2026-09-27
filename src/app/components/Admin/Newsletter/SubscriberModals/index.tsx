@@ -31,12 +31,10 @@ export const SubscriberDetailsModal: React.FC<SubscriberDetailsModalProps> = ({
   if (!subscriber) return null;
 
   const getEngagementLevel = (score: number) => {
-    if (score >= 75)
-      return { label: 'Alto', color: 'text-accent-green bg-accent-green/10' };
+    if (score >= 75) return { label: 'Alto', color: 'text-ok bg-ok/10' };
     if (score >= 50)
-      return { label: 'Médio', color: 'text-accent-amber bg-accent-amber/10' };
-    if (score >= 25)
-      return { label: 'Baixo', color: 'text-accent-red bg-accent-red/10' };
+      return { label: 'Médio', color: 'text-atencao bg-atencao/10' };
+    if (score >= 25) return { label: 'Baixo', color: 'text-erro bg-erro/10' };
     return { label: 'Nenhum', color: 'text-theme-tertiary bg-theme-secondary' };
   };
 
@@ -47,7 +45,7 @@ export const SubscriberDetailsModal: React.FC<SubscriberDetailsModalProps> = ({
       <Stack gap={6}>
         {/* Header */}
         <div className="text-center">
-          <div className="w-16 h-16 bg-gradient-to-br from-accent-blue to-accent-purple rounded-full flex items-center justify-center mx-auto mb-4 shadow-theme-glow">
+          <div className="w-16 h-16 bg-aviso rounded-full flex items-center justify-center mx-auto mb-4 shadow-theme-glow">
             <PiUser className="w-8 h-8 text-white" />
           </div>
           <h2 className="text-2xl font-bold text-theme-primary classical-title mb-2">
@@ -79,10 +77,10 @@ export const SubscriberDetailsModal: React.FC<SubscriberDetailsModalProps> = ({
                 <p
                   className={`px-2 py-1 rounded-full text-xs font-medium inline-block mt-1 ${
                     subscriber.status === 'ACTIVE'
-                      ? 'text-accent-green bg-accent-green/10'
+                      ? 'text-ok bg-ok/10'
                       : subscriber.status === 'PENDING'
-                        ? 'text-accent-amber bg-accent-amber/10'
-                        : 'text-accent-red bg-accent-red/10'
+                        ? 'text-atencao bg-atencao/10'
+                        : 'text-erro bg-erro/10'
                   }`}
                 >
                   {subscriber.status === 'ACTIVE'
@@ -178,7 +176,7 @@ export const SubscriberDetailsModal: React.FC<SubscriberDetailsModalProps> = ({
                         papel="legenda"
                         tom="ouro"
                         key={index}
-                        className="px-2 py-1 bg-brand-primary/10 rounded-full"
+                        className="px-2 py-1 bg-ouro/10 rounded-full"
                       >
                         {interest}
                       </Text>
@@ -298,7 +296,7 @@ export const EditSubscriberModal: React.FC<EditSubscriberModalProps> = ({
       <Stack gap={6}>
         {/* Header */}
         <div className="text-center">
-          <div className="w-16 h-16 bg-gradient-to-br from-accent-green to-accent-blue rounded-full flex items-center justify-center mx-auto mb-4 shadow-theme-glow">
+          <div className="w-16 h-16 bg-ok rounded-full flex items-center justify-center mx-auto mb-4 shadow-theme-glow">
             <PiNotePencil className="w-8 h-8 text-white" />
           </div>
           <h2 className="text-2xl font-bold text-theme-primary classical-title mb-2">
@@ -460,7 +458,7 @@ export const SendEmailModal: React.FC<SendEmailModalProps> = ({
       <Stack gap={6}>
         {/* Header */}
         <div className="text-center">
-          <div className="w-16 h-16 bg-gradient-to-br from-accent-amber to-accent-red rounded-full flex items-center justify-center mx-auto mb-4 shadow-theme-glow">
+          <div className="w-16 h-16 bg-atencao rounded-full flex items-center justify-center mx-auto mb-4 shadow-theme-glow">
             <PiPaperPlaneRight className="w-8 h-8 text-white" />
           </div>
           <h2 className="text-2xl font-bold text-theme-primary classical-title mb-2">
@@ -537,7 +535,7 @@ export const SendEmailModal: React.FC<SendEmailModalProps> = ({
               <p>
                 <strong>Assunto:</strong> {formData.subject || 'Sem assunto'}
               </p>
-              <div className="mt-2 p-3 bg-theme-tertiary rounded border-l-4 border-brand-primary">
+              <div className="border mt-2 p-3 bg-ouro/10 rounded border-ouro/40">
                 <p className="whitespace-pre-wrap">
                   {formData.content.replace(
                     '{{firstName}}',

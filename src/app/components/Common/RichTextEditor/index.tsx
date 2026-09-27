@@ -160,8 +160,8 @@ const RichTextEditor = forwardRef<HTMLDivElement, RichTextEditorProps>(
         p-2 rounded-md border transition-all duration-200
         ${
           isActive
-            ? 'bg-brand-primary text-white border-brand-primary'
-            : 'bg-theme-secondary-bg text-theme-tertiary border-theme-secondary hover:bg-interactive-hover hover:text-brand-primary'
+            ? 'bg-ouro text-sobre-ouro border-ouro'
+            : 'bg-sup-1 text-theme-tertiary border-theme-secondary hover:bg-ouro/10 hover:text-ouro-texto'
         }
         ${disabled ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'}
       `}
@@ -181,7 +181,7 @@ const RichTextEditor = forwardRef<HTMLDivElement, RichTextEditorProps>(
         type="button"
         onClick={onClick}
         disabled={disabled}
-        className="px-3 py-1 text-sm bg-theme-secondary-bg text-theme-tertiary border border-theme-secondary rounded hover:bg-interactive-hover hover:text-brand-primary transition-all"
+        className="px-3 py-1 text-sm bg-sup-1 text-theme-tertiary border border-theme-secondary rounded hover:bg-ouro/10 hover:text-ouro-texto transition-all"
       >
         H{level}
       </button>
@@ -197,7 +197,7 @@ const RichTextEditor = forwardRef<HTMLDivElement, RichTextEditorProps>(
             <button
               type="button"
               onClick={togglePreview}
-              className="p-1 text-theme-tertiary hover:text-brand-primary transition-colors"
+              className="p-1 text-theme-tertiary hover:text-ouro-texto transition-colors"
               title={isPreview ? 'Editar' : 'Visualizar'}
             >
               {isPreview ? (
@@ -212,7 +212,7 @@ const RichTextEditor = forwardRef<HTMLDivElement, RichTextEditorProps>(
         <div className={`rich-text-editor ${error ? 'error' : ''}`}>
           {/* Toolbar */}
           {!isPreview && (
-            <div className="toolbar bg-theme-secondary-bg border border-theme-secondary border-b-0 rounded-t-lg p-3 flex flex-wrap gap-2">
+            <div className="toolbar bg-sup-1 border border-theme-secondary border-b-0 rounded-t-lg p-3 flex flex-wrap gap-2">
               {/* Headings */}
               <div className="flex gap-1">
                 <HeadingButton level={1} onClick={() => insertHeading(1)} />
@@ -302,7 +302,7 @@ const RichTextEditor = forwardRef<HTMLDivElement, RichTextEditorProps>(
           {/* Editor / Preview */}
           {isPreview ? (
             <div
-              className="preview-content border border-theme-secondary rounded-lg p-4 bg-theme-primary-bg text-theme-primary"
+              className="preview-content border border-theme-secondary rounded-lg p-4 bg-fundo text-theme-primary"
               style={{ minHeight: height }}
               dangerouslySetInnerHTML={{ __html: value }}
             />
@@ -316,9 +316,7 @@ const RichTextEditor = forwardRef<HTMLDivElement, RichTextEditorProps>(
               className={`
               editor-content border border-theme-secondary ${
                 !isPreview ? 'border-t-0' : ''
-              } rounded-b-lg p-4
-              bg-theme-primary-bg text-theme-primary
-              focus:outline-none focus:ring-2 focus:ring-brand-primary focus:ring-inset
+              } rounded-b-lg p-4 bg-fundo text-theme-primary focus:outline-none focus:ring-2 focus:ring-ouro focus:ring-inset
               ${disabled ? 'cursor-not-allowed opacity-50' : 'cursor-text'}
             `}
               style={{
@@ -332,7 +330,7 @@ const RichTextEditor = forwardRef<HTMLDivElement, RichTextEditorProps>(
           )}
         </div>
 
-        {error && <p className="mt-1 text-sm text-red-600">{error}</p>}
+        {error && <p className="mt-1 text-sm text-erro">{error}</p>}
 
         <style jsx>{`
           .editor-content:empty::before {

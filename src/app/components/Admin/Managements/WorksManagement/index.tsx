@@ -221,13 +221,13 @@ export default function WorksManagement() {
   const getDifficultyColor = (difficulty?: string) => {
     switch (difficulty) {
       case 'Iniciante':
-        return 'text-accent-green bg-accent-green/10';
+        return 'text-ok bg-ok/10';
       case 'Intermediário':
-        return 'text-accent-amber bg-accent-amber/10';
+        return 'text-atencao bg-atencao/10';
       case 'Avançado':
-        return 'text-accent-red bg-accent-red/10';
+        return 'text-erro bg-erro/10';
       case 'Profissional':
-        return 'text-accent-purple bg-accent-purple/10';
+        return 'text-ouro-texto bg-ouro/10';
       default:
         return 'text-theme-tertiary bg-theme-secondary';
     }
@@ -248,7 +248,7 @@ export default function WorksManagement() {
         <AnimatedItem direction="up" springType="gentle">
           <div className="text-center mb-8 py-16">
             <div className="flex items-center justify-center mb-6">
-              <div className="w-16 h-16 bg-gradient-to-br from-accent-green to-accent-blue rounded-3xl flex items-center justify-center shadow-theme-glow">
+              <div className="w-16 h-16 bg-ok rounded-3xl flex items-center justify-center shadow-theme-glow">
                 <PiMusicNotes className="w-8 h-8 text-theme-primary" />
               </div>
             </div>
@@ -383,7 +383,7 @@ export default function WorksManagement() {
                     gap={2}
                     className="text-xl font-bold text-theme-primary mb-6"
                   >
-                    <PiStar className="w-5 h-5 text-accent-amber" />
+                    <PiStar className="w-5 h-5 text-atencao" />
                     <span>Mais Favoritadas</span>
                   </Inline>
                   <Stack gap={3}>
@@ -397,7 +397,7 @@ export default function WorksManagement() {
                           papel="rotulo"
                           tom="forte"
                           as="div"
-                          className="w-8 h-8 bg-gradient-to-br from-accent-amber to-accent-red rounded-lg flex items-center justify-center font-bold"
+                          className="w-8 h-8 bg-atencao rounded-lg flex items-center justify-center font-bold"
                         >
                           {index + 1}
                         </Text>
@@ -436,7 +436,7 @@ export default function WorksManagement() {
                     gap={2}
                     className="text-xl font-bold text-theme-primary mb-6"
                   >
-                    <PiBookOpen className="w-5 h-5 text-accent-blue" />
+                    <PiBookOpen className="w-5 h-5 text-aviso" />
                     <span>Mais Queridas</span>
                   </Inline>
                   <Stack gap={3}>
@@ -450,7 +450,7 @@ export default function WorksManagement() {
                           papel="rotulo"
                           tom="forte"
                           as="div"
-                          className="w-8 h-8 bg-gradient-to-br from-accent-blue to-accent-purple rounded-lg flex items-center justify-center font-bold"
+                          className="w-8 h-8 bg-aviso rounded-lg flex items-center justify-center font-bold"
                         >
                           {index + 1}
                         </Text>
@@ -490,7 +490,7 @@ export default function WorksManagement() {
                     gap={2}
                     className="text-xl font-bold text-theme-primary mb-6"
                   >
-                    <PiCheckCircle className="w-5 h-5 text-accent-green" />
+                    <PiCheckCircle className="w-5 h-5 text-ok" />
                     <span>Mais Aprendidas</span>
                   </Inline>
                   <Stack gap={3}>
@@ -504,7 +504,7 @@ export default function WorksManagement() {
                           papel="rotulo"
                           tom="forte"
                           as="div"
-                          className="w-8 h-8 bg-gradient-to-br from-accent-green to-accent-blue rounded-lg flex items-center justify-center font-bold"
+                          className="w-8 h-8 bg-ok rounded-lg flex items-center justify-center font-bold"
                         >
                           {index + 1}
                         </Text>
@@ -760,8 +760,8 @@ export default function WorksManagement() {
 
             {/* Bulk Actions */}
             {selectedWorks.size > 0 && (
-              <div className="flex items-center justify-between p-4 bg-accent-green/10 border border-accent-green rounded-xl mb-6">
-                <span className="text-accent-green font-medium">
+              <div className="flex items-center justify-between p-4 bg-ok/10 border border-ok rounded-xl mb-6">
+                <span className="text-ok font-medium">
                   {selectedWorks.size} obras selecionadas
                 </span>
                 <Inline gap={2}>
@@ -789,7 +789,7 @@ export default function WorksManagement() {
               {works.map((work) => (
                 <div
                   key={work.id}
-                  className="p-4 bg-theme-secondary rounded-xl hover:bg-theme-primary/50 transition-colors"
+                  className="p-4 bg-theme-secondary rounded-xl hover:bg-fundo/50 transition-colors"
                 >
                   <div className="flex items-start space-x-4">
                     <input
@@ -804,7 +804,7 @@ export default function WorksManagement() {
                         }
                         setSelectedWorks(newSelected);
                       }}
-                      className="w-4 h-4 text-brand-primary bg-theme-secondary border-theme-primary rounded focus:ring-brand-primary focus:ring-2 mt-1"
+                      className="w-4 h-4 text-brand-primary bg-theme-secondary border-theme-primary rounded focus:ring-ouro focus:ring-2 mt-1"
                     />
 
                     <div className="flex-1 min-w-0">
@@ -816,7 +816,7 @@ export default function WorksManagement() {
                           <Text
                             papel="rotulo"
                             tom="fraco"
-                            className="bg-theme-primary/20 px-2 py-1 rounded"
+                            className="bg-fundo/20 px-2 py-1 rounded"
                           >
                             {work.opOrCatalog}
                           </Text>
@@ -831,7 +831,7 @@ export default function WorksManagement() {
                           </span>
                         )}
                         {work.scoresCount === 0 && (
-                          <span className="text-xs bg-accent-red/10 text-accent-red px-2 py-1 rounded">
+                          <span className="text-xs bg-erro/10 text-erro px-2 py-1 rounded">
                             Sem partituras
                           </span>
                         )}
@@ -867,7 +867,7 @@ export default function WorksManagement() {
                           <PiHeart className="w-4 h-4" />
                           <span
                             className={
-                              work.favoritesCount === 0 ? 'text-accent-red' : ''
+                              work.favoritesCount === 0 ? 'text-erro' : ''
                             }
                           >
                             {work.favoritesCount} favoritos
@@ -885,7 +885,7 @@ export default function WorksManagement() {
                           <PiFileText className="w-4 h-4" />
                           <span
                             className={
-                              work.scoresCount === 0 ? 'text-accent-red' : ''
+                              work.scoresCount === 0 ? 'text-erro' : ''
                             }
                           >
                             {work.scoresCount} partituras
@@ -930,7 +930,7 @@ export default function WorksManagement() {
                         size="sm"
                         leftIcon={<PiTrash />}
                         onClick={() => handleDeleteWork(work.id, work.title)}
-                        className="text-accent-red hover:bg-accent-red/10"
+                        className="text-erro hover:bg-erro/10"
                         title="Deletar"
                       />
                     </Inline>

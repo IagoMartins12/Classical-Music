@@ -103,7 +103,7 @@ export default function StudentProgressPageClient({
       <PageContainer showBackground={true}>
         <div className="flex items-center justify-center min-h-screen">
           <Card densidade="larga" className="text-center max-w-md">
-            <div className="w-16 h-16 bg-gradient-to-br from-accent-red to-accent-purple rounded-3xl flex items-center justify-center mx-auto mb-6">
+            <div className="w-16 h-16 bg-erro rounded-3xl flex items-center justify-center mx-auto mb-6">
               <PiWarningCircle className="w-8 h-8 text-theme-primary" />
             </div>
             <h1 className="text-xl font-bold text-theme-primary classical-title mb-4">
@@ -166,7 +166,7 @@ export default function StudentProgressPageClient({
         <AnimatedItem direction="up" springType="gentle">
           <div className="text-center mb-8 py-8">
             <div className="flex items-center justify-center mb-6">
-              <div className="w-16 h-16 bg-gradient-to-br from-brand-primary to-brand-secondary rounded-3xl flex items-center justify-center shadow-theme-glow">
+              <div className="w-16 h-16 fill-ouro rounded-3xl flex items-center justify-center shadow-theme-glow">
                 <PiTrendUp className="w-8 h-8 text-theme-primary" />
               </div>
             </div>
@@ -242,12 +242,12 @@ export default function StudentProgressPageClient({
                   <Text papel="rotulo" tom="fraco" as="div">
                     {t('completed_lessons')}
                   </Text>
-                  <div className="text-xs text-accent-blue mt-1">
+                  <div className="text-xs text-aviso mt-1">
                     {progressData.stats.attendanceRate?.toFixed(1)}%{' '}
                     {t('attendance_rate')}
                   </div>
                 </div>
-                <div className="w-12 h-12 bg-gradient-to-br from-accent-blue to-accent-purple rounded-xl flex items-center justify-center">
+                <div className="w-12 h-12 bg-aviso rounded-xl flex items-center justify-center">
                   <PiBookOpen className="w-6 h-6 text-theme-primary" />
                 </div>
               </div>
@@ -263,7 +263,7 @@ export default function StudentProgressPageClient({
                   <Text papel="rotulo" tom="fraco" as="div">
                     {t('study_time')}
                   </Text>
-                  <div className="text-xs text-accent-green mt-1">
+                  <div className="text-xs text-ok mt-1">
                     {t('average_per_lesson')}:{' '}
                     {(
                       progressData.stats.totalStudyHours /
@@ -272,7 +272,7 @@ export default function StudentProgressPageClient({
                     {t('per_lesson')}
                   </div>
                 </div>
-                <div className="w-12 h-12 bg-gradient-to-br from-accent-green to-accent-blue rounded-xl flex items-center justify-center">
+                <div className="w-12 h-12 bg-ok rounded-xl flex items-center justify-center">
                   <PiClock className="w-6 h-6 text-theme-primary" />
                 </div>
               </div>
@@ -288,11 +288,11 @@ export default function StudentProgressPageClient({
                   <Text papel="rotulo" tom="fraco" as="div">
                     {t('learned_works')}
                   </Text>
-                  <div className="text-xs text-accent-purple mt-1">
+                  <div className="text-xs text-ouro-texto mt-1">
                     {progressData.stats.wantToLearnWorks} {t('in_list')}
                   </div>
                 </div>
-                <div className="w-12 h-12 bg-gradient-to-br from-accent-purple to-accent-pink rounded-xl flex items-center justify-center">
+                <div className="w-12 h-12 fill-ouro rounded-xl flex items-center justify-center">
                   <PiMusicNotes className="w-6 h-6 text-theme-primary" />
                 </div>
               </div>
@@ -311,11 +311,11 @@ export default function StudentProgressPageClient({
                   <Text papel="rotulo" tom="fraco" as="div">
                     {t('consecutive_days')}
                   </Text>
-                  <div className="text-xs text-accent-orange mt-1">
+                  <div className="text-xs text-atencao mt-1">
                     {t('record')}: {progressData.stats.longestStreak}
                   </div>
                 </div>
-                <div className="w-12 h-12 bg-gradient-to-br from-accent-orange to-accent-red rounded-xl flex items-center justify-center">
+                <div className="w-12 h-12 bg-atencao rounded-xl flex items-center justify-center">
                   <PiFire className="w-6 h-6 text-theme-primary" />
                 </div>
               </div>
@@ -337,7 +337,7 @@ export default function StudentProgressPageClient({
                 <h3 className="text-lg font-bold text-theme-primary">
                   {t('assignments')}
                 </h3>
-                <div className="w-10 h-10 bg-gradient-to-br from-accent-blue to-accent-purple rounded-xl flex items-center justify-center">
+                <div className="w-10 h-10 bg-aviso rounded-xl flex items-center justify-center">
                   <PiTarget className="w-5 h-5 text-theme-primary" />
                 </div>
               </div>
@@ -378,7 +378,7 @@ export default function StudentProgressPageClient({
                 <h3 className="text-lg font-bold text-theme-primary">
                   {t('consistency')}
                 </h3>
-                <div className="w-10 h-10 bg-gradient-to-br from-accent-green to-accent-blue rounded-xl flex items-center justify-center">
+                <div className="w-10 h-10 bg-ok rounded-xl flex items-center justify-center">
                   <PiCalendarBlank className="w-5 h-5 text-theme-primary" />
                 </div>
               </div>
@@ -426,7 +426,7 @@ export default function StudentProgressPageClient({
                 <h3 className="text-lg font-bold text-theme-primary">
                   {t('annotations')}
                 </h3>
-                <div className="w-10 h-10 bg-gradient-to-br from-accent-purple to-accent-pink rounded-xl flex items-center justify-center">
+                <div className="w-10 h-10 fill-ouro rounded-xl flex items-center justify-center">
                   <PiBookOpen className="w-5 h-5 text-theme-primary" />
                 </div>
               </div>
@@ -441,14 +441,14 @@ export default function StudentProgressPageClient({
 
                 <div className="flex justify-between items-center">
                   <span className="text-theme-secondary">{t('useful')}</span>
-                  <span className="font-bold text-accent-green">
+                  <span className="font-bold text-ok">
                     {progressData.stats.helpfulAnnotations}
                   </span>
                 </div>
 
                 {progressData.stats.totalAnnotations > 0 && (
                   <div className="text-center">
-                    <span className="text-sm font-medium text-accent-blue">
+                    <span className="text-sm font-medium text-aviso">
                       {(
                         (progressData.stats.helpfulAnnotations /
                           progressData.stats.totalAnnotations) *
@@ -487,7 +487,7 @@ export default function StudentProgressPageClient({
                       springType="bouncy"
                       delay={index * 0.1}
                     >
-                      <div className="p-4 bg-theme-elevated rounded-lg border border-theme-secondary hover:border-brand-primary transition-all duration-300">
+                      <div className="p-4 bg-theme-elevated rounded-lg border border-theme-secondary hover:border-ouro transition-all duration-300">
                         <Inline gap={3} className="mb-4">
                           {teacher.teacherImage ? (
                             <div className="w-10 h-10 relative rounded-full overflow-hidden">
@@ -500,7 +500,7 @@ export default function StudentProgressPageClient({
                               />
                             </div>
                           ) : (
-                            <div className="w-10 h-10 bg-gradient-to-br from-brand-primary to-brand-secondary rounded-full flex items-center justify-center">
+                            <div className="w-10 h-10 fill-ouro rounded-full flex items-center justify-center">
                               <PiUser className="w-5 h-5 text-theme-primary" />
                             </div>
                           )}
@@ -537,10 +537,10 @@ export default function StudentProgressPageClient({
                                 {t('rating')}
                               </span>
                               <Inline gap={1}>
-                                <span className="text-accent-yellow font-medium">
+                                <span className="text-atencao font-medium">
                                   {teacher.avgRating.toFixed(1)}
                                 </span>
-                                <PiStar className="w-3 h-3 text-accent-yellow" />
+                                <PiStar className="w-3 h-3 text-atencao" />
                               </Inline>
                             </div>
                           )}
@@ -555,7 +555,7 @@ export default function StudentProgressPageClient({
                                   papel="legenda"
                                   tom="ouro"
                                   key={idx}
-                                  className="px-2 py-1 bg-brand-primary/10 rounded-full"
+                                  className="px-2 py-1 bg-ouro/10 rounded-full"
                                 >
                                   {specialty}
                                 </Text>
@@ -598,9 +598,9 @@ export default function StudentProgressPageClient({
                     springType="bouncy"
                     delay={index * 0.1}
                   >
-                    <div className="p-4 bg-gradient-to-r from-accent-green/5 to-accent-blue/5 border border-accent-green/30 rounded-lg">
+                    <div className="p-4 bg-ok/5 border border-ok/30 rounded-lg">
                       <Inline gap={3} className="mb-2">
-                        <div className="w-8 h-8 bg-gradient-to-br from-accent-green to-accent-blue rounded-full flex items-center justify-center">
+                        <div className="w-8 h-8 bg-ok rounded-full flex items-center justify-center">
                           <PiMedal className="w-4 h-4 text-theme-primary" />
                         </div>
                         <h4 className="font-bold text-theme-primary">
@@ -610,7 +610,7 @@ export default function StudentProgressPageClient({
                       <Text papel="rotulo" tom="suave" as="p">
                         {achievement.description}
                       </Text>
-                      <div className="text-xs text-accent-green mt-2">
+                      <div className="text-xs text-ok mt-2">
                         {t('achieved_on')}{' '}
                         {achievement.earnedAt.toLocaleDateString('pt-BR')}
                       </div>
@@ -631,7 +631,7 @@ export default function StudentProgressPageClient({
               </h3>
               <Link
                 href="/learning"
-                className="text-brand-primary hover:text-brand-secondary transition-colors flex items-center space-x-1"
+                className="text-brand-primary hover:text-ouro-texto transition-colors flex items-center space-x-1"
               >
                 <span>{t('view_all')}</span>
                 <svg
@@ -654,7 +654,7 @@ export default function StudentProgressPageClient({
               {/* Learned Works */}
               <Stack>
                 <h4 className="font-bold text-theme-primary flex items-center">
-                  <PiCheckCircle className="w-5 h-5 mr-2 text-accent-green" />
+                  <PiCheckCircle className="w-5 h-5 mr-2 text-ok" />
                   {t('already_learned')} ({progressData.stats.learnedWorks})
                 </h4>
 
@@ -679,7 +679,7 @@ export default function StudentProgressPageClient({
                                 {work.composer}
                               </Text>
                               {work.difficulty && (
-                                <span className="inline-block mt-1 px-2 py-0.5 text-xs bg-accent-blue/10 text-accent-blue rounded">
+                                <span className="inline-block mt-1 px-2 py-0.5 text-xs bg-aviso/10 text-aviso rounded">
                                   {work.difficulty}
                                 </span>
                               )}
@@ -689,12 +689,12 @@ export default function StudentProgressPageClient({
                                 <Text papel="legenda" tom="suave">
                                   {work.mastery}/5
                                 </Text>
-                                <PiStar className="w-3 h-3 text-accent-yellow" />
+                                <PiStar className="w-3 h-3 text-atencao" />
                               </Inline>
                             )}
                           </div>
                           {work.learnedDate && (
-                            <div className="text-xs text-accent-green mt-2">
+                            <div className="text-xs text-ok mt-2">
                               {t('learned_on')}{' '}
                               {work.learnedDate.toLocaleDateString('pt-BR')}
                             </div>
@@ -708,7 +708,7 @@ export default function StudentProgressPageClient({
               {/* Want to Learn */}
               <Stack>
                 <h4 className="font-bold text-theme-primary flex items-center">
-                  <PiHeart className="w-5 h-5 mr-2 text-accent-blue" />
+                  <PiHeart className="w-5 h-5 mr-2 text-aviso" />
                   {t('want_to_learn')} ({progressData.stats.wantToLearnWorks})
                 </h4>
 
@@ -733,7 +733,7 @@ export default function StudentProgressPageClient({
                                 {work.composer}
                               </Text>
                               {work.difficulty && (
-                                <span className="inline-block mt-1 px-2 py-0.5 text-xs bg-accent-blue/10 text-accent-blue rounded">
+                                <span className="inline-block mt-1 px-2 py-0.5 text-xs bg-aviso/10 text-aviso rounded">
                                   {work.difficulty}
                                 </span>
                               )}

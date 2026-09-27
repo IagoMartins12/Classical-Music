@@ -85,7 +85,7 @@ const FeaturedComposer: React.FC<FeaturedComposerProps> = ({ composer }) => {
         <div className="relative py-4 md:p-8 lg:p-12">
           {/* Header */}
           <div className="flex items-center gap-3 mb-8">
-            <div className="w-12 h-12 bg-brand-gradient rounded-2xl flex items-center justify-center">
+            <div className="w-12 h-12 fill-ouro rounded-2xl flex items-center justify-center">
               <PiMusicNotes className="w-6 h-6 text-theme-primary" />
             </div>
             <div>
@@ -107,7 +107,7 @@ const FeaturedComposer: React.FC<FeaturedComposerProps> = ({ composer }) => {
                   {/* Portrait or fallback */}
                   {composer.portraitUrl ? (
                     <Link href={`/composer/${composer.id}`}>
-                      <div className="relative w-full h-full rounded-3xl overflow-hidden border-2 border-brand-primary/20 group-hover:border-brand-primary/40 transition-all duration-500 shadow-theme-medium group-hover:shadow-theme-glow">
+                      <div className="relative w-full h-full rounded-3xl overflow-hidden border-2 border-ouro/20 group-hover:border-ouro/40 transition-all duration-500 shadow-theme-medium group-hover:shadow-[var(--sombra-2)]">
                         <Image
                           src={composer.portraitUrl}
                           alt={composer.name}
@@ -123,7 +123,7 @@ const FeaturedComposer: React.FC<FeaturedComposerProps> = ({ composer }) => {
                       </div>
                     </Link>
                   ) : (
-                    <div className="w-full h-full bg-gradient-to-br from-brand-primary to-brand-secondary rounded-3xl flex items-center justify-center border-4 border-brand-primary/20 group-hover:border-brand-primary/40 transition-all duration-500 shadow-theme-medium group-hover:shadow-theme-glow">
+                    <div className="w-full h-full fill-ouro rounded-3xl flex items-center justify-center border border-ouro/20 group-hover:border-ouro/40 transition-all duration-500 shadow-theme-medium group-hover:shadow-[var(--sombra-2)]">
                       <PiUser className="w-16 h-16 text-theme-inverse" />
                     </div>
                   )}
@@ -144,7 +144,7 @@ const FeaturedComposer: React.FC<FeaturedComposerProps> = ({ composer }) => {
 
               {/* Name and dates */}
               <Stack gap={2}>
-                <h3 className="text-2xl lg:text-3xl font-bold text-theme-primary classical-title group-hover:text-brand-primary transition-colors duration-300">
+                <h3 className="text-2xl lg:text-3xl font-bold text-theme-primary classical-title group-hover:text-ouro-texto transition-colors duration-300">
                   {composer.name}
                 </h3>
 
@@ -182,7 +182,7 @@ const FeaturedComposer: React.FC<FeaturedComposerProps> = ({ composer }) => {
                     href={composer.wikipediaLink}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="inline-flex items-center px-4 py-2 bg-accent-blue/10 border border-accent-blue/20 text-accent-blue rounded-xl text-sm font-medium hover:bg-accent-blue/20 hover:scale-105 transition-all duration-300 group/link"
+                    className="inline-flex items-center px-4 py-2 bg-aviso/10 border border-aviso/20 text-aviso rounded-xl text-sm font-medium hover:bg-aviso/20 hover:scale-105 transition-all duration-300 group/link"
                   >
                     Wikipedia
                     <PiArrowSquareOut className="w-3 h-3 ml-2 opacity-60 group-hover/link:opacity-100" />
@@ -193,7 +193,7 @@ const FeaturedComposer: React.FC<FeaturedComposerProps> = ({ composer }) => {
                     href={composer.permLinkImslp}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="inline-flex items-center px-4 py-2 bg-accent-green/10 border border-accent-green/20 text-accent-green rounded-xl text-sm font-medium hover:bg-accent-green/20 hover:scale-105 transition-all duration-300 group/link"
+                    className="inline-flex items-center px-4 py-2 bg-ok/10 border border-ok/20 text-ok rounded-xl text-sm font-medium hover:bg-ok/20 hover:scale-105 transition-all duration-300 group/link"
                   >
                     IMSLP
                     <PiArrowSquareOut className="w-3 h-3 ml-2 opacity-60 group-hover/link:opacity-100" />
@@ -233,11 +233,11 @@ const FeaturedComposer: React.FC<FeaturedComposerProps> = ({ composer }) => {
                           animationDelay: `${index * 100}ms`,
                         }}
                       >
-                        <div className="flex-shrink-0 w-12 h-12 bg-gradient-to-br from-brand-primary/10 to-brand-secondary/10 rounded-2xl flex items-center justify-center text-2xl group-hover/curiosity:scale-110 transition-transform duration-300">
+                        <div className="flex-shrink-0 w-12 h-12 bg-ouro/10 rounded-2xl flex items-center justify-center text-2xl group-hover/curiosity:scale-110 transition-transform duration-300">
                           {curiosity.icon}
                         </div>
                         <div className="flex-1">
-                          <p className="text-theme-secondary leading-relaxed group-hover/curiosity:text-theme-primary transition-colors duration-300">
+                          <p className="text-theme-secondary leading-relaxed group-hover/curiosity:text-texto transition-colors duration-300">
                             {curiosity.text[language]}
                           </p>
                         </div>
@@ -263,12 +263,12 @@ const FeaturedComposer: React.FC<FeaturedComposerProps> = ({ composer }) => {
                           className="flex items-center justify-between hover:scale-[1.02] transition-all duration-300 group/work"
                         >
                           <div className="flex items-center gap-3">
-                            <div className="w-2 h-2 bg-brand-primary rounded-full animate-pulse"></div>
-                            <span className="text-theme-primary font-medium group-hover/work:text-brand-primary transition-colors">
+                            <div className="w-2 h-2 bg-ouro rounded-full animate-pulse"></div>
+                            <span className="text-theme-primary font-medium group-hover/work:text-ouro-texto transition-colors">
                               {work.title}
                             </span>
                           </div>
-                          <div className="text-theme-tertiary hover:text-brand-primary transition-colors">
+                          <div className="text-theme-tertiary hover:text-ouro-texto transition-colors">
                             <PiArrowSquareOut className="w-4 h-4" />
                           </div>
                         </Card>
@@ -282,7 +282,7 @@ const FeaturedComposer: React.FC<FeaturedComposerProps> = ({ composer }) => {
               <div className="pt-6">
                 <Link
                   href={`/composer/${composer.id}`}
-                  className="inline-flex items-center px-8 py-4 bg-brand-gradient text-theme-primary font-semibold rounded-2xl hover:scale-105 hover:shadow-theme-glow transition-all duration-300 group/cta"
+                  className="inline-flex items-center px-8 py-4 fill-ouro text-theme-primary font-semibold rounded-2xl hover:scale-105 hover:shadow-[var(--sombra-2)] transition-all duration-300 group/cta"
                 >
                   {t('featured_composer_explore_all')}
                   <svg
@@ -304,7 +304,7 @@ const FeaturedComposer: React.FC<FeaturedComposerProps> = ({ composer }) => {
           </div>
 
           {/* Floating decoration */}
-          <div className="absolute top-4 right-4 w-16 h-16 bg-brand-gradient/10 rounded-3xl flex items-center justify-center opacity-50 group-hover:opacity-100 transition-opacity duration-500">
+          <div className="absolute top-4 right-4 w-16 h-16 bg-ouro/10 rounded-3xl flex items-center justify-center opacity-50 group-hover:opacity-100 transition-opacity duration-500">
             <PiMusicNotes className="w-8 h-8 text-brand-primary" />
           </div>
         </div>

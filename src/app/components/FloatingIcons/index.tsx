@@ -10,19 +10,19 @@ const FloatingIcons = () => {
   return (
     <Inline gap={6} className="justify-center mb-8 animate-fade-in-up">
       <div
-        className="w-16 h-16 bg-gradient-to-br from-accent-blue to-accent-purple rounded-2xl flex items-center justify-center shadow-theme-glow animate-bounce"
+        className="w-16 h-16 bg-aviso rounded-2xl flex items-center justify-center shadow-theme-glow animate-bounce"
         style={{ animationDelay: '0s' }}
       >
         <PiMusicNotes className="text-2xl text-theme-primary" />
       </div>
       <div
-        className="w-20 h-20 bg-gradient-to-br from-brand-primary to-brand-secondary rounded-2xl flex items-center justify-center shadow-theme-glow animate-bounce"
+        className="w-20 h-20 fill-ouro rounded-2xl flex items-center justify-center shadow-theme-glow animate-bounce"
         style={{ animationDelay: '0.2s' }}
       >
         <PiMusicNotes className="text-3xl text-theme-primary" />
       </div>
       <div
-        className="w-16 h-16 bg-gradient-to-br from-accent-purple to-accent-red rounded-2xl flex items-center justify-center shadow-theme-glow animate-bounce"
+        className="w-16 h-16 fill-ouro rounded-2xl flex items-center justify-center shadow-theme-glow animate-bounce"
         style={{ animationDelay: '0.4s' }}
       >
         <GiViolin className="text-2xl text-theme-primary" />

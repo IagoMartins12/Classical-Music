@@ -313,7 +313,7 @@ export default function MediaUploadModal({
         {/* Header */}
         <div className="flex items-center justify-between p-6 border-b border-theme-primary">
           <Inline gap={3}>
-            <div className="w-12 h-12 bg-gradient-to-br from-accent-blue to-accent-purple rounded-2xl flex items-center justify-center">
+            <div className="w-12 h-12 bg-aviso rounded-2xl flex items-center justify-center">
               <PiUploadSimple className="w-6 h-6 text-white" />
             </div>
             <div>
@@ -332,8 +332,8 @@ export default function MediaUploadModal({
               onClick={() => setActiveTab('current')}
               className={`px-4 py-2 rounded-md text-sm font-medium transition-colors ${
                 activeTab === 'current'
-                  ? 'bg-brand-primary text-white'
-                  : 'text-theme-secondary hover:text-theme-primary'
+                  ? 'bg-ouro text-sobre-ouro'
+                  : 'text-theme-secondary hover:text-texto'
               }`}
             >
               <PiEye className="w-4 h-4 inline mr-2" />
@@ -343,8 +343,8 @@ export default function MediaUploadModal({
               onClick={() => setActiveTab('upload')}
               className={`px-4 py-2 rounded-md text-sm font-medium transition-colors ${
                 activeTab === 'upload'
-                  ? 'bg-brand-primary text-white'
-                  : 'text-theme-secondary hover:text-theme-primary'
+                  ? 'bg-ouro text-sobre-ouro'
+                  : 'text-theme-secondary hover:text-texto'
               }`}
             >
               <PiUploadSimple className="w-4 h-4 inline mr-2" />
@@ -359,7 +359,7 @@ export default function MediaUploadModal({
               {/* Info sobre dimensões ideais */}
               <Card
                 densidade="compacta"
-                className="bg-accent-blue/5 border border-accent-blue/20"
+                className="bg-aviso/5 border border-aviso/20"
               >
                 <h3 className="font-semibold text-theme-primary mb-3 flex items-center">
                   <PiGear className="w-5 h-5 mr-2" />
@@ -368,8 +368,8 @@ export default function MediaUploadModal({
 
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                   <div className="text-center">
-                    <div className="w-12 h-12 bg-accent-blue/20 rounded-xl flex items-center justify-center mx-auto mb-2">
-                      <PiMonitor className="w-6 h-6 text-accent-blue" />
+                    <div className="w-12 h-12 bg-aviso/20 rounded-xl flex items-center justify-center mx-auto mb-2">
+                      <PiMonitor className="w-6 h-6 text-aviso" />
                     </div>
                     <div className="text-sm">
                       <div className="font-medium text-theme-primary">
@@ -386,8 +386,8 @@ export default function MediaUploadModal({
                   </div>
 
                   <div className="text-center">
-                    <div className="w-12 h-12 bg-accent-purple/20 rounded-xl flex items-center justify-center mx-auto mb-2">
-                      <PiDeviceTablet className="w-6 h-6 text-accent-purple" />
+                    <div className="w-12 h-12 bg-ouro/20 rounded-xl flex items-center justify-center mx-auto mb-2">
+                      <PiDeviceTablet className="w-6 h-6 text-ouro-texto" />
                     </div>
                     <div className="text-sm">
                       <div className="font-medium text-theme-primary">
@@ -404,8 +404,8 @@ export default function MediaUploadModal({
                   </div>
 
                   <div className="text-center">
-                    <div className="w-12 h-12 bg-accent-green/20 rounded-xl flex items-center justify-center mx-auto mb-2">
-                      <PiDeviceMobile className="w-6 h-6 text-accent-green" />
+                    <div className="w-12 h-12 bg-ok/20 rounded-xl flex items-center justify-center mx-auto mb-2">
+                      <PiDeviceMobile className="w-6 h-6 text-ok" />
                     </div>
                     <div className="text-sm">
                       <div className="font-medium text-theme-primary">
@@ -433,7 +433,7 @@ export default function MediaUploadModal({
                       gap={2}
                       className="font-semibold text-theme-primary"
                     >
-                      <PiImage className="w-5 h-5 text-accent-blue" />
+                      <PiImage className="w-5 h-5 text-aviso" />
                       <span>Imagem</span>
                     </Inline>
                     {(ad.imageUrl || ad.imageVersions) && (
@@ -442,7 +442,7 @@ export default function MediaUploadModal({
                         size="sm"
                         leftIcon={<PiTrash />}
                         onClick={() => removeMedia('image')}
-                        className="text-accent-red hover:text-accent-red"
+                        className="text-erro hover:text-erro"
                       >
                         Remover
                       </Button>
@@ -466,7 +466,7 @@ export default function MediaUploadModal({
                       </div>
 
                       <div className="flex items-center justify-between text-sm">
-                        <Inline gap={2} className="text-accent-green">
+                        <Inline gap={2} className="text-ok">
                           <PiCheck className="w-4 h-4" />
                           <span>Imagem configurada</span>
                         </Inline>
@@ -503,7 +503,7 @@ export default function MediaUploadModal({
                       gap={2}
                       className="font-semibold text-theme-primary"
                     >
-                      <PiVideoCamera className="w-5 h-5 text-accent-purple" />
+                      <PiVideoCamera className="w-5 h-5 text-ouro-texto" />
                       <span>Vídeo</span>
                     </Inline>
                     {(ad.videoUrl || ad.videoVersions) && (
@@ -512,7 +512,7 @@ export default function MediaUploadModal({
                         size="sm"
                         leftIcon={<PiTrash />}
                         onClick={() => removeMedia('video')}
-                        className="text-accent-red hover:text-accent-red"
+                        className="text-erro hover:text-erro"
                       >
                         Remover
                       </Button>
@@ -535,7 +535,7 @@ export default function MediaUploadModal({
                       </div>
 
                       <div className="flex items-center justify-between text-sm">
-                        <Inline gap={2} className="text-accent-green">
+                        <Inline gap={2} className="text-ok">
                           <PiCheck className="w-4 h-4" />
                           <span>Vídeo configurado</span>
                         </Inline>
@@ -578,9 +578,9 @@ export default function MediaUploadModal({
                         onChange={(e) =>
                           setUploadType(e.target.value as 'image' | 'video')
                         }
-                        className="text-brand-primary focus:ring-brand-primary"
+                        className="text-brand-primary focus:ring-ouro"
                       />
-                      <PiImage className="w-5 h-5 text-accent-blue" />
+                      <PiImage className="w-5 h-5 text-aviso" />
                       <span className="text-theme-primary font-medium">
                         Imagem
                       </span>
@@ -594,9 +594,9 @@ export default function MediaUploadModal({
                         onChange={(e) =>
                           setUploadType(e.target.value as 'image' | 'video')
                         }
-                        className="text-brand-primary focus:ring-brand-primary"
+                        className="text-brand-primary focus:ring-ouro"
                       />
-                      <PiVideoCamera className="w-5 h-5 text-accent-purple" />
+                      <PiVideoCamera className="w-5 h-5 text-ouro-texto" />
                       <span className="text-theme-primary font-medium">
                         Vídeo
                       </span>
@@ -629,7 +629,7 @@ export default function MediaUploadModal({
               {filePreview && (
                 <Card
                   densidade="compacta"
-                  className="bg-accent-green/5 border border-accent-green/20"
+                  className="bg-ok/5 border border-ok/20"
                 >
                   <div className="flex items-center justify-between mb-3">
                     <h4 className="font-medium text-theme-primary">Preview</h4>
@@ -704,8 +704,8 @@ export default function MediaUploadModal({
                         <div
                           className={`p-2 rounded text-xs ${
                             filePreview.validation.isValid
-                              ? 'bg-accent-green/10 text-accent-green'
-                              : 'bg-accent-amber/10 text-accent-amber'
+                              ? 'bg-ok/10 text-ok'
+                              : 'bg-atencao/10 text-atencao'
                           }`}
                         >
                           <div className="flex items-center gap-2 mb-1">
@@ -736,8 +736,8 @@ export default function MediaUploadModal({
                   border-2 border-dashed rounded-2xl p-8 text-center transition-all
                   ${
                     dragActive
-                      ? 'border-brand-primary bg-brand-primary/10'
-                      : 'border-theme-primary hover:border-brand-primary/50'
+                      ? 'border-ouro bg-ouro/10'
+                      : 'border-theme-primary hover:border-ouro/50'
                   }
                   ${
                     uploading
@@ -761,7 +761,7 @@ export default function MediaUploadModal({
 
                 {uploading ? (
                   <div className="space-y-4">
-                    <div className="w-16 h-16 border-4 border-brand-primary border-t-transparent rounded-full animate-spin mx-auto"></div>
+                    <div className="w-16 h-16 border-4 border-ouro border-t-transparent rounded-full animate-spin mx-auto"></div>
                     <div>
                       <p className="text-theme-primary font-medium text-lg">
                         Processando...
@@ -773,7 +773,7 @@ export default function MediaUploadModal({
                   </div>
                 ) : (
                   <div className="space-y-4">
-                    <div className="w-20 h-20 bg-gradient-to-br from-brand-primary/20 to-accent-blue/20 rounded-2xl flex items-center justify-center mx-auto">
+                    <div className="w-20 h-20 bg-ouro/20 rounded-2xl flex items-center justify-center mx-auto">
                       {uploadType === 'image' ? (
                         <PiImage className="w-10 h-10 text-brand-primary" />
                       ) : (
@@ -830,9 +830,9 @@ export default function MediaUploadModal({
               </div>
 
               {/* Info sobre processamento */}
-              <Card densidade="compacta" className="bg-accent-blue/5">
+              <Card densidade="compacta" className="bg-aviso/5">
                 <div className="flex items-start space-x-3">
-                  <PiInfo className="w-5 h-5 text-accent-blue mt-0.5 flex-shrink-0" />
+                  <PiInfo className="w-5 h-5 text-aviso mt-0.5 flex-shrink-0" />
                   <Stack gap={2}>
                     <h4 className="font-medium text-theme-primary">
                       🚀 Processamento Inteligente

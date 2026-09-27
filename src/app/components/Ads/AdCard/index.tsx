@@ -71,7 +71,7 @@ export default function AdCard({
 
         {/* Content */}
         <div className="p-4">
-          <h3 className="font-semibold text-theme-primary mb-1 group-hover:text-brand-primary transition-colors line-clamp-2">
+          <h3 className="font-semibold text-theme-primary mb-1 group-hover:text-ouro-texto transition-colors line-clamp-2">
             {ad.title}
           </h3>
 

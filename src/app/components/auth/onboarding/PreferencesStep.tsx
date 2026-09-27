@@ -235,7 +235,7 @@ const PreferencesStep: React.FC<PreferencesStepProps> = ({
                 </div>
                 <button
                   onClick={() => updateData({ favoriteComposerId: undefined })}
-                  className="ml-auto text-theme-tertiary hover:text-accent-red"
+                  className="ml-auto text-theme-tertiary hover:text-erro"
                 >
                   ✕
                 </button>
@@ -248,7 +248,7 @@ const PreferencesStep: React.FC<PreferencesStepProps> = ({
               <button
                 key={composer.id}
                 onClick={() => updateData({ favoriteComposerId: composer.id })}
-                className="classical-card-2 p-3 text-left transition-all duration-200 hover:border-brand-primary hover:scale-105"
+                className="classical-card-2 p-3 text-left transition-all duration-200 hover:border-ouro hover:scale-105"
               >
                 <Inline gap={3}>
                   {composer.portraitUrl && (

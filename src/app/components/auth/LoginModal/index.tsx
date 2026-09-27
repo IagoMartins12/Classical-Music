@@ -296,7 +296,7 @@ const LoginModal: React.FC = () => {
       >
         <div className="text-center mb-8">
           <div className="flex justify-center mb-4">
-            <div className="w-16 h-16 bg-brand-gradient rounded-full flex items-center justify-center shadow-theme-glow">
+            <div className="w-16 h-16 fill-ouro rounded-full flex items-center justify-center shadow-theme-glow">
               <GiGrandPiano className="w-8 h-8 text-theme-primary" />
             </div>
           </div>
@@ -308,14 +308,14 @@ const LoginModal: React.FC = () => {
 
         {/* Aviso de conflito de email */}
         {emailConflictError && (
-          <div className="mb-6 p-4 rounded-lg bg-accent-amber bg-opacity-10 border border-accent-amber">
+          <div className="mb-6 p-4 rounded-lg bg-atencao/10 border border-atencao">
             <div className="flex items-start">
-              <PiWarning className="w-5 h-5 text-accent-amber mr-3 mt-0.5 flex-shrink-0" />
+              <PiWarning className="w-5 h-5 text-atencao mr-3 mt-0.5 flex-shrink-0" />
               <div>
-                <h4 className="font-medium text-accent-amber mb-1">
+                <h4 className="font-medium text-atencao mb-1">
                   {t('login_modal_email_conflict_title')}
                 </h4>
-                <p className="text-sm text-accent-amber opacity-90">
+                <p className="text-sm text-atencao opacity-90">
                   {emailConflictError}
                 </p>
                 <div className="mt-3 flex flex-wrap gap-2">
@@ -328,16 +328,14 @@ const LoginModal: React.FC = () => {
                       ) as HTMLInputElement;
                       if (emailInput) emailInput.focus();
                     }}
-                    className="text-xs text-accent-amber hover:text-accent-amber opacity-80 hover:opacity-100 underline transition-opacity"
+                    className="text-xs text-atencao hover:text-atencao opacity-80 hover:opacity-100 underline transition-opacity"
                   >
                     {t('login_modal_email_conflict_action_login')}
                   </button>
-                  <span className="text-xs text-accent-amber opacity-50">
-                    •
-                  </span>
+                  <span className="text-xs text-atencao opacity-50">•</span>
                   <button
                     onClick={handleForgotPassword}
-                    className="text-xs text-accent-amber hover:text-accent-amber opacity-80 hover:opacity-100 underline transition-opacity"
+                    className="text-xs text-atencao hover:text-atencao opacity-80 hover:opacity-100 underline transition-opacity"
                   >
                     {t('login_modal_email_conflict_action_forgot')}
                   </button>
@@ -351,7 +349,7 @@ const LoginModal: React.FC = () => {
         <form onSubmit={handleSubmit} className="space-y-6">
           {/* General Error */}
           {errors.general && (
-            <div className="p-3 rounded-lg bg-opacity-10 border border-red-400 text-red-400 text-sm">
+            <div className="p-3 rounded-lg border border-erro text-erro text-sm">
               {errors.general}
             </div>
           )}
@@ -389,7 +387,7 @@ const LoginModal: React.FC = () => {
             <button
               type="button"
               onClick={handleForgotPassword}
-              className="text-sm text-brand-primary hover:text-brand-secondary transition-colors"
+              className="text-sm text-brand-primary hover:text-ouro-texto transition-colors"
               disabled={isLoading || isGoogleLoading}
             >
               {t('login_modal_forgot_password')}
@@ -440,7 +438,7 @@ const LoginModal: React.FC = () => {
             {t('login_modal_register_text')}{' '}
             <button
               onClick={switchToRegister}
-              className="text-brand-primary hover:text-brand-secondary font-medium transition-colors"
+              className="text-brand-primary hover:text-ouro-texto font-medium transition-colors"
               disabled={isLoading || isGoogleLoading}
             >
               {t('login_modal_register_link')}

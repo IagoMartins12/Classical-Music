@@ -321,7 +321,7 @@ const Navbar: React.FC = () => {
   return (
     <nav
       aria-label={t('aria_navegacao_principal')}
-      className="navbar-classical sticky top-0 z-50"
+      className="navbar-classical sticky top-0 z-barra"
     >
       <div className="section-wrap-nav pt-1 pb-2">
         <div className="flex items-center justify-between">
@@ -352,12 +352,10 @@ const Navbar: React.FC = () => {
                         relative px-3 py-2 rounded-lg font-medium transition-all duration-300 flex items-center space-x-1
                         ${
                           active
-                            ? 'text-brand-primary bg-interactive-active'
-                            : 'text-theme-secondary hover:text-brand-primary hover:bg-interactive-hover'
+                            ? 'text-brand-primary bg-ouro/10'
+                            : 'text-theme-secondary hover:text-ouro-texto hover:bg-ouro/10'
                         }
-                        after:absolute after:bottom-0 after:left-1/2 after:w-0 after:h-0.5 
-                        after:bg-brand-gradient after:transition-all after:duration-300
-                        hover:after:w-full hover:after:left-0
+                        after:absolute after:bottom-0 after:left-1/2 after:w-0 after:h-0.5 after:fill-ouro after:transition-all after:duration-300 hover:after:w-full hover:after:left-0
                         ${active ? 'after:w-full after:left-0' : ''}
                       `}
                     >
@@ -381,8 +379,8 @@ const Navbar: React.FC = () => {
                                 block p-3 rounded-lg transition-colors group
                                 ${
                                   pathname === item.href
-                                    ? 'bg-interactive-active text-brand-primary'
-                                    : 'hover:bg-interactive-hover'
+                                    ? 'bg-ouro/10 text-brand-primary'
+                                    : 'hover:bg-ouro/10'
                                 }
                               `}
                               onClick={() => setActiveSubmenu(null)}
@@ -393,7 +391,7 @@ const Navbar: React.FC = () => {
                                 ${
                                   pathname === item.href
                                     ? 'text-brand-primary'
-                                    : 'text-theme-primary group-hover:text-brand-primary'
+                                    : 'text-theme-primary group-hover:text-ouro-texto'
                                 }
                               `}
                               >
@@ -423,12 +421,10 @@ const Navbar: React.FC = () => {
                       
                       ${
                         active
-                          ? 'text-brand-primary bg-interactive-active'
-                          : 'text-theme-secondary hover:text-brand-primary hover:bg-interactive-hover'
+                          ? 'text-brand-primary bg-ouro/10'
+                          : 'text-theme-secondary hover:text-ouro-texto hover:bg-ouro/10'
                       }
-                      after:absolute after:bottom-0 after:left-1/2 after:w-0 after:h-0.5 
-                      after:bg-brand-gradient after:transition-all after:duration-300
-                      hover:after:w-full hover:after:left-0
+                      after:absolute after:bottom-0 after:left-1/2 after:w-0 after:h-0.5 after:fill-ouro after:transition-all after:duration-300 hover:after:w-full hover:after:left-0
                       ${active ? 'after:w-full after:left-0' : ''}
                     `}
                   >
@@ -457,7 +453,7 @@ const Navbar: React.FC = () => {
                   as="button"
                   gap={2}
                   onClick={toggleProfileMenu}
-                  className="p-2 rounded-lg hover:bg-interactive-hover transition-colors"
+                  className="p-2 rounded-lg hover:bg-ouro/10 transition-colors"
                 >
                   {user.image ? (
                     <Image
@@ -465,14 +461,14 @@ const Navbar: React.FC = () => {
                       width={24}
                       height={24}
                       alt={getUserDisplayName()}
-                      className="w-8 h-8 rounded-full object-cover border-2 border-brand-primary bg-theme-secondary"
+                      className="w-8 h-8 rounded-full object-cover border-2 border-ouro bg-theme-secondary"
                     />
                   ) : (
                     <Text
                       papel="rotulo"
                       tom="forte"
                       as="div"
-                      className="w-8 h-8 bg-brand-gradient rounded-full flex items-center bg-theme-secondary justify-center font-semibold"
+                      className="w-8 h-8 fill-ouro rounded-full flex items-center bg-theme-secondary justify-center font-semibold"
                     >
                       {getUserInitials()}
                     </Text>
@@ -488,7 +484,7 @@ const Navbar: React.FC = () => {
                       {getUserDisplayName()}
                     </Text>
                     {!user.onboardingCompleted && (
-                      <p className="text-xs text-accent-amber">
+                      <p className="text-xs text-atencao">
                         {t('navbar_configure_seu_perfil')}
                       </p>
                     )}
@@ -527,8 +523,8 @@ const Navbar: React.FC = () => {
                           flex items-center space-x-2 w-full px-3 py-2 text-sm rounded-lg transition-all
                           ${
                             pathname === '/profile'
-                              ? 'text-brand-primary bg-interactive-active'
-                              : 'text-theme-secondary hover:text-brand-primary hover:bg-interactive-hover'
+                              ? 'text-brand-primary bg-ouro/10'
+                              : 'text-theme-secondary hover:text-ouro-texto hover:bg-ouro/10'
                           }
                         `}
                         onClick={() => setIsProfileOpen(false)}
@@ -544,8 +540,8 @@ const Navbar: React.FC = () => {
                         flex items-center space-x-2 w-full px-3 py-2 text-sm rounded-lg transition-all
                         ${
                           pathname === '/favorites'
-                            ? 'text-brand-primary bg-interactive-active'
-                            : 'text-theme-secondary hover:text-brand-primary hover:bg-interactive-hover'
+                            ? 'text-brand-primary bg-ouro/10'
+                            : 'text-theme-secondary hover:text-ouro-texto hover:bg-ouro/10'
                         }
                       `}
                       onClick={() => setIsProfileOpen(false)}
@@ -560,8 +556,8 @@ const Navbar: React.FC = () => {
                         flex items-center space-x-2 w-full px-3 py-2 text-sm rounded-lg transition-all
                         ${
                           pathname === '/learning'
-                            ? 'text-brand-primary bg-interactive-active'
-                            : 'text-theme-secondary hover:text-brand-primary hover:bg-interactive-hover'
+                            ? 'text-brand-primary bg-ouro/10'
+                            : 'text-theme-secondary hover:text-ouro-texto hover:bg-ouro/10'
                         }
                       `}
                       onClick={() => setIsProfileOpen(false)}
@@ -576,8 +572,8 @@ const Navbar: React.FC = () => {
                         flex items-center space-x-2 w-full px-3 py-2 text-sm rounded-lg transition-all
                         ${
                           pathname === '/annotations'
-                            ? 'text-brand-primary bg-interactive-active'
-                            : 'text-theme-secondary hover:text-brand-primary hover:bg-interactive-hover'
+                            ? 'text-brand-primary bg-ouro/10'
+                            : 'text-theme-secondary hover:text-ouro-texto hover:bg-ouro/10'
                         }
                       `}
                       onClick={() => setIsProfileOpen(false)}
@@ -592,8 +588,8 @@ const Navbar: React.FC = () => {
                         flex items-center space-x-2 w-full px-3 py-2 text-sm rounded-lg transition-all
                         ${
                           pathname === '/upload'
-                            ? 'text-brand-primary bg-interactive-active'
-                            : 'text-theme-secondary hover:text-brand-primary hover:bg-interactive-hover'
+                            ? 'text-brand-primary bg-ouro/10'
+                            : 'text-theme-secondary hover:text-ouro-texto hover:bg-ouro/10'
                         }
                       `}
                       onClick={() => setIsProfileOpen(false)}
@@ -609,8 +605,8 @@ const Navbar: React.FC = () => {
                           flex items-center space-x-2 w-full px-3 py-2 text-sm rounded-lg transition-all
                           ${
                             pathname === '/teacher'
-                              ? 'text-brand-primary bg-interactive-active'
-                              : 'text-theme-secondary hover:text-brand-primary hover:bg-interactive-hover'
+                              ? 'text-brand-primary bg-ouro/10'
+                              : 'text-theme-secondary hover:text-ouro-texto hover:bg-ouro/10'
                           }
                         `}
                         onClick={() => setIsProfileOpen(false)}
@@ -627,8 +623,8 @@ const Navbar: React.FC = () => {
                           flex items-center space-x-2 w-full px-3 py-2 text-sm rounded-lg transition-all
                           ${
                             pathname === '/student'
-                              ? 'text-brand-primary bg-interactive-active'
-                              : 'text-theme-secondary hover:text-brand-primary hover:bg-interactive-hover'
+                              ? 'text-brand-primary bg-ouro/10'
+                              : 'text-theme-secondary hover:text-ouro-texto hover:bg-ouro/10'
                           }
                         `}
                         onClick={() => setIsProfileOpen(false)}
@@ -644,8 +640,8 @@ const Navbar: React.FC = () => {
                           flex items-center space-x-2 w-full px-3 py-2 text-sm rounded-lg transition-all
                           ${
                             pathname === '/moderation'
-                              ? 'text-brand-primary bg-interactive-active'
-                              : 'text-theme-secondary hover:text-brand-primary hover:bg-interactive-hover'
+                              ? 'text-brand-primary bg-ouro/10'
+                              : 'text-theme-secondary hover:text-ouro-texto hover:bg-ouro/10'
                           }
                         `}
                         onClick={() => setIsProfileOpen(false)}
@@ -661,8 +657,8 @@ const Navbar: React.FC = () => {
                           flex items-center space-x-2 w-full px-3 py-2 text-sm rounded-lg transition-all
                           ${
                             pathname === '/admin'
-                              ? 'text-brand-primary bg-interactive-active'
-                              : 'text-theme-secondary hover:text-brand-primary hover:bg-interactive-hover'
+                              ? 'text-brand-primary bg-ouro/10'
+                              : 'text-theme-secondary hover:text-ouro-texto hover:bg-ouro/10'
                           }
                         `}
                         onClick={() => setIsProfileOpen(false)}
@@ -708,7 +704,7 @@ const Navbar: React.FC = () => {
             <button
               ref={mobileButtonRef}
               onClick={handleMobileButtonClick}
-              className="lg:hidden p-2 text-theme-secondary hover:text-brand-primary transition-colors"
+              className="lg:hidden p-2 text-theme-secondary hover:text-ouro-texto transition-colors"
               aria-controls="mobile-menu"
               aria-expanded={isMenuOpen}
             >
@@ -764,8 +760,8 @@ const Navbar: React.FC = () => {
                                 flex-1 block px-4 py-3 rounded-lg font-medium transition-all duration-300
                                 ${
                                   active
-                                    ? 'text-brand-primary bg-interactive-active'
-                                    : 'text-theme-secondary hover:text-brand-primary hover:bg-interactive-hover'
+                                    ? 'text-brand-primary bg-ouro/10'
+                                    : 'text-theme-secondary hover:text-ouro-texto hover:bg-ouro/10'
                                 }
                               `}
                                 onClick={handleMobileNavClick}
@@ -774,7 +770,7 @@ const Navbar: React.FC = () => {
                               </Link>
                               <button
                                 onClick={() => goToSubmenuView(label, submenu)}
-                                className="ml-2 p-2 text-theme-tertiary hover:text-brand-primary transition-colors"
+                                className="ml-2 p-2 text-theme-tertiary hover:text-ouro-texto transition-colors"
                               >
                                 <PiCaretRight className="w-5 h-5" />
                                 <NomeAcao acao="proximo" />
@@ -787,8 +783,8 @@ const Navbar: React.FC = () => {
                               block px-4 py-3 rounded-lg font-medium transition-all duration-300
                               ${
                                 active
-                                  ? 'text-brand-primary bg-interactive-active'
-                                  : 'text-theme-secondary hover:text-brand-primary hover:bg-interactive-hover'
+                                  ? 'text-brand-primary bg-ouro/10'
+                                  : 'text-theme-secondary hover:text-ouro-texto hover:bg-ouro/10'
                               }
                             `}
                               onClick={handleMobileNavClick}
@@ -820,14 +816,14 @@ const Navbar: React.FC = () => {
                                 width={32}
                                 height={32}
                                 alt={getUserDisplayName()}
-                                className="w-8 h-8 rounded-full object-cover border-2 border-brand-primary"
+                                className="w-8 h-8 rounded-full object-cover border-2 border-ouro"
                               />
                             ) : (
                               <Text
                                 papel="rotulo"
                                 tom="forte"
                                 as="div"
-                                className="w-8 h-8 bg-brand-gradient rounded-full flex items-center justify-center font-semibold"
+                                className="w-8 h-8 fill-ouro rounded-full flex items-center justify-center font-semibold"
                               >
                                 {getUserInitials()}
                               </Text>
@@ -846,7 +842,7 @@ const Navbar: React.FC = () => {
                               </Text>
                             </div>
                           </Inline>
-                          <div className="p-2 text-theme-tertiary hover:text-brand-primary transition-colors">
+                          <div className="p-2 text-theme-tertiary hover:text-ouro-texto transition-colors">
                             <PiCaretRight className="w-5 h-5" />
                           </div>
                         </div>
@@ -861,7 +857,7 @@ const Navbar: React.FC = () => {
                               openLogin();
                               closeMobileMenu();
                             }}
-                            className="block w-full px-4 py-3 text-left rounded-lg font-medium text-theme-secondary hover:text-brand-primary hover:bg-interactive-hover transition-all"
+                            className="block w-full px-4 py-3 text-left rounded-lg font-medium text-theme-secondary hover:text-ouro-texto hover:bg-ouro/10 transition-all"
                           >
                             {t('navbar_fazer_login')}
                           </button>
@@ -872,7 +868,7 @@ const Navbar: React.FC = () => {
                               openRegister();
                               closeMobileMenu();
                             }}
-                            className="block w-full px-4 py-3 text-left rounded-lg font-medium text-brand-primary bg-brand-primary bg-opacity-10 hover:bg-opacity-20 transition-all"
+                            className="block w-full px-4 py-3 text-left rounded-lg font-medium text-brand-primary bg-ouro/10 hover:bg-opacity-20 transition-all"
                           >
                             {t('navbar_button_criar')}
                           </button>
@@ -890,7 +886,7 @@ const Navbar: React.FC = () => {
                             as="button"
                             gap={3}
                             onClick={handleLogout}
-                            className="w-full px-4 py-3 text-accent-red hover:bg-accent-red rounded-lg l"
+                            className="w-full px-4 py-3 text-erro hover:bg-erro rounded-lg l"
                           >
                             <PiSignOut className="w-5 h-5" />
                             <span>{t('navbar_sair')}</span>
@@ -923,7 +919,7 @@ const Navbar: React.FC = () => {
                       <div className="flex items-center mb-4 pb-3 border-b border-theme-secondary">
                         <button
                           onClick={goBackToMain}
-                          className="p-2 mr-2 text-theme-tertiary hover:text-brand-primary transition-colors"
+                          className="p-2 mr-2 text-theme-tertiary hover:text-ouro-texto transition-colors"
                         >
                           <PiCaretLeft className="w-5 h-5" />
                           <NomeAcao acao="anterior" />
@@ -936,7 +932,7 @@ const Navbar: React.FC = () => {
                       {/* User Info */}
                       <Inline
                         gap={3}
-                        className="px-4 py-3 mb-4 bg-interactive-hover rounded-lg"
+                        className="px-4 py-3 mb-4 bg-ouro/10 rounded-lg"
                       >
                         {user.image ? (
                           <Image
@@ -944,10 +940,10 @@ const Navbar: React.FC = () => {
                             width={40}
                             height={40}
                             alt={getUserDisplayName()}
-                            className="w-10 h-10 rounded-full object-cover border-2 border-brand-primary"
+                            className="w-10 h-10 rounded-full object-cover border-2 border-ouro"
                           />
                         ) : (
-                          <div className="w-10 h-10 bg-brand-gradient rounded-full flex items-center justify-center text-theme-primary font-semibold">
+                          <div className="w-10 h-10 fill-ouro rounded-full flex items-center justify-center text-theme-primary font-semibold">
                             {getUserInitials()}
                           </div>
                         )}
@@ -967,7 +963,7 @@ const Navbar: React.FC = () => {
                             open();
                             closeMobileMenu();
                           }}
-                          className="w-full mb-4 text-center py-3 px-4 bg-brand-primary bg-opacity-10 text-brand-primary rounded-lg font-medium hover:bg-opacity-20 transition-all"
+                          className="w-full mb-4 text-center py-3 px-4 bg-ouro/10 text-brand-primary rounded-lg font-medium hover:bg-opacity-20 transition-all"
                         >
                           {t('navbar_configure_seu_perfil')}
                         </button>
@@ -983,8 +979,8 @@ const Navbar: React.FC = () => {
                                 flex items-center space-x-3 px-4 py-3 rounded-lg transition-all
                                 ${
                                   pathname === '/profile'
-                                    ? 'text-brand-primary bg-interactive-active'
-                                    : 'text-theme-secondary hover:text-brand-primary hover:bg-interactive-hover'
+                                    ? 'text-brand-primary bg-ouro/10'
+                                    : 'text-theme-secondary hover:text-ouro-texto hover:bg-ouro/10'
                                 }
                               `}
                               onClick={handleMobileNavClick}
@@ -1002,8 +998,8 @@ const Navbar: React.FC = () => {
                               flex items-center space-x-3 px-4 py-3 rounded-lg transition-all
                               ${
                                 pathname === '/favorites'
-                                  ? 'text-brand-primary bg-interactive-active'
-                                  : 'text-theme-secondary hover:text-brand-primary hover:bg-interactive-hover'
+                                  ? 'text-brand-primary bg-ouro/10'
+                                  : 'text-theme-secondary hover:text-ouro-texto hover:bg-ouro/10'
                               }
                             `}
                             onClick={handleMobileNavClick}
@@ -1020,8 +1016,8 @@ const Navbar: React.FC = () => {
                               flex items-center space-x-3 px-4 py-3 rounded-lg transition-all
                               ${
                                 pathname === '/learning'
-                                  ? 'text-brand-primary bg-interactive-active'
-                                  : 'text-theme-secondary hover:text-brand-primary hover:bg-interactive-hover'
+                                  ? 'text-brand-primary bg-ouro/10'
+                                  : 'text-theme-secondary hover:text-ouro-texto hover:bg-ouro/10'
                               }
                             `}
                             onClick={handleMobileNavClick}
@@ -1038,8 +1034,8 @@ const Navbar: React.FC = () => {
                               flex items-center space-x-3 px-4 py-3 rounded-lg transition-all
                               ${
                                 pathname === '/annotations'
-                                  ? 'text-brand-primary bg-interactive-active'
-                                  : 'text-theme-secondary hover:text-brand-primary hover:bg-interactive-hover'
+                                  ? 'text-brand-primary bg-ouro/10'
+                                  : 'text-theme-secondary hover:text-ouro-texto hover:bg-ouro/10'
                               }
                             `}
                             onClick={handleMobileNavClick}
@@ -1056,8 +1052,8 @@ const Navbar: React.FC = () => {
                               flex items-center space-x-3 px-4 py-3 rounded-lg transition-all
                               ${
                                 pathname === '/upload'
-                                  ? 'text-brand-primary bg-interactive-active'
-                                  : 'text-theme-secondary hover:text-brand-primary hover:bg-interactive-hover'
+                                  ? 'text-brand-primary bg-ouro/10'
+                                  : 'text-theme-secondary hover:text-ouro-texto hover:bg-ouro/10'
                               }
                             `}
                             onClick={handleMobileNavClick}
@@ -1076,8 +1072,8 @@ const Navbar: React.FC = () => {
                                 flex items-center space-x-3 px-4 py-3 rounded-lg transition-all
                                 ${
                                   pathname === '/teacher'
-                                    ? 'text-brand-primary bg-interactive-active'
-                                    : 'text-theme-secondary hover:text-brand-primary hover:bg-interactive-hover'
+                                    ? 'text-brand-primary bg-ouro/10'
+                                    : 'text-theme-secondary hover:text-ouro-texto hover:bg-ouro/10'
                                 }
                               `}
                               onClick={handleMobileNavClick}
@@ -1096,8 +1092,8 @@ const Navbar: React.FC = () => {
                                 flex items-center space-x-3 px-4 py-3 rounded-lg transition-all
                                 ${
                                   pathname === '/student'
-                                    ? 'text-brand-primary bg-interactive-active'
-                                    : 'text-theme-secondary hover:text-brand-primary hover:bg-interactive-hover'
+                                    ? 'text-brand-primary bg-ouro/10'
+                                    : 'text-theme-secondary hover:text-ouro-texto hover:bg-ouro/10'
                                 }
                               `}
                               onClick={handleMobileNavClick}
@@ -1117,8 +1113,8 @@ const Navbar: React.FC = () => {
                                   flex items-center space-x-3 px-4 py-3 rounded-lg transition-all
                                   ${
                                     pathname === '/moderation'
-                                      ? 'text-brand-primary bg-interactive-active'
-                                      : 'text-theme-secondary hover:text-brand-primary hover:bg-interactive-hover'
+                                      ? 'text-brand-primary bg-ouro/10'
+                                      : 'text-theme-secondary hover:text-ouro-texto hover:bg-ouro/10'
                                   }
                                 `}
                                 onClick={handleMobileNavClick}
@@ -1134,8 +1130,8 @@ const Navbar: React.FC = () => {
                                   flex items-center space-x-3 px-4 py-3 rounded-lg transition-all
                                   ${
                                     pathname === '/admin'
-                                      ? 'text-brand-primary bg-interactive-active'
-                                      : 'text-theme-secondary hover:text-brand-primary hover:bg-interactive-hover'
+                                      ? 'text-brand-primary bg-ouro/10'
+                                      : 'text-theme-secondary hover:text-ouro-texto hover:bg-ouro/10'
                                   }
                                 `}
                                 onClick={handleMobileNavClick}
@@ -1163,7 +1159,7 @@ const Navbar: React.FC = () => {
                     <div className="flex items-center mb-4 pb-3 border-b border-theme-secondary">
                       <button
                         onClick={goBackToMain}
-                        className="p-2 mr-2 text-theme-tertiary hover:text-brand-primary transition-colors"
+                        className="p-2 mr-2 text-theme-tertiary hover:text-ouro-texto transition-colors"
                       >
                         <PiCaretLeft className="w-5 h-5" />
                         <NomeAcao acao="anterior" />
@@ -1183,8 +1179,8 @@ const Navbar: React.FC = () => {
                               block px-4 py-3 rounded-lg transition-all
                               ${
                                 pathname === item.href
-                                  ? 'text-brand-primary bg-interactive-active'
-                                  : 'text-theme-secondary hover:text-brand-primary hover:bg-interactive-hover'
+                                  ? 'text-brand-primary bg-ouro/10'
+                                  : 'text-theme-secondary hover:text-ouro-texto hover:bg-ouro/10'
                               }
                             `}
                             onClick={handleMobileNavClick}

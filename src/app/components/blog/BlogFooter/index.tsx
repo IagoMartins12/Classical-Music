@@ -94,10 +94,10 @@ export function BlogFooter() {
                   href={social.href}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="p-2 rounded-lg bg-theme-elevated hover:bg-theme-classical transition-all group"
+                  className="p-2 rounded-lg bg-theme-elevated hover:bg-sup-1 transition-all group"
                   aria-label={social.label}
                 >
-                  <social.icon className="w-5 h-5 text-theme-tertiary group-hover:text-brand-primary transition-colors" />
+                  <social.icon className="w-5 h-5 text-theme-tertiary group-hover:text-ouro-texto transition-colors" />
                 </Link>
               ))}
             </Inline>
@@ -114,7 +114,7 @@ export function BlogFooter() {
                   <li key={link.href}>
                     <Link
                       href={link.href}
-                      className="text-sm text-theme-secondary hover:text-brand-primary transition-colors"
+                      className="text-sm text-theme-secondary hover:text-ouro-texto transition-colors"
                     >
                       {link.label}
                     </Link>
@@ -164,19 +164,19 @@ export function BlogFooter() {
             <div className="flex items-center gap-6">
               <Link
                 href="/privacy"
-                className="hover:text-brand-primary transition-colors"
+                className="hover:text-ouro-texto transition-colors"
               >
                 Privacidade
               </Link>
               <Link
                 href="/terms"
-                className="hover:text-brand-primary transition-colors"
+                className="hover:text-ouro-texto transition-colors"
               >
                 Termos
               </Link>
               <Link
                 href="/sitemap"
-                className="hover:text-brand-primary transition-colors"
+                className="hover:text-ouro-texto transition-colors"
               >
                 Mapa do Site
               </Link>

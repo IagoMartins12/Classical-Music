@@ -126,8 +126,8 @@ export function ScoreModal({ editor, onClose }: ScoreModalProps) {
                     onClick={() => setSelectedScore(score)}
                     className={`w-full p-3 rounded-lg border-2 transition-colors flex justify-between px-8 mx-auto text-left ${
                       selectedScore?.id === score.id
-                        ? 'border-accent-green bg-interactive-active'
-                        : 'border-theme-secondary hover:border-accent-green'
+                        ? 'border-ok bg-ouro/20'
+                        : 'border-theme-secondary hover:border-ok'
                     }`}
                   >
                     <div className="flex flex-col justify-center ">

@@ -164,7 +164,7 @@ const QuoteMusicalComponent = (props: any) => {
     >
       <Card
         densidade="larga"
-        className="relative border-l-4 border-accent-purple"
+        className="border relative border-ouro/40 bg-ouro/10"
       >
         {/* Controles de Edição */}
         {showControls && (
@@ -175,7 +175,7 @@ const QuoteMusicalComponent = (props: any) => {
             <button
               type="button"
               onClick={handleDelete}
-              className="p-2 text-red-600 hover:bg-red-50 rounded transition-colors"
+              className="p-2 text-erro hover:bg-erro/10 rounded transition-colors"
               title="Remover"
             >
               <PiTrash className="w-4 h-4" />
@@ -207,7 +207,7 @@ const QuoteMusicalComponent = (props: any) => {
                     e.preventDefault();
                     setShowPlayer(!showPlayer);
                   }}
-                  className="text-sm text-accent-purple hover:text-brand-primary transition-colors"
+                  className="text-sm text-ouro-texto hover:text-ouro-texto transition-colors"
                 >
                   <PiMusicNotes className="w-5 h-5" />
                   <span>{showPlayer ? 'Ocultar' : 'Mostrar'} controles</span>
@@ -231,7 +231,7 @@ const QuoteMusicalComponent = (props: any) => {
                 e.stopPropagation();
                 togglePlay();
               }}
-              className="p-2 bg-accent-purple text-white rounded-full hover:opacity-90 transition-opacity"
+              className="p-2 bg-ouro text-sobre-ouro rounded-full hover:opacity-90 transition-opacity"
             >
               {isPlaying ? (
                 <PiPause className="w-5 h-5" />

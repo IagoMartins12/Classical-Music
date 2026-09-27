@@ -128,10 +128,10 @@ export default function MultiSelectWithId({
           ${
             isDisabled
               ? 'cursor-not-allowed opacity-50'
-              : 'hover:border-brand-primary/50'
+              : 'hover:border-ouro/50'
           }
-          ${error ? 'border-red-300' : 'border-theme-secondary'}
-          ${isOpen ? 'border-brand-primary ring-2 ring-brand-primary/20' : ''}
+          ${error ? 'border-erro/30' : 'border-theme-secondary'}
+          ${isOpen ? 'border-ouro ring-2 ring-ouro/20' : ''}
         `}
         onClick={handleToggleDropdown}
       >
@@ -151,13 +151,13 @@ export default function MultiSelectWithId({
                   papel="legenda"
                   tom="ouro"
                   key={id}
-                  className="inline-flex items-center capitalize gap-1 bg-brand-primary/10 px-2 py-1 rounded-lg font-medium"
+                  className="inline-flex items-center capitalize gap-1 bg-ouro/10 px-2 py-1 rounded-lg font-medium"
                 >
                   {option.label}
                   <button
                     type="button"
                     onClick={(e) => handleRemoveSelected(id, e)}
-                    className="hover:bg-brand-primary/20 rounded p-0.5 transition-colors"
+                    className="hover:bg-ouro/20 rounded p-0.5 transition-colors"
                     disabled={isDisabled}
                   >
                     <PiX className="w-3 h-3" />
@@ -178,13 +178,13 @@ export default function MultiSelectWithId({
                     papel="legenda"
                     tom="ouro"
                     key={id}
-                    className="inline-flex capitalize items-center gap-1 bg-brand-primary/10 px-2 py-1 rounded-lg font-medium"
+                    className="inline-flex capitalize items-center gap-1 bg-ouro/10 px-2 py-1 rounded-lg font-medium"
                   >
                     {option.label}
                     <button
                       type="button"
                       onClick={(e) => handleRemoveSelected(id, e)}
-                      className="hover:bg-brand-primary/20 rounded p-0.5 transition-colors"
+                      className="hover:bg-ouro/20 rounded p-0.5 transition-colors"
                       disabled={isDisabled}
                     >
                       <PiX className="w-3 h-3" />
@@ -205,7 +205,7 @@ export default function MultiSelectWithId({
             <button
               type="button"
               onClick={handleClearAll}
-              className="p-1 hover:bg-theme-secondary/20 rounded transition-colors"
+              className="p-1 hover:bg-sup-1/20 rounded transition-colors"
               disabled={isDisabled}
             >
               <PiX className="w-4 h-4 text-theme-tertiary" />
@@ -220,12 +220,12 @@ export default function MultiSelectWithId({
         </div>
       </div>
 
-      {error && <p className="text-red-500 text-xs mt-1">{error}</p>}
+      {error && <p className="text-erro text-xs mt-1">{error}</p>}
 
       {isOpen && (
         <div
           ref={dropdownRef}
-          className="absolute top-full left-0 right-0 mt-2 bg-theme-elevated border border-theme-secondary rounded-xl shadow-xl z-[500] max-h-80 overflow-hidden"
+          className="absolute top-full left-0 right-0 mt-2 bg-theme-elevated border border-theme-secondary rounded-xl shadow-xl z-menu max-h-80 overflow-hidden"
         >
           <div className="p-3 border-b border-theme-secondary">
             <div className="relative">
@@ -239,7 +239,7 @@ export default function MultiSelectWithId({
                 onKeyDown={(e) => {
                   if (e.key === 'Enter') e.preventDefault();
                 }}
-                className="w-full pl-10 pr-4 py-2 bg-theme-primary border border-theme-secondary rounded-lg text-sm focus:outline-none focus:border-brand-primary focus:ring-2 focus:ring-brand-primary/20"
+                className="w-full pl-10 pr-4 py-2 bg-theme-primary border border-theme-secondary rounded-lg text-sm focus:outline-none focus:border-ouro focus:ring-2 focus:ring-ouro/20"
               />
             </div>
           </div>
@@ -264,11 +264,10 @@ export default function MultiSelectWithId({
                     type="button"
                     onClick={(e) => handleOptionClick(opt.id, e)}
                     className={`
-                      w-full text-left px-4 py-3 hover:bg-interactive-hover transition-colors duration-200 
-                      flex items-center justify-between border-b last:border-b-0 border-theme-secondary/50
+                      w-full text-left px-4 py-3 hover:bg-ouro/10 transition-colors duration-200 flex items-center justify-between border-b last:border-b-0 border-linha/50
                       ${
                         isSelected
-                          ? 'bg-brand-primary/5 text-brand-primary'
+                          ? 'bg-ouro/5 text-brand-primary'
                           : 'text-theme-primary'
                       }
                     `}
@@ -284,7 +283,7 @@ export default function MultiSelectWithId({
           </div>
 
           {selectedValues.length > 0 && (
-            <div className="px-4 py-2 border-t border-theme-secondary bg-theme-secondary/5">
+            <div className="px-4 py-2 border-t border-theme-secondary bg-sup-1/5">
               <Text papel="legenda" tom="suave" as="p">
                 {selectedValues.length}{' '}
                 {selectedValues.length === 1

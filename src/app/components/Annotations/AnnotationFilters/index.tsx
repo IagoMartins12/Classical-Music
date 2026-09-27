@@ -144,10 +144,10 @@ export default function AnnotationFiltersComponent({
 
   return (
     <AnimatedCard hover="none" className="border-t border-theme-secondary">
-      <div className="p-6 bg-theme-elevated/30">
+      <div className="p-6 bg-sup-elevada/30">
         <div className="flex items-center justify-between mb-6">
           <Inline gap={3}>
-            <div className="w-8 h-8 bg-gradient-to-br from-accent-purple to-accent-blue rounded-xl flex items-center justify-center">
+            <div className="w-8 h-8 fill-ouro rounded-xl flex items-center justify-center">
               <PiFunnel className="w-4 h-4 text-theme-primary" />
             </div>
             <h3 className="text-lg font-semibold text-theme-primary classical-title">
@@ -157,7 +157,7 @@ export default function AnnotationFiltersComponent({
               <Text
                 papel="legenda"
                 tom="ouro"
-                className="bg-brand-primary/10 px-2 py-1 rounded-lg font-medium"
+                className="bg-ouro/10 px-2 py-1 rounded-lg font-medium"
               >
                 {
                   Object.entries(localFilters).filter(([key, value]) => {
@@ -173,7 +173,7 @@ export default function AnnotationFiltersComponent({
           </Inline>
           <button
             onClick={onClose}
-            className="w-8 h-8 rounded-lg bg-theme-elevated border border-theme-primary/30 flex items-center justify-center text-theme-tertiary hover:text-theme-primary hover:border-accent-red/50 transition-all"
+            className="w-8 h-8 rounded-lg bg-theme-elevated border border-linha/30 flex items-center justify-center text-theme-tertiary hover:text-texto hover:border-erro/50 transition-all"
           >
             <PiX className="w-4 h-4" />
             <NomeAcao acao="fechar" />
@@ -213,8 +213,8 @@ export default function AnnotationFiltersComponent({
                       }
                       className={`w-full flex items-center space-x-3 px-3 py-2 rounded-xl text-sm font-medium transition-all ${
                         isSelected
-                          ? 'bg-accent-blue/10 border border-accent-blue/30 text-accent-blue'
-                          : 'bg-theme-elevated border border-theme-primary/20 text-theme-secondary hover:border-accent-blue/50 hover:text-theme-primary'
+                          ? 'bg-aviso/10 border border-aviso/30 text-aviso'
+                          : 'bg-theme-elevated border border-linha/20 text-theme-secondary hover:border-aviso/50 hover:text-texto'
                       }`}
                     >
                       <Icon className="w-4 h-4" />
@@ -259,8 +259,8 @@ export default function AnnotationFiltersComponent({
                       }
                       className={`w-full flex items-center space-x-3 px-3 py-2 rounded-xl text-sm font-medium transition-all ${
                         isSelected
-                          ? 'bg-accent-green/10 border border-accent-green/30 text-accent-green'
-                          : 'bg-theme-elevated border border-theme-primary/20 text-theme-secondary hover:border-accent-green/50 hover:text-theme-primary'
+                          ? 'bg-ok/10 border border-ok/30 text-ok'
+                          : 'bg-theme-elevated border border-linha/20 text-theme-secondary hover:border-ok/50 hover:text-texto'
                       }`}
                     >
                       <Icon className="w-4 h-4" />
@@ -299,8 +299,8 @@ export default function AnnotationFiltersComponent({
                       onClick={() => handleFilterChange('sortBy', option.value)}
                       className={`w-full flex items-center space-x-3 px-3 py-2 rounded-xl text-sm font-medium transition-all ${
                         isSelected
-                          ? 'bg-accent-purple/10 border border-accent-purple/30 text-accent-purple'
-                          : 'bg-theme-elevated border border-theme-primary/20 text-theme-secondary hover:border-accent-purple/50 hover:text-theme-primary'
+                          ? 'bg-ouro/10 border border-ouro/30 text-ouro-texto'
+                          : 'bg-theme-elevated border border-linha/20 text-theme-secondary hover:border-ouro/50 hover:text-texto'
                       }`}
                     >
                       <Icon className="w-4 h-4" />
@@ -345,7 +345,7 @@ export default function AnnotationFiltersComponent({
                 {localFilters.search && (
                   <button
                     onClick={() => handleFilterChange('search', undefined)}
-                    className="absolute right-2 top-1/2 transform -translate-y-1/2 text-theme-tertiary hover:text-accent-red transition-colors"
+                    className="absolute right-2 top-1/2 transform -translate-y-1/2 text-theme-tertiary hover:text-erro transition-colors"
                   >
                     <PiX className="w-4 h-4" />
                     <NomeAcao acao="fechar" />
@@ -372,7 +372,7 @@ export default function AnnotationFiltersComponent({
                 <Inline
                   as="span"
                   gap={2}
-                  className="px-3 py-1 bg-accent-blue/10 border border-accent-blue/30 text-accent-blue rounded-full text-sm font-medium"
+                  className="px-3 py-1 bg-aviso/10 border border-aviso/30 text-aviso rounded-full text-sm font-medium"
                 >
                   <span>
                     {t('annotation_filters_dificuldade')}{' '}
@@ -384,7 +384,7 @@ export default function AnnotationFiltersComponent({
                   </span>
                   <button
                     onClick={() => handleFilterChange('difficulty', undefined)}
-                    className="text-accent-blue hover:text-accent-red transition-colors"
+                    className="text-aviso hover:text-erro transition-colors"
                   >
                     <PiX className="w-3 h-3" />
                     <NomeAcao acao="fechar" />
@@ -396,7 +396,7 @@ export default function AnnotationFiltersComponent({
                 <Inline
                   as="span"
                   gap={2}
-                  className="px-3 py-1 bg-accent-green/10 border border-accent-green/30 text-accent-green rounded-full text-sm font-medium"
+                  className="px-3 py-1 bg-ok/10 border border-ok/30 text-ok rounded-full text-sm font-medium"
                 >
                   <span>
                     {t('annotation_filters_abrangencia_label')}{' '}
@@ -407,7 +407,7 @@ export default function AnnotationFiltersComponent({
                   </span>
                   <button
                     onClick={() => handleFilterChange('scope', undefined)}
-                    className="text-accent-green hover:text-accent-red transition-colors"
+                    className="text-ok hover:text-erro transition-colors"
                   >
                     <PiX className="w-3 h-3" />
                     <NomeAcao acao="fechar" />
@@ -419,7 +419,7 @@ export default function AnnotationFiltersComponent({
                 <Inline
                   as="span"
                   gap={2}
-                  className="px-3 py-1 bg-accent-purple/10 border border-accent-purple/30 text-accent-purple rounded-full text-sm font-medium"
+                  className="px-3 py-1 bg-ouro/10 border border-ouro/30 text-ouro-texto rounded-full text-sm font-medium"
                 >
                   <span>
                     {t('annotation_filters_ordem')}{' '}
@@ -430,7 +430,7 @@ export default function AnnotationFiltersComponent({
                   </span>
                   <button
                     onClick={() => handleFilterChange('sortBy', 'helpful')}
-                    className="text-accent-purple hover:text-accent-red transition-colors"
+                    className="text-ouro-texto hover:text-erro transition-colors"
                   >
                     <PiX className="w-3 h-3" />
                     <NomeAcao acao="fechar" />
@@ -442,7 +442,7 @@ export default function AnnotationFiltersComponent({
                 <Inline
                   as="span"
                   gap={2}
-                  className="px-3 py-1 bg-brand-primary/10 border border-brand-primary/30 text-brand-primary rounded-full text-sm font-medium"
+                  className="px-3 py-1 bg-ouro/10 border border-ouro/30 text-brand-primary rounded-full text-sm font-medium"
                 >
                   <span>
                     {t('annotation_filters_busca')} &quot;{localFilters.search}
@@ -450,7 +450,7 @@ export default function AnnotationFiltersComponent({
                   </span>
                   <button
                     onClick={() => handleFilterChange('search', undefined)}
-                    className="text-brand-primary hover:text-accent-red transition-colors"
+                    className="text-brand-primary hover:text-erro transition-colors"
                   >
                     <PiX className="w-3 h-3" />
                     <NomeAcao acao="fechar" />
@@ -468,7 +468,7 @@ export default function AnnotationFiltersComponent({
               <Inline
                 as="span"
                 gap={1}
-                className="px-3 py-1 bg-brand-primary/10 border border-brand-primary/30 text-brand-primary rounded-full text-sm font-medium"
+                className="px-3 py-1 bg-ouro/10 border border-ouro/30 text-brand-primary rounded-full text-sm font-medium"
               >
                 <PiFunnel className="w-3 h-3" />
                 <span>
@@ -516,7 +516,7 @@ export default function AnnotationFiltersComponent({
         </div>
 
         {/* ✅ Dica de uso com traduções */}
-        <div className="mt-4 p-3 bg-theme-elevated/50 border border-theme-primary/20 rounded-xl">
+        <div className="mt-4 p-3 bg-sup-elevada/50 border border-linha/20 rounded-xl">
           <Text
             papel="legenda"
             tom="fraco"

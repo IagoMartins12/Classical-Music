@@ -420,7 +420,7 @@ export default function ComposerWorks({
       <AnimatedCard hover="lift" className="classical-card p-12">
         <AnimatedItem direction="up" springType="bouncy">
           <Inline gap={3} className="mb-6">
-            <div className="w-12 h-12 bg-gradient-to-br from-accent-blue to-accent-purple rounded-2xl flex items-center justify-center">
+            <div className="w-12 h-12 bg-aviso rounded-2xl flex items-center justify-center">
               <PiBookOpen className="w-6 h-6 text-theme-primary" />
             </div>
             <div>
@@ -433,7 +433,7 @@ export default function ComposerWorks({
 
         <AnimatedItem direction="scale" springType="gentle">
           <div className="text-center py-12">
-            <div className="w-16 h-16 bg-theme-tertiary/20 rounded-2xl flex items-center justify-center mx-auto mb-6">
+            <div className="w-16 h-16 bg-sup-2/20 rounded-2xl flex items-center justify-center mx-auto mb-6">
               <PiPlaylist className="w-8 h-8 text-theme-tertiary" />
             </div>
             <h3 className="text-xl font-bold text-theme-primary classical-title mb-2">
@@ -455,10 +455,10 @@ export default function ComposerWorks({
         <AnimatedItem
           direction="up"
           springType="smooth"
-          className="p-0 pb-4 md:p-8 border-b border-theme-secondary bg-gradient-to-r from-theme-elevated to-interactive-hover"
+          className="p-0 pb-4 md:p-8 border-b border-theme-secondary bg-sup-elevada"
         >
           <Inline gap={3} className="mb-4">
-            <div className="w-12 h-12 bg-gradient-to-br from-accent-blue to-accent-purple rounded-2xl flex items-center justify-center">
+            <div className="w-12 h-12 bg-aviso rounded-2xl flex items-center justify-center">
               <PiBookOpen className="w-6 h-6 text-theme-primary" />
             </div>
             <div className="flex-1">
@@ -490,8 +490,8 @@ export default function ComposerWorks({
                         px-4 py-2 rounded-xl text-sm font-medium transition-all duration-300 
                         ${
                           selectedWorkType === 'all'
-                            ? 'bg-brand-primary text-theme-primary shadow-theme-medium border-2 border-brand-primary'
-                            : 'bg-interactive-hover border border-theme-secondary text-theme-secondary hover:bg-brand-primary/10 hover:border-brand-primary/30 hover:text-brand-primary'
+                            ? 'bg-ouro text-theme-primary shadow-theme-medium border-2 border-ouro'
+                            : 'bg-ouro/10 border border-theme-secondary text-theme-secondary hover:bg-ouro/10 hover:border-ouro/30 hover:text-ouro-texto'
                         }
                       `}
                   disabled={loading}
@@ -514,8 +514,8 @@ export default function ComposerWorks({
                             px-4 py-2 rounded-xl text-sm font-medium transition-all duration-300 
                             ${
                               selectedWorkType === groupKey
-                                ? 'bg-accent-blue text-theme-primary shadow-theme-medium border-2 border-accent-blue'
-                                : 'bg-interactive-hover border border-theme-secondary text-theme-secondary hover:bg-accent-blue/10 hover:border-accent-blue/30 hover:text-accent-blue'
+                                ? 'bg-aviso text-theme-primary shadow-theme-medium border-2 border-aviso'
+                                : 'bg-ouro/10 border border-theme-secondary text-theme-secondary hover:bg-aviso/10 hover:border-aviso/30 hover:text-aviso'
                             }
                           `}
                         disabled={loading}
@@ -545,7 +545,7 @@ export default function ComposerWorks({
             {searchTerm && (
               <button
                 onClick={() => setSearchTerm('')}
-                className="absolute right-4 top-1/2 transform -translate-y-1/2 text-theme-tertiary hover:text-theme-primary transition-colors"
+                className="absolute right-4 top-1/2 transform -translate-y-1/2 text-theme-tertiary hover:text-texto transition-colors"
                 disabled={loading}
               >
                 <PiX className="w-5 h-5" />
@@ -597,7 +597,7 @@ export default function ComposerWorks({
           {/* Filtros expandidos */}
           {showFilters && (
             <div className="overflow-hidden transition-all duration-500 max-h-96 opacity-100 mt-6">
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-4 p-4 bg-theme-elevated/50 border border-theme-primary rounded-xl">
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4 p-4 bg-sup-elevada/50 border border-theme-primary rounded-xl">
                 {/* Filtro de instrumento */}
                 <Stack gap={2} className="gap-1">
                   <label className="text-sm font-medium text-theme-secondary">
@@ -685,14 +685,14 @@ export default function ComposerWorks({
                   papel="rotulo"
                   tom="ouro"
                   as="div"
-                  className="flex items-center gap-2 px-3 py-1 bg-brand-primary/10 border border-brand-primary/30 rounded-full"
+                  className="flex items-center gap-2 px-3 py-1 bg-ouro/10 border border-ouro/30 rounded-full"
                 >
                   <span>
                     {t('search_filter_prefix')} &quot;{searchTerm}&quot;
                   </span>
                   <button
                     onClick={() => setSearchTerm('')}
-                    className="hover:text-brand-secondary transition-colors"
+                    className="hover:text-ouro-texto transition-colors"
                     disabled={loading}
                   >
                     <PiX className="w-3 h-3" />
@@ -702,14 +702,14 @@ export default function ComposerWorks({
               )}
 
               {selectedWorkType !== 'all' && (
-                <div className="flex items-center gap-2 px-3 py-1 bg-accent-blue/10 border border-accent-blue/30 text-accent-blue rounded-full text-sm">
+                <div className="flex items-center gap-2 px-3 py-1 bg-aviso/10 border border-aviso/30 text-aviso rounded-full text-sm">
                   <span>
                     {t('type_filter_prefix')}{' '}
                     {t(WORK_TYPE_LABELS[selectedWorkType])}
                   </span>
                   <button
                     onClick={() => setSelectedWorkType('all')}
-                    className="hover:text-accent-blue/80 transition-colors"
+                    className="hover:text-aviso/80 transition-colors"
                     disabled={loading}
                   >
                     <PiX className="w-3 h-3" />
@@ -719,7 +719,7 @@ export default function ComposerWorks({
               )}
 
               {selectedInstrument && (
-                <div className="flex items-center gap-2 px-3 py-1 bg-accent-green/10 border border-accent-green/30 text-accent-green rounded-full text-sm">
+                <div className="flex items-center gap-2 px-3 py-1 bg-ok/10 border border-ok/30 text-ok rounded-full text-sm">
                   <span>
                     {t('instrument_filter_prefix')}{' '}
                     {
@@ -730,7 +730,7 @@ export default function ComposerWorks({
                   </span>
                   <button
                     onClick={() => setSelectedInstrument('')}
-                    className="hover:text-accent-green/80 transition-colors"
+                    className="hover:text-ok/80 transition-colors"
                     disabled={loading}
                   >
                     <PiX className="w-3 h-3" />
@@ -740,13 +740,13 @@ export default function ComposerWorks({
               )}
 
               {selectedGenre && (
-                <div className="flex items-center gap-2 px-3 py-1 bg-accent-purple/10 border border-accent-purple/30 text-accent-purple rounded-full text-sm">
+                <div className="flex items-center gap-2 px-3 py-1 bg-ouro/10 border border-ouro/30 text-ouro-texto rounded-full text-sm">
                   <span>
                     {t('genre_filter_prefix')} {selectedGenre}
                   </span>
                   <button
                     onClick={() => setSelectedGenre('')}
-                    className="hover:text-accent-purple/80 transition-colors"
+                    className="hover:text-ouro-texto/80 transition-colors"
                     disabled={loading}
                   >
                     <PiX className="w-3 h-3" />
@@ -756,13 +756,13 @@ export default function ComposerWorks({
               )}
 
               {selectedCategory && (
-                <div className="flex items-center gap-2 px-3 py-1 bg-accent-orange/10 border border-accent-orange/30 text-accent-orange rounded-full text-sm">
+                <div className="flex items-center gap-2 px-3 py-1 bg-atencao/10 border border-atencao/30 text-atencao rounded-full text-sm">
                   <span>
                     {t('category_filter_prefix')} {selectedCategory}
                   </span>
                   <button
                     onClick={() => setSelectedCategory('')}
-                    className="hover:text-accent-orange/80 transition-colors"
+                    className="hover:text-atencao/80 transition-colors"
                     disabled={loading}
                   >
                     <PiX className="w-3 h-3" />
@@ -773,7 +773,7 @@ export default function ComposerWorks({
 
               <button
                 onClick={clearFilters}
-                className="text-sm text-accent-red hover:text-accent-red/80 underline font-medium"
+                className="text-sm text-erro hover:text-erro/80 underline font-medium"
                 disabled={loading}
               >
                 {t('clear_all_filters')}
@@ -800,13 +800,13 @@ export default function ComposerWorks({
               <AnimatedItem direction="scale" springType="gentle">
                 <div className="flex items-center justify-center py-4 opacity-70">
                   <Inline gap={2} className="text-sm text-theme-secondary">
-                    <div className="w-2 h-2 bg-brand-primary rounded-full animate-bounce"></div>
+                    <div className="w-2 h-2 bg-ouro rounded-full animate-bounce"></div>
                     <div
-                      className="w-2 h-2 bg-brand-primary rounded-full animate-bounce"
+                      className="w-2 h-2 bg-ouro rounded-full animate-bounce"
                       style={{ animationDelay: '0.1s' }}
                     ></div>
                     <div
-                      className="w-2 h-2 bg-brand-primary rounded-full animate-bounce"
+                      className="w-2 h-2 bg-ouro rounded-full animate-bounce"
                       style={{ animationDelay: '0.2s' }}
                     ></div>
                     <span className="ml-2">{t('loading')}...</span>
@@ -827,20 +827,20 @@ export default function ComposerWorks({
                     <Link
                       href={`/works/${work.id}`}
                       key={work.id}
-                      className="classical-card-simple w-full hover:shadow-theme-glow transition-all duration-300 group block"
+                      className="classical-card-simple w-full hover:shadow-[var(--sombra-2)] transition-all duration-300 group block"
                     >
                       <div className="p-6">
                         <div className="flex items-start justify-between">
                           <div className="flex-1 max-w-full">
                             <Inline gap={3} className="mb-4">
                               {work.instrument?.name && (
-                                <div className="w-8 h-8 bg-gradient-to-br from-accent-blue to-accent-purple rounded-xl flex items-center justify-center text-theme-primary group-hover:scale-110 transition-transform duration-300">
+                                <div className="w-8 h-8 bg-aviso rounded-xl flex items-center justify-center text-theme-primary group-hover:scale-110 transition-transform duration-300">
                                   {getInstrumentIcon(work.instrument.name)}
                                 </div>
                               )}
 
                               <div className="flex-1 flex-wrap flex flex-col gap-2">
-                                <span className="text-lg flex items-center gap-2 font-semibold text-brand-primary group-hover:text-brand-secondary transition-colors duration-300 classical-title">
+                                <span className="text-lg flex items-center gap-2 font-semibold text-brand-primary group-hover:text-ouro-texto transition-colors duration-300 classical-title">
                                   {work.title}
                                   <VerificationBadge
                                     verified={work.isVerified}
@@ -906,7 +906,7 @@ export default function ComposerWorks({
                                   .map((genre) => (
                                     <span
                                       key={genre}
-                                      className="px-2 capitalize py-1 bg-accent-green/10 border border-accent-green/30 text-accent-green text-xs rounded-full"
+                                      className="px-2 capitalize py-1 bg-ok/10 border border-ok/30 text-ok text-xs rounded-full"
                                     >
                                       {translateGenre(genre, language)}
                                     </span>
@@ -916,7 +916,7 @@ export default function ComposerWorks({
                                   .map((category) => (
                                     <span
                                       key={category}
-                                      className="px-2 py-1 bg-accent-purple/10 border border-accent-purple/30 text-accent-purple text-xs rounded-full"
+                                      className="px-2 py-1 bg-ouro/10 border border-ouro/30 text-ouro-texto text-xs rounded-full"
                                     >
                                       {translateCategory(category, language)}
                                     </span>
@@ -949,20 +949,20 @@ export default function ComposerWorks({
                     <AnimatedItem key={work.id} direction="left" speed="fast">
                       <Link
                         href={`/works/${work.id}`}
-                        className="classical-card-simple hover:shadow-theme-glow transition-all duration-300 group block mb-4"
+                        className="classical-card-simple hover:shadow-[var(--sombra-2)] transition-all duration-300 group block mb-4"
                       >
                         <div className="p-6">
                           <div className="flex items-start justify-between">
                             <div className="flex-1">
                               <Inline gap={3} className="mb-4">
                                 {work.instrument?.name && (
-                                  <div className="w-8 h-8 bg-gradient-to-br from-accent-blue to-accent-purple rounded-xl flex items-center justify-center text-theme-primary group-hover:scale-110 transition-transform duration-300">
+                                  <div className="w-8 h-8 bg-aviso rounded-xl flex items-center justify-center text-theme-primary group-hover:scale-110 transition-transform duration-300">
                                     {getInstrumentIcon(work.instrument.name)}
                                   </div>
                                 )}
 
                                 <div className="flex-1 flex">
-                                  <span className="text-lg flex items-center gap-2 font-semibold text-brand-primary group-hover:text-brand-secondary transition-colors duration-300 classical-title">
+                                  <span className="text-lg flex items-center gap-2 font-semibold text-brand-primary group-hover:text-ouro-texto transition-colors duration-300 classical-title">
                                     {work.title}
                                     <VerificationBadge
                                       verified={work.isVerified}
@@ -1028,7 +1028,7 @@ export default function ComposerWorks({
                                     .map((genre) => (
                                       <span
                                         key={genre}
-                                        className="px-2 capitalize py-1 bg-accent-green/10 border border-accent-green/30 text-accent-green text-xs rounded-full"
+                                        className="px-2 capitalize py-1 bg-ok/10 border border-ok/30 text-ok text-xs rounded-full"
                                       >
                                         {translateGenre(genre, language)}
                                       </span>
@@ -1038,7 +1038,7 @@ export default function ComposerWorks({
                                     .map((category) => (
                                       <span
                                         key={category}
-                                        className="px-2 py-1 bg-accent-purple/10 border border-accent-purple/30 text-accent-purple text-xs rounded-full"
+                                        className="px-2 py-1 bg-ouro/10 border border-ouro/30 text-ouro-texto text-xs rounded-full"
                                       >
                                         {translateCategory(category, language)}
                                       </span>
@@ -1099,7 +1099,7 @@ export default function ComposerWorks({
             // Empty state para resultados filtrados
             <AnimatedItem direction="scale" springType="gentle">
               <div className="text-center py-16">
-                <div className="w-16 h-16 bg-theme-tertiary/20 rounded-2xl flex items-center justify-center mx-auto mb-6">
+                <div className="w-16 h-16 bg-sup-2/20 rounded-2xl flex items-center justify-center mx-auto mb-6">
                   <PiMagnifyingGlass className="w-8 h-8 text-theme-tertiary" />
                 </div>
                 <h3 className="text-xl font-bold text-theme-primary classical-title mb-2">

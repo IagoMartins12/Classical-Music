@@ -34,7 +34,7 @@ const TimelineComponent = (props: any) => {
         >
           <button
             onClick={handleDelete}
-            className="p-2 text-red-600 hover:bg-red-50 rounded transition-colors"
+            className="p-2 text-erro hover:bg-erro/10 rounded transition-colors"
             title="Remover"
           >
             <PiTrash className="w-4 h-4" />
@@ -46,7 +46,7 @@ const TimelineComponent = (props: any) => {
       {composerName && (
         <Inline
           gap={3}
-          className="mb-6 p-4 bg-brand-primary/10 rounded-lg border-l-4 border-brand-primary"
+          className="border mb-6 p-4 bg-ouro/10 rounded-lg border-ouro/40"
         >
           <PiUser className="w-5 h-5 text-brand-primary" />
           <div>
@@ -66,7 +66,7 @@ const TimelineComponent = (props: any) => {
           {events.map((event: any, index: number) => (
             <div key={index} className="relative flex items-start space-x-6">
               {/* Ícone */}
-              <div className="relative z-10 flex items-center justify-center w-16 h-16 rounded-full bg-brand-primary border-4 border-theme-elevated shadow-theme-medium">
+              <div className="relative z-10 flex items-center justify-center w-16 h-16 rounded-full bg-ouro border-4 border-sup-elevada shadow-theme-medium">
                 <PiClock className="w-6 h-6 text-theme-primary" />
               </div>
 
