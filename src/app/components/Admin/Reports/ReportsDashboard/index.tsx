@@ -125,7 +125,7 @@ export default function ReportsDashboard() {
             <h1 className="text-4xl md:text-5xl font-bold text-gradient-brand classical-title mb-4">
               Dashboard de Reports
             </h1>
-            <p className="text-xl text-theme-secondary classical-subtitle">
+            <p className="text-xl text-theme-secondary classical-subtitle medida-texto mx-auto">
               Monitore e gerencie reports da plataforma
             </p>
           </div>

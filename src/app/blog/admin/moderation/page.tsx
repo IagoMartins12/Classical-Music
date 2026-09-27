@@ -76,7 +76,7 @@ export default async function ModerationPage({ searchParams }: PageProps) {
             </AnimatedItem>
 
             <AnimatedItem direction="up">
-              <p className="text-xl text-theme-secondary max-w-3xl mx-auto classical-subtitle mb-8">
+              <p className="text-xl text-theme-secondary medida-texto mx-auto classical-subtitle mb-8">
                 Revise e modere os comentários do blog
               </p>
             </AnimatedItem>

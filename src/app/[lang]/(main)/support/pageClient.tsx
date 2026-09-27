@@ -563,7 +563,7 @@ export default function SupportPage(): JSX.Element {
               </AnimatedItem>
 
               <AnimatedItem direction="up" springType="gentle">
-                <p className="text-xl lg:text-2xl text-theme-secondary leading-relaxed classical-body">
+                <p className="text-xl lg:text-2xl text-theme-secondary leading-relaxed classical-body medida-texto mx-auto">
                   {t('support_jsx_p_children_0__soluções_rápidas_problemas')}
                 </p>
               </AnimatedItem>
@@ -585,7 +585,7 @@ export default function SupportPage(): JSX.Element {
                       'support_pagecontainer_animatedcontainer_categorias_suporte'
                     )}
                   </h2>
-                  <p className="text-xl text-theme-secondary max-w-3xl mx-auto">
+                  <p className="text-xl text-theme-secondary medida-texto mx-auto">
                     {t('support_jsx_p_children_0__encontre_soluções_rápidas')}
                   </p>
                 </div>
@@ -834,7 +834,7 @@ export default function SupportPage(): JSX.Element {
                 {t('support_jsx_h2_children_0__problema_não_resolvido')}
               </h2>
 
-              <p className="text-xl text-theme-secondary mb-12 classical-body">
+              <p className="text-xl text-theme-secondary mb-12 classical-body medida-texto mx-auto">
                 {t('support_jsx_p_children_0__nossa_equipe_suporte')}
               </p>
 

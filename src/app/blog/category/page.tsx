@@ -34,7 +34,7 @@ export default async function CategoriesPage() {
         <h1 className="text-4xl md:text-5xl font-bold text-gradient-brand classical-title mb-4">
           Explore por Categoria
         </h1>
-        <p className="text-xl text-theme-secondary max-w-3xl mx-auto">
+        <p className="text-xl text-theme-secondary medida-texto mx-auto">
           Navegue por {categories.length} categorias e descubra artigos sobre
           seus temas favoritos
         </p>

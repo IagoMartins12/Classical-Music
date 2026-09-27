@@ -111,7 +111,7 @@ export default function ArticlePreviewModal({
           </div>
 
           {/* Article Content */}
-          <article className="prose prose-lg max-w-none dark:prose-invert">
+          <article className="prose prose-lg medida-texto dark:prose-invert">
             <ArticleContent content={article.content} />
           </article>
 

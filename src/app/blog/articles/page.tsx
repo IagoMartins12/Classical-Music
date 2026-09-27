@@ -66,7 +66,7 @@ export default async function ArticlesPage() {
         <h1 className="text-4xl md:text-5xl font-bold text-gradient-brand classical-title mb-4">
           Todos os Artigos
         </h1>
-        <p className="text-xl text-theme-secondary max-w-3xl mx-auto">
+        <p className="text-xl text-theme-secondary medida-texto mx-auto">
           Explore nossa coleção completa de artigos sobre música clássica
         </p>
 

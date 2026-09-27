@@ -78,7 +78,7 @@ export default async function ArticlesAdminPage({ searchParams }: PageProps) {
             </AnimatedItem>
 
             <AnimatedItem direction="up">
-              <p className="text-xl text-theme-secondary max-w-3xl mx-auto classical-subtitle mb-8">
+              <p className="text-xl text-theme-secondary medida-texto mx-auto classical-subtitle mb-8">
                 Todos os artigos do blog em um só lugar
               </p>
             </AnimatedItem>

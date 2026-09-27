@@ -180,7 +180,7 @@ export default function AdminDashboard() {
             <h1 className="text-5xl md:text-6xl font-bold text-gradient-brand classical-title mb-4">
               Dashboard Administrativo
             </h1>
-            <p className="text-xl text-theme-secondary classical-subtitle mb-6">
+            <p className="text-xl text-theme-secondary classical-subtitle mb-6 medida-texto mx-auto">
               Insights completos da plataforma de música clássica
             </p>
 

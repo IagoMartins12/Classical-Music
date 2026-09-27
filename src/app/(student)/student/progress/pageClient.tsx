@@ -173,7 +173,7 @@ export default function StudentProgressPageClient({
             <h1 className="text-4xl md:text-5xl font-bold text-gradient-brand classical-title mb-4">
               {t('title')}
             </h1>
-            <p className="text-xl text-theme-secondary classical-subtitle">
+            <p className="text-xl text-theme-secondary classical-subtitle medida-texto mx-auto">
               {t('subtitle')}
             </p>
           </div>

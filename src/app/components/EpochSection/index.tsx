@@ -147,7 +147,7 @@ export function EpochSection({ epoch, index, isReversed = false }: Props) {
                   {t('epoch_jsx_h3_children_0__sobre_periodo')}
                 </h3>
               </Inline>
-              <p className="text-theme-secondary sm:text-lg leading-relaxed classical-body">
+              <p className="text-theme-secondary sm:text-lg leading-relaxed classical-body medida-texto">
                 {epoch.historicalData.description}
               </p>
             </Stack>

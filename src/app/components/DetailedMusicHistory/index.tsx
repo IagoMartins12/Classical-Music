@@ -207,7 +207,7 @@ const OriginsSection = memo<SectionProps>(({ isExpanded, onToggle }) => {
       onToggle={onToggle}
     >
       <div className="classical-body text-theme-secondary">
-        <p className="text-lg leading-relaxed mb-6">
+        <p className="text-lg leading-relaxed mb-6 medida-texto">
           {t('detailed_jsx_p_children_0__origem_musica_classica')}
         </p>
         <div className="rounded-xl p-6 my-6 transform transition-all duration-200 hover:scale-101 bg-sup-2">
@@ -318,7 +318,7 @@ const RenaissanceSection = memo<SectionProps>(({ isExpanded, onToggle }) => {
       onToggle={onToggle}
     >
       <div className="classical-body text-theme-secondary">
-        <p className="text-lg leading-relaxed mb-6">
+        <p className="text-lg leading-relaxed mb-6 medida-texto">
           {t('detailed_jsx_p_children_0__se_periodo_medieval')}
         </p>
 
@@ -412,7 +412,7 @@ const BaroqueSection = memo<SectionProps>(({ isExpanded, onToggle }) => {
       onToggle={onToggle}
     >
       <div className="classical-body text-theme-secondary">
-        <p className="text-lg leading-relaxed mb-6">
+        <p className="text-lg leading-relaxed mb-6 medida-texto">
           {t('detailed_jsx_p_children_0__seculo_xvii_trouxe')}
         </p>
 
@@ -493,7 +493,7 @@ const ClassicalSection = memo<SectionProps>(({ isExpanded, onToggle }) => {
       onToggle={onToggle}
     >
       <div className="classical-body text-theme-secondary">
-        <p className="text-lg leading-relaxed mb-6">
+        <p className="text-lg leading-relaxed mb-6 medida-texto">
           {t('detailed_jsx_p_children_0__depois_excessos_barrocos')}
         </p>
 
@@ -563,7 +563,7 @@ const RomanticSection = memo<SectionProps>(({ isExpanded, onToggle }) => {
       onToggle={onToggle}
     >
       <div className="classical-body text-theme-secondary">
-        <p className="text-lg leading-relaxed mb-6">
+        <p className="text-lg leading-relaxed mb-6 medida-texto">
           {t('detailed_jsx_p_children_0__seculo_xix_foi')}
         </p>
 
@@ -610,7 +610,7 @@ const ModernSection = memo<SectionProps>(({ isExpanded, onToggle }) => {
       onToggle={onToggle}
     >
       <div className="classical-body text-theme-secondary">
-        <p className="text-lg leading-relaxed mb-6">
+        <p className="text-lg leading-relaxed mb-6 medida-texto">
           {t('detailed_jsx_p_children_0__seculo_xx_comecou')}
         </p>
 
@@ -732,7 +732,7 @@ const ContemporarySection = memo<SectionProps>(({ isExpanded, onToggle }) => {
       onToggle={onToggle}
     >
       <div className="classical-body text-theme-secondary">
-        <p className="text-lg leading-relaxed mb-6">
+        <p className="text-lg leading-relaxed mb-6 medida-texto">
           {t('detailed_jsx_p_children_0__vivemos_epoca_unica')}
         </p>
 
@@ -777,7 +777,7 @@ const ContemporarySection = memo<SectionProps>(({ isExpanded, onToggle }) => {
               <PiStar className="w-6 h-6 text-theme-primary" />
             </div>
           </div>
-          <p className="text-theme-primary text-lg font-medium classical-subtitle italic">
+          <p className="text-theme-primary text-lg font-medium classical-subtitle italic medida-texto mx-auto">
             &quot;{t('detailed_jsx_p_children_0__musica_classica_nao')}&quot;
           </p>
         </Stack>
@@ -803,7 +803,7 @@ const PopularMusicSection = memo<SectionProps>(({ isExpanded, onToggle }) => {
       onToggle={onToggle}
     >
       <div className="classical-body text-theme-secondary">
-        <p className="text-lg leading-relaxed mb-6">
+        <p className="text-lg leading-relaxed mb-6 medida-texto">
           {t('detailed_jsx_p_children_0__relacao_entre_musica')}
         </p>
 

@@ -497,7 +497,7 @@ export default function TeacherProfilePageClient({
             <h1 className="text-4xl md:text-5xl font-bold text-gradient-brand classical-title mb-4">
               {t('page_title')}
             </h1>
-            <p className="text-xl text-theme-secondary classical-subtitle">
+            <p className="text-xl text-theme-secondary classical-subtitle medida-texto mx-auto">
               {t('page_subtitle')}
             </p>
           </div>

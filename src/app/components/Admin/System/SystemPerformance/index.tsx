@@ -177,7 +177,7 @@ export default function SystemPerformance() {
             <h1 className="text-4xl md:text-5xl font-bold text-gradient-brand classical-title mb-4">
               Sistema & Performance
             </h1>
-            <p className="text-xl text-theme-secondary classical-subtitle">
+            <p className="text-xl text-theme-secondary classical-subtitle medida-texto mx-auto">
               Monitoramento em tempo real da infraestrutura
             </p>
 

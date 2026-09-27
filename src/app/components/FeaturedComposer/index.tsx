@@ -211,7 +211,7 @@ const FeaturedComposer: React.FC<FeaturedComposerProps> = ({ composer }) => {
                     <PiUser className="w-5 h-5 text-ouro-texto" />
                     {t('featured_composer_biography')}
                   </h4>
-                  <p className="text-theme-secondary leading-relaxed text-lg">
+                  <p className="text-theme-secondary leading-relaxed text-lg medida-texto">
                     {formatBio(biography)}
                   </p>
                 </Stack>

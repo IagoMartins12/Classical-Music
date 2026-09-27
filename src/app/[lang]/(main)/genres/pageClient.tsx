@@ -148,7 +148,7 @@ export default function GenresClient({ genres }: GenresClientProps) {
             <h1 className="text-4xl md:text-5xl font-bold text-gradient-brand classical-title mb-4">
               {t('page_title')}
             </h1>
-            <p className="text-xl text-theme-secondary max-w-3xl mx-auto classical-subtitle">
+            <p className="text-xl text-theme-secondary medida-texto mx-auto classical-subtitle">
               {t('page_subtitle').replace('{count}', genres.length.toString())}
             </p>
           </div>

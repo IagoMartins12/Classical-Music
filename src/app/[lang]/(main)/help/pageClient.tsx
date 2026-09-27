@@ -577,7 +577,7 @@ export default function HelpPage(): JSX.Element {
                   <h2 className="text-3xl lg:text-4xl font-bold classical-title text-theme-primary mb-4">
                     {t('help_jsx_h2_children_0__categorias_ajuda')}
                   </h2>
-                  <p className="text-xl text-theme-secondary max-w-3xl mx-auto">
+                  <p className="text-xl text-theme-secondary medida-texto mx-auto">
                     {t('help_jsx_p_children_0__escolha_categoria_que')}
                   </p>
                 </div>
@@ -690,7 +690,7 @@ export default function HelpPage(): JSX.Element {
               </AnimatedItem>
 
               <AnimatedItem direction="up" springType="gentle">
-                <p className="text-xl lg:text-2xl text-theme-secondary leading-relaxed classical-body">
+                <p className="text-xl lg:text-2xl text-theme-secondary leading-relaxed classical-body medida-texto mx-auto">
                   {t('help_jsx_p_children_0__pratica')}
                 </p>
               </AnimatedItem>
@@ -769,7 +769,7 @@ export default function HelpPage(): JSX.Element {
                 {t('help_jsx_h2_children_0__ainda_precisa_ajuda')}
               </h2>
 
-              <p className="text-xl text-theme-secondary mb-12 classical-body">
+              <p className="text-xl text-theme-secondary mb-12 classical-body medida-texto mx-auto">
                 {t('help_jsx_p_children_0__nossa_equipe_suporte')}
               </p>
 

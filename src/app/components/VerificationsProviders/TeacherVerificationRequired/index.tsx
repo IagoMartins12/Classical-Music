@@ -67,7 +67,7 @@ export default function TeacherVerificationRequired({
 
             {/* Subtitle */}
             <AnimatedItem direction="up" springType="smooth">
-              <p className="text-xl md:text-2xl text-theme-secondary mb-8 leading-relaxed">
+              <p className="text-xl md:text-2xl text-theme-secondary mb-8 leading-relaxed medida-texto mx-auto">
                 Seu convite para se tornar professor está sendo processado.
               </p>
             </AnimatedItem>

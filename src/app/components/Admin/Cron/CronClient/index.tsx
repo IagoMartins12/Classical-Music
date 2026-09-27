@@ -134,7 +134,7 @@ export default function CronClient() {
                     papel="rotulo"
                     tom="suave"
                     as="p"
-                    className="mt-1 max-w-2xl"
+                    className="mt-1 medida-texto"
                   >
                     {tarefa.description}
                   </Text>

@@ -266,7 +266,7 @@ export default function ModerationDashboard() {
             <h1 className="text-4xl md:text-5xl font-bold text-gradient-brand classical-title mb-4">
               Centro de Moderação
             </h1>
-            <p className="text-xl text-theme-secondary classical-subtitle">
+            <p className="text-xl text-theme-secondary classical-subtitle medida-texto mx-auto">
               Controle de qualidade e moderação de conteúdo
             </p>
           </div>

@@ -261,7 +261,7 @@ export default function UsersList() {
                 </span>
               )}
             </h1>
-            <p className="text-base md:text-lg lg:text-xl text-theme-secondary classical-subtitle px-4">
+            <p className="text-base md:text-lg lg:text-xl text-theme-secondary classical-subtitle px-4 medida-texto mx-auto">
               Todos os usuários cadastrados na plataforma
             </p>
           </div>

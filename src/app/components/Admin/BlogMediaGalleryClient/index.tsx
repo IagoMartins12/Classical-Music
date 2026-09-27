@@ -186,7 +186,7 @@ export default function BlogMediaGalleryClient() {
               <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold text-gradient-brand classical-title mb-4">
                 Galeria de Mídia do Blog
               </h1>
-              <p className="text-lg md:text-xl text-theme-secondary classical-subtitle max-w-2xl mx-auto">
+              <p className="text-lg md:text-xl text-theme-secondary classical-subtitle medida-texto mx-auto">
                 Gerencie todas as imagens, vídeos e áudios dos seus artigos
               </p>
             </div>

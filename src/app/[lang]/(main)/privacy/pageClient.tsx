@@ -178,7 +178,7 @@ export default function PrivacyPage() {
         <div className="absolute inset-0"></div>
         <AnimatedContainer delay={0.1} staggerSpeed="normal">
           <div className="relative ">
-            <div className="text-center max-w-4xl mx-auto">
+            <div className="text-center coluna-leitura mx-auto">
               <AnimatedItem direction="scale" springType="bouncy">
                 <div className="inline-flex items-center px-6 py-3 rounded-full mb-8 bg-sup-2">
                   <PiShield className="w-5 h-5 text-ouro-texto mr-2" />
@@ -198,7 +198,7 @@ export default function PrivacyPage() {
               </AnimatedItem>
 
               <AnimatedItem direction="up" springType="gentle">
-                <p className="text-xl lg:text-2xl text-theme-secondary leading-relaxed classical-body">
+                <p className="text-xl lg:text-2xl text-theme-secondary leading-relaxed classical-body medida-texto mx-auto">
                   {t('privacy_jsx_p_children_0__conheça_como_protegemos')}
                 </p>
               </AnimatedItem>
@@ -222,7 +222,7 @@ export default function PrivacyPage() {
       <section className="py-8">
         <AnimatedContainer delay={0.1} staggerSpeed="normal">
           <div className="">
-            <div className="max-w-4xl mx-auto">
+            <div className="coluna-leitura mx-auto">
               <AnimatedCard hover="lift" className="classical-card !p-8 md:p-8">
                 <div className="flex items-start flex-col md:flex-row space-x-4">
                   <div className="w-16 h-16 rounded-2xl flex items-center justify-center flex-shrink-0">
@@ -234,7 +234,7 @@ export default function PrivacyPage() {
                         'privacy_jsx_h2_children_0__compromisso_sua_privacidade'
                       )}
                     </h2>
-                    <p className="text-lg text-theme-secondary classical-body leading-relaxed">
+                    <p className="text-lg text-theme-secondary classical-body leading-relaxed medida-texto">
                       {t('privacy_jsx_p_children_0__music')}
                     </p>
                   </Stack>
@@ -249,7 +249,7 @@ export default function PrivacyPage() {
       <section className="py-8">
         <AnimatedContainer delay={0.1} staggerSpeed="fast">
           <div className="">
-            <div className="max-w-4xl mx-auto">
+            <div className="coluna-leitura mx-auto">
               <Stack className="text-center mb-12">
                 <h2 className="text-3xl font-bold classical-title text-theme-primary">
                   {t('privacy_jsx_h2_children_0__tipos_dados_coletados')}
@@ -302,7 +302,7 @@ export default function PrivacyPage() {
       <section className="py-8">
         <AnimatedContainer delay={0.1} staggerSpeed="fast">
           <div className="">
-            <div className="max-w-4xl mx-auto space-y-8">
+            <div className="coluna-leitura mx-auto space-y-8">
               {privacyData.map((section, index) => (
                 <AnimatedItem
                   key={section.id}
@@ -345,7 +345,7 @@ export default function PrivacyPage() {
       <section className="">
         <AnimatedContainer delay={0.1} staggerSpeed="normal">
           <div className="">
-            <div className="max-w-4xl mx-auto">
+            <div className="coluna-leitura mx-auto">
               <AnimatedCard hover="lift" className="classical-card !p-8">
                 <div className="flex items-start flex-col md:flex-row space-x-4">
                   <div className="w-12 h-12 rounded-xl flex items-center justify-center flex-shrink-0">
@@ -386,7 +386,7 @@ export default function PrivacyPage() {
 
         <AnimatedContainer delay={0.1} staggerSpeed="normal">
           <div className="relative ">
-            <div className="max-w-4xl mx-auto">
+            <div className="coluna-leitura mx-auto">
               <AnimatedCard
                 hover="lift"
                 className="classical-card p-12 text-center"
@@ -399,7 +399,7 @@ export default function PrivacyPage() {
                   {t('privacy_jsx_h2_children_0__dúvidas_sobre_privacidade')}
                 </h2>
 
-                <p className="text-xl text-theme-secondary mb-12 classical-body">
+                <p className="text-xl text-theme-secondary mb-12 classical-body medida-texto mx-auto">
                   {t('privacy_jsx_p_children_0__nossa_equipe_está')}
                 </p>
 

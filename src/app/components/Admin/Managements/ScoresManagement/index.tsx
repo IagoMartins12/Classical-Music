@@ -285,7 +285,7 @@ export default function ScoresManagement() {
             <h1 className="text-4xl md:text-5xl font-bold text-gradient-brand classical-title mb-4">
               Gerenciar Partituras
             </h1>
-            <p className="text-xl text-theme-secondary classical-subtitle">
+            <p className="text-xl text-theme-secondary classical-subtitle medida-texto mx-auto">
               Administre o catálogo de partituras da plataforma
             </p>
             {/* 🆕 Botão de Debug */}

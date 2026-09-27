@@ -282,7 +282,7 @@ export default function AnnotationsSection({
                   <h2 className="text-lg md:text-2xl font-bold text-theme-primary classical-title">
                     {t('annotations_titulo')}
                   </h2>
-                  <p className="text-theme-secondary md:text-lg classical-subtitle">
+                  <p className="text-theme-secondary md:text-lg classical-subtitle medida-texto">
                     {t('annotations_subtitulo')}
                   </p>
                 </div>

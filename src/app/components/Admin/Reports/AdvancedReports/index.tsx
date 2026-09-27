@@ -776,7 +776,7 @@ export default function AdvancedReports() {
             <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold text-gradient-brand classical-title mb-4">
               Relatórios do Sistema
             </h1>
-            <p className="text-lg md:text-xl text-theme-secondary classical-subtitle">
+            <p className="text-lg md:text-xl text-theme-secondary classical-subtitle medida-texto mx-auto">
               Geração automática de relatórios com dados reais da plataforma
             </p>
             {stats && (

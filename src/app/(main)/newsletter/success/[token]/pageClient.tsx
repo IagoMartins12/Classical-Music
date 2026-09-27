@@ -122,7 +122,7 @@ export default function NewsletterSuccessContent() {
 
               {/* Message */}
               <AnimatedItem direction="up" springType="gentle">
-                <p className="text-lg text-theme-secondary leading-relaxed mb-8 max-w-2xl mx-auto">
+                <p className="text-lg text-theme-secondary leading-relaxed mb-8 medida-texto mx-auto">
                   {content.message}
                 </p>
               </AnimatedItem>

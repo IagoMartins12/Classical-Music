@@ -250,7 +250,7 @@ export default function ComposersManagement() {
             <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold text-gradient-brand classical-title mb-4">
               Gerenciar Compositores
             </h1>
-            <p className="text-lg md:text-xl text-theme-secondary classical-subtitle">
+            <p className="text-lg md:text-xl text-theme-secondary classical-subtitle medida-texto mx-auto">
               Administre o catálogo de compositores da plataforma
             </p>
             <Inline gap={4} className="justify-center mt-6">

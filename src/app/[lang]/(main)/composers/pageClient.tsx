@@ -186,7 +186,7 @@ export default function ComposersClient({
             </AnimatedItem>
 
             <AnimatedItem direction="up">
-              <p className="text-xl text-theme-secondary max-w-3xl mx-auto classical-subtitle">
+              <p className="text-xl text-theme-secondary medida-texto mx-auto classical-subtitle">
                 {t('client_jsx_p_children_0__explore_nossa_colecao')}
               </p>
             </AnimatedItem>

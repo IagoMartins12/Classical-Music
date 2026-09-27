@@ -221,7 +221,7 @@ export default function AdvancedInsightsAnalytics() {
             <h1 className="text-4xl md:text-5xl font-bold text-gradient-brand classical-title mb-4">
               AI Analytics Dashboard
             </h1>
-            <p className="text-xl text-theme-secondary classical-subtitle mb-6">
+            <p className="text-xl text-theme-secondary classical-subtitle mb-6 medida-texto mx-auto">
               Sistema Avançado de Inteligência Educacional
             </p>
 

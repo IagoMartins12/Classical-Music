@@ -68,7 +68,7 @@ export default function StudentVerificationRequired({
 
             {/* Subtitle */}
             <AnimatedItem direction="up" springType="smooth">
-              <p className="text-xl md:text-2xl text-theme-secondary mb-8 leading-relaxed">
+              <p className="text-xl md:text-2xl text-theme-secondary mb-8 leading-relaxed medida-texto mx-auto">
                 Você precisa aprovar seu convite para acessar a área do aluno.
               </p>
             </AnimatedItem>

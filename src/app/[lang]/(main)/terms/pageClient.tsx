@@ -141,7 +141,7 @@ export default function TermsPage() {
         <div className="absolute inset-0"></div>
         <AnimatedContainer delay={0.1} staggerSpeed="normal">
           <div className="relative ">
-            <div className="text-center max-w-4xl mx-auto">
+            <div className="text-center coluna-leitura mx-auto">
               <AnimatedItem direction="scale" springType="bouncy">
                 <div className="inline-flex items-center px-6 py-3 rounded-full mb-8 bg-sup-2">
                   <PiFileText className="w-5 h-5 text-ouro-texto mr-2" />
@@ -161,7 +161,7 @@ export default function TermsPage() {
               </AnimatedItem>
 
               <AnimatedItem direction="up" springType="gentle">
-                <p className="text-xl lg:text-2xl text-theme-secondary leading-relaxed classical-body">
+                <p className="text-xl lg:text-2xl text-theme-secondary leading-relaxed classical-body medida-texto mx-auto">
                   {t('terms_jsx_p_children_0__music')}
                 </p>
               </AnimatedItem>
@@ -185,7 +185,7 @@ export default function TermsPage() {
       <section className="">
         <AnimatedContainer delay={0.1} staggerSpeed="normal">
           <div className="">
-            <div className="max-w-4xl mx-auto">
+            <div className="coluna-leitura mx-auto">
               <AnimatedCard hover="lift" className="classical-card !p-8 md:p-8">
                 <div className="flex flex-col md:flex-row items-start space-x-4">
                   <div className="w-16 h-16 rounded-2xl flex items-center justify-center flex-shrink-0">
@@ -195,7 +195,7 @@ export default function TermsPage() {
                     <h2 className="text-xl md:text-2xl font-bold classical-title text-theme-primary">
                       {t('terms_jsx_h2_children_0__welcome')}
                     </h2>
-                    <p className="md:text-lg text-theme-secondary classical-body leading-relaxed">
+                    <p className="md:text-lg text-theme-secondary classical-body leading-relaxed medida-texto">
                       {t('terms_jsx_p_children_0__create')}
                     </p>
                   </Stack>
@@ -210,7 +210,7 @@ export default function TermsPage() {
       <section className="">
         <AnimatedContainer delay={0.1} staggerSpeed="fast">
           <div className="">
-            <div className="max-w-4xl mx-auto space-y-8">
+            <div className="coluna-leitura mx-auto space-y-8">
               {termsData.map((section, index) => (
                 <AnimatedItem
                   key={section.id}
@@ -253,7 +253,7 @@ export default function TermsPage() {
       <section className="">
         <AnimatedContainer delay={0.1} staggerSpeed="normal">
           <div className="">
-            <div className="max-w-4xl mx-auto">
+            <div className="coluna-leitura mx-auto">
               <AnimatedCard hover="lift" className="classical-card !p-8 md:p-8">
                 <div className="flex items-start flex-col md:flex-row space-x-4">
                   <div className="w-12 h-12 rounded-xl flex items-center justify-center flex-shrink-0">
@@ -309,7 +309,7 @@ export default function TermsPage() {
 
         <AnimatedContainer delay={0.1} staggerSpeed="normal">
           <div className="relative ">
-            <div className="max-w-4xl mx-auto">
+            <div className="coluna-leitura mx-auto">
               <AnimatedCard
                 hover="lift"
                 className="classical-card p-12 text-center"
@@ -322,7 +322,7 @@ export default function TermsPage() {
                   {t('terms_jsx_h2_children_0__dúvidas_sobre_termos')}
                 </h2>
 
-                <p className="text-xl text-theme-secondary mb-12 classical-body">
+                <p className="text-xl text-theme-secondary mb-12 classical-body medida-texto mx-auto">
                   {t('terms_jsx_p_children_0__tiver_alguma_dúvida')}
                 </p>
 

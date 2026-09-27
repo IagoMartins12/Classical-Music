@@ -64,7 +64,7 @@ export default async function LikedPage() {
             </AnimatedItem>
 
             <AnimatedItem direction="up">
-              <p className="text-xl text-theme-secondary max-w-3xl mx-auto classical-subtitle mb-8">
+              <p className="text-xl text-theme-secondary medida-texto mx-auto classical-subtitle mb-8">
                 Artigos que você adorou e quer revisitar
               </p>
             </AnimatedItem>

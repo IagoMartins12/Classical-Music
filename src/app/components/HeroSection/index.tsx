@@ -29,7 +29,7 @@ export function HeroSection() {
               </span>
             </h1>
 
-            <p className="text-xl lg:text-2xl text-theme-secondary classical-subtitle mb-8 max-w-4xl mx-auto leading-relaxed">
+            <p className="text-xl lg:text-2xl text-theme-secondary classical-subtitle mb-8 medida-texto mx-auto leading-relaxed">
               {t('hero_jsx_p_children_0__embarque_jornada')}
             </p>
           </div>

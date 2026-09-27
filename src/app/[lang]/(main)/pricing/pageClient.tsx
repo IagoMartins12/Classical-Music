@@ -404,7 +404,7 @@ export default function PricingPage({ pricing }: PricingProps) {
               </AnimatedItem>
 
               <AnimatedItem direction="up" springType="gentle">
-                <p className="text-xl lg:text-2xl text-theme-secondary leading-relaxed classical-body">
+                <p className="text-xl lg:text-2xl text-theme-secondary leading-relaxed classical-body medida-texto mx-auto">
                   Do usuário casual ao professor profissional, temos o plano
                   ideal para acelerar sua jornada musical.
                 </p>
@@ -476,7 +476,7 @@ export default function PricingPage({ pricing }: PricingProps) {
               <h2 className="text-3xl lg:text-4xl font-bold classical-title text-theme-primary mb-4">
                 Planos para Usuários
               </h2>
-              <p className="text-xl text-theme-secondary max-w-2xl mx-auto classical-body">
+              <p className="text-xl text-theme-secondary medida-texto mx-auto classical-body">
                 Acelere sua evolução musical com ferramentas inteligentes
               </p>
             </div>
@@ -592,7 +592,7 @@ export default function PricingPage({ pricing }: PricingProps) {
               <h2 className="text-3xl lg:text-4xl font-bold classical-title text-theme-primary mb-4">
                 Planos Profissionais
               </h2>
-              <p className="text-xl text-theme-secondary max-w-2xl mx-auto classical-body">
+              <p className="text-xl text-theme-secondary medida-texto mx-auto classical-body">
                 Transforme sua forma de ensinar com tecnologia de ponta
               </p>
             </div>
@@ -800,7 +800,7 @@ export default function PricingPage({ pricing }: PricingProps) {
               <h2 className="text-3xl lg:text-4xl font-bold classical-title text-theme-primary mb-4">
                 O que você ganha com cada plano?
               </h2>
-              <p className="text-xl text-theme-secondary classical-body">
+              <p className="text-xl text-theme-secondary classical-body medida-texto mx-auto">
                 Entenda o impacto real na sua jornada musical
               </p>
             </div>
@@ -913,7 +913,7 @@ export default function PricingPage({ pricing }: PricingProps) {
                 Comece sua jornada hoje
               </h2>
 
-              <p className="text-xl text-theme-secondary mb-12 classical-body">
+              <p className="text-xl text-theme-secondary mb-12 classical-body medida-texto mx-auto">
                 Junte-se a milhares de músicos que já transformaram sua forma de
                 estudar e ensinar música clássica.
               </p>

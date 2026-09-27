@@ -314,7 +314,7 @@ export default function FAQPage(): JSX.Element {
               </AnimatedItem>
 
               <AnimatedItem direction="up" springType="gentle">
-                <p className="text-xl lg:text-2xl text-theme-secondary leading-relaxed classical-body">
+                <p className="text-xl lg:text-2xl text-theme-secondary leading-relaxed classical-body medida-texto mx-auto">
                   {t('faq_jsx_p_children_0__encontre_respostas_rápidas')}
                 </p>
               </AnimatedItem>
@@ -459,7 +459,7 @@ export default function FAQPage(): JSX.Element {
               {t('faq_jsx_h2_children_0__nao_encontrou_resposta')}
             </h2>
 
-            <p className="text-xl text-theme-secondary mb-12 classical-body">
+            <p className="text-xl text-theme-secondary mb-12 classical-body medida-texto mx-auto">
               {t('faq_jsx_p_children_0__nossa_equipe_sempre')}
             </p>
 

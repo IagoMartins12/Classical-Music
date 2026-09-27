@@ -342,7 +342,7 @@ const LearningPageClient = ({ initialData }: LearningPageClientProps) => {
             <h1 className="text-4xl md:text-5xl font-bold text-gradient-brand classical-title mb-4">
               {t('learning_page_title')}
             </h1>
-            <p className="text-xl text-theme-secondary classical-subtitle">
+            <p className="text-xl text-theme-secondary classical-subtitle medida-texto mx-auto">
               {t('learning_page_subtitle')}
             </p>
           </div>

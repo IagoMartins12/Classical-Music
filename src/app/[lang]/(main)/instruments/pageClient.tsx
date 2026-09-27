@@ -199,7 +199,7 @@ export function InstrumentsPageClient({
                   </span>
                 </h1>
 
-                <p className="text-xl lg:text-2xl text-theme-secondary classical-subtitle mb-8 max-w-4xl mx-auto leading-relaxed">
+                <p className="text-xl lg:text-2xl text-theme-secondary classical-subtitle mb-8 medida-texto mx-auto leading-relaxed">
                   {t('hero_jsx_p_children_0__explore_rica_historia')}
                 </p>
               </div>
@@ -230,7 +230,7 @@ export function InstrumentsPageClient({
                       <h2 className="text-3xl text-theme-primary classical-title mb-2 transition-colors duration-300">
                         {instrument.historicalData.name}
                       </h2>
-                      <p className="text-theme-secondary md:text-lg classical-subtitle mb-1">
+                      <p className="text-theme-secondary md:text-lg classical-subtitle mb-1 medida-texto">
                         {instrument.historicalData.category} •{' '}
                         {instrument.historicalData.origin}
                       </p>
@@ -272,7 +272,7 @@ export function InstrumentsPageClient({
                     {/* Brief Description */}
                     <Card nivel={2} className="relative overflow-hidden">
                       <div className="relative z-10">
-                        <p className="text-theme-secondary md:text-lg leading-relaxed classical-body">
+                        <p className="text-theme-secondary md:text-lg leading-relaxed classical-body medida-texto">
                           {instrument.historicalData.description}
                         </p>
                       </div>

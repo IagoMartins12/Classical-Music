@@ -182,7 +182,7 @@ export default async function BlogHomePage() {
               <p className="text-theme-secondary mb-6">
                 Os artigos mais populares escolhidos pela nossa comunidade
               </p>
-              <div className="prose prose-lg max-w-none">
+              <div className="prose prose-lg medida-texto">
                 <p className="text-theme-secondary leading-relaxed">
                   Explore análises profundas, biografias inspiradoras e guias
                   práticos sobre música clássica. Nossa equipe de especialistas

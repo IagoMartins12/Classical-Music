@@ -133,7 +133,7 @@ export default function CalendarPageClient({
           <h1 className="text-4xl md:text-5xl font-bold text-gradient-brand classical-title mb-4">
             Calendário de Eventos
           </h1>
-          <p className="text-xl text-theme-secondary classical-subtitle">
+          <p className="text-xl text-theme-secondary classical-subtitle medida-texto mx-auto">
             Descubra eventos de música clássica em todo o Brasil
           </p>
         </div>

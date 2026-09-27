@@ -105,7 +105,7 @@ export default async function TeacherProgressPage({
           <h1 className="text-4xl md:text-5xl font-bold text-theme-primary classical-title mb-4">
             Relatório de Progresso
           </h1>
-          <p className="text-lg text-theme-secondary max-w-2xl mx-auto">
+          <p className="text-lg text-theme-secondary medida-texto mx-auto">
             Esta página ainda está em desenvolvimento. Em breve você poderá
             acompanhar o progresso detalhado do aluno aqui.
           </p>

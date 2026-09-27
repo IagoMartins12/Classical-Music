@@ -113,7 +113,7 @@ export default function AboutPage() {
               </AnimatedItem>
 
               <AnimatedItem direction="up" springType="gentle">
-                <p className="text-xl lg:text-2xl text-theme-secondary leading-relaxed classical-body">
+                <p className="text-xl lg:text-2xl text-theme-secondary leading-relaxed classical-body medida-texto mx-auto">
                   {t('about_hero_description')}
                 </p>
               </AnimatedItem>
@@ -155,11 +155,11 @@ export default function AboutPage() {
                 </h2>
 
                 <Stack gap={6}>
-                  <p className="text-lg text-theme-secondary leading-relaxed classical-body">
+                  <p className="text-lg text-theme-secondary leading-relaxed classical-body medida-texto">
                     {t('about_mission_paragraph_1')}
                   </p>
 
-                  <p className="text-lg text-theme-secondary leading-relaxed classical-body">
+                  <p className="text-lg text-theme-secondary leading-relaxed classical-body medida-texto">
                     {t('about_mission_paragraph_2')}
                   </p>
 
@@ -262,7 +262,7 @@ export default function AboutPage() {
                 {t('about_features_title')}
               </h2>
 
-              <p className="text-xl text-theme-secondary max-w-3xl mx-auto classical-body">
+              <p className="text-xl text-theme-secondary medida-texto mx-auto classical-body">
                 {t('about_features_description')}
               </p>
             </div>
@@ -332,7 +332,7 @@ export default function AboutPage() {
                 {t('about_cta_title')}
               </h2>
 
-              <p className="text-xl text-theme-secondary mb-12 classical-body">
+              <p className="text-xl text-theme-secondary mb-12 classical-body medida-texto mx-auto">
                 {t('about_cta_description')}
               </p>
 
@@ -437,7 +437,7 @@ function ValueCard({ value }: ValueCardProps) {
         {value.title}
       </h3>
 
-      <p className="text-theme-secondary leading-relaxed classical-body text-lg">
+      <p className="text-theme-secondary leading-relaxed classical-body text-lg medida-texto mx-auto">
         {value.description}
       </p>
     </div>

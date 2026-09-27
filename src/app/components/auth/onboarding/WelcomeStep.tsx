@@ -30,7 +30,7 @@ const WelcomeStep: React.FC = () => {
           {t('welcome_step_title')}
         </h3>
 
-        <p className="text-lg text-theme-secondary max-w-2xl mx-auto leading-relaxed">
+        <p className="text-lg text-theme-secondary medida-texto mx-auto leading-relaxed">
           {t('welcome_step_subtitle')}
         </p>
       </div>

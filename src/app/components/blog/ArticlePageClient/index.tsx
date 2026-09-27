@@ -101,7 +101,7 @@ export function ArticlePageClient({
 
             {/* Main Content */}
             <div className="lg:col-span-8">
-              <article className="prose prose-lg max-w-none">
+              <article className="prose prose-lg medida-texto">
                 <ArticleContent content={article.content} />
               </article>
 

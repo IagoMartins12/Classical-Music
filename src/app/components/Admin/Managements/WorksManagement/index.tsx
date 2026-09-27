@@ -255,7 +255,7 @@ export default function WorksManagement() {
             <h1 className="text-4xl md:text-5xl font-bold text-gradient-brand classical-title mb-4">
               Gerenciar Obras
             </h1>
-            <p className="text-xl text-theme-secondary classical-subtitle">
+            <p className="text-xl text-theme-secondary classical-subtitle medida-texto mx-auto">
               Administre o catálogo de obras musicais da plataforma
             </p>
             <div className="flex justify-center mt-6">

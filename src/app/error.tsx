@@ -233,7 +233,7 @@ export default function Error({ error, reset }: ErrorProps) {
 
             {/* Subtitle */}
             <AnimatedItem direction="up" springType="smooth">
-              <p className="text-xl md:text-2xl text-theme-secondary mb-8 leading-relaxed">
+              <p className="text-xl md:text-2xl text-theme-secondary mb-8 leading-relaxed medida-texto mx-auto">
                 {t('error_jsx_p_children_0__sinfonia_encontrou_nota')}
               </p>
             </AnimatedItem>

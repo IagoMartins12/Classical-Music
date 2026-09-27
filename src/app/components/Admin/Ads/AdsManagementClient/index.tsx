@@ -262,7 +262,7 @@ export default function AdsManagementClient() {
               <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold text-gradient-brand classical-title mb-4">
                 Gerenciamento de Anúncios
               </h1>
-              <p className="text-lg md:text-xl text-theme-secondary classical-subtitle max-w-2xl mx-auto">
+              <p className="text-lg md:text-xl text-theme-secondary classical-subtitle medida-texto mx-auto">
                 Gerencie campanhas publicitárias e parcerias
               </p>
             </div>

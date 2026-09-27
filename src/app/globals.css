@@ -388,6 +388,21 @@
   z-index: var(--z-aviso);
 }
 
+/* Medida de leitura: a linha de texto corrido em ~75 caracteres. A linha
+   longa (90+) cansa na volta para a linha de baixo. Em `ch`, e não em px:
+   a medida acompanha o tamanho da letra — ~640px no corpo, mais no subtítulo
+   grande (em 720px fixos, um subtítulo de 24px caía para 55 caracteres).
+   `medida-texto` vai no parágrafo ou título; `coluna-leitura` na coluna de
+   cards de texto, somando o recuo do card. */
+@utility medida-texto {
+  /* 60ch ≈ 75 letras: o `ch` é a largura do "0", mais largo que a letra
+     média da Geist — 75ch davam ~105 letras por linha. */
+  max-width: 60ch;
+}
+@utility coluna-leitura {
+  max-width: calc(var(--largura-texto) + 4rem);
+}
+
 /* As classes do sistema moram em `@layer components`, abaixo dos utilitários.
    Fora de camada, no Tailwind v4 elas venceriam qualquer utilitário escrito
    ao lado: `t-legenda text-erro` mostrava o erro do campo em cinza, e o

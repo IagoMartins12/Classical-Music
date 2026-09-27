@@ -492,7 +492,7 @@ export default function UploadsManagement() {
             <h1 className="text-4xl md:text-5xl font-bold text-gradient-brand classical-title mb-4">
               Gerenciar Uploads
             </h1>
-            <p className="text-xl text-theme-secondary classical-subtitle">
+            <p className="text-xl text-theme-secondary classical-subtitle medida-texto mx-auto">
               Monitore a atividade de uploads e contribuições da plataforma
             </p>
             <div className="flex justify-center mt-6">

@@ -221,7 +221,7 @@ export default function PublicTeachersPageClient({
             <h1 className="text-4xl md:text-5xl font-bold text-gradient-brand classical-title mb-4">
               Conheça Nossos Professores
             </h1>
-            <p className="text-xl text-theme-secondary classical-subtitle max-w-3xl mx-auto">
+            <p className="text-xl text-theme-secondary classical-subtitle medida-texto mx-auto">
               Encontre o professor ideal para sua jornada musical. Navegue por
               perfis verificados, especialidades e avaliações de alunos reais.
             </p>

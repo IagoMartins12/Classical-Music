@@ -179,7 +179,7 @@ export default function DifficultyClient({
             <h1 className="text-4xl md:text-5xl font-bold text-gradient-brand classical-title mb-4">
               Níveis de Dificuldade
             </h1>
-            <p className="text-xl text-theme-secondary max-w-4xl mx-auto classical-subtitle mb-6">
+            <p className="text-xl text-theme-secondary medida-texto mx-auto classical-subtitle mb-6">
               Explore obras de música clássica organizadas por nível de
               dificuldade baseado no sistema IMSLP e RCM
             </p>

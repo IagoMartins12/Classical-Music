@@ -166,7 +166,7 @@ export default function AdminAnalytics() {
             <h1 className="text-4xl md:text-5xl font-bold text-gradient-brand classical-title mb-4">
               Analytics da Plataforma
             </h1>
-            <p className="text-xl text-theme-secondary classical-subtitle">
+            <p className="text-xl text-theme-secondary classical-subtitle medida-texto mx-auto">
               Visão completa de performance e engajamento
             </p>
 

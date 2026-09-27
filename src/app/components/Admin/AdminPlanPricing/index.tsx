@@ -155,7 +155,7 @@ export default function AdminPlanPricingPage() {
           <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold text-gradient-brand classical-title mb-4">
             Gerenciar Preços dos Planos
           </h1>
-          <p className="text-lg md:text-xl text-theme-secondary classical-subtitle">
+          <p className="text-lg md:text-xl text-theme-secondary classical-subtitle medida-texto mx-auto">
             Configure os valores e descontos de cada plano de assinatura
           </p>
         </div>

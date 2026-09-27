@@ -183,7 +183,7 @@ export default function LogsAudit() {
             <h1 className="text-4xl md:text-5xl font-bold text-gradient-brand classical-title mb-4">
               Atividades Recentes
             </h1>
-            <p className="text-xl text-theme-secondary classical-subtitle mb-6">
+            <p className="text-xl text-theme-secondary classical-subtitle mb-6 medida-texto mx-auto">
               Monitoramento completo das ações dos usuários
             </p>
 

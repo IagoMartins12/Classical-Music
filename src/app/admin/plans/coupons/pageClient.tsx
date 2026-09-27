@@ -273,7 +273,7 @@ export default function AdminCouponsPageClient() {
             <h1 className="text-2xl md:text-3xl lg:text-5xl font-bold text-gradient-brand classical-title mb-2 md:mb-4">
               Gerenciamento de Cupons
             </h1>
-            <p className="text-base md:text-lg lg:text-xl text-theme-secondary classical-subtitle px-4">
+            <p className="text-base md:text-lg lg:text-xl text-theme-secondary classical-subtitle px-4 medida-texto mx-auto">
               Crie, edite e acompanhe cupons da plataforma
             </p>
           </div>

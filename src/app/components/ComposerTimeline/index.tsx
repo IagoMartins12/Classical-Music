@@ -152,7 +152,7 @@ export function ComposersTimeline({ composers }: Props) {
         <h2 className="text-3xl lg:text-4xl font-bold text-gradient-brand classical-title mb-4">
           {t('timeline_jsx_h2_children_0__linha_tempo_compositores')}
         </h2>
-        <p className="text-lg text-theme-secondary classical-subtitle max-w-2xl mx-auto">
+        <p className="text-lg text-theme-secondary classical-subtitle medida-texto mx-auto">
           {t('timeline_jsx_p_children_0__acompanhe_cronologia')}
         </p>
       </div>

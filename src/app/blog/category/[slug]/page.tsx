@@ -93,7 +93,7 @@ export default async function CategoryPage({
 
           {/* Description */}
           {category.description && (
-            <p className="text-xl text-theme-secondary max-w-2xl mx-auto mb-6">
+            <p className="text-xl text-theme-secondary medida-texto mx-auto mb-6">
               {category.description}
             </p>
           )}

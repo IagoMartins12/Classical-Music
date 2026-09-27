@@ -250,7 +250,7 @@ export default function ContactPageClient() {
               </AnimatedItem>
 
               <AnimatedItem direction="up" springType="gentle">
-                <p className="text-xl lg:text-2xl text-theme-secondary leading-relaxed classical-body">
+                <p className="text-xl lg:text-2xl text-theme-secondary leading-relaxed classical-body medida-texto mx-auto">
                   {t('contact_jsx_p_children_0__estamos_aqui_ajudar')}
                 </p>
               </AnimatedItem>
@@ -268,7 +268,7 @@ export default function ContactPageClient() {
               <h2 className="text-3xl lg:text-4xl font-bold classical-title text-theme-primary mb-4">
                 {t('contact_jsx_h2_children_0__como_podemos_ajudar')}
               </h2>
-              <p className="text-xl text-theme-secondary max-w-2xl mx-auto">
+              <p className="text-xl text-theme-secondary medida-texto mx-auto">
                 {t('contact_jsx_p_children_0__escolha_categoria_que')}
               </p>
             </div>

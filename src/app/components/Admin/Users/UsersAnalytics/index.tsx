@@ -178,7 +178,7 @@ export default function UsersAnalytics() {
             <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold text-gradient-brand classical-title mb-4">
               Análise de Usuários
             </h1>
-            <p className="text-lg md:text-xl text-theme-secondary classical-subtitle">
+            <p className="text-lg md:text-xl text-theme-secondary classical-subtitle medida-texto mx-auto">
               Insights detalhados sobre comportamento e engajamento
             </p>
             <Inline gap={4} className="justify-center mt-6">

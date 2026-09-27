@@ -827,7 +827,7 @@ export default function StudentAssignmentsPageClient({
             <h1 className="text-4xl md:text-5xl font-bold text-gradient-brand classical-title mb-4">
               {t('student_assignments_header_title')}
             </h1>
-            <p className="text-xl text-theme-secondary classical-subtitle">
+            <p className="text-xl text-theme-secondary classical-subtitle medida-texto mx-auto">
               {t('student_assignments_header_subtitle')}
             </p>
           </div>

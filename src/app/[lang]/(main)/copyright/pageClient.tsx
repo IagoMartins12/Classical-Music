@@ -225,7 +225,7 @@ export default function CopyrightPage() {
               </AnimatedItem>
 
               <AnimatedItem direction="up" springType="gentle">
-                <p className="text-xl lg:text-2xl text-theme-secondary leading-relaxed classical-body">
+                <p className="text-xl lg:text-2xl text-theme-secondary leading-relaxed classical-body medida-texto mx-auto">
                   {t('copyright_jsx_p_children_0__composer')}
                 </p>
               </AnimatedItem>
@@ -259,7 +259,7 @@ export default function CopyrightPage() {
                     <h2 className="text-2xl font-bold classical-title text-theme-primary">
                       {t('copyright_jsx_h2_children_0__compromisso_legalidade')}
                     </h2>
-                    <p className="text-lg text-theme-secondary classical-body leading-relaxed">
+                    <p className="text-lg text-theme-secondary classical-body leading-relaxed medida-texto">
                       {t('copyright_jsx_p_children_0__score')}
                     </p>
                   </Stack>
@@ -475,7 +475,7 @@ export default function CopyrightPage() {
                   {t('copyright_jsx_h2_children_0__dmca_agent')}
                 </h2>
 
-                <p className="text-xl text-theme-secondary mb-8 classical-body">
+                <p className="text-xl text-theme-secondary mb-8 classical-body medida-texto mx-auto">
                   {t(
                     'copyright_jsx_p_children_0__questões_relacionadas_direitos'
                   )}

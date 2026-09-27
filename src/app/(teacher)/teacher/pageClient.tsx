@@ -347,7 +347,7 @@ export default function TeacherPageClient({
               {t('dashboard_title')}
             </h1>
             <div className="flex flex-col gap-4 sm:gap-0 sm:flex-row items-center justify-center space-x-4">
-              <p className="text-xl m-0 text-theme-secondary classical-subtitle">
+              <p className="text-xl m-0 text-theme-secondary classical-subtitle medida-texto mx-auto">
                 {t('welcome_message', { name: teacherProfile.name })}
               </p>
 
