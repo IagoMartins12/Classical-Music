@@ -40,9 +40,16 @@ const VARIANTE: Record<Variante, string> = {
 
 const TAMANHO: Record<Tamanho, string> = {
   /** Denso, para barras e tabelas. Continua com 44px de alvo no toque. */
-  p: 'min-h-9 px-3.5 text-sm [@media(pointer:coarse)]:min-h-[var(--alvo)]',
-  m: 'min-h-[var(--alvo)] px-5 text-[0.9375rem]',
+  p: 'min-h-9 text-sm [@media(pointer:coarse)]:min-h-[var(--alvo)]',
+  m: 'min-h-[var(--alvo)] text-[0.9375rem]',
 };
+
+/**
+ * Recuo lateral só com texto. Estava dentro de `TAMANHO`, e o `px-0` do botão
+ * só de ícone perdia para o `px-5` (o CSS gerado põe o `px-5` depois): todo
+ * botão de ícone saía mais largo que alto, apesar do `aspect-square`.
+ */
+const RECUO: Record<Tamanho, string> = { p: 'px-3.5', m: 'px-5' };
 
 interface BaseProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   variante?: Variante;
@@ -94,7 +101,7 @@ export function Button({
         'disabled:cursor-not-allowed disabled:opacity-40',
         VARIANTE[variante],
         TAMANHO[tamanho],
-        soIcone && 'aspect-square px-0',
+        soIcone ? 'aspect-square' : RECUO[tamanho],
         className
       )}
       {...resto}

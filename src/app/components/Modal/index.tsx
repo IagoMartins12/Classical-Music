@@ -355,7 +355,9 @@ const Modal = forwardRef<ModalRef, ModalProps>(
                     icone={PiX}
                     rotulo="Fechar"
                     onClick={handleClose}
-                    className="-mr-2 -mt-2 ml-auto"
+                    // Caixa visível de 32px, mesmo ícone; a faixa invisível do
+                    // `after` completa os 44px de alvo para o dedo.
+                    className="relative -mr-1 -mt-1 ml-auto h-8 w-8 !min-h-8 after:absolute after:-inset-1.5 after:content-['']"
                   />
                 )}
               </div>
