@@ -10,7 +10,6 @@ import DifficultyTable from '../../components/DifficultyTable';
 import DifficultyStats from '../../components/DifficultyStats';
 import DifficultyInfo from '../../components/DifficultyInfo';
 import PaginationControls from '../PaginationControls';
-import AnimatedMusicalNotes2 from '../AnimatedMusicalNotes2';
 import {
   PageContainer,
   AnimatedContainer,
@@ -167,8 +166,6 @@ export default function DifficultyClient({
       <AnimatedContainer delay={0.1} staggerSpeed="normal">
         {/* Header Section */}
         <div className="relative text-center py-16">
-          <AnimatedMusicalNotes2 />
-
           <div className="relative z-10">
             <div className="flex items-center justify-center mb-6">
               <div className="w-20 h-20 rounded-3xl flex items-center justify-center shadow-theme-glow">

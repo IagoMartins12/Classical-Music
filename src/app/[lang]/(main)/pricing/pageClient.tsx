@@ -31,7 +31,6 @@ import {
   SequentialGrid,
   FloatingElement,
 } from '../../../components/animation/AnimatedComponents';
-import AnimatedMusicalNotes from '../../../components/AnimatedMusicalNotes';
 import Button from '@/app/components/Common/Button';
 import {
   PlanType,
@@ -458,8 +457,6 @@ export default function PricingPage({ pricing }: PricingProps) {
               </AnimatedItem>
             </div>
           </div>
-
-          <AnimatedMusicalNotes />
         </AnimatedContainer>
       </section>
 

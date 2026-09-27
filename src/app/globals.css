@@ -549,14 +549,35 @@
   transition: none !important;
 }
 
-::view-transition-old(root),
-::view-transition-new(root) {
+/* O círculo é só da troca de tema: sem o `.trocando-tema`, toda navegação
+   com View Transition abriria revelando a página num círculo. */
+:root.trocando-tema::view-transition-old(root),
+:root.trocando-tema::view-transition-new(root) {
   animation: none;
   mix-blend-mode: normal;
 }
 
-::view-transition-new(root) {
+:root.trocando-tema::view-transition-new(root) {
   animation: tema-revela 450ms var(--saida);
+}
+
+/* Navegação e lista (`ui/transicao`). O card vira a página em 320ms; ao
+   filtrar, cada card desliza até o novo lugar em 280ms. O resto da página
+   cruza no tempo padrão do navegador. */
+::view-transition-group(*.cartao) {
+  animation-duration: 320ms;
+  animation-timing-function: var(--saida);
+}
+::view-transition-group(*.item-lista) {
+  animation-duration: 280ms;
+  animation-timing-function: var(--saida);
+}
+@media (prefers-reduced-motion: reduce) {
+  ::view-transition-group(*),
+  ::view-transition-old(*),
+  ::view-transition-new(*) {
+    animation: none !important;
+  }
 }
 
 /* Variação `INVERSE_THEME_CIRCLE` (`themeStore`): voltando ao escuro, a foto
@@ -1107,6 +1128,65 @@ body {
   .loading-skeleton {
     animation: none;
     background: var(--esqueleto);
+  }
+}
+
+/* Notas ao fundo (`ui/NotasAoFundo`): sobem em 14s, aparecem até 28% e
+   somem antes do topo, com uma deriva lateral pequena. Sem pulso, sem
+   desfoque; com movimento reduzido, não aparecem. */
+.nota-ao-fundo {
+  opacity: 0;
+  animation: nota-sobe 14s linear infinite;
+}
+/* Sobe a altura do contêiner (e não da janela): num bloco baixo, a nota
+   atravessaria em segundos e passaria o resto do ciclo escondida. */
+@keyframes nota-sobe {
+  0% {
+    bottom: -5%;
+    transform: translateX(0) rotate(-6deg);
+    opacity: 0;
+  }
+  15% {
+    opacity: 0.28;
+  }
+  70% {
+    opacity: 0.28;
+  }
+  100% {
+    bottom: 105%;
+    transform: translateX(14px) rotate(8deg);
+    opacity: 0;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .notas-ao-fundo {
+    display: none;
+  }
+}
+
+/* Selo de verificada (`ui/SeloVerificada`): com `.selo-desenha`, o contorno
+   se traça e o visto entra depois — 1,3s, uma vez. */
+.selo-desenha .selo-contorno,
+.selo-desenha .selo-visto {
+  stroke-dasharray: 1;
+  stroke-dashoffset: 1;
+}
+.selo-desenha .selo-contorno {
+  animation: selo-traca 0.8s var(--saida) forwards;
+}
+.selo-desenha .selo-visto {
+  animation: selo-traca 0.5s var(--saida) 0.8s forwards;
+}
+@keyframes selo-traca {
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .selo-desenha .selo-contorno,
+  .selo-desenha .selo-visto {
+    animation: none;
+    stroke-dashoffset: 0;
   }
 }
 

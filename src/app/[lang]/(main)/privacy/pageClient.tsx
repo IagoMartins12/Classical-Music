@@ -16,7 +16,6 @@ import {
   PiShield,
   PiUser,
 } from 'react-icons/pi';
-import AnimatedMusicalNotes from '../../../components/AnimatedMusicalNotes';
 import Link from '@/app/components/LocalizedLink';
 
 // Importar componentes de animação
@@ -214,7 +213,6 @@ export default function PrivacyPage() {
               </AnimatedItem>
             </div>
           </div>
-          <AnimatedMusicalNotes />
         </AnimatedContainer>
       </section>
 

@@ -1,5 +1,7 @@
 // app/works/pageClient.tsx - Com Performance Otimizada e Traduções - CORRIGIDO
 'use client';
+import { useReordenacao } from '@/app/components/ui/useReordenacao';
+import { navegarComTransicao } from '@/app/components/ui/transicao';
 import { useLocalizedRouter } from '@/app/hooks/useLocalizedRouter';
 
 import {
@@ -25,7 +27,6 @@ import {
 import WorkCard from '../../../components/WorksClient/WorkCard';
 import WorkCardList from '../../../components/WorksClient/WorkCardList';
 import PaginationControls from '../../../components/PaginationControls';
-import AnimatedMusicalNotes2 from '../../../components/AnimatedMusicalNotes2';
 import GenreSearchInput from '../../../components/GenreSearchInput';
 import ComposerSearchInput from '../../../components/ComposerSearchInput';
 import ViewModeToggle from '../../../components/ViewModeToggle';
@@ -346,10 +347,17 @@ const WorksClient = memo(
       () => searchParams.composer || ''
     );
     const [viewMode, setViewMode] = useState<'list' | 'cards'>('cards');
+    // Ao filtrar, cada card desliza até o novo lugar (FLIP).
+    const gradeRef = useReordenacao<HTMLDivElement>(
+      worksData.works.map((w) => w.id)
+    );
 
+    // O card vira a página da obra (View Transition); pré-carregar ao
+    // passar o ponteiro deixa a espera curta o bastante para a transição.
     const goToWorkPage = (workId: string) => {
-      router.push(`/works/${workId}`);
+      navegarComTransicao(router.push, `/works/${workId}`);
     };
+    const preverObra = (workId: string) => router.prefetch(`/works/${workId}`);
 
     // Memoizar cálculos pesados
     const { totalPages, startItem, endItem, hasActiveFilters } = useMemo(() => {
@@ -571,16 +579,23 @@ const WorksClient = memo(
 
       if (viewMode === 'cards') {
         return (
-          <SequentialGrid
-            cols={4}
-            gap={6}
-            delayBetweenItems={0.05}
-            className=""
-          >
-            {worksData.works.map((work) => (
-              <WorkCard key={work.id} work={work} goToWorkPage={goToWorkPage} />
-            ))}
-          </SequentialGrid>
+          <div ref={gradeRef}>
+            <SequentialGrid
+              cols={4}
+              gap={6}
+              delayBetweenItems={0.05}
+              className=""
+            >
+              {worksData.works.map((work) => (
+                <WorkCard
+                  key={work.id}
+                  work={work}
+                  goToWorkPage={goToWorkPage}
+                  preverObra={preverObra}
+                />
+              ))}
+            </SequentialGrid>
+          </div>
         );
       }
 
@@ -615,8 +630,6 @@ const WorksClient = memo(
         <AnimatedContainer delay={0.1} staggerSpeed="normal">
           {/* Header Section */}
           <div className="relative text-center py-16">
-            <AnimatedMusicalNotes2 />
-
             <div className="relative z-10">
               <div className="flex items-center justify-center mb-6">
                 <div className="w-16 h-16 rounded-2xl flex items-center justify-center shadow-theme-glow">

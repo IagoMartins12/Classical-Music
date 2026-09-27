@@ -2,7 +2,6 @@
 'use client';
 
 import { useTranslation } from '@/app/context/TranslationContext';
-import AnimatedMusicalNotes from '../AnimatedMusicalNotes';
 import FloatingIcons from '../FloatingIcons';
 
 export function HeroSection() {
@@ -10,8 +9,6 @@ export function HeroSection() {
 
   return (
     <section className="relative overflow-hidden pt-8 md:pt-24 lg:pt-24 flex items-center">
-      {/* Animated musical notes */}
-      <AnimatedMusicalNotes />
       <div className="section-wrap mx-auto relative z-10">
         <div className="text-center space-y-8">
           {/* Floating Icons */}

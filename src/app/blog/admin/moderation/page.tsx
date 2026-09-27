@@ -13,7 +13,6 @@ import { getServerAccessToken } from '@/app/libs/api/server-session';
 import { loadModeration } from '@/app/requests/blog/admin';
 import { ModerationList } from '@/app/components/blog/admin/ModerationList';
 import { AnimatedItem } from '@/app/components/animation/AnimatedComponents';
-import AnimatedMusicalNotesClient from '@/app/components/AnimatedMusicalNotesClient';
 import { getServerSession } from '@/app/libs/api/server-session';
 import { Text } from '@/app/components/ui/Text';
 import { Stack } from '@/app/components/ui/Layout';
@@ -57,8 +56,6 @@ export default async function ModerationPage({ searchParams }: PageProps) {
           springType="bouncy"
           className="relative text-center py-16"
         >
-          <AnimatedMusicalNotesClient />
-
           <div className="relative z-10">
             <AnimatedItem
               direction="scale"

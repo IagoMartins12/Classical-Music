@@ -13,7 +13,6 @@ import {
   PiTag,
   PiX,
 } from 'react-icons/pi';
-import AnimatedMusicalNotes2 from '../../../components/AnimatedMusicalNotes2';
 import ViewModeToggle from '../../../components/ViewModeToggle';
 import { useTranslation } from '@/app/context/TranslationContext';
 import { Stack, Inline } from '@/app/components/ui/Layout';
@@ -136,8 +135,6 @@ export default function GenresClient({ genres }: GenresClientProps) {
       <Stack gap={8} className="section-wrap relative z-10">
         {/* Header */}
         <div className="relative text-center py-16">
-          <AnimatedMusicalNotes2 />
-
           <div className="relative z-10">
             <div className="flex items-center justify-center mb-6">
               <div className="w-16 h-16 rounded-2xl flex items-center justify-center shadow-theme-glow">

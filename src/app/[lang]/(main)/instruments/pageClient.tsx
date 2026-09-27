@@ -25,7 +25,6 @@ import {
 } from 'react-icons/pi';
 import Link from '@/app/components/LocalizedLink';
 import FloatingIcons from '../../../components/FloatingIcons';
-import AnimatedMusicalNotes from '../../../components/AnimatedMusicalNotes';
 import Image from '@/app/components/SmartImage';
 import { useTranslation } from '@/app/context/TranslationContext';
 import { Stack, Inline } from '@/app/components/ui/Layout';
@@ -181,8 +180,6 @@ export function InstrumentsPageClient({
       <div className="relative z-10">
         {/* Hero Section */}
         <section className="relative overflow-hidden pt-24 flex items-center">
-          <AnimatedMusicalNotes />
-
           <div className="section-wrap mx-auto relative z-10">
             <div className="text-center space-y-8">
               {/* Floating Icons */}

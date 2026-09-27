@@ -1,6 +1,12 @@
 // app/composers/ComposerCard.tsx - Updated with Favorites
 'use client';
 
+import {
+  cliqueSimples,
+  navegarComTransicao,
+  nomeDeTransicao,
+} from '@/app/components/ui/transicao';
+import { useLocalizedRouter } from '@/app/hooks/useLocalizedRouter';
 import { useState } from 'react';
 import Image from '@/app/components/SmartImage';
 import Link from '@/app/components/LocalizedLink';
@@ -24,6 +30,7 @@ interface composerCardProps {
 
 const ComposerCard: React.FC<composerCardProps> = ({ composer }) => {
   const { t } = useTranslation({ sections: ['pages/composers'] });
+  const router = useLocalizedRouter();
   const [imageLoaded, setImageLoaded] = useState(false);
   const [imageError, setImageError] = useState(false);
 
@@ -57,7 +64,10 @@ const ComposerCard: React.FC<composerCardProps> = ({ composer }) => {
      * Eles sobem para `z-10` e continuam clicáveis por cima da área esticada.
      */
     <div className="group select-none h-full relative">
-      <div className="classical-card h-full overflow-hidden transition-all duration-700 ease-out group-hover:scale-105 group-hover:-translate-y-2">
+      <div
+        style={nomeDeTransicao(`compositor-${composer.id}`)}
+        className="classical-card h-full overflow-hidden transition-all duration-700 ease-out group-hover:scale-105 group-hover:-translate-y-2"
+      >
         {/* Portrait Section */}
         <div className="relative p-6 pb-4">
           <div className="flex justify-center mb-4">
@@ -122,6 +132,16 @@ const ComposerCard: React.FC<composerCardProps> = ({ composer }) => {
               <h3 className="text-lg font-bold text-theme-primary classical-title transition-colors duration-300 line-clamp-2">
                 <Link
                   href={`/composer/${composer.id}`}
+                  onClick={(e) => {
+                    // Clique simples vira transição; com tecla ou botão do
+                    // meio, o link abre como sempre (nova aba, etc.).
+                    if (!cliqueSimples(e)) return;
+                    e.preventDefault();
+                    navegarComTransicao(
+                      router.push,
+                      `/composer/${composer.id}`
+                    );
+                  }}
                   className="after:absolute after:inset-0 after:content-[''] focus-visible:outline-none focus-visible:ring-2 rounded"
                 >
                   {composer.name}

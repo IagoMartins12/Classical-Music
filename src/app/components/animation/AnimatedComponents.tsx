@@ -375,6 +375,8 @@ interface AnimatedCardProps extends BaseAnimationProps {
   hover?: HoverEffect;
   clickable?: boolean;
   onClick?: () => void;
+  /** Estilo inline — usado para o nome de View Transition do card. */
+  style?: React.CSSProperties;
 }
 
 export const AnimatedCard: React.FC<AnimatedCardProps> = ({
@@ -385,6 +387,7 @@ export const AnimatedCard: React.FC<AnimatedCardProps> = ({
   className = '',
   onClick,
   delay = 0,
+  style,
 }) => {
   const ref = useRef<HTMLDivElement>(null);
 
@@ -401,7 +404,7 @@ export const AnimatedCard: React.FC<AnimatedCardProps> = ({
     .join(' ');
 
   return (
-    <div ref={ref} className={classes} onClick={onClick}>
+    <div ref={ref} className={classes} onClick={onClick} style={style}>
       {children}
     </div>
   );

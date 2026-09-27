@@ -2,7 +2,6 @@
 import { Metadata } from 'next';
 import { redirect } from 'next/navigation';
 import { listCategories } from '@/app/requests/blog/taxonomy';
-import AnimatedMusicalNotesClient from '@/app/components/AnimatedMusicalNotesClient';
 import { LikedPageClient } from '@/app/components/blog/LikedPageClient';
 import { AnimatedItem } from '@/app/components/animation/AnimatedComponents';
 import { PiHeart } from 'react-icons/pi';
@@ -45,8 +44,6 @@ export default async function LikedPage() {
           springType="bouncy"
           className="relative text-center py-16"
         >
-          <AnimatedMusicalNotesClient />
-
           <div className="relative z-10">
             <AnimatedItem
               direction="scale"

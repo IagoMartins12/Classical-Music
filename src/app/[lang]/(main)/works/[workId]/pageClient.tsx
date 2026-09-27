@@ -1,6 +1,7 @@
 // app/work/[workId]/WorkDetailsClient.tsx - COM TRADUÇÕES COMPLETAS
 'use client';
 
+import { nomeDeTransicao } from '@/app/components/ui/transicao';
 import { useState, useEffect } from 'react';
 import Link from '@/app/components/LocalizedLink';
 import {
@@ -623,6 +624,7 @@ export default function WorkDetailsClient({
           <AnimatedCard
             hover="lift"
             className="classical-card overflow-hidden relative"
+            style={nomeDeTransicao(`obra-${work.id}`, 'cartao')}
           >
             {/* Animated Background Elements */}
             <div className="absolute inset-0 pointer-events-none">

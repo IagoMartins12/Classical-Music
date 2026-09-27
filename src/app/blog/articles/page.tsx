@@ -4,7 +4,6 @@ import Link from 'next/link';
 import { PiArrowRight, PiClock, PiTrendUp } from 'react-icons/pi';
 import { ArticleCarousel } from '@/app/components/blog/ArticleCarousel';
 import SectionTitle from '@/app/components/Utils/SectionTitle';
-import AnimatedMusicalNotesClient from '@/app/components/AnimatedMusicalNotesClient';
 import { listArticles } from '@/app/requests/blog/articles';
 import { tolerarApiForaNoBuild } from '@/app/libs/api/build-tolerance';
 import {
@@ -69,8 +68,6 @@ export default async function ArticlesPage() {
         <p className="text-xl text-theme-secondary medida-texto mx-auto">
           Explore nossa coleção completa de artigos sobre música clássica
         </p>
-
-        <AnimatedMusicalNotesClient />
       </div>
 
       {/* Últimos Artigos */}

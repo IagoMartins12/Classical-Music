@@ -1,7 +1,8 @@
 // app/components/Verification/VerificationBadge.tsx
 'use client';
 
-import { PiSealCheck } from 'react-icons/pi';
+import { useEffect, useRef, useState } from 'react';
+import { SeloVerificada } from '@/app/components/ui/SeloVerificada';
 import { useTranslation } from '@/app/hooks/useTranslation';
 
 interface VerificationBadgeProps {
@@ -20,6 +21,16 @@ export default function VerificationBadge({
   className = '',
 }: VerificationBadgeProps) {
   const { t } = useTranslation({ sections: ['pages/workId'] });
+
+  // O selo se desenha só quando a verificação acontece com a tela aberta
+  // (de não verificada para verificada). Ao abrir uma página de obra já
+  // verificada, ele aparece pronto.
+  const antes = useRef(verified);
+  const [desenhar, setDesenhar] = useState(false);
+  useEffect(() => {
+    if (verified && antes.current === false) setDesenhar(true);
+    antes.current = verified;
+  }, [verified]);
 
   if (!verified) return null;
 
@@ -41,7 +52,10 @@ export default function VerificationBadge({
         className={`${sizeClasses[size]}${className} self-end mb-2`}
         title={t('verification_badge_verificado')}
       >
-        <PiSealCheck className={`${iconSizeClasses[size]}`} />
+        <SeloVerificada
+          desenhar={desenhar}
+          className={`${iconSizeClasses[size]}`}
+        />
       </div>
     );
   }
@@ -51,7 +65,10 @@ export default function VerificationBadge({
       <div
         className={`inline-flex items-center space-x-1 px-2 py-1 rounded-full bg-sup-2 ${className}`}
       >
-        <PiSealCheck className={`${iconSizeClasses[size]}`} />
+        <SeloVerificada
+          desenhar={desenhar}
+          className={`${iconSizeClasses[size]}`}
+        />
         <span className="text-xs font-medium">
           {t('verification_badge_verificado')}
         </span>
@@ -67,7 +84,10 @@ export default function VerificationBadge({
 
     return (
       <div className={`inline-flex items-center space-x-1 ${className}`}>
-        <PiSealCheck className={`${iconSizeClasses[size]}`} />
+        <SeloVerificada
+          desenhar={desenhar}
+          className={`${iconSizeClasses[size]}`}
+        />
         <span className="hidden md:block md:text-sm font-medium">
           {verifiedText}
         </span>

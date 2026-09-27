@@ -19,7 +19,6 @@ import {
   PiUsers,
   PiWarningCircle,
 } from 'react-icons/pi';
-import AnimatedMusicalNotes from '../../../components/AnimatedMusicalNotes';
 import Link from '@/app/components/LocalizedLink';
 
 // Importar componentes de animação
@@ -241,7 +240,6 @@ export default function CopyrightPage() {
               </AnimatedItem>
             </div>
           </div>
-          <AnimatedMusicalNotes />
         </AnimatedContainer>
       </section>
 

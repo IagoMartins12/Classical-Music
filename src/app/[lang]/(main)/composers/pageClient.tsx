@@ -1,5 +1,6 @@
 'use client';
 // app/composers/ComposersClient.tsx - Premium version com Animação Sequencial
+import { useReordenacao } from '@/app/components/ui/useReordenacao';
 import { NomeAcao } from '@/app/components/ui/NomeAcao';
 import { useLocalizedRouter } from '@/app/hooks/useLocalizedRouter';
 
@@ -9,7 +10,6 @@ import { PiClock, PiMagnifyingGlass, PiUser, PiX } from 'react-icons/pi';
 import ComposerCard from '../../../components/ComposersClient/ComposerCard';
 import ComposerCardList from '../../../components/ComposersClient/ComposerCardList';
 import PaginationControls from '../../../components/PaginationControls';
-import AnimatedMusicalNotes2 from '../../../components/AnimatedMusicalNotes2';
 import ViewModeToggle from '../../../components/ViewModeToggle';
 import {
   PageContainer,
@@ -77,6 +77,8 @@ export default function ComposersClient({
   const [searchTerm, setSearchTerm] = useState(initialSearchTerm);
   const [selectedEpoch, setSelectedEpoch] = useState(initialSelectedEpoch);
   const [viewMode, setViewMode] = useState<'cards' | 'list'>('cards');
+  // Ao filtrar, cada card desliza até o novo lugar (FLIP).
+  const gradeRef = useReordenacao<HTMLDivElement>(composers.map((c) => c.id));
 
   // Função para atualizar URL com debounce
   const updateUrl = useCallback(
@@ -166,9 +168,6 @@ export default function ComposersClient({
           springType="bouncy"
           className="relative text-center py-16"
         >
-          {/* Animated Background Elements */}
-          <AnimatedMusicalNotes2 />
-
           <div className="relative z-10">
             <AnimatedItem
               direction="scale"
@@ -341,16 +340,22 @@ export default function ComposersClient({
           {composers.length > 0 ? (
             viewMode === 'cards' ? (
               // 🎬 ANIMAÇÃO SEQUENCIAL - Cards aparecem um por vez!
-              <SequentialGrid cols={4} gap={6} className="px-0 md:px-4">
-                {composers.map((composer) => (
-                  // Quem leva ao compositor é o link dentro do cartão, não um
-                  // `onClick` aqui: buscador não segue clique. Ver o
-                  // comentário em `ComposerCard`.
-                  <div key={composer.id} className="group">
-                    <ComposerCard composer={composer} />
-                  </div>
-                ))}
-              </SequentialGrid>
+              <div ref={gradeRef}>
+                <SequentialGrid cols={4} gap={6} className="px-0 md:px-4">
+                  {composers.map((composer) => (
+                    // Quem leva ao compositor é o link dentro do cartão, não um
+                    // `onClick` aqui: buscador não segue clique. Ver o
+                    // comentário em `ComposerCard`.
+                    <div
+                      key={composer.id}
+                      data-chave={composer.id}
+                      className="group"
+                    >
+                      <ComposerCard composer={composer} />
+                    </div>
+                  ))}
+                </SequentialGrid>
+              </div>
             ) : (
               <div className="divide-y flex flex-col gap-4 py-4 mx-4 divide-linha">
                 {composers.map((composer, index) => (

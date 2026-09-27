@@ -3,7 +3,6 @@ import { Metadata } from 'next';
 import { redirect } from 'next/navigation';
 import { PiBookmarkSimple } from 'react-icons/pi';
 import { listCategories } from '@/app/requests/blog/taxonomy';
-import AnimatedMusicalNotesClient from '@/app/components/AnimatedMusicalNotesClient';
 import { BookmarksPageClient } from '@/app/components/blog/BookmarksPageClient';
 import { AnimatedItem } from '@/app/components/animation/AnimatedComponents';
 import { getServerSession } from '@/app/libs/api/server-session';
@@ -45,8 +44,6 @@ export default async function BookmarksPage() {
           springType="bouncy"
           className="relative text-center py-16"
         >
-          <AnimatedMusicalNotesClient />
-
           <div className="relative z-10">
             <AnimatedItem
               direction="scale"

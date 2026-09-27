@@ -1,6 +1,7 @@
 // app/composer/[composerId]/ComposerDetailsClient.tsx - Com sistema de animações, traduções e vídeo
 'use client';
 
+import { nomeDeTransicao } from '@/app/components/ui/transicao';
 import { useState } from 'react';
 import Image from '@/app/components/SmartImage';
 import Link from '@/app/components/LocalizedLink';
@@ -287,6 +288,7 @@ export default function ComposerDetailsClient({
           <AnimatedCard
             hover="lift"
             className="classical-card relative z-elevado"
+            style={nomeDeTransicao(`compositor-${composer.id}`, 'cartao')}
           >
             <div className=" p-2 md:p-8 relative z-10">
               <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">

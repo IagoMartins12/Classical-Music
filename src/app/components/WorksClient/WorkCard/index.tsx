@@ -1,6 +1,7 @@
 // app/works/WorkCard.tsx - Premium version with translations
 'use client';
 
+import { nomeDeTransicao } from '@/app/components/ui/transicao';
 import { WorkListItem } from '@/app/requests/work-details';
 import Link from '@/app/components/LocalizedLink';
 import {
@@ -20,9 +21,15 @@ import { Text } from '@/app/components/ui/Text';
 interface workCardProps {
   work: WorkListItem;
   goToWorkPage: (composerId: string) => void;
+  /** Pré-carrega a página da obra quando o ponteiro entra no card. */
+  preverObra?: (workId: string) => void;
 }
 
-const WorkCard: React.FC<workCardProps> = ({ work, goToWorkPage }) => {
+const WorkCard: React.FC<workCardProps> = ({
+  work,
+  goToWorkPage,
+  preverObra,
+}) => {
   const { t } = useTranslation({ sections: ['pages/works'] });
 
   const formatDuration = (duration: string | null) => {
@@ -36,12 +43,17 @@ const WorkCard: React.FC<workCardProps> = ({ work, goToWorkPage }) => {
   };
 
   return (
-    <div className="group cursor-pointer select-none h-full">
+    <div
+      data-chave={work.id}
+      className="group cursor-pointer select-none h-full"
+    >
       <div
         onClick={(ev) => {
           ev.preventDefault();
           goToWorkPage(work.id);
         }}
+        onPointerEnter={() => preverObra?.(work.id)}
+        style={nomeDeTransicao(`obra-${work.id}`)}
         className="classical-card h-full flex flex-col overflow-hidden transition-all duration-700 ease-out group-hover:scale-105 group-hover:-translate-y-2"
       >
         {/* Header Section */}

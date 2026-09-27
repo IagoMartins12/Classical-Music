@@ -1,5 +1,6 @@
 'use client';
 
+import { NotasAoFundo } from '@/app/components/ui/NotasAoFundo';
 import { useTranslation } from '@/app/context/TranslationContext';
 import Image from '@/app/components/SmartImage';
 import Link from '@/app/components/LocalizedLink';
@@ -9,7 +10,9 @@ const HeroMainPage = () => {
 
   console.log('hero page loaded');
   return (
-    <div className="section-wrap flex flex-col lg:flex-row gap-6">
+    <div className="section-wrap relative isolate flex flex-col lg:flex-row gap-6">
+      {/* As notas, uma vez e discretas: atrás dos cards, só nos vãos. */}
+      <NotasAoFundo className="-z-10" />
       {/* Seção Principal - História da Música */}
       <Link
         href="/music-history"

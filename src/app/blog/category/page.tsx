@@ -2,7 +2,6 @@ import Link from 'next/link';
 import Image from '@/app/components/SmartImage';
 import { Metadata } from 'next';
 import { PiArrowRight, PiSquaresFour } from 'react-icons/pi';
-import AnimatedMusicalNotesClient from '@/app/components/AnimatedMusicalNotesClient';
 import { listCategories } from '@/app/requests/blog/taxonomy';
 import { tolerarApiForaNoBuild } from '@/app/libs/api/build-tolerance';
 import { Text } from '@/app/components/ui/Text';
@@ -38,7 +37,6 @@ export default async function CategoriesPage() {
           Navegue por {categories.length} categorias e descubra artigos sobre
           seus temas favoritos
         </p>
-        <AnimatedMusicalNotesClient />
       </div>
 
       {/* Categories Grid */}
