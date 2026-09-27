@@ -23,6 +23,7 @@ import {
 } from '@/app/libs/newsletter/emailTemplates';
 import { Inline } from '@/app/components/ui/Layout';
 import { Text } from '@/app/components/ui/Text';
+import { Field } from '@/app/components/ui/Field';
 
 interface CreateEditTemplateModalProps {
   isOpen: boolean;
@@ -289,10 +290,8 @@ export default function CreateEditTemplateModal({
             {currentStep === 1 && (
               <div className="space-y-6">
                 <div>
-                  <label className="block text-sm font-medium text-theme-secondary mb-2">
-                    Nome do Template *
-                  </label>
                   <Input
+                    label="Nome do Template *"
                     type="text"
                     value={form.name}
                     onChange={(e) => handleInputChange('name', e.target.value)}
@@ -302,20 +301,17 @@ export default function CreateEditTemplateModal({
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-theme-secondary mb-2">
-                    Tipo do Template *
-                  </label>
-                  <select
+                  <Field.Selecao
+                    label="Tipo do Template *"
                     value={form.type}
                     onChange={(e) => handleInputChange('type', e.target.value)}
-                    className="input-classical-2 w-full"
                   >
                     {templateTypeOptions.map((option) => (
                       <option key={option.value} value={option.value}>
                         {option.label}
                       </option>
                     ))}
-                  </select>
+                  </Field.Selecao>
                   {form.type !== 'CAMPAIGN_CUSTOM' && (
                     <div className="mt-2">
                       <Button
@@ -331,10 +327,8 @@ export default function CreateEditTemplateModal({
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-theme-secondary mb-2">
-                    Assunto do Email *
-                  </label>
                   <Input
+                    label="Assunto do Email *"
                     type="text"
                     value={form.subject}
                     onChange={(e) =>
@@ -346,17 +340,15 @@ export default function CreateEditTemplateModal({
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-theme-secondary mb-2">
-                    Descrição (opcional)
-                  </label>
-                  <textarea
+                  <Field.Area
+                    label="Descrição (opcional)"
+                    classeCampo="resize-none"
                     value={form.description}
                     onChange={(e) =>
                       handleInputChange('description', e.target.value)
                     }
                     placeholder="Descreva o propósito deste template..."
                     rows={3}
-                    className="input-classical-2 w-full resize-none"
                   />
                 </div>
               </div>
@@ -366,17 +358,15 @@ export default function CreateEditTemplateModal({
             {currentStep === 2 && (
               <div className="space-y-6">
                 <div>
-                  <label className="block text-sm font-medium text-theme-secondary mb-2">
-                    Conteúdo HTML *
-                  </label>
-                  <textarea
+                  <Field.Area
+                    label="Conteúdo HTML *"
+                    classeCampo="font-mono resize-none"
                     value={form.htmlContent}
                     onChange={(e) =>
                       handleInputChange('htmlContent', e.target.value)
                     }
                     placeholder="<h2>Olá {{firstName}}!</h2><p>Bem-vindo ao nosso site...</p>"
                     rows={12}
-                    className="input-classical-2 w-full font-mono text-sm resize-none"
                   />
                   {errors.htmlContent && (
                     <p className="text-accent-red text-sm mt-1">
@@ -386,17 +376,15 @@ export default function CreateEditTemplateModal({
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-theme-secondary mb-2">
-                    Conteúdo em Texto (alternativa) *
-                  </label>
-                  <textarea
+                  <Field.Area
+                    label="Conteúdo em Texto (alternativa) *"
+                    classeCampo="font-mono resize-none"
                     value={form.textContent}
                     onChange={(e) =>
                       handleInputChange('textContent', e.target.value)
                     }
                     placeholder="Olá {{firstName}}! Bem-vindo ao nosso site..."
                     rows={8}
-                    className="input-classical-2 w-full font-mono text-sm resize-none"
                   />
                 </div>
 
@@ -436,10 +424,8 @@ export default function CreateEditTemplateModal({
               <div className="space-y-6">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div>
-                    <label className="block text-sm font-medium text-theme-secondary mb-2">
-                      Nome do Remetente *
-                    </label>
                     <Input
+                      label="Nome do Remetente *"
                       type="text"
                       value={form.senderName}
                       onChange={(e) =>
@@ -450,10 +436,8 @@ export default function CreateEditTemplateModal({
                   </div>
 
                   <div>
-                    <label className="block text-sm font-medium text-theme-secondary mb-2">
-                      Email do Remetente *
-                    </label>
                     <Input
+                      label="Email do Remetente *"
                       type="email"
                       value={form.senderEmail}
                       onChange={(e) =>
@@ -466,10 +450,8 @@ export default function CreateEditTemplateModal({
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-theme-secondary mb-2">
-                    Email de Resposta (opcional)
-                  </label>
                   <Input
+                    label="Email de Resposta (opcional)"
                     type="email"
                     value={form.replyToEmail}
                     onChange={(e) =>

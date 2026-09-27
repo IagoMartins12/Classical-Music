@@ -11,6 +11,7 @@ import { useTranslation } from '@/app/hooks/useTranslation';
 import { reportContent } from '@/app/requests/moderation';
 import { Inline } from '@/app/components/ui/Layout';
 import { Text } from '@/app/components/ui/Text';
+import { Field } from '@/app/components/ui/Field';
 
 interface ReportModalProps {
   isOpen: boolean;
@@ -195,17 +196,17 @@ export default function ReportModal({
 
             {/* Description */}
             <div>
-              <label className="block text-sm font-medium text-theme-primary mb-2">
-                {selectedReason === 'other'
-                  ? t('report_modal_descricao_obrigatoria')
-                  : t('report_modal_descricao')}
-              </label>
-              <textarea
+              <Field.Area
+                label={
+                  selectedReason === 'other'
+                    ? t('report_modal_descricao_obrigatoria')
+                    : t('report_modal_descricao')
+                }
+                classeCampo="resize-none"
                 value={description}
                 onChange={(e) => setDescription(e.target.value)}
                 placeholder="Descreva o problema com mais detalhes..."
                 rows={4}
-                className="input-classical w-full resize-none"
                 required={selectedReason === 'other'}
               />
             </div>

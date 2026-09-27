@@ -18,6 +18,7 @@ import { useNewsletterAdmin } from '@/app/hooks/admin/useNewsletterAdmin';
 import LoadingAdminState from '../../../Common/LoadingState';
 import { Inline } from '@/app/components/ui/Layout';
 import { Text } from '@/app/components/ui/Text';
+import { Field } from '@/app/components/ui/Field';
 
 interface SendTestCampaignModalProps {
   isOpen: boolean;
@@ -357,10 +358,9 @@ export default function SendTestCampaignModal({
             />
           </div>
           <div className="mt-4">
-            <label className="block text-sm font-medium text-theme-primary mb-2">
-              Nota Personalizada
-            </label>
-            <textarea
+            <Field.Area
+              label="Nota Personalizada"
+              classeCampo="resize-none"
               value={formData.customVariables.customNote}
               onChange={(e) =>
                 setFormData((prev) => ({
@@ -372,7 +372,6 @@ export default function SendTestCampaignModal({
                 }))
               }
               rows={2}
-              className="w-full px-4 py-3 bg-theme-tertiary border border-theme-secondary rounded-lg text-theme-primary placeholder-theme-tertiary focus:outline-none focus:border-brand-primary transition-colors resize-none"
               placeholder="Adicione uma nota sobre este teste..."
             />
           </div>

@@ -47,6 +47,7 @@ import { useToast } from '@/app/hooks/useToast';
 import { useTranslation } from '@/app/context/TranslationContext';
 import { Inline } from '@/app/components/ui/Layout';
 import { Text } from '@/app/components/ui/Text';
+import { Field } from '@/app/components/ui/Field';
 
 interface TeacherAssignmentsPageClientProps {
   initialData: TeacherAssignmentsData;
@@ -1343,10 +1344,8 @@ function CreateAssignmentModal({
             {/* Basic Info */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
-                <label className="block text-sm font-medium text-theme-primary mb-2">
-                  {t('student_required')}
-                </label>
                 <Select
+                  label={t('student_required')}
                   options={[
                     { value: '', label: t('select_student') },
                     ...students.map((student) => ({
@@ -1367,10 +1366,8 @@ function CreateAssignmentModal({
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-theme-primary mb-2">
-                  {t('assignment_type')}
-                </label>
                 <Select
+                  label={t('assignment_type')}
                   options={Object.entries(ASSIGNMENT_TYPES).map(
                     ([key, labelKey]) => ({
                       label: t(labelKey),
@@ -1390,10 +1387,8 @@ function CreateAssignmentModal({
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-theme-primary mb-2">
-                {t('assignment_title')}
-              </label>
               <Input
+                label={t('assignment_title')}
                 type="text"
                 value={createForm.title}
                 onChange={(e) =>
@@ -1409,10 +1404,8 @@ function CreateAssignmentModal({
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-theme-primary mb-2">
-                {t('assignment_description')}
-              </label>
-              <textarea
+              <Field.Area
+                label={t('assignment_description')}
                 value={createForm.description}
                 onChange={(e) =>
                   setCreateForm((prev: any) => ({
@@ -1421,7 +1414,6 @@ function CreateAssignmentModal({
                   }))
                 }
                 rows={3}
-                className="input-classical w-full"
                 placeholder="Descreva detalhadamente o que o aluno deve fazer..."
                 required
               />
@@ -1429,10 +1421,8 @@ function CreateAssignmentModal({
 
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
               <div>
-                <label className="block text-sm font-medium text-theme-primary mb-2">
-                  {t('priority')}
-                </label>
                 <Select
+                  label={t('priority')}
                   options={[
                     { value: 'low', label: t('priority_low') },
                     { value: 'medium', label: t('priority_medium') },
@@ -1450,10 +1440,8 @@ function CreateAssignmentModal({
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-theme-primary mb-2">
-                  {t('due_date')}
-                </label>
                 <Input
+                  label={t('due_date')}
                   type="date"
                   value={createForm.dueDate}
                   onChange={(e) =>
@@ -1467,10 +1455,8 @@ function CreateAssignmentModal({
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-theme-primary mb-2">
-                  {t('estimated_time')}
-                </label>
                 <Input
+                  label={t('estimated_time')}
                   type="number"
                   value={createForm.estimatedTime}
                   onChange={(e) =>

@@ -303,10 +303,8 @@ export default function FilterPanel({
             <div className="space-y-4">
               {/* Selecionar campo */}
               <div>
-                <label className="block text-sm font-medium text-theme-secondary mb-2">
-                  Campo
-                </label>
                 <Select
+                  label="Campo"
                   value={newField}
                   onChange={(e) => {
                     setNewField(e.target.value);
@@ -323,10 +321,8 @@ export default function FilterPanel({
               {/* Selecionar operador */}
               {newField && (
                 <div>
-                  <label className="block text-sm font-medium text-theme-secondary mb-2">
-                    Operador
-                  </label>
                   <Select
+                    label="Operador"
                     value={newOperator}
                     onChange={(e) => setNewOperator(e.target.value)}
                     options={getOperatorsForField(newField)}

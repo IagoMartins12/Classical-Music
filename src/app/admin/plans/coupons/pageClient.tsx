@@ -35,6 +35,7 @@ import {
   toggleCouponRequest,
 } from '@/app/requests/admin/billing';
 import { Text } from '@/app/components/ui/Text';
+import { Field } from '@/app/components/ui/Field';
 
 interface Coupon {
   id: string;
@@ -390,10 +391,8 @@ export default function AdminCouponsPageClient() {
             <div className="space-y-4">
               {/* Código */}
               <div>
-                <label className="block text-sm font-medium text-theme-secondary mb-2">
-                  Código do Cupom *
-                </label>
                 <Input
+                  label="Código do Cupom *"
                   type="text"
                   value={formData.code}
                   onChange={(e) =>
@@ -408,10 +407,8 @@ export default function AdminCouponsPageClient() {
 
               {/* Tipo */}
               <div>
-                <label className="block text-sm font-medium text-theme-secondary mb-2">
-                  Tipo de Desconto *
-                </label>
                 <Select
+                  label="Tipo de Desconto *"
                   options={statusOptions}
                   value={formData.type}
                   onChange={(e) =>
@@ -423,10 +420,8 @@ export default function AdminCouponsPageClient() {
               {/* Valor do Desconto */}
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-sm font-medium text-theme-secondary mb-2">
-                    Valor do Desconto *
-                  </label>
                   <Input
+                    label="Valor do Desconto *"
                     type="number"
                     value={formData.discountValue}
                     onChange={(e) =>
@@ -448,10 +443,8 @@ export default function AdminCouponsPageClient() {
 
                 {formData.type === 'PERCENTAGE' && (
                   <div>
-                    <label className="block text-sm font-medium text-theme-secondary mb-2">
-                      Desconto Máximo (R$)
-                    </label>
                     <Input
+                      label="Desconto Máximo (R$)"
                       type="number"
                       value={formData.maxDiscount}
                       onChange={(e) =>
@@ -470,10 +463,8 @@ export default function AdminCouponsPageClient() {
 
                 {formData.type === 'FREE_TRIAL' && (
                   <div>
-                    <label className="block text-sm font-medium text-theme-secondary mb-2">
-                      Dias Extras de Trial
-                    </label>
                     <Input
+                      label="Dias Extras de Trial"
                       type="number"
                       value={formData.extraTrialDays}
                       onChange={(e) =>
@@ -521,10 +512,8 @@ export default function AdminCouponsPageClient() {
               {/* Datas */}
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-sm font-medium text-theme-secondary mb-2">
-                    Válido De *
-                  </label>
                   <Input
+                    label="Válido De *"
                     type="date"
                     value={formData.validFrom}
                     onChange={(e) =>
@@ -533,10 +522,8 @@ export default function AdminCouponsPageClient() {
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-theme-secondary mb-2">
-                    Válido Até *
-                  </label>
                   <Input
+                    label="Válido Até *"
                     type="date"
                     value={formData.validUntil}
                     onChange={(e) =>
@@ -549,10 +536,8 @@ export default function AdminCouponsPageClient() {
               {/* Limites de Uso */}
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-sm font-medium text-theme-secondary mb-2">
-                    Usos Totais
-                  </label>
                   <Input
+                    label="Usos Totais"
                     type="number"
                     value={formData.maxUses}
                     onChange={(e) =>
@@ -565,10 +550,8 @@ export default function AdminCouponsPageClient() {
                   </Text>
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-theme-secondary mb-2">
-                    Usos por Usuário *
-                  </label>
                   <Input
+                    label="Usos por Usuário *"
                     type="number"
                     value={formData.maxUsesPerUser}
                     onChange={(e) =>
@@ -584,17 +567,15 @@ export default function AdminCouponsPageClient() {
 
               {/* Descrição */}
               <div>
-                <label className="block text-sm font-medium text-theme-secondary mb-2">
-                  Descrição
-                </label>
-                <textarea
+                <Field.Area
+                  label="Descrição"
+                  classeCampo="resize-none"
                   value={formData.description}
                   onChange={(e) =>
                     setFormData({ ...formData, description: e.target.value })
                   }
                   placeholder="Cupom de boas-vindas com 20% de desconto"
                   rows={3}
-                  className="w-full px-4 py-2 rounded-lg border border-theme-primary text-theme-primary placeholder:text-theme-tertiary resize-none"
                 />
               </div>
 

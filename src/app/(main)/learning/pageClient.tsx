@@ -488,10 +488,8 @@ const LearningPageClient = ({ initialData }: LearningPageClientProps) => {
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                       {/* Difficulty Filter */}
                       <div>
-                        <label className="block text-xs font-medium text-theme-tertiary mb-2">
-                          {t('difficulty_label')}
-                        </label>
                         <Select
+                          label={t('difficulty_label')}
                           options={difficultyOptions}
                           value={difficultyFilter}
                           onChange={(e) =>
@@ -507,10 +505,8 @@ const LearningPageClient = ({ initialData }: LearningPageClientProps) => {
                       {(activeTab === 'all' ||
                         activeTab === 'want-to-learn') && (
                         <div>
-                          <label className="block text-xs font-medium text-theme-tertiary mb-2">
-                            {t('priority_label')}
-                          </label>
                           <Select
+                            label={t('priority_label')}
                             options={priorityOptions}
                             value={priorityFilter}
                             onChange={(e) =>

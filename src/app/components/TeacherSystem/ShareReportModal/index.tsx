@@ -21,6 +21,7 @@ import {
 import Modal from '@/app/components/Modal';
 import Checkbox from '../../Common/Checkbox';
 import { Text } from '@/app/components/ui/Text';
+import { Field } from '@/app/components/ui/Field';
 
 interface ShareReportModalProps {
   isOpen: boolean;
@@ -201,25 +202,20 @@ export default function ShareReportModal({
             </h3>
 
             <div>
-              <label className="block text-sm font-medium text-theme-primary mb-2">
-                Título do Relatório
-              </label>
-              <input
+              <Field
+                label="Título do Relatório"
                 type="text"
                 value={shareData.title}
                 onChange={(e) =>
                   setShareData((prev) => ({ ...prev, title: e.target.value }))
                 }
-                className="input-classical w-full"
                 placeholder="Digite um título para o relatório..."
               />
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-theme-primary mb-2">
-                Descrição (opcional)
-              </label>
-              <textarea
+              <Field.Area
+                label="Descrição (opcional)"
                 value={shareData.description}
                 onChange={(e) =>
                   setShareData((prev) => ({
@@ -228,16 +224,13 @@ export default function ShareReportModal({
                   }))
                 }
                 rows={2}
-                className="input-classical w-full"
                 placeholder="Breve descrição do que o relatório contém..."
               />
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-theme-primary mb-2">
-                Mensagem para o Aluno (opcional)
-              </label>
-              <textarea
+              <Field.Area
+                label="Mensagem para o Aluno (opcional)"
                 value={shareData.teacherMessage}
                 onChange={(e) =>
                   setShareData((prev) => ({
@@ -246,7 +239,6 @@ export default function ShareReportModal({
                   }))
                 }
                 rows={3}
-                className="input-classical w-full"
                 placeholder="Escreva uma mensagem personalizada para o aluno sobre este relatório..."
               />
             </div>
@@ -359,10 +351,8 @@ export default function ShareReportModal({
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-theme-primary mb-2">
-                Expirar após (dias)
-              </label>
-              <select
+              <Field.Selecao
+                label="Expirar após (dias)"
                 value={shareData.expiresInDays || 30}
                 onChange={(e) =>
                   setShareData((prev) => ({
@@ -372,7 +362,6 @@ export default function ShareReportModal({
                       : undefined,
                   }))
                 }
-                className="input-classical w-full"
               >
                 <option value="">Nunca</option>
                 <option value="7">7 dias</option>
@@ -380,7 +369,7 @@ export default function ShareReportModal({
                 <option value="30">30 dias</option>
                 <option value="60">60 dias</option>
                 <option value="90">90 dias</option>
-              </select>
+              </Field.Selecao>
             </div>
           </div>
         </div>

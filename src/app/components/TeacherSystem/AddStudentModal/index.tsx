@@ -23,6 +23,7 @@ import Button from '../../Common/Button';
 import Checkbox from '../../Common/Checkbox';
 import { Inline } from '@/app/components/ui/Layout';
 import { Text } from '@/app/components/ui/Text';
+import { Field } from '@/app/components/ui/Field';
 
 interface AddStudentModalProps {
   onClose: () => void;
@@ -431,10 +432,8 @@ const AddStudentModal: React.FC<AddStudentModalProps> = ({
                   <div className="space-y-4">
                     <div className="grid grid-cols-2 gap-4">
                       <div>
-                        <label className="block text-sm font-medium text-theme-primary mb-2">
-                          Aulas por Semana
-                        </label>
                         <Select
+                          label="Aulas por Semana"
                           options={[
                             { value: '1', label: '1 aula' },
                             { value: '2', label: '2 aulas' },
@@ -453,10 +452,8 @@ const AddStudentModal: React.FC<AddStudentModalProps> = ({
                       </div>
 
                       <div>
-                        <label className="block text-sm font-medium text-theme-primary mb-2">
-                          Duração (minutos)
-                        </label>
                         <Select
+                          label="Duração (minutos)"
                           options={[
                             { value: '30', label: '30 min' },
                             { value: '45', label: '45 min' },
@@ -556,10 +553,8 @@ const AddStudentModal: React.FC<AddStudentModalProps> = ({
                   <div className="space-y-4">
                     {/* Frequência de Prática */}
                     <div>
-                      <label className="block text-sm font-medium text-theme-primary mb-2">
-                        Frequência de Prática
-                      </label>
                       <Select
+                        label="Frequência de Prática"
                         options={PRACTICE_FREQUENCY_OPTIONS}
                         value={studyPlan.practiceFrequency || ''}
                         onChange={(e) =>
@@ -574,10 +569,8 @@ const AddStudentModal: React.FC<AddStudentModalProps> = ({
 
                     {/* Expectativa de Tarefa */}
                     <div>
-                      <label className="block text-sm font-medium text-theme-primary mb-2">
-                        Tarefas de Casa
-                      </label>
                       <Select
+                        label="Tarefas de Casa"
                         options={HOMEWORK_EXPECTATION_OPTIONS}
                         value={studyPlan.homeworkExpectation || ''}
                         onChange={(e) =>
@@ -648,25 +641,20 @@ const AddStudentModal: React.FC<AddStudentModalProps> = ({
               {/* Campos de Texto Expandidos */}
               <div className="grid lg:grid-cols-2 gap-6">
                 <div>
-                  <label className="block text-sm font-medium text-theme-primary mb-2">
-                    Objetivos de Estudo
-                  </label>
-                  <textarea
+                  <Field.Area
+                    label="Objetivos de Estudo"
                     value={studyPlan.studyGoals || ''}
                     onChange={(e) =>
                       handleStudyPlanChange('studyGoals', e.target.value)
                     }
                     rows={3}
-                    className="input-classical w-full"
                     placeholder="Descreva os objetivos musicais do aluno..."
                   />
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-theme-primary mb-2">
-                    Instruções Especiais
-                  </label>
-                  <textarea
+                  <Field.Area
+                    label="Instruções Especiais"
                     value={studyPlan.specialInstructions || ''}
                     onChange={(e) =>
                       handleStudyPlanChange(
@@ -675,38 +663,31 @@ const AddStudentModal: React.FC<AddStudentModalProps> = ({
                       )
                     }
                     rows={3}
-                    className="input-classical w-full"
                     placeholder="Necessidades especiais, preferências específicas..."
                   />
                 </div>
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-theme-primary mb-2">
-                  Plano de Aprendizado Detalhado
-                </label>
-                <textarea
+                <Field.Area
+                  label="Plano de Aprendizado Detalhado"
                   value={studyPlan.learningPlan || ''}
                   onChange={(e) =>
                     handleStudyPlanChange('learningPlan', e.target.value)
                   }
                   rows={4}
-                  className="input-classical w-full"
                   placeholder="Descreva o plano detalhado de aprendizado, metodologia a ser seguida, progressão esperada..."
                 />
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-theme-primary mb-2">
-                  Notas do Professor (privadas)
-                </label>
-                <textarea
+                <Field.Area
+                  label="Notas do Professor (privadas)"
                   value={studyPlan.teacherNotes || ''}
                   onChange={(e) =>
                     handleStudyPlanChange('teacherNotes', e.target.value)
                   }
                   rows={3}
-                  className="input-classical w-full"
                   placeholder="Observações pessoais sobre o aluno..."
                 />
               </div>

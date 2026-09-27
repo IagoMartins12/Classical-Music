@@ -56,6 +56,7 @@ import {
 } from '@/app/requests/uploads-client';
 import { Inline } from '@/app/components/ui/Layout';
 import { Text } from '@/app/components/ui/Text';
+import { Field } from '@/app/components/ui/Field';
 
 interface CreateScoreModalProps {
   isOpen: boolean;
@@ -1148,10 +1149,8 @@ const CreateScoreModal = ({
                   />
 
                   <div>
-                    <label className="block text-sm font-medium text-theme-tertiary mb-2">
-                      {t('modal_score_basic_type')}
-                    </label>
                     <Select
+                      label={t('modal_score_basic_type')}
                       options={scoreTypeOptions}
                       value={formData.type}
                       onChange={(e) =>
@@ -1161,10 +1160,8 @@ const CreateScoreModal = ({
                   </div>
 
                   <div>
-                    <label className="block text-sm font-medium text-theme-tertiary mb-2">
-                      {t('modal_score_basic_format')}
-                    </label>
                     <Select
+                      label={t('modal_score_basic_format')}
                       options={fileFormatOptions}
                       value={formData.fileFormat}
                       onChange={(e) =>
@@ -1360,16 +1357,14 @@ const CreateScoreModal = ({
 
                 <div className="space-y-4">
                   <div>
-                    <label className="block text-sm font-medium text-theme-tertiary mb-2">
-                      {t('modal_score_notes_label')}
-                    </label>
-                    <textarea
+                    <Field.Area
+                      label={t('modal_score_notes_label')}
+                      classeCampo="resize-none"
                       value={formData.notes}
                       onChange={(e) =>
                         handleInputChange('notes', e.target.value)
                       }
                       rows={3}
-                      className="input-classical-2 w-full resize-none"
                       placeholder={t('modal_score_notes_placeholder')}
                     />
                   </div>

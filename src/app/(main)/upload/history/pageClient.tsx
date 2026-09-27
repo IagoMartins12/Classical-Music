@@ -551,10 +551,8 @@ const HistoryClient = ({
                 <AnimatedItem direction="scale" springType="gentle">
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4 pt-4 border-t border-theme-secondary">
                     <div>
-                      <label className="block text-sm font-medium text-theme-tertiary mb-2">
-                        {t('history_filter_type_label')}
-                      </label>
                       <Select
+                        label={t('history_filter_type_label')}
                         options={typeOptions}
                         value={selectedType}
                         onChange={(e) => setSelectedType(e.target.value)}
@@ -563,10 +561,8 @@ const HistoryClient = ({
                     </div>
 
                     <div>
-                      <label className="block text-sm font-medium text-theme-tertiary mb-2">
-                        {t('history_filter_action_label')}
-                      </label>
                       <Select
+                        label={t('history_filter_action_label')}
                         options={actionOptions}
                         value={selectedAction}
                         onChange={(e) => setSelectedAction(e.target.value)}

@@ -23,6 +23,7 @@ import { useNewsletterAnalytics } from '@/app/hooks/admin/useNewsletterAnalytics
 import LoadingAdminState from '../../Common/LoadingState';
 import { Inline } from '@/app/components/ui/Layout';
 import { Text } from '@/app/components/ui/Text';
+import { Field } from '@/app/components/ui/Field';
 
 interface MetricCard {
   title: string;
@@ -153,20 +154,17 @@ export default function NewsletterAnalyticsClient() {
             <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
               <Inline gap={4}>
                 <div>
-                  <label className="block text-sm font-medium text-theme-secondary mb-2">
-                    Período
-                  </label>
-                  <select
+                  <Field.Selecao
+                    label="Período"
                     value={dateRange}
                     onChange={(e) => setDateRange(e.target.value)}
-                    className="px-3 py-2 bg-theme-secondary border border-theme-primary rounded-lg text-theme-primary focus:outline-none focus:ring-2 focus:ring-brand-primary"
                   >
                     {dateRangeOptions.map((option) => (
                       <option key={option.value} value={option.value}>
                         {option.label}
                       </option>
                     ))}
-                  </select>
+                  </Field.Selecao>
                 </div>
               </Inline>
 

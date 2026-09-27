@@ -30,6 +30,7 @@ import { useAdminModeration } from '@/app/hooks/admin/useAdminModeration';
 import { useToast } from '@/app/hooks/useToast';
 import { Inline } from '@/app/components/ui/Layout';
 import { Text } from '@/app/components/ui/Text';
+import { Field } from '@/app/components/ui/Field';
 
 interface ModerationDetailProps {
   itemId: string;
@@ -346,25 +347,20 @@ export default function ModerationDetail({ itemId }: ModerationDetailProps) {
 
               <div className="space-y-6">
                 <div>
-                  <label className="block text-sm font-medium text-theme-primary mb-2">
-                    Notas da Moderação
-                  </label>
-                  <textarea
+                  <Field.Area
+                    label="Notas da Moderação"
+                    classeCampo="h-24 resize-none"
                     value={notes}
                     onChange={(e) => setNotes(e.target.value)}
                     placeholder="Adicione suas observações sobre esta revisão..."
-                    className="input-classical-2 w-full h-24 resize-none"
                   />
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-theme-primary mb-2">
-                    Razão para Rejeição (se aplicável)
-                  </label>
-                  <select
+                  <Field.Selecao
+                    label="Razão para Rejeição (se aplicável)"
                     value={rejectionReason}
                     onChange={(e) => setRejectionReason(e.target.value)}
-                    className="input-classical-2 w-full"
                   >
                     <option value="">Selecione uma razão...</option>
                     <option value="insufficient_data">
@@ -386,7 +382,7 @@ export default function ModerationDetail({ itemId }: ModerationDetailProps) {
                       Conteúdo inadequado
                     </option>
                     <option value="other">Outro motivo</option>
-                  </select>
+                  </Field.Selecao>
                 </div>
 
                 <Inline

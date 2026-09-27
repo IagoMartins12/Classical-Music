@@ -13,6 +13,7 @@ import Button from '@/app/components/Common/Button';
 import Input from '@/app/components/Common/Inputs';
 import Select from '@/app/components/Common/Select';
 import { Text } from '@/app/components/ui/Text';
+import { Field } from '@/app/components/ui/Field';
 
 // Modal de Detalhes do Subscriber
 interface SubscriberDetailsModalProps {
@@ -333,10 +334,8 @@ export const EditSubscriberModal: React.FC<EditSubscriberModalProps> = ({
           {/* Status e Frequência */}
           <div className="grid md:grid-cols-2 gap-4">
             <div>
-              <label className="block text-sm font-medium text-theme-primary mb-2">
-                Status
-              </label>
               <Select
+                label="Status"
                 options={statusOptions}
                 value={formData.status}
                 onChange={(e) =>
@@ -346,10 +345,8 @@ export const EditSubscriberModal: React.FC<EditSubscriberModalProps> = ({
               />
             </div>
             <div>
-              <label className="block text-sm font-medium text-theme-primary mb-2">
-                Frequência
-              </label>
               <Select
+                label="Frequência"
                 options={frequencyOptions}
                 value={formData.frequency}
                 onChange={(e) =>
@@ -365,10 +362,9 @@ export const EditSubscriberModal: React.FC<EditSubscriberModalProps> = ({
 
           {/* Interesses */}
           <div>
-            <label className="block text-sm font-medium text-theme-primary mb-2">
-              Interesses (separados por vírgula)
-            </label>
-            <textarea
+            <Field.Area
+              label="Interesses (separados por vírgula)"
+              classeCampo="resize-none"
               value={formData.interests}
               onChange={(e) =>
                 setFormData((prev) => ({ ...prev, interests: e.target.value }))
@@ -376,7 +372,6 @@ export const EditSubscriberModal: React.FC<EditSubscriberModalProps> = ({
               placeholder="Piano, Violão, Música Clássica"
               rows={3}
               disabled={loading}
-              className="w-full px-4 py-3 bg-theme-tertiary border border-theme-secondary rounded-lg text-theme-primary placeholder-theme-tertiary focus:outline-none focus:border-brand-primary transition-colors resize-none"
             />
           </div>
 
@@ -486,10 +481,8 @@ export const SendEmailModal: React.FC<SendEmailModalProps> = ({
         <form onSubmit={handleSubmit} className="space-y-6">
           {/* Tipo de Template */}
           <div>
-            <label className="block text-sm font-medium text-theme-primary mb-2">
-              Tipo de Email
-            </label>
             <Select
+              label="Tipo de Email"
               options={templateOptions}
               value={formData.templateType}
               onChange={(e) =>
@@ -517,10 +510,9 @@ export const SendEmailModal: React.FC<SendEmailModalProps> = ({
 
           {/* Conteúdo */}
           <div>
-            <label className="block text-sm font-medium text-theme-primary mb-2">
-              Conteúdo
-            </label>
-            <textarea
+            <Field.Area
+              label="Conteúdo"
+              classeCampo="resize-y"
               value={formData.content}
               onChange={(e) =>
                 setFormData((prev) => ({ ...prev, content: e.target.value }))
@@ -529,7 +521,6 @@ export const SendEmailModal: React.FC<SendEmailModalProps> = ({
               rows={10}
               disabled={loading}
               required
-              className="w-full px-4 py-3 bg-theme-tertiary border border-theme-secondary rounded-lg text-theme-primary placeholder-theme-tertiary focus:outline-none focus:border-brand-primary transition-colors resize-y"
             />
             <Text papel="legenda" tom="fraco" as="p" className="mt-2">
               Você pode usar &quot;FirstName&quot; para personalizar o nome do

@@ -13,6 +13,7 @@ import Input from '@/app/components/Common/Inputs';
 import Button from '@/app/components/Common/Button';
 import Checkbox from '@/app/components/Common/Checkbox';
 import { Text } from '@/app/components/ui/Text';
+import { Field } from '@/app/components/ui/Field';
 
 interface QuoteMusicalModalProps {
   editor: Editor;
@@ -143,15 +144,13 @@ export function QuoteMusicalModal({
     >
       <form onSubmit={handleSubmit} className="space-y-4">
         <div>
-          <label className="block text-sm font-medium text-theme-primary mb-2">
-            Citação *
-          </label>
-          <textarea
+          <Field.Area
+            label="Citação *"
+            classeCampo="resize-none"
             value={quote}
             onChange={(e) => setQuote(e.target.value)}
             rows={4}
             placeholder="Digite a citação aqui..."
-            className="input-classical-2 w-full resize-none"
             required
           />
         </div>

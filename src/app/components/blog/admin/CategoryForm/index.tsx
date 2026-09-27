@@ -20,6 +20,7 @@ import {
 } from '@/app/requests/blog/admin-actions';
 import { Inline, Stack } from '@/app/components/ui/Layout';
 import { Text } from '@/app/components/ui/Text';
+import { Field } from '@/app/components/ui/Field';
 
 interface CategoryFormProps {
   mode: 'create' | 'edit';
@@ -268,10 +269,9 @@ export function CategoryForm({ mode, category }: CategoryFormProps) {
 
           {/* Description */}
           <div>
-            <label className="block text-sm font-medium text-theme-primary mb-2">
-              Descrição
-            </label>
-            <textarea
+            <Field.Area
+              label="Descrição"
+              classeCampo="resize-none"
               value={formData.description}
               onChange={(e) =>
                 setFormData((prev) => ({
@@ -279,7 +279,6 @@ export function CategoryForm({ mode, category }: CategoryFormProps) {
                   description: e.target.value,
                 }))
               }
-              className="input-classical w-full resize-none"
               placeholder="Breve descrição da categoria..."
               rows={3}
               maxLength={200}
@@ -300,16 +299,13 @@ export function CategoryForm({ mode, category }: CategoryFormProps) {
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           {/* Icon */}
           <div>
-            <label className="block text-sm font-medium text-theme-primary mb-2">
-              Ícone (Emoji)
-            </label>
-            <input
+            <Field
+              label="Ícone (Emoji)"
               type="text"
               value={formData.icon}
               onChange={(e) =>
                 setFormData((prev) => ({ ...prev, icon: e.target.value }))
               }
-              className="input-classical w-full"
               placeholder="📚"
               maxLength={2}
             />

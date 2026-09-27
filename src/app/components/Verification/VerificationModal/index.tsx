@@ -11,6 +11,7 @@ import { useTranslation } from '@/app/hooks/useTranslation';
 import { setVerificationRequest } from '@/app/requests/verification';
 import { Inline } from '@/app/components/ui/Layout';
 import { Text } from '@/app/components/ui/Text';
+import { Field } from '@/app/components/ui/Field';
 
 interface VerificationModalProps {
   isOpen: boolean;
@@ -131,15 +132,13 @@ export default function VerificationModal({
 
           {/* Notes */}
           <div className="mb-6">
-            <label className="block text-sm font-medium text-theme-primary mb-2">
-              {t('verification_modal_notas')}
-            </label>
-            <textarea
+            <Field.Area
+              label={t('verification_modal_notas')}
+              classeCampo="resize-none"
               value={notes}
               onChange={(e) => setNotes(e.target.value)}
               placeholder={t('verification_modal_placeholder')}
               rows={3}
-              className="input-classical w-full resize-none"
             />
           </div>
 

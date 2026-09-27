@@ -34,6 +34,7 @@ import ComposerSearchInputSimple from '@/app/components/ComposerSearchInputSimpl
 import SimpleWorkSearchInput from '@/app/components/SimpleWorkSearchInput';
 import { Inline } from '@/app/components/ui/Layout';
 import { Text } from '@/app/components/ui/Text';
+import { Field } from '@/app/components/ui/Field';
 
 const articleSchema = z.object({
   title: z.string().min(3, 'Título deve ter pelo menos 3 caracteres'),
@@ -618,14 +619,11 @@ export function ArticleForm({
         <div className="space-y-6">
           {/* Título */}
           <div>
-            <label className="block text-sm font-medium text-theme-primary mb-2">
-              Título *
-            </label>
-            <input
+            <Field
+              label="Título *"
               type="text"
               value={formData.title}
               onChange={handleTitleChange}
-              className="input-classical-2 w-full text-lg"
               placeholder="Digite o título do artigo..."
             />
             {errors.title && (
@@ -663,10 +661,9 @@ export function ArticleForm({
 
           {/* Descrição */}
           <div>
-            <label className="block text-sm font-medium text-theme-primary mb-2">
-              Descrição (Preview)
-            </label>
-            <textarea
+            <Field.Area
+              label="Descrição (Preview)"
+              classeCampo="resize-none"
               value={formData.description || ''}
               onChange={(e) =>
                 setFormData((prev) => ({
@@ -675,7 +672,6 @@ export function ArticleForm({
                 }))
               }
               rows={3}
-              className="input-classical-2 w-full resize-none"
               placeholder="Uma breve descrição do artigo para aparecer nos cards e SEO..."
             />
           </div>
@@ -841,10 +837,8 @@ export function ArticleForm({
             />
 
             <div>
-              <label className="block text-sm font-medium text-theme-primary mb-2">
-                Agendar Publicação
-              </label>
-              <input
+              <Field
+                label="Agendar Publicação"
                 type="datetime-local"
                 value={formData.scheduledFor || ''}
                 onChange={(e) =>
@@ -853,7 +847,6 @@ export function ArticleForm({
                     scheduledFor: e.target.value,
                   }))
                 }
-                className="input-classical-2 w-full"
               />
             </div>
           </div>
@@ -1316,17 +1309,14 @@ export function ArticleForm({
       {activeTab === 'seo' && (
         <div className="space-y-6">
           <div>
-            <label className="block text-sm font-medium text-theme-primary mb-2">
-              Meta Título
-            </label>
-            <input
+            <Field
+              label="Meta Título"
               type="text"
               value={formData.metaTitle || ''}
               onChange={(e) =>
                 setFormData((prev) => ({ ...prev, metaTitle: e.target.value }))
               }
               placeholder="Título customizado para SEO (deixe vazio para usar o título do artigo)"
-              className="input-classical-2 w-full"
             />
             <Text papel="legenda" tom="fraco" as="p" className="mt-1">
               Máximo 60 caracteres recomendado
@@ -1334,10 +1324,9 @@ export function ArticleForm({
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-theme-primary mb-2">
-              Meta Descrição
-            </label>
-            <textarea
+            <Field.Area
+              label="Meta Descrição"
+              classeCampo="resize-none"
               value={formData.metaDescription || ''}
               onChange={(e) =>
                 setFormData((prev) => ({
@@ -1347,7 +1336,6 @@ export function ArticleForm({
               }
               rows={3}
               placeholder="Descrição customizada para SEO (deixe vazio para usar a descrição do artigo)"
-              className="input-classical-2 w-full resize-none"
             />
             <Text papel="legenda" tom="fraco" as="p" className="mt-1">
               Máximo 160 caracteres recomendado

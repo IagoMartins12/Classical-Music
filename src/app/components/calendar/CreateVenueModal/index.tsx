@@ -13,6 +13,7 @@ import { saveVenue } from '@/app/requests/calendar-requests';
 import Image from '@/app/components/SmartImage';
 import { Inline } from '@/app/components/ui/Layout';
 import { Text } from '@/app/components/ui/Text';
+import { Field } from '@/app/components/ui/Field';
 
 interface CreateVenueModalProps {
   isOpen: boolean;
@@ -233,10 +234,8 @@ export default function CreateVenueModal({
       <div className="px-6 py-6 space-y-6 overflow-y-auto ">
         {/* Name */}
         <div>
-          <label className="block text-sm font-medium text-theme-primary mb-2">
-            Nome do Local *
-          </label>
           <Input
+            label="Nome do Local *"
             ref={fieldRefs.name}
             type="text"
             value={formData.name}
@@ -257,10 +256,8 @@ export default function CreateVenueModal({
         {/* City and State */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div>
-            <label className="block text-sm font-medium text-theme-primary mb-2">
-              Cidade *
-            </label>
             <Input
+              label="Cidade *"
               ref={fieldRefs.city}
               type="text"
               value={formData.city}
@@ -278,10 +275,8 @@ export default function CreateVenueModal({
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-theme-primary mb-2">
-              Estado *
-            </label>
             <Input
+              label="Estado *"
               ref={fieldRefs.state}
               type="text"
               value={formData.state}
@@ -302,10 +297,8 @@ export default function CreateVenueModal({
 
         {/* Address */}
         <div>
-          <label className="block text-sm font-medium text-theme-primary mb-2">
-            Endereço
-          </label>
           <Input
+            label="Endereço"
             type="text"
             value={formData.address}
             onChange={(e) =>
@@ -319,10 +312,8 @@ export default function CreateVenueModal({
         {/* Contact */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div>
-            <label className="block text-sm font-medium text-theme-primary mb-2">
-              Website
-            </label>
             <Input
+              label="Website"
               type="url"
               value={formData.website}
               onChange={(e) =>
@@ -334,10 +325,8 @@ export default function CreateVenueModal({
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-theme-primary mb-2">
-              Telefone
-            </label>
             <Input
+              label="Telefone"
               type="tel"
               value={formData.phone}
               onChange={(e) =>
@@ -351,10 +340,8 @@ export default function CreateVenueModal({
 
         {/* Capacity */}
         <div>
-          <label className="block text-sm font-medium text-theme-primary mb-2">
-            Capacidade
-          </label>
           <Input
+            label="Capacidade"
             type="number"
             min="1"
             value={formData.capacity}
@@ -368,15 +355,13 @@ export default function CreateVenueModal({
 
         {/* Description */}
         <div>
-          <label className="block text-sm font-medium text-theme-primary mb-2">
-            Descrição
-          </label>
-          <textarea
+          <Field.Area
+            label="Descrição"
+            classeCampo="resize-none"
             value={formData.description}
             onChange={(e) =>
               setFormData((prev) => ({ ...prev, description: e.target.value }))
             }
-            className="w-full input-classical-2 resize-none"
             rows={4}
             placeholder="Descreva o local..."
             maxLength={500}
@@ -388,10 +373,8 @@ export default function CreateVenueModal({
 
         {/* Logo URL */}
         <div>
-          <label className="block text-sm font-medium text-theme-primary mb-2">
-            Logo do Local
-          </label>
           <Input
+            label="Logo do Local"
             type="url"
             value={formData.logoUrl}
             onChange={(e) =>
@@ -421,10 +404,8 @@ export default function CreateVenueModal({
 
         {/* Cover Image URL */}
         <div>
-          <label className="block text-sm font-medium text-theme-primary mb-2">
-            Imagem de Capa
-          </label>
           <Input
+            label="Imagem de Capa"
             type="url"
             value={formData.coverImageUrl}
             onChange={(e) =>

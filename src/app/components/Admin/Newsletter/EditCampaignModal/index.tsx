@@ -8,6 +8,7 @@ import Button from '@/app/components/Common/Button';
 import Input from '@/app/components/Common/Inputs';
 import Select from '@/app/components/Common/Select';
 import { useNewsletterAdmin } from '@/app/hooks/admin/useNewsletterAdmin';
+import { Field } from '@/app/components/ui/Field';
 
 interface EditCampaignModalProps {
   isOpen: boolean;
@@ -332,10 +333,8 @@ const EditCampaignModal: React.FC<EditCampaignModalProps> = ({
           {/* Template */}
           {editableFields.templateId && (
             <div>
-              <label className="block text-sm font-medium text-theme-primary mb-2">
-                Template
-              </label>
               <Select
+                label="Template"
                 options={[
                   { value: '', label: 'Selecione um template' },
                   ...templates.map((template) => ({
@@ -439,10 +438,9 @@ const EditCampaignModal: React.FC<EditCampaignModalProps> = ({
 
               {editableFields.customHtmlContent && (
                 <div>
-                  <label className="block text-sm font-medium text-theme-primary mb-2">
-                    Conteúdo HTML Customizado (opcional)
-                  </label>
-                  <textarea
+                  <Field.Area
+                    label="Conteúdo HTML Customizado (opcional)"
+                    classeCampo="resize-y font-mono"
                     value={formData.customHtmlContent}
                     onChange={(e) =>
                       handleInputChange('customHtmlContent', e.target.value)
@@ -450,7 +448,6 @@ const EditCampaignModal: React.FC<EditCampaignModalProps> = ({
                     placeholder="HTML personalizado para esta campanha"
                     rows={6}
                     disabled={loading}
-                    className="w-full px-4 py-3 bg-theme-tertiary border border-theme-secondary rounded-lg text-theme-primary placeholder-theme-tertiary focus:outline-none focus:border-brand-primary transition-colors resize-y font-mono text-sm"
                   />
                 </div>
               )}
@@ -460,16 +457,14 @@ const EditCampaignModal: React.FC<EditCampaignModalProps> = ({
           {/* Notas */}
           {editableFields.notes && (
             <div>
-              <label className="block text-sm font-medium text-theme-primary mb-2">
-                Notas da Campanha (opcional)
-              </label>
-              <textarea
+              <Field.Area
+                label="Notas da Campanha (opcional)"
+                classeCampo="resize-none"
                 value={formData.notes}
                 onChange={(e) => handleInputChange('notes', e.target.value)}
                 placeholder="Observações sobre esta campanha..."
                 rows={3}
                 disabled={loading}
-                className="w-full px-4 py-3 bg-theme-tertiary border border-theme-secondary rounded-lg text-theme-primary placeholder-theme-tertiary focus:outline-none focus:border-brand-primary transition-colors resize-none"
               />
             </div>
           )}

@@ -46,6 +46,7 @@ import Select from '@/app/components/Common/Select';
 import { useTranslation } from '@/app/context/TranslationContext';
 import { Inline } from '@/app/components/ui/Layout';
 import { Text } from '@/app/components/ui/Text';
+import { Field } from '@/app/components/ui/Field';
 
 interface StudentProfilePageClientProps {
   initialData: StudentProfileData | null;
@@ -558,10 +559,8 @@ export default function StudentProfilePageClient({
                 <div className="space-y-6">
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div>
-                      <label className="block text-sm font-medium text-theme-primary mb-2">
-                        {t('first_name')} *
-                      </label>
-                      <input
+                      <Field
+                        label={<>{t('first_name')}*</>}
                         type="text"
                         value={personalForm.firstName}
                         onChange={(e) =>
@@ -570,17 +569,14 @@ export default function StudentProfilePageClient({
                             firstName: e.target.value,
                           }))
                         }
-                        className="input-classical w-full"
                         placeholder="Seu primeiro nome"
                         required
                       />
                     </div>
 
                     <div>
-                      <label className="block text-sm font-medium text-theme-primary mb-2">
-                        {t('last_name')}
-                      </label>
-                      <input
+                      <Field
+                        label={t('last_name')}
                         type="text"
                         value={personalForm.lastName}
                         onChange={(e) =>
@@ -589,7 +585,6 @@ export default function StudentProfilePageClient({
                             lastName: e.target.value,
                           }))
                         }
-                        className="input-classical w-full"
                         placeholder="Seu sobrenome"
                       />
                     </div>
@@ -796,10 +791,8 @@ export default function StudentProfilePageClient({
                 <div className="space-y-6">
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div>
-                      <label className="block text-sm font-medium text-theme-primary mb-2">
-                        {t('current_level')}
-                      </label>
                       <Select
+                        label={t('current_level')}
                         options={skillLevels}
                         value={studyForm.level}
                         onChange={(e) =>
@@ -814,10 +807,8 @@ export default function StudentProfilePageClient({
                     </div>
 
                     <div>
-                      <label className="block text-sm font-medium text-theme-primary mb-2">
-                        {t('weekly_practice_time')}
-                      </label>
-                      <input
+                      <Field
+                        label={t('weekly_practice_time')}
                         type="number"
                         value={studyForm.practiceTime}
                         onChange={(e) =>
@@ -828,7 +819,6 @@ export default function StudentProfilePageClient({
                         }
                         min={0}
                         max={2400}
-                        className="input-classical w-full"
                         disabled={saving}
                         placeholder={t('practice_time_placeholder')}
                       />
@@ -836,10 +826,8 @@ export default function StudentProfilePageClient({
                   </div>
 
                   <div>
-                    <label className="block text-sm font-medium text-theme-primary mb-2">
-                      {t('learning_pace')}
-                    </label>
                     <Select
+                      label={t('learning_pace')}
                       options={learningPaceOptions}
                       value={studyForm.learningPace}
                       onChange={(e) =>
@@ -854,10 +842,8 @@ export default function StudentProfilePageClient({
                   </div>
 
                   <div>
-                    <label className="block text-sm font-medium text-theme-primary mb-2">
-                      {t('musical_goals')}
-                    </label>
-                    <textarea
+                    <Field.Area
+                      label={t('musical_goals')}
                       value={studyForm.musicalGoals}
                       onChange={(e) =>
                         setStudyForm((prev) => ({
@@ -866,17 +852,14 @@ export default function StudentProfilePageClient({
                         }))
                       }
                       rows={3}
-                      className="input-classical w-full"
                       placeholder={t('musical_goals_placeholder')}
                       disabled={saving}
                     />
                   </div>
 
                   <div>
-                    <label className="block text-sm font-medium text-theme-primary mb-2">
-                      {t('musical_background')}
-                    </label>
-                    <textarea
+                    <Field.Area
+                      label={t('musical_background')}
                       value={studyForm.musicalBackground}
                       onChange={(e) =>
                         setStudyForm((prev) => ({
@@ -885,17 +868,14 @@ export default function StudentProfilePageClient({
                         }))
                       }
                       rows={3}
-                      className="input-classical w-full"
                       placeholder={t('musical_background_placeholder')}
                       disabled={saving}
                     />
                   </div>
 
                   <div>
-                    <label className="block text-sm font-medium text-theme-primary mb-2">
-                      {t('special_needs')}
-                    </label>
-                    <textarea
+                    <Field.Area
+                      label={t('special_needs')}
                       value={studyForm.specialNeeds}
                       onChange={(e) =>
                         setStudyForm((prev) => ({
@@ -904,7 +884,6 @@ export default function StudentProfilePageClient({
                         }))
                       }
                       rows={2}
-                      className="input-classical w-full"
                       placeholder={t('special_needs_placeholder')}
                       disabled={saving}
                     />
@@ -1198,10 +1177,8 @@ export default function StudentProfilePageClient({
               {editingSection === 'privacy' ? (
                 <div className="space-y-6">
                   <div>
-                    <label className="block text-sm font-medium text-theme-primary mb-2">
-                      {t('profile_visibility')}
-                    </label>
-                    <select
+                    <Field.Selecao
+                      label={t('profile_visibility')}
                       value={privacyForm.profileVisibility}
                       onChange={(e) =>
                         setPrivacyForm((prev) => ({
@@ -1209,7 +1186,6 @@ export default function StudentProfilePageClient({
                           profileVisibility: e.target.value,
                         }))
                       }
-                      className="input-classical w-full"
                       disabled={saving}
                     >
                       {profileVisibilityOptions.map((option) => (
@@ -1217,7 +1193,7 @@ export default function StudentProfilePageClient({
                           {option.label}
                         </option>
                       ))}
-                    </select>
+                    </Field.Selecao>
                   </div>
 
                   <div className="space-y-4">
@@ -1411,10 +1387,8 @@ export default function StudentProfilePageClient({
               {editingSection === 'communication' ? (
                 <div className="space-y-6">
                   <div>
-                    <label className="block text-sm font-medium text-theme-primary mb-2">
-                      {t('preferred_contact')}
-                    </label>
-                    <select
+                    <Field.Selecao
+                      label={t('preferred_contact')}
                       value={communicationForm.preferredContact}
                       onChange={(e) =>
                         setCommunicationForm((prev) => ({
@@ -1422,7 +1396,6 @@ export default function StudentProfilePageClient({
                           preferredContact: e.target.value,
                         }))
                       }
-                      className="input-classical w-full"
                       disabled={saving}
                     >
                       {contactPreferences.map((pref) => (
@@ -1430,7 +1403,7 @@ export default function StudentProfilePageClient({
                           {pref.label}
                         </option>
                       ))}
-                    </select>
+                    </Field.Selecao>
                   </div>
 
                   <Inline

@@ -272,10 +272,8 @@ export function ArticleList({
             <div className="grid grid-cols-1 md:grid-cols-4 gap-4 pt-4 border-t border-theme-secondary">
               {/* Status Filter */}
               <div>
-                <label className="block text-sm font-medium text-theme-primary mb-2">
-                  Status
-                </label>
                 <Select
+                  label="Status"
                   options={statusOptions}
                   value={currentParams.status || ''}
                   onChange={(e) =>
@@ -287,11 +285,8 @@ export function ArticleList({
 
               {/* Category Filter */}
               <div>
-                <label className="block text-sm font-medium text-theme-primary mb-2">
-                  Categoria
-                </label>
-
                 <Select
+                  label="Categoria"
                   options={filters.categories.map((cat) => {
                     return {
                       label: `${cat.icon} ${cat.name}`,
@@ -308,10 +303,8 @@ export function ArticleList({
 
               {/* Type Filter */}
               <div>
-                <label className="block text-sm font-medium text-theme-primary mb-2">
-                  Tipo
-                </label>
                 <Select
+                  label="Tipo"
                   options={articleTypes}
                   value={currentParams.type || ''}
                   onChange={(e) =>
@@ -323,10 +316,8 @@ export function ArticleList({
 
               {/* Author Filter */}
               <div>
-                <label className="block text-sm font-medium text-theme-primary mb-2">
-                  Autor
-                </label>
                 <Select
+                  label="Autor"
                   options={filters.authors.map((author) => {
                     return {
                       label: getAuthorName(author),

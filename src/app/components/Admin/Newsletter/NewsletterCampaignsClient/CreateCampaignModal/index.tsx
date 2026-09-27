@@ -27,6 +27,7 @@ import {
 import Checkbox from '@/app/components/Common/Checkbox';
 import { Inline } from '@/app/components/ui/Layout';
 import { Text } from '@/app/components/ui/Text';
+import { Field } from '@/app/components/ui/Field';
 
 interface CreateCampaignModalProps {
   onClose: () => void;
@@ -256,10 +257,8 @@ export default function CreateCampaignModal({
             {currentStep === 1 && (
               <div className="space-y-6">
                 <div>
-                  <label className="block text-sm font-medium text-theme-secondary mb-2">
-                    Nome da Campanha *
-                  </label>
                   <Input
+                    label="Nome da Campanha *"
                     type="text"
                     value={form.name}
                     onChange={(e) =>
@@ -270,10 +269,8 @@ export default function CreateCampaignModal({
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-theme-secondary mb-2">
-                    Assunto do Email *
-                  </label>
                   <Input
+                    label="Assunto do Email *"
                     type="text"
                     value={form.subject}
                     onChange={(e) =>
@@ -284,10 +281,8 @@ export default function CreateCampaignModal({
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-theme-secondary mb-2">
-                    Status da Campanha
-                  </label>
-                  <select
+                  <Field.Selecao
+                    label="Status da Campanha"
                     value={form.status}
                     onChange={(e) =>
                       setForm((prev) => ({
@@ -295,11 +290,10 @@ export default function CreateCampaignModal({
                         status: e.target.value as any,
                       }))
                     }
-                    className="input-classical-2 w-full"
                   >
                     <option value="DRAFT">Rascunho</option>
                     <option value="SCHEDULED">Agendada</option>
-                  </select>
+                  </Field.Selecao>
                 </div>
               </div>
             )}
@@ -308,10 +302,8 @@ export default function CreateCampaignModal({
             {currentStep === 2 && (
               <div className="space-y-6">
                 <div>
-                  <label className="block text-sm font-medium text-theme-secondary mb-2">
-                    Tipo de Template *
-                  </label>
-                  <select
+                  <Field.Selecao
+                    label="Tipo de Template *"
                     value={form.templateType}
                     onChange={(e) =>
                       setForm((prev) => ({
@@ -320,14 +312,13 @@ export default function CreateCampaignModal({
                         templateId: '', // Reset template personalizado
                       }))
                     }
-                    className="input-classical-2 w-full"
                   >
                     {emailTemplates.map(({ type, template }) => (
                       <option key={type} value={type}>
                         {template.description}
                       </option>
                     ))}
-                  </select>
+                  </Field.Selecao>
                 </div>
 
                 {/* Opção de usar template personalizado */}
@@ -370,10 +361,8 @@ export default function CreateCampaignModal({
                     <div className="space-y-4">
                       {getTemplateOptions().length > 0 ? (
                         <div>
-                          <label className="block text-sm font-medium text-theme-secondary mb-2">
-                            Selecionar Template
-                          </label>
-                          <select
+                          <Field.Selecao
+                            label="Selecionar Template"
                             value={form.templateId}
                             onChange={(e) =>
                               setForm((prev) => ({
@@ -381,7 +370,6 @@ export default function CreateCampaignModal({
                                 templateId: e.target.value,
                               }))
                             }
-                            className="input-classical-2 w-full"
                           >
                             <option value="">Selecione um template...</option>
                             {getTemplateOptions().map((template) => (
@@ -390,7 +378,7 @@ export default function CreateCampaignModal({
                                 {template.isDefault && ' (Padrão)'}
                               </option>
                             ))}
-                          </select>
+                          </Field.Selecao>
                         </div>
                       ) : (
                         <div className="text-center py-6">
@@ -474,10 +462,8 @@ export default function CreateCampaignModal({
                 {/* Customização de assunto */}
                 {form.useCustomTemplate && selectedTemplate && (
                   <div>
-                    <label className="block text-sm font-medium text-theme-secondary mb-2">
-                      Assunto Personalizado (opcional)
-                    </label>
                     <Input
+                      label="Assunto Personalizado (opcional)"
                       type="text"
                       value={form.customSubject || ''}
                       onChange={(e) =>
@@ -497,10 +483,9 @@ export default function CreateCampaignModal({
                 {form.templateType === 'CAMPAIGN_CUSTOM' &&
                   !form.useCustomTemplate && (
                     <div>
-                      <label className="block text-sm font-medium text-theme-secondary mb-2">
-                        Conteúdo Personalizado (HTML)
-                      </label>
-                      <textarea
+                      <Field.Area
+                        label="Conteúdo Personalizado (HTML)"
+                        classeCampo="h-40 font-mono"
                         value={form.customContent || ''}
                         onChange={(e) =>
                           setForm((prev) => ({
@@ -508,7 +493,6 @@ export default function CreateCampaignModal({
                             customContent: e.target.value,
                           }))
                         }
-                        className="input-classical-2 w-full h-40 font-mono text-sm"
                         placeholder="<h2>Olá {{firstName}}!</h2><p>Conteúdo da sua campanha...</p>"
                       />
                     </div>
@@ -531,10 +515,8 @@ export default function CreateCampaignModal({
               <div className="space-y-6">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div>
-                    <label className="block text-sm font-medium text-theme-secondary mb-2">
-                      Nome do Remetente
-                    </label>
                     <Input
+                      label="Nome do Remetente"
                       type="text"
                       value={form.senderName}
                       onChange={(e) =>
@@ -548,10 +530,8 @@ export default function CreateCampaignModal({
                   </div>
 
                   <div>
-                    <label className="block text-sm font-medium text-theme-secondary mb-2">
-                      Email do Remetente
-                    </label>
                     <Input
+                      label="Email do Remetente"
                       type="email"
                       value={form.senderEmail}
                       onChange={(e) =>
@@ -566,10 +546,8 @@ export default function CreateCampaignModal({
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-theme-secondary mb-2">
-                    Email de Resposta (opcional)
-                  </label>
                   <Input
+                    label="Email de Resposta (opcional)"
                     type="email"
                     value={form.replyToEmail}
                     onChange={(e) =>
@@ -642,10 +620,8 @@ export default function CreateCampaignModal({
 
                 {form.status === 'SCHEDULED' && (
                   <div>
-                    <label className="block text-sm font-medium text-theme-secondary mb-2">
-                      Data e Hora do Envio *
-                    </label>
                     <Input
+                      label="Data e Hora do Envio *"
                       type="datetime-local"
                       value={form.scheduledAt || ''}
                       onChange={(e) =>

@@ -448,10 +448,8 @@ export default function CreateAssignmentPageClient({
                     </h2>
 
                     <div>
-                      <label className="block text-sm font-medium text-theme-primary mb-2">
-                        {t('student_required')}
-                      </label>
                       <Select
+                        label={t('student_required')}
                         ref={fieldRefs.studentUserId}
                         options={[
                           { value: '', label: t('select_student') },
@@ -523,10 +521,8 @@ export default function CreateAssignmentPageClient({
 
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                       <div>
-                        <label className="block text-sm font-medium text-theme-primary mb-2">
-                          {t('assignment_type')}
-                        </label>
                         <Select
+                          label={t('assignment_type')}
                           options={initialData.assignmentTypes.map((type) => ({
                             value: type.value,
                             label: type.label,
@@ -553,10 +549,8 @@ export default function CreateAssignmentPageClient({
                       </div>
 
                       <div>
-                        <label className="block text-sm font-medium text-theme-primary mb-2">
-                          {t('priority')}
-                        </label>
                         <Select
+                          label={t('priority')}
                           options={initialData.priorityLevels.map(
                             (priority) => ({
                               value: priority.value,
@@ -573,10 +567,8 @@ export default function CreateAssignmentPageClient({
                     </div>
 
                     <div>
-                      <label className="block text-sm font-medium text-theme-primary mb-2">
-                        {t('assignment_title_required')}
-                      </label>
                       <Input
+                        label={t('assignment_title_required')}
                         ref={fieldRefs.title}
                         type="text"
                         value={formData.title}
@@ -642,10 +634,8 @@ export default function CreateAssignmentPageClient({
 
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                       <div>
-                        <label className="block text-sm font-medium text-theme-primary mb-2">
-                          {t('due_date')}
-                        </label>
                         <Input
+                          label={t('due_date')}
                           ref={fieldRefs.dueDate}
                           type="date"
                           value={formData.dueDate}
@@ -665,10 +655,8 @@ export default function CreateAssignmentPageClient({
                       </div>
 
                       <div>
-                        <label className="block text-sm font-medium text-theme-primary mb-2">
-                          {t('estimated_time_required')}
-                        </label>
                         <Input
+                          label={t('estimated_time_required')}
                           ref={fieldRefs.estimatedTime}
                           type="number"
                           value={formData.estimatedTime}

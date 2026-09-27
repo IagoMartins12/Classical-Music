@@ -7,6 +7,7 @@ import { toast } from 'react-hot-toast';
 import { createTag, updateTag } from '@/app/requests/blog/admin-actions';
 import { Inline } from '@/app/components/ui/Layout';
 import { Text } from '@/app/components/ui/Text';
+import { Field } from '@/app/components/ui/Field';
 
 interface TagFormProps {
   mode: 'create' | 'edit';
@@ -173,10 +174,9 @@ export function TagForm({ mode, tag }: TagFormProps) {
 
           {/* Description */}
           <div>
-            <label className="block text-sm font-medium text-theme-primary mb-2">
-              Descrição
-            </label>
-            <textarea
+            <Field.Area
+              label="Descrição"
+              classeCampo="resize-none"
               value={formData.description}
               onChange={(e) =>
                 setFormData((prev) => ({
@@ -184,7 +184,6 @@ export function TagForm({ mode, tag }: TagFormProps) {
                   description: e.target.value,
                 }))
               }
-              className="input-classical w-full resize-none"
               placeholder="Breve descrição da tag..."
               rows={2}
               maxLength={150}

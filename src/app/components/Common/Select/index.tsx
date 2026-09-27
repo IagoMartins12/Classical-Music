@@ -2,8 +2,9 @@
 'use client';
 
 import React, { forwardRef, useId, useMemo } from 'react';
-import { PiCaretDown, PiWarningCircle } from 'react-icons/pi';
+import { PiWarningCircle } from 'react-icons/pi';
 import { Inline } from '@/app/components/ui/Layout';
+import { Selecao } from '@/app/components/ui/Selecao';
 
 interface SelectOption {
   value: string;
@@ -16,7 +17,7 @@ interface SelectProps extends Omit<
   React.SelectHTMLAttributes<HTMLSelectElement>,
   'defaultValue'
 > {
-  label?: string;
+  label?: React.ReactNode;
   error?: string;
   options: SelectOption[];
   placeholder?: string;
@@ -88,77 +89,57 @@ const Select = forwardRef<HTMLSelectElement, SelectProps>(
         {label && (
           <label
             htmlFor={finalId}
-            className="block text-sm font-medium text-theme-secondary mb-2"
+            className="block t-rotulo font-medium text-texto mb-2"
           >
             {label}
           </label>
         )}
 
-        <div className="relative">
-          <select
-            ref={ref}
-            id={finalId}
-            // Sem `label`, o nome vem do placeholder ou, sem ele, da primeira
-            // opção ("Todos os períodos"): na home e em `/composers` o select
-            // era usado sem rótulo nenhum, e o leitor de tela anunciava só
-            // "caixa de seleção". Um `aria-label` explícito de quem usa o
-            // componente continua vencendo (vem em `props`, depois).
-            aria-label={
-              label ? undefined : placeholder || memoizedOptions[0]?.label
-            }
-            value={finalValue || ''}
-            className={`
-              input-classical w-full !pr-10 !pl-6 appearance-none cursor-pointer
-              focus:outline-none focus:ring-2 focus:ring-brand-primary focus:border-brand-primary
-              transition-all duration-200
-              ${
-                error
-                  ? '!border-red-500 focus:ring-red-500 focus:border-red-500'
-                  : ''
-              }
-              ${
-                props.disabled
-                  ? 'opacity-50 cursor-not-allowed bg-theme-secondary/20'
-                  : ''
-              }
-              ${className}
-            `}
-            {...props}
-          >
-            {placeholder && (
-              <option value="" disabled>
-                {placeholder}
-              </option>
-            )}
-
-            {memoizedOptions.map((option, index) => (
-              <option
-                key={option.key || `${option.value}-${index}`}
-                value={option.value}
-                disabled={option.disabled}
-                className="capitalize"
-              >
-                {option.label}
-              </option>
-            ))}
-          </select>
-
-          {/* Seta customizada */}
-          <div className="absolute right-3 top-1/2 transform -translate-y-1/2 pointer-events-none">
-            <PiCaretDown
-              className={`w-4 h-4 transition-colors duration-200 ${
-                props.disabled ? 'text-theme-tertiary' : 'text-theme-secondary'
-              }`}
-            />
-          </div>
-        </div>
+        {/* O select do sistema, no lugar do `<select>` nativo (cuja lista o
+            sistema operacional desenha e não aceita estilo). A API continua a
+            mesma: o `onChange` recebe `{ target: { value, name } }`, que é o
+            que as 228 telas leem, e o `ref` foca o botão. */}
+        <Selecao
+          ref={ref as unknown as React.Ref<HTMLButtonElement>}
+          id={finalId}
+          name={props.name}
+          opcoes={memoizedOptions}
+          valor={String(finalValue ?? '')}
+          aoMudar={(novo) =>
+            props.onChange?.({
+              target: { value: novo, name: props.name ?? '' },
+              currentTarget: { value: novo, name: props.name ?? '' },
+            } as unknown as React.ChangeEvent<HTMLSelectElement>)
+          }
+          placeholder={placeholder}
+          disabled={props.disabled}
+          invalido={!!error || props['aria-invalid'] === true}
+          // Sem `label`, o nome vem do placeholder ou, sem ele, da primeira
+          // opção ("Todos os períodos"): na home e em `/composers` o select
+          // era usado sem rótulo nenhum. Um `aria-label` explícito vence.
+          aria-label={
+            props['aria-label'] ??
+            (label ? undefined : placeholder || memoizedOptions[0]?.label)
+          }
+          aria-describedby={
+            props['aria-describedby'] ?? (error ? `${finalId}-erro` : undefined)
+          }
+          onBlur={
+            props.onBlur as unknown as React.FocusEventHandler<HTMLButtonElement>
+          }
+          onFocus={
+            props.onFocus as unknown as React.FocusEventHandler<HTMLButtonElement>
+          }
+          className={className}
+        />
 
         {/* Mensagem de erro */}
         {error && (
           <Inline
             as="p"
-            gap={1}
-            className="text-red-500 text-sm font-medium mt-1 gap-2"
+            id={`${finalId}-erro`}
+            gap={2}
+            className="text-erro t-rotulo font-medium mt-1"
           >
             <PiWarningCircle className="w-4 h-4" />
             <span>{error}</span>

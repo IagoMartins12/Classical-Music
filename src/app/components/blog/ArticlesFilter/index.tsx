@@ -7,6 +7,7 @@ import { PiFunnel, PiMagnifyingGlass, PiX } from 'react-icons/pi';
 import ViewModeToggle, { ViewMode } from '@/app/components/ViewModeToggle';
 import { ArticleCard } from '@/app/components/blog/ArticleCard';
 import { ArticleCardList } from '@/app/components/blog/ArticleCardList';
+import { Field } from '@/app/components/ui/Field';
 
 interface Article {
   id: string;
@@ -151,15 +152,12 @@ export function ArticlesFilter({
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4 pt-4 border-t border-theme-secondary">
               {/* Category Filter */}
               <div>
-                <label className="block text-sm font-medium text-theme-primary mb-2">
-                  Categoria
-                </label>
-                <select
+                <Field.Selecao
+                  label="Categoria"
                   value={currentParams.category || ''}
                   onChange={(e) =>
                     updateParams({ category: e.target.value, page: '1' })
                   }
-                  className="input-classical-2 w-full text-sm"
                 >
                   <option value="">Todas as categorias</option>
                   {categories.map((cat) => (
@@ -167,25 +165,22 @@ export function ArticlesFilter({
                       {cat.icon} {cat.name}
                     </option>
                   ))}
-                </select>
+                </Field.Selecao>
               </div>
 
               {/* Sort Filter */}
               <div>
-                <label className="block text-sm font-medium text-theme-primary mb-2">
-                  Ordenar por
-                </label>
-                <select
+                <Field.Selecao
+                  label="Ordenar por"
                   value={currentParams.sort || 'recent'}
                   onChange={(e) =>
                     updateParams({ sort: e.target.value, page: '1' })
                   }
-                  className="input-classical-2 w-full text-sm"
                 >
                   <option value="recent">Mais recentes</option>
                   <option value="popular">Mais populares</option>
                   <option value="likes">Mais curtidos</option>
-                </select>
+                </Field.Selecao>
               </div>
             </div>
           )}

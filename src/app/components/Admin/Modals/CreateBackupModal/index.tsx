@@ -100,10 +100,8 @@ export default function CreateBackupModal({
             </h3>
 
             <div>
-              <label className="block text-sm font-medium text-theme-primary mb-2">
-                Nome do Backup
-              </label>
               <Input
+                label="Nome do Backup"
                 type="text"
                 value={config?.name}
                 onChange={(e) =>
@@ -115,10 +113,8 @@ export default function CreateBackupModal({
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-theme-primary mb-2">
-                Tipo de Backup
-              </label>
               <Select
+                label="Tipo de Backup"
                 value={config?.type}
                 onChange={(e) =>
                   setConfig((prev) => ({
@@ -236,10 +232,8 @@ export default function CreateBackupModal({
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-theme-primary mb-2">
-                Retenção (dias)
-              </label>
               <Input
+                label="Retenção (dias)"
                 type="number"
                 value={config?.retentionDays}
                 onChange={(e) =>
@@ -262,10 +256,8 @@ export default function CreateBackupModal({
             </h3>
 
             <div>
-              <label className="block text-sm font-medium text-theme-primary mb-2">
-                Frequência
-              </label>
               <Select
+                label="Frequência"
                 value={config?.scheduleType}
                 onChange={(e) =>
                   setConfig((prev) => ({
@@ -285,10 +277,8 @@ export default function CreateBackupModal({
 
             {config?.scheduleType !== 'once' && (
               <div>
-                <label className="block text-sm font-medium text-theme-primary mb-2">
-                  Horário
-                </label>
                 <Input
+                  label="Horário"
                   type="time"
                   value={config?.scheduleTime || '03:00'}
                   onChange={(e) =>

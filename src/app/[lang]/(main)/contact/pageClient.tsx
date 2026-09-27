@@ -36,6 +36,7 @@ import { useTranslation } from '@/app/context/TranslationContext';
 import Checkbox from '@/app/components/Common/Checkbox';
 import { Inline } from '@/app/components/ui/Layout';
 import { Text } from '@/app/components/ui/Text';
+import { Field } from '@/app/components/ui/Field';
 
 interface ContactOption {
   icon: React.ComponentType<{ className?: string }>;
@@ -358,10 +359,8 @@ export default function ContactPageClient() {
                 <form onSubmit={handleSubmit} className="space-y-6">
                   <div className="grid md:grid-cols-2 gap-6">
                     <div>
-                      <label className="block text-sm font-medium text-theme-secondary mb-2">
-                        {t('contact_jsx_label_children_0__nome')}
-                      </label>
                       <Input
+                        label={t('contact_jsx_label_children_0__nome')}
                         type="text"
                         name="name"
                         value={formData.name}
@@ -374,10 +373,8 @@ export default function ContactPageClient() {
                     </div>
 
                     <div>
-                      <label className="block text-sm font-medium text-theme-secondary mb-2">
-                        {t('contact_jsx_label_children_0__email')}
-                      </label>
                       <Input
+                        label={t('contact_jsx_label_children_0__email')}
                         type="email"
                         name="email"
                         value={formData.email}
@@ -391,10 +388,8 @@ export default function ContactPageClient() {
                   </div>
 
                   <div>
-                    <label className="block text-sm font-medium text-theme-secondary mb-2">
-                      {t('contact_jsx_label_children_0__assunto')}
-                    </label>
                     <Input
+                      label={t('contact_jsx_label_children_0__assunto')}
                       type="text"
                       name="subject"
                       value={formData.subject}
@@ -407,10 +402,8 @@ export default function ContactPageClient() {
                   </div>
 
                   <div>
-                    <label className="block text-sm font-medium text-theme-secondary mb-2">
-                      {t('contact_jsx_label_children_0__prioridade')}
-                    </label>
                     <Select
+                      label={t('contact_jsx_label_children_0__prioridade')}
                       options={priorityOptions}
                       name="priority"
                       value={formData.priority}
@@ -421,17 +414,15 @@ export default function ContactPageClient() {
                   </div>
 
                   <div>
-                    <label className="block text-sm font-medium text-theme-secondary mb-2">
-                      {t('contact_jsx_label_children_0__mensagem')}
-                    </label>
-                    <textarea
+                    <Field.Area
+                      label={t('contact_jsx_label_children_0__mensagem')}
+                      classeCampo="resize-none"
                       name="message"
                       value={formData.message}
                       onChange={handleInputChange}
                       required
                       rows={6}
                       disabled={loading || success}
-                      className="input-classical-2 w-full resize-none disabled:opacity-50"
                       placeholder={t(
                         'contact_jsx_textarea_placeholder_mensagem'
                       )}

@@ -35,6 +35,7 @@ import { useTranslation } from '@/app/context/TranslationContext';
 import { getWorkById } from '@/app/requests/catalog-search';
 import { Inline } from '@/app/components/ui/Layout';
 import { Text } from '@/app/components/ui/Text';
+import { Field } from '@/app/components/ui/Field';
 
 interface EditAssignmentPageClientProps {
   initialData: EditAssignmentData | null;
@@ -388,10 +389,8 @@ export default function EditAssignmentPageClient({
 
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                       <div>
-                        <label className="block text-sm font-medium text-theme-primary mb-2">
-                          {t('assignment_type')}
-                        </label>
                         <Select
+                          label={t('assignment_type')}
                           options={initialData.assignmentTypes.map((type) => ({
                             value: type.value,
                             label: type.label,
@@ -417,10 +416,8 @@ export default function EditAssignmentPageClient({
                       </div>
 
                       <div>
-                        <label className="block text-sm font-medium text-theme-primary mb-2">
-                          {t('priority')}
-                        </label>
                         <Select
+                          label={t('priority')}
                           options={initialData.priorityLevels.map(
                             (priority) => ({
                               value: priority.value,
@@ -437,10 +434,8 @@ export default function EditAssignmentPageClient({
                     </div>
 
                     <div>
-                      <label className="block text-sm font-medium text-theme-primary mb-2">
-                        {t('assignment_title_required')}
-                      </label>
                       <Input
+                        label={t('assignment_title_required')}
                         type="text"
                         value={formData.title}
                         onChange={(e) =>
@@ -453,16 +448,13 @@ export default function EditAssignmentPageClient({
                     </div>
 
                     <div>
-                      <label className="block text-sm font-medium text-theme-primary mb-2">
-                        {t('description_required')}
-                      </label>
-                      <textarea
+                      <Field.Area
+                        label={t('description_required')}
                         value={formData.description}
                         onChange={(e) =>
                           updateFormData('description', e.target.value)
                         }
                         rows={4}
-                        className="input-classical w-full"
                         placeholder={t('description_placeholder')}
                         required
                       />
@@ -477,10 +469,8 @@ export default function EditAssignmentPageClient({
 
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                       <div>
-                        <label className="block text-sm font-medium text-theme-primary mb-2">
-                          {t('due_date')}
-                        </label>
                         <Input
+                          label={t('due_date')}
                           type="date"
                           value={formData.dueDate}
                           onChange={(e) =>
@@ -492,10 +482,8 @@ export default function EditAssignmentPageClient({
                       </div>
 
                       <div>
-                        <label className="block text-sm font-medium text-theme-primary mb-2">
-                          {t('estimated_time')}
-                        </label>
                         <Input
+                          label={t('estimated_time')}
                           type="number"
                           value={formData.estimatedTime}
                           onChange={(e) =>

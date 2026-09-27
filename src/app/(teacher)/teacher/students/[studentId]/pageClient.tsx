@@ -45,6 +45,7 @@ import Modal from '@/app/components/Modal';
 import { useTranslation } from '@/app/context/TranslationContext';
 import { Inline } from '@/app/components/ui/Layout';
 import { Text } from '@/app/components/ui/Text';
+import { Field } from '@/app/components/ui/Field';
 
 interface TeacherStudentDetailPageClientProps {
   studentData: StudentDetailData;
@@ -204,10 +205,8 @@ function EditRelationshipModal({
               <div className="space-y-4">
                 <div className="grid grid-cols-2 gap-4">
                   <div>
-                    <label className="block text-sm font-medium text-theme-primary mb-2">
-                      {t('lessons_per_week')}
-                    </label>
                     <Select
+                      label={t('lessons_per_week')}
                       options={[
                         { value: '1', label: t('lesson_option_1') },
                         { value: '2', label: t('lesson_option_2') },
@@ -226,10 +225,8 @@ function EditRelationshipModal({
                   </div>
 
                   <div>
-                    <label className="block text-sm font-medium text-theme-primary mb-2">
-                      {t('duration_minutes')}
-                    </label>
                     <Select
+                      label={t('duration_minutes')}
                       options={[
                         { value: '30', label: t('duration_30') },
                         { value: '45', label: t('duration_45') },
@@ -377,10 +374,8 @@ function EditRelationshipModal({
           {/* Campos de Texto */}
           <div className="space-y-4">
             <div>
-              <label className="block text-sm font-medium text-theme-primary mb-2">
-                {t('detailed_learning_plan')}
-              </label>
-              <textarea
+              <Field.Area
+                label={t('detailed_learning_plan')}
                 value={formData.learningPlan}
                 onChange={(e) =>
                   setFormData((prev) => ({
@@ -389,16 +384,13 @@ function EditRelationshipModal({
                   }))
                 }
                 rows={4}
-                className="input-classical w-full"
                 placeholder={t('detailed_learning_plan_placeholder')}
               />
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-theme-primary mb-2">
-                {t('teacher_notes_private')}
-              </label>
-              <textarea
+              <Field.Area
+                label={t('teacher_notes_private')}
                 value={formData.teacherNotes}
                 onChange={(e) =>
                   setFormData((prev) => ({
@@ -407,7 +399,6 @@ function EditRelationshipModal({
                   }))
                 }
                 rows={3}
-                className="input-classical w-full"
                 placeholder={t('teacher_notes_private_placeholder')}
               />
             </div>

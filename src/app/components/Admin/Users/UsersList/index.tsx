@@ -340,10 +340,8 @@ export default function UsersList() {
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
                   {/* Tipo de Usuário */}
                   <div>
-                    <label className="block text-sm font-medium text-theme-primary mb-2">
-                      Tipo de Usuário
-                    </label>
                     <Select
+                      label="Tipo de Usuário"
                       options={USER_TYPE_OPTIONS}
                       value={localFilters.userType || 'all'}
                       onChange={(e) =>
@@ -359,10 +357,8 @@ export default function UsersList() {
 
                   {/* Nível de Experiência */}
                   <div>
-                    <label className="block text-sm font-medium text-theme-primary mb-2">
-                      Experiência
-                    </label>
                     <Select
+                      label="Experiência"
                       options={EXPERIENCE_OPTIONS}
                       value={localFilters.experienceLevel || 'all'}
                       onChange={(e) =>
@@ -378,10 +374,8 @@ export default function UsersList() {
 
                   {/* Ordenação */}
                   <div>
-                    <label className="block text-sm font-medium text-theme-primary mb-2">
-                      Ordenar por
-                    </label>
                     <Select
+                      label="Ordenar por"
                       options={SORT_OPTIONS}
                       value={localFilters.sortBy || 'createdAt'}
                       onChange={(e) =>
@@ -392,10 +386,8 @@ export default function UsersList() {
 
                   {/* Direção da Ordenação */}
                   <div>
-                    <label className="block text-sm font-medium text-theme-primary mb-2">
-                      Direção
-                    </label>
                     <Select
+                      label="Direção"
                       options={DIRECTION_OPTIONS}
                       value={localFilters.sortOrder || 'desc'}
                       onChange={(e) =>

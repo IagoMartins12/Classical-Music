@@ -49,6 +49,7 @@ import { useTranslation } from '@/app/context/TranslationContext';
 import { updateLessonRequest } from '@/app/requests/portal/lesson-actions';
 import { Inline } from '@/app/components/ui/Layout';
 import { Text } from '@/app/components/ui/Text';
+import { Field } from '@/app/components/ui/Field';
 
 interface TeacherLessonDetailsPageClientProps {
   lessonData: LessonDetailsData | null;
@@ -873,10 +874,8 @@ export default function TeacherLessonDetailsPageClient({
                   <div className="space-y-4">
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                       <div>
-                        <label className="block text-sm font-medium text-theme-tertiary mb-2">
-                          {t('form_title_required')}
-                        </label>
                         <Input
+                          label={t('form_title_required')}
                           type="text"
                           value={editingBasicInfo.title}
                           onChange={(e) =>
@@ -887,10 +886,8 @@ export default function TeacherLessonDetailsPageClient({
                         />
                       </div>
                       <div>
-                        <label className="block text-sm font-medium text-theme-tertiary mb-2">
-                          {t('form_status_label')}
-                        </label>
                         <Select
+                          label={t('form_status_label')}
                           options={statusOptions}
                           value={editingBasicInfo.status}
                           onChange={(e) =>
@@ -903,10 +900,8 @@ export default function TeacherLessonDetailsPageClient({
 
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                       <div>
-                        <label className="block text-sm font-medium text-theme-tertiary mb-2">
-                          {t('form_type_label')}
-                        </label>
                         <Select
+                          label={t('form_type_label')}
                           options={lessonTypeOptions}
                           value={editingBasicInfo.type}
                           onChange={(e) =>
@@ -916,10 +911,8 @@ export default function TeacherLessonDetailsPageClient({
                         />
                       </div>
                       <div>
-                        <label className="block text-sm font-medium text-theme-tertiary mb-2">
-                          {t('form_location_label')}
-                        </label>
                         <Input
+                          label={t('form_location_label')}
                           type="text"
                           value={editingBasicInfo.location}
                           onChange={(e) =>
@@ -933,10 +926,8 @@ export default function TeacherLessonDetailsPageClient({
 
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                       <div>
-                        <label className="block text-sm font-medium text-theme-tertiary mb-2">
-                          {t('form_datetime_required')}
-                        </label>
                         <Input
+                          label={t('form_datetime_required')}
                           type="datetime-local"
                           value={editingBasicInfo.scheduledAt}
                           onChange={(e) =>
@@ -947,10 +938,8 @@ export default function TeacherLessonDetailsPageClient({
                         />
                       </div>
                       <div>
-                        <label className="block text-sm font-medium text-theme-tertiary mb-2">
-                          {t('form_duration_label')}
-                        </label>
                         <Input
+                          label={t('form_duration_label')}
                           type="number"
                           value={editingBasicInfo.duration}
                           onChange={(e) =>
@@ -967,15 +956,13 @@ export default function TeacherLessonDetailsPageClient({
                     </div>
 
                     <div>
-                      <label className="block text-sm font-medium text-theme-tertiary mb-2">
-                        {t('form_description_label')}
-                      </label>
-                      <textarea
+                      <Field.Area
+                        label={t('form_description_label')}
+                        classeCampo="h-20"
                         value={editingBasicInfo.description}
                         onChange={(e) =>
                           updateFormData('description', e.target.value)
                         }
-                        className="input-classical-2 w-full h-20"
                         placeholder={t('form_description_placeholder')}
                       />
                     </div>
@@ -1542,10 +1529,9 @@ export default function TeacherLessonDetailsPageClient({
                 {isEditing.notes ? (
                   <div className="space-y-4">
                     <div>
-                      <label className="block text-sm font-medium text-theme-tertiary mb-2">
-                        {t('teacher_notes_label')}
-                      </label>
-                      <textarea
+                      <Field.Area
+                        label={t('teacher_notes_label')}
+                        classeCampo="h-24"
                         value={editingNotes.teacher}
                         onChange={(e) =>
                           setEditingNotes((prev) => ({
@@ -1553,16 +1539,14 @@ export default function TeacherLessonDetailsPageClient({
                             teacher: e.target.value,
                           }))
                         }
-                        className="input-classical-2 w-full h-24"
                         placeholder={t('teacher_notes_placeholder')}
                       />
                     </div>
 
                     <div>
-                      <label className="block text-sm font-medium text-theme-tertiary mb-2">
-                        {t('public_notes_label')}
-                      </label>
-                      <textarea
+                      <Field.Area
+                        label={t('public_notes_label')}
+                        classeCampo="h-24"
                         value={editingNotes.public}
                         onChange={(e) =>
                           setEditingNotes((prev) => ({
@@ -1570,16 +1554,14 @@ export default function TeacherLessonDetailsPageClient({
                             public: e.target.value,
                           }))
                         }
-                        className="input-classical-2 w-full h-24"
                         placeholder={t('public_notes_placeholder')}
                       />
                     </div>
 
                     <div>
-                      <label className="block text-sm font-medium text-theme-tertiary mb-2">
-                        {t('lesson_summary_label')}
-                      </label>
-                      <textarea
+                      <Field.Area
+                        label={t('lesson_summary_label')}
+                        classeCampo="h-20"
                         value={editingNotes.summary}
                         onChange={(e) =>
                           setEditingNotes((prev) => ({
@@ -1587,16 +1569,14 @@ export default function TeacherLessonDetailsPageClient({
                             summary: e.target.value,
                           }))
                         }
-                        className="input-classical-2 w-full h-20"
                         placeholder={t('lesson_summary_placeholder')}
                       />
                     </div>
 
                     <div>
-                      <label className="block text-sm font-medium text-theme-tertiary mb-2">
-                        {t('homework_label')}
-                      </label>
-                      <textarea
+                      <Field.Area
+                        label={t('homework_label')}
+                        classeCampo="h-20"
                         value={editingNotes.homework}
                         onChange={(e) =>
                           setEditingNotes((prev) => ({
@@ -1604,7 +1584,6 @@ export default function TeacherLessonDetailsPageClient({
                             homework: e.target.value,
                           }))
                         }
-                        className="input-classical-2 w-full h-20"
                         placeholder={t('homework_placeholder')}
                       />
                     </div>
@@ -2031,14 +2010,11 @@ export default function TeacherLessonDetailsPageClient({
 
             {quickActionType === 'cancel' && (
               <div className="mb-6">
-                <label className="block text-sm font-medium text-theme-primary mb-2">
-                  {t('reason_optional')}
-                </label>
-                <textarea
+                <Field.Area
+                  label={t('reason_optional')}
                   value={quickActionReason}
                   onChange={(e) => setQuickActionReason(e.target.value)}
                   rows={3}
-                  className="input-classical-2 w-full"
                   placeholder={t('cancel_reason_placeholder')}
                 />
               </div>
@@ -2129,14 +2105,11 @@ export default function TeacherLessonDetailsPageClient({
 
             <div className="space-y-4 mb-6">
               <div>
-                <label className="block text-sm font-medium text-theme-primary mb-2">
-                  {t('reason_optional')}
-                </label>
-                <textarea
+                <Field.Area
+                  label={t('reason_optional')}
                   value={deleteReason}
                   onChange={(e) => setDeleteReason(e.target.value)}
                   rows={3}
-                  className="input-classical-2 w-full"
                   placeholder={t('delete_reason_placeholder')}
                 />
               </div>

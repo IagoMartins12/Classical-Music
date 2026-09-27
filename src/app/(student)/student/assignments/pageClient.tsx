@@ -966,10 +966,8 @@ export default function StudentAssignmentsPageClient({
             {showFilters && (
               <div className="mt-6 pt-6 border-t border-theme-secondary grid grid-cols-1 md:grid-cols-4 gap-4">
                 <div>
-                  <label className="block text-sm font-medium text-theme-tertiary mb-2">
-                    Professor
-                  </label>
                   <Select
+                    label="Professor"
                     value={selectedTeacher}
                     onChange={(e) => setSelectedTeacher(e.target.value)}
                     options={[
@@ -987,10 +985,8 @@ export default function StudentAssignmentsPageClient({
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-theme-tertiary mb-2">
-                    Status
-                  </label>
                   <Select
+                    label="Status"
                     value={statusFilter}
                     onChange={(e) =>
                       setStatusFilter(e.target.value as AssignmentFilter)
@@ -1022,10 +1018,8 @@ export default function StudentAssignmentsPageClient({
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-theme-tertiary mb-2">
-                    Período
-                  </label>
                   <Select
+                    label="Período"
                     value={timeFilter}
                     onChange={(e) =>
                       setTimeFilter(e.target.value as TimeFilter)
@@ -1058,10 +1052,8 @@ export default function StudentAssignmentsPageClient({
 
                 <div>
                   {/* 🆕 ORDENAÇÃO */}
-                  <label className="block text-sm font-medium text-theme-tertiary mb-2">
-                    Ordenação
-                  </label>
                   <Select
+                    label="Ordenação"
                     value={sortBy}
                     onChange={(e) => setSortBy(e.target.value as SortOption)}
                     options={[

@@ -360,10 +360,8 @@ export default function CreateAdModal({
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div>
-                <label className="block text-sm font-medium text-theme-primary mb-2">
-                  Título *
-                </label>
                 <Input
+                  label="Título *"
                   ref={fieldRefs.title}
                   type="text"
                   value={formData.title}
@@ -378,10 +376,8 @@ export default function CreateAdModal({
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-theme-primary mb-2">
-                  Anunciante *
-                </label>
                 <Input
+                  label="Anunciante *"
                   ref={fieldRefs.advertiserName}
                   type="text"
                   value={formData.advertiserName}
@@ -533,12 +529,12 @@ export default function CreateAdModal({
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-theme-primary mb-2">
-                  {formData.linkType === 'whatsapp'
-                    ? 'Número do WhatsApp'
-                    : 'URL de Destino'}
-                </label>
                 <Input
+                  label={
+                    formData.linkType === 'whatsapp'
+                      ? 'Número do WhatsApp'
+                      : 'URL de Destino'
+                  }
                   ref={fieldRefs.targetUrl}
                   type={formData.linkType === 'whatsapp' ? 'tel' : 'url'}
                   value={formData.targetUrl}
@@ -565,10 +561,8 @@ export default function CreateAdModal({
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-theme-primary mb-2">
-                  Texto do Botão
-                </label>
                 <Input
+                  label="Texto do Botão"
                   ref={fieldRefs.ctaText}
                   type="text"
                   value={formData.ctaText}
@@ -592,10 +586,8 @@ export default function CreateAdModal({
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div>
-                <label className="block text-sm font-medium text-theme-primary mb-2">
-                  Email
-                </label>
                 <Input
+                  label="Email"
                   type="email"
                   value={formData.advertiserEmail}
                   onChange={(e) =>
@@ -606,10 +598,8 @@ export default function CreateAdModal({
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-theme-primary mb-2">
-                  Telefone
-                </label>
                 <Input
+                  label="Telefone"
                   type="tel"
                   value={formData.advertiserPhone}
                   onChange={(e) =>
@@ -620,10 +610,8 @@ export default function CreateAdModal({
               </div>
 
               <div className="md:col-span-2">
-                <label className="block text-sm font-medium text-theme-primary mb-2">
-                  Site
-                </label>
                 <Input
+                  label="Site"
                   type="url"
                   value={formData.advertiserWebsite}
                   onChange={(e) =>
@@ -643,10 +631,8 @@ export default function CreateAdModal({
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div>
-                <label className="block text-sm font-medium text-theme-primary mb-2">
-                  Data de Início
-                </label>
                 <Input
+                  label="Data de Início"
                   type="datetime-local"
                   value={formData.startDate}
                   onChange={(e) =>
@@ -656,10 +642,8 @@ export default function CreateAdModal({
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-theme-primary mb-2">
-                  Data de Fim
-                </label>
                 <Input
+                  label="Data de Fim"
                   type="datetime-local"
                   value={formData.endDate}
                   onChange={(e) => handleInputChange('endDate', e.target.value)}

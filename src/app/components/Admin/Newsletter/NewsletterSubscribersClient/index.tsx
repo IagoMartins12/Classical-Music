@@ -387,10 +387,8 @@ export default function NewsletterSubscribersClient() {
             {showFilters && (
               <div className="mb-6 p-4 bg-theme-secondary rounded-lg grid md:grid-cols-3 gap-4">
                 <div>
-                  <label className="block text-sm font-medium text-theme-secondary mb-2">
-                    Período de Inscrição
-                  </label>
                   <Select
+                    label="Período de Inscrição"
                     options={dateRangeOptions}
                     value={filters.dateRange}
                     onChange={(e) =>
@@ -400,10 +398,8 @@ export default function NewsletterSubscribersClient() {
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-theme-secondary mb-2">
-                    Nível de Engajamento
-                  </label>
                   <Select
+                    label="Nível de Engajamento"
                     options={engagementOptions}
                     value={filters.engagement}
                     onChange={(e) =>

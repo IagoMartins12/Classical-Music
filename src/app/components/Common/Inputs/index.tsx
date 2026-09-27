@@ -6,7 +6,7 @@ import { PiEye, PiEyeSlash, PiWarningCircle } from 'react-icons/pi';
 import { Text } from '@/app/components/ui/Text';
 
 interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> {
-  label?: string;
+  label?: React.ReactNode;
   error?: string | null;
   helperText?: string;
   leftIcon?: React.ReactNode;
@@ -58,33 +58,24 @@ const Input = forwardRef<HTMLInputElement, InputProps>(
     // 🆕 Evitar problemas de hydration usando o estado
     const finalInputId = isHydrated ? inputId : undefined;
 
+    // A aparência vem de `.input-classical` (globals.css), a mesma de todo
+    // campo do produto. Aqui fica só o que é deste componente: o recuo para
+    // os ícones e as variantes.
     const baseClasses = `
       input-classical w-full
-      pl-4
       ${leftIcon ? 'pl-10' : 'pl-4'}
-      ${rightIcon ? 'pr-10' : 'pr-4'}
-      py-3
-      bg-theme-background
-      border border-theme-primary
-      rounded-lg
-      text-theme-primary
-      placeholder-theme-tertiary
-      focus:outline-none
-      focus:ring-2
-      focus:ring-brand-primary
-      focus:border-brand-primary
-      transition-all duration-200
-      ${error ? '!border-red-400 !focus:ring-accent-red' : ''}
+      ${rightIcon || isPassword ? 'pr-10' : 'pr-4'}
       ${variant === 'filled' ? 'bg-theme-secondary' : ''}
-      ${variant === 'outlined' ? 'border-2' : ''}
     `;
+    const idErro = finalInputId && `${finalInputId}-erro`;
+    const idAjuda = finalInputId && `${finalInputId}-ajuda`;
 
     return (
       <div className={`relative ${widhtFull && 'w-full'}`}>
         {label && (
           <label
             htmlFor={finalInputId}
-            className="block  text-sm font-medium text-theme-primary mb-2"
+            className="block t-rotulo font-medium text-texto mb-2"
           >
             {label}
           </label>
@@ -102,6 +93,8 @@ const Input = forwardRef<HTMLInputElement, InputProps>(
             id={finalInputId} // 🆕 Usar ID controlado por estado
             type={inputType2 || inputType || props.type || 'text'}
             className={`${baseClasses} ${className}`}
+            aria-invalid={error ? true : undefined}
+            aria-describedby={error ? idErro : helperText ? idAjuda : undefined}
             {...props}
           />
 
@@ -129,13 +122,15 @@ const Input = forwardRef<HTMLInputElement, InputProps>(
 
         {error && (
           <div className="flex gap-2 items-center mt-1">
-            <PiWarningCircle className="text-red-500" />
-            <p className="mt-1 text-sm text-red-400">{error}</p>
+            <PiWarningCircle className="text-erro" />
+            <p id={idErro} className="mt-1 t-rotulo text-erro">
+              {error}
+            </p>
           </div>
         )}
 
         {helperText && !error && (
-          <Text papel="rotulo" tom="fraco" as="p" className="mt-1">
+          <Text papel="rotulo" tom="fraco" as="p" id={idAjuda} className="mt-1">
             {helperText}
           </Text>
         )}

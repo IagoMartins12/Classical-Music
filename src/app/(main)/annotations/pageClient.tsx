@@ -522,10 +522,8 @@ export default function AnnotationsPageClient() {
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                       {/* Category Filter */}
                       <div>
-                        <label className="block text-xs font-medium text-theme-tertiary mb-2">
-                          {t('category_label')}
-                        </label>
                         <Select
+                          label={t('category_label')}
                           options={CATEGORY_OPTIONS}
                           value={categoryFilter}
                           onChange={(e) =>
@@ -539,10 +537,8 @@ export default function AnnotationsPageClient() {
 
                       {/* Difficulty Filter */}
                       <div>
-                        <label className="block text-xs font-medium text-theme-tertiary mb-2">
-                          {t('difficulty_label')}
-                        </label>
                         <Select
+                          label={t('difficulty_label')}
                           options={DIFFICULTY_OPTIONS}
                           value={difficultyFilter}
                           onChange={(e) =>
@@ -556,10 +552,8 @@ export default function AnnotationsPageClient() {
 
                       {/* Scope Filter */}
                       <div>
-                        <label className="block text-xs font-medium text-theme-tertiary mb-2">
-                          {t('scope_label')}
-                        </label>
                         <Select
+                          label={t('scope_label')}
                           options={SCOPE_OPTIONS}
                           value={scopeFilter}
                           onChange={(e) =>

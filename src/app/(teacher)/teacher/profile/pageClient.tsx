@@ -47,6 +47,7 @@ import Input from '@/app/components/Common/Inputs';
 import { useTranslation } from '@/app/context/TranslationContext';
 import { Inline } from '@/app/components/ui/Layout';
 import { Text } from '@/app/components/ui/Text';
+import { Field } from '@/app/components/ui/Field';
 
 interface TeacherProfilePageClientProps {
   initialData: TeacherProfileData | null;
@@ -582,10 +583,8 @@ export default function TeacherProfilePageClient({
                 <div className="space-y-6">
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div>
-                      <label className="block text-sm font-medium text-theme-primary mb-2">
-                        {t('first_name')} *
-                      </label>
-                      <input
+                      <Field
+                        label={<>{t('first_name')}*</>}
                         type="text"
                         value={personalForm.firstName}
                         onChange={(e) =>
@@ -594,17 +593,14 @@ export default function TeacherProfilePageClient({
                             firstName: e.target.value,
                           }))
                         }
-                        className="input-classical w-full"
                         placeholder="Seu primeiro nome"
                         required
                       />
                     </div>
 
                     <div>
-                      <label className="block text-sm font-medium text-theme-primary mb-2">
-                        {t('last_name')}
-                      </label>
-                      <input
+                      <Field
+                        label={t('last_name')}
                         type="text"
                         value={personalForm.lastName}
                         onChange={(e) =>
@@ -613,7 +609,6 @@ export default function TeacherProfilePageClient({
                             lastName: e.target.value,
                           }))
                         }
-                        className="input-classical w-full"
                         placeholder="Seu sobrenome"
                       />
                     </div>
@@ -849,10 +844,8 @@ export default function TeacherProfilePageClient({
               {editingSection === 'professional' ? (
                 <div className="space-y-6">
                   <div>
-                    <label className="block text-sm font-medium text-theme-primary mb-2">
-                      {t('biography')}
-                    </label>
-                    <textarea
+                    <Field.Area
+                      label={t('biography')}
                       value={professionalForm.bio}
                       onChange={(e) =>
                         setProfessionalForm((prev) => ({
@@ -861,7 +854,6 @@ export default function TeacherProfilePageClient({
                         }))
                       }
                       rows={4}
-                      className="input-classical w-full"
                       placeholder={t('biography_placeholder')}
                       disabled={saving}
                     />
@@ -869,10 +861,8 @@ export default function TeacherProfilePageClient({
 
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div>
-                      <label className="block text-sm font-medium text-theme-primary mb-2">
-                        {t('experience')}
-                      </label>
-                      <textarea
+                      <Field.Area
+                        label={t('experience')}
                         value={professionalForm.experience}
                         onChange={(e) =>
                           setProfessionalForm((prev) => ({
@@ -881,17 +871,14 @@ export default function TeacherProfilePageClient({
                           }))
                         }
                         rows={3}
-                        className="input-classical w-full"
                         placeholder={t('experience_placeholder')}
                         disabled={saving}
                       />
                     </div>
 
                     <div>
-                      <label className="block text-sm font-medium text-theme-primary mb-2">
-                        {t('education')}
-                      </label>
-                      <textarea
+                      <Field.Area
+                        label={t('education')}
                         value={professionalForm.education}
                         onChange={(e) =>
                           setProfessionalForm((prev) => ({
@@ -900,7 +887,6 @@ export default function TeacherProfilePageClient({
                           }))
                         }
                         rows={3}
-                        className="input-classical w-full"
                         placeholder={t('education_placeholder')}
                         disabled={saving}
                       />
@@ -908,10 +894,8 @@ export default function TeacherProfilePageClient({
                   </div>
 
                   <div>
-                    <label className="block text-sm font-medium text-theme-primary mb-2">
-                      {t('achievements')}
-                    </label>
-                    <textarea
+                    <Field.Area
+                      label={t('achievements')}
                       value={professionalForm.achievements}
                       onChange={(e) =>
                         setProfessionalForm((prev) => ({
@@ -920,7 +904,6 @@ export default function TeacherProfilePageClient({
                         }))
                       }
                       rows={3}
-                      className="input-classical w-full"
                       placeholder={t('achievements_placeholder')}
                       disabled={saving}
                     />
@@ -928,10 +911,8 @@ export default function TeacherProfilePageClient({
 
                   <div className="grid grid-cols-1  gap-6">
                     <div>
-                      <label className="block text-sm font-medium text-theme-primary mb-2">
-                        {t('website')}
-                      </label>
                       <Input
+                        label={t('website')}
                         widhtFull
                         type="url"
                         value={professionalForm.website}
@@ -1203,10 +1184,8 @@ export default function TeacherProfilePageClient({
                   </div>
 
                   <div>
-                    <label className="block text-sm font-medium text-theme-primary mb-2">
-                      {t('teaching_methodology')}
-                    </label>
-                    <textarea
+                    <Field.Area
+                      label={t('teaching_methodology')}
                       value={teachingForm.teachingMethod}
                       onChange={(e) =>
                         setTeachingForm((prev) => ({
@@ -1215,7 +1194,6 @@ export default function TeacherProfilePageClient({
                         }))
                       }
                       rows={3}
-                      className="input-classical w-full"
                       placeholder={t('methodology_placeholder')}
                       disabled={saving}
                     />
@@ -1292,10 +1270,8 @@ export default function TeacherProfilePageClient({
 
                   <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                     <div>
-                      <label className="block text-sm font-medium text-theme-primary mb-2">
-                        {t('default_lesson_duration')}
-                      </label>
-                      <select
+                      <Field.Selecao
+                        label={t('default_lesson_duration')}
                         value={teachingForm.defaultLessonDuration}
                         onChange={(e) =>
                           setTeachingForm((prev) => ({
@@ -1303,7 +1279,6 @@ export default function TeacherProfilePageClient({
                             defaultLessonDuration: parseInt(e.target.value),
                           }))
                         }
-                        className="input-classical w-full"
                         disabled={saving}
                       >
                         <option value={30}>30 {t('minutes')}</option>
@@ -1311,14 +1286,12 @@ export default function TeacherProfilePageClient({
                         <option value={60}>60 {t('minutes')}</option>
                         <option value={90}>90 {t('minutes')}</option>
                         <option value={120}>120 {t('minutes')}</option>
-                      </select>
+                      </Field.Selecao>
                     </div>
 
                     <div>
-                      <label className="block text-sm font-medium text-theme-primary mb-2">
-                        {t('max_students_per_week')}
-                      </label>
-                      <input
+                      <Field
+                        label={t('max_students_per_week')}
                         type="number"
                         value={teachingForm.maxStudentsPerWeek}
                         onChange={(e) =>
@@ -1329,16 +1302,13 @@ export default function TeacherProfilePageClient({
                         }
                         min={1}
                         max={200}
-                        className="input-classical w-full"
                         disabled={saving}
                       />
                     </div>
 
                     <div>
-                      <label className="block text-sm font-medium text-theme-primary mb-2">
-                        {t('timezone')}
-                      </label>
-                      <select
+                      <Field.Selecao
+                        label={t('timezone')}
                         value={teachingForm.timezone}
                         onChange={(e) =>
                           setTeachingForm((prev) => ({
@@ -1346,7 +1316,6 @@ export default function TeacherProfilePageClient({
                             timezone: e.target.value,
                           }))
                         }
-                        className="input-classical w-full"
                         disabled={saving}
                       >
                         <option value="America/Sao_Paulo">
@@ -1358,7 +1327,7 @@ export default function TeacherProfilePageClient({
                         <option value="America/Manaus">
                           {t('timezone_manaus')}
                         </option>
-                      </select>
+                      </Field.Selecao>
                     </div>
                   </div>
 
@@ -1655,10 +1624,8 @@ export default function TeacherProfilePageClient({
 
                   {publicForm.isPublicProfile && (
                     <div>
-                      <label className="block text-sm font-medium text-theme-primary mb-2">
-                        {t('public_biography')}
-                      </label>
-                      <textarea
+                      <Field.Area
+                        label={t('public_biography')}
                         value={publicForm.publicBio}
                         onChange={(e) =>
                           setPublicForm((prev) => ({
@@ -1667,7 +1634,6 @@ export default function TeacherProfilePageClient({
                           }))
                         }
                         rows={4}
-                        className="input-classical w-full"
                         placeholder={t('public_bio_placeholder')}
                         disabled={saving}
                       />

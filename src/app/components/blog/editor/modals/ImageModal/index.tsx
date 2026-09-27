@@ -245,10 +245,8 @@ export function ImageModal({
 
         {/* Alinhamento */}
         <div>
-          <label className="block text-sm font-medium text-theme-primary mb-2">
-            Alinhamento
-          </label>
           <Select
+            label="Alinhamento"
             options={alignmentOptions}
             value={alignment}
             onChange={(e) => setAlignment(e.target.value)}

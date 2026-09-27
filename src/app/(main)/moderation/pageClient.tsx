@@ -39,6 +39,7 @@ import Checkbox from '@/app/components/Common/Checkbox';
 import { useTranslation } from '@/app/context/TranslationContext';
 import { Inline } from '@/app/components/ui/Layout';
 import { Text } from '@/app/components/ui/Text';
+import { Field } from '@/app/components/ui/Field';
 
 interface ModerationClientProps {
   page: number;
@@ -605,14 +606,12 @@ const ModerationClient = ({
                 </p>
 
                 <div className="mb-4">
-                  <label className="block text-sm font-medium text-theme-tertiary mb-2">
-                    {t('moderation_delete_notes_label')}
-                  </label>
-                  <textarea
+                  <Field.Area
+                    label={t('moderation_delete_notes_label')}
+                    classeCampo="resize-none"
                     value={moderationNotes}
                     onChange={(e) => setModerationNotes(e.target.value)}
                     rows={3}
-                    className="input-classical-2 w-full resize-none"
                     placeholder={t('moderation_delete_notes_placeholder')}
                   />
                 </div>

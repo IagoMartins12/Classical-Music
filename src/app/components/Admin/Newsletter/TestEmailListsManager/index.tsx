@@ -37,6 +37,7 @@ import Select from '@/app/components/Common/Select';
 import Checkbox from '@/app/components/Common/Checkbox';
 import { Inline } from '@/app/components/ui/Layout';
 import { Text } from '@/app/components/ui/Text';
+import { Field } from '@/app/components/ui/Field';
 
 interface CreateEditModalProps {
   isOpen: boolean;
@@ -213,16 +214,14 @@ const CreateEditModal: React.FC<CreateEditModalProps> = ({
 
           {/* Descrição */}
           <div>
-            <label className="block text-sm font-medium text-theme-primary mb-2">
-              Descrição (opcional)
-            </label>
-            <textarea
+            <Field.Area
+              label="Descrição (opcional)"
+              classeCampo="resize-none"
               value={formData.description}
               onChange={(e) => handleInputChange('description', e.target.value)}
               placeholder="Descreva o propósito desta lista..."
               rows={3}
               disabled={loading}
-              className="w-full px-4 py-3 bg-theme-tertiary border border-theme-secondary rounded-lg text-theme-primary placeholder-theme-tertiary focus:outline-none focus:border-brand-primary transition-colors resize-none"
             />
           </div>
 
@@ -464,10 +463,8 @@ const SendTestModal: React.FC<SendTestModalProps> = ({
         <form onSubmit={handleSubmit} className="space-y-6">
           {/* Template */}
           <div>
-            <label className="block text-sm font-medium text-theme-primary mb-2">
-              Template de Email
-            </label>
-            <select
+            <Field.Selecao
+              label="Template de Email"
               value={formData.templateType}
               onChange={(e) =>
                 setFormData((prev) => ({
@@ -475,14 +472,13 @@ const SendTestModal: React.FC<SendTestModalProps> = ({
                   templateType: e.target.value,
                 }))
               }
-              className="w-full px-4 py-3 bg-theme-tertiary border border-theme-secondary rounded-lg text-theme-primary focus:outline-none focus:border-brand-primary"
             >
               {templates.map((template) => (
                 <option key={template.type} value={template.type}>
                   {template.name} - {template.subject}
                 </option>
               ))}
-            </select>
+            </Field.Selecao>
           </div>
 
           {/* Assunto Customizado */}

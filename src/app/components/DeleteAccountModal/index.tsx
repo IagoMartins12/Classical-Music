@@ -449,10 +449,8 @@ const DeleteAccountModal: React.FC<DeleteAccountModalProps> = ({
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-theme-secondary mb-2">
-                  {t('delete_modal_type_delete')}
-                </label>
                 <Input
+                  label={t('delete_modal_type_delete')}
                   value={confirmText}
                   onChange={(e) => setConfirmText(e.target.value)}
                   placeholder={t('delete_modal_placeholder_delete')}
@@ -468,10 +466,8 @@ const DeleteAccountModal: React.FC<DeleteAccountModalProps> = ({
 
               {requirePassword && (
                 <div>
-                  <label className="block text-sm font-medium text-theme-secondary mb-2">
-                    {t('delete_modal_current_password')}
-                  </label>
                   <Input
+                    label={t('delete_modal_current_password')}
                     type="password"
                     value={currentPassword}
                     onChange={(e) => setCurrentPassword(e.target.value)}

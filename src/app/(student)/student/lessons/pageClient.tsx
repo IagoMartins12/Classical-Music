@@ -804,10 +804,8 @@ export default function StudentLessonsPageClient({
             {showFilters && (
               <div className="mt-6 pt-6 border-t border-theme-secondary grid grid-cols-1 md:grid-cols-4 gap-4">
                 <div>
-                  <label className="block text-sm font-medium text-theme-tertiary mb-2">
-                    {t('teacher')}
-                  </label>
                   <Select
+                    label={t('teacher')}
                     value={selectedTeacher}
                     onChange={(e) => setSelectedTeacher(e.target.value)}
                     options={[
@@ -822,10 +820,8 @@ export default function StudentLessonsPageClient({
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-theme-tertiary mb-2">
-                    {t('status')}
-                  </label>
                   <Select
+                    label={t('status')}
                     value={statusFilter}
                     onChange={(e) =>
                       setStatusFilter(e.target.value as LessonFilter)
@@ -841,10 +837,8 @@ export default function StudentLessonsPageClient({
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-theme-tertiary mb-2">
-                    {t('period')}
-                  </label>
                   <Select
+                    label={t('period')}
                     value={timeFilter}
                     onChange={(e) =>
                       setTimeFilter(e.target.value as TimeFilter)
@@ -862,11 +856,8 @@ export default function StudentLessonsPageClient({
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-theme-tertiary mb-2">
-                    {t('ordered')}
-                  </label>
-                  {/* 🆕 ORDENAÇÃO */}
                   <Select
+                    label={t('ordered')}
                     value={sortBy}
                     onChange={(e) => setSortBy(e.target.value as SortOption)}
                     options={[

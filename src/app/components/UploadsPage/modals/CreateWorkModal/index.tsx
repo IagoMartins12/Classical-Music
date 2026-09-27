@@ -1241,10 +1241,8 @@ const CreateWorkModal = ({
                     </div>
 
                     <div>
-                      <label className="block text-sm font-medium text-theme-tertiary mb-2">
-                        {t('modal_work_basic_instrument')} *
-                      </label>
                       <Select
+                        label={<>{t('modal_work_basic_instrument')}*</>}
                         ref={fieldRefs.instrumentId}
                         options={[
                           {
@@ -1271,10 +1269,8 @@ const CreateWorkModal = ({
                     </div>
 
                     <div>
-                      <label className="block text-sm font-medium text-theme-tertiary mb-2">
-                        {t('modal_work_basic_epoch')} *
-                      </label>
                       <Select
+                        label={<>{t('modal_work_basic_epoch')}*</>}
                         ref={fieldRefs.epochId}
                         options={[
                           {
@@ -1298,10 +1294,8 @@ const CreateWorkModal = ({
                     </div>
 
                     <div>
-                      <label className="block text-sm font-medium text-theme-tertiary mb-2">
-                        {t('modal_work_basic_work_type')}
-                      </label>
                       <Select
+                        label={t('modal_work_basic_work_type')}
                         options={workTypeOptions}
                         value={formData.workType}
                         onChange={(e) =>
@@ -1454,10 +1448,8 @@ const CreateWorkModal = ({
                     />
 
                     <div>
-                      <label className="block text-sm font-medium text-theme-tertiary mb-2">
-                        {t('modal_work_catalog_tonality')}
-                      </label>
                       <Select
+                        label={t('modal_work_catalog_tonality')}
                         options={tonalityOptions}
                         value={formData.tone}
                         onChange={(e) =>
@@ -1477,10 +1469,8 @@ const CreateWorkModal = ({
                     />
 
                     <div>
-                      <label className="block text-sm font-medium text-theme-tertiary mb-2">
-                        {t('modal_work_catalog_difficulty')}
-                      </label>
                       <Select
+                        label={t('modal_work_catalog_difficulty')}
                         options={difficultyOptions}
                         value={formData.difficultyLevel}
                         onChange={(e) =>
@@ -1705,10 +1695,8 @@ const CreateWorkModal = ({
                           </h4>
                         </Inline>
                         <div>
-                          <label className="block text-sm font-medium text-theme-tertiary mb-2">
-                            {t('modal_work_media_audio_upload')}
-                          </label>
                           <Input
+                            label={t('modal_work_media_audio_upload')}
                             type="file"
                             accept="audio/*"
                             onChange={(e) => {
@@ -1788,10 +1776,8 @@ const CreateWorkModal = ({
                               {/* Type and Source */}
                               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                                 <div>
-                                  <label className="block text-sm font-medium text-theme-tertiary mb-2">
-                                    {t('modal_work_media_video_type')}
-                                  </label>
                                   <Select
+                                    label={t('modal_work_media_video_type')}
                                     options={videoAulaTypeOptions}
                                     value={mediaData.videoAulaType}
                                     onChange={(e) =>
@@ -1804,10 +1790,8 @@ const CreateWorkModal = ({
                                 </div>
 
                                 <div>
-                                  <label className="block text-sm font-medium text-theme-tertiary mb-2">
-                                    {t('modal_work_media_video_source')}
-                                  </label>
                                   <Select
+                                    label={t('modal_work_media_video_source')}
                                     options={videoAulaSourceOptions}
                                     value={mediaData.videoAulaSource}
                                     onChange={(e) =>
@@ -1868,10 +1852,8 @@ const CreateWorkModal = ({
                                 />
                               ) : (
                                 <div>
-                                  <label className="block text-sm font-medium text-theme-tertiary mb-2">
-                                    {t('modal_work_media_video_upload')}
-                                  </label>
                                   <Input
+                                    label={t('modal_work_media_video_upload')}
                                     type="file"
                                     accept="video/*"
                                     onChange={(e) => {

@@ -32,6 +32,7 @@ import Modal from '@/app/components/Modal';
 import { useTranslation } from '@/app/context/TranslationContext';
 import { Inline } from '@/app/components/ui/Layout';
 import { Text } from '@/app/components/ui/Text';
+import { Field } from '@/app/components/ui/Field';
 
 interface StudentCalendarPageClientProps {
   initialData: StudentCalendarData | null;
@@ -1278,14 +1279,12 @@ function FeedbackModal({
 
           <div className="space-y-4">
             <div>
-              <label className="block text-sm font-medium text-theme-tertiary mb-2">
-                {t('student_calendar_feedback_modal_question')}
-              </label>
-              <textarea
+              <Field.Area
+                label={t('student_calendar_feedback_modal_question')}
+                classeCampo="h-32 resize-none"
                 value={feedbackText}
                 onChange={(e) => setFeedbackText(e.target.value)}
                 placeholder={t('student_calendar_feedback_modal_placeholder')}
-                className="input-classical-2 w-full h-32 resize-none"
                 maxLength={500}
               />
               <Text papel="legenda" tom="fraco" as="div" className="mt-1">

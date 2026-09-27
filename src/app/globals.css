@@ -117,6 +117,9 @@
   --angulo: 135deg;
 
   --fundo: #0c0d12;
+  /* Fundo de campo de formulário: um passo acima do chão, perto do card —
+     a borda é que marca o campo. O chão puro (#0c0d12) ficava um buraco. */
+  --campo: #15161e;
   --sup-1-a: #191a24;
   --sup-1-b: #13141c;
   --sup-2-a: #21222e;
@@ -262,9 +265,10 @@
   );
 
   /* As transições nomeadas continuam, sem o `all`. */
-  --transition-theme: background-color var(--t-entrada) var(--saida),
-    color var(--t-entrada) var(--saida), border-color var(--t-entrada)
-    var(--saida);
+  --transition-theme:
+    background-color var(--t-entrada) var(--saida),
+    color var(--t-entrada) var(--saida),
+    border-color var(--t-entrada) var(--saida);
   --transition-fast: var(--t-toque) var(--saida);
   --transition-smooth: var(--t-resposta) var(--saida);
   --transition-slow: var(--t-entrada) var(--saida);
@@ -276,6 +280,7 @@
    ========================================================================= */
 [data-theme='light'] {
   --fundo: #faf7f0;
+  --campo: #faf7f0;
   --sup-1-a: #ffffff;
   --sup-1-b: #fbf8f2;
   --sup-2-a: #fbf8f2;
@@ -302,13 +307,20 @@
   /* Título em degradê metálico: 1,85 a 3,05:1. O degradê do botão, que era
      usado aqui, dava 1,72 a 2,24:1. Versão segura: #b37f05 → #916800. */
   --ouro-texto-grad: linear-gradient(var(--angulo), #ddb33e, #b58710);
+  /* Botão dourado no creme: mais claro e menos saturado. O ouro cheio do tema
+     escuro, sobre o papel, pesava demais. O texto escuro continua em 11 a
+     13,6:1. */
+  --ouro-fill: linear-gradient(var(--angulo), #efd68f, #e2c06a);
+  --ouro-fill-hover: linear-gradient(var(--angulo), #f2dc9c, #e6c674);
   --ouro-tint: linear-gradient(
     var(--angulo),
     rgba(212, 175, 55, 0.22),
     rgba(212, 175, 55, 0.1)
   );
 
-  --erro: #a8331f;
+  /* Vermelho vivo: o #a8331f passava no contraste mas puxava para tijolo, e o
+     erro não se destacava no creme. 5,36:1. */
+  --erro: #c81e1e;
   --ok: #41693f;
   --atencao: #8a6416;
   --aviso: #355789;
@@ -431,7 +443,15 @@
 /* Em `@layer base`: é o padrão de todo elemento, e um componente com foco
    próprio (utilitário `focus-visible:*`) consegue sobrescrever. */
 @layer base {
-  :where(a, button, input, select, textarea, summary, [tabindex]):focus-visible {
+  :where(
+    a,
+    button,
+    input,
+    select,
+    textarea,
+    summary,
+    [tabindex]
+  ):focus-visible {
     /* Contorno transparente em vez de `none`: no modo de alto contraste do
        Windows a sombra some, e o contorno é o que sobra para mostrar o foco. */
     outline: 2px solid transparent;
@@ -677,43 +697,152 @@ body {
 }
 
 /* Inputs e forms */
-.input-classical {
-  background: var(--bg-elevated);
-  border: 1px solid var(--border-secondary);
-  color: var(--text-primary);
-  border-radius: 0.5rem;
-  padding: 0.75rem 1rem;
-  transition: var(--transition-smooth);
-  padding-left: 3rem;
+/* Campo de formulário: uma aparência só, para os 377 `input-classical` e o
+   `Field`. Mais escuro que o card — é onde se escreve, não onde se lê —,
+   borda de 1px, raio de controle e 44px de alvo.
+
+   Em `@layer components` porque, fora de camada, este bloco vencia qualquer
+   utilitário: o `padding-left: 3rem` (pensado para campo com ícone) valia até
+   onde o componente pedia `pl-4`, e todo campo sem ícone começava o texto 48px
+   para dentro — era por isso que o `Select` precisava de `!pl-6`.
+
+   16px de letra, nunca menos: abaixo disso o Safari do iPhone dá zoom na
+   página ao focar o campo. */
+@layer components {
+  .input-classical,
+  .input-classical-2 {
+    background: var(--campo);
+    border: 1px solid var(--linha-forte);
+    color: var(--texto);
+    border-radius: var(--r-controle);
+    min-height: var(--alvo);
+    padding: 0.625rem 1rem;
+    font-size: 1rem;
+    transition:
+      border-color var(--t-resposta) var(--saida),
+      box-shadow var(--t-resposta) var(--saida);
+  }
+
+  /* O padrão antigo, para campo com ícone à esquerda sem `pl-*` próprio. */
+  .input-classical {
+    padding-left: 3rem;
+  }
+
+  .input-classical-2 {
+    padding-inline: 1.5rem;
+  }
+
+  .input-classical:focus,
+  .input-classical-2:focus {
+    outline: 2px solid transparent;
+    border-color: var(--ouro);
+    box-shadow: var(--foco-anel);
+  }
+
+  .input-classical::placeholder,
+  .input-classical-2::placeholder {
+    color: var(--texto-fraco);
+  }
+
+  /* Erro: a borda e um halo da mesma cor. Só a borda de 1px sumia no creme. */
+  .input-classical[aria-invalid='true'],
+  .input-classical-2[aria-invalid='true'] {
+    border-color: var(--erro);
+    box-shadow: 0 0 0 3px color-mix(in srgb, var(--erro) 16%, transparent);
+  }
+
+  .input-classical:disabled,
+  .input-classical-2:disabled {
+    cursor: not-allowed;
+    opacity: 0.5;
+  }
+
+  /* O select do sistema (`ui/Selecao`). O botão já é um `.input-classical`;
+     aberto, fica com a borda de foco enquanto a lista está à mostra. */
+  .input-classical.selecao-aberta {
+    border-color: var(--ouro);
+  }
+
+  /* A lista abre na camada de topo (popover): nada a corta, nada a cobre. O
+     navegador põe margem, borda e `inset` de popover; tudo zerado aqui. */
+  .selecao-lista {
+    position: fixed;
+    inset: auto;
+    margin: 0;
+    padding: 0.375rem;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    background: var(--sup-alta);
+    color: var(--texto);
+    border: 1px solid var(--linha-forte);
+    border-radius: 0.75rem;
+    box-shadow: var(--sombra-alta);
+  }
+
+  .selecao-lista:popover-open {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    animation: selecao-entra var(--t-toque) var(--saida);
+  }
+
+  .selecao-lista.selecao-acima:popover-open {
+    animation-name: selecao-entra-acima;
+  }
+
+  .selecao-opcao {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    min-height: 2.5rem;
+    padding: 0.5rem 0.75rem;
+    border-radius: 0.5rem;
+    font-size: 0.9375rem;
+    color: var(--texto-suave);
+    cursor: pointer;
+    user-select: none;
+  }
+
+  .selecao-opcao[aria-selected='true'] {
+    color: var(--texto);
+    font-weight: 500;
+  }
+
+  .selecao-opcao[data-ativa] {
+    background: var(--ouro-tint);
+    color: var(--texto);
+  }
+
+  .selecao-opcao[aria-disabled='true'] {
+    cursor: not-allowed;
+    opacity: 0.45;
+  }
+
+  @media (pointer: coarse) {
+    .selecao-opcao {
+      min-height: var(--alvo);
+    }
+  }
 }
 
-.input-classical:focus {
-  outline: none;
-  border-color: var(--border-accent);
-  box-shadow: 0 0 0 3px var(--interactive-focus);
+@keyframes selecao-entra {
+  from {
+    opacity: 0;
+    transform: translateY(-4px) scale(0.98);
+  }
 }
 
-.input-classical::placeholder {
-  color: var(--text-tertiary);
+@keyframes selecao-entra-acima {
+  from {
+    opacity: 0;
+    transform: translateY(4px) scale(0.98);
+  }
 }
 
-.input-classical-2 {
-  background: var(--bg-elevated);
-  border: 1px solid var(--border-secondary);
-  color: var(--text-primary);
-  border-radius: 0.5rem;
-  padding: 0.75rem 1.5rem;
-  transition: var(--transition-smooth);
-}
-
-.input-classical-2:focus {
-  outline: none;
-  border-color: var(--border-accent);
-  box-shadow: 0 0 0 3px var(--interactive-focus);
-}
-
-.input-classical-2::placeholder {
-  color: var(--text-tertiary);
+@media (prefers-reduced-motion: reduce) {
+  .selecao-lista:popover-open {
+    animation: none;
+  }
 }
 
 /* Scrollbar personalizada */

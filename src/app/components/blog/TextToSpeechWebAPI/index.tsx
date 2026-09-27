@@ -11,6 +11,7 @@ import {
 } from 'react-icons/pi';
 import { Inline } from '@/app/components/ui/Layout';
 import { Text } from '@/app/components/ui/Text';
+import { Field } from '@/app/components/ui/Field';
 
 interface TextToSpeechWebAPIProps {
   content: any; // TipTap JSON
@@ -231,23 +232,20 @@ export function TextToSpeechWebAPI({ content }: TextToSpeechWebAPIProps) {
         <div className="mb-4 p-4 bg-theme-elevated rounded-lg space-y-4">
           {/* Seleção de Voz */}
           <div>
-            <label className="block text-sm font-medium text-theme-primary mb-2">
-              Voz:
-            </label>
-            <select
+            <Field.Selecao
+              label="Voz:"
               value={selectedVoice?.name || ''}
               onChange={(e) => {
                 const voice = voices.find((v) => v.name === e.target.value);
                 if (voice) setSelectedVoice(voice);
               }}
-              className="input-classical-2 w-full"
             >
               {voices.map((voice) => (
                 <option key={voice.name} value={voice.name}>
                   {voice.name} ({voice.lang})
                 </option>
               ))}
-            </select>
+            </Field.Selecao>
           </div>
 
           {/* Velocidade */}

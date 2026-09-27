@@ -40,6 +40,7 @@ import { useTranslation } from '@/app/context/TranslationContext';
 import { loadSchoolActivities } from '@/app/requests/portal/school-activities';
 import { Inline } from '@/app/components/ui/Layout';
 import { Text } from '@/app/components/ui/Text';
+import { Field } from '@/app/components/ui/Field';
 
 interface Activity {
   id: string;
@@ -471,10 +472,8 @@ const StudentHistoryClient = ({
                 <AnimatedItem direction="scale" springType="gentle">
                   <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 pt-4 border-t border-theme-secondary">
                     <div>
-                      <label className="block text-sm font-medium text-theme-tertiary mb-2">
-                        {t('student_history_filters_action')}
-                      </label>
                       <Select
+                        label={t('student_history_filters_action')}
                         options={actionOptions}
                         value={selectedAction}
                         onChange={(e) => setSelectedAction(e.target.value)}
@@ -483,10 +482,8 @@ const StudentHistoryClient = ({
                     </div>
 
                     <div>
-                      <label className="block text-sm font-medium text-theme-tertiary mb-2">
-                        {t('student_history_filters_type')}
-                      </label>
                       <Select
+                        label={t('student_history_filters_type')}
                         options={entityTypeOptions}
                         value={selectedEntityType}
                         onChange={(e) => setSelectedEntityType(e.target.value)}
@@ -495,26 +492,20 @@ const StudentHistoryClient = ({
                     </div>
 
                     <div>
-                      <label className="block text-sm font-medium text-theme-tertiary mb-2">
-                        {t('student_history_filters_date_from')}
-                      </label>
-                      <input
+                      <Field
+                        label={t('student_history_filters_date_from')}
                         type="date"
                         value={dateFrom}
                         onChange={(e) => setDateFrom(e.target.value)}
-                        className="input-classical-2 w-full"
                       />
                     </div>
 
                     <div>
-                      <label className="block text-sm font-medium text-theme-tertiary mb-2">
-                        {t('student_history_filters_date_to')}
-                      </label>
-                      <input
+                      <Field
+                        label={t('student_history_filters_date_to')}
                         type="date"
                         value={dateTo}
                         onChange={(e) => setDateTo(e.target.value)}
-                        className="input-classical-2 w-full"
                       />
                     </div>
                   </div>

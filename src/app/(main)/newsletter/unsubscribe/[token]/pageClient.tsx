@@ -15,6 +15,7 @@ import Input from '@/app/components/Common/Inputs';
 import { useTranslation } from '@/app/context/TranslationContext';
 import { unsubscribeFromNewsletter } from '@/app/requests/newsletter';
 import { Inline } from '@/app/components/ui/Layout';
+import { Field } from '@/app/components/ui/Field';
 
 export default function UnsubscribePage() {
   const router = useRouter();
@@ -221,14 +222,12 @@ export default function UnsubscribePage() {
 
                     {/* Feedback */}
                     <div>
-                      <label className="block text-sm font-medium text-theme-secondary mb-2">
-                        {t('unsubscribe_feedback_label')}
-                      </label>
-                      <textarea
+                      <Field.Area
+                        label={t('unsubscribe_feedback_label')}
+                        classeCampo="resize-none"
                         value={feedback}
                         onChange={(e) => setFeedback(e.target.value)}
                         rows={4}
-                        className="input-classical-2 w-full resize-none"
                         placeholder={t('unsubscribe_feedback_placeholder')}
                       />
                     </div>

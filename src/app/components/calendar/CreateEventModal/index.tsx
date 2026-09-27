@@ -14,6 +14,7 @@ import { saveEvent } from '@/app/requests/calendar-requests';
 import Image from '@/app/components/SmartImage';
 import { Inline } from '@/app/components/ui/Layout';
 import { Text } from '@/app/components/ui/Text';
+import { Field } from '@/app/components/ui/Field';
 
 interface CreateEventModalProps {
   isOpen: boolean;
@@ -311,10 +312,8 @@ export default function CreateEventModal({
       <div className="px-6 py-6 space-y-6 overflow-y-auto ">
         {/* Title */}
         <div>
-          <label className="block text-sm font-medium text-theme-primary mb-2">
-            Título do Evento *
-          </label>
           <Input
+            label="Título do Evento *"
             ref={fieldRefs.title}
             type="text"
             value={formData.title}
@@ -335,10 +334,8 @@ export default function CreateEventModal({
         {/* Type and Status */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div>
-            <label className="block text-sm font-medium text-theme-primary mb-2">
-              Tipo de Evento *
-            </label>
             <Select
+              label="Tipo de Evento *"
               options={EVENT_TYPE_OPTIONS}
               value={formData.type}
               onChange={(e) =>
@@ -352,10 +349,8 @@ export default function CreateEventModal({
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-theme-primary mb-2">
-              Status
-            </label>
             <Select
+              label="Status"
               options={STATUS_OPTIONS}
               value={formData.status}
               onChange={(e) =>
@@ -368,10 +363,8 @@ export default function CreateEventModal({
 
         {/* Venue */}
         <div>
-          <label className="block text-sm font-medium text-theme-primary mb-2">
-            Local *
-          </label>
           <Select
+            label="Local *"
             ref={fieldRefs.venueId}
             options={[
               { value: '', label: 'Selecione um local' },
@@ -396,10 +389,8 @@ export default function CreateEventModal({
         {/* Date and Time */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div>
-            <label className="block text-sm font-medium text-theme-primary mb-2">
-              Data de Início *
-            </label>
             <Input
+              label="Data de Início *"
               ref={fieldRefs.startDate}
               type="date"
               value={formData.startDate}
@@ -416,10 +407,8 @@ export default function CreateEventModal({
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-theme-primary mb-2">
-              Horário de Início *
-            </label>
             <Input
+              label="Horário de Início *"
               ref={fieldRefs.startTime}
               type="time"
               value={formData.startTime}
@@ -438,15 +427,13 @@ export default function CreateEventModal({
 
         {/* Description */}
         <div>
-          <label className="block text-sm font-medium text-theme-primary mb-2">
-            Descrição
-          </label>
-          <textarea
+          <Field.Area
+            label="Descrição"
+            classeCampo="resize-none"
             value={formData.description}
             onChange={(e) =>
               setFormData((prev) => ({ ...prev, description: e.target.value }))
             }
-            className="w-full input-classical-2 resize-none"
             rows={4}
             placeholder="Descreva o evento..."
             maxLength={500}
@@ -458,10 +445,8 @@ export default function CreateEventModal({
 
         {/* Image URL */}
         <div>
-          <label className="block text-sm font-medium text-theme-primary mb-2">
-            Imagem do Evento
-          </label>
           <Input
+            label="Imagem do Evento"
             type="url"
             value={formData.imageUrl}
             onChange={(e) =>
@@ -494,10 +479,8 @@ export default function CreateEventModal({
         {/* Tickets */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div>
-            <label className="block text-sm font-medium text-theme-primary mb-2">
-              Link para Ingressos
-            </label>
             <Input
+              label="Link para Ingressos"
               type="url"
               value={formData.ticketUrl}
               onChange={(e) =>

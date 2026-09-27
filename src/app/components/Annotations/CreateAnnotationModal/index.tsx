@@ -879,10 +879,8 @@ export default function CreateAnnotationModal({
       <div className="px-0 py-6 md:p-6 space-y-6 overflow-y-auto">
         {/* Title */}
         <div>
-          <label className="block text-sm font-medium text-theme-primary mb-2">
-            {t('create_modal_annotation_title')} *
-          </label>
           <Input
+            label={<>{t('create_modal_annotation_title')}*</>}
             ref={fieldRefs.title}
             type="text"
             value={formData.title}
@@ -906,10 +904,8 @@ export default function CreateAnnotationModal({
         {/* Category and Difficulty */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div>
-            <label className="block text-sm font-medium text-theme-primary mb-2">
-              {t('create_modal_category')} *
-            </label>
             <Select
+              label={<>{t('create_modal_category')}*</>}
               options={CATEGORY_OPTIONS}
               ref={fieldRefs.category}
               value={formData.category}
@@ -929,10 +925,8 @@ export default function CreateAnnotationModal({
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-theme-primary mb-2">
-              {t('create_modal_difficulty_level')}
-            </label>
             <Select
+              label={t('create_modal_difficulty_level')}
               options={DIFFICULTY_OPTIONS}
               value={formData.difficulty}
               onChange={(e) =>
@@ -948,10 +942,8 @@ export default function CreateAnnotationModal({
 
         {/* Scope */}
         <div>
-          <label className="block text-sm font-medium text-theme-primary mb-2">
-            {t('create_modal_annotation_scope')}
-          </label>
           <Select
+            label={t('create_modal_annotation_scope')}
             options={SCOPE_OPTIONS}
             value={formData.scope}
             onChange={(e) =>
@@ -968,10 +960,8 @@ export default function CreateAnnotationModal({
         {formData.scope === 'SPECIFIC_MEASURE' && (
           <div className="grid grid-cols-2 gap-4">
             <div>
-              <label className="block text-sm font-medium text-theme-primary mb-2">
-                {t('create_modal_initial_measure')} *
-              </label>
               <Input
+                label={<>{t('create_modal_initial_measure')}*</>}
                 ref={fieldRefs.measureStart}
                 type="number"
                 min="1"
@@ -994,10 +984,8 @@ export default function CreateAnnotationModal({
               )}
             </div>
             <div>
-              <label className="block text-sm font-medium text-theme-primary mb-2">
-                {t('create_modal_final_measure')}
-              </label>
               <Input
+                label={t('create_modal_final_measure')}
                 ref={fieldRefs.measureEnd}
                 type="number"
                 min="1"
@@ -1024,10 +1012,8 @@ export default function CreateAnnotationModal({
 
         {formData.scope === 'MOVEMENT' && (
           <div>
-            <label className="block text-sm font-medium text-theme-primary mb-2">
-              {t('create_modal_movement_name')} *
-            </label>
             <Input
+              label={<>{t('create_modal_movement_name')}*</>}
               ref={fieldRefs.movement}
               type="text"
               value={formData.movement}
@@ -1047,10 +1033,8 @@ export default function CreateAnnotationModal({
 
         {formData.scope === 'SECTION' && (
           <div>
-            <label className="block text-sm font-medium text-theme-primary mb-2">
-              {t('create_modal_section_name')} *
-            </label>
             <Input
+              label={<>{t('create_modal_section_name')}*</>}
               ref={fieldRefs.section}
               type="text"
               value={formData.section}
@@ -1071,10 +1055,8 @@ export default function CreateAnnotationModal({
         {/* Additional details */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div>
-            <label className="block text-sm font-medium text-theme-primary mb-2">
-              {t('create_modal_specific_hand')}
-            </label>
             <Select
+              label={t('create_modal_specific_hand')}
               options={HAND_OPTIONS}
               value={formData.hand}
               onChange={(e) =>
@@ -1085,10 +1067,8 @@ export default function CreateAnnotationModal({
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-theme-primary mb-2">
-              {t('create_modal_sheet_page')}
-            </label>
             <Input
+              label={t('create_modal_sheet_page')}
               type="number"
               min="1"
               value={formData.pageNumber}

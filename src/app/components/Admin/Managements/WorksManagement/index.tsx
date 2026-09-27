@@ -668,10 +668,8 @@ export default function WorksManagement() {
               {/* Filtros de Popularidade */}
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                 <div>
-                  <label className="block text-sm font-medium text-theme-secondary mb-2">
-                    Mínimo de Favoritos
-                  </label>
                   <Input
+                    label="Mínimo de Favoritos"
                     type="number"
                     placeholder="Ex: 10"
                     value={filters.minFavorites}
@@ -684,10 +682,8 @@ export default function WorksManagement() {
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-theme-secondary mb-2">
-                    Mín. Querem Aprender
-                  </label>
                   <Input
+                    label="Mín. Querem Aprender"
                     type="number"
                     placeholder="Ex: 5"
                     value={filters.minWantToLearn}
@@ -700,10 +696,8 @@ export default function WorksManagement() {
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-theme-secondary mb-2">
-                    Mín. Aprenderam
-                  </label>
                   <Input
+                    label="Mín. Aprenderam"
                     type="number"
                     placeholder="Ex: 3"
                     value={filters.minLearned}
@@ -719,10 +713,8 @@ export default function WorksManagement() {
               {/* Filtros de Partituras */}
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                 <div>
-                  <label className="block text-sm font-medium text-theme-secondary mb-2">
-                    Mínimo de Partituras
-                  </label>
                   <Input
+                    label="Mínimo de Partituras"
                     type="number"
                     placeholder="Ex: 1"
                     value={filters.minScores}
@@ -735,10 +727,8 @@ export default function WorksManagement() {
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-theme-secondary mb-2">
-                    Máximo de Partituras
-                  </label>
                   <Input
+                    label="Máximo de Partituras"
                     type="number"
                     placeholder="Ex: 10"
                     value={filters.maxScores}
@@ -751,10 +741,8 @@ export default function WorksManagement() {
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-theme-secondary mb-2">
-                    Tem Partituras?
-                  </label>
                   <Select
+                    label="Tem Partituras?"
                     value={filters.hasScores}
                     onChange={(e) =>
                       handleFilterChange('hasScores', e.target.value)

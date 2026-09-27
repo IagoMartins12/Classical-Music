@@ -1,6 +1,7 @@
 'use client';
 
-import { useId } from 'react';
+import { Children, Fragment, isValidElement, useId } from 'react';
+import type { ChangeEvent, ReactElement } from 'react';
 import type {
   InputHTMLAttributes,
   ReactNode,
@@ -8,6 +9,8 @@ import type {
   TextareaHTMLAttributes,
 } from 'react';
 import { cx } from './cx';
+import { Selecao } from './Selecao';
+import type { OpcaoSelecao } from './Selecao';
 
 /**
  * Campo de formulário: rótulo, ajuda, erro e foco, juntos e sempre.
@@ -24,21 +27,23 @@ import { cx } from './cx';
  * onde se lê.
  */
 
-const BASE_CONTROLE = cx(
-  'w-full rounded-controle border border-linha bg-fundo px-3.5 text-[0.9375rem] text-texto',
-  'min-h-[var(--alvo)] py-2.5',
-  'placeholder:text-texto-fraco',
-  'transition-[border-color,box-shadow] duration-[var(--t-resposta)] ease-saida motion-reduce:transition-none',
-  'disabled:cursor-not-allowed disabled:opacity-50'
-);
+/**
+ * A aparência vem de `.input-classical` (`globals.css`), a mesma dos 377
+ * campos antigos: um lugar só decide como um campo se parece. `pl-4` vence o
+ * recuo de 3rem que a classe guarda para campo com ícone.
+ */
+const BASE_CONTROLE = 'input-classical w-full pl-4';
 
 interface BaseProps {
-  label: string;
+  label: ReactNode;
   ajuda?: string;
   erro?: string;
   /** Esconde o rótulo da tela, mantendo-o para leitor. Use com parcimônia. */
   rotuloOculto?: boolean;
+  /** Classes da moldura (o `div` que junta rótulo, campo e mensagens). */
   className?: string;
+  /** Classes do próprio campo — altura de um `textarea`, largura fixa. */
+  classeCampo?: string;
 }
 
 function Moldura({
@@ -100,6 +105,7 @@ export function Field({
   erro,
   rotuloOculto,
   className,
+  classeCampo,
   ...resto
 }: FieldProps) {
   const id = useId();
@@ -124,7 +130,7 @@ export function Field({
         id={idCampo}
         aria-invalid={erro ? true : undefined}
         aria-describedby={erro ? idErro : ajuda ? idAjuda : undefined}
-        className={cx(BASE_CONTROLE, erro && 'border-erro')}
+        className={cx(BASE_CONTROLE, classeCampo)}
         {...resto}
       />
     </Moldura>
@@ -140,6 +146,7 @@ Field.Area = function FieldArea({
   erro,
   rotuloOculto,
   className,
+  classeCampo,
   ...resto
 }: AreaProps) {
   const id = useId();
@@ -165,7 +172,7 @@ Field.Area = function FieldArea({
         rows={4}
         aria-invalid={erro ? true : undefined}
         aria-describedby={erro ? idErro : ajuda ? idAjuda : undefined}
-        className={cx(BASE_CONTROLE, 'resize-y', erro && 'border-erro')}
+        className={cx(BASE_CONTROLE, 'resize-y', classeCampo)}
         {...resto}
       />
     </Moldura>
@@ -177,12 +184,53 @@ type SelecaoProps = BaseProps &
     children: ReactNode;
   };
 
+/** Texto de um nó React, para o rótulo de uma `<option>` escrita à mão. */
+function textoDe(no: ReactNode): string {
+  if (no === null || no === undefined || typeof no === 'boolean') return '';
+  if (typeof no === 'string' || typeof no === 'number') return String(no);
+  if (Array.isArray(no)) return no.map(textoDe).join('');
+  if (isValidElement(no))
+    return textoDe((no.props as { children?: ReactNode }).children);
+  return '';
+}
+
+/** As `<option>` dos filhos — escritas à mão, em `.map(...)` ou em fragmento. */
+function opcoesDe(filhos: ReactNode): OpcaoSelecao[] {
+  const saida: OpcaoSelecao[] = [];
+  Children.toArray(filhos).forEach((filho) => {
+    if (!isValidElement(filho)) return;
+    const el = filho as ReactElement<{
+      value?: string | number;
+      disabled?: boolean;
+      children?: ReactNode;
+    }>;
+    if (el.type === Fragment) {
+      saida.push(...opcoesDe(el.props.children));
+    } else if (el.type === 'option') {
+      const rotulo = textoDe(el.props.children);
+      saida.push({
+        value: String(el.props.value ?? rotulo),
+        label: rotulo,
+        disabled: el.props.disabled,
+      });
+    } else if (el.type === 'optgroup') {
+      saida.push(...opcoesDe(el.props.children));
+    }
+  });
+  return saida;
+}
+
+/**
+ * Seleção com rótulo. As opções continuam vindo como `<option>` filhos — é o
+ * que as telas já escrevem —, mas quem desenha é o `Selecao` do sistema.
+ */
 Field.Selecao = function FieldSelecao({
   label,
   ajuda,
   erro,
   rotuloOculto,
   className,
+  classeCampo,
   children,
   ...resto
 }: SelecaoProps) {
@@ -192,6 +240,10 @@ Field.Selecao = function FieldSelecao({
   const idCampo = resto.id ?? `${id}-campo`;
   const idAjuda = `${id}-ajuda`;
   const idErro = `${id}-erro`;
+  const opcoes = opcoesDe(children);
+  const valor = String(
+    resto.value ?? resto.defaultValue ?? opcoes[0]?.value ?? ''
+  );
 
   return (
     <Moldura
@@ -204,15 +256,22 @@ Field.Selecao = function FieldSelecao({
       idErro={idErro}
       className={className}
     >
-      <select
+      <Selecao
         id={idCampo}
-        aria-invalid={erro ? true : undefined}
+        name={resto.name}
+        opcoes={opcoes}
+        valor={valor}
+        aoMudar={(novo) =>
+          resto.onChange?.({
+            target: { value: novo, name: resto.name ?? '' },
+            currentTarget: { value: novo, name: resto.name ?? '' },
+          } as unknown as ChangeEvent<HTMLSelectElement>)
+        }
+        disabled={resto.disabled}
+        invalido={!!erro}
         aria-describedby={erro ? idErro : ajuda ? idAjuda : undefined}
-        className={cx(BASE_CONTROLE, erro && 'border-erro')}
-        {...resto}
-      >
-        {children}
-      </select>
+        className={classeCampo}
+      />
     </Moldura>
   );
 };

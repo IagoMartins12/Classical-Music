@@ -958,10 +958,8 @@ const CreateComposerModal = ({
 
                 <div className="space-y-4">
                   <div>
-                    <label className="block text-sm font-medium text-theme-tertiary mb-2">
-                      {t('modal_composer_scraping_source_type')}
-                    </label>
                     <Select
+                      label={t('modal_composer_scraping_source_type')}
                       options={dataSourceOptions}
                       value={dataSource}
                       onChange={(e) =>
@@ -1210,10 +1208,8 @@ const CreateComposerModal = ({
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div>
-                    <label className="block text-sm font-medium text-theme-tertiary mb-2">
-                      {t('modal_composer_dates_birth')}
-                    </label>
                     <Input
+                      label={t('modal_composer_dates_birth')}
                       ref={fieldRefs.birthDate}
                       type="date"
                       value={formData.birthDate}
@@ -1227,10 +1223,8 @@ const CreateComposerModal = ({
                   </div>
 
                   <div>
-                    <label className="block text-sm font-medium text-theme-tertiary mb-2">
-                      {t('modal_composer_dates_death')}
-                    </label>
                     <Input
+                      label={t('modal_composer_dates_death')}
                       ref={fieldRefs.deathDate}
                       type="date"
                       value={formData.deathDate}
@@ -1293,10 +1287,8 @@ const CreateComposerModal = ({
                 <div className=" space-y-6 gap-4">
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div>
-                      <label className="block text-sm font-medium text-theme-tertiary mb-2">
-                        {t('modal_composer_classification_epoch')} *
-                      </label>
                       <Select
+                        label={<>{t('modal_composer_classification_epoch')}*</>}
                         ref={fieldRefs.epochId}
                         options={[
                           {
@@ -1339,10 +1331,12 @@ const CreateComposerModal = ({
                     </div>
 
                     <div>
-                      <label className="block text-sm font-medium text-theme-tertiary mb-2">
-                        {t('modal_composer_classification_primary_role')} *
-                      </label>
                       <Select
+                        label={
+                          <>
+                            {t('modal_composer_classification_primary_role')}*
+                          </>
+                        }
                         ref={fieldRefs.primaryRoleId}
                         options={[
                           {

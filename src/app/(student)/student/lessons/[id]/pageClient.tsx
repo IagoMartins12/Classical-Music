@@ -41,6 +41,7 @@ import { loadStudentLesson } from '@/app/requests/portal/student';
 import { sendStudentLessonNotice } from '@/app/requests/portal/lesson-actions';
 import { Inline } from '@/app/components/ui/Layout';
 import { Text } from '@/app/components/ui/Text';
+import { Field } from '@/app/components/ui/Field';
 
 interface StudentLessonDetailPageClientProps {
   initialData: StudentLessonDetail | null;
@@ -978,14 +979,11 @@ export default function StudentLessonDetailPageClient({
             {!actionSent ? (
               <>
                 <div className="mb-6">
-                  <label className="block text-sm font-medium text-theme-primary mb-2">
-                    {t('message_optional')}
-                  </label>
-                  <textarea
+                  <Field.Area
+                    label={t('message_optional')}
                     value={studentMessage}
                     onChange={(e) => setStudentMessage(e.target.value)}
                     rows={4}
-                    className="input-classical-2 w-full"
                     placeholder={
                       studentActionType === 'absence'
                         ? t('absence_placeholder')

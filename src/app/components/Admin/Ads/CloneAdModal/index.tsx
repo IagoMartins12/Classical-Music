@@ -19,6 +19,7 @@ import Checkbox from '@/app/components/Common/Checkbox';
 import { listInstruments } from '@/app/requests/admin/ads';
 import { Inline } from '@/app/components/ui/Layout';
 import { Text } from '@/app/components/ui/Text';
+import { Field } from '@/app/components/ui/Field';
 
 interface CloneAdModalProps {
   ad: any;
@@ -456,10 +457,8 @@ export default function CloneAdModal({
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div>
-                <label className="block text-sm font-medium text-theme-primary mb-2">
-                  Título *
-                </label>
                 <Input
+                  label="Título *"
                   type="text"
                   value={formData.title}
                   onChange={(e) => handleInputChange('title', e.target.value)}
@@ -469,10 +468,8 @@ export default function CloneAdModal({
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-theme-primary mb-2">
-                  Anunciante *
-                </label>
                 <Input
+                  label="Anunciante *"
                   type="text"
                   value={formData.advertiserName}
                   onChange={(e) =>
@@ -484,17 +481,15 @@ export default function CloneAdModal({
               </div>
 
               <div className="md:col-span-2">
-                <label className="block text-sm font-medium text-theme-primary mb-2">
-                  Descrição
-                </label>
-                <textarea
+                <Field.Area
+                  label="Descrição"
+                  classeCampo="resize-none"
                   value={formData.description}
                   onChange={(e) =>
                     handleInputChange('description', e.target.value)
                   }
                   rows={3}
                   placeholder="Descrição do anúncio"
-                  className="input-classical-2 w-full resize-none"
                   maxLength={300}
                 />
               </div>
@@ -559,15 +554,12 @@ export default function CloneAdModal({
 
               {formData.targetType === 'INSTRUMENT' && (
                 <div>
-                  <label className="block text-sm font-medium text-theme-primary mb-2">
-                    Instrumento *
-                  </label>
-                  <select
+                  <Field.Selecao
+                    label="Instrumento *"
                     value={formData.instrumentId}
                     onChange={(e) =>
                       handleInputChange('instrumentId', e.target.value)
                     }
-                    className="input-classical-2 w-full"
                   >
                     <option value="">Selecione um instrumento</option>
                     {availableInstruments.map((instrument) => (
@@ -575,7 +567,7 @@ export default function CloneAdModal({
                         {instrument.name}
                       </option>
                     ))}
-                  </select>
+                  </Field.Selecao>
                 </div>
               )}
             </div>
@@ -605,12 +597,12 @@ export default function CloneAdModal({
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-theme-primary mb-2">
-                  {formData.linkType === 'whatsapp'
-                    ? 'Número do WhatsApp'
-                    : 'URL de Destino'}
-                </label>
                 <Input
+                  label={
+                    formData.linkType === 'whatsapp'
+                      ? 'Número do WhatsApp'
+                      : 'URL de Destino'
+                  }
                   type={formData.linkType === 'whatsapp' ? 'tel' : 'url'}
                   value={formData.targetUrl}
                   onChange={(e) =>
@@ -625,10 +617,8 @@ export default function CloneAdModal({
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-theme-primary mb-2">
-                  Texto do Botão
-                </label>
                 <Input
+                  label="Texto do Botão"
                   type="text"
                   value={formData.ctaText}
                   onChange={(e) => handleInputChange('ctaText', e.target.value)}
@@ -651,10 +641,8 @@ export default function CloneAdModal({
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div>
-                <label className="block text-sm font-medium text-theme-primary mb-2">
-                  Data de Início
-                </label>
                 <Input
+                  label="Data de Início"
                   type="datetime-local"
                   value={formData.startDate}
                   onChange={(e) =>
@@ -664,10 +652,8 @@ export default function CloneAdModal({
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-theme-primary mb-2">
-                  Data de Fim
-                </label>
                 <Input
+                  label="Data de Fim"
                   type="datetime-local"
                   value={formData.endDate}
                   onChange={(e) => handleInputChange('endDate', e.target.value)}

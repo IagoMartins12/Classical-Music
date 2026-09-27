@@ -43,6 +43,7 @@ import { useTranslation } from '@/app/context/TranslationContext';
 import { checkLessonConflicts } from '@/app/requests/portal/lesson-actions';
 import { Inline } from '@/app/components/ui/Layout';
 import { Text } from '@/app/components/ui/Text';
+import { Field } from '@/app/components/ui/Field';
 
 interface CreateLessonPageClientProps {
   initialData: CreateLessonData;
@@ -945,10 +946,8 @@ export default function CreateLessonPageClient({
                     </h2>
 
                     <div>
-                      <label className="block text-sm font-medium text-theme-primary mb-2">
-                        {t('student_label')} *
-                      </label>
                       <Select
+                        label={<>{t('student_label')}*</>}
                         ref={fieldRefs.studentUserId}
                         options={[
                           { value: '', label: t('select_student') },
@@ -1009,10 +1008,8 @@ export default function CreateLessonPageClient({
 
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                       <div>
-                        <label className="block text-sm font-medium text-theme-primary mb-2">
-                          {t('lesson_title')} *
-                        </label>
                         <Input
+                          label={<>{t('lesson_title')}*</>}
                           ref={fieldRefs.title}
                           type="text"
                           value={formData.title}
@@ -1029,10 +1026,8 @@ export default function CreateLessonPageClient({
                       </div>
 
                       <div>
-                        <label className="block text-sm font-medium text-theme-primary mb-2">
-                          {t('lesson_type')}
-                        </label>
                         <Select
+                          label={t('lesson_type')}
                           options={lessonTypeOptions}
                           value={formData.type}
                           onChange={(e) =>
@@ -1044,16 +1039,13 @@ export default function CreateLessonPageClient({
                     </div>
 
                     <div>
-                      <label className="block text-sm font-medium text-theme-primary mb-2">
-                        {t('description')}
-                      </label>
-                      <textarea
+                      <Field.Area
+                        label={t('description')}
                         value={formData.description}
                         onChange={(e) =>
                           updateFormData('description', e.target.value)
                         }
                         rows={3}
-                        className="input-classical w-full"
                         placeholder={t('description_placeholder')}
                       />
                     </div>
@@ -1136,10 +1128,8 @@ export default function CreateLessonPageClient({
 
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                       <div>
-                        <label className="block text-sm font-medium text-theme-primary mb-2">
-                          {t('date_time')} *
-                        </label>
                         <Input
+                          label={<>{t('date_time')}*</>}
                           ref={fieldRefs.scheduledAt}
                           type="datetime-local"
                           value={formData.scheduledAt}
@@ -1172,10 +1162,8 @@ export default function CreateLessonPageClient({
                       </div>
 
                       <div>
-                        <label className="block text-sm font-medium text-theme-primary mb-2">
-                          {t('duration_minutes')} *
-                        </label>
                         <Input
+                          label={<>{t('duration_minutes')}*</>}
                           ref={fieldRefs.duration}
                           type="number"
                           value={formData.duration}
@@ -1197,10 +1185,8 @@ export default function CreateLessonPageClient({
                       </div>
 
                       <div>
-                        <label className="block text-sm font-medium text-theme-primary mb-2">
-                          {t('location')}
-                        </label>
                         <Input
+                          label={t('location')}
                           type="text"
                           value={formData.location}
                           onChange={(e) =>
@@ -1249,10 +1235,8 @@ export default function CreateLessonPageClient({
 
                           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                             <div>
-                              <label className="block text-sm font-medium text-theme-primary mb-2">
-                                {t('frequency')} *
-                              </label>
                               <Select
+                                label={<>{t('frequency')}*</>}
                                 options={recurrenceOptions}
                                 value={formData.recurrenceType || 'WEEKLY'}
                                 onChange={(e) =>
@@ -1267,10 +1251,8 @@ export default function CreateLessonPageClient({
                             </div>
 
                             <div>
-                              <label className="block text-sm font-medium text-theme-primary mb-2">
-                                {t('until_when')} *
-                              </label>
                               <Input
+                                label={<>{t('until_when')}*</>}
                                 ref={fieldRefs.recurrenceEnd}
                                 type="date"
                                 value={formData.recurrenceEnd}
@@ -1527,16 +1509,13 @@ export default function CreateLessonPageClient({
 
                         {/* Homework */}
                         <div>
-                          <label className="block text-sm font-medium text-theme-primary mb-2">
-                            {t('homework')}
-                          </label>
-                          <textarea
+                          <Field.Area
+                            label={t('homework')}
                             value={formData.homework}
                             onChange={(e) =>
                               updateFormData('homework', e.target.value)
                             }
                             rows={3}
-                            className="input-classical w-full"
                             placeholder={t('homework_placeholder')}
                           />
                         </div>
@@ -1544,31 +1523,25 @@ export default function CreateLessonPageClient({
                         {/* Notes */}
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                           <div>
-                            <label className="block text-sm font-medium text-theme-primary mb-2">
-                              {t('teacher_notes')}
-                            </label>
-                            <textarea
+                            <Field.Area
+                              label={t('teacher_notes')}
                               value={formData.teacherNotes}
                               onChange={(e) =>
                                 updateFormData('teacherNotes', e.target.value)
                               }
                               rows={3}
-                              className="input-classical w-full"
                               placeholder={t('teacher_notes_placeholder')}
                             />
                           </div>
 
                           <div>
-                            <label className="block text-sm font-medium text-theme-primary mb-2">
-                              {t('public_notes')}
-                            </label>
-                            <textarea
+                            <Field.Area
+                              label={t('public_notes')}
                               value={formData.publicNotes}
                               onChange={(e) =>
                                 updateFormData('publicNotes', e.target.value)
                               }
                               rows={3}
-                              className="input-classical w-full"
                               placeholder={t('public_notes_placeholder')}
                             />
                           </div>

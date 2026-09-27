@@ -396,10 +396,8 @@ export default function AdminPlanPricingPage() {
                   {/* Trial Days */}
                   {isEditing && (
                     <div>
-                      <label className="block text-sm font-medium mb-2">
-                        Dias de Trial Grátis
-                      </label>
                       <Input
+                        label="Dias de Trial Grátis"
                         type="number"
                         value={currentEdit.trialDays}
                         onChange={(e) =>
