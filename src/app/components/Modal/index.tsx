@@ -226,6 +226,65 @@ const Modal = forwardRef<ModalRef, ModalProps>(
       // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [isOpen]);
 
+    // ── Arraste da alça, no telefone ──────────────────────────────────────
+    // Para baixo: fecha (em tela cheia, primeiro volta ao tamanho normal —
+    // um arraste só fecharia um formulário longo por um toque errado). Para
+    // cima: o modal grande ocupa a tela inteira; o pequeno só cede e volta.
+    const [arrasto, setArrasto] = useState<number | null>(null);
+    const [telaCheia, setTelaCheia] = useState(false);
+    const [saindo, setSaindo] = useState(false);
+    const gesto = useRef({ y: 0, t: 0 });
+    const podeExpandir = isLargeModal;
+
+    useEffect(() => {
+      if (!isOpen) {
+        setTelaCheia(false);
+        setArrasto(null);
+        setSaindo(false);
+      }
+    }, [isOpen]);
+
+    const aoPegar = (e: React.PointerEvent<HTMLDivElement>) => {
+      if (window.matchMedia('(min-width: 640px)').matches) return;
+      e.currentTarget.setPointerCapture(e.pointerId);
+      gesto.current = { y: e.clientY, t: performance.now() };
+      setArrasto(0);
+    };
+
+    const aoArrastar = (e: React.PointerEvent<HTMLDivElement>) => {
+      if (arrasto === null) return;
+      const dy = e.clientY - gesto.current.y;
+      // Para cima a folha resiste: é só o sinal de que ela responde.
+      setArrasto(dy < 0 ? dy * (podeExpandir && !telaCheia ? 0.35 : 0.15) : dy);
+    };
+
+    const aoSoltar = (e: React.PointerEvent<HTMLDivElement>) => {
+      if (arrasto === null) return;
+      const dy = e.clientY - gesto.current.y;
+      const velocidade = dy / Math.max(1, performance.now() - gesto.current.t);
+      const altura = modalRef.current?.offsetHeight ?? 600;
+      const desceu = dy > Math.min(160, altura * 0.25) || velocidade > 0.6;
+      const subiu = dy < -60 || velocidade < -0.6;
+
+      if (desceu && telaCheia) {
+        setTelaCheia(false);
+      } else if (desceu) {
+        if (confirmOnClose) {
+          // Com alterações por salvar, o arraste pede a mesma confirmação
+          // do X: a folha volta e a pergunta aparece.
+          handleClose();
+        } else {
+          setSaindo(true);
+          setArrasto(altura);
+          window.setTimeout(() => onClose?.(), 200);
+          return;
+        }
+      } else if (subiu && podeExpandir) {
+        setTelaCheia(true);
+      }
+      setArrasto(null);
+    };
+
     if (!isOpen) return null;
 
     const temCabecalho = !!title || showCloseButton;
@@ -245,16 +304,39 @@ const Modal = forwardRef<ModalRef, ModalProps>(
             role="dialog"
             aria-modal="true"
             aria-labelledby={title ? idTitulo : undefined}
+            style={
+              arrasto !== null
+                ? { transform: `translateY(${arrasto}px)` }
+                : undefined
+            }
             className={`folha sup-alta relative flex w-full flex-col overflow-hidden outline-none
-          max-h-[92dvh] rounded-b-none sm:max-h-[90vh] sm:rounded-folha
+          ${
+            telaCheia
+              ? 'h-[100dvh] max-h-[100dvh] rounded-none pt-[env(safe-area-inset-top)]'
+              : 'max-h-[92dvh] rounded-b-none'
+          }
+          sm:h-auto sm:max-h-[90vh] sm:rounded-folha sm:pt-0
+          ${
+            arrasto !== null && !saindo
+              ? 'transition-none'
+              : 'transition-[transform,max-height,height,border-radius] duration-[var(--t-entrada)] ease-saida motion-reduce:transition-none'
+          }
           ${isLargeModal && !middlePosition ? '' : 'sm:w-11/12'}
           ${maxWidthClasses[maxWidth]} ${setPr ? '!pr-1' : ''} ${className}`}
           >
-            {/* A alça diz, no telefone, que a folha é uma camada por cima. */}
-            <span
+            {/* A alça: no telefone, arrastar para baixo fecha e, no modal
+                grande, para cima ocupa a tela. A faixa é maior que a barra
+                para o dedo acertar; o X continua sendo o caminho acessível. */}
+            <div
               aria-hidden="true"
-              className="mx-auto mt-2 h-1 w-10 shrink-0 rounded-full bg-linha-forte sm:hidden"
-            />
+              onPointerDown={aoPegar}
+              onPointerMove={aoArrastar}
+              onPointerUp={aoSoltar}
+              onPointerCancel={aoSoltar}
+              className="flex shrink-0 cursor-grab touch-none justify-center pb-2 pt-3 active:cursor-grabbing sm:hidden"
+            >
+              <span className="h-1 w-10 rounded-full bg-linha-forte" />
+            </div>
 
             {temCabecalho && (
               <div

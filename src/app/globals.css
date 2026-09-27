@@ -1094,7 +1094,9 @@ body {
   animation: folha-veu var(--t-entrada) var(--saida) both;
 }
 .folha {
-  animation: folha-sobe var(--t-entrada) var(--saida) both;
+  /* `backwards`, não `both`: terminada a entrada, a animação solta o
+     `transform`, e o arraste da alça pode mover a folha. */
+  animation: folha-sobe var(--t-entrada) var(--saida) backwards;
 }
 @media (min-width: 640px) {
   .folha {
