@@ -1,16 +1,16 @@
 import {
   EsqueletoCabecalho,
   EsqueletoControles,
-  EsqueletoLista,
+  EsqueletoLinhaDoTempo,
   EsqueletoPagina,
 } from '@/app/components/ui/Carregando';
 
 export default function Carregando() {
   return (
     <EsqueletoPagina rotulo="Carregando histórico">
-      <EsqueletoCabecalho />
-      <EsqueletoControles filtros={2} />
-      <EsqueletoLista quantos={6} />
+      <EsqueletoCabecalho centro />
+      <EsqueletoControles filtros={1} />
+      <EsqueletoLinhaDoTempo quantos={5} />
     </EsqueletoPagina>
   );
 }

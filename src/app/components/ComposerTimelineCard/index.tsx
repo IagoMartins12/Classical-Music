@@ -61,6 +61,7 @@ export function ComposerTimelineCard({
       {/* Card */}
       <Link
         href={`/composer/${composer.id}`}
+        data-vira={`compositor-${composer.id}`}
         className={`w-[90%] lg:w-[42%] classical-card p-6 transition-all duration-500 transform hover:scale-105 group relative overflow-hidden ${
           isLeft ? 'lg:mr-auto' : 'lg:ml-auto'
         }`}
@@ -182,9 +183,7 @@ export function ComposerTimelineCard({
       {/* Timeline Dot */}
       <div
         className={`absolute left-0 lg:left-1/2 transform lg:-translate-x-1/2 w-6 h-6 ${composer.dotColorClass} rounded-full border-4 border-theme-primary shadow-theme-glow z-10 group-hover:scale-125 transition-transform duration-300`}
-      >
-        <div className="absolute inset-1 rounded-full animate-pulse"></div>
-      </div>
+      ></div>
 
       {/* Connector Line */}
       <div

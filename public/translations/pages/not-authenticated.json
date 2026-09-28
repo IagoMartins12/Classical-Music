@@ -2,7 +2,7 @@
   "ptBr": {
     "not_authenticated_jsx_span_children_0__opus_atlas": "Opus Atlas",
     "not_authenticated_jsx_div_children_0__music": "Enciclopédia de Música Clássica",
-    "not_authenticated_jsx_h1_children_0__acesso_requerido": "Acesso Requerido",
+    "not_authenticated_jsx_h1_children_0__acesso_requerido": "Acesso Restrito",
     "not_authenticated_jsx_h3_children_0__terá_acesso": "O que você terá acesso:",
     "not_authenticated_jsx_p_children_0__não_tem_conta": "Não tem uma conta ainda?",
     "not_authenticated_jsx_button_children_0__fazer_login": "Fazer Login",
@@ -62,7 +62,7 @@
   "en": {
     "not_authenticated_jsx_span_children_0__opus_atlas": "Opus Atlas",
     "not_authenticated_jsx_div_children_0__music": "Classical Music Encyclopedia",
-    "not_authenticated_jsx_h1_children_0__acesso_requerido": "Access Required",
+    "not_authenticated_jsx_h1_children_0__acesso_requerido": "Access Restricted",
     "not_authenticated_jsx_h3_children_0__terá_acesso": "What you will have access to:",
     "not_authenticated_jsx_p_children_0__não_tem_conta": "Don't have an account yet?",
     "not_authenticated_jsx_button_children_0__fazer_login": "Login",

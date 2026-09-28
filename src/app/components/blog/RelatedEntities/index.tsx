@@ -66,6 +66,7 @@ export async function RelatedEntities({
                 <Link
                   key={composer.id}
                   href={`/composer/${composer.id}`}
+                  data-vira={`compositor-${composer.id}`}
                   className="block p-3 rounded-lg bg-theme-elevated transition-all group"
                 >
                   <div className="font-medium text-theme-primary transition-colors">
@@ -92,6 +93,7 @@ export async function RelatedEntities({
                 <Link
                   key={work.id}
                   href={`/works/${work.id}`}
+                  data-vira={`obra-${work.id}`}
                   className="block p-3 rounded-lg bg-theme-elevated transition-all group"
                 >
                   <div className="font-medium text-theme-primary transition-colors line-clamp-1">

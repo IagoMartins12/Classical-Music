@@ -1,4 +1,5 @@
 'use client';
+import { Button as Botao } from '@/app/components/ui/Button';
 
 import { useState, useEffect } from 'react';
 import {
@@ -162,10 +163,11 @@ export function ShareButtons({ url, title }: ShareButtonsProps = {}) {
         ))}
 
         {/* Copy Link Button */}
-        <button
+        <Botao
+          tamanho="p"
           onClick={copyToClipboard}
-          className="p-2 rounded-lg bg-theme-elevated transition-all group relative"
           title="Copiar link"
+          className="group relative"
         >
           {copied ? (
             <PiCheck className="w-5 h-5 text-green-500" />
@@ -177,7 +179,7 @@ export function ShareButtons({ url, title }: ShareButtonsProps = {}) {
               Link copiado!
             </span>
           )}
-        </button>
+        </Botao>
       </div>
     </div>
   );

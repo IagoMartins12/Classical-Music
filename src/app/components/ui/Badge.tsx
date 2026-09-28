@@ -25,7 +25,7 @@ const ESTADO: Record<Estado, string> = {
   atencao: 'border-atencao/35 text-atencao bg-atencao/10',
   erro: 'border-erro/35 text-erro bg-erro/10',
   aviso: 'border-aviso/35 text-aviso bg-aviso/10',
-  ouro: 'border-ouro/30 text-ouro-texto tint-ouro',
+  ouro: 'border-ouro/30 text-ouro-na-tinta tint-ouro',
 };
 
 export function Badge({
@@ -75,7 +75,7 @@ export function Chip({
         'transition-[border-color,color] duration-[var(--t-resposta)] ease-saida motion-reduce:transition-none',
         '[@media(pointer:coarse)]:min-h-[var(--alvo)]',
         selecionado
-          ? 'border-ouro/50 tint-ouro font-medium text-ouro-texto'
+          ? 'border-ouro/50 tint-ouro font-medium text-ouro-na-tinta'
           : 'border-linha-forte text-texto-suave hover:border-ouro/45 hover:text-ouro-texto',
         className
       )}

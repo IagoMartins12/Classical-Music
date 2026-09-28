@@ -302,7 +302,7 @@ export default function CoverCropper({
               {/* Controles */}
               <Stack className="mt-4">
                 {/* Zoom */}
-                <div className="space-y-2">
+                <Stack gap={2}>
                   <div className="flex items-center justify-between">
                     <Text papel="rotulo" tom="suave" className="font-medium">
                       Zoom:{Math.round(scale * 100)}%
@@ -344,7 +344,7 @@ export default function CoverCropper({
                     onChange={(e) => setScale(parseFloat(e.target.value))}
                     className="w-full h-2 bg-theme-secondary rounded-lg appearance-none cursor-pointer slider-thumb"
                   />
-                </div>
+                </Stack>
 
                 {/* Rotação */}
                 <div className="flex items-center justify-between p-3 bg-theme-classical rounded-lg">
@@ -478,7 +478,7 @@ export default function CoverCropper({
             </div>
 
             {/* Ações */}
-            <div className="space-y-2">
+            <Stack gap={2}>
               <Button
                 variant="primary"
                 onClick={handleConfirm}
@@ -496,7 +496,7 @@ export default function CoverCropper({
               >
                 <span>Cancelar</span>
               </Button>
-            </div>
+            </Stack>
 
             {/* Info adicional */}
             <Stack
@@ -506,12 +506,16 @@ export default function CoverCropper({
               <p className="text-xs text-green-900 dark:text-green-100 font-medium">
                 Recursos Disponíveis:
               </p>
-              <ul className="text-xs text-green-800 dark:text-green-200 space-y-1">
+              <Stack
+                gap={1}
+                as="ul"
+                className="text-xs text-green-800 dark:text-green-200"
+              >
                 <li>• Zoom preciso (10% - 500%)</li>
                 <li>• Rotação em 90°</li>
                 <li>• Grid de composição</li>
                 <li>• Preview responsivo</li>
-              </ul>
+              </Stack>
             </Stack>
           </Stack>
         </div>

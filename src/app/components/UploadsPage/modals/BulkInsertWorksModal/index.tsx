@@ -408,7 +408,7 @@ const BulkInsertWorksModal = ({
                       })}
                     </p>
 
-                    <div className="space-y-3">
+                    <Stack gap={3}>
                       <Text
                         papel="legenda"
                         tom="fraco"
@@ -421,12 +421,12 @@ const BulkInsertWorksModal = ({
                             {t('bulk_step_discover_how_title')}
                           </span>
                         </Inline>
-                        <ul className="text-left space-y-1 ml-5">
+                        <Stack gap={1} as="ul" className="text-left ml-5">
                           <li>• {t('bulk_step_discover_how_1')}</li>
                           <li>• {t('bulk_step_discover_how_2')}</li>
                           <li>• {t('bulk_step_discover_how_3')}</li>
                           <li>• {t('bulk_step_discover_how_4')}</li>
-                        </ul>
+                        </Stack>
                       </Text>
 
                       <Button
@@ -447,7 +447,7 @@ const BulkInsertWorksModal = ({
                           ? t('bulk_discovering')
                           : t('bulk_discover_button')}
                       </Button>
-                    </div>
+                    </Stack>
                   </AnimatedCard>
                 </div>
               )}

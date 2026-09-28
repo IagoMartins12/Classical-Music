@@ -1,5 +1,6 @@
 // app/components/EmailVerificationBanner.tsx
 'use client';
+import { Button as Botao } from '@/app/components/ui/Button';
 
 import { useState } from 'react';
 import {
@@ -84,13 +85,14 @@ export default function EmailVerificationBanner({
               </Button>
 
               {dismissible && (
-                <button
+                <Botao
+                  variante="fantasma"
+                  tamanho="p"
                   onClick={() => setIsDismissed(true)}
-                  className="w-8 h-8 rounded-lg flex items-center justify-center text-theme-tertiary transition-colors"
                   aria-label="Fechar aviso"
-                >
-                  <PiX className="w-4 h-4" />
-                </button>
+                  icone={PiX}
+                  rotulo="Fechar aviso"
+                />
               )}
             </Inline>
           </div>

@@ -1,4 +1,5 @@
 import type { CSSProperties } from 'react';
+import { flushSync } from 'react-dom';
 
 /**
  * Movimento entre estados com a View Transitions API — sem biblioteca.
@@ -64,8 +65,74 @@ export function navegarComTransicao(
 }
 
 /**
+ * Troca de vista (cards ↔ lista): cada item visível se transforma no seu
+ * par da outra vista, pelo `data-vira` que os dois têm (`obra-{id}`,
+ * `compositor-{id}`). O que não tem par aparece ou some cruzando.
+ *
+ * Os nomes são dados só durante a troca e só aos itens perto da tela — cada
+ * nome é uma foto que o navegador tira, e uma grade de 30 cards fora da tela
+ * não precisa de foto.
+ */
+export function trocarVista(atualizar: () => void) {
+  if (!podeTransitar()) {
+    atualizar();
+    return;
+  }
+  const marcar = () => {
+    const vistos = new Set<string>();
+    document.querySelectorAll<HTMLElement>('[data-vira]').forEach((el) => {
+      const nome = el.dataset.vira!;
+      const r = el.getBoundingClientRect();
+      if (vistos.has(nome) || vistos.size >= 60) return;
+      if (r.bottom < -100 || r.top > window.innerHeight + 100) return;
+      vistos.add(nome);
+      el.style.viewTransitionName = nome;
+      el.style.setProperty('view-transition-class', 'vista');
+    });
+  };
+  const limpar = () =>
+    document.querySelectorAll<HTMLElement>('[data-vira]').forEach((el) => {
+      el.style.viewTransitionName = '';
+      el.style.removeProperty('view-transition-class');
+    });
+  marcar();
+  const t = (document as Documento).startViewTransition!(() => {
+    limpar();
+    flushSync(atualizar);
+    marcar();
+  }) as { finished?: Promise<void> } | undefined;
+  t?.finished?.finally(limpar);
+}
+
+/**
+ * O card vira a página: recebe, só agora, o nome que o cabeçalho da página
+ * de destino já tem, e a navegação acontece dentro da transição.
+ *
+ * O nome é dado no clique, e não fixo no card, porque o mesmo compositor
+ * pode aparecer duas vezes na tela (na home, em "Últimas adições" e no
+ * carrossel). Dois elementos com o mesmo nome anulam a transição inteira.
+ */
+export function virarCartao(
+  cartao: HTMLElement,
+  nome: string,
+  empurrar: (href: string) => void,
+  href: string
+) {
+  document
+    .querySelectorAll<HTMLElement>('[style*="view-transition-name"]')
+    .forEach((el) => {
+      if (el !== cartao && el.style.viewTransitionName === nome) {
+        el.style.viewTransitionName = 'none';
+      }
+    });
+  cartao.style.viewTransitionName = nome;
+  cartao.style.setProperty('view-transition-class', 'cartao');
+  navegarComTransicao(empurrar, href);
+}
+
+/**
  * O nome que liga o card à página (e cada card a si mesmo na reordenação).
- * `classe` escolhe o tempo no CSS: `cartao` (320ms) ou `item-lista` (280ms).
+ * `classe` escolhe o tempo no CSS: `cartao` (560ms) ou `item-lista` (380ms).
  */
 export function nomeDeTransicao(
   nome: string,

@@ -14,7 +14,7 @@ export default function ComposerList({ composers, onSelect }: Props) {
   return (
     <Stack gap={2} className="p-4">
       <h2 className="text-xl font-semibold">Compositores encontrados</h2>
-      <ul className="space-y-2">
+      <Stack gap={2} as="ul">
         {composers.map((composer) => (
           <li
             key={composer.id}
@@ -24,7 +24,7 @@ export default function ComposerList({ composers, onSelect }: Props) {
             <strong>{composer.name}</strong> — {composer.epoch}
           </li>
         ))}
-      </ul>
+      </Stack>
     </Stack>
   );
 }

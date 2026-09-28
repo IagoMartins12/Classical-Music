@@ -41,7 +41,8 @@
     "epochs_contemporaneo": "Contemporâneo",
     "pagination_aria_nav": "Paginação",
     "pagination_aria_anterior": "Página anterior",
-    "pagination_aria_proxima": "Próxima página"
+    "pagination_aria_proxima": "Próxima página",
+    "client_jsx_button_buscar": "Buscar"
   },
   "en": {
     "client_jsx_h1_children_0__compositores_classicos": "Classical Composers",
@@ -85,6 +86,7 @@
     "epochs_contemporaneo": "Contemporary",
     "pagination_aria_nav": "Pagination",
     "pagination_aria_anterior": "Previous page",
-    "pagination_aria_proxima": "Next page"
+    "pagination_aria_proxima": "Next page",
+    "client_jsx_button_buscar": "Search"
   }
 }

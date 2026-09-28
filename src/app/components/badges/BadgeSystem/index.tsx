@@ -443,7 +443,7 @@ export function BadgeComponent({
       <div
         className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 
                      opacity-0 group-hover:opacity-100 transition-opacity duration-300 
-                     pointer-events-none z-50"
+                     pointer-events-none z-aviso"
       >
         <div className=" bg-theme-primary px-3 py-2 rounded-lg text-sm font-medium shadow-lg max-w-64 w-32 text-center">
           <div className="font-bold">{badge.name}</div>

@@ -104,7 +104,7 @@ const FavoriteButton = ({
     const baseClasses = `
       ${sizeClasses[size]} 
       ${typeButton === 'circle' ? 'rounded-full ' : ' '}
-      transition-all duration-300 hover:scale-110 active:scale-95 flex items-center justify-center relative overflow-hidden group
+      transition-all duration-300 hover:scale-110 active:scale-95 flex items-center justify-center relative overflow-hidden group/fav
       ${disabled ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'}
     `;
 
@@ -217,7 +217,7 @@ const FavoriteButton = ({
       {[...Array(3)].map((_, i) => (
         <div
           key={i}
-          className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 opacity-0 group-active:opacity-100 group-active:animate-ping"
+          className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 opacity-0 group-active/fav:opacity-100 group-active/fav:animate-ping"
           style={{
             animationDelay: `${i * 0.1}s`,
             animationDuration: '0.6s',
@@ -282,7 +282,7 @@ const FavoriteButton = ({
           ${iconSizes[size]} 
           transition-all 
           duration-300 
-          ${isFavorited ? 'fill-current scale-110' : 'group-hover:scale-110'}
+          ${isFavorited ? 'fill-current scale-110' : 'group-hover/fav:scale-110'}
           ${isLoading ? 'opacity-0' : 'opacity-100'}
           drop-shadow-sm
         `}
@@ -293,7 +293,7 @@ const FavoriteButton = ({
           ${iconSizes[size]} 
           transition-all 
           duration-300 
-          ${isFavorited ? 'fill-current scale-110' : 'group-hover:scale-110'}
+          ${isFavorited ? 'fill-current scale-110' : 'group-hover/fav:scale-110'}
           ${isLoading ? 'opacity-0' : 'opacity-100'}
           drop-shadow-sm
         `}
@@ -304,14 +304,14 @@ const FavoriteButton = ({
       <div
         className={`absolute ${
           typeButton === 'circle' ? 'rounded-full ' : ' '
-        }  inset-0 bg-gradient-to-br from-white/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 `}
+        }  inset-0 bg-gradient-to-br from-white/10 to-transparent opacity-0 group-hover/fav:opacity-100 transition-opacity duration-300 `}
       ></div>
 
       {/* Borda brilhante no hover */}
       <div
         className={`absolute inset-0 ${
           typeButton === 'circle' ? 'rounded-full ' : ' '
-        }  opacity-0 group-hover:opacity-100 transition-opacity duration-300 border-2 border-white/20 scale-110`}
+        }  opacity-0 group-hover/fav:opacity-100 transition-opacity duration-300 border-2 border-white/20 scale-110`}
       ></div>
     </button>
   );

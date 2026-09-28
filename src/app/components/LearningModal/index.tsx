@@ -1333,15 +1333,45 @@ const LearningModal = () => {
 
         {/* Footer */}
         <div className="px-0 md:px-6 py-4 border-t border-theme-secondary">
-          {/* Mobile Layout - Stack vertical */}
-          <div className="block md:hidden space-y-3">
-            {/* Botão Principal - Sempre em destaque */}
+          {/* Um bloco só para as duas larguras: no telefone, coluna com a
+              ação principal em cima (`flex-col-reverse`); a partir do tablet,
+              linha com as secundárias à esquerda e a principal à direita. */}
+          <div
+            className={`flex flex-col-reverse gap-3 md:flex-row md:items-center ${
+              isCurrentlyActive && !isSubmitting && !isUploading
+                ? 'md:justify-between'
+                : 'md:justify-end'
+            }`}
+          >
+            {isCurrentlyActive && !isSubmitting && !isUploading && (
+              <div className="flex flex-col-reverse gap-2 md:flex-row md:gap-3">
+                <Button
+                  variant="delete"
+                  leftIcon={<PiTrashSimple />}
+                  onClick={handleRemove}
+                  className="w-full md:w-auto"
+                >
+                  {t('delete_button')}
+                </Button>
+
+                {type === 'want-to-learn' && (
+                  <Button
+                    variant="outline"
+                    className="w-full truncate md:w-auto"
+                    onClick={handleTransferToLearned}
+                  >
+                    {t('mark_as_learned')}
+                  </Button>
+                )}
+              </div>
+            )}
+
             <Button
               variant="primary"
               onClick={handleSubmit}
               isLoading={isSubmitting || isUploading}
               disabled={isUploading}
-              className="w-full"
+              className="w-full md:w-auto"
             >
               {isSubmitting || isUploading
                 ? type === 'learned' && selectedVideo
@@ -1351,81 +1381,6 @@ const LearningModal = () => {
                   ? t('update_button')
                   : t('save_button')}
             </Button>
-
-            {/* Botões Secundários - Quando editando */}
-            {isCurrentlyActive && !isSubmitting && !isUploading && (
-              <Stack gap={2}>
-                {type === 'want-to-learn' && (
-                  <Button
-                    variant="outline"
-                    onClick={handleTransferToLearned}
-                    className="w-full"
-                  >
-                    {t('mark_as_learned')}
-                  </Button>
-                )}
-
-                <Button
-                  variant="delete"
-                  leftIcon={<PiTrashSimple />}
-                  onClick={handleRemove}
-                  className="w-full"
-                >
-                  {t('delete_button')}
-                </Button>
-              </Stack>
-            )}
-          </div>
-
-          {/* Desktop Layout - Horizontal */}
-          <div
-            className={`hidden md:flex items-center ${
-              (isCurrentlyActive && !isSubmitting && !isUploading) ||
-              (type === 'want-to-learn' && isCurrentlyActive)
-                ? 'justify-between'
-                : 'justify-end'
-            } space-x-3`}
-          >
-            {/* Botões de ação à esquerda */}
-            {isCurrentlyActive && !isSubmitting && !isUploading && (
-              <Inline gap={3}>
-                <Button
-                  variant="delete"
-                  leftIcon={<PiTrashSimple />}
-                  onClick={handleRemove}
-                >
-                  {t('delete_button')}
-                </Button>
-
-                {type === 'want-to-learn' && (
-                  <Button
-                    variant="outline"
-                    className="truncate"
-                    onClick={handleTransferToLearned}
-                  >
-                    {t('mark_as_learned')}
-                  </Button>
-                )}
-              </Inline>
-            )}
-
-            {/* Botão principal à direita */}
-            <Inline gap={3}>
-              <Button
-                variant="primary"
-                onClick={handleSubmit}
-                isLoading={isSubmitting || isUploading}
-                disabled={isUploading}
-              >
-                {isSubmitting || isUploading
-                  ? type === 'learned' && selectedVideo
-                    ? t('uploading_status')
-                    : t('saving_status')
-                  : isCurrentlyActive
-                    ? t('update_button')
-                    : t('save_button')}
-              </Button>
-            </Inline>
           </div>
         </div>
       </Modal>
@@ -1497,11 +1452,11 @@ const LearningModal = () => {
             </p>
 
             <Text papel="rotulo" tom="suave" as="div" className="mt-3">
-              <ul className="space-y-1">
+              <Stack gap={1} as="ul">
                 <li>• {t('transfer_priority_mastery')}</li>
                 <li>• {t('transfer_difficulty_notes')}</li>
                 <li>• {t('transfer_score_preserved')}</li>
-              </ul>
+              </Stack>
             </Text>
           </Card>
 

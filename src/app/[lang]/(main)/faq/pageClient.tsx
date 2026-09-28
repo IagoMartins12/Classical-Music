@@ -34,7 +34,7 @@ import {
 } from '../../../components/animation/AnimatedComponents';
 import Input from '@/app/components/Common/Inputs';
 import { useTranslation } from '@/app/context/TranslationContext';
-import { Inline } from '@/app/components/ui/Layout';
+import { Stack, Inline } from '@/app/components/ui/Layout';
 import { Text } from '@/app/components/ui/Text';
 
 interface FAQItem {
@@ -368,7 +368,7 @@ export default function FAQPage(): JSX.Element {
       <section className="">
         <AnimatedContainer delay={0.1} staggerSpeed="fast">
           <div className="">
-            <div className="max-w-4xl mx-auto space-y-4">
+            <Stack className="max-w-4xl mx-auto">
               {filteredFAQs.length === 0 ? (
                 <AnimatedCard
                   hover="lift"
@@ -408,9 +408,9 @@ export default function FAQPage(): JSX.Element {
                               >
                                 {item.category}
                               </Text>
-                              <h3 className="text-lg font-semibold text-theme-primary">
+                              <h2 className="text-lg font-semibold text-theme-primary">
                                 {item.question}
-                              </h3>
+                              </h2>
                             </div>
                           </Inline>
                           <div className="flex-shrink-0 ml-4">
@@ -438,7 +438,7 @@ export default function FAQPage(): JSX.Element {
                   </AnimatedItem>
                 ))
               )}
-            </div>
+            </Stack>
           </div>
         </AnimatedContainer>
       </section>

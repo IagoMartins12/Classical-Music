@@ -114,13 +114,9 @@ const EditWorkClient = ({
   return (
     <div className="">
       {/* Background Pattern */}
-      <div className="absolute inset-0 pointer-events-none opacity-5">
-        <div className="absolute top-20 left-20 w-64 h-64 rounded-full blur-3xl"></div>
-        <div className="absolute bottom-40 right-32 w-48 h-48 rounded-full blur-2xl"></div>
-        <div className="absolute top-1/2 left-1/4 w-32 h-32 rounded-full blur-xl"></div>
-      </div>
+      <div className="absolute inset-0 pointer-events-none opacity-5"></div>
 
-      <div className="section-wrap space-y-8 relative z-10">
+      <Stack gap={8} className="section-wrap relative z-10">
         {/* Breadcrumb */}
         <AnimatedItem direction="down" springType="gentle">
           <Inline
@@ -622,7 +618,7 @@ const EditWorkClient = ({
                       </h3>
                     </Inline>
 
-                    <div className="text-center space-y-4">
+                    <div className="text-center gap-4 flex flex-col">
                       {work.composer.portraitUrl && !imageError ? (
                         <div className="relative w-32 h-40 mx-auto rounded-xl overflow-hidden shadow-theme-medium">
                           <Image
@@ -699,7 +695,7 @@ const EditWorkClient = ({
             </div>
           </AnimatedCard>
         </AnimatedContainer>
-      </div>
+      </Stack>
 
       {/* Edit Modal */}
       <CreateWorkModal

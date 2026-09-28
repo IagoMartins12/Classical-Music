@@ -1,7 +1,7 @@
 // app/newsletter/unsubscribe/[token]/pageclient.tsx
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useId } from 'react';
 import { useParams } from 'next/navigation';
 import { useRouter } from 'next/navigation';
 import { PiArrowRight, PiCheck, PiX } from 'react-icons/pi';
@@ -19,6 +19,7 @@ import { Field } from '@/app/components/ui/Field';
 import { Button } from '@/app/components/ui/Button';
 
 export default function UnsubscribePage() {
+  const idCampo = useId();
   const router = useRouter();
   const params = useParams();
   const token = params.token as string;
@@ -153,7 +154,7 @@ export default function UnsubscribePage() {
                       </p>
                     </Stack>
 
-                    <div className="space-y-4">
+                    <Stack>
                       <Button
                         variante="primario"
                         type="submit"
@@ -181,7 +182,7 @@ export default function UnsubscribePage() {
                       >
                         {t('unsubscribe_keep_button')}
                       </button>
-                    </div>
+                    </Stack>
                   </Stack>
                 </AnimatedCard>
               )}
@@ -200,7 +201,10 @@ export default function UnsubscribePage() {
 
                     {/* Reason Selection */}
                     <Stack gap={3}>
-                      <label className="block text-sm font-medium text-theme-secondary">
+                      <label
+                        htmlFor={`${idCampo}-1`}
+                        className="block text-sm font-medium text-theme-secondary"
+                      >
                         {t('unsubscribe_reason_label')}
                       </label>
                       <Stack gap={2}>
@@ -212,6 +216,7 @@ export default function UnsubscribePage() {
                             className="p-3 rounded-lg cursor-pointer transition-colors bg-sup-2"
                           >
                             <Input
+                              id={`${idCampo}-1`}
                               type="radio"
                               name="reason"
                               value={reasonOption.id}
@@ -240,7 +245,7 @@ export default function UnsubscribePage() {
                     </div>
 
                     {/* Actions */}
-                    <div className="space-y-3">
+                    <Stack gap={3}>
                       <Button
                         variante="primario"
                         type="submit"
@@ -259,7 +264,7 @@ export default function UnsubscribePage() {
                       >
                         {t('unsubscribe_back_button')}
                       </button>
-                    </div>
+                    </Stack>
                   </Stack>
                 </AnimatedCard>
               )}

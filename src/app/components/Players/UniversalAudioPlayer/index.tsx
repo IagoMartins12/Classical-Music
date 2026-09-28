@@ -1,5 +1,6 @@
 // app/components/Players/UniversalAudioPlayer/index.tsx - COM IMPORT DO WAVEFORM E TRADUÇÕES
 'use client';
+import { Button } from '@/app/components/ui/Button';
 
 import React, { useState, useEffect, useRef, useCallback, JSX } from 'react';
 import {
@@ -509,16 +510,13 @@ const UniversalAudioPlayer: React.FC<UniversalAudioPlayerProps> = ({
 
           {/* Volume */}
           <Inline gap={2}>
-            <button
-              onClick={toggleMute}
-              className="p-2 text-gray-400 hover:text-white transition-colors"
-            >
+            <Button variante="fantasma" tamanho="p" onClick={toggleMute}>
               {isMuted ? (
                 <PiSpeakerX className="w-4 h-4" />
               ) : (
                 <PiSpeakerHigh className="w-4 h-4" />
               )}
-            </button>
+            </Button>
             <input
               type="range"
               min="0"

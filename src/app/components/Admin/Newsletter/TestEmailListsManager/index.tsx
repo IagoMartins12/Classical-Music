@@ -1,7 +1,7 @@
 // app/components/Admin/Newsletter/TestEmailListsManager.tsx
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useId } from 'react';
 import {
   PiCheckCircle,
   PiClock,
@@ -65,6 +65,7 @@ const CreateEditModal: React.FC<CreateEditModalProps> = ({
   list,
   onSuccess,
 }) => {
+  const idCampo = useId();
   const { createList, updateList } = useTestEmailLists();
   const isEditing = !!list;
 
@@ -199,7 +200,7 @@ const CreateEditModal: React.FC<CreateEditModalProps> = ({
           </p>
         </div>
 
-        <form onSubmit={handleSubmit} className="space-y-6">
+        <Stack gap={6} as="form" onSubmit={handleSubmit}>
           {/* Nome */}
           <Input
             label="Nome da Lista"
@@ -227,10 +228,14 @@ const CreateEditModal: React.FC<CreateEditModalProps> = ({
 
           {/* Emails */}
           <div>
-            <label className="block text-sm font-medium text-theme-primary mb-2">
+            <label
+              htmlFor={`${idCampo}-1`}
+              className="block text-sm font-medium text-theme-primary mb-2"
+            >
               Emails (um por linha)
             </label>
             <textarea
+              id={`${idCampo}-1`}
               value={formData.emails}
               onChange={(e) => handleInputChange('emails', e.target.value)}
               placeholder={`exemplo1@email.com\nexemplo2@email.com\nexemplo3@email.com`}
@@ -256,10 +261,13 @@ const CreateEditModal: React.FC<CreateEditModalProps> = ({
           {/* Cor e Status */}
           <div className="grid grid-cols-2 gap-4">
             <Stack gap={2}>
-              <label className="block text-sm font-medium text-theme-primary">
+              <span
+                id={`${idCampo}-2`}
+                className="block text-sm font-medium text-theme-primary"
+              >
                 Cor da Lista
-              </label>
-              <Inline gap={3}>
+              </span>
+              <Inline role="group" aria-labelledby={`${idCampo}-2`} gap={3}>
                 <input
                   type="color"
                   value={formData.color}
@@ -278,10 +286,18 @@ const CreateEditModal: React.FC<CreateEditModalProps> = ({
             </Stack>
 
             <div>
-              <label className="block text-sm font-medium text-theme-primary mb-2">
+              <span
+                id={`${idCampo}-3`}
+                className="block text-sm font-medium text-theme-primary mb-2"
+              >
                 Status
-              </label>
-              <Inline gap={2} className="mt-3">
+              </span>
+              <Inline
+                role="group"
+                aria-labelledby={`${idCampo}-3`}
+                gap={2}
+                className="mt-3"
+              >
                 <button
                   type="button"
                   onClick={() =>
@@ -327,7 +343,7 @@ const CreateEditModal: React.FC<CreateEditModalProps> = ({
               Cancelar
             </Button>
           </div>
-        </form>
+        </Stack>
       </Stack>
     </Modal>
   );
@@ -458,7 +474,7 @@ const SendTestModal: React.FC<SendTestModalProps> = ({
           </Stack>
         </Stack>
 
-        <form onSubmit={handleSubmit} className="space-y-6">
+        <Stack gap={6} as="form" onSubmit={handleSubmit}>
           {/* Template */}
           <div>
             <Field.Selecao
@@ -495,9 +511,9 @@ const SendTestModal: React.FC<SendTestModalProps> = ({
 
           {/* Variáveis de Teste */}
           <Stack gap={2}>
-            <label className="block text-sm font-medium text-theme-primary">
+            <span className="block text-sm font-medium text-theme-primary">
               Variáveis de Teste
-            </label>
+            </span>
             <div className="grid grid-cols-2 gap-4">
               <Input
                 label="Nome do Teste"
@@ -532,10 +548,17 @@ const SendTestModal: React.FC<SendTestModalProps> = ({
 
           {/* Modo de Envio */}
           <Stack gap={3}>
-            <label className="block text-sm font-medium text-theme-primary">
+            <span
+              aria-hidden="true"
+              className="block text-sm font-medium text-theme-primary"
+            >
               Modo de Envio
-            </label>
-            <div className="grid grid-cols-2 gap-4">
+            </span>
+            <div
+              role="radiogroup"
+              aria-label="Modo de Envio"
+              className="grid grid-cols-2 gap-4"
+            >
               <label
                 className={`cursor-pointer p-4 rounded-lg border-2 transition-colors ${
                   formData.sendMode === 'bulk' ? '' : 'border-theme-secondary'
@@ -616,7 +639,7 @@ const SendTestModal: React.FC<SendTestModalProps> = ({
               Cancelar
             </Button>
           </div>
-        </form>
+        </Stack>
       </>
     );
   };
@@ -967,7 +990,7 @@ export default function TestEmailListsManager() {
             {lists.length > 0 && (
               <div className="flex items-center justify-between mt-4 pt-4 border-t border-theme-secondary">
                 <Inline gap={4}>
-                  <label className="flex items-center">
+                  <span className="flex items-center">
                     <Checkbox
                       checked={
                         selectedLists.length === filteredLists.length &&
@@ -979,7 +1002,7 @@ export default function TestEmailListsManager() {
                     <Text papel="rotulo" tom="forte">
                       Selecionar todos ({filteredLists.length})
                     </Text>
-                  </label>
+                  </span>
 
                   {selectedLists.length > 0 && (
                     <button

@@ -244,7 +244,7 @@ export default function AnnotationCard({
       >
         {/* Loading overlay para updates */}
         {isUpdating && (
-          <div className="absolute inset-0 backdrop-blur-sm z-20 flex items-center justify-center">
+          <div className="absolute inset-0 backdrop-blur-sm z-elevado flex items-center justify-center">
             <Inline gap={3} className="rounded-xl px-4 py-2 bg-sup-2">
               <PiSpinnerGap className="w-4 h-4 animate-spin text-ouro-texto" />
               <Text papel="rotulo" tom="forte" className="font-medium">

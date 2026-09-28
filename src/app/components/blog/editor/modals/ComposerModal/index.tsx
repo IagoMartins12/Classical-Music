@@ -1,7 +1,8 @@
 // components/blog/modals/ComposerModal.tsx - CORRIGIDO COM NATIONALITY
 'use client';
+import { Button as Botao } from '@/app/components/ui/Button';
 
-import { useState } from 'react';
+import { useState, useId } from 'react';
 import { Editor } from '@tiptap/react';
 import Image from '@/app/components/SmartImage';
 import Modal from '@/app/components/Modal';
@@ -19,6 +20,7 @@ interface ComposerModalProps {
 }
 
 export function ComposerModal({ editor, onClose }: ComposerModalProps) {
+  const idCampo = useId();
   const [selectedComposer, setSelectedComposer] = useState('');
   const [composerData, setComposerData] = useState<any>(null);
 
@@ -100,16 +102,20 @@ export function ComposerModal({ editor, onClose }: ComposerModalProps) {
     >
       <Stack gap={6} as="form" onSubmit={handleSubmit}>
         {/* Busca do Compositor */}
-        <div>
-          <label className="block text-sm font-medium text-theme-primary mb-2">
+        <Stack gap={2}>
+          <label
+            htmlFor={`${idCampo}-1`}
+            className="block text-sm font-medium text-theme-primary"
+          >
             Buscar Compositor
           </label>
           <ComposerSearchInputSimple
+            id={`${idCampo}-1`}
             selectedComposer={selectedComposer}
             onComposerSelect={handleComposerSelect}
             fullData={true} // ✅ Passa fullData=true para buscar todos os campos
           />
-        </div>
+        </Stack>
 
         {/* Configurações */}
         {composerData && (
@@ -123,10 +129,17 @@ export function ComposerModal({ editor, onClose }: ComposerModalProps) {
 
                 {/* Layout */}
                 <Stack gap={2} className="mb-4">
-                  <label className="block text-sm font-medium text-theme-primary">
+                  <span
+                    id={`${idCampo}-2`}
+                    className="block text-sm font-medium text-theme-primary"
+                  >
                     Layout
-                  </label>
-                  <div className="flex space-x-2">
+                  </span>
+                  <div
+                    role="group"
+                    aria-labelledby={`${idCampo}-2`}
+                    className="flex space-x-2"
+                  >
                     <Button
                       type="button"
                       variant={layout === 'vertical' ? 'primary' : 'outline'}
@@ -302,20 +315,14 @@ export function ComposerModal({ editor, onClose }: ComposerModalProps) {
 
                     {/* Botões */}
                     <Inline gap={2} className="mt-3">
-                      <button
-                        type="button"
-                        className="px-3 py-1 text-white text-sm rounded hover:opacity-90 transition-opacity"
-                      >
+                      <Botao variante="fantasma" tamanho="p" type="button">
                         Ver no Opus →
-                      </button>
+                      </Botao>
 
                       {showWorksButton && (
-                        <button
-                          type="button"
-                          className="px-3 py-1 bg-gray-200 text-gray-700 text-sm rounded hover:bg-gray-300 transition-colors"
-                        >
+                        <Botao variante="fantasma" tamanho="p" type="button">
                           Ver Obras
-                        </button>
+                        </Botao>
                       )}
 
                       {/* ✅ BOTÃO WIKIPEDIA ADICIONADO NO PREVIEW */}

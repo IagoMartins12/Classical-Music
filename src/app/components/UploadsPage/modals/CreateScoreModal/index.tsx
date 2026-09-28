@@ -1,7 +1,7 @@
 // app/components/UploadsPage/modals/CreateScoreModal/index.tsx - ATUALIZADO PARA IMAGENS
 'use client';
 
-import { useState, useEffect, useRef, useMemo } from 'react';
+import { useState, useEffect, useRef, useMemo, useId } from 'react';
 import { useRouter } from 'next/navigation';
 import Image from '@/app/components/SmartImage';
 import {
@@ -90,6 +90,7 @@ const CreateScoreModal = ({
   works,
   editingScore,
 }: CreateScoreModalProps) => {
+  const idCampo = useId();
   const router = useRouter();
   const { t } = useTranslation({ sections: ['pages/uploads'] });
 
@@ -693,7 +694,7 @@ const CreateScoreModal = ({
 
           {/* Content */}
           <div className="px-0 py-4 md:p-6">
-            <form onSubmit={handleSubmit} className="space-y-6" noValidate>
+            <Stack gap={6} as="form" onSubmit={handleSubmit} noValidate>
               {/* Upload Mode Selection */}
               {!editingScore && (
                 <AnimatedCard className="classical-card-2 p-4">
@@ -1017,7 +1018,10 @@ const CreateScoreModal = ({
 
                 <Stack>
                   <div ref={fieldRefs.composerFilter}>
-                    <label className="block text-sm font-medium text-theme-tertiary mb-2">
+                    <label
+                      htmlFor={`${idCampo}-1`}
+                      className="block text-sm font-medium text-theme-tertiary mb-2"
+                    >
                       <Inline gap={2}>
                         <PiFunnel className="w-4 h-4" />
                         <span>{t('modal_score_work_filter_composer')}</span>
@@ -1030,6 +1034,7 @@ const CreateScoreModal = ({
                     </label>
 
                     <ComposerSearchInput
+                      id={`${idCampo}-1`}
                       selectedComposer={composerFilter}
                       onComposerSelect={handleComposerFilterChange}
                       popularComposers={popularComposers}
@@ -1050,9 +1055,9 @@ const CreateScoreModal = ({
                   </div>
 
                   <div ref={fieldRefs.workId}>
-                    <label className="block text-sm font-medium text-theme-tertiary mb-2">
+                    <span className="block text-sm font-medium text-theme-tertiary mb-2">
                       {t('modal_score_work_label')} *
-                    </label>
+                    </span>
 
                     {editingScore && workData ? (
                       <div className="w-full p-3 rounded-lg bg-theme-elevated opacity-50 cursor-not-allowed">
@@ -1404,7 +1409,7 @@ const CreateScoreModal = ({
                       : t('form_create') + ' Partitura'}
                 </Button>
               </Inline>
-            </form>
+            </Stack>
           </div>
         </div>
       </AnimatedItem>

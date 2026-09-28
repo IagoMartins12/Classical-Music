@@ -646,7 +646,7 @@ export default function EventScraperModal({
                   <h4 className="text-sm font-bold text-theme-primary">
                     Eventos Novos ({newEvents.length})
                   </h4>
-                  <div className=" overflow-y-auto space-y-3">
+                  <Stack gap={3} className="overflow-y-auto">
                     {newEvents.map((event) => (
                       <AnimatedItem
                         key={event.id}
@@ -660,7 +660,7 @@ export default function EventScraperModal({
                         />
                       </AnimatedItem>
                     ))}
-                  </div>
+                  </Stack>
                 </Stack>
 
                 {/* Seção de Duplicados */}
@@ -689,7 +689,7 @@ export default function EventScraperModal({
 
                     {showDuplicates && (
                       <AnimatedItem direction="down" springType="smooth">
-                        <div className="mt-3 overflow-y-auto space-y-3 pl-4">
+                        <Stack gap={3} className="mt-3 overflow-y-auto pl-4">
                           {duplicateEvents.map((event) => (
                             <AnimatedItem
                               key={event.id}
@@ -704,7 +704,7 @@ export default function EventScraperModal({
                               />
                             </AnimatedItem>
                           ))}
-                        </div>
+                        </Stack>
                       </AnimatedItem>
                     )}
                   </div>
@@ -749,7 +749,7 @@ export default function EventScraperModal({
                   </Text>
                 </div>
 
-                <div className=" overflow-y-auto space-y-3">
+                <div className=" overflow-y-auto gap-3 flex flex-col">
                   {eventProgress.map((event) => (
                     <div
                       key={event.tempId}
@@ -879,7 +879,7 @@ export default function EventScraperModal({
                   </Card>
                 </div>
 
-                <div className="overflow-x-hidden overflow-y-auto space-y-2">
+                <div className="overflow-x-hidden overflow-y-auto gap-2 flex flex-col">
                   {processResults.map((result) => (
                     <div
                       key={result.tempId}

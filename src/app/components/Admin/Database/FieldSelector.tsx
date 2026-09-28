@@ -300,7 +300,7 @@ export default function FieldSelector({
           densidade="compacta"
           className="max-h-96 overflow-y-auto classical-scrollbar"
         >
-          <div className="space-y-2">
+          <div className="gap-2 flex flex-col">
             {filteredFields.length === 0 ? (
               <div className="text-center py-8 text-theme-tertiary">
                 Nenhum campo encontrado

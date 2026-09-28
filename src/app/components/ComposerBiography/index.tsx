@@ -1,5 +1,6 @@
 // ComposerBiography.tsx - ATUALIZADO com hook de controle de idioma
 'use client';
+import { Button } from '@/app/components/ui/Button';
 
 import { useState, useEffect } from 'react';
 import {
@@ -179,12 +180,9 @@ export default function ComposerBiography({
                 Translation error - showing previous version
               </span>
             </Inline>
-            <button
-              onClick={handleRetry}
-              className="text-xs px-2 py-1 rounded transition-colors"
-            >
+            <Button variante="fantasma" tamanho="p" onClick={handleRetry}>
               Try again
-            </button>
+            </Button>
           </div>
         </div>
       )}
@@ -192,7 +190,6 @@ export default function ComposerBiography({
       {/* Conteúdo da biografia */}
       <div className="relative">
         {/* Decoração de fundo */}
-        <div className="absolute top-0 right-0 w-32 h-32 opacity-5 rounded-full blur-3xl"></div>
 
         <Text
           papel="corpo"

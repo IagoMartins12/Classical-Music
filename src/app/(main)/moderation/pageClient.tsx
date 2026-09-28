@@ -36,7 +36,7 @@ import { useToast } from '@/app/hooks/useToast';
 import { listModerations, resolveModeration } from '@/app/requests/moderation';
 import Checkbox from '@/app/components/Common/Checkbox';
 import { useTranslation } from '@/app/context/TranslationContext';
-import { Inline } from '@/app/components/ui/Layout';
+import { Stack, Inline } from '@/app/components/ui/Layout';
 import { Text } from '@/app/components/ui/Text';
 import { Field } from '@/app/components/ui/Field';
 import { Card } from '@/app/components/ui/Card';
@@ -346,7 +346,7 @@ const ModerationClient = ({
 
         {/* Moderations List */}
         <AnimatedItem direction="up" springType="gentle">
-          <div className="space-y-4">
+          <Stack>
             {moderations.length === 0 ? (
               <div className="classical-card p-12 text-center">
                 <PiShield className="w-16 h-16 text-theme-tertiary mx-auto mb-4" />
@@ -543,7 +543,7 @@ const ModerationClient = ({
                 </AnimatedItem>
               ))
             )}
-          </div>
+          </Stack>
         </AnimatedItem>
 
         {/* Pagination */}

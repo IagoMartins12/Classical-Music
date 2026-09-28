@@ -6,6 +6,7 @@ import { ClientThemeWrapper } from './components/ClientThemeWrapper';
 import AuthProvider from './providers/AuthProvider';
 import { getBuildLanguage } from './utils/translations/serverTranslations';
 import Script from 'next/script';
+import { CartoesQueViram } from '@/app/components/ui/CartoesQueViram';
 
 /**
  * As três famílias do sistema, e por que são três.
@@ -261,6 +262,7 @@ export default function RootLayout({
       <body className="antialiased">
         <ClientThemeWrapper>
           <AuthProvider>{children}</AuthProvider>
+          <CartoesQueViram />
         </ClientThemeWrapper>
 
         {/* 🚀 Analytics otimizados - carregamento assíncrono */}

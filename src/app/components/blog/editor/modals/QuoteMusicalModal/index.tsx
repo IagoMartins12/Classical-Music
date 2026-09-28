@@ -5,7 +5,7 @@
 
 import { uploadBlogMedia } from '@/app/requests/blog/interactions';
 
-import { useState } from 'react';
+import { useState, useId } from 'react';
 import { Editor } from '@tiptap/react';
 import { PiUploadSimple } from 'react-icons/pi';
 import Modal from '@/app/components/Modal';
@@ -29,6 +29,7 @@ export function QuoteMusicalModal({
   articleId,
   sessionId,
 }: QuoteMusicalModalProps) {
+  const idCampo = useId();
   const [quote, setQuote] = useState('');
   const [author, setAuthor] = useState('');
 
@@ -143,7 +144,7 @@ export function QuoteMusicalModal({
       title="Inserir Citação Musical"
       maxWidth="2xl"
     >
-      <form onSubmit={handleSubmit} className="space-y-4">
+      <Stack as="form" onSubmit={handleSubmit}>
         <div>
           <Field.Area
             label="Citação *"
@@ -174,7 +175,7 @@ export function QuoteMusicalModal({
         </div>
 
         {enableAudio && (
-          <div className="space-y-4 pl-6 border-l-2">
+          <Stack className="pl-6 border-l-2">
             {/* TABS */}
             <div className="flex ">
               <button
@@ -204,10 +205,17 @@ export function QuoteMusicalModal({
             {/* ABA UPLOAD */}
             {activeTab === 'upload' && (
               <Stack gap={2}>
-                <label className="block text-sm font-medium text-theme-primary">
+                <span
+                  id={`${idCampo}-1`}
+                  className="block text-sm font-medium text-theme-primary"
+                >
                   Selecionar Arquivo de Áudio
-                </label>
-                <div className="border-2 border-dashed border-theme-secondary rounded-lg p-4 text-center transition-colors">
+                </span>
+                <div
+                  role="group"
+                  aria-labelledby={`${idCampo}-1`}
+                  className="border-2 border-dashed border-theme-secondary rounded-lg p-4 text-center transition-colors"
+                >
                   <input
                     type="file"
                     id="audio-upload-quote"
@@ -218,17 +226,17 @@ export function QuoteMusicalModal({
                   />
 
                   {audioUrl && !uploading ? (
-                    <div className="space-y-2">
+                    <Stack gap={2}>
                       <p className="text-sm text-green-700 font-medium">
                         Áudio carregado com sucesso
                       </p>
                       <label
                         htmlFor="audio-upload-quote"
-                        className="inline-block cursor-pointer text-sm text-ouro-texto underline"
+                        className="inline-block cursor-pointer text-sm text-ouro-texto underline self-center"
                       >
                         Alterar áudio
                       </label>
-                    </div>
+                    </Stack>
                   ) : (
                     <label
                       htmlFor="audio-upload-quote"
@@ -271,10 +279,14 @@ export function QuoteMusicalModal({
 
             {/* Volume */}
             <div>
-              <label className="block text-sm font-medium text-theme-primary mb-2">
+              <label
+                htmlFor={`${idCampo}-2`}
+                className="block text-sm font-medium text-theme-primary mb-2"
+              >
                 Volume: {audioVolume}%
               </label>
               <input
+                id={`${idCampo}-2`}
                 type="range"
                 min="0"
                 max="100"
@@ -304,7 +316,7 @@ export function QuoteMusicalModal({
                 reproduzido.
               </p>
             </div>
-          </div>
+          </Stack>
         )}
 
         <div className="flex justify-end space-x-2 pt-4 border-t border-theme-secondary">
@@ -325,7 +337,7 @@ export function QuoteMusicalModal({
             Inserir Citação
           </Button>
         </div>
-      </form>
+      </Stack>
     </Modal>
   );
 }

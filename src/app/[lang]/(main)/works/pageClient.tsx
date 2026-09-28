@@ -1,7 +1,7 @@
 // app/works/pageClient.tsx - Com Performance Otimizada e Traduções - CORRIGIDO
 'use client';
+import { EsqueletoObras } from '@/app/components/ui/Carregando';
 import { useReordenacao } from '@/app/components/ui/useReordenacao';
-import { navegarComTransicao } from '@/app/components/ui/transicao';
 import { useLocalizedRouter } from '@/app/hooks/useLocalizedRouter';
 
 import {
@@ -11,7 +11,7 @@ import {
   useEffect,
   useMemo,
   memo,
-  useRef,
+  useId,
 } from 'react';
 
 import { WorksListResponse, FilterOptions } from '@/app/requests/work-details';
@@ -22,12 +22,12 @@ import {
   PiFunnel,
   PiMagnifyingGlass,
   PiMusicNotes,
+  PiTag,
   PiX,
 } from 'react-icons/pi';
 import WorkCard from '../../../components/WorksClient/WorkCard';
 import WorkCardList from '../../../components/WorksClient/WorkCardList';
 import PaginationControls from '../../../components/PaginationControls';
-import GenreSearchInput from '../../../components/GenreSearchInput';
 import ComposerSearchInput from '../../../components/ComposerSearchInput';
 import ViewModeToggle from '../../../components/ViewModeToggle';
 import {
@@ -45,7 +45,6 @@ import { Stack } from '@/app/components/ui/Layout';
 import { Text } from '@/app/components/ui/Text';
 import { NomeAcao } from '@/app/components/ui/NomeAcao';
 import { Button } from '@/app/components/ui/Button';
-import { Card } from '@/app/components/ui/Card';
 
 interface WorksClientProps {
   worksData: WorksListResponse;
@@ -61,55 +60,6 @@ interface WorksClientProps {
   };
   filterOptions: FilterOptions;
 }
-
-// Hook para busca otimizada com debounce correto
-function useOptimizedSearch(
-  callback: (value: string) => void,
-  delay: number = 800
-) {
-  const timeoutRef = useRef<NodeJS.Timeout>(null);
-
-  const debouncedCallback = useCallback(
-    (value: string) => {
-      // Limpar timeout anterior se existir
-      if (timeoutRef.current) {
-        clearTimeout(timeoutRef.current);
-      }
-
-      // Criar novo timeout
-      timeoutRef.current = setTimeout(() => {
-        callback(value);
-      }, delay);
-    },
-    [callback, delay]
-  );
-
-  // Cleanup no unmount
-  useEffect(() => {
-    return () => {
-      if (timeoutRef.current) {
-        clearTimeout(timeoutRef.current);
-      }
-    };
-  }, []);
-
-  return debouncedCallback;
-}
-
-// Componente de Loading Skeleton otimizado
-const WorksSkeleton = memo(() => (
-  <SequentialGrid cols={4} gap={6} delayBetweenItems={0.05} className="">
-    {Array.from({ length: 8 }).map((_, i) => (
-      <Card key={i} className="animate-pulse">
-        <div className="h-4 rounded mb-3"></div>
-        <div className="h-3 rounded mb-2"></div>
-        <div className="h-3 rounded w-2/3"></div>
-      </Card>
-    ))}
-  </SequentialGrid>
-));
-
-WorksSkeleton.displayName = 'WorksSkeleton';
 
 // Componente de Estatísticas memoizado
 const ResultsInfo = memo(
@@ -325,6 +275,7 @@ const WorksClient = memo(
     searchParams,
     filterOptions,
   }: WorksClientProps) => {
+    const idCampo = useId();
     const { t } = useTranslation({ sections: ['pages/works'] });
     const router = useLocalizedRouter();
     const [isPending, startTransition] = useTransition();
@@ -352,13 +303,6 @@ const WorksClient = memo(
       worksData.works.map((w) => w.id),
       'obras'
     );
-
-    // O card vira a página da obra (View Transition); pré-carregar ao
-    // passar o ponteiro deixa a espera curta o bastante para a transição.
-    const goToWorkPage = (workId: string) => {
-      navegarComTransicao(router.push, `/works/${workId}`);
-    };
-    const preverObra = (workId: string) => router.prefetch(`/works/${workId}`);
 
     // Memoizar cálculos pesados
     const { totalPages, startItem, endItem, hasActiveFilters } = useMemo(() => {
@@ -411,23 +355,18 @@ const WorksClient = memo(
       [searchParams, router]
     );
 
-    // 🚀 BUSCA OTIMIZADA - Com debounce correto e delay maior
-    const performSearch = useCallback(
-      (value: string) => {
-        updateSearchParams({ search: value || undefined });
+    // A busca só vai quando a pessoa pede (botão ou Enter): buscar a cada
+    // letra refazia a lista no meio da digitação.
+    const buscar = useCallback(
+      (valor: string) => {
+        updateSearchParams({ search: valor.trim() || undefined });
       },
       [updateSearchParams]
     );
-
-    const debouncedSearch = useOptimizedSearch(performSearch, 800);
-
-    const handleSearchChange = useCallback(
-      (value: string) => {
-        setSearchTerm(value);
-        debouncedSearch(value);
-      },
-      [debouncedSearch]
-    );
+    const limparBusca = useCallback(() => {
+      setSearchTerm('');
+      buscar('');
+    }, [buscar]);
 
     // Handlers de filtros memoizados
     const handleComposerFilter = useCallback(
@@ -588,12 +527,7 @@ const WorksClient = memo(
               className=""
             >
               {worksData.works.map((work) => (
-                <WorkCard
-                  key={work.id}
-                  work={work}
-                  goToWorkPage={goToWorkPage}
-                  preverObra={preverObra}
-                />
+                <WorkCard key={work.id} work={work} />
               ))}
             </SequentialGrid>
           </div>
@@ -616,7 +550,6 @@ const WorksClient = memo(
                   animationDelay: `${index * 0.05}s`,
                   animationFillMode: 'backwards',
                 }}
-                onClick={() => (window.location.href = `/works/${work.id}`)}
               >
                 <WorkCardList work={work} />
               </AnimatedItem>
@@ -666,30 +599,45 @@ const WorksClient = memo(
             </div>
 
             {/* Search Bar */}
-            <div className="mb-6">
-              <div className="relative">
+            <form
+              role="search"
+              onSubmit={(e) => {
+                e.preventDefault();
+                buscar(searchTerm);
+              }}
+              className="mb-6 flex gap-2"
+            >
+              <div className="relative flex-1">
                 <PiMagnifyingGlass className="absolute left-4 top-1/2 transform -translate-y-1/2 w-5 h-5 text-theme-tertiary" />
                 <input
-                  type="text"
+                  type="search"
+                  enterKeyHint="search"
+                  aria-label={t('client_jsx_input_search_placeholder')}
                   placeholder={t('client_jsx_input_search_placeholder')}
                   value={searchTerm}
-                  onChange={(e) => handleSearchChange(e.target.value)}
-                  className={`input-classical pl-12 pr-12 w-full ${
-                    isPending ? 'cursor-not-allowed' : ''
-                  }`}
-                  disabled={isPending}
+                  onChange={(e) => setSearchTerm(e.target.value)}
+                  className="input-classical pl-12 pr-12 w-full [&::-webkit-search-cancel-button]:hidden"
                 />
                 {searchTerm && (
                   <button
-                    onClick={() => handleSearchChange('')}
+                    type="button"
+                    onClick={limparBusca}
                     className="absolute right-4 top-1/2 transform -translate-y-1/2 text-theme-tertiary transition-colors"
                   >
                     <PiX className="w-5 h-5" />
-                    <NomeAcao acao="fechar" />
+                    <NomeAcao acao="limpar" />
                   </button>
                 )}
               </div>
-            </div>
+              <Button
+                type="submit"
+                variante="primario"
+                icone={PiMagnifyingGlass}
+                disabled={isPending}
+              >
+                {t('client_jsx_button_buscar')}
+              </Button>
+            </form>
 
             {/* Filter Toggle */}
             <div className="flex items-center justify-between mb-4">
@@ -736,14 +684,18 @@ const WorksClient = memo(
             {/* Expanded Filters */}
             {showFilters && (
               <AnimatedContainer speed="fast" delay={0}>
-                <div className="border-t border-theme-secondary pt-6 mb-4 relative z-20">
+                <div className="border-t border-theme-secondary pt-6 mb-4 relative">
                   <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 relative">
                     {/* Composer Filter */}
-                    <Stack gap={2} className="gap-1 relative z-40">
-                      <label className="text-sm font-medium text-theme-secondary">
+                    <Stack gap={2} className="gap-1 relative z-elevado">
+                      <label
+                        htmlFor={`${idCampo}-1`}
+                        className="text-sm font-medium text-theme-secondary"
+                      >
                         {t('client_jsx_label_composer')}
                       </label>
                       <ComposerSearchInput
+                        id={`${idCampo}-1`}
                         selectedComposer={selectedComposer}
                         onComposerSelect={handleComposerFilter}
                         popularComposers={filterOptions.popularComposers}
@@ -752,12 +704,16 @@ const WorksClient = memo(
                     </Stack>
 
                     {/* Instrument Filter */}
-                    <Stack gap={2} className="gap-1 relative z-20">
-                      <label className="text-sm font-medium text-theme-secondary">
+                    <Stack gap={2} className="gap-1 relative">
+                      <label
+                        htmlFor={`${idCampo}-2`}
+                        className="text-sm font-medium text-theme-secondary"
+                      >
                         {t('client_jsx_label_instrument')}
                       </label>
                       <div className="relative">
                         <Select
+                          id={`${idCampo}-2`}
                           options={[
                             {
                               label: t('client_jsx_option_all_instruments'),
@@ -780,7 +736,7 @@ const WorksClient = memo(
                     </Stack>
 
                     {/* Epoch Filter */}
-                    <Stack gap={2} className="gap-1 relative z-10">
+                    <Stack gap={2} className="gap-1 relative">
                       <Text papel="rotulo" tom="suave" className="font-medium">
                         {t('client_jsx_label_epoch')}
                       </Text>
@@ -809,16 +765,33 @@ const WorksClient = memo(
                     </Stack>
 
                     {/* Genre Filter */}
-                    <Stack gap={2} className="gap-1 relative z-30">
+                    <Stack gap={2} className="gap-1 relative">
                       <Text papel="rotulo" tom="suave" className="font-medium">
                         {t('client_jsx_label_genre')}
                       </Text>
-                      <GenreSearchInput
-                        selectedGenre={selectedGenre}
-                        onGenreSelect={handleGenreFilter}
-                        initialGenres={filterOptions.workGenres}
-                        isDisabled={isPending}
-                      />
+                      {/* Seletor comum, como o de instrumento e o de período. A
+                          busca com lista própria abria a lista por baixo dos
+                          cards. O valor é o nome original: é ele que o
+                          filtro usa na URL. */}
+                      <div className="relative">
+                        <Select
+                          options={[
+                            {
+                              label: t('client_jsx_option_all_genres'),
+                              value: '',
+                            },
+                            ...filterOptions.workGenres.map((genre) => ({
+                              label: genre.name,
+                              value: genre.originalName || genre.name,
+                            })),
+                          ]}
+                          value={selectedGenre}
+                          onChange={(e) => handleGenreFilter(e.target.value)}
+                          className="w-full"
+                          icone={PiTag}
+                          disabled={isPending}
+                        />
+                      </div>
                     </Stack>
                   </div>
                 </div>
@@ -845,22 +818,13 @@ const WorksClient = memo(
           </AnimatedItem>
 
           {/* Results Section */}
-          <div className="relative mt-4 pt-4 z-10">
-            {isPending ? <WorksSkeleton /> : worksGrid}
-
-            {/* Loading Overlay */}
-            {isPending && (
-              <AnimatedItem direction="scale" springType="gentle">
-                <div className="absolute inset-0 backdrop-blur-sm flex items-center justify-center z-10 rounded-2xl">
-                  <Card densidade="larga" className="text-center">
-                    <div className="w-12 h-12 border-4 border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
-                    <p className="text-theme-primary font-medium">
-                      {t('client_jsx_p_loading_works')}
-                    </p>
-                  </Card>
-                </div>
-              </AnimatedItem>
-            )}
+          {/* `z-0` isola a grade: os `z-10` de dentro dos cards ficam abaixo
+              do card de filtros (`z-elevado`), e a lista do compositor abre
+              por cima deles. */}
+          <div className="relative z-0 mt-4 pt-4">
+            {/* Na espera do filtro, o esqueleto com a forma dos cards; ao
+                chegar, cada card que continua desliza de onde estava. */}
+            {isPending ? <EsqueletoObras quantos={8} /> : worksGrid}
           </div>
 
           {/* Pagination */}

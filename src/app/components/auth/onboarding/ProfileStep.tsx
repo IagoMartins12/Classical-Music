@@ -2,7 +2,7 @@
 'use client';
 
 import { useOnboardingModal } from '@/app/stores/authStore';
-import React, { useState } from 'react';
+import React, { useState, useId } from 'react';
 import toast from 'react-hot-toast';
 // Era `User` do NextAuth, aumentado em `types/next-auth.d.ts`. É o mesmo
 // objeto que `useAuth()` entrega, e ele já tem tipo próprio no store.
@@ -20,6 +20,7 @@ import { Card } from '@/app/components/ui/Card';
 import { Stack } from '@/app/components/ui/Layout';
 
 const ProfileStep: React.FC = () => {
+  const idCampo = useId();
   const [isUploadingImage, setIsUploadingImage] = useState(false);
   const { t } = useTranslation({ sections: ['components/onboarding'] });
 
@@ -160,9 +161,9 @@ const ProfileStep: React.FC = () => {
       <Stack gap={8} className="max-w-lg mx-auto">
         {/* Profile Picture */}
         <div className="text-center">
-          <label className="block text-sm font-medium text-theme-secondary mb-4">
+          <span className="block text-sm font-medium text-theme-secondary mb-4">
             {t('profile_step_photo_label')}
-          </label>
+          </span>
 
           <ProfileImageUpload
             currentImage={user?.image}
@@ -181,11 +182,15 @@ const ProfileStep: React.FC = () => {
 
         {/* Bio */}
         <div>
-          <label className="block text-sm font-medium text-theme-secondary mb-3">
+          <label
+            htmlFor={`${idCampo}-1`}
+            className="block text-sm font-medium text-theme-secondary mb-3"
+          >
             {t('profile_step_bio_label')}
           </label>
 
           <textarea
+            id={`${idCampo}-1`}
             value={data.bio || ''}
             onChange={(e) => updateData({ bio: e.target.value })}
             placeholder={t('profile_step_bio_placeholder')}
@@ -210,8 +215,8 @@ const ProfileStep: React.FC = () => {
         </div>
 
         {/* Localização */}
-        <div>
-          <div className="mb-4">
+        <Stack>
+          <div>
             <h4 className="text-sm font-medium text-theme-secondary mb-2">
               {t('profile_step_location_label')}
             </h4>
@@ -226,27 +231,35 @@ const ProfileStep: React.FC = () => {
             showLabels={false}
             className="space-y-3"
           />
-        </div>
+        </Stack>
       </Stack>
 
       {/* Dicas e informações */}
-      <div className="mt-8 space-y-4">
-        <Card nivel={2} densidade="compacta" className="max-w-lg mx-auto">
+      <div className="mt-8 gap-4 flex flex-col">
+        <Card
+          nivel={2}
+          densidade="compacta"
+          className="max-w-lg mx-auto w-full"
+        >
           <Text papel="rotulo" tom="suave" as="p">
             <strong>{t('profile_step_tip_title')}</strong>{' '}
             {t('profile_step_tip_text')}
           </Text>
         </Card>
 
-        <Card nivel={2} densidade="compacta" className="max-w-lg mx-auto">
+        <Card
+          nivel={2}
+          densidade="compacta"
+          className="max-w-lg mx-auto w-full"
+        >
           <h4 className="text-sm font-medium text-ouro-texto mb-2">
             {t('profile_step_privacy_title')}
           </h4>
-          <ul className="text-xs text-theme-secondary space-y-1">
+          <Stack gap={1} as="ul" className="text-xs text-theme-secondary">
             <li>{t('profile_step_privacy_contact')}</li>
             <li>{t('profile_step_privacy_location')}</li>
             <li>{t('profile_step_privacy_settings')}</li>
-          </ul>
+          </Stack>
         </Card>
       </div>
     </div>

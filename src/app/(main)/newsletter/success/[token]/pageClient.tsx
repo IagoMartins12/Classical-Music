@@ -21,6 +21,7 @@ import {
 } from '../../../../components/animation/AnimatedComponents';
 import { useTranslation } from '@/app/context/TranslationContext';
 import { Text } from '@/app/components/ui/Text';
+import { Stack } from '@/app/components/ui/Layout';
 
 export default function NewsletterSuccessContent() {
   const searchParams = useSearchParams();
@@ -129,10 +130,10 @@ export default function NewsletterSuccessContent() {
 
               {/* Actions */}
               <AnimatedItem direction="up" springType="gentle">
-                <div className="space-y-4">
+                <Stack>
                   <Link
                     href={content.buttonHref}
-                    className="btn-classical-primary inline-flex items-center space-x-3 px-8 py-4"
+                    className="btn-classical-primary inline-flex items-center space-x-3 px-8 py-4 self-center"
                   >
                     <span>{content.buttonText}</span>
                     <PiArrowRight className="w-5 h-5" />
@@ -150,7 +151,7 @@ export default function NewsletterSuccessContent() {
                       </button>
                     </div>
                   )}
-                </div>
+                </Stack>
               </AnimatedItem>
 
               {/* Additional Links */}

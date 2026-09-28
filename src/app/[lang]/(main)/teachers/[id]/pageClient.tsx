@@ -101,14 +101,9 @@ export default function PublicTeacherDetailsPageClient({
   return (
     <div className="">
       {/* Background Pattern */}
-      <div className="absolute inset-0 pointer-events-none opacity-5">
-        <div className="absolute top-20 left-20 w-64 h-64 rounded-full blur-3xl"></div>
-        <div className="absolute bottom-40 right-32 w-48 h-48 rounded-full blur-2xl"></div>
-        <div className="absolute top-1/2 left-1/4 w-32 h-32 rounded-full blur-xl"></div>
-        <div className="absolute bottom-20 left-10 w-40 h-40 rounded-full blur-2xl"></div>
-      </div>
+      <div className="absolute inset-0 pointer-events-none opacity-5"></div>
 
-      <div className="section-wrap space-y-8 relative z-10">
+      <Stack gap={8} className="section-wrap relative z-10">
         {/* Breadcrumb */}
         <AnimatedItem direction="down" springType="gentle">
           <Inline
@@ -154,7 +149,10 @@ export default function PublicTeacherDetailsPageClient({
             <div className="p-8 relative z-10">
               <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
                 {/* Informações do Professor */}
-                <div className="lg:col-span-2 space-y-6 order-2 md:order-1 lg:order-1">
+                <Stack
+                  gap={6}
+                  className="lg:col-span-2 order-2 md:order-1 lg:order-1"
+                >
                   {/* Nome e título */}
                   <AnimatedItem direction="up" springType="bouncy">
                     <Stack gap={3}>
@@ -460,7 +458,7 @@ export default function PublicTeacherDetailsPageClient({
                       </Inline>
                     </Stack>
                   </AnimatedItem>
-                </div>
+                </Stack>
 
                 {/* Imagem do Professor */}
                 <AnimatedItem
@@ -572,13 +570,14 @@ export default function PublicTeacherDetailsPageClient({
               </AnimatedItem>
 
               <AnimatedItem direction="up" springType="gentle">
-                <div className="space-y-4">
+                <Stack>
                   <p className="text-theme-primary leading-relaxed whitespace-pre-line">
                     {bioToShow}
                   </p>
 
                   {teacher.fullBio.length > 500 && (
                     <Button
+                      className="self-start"
                       variante="secundario"
                       type="submit"
                       onClick={() => setShowFullBio(!showFullBio)}
@@ -586,7 +585,7 @@ export default function PublicTeacherDetailsPageClient({
                       {showFullBio ? 'Ver menos' : 'Ver mais'}
                     </Button>
                   )}
-                </div>
+                </Stack>
               </AnimatedItem>
 
               {teacher.teachingPhilosophy && (
@@ -626,8 +625,8 @@ export default function PublicTeacherDetailsPageClient({
               <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                 {/* Informações de Contato */}
                 <AnimatedItem direction="left" springType="smooth">
-                  <div className="space-y-4">
-                    <h3 className="text-lg font-bold text-theme-primary mb-4">
+                  <div className="gap-4 flex flex-col">
+                    <h3 className="text-lg font-bold text-theme-primary ">
                       Preferências de Contato
                     </h3>
 
@@ -674,8 +673,8 @@ export default function PublicTeacherDetailsPageClient({
 
                 {/* Botões de Ação */}
                 <AnimatedItem direction="right" springType="smooth">
-                  <div className="space-y-4">
-                    <h3 className="text-lg font-bold text-theme-primary mb-4">
+                  <div className="gap-4 flex flex-col">
+                    <h3 className="text-lg font-bold text-theme-primary ">
                       Como Entrar em Contato
                     </h3>
 
@@ -743,7 +742,7 @@ export default function PublicTeacherDetailsPageClient({
             </div>
           </AnimatedCard>
         </AnimatedContainer>
-      </div>
+      </Stack>
     </div>
   );
 }

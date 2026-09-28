@@ -1,5 +1,6 @@
 // components/blog/AudioAutoplay.tsx - COM PLAYER COMPLETO
 'use client';
+import { Button } from '@/app/components/ui/Button';
 
 import { useState, useEffect, useRef, useCallback } from 'react';
 import {
@@ -553,12 +554,14 @@ export function AudioAutoplay({
                 <p className="text-xs opacity-90 mb-3">
                   {title || 'Ative o som para uma melhor experiência'}
                 </p>
-                <button
+                <Button
+                  variante="fantasma"
+                  tamanho="p"
                   onClick={activateAudio}
-                  className="w-full text-theme-primary text-ouro-texto px-4 py-2 rounded-lg font-medium text-sm ansition-colors shadow-md"
+                  className="w-full"
                 >
                   Ativar Áudio
-                </button>
+                </Button>
               </div>
               <button
                 onClick={() => setShowBanner(false)}

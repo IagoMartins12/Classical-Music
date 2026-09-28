@@ -734,10 +734,10 @@ const LocationSelector: React.FC<LocationSelectorProps> = ({
       {/* País */}
       <div>
         {showLabels && (
-          <label className="block text-sm font-medium text-theme-secondary mb-2">
+          <span className="block text-sm font-medium text-theme-secondary mb-2">
             <PiGlobeHemisphereWest className="w-4 h-4 inline mr-2" />
             País
-          </label>
+          </span>
         )}
         <ElegantSelectWithSearch
           options={countrySelectOptions}
@@ -765,10 +765,10 @@ const LocationSelector: React.FC<LocationSelectorProps> = ({
       {/* Estado */}
       <div>
         {showLabels && (
-          <label className="block text-sm font-medium text-theme-secondary mb-2">
+          <span className="block text-sm font-medium text-theme-secondary mb-2">
             <PiMapPin className="w-4 h-4 inline mr-2" />
             Estado/Região
-          </label>
+          </span>
         )}
         <ElegantSelectWithSearch
           options={stateOptions}
@@ -802,10 +802,10 @@ const LocationSelector: React.FC<LocationSelectorProps> = ({
       {/* Cidade */}
       <div>
         {showLabels && (
-          <label className="block text-sm font-medium text-theme-secondary mb-2">
+          <span className="block text-sm font-medium text-theme-secondary mb-2">
             <PiBuildings className="w-4 h-4 inline mr-2" />
             Cidade
-          </label>
+          </span>
         )}
         <ElegantSelectWithSearch
           options={cityOptions}

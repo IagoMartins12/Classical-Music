@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation';
 import { PiArrowLeft, PiQuestion, PiX } from 'react-icons/pi';
 import Button from '@/app/components/Common/Button';
 import { Text } from '@/app/components/ui/Text';
+import { Stack } from '@/app/components/ui/Layout';
 
 export default function SubscriptionFailurePage() {
   const router = useRouter();
@@ -37,7 +38,7 @@ export default function SubscriptionFailurePage() {
                 <h3 className="text-lg font-semibold text-theme-primary mb-2">
                   Possíveis motivos:
                 </h3>
-                <ul className="space-y-2 text-theme-secondary">
+                <Stack gap={2} as="ul" className="text-theme-secondary">
                   <li className="flex items-center gap-2">
                     <span className="w-1.5 h-1.5 bg-red-500 rounded-full flex-shrink-0"></span>
                     <span>Cartão sem saldo suficiente</span>
@@ -54,7 +55,7 @@ export default function SubscriptionFailurePage() {
                     <span className="w-1.5 h-1.5 bg-red-500 rounded-full flex-shrink-0"></span>
                     <span>Problema com a operadora do cartão</span>
                   </li>
-                </ul>
+                </Stack>
               </div>
             </div>
           </div>

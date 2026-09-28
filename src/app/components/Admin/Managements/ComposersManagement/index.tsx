@@ -1,7 +1,7 @@
 // app/components/Admin/Composers/ComposersManagement.tsx
 'use client';
 
-import { useState } from 'react';
+import { useState, useId } from 'react';
 import { useRouter } from 'next/navigation';
 import {
   PiArrowsClockwise,
@@ -66,6 +66,7 @@ interface ComposerFilters {
 }
 
 export default function ComposersManagement() {
+  const idCampo = useId();
   const router = useRouter();
   const {
     composers,
@@ -584,7 +585,7 @@ export default function ComposersManagement() {
 
             {/* Filtros Avançados */}
             <div
-              className={`space-y-4 mb-6 transition-all duration-300 ${
+              className={`gap-4 mb-6 transition-all duration-300 flex flex-col ${
                 showFilters ? 'block' : 'hidden'
               }`}
             >
@@ -640,10 +641,14 @@ export default function ComposersManagement() {
               {/* Filtros Numéricos */}
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
                 <div>
-                  <label className="block text-xs md:text-sm font-medium text-theme-secondary mb-1 md:mb-2">
+                  <label
+                    htmlFor={`${idCampo}-1`}
+                    className="block text-xs md:text-sm font-medium text-theme-secondary mb-1 md:mb-2"
+                  >
                     Mínimo de Obras
                   </label>
                   <Input
+                    id={`${idCampo}-1`}
                     type="number"
                     placeholder="Ex: 5"
                     value={filters.minWorks}
@@ -656,10 +661,14 @@ export default function ComposersManagement() {
                 </div>
 
                 <div>
-                  <label className="block text-xs md:text-sm font-medium text-theme-secondary mb-1 md:mb-2">
+                  <label
+                    htmlFor={`${idCampo}-2`}
+                    className="block text-xs md:text-sm font-medium text-theme-secondary mb-1 md:mb-2"
+                  >
                     Máximo de Obras
                   </label>
                   <Input
+                    id={`${idCampo}-2`}
                     type="number"
                     placeholder="Ex: 100"
                     value={filters.maxWorks}
@@ -672,10 +681,14 @@ export default function ComposersManagement() {
                 </div>
 
                 <div className="sm:col-span-2 lg:col-span-1">
-                  <label className="block text-xs md:text-sm font-medium text-theme-secondary mb-1 md:mb-2">
+                  <label
+                    htmlFor={`${idCampo}-3`}
+                    className="block text-xs md:text-sm font-medium text-theme-secondary mb-1 md:mb-2"
+                  >
                     Mínimo de Favoritos
                   </label>
                   <Input
+                    id={`${idCampo}-3`}
                     type="number"
                     placeholder="Ex: 10"
                     value={filters.minFavorites}
@@ -735,7 +748,7 @@ export default function ComposersManagement() {
               {composers.map((composer) => (
                 <div
                   key={composer.id}
-                  className="p-3 md:p-4 bg-theme-secondary rounded-xl transition-colors"
+                  className="grid grid-cols-1 md:grid-cols-[1fr_auto] md:items-start md:gap-4 p-3 md:p-4 bg-theme-secondary rounded-xl transition-colors"
                 >
                   <div className="flex items-start gap-3 md:gap-4">
                     {/* Checkbox */}
@@ -848,99 +861,61 @@ export default function ComposersManagement() {
                         </Text>
                       )}
                     </div>
-
-                    {/* Ações - Desktop */}
-                    <div className="hidden md:flex items-center gap-2 flex-shrink-0">
-                      <Button
-                        variant="ghost"
-                        size="sm"
-                        leftIcon={<PiEye />}
-                        onClick={() => router.push(`/composer/${composer.id}`)}
-                        title="Ver detalhes"
-                      />
-                      <Button
-                        variant="ghost"
-                        size="sm"
-                        leftIcon={<PiNotePencil />}
-                        onClick={() =>
-                          router.push(`/uploads/composer/${composer.id}/edit`)
-                        }
-                        title="Editar"
-                      />
-                      <Button
-                        variant="ghost"
-                        size="sm"
-                        leftIcon={composer.isVerified ? <PiX /> : <PiShield />}
-                        onClick={() =>
-                          handleVerifyComposer(
-                            composer.id,
-                            !composer.isVerified
-                          )
-                        }
-                        className={composer.isVerified ? '' : ''}
-                        title={
-                          composer.isVerified
-                            ? 'Remover verificação'
-                            : 'Verificar'
-                        }
-                      />
-                      <Button
-                        variant="ghost"
-                        size="sm"
-                        leftIcon={<PiTrash />}
-                        onClick={() =>
-                          handleDeleteComposer(composer.id, composer.name)
-                        }
-                        className=""
-                        title="Deletar"
-                      />
-                    </div>
                   </div>
 
-                  {/* Ações - Mobile */}
-                  <div className="flex md:hidden items-center gap-2 mt-3 pt-3 border-t border-linha">
+                  {/* Ações: embaixo, numa linha, no telefone; à direita a
+                      partir do tablet (a grade do card as põe lá). */}
+                  <div className="flex items-center gap-2 mt-3 pt-3 border-t border-linha md:mt-0 md:pt-0 md:border-t-0">
                     <Button
                       variant="ghost"
                       size="sm"
+                      leftIcon={<PiEye />}
                       onClick={() => router.push(`/composer/${composer.id}`)}
-                      className="flex-1"
-                    >
-                      <PiEye className="w-4 h-4" />
-                    </Button>
+                      title="Ver detalhes"
+                      aria-label="Ver detalhes"
+                      className="flex-1 md:flex-none"
+                    />
                     <Button
                       variant="ghost"
                       size="sm"
+                      leftIcon={<PiNotePencil />}
                       onClick={() =>
                         router.push(`/uploads/composer/${composer.id}/edit`)
                       }
-                      className="flex-1"
-                    >
-                      <PiNotePencil className="w-4 h-4" />
-                    </Button>
+                      title="Editar"
+                      aria-label="Editar"
+                      className="flex-1 md:flex-none"
+                    />
                     <Button
                       variant="ghost"
                       size="sm"
+                      leftIcon={composer.isVerified ? <PiX /> : <PiShield />}
                       onClick={() =>
                         handleVerifyComposer(composer.id, !composer.isVerified)
                       }
-                      className={`flex-1 ${composer.isVerified ? '' : ''}`}
-                    >
-                      {composer.isVerified ? (
-                        <PiX className="w-4 h-4" />
-                      ) : (
-                        <PiShield className="w-4 h-4" />
-                      )}
-                    </Button>
+                      title={
+                        composer.isVerified
+                          ? 'Remover verificação'
+                          : 'Verificar'
+                      }
+                      aria-label={
+                        composer.isVerified
+                          ? 'Remover verificação'
+                          : 'Verificar'
+                      }
+                      className="flex-1 md:flex-none"
+                    />
                     <Button
                       variant="ghost"
                       size="sm"
+                      leftIcon={<PiTrash />}
                       onClick={() =>
                         handleDeleteComposer(composer.id, composer.name)
                       }
-                      className="flex-1 !text-erro"
-                    >
-                      <PiTrash className="w-4 h-4" />
-                    </Button>
+                      title="Deletar"
+                      aria-label="Deletar"
+                      className="flex-1 md:flex-none !text-erro"
+                    />
                   </div>
                 </div>
               ))}

@@ -540,7 +540,7 @@ const WorkSearchInput: React.FC<WorkSearchInputProps> = ({
           {isOpen && !disabled && (
             <div
               ref={dropdownRef}
-              className="absolute top-full left-0 right-0 mt-2 bg-theme-elevated rounded-lg shadow-theme-large max-h-80 overflow-y-auto z-50"
+              className="absolute top-full left-0 right-0 mt-2 bg-theme-elevated rounded-lg shadow-theme-large max-h-80 overflow-y-auto z-menu"
             >
               {/* Loading */}
               {(isLoading || loadingUserSuggestions) && (

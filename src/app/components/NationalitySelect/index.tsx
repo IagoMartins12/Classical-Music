@@ -14,6 +14,8 @@ import { Text } from '@/app/components/ui/Text';
 import { NomeAcao } from '@/app/components/ui/NomeAcao';
 
 interface NationalitySelectProps {
+  /** Id do campo, para o `<label htmlFor>` de quem usa. */
+  id?: string;
   value: string;
   onChange: (value: string) => void;
   error?: string;
@@ -23,6 +25,7 @@ interface NationalitySelectProps {
 }
 
 export default function NationalitySelect({
+  id,
   value,
   onChange,
   error,
@@ -113,6 +116,7 @@ export default function NationalitySelect({
         <PiGlobe className="absolute left-4 top-1/2 transform -translate-y-1/2 w-4 h-4 text-theme-tertiary z-10" />
 
         <input
+          id={id}
           ref={inputRef}
           type="text"
           value={displayValue}

@@ -161,21 +161,7 @@ export function InstrumentsPageClient({
   return (
     <div className="w-full">
       {/* Background Pattern */}
-      <div className="fixed inset-0 pointer-events-none opacity-5 z-0">
-        <div className="absolute top-20 left-20 w-64 h-64 rounded-full blur-3xl animate-pulse"></div>
-        <div
-          className="absolute bottom-40 right-32 w-48 h-48 rounded-full blur-2xl animate-pulse"
-          style={{ animationDelay: '1s' }}
-        ></div>
-        <div
-          className="absolute top-1/2 left-1/4 w-32 h-32 rounded-full blur-xl animate-pulse"
-          style={{ animationDelay: '2s' }}
-        ></div>
-        <div
-          className="absolute bottom-20 left-10 w-40 h-40 rounded-full blur-2xl animate-pulse"
-          style={{ animationDelay: '0.5s' }}
-        ></div>
-      </div>
+      <div className="fixed inset-0 pointer-events-none opacity-5 z-0"></div>
 
       <div className="relative z-10">
         {/* Hero Section */}
@@ -392,7 +378,7 @@ export function InstrumentsPageClient({
                                       }
                                       width={56}
                                       height={56}
-                                      className="w-14 h-14 rounded-full border-2 shadow-theme-medium"
+                                      className="w-14 h-14 rounded-full border-2 shadow-theme-medium object-cover"
                                     />
                                   </Link>
                                 ) : (
@@ -732,6 +718,7 @@ export function InstrumentsPageClient({
                               instrument.works.map((work, workIndex) => (
                                 <div
                                   key={work.id}
+                                  data-vira={`obra-${work.id}`}
                                   className="classical-card-simple p-5 group/work hover:scale-105 transition-all duration-300 relative overflow-hidden"
                                   style={{
                                     animationDelay: `${workIndex * 0.05}s`,
@@ -853,19 +840,6 @@ export function InstrumentsPageClient({
       </div>
 
       {/* Floating Elements */}
-      <div className="fixed top-20 left-4 w-2 h-2 rounded-full animate-pulse z-20"></div>
-      <div
-        className="fixed top-40 right-8 w-1.5 h-1.5 rounded-full animate-pulse z-20"
-        style={{ animationDelay: '1s' }}
-      ></div>
-      <div
-        className="fixed bottom-32 left-8 w-1 h-1 rounded-full animate-pulse z-20"
-        style={{ animationDelay: '2s' }}
-      ></div>
-      <div
-        className="fixed bottom-20 right-4 w-1.5 h-1.5 rounded-full animate-pulse z-20"
-        style={{ animationDelay: '0.5s' }}
-      ></div>
     </div>
   );
 }

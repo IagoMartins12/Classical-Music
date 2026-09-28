@@ -578,8 +578,8 @@ export default function SupportPage(): JSX.Element {
         <section className="py-8">
           <AnimatedContainer delay={0.1} staggerSpeed="fast">
             <div className="">
-              <div className="max-w-6xl mx-auto">
-                <div className="text-center mb-12">
+              <Stack gap={12} className="max-w-6xl mx-auto">
+                <div className="text-center">
                   <h2 className="text-3xl lg:text-4xl font-bold classical-title text-theme-primary mb-4">
                     {t(
                       'support_pagecontainer_animatedcontainer_categorias_suporte'
@@ -620,7 +620,7 @@ export default function SupportPage(): JSX.Element {
                     </div>
                   ))}
                 </SequentialGrid>
-              </div>
+              </Stack>
             </div>
           </AnimatedContainer>
         </section>
@@ -656,7 +656,7 @@ export default function SupportPage(): JSX.Element {
                         </p>
                       </div>
 
-                      <div className="space-y-4">
+                      <Stack>
                         {category.solutions.map((solution, index) => (
                           <AnimatedItem
                             key={solution.id}
@@ -769,7 +769,7 @@ export default function SupportPage(): JSX.Element {
                                             'support_animatedcontainer_animateditem_passos_resolver'
                                           )}
                                         </h5>
-                                        <ol className="space-y-3">
+                                        <Stack gap={3} as="ol">
                                           {solution.steps.map(
                                             (step, stepIndex) => (
                                               <li
@@ -785,7 +785,7 @@ export default function SupportPage(): JSX.Element {
                                               </li>
                                             )
                                           )}
-                                        </ol>
+                                        </Stack>
 
                                         <div className="mt-6 pt-4 border-t border-linha">
                                           <button
@@ -806,7 +806,7 @@ export default function SupportPage(): JSX.Element {
                             </div>
                           </AnimatedItem>
                         ))}
-                      </div>
+                      </Stack>
                     </Stack>
                   );
                 })()}

@@ -159,7 +159,7 @@ export const LanguageToggle: React.FC<LanguageToggleProps> = ({
           disabled={isTranslating}
           className={`
             ${getVariantClasses()}
-            relative bg-theme-elevated rounded-xl active:scale-95 transition-all duration-300 group disabled:opacity-50 disabled:cursor-not-allowed focus:outline-none focus:ring-2 focus:ring-offset-2
+            relative fundo-sup-2 border border-linha-forte rounded-xl active:scale-95 transition-all duration-300 group disabled:opacity-50 disabled:cursor-not-allowed focus:outline-none focus:ring-2 focus:ring-offset-2
             ${isTranslating ? 'animate-pulse cursor-wait' : ''}
           `}
           aria-label={`Alterar para ${
@@ -179,14 +179,6 @@ export const LanguageToggle: React.FC<LanguageToggleProps> = ({
               <div className="w-4 h-4 border-2 border-t-transparent rounded-full animate-spin" />
             </div>
           )}
-
-          {/* 🆕 Indicador de sistema (apenas se showSystemIndicator = true) */}
-          {showSystemIndicator && !hasUserPreference && (
-            <div className="absolute -top-1 -left-1 w-2 h-2 rounded-full opacity-75 animate-pulse" />
-          )}
-
-          {/* Subtle animation indicator */}
-          <div className="absolute -top-1 -right-1 w-2 h-2 rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-300 animate-pulse" />
         </button>
       </div>
     </>
@@ -276,7 +268,7 @@ export const LanguageDropdown: React.FC<{
           />
 
           {/* Dropdown */}
-          <div className="absolute top-full right-0 mt-2 bg-theme-tertiary rounded-lg shadow-xl z-20 overflow-hidden min-w-[140px]">
+          <div className="absolute top-full right-0 mt-2 bg-theme-tertiary rounded-lg shadow-xl z-menu overflow-hidden min-w-[140px]">
             {languages.map((lang) => (
               <button
                 key={lang.code}

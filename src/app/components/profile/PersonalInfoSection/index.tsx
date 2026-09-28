@@ -1,7 +1,7 @@
 // app/profile/components/PersonalInfoSection.tsx - COM VALIDAÇÃO DE TELEFONE
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useId } from 'react';
 import {
   PiFloppyDisk,
   PiMapPin,
@@ -48,6 +48,7 @@ const PersonalInfoSection: React.FC<PersonalInfoSectionProps> = ({
   user,
   updateUser: localUpdateUser,
 }) => {
+  const idCampo = useId();
   const { updateUser: globalUpdateUser } = useAuth();
   const { updateUserSession } = useSessionUpdate();
   const { t } = useTranslation({ sections: ['pages/profile'] });
@@ -379,11 +380,15 @@ const PersonalInfoSection: React.FC<PersonalInfoSectionProps> = ({
 
       {/* Bio */}
       <div>
-        <label className="block text-sm font-medium text-theme-secondary mb-2">
+        <label
+          htmlFor={`${idCampo}-1`}
+          className="block text-sm font-medium text-theme-secondary mb-2"
+        >
           {t('personal_info_about')}
         </label>
         <div className="relative">
           <textarea
+            id={`${idCampo}-1`}
             name="bio"
             value={formData.bio}
             onChange={handleInputChange}

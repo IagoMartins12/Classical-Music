@@ -100,7 +100,7 @@ export function EpochSection({ epoch, index, isReversed = false }: Props) {
       style={{ animationDelay: `${index * 0.2}s` }}
     >
       {/* Content Section */}
-      <div className="flex-1 space-y-8">
+      <div className="flex-1 gap-8 flex flex-col">
         {/* Header */}
         <div className="relative flex justify-center lg:justify-start">
           <div
@@ -192,8 +192,8 @@ export function EpochSection({ epoch, index, isReversed = false }: Props) {
               <div className="px-6 pb-6 border-t border-theme-secondary">
                 <div className="grid md:grid-cols-2 gap-6 pt-6">
                   {/* Características */}
-                  <div className="space-y-4">
-                    <Inline gap={3} className="mb-4">
+                  <div className="gap-4 flex flex-col">
+                    <Inline gap={3} className="">
                       <div className="w-8 h-8 rounded-xl flex items-center justify-center">
                         <PiMusicNotes className="w-4 h-4 text-theme-primary" />
                       </div>
@@ -218,8 +218,8 @@ export function EpochSection({ epoch, index, isReversed = false }: Props) {
                   </div>
 
                   {/* Desenvolvimentos */}
-                  <div className="space-y-4">
-                    <Inline gap={3} className="mb-4">
+                  <div className="gap-4 flex flex-col">
+                    <Inline gap={3} className="">
                       <div className="w-8 h-8 rounded-xl flex items-center justify-center">
                         <PiClock className="w-4 h-4 text-theme-primary" />
                       </div>
@@ -244,8 +244,8 @@ export function EpochSection({ epoch, index, isReversed = false }: Props) {
                   </div>
 
                   {/* Formas Musicais */}
-                  <div className="space-y-4">
-                    <Inline gap={3} className="mb-4">
+                  <div className="gap-4 flex flex-col">
+                    <Inline gap={3} className="">
                       <div className="w-8 h-8 rounded-xl flex items-center justify-center">
                         <PiMusicNotes className="w-4 h-4 text-theme-primary" />
                       </div>
@@ -267,8 +267,8 @@ export function EpochSection({ epoch, index, isReversed = false }: Props) {
                   </div>
 
                   {/* Instrumentos */}
-                  <div className="space-y-4">
-                    <Inline gap={3} className="mb-4">
+                  <div className="gap-4 flex flex-col">
+                    <Inline gap={3} className="">
                       <div className="w-8 h-8 rounded-xl flex items-center justify-center">
                         <GiGrandPiano className="w-4 h-4 text-theme-primary" />
                       </div>

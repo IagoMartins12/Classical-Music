@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation';
 import { PiArrowRight, PiCheck, PiConfetti } from 'react-icons/pi';
 import Button from '@/app/components/Common/Button';
 import { Text } from '@/app/components/ui/Text';
+import { Stack } from '@/app/components/ui/Layout';
 
 export default function SubscriptionSuccessPage() {
   const router = useRouter();
@@ -66,7 +67,7 @@ export default function SubscriptionSuccessPage() {
                 <h3 className="text-lg font-semibold text-theme-primary mb-2">
                   O que acontece agora?
                 </h3>
-                <ul className="space-y-2 text-theme-secondary">
+                <Stack gap={2} as="ul" className="text-theme-secondary">
                   <li className="flex items-center gap-2">
                     <PiCheck className="w-4 h-4 flex-shrink-0" />
                     <span>
@@ -82,7 +83,7 @@ export default function SubscriptionSuccessPage() {
                     <PiCheck className="w-4 h-4 flex-shrink-0" />
                     <span>A nota fiscal está disponível no seu painel</span>
                   </li>
-                </ul>
+                </Stack>
               </div>
             </div>
           </div>

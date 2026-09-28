@@ -247,8 +247,8 @@ export default function PrivacyPage() {
       <section className="py-8">
         <AnimatedContainer delay={0.1} staggerSpeed="fast">
           <div className="">
-            <div className="coluna-leitura mx-auto">
-              <Stack className="text-center mb-12">
+            <Stack gap={12} className="coluna-leitura mx-auto">
+              <Stack className="text-center">
                 <h2 className="text-3xl font-bold classical-title text-theme-primary">
                   {t('privacy_jsx_h2_children_0__tipos_dados_coletados')}
                 </h2>
@@ -291,7 +291,7 @@ export default function PrivacyPage() {
                   </AnimatedCard>
                 ))}
               </SequentialGrid>
-            </div>
+            </Stack>
           </div>
         </AnimatedContainer>
       </section>
@@ -300,7 +300,7 @@ export default function PrivacyPage() {
       <section className="py-8">
         <AnimatedContainer delay={0.1} staggerSpeed="fast">
           <div className="">
-            <div className="coluna-leitura mx-auto space-y-8">
+            <Stack gap={8} className="coluna-leitura mx-auto">
               {privacyData.map((section, index) => (
                 <AnimatedItem
                   key={section.id}
@@ -334,7 +334,7 @@ export default function PrivacyPage() {
                   </div>
                 </AnimatedItem>
               ))}
-            </div>
+            </Stack>
           </div>
         </AnimatedContainer>
       </section>

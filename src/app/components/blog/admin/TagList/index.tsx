@@ -1,4 +1,5 @@
 'use client';
+import { Button } from '@/app/components/ui/Button';
 
 import { useState } from 'react';
 import Link from 'next/link';
@@ -144,14 +145,16 @@ export function TagList({ tags: tags }: TagListProps) {
                   <PiNotePencil className="w-4 h-4" />
                 </Link>
 
-                <button
+                <Button
+                  variante="fantasma"
+                  tamanho="p"
                   onClick={() => setDeleteModal(tag.id)}
-                  className="p-2 rounded-lg transition-all !text-erro"
                   title="Deletar"
                   disabled={tag._count.articles > 0}
-                >
-                  <PiTrash className="w-4 h-4" />
-                </button>
+                  icone={PiTrash}
+                  rotulo="Deletar"
+                  className="text-erro"
+                />
               </Inline>
             </div>
 

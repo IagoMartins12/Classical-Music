@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useId } from 'react';
 import { useRouter } from 'next/navigation';
 import { PiFloppyDisk, PiTag, PiWarningCircle, PiX } from 'react-icons/pi';
 import { toast } from 'react-hot-toast';
@@ -22,6 +22,7 @@ interface TagFormProps {
 }
 
 export function TagForm({ mode, tag }: TagFormProps) {
+  const idCampo = useId();
   const router = useRouter();
 
   const [formData, setFormData] = useState({
@@ -119,10 +120,14 @@ export function TagForm({ mode, tag }: TagFormProps) {
         <Stack>
           {/* Name */}
           <div>
-            <label className="block text-sm font-medium text-theme-primary mb-2">
+            <label
+              htmlFor={`${idCampo}-1`}
+              className="block text-sm font-medium text-theme-primary mb-2"
+            >
               Nome da Tag *
             </label>
             <input
+              id={`${idCampo}-1`}
               type="text"
               value={formData.name}
               onChange={(e) => handleNameChange(e.target.value)}
@@ -145,7 +150,10 @@ export function TagForm({ mode, tag }: TagFormProps) {
 
           {/* Slug */}
           <div>
-            <label className="block text-sm font-medium text-theme-primary mb-2">
+            <label
+              htmlFor={`${idCampo}-2`}
+              className="block text-sm font-medium text-theme-primary mb-2"
+            >
               Slug (URL) *
             </label>
             <Inline gap={2}>
@@ -153,6 +161,7 @@ export function TagForm({ mode, tag }: TagFormProps) {
                 /blog/tag/
               </Text>
               <input
+                id={`${idCampo}-2`}
                 type="text"
                 value={formData.slug}
                 onChange={(e) =>
@@ -196,10 +205,13 @@ export function TagForm({ mode, tag }: TagFormProps) {
 
           {/* Color */}
           <div>
-            <label className="block text-sm font-medium text-theme-primary mb-2">
+            <span
+              id={`${idCampo}-3`}
+              className="block text-sm font-medium text-theme-primary mb-2"
+            >
               Cor *
-            </label>
-            <Inline gap={3}>
+            </span>
+            <Inline role="group" aria-labelledby={`${idCampo}-3`} gap={3}>
               <input
                 type="color"
                 value={formData.color}

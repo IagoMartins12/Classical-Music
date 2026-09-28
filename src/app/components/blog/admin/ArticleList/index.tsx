@@ -441,17 +441,18 @@ export function ArticleList({
 
                       {/* Action Menu */}
                       <div className="relative">
-                        <button
+                        <Button
+                          variante="fantasma"
+                          tamanho="p"
                           onClick={() =>
                             setActionMenu(
                               actionMenu === article.id ? null : article.id
                             )
                           }
-                          className="p-2 rounded-lg text-theme-tertiary transition-all"
+                          icone={PiDotsThreeVertical}
                         >
-                          <PiDotsThreeVertical className="w-4 h-4" />
                           <NomeAcao acao="maisOpcoes" />
-                        </button>
+                        </Button>
 
                         {actionMenu === article.id && (
                           <div className="absolute top-0 right-7 mt-1 w-48 bg-theme-tertiary rounded-lg shadow-xl z-10">
@@ -580,13 +581,15 @@ export function ArticleList({
                             </Link>
                           )}
 
-                          <button
+                          <Button
+                            variante="fantasma"
+                            tamanho="p"
                             onClick={() => setDeleteModal(article.id)}
-                            className="p-2 rounded-lg transition-all !text-erro"
                             title="Deletar"
-                          >
-                            <PiTrash className="w-4 h-4" />
-                          </button>
+                            icone={PiTrash}
+                            rotulo="Deletar"
+                            className="text-erro"
+                          />
                         </Inline>
                       </div>
                     </div>
@@ -690,20 +693,23 @@ export function ArticleList({
                 </p>
 
                 <Inline gap={3}>
-                  <button
+                  <Button
+                    tamanho="p"
                     onClick={() => setDeleteModal(null)}
-                    className="flex-1 px-4 py-2 rounded-lg bg-theme-elevated text-theme-primary transition-all"
                     disabled={deleting}
+                    className="flex-1"
                   >
                     Cancelar
-                  </button>
-                  <button
+                  </Button>
+                  <Button
+                    variante="perigo"
+                    tamanho="p"
                     onClick={() => handleDelete(deleteModal)}
-                    className="flex-1 px-4 py-2 rounded-lg bg-red-500 hover:bg-red-600 transition-all disabled:opacity-50 !text-erro"
                     disabled={deleting}
+                    className="flex-1"
                   >
                     {deleting ? 'Deletando...' : 'Deletar'}
-                  </button>
+                  </Button>
                 </Inline>
               </div>
             </div>

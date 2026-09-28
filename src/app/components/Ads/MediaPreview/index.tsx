@@ -391,14 +391,14 @@ export default function MediaPreview({
               <div className="font-medium text-theme-primary mb-1">
                 Dicas de otimização
               </div>
-              <ul className="space-y-1">
+              <Stack gap={1} as="ul">
                 <li>• Textos devem ser legíveis em telas pequenas</li>
                 <li>• CTAs ficam mais visíveis com contrastes altos</li>
                 <li>• Evite detalhes muito pequenos para mobile</li>
                 {currentMedia?.type === 'video' && (
                   <li>• Vídeos começam mutados por padrão</li>
                 )}
-              </ul>
+              </Stack>
             </Text>
           </div>
         </div>

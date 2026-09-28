@@ -1,7 +1,7 @@
 // app/admin/ads/components/EditAdModal.tsx
 'use client';
 
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, useId } from 'react';
 import {
   PiChatCircle,
   PiFloppyDisk,
@@ -76,6 +76,7 @@ export default function EditAdModal({
   onClose,
   onSuccess,
 }: EditAdModalProps) {
+  const idCampo = useId();
   const { updateAd, loading, checkConflict } = useAds();
 
   // 🆕 Refs para scroll automático
@@ -477,11 +478,15 @@ export default function EditAdModal({
                 )}
               </div>
 
-              <div className="md:col-span-2">
-                <label className="block text-sm font-medium text-theme-primary mb-2">
+              <Stack gap={2} className="md:col-span-2">
+                <label
+                  htmlFor={`${idCampo}-1`}
+                  className="block text-sm font-medium text-theme-primary"
+                >
                   Descrição
                 </label>
                 <textarea
+                  id={`${idCampo}-1`}
                   ref={fieldRefs.description}
                   value={formData.description}
                   onChange={(e) =>
@@ -492,7 +497,7 @@ export default function EditAdModal({
                   className="input-classical-2 w-full resize-none"
                   maxLength={300}
                 />
-              </div>
+              </Stack>
 
               <div>
                 <Select
@@ -566,10 +571,14 @@ export default function EditAdModal({
 
               {formData.targetType === 'INSTRUMENT' && (
                 <div>
-                  <label className="block text-sm font-medium text-theme-primary mb-2">
+                  <label
+                    htmlFor={`${idCampo}-2`}
+                    className="block text-sm font-medium text-theme-primary mb-2"
+                  >
                     Instrumento *
                   </label>
                   <select
+                    id={`${idCampo}-2`}
                     ref={fieldRefs.instrumentId}
                     value={formData.instrumentId}
                     onChange={(e) =>
@@ -740,9 +749,9 @@ export default function EditAdModal({
 
             {/* Dispositivos */}
             <Stack gap={2}>
-              <label className="block text-sm font-medium text-theme-primary">
+              <span className="block text-sm font-medium text-theme-primary">
                 Exibir em:
-              </label>
+              </span>
               <div className="flex space-x-4">
                 <Inline as="label" gap={2}>
                   <Checkbox

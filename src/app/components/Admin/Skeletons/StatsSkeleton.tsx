@@ -81,7 +81,7 @@ export function TopPerformersSkeleton() {
             >
               <Inline gap={3}>
                 <div className="w-8 h-8 bg-theme-primary rounded-lg"></div>
-                <div className="flex-1 space-y-2">
+                <div className="flex-1 gap-2 flex flex-col">
                   <div className="h-4 bg-theme-primary rounded w-3/4"></div>
                   <div className="h-3 bg-theme-primary rounded w-1/2"></div>
                 </div>

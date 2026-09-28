@@ -296,7 +296,7 @@ export default function UserDetailsModal({
           <>
             {/* Overview Tab */}
             {activeTab === 'overview' && (
-              <div className="space-y-6">
+              <Stack gap={6}>
                 <AnimatedCard className="classical-card p-5">
                   <h3 className="text-lg font-bold text-theme-primary mb-4 flex items-center gap-2">
                     <PiUser className="w-5 h-5" />
@@ -520,12 +520,12 @@ export default function UserDetailsModal({
                     </Stack>
                   </div>
                 </AnimatedCard>
-              </div>
+              </Stack>
             )}
 
             {/* Favorites Tab */}
             {activeTab === 'favorites' && (
-              <div className="space-y-6">
+              <Stack gap={6}>
                 {detailsData.favoriteComposers.length > 0 && (
                   <AnimatedCard className="classical-card p-5">
                     <h3 className="text-lg font-bold text-theme-primary mb-4 flex items-center gap-2">
@@ -637,12 +637,12 @@ export default function UserDetailsModal({
                       </p>
                     </div>
                   )}
-              </div>
+              </Stack>
             )}
 
             {/* Learning Tab */}
             {activeTab === 'learning' && (
-              <div className="space-y-6">
+              <Stack gap={6}>
                 {detailsData.wantToLearn.length > 0 && (
                   <AnimatedCard className="classical-card p-5">
                     <h3 className="text-lg font-bold text-theme-primary mb-4 flex items-center gap-2">
@@ -710,7 +710,7 @@ export default function UserDetailsModal({
                       </p>
                     </div>
                   )}
-              </div>
+              </Stack>
             )}
 
             {/* Annotations Tab */}
@@ -807,7 +807,7 @@ export default function UserDetailsModal({
 
             {/* Profiles Tab */}
             {activeTab === 'profiles' && (
-              <div className="space-y-6">
+              <Stack gap={6}>
                 {detailsData.isTeacher && detailsData.teacherProfile && (
                   <AnimatedCard className="classical-card p-5">
                     <h3 className="text-lg font-bold text-theme-primary mb-4 flex items-center gap-2">
@@ -943,7 +943,7 @@ export default function UserDetailsModal({
                     </Text>
                   </div>
                 )}
-              </div>
+              </Stack>
             )}
           </>
         ) : null}

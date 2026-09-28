@@ -8,9 +8,11 @@ import { useTranslation } from '@/app/hooks/useTranslation';
 interface VerificationBadgeProps {
   verified?: boolean;
   title?: 'Compositor' | 'Peça';
-  size?: 'sm' | 'md' | 'lg';
+  size?: 'sm' | 'md' | 'lg' | 'xl';
   variant?: 'icon' | 'badge' | 'text';
   className?: string;
+  /** Desenha também ao montar já verificada (a página da obra ou do compositor). */
+  desenharAoEntrar?: boolean;
 }
 
 export default function VerificationBadge({
@@ -19,14 +21,18 @@ export default function VerificationBadge({
   size = 'md',
   variant = 'icon',
   className = '',
+  desenharAoEntrar = false,
 }: VerificationBadgeProps) {
   const { t } = useTranslation({ sections: ['pages/workId'] });
 
-  // O selo se desenha só quando a verificação acontece com a tela aberta
-  // (de não verificada para verificada). Ao abrir uma página de obra já
-  // verificada, ele aparece pronto.
+  // Nos cards, o selo se desenha só quando a verificação acontece com a tela
+  // aberta (de não verificada para verificada). No título da página da obra
+  // ou do compositor (`desenharAoEntrar`), ele também se desenha ao chegar,
+  // depois de o card virar a página (`.selo-entrada` no `globals.css`).
   const antes = useRef(verified);
-  const [desenhar, setDesenhar] = useState(false);
+  const [desenhar, setDesenhar] = useState(
+    Boolean(desenharAoEntrar && verified)
+  );
   useEffect(() => {
     if (verified && antes.current === false) setDesenhar(true);
     antes.current = verified;
@@ -34,29 +40,25 @@ export default function VerificationBadge({
 
   if (!verified) return null;
 
-  const sizeClasses = {
-    sm: 'w-4 h-4 text-xs',
-    md: 'w-5 h-5 text-sm',
-    lg: 'w-6 h-6 text-base',
-  };
-
   const iconSizeClasses = {
     sm: 'w-3 h-3',
     md: 'w-4 h-4',
     lg: 'w-5 h-5',
+    xl: 'w-6 h-6 md:w-8 md:h-8',
   };
 
+  // `span`, e não `div`: o selo entra dentro de um título (ver `SeloNoTitulo`).
   if (variant === 'icon') {
     return (
-      <div
-        className={`${sizeClasses[size]}${className} self-end mb-2`}
+      <span
+        className={`inline-flex shrink-0 align-middle text-verificado ${className}`}
         title={t('verification_badge_verificado')}
       >
         <SeloVerificada
           desenhar={desenhar}
-          className={`${iconSizeClasses[size]}`}
+          className={`${iconSizeClasses[size]} ${desenharAoEntrar ? 'selo-entrada' : ''}`}
         />
-      </div>
+      </span>
     );
   }
 
@@ -67,7 +69,7 @@ export default function VerificationBadge({
       >
         <SeloVerificada
           desenhar={desenhar}
-          className={`${iconSizeClasses[size]}`}
+          className={`${iconSizeClasses[size]} text-verificado`}
         />
         <span className="text-xs font-medium">
           {t('verification_badge_verificado')}
@@ -86,7 +88,7 @@ export default function VerificationBadge({
       <div className={`inline-flex items-center space-x-1 ${className}`}>
         <SeloVerificada
           desenhar={desenhar}
-          className={`${iconSizeClasses[size]}`}
+          className={`${iconSizeClasses[size]} text-verificado`}
         />
         <span className="hidden md:block md:text-sm font-medium">
           {verifiedText}
@@ -96,4 +98,41 @@ export default function VerificationBadge({
   }
 
   return null;
+}
+
+/**
+ * O título com o selo colado na última palavra.
+ *
+ * Com o selo ao lado do `h1` num flex, um título que quebra em duas linhas
+ * ocupa a largura inteira e empurra o selo para a borda — longe do nome, no
+ * telefone. Aqui ele segue o texto: a última palavra e o selo não se separam
+ * na quebra.
+ */
+export function SeloNoTitulo({
+  texto,
+  verified,
+  title,
+}: {
+  texto: string;
+  verified?: boolean;
+  title?: 'Compositor' | 'Peça';
+}) {
+  const partes = texto.trim().split(/\s+/);
+  const ultima = partes.pop() ?? '';
+  return (
+    <>
+      {partes.length > 0 && `${partes.join(' ')} `}
+      <span className="whitespace-nowrap">
+        {ultima}
+        <VerificationBadge
+          verified={verified}
+          size="xl"
+          variant="icon"
+          title={title}
+          className="ml-2 -translate-y-[0.08em]"
+          desenharAoEntrar
+        />
+      </span>
+    </>
+  );
 }

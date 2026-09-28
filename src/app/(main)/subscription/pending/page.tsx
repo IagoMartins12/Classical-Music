@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation';
 import { PiClock, PiEnvelopeSimple } from 'react-icons/pi';
 import Button from '@/app/components/Common/Button';
 import { Text } from '@/app/components/ui/Text';
+import { Stack } from '@/app/components/ui/Layout';
 
 export default function SubscriptionPendingPage() {
   const router = useRouter();
@@ -37,7 +38,7 @@ export default function SubscriptionPendingPage() {
                 <h3 className="text-lg font-semibold text-theme-primary mb-2">
                   O que acontece agora?
                 </h3>
-                <ul className="space-y-2 text-theme-secondary">
+                <Stack gap={2} as="ul" className="text-theme-secondary">
                   <li className="flex items-center gap-2">
                     <span className="w-1.5 h-1.5 bg-amber-500 rounded-full flex-shrink-0"></span>
                     <span>
@@ -59,7 +60,7 @@ export default function SubscriptionPendingPage() {
                     <span className="w-1.5 h-1.5 bg-amber-500 rounded-full flex-shrink-0"></span>
                     <span>Para PIX, a confirmação é quase instantânea</span>
                   </li>
-                </ul>
+                </Stack>
               </div>
             </div>
           </div>

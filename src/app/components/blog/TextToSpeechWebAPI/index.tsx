@@ -1,7 +1,7 @@
 // components/blog/TextToSpeechWebAPI.tsx - Web Speech API (GRATUITO)
 'use client';
 
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, useId } from 'react';
 import {
   PiGear,
   PiPause,
@@ -19,6 +19,7 @@ interface TextToSpeechWebAPIProps {
 }
 
 export function TextToSpeechWebAPI({ content }: TextToSpeechWebAPIProps) {
+  const idCampo = useId();
   const [isSupported, setIsSupported] = useState(false);
   const [isSpeaking, setIsSpeaking] = useState(false);
   const [isPaused, setIsPaused] = useState(false);
@@ -250,11 +251,15 @@ export function TextToSpeechWebAPI({ content }: TextToSpeechWebAPIProps) {
           </div>
 
           {/* Velocidade */}
-          <div>
-            <label className="block text-sm font-medium text-theme-primary mb-2">
+          <Stack gap={2}>
+            <label
+              htmlFor={`${idCampo}-1`}
+              className="block text-sm font-medium text-theme-primary"
+            >
               Velocidade: {rate.toFixed(1)}x
             </label>
             <input
+              id={`${idCampo}-1`}
               type="range"
               min="0.5"
               max="2"
@@ -263,14 +268,18 @@ export function TextToSpeechWebAPI({ content }: TextToSpeechWebAPIProps) {
               onChange={(e) => setRate(parseFloat(e.target.value))}
               className="w-full"
             />
-          </div>
+          </Stack>
 
           {/* Tom */}
-          <div>
-            <label className="block text-sm font-medium text-theme-primary mb-2">
+          <Stack gap={2}>
+            <label
+              htmlFor={`${idCampo}-2`}
+              className="block text-sm font-medium text-theme-primary"
+            >
               Tom: {pitch.toFixed(1)}
             </label>
             <input
+              id={`${idCampo}-2`}
               type="range"
               min="0.5"
               max="2"
@@ -279,7 +288,7 @@ export function TextToSpeechWebAPI({ content }: TextToSpeechWebAPIProps) {
               onChange={(e) => setPitch(parseFloat(e.target.value))}
               className="w-full"
             />
-          </div>
+          </Stack>
         </Stack>
       )}
 

@@ -260,7 +260,7 @@ export default function AdvancedReports() {
   console.log('stats', stats);
 
   const renderOverview = () => (
-    <div className="space-y-8">
+    <Stack gap={8}>
       {/* Real Stats */}
       {stats && (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 lg:gap-6">
@@ -460,7 +460,7 @@ export default function AdvancedReports() {
           })}
         </div>
       </AnimatedCard>
-    </div>
+    </Stack>
   );
 
   const renderResults = () => (
@@ -489,7 +489,7 @@ export default function AdvancedReports() {
       </div>
 
       {results.length > 0 ? (
-        <div className="space-y-4">
+        <Stack>
           {results.map((result) => {
             const isDeleting = deletingReports.has(result.id);
             const isPdf = result.format === 'pdf';
@@ -600,7 +600,7 @@ export default function AdvancedReports() {
               </AnimatedCard>
             );
           })}
-        </div>
+        </Stack>
       ) : (
         <div className="text-center py-12">
           <PiFileText className="w-12 h-12 text-theme-tertiary mx-auto mb-4" />
@@ -625,7 +625,7 @@ export default function AdvancedReports() {
 
   // 🔄 RENDER DE MÉTRICAS REAIS
   const renderMetrics = () => (
-    <div className="space-y-6">
+    <Stack gap={6}>
       <div className="flex items-center justify-between">
         <div>
           <h3 className="text-xl font-bold text-theme-primary">
@@ -749,7 +749,7 @@ export default function AdvancedReports() {
           </div>
         </AnimatedCard>
       )}
-    </div>
+    </Stack>
   );
 
   const tabs = [

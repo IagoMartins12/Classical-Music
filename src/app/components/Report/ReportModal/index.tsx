@@ -1,7 +1,7 @@
 // app/components/Report/ReportModal.tsx
 'use client';
 
-import { useState } from 'react';
+import { useState, useId } from 'react';
 import { PiFlag, PiWarning } from 'react-icons/pi';
 import Button from '@/app/components/Common/Button';
 import { AnimatedItem } from '@/app/components/animation/AnimatedComponents';
@@ -28,6 +28,7 @@ export default function ReportModal({
   entityId,
   entityName,
 }: ReportModalProps) {
+  const idCampo = useId();
   const { t, language } = useTranslation({
     sections: ['components/reportModal'],
   });
@@ -160,10 +161,13 @@ export default function ReportModal({
           <Stack gap={6} as="form" onSubmit={handleSubmit}>
             {/* Reason Selection */}
             <Stack gap={3}>
-              <label className="block text-sm font-medium text-theme-primary">
+              <label
+                htmlFor={`${idCampo}-1`}
+                className="block text-sm font-medium text-theme-primary"
+              >
                 {t('report_modal_motivo')}
               </label>
-              <div className="space-y-2">
+              <div className="gap-2 flex flex-col">
                 {REPORT_REASONS.map((reason) => (
                   <label
                     key={reason.value}
@@ -174,6 +178,7 @@ export default function ReportModal({
                     }`}
                   >
                     <input
+                      id={`${idCampo}-1`}
                       type="radio"
                       name="reason"
                       value={reason.value}

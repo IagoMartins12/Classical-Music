@@ -3,7 +3,7 @@
 // ============================================
 'use client';
 
-import { useState } from 'react';
+import { useState, useId } from 'react';
 import { Editor } from '@tiptap/react';
 import Modal from '@/app/components/Modal';
 import Button from '@/app/components/Common/Button';
@@ -18,6 +18,7 @@ interface WorkModalProps {
 }
 
 export function WorkModal({ editor, onClose }: WorkModalProps) {
+  const idCampo = useId();
   const [composerFilter, setComposerFilter] = useState('');
   const [selectedWork, setSelectedWork] = useState('');
   const [workData, setWorkData] = useState<any>(null);
@@ -61,26 +62,34 @@ export function WorkModal({ editor, onClose }: WorkModalProps) {
       minHeight
     >
       <Stack as="form" onSubmit={handleSubmit}>
-        <div>
-          <label className="block text-sm font-medium text-theme-primary mb-2">
+        <Stack gap={2}>
+          <label
+            htmlFor={`${idCampo}-1`}
+            className="block text-sm font-medium text-theme-primary"
+          >
             1. Filtrar por Compositor (opcional)
           </label>
           <ComposerSearchInputSimple
+            id={`${idCampo}-1`}
             selectedComposer={composerFilter}
             onComposerSelect={setComposerFilter}
           />
-        </div>
+        </Stack>
 
-        <div>
-          <label className="block text-sm font-medium text-theme-primary mb-2">
+        <Stack gap={2}>
+          <label
+            htmlFor={`${idCampo}-2`}
+            className="block text-sm font-medium text-theme-primary"
+          >
             2. Buscar Obra
           </label>
           <SimpleWorkSearchInput
+            id={`${idCampo}-2`}
             selectedWork={selectedWork}
             onWorkSelect={handleWorkSelect}
             filterByComposer={composerFilter}
           />
-        </div>
+        </Stack>
 
         <div className="flex justify-end space-x-2 pt-4">
           <Button type="button" variant="secondary" onClick={onClose}>

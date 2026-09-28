@@ -1,5 +1,6 @@
 // app/learning/components/LearningCard.tsx - Com Sistema de Animação e Download
 'use client';
+import { Button } from '@/app/components/ui/Button';
 
 import { useState, useEffect } from 'react';
 import { createPortal } from 'react-dom';
@@ -335,20 +336,22 @@ export const LearningCard = ({
                     </AnimatedItem>
                   )}
 
-                  <button
+                  <Button
+                    variante="fantasma"
+                    tamanho="p"
                     onClick={onEdit}
-                    className="w-8 h-8 bg-theme-secondary rounded-lg flex items-center justify-center text-theme-tertiary transition-all"
                     title={t('edit_button')}
-                  >
-                    <PiPencilLine className="w-4 h-4" />
-                  </button>
-                  <button
+                    icone={PiPencilLine}
+                    rotulo={t('edit_button')}
+                  />
+                  <Button
+                    variante="fantasma"
+                    tamanho="p"
                     onClick={() => setShowDeleteModal(true)}
-                    className="w-8 h-8 bg-theme-secondary rounded-lg flex items-center justify-center text-theme-tertiary transition-all"
                     title={t('remove_button')}
-                  >
-                    <PiX className="w-4 h-4" />
-                  </button>
+                    icone={PiX}
+                    rotulo={t('remove_button')}
+                  />
                   {((isWantToLearn && wantToLearnItem.notes) ||
                     (!isWantToLearn && learnedItem.notes)) && (
                     <div
@@ -409,35 +412,40 @@ export const LearningCard = ({
             {/* ✅ BOTÃO DE DOWNLOAD DA PARTITURA */}
             {hasSelectedScore && (
               <AnimatedItem hover="scale">
-                <button
+                <Button
+                  variante="fantasma"
+                  tamanho="p"
                   onClick={(e) => {
                     e.stopPropagation();
                     handleScoreDownload(item, t);
                   }}
-                  className="w-8 h-8 bg-theme-secondary rounded-lg flex items-center justify-center text-theme-tertiary transition-all"
                   title={`${t('download_score')} ${
                     item.selectedWorkScore?.title
                   }`}
-                >
-                  <PiDownloadSimple className="w-4 h-4" />
-                </button>
+                  icone={PiDownloadSimple}
+                  rotulo={`${t('download_score')} ${
+                    item.selectedWorkScore?.title
+                  }`}
+                />
               </AnimatedItem>
             )}
 
-            <button
+            <Button
+              variante="fantasma"
+              tamanho="p"
               onClick={onEdit}
-              className="w-8 h-8 bg-theme-secondary rounded-lg flex items-center justify-center text-theme-tertiary transition-all"
               title={t('edit_button')}
-            >
-              <PiPencilLine className="w-4 h-4" />
-            </button>
-            <button
+              icone={PiPencilLine}
+              rotulo={t('edit_button')}
+            />
+            <Button
+              variante="fantasma"
+              tamanho="p"
               onClick={() => setShowDeleteModal(true)}
-              className="w-8 h-8 bg-theme-secondary rounded-lg flex items-center justify-center text-theme-tertiary transition-all"
               title={t('remove_button')}
-            >
-              <PiX className="w-4 h-4" />
-            </button>
+              icone={PiX}
+              rotulo={t('remove_button')}
+            />
           </Inline>
         </div>
 

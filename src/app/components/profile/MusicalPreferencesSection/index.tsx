@@ -270,12 +270,12 @@ const MusicalPreferencesSection: React.FC<MusicalPreferencesSectionProps> = ({
 
       {/* Experience Level */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        <div>
-          <Inline gap={2} className="mb-3">
+        <Stack gap={3}>
+          <Inline gap={2}>
             <PiClock className="w-4 h-4 text-ouro-texto" />
-            <label className="text-sm font-medium text-theme-secondary">
+            <span className="text-sm font-medium text-theme-secondary">
               {t('preferences_experience_level')}
-            </label>
+            </span>
           </Inline>
 
           <Select
@@ -285,14 +285,14 @@ const MusicalPreferencesSection: React.FC<MusicalPreferencesSectionProps> = ({
             options={EXPERIENCE_LEVELS}
             disabled={!isEditing}
           />
-        </div>
+        </Stack>
 
-        <div>
-          <Inline gap={2} className="mb-3">
+        <Stack gap={3}>
+          <Inline gap={2}>
             <PiClock className="w-4 h-4 text-ouro-texto" />
-            <label className="text-sm font-medium text-theme-secondary">
+            <span className="text-sm font-medium text-theme-secondary">
               {t('preferences_practice_time')}
-            </label>
+            </span>
           </Inline>
 
           <Select
@@ -302,7 +302,7 @@ const MusicalPreferencesSection: React.FC<MusicalPreferencesSectionProps> = ({
             options={PRACTICE_TIME_OPTIONS}
             disabled={!isEditing}
           />
-        </div>
+        </Stack>
       </div>
 
       {/* Favorites */}
@@ -316,9 +316,9 @@ const MusicalPreferencesSection: React.FC<MusicalPreferencesSectionProps> = ({
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <div>
-            <label className="block text-sm font-medium text-theme-secondary mb-2">
+            <span className="block text-sm font-medium text-theme-secondary mb-2">
               {t('preferences_favorite_composer')}
-            </label>
+            </span>
             {!isEditing ? (
               <div className="input-classical bg-theme-secondary">
                 {getComposerName(formData.favoriteComposerId)}
@@ -341,9 +341,9 @@ const MusicalPreferencesSection: React.FC<MusicalPreferencesSectionProps> = ({
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-theme-secondary mb-2">
+            <span className="block text-sm font-medium text-theme-secondary mb-2">
               {t('preferences_favorite_period')}
-            </label>
+            </span>
             {!isEditing ? (
               <div className="input-classical bg-theme-secondary">
                 {getEpochName(formData.favoriteEpochId)}

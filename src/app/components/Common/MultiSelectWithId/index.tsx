@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect, useRef, useMemo } from 'react';
+import { useState, useEffect, useRef, useMemo, useId } from 'react';
 import { PiCaretDown, PiCheck, PiMagnifyingGlass, PiX } from 'react-icons/pi';
 import { Text } from '@/app/components/ui/Text';
 import { NomeAcao } from '@/app/components/ui/NomeAcao';
@@ -33,6 +33,7 @@ export default function MultiSelectWithId({
   error,
   excludeValues = [],
 }: MultiSelectProps) {
+  const idCampo = useId();
   const [isOpen, setIsOpen] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
   const dropdownRef = useRef<HTMLDivElement>(null);
@@ -117,11 +118,16 @@ export default function MultiSelectWithId({
 
   return (
     <div className="relative">
-      <label className="block text-sm font-medium text-theme-tertiary mb-2">
+      <span
+        id={`${idCampo}-1`}
+        className="block text-sm font-medium text-theme-tertiary mb-2"
+      >
         {label}
-      </label>
+      </span>
 
       <div
+        role="group"
+        aria-labelledby={`${idCampo}-1`}
         className={`
           relative cursor-pointer border rounded-xl px-4 py-3 bg-theme-elevated
           transition-all duration-200 min-h-[48px] flex items-center

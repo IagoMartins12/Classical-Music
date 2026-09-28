@@ -65,23 +65,23 @@ const TermsAcceptance: React.FC<TermsAcceptanceProps> = ({
           <h4 className="font-semibold text-theme-primary">
             {t('privacy_policy_data_collection_title')}
           </h4>
-          <ul className="space-y-2 ml-4">
+          <Stack gap={2} as="ul" className="ml-4">
             <li>{t('privacy_policy_data_registration')}</li>
             <li>{t('privacy_policy_data_usage')}</li>
             <li>{t('privacy_policy_data_technical')}</li>
-          </ul>
+          </Stack>
         </Stack>
 
         <Stack gap={3}>
           <h4 className="font-semibold text-theme-primary">
             {t('privacy_policy_how_we_use_title')}
           </h4>
-          <ul className="space-y-2 ml-4">
+          <Stack gap={2} as="ul" className="ml-4">
             <li>{t('privacy_policy_use_personalize')}</li>
             <li>{t('privacy_policy_use_security')}</li>
             <li>{t('privacy_policy_use_updates')}</li>
             <li>{t('privacy_policy_use_statistics')}</li>
-          </ul>
+          </Stack>
         </Stack>
 
         <Stack gap={3}>
@@ -89,13 +89,13 @@ const TermsAcceptance: React.FC<TermsAcceptanceProps> = ({
             {t('privacy_policy_rights_title')}
           </h4>
           <div className="rounded-lg p-3">
-            <ul className="space-y-1">
+            <Stack gap={1} as="ul">
               <li>{t('privacy_policy_right_access')}</li>
               <li>{t('privacy_policy_right_correction')}</li>
               <li>{t('privacy_policy_right_deletion')}</li>
               <li>{t('privacy_policy_right_portability')}</li>
               <li>{t('privacy_policy_right_revocation')}</li>
-            </ul>
+            </Stack>
           </div>
         </Stack>
 
@@ -103,24 +103,24 @@ const TermsAcceptance: React.FC<TermsAcceptanceProps> = ({
           <h4 className="font-semibold text-theme-primary">
             {t('privacy_policy_security_title')}
           </h4>
-          <ul className="space-y-2 ml-4">
+          <Stack gap={2} as="ul" className="ml-4">
             <li>{t('privacy_policy_security_encryption')}</li>
             <li>{t('privacy_policy_security_passwords')}</li>
             <li>{t('privacy_policy_security_backups')}</li>
             <li>{t('privacy_policy_security_monitoring')}</li>
-          </ul>
+          </Stack>
         </Stack>
 
         <Stack gap={3}>
           <h4 className="font-semibold text-theme-primary">
             {t('privacy_policy_retention_title')}
           </h4>
-          <ul className="space-y-2 ml-4">
+          <Stack gap={2} as="ul" className="ml-4">
             <li>{t('privacy_policy_retention_account')}</li>
             <li>{t('privacy_policy_retention_usage')}</li>
             <li>{t('privacy_policy_retention_cookies')}</li>
             <li>{t('privacy_policy_retention_annotations')}</li>
-          </ul>
+          </Stack>
         </Stack>
 
         <Stack gap={2} className="rounded-lg p-4 bg-sup-2">
@@ -157,47 +157,47 @@ const TermsAcceptance: React.FC<TermsAcceptanceProps> = ({
           <h4 className="font-semibold text-theme-primary">
             {t('terms_of_use_permitted_title')}
           </h4>
-          <ul className="space-y-2 ml-4">
+          <Stack gap={2} as="ul" className="ml-4">
             <li>{t('terms_of_use_permitted_explore')}</li>
             <li>{t('terms_of_use_permitted_notes')}</li>
             <li>{t('terms_of_use_permitted_community')}</li>
             <li>{t('terms_of_use_permitted_tools')}</li>
-          </ul>
+          </Stack>
         </Stack>
 
         <Stack gap={3}>
           <h4 className="font-semibold text-theme-primary">
             {t('terms_of_use_prohibited_title')}
           </h4>
-          <ul className="space-y-2 ml-4">
+          <Stack gap={2} as="ul" className="ml-4">
             <li>{t('terms_of_use_prohibited_commercial')}</li>
             <li>{t('terms_of_use_prohibited_spam')}</li>
             <li>{t('terms_of_use_prohibited_copyright')}</li>
             <li>{t('terms_of_use_prohibited_offensive')}</li>
-          </ul>
+          </Stack>
         </Stack>
 
         <Stack gap={3}>
           <h4 className="font-semibold text-theme-primary">
             {t('terms_of_use_content_title')}
           </h4>
-          <ul className="space-y-2 ml-4">
+          <Stack gap={2} as="ul" className="ml-4">
             <li>{t('terms_of_use_content_scores')}</li>
             <li>{t('terms_of_use_content_annotations')}</li>
             <li>{t('terms_of_use_content_uploads')}</li>
             <li>{t('terms_of_use_content_points')}</li>
-          </ul>
+          </Stack>
         </Stack>
 
         <Stack gap={3}>
           <h4 className="font-semibold text-theme-primary">
             {t('terms_of_use_favorites_title')}
           </h4>
-          <ul className="space-y-2 ml-4">
+          <Stack gap={2} as="ul" className="ml-4">
             <li>{t('terms_of_use_favorites_organize')}</li>
             <li>{t('terms_of_use_favorites_privacy')}</li>
             <li>{t('terms_of_use_favorites_educational')}</li>
-          </ul>
+          </Stack>
         </Stack>
 
         <Stack gap={3}>
@@ -205,12 +205,12 @@ const TermsAcceptance: React.FC<TermsAcceptanceProps> = ({
             {t('terms_of_use_responsibilities_title')}
           </h4>
           <div className="rounded-lg p-3">
-            <ul className="space-y-1">
+            <Stack gap={1} as="ul">
               <li>{t('terms_of_use_responsibility_security')}</li>
               <li>{t('terms_of_use_responsibility_respect')}</li>
               <li>{t('terms_of_use_responsibility_moderation')}</li>
               <li>{t('terms_of_use_responsibility_collaboration')}</li>
-            </ul>
+            </Stack>
           </div>
         </Stack>
 
@@ -218,11 +218,11 @@ const TermsAcceptance: React.FC<TermsAcceptanceProps> = ({
           <h4 className="font-semibold text-theme-primary">
             {t('terms_of_use_suspension_title')}
           </h4>
-          <ul className="space-y-2 ml-4">
+          <Stack gap={2} as="ul" className="ml-4">
             <li>{t('terms_of_use_suspension_violations')}</li>
             <li>{t('terms_of_use_suspension_user_choice')}</li>
             <li>{t('terms_of_use_suspension_annotations')}</li>
-          </ul>
+          </Stack>
         </Stack>
 
         <Stack gap={2} className="rounded-lg p-4">
@@ -237,7 +237,7 @@ const TermsAcceptance: React.FC<TermsAcceptanceProps> = ({
 
   return (
     <>
-      <div className="space-y-3">
+      <div className="gap-3 flex flex-col">
         <div
           className={`
             flex items-start space-x-3 p-4 rounded-lg  transition-all cursor-pointer

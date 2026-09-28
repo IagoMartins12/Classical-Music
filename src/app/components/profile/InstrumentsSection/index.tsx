@@ -1,5 +1,6 @@
 // app/profile/components/InstrumentsSection.tsx (versão com dados reais)
 'use client';
+import { Button as Botao } from '@/app/components/ui/Button';
 
 import React, { useState, useEffect, useCallback } from 'react';
 // Era `User` do NextAuth, aumentado em `types/next-auth.d.ts`. É o mesmo
@@ -457,13 +458,15 @@ const InstrumentsSection: React.FC<InstrumentsSectionProps> = ({ user }) => {
                 </Inline>
 
                 {isEditing && (
-                  <button
+                  <Botao
+                    variante="fantasma"
+                    tamanho="p"
                     onClick={() => handleRemoveInstrument(instrument.id)}
-                    className="p-2 transition-colors !text-erro"
                     title="Remover instrumento"
-                  >
-                    <PiTrash className="w-4 h-4" />
-                  </button>
+                    icone={PiTrash}
+                    rotulo="Remover instrumento"
+                    className="text-erro"
+                  />
                 )}
               </div>
             </Card>
@@ -487,7 +490,11 @@ const InstrumentsSection: React.FC<InstrumentsSectionProps> = ({ user }) => {
                 : t('instruments_add_instrument')}
             </Button>
           ) : (
-            <Card nivel={2} densidade="compacta" className="space-y-4">
+            <Card
+              nivel={2}
+              densidade="compacta"
+              className="gap-4 flex flex-col"
+            >
               <h4 className="font-medium text-theme-primary">
                 {t('instruments_add_title')}
               </h4>

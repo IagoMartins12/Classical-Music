@@ -143,7 +143,7 @@ export default function AdminPlanPricingPage() {
   const activePlans = plans.filter((p) => p.planType !== 'FREE');
 
   return (
-    <div className="max-w-7xl mx-auto p-6 space-y-8">
+    <Stack gap={8} className="max-w-7xl mx-auto p-6">
       {/* Header */}
       <AnimatedItem direction="up" springType="gentle">
         <div className="text-center mb-8 py-12">
@@ -198,7 +198,7 @@ export default function AdminPlanPricingPage() {
                   <p className="font-semibold mb-2">
                     Os seguintes planos serão criados:
                   </p>
-                  <ul className="space-y-2 text-blue-800">
+                  <Stack gap={2} as="ul" className="text-blue-800">
                     <li>
                       <strong>PLUS:</strong> R$ 29/mês (7 dias de trial)
                     </li>
@@ -208,7 +208,7 @@ export default function AdminPlanPricingPage() {
                     <li>
                       <strong>MAESTRO:</strong> R$ 149/mês (30 dias de trial)
                     </li>
-                  </ul>
+                  </Stack>
                   <p className="mt-2 text-xs">
                     Todos com descontos: 10% trimestral, 15% semestral, 20%
                     anual
@@ -253,9 +253,9 @@ export default function AdminPlanPricingPage() {
                 <Stack gap={6} className="p-6">
                   {/* Preço Mensal */}
                   <div>
-                    <label className="block text-sm font-medium mb-2">
+                    <span className="block text-sm font-medium mb-2">
                       Preço Mensal (R$)
-                    </label>
+                    </span>
                     {isEditing ? (
                       <Input
                         type="number"
@@ -477,6 +477,6 @@ export default function AdminPlanPricingPage() {
           </Stack>
         </div>
       )}
-    </div>
+    </Stack>
   );
 }

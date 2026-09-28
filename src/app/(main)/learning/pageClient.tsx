@@ -1,5 +1,7 @@
 // app/learning/LearningPageClient.tsx - ATUALIZADO COM INSTRUMENTNAME
 'use client';
+import { Button as Botao } from '@/app/components/ui/Button';
+import { Aba, Abas } from '@/app/components/ui/Abas';
 
 import { useState, useEffect, useMemo } from 'react';
 import {
@@ -351,42 +353,30 @@ const LearningPageClient = ({ initialData }: LearningPageClientProps) => {
         {/* Controls */}
         <AnimatedItem direction="up" springType="gentle">
           <AnimatedCard hover="none" className="classical-card p-6">
-            <div className="space-y-4">
+            <Stack>
               {/* Main Controls Row */}
               <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
                 {/* Tabs */}
-                <div className="flex bg-theme-secondary rounded-xl p-1">
-                  <button
+                <Abas rotulo="Filtrar estudos">
+                  <Aba
+                    ativa={activeTab === 'all'}
                     onClick={() => setActiveTab('all')}
-                    className={`px-4 py-2 rounded-lg text-sm font-medium transition-all ${
-                      activeTab === 'all'
-                        ? 'bg-theme-tertiary text-theme-primary shadow-md'
-                        : 'text-theme-tertiary'
-                    }`}
                   >
                     {t('tab_all')} ({stats.totalItems})
-                  </button>
-                  <button
+                  </Aba>
+                  <Aba
+                    ativa={activeTab === 'want-to-learn'}
                     onClick={() => setActiveTab('want-to-learn')}
-                    className={`px-4 py-2 rounded-lg text-sm font-medium transition-all ${
-                      activeTab === 'want-to-learn'
-                        ? 'bg-theme-tertiary text-theme-primary shadow-md'
-                        : 'text-theme-tertiary'
-                    }`}
                   >
                     {t('tab_want_to_learn')} ({stats.wantToLearnCount})
-                  </button>
-                  <button
+                  </Aba>
+                  <Aba
+                    ativa={activeTab === 'learned'}
                     onClick={() => setActiveTab('learned')}
-                    className={`px-4 py-2 rounded-lg text-sm font-medium transition-all ${
-                      activeTab === 'learned'
-                        ? 'bg-theme-tertiary text-theme-primary shadow-md'
-                        : 'text-theme-tertiary'
-                    }`}
                   >
                     {t('tab_learned')} ({stats.learnedCount})
-                  </button>
-                </div>
+                  </Aba>
+                </Abas>
 
                 {/* Search, Filter Button, Stats Toggle and View Mode */}
                 <div className="flex flex-col sm:flex-row gap-3">
@@ -470,12 +460,9 @@ const LearningPageClient = ({ initialData }: LearningPageClientProps) => {
                       </Inline>
                       <Inline gap={2}>
                         {hasActiveFilters && (
-                          <button
-                            onClick={clearFilters}
-                            className="text-xs text-theme-tertiary transition-colors px-2 py-1 rounded bg-sup-2"
-                          >
+                          <Botao tamanho="p" onClick={clearFilters}>
                             {t('clear_all_filters')}
-                          </button>
+                          </Botao>
                         )}
                         <button
                           onClick={() => setShowFilters(false)}
@@ -526,7 +513,7 @@ const LearningPageClient = ({ initialData }: LearningPageClientProps) => {
                   </Stack>
                 </AnimatedItem>
               )}
-            </div>
+            </Stack>
           </AnimatedCard>
         </AnimatedItem>
 
@@ -635,7 +622,7 @@ const LearningPageClient = ({ initialData }: LearningPageClientProps) => {
                               ))}
                             </SequentialGrid>
                           ) : (
-                            <div className="space-y-4">
+                            <Stack>
                               {filteredData.wantToLearn.map((item, index) => (
                                 <AnimatedItem
                                   key={item.id}
@@ -656,7 +643,7 @@ const LearningPageClient = ({ initialData }: LearningPageClientProps) => {
                                   />
                                 </AnimatedItem>
                               ))}
-                            </div>
+                            </Stack>
                           )}
                         </>
                       )}
@@ -716,7 +703,7 @@ const LearningPageClient = ({ initialData }: LearningPageClientProps) => {
                               ))}
                             </SequentialGrid>
                           ) : (
-                            <div className="space-y-4">
+                            <Stack>
                               {filteredData.learned.map((item, index) => (
                                 <AnimatedItem
                                   key={item.id}
@@ -737,7 +724,7 @@ const LearningPageClient = ({ initialData }: LearningPageClientProps) => {
                                   />
                                 </AnimatedItem>
                               ))}
-                            </div>
+                            </Stack>
                           )}
                         </>
                       )}

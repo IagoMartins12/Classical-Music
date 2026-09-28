@@ -126,11 +126,7 @@ export default function GenresClient({ genres }: GenresClientProps) {
   return (
     <div className="">
       {/* Background Pattern */}
-      <div className="absolute inset-0 pointer-events-none opacity-5">
-        <div className="absolute top-20 left-20 w-64 h-64 rounded-full blur-3xl"></div>
-        <div className="absolute bottom-40 right-32 w-48 h-48 rounded-full blur-2xl"></div>
-        <div className="absolute top-1/2 left-1/4 w-32 h-32 rounded-full blur-xl"></div>
-      </div>
+      <div className="absolute inset-0 pointer-events-none opacity-5"></div>
 
       <Stack gap={8} className="section-wrap relative z-10">
         {/* Header */}
@@ -330,7 +326,7 @@ export default function GenresClient({ genres }: GenresClientProps) {
                         ))}
                       </div>
                     ) : (
-                      <div className="space-y-2">
+                      <Stack gap={2}>
                         {genresInGroup.map((genre, index) => (
                           <button
                             key={genre.id}
@@ -366,7 +362,7 @@ export default function GenresClient({ genres }: GenresClientProps) {
                             </div>
                           </button>
                         ))}
-                      </div>
+                      </Stack>
                     )}
                   </div>
                 )}

@@ -299,10 +299,10 @@ const InternationalPhoneInput: React.FC<InternationalPhoneInputProps> = ({
   return (
     <div className={`space-y-2 ${className}`}>
       {showLabel && label && (
-        <label className="block text-sm font-medium text-theme-secondary">
+        <span className="block text-sm font-medium text-theme-secondary">
           <PiPhone className="w-4 h-4 inline mr-2" />
           {label}
-        </label>
+        </span>
       )}
 
       <div className="relative z-elevado">

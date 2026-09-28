@@ -1,7 +1,7 @@
 // app/components/Admin/OrphanFiles/OrphanFilesManagementClient.tsx - VERSÃO CORRIGIDA
 'use client';
 
-import { useState } from 'react';
+import { useState, useId } from 'react';
 import {
   PiArrowsClockwise,
   PiCheckSquare,
@@ -263,6 +263,7 @@ type TabValue =
   | OrphanFileCategory;
 
 export default function OrphanFilesManagementClient() {
+  const idCampo = useId();
   const {
     scanResult,
     error,
@@ -534,10 +535,17 @@ export default function OrphanFilesManagementClient() {
 
                   {/* Seletor de tipo de scan */}
                   <Inline gap={4}>
-                    <label className="text-sm font-medium text-theme-primary">
+                    <span
+                      id={`${idCampo}-1`}
+                      className="text-sm font-medium text-theme-primary"
+                    >
                       Tipo de Scan:
-                    </label>
-                    <Inline gap={2}>
+                    </span>
+                    <Inline
+                      role="group"
+                      aria-labelledby={`${idCampo}-1`}
+                      gap={2}
+                    >
                       {SCAN_TYPE_OPTIONS.map((option) => (
                         <button
                           key={option.value}

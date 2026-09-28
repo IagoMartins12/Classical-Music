@@ -1,7 +1,7 @@
 // components/blog/CategoryForm.tsx - COM ROTA ESPECÍFICA
 'use client';
 
-import { useState, useRef } from 'react';
+import { useState, useRef, useId } from 'react';
 import { useRouter } from 'next/navigation';
 import Image from '@/app/components/SmartImage';
 import {
@@ -40,6 +40,7 @@ interface CategoryFormProps {
 }
 
 export function CategoryForm({ mode, category }: CategoryFormProps) {
+  const idCampo = useId();
   const router = useRouter();
   const fileInputRef = useRef<HTMLInputElement>(null);
 
@@ -212,10 +213,14 @@ export function CategoryForm({ mode, category }: CategoryFormProps) {
         <Stack>
           {/* Name */}
           <div>
-            <label className="block text-sm font-medium text-theme-primary mb-2">
+            <label
+              htmlFor={`${idCampo}-1`}
+              className="block text-sm font-medium text-theme-primary mb-2"
+            >
               Nome da Categoria *
             </label>
             <input
+              id={`${idCampo}-1`}
               type="text"
               value={formData.name}
               onChange={(e) => handleNameChange(e.target.value)}
@@ -238,7 +243,10 @@ export function CategoryForm({ mode, category }: CategoryFormProps) {
 
           {/* Slug */}
           <div>
-            <label className="block text-sm font-medium text-theme-primary mb-2">
+            <label
+              htmlFor={`${idCampo}-2`}
+              className="block text-sm font-medium text-theme-primary mb-2"
+            >
               Slug (URL) *
             </label>
             <Inline gap={2}>
@@ -246,6 +254,7 @@ export function CategoryForm({ mode, category }: CategoryFormProps) {
                 /blog/category/
               </Text>
               <input
+                id={`${idCampo}-2`}
                 type="text"
                 value={formData.slug}
                 onChange={(e) =>
@@ -342,10 +351,13 @@ export function CategoryForm({ mode, category }: CategoryFormProps) {
 
           {/* Color */}
           <div>
-            <label className="block text-sm font-medium text-theme-primary mb-2">
+            <span
+              id={`${idCampo}-3`}
+              className="block text-sm font-medium text-theme-primary mb-2"
+            >
               Cor *
-            </label>
-            <Inline gap={3}>
+            </span>
+            <Inline role="group" aria-labelledby={`${idCampo}-3`} gap={3}>
               <input
                 type="color"
                 value={formData.color}
@@ -392,9 +404,9 @@ export function CategoryForm({ mode, category }: CategoryFormProps) {
 
         {/* Image Upload */}
         <div className="mt-6">
-          <label className="block text-sm font-medium text-theme-primary mb-2">
+          <span className="block text-sm font-medium text-theme-primary mb-2">
             Imagem da Categoria (Opcional)
-          </label>
+          </span>
           <Text papel="legenda" tom="fraco" as="p" className="mb-3">
             Recomendado: 800x400px, máximo 2MB
           </Text>

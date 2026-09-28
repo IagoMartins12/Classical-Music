@@ -1,9 +1,7 @@
 // app/[lang]/(main)/works/view.tsx
 import { Metadata } from 'next';
-import { Suspense } from 'react';
 import { unstable_cache } from 'next/cache';
 import WorksServer from './pageServer';
-import WorksLoading from './WorksLoading';
 import type { Language } from '@/app/utils/translations/serverTranslations';
 import { alternatesFor } from '@/app/utils/seoAlternates';
 
@@ -43,11 +41,12 @@ export function WorksView({
   searchParams: WorksSearchParams;
   language: Language;
 }) {
-  return (
-    <Suspense fallback={<WorksLoading />}>
-      <WorksServer searchParams={searchParams} language={language} />
-    </Suspense>
-  );
+  // Sem `Suspense` aqui dentro: a cada filtro a página é outra (a URL muda de
+  // query string), e um limite novo mostraria o esqueleto no lugar da grade —
+  // os cards não teriam de onde deslizar até o novo lugar. Sem ele, a
+  // navegação segura a grade atual até a nova chegar. A entrada na rota tem o
+  // esqueleto do `(lista)/loading.tsx`.
+  return <WorksServer searchParams={searchParams} language={language} />;
 }
 
 // Cache inteligente para metadata - 2 horas

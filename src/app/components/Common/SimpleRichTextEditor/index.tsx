@@ -1,5 +1,6 @@
 // components/Common/SimpleRichTextEditor.tsx
 'use client';
+import { Button } from '@/app/components/ui/Button';
 
 import { useRef, forwardRef, useState, useEffect } from 'react';
 import {
@@ -143,9 +144,9 @@ const SimpleRichTextEditor = forwardRef<
     return (
       <div ref={ref} className="w-full">
         {label && (
-          <label className="block text-sm font-medium text-theme-tertiary mb-2">
+          <span className="block text-sm font-medium text-theme-tertiary mb-2">
             {label}
-          </label>
+          </span>
         )}
 
         <div className={`simple-rich-editor ${error ? 'error' : ''}`}>
@@ -153,30 +154,30 @@ const SimpleRichTextEditor = forwardRef<
           <div className="toolbar border-b-0 rounded-t-lg p-3 flex flex-wrap gap-2 bg-sup-2">
             {/* Headings */}
             <div className="flex gap-1">
-              <button
+              <Button
+                tamanho="p"
                 type="button"
                 onClick={() => insertHeading(1)}
                 disabled={disabled}
-                className="px-3 py-1 text-sm text-theme-tertiary rounded transition-all bg-sup-2"
               >
                 H1
-              </button>
-              <button
+              </Button>
+              <Button
+                tamanho="p"
                 type="button"
                 onClick={() => insertHeading(2)}
                 disabled={disabled}
-                className="px-3 py-1 text-sm text-theme-tertiary rounded transition-all bg-sup-2"
               >
                 H2
-              </button>
-              <button
+              </Button>
+              <Button
+                tamanho="p"
                 type="button"
                 onClick={() => insertHeading(3)}
                 disabled={disabled}
-                className="px-3 py-1 text-sm text-theme-tertiary rounded transition-all bg-sup-2"
               >
                 H3
-              </button>
+              </Button>
             </div>
 
             <div className="w-px h-6 bg-theme-secondary"></div>

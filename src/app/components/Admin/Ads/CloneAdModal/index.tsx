@@ -419,13 +419,17 @@ export default function CloneAdModal({
                   conflictInfo.suggestions.length > 0 && (
                     <Stack gap={2} className="mt-4 p-3 rounded bg-sup-2">
                       <h5 className="font-medium text-sm">Sugestões:</h5>
-                      <ul className="text-xs text-theme-secondary space-y-1">
+                      <Stack
+                        gap={1}
+                        as="ul"
+                        className="text-xs text-theme-secondary"
+                      >
                         {conflictInfo.suggestions.map(
                           (suggestion: string, index: number) => (
                             <li key={index}>{suggestion}</li>
                           )
                         )}
-                      </ul>
+                      </Stack>
                     </Stack>
                   )}
               </div>
@@ -660,9 +664,9 @@ export default function CloneAdModal({
             </h3>
 
             <Stack gap={2}>
-              <label className="block text-sm font-medium text-theme-primary">
+              <span className="block text-sm font-medium text-theme-primary">
                 Exibir em:
-              </label>
+              </span>
               <div className="flex space-x-4">
                 <Inline as="label" gap={2}>
                   <Checkbox

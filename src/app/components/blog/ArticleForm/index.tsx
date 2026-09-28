@@ -1,7 +1,8 @@
 // components/blog/ArticleForm.tsx - ATUALIZADO COM COMPOSITORES E OBRAS
 'use client';
+import { Button } from '@/app/components/ui/Button';
 
-import { useState, useEffect, useMemo } from 'react';
+import { useState, useEffect, useMemo, useId } from 'react';
 import { z } from 'zod';
 import {
   PiArrowLeft,
@@ -97,6 +98,7 @@ export function ArticleForm({
   categories,
   isSubmitting = false,
 }: ArticleFormProps) {
+  const idCampo = useId();
   const toast = useToast();
   const [activeTab, setActiveTab] = useState<
     'content' | 'settings' | 'relations' | 'seo'
@@ -637,7 +639,10 @@ export function ArticleForm({
 
           {/* Slug */}
           <div>
-            <label className="block text-sm font-medium text-theme-primary mb-2">
+            <label
+              htmlFor={`${idCampo}-1`}
+              className="block text-sm font-medium text-theme-primary mb-2"
+            >
               Slug (URL) *
             </label>
             <Inline gap={2}>
@@ -645,6 +650,7 @@ export function ArticleForm({
                 /artigo/
               </Text>
               <input
+                id={`${idCampo}-1`}
                 type="text"
                 value={formData.slug}
                 onChange={(e) =>
@@ -680,9 +686,9 @@ export function ArticleForm({
 
           {/* Imagem de Capa */}
           <div>
-            <label className="block text-sm font-medium text-theme-primary mb-2">
+            <span className="block text-sm font-medium text-theme-primary mb-2">
               Imagem de Capa
-            </label>
+            </span>
 
             {cropImageSrc && (
               <CoverCropper
@@ -738,7 +744,7 @@ export function ArticleForm({
             )}
 
             {formData.coverImage && (
-              <div className="mt-4 space-y-2">
+              <Stack gap={2} className="mt-4">
                 <input
                   type="text"
                   value={formData.coverImageAlt || ''}
@@ -763,15 +769,15 @@ export function ArticleForm({
                   placeholder="Crédito do fotógrafo"
                   className="input-classical-2 w-full"
                 />
-              </div>
+              </Stack>
             )}
           </div>
 
           {/* Editor */}
           <div>
-            <label className="block text-sm font-medium text-theme-primary mb-2">
+            <span className="block text-sm font-medium text-theme-primary mb-2">
               Conteúdo *
-            </label>
+            </span>
             <BlogEditor
               content={formData.content}
               onChange={(content) =>
@@ -784,7 +790,10 @@ export function ArticleForm({
 
           {/* Tempo de Leitura */}
           <Stack gap={2}>
-            <label className="block text-sm font-medium text-theme-primary">
+            <label
+              htmlFor={`${idCampo}-2`}
+              className="block text-sm font-medium text-theme-primary"
+            >
               Tempo de Leitura
             </label>
             <div className="flex items-center gap-4 p-4 bg-blue-50 dark:bg-blue-900/20 rounded-lg">
@@ -800,6 +809,7 @@ export function ArticleForm({
               </div>
               <div className="flex items-center gap-2">
                 <input
+                  id={`${idCampo}-2`}
                   type="number"
                   min={1}
                   max={300}
@@ -824,7 +834,7 @@ export function ArticleForm({
 
       {/* TAB: CONFIGURAÇÕES */}
       {activeTab === 'settings' && (
-        <div className="space-y-6">
+        <div className="gap-6 flex flex-col">
           {/* Status e Publicação */}
           <div className="grid grid-cols-2 gap-4">
             <Select
@@ -938,15 +948,22 @@ export function ArticleForm({
               </button>
             </div>
 
-            <div className="space-y-4">
+            <Stack>
               {/* 🆕 ABA: UPLOAD */}
               {backgroundMusicTab === 'upload' && (
                 <>
                   <Stack gap={2}>
-                    <label className="block text-sm font-medium text-theme-primary">
+                    <span
+                      id={`${idCampo}-3`}
+                      className="block text-sm font-medium text-theme-primary"
+                    >
                       Selecionar Arquivo de Áudio
-                    </label>
-                    <div className="border-2 border-dashed border-theme-secondary rounded-lg p-6 text-center transition-colors">
+                    </span>
+                    <div
+                      role="group"
+                      aria-labelledby={`${idCampo}-3`}
+                      className="border-2 border-dashed border-theme-secondary rounded-lg p-6 text-center transition-colors"
+                    >
                       <input
                         type="file"
                         id="background-audio-upload"
@@ -1058,10 +1075,14 @@ export function ArticleForm({
               {/* ✅ CONFIGURAÇÕES (mesmas para ambas as abas) */}
               <Inline gap={4}>
                 <div className="flex-1">
-                  <label className="block text-xs text-theme-tertiary mb-1">
+                  <label
+                    htmlFor={`${idCampo}-4`}
+                    className="block text-xs text-theme-tertiary mb-1"
+                  >
                     Volume (0.0 - 1.0)
                   </label>
                   <input
+                    id={`${idCampo}-4`}
                     type="number"
                     value={formData.backgroundMusic?.volume ?? 0.3}
                     onChange={(e) =>
@@ -1120,7 +1141,7 @@ export function ArticleForm({
                   </Text>
                 </Inline>
               </Inline>
-            </div>
+            </Stack>
           </Card>
         </div>
       )}
@@ -1193,14 +1214,16 @@ export function ArticleForm({
                         </Text>
                       </div>
                     </Inline>
-                    <button
+                    <Button
+                      variante="fantasma"
+                      tamanho="p"
                       type="button"
                       onClick={() => handleRemoveComposer(composer.id)}
-                      className="p-2 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-lg transition-colors !text-erro"
+                      icone={PiTrash}
+                      className="text-erro"
                     >
-                      <PiTrash className="w-4 h-4" />
                       <NomeAcao acao="excluir" />
-                    </button>
+                    </Button>
                   </div>
                 ))}
               </Stack>
@@ -1209,10 +1232,14 @@ export function ArticleForm({
             {/* Adicionar Compositor */}
             <div className="flex items-end space-x-2">
               <div className="flex-1">
-                <label className="block text-sm font-medium text-theme-secondary mb-2">
+                <label
+                  htmlFor={`${idCampo}-5`}
+                  className="block text-sm font-medium text-theme-secondary mb-2"
+                >
                   Buscar Compositor
                 </label>
                 <ComposerSearchInputSimple
+                  id={`${idCampo}-5`}
                   selectedComposer={currentComposer}
                   onComposerSelect={setCurrentComposer}
                   fullData={true}
@@ -1254,14 +1281,16 @@ export function ArticleForm({
                         {work.composer?.name} • {work.instrument?.name}
                       </Text>
                     </div>
-                    <button
+                    <Button
+                      variante="fantasma"
+                      tamanho="p"
                       type="button"
                       onClick={() => handleRemoveWork(work.id)}
-                      className="p-2 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-lg transition-colors !text-erro"
+                      icone={PiTrash}
+                      className="text-erro"
                     >
-                      <PiTrash className="w-4 h-4" />
                       <NomeAcao acao="excluir" />
-                    </button>
+                    </Button>
                   </div>
                 ))}
               </Stack>
@@ -1270,24 +1299,32 @@ export function ArticleForm({
             {/* Adicionar Obra */}
             <Stack gap={3}>
               {/* ✅ FILTRO DE COMPOSITOR (OPCIONAL) */}
-              <div>
-                <label className="block text-sm font-medium text-theme-secondary mb-2">
+              <Stack gap={2}>
+                <label
+                  htmlFor={`${idCampo}-6`}
+                  className="block text-sm font-medium text-theme-secondary"
+                >
                   1. Filtrar por Compositor (opcional)
                 </label>
                 <ComposerSearchInputSimple
+                  id={`${idCampo}-6`}
                   selectedComposer={composerFilterForWorks}
                   onComposerSelect={setComposerFilterForWorks}
                   fullData={true}
                 />
-              </div>
+              </Stack>
 
               {/* ✅ BUSCA DE OBRA (COM FILTRO) */}
               <div className="flex items-end space-x-2">
                 <div className="flex-1">
-                  <label className="block text-sm font-medium text-theme-secondary mb-2">
+                  <label
+                    htmlFor={`${idCampo}-7`}
+                    className="block text-sm font-medium text-theme-secondary mb-2"
+                  >
                     2. Buscar Obra
                   </label>
                   <SimpleWorkSearchInput
+                    id={`${idCampo}-7`}
                     selectedWork={currentWork}
                     onWorkSelect={setCurrentWork}
                     filterByComposer={composerFilterForWorks}
@@ -1312,7 +1349,7 @@ export function ArticleForm({
 
       {/* TAB: SEO */}
       {activeTab === 'seo' && (
-        <div className="space-y-6">
+        <Stack gap={6}>
           <div>
             <Field
               label="Meta Título"
@@ -1355,7 +1392,7 @@ export function ArticleForm({
             placeholder="Digite e pressione Enter..."
             allowCreate
           />
-        </div>
+        </Stack>
       )}
 
       {/* Ações */}

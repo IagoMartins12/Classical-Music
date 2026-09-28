@@ -335,7 +335,7 @@ export default function ConfirmAccountPage() {
               </p>
             </Stack>
 
-            <div className="space-y-4">
+            <Stack>
               {state.canResend && (
                 <Button
                   variant="primary"
@@ -374,7 +374,7 @@ export default function ConfirmAccountPage() {
                   {t('pages_token_jsx_button_children_0__tentar_novamente')}
                 </Button>
               </div>
-            </div>
+            </Stack>
           </div>
         );
 
@@ -387,8 +387,6 @@ export default function ConfirmAccountPage() {
     <div className="min-h-screen flex items-center justify-center p-4">
       {/* Background Decorations */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        <div className="absolute -top-10 -left-10 w-40 h-40 opacity-10 rounded-full blur-3xl"></div>
-        <div className="absolute -bottom-10 -right-10 w-60 h-60 opacity-10 rounded-full blur-3xl"></div>
         <GiGrandPiano className="absolute top-20 right-20 w-12 h-12 text-ouro-texto opacity-5 rotate-12" />
         <GiGrandPiano className="absolute bottom-20 left-20 w-16 h-16 opacity-5 -rotate-12" />
       </div>

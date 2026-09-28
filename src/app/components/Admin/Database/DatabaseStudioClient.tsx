@@ -259,7 +259,7 @@ export default function DatabaseStudioClient() {
                         <div className="flex-1 h-px bg-theme-primary" />
                       </Inline>
 
-                      <div className="space-y-1">
+                      <div className="gap-1 flex flex-col">
                         {categoryModels.map((model) => (
                           <button
                             key={model.name}

@@ -1,5 +1,6 @@
 // app/components/Notifications/NotificationBell.tsx - CORRIGIDO
 'use client';
+import { Button as Botao } from '@/app/components/ui/Button';
 
 import { useState, useRef, useEffect, useCallback, useMemo } from 'react';
 import Link from 'next/link';
@@ -39,17 +40,12 @@ export default function NotificationBell({
   const dropdownRef = useRef<HTMLDivElement>(null);
   const loadedRef = useRef(false);
 
-  const {
-    unreadCount,
-    isChecking,
-    markAsRead,
-    markAllAsRead,
-    fetchNotifications,
-  } = useNotifications({
-    userRole,
-    userId,
-    autoStart: true,
-  });
+  const { unreadCount, markAsRead, markAllAsRead, fetchNotifications } =
+    useNotifications({
+      userRole,
+      userId,
+      autoStart: true,
+    });
 
   // Memoized functions to prevent re-renders
   const loadRecentNotifications = useCallback(async () => {
@@ -176,10 +172,12 @@ export default function NotificationBell({
   return (
     <div className={`relative ${className}`} ref={dropdownRef}>
       {/* Bell Button */}
-      <button
+      <Botao
+        variante="fantasma"
+        tamanho="p"
         onClick={handleBellClick}
-        className="relative p-2 rounded-lg transition-colors group"
         title="Notificações"
+        className="relative group"
       >
         <PiBell
           className={`w-5 h-5 transition-colors ${bellAppearance.iconColor}`}
@@ -195,16 +193,11 @@ export default function NotificationBell({
             {bellAppearance.badgeText}
           </Text>
         )}
-
-        {/* Indicator de carregamento */}
-        {isChecking && (
-          <div className="absolute -bottom-1 -right-1 w-2 h-2 rounded-full animate-pulse"></div>
-        )}
-      </button>
+      </Botao>
 
       {/* Dropdown */}
       {isOpen && (
-        <div className="absolute right-0 top-full mt-2 w-96 bg-theme-secondary backdrop-blur-xl rounded-2xl shadow-xl z-50 overflow-hidden">
+        <div className="absolute right-0 top-full mt-2 w-96 bg-theme-secondary backdrop-blur-xl rounded-2xl shadow-xl z-menu overflow-hidden">
           {/* Header */}
           <div className="p-4 border-b border-theme-secondary">
             <div className="flex items-center justify-between">

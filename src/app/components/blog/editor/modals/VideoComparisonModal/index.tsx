@@ -3,7 +3,7 @@
 // ============================================
 'use client';
 
-import { useState } from 'react';
+import { useState, useId } from 'react';
 import { Editor } from '@tiptap/react';
 import Modal from '@/app/components/Modal';
 import Input from '@/app/components/Common/Inputs';
@@ -21,6 +21,7 @@ export function VideoComparisonModal({
   editor,
   onClose,
 }: VideoComparisonModalProps) {
+  const idCampo = useId();
   const [title, setTitle] = useState('Comparação de Performances');
   const [video1, setVideo1] = useState({ url: '', title: '', description: '' });
   const [video2, setVideo2] = useState({ url: '', title: '', description: '' });
@@ -69,7 +70,7 @@ export function VideoComparisonModal({
       title="Inserir Comparação de Vídeos"
       maxWidth="3xl"
     >
-      <form onSubmit={handleSubmit} className="space-y-6">
+      <Stack gap={6} as="form" onSubmit={handleSubmit}>
         <Input
           label="Título da Comparação"
           type="text"
@@ -82,7 +83,7 @@ export function VideoComparisonModal({
         <Card nivel={2} densidade="compacta" className="bg-theme-secondary">
           <h4 className="font-medium text-theme-primary mb-3">Vídeo 1</h4>
 
-          <div className="space-y-3">
+          <Stack gap={3}>
             <Input
               label="URL do YouTube *"
               type="url"
@@ -113,13 +114,13 @@ export function VideoComparisonModal({
               placeholder="Ex: Gravação histórica de estúdio"
               widhtFull
             />
-          </div>
+          </Stack>
         </Card>
 
         <Card nivel={2} densidade="compacta" className="bg-theme-secondary">
           <h4 className="font-medium text-theme-primary mb-3">Vídeo 2</h4>
 
-          <div className="space-y-3">
+          <Stack gap={3}>
             <Input
               label="URL do YouTube *"
               type="url"
@@ -150,15 +151,22 @@ export function VideoComparisonModal({
               placeholder="Ex: Performance ao vivo em Berlim"
               widhtFull
             />
-          </div>
+          </Stack>
         </Card>
 
-        <div className="space-y-4 border-t border-theme-secondary pt-4">
+        <Stack className="border-t border-theme-secondary pt-4">
           <Stack gap={2}>
-            <label className="block text-sm font-medium text-theme-primary">
+            <span
+              id={`${idCampo}-1`}
+              className="block text-sm font-medium text-theme-primary"
+            >
               Layout
-            </label>
-            <div className="flex space-x-2">
+            </span>
+            <div
+              role="group"
+              aria-labelledby={`${idCampo}-1`}
+              className="flex space-x-2"
+            >
               <Button
                 type="button"
                 variant={layout === 'side-by-side' ? 'primary' : 'outline'}
@@ -183,7 +191,7 @@ export function VideoComparisonModal({
             checked={syncPlayback}
             onChange={(e) => setSyncPlayback(e.target.checked)}
           />
-        </div>
+        </Stack>
 
         <div className="flex justify-end space-x-2 pt-4">
           <Button type="button" variant="secondary" onClick={onClose}>
@@ -193,7 +201,7 @@ export function VideoComparisonModal({
             Inserir Comparação
           </Button>
         </div>
-      </form>
+      </Stack>
     </Modal>
   );
 }

@@ -312,11 +312,11 @@ export default function GroupingSuggestions({
       )}
 
       {/* Opção para Novo Grupo */}
-      <div>
+      <Stack gap={3}>
         <Inline
           as="h4"
           gap={2}
-          className="text-sm font-semibold text-theme-primary mb-3"
+          className="text-sm font-semibold text-theme-primary"
         >
           <PiPlus className="w-4 h-4 text-ouro-texto" />
           <span>Criar Novo Grupo</span>
@@ -351,7 +351,7 @@ export default function GroupingSuggestions({
             </div>
           </Inline>
         </button>
-      </div>
+      </Stack>
 
       {/* Info Helper Atualizado */}
       <div className="rounded-lg p-3 bg-sup-2">

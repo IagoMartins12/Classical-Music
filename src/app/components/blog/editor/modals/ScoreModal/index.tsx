@@ -3,7 +3,7 @@
 // ============================================
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useId } from 'react';
 import { Editor } from '@tiptap/react';
 import Modal from '@/app/components/Modal';
 import Button from '@/app/components/Common/Button';
@@ -22,6 +22,7 @@ interface ScoreModalProps {
 }
 
 export function ScoreModal({ editor, onClose }: ScoreModalProps) {
+  const idCampo = useId();
   const [composerFilter, setComposerFilter] = useState('');
   const [selectedWork, setSelectedWork] = useState('');
   const [workData, setWorkData] = useState<any>(null);
@@ -82,21 +83,29 @@ export function ScoreModal({ editor, onClose }: ScoreModalProps) {
       minHeight
     >
       <Stack as="form" onSubmit={handleSubmit}>
-        <div>
-          <label className="block text-sm font-medium text-theme-primary mb-2">
+        <Stack gap={2}>
+          <label
+            htmlFor={`${idCampo}-1`}
+            className="block text-sm font-medium text-theme-primary"
+          >
             1. Filtrar por Compositor (opcional)
           </label>
           <ComposerSearchInputSimple
+            id={`${idCampo}-1`}
             selectedComposer={composerFilter}
             onComposerSelect={setComposerFilter}
           />
-        </div>
+        </Stack>
 
-        <div>
-          <label className="block text-sm font-medium text-theme-primary mb-2">
+        <Stack gap={2}>
+          <label
+            htmlFor={`${idCampo}-2`}
+            className="block text-sm font-medium text-theme-primary"
+          >
             2. Selecionar Obra
           </label>
           <SimpleWorkSearchInput
+            id={`${idCampo}-2`}
             selectedWork={selectedWork}
             onWorkSelect={(id, data) => {
               setSelectedWork(id);
@@ -105,13 +114,13 @@ export function ScoreModal({ editor, onClose }: ScoreModalProps) {
             }}
             filterByComposer={composerFilter}
           />
-        </div>
+        </Stack>
 
         {selectedWork && (
           <div>
-            <label className="block text-sm font-medium text-theme-primary mb-2">
+            <span className="block text-sm font-medium text-theme-primary mb-2">
               3. Selecionar Partitura
-            </label>
+            </span>
 
             {loading ? (
               <Text papel="rotulo" tom="fraco" as="p">
@@ -158,7 +167,7 @@ export function ScoreModal({ editor, onClose }: ScoreModalProps) {
         )}
 
         {selectedScore && (
-          <div className="space-y-3 pt-4 border-t border-theme-secondary">
+          <Stack gap={3} className="pt-4 border-t border-theme-secondary">
             <Input
               label="Página inicial"
               type="number"
@@ -173,7 +182,7 @@ export function ScoreModal({ editor, onClose }: ScoreModalProps) {
               checked={allowDownload}
               onChange={(e) => setAllowDownload(e.target.checked)}
             />
-          </div>
+          </Stack>
         )}
 
         <div className="flex justify-end space-x-2 pt-4">

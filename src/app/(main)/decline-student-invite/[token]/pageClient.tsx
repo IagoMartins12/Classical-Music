@@ -177,7 +177,7 @@ export default function DeclineStudentInvitePage() {
                   __html: t('pages_token_jsx_p_children_0__se_recusar_convite'),
                 }}
               />
-              <ul className="text-sm space-y-2 ml-4">
+              <Stack gap={2} as="ul" className="text-sm ml-4">
                 <li>
                   {t('pages_token_jsx_li_children_0__relacionamento_removido')}
                 </li>
@@ -190,7 +190,7 @@ export default function DeclineStudentInvitePage() {
                 <li>
                   {t('pages_token_jsx_li_children_0__configurações_afetadas')}
                 </li>
-              </ul>
+              </Stack>
             </Stack>
           </Stack>
 
@@ -428,8 +428,6 @@ export default function DeclineStudentInvitePage() {
     <div className="min-h-screen flex items-center justify-center p-4">
       {/* Background Decorations */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        <div className="absolute -top-10 -left-10 w-40 h-40 opacity-10 rounded-full blur-3xl"></div>
-        <div className="absolute -bottom-10 -right-10 w-60 h-60 opacity-10 rounded-full blur-3xl"></div>
         <GiGrandPiano className="absolute top-20 right-20 w-12 h-12 opacity-5 rotate-12" />
         <GiGrandPiano className="absolute bottom-20 left-20 w-16 h-16 opacity-5 -rotate-12" />
       </div>

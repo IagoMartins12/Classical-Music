@@ -518,7 +518,7 @@ export default function LearnedVideoViewer({
                 </div>
 
                 {editingNotes ? (
-                  <div className="space-y-3">
+                  <Stack gap={3}>
                     <textarea
                       value={notes}
                       onChange={(e) => setNotes(e.target.value)}
@@ -546,7 +546,7 @@ export default function LearnedVideoViewer({
                         Cancelar
                       </Button>
                     </Inline>
-                  </div>
+                  </Stack>
                 ) : (
                   <Stack gap={3}>
                     {learned.notes && (

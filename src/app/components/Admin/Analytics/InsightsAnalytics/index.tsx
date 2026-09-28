@@ -573,7 +573,7 @@ export default function AdvancedInsightsAnalytics() {
                 <span>Próximas Ações Prioritárias</span>
               </Inline>
 
-              <div className="space-y-4">
+              <div className="gap-4 flex flex-col">
                 {insights.summary.actionItems
                   .sort((a, b) => {
                     const priorityOrder = { high: 3, medium: 2, low: 1 };
@@ -638,7 +638,7 @@ export default function AdvancedInsightsAnalytics() {
 
 function OverviewSection({ insights, onRefreshModule, isGenerating }: any) {
   return (
-    <div className="space-y-8">
+    <Stack gap={8}>
       <AnimatedItem direction="up" springType="gentle">
         <Inline
           as="h2"
@@ -912,7 +912,7 @@ function OverviewSection({ insights, onRefreshModule, isGenerating }: any) {
           )}
         </div>
       </AnimatedCard>
-    </div>
+    </Stack>
   );
 }
 
@@ -922,7 +922,7 @@ function PredictionsSection({
   isGenerating,
 }: any) {
   return (
-    <div className="space-y-8">
+    <Stack gap={8}>
       <AnimatedItem direction="up" springType="gentle">
         <div className="flex items-center justify-between mb-6">
           <Inline
@@ -1058,7 +1058,7 @@ function PredictionsSection({
           );
         })}
       </div>
-    </div>
+    </Stack>
   );
 }
 
@@ -1068,7 +1068,7 @@ function EducationalEngagementSection({
   isGenerating,
 }: any) {
   return (
-    <div className="space-y-8">
+    <Stack gap={8}>
       <AnimatedItem direction="up" springType="gentle">
         <div className="flex items-center justify-between mb-6">
           <Inline
@@ -1138,7 +1138,7 @@ function EducationalEngagementSection({
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
                   <Stack gap={1}>
                     <p className="text-theme-tertiary">Pontos de abandono:</p>
-                    <ul className="space-y-1">
+                    <Stack gap={1} as="ul">
                       {progression.dropoffPoints.map(
                         (point: string, i: number) => (
                           <Inline as="li" gap={1} key={i} className="">
@@ -1147,11 +1147,11 @@ function EducationalEngagementSection({
                           </Inline>
                         )
                       )}
-                    </ul>
+                    </Stack>
                   </Stack>
                   <Stack gap={1}>
                     <p className="text-theme-tertiary">Recomendações:</p>
-                    <ul className="space-y-1">
+                    <Stack gap={1} as="ul">
                       {progression.recommendations.map(
                         (rec: string, i: number) => (
                           <Inline as="li" gap={1} key={i} className="">
@@ -1160,7 +1160,7 @@ function EducationalEngagementSection({
                           </Inline>
                         )
                       )}
-                    </ul>
+                    </Stack>
                   </Stack>
                 </div>
               </Stack>
@@ -1354,7 +1354,7 @@ function EducationalEngagementSection({
           </Stack>
         </AnimatedCard>
       </div>
-    </div>
+    </Stack>
   );
 }
 
@@ -1365,7 +1365,7 @@ function UserJourneySection({
   isGenerating,
 }: any) {
   return (
-    <div className="space-y-8">
+    <Stack gap={8}>
       <AnimatedItem direction="up" springType="gentle">
         <div className="flex items-center justify-between mb-6">
           <Inline
@@ -1449,25 +1449,25 @@ function UserJourneySection({
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
                 <Stack gap={2}>
                   <p className="text-theme-tertiary">Fatores de Sucesso:</p>
-                  <ul className="space-y-1">
+                  <Stack gap={1} as="ul">
                     {journey.successFactors.map((factor: string, i: number) => (
                       <Inline as="li" gap={1} key={i} className="">
                         <span>•</span>
                         <span>{factor}</span>
                       </Inline>
                     ))}
-                  </ul>
+                  </Stack>
                 </Stack>
                 <Stack gap={2}>
                   <p className="text-theme-tertiary">Recomendações:</p>
-                  <ul className="space-y-1">
+                  <Stack gap={1} as="ul">
                     {journey.recommendations.map((rec: string, i: number) => (
                       <Inline as="li" gap={1} key={i} className="">
                         <span>•</span>
                         <span>{rec}</span>
                       </Inline>
                     ))}
-                  </ul>
+                  </Stack>
                 </Stack>
               </div>
             </div>
@@ -1625,7 +1625,7 @@ function UserJourneySection({
           ))}
         </div>
       </AnimatedCard>
-    </div>
+    </Stack>
   );
 }
 
@@ -1637,7 +1637,7 @@ function RiskAssessmentSection({
   isGenerating,
 }: any) {
   return (
-    <div className="space-y-8">
+    <Stack gap={8}>
       <AnimatedItem direction="up" springType="gentle">
         <div className="flex items-center justify-between mb-6">
           <Inline
@@ -1715,18 +1715,18 @@ function RiskAssessmentSection({
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
                     <Stack gap={1}>
                       <p className="text-theme-tertiary">Fatores de risco:</p>
-                      <ul className="space-y-1">
+                      <Stack gap={1} as="ul">
                         {user.riskFactors.map((factor: string, i: number) => (
                           <Inline as="li" gap={1} key={i} className="">
                             <span>•</span>
                             <span>{factor}</span>
                           </Inline>
                         ))}
-                      </ul>
+                      </Stack>
                     </Stack>
                     <Stack gap={1}>
                       <p className="text-theme-tertiary">Ações sugeridas:</p>
-                      <ul className="space-y-1">
+                      <Stack gap={1} as="ul">
                         {user.suggestedActions.map(
                           (action: string, i: number) => (
                             <Inline as="li" gap={1} key={i} className="">
@@ -1735,7 +1735,7 @@ function RiskAssessmentSection({
                             </Inline>
                           )
                         )}
-                      </ul>
+                      </Stack>
                     </Stack>
                   </div>
                 </Stack>
@@ -1821,7 +1821,7 @@ function RiskAssessmentSection({
           )}
         </div>
       </AnimatedCard>
-    </div>
+    </Stack>
   );
 }
 
@@ -1848,7 +1848,7 @@ function GrowthOpportunitiesSection({
   };
 
   return (
-    <div className="space-y-8">
+    <Stack gap={8}>
       <AnimatedItem direction="up" springType="gentle">
         <div className="flex items-center justify-between mb-6">
           <Inline
@@ -1914,7 +1914,7 @@ function GrowthOpportunitiesSection({
                 <h4 className="text-sm font-medium text-theme-primary">
                   Resultados Esperados:
                 </h4>
-                <ul className="space-y-1">
+                <Stack gap={1} as="ul">
                   {opportunity.expectedResults.map(
                     (result: string, i: number) => (
                       <Inline as="li" gap={1} key={i} className="text-sm">
@@ -1923,14 +1923,14 @@ function GrowthOpportunitiesSection({
                       </Inline>
                     )
                   )}
-                </ul>
+                </Stack>
               </Stack>
 
               <Stack gap={2}>
                 <h4 className="text-sm font-medium text-theme-primary">
                   Implementação:
                 </h4>
-                <ul className="space-y-1">
+                <Stack gap={1} as="ul">
                   {opportunity.implementation
                     .slice(0, 3)
                     .map((step: string, i: number) => (
@@ -1944,7 +1944,7 @@ function GrowthOpportunitiesSection({
                         <span>{step}</span>
                       </Inline>
                     ))}
-                </ul>
+                </Stack>
               </Stack>
 
               <div className="pt-3 border-t border-theme-secondary">
@@ -1973,7 +1973,7 @@ function GrowthOpportunitiesSection({
           </AnimatedCard>
         ))}
       </div>
-    </div>
+    </Stack>
   );
 }
 
@@ -1983,7 +1983,7 @@ function MonetizationSection({
   isGenerating,
 }: any) {
   return (
-    <div className="space-y-8">
+    <Stack gap={8}>
       <AnimatedItem direction="up" springType="gentle">
         <div className="flex items-center justify-between mb-6">
           <Inline
@@ -2146,7 +2146,7 @@ function MonetizationSection({
           )}
         </Stack>
       </AnimatedCard>
-    </div>
+    </Stack>
   );
 }
 
@@ -2157,7 +2157,7 @@ function BehaviorPatternsSection({
   isGenerating,
 }: any) {
   return (
-    <div className="space-y-8">
+    <Stack gap={8}>
       <AnimatedItem direction="up" springType="gentle">
         <div className="flex items-center justify-between mb-6">
           <Inline
@@ -2184,7 +2184,7 @@ function BehaviorPatternsSection({
         </div>
       </AnimatedItem>
 
-      <div className="space-y-6">
+      <Stack gap={6}>
         {patterns.map((pattern: any, index: number) => (
           <AnimatedCard key={index} className="classical-card p-6">
             <div className="flex items-start justify-between mb-4">
@@ -2239,8 +2239,8 @@ function BehaviorPatternsSection({
             </div>
           </AnimatedCard>
         ))}
-      </div>
-    </div>
+      </Stack>
+    </Stack>
   );
 }
 
@@ -2250,7 +2250,7 @@ function ContentPerformanceSection({
   isGenerating,
 }: any) {
   return (
-    <div className="space-y-8">
+    <Stack gap={8}>
       <AnimatedItem direction="up" springType="gentle">
         <div className="flex items-center justify-between mb-6">
           <Inline
@@ -2446,13 +2446,13 @@ function ContentPerformanceSection({
             ))}
         </Stack>
       </AnimatedCard>
-    </div>
+    </Stack>
   );
 }
 
 function AnomaliesSection({ anomalies, onRefreshModule, isGenerating }: any) {
   return (
-    <div className="space-y-8">
+    <Stack gap={8}>
       <AnimatedItem direction="up" springType="gentle">
         <div className="flex items-center justify-between mb-6">
           <Inline
@@ -2615,6 +2615,6 @@ function AnomaliesSection({ anomalies, onRefreshModule, isGenerating }: any) {
           })}
         </div>
       )}
-    </div>
+    </Stack>
   );
 }

@@ -18,12 +18,14 @@
 
   --color-ouro: var(--ouro);
   --color-ouro-texto: var(--ouro-texto);
+  --color-ouro-na-tinta: var(--ouro-na-tinta);
 
   --color-erro: var(--erro);
   --color-sobre-erro: var(--sobre-erro);
   --color-ok: var(--ok);
   --color-atencao: var(--atencao);
   --color-aviso: var(--aviso);
+  --color-verificado: var(--verificado);
 
   --radius-controle: var(--r-controle);
   --radius-card: var(--r-card);
@@ -165,6 +167,9 @@
   /* Degradê para letra, não para fundo: as duas pontas passam no contraste.
      Escuro: 11,90 e 10,60:1 sobre o fundo. */
   --ouro-texto-grad: linear-gradient(var(--angulo), #e8c863, #d4af37);
+  /* Ouro de texto sobre a tinta dourada (selo, ficha ativa). No escuro é o
+     próprio ouro de texto: 6,3:1 sobre a tinta. */
+  --ouro-na-tinta: var(--ouro-texto);
 
   /* --- Estados: quatro, não onze. --- */
   --erro: #e8735a;
@@ -173,6 +178,10 @@
   --ok: #6a9b6e;
   --atencao: #d9a441;
   --aviso: #6f8fbf;
+  /* O selo de verificada é azul, por decisão do dono (28/09): a única cor
+     fora do ouro que não é de estado, e só nele. 6,7:1 sobre o fundo e 5,8:1
+     sobre o card. */
+  --verificado: #4c9bf0;
 
   /* --- Espaço: os seis degraus que o projeto já usava (94,9% dos usos). --- */
   --e-1: 4px;
@@ -313,6 +322,10 @@
   /* Título em degradê metálico: 1,85 a 3,05:1. O degradê do botão, que era
      usado aqui, dava 1,72 a 2,24:1. Versão segura: #b37f05 → #916800. */
   --ouro-texto-grad: linear-gradient(var(--angulo), #ddb33e, #b58710);
+  /* O `#bb860a` sobre a tinta dourada caía a 2,6:1 — abaixo até dos 3:1
+     aceitos para o ouro de texto. Um degrau mais escuro, o mesmo matiz:
+     4,7:1 sobre a tinta. Só no selo e na ficha ativa (`Badge`). */
+  --ouro-na-tinta: #855f00;
   /* Botão dourado no creme: mais claro e menos saturado. O ouro cheio do tema
      escuro, sobre o papel, pesava demais. O texto escuro continua em 11 a
      13,6:1. */
@@ -331,6 +344,8 @@
   --ok: #41693f;
   --atencao: #8a6416;
   --aviso: #355789;
+  /* 4,7:1 sobre o creme (acima dos 3:1 que um ícone pede). */
+  --verificado: #1f6fd1;
 
   --bg-overlay: rgba(45, 38, 24, 0.5);
   --interactive-disabled: rgba(107, 102, 120, 0.25);
@@ -394,6 +409,13 @@
    grande (em 720px fixos, um subtítulo de 24px caía para 55 caracteres).
    `medida-texto` vai no parágrafo ou título; `coluna-leitura` na coluna de
    cards de texto, somando o recuo do card. */
+/* A superfície rebaixada como utilitário: a caixa agrupada sem borda
+   (Etapa 7.8). Era usada em 384 lugares sem existir — não gerava CSS e a
+   caixa saía transparente. Degradê não é cor, por isso não vem do @theme. */
+@utility bg-sup-2 {
+  background: var(--sup-2);
+}
+
 @utility medida-texto {
   /* 60ch ≈ 75 letras: o `ch` é a largura do "0", mais largo que a letra
      média da Geist — 75ch davam ~105 letras por linha. */
@@ -561,15 +583,36 @@
   animation: tema-revela 450ms var(--saida);
 }
 
-/* Navegação e lista (`ui/transicao`). O card vira a página em 320ms; ao
-   filtrar, cada card desliza até o novo lugar em 280ms. O resto da página
-   cruza no tempo padrão do navegador. */
-::view-transition-group(*.cartao) {
-  animation-duration: 320ms;
-  animation-timing-function: var(--saida);
+/* Card de compositor ou de obra: inteiro clicável (`ui/CartoesQueViram`). */
+[data-vira] {
+  cursor: pointer;
+}
+
+/* Navegação e lista (`ui/transicao`). O card vira a página em 560ms — mais
+   que os 320ms do resto do sistema, por pedido do dono: é um movimento
+   grande, de um card a um cabeçalho, e em 320ms não dava para acompanhar.
+   A curva acelera e freia (ida e chegada), e a foto antiga do card cruza
+   com a nova no mesmo tempo; o resto da página cruza junto. Ao filtrar,
+   cada card desliza até o novo lugar em 380ms (`useReordenacao`). */
+::view-transition-group(*.cartao),
+::view-transition-old(*.cartao),
+::view-transition-new(*.cartao) {
+  animation-duration: 560ms;
+  animation-timing-function: cubic-bezier(0.65, 0, 0.35, 1);
+}
+:root:not(.trocando-tema)::view-transition-old(root),
+:root:not(.trocando-tema)::view-transition-new(root) {
+  animation-duration: 400ms;
+}
+/* Troca de vista (cards ↔ lista): cada card vira a sua linha. */
+::view-transition-group(*.vista),
+::view-transition-old(*.vista),
+::view-transition-new(*.vista) {
+  animation-duration: 420ms;
+  animation-timing-function: cubic-bezier(0.65, 0, 0.35, 1);
 }
 ::view-transition-group(*.item-lista) {
-  animation-duration: 280ms;
+  animation-duration: 380ms;
   animation-timing-function: var(--saida);
 }
 @media (prefers-reduced-motion: reduce) {
@@ -1122,7 +1165,13 @@ body {
   );
   background-size: 220% 100%;
   animation: shimmer 1.6s ease-in-out infinite;
-  border-radius: 0.5rem;
+}
+/* O raio padrão fica numa camada: fora dela ele vencia todo `rounded-*` — o
+   esqueleto de retrato (`rounded-full`) saía quadrado. */
+@layer components {
+  .loading-skeleton {
+    border-radius: 0.5rem;
+  }
 }
 @media (prefers-reduced-motion: reduce) {
   .loading-skeleton {
@@ -1135,8 +1184,15 @@ body {
    somem antes do topo, com uma deriva lateral pequena. Sem pulso, sem
    desfoque; com movimento reduzido, não aparecem. */
 .nota-ao-fundo {
+  --nota-opacidade: 0.28;
   opacity: 0;
   animation: nota-sobe 14s linear infinite;
+}
+/* No creme, o ouro claro a 28% sumia no fundo: o ouro de texto, mais
+   escuro, e um pouco mais presente. */
+:root[data-theme='light'] .nota-ao-fundo {
+  --nota-opacidade: 0.42;
+  color: var(--ouro-texto);
 }
 /* Sobe a altura do contêiner (e não da janela): num bloco baixo, a nota
    atravessaria em segundos e passaria o resto do ciclo escondida. */
@@ -1147,10 +1203,10 @@ body {
     opacity: 0;
   }
   15% {
-    opacity: 0.28;
+    opacity: var(--nota-opacidade);
   }
   70% {
-    opacity: 0.28;
+    opacity: var(--nota-opacidade);
   }
   100% {
     bottom: 105%;
@@ -1165,7 +1221,9 @@ body {
 }
 
 /* Selo de verificada (`ui/SeloVerificada`): com `.selo-desenha`, o contorno
-   se traça e o visto entra depois — 1,3s, uma vez. */
+   se traça e o visto entra depois — 1,3s, uma vez. Ao abrir a página da obra
+   ou do compositor (`.selo-entrada`), ele espera o card virar a página
+   (560ms) para começar. */
 .selo-desenha .selo-contorno,
 .selo-desenha .selo-visto {
   stroke-dasharray: 1;
@@ -1176,6 +1234,12 @@ body {
 }
 .selo-desenha .selo-visto {
   animation: selo-traca 0.5s var(--saida) 0.8s forwards;
+}
+.selo-entrada.selo-desenha .selo-contorno {
+  animation-delay: 0.5s;
+}
+.selo-entrada.selo-desenha .selo-visto {
+  animation-delay: 1.3s;
 }
 @keyframes selo-traca {
   to {

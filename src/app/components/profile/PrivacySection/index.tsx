@@ -291,13 +291,13 @@ const PrivacySection: React.FC<PrivacySectionProps> = ({
         <h4 className="font-medium text-theme-primary mb-2">
           {t('privacy_security_info')}
         </h4>
-        <ul className="text-sm text-theme-secondary space-y-1">
+        <Stack gap={1} as="ul" className="text-sm text-theme-secondary">
           <li>{t('privacy_email_never_shown')}</li>
           <li>{t('privacy_admin_only')}</li>
           <li>{t('privacy_can_change')}</li>
           <li>{t('privacy_study_data_private')}</li>
           <li>{t('privacy_auto_save')}</li>
-        </ul>
+        </Stack>
       </Card>
     </Stack>
   );

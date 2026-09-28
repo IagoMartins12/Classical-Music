@@ -142,8 +142,8 @@ export default function AboutPage() {
         <AnimatedContainer delay={0.1} staggerSpeed="normal">
           <div className="section-wrap">
             <div className="grid lg:grid-cols-2 gap-16 items-center">
-              <div className="space-y-8">
-                <div className="inline-flex items-center px-4 py-2 rounded-full bg-sup-2">
+              <div className="gap-8 flex flex-col">
+                <div className="inline-flex items-center px-4 py-2 rounded-full bg-sup-2 self-start">
                   <PiTarget className="w-4 h-4 mr-2" />
                   <span className="font-medium text-sm">
                     {t('about_mission_badge')}
@@ -165,7 +165,7 @@ export default function AboutPage() {
 
                   <AnimatedCard
                     hover="lift"
-                    className="flex items-start space-x-4 p-6 rounded-2xl bg-sup-2"
+                    className="flex items-start space-x-4 p-6 rounded-2xl"
                   >
                     <div className="w-12 h-12 rounded-xl flex items-center justify-center flex-shrink-0">
                       <PiHeart className="w-6 h-6 text-theme-primary" />

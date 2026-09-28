@@ -44,7 +44,7 @@ import { useMostFavoritedForWork } from '@/app/stores/useMostFavoritedStore';
 import IMSLPTabsIncremental from '../../../../components/WorkDetailsClient/IMSLPTabsIncremental';
 import ReportButton from '../../../../components/Report/ReportButton';
 import VerificationModal from '../../../../components/Verification/VerificationModal';
-import VerificationBadge from '../../../../components/Verification/VerificationBadge';
+import { SeloNoTitulo } from '../../../../components/Verification/VerificationBadge';
 import VerificationButton from '../../../../components/Verification/VerificationButton';
 import EditButton from '../../../../components/Common/EditButton';
 import MediaSection from '../../../../components/Players/MediaSection';
@@ -398,7 +398,7 @@ export default function WorkDetailsClient({
   if (isSelectionMode || isInSelectionMode) {
     return (
       <div className="">
-        <div className="section-wrap space-y-8 relative z-10">
+        <Stack gap={8} className="section-wrap relative z-10">
           {/* Header do modo seleção MELHORADO */}
           <AnimatedItem direction="down" springType="gentle">
             <div className="bg-theme-elevated rounded-2xl p-4 md:p-6 mb-6">
@@ -552,7 +552,7 @@ export default function WorkDetailsClient({
               </AnimatedCard>
             </div>
           </div>
-        </div>
+        </Stack>
       </div>
     );
   }
@@ -562,7 +562,7 @@ export default function WorkDetailsClient({
     <div className="">
       <LearningInitializer learningData={learningData} />
 
-      <div className="section-wrap space-y-8 relative z-10">
+      <Stack gap={8} className="section-wrap relative z-10">
         {/* Breadcrumb */}
         <AnimatedItem direction="down" springType="gentle">
           <Inline
@@ -644,19 +644,16 @@ export default function WorkDetailsClient({
                   <div className="space-y-4">
                     <div className="flex items-start justify-between mb-4">
                       <div className="flex-1">
-                        <div className="flex items-center  gap-4">
-                          <h1 className="text-4xl md:text-5xl font-bold text-gradient-brand classical-title leading-tight">
-                            {work.title}
-                          </h1>
-                          {/* Sempre montado: o selo precisa ver a obra passar a verificada
-    para se desenhar (sem nada, ele não ocupa espaço). */}
-                          <VerificationBadge
+                        {/* O selo fica sempre montado (precisa ver a obra passar a
+                            verificada para se desenhar) e colado na última
+                            palavra do título. */}
+                        <h1 className="text-4xl md:text-5xl font-bold text-gradient-brand classical-title leading-tight">
+                          <SeloNoTitulo
+                            texto={work.title}
                             verified={isVerified}
-                            size="lg"
-                            variant="icon"
                             title="Peça"
                           />
-                        </div>
+                        </h1>
                         {/* Subtitle */}
                         {work.subtitle && (
                           <h2 className="text-2xl md:text-3xl text-theme-secondary mt-2 classical-subtitle font-medium">
@@ -1396,7 +1393,7 @@ export default function WorkDetailsClient({
             />
           )}
         </AnimatedContainer>
-      </div>
+      </Stack>
       {/* LearningModal global */}
       <LearningModal />
     </div>

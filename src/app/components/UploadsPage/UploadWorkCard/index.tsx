@@ -1,5 +1,6 @@
 // app/components/uploads/UploadWorkCard.tsx - TRADUZIDO
 'use client';
+import { Button } from '@/app/components/ui/Button';
 
 import { useState } from 'react';
 import {
@@ -147,13 +148,14 @@ const UploadWorkCard = ({
             )}
 
             <Inline gap={1} className="-300">
-              <button
+              <Button
+                variante="fantasma"
+                tamanho="p"
                 onClick={handleEditClick}
-                className="w-8 h-8 rounded-lg bg-theme-secondary text-theme-tertiary transition-colors flex items-center justify-center"
+                icone={PiNotePencil}
               >
-                <PiNotePencil className="w-4 h-4" />
                 <NomeAcao acao="editar" />
-              </button>
+              </Button>
 
               <button
                 onClick={handleDeleteClick}
@@ -184,15 +186,16 @@ const UploadWorkCard = ({
             {/* Floating action buttons */}
             <Stack
               gap={2}
-              className="absolute top-0 sm:top-4 right-4 z-50 opacity-100 transition-all duration-300 transform translate-y-2 group-hover:translate-y-0"
+              className="absolute top-0 sm:top-4 right-4 z-elevado opacity-100 transition-all duration-300 transform translate-y-2 group-hover:translate-y-0"
             >
-              <button
+              <Button
+                variante="fantasma"
+                tamanho="p"
                 onClick={handleEditClick}
-                className="w-8 h-8 rounded-lg bg-theme-elevated text-theme-tertiary transition-colors flex items-center justify-center shadow-theme-medium"
+                icone={PiNotePencil}
               >
-                <PiNotePencil className="w-4 h-4" />
                 <NomeAcao acao="editar" />
-              </button>
+              </Button>
 
               <button
                 onClick={handleDeleteClick}
@@ -229,7 +232,7 @@ const UploadWorkCard = ({
           {/* Content Section */}
           <div className="p-2 md:p-6 flex-1 w-full flex flex-col">
             {/* Work Details */}
-            <div className="space-y-3 mb-4 flex-1">
+            <div className="gap-3 mb-4 flex-1 flex flex-col">
               {/* Instrument */}
               {item.instrumentName && (
                 <div className="flex items-center">

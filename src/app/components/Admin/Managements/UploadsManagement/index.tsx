@@ -154,9 +154,9 @@ const ActivityDetailModal = ({
         {/* Informações básicas */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div>
-            <label className="text-sm font-medium text-theme-secondary">
+            <span className="text-sm font-medium text-theme-secondary">
               Usuário
-            </label>
+            </span>
             <Inline gap={2} className="mt-1">
               <PiUser className="w-4 h-4 text-theme-tertiary" />
               <span className="text-theme-primary">{activity.user.name}</span>
@@ -164,9 +164,9 @@ const ActivityDetailModal = ({
           </div>
 
           <div>
-            <label className="text-sm font-medium text-theme-secondary">
+            <span className="text-sm font-medium text-theme-secondary">
               Data
-            </label>
+            </span>
             <Inline gap={2} className="mt-1">
               <PiCalendarBlank className="w-4 h-4 text-theme-tertiary" />
               <span className="text-theme-primary">
@@ -176,9 +176,9 @@ const ActivityDetailModal = ({
           </div>
 
           <div>
-            <label className="text-sm font-medium text-theme-secondary">
+            <span className="text-sm font-medium text-theme-secondary">
               Tipo de Entidade
-            </label>
+            </span>
             <Inline gap={2} className="mt-1">
               <EntityIcon className="w-4 h-4 text-theme-tertiary" />
               <span className="text-theme-primary">
@@ -188,9 +188,9 @@ const ActivityDetailModal = ({
           </div>
 
           <div>
-            <label className="text-sm font-medium text-theme-secondary">
+            <span className="text-sm font-medium text-theme-secondary">
               Ação
-            </label>
+            </span>
             <Inline gap={2} className="mt-1">
               <PiNotePencil className="w-4 h-4 text-theme-tertiary" />
               <span className="text-theme-primary">
@@ -203,9 +203,9 @@ const ActivityDetailModal = ({
         {/* Detalhes da entidade */}
         {activity.entityDetails && (
           <Stack gap={2}>
-            <label className="text-sm font-medium text-theme-secondary block">
+            <span className="text-sm font-medium text-theme-secondary block">
               Detalhes da Entidade
-            </label>
+            </span>
             <div className="bg-theme-secondary rounded-xl p-4">
               {activity.entityType === 'composer' && (
                 <div>
@@ -252,9 +252,9 @@ const ActivityDetailModal = ({
         {/* Motivo */}
         {activity.reason && (
           <Stack gap={2}>
-            <label className="text-sm font-medium text-theme-secondary block">
+            <span className="text-sm font-medium text-theme-secondary block">
               Motivo
-            </label>
+            </span>
             <div className="bg-theme-secondary rounded-xl p-4">
               <p className="text-theme-primary">{activity.reason}</p>
             </div>
@@ -264,9 +264,9 @@ const ActivityDetailModal = ({
         {/* Mudanças */}
         {activity.changes && (
           <Stack gap={2}>
-            <label className="text-sm font-medium text-theme-secondary block">
+            <span className="text-sm font-medium text-theme-secondary block">
               Mudanças Realizadas
-            </label>
+            </span>
             <div className="bg-theme-secondary rounded-xl p-4">
               <pre className="text-sm text-theme-primary whitespace-pre-wrap">
                 {JSON.stringify(activity.changes, null, 2)}
@@ -277,9 +277,9 @@ const ActivityDetailModal = ({
 
         {/* Informações do usuário */}
         <Stack gap={2}>
-          <label className="text-sm font-medium text-theme-secondary block">
+          <span className="text-sm font-medium text-theme-secondary block">
             Informações do Usuário
-          </label>
+          </span>
           <Stack gap={2} className="bg-theme-secondary rounded-xl p-4">
             <div className="flex justify-between">
               <span className="text-theme-tertiary">Email:</span>
@@ -766,7 +766,7 @@ export default function UploadsManagement() {
 
             {/* Filtros */}
             <div
-              className={`space-y-4 mb-6 ${showFilters ? 'block' : 'hidden'}`}
+              className={`gap-4 mb-6 flex flex-col ${showFilters ? 'block' : 'hidden'}`}
             >
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                 <div className="relative">

@@ -272,8 +272,8 @@ export default function CopyrightPage() {
       <section className="py-8">
         <AnimatedContainer delay={0.1} staggerSpeed="normal">
           <div className=" ">
-            <div className="max-w-4xl mx-auto">
-              <Stack className="text-center mb-8">
+            <Stack gap={8} className="max-w-4xl mx-auto">
+              <Stack className="text-center">
                 <h2 className="text-3xl font-bold classical-title text-theme-primary">
                   {t('copyright_jsx_h2_children_0__exemplos_domínio_público')}
                 </h2>
@@ -309,7 +309,7 @@ export default function CopyrightPage() {
                   ))}
                 </div>
               </AnimatedCard>
-            </div>
+            </Stack>
           </div>
         </AnimatedContainer>
       </section>
@@ -318,7 +318,7 @@ export default function CopyrightPage() {
       <section className="">
         <AnimatedContainer delay={0.1} staggerSpeed="fast">
           <div className="">
-            <div className="max-w-4xl mx-auto space-y-8">
+            <Stack gap={8} className="max-w-4xl mx-auto">
               {copyrightData.map((section, index) => (
                 <AnimatedItem
                   key={section.id}
@@ -352,7 +352,7 @@ export default function CopyrightPage() {
                   </div>
                 </AnimatedItem>
               ))}
-            </div>
+            </Stack>
           </div>
         </AnimatedContainer>
       </section>
@@ -361,8 +361,8 @@ export default function CopyrightPage() {
       <section className="py-8">
         <AnimatedContainer delay={0.1} staggerSpeed="normal">
           <div className=" ">
-            <div className="max-w-4xl mx-auto">
-              <Stack className="text-center mb-12">
+            <Stack gap={12} className="max-w-4xl mx-auto">
+              <Stack className="text-center">
                 <h2 className="text-3xl font-bold classical-title text-theme-primary">
                   {t('copyright_jsx_h2_children_0__processo_report')}
                 </h2>
@@ -393,7 +393,7 @@ export default function CopyrightPage() {
                   ))}
                 </Stack>
               </AnimatedCard>
-            </div>
+            </Stack>
           </div>
         </AnimatedContainer>
       </section>
@@ -412,7 +412,7 @@ export default function CopyrightPage() {
                     <h3 className="text-xl font-bold classical-title text-theme-primary">
                       {t('copyright_jsx_h3_children_0__warning')}
                     </h3>
-                    <ul className="space-y-3 text-theme-secondary">
+                    <Stack gap={3} as="ul" className="text-theme-secondary">
                       <li className="flex items-start space-x-2">
                         <PiCheck className="w-4 h-4 mt-0.5 flex-shrink-0" />
                         <span>
@@ -445,7 +445,7 @@ export default function CopyrightPage() {
                           )}
                         </span>
                       </li>
-                    </ul>
+                    </Stack>
                   </Stack>
                 </div>
               </AnimatedCard>

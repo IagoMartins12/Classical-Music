@@ -1,6 +1,7 @@
 'use client';
+import { Button as Botao } from '@/app/components/ui/Button';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useId } from 'react';
 import { useSession } from '@/app/libs/session';
 import { useRouter } from 'next/navigation';
 import {
@@ -63,6 +64,7 @@ const statusOptions = [
 ];
 
 export default function AdminCouponsPageClient() {
+  const idCampo = useId();
   const { status } = useSession();
   const router = useRouter();
 
@@ -480,10 +482,17 @@ export default function AdminCouponsPageClient() {
 
               {/* Planos Aplicáveis */}
               <div>
-                <label className="block text-sm font-medium text-theme-secondary mb-2">
+                <span
+                  id={`${idCampo}-1`}
+                  className="block text-sm font-medium text-theme-secondary mb-2"
+                >
                   Planos Aplicáveis
-                </label>
-                <div className="flex flex-wrap gap-2">
+                </span>
+                <div
+                  role="group"
+                  aria-labelledby={`${idCampo}-1`}
+                  className="flex flex-wrap gap-2"
+                >
                   {['PLUS', 'MENTOR', 'MAESTRO'].map((plan) => (
                     <Button
                       key={plan}
@@ -771,9 +780,9 @@ function CouponCard({
 
       {/* Actions */}
       <div className="flex items-center gap-2 pt-4 border-t border-theme-secondary">
-        <button
+        <Botao
+          tamanho="p"
           onClick={onToggle}
-          className="flex items-center gap-2 px-3 py-2 rounded-lg bg-theme-secondary text-theme-secondary transition-colors text-sm font-medium"
           title={coupon.isActive ? 'Desativar' : 'Ativar'}
         >
           {coupon.isActive ? (
@@ -787,23 +796,22 @@ function CouponCard({
               <span>Inativo</span>
             </>
           )}
-        </button>
+        </Botao>
 
-        <button
-          onClick={onEdit}
-          className="flex items-center gap-2 px-3 py-2 rounded-lg bg-theme-secondary text-ouro-texto transition-colors text-sm font-medium"
-        >
+        <Botao tamanho="p" onClick={onEdit}>
           <PiPencilSimple className="w-4 h-4" />
           <span>Editar</span>
-        </button>
+        </Botao>
 
-        <button
+        <Botao
+          variante="fantasma"
+          tamanho="p"
           onClick={onDelete}
-          className="flex items-center gap-2 px-3 py-2 rounded-lg bg-theme-secondary hover:bg-red-500/10 transition-colors text-sm font-medium ml-auto !text-erro"
+          icone={PiTrash}
+          className="ml-auto text-erro"
         >
-          <PiTrash className="w-4 h-4" />
           <NomeAcao acao="excluir" />
-        </button>
+        </Botao>
       </div>
     </div>
   );

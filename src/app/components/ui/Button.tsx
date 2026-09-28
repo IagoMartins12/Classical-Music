@@ -1,11 +1,14 @@
-import type {
-  ButtonHTMLAttributes,
-  ComponentType,
-  ReactNode,
-  SVGProps,
+import {
+  isValidElement,
+  type ButtonHTMLAttributes,
+  type ComponentType,
+  type ReactNode,
+  type Ref,
+  type SVGProps,
 } from 'react';
 import { cx } from './cx';
 import { Icon } from './Icon';
+import { NomeAcao } from './NomeAcao';
 
 /**
  * O botão do sistema.
@@ -25,7 +28,7 @@ import { Icon } from './Icon';
  * recomendado num telefone.
  */
 
-type Variante = 'primario' | 'secundario' | 'fantasma' | 'perigo';
+type Variante = 'primario' | 'secundario' | 'fantasma' | 'perigo' | 'texto';
 type Tamanho = 'p' | 'm';
 
 const VARIANTE: Record<Variante, string> = {
@@ -36,6 +39,14 @@ const VARIANTE: Record<Variante, string> = {
     'bg-transparent text-texto-suave border-transparent hover:text-texto hover:bg-[var(--interactive-hover)] font-medium',
   perigo:
     'bg-erro text-sobre-erro border-transparent font-semibold hover:bg-[color-mix(in_srgb,var(--erro)_86%,var(--texto))]',
+  /**
+   * Ação com cara de link, no meio do texto ou ao pé de um bloco ("Voltar",
+   * "Ver todos os resultados", "Limpar filtros"). Sem fundo, sem moldura e
+   * sem a altura mínima: ela mora numa linha de texto. Eram botões escritos à
+   * mão, cada um com o seu dourado.
+   */
+  texto:
+    'bg-transparent border-transparent text-ouro-texto font-medium hover:underline underline-offset-4 !min-h-0 !px-0',
 };
 
 const TAMANHO: Record<Tamanho, string> = {
@@ -52,6 +63,8 @@ const TAMANHO: Record<Tamanho, string> = {
 const RECUO: Record<Tamanho, string> = { p: 'px-3.5', m: 'px-5' };
 
 interface BaseProps extends ButtonHTMLAttributes<HTMLButtonElement> {
+  /** No React 19 o `ref` chega como prop e segue para o `<button>`. */
+  ref?: Ref<HTMLButtonElement>;
   variante?: Variante;
   tamanho?: Tamanho;
   icone?: ComponentType<SVGProps<SVGSVGElement>>;
@@ -86,7 +99,10 @@ export function Button({
   children,
   ...resto
 }: ButtonProps) {
-  const soIcone = !children;
+  // Só ícone também quando o único filho é o nome para leitor de tela
+  // (`NomeAcao`), que não ocupa lugar na tela.
+  const soIcone =
+    !children || (isValidElement(children) && children.type === NomeAcao);
 
   return (
     <button

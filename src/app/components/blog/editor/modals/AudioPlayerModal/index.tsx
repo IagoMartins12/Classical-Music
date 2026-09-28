@@ -3,7 +3,7 @@
 // ============================================
 'use client';
 
-import { useState } from 'react';
+import { useState, useId } from 'react';
 import { Editor } from '@tiptap/react';
 import { PiMusicNotes, PiUploadSimple } from 'react-icons/pi';
 import Modal from '@/app/components/Modal';
@@ -30,6 +30,7 @@ export function AudioPlayerModal({
   sessionId,
 }: AudioPlayerModalProps) {
   // Tabs
+  const idCampo = useId();
   const [activeTab, setActiveTab] = useState<'upload' | 'youtube'>('upload');
 
   // Dados do áudio
@@ -171,7 +172,7 @@ export function AudioPlayerModal({
       title="Inserir Player de Áudio"
       maxWidth="2xl"
     >
-      <form onSubmit={handleSubmit} className="space-y-4">
+      <Stack as="form" onSubmit={handleSubmit}>
         {/* TABS */}
         <div className="flex">
           <button
@@ -202,10 +203,17 @@ export function AudioPlayerModal({
         {activeTab === 'upload' && (
           <>
             <Stack gap={2}>
-              <label className="block text-sm font-medium text-theme-primary">
+              <span
+                id={`${idCampo}-1`}
+                className="block text-sm font-medium text-theme-primary"
+              >
                 Selecionar Arquivo de Áudio
-              </label>
-              <div className="border-2 border-dashed border-theme-secondary rounded-lg p-6 text-center transition-colors">
+              </span>
+              <div
+                role="group"
+                aria-labelledby={`${idCampo}-1`}
+                className="border-2 border-dashed border-theme-secondary rounded-lg p-6 text-center transition-colors"
+              >
                 <input
                   type="file"
                   id="audio-upload"
@@ -307,10 +315,14 @@ export function AudioPlayerModal({
             </h4>
 
             <div>
-              <label className="block text-sm font-medium text-theme-primary mb-2">
+              <label
+                htmlFor={`${idCampo}-2`}
+                className="block text-sm font-medium text-theme-primary mb-2"
+              >
                 Compositor (opcional)
               </label>
               <ComposerSearchInputSimple
+                id={`${idCampo}-2`}
                 selectedComposer={selectedComposer}
                 onComposerSelect={handleComposerSelect}
               />
@@ -320,10 +332,14 @@ export function AudioPlayerModal({
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-theme-primary mb-2">
+              <label
+                htmlFor={`${idCampo}-3`}
+                className="block text-sm font-medium text-theme-primary mb-2"
+              >
                 Obra (opcional)
               </label>
               <SimpleWorkSearchInput
+                id={`${idCampo}-3`}
                 selectedWork={selectedWork}
                 onWorkSelect={handleWorkSelect}
                 filterByComposer={selectedComposer}
@@ -352,7 +368,7 @@ export function AudioPlayerModal({
             Inserir Player
           </Button>
         </div>
-      </form>
+      </Stack>
     </Modal>
   );
 }

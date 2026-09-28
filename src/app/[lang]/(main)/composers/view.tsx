@@ -1,8 +1,6 @@
 // app/[lang]/(main)/composers/view.tsx
 import { Metadata } from 'next';
-import { Suspense } from 'react';
 import ComposersServer from './pageServer';
-import { ListPageLoading } from '@/app/wrappers/SuspenseWrapper';
 import type { Language } from '@/app/utils/translations/serverTranslations';
 import { alternatesFor } from '@/app/utils/seoAlternates';
 
@@ -39,15 +37,18 @@ export function ComposersView({
   epochId: string;
   language: Language;
 }) {
+  // Sem `Suspense` aqui dentro: a cada filtro a página é outra (a URL muda de
+  // query string), e um limite novo mostraria o esqueleto no lugar da grade —
+  // os cards não teriam de onde deslizar até o novo lugar. Sem ele, a
+  // navegação segura a grade atual até a nova chegar. A entrada na rota tem o
+  // esqueleto do `loading.tsx`.
   return (
-    <Suspense fallback={<ListPageLoading />}>
-      <ComposersServer
-        page={page}
-        search={search}
-        epochId={epochId}
-        language={language}
-      />
-    </Suspense>
+    <ComposersServer
+      page={page}
+      search={search}
+      epochId={epochId}
+      language={language}
+    />
   );
 }
 

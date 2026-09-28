@@ -1,7 +1,7 @@
 // app/admin/ads/components/MediaUploadModal.tsx - Modal com preview corrigido
 'use client';
 
-import { useState, useRef, useCallback } from 'react';
+import { useState, useRef, useCallback, useId } from 'react';
 import {
   PiCheck,
   PiDeviceMobile,
@@ -53,6 +53,7 @@ export default function MediaUploadModal({
   onClose,
   onSuccess,
 }: MediaUploadModalProps) {
+  const idCampo = useId();
   const [uploading, setUploading] = useState(false);
   const [uploadType, setUploadType] = useState<'image' | 'video'>('image');
   const [quality, setQuality] = useState<'high' | 'medium' | 'low'>('high');
@@ -554,15 +555,22 @@ export default function MediaUploadModal({
           )}
 
           {activeTab === 'upload' && (
-            <div className="space-y-6">
+            <div className="gap-6 flex flex-col">
               {/* Controles de upload */}
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 {/* Tipo de mídia */}
                 <Stack gap={3}>
-                  <label className="block text-sm font-medium text-theme-primary">
+                  <span
+                    id={`${idCampo}-1`}
+                    className="block text-sm font-medium text-theme-primary"
+                  >
                     Tipo de Mídia
-                  </label>
-                  <div className="flex space-x-4">
+                  </span>
+                  <div
+                    role="group"
+                    aria-labelledby={`${idCampo}-1`}
+                    className="flex space-x-4"
+                  >
                     <Inline as="label" gap={3} className="cursor-pointer">
                       <input
                         type="radio"
@@ -598,11 +606,15 @@ export default function MediaUploadModal({
                 </Stack>
 
                 {/* Qualidade */}
-                <div>
-                  <label className="block text-sm font-medium text-theme-primary mb-3">
+                <Stack gap={3}>
+                  <label
+                    htmlFor={`${idCampo}-2`}
+                    className="block text-sm font-medium text-theme-primary"
+                  >
                     Qualidade de Processamento
                   </label>
                   <select
+                    id={`${idCampo}-2`}
                     value={quality}
                     onChange={(e) =>
                       setQuality(e.target.value as 'high' | 'medium' | 'low')
@@ -615,7 +627,7 @@ export default function MediaUploadModal({
                       </option>
                     ))}
                   </select>
-                </div>
+                </Stack>
               </div>
 
               {/* 🆕 Preview do arquivo selecionado - CORRIGIDO */}
@@ -655,7 +667,7 @@ export default function MediaUploadModal({
                     </div>
 
                     {/* Informações */}
-                    <div className="space-y-3">
+                    <div className="gap-3 flex flex-col">
                       <div>
                         <Text
                           papel="rotulo"
@@ -744,7 +756,7 @@ export default function MediaUploadModal({
                 />
 
                 {uploading ? (
-                  <div className="space-y-4">
+                  <div className="gap-4 flex flex-col">
                     <div className="w-16 h-16 border-4 border-t-transparent rounded-full animate-spin mx-auto"></div>
                     <div>
                       <p className="text-theme-primary font-medium text-lg">
@@ -756,7 +768,7 @@ export default function MediaUploadModal({
                     </div>
                   </div>
                 ) : (
-                  <div className="space-y-4">
+                  <div className="gap-4 flex flex-col">
                     <div className="w-20 h-20 rounded-2xl flex items-center justify-center mx-auto">
                       {uploadType === 'image' ? (
                         <PiImage className="w-10 h-10 text-ouro-texto" />
@@ -821,7 +833,11 @@ export default function MediaUploadModal({
                     <h4 className="font-medium text-theme-primary">
                       Processamento Inteligente
                     </h4>
-                    <ul className="text-sm text-theme-secondary space-y-1">
+                    <Stack
+                      gap={1}
+                      as="ul"
+                      className="text-sm text-theme-secondary"
+                    >
                       <li>• Arquivos salvos em pasta exclusiva do anúncio</li>
                       <li>
                         • Criamos versões otimizadas para desktop, tablet e
@@ -833,7 +849,7 @@ export default function MediaUploadModal({
                       <li>• Compressão inteligente para carregamento rápido</li>
                       <li>• Formato WebP para imagens (melhor compressão)</li>
                       <li>• Thumbnails automáticos para vídeos</li>
-                    </ul>
+                    </Stack>
                   </Stack>
                 </div>
               </Card>

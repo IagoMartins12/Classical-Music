@@ -1,5 +1,7 @@
 // app/annotations/AnnotationsPageClient.tsx - ATUALIZADO COM CARD/LIST LAYOUT
 'use client';
+import { Button as Botao } from '@/app/components/ui/Button';
+import { Aba, Abas } from '@/app/components/ui/Abas';
 
 import { useState, useEffect, useMemo, useCallback } from 'react';
 import {
@@ -371,54 +373,38 @@ export default function AnnotationsPageClient() {
         {/* Controls */}
         <AnimatedItem direction="up" springType="gentle">
           <AnimatedCard hover="none" className="classical-card p-6">
-            <div className="space-y-4">
+            <Stack>
               {/* Main Controls Row */}
               <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
                 {/* Tabs */}
-                <div className="flex bg-theme-secondary rounded-xl p-1">
-                  <button
+                <Abas rotulo="Filtrar anotações">
+                  <Aba
+                    ativa={activeTab === 'all'}
                     onClick={() => setActiveTab('all')}
-                    className={`px-4 py-2 rounded-lg text-sm font-medium transition-all ${
-                      activeTab === 'all'
-                        ? 'bg-theme-tertiary text-theme-primary shadow-md'
-                        : 'text-theme-tertiary'
-                    }`}
                   >
                     {t('tab_all')} ({stats.totalAnnotations})
-                  </button>
-                  <button
+                  </Aba>
+                  <Aba
+                    ativa={activeTab === 'public'}
                     onClick={() => setActiveTab('public')}
-                    className={`px-4 py-2 rounded-lg text-sm font-medium transition-all ${
-                      activeTab === 'public'
-                        ? 'bg-theme-tertiary text-theme-primary shadow-md'
-                        : 'text-theme-tertiary'
-                    }`}
                   >
                     {t('tab_public')} ({stats.publicAnnotations})
-                  </button>
-                  <button
+                  </Aba>
+                  <Aba
+                    ativa={activeTab === 'private'}
                     onClick={() => setActiveTab('private')}
-                    className={`px-4 py-2 rounded-lg text-sm font-medium transition-all ${
-                      activeTab === 'private'
-                        ? 'bg-theme-tertiary text-theme-primary shadow-md'
-                        : 'text-theme-tertiary'
-                    }`}
                   >
                     {t('tab_private')} ({stats.privateAnnotations})
-                  </button>
+                  </Aba>
                   {stats.verifiedAnnotations > 0 && (
-                    <button
+                    <Aba
+                      ativa={activeTab === 'verified'}
                       onClick={() => setActiveTab('verified')}
-                      className={`px-4 py-2 rounded-lg text-sm font-medium transition-all ${
-                        activeTab === 'verified'
-                          ? 'bg-theme-tertiary text-theme-primary shadow-md'
-                          : 'text-theme-tertiary'
-                      }`}
                     >
                       {t('tab_verified')} ({stats.verifiedAnnotations})
-                    </button>
+                    </Aba>
                   )}
-                </div>
+                </Abas>
 
                 {/* Search, Filter Button, Stats Toggle, View Mode */}
                 <div className="flex flex-col sm:flex-row gap-3">
@@ -504,12 +490,9 @@ export default function AnnotationsPageClient() {
                       </Inline>
                       <Inline gap={2}>
                         {hasActiveFilters && (
-                          <button
-                            onClick={handleClearFilters}
-                            className="text-xs text-theme-tertiary transition-colors px-2 py-1 rounded bg-sup-2"
-                          >
+                          <Botao tamanho="p" onClick={handleClearFilters}>
                             {t('clear_all_filters')}
-                          </button>
+                          </Botao>
                         )}
                         <button
                           onClick={() => setShowFilters(false)}
@@ -570,12 +553,12 @@ export default function AnnotationsPageClient() {
                   </Stack>
                 </AnimatedItem>
               )}
-            </div>
+            </Stack>
           </AnimatedCard>
         </AnimatedItem>
 
         {/* Content */}
-        <div className="space-y-8 mt-8">
+        <Stack gap={8} className="mt-8">
           {/* Main Content */}
           <AnimatedItem direction="up" springType="gentle">
             {isLoading && filteredAnnotations.length === 0 ? (
@@ -675,7 +658,7 @@ export default function AnnotationsPageClient() {
                       ))}
                     </SequentialGrid>
                   ) : (
-                    <div className="space-y-4">
+                    <Stack>
                       {filteredAnnotations.map((annotation, index) => (
                         <AnimatedItem
                           key={annotation.id}
@@ -692,7 +675,7 @@ export default function AnnotationsPageClient() {
                           />
                         </AnimatedItem>
                       ))}
-                    </div>
+                    </Stack>
                   )}
                 </div>
 
@@ -707,7 +690,7 @@ export default function AnnotationsPageClient() {
               </div>
             )}
           </AnimatedItem>
-        </div>
+        </Stack>
       </AnimatedContainer>
 
       {/* Stats Modal para Mobile */}

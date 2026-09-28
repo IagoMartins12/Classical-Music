@@ -83,7 +83,7 @@ export default function EventModal({
 
   return (
     <Modal isOpen={isOpen} onClose={onClose} title={event.title} maxWidth="lg">
-      <div className="space-y-6">
+      <div className="gap-6 flex flex-col">
         {/* Imagem do Evento */}
         {event.imageUrl && (
           <div className="relative w-full h-64 rounded-lg overflow-hidden">
@@ -142,7 +142,7 @@ export default function EventModal({
 
         {/* Badge de Gratuito */}
         {event.isFree && (
-          <div className="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-green-100 text-green-800">
+          <div className="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-green-100 text-green-800 self-start">
             <PiTicket className="w-4 h-4 mr-1" />
             Entrada Gratuita
           </div>

@@ -43,7 +43,10 @@ const ComposerCardList: React.FC<composerCardListProps> = ({ composer }) => {
 
   return (
     // Link esticado sobre a linha inteira; ver o comentário em `ComposerCard`.
-    <div className="relative flex items-center justify-between w-full group">
+    <div
+      data-vira={`compositor-${composer.id}`}
+      className="relative flex items-center justify-between w-full group"
+    >
       {/* Left section - Portrait and basic info */}
       <Inline gap={4} className="flex-1 min-w-0">
         {/* Portrait */}

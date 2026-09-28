@@ -307,7 +307,7 @@ const EditCampaignModal: React.FC<EditCampaignModalProps> = ({
           </div>
         )}
 
-        <form onSubmit={handleSubmit} className="space-y-6">
+        <Stack gap={6} as="form" onSubmit={handleSubmit}>
           {/* Informações Básicas */}
           <div className="grid md:grid-cols-2 gap-4">
             <Input
@@ -369,7 +369,7 @@ const EditCampaignModal: React.FC<EditCampaignModalProps> = ({
           {(editableFields.senderName ||
             editableFields.senderEmail ||
             editableFields.replyToEmail) && (
-            <div className="space-y-4">
+            <Stack>
               <h3 className="text-lg font-semibold text-theme-primary">
                 Configurações de Remetente
               </h3>
@@ -413,13 +413,13 @@ const EditCampaignModal: React.FC<EditCampaignModalProps> = ({
                   disabled={loading}
                 />
               )}
-            </div>
+            </Stack>
           )}
 
           {/* Personalização */}
           {(editableFields.customSubject ||
             editableFields.customHtmlContent) && (
-            <div className="space-y-4">
+            <Stack>
               <h3 className="text-lg font-semibold text-theme-primary">
                 Personalização
               </h3>
@@ -452,7 +452,7 @@ const EditCampaignModal: React.FC<EditCampaignModalProps> = ({
                   />
                 </div>
               )}
-            </div>
+            </Stack>
           )}
 
           {/* Notas */}
@@ -543,7 +543,7 @@ const EditCampaignModal: React.FC<EditCampaignModalProps> = ({
               Cancelar
             </Button>
           </div>
-        </form>
+        </Stack>
       </div>
     </Modal>
   );

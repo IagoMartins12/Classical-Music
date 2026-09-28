@@ -128,7 +128,7 @@ export function TimelineModal({
       title="Inserir Timeline"
       maxWidth="4xl"
     >
-      <form onSubmit={handleSubmit} className="space-y-6">
+      <Stack gap={6} as="form" onSubmit={handleSubmit}>
         {/* Compositor vinculado */}
         <Card
           nivel={2}
@@ -197,11 +197,15 @@ export function TimelineModal({
                 />
               </div>
 
-              <div className="mb-3">
-                <label className="block text-sm font-medium text-theme-primary mb-1">
+              <Stack gap={1} className="mb-3">
+                <span
+                  aria-hidden="true"
+                  className="block text-sm font-medium text-theme-primary"
+                >
                   Descrição
-                </label>
+                </span>
                 <textarea
+                  aria-label={`Descrição do evento ${index + 1}`}
                   value={event.description}
                   onChange={(e) =>
                     updateEvent(index, 'description', e.target.value)
@@ -210,12 +214,12 @@ export function TimelineModal({
                   placeholder="Descreva o evento..."
                   className="input-classical-2 w-full resize-none"
                 />
-              </div>
+              </Stack>
 
               <div>
-                <label className="block text-sm font-medium text-theme-primary mb-1">
+                <span className="block text-sm font-medium text-theme-primary mb-1">
                   Imagem (opcional)
-                </label>
+                </span>
                 {event.image ? (
                   <div className="relative rounded-lg overflow-hidden">
                     <Image
@@ -283,7 +287,7 @@ export function TimelineModal({
             Inserir Timeline
           </Button>
         </div>
-      </form>
+      </Stack>
     </Modal>
   );
 }

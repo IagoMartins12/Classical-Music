@@ -70,14 +70,14 @@ const UploadFormValidation = ({
               Erros encontrados ({validation.errors.length})
             </span>
           </Inline>
-          <ul className="space-y-1">
+          <Stack gap={1} as="ul">
             {validation.errors.map((error, index) => (
               <li key={index} className="text-sm flex items-start space-x-2">
                 <span className="text-xs mt-1">•</span>
                 <span>{error}</span>
               </li>
             ))}
-          </ul>
+          </Stack>
         </Stack>
       )}
 
@@ -90,14 +90,14 @@ const UploadFormValidation = ({
               Avisos ({validation.warnings.length})
             </span>
           </Inline>
-          <ul className="space-y-1">
+          <Stack gap={1} as="ul">
             {validation.warnings.map((warning, index) => (
               <li key={index} className="text-sm flex items-start space-x-2">
                 <span className="text-xs mt-1">•</span>
                 <span>{warning}</span>
               </li>
             ))}
-          </ul>
+          </Stack>
         </Stack>
       )}
 

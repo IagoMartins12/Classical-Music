@@ -201,7 +201,7 @@ const ScoreCardWithBadge = React.memo(
         {/* Coroa no canto superior esquerdo */}
         {showMostFavoritedBadge && isMostFavorited && (
           <div
-            className="absolute -top-3 -left-3 z-20 group/crown"
+            className="absolute -top-3 -left-3 z-elevado group/crown"
             title={t('score_card_favorita_comunidade')}
           >
             <div className="w-10 h-10 bg-gradient-to-br from-yellow-400 via-yellow-500 to-yellow-600 border-2 border-yellow-300 text-yellow-900 rounded-full font-medium shadow-xl backdrop-blur-sm flex items-center justify-center ring-2 ring-yellow-400/40 animate-pulse hover:animate-none transition-all duration-300 hover:scale-110">
@@ -209,7 +209,7 @@ const ScoreCardWithBadge = React.memo(
             </div>
 
             {/* Tooltip elegante */}
-            <div className="absolute left-12 top-1/2 -translate-y-1/2 bg-gray-900 text-white px-3 py-2 rounded-lg text-sm whitespace-nowrap opacity-0 group-hover/crown:opacity-100 transition-all duration-300 pointer-events-none shadow-xl z-30">
+            <div className="absolute left-12 top-1/2 -translate-y-1/2 bg-gray-900 text-white px-3 py-2 rounded-lg text-sm whitespace-nowrap opacity-0 group-hover/crown:opacity-100 transition-all duration-300 pointer-events-none shadow-xl z-elevado">
               {t('score_card_favorita_comunidade')}
               <div className="absolute left-0 top-1/2 -translate-y-1/2 -translate-x-1 w-2 h-2 bg-gray-900 border-l border-b border-gray-700 rotate-45"></div>
             </div>
@@ -911,7 +911,7 @@ export default function IMSLPTabsIncremental({
                         </div>
                       )}
 
-                      <div className="space-y-2">
+                      <Stack gap={2}>
                         {scoreGroup.scores.map((score, index) => {
                           const scoreStats = getScoreStats(
                             score.id,
@@ -962,7 +962,7 @@ export default function IMSLPTabsIncremental({
                             </SequentialGrid>
                           );
                         })}
-                      </div>
+                      </Stack>
                     </Stack>
                   ))}
 

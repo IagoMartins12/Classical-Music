@@ -1,7 +1,7 @@
 // app/difficulty/DifficultyClient.tsx - Cliente Principal
 
 'use client';
-import { useState, useCallback, useTransition, useMemo } from 'react';
+import { useState, useCallback, useTransition, useMemo, useId } from 'react';
 import { useRouter } from 'next/navigation';
 import { PiInfo, PiMagnifyingGlass, PiTrendUp, PiX } from 'react-icons/pi';
 import { DifficultyResponse } from '@/app/requests/difficulty-details';
@@ -46,6 +46,7 @@ export default function DifficultyClient({
   currentPage,
   searchParams,
 }: DifficultyClientProps) {
+  const idCampo = useId();
   const router = useRouter();
   const [isPending, startTransition] = useTransition();
 
@@ -267,10 +268,17 @@ export default function DifficultyClient({
           {/* Level Filter */}
           {difficultyData.difficultyLevels.length > 0 && (
             <Stack gap={3} className="mb-6">
-              <label className="block text-sm font-medium text-theme-secondary">
+              <span
+                id={`${idCampo}-1`}
+                className="block text-sm font-medium text-theme-secondary"
+              >
                 Filtrar por Nível:
-              </label>
-              <div className="flex flex-wrap gap-2">
+              </span>
+              <div
+                role="group"
+                aria-labelledby={`${idCampo}-1`}
+                className="flex flex-wrap gap-2"
+              >
                 <button
                   onClick={() => handleLevelChange('all')}
                   className={`px-3 py-1.5 rounded-full text-sm font-medium transition-all duration-300 ${
@@ -335,7 +343,7 @@ export default function DifficultyClient({
         </AnimatedCard>
 
         {/* Tabs and Table */}
-        <div className="space-y-6">
+        <Stack gap={6}>
           {/* Instrument Tabs */}
           <AnimatedItem direction="up" springType="gentle">
             <DifficultyTabs
@@ -366,7 +374,7 @@ export default function DifficultyClient({
               />
             </AnimatedItem>
           )}
-        </div>
+        </Stack>
 
         {/* Loading Overlay */}
         {isPending && (

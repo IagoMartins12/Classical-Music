@@ -6,6 +6,7 @@ import { Editor } from '@tiptap/react';
 import Modal from '@/app/components/Modal';
 import Input from '@/app/components/Common/Inputs';
 import Button from '@/app/components/Common/Button';
+import { Stack } from '@/app/components/ui/Layout';
 
 interface LinkModalProps {
   editor: Editor;
@@ -47,7 +48,7 @@ export function LinkModal({ editor, onClose }: LinkModalProps) {
       maxWidth="md"
       preventBodyScroll={true}
     >
-      <form onSubmit={handleSubmit} className="space-y-4">
+      <Stack as="form" onSubmit={handleSubmit}>
         <Input
           label="URL"
           type="url"
@@ -76,7 +77,7 @@ export function LinkModal({ editor, onClose }: LinkModalProps) {
             Inserir
           </Button>
         </div>
-      </form>
+      </Stack>
     </Modal>
   );
 }

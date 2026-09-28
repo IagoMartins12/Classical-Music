@@ -25,6 +25,8 @@ interface Work {
 }
 
 interface SimpleWorkSearchInputProps {
+  /** Id do campo, para o `<label htmlFor>` de quem usa. */
+  id?: string;
   selectedWork: string;
   onWorkSelect: (workId: string, data?: any) => void;
   placeholder?: string;
@@ -37,6 +39,7 @@ interface SimpleWorkSearchInputProps {
 }
 
 const SimpleWorkSearchInput: React.FC<SimpleWorkSearchInputProps> = ({
+  id,
   selectedWork,
   onWorkSelect,
   placeholder = 'Digite para buscar uma obra...',
@@ -342,6 +345,7 @@ const SimpleWorkSearchInput: React.FC<SimpleWorkSearchInputProps> = ({
           <div className="relative">
             <PiMagnifyingGlass className="absolute left-3 top-1/2 transform -translate-y-1/2 text-theme-tertiary w-4 h-4 z-10" />
             <input
+              id={id}
               ref={inputRef}
               type="text"
               value={query}
@@ -368,7 +372,7 @@ const SimpleWorkSearchInput: React.FC<SimpleWorkSearchInputProps> = ({
           {isOpen && !disabled && (
             <div
               ref={dropdownRef}
-              className="absolute top-full left-0 right-0 mt-2 bg-theme-elevated rounded-lg shadow-theme-large max-h-80 overflow-y-auto z-50"
+              className="absolute top-full left-0 right-0 mt-2 bg-theme-elevated rounded-lg shadow-theme-large max-h-80 overflow-y-auto z-menu"
             >
               {/* Loading */}
               {(isLoading || loadingUserSuggestions) && (

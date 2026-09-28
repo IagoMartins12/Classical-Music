@@ -3,7 +3,7 @@
 
 import { NomeAcao } from '@/app/components/ui/NomeAcao';
 import { useOnboardingModal } from '@/app/stores/authStore';
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useId } from 'react';
 import { PiHeart, PiMagnifyingGlass, PiSpinnerGap, PiX } from 'react-icons/pi';
 import Image from '@/app/components/SmartImage';
 import { useTranslation } from '@/app/context/TranslationContext';
@@ -36,6 +36,7 @@ const PreferencesStep: React.FC<PreferencesStepProps> = ({
   composers: initialComposers,
   epochs,
 }) => {
+  const idCampo = useId();
   const { data, updateData } = useOnboardingModal();
   const { t } = useTranslation({ sections: ['components/onboarding'] });
   const [composerSearch, setComposerSearch] = useState('');
@@ -138,12 +139,16 @@ const PreferencesStep: React.FC<PreferencesStepProps> = ({
       <Stack gap={8} className="max-w-2xl mx-auto">
         {/* Practice Time */}
         {data.userType !== 'CASUAL_USER' && (
-          <div>
-            <label className="block text-sm font-medium text-theme-secondary mb-3">
+          <Stack gap={3}>
+            <label
+              htmlFor={`${idCampo}-1`}
+              className="block text-sm font-medium text-theme-secondary"
+            >
               {t('preferences_step_practice_time')}
             </label>
 
             <Select
+              id={`${idCampo}-1`}
               value={data.practiceTimePerWeek?.toString() || ''}
               onChange={(e) =>
                 updateData({
@@ -155,17 +160,24 @@ const PreferencesStep: React.FC<PreferencesStepProps> = ({
               options={PRACTICE_TIME_OPTIONS}
               placeholder={t('preferences_step_practice_select')}
             />
-          </div>
+          </Stack>
         )}
 
         {/* Favorite Epoch */}
         <Stack gap={3}>
-          <label className="block text-sm font-medium text-theme-secondary">
+          <span
+            id={`${idCampo}-2`}
+            className="block text-sm font-medium text-theme-secondary"
+          >
             <PiHeart className="w-4 h-4 inline mr-2" />
             {t('preferences_step_favorite_epoch')}
-          </label>
+          </span>
 
-          <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
+          <div
+            role="group"
+            aria-labelledby={`${idCampo}-2`}
+            className="grid grid-cols-2 sm:grid-cols-3 gap-3"
+          >
             {epochs.map((epoch) => (
               <button
                 key={epoch.id}
@@ -194,12 +206,16 @@ const PreferencesStep: React.FC<PreferencesStepProps> = ({
 
         {/* Favorite Composer */}
         <div>
-          <label className="block text-sm font-medium text-theme-secondary mb-3">
+          <label
+            htmlFor={`${idCampo}-3`}
+            className="block text-sm font-medium text-theme-secondary mb-3"
+          >
             {t('preferences_step_favorite_composer')}
           </label>
 
           <div className="relative">
             <Input
+              id={`${idCampo}-3`}
               placeholder={t('preferences_step_search_composer')}
               value={composerSearch}
               onChange={(e) => setComposerSearch(e.target.value)}

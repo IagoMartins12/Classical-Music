@@ -1,5 +1,6 @@
 // app/components/ComposerImageUpload.tsx
 'use client';
+import { Button as Botao } from '@/app/components/ui/Button';
 
 import React, { useState, useRef } from 'react';
 import {
@@ -280,15 +281,16 @@ const ComposerImageUpload: React.FC<ComposerImageUploadProps> = ({
               className="flex-1 px-3 py-2 border border-theme-secondary rounded-lg focus:outline-none focus:ring-2 focus:border-transparent"
               onKeyPress={(e) => e.key === 'Enter' && handleUrlSubmit()}
             />
-            <button
+            <Botao
+              variante="fantasma"
+              tamanho="p"
               onClick={(e) => {
                 e.preventDefault();
                 handleUrlSubmit();
               }}
-              className="px-4 py-2 text-white rounded-lg transition-colors"
             >
               Aplicar
-            </button>
+            </Botao>
           </div>
           <Text papel="legenda" tom="fraco" as="p" className="text-center">
             Insira a URL completa da imagem

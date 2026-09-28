@@ -1,5 +1,6 @@
 // app/components/Admin/AdminHeader.tsx
 'use client';
+import { Button as Botao } from '@/app/components/ui/Button';
 
 import { useState } from 'react';
 import { signOut, useSession } from '@/app/libs/session';
@@ -82,14 +83,16 @@ export default function AdminHeader({ onMenuClick }: AdminHeaderProps) {
             {/* Logo/Title + Mobile Menu Button */}
             <div className="flex items-center space-x-4 lg:space-x-8">
               {/* Mobile Menu Button */}
-              <button
+              <Botao
+                variante="fantasma"
+                tamanho="p"
                 id="menu-button"
                 onClick={onMenuClick}
-                className="lg:hidden p-2 rounded-lg text-theme-tertiary transition-all"
+                icone={PiList}
+                className="lg:hidden"
               >
-                <PiList className="w-5 h-5" />
                 <NomeAcao acao="menu" />
-              </button>
+              </Botao>
 
               {/* Logo */}
               <Link

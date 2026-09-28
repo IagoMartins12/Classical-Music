@@ -31,6 +31,7 @@ const ListComposersCards: React.FC<listComposersCardsProps> = ({
     <div className="group cursor-pointer select-none h-full">
       <Link href={`/composer/${composer.id}`}>
         <div
+          data-vira={`compositor-${composer.id}`}
           className={`
             relative overflow-hidden rounded-2xl h-full
             classical-card
@@ -109,7 +110,7 @@ const ListComposersCards: React.FC<listComposersCardsProps> = ({
               <div className="flex items-center justify-between pt-3 border-t border-theme-secondary">
                 <div className="flex items-center space-x-1.5">
                   <div className="w-1.5 h-1.5 rounded-full animate-pulse"></div>
-                  <Text papel="legenda" tom="fraco" className="font-medium">
+                  <Text papel="legenda" tom="suave" className="font-medium">
                     {t('see_works')}
                   </Text>
                 </div>
@@ -139,9 +140,7 @@ const ListComposersCards: React.FC<listComposersCardsProps> = ({
 
           {/* Active State Indicator */}
           {isActive && (
-            <div className="absolute inset-0 border-2 rounded-2xl pointer-events-none">
-              <div className="absolute top-2 left-2 w-3 h-3 rounded-full animate-pulse"></div>
-            </div>
+            <div className="absolute inset-0 border-2 rounded-2xl pointer-events-none"></div>
           )}
 
           {/* Floating mini badge for interaction feedback */}

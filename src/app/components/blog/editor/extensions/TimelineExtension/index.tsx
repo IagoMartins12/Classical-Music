@@ -1,3 +1,4 @@
+import { Button } from '@/app/components/ui/Button';
 // components/blog/editor/extensions/TimelineExtension.tsx - COM COMPOSITOR E EDIÇÃO
 import { Node, mergeAttributes } from '@tiptap/core';
 import { ReactNodeViewRenderer } from '@tiptap/react';
@@ -32,13 +33,15 @@ const TimelineComponent = (props: any) => {
           gap={2}
           className="absolute top-0 right-0 p-2 bg-white shadow-lg rounded-lg z-10"
         >
-          <button
+          <Button
+            variante="fantasma"
+            tamanho="p"
             onClick={handleDelete}
-            className="p-2 hover:bg-red-50 rounded transition-colors !text-erro"
             title="Remover"
-          >
-            <PiTrash className="w-4 h-4" />
-          </button>
+            icone={PiTrash}
+            rotulo="Remover"
+            className="text-erro"
+          />
         </Inline>
       )}
 

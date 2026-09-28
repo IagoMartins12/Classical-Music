@@ -12,7 +12,10 @@ certos: 404 para o que não existe, 500 para falha passageira da API, 200 só
 para página de verdade. O custo é pequeno e foi medido — o render frio destas
 páginas leva de 20 a 60 ms, e elas são guardadas em cache depois disso.
 
-As listas que querem esqueleto (`composers`, `works`, `instruments`,
-`music-history`, `teachers`) mantêm o `loading.tsx` **da própria rota**: elas
-não têm caminho de "não encontrado", então o limite de `Suspense` ali não
-falsifica status nenhum.
+As páginas que querem esqueleto mantêm o `loading.tsx` **da própria rota**
+(listas, páginas institucionais) ou de um grupo que só as contém: a home em
+`(inicio)` e a listagem de obras em `works/(lista)`, que deixa de fora
+`works/[workId]`. Nenhuma delas tem caminho de "não encontrado", então o
+limite de `Suspense` ali não falsifica status nenhum. As páginas de detalhe
+(`composer/[composerId]`, `works/[workId]`) seguem sem: a navegação espera a
+página inteira, e o card que a pessoa clicou vira o cabeçalho dela.

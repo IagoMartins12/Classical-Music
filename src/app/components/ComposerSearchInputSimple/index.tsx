@@ -33,6 +33,8 @@ interface Composer {
 }
 
 interface ComposerSearchInputProps {
+  /** Id do campo, para o `<label htmlFor>` de quem usa. */
+  id?: string;
   selectedComposer: string;
   onComposerSelect: (composerId: string) => void;
   isDisabled?: boolean;
@@ -40,6 +42,7 @@ interface ComposerSearchInputProps {
 }
 
 export default function ComposerSearchInputSimple({
+  id,
   selectedComposer,
   onComposerSelect,
   isDisabled = false,
@@ -246,6 +249,7 @@ export default function ComposerSearchInputSimple({
         <PiUser className="absolute left-4 top-1/2 transform -translate-y-1/2 w-4 h-4 text-theme-tertiary z-10" />
 
         <input
+          id={id}
           ref={inputRef}
           type="text"
           placeholder={

@@ -1,4 +1,5 @@
 'use client';
+import { Button } from '@/app/components/ui/Button';
 
 import { useState } from 'react';
 
@@ -34,19 +35,13 @@ export default function TextToSpeech({ text }: TextToSpeechProps) {
   return (
     <div className="flex gap-2 mt-4">
       {!isSpeaking ? (
-        <button
-          onClick={handleSpeak}
-          className="px-4 py-2 bg-blue-600 text-white rounded"
-        >
+        <Button variante="fantasma" tamanho="p" onClick={handleSpeak}>
           Ouvir artigo
-        </button>
+        </Button>
       ) : (
-        <button
-          onClick={handleStop}
-          className="px-4 py-2 bg-red-600 text-white rounded"
-        >
+        <Button variante="perigo" tamanho="p" onClick={handleStop}>
           Parar
-        </button>
+        </Button>
       )}
     </div>
   );

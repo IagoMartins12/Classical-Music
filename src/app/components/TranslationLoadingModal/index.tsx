@@ -150,11 +150,6 @@ export function TranslationLoadingModal({
         </div>
 
         {/* Gradiente decorativo */}
-        <div className="absolute -top-20 -right-20 w-40 h-40 rounded-full blur-3xl opacity-20 animate-pulse" />
-        <div
-          className="absolute -bottom-20 -left-20 w-32 h-32 rounded-full blur-2xl opacity-30 animate-pulse"
-          style={{ animationDelay: '0.5s' }}
-        />
 
         <div className="relative z-10 text-center">
           {/* Ícone principal animado */}

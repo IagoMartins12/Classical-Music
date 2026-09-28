@@ -1,5 +1,6 @@
 // components/Navbar.tsx
 'use client';
+import { Button as Botao } from '@/app/components/ui/Button';
 
 import React, { useEffect, useRef, useState } from 'react';
 import Link from '@/app/components/LocalizedLink';
@@ -38,7 +39,7 @@ import { useLearningStore } from '@/app/stores/useLearningStore';
 import { useRouter } from 'next/navigation';
 import { LanguageToggle } from '../LanguageToggle';
 import { useTranslation } from '@/app/context/TranslationContext';
-import { Inline } from '@/app/components/ui/Layout';
+import { Stack, Inline } from '@/app/components/ui/Layout';
 import { Text } from '@/app/components/ui/Text';
 import { NomeAcao } from '@/app/components/ui/NomeAcao';
 import { Card } from '@/app/components/ui/Card';
@@ -365,7 +366,7 @@ const Navbar: React.FC = () => {
 
                     {/* Submenu */}
                     {activeSubmenu === label && (
-                      <div className="absolute top-full left-0 mt-2 w-72 bg-theme-tertiary rounded-2xl shadow-xl z-50 overflow-hidden">
+                      <div className="absolute top-full left-0 mt-2 w-72 bg-theme-tertiary rounded-2xl shadow-xl z-menu overflow-hidden">
                         <div className="p-2">
                           {submenu.map((item, index) => (
                             <Link
@@ -485,7 +486,7 @@ const Navbar: React.FC = () => {
 
                 {/* Desktop Profile Dropdown */}
                 {isProfileOpen && (
-                  <div className="absolute right-0 top-full mt-2 w-64 bg-theme-tertiary rounded-2xl z-20 p-2 shadow-xl">
+                  <div className="absolute right-0 top-full mt-2 w-64 bg-theme-tertiary rounded-2xl z-menu p-2 shadow-xl">
                     {/* User Info */}
                     <div className="px-3 py-2 border-b border-theme-secondary mb-2">
                       <p className="font-medium text-theme-primary">
@@ -693,12 +694,14 @@ const Navbar: React.FC = () => {
             )}
 
             {/* Mobile Menu Button */}
-            <button
+            <Botao
+              variante="fantasma"
+              tamanho="p"
               ref={mobileButtonRef}
               onClick={handleMobileButtonClick}
-              className="lg:hidden p-2 text-theme-secondary transition-colors"
               aria-controls="mobile-menu"
               aria-expanded={isMenuOpen}
+              className="lg:hidden"
             >
               <span className="sr-only">
                 {isMenuOpen ? t('navbar_fechar') : t('navbar_abrir')}
@@ -708,7 +711,7 @@ const Navbar: React.FC = () => {
               ) : (
                 <PiList className="w-6 h-6" />
               )}
-            </button>
+            </Botao>
           </Inline>
         </div>
 
@@ -760,13 +763,15 @@ const Navbar: React.FC = () => {
                               >
                                 {label}
                               </Link>
-                              <button
+                              <Botao
+                                variante="fantasma"
+                                tamanho="p"
                                 onClick={() => goToSubmenuView(label, submenu)}
-                                className="ml-2 p-2 text-theme-tertiary transition-colors"
+                                icone={PiCaretRight}
+                                className="ml-2"
                               >
-                                <PiCaretRight className="w-5 h-5" />
                                 <NomeAcao acao="proximo" />
-                              </button>
+                              </Botao>
                             </div>
                           ) : (
                             <Link
@@ -909,13 +914,15 @@ const Navbar: React.FC = () => {
                     <div>
                       {/* Header */}
                       <div className="flex items-center mb-4 pb-3 border-b border-theme-secondary">
-                        <button
+                        <Botao
+                          variante="fantasma"
+                          tamanho="p"
                           onClick={goBackToMain}
-                          className="p-2 mr-2 text-theme-tertiary transition-colors"
+                          icone={PiCaretLeft}
+                          className="mr-2"
                         >
-                          <PiCaretLeft className="w-5 h-5" />
                           <NomeAcao acao="anterior" />
-                        </button>
+                        </Botao>
                         <h3 className="font-medium text-theme-primary">
                           Perfil
                         </h3>
@@ -947,19 +954,20 @@ const Navbar: React.FC = () => {
                       </Inline>
 
                       {!user.onboardingCompleted && (
-                        <button
+                        <Botao
+                          variante="fantasma"
                           onClick={() => {
                             open();
                             closeMobileMenu();
                           }}
-                          className="w-full mb-4 text-center py-3 px-4 text-ouro-texto rounded-lg font-medium transition-all"
+                          className="w-full mb-4"
                         >
                           {t('navbar_configure_seu_perfil')}
-                        </button>
+                        </Botao>
                       )}
 
                       {/* Menu Items */}
-                      <ul className="space-y-1">
+                      <Stack gap={1} as="ul">
                         {user.onboardingCompleted && (
                           <li>
                             <Link
@@ -1131,7 +1139,7 @@ const Navbar: React.FC = () => {
                             </li>
                           </>
                         )}
-                      </ul>
+                      </Stack>
                     </div>
                   )}
                 </div>
@@ -1146,20 +1154,22 @@ const Navbar: React.FC = () => {
                   <div>
                     {/* Header */}
                     <div className="flex items-center mb-4 pb-3 border-b border-theme-secondary">
-                      <button
+                      <Botao
+                        variante="fantasma"
+                        tamanho="p"
                         onClick={goBackToMain}
-                        className="p-2 mr-2 text-theme-tertiary transition-colors"
+                        icone={PiCaretLeft}
+                        className="mr-2"
                       >
-                        <PiCaretLeft className="w-5 h-5" />
                         <NomeAcao acao="anterior" />
-                      </button>
+                      </Botao>
                       <h3 className="font-medium text-theme-primary">
                         {submenuTitle}
                       </h3>
                     </div>
 
                     {/* Submenu Items */}
-                    <ul className="space-y-1">
+                    <Stack gap={1} as="ul">
                       {activeSubmenuItems.map((item, index) => (
                         <li key={index}>
                           <Link
@@ -1178,7 +1188,7 @@ const Navbar: React.FC = () => {
                           </Link>
                         </li>
                       ))}
-                    </ul>
+                    </Stack>
                   </div>
                 </div>
               </div>

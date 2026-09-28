@@ -241,7 +241,7 @@ const EpochCard = ({ epoch }: { epoch: Epoch }) => {
       {/* Dica de interação */}
       {!isExpanded && (
         <div className="text-center">
-          <Text papel="legenda" tom="fraco" className="font-medium opacity-60">
+          <Text papel="legenda" tom="suave" className="font-medium">
             {t('composers_by_epoch_click_navigate')}
           </Text>
         </div>

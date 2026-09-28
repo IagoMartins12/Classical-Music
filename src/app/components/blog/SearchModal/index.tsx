@@ -1,4 +1,5 @@
 'use client';
+import { Button } from '@/app/components/ui/Button';
 
 import { useState, useEffect, useCallback, useRef } from 'react';
 import { useRouter } from 'next/navigation';
@@ -246,12 +247,14 @@ export function SearchModal({ isOpen, onClose }: SearchModalProps) {
                 </Stack>
 
                 {/* Link para ver todos os resultados */}
-                <button
+                <Button
+                  variante="fantasma"
+                  tamanho="p"
                   onClick={() => handleSearch()}
-                  className="mt-3 w-full py-2 text-center text-ouro-texto transition-colors text-sm font-medium"
+                  className="mt-3 w-full"
                 >
                   Ver todos os resultados para &quot;{query}&quot;
-                </button>
+                </Button>
               </div>
             )}
 
@@ -335,13 +338,13 @@ export function SearchModal({ isOpen, onClose }: SearchModalProps) {
                 </div>
                 <div className="flex flex-wrap gap-2">
                   {recentSearches.map((term) => (
-                    <button
+                    <Button
+                      tamanho="p"
                       key={term}
                       onClick={() => handleSearch(term)}
-                      className="px-3 py-2 rounded-lg bg-theme-elevated text-sm transition-all"
                     >
                       {term}
-                    </button>
+                    </Button>
                   ))}
                 </div>
               </Stack>
@@ -355,13 +358,13 @@ export function SearchModal({ isOpen, onClose }: SearchModalProps) {
               </h3>
               <div className="flex flex-wrap gap-2">
                 {popularSuggestions.map((term) => (
-                  <button
+                  <Button
+                    tamanho="p"
                     key={term}
                     onClick={() => handleSearch(term)}
-                    className="px-3 py-2 rounded-lg bg-theme-elevated hover:text-white text-sm transition-all"
                   >
                     {term}
-                  </button>
+                  </Button>
                 ))}
               </div>
             </Stack>

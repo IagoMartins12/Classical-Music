@@ -33,7 +33,11 @@ const WorkCardList: React.FC<workCardListProps> = ({ work }) => {
   };
 
   return (
-    <div className="flex items-center justify-between w-full group">
+    // Link esticado sobre a linha inteira; ver o comentário em `ComposerCard`.
+    <div
+      data-vira={`obra-${work.id}`}
+      className="relative flex items-center justify-between w-full group"
+    >
       {/* Left section - Main info */}
       <Inline gap={4} className="flex-1 min-w-0">
         {/* Musical icon */}
@@ -49,7 +53,12 @@ const WorkCardList: React.FC<workCardListProps> = ({ work }) => {
           <div className="flex items-start gap-3 mb-1">
             <div className="inline-flex items-center py-0.5">
               <h3 className="font-bold flex items-center gap-2 ml-1 text-theme-primary classical-title transition-colors duration-300 flex-1">
-                {work.title}
+                <Link
+                  href={`/works/${work.id}`}
+                  className="after:absolute after:inset-0 after:content-[''] focus-visible:outline-none focus-visible:ring-2 rounded"
+                >
+                  {work.title}
+                </Link>
                 <VerificationBadge verified={work.isVerified} variant="icon" />
               </h3>
             </div>
@@ -67,7 +76,7 @@ const WorkCardList: React.FC<workCardListProps> = ({ work }) => {
               )}
               <Stack
                 gap={2}
-                className="opacity-100 md:opacity-0 group-hover:opacity-100 transition-all duration-300 transform translate-y-2 group-hover:translate-y-0"
+                className="relative z-10 opacity-100 md:opacity-0 group-hover:opacity-100 transition-all duration-300 transform translate-y-2 group-hover:translate-y-0"
               >
                 <FavoriteButton
                   id={work.id}
@@ -85,8 +94,7 @@ const WorkCardList: React.FC<workCardListProps> = ({ work }) => {
           <Inline gap={2} className="mb-2">
             <Link
               href={`/composer/${work.composer.id}`}
-              className="inline-flex items-center text-sm transition-colors font-medium"
-              onClick={(e) => e.stopPropagation()}
+              className="relative z-10 inline-flex items-center text-sm transition-colors font-medium"
             >
               <PiUser className="w-3 h-3 mr-1" />
               {work.composer.fullName}

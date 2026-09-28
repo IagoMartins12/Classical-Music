@@ -260,7 +260,7 @@ export default function ModerationDetail({ itemId }: ModerationDetailProps) {
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           {/* Main Content */}
-          <div className="lg:col-span-2 space-y-8">
+          <Stack gap={8} className="lg:col-span-2">
             {/* Item Details */}
             <AnimatedCard className="classical-card p-6">
               <h3 className="text-xl font-bold text-theme-primary mb-6">
@@ -408,10 +408,10 @@ export default function ModerationDetail({ itemId }: ModerationDetailProps) {
                 </Inline>
               </Stack>
             </AnimatedCard>
-          </div>
+          </Stack>
 
           {/* Sidebar */}
-          <div className="space-y-6">
+          <Stack gap={6}>
             {/* Uploader Info */}
             <AnimatedCard className="classical-card p-6">
               <Inline
@@ -423,7 +423,7 @@ export default function ModerationDetail({ itemId }: ModerationDetailProps) {
                 <span>Informações do Uploader</span>
               </Inline>
 
-              <div className="space-y-4">
+              <Stack>
                 <Inline gap={3}>
                   <div className="w-10 h-10 rounded-lg flex items-center justify-center">
                     <PiUser className="w-5 h-5 text-theme-primary" />
@@ -464,7 +464,7 @@ export default function ModerationDetail({ itemId }: ModerationDetailProps) {
                 >
                   Ver Perfil Completo
                 </Button>
-              </div>
+              </Stack>
             </AnimatedCard>
 
             {/* Timeline */}
@@ -564,7 +564,7 @@ export default function ModerationDetail({ itemId }: ModerationDetailProps) {
                 </div>
               </Stack>
             </AnimatedCard>
-          </div>
+          </Stack>
         </div>
       </AnimatedContainer>
     </PageContainer>

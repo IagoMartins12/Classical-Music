@@ -181,11 +181,6 @@ export const ScoreLoadingWithProgress = ({
       )}
 
       {/* Decorative elements */}
-      <div className="absolute bottom-4 right-4 w-2 h-2 rounded-full animate-pulse"></div>
-      <div
-        className="absolute top-1/2 left-4 w-1.5 h-1.5 rounded-full animate-pulse"
-        style={{ animationDelay: '1s' }}
-      ></div>
     </div>
   );
 };

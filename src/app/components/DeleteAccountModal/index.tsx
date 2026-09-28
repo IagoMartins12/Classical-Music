@@ -1,5 +1,6 @@
 // app/components/profile/DeleteAccountModal.tsx - Enhanced modal for account deletion
 'use client';
+import { Button as Botao } from '@/app/components/ui/Button';
 
 import { useState, useEffect } from 'react';
 import { createPortal } from 'react-dom';
@@ -186,14 +187,15 @@ const DeleteAccountModal: React.FC<DeleteAccountModalProps> = ({
           </div>
         </Inline>
 
-        <button
+        <Botao
+          variante="fantasma"
+          tamanho="p"
           onClick={handleClose}
           disabled={isLoading}
-          className="w-8 h-8 rounded-lg bg-theme-secondary text-theme-tertiary transition-colors flex items-center justify-center disabled:opacity-50"
+          icone={PiX}
         >
-          <PiX className="w-4 h-4" />
           <NomeAcao acao="fechar" />
-        </button>
+        </Botao>
       </div>
 
       {/* Content */}
@@ -218,14 +220,14 @@ const DeleteAccountModal: React.FC<DeleteAccountModalProps> = ({
                 <PiInfo className="w-4 h-4 mr-2" />
                 {t('delete_modal_what_happens')}
               </h5>
-              <ul className="text-sm opacity-90 space-y-1">
+              <Stack gap={1} as="ul" className="text-sm opacity-90">
                 <li>{t('delete_modal_data_removed')}</li>
                 <li>{t('delete_modal_uploads_deleted')}</li>
                 <li>{t('delete_modal_annotations_lost')}</li>
                 <li>{t('delete_modal_history_erased')}</li>
                 <li>{t('delete_modal_goodbye_email')}</li>
                 <li>{t('delete_modal_irreversible')}</li>
-              </ul>
+              </Stack>
             </Stack>
 
             <Stack gap={2} className="bg-theme-secondary rounded-lg p-4">

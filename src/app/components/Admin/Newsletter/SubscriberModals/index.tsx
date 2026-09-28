@@ -62,7 +62,7 @@ export const SubscriberDetailsModal: React.FC<SubscriberDetailsModalProps> = ({
             </h3>
             <Stack gap={3}>
               <div>
-                <label className="text-sm text-theme-tertiary">Nome</label>
+                <span className="text-sm text-theme-tertiary">Nome</span>
                 <p className="font-medium text-theme-primary">
                   {subscriber.firstName || subscriber.lastName
                     ? `${subscriber.firstName || ''} ${
@@ -72,7 +72,7 @@ export const SubscriberDetailsModal: React.FC<SubscriberDetailsModalProps> = ({
                 </p>
               </div>
               <div>
-                <label className="text-sm text-theme-tertiary">Status</label>
+                <span className="text-sm text-theme-tertiary">Status</span>
                 <p
                   className={`px-2 py-1 rounded-full text-xs font-medium inline-block mt-1 ${
                     subscriber.status === 'ACTIVE'
@@ -92,9 +92,9 @@ export const SubscriberDetailsModal: React.FC<SubscriberDetailsModalProps> = ({
                 </p>
               </div>
               <div>
-                <label className="text-sm text-theme-tertiary">
+                <span className="text-sm text-theme-tertiary">
                   Data de Inscrição
-                </label>
+                </span>
                 <p className="font-medium text-theme-primary">
                   {new Date(subscriber.subscribedAt).toLocaleDateString(
                     'pt-BR'
@@ -102,9 +102,7 @@ export const SubscriberDetailsModal: React.FC<SubscriberDetailsModalProps> = ({
                 </p>
               </div>
               <div>
-                <label className="text-sm text-theme-tertiary">
-                  Frequência
-                </label>
+                <span className="text-sm text-theme-tertiary">Frequência</span>
                 <p className="font-medium text-theme-primary capitalize">
                   {subscriber.frequency || 'weekly'}
                 </p>
@@ -119,7 +117,7 @@ export const SubscriberDetailsModal: React.FC<SubscriberDetailsModalProps> = ({
             </h3>
             <Stack gap={3}>
               <div>
-                <label className="text-sm text-theme-tertiary">Nível</label>
+                <span className="text-sm text-theme-tertiary">Nível</span>
                 <p
                   className={`px-2 py-1 rounded-full text-xs font-medium inline-block mt-1 ${engagement.color}`}
                 >
@@ -128,25 +126,25 @@ export const SubscriberDetailsModal: React.FC<SubscriberDetailsModalProps> = ({
                 </p>
               </div>
               <div>
-                <label className="text-sm text-theme-tertiary">
+                <span className="text-sm text-theme-tertiary">
                   Emails Abertos
-                </label>
+                </span>
                 <p className="font-medium text-theme-primary">
                   {subscriber.emailOpenCount || 0}
                 </p>
               </div>
               <div>
-                <label className="text-sm text-theme-tertiary">
+                <span className="text-sm text-theme-tertiary">
                   Links Clicados
-                </label>
+                </span>
                 <p className="font-medium text-theme-primary">
                   {subscriber.emailClickCount || 0}
                 </p>
               </div>
               <div>
-                <label className="text-sm text-theme-tertiary">
+                <span className="text-sm text-theme-tertiary">
                   Último Email Aberto
-                </label>
+                </span>
                 <p className="font-medium text-theme-primary">
                   {subscriber.lastEmailOpenedAt
                     ? new Date(subscriber.lastEmailOpenedAt).toLocaleDateString(
@@ -166,7 +164,7 @@ export const SubscriberDetailsModal: React.FC<SubscriberDetailsModalProps> = ({
           </h3>
           <div className="grid md:grid-cols-2 gap-4">
             <div>
-              <label className="text-sm text-theme-tertiary">Interesses</label>
+              <span className="text-sm text-theme-tertiary">Interesses</span>
               <div className="flex flex-wrap gap-2 mt-2">
                 {subscriber.interests && subscriber.interests.length > 0 ? (
                   subscriber.interests.map(
@@ -189,7 +187,7 @@ export const SubscriberDetailsModal: React.FC<SubscriberDetailsModalProps> = ({
               </div>
             </div>
             <div>
-              <label className="text-sm text-theme-tertiary">Timezone</label>
+              <span className="text-sm text-theme-tertiary">Timezone</span>
               <p className="font-medium text-theme-primary">
                 {subscriber.timezone || 'America/Sao_Paulo'}
               </p>
@@ -474,7 +472,7 @@ export const SendEmailModal: React.FC<SendEmailModalProps> = ({
           </p>
         </div>
 
-        <form onSubmit={handleSubmit} className="space-y-6">
+        <Stack gap={6} as="form" onSubmit={handleSubmit}>
           {/* Tipo de Template */}
           <div>
             <Select
@@ -569,7 +567,7 @@ export const SendEmailModal: React.FC<SendEmailModalProps> = ({
               Cancelar
             </Button>
           </div>
-        </form>
+        </Stack>
       </Stack>
     </Modal>
   );

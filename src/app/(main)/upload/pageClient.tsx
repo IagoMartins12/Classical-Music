@@ -1,7 +1,9 @@
 // UploadsClient.tsx - OTIMIZADO PARA PERFORMANCE
 'use client';
+import { Button as Botao } from '@/app/components/ui/Button';
+import { Aba, Abas } from '@/app/components/ui/Abas';
 
-import { useState, useTransition, useCallback, useMemo } from 'react';
+import { useState, useTransition, useCallback, useMemo, useId } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import {
   PiArrowRight,
@@ -47,7 +49,7 @@ import UploadComposerCard from '../../components/UploadsPage/UploadComposerCard'
 import UploadWorkCard from '../../components/UploadsPage/UploadWorkCard';
 import UploadScoreCard from '../../components/UploadsPage/UploadScoreCard';
 import { useTranslation } from '@/app/context/TranslationContext';
-import { Inline } from '@/app/components/ui/Layout';
+import { Stack, Inline } from '@/app/components/ui/Layout';
 import { Text } from '@/app/components/ui/Text';
 import { NomeAcao } from '@/app/components/ui/NomeAcao';
 
@@ -151,6 +153,9 @@ const UploadsClient = ({
   isAdmin,
   formData: initialFormData,
 }: UploadsClientProps) => {
+  // Os filtros moram numa função auxiliar (`renderTabSpecificFilters`), onde
+  // hook não entra: o id dos rótulos nasce aqui.
+  const idFiltro = useId();
   const router = useRouter();
   const searchParams = useSearchParams();
   const { t } = useTranslation({ sections: ['pages/uploads'] });
@@ -533,14 +538,18 @@ const UploadsClient = ({
   const renderTabSpecificFilters = () => {
     if (selectedType === 'composers') {
       return (
-        <div>
-          <label className="block text-xs font-medium text-theme-tertiary mb-2">
+        <Stack gap={2}>
+          <label
+            htmlFor={`${idFiltro}-1`}
+            className="block text-xs font-medium text-theme-tertiary"
+          >
             {t('filter_epoch')}{' '}
             {loadingEpochs && (
               <span className="text-xs">{t('filter_loading_epochs')}</span>
             )}
           </label>
           <Select
+            id={`${idFiltro}-1`}
             options={[
               { value: '', label: t('filter_all_epochs') },
               ...availableEpochs.map((epoch) => ({
@@ -553,21 +562,25 @@ const UploadsClient = ({
             className="input-classical-2 w-full"
             disabled={loadingEpochs}
           />
-        </div>
+        </Stack>
       );
     }
 
     if (selectedType === 'works') {
       return (
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <div>
-            <label className="block text-xs font-medium text-theme-tertiary mb-2">
+          <Stack gap={2}>
+            <label
+              htmlFor={`${idFiltro}-2`}
+              className="block text-xs font-medium text-theme-tertiary"
+            >
               {t('filter_composer')}
               {loadingFilterData && (
                 <span className="text-xs ml-2">Carregando...</span>
               )}
             </label>
             <Select
+              id={`${idFiltro}-2`}
               options={[
                 { value: '', label: t('filter_all_composers') },
                 ...filterComposers.map((composer) => ({
@@ -580,15 +593,19 @@ const UploadsClient = ({
               className="input-classical-2 w-full"
               disabled={loadingFilterData}
             />
-          </div>
-          <div>
-            <label className="block text-xs font-medium text-theme-tertiary mb-2">
+          </Stack>
+          <Stack gap={2}>
+            <label
+              htmlFor={`${idFiltro}-3`}
+              className="block text-xs font-medium text-theme-tertiary"
+            >
               {t('filter_epoch')}{' '}
               {loadingEpochs && (
                 <span className="text-xs">{t('filter_loading_epochs')}</span>
               )}
             </label>
             <Select
+              id={`${idFiltro}-3`}
               options={[
                 { value: '', label: t('filter_all_epochs') },
                 ...availableEpochs.map((epoch) => ({
@@ -601,7 +618,7 @@ const UploadsClient = ({
               className="input-classical-2 w-full"
               disabled={loadingEpochs}
             />
-          </div>
+          </Stack>
         </div>
       );
     }
@@ -609,14 +626,18 @@ const UploadsClient = ({
     if (selectedType === 'scores') {
       return (
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <div>
-            <label className="block text-xs font-medium text-theme-tertiary mb-2">
+          <Stack gap={2}>
+            <label
+              htmlFor={`${idFiltro}-4`}
+              className="block text-xs font-medium text-theme-tertiary"
+            >
               {t('filter_work')}
               {loadingFilterData && (
                 <span className="text-xs ml-2">Carregando...</span>
               )}
             </label>
             <Select
+              id={`${idFiltro}-4`}
               options={[
                 { value: '', label: t('filter_all_works') },
                 ...filterWorks.map((work) => ({
@@ -629,15 +650,19 @@ const UploadsClient = ({
               className="input-classical-2 w-full"
               disabled={loadingFilterData}
             />
-          </div>
-          <div>
-            <label className="block text-xs font-medium text-theme-tertiary mb-2">
+          </Stack>
+          <Stack gap={2}>
+            <label
+              htmlFor={`${idFiltro}-5`}
+              className="block text-xs font-medium text-theme-tertiary"
+            >
               {t('filter_epoch')}{' '}
               {loadingEpochs && (
                 <span className="text-xs">{t('filter_loading_epochs')}</span>
               )}
             </label>
             <Select
+              id={`${idFiltro}-5`}
               options={[
                 { value: '', label: t('filter_all_epochs') },
                 ...availableEpochs.map((epoch) => ({
@@ -650,20 +675,24 @@ const UploadsClient = ({
               className="input-classical-2 w-full"
               disabled={loadingEpochs}
             />
-          </div>
+          </Stack>
         </div>
       );
     }
 
     return (
-      <div>
-        <label className="block text-xs font-medium text-theme-tertiary mb-2">
+      <Stack gap={2}>
+        <label
+          htmlFor={`${idFiltro}-6`}
+          className="block text-xs font-medium text-theme-tertiary"
+        >
           {t('filter_epoch')}{' '}
           {loadingEpochs && (
             <span className="text-xs">{t('filter_loading_epochs')}</span>
           )}
         </label>
         <Select
+          id={`${idFiltro}-6`}
           options={[
             { value: '', label: t('filter_all_epochs') },
             ...availableEpochs.map((epoch) => ({
@@ -676,7 +705,7 @@ const UploadsClient = ({
           className="input-classical-2 w-full"
           disabled={loadingEpochs}
         />
-      </div>
+      </Stack>
     );
   };
 
@@ -704,48 +733,32 @@ const UploadsClient = ({
         <AnimatedItem direction="up" springType="gentle">
           <AnimatedCard hover="none" className="classical-card p-6">
             {/* Tabs */}
-            <div className="flex bg-theme-secondary classical-scrollbar-mini rounded-xl p-1 overflow-x-auto mb-4">
-              <button
+            <Abas rotulo="Filtrar envios" className="mb-4">
+              <Aba
+                ativa={selectedType === 'all'}
                 onClick={() => handleTabChange('all')}
-                className={`px-4 py-2 rounded-lg text-sm font-medium transition-all whitespace-nowrap ${
-                  selectedType === 'all'
-                    ? 'bg-theme-tertiary text-theme-primary shadow-md'
-                    : 'text-theme-tertiary'
-                }`}
               >
                 {t('tabs_all')} ({stats.totalCount})
-              </button>
-              <button
+              </Aba>
+              <Aba
+                ativa={selectedType === 'composers'}
                 onClick={() => handleTabChange('composers')}
-                className={`px-4 py-2 rounded-lg text-sm font-medium transition-all whitespace-nowrap ${
-                  selectedType === 'composers'
-                    ? 'bg-theme-tertiary text-theme-primary shadow-md'
-                    : 'text-theme-tertiary'
-                }`}
               >
                 {t('tabs_composers')} ({stats.composerCount})
-              </button>
-              <button
+              </Aba>
+              <Aba
+                ativa={selectedType === 'works'}
                 onClick={() => handleTabChange('works')}
-                className={`px-4 py-2 rounded-lg text-sm font-medium transition-all whitespace-nowrap ${
-                  selectedType === 'works'
-                    ? 'bg-theme-tertiary text-theme-primary shadow-md'
-                    : 'text-theme-tertiary'
-                }`}
               >
                 {t('tabs_works')} ({stats.workCount})
-              </button>
-              <button
+              </Aba>
+              <Aba
+                ativa={selectedType === 'scores'}
                 onClick={() => handleTabChange('scores')}
-                className={`px-4 py-2 rounded-lg text-sm font-medium transition-all whitespace-nowrap ${
-                  selectedType === 'scores'
-                    ? 'bg-theme-tertiary text-theme-primary shadow-md'
-                    : 'text-theme-tertiary'
-                }`}
               >
                 {t('tabs_scores')} ({stats.scoreCount})
-              </button>
-            </div>
+              </Aba>
+            </Abas>
 
             <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
               {/* Create Buttons */}
@@ -866,12 +879,9 @@ const UploadsClient = ({
                     </Inline>
                     <Inline gap={2}>
                       {hasActiveFilters && (
-                        <button
-                          onClick={clearFilters}
-                          className="text-xs text-theme-tertiary transition-colors px-2 py-1 rounded bg-sup-2"
-                        >
+                        <Botao tamanho="p" onClick={clearFilters}>
                           {t('filters_clear_all')}
-                        </button>
+                        </Botao>
                       )}
                       <button
                         onClick={() => setShowFilters(false)}
@@ -1006,7 +1016,7 @@ const UploadsClient = ({
                       ))}
                     </SequentialGrid>
                   ) : (
-                    <div className="space-y-4">
+                    <Stack>
                       {(selectedType === 'all'
                         ? uploadsByType.composers.slice(0, 16)
                         : uploadsByType.composers
@@ -1033,7 +1043,7 @@ const UploadsClient = ({
                           />
                         </AnimatedItem>
                       ))}
-                    </div>
+                    </Stack>
                   )}
                 </AnimatedItem>
               ) : (
@@ -1125,7 +1135,7 @@ const UploadsClient = ({
                       ))}
                     </SequentialGrid>
                   ) : (
-                    <div className="space-y-4">
+                    <Stack>
                       {(selectedType === 'all'
                         ? uploadsByType.works.slice(0, 16)
                         : uploadsByType.works
@@ -1149,7 +1159,7 @@ const UploadsClient = ({
                           />
                         </AnimatedItem>
                       ))}
-                    </div>
+                    </Stack>
                   )}
                 </AnimatedItem>
               ) : (
@@ -1241,7 +1251,7 @@ const UploadsClient = ({
                       ))}
                     </SequentialGrid>
                   ) : (
-                    <div className="space-y-4">
+                    <Stack>
                       {(selectedType === 'all'
                         ? uploadsByType.scores.slice(0, 16)
                         : uploadsByType.scores
@@ -1265,7 +1275,7 @@ const UploadsClient = ({
                           />
                         </AnimatedItem>
                       ))}
-                    </div>
+                    </Stack>
                   )}
                 </AnimatedItem>
               ) : (
@@ -1320,12 +1330,9 @@ const UploadsClient = ({
                   <p className="text-theme-secondary mb-6">
                     {t('empty_no_results_subtitle')}
                   </p>
-                  <button
-                    onClick={clearFilters}
-                    className="btn-classical-primary"
-                  >
+                  <Botao variante="primario" onClick={clearFilters}>
                     {t('filters_clear_all')}
-                  </button>
+                  </Botao>
                 </div>
               </AnimatedItem>
             )}

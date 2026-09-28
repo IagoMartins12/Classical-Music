@@ -179,13 +179,7 @@ export default function StatsModal({
         <AnimatedCard
           hover="none"
           className={`
-            h-full bg-theme-elevated border-t-4 
-            ${
-              colors.gradient
-                .replace('from-', 'border-')
-                .replace('to-', '')
-                .split(' ')[0]
-            }
+            h-full bg-theme-elevated
             rounded-t-3xl shadow-2xl
             flex flex-col overflow-hidden
           `}

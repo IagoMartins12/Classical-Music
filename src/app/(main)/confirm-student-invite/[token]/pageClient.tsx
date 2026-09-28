@@ -257,7 +257,11 @@ export default function ConfirmStudentInvitePage() {
                       <h4 className="font-medium mb-2">
                         {t('pages_token_jsx_h4_children_0__seu_plano_estudos')}
                       </h4>
-                      <ul className="text-xs opacity-90 space-y-1 text-left">
+                      <Stack
+                        gap={1}
+                        as="ul"
+                        className="text-xs opacity-90 text-left"
+                      >
                         <li>
                           {t(
                             'pages_token_jsx_li_children_0__aulas_por_semana',
@@ -285,13 +289,17 @@ export default function ConfirmStudentInvitePage() {
                             })}
                           </li>
                         )}
-                      </ul>
+                      </Stack>
                     </Card>
                     <Card nivel={2} densidade="compacta" className="rounded-lg">
                       <h4 className="font-medium mb-2">
                         {t('pages_token_jsx_h4_children_0__próximos_passos')}
                       </h4>
-                      <ul className="text-xs opacity-90 space-y-1 text-left">
+                      <Stack
+                        gap={1}
+                        as="ul"
+                        className="text-xs opacity-90 text-left"
+                      >
                         <li>
                           {t('pages_token_jsx_li_children_0__complete_perfil')}
                         </li>
@@ -308,7 +316,7 @@ export default function ConfirmStudentInvitePage() {
                             'pages_token_jsx_li_children_0__prepare_se_aprender'
                           )}
                         </li>
-                      </ul>
+                      </Stack>
                     </Card>
                   </div>
                 )}
@@ -413,7 +421,7 @@ export default function ConfirmStudentInvitePage() {
               </p>
             </Stack>
 
-            <div className="space-y-4">
+            <Stack>
               {state.canResend && (
                 <Button
                   variant="primary"
@@ -450,7 +458,7 @@ export default function ConfirmStudentInvitePage() {
                   {t('pages_token_jsx_button_children_0__tentar_novamente')}
                 </Button>
               </div>
-            </div>
+            </Stack>
           </div>
         );
 
@@ -463,8 +471,6 @@ export default function ConfirmStudentInvitePage() {
     <div className="min-h-screen flex items-center justify-center p-4">
       {/* Background Decorations */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        <div className="absolute -top-10 -left-10 w-40 h-40 opacity-10 rounded-full blur-3xl"></div>
-        <div className="absolute -bottom-10 -right-10 w-60 h-60 opacity-10 rounded-full blur-3xl"></div>
         <GiGrandPiano className="absolute top-20 right-20 w-12 h-12 text-ouro-texto opacity-5 rotate-12" />
         <GiGrandPiano className="absolute bottom-20 left-20 w-16 h-16 opacity-5 -rotate-12" />
       </div>

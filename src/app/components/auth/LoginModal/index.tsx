@@ -21,6 +21,7 @@ import ForgotPasswordModal from '../ForgotPasswordModal';
 import { useTranslation } from '@/app/hooks/useTranslation';
 import { Language } from '@/app/stores/useLanguageStore';
 import { Text } from '@/app/components/ui/Text';
+import { Stack } from '@/app/components/ui/Layout';
 
 const errorMessages: Record<string, { pt: string; en: string }> = {
   Callback: {
@@ -344,7 +345,7 @@ const LoginModal: React.FC = () => {
         )}
 
         {/* Email/Password Form */}
-        <form onSubmit={handleSubmit} className="space-y-6">
+        <Stack gap={6} as="form" onSubmit={handleSubmit}>
           {/* General Error */}
           {errors.general && (
             <div className="p-3 rounded-lg text-red-400 text-sm bg-sup-2">
@@ -403,7 +404,7 @@ const LoginModal: React.FC = () => {
           >
             {t('login_modal_submit_button')}
           </Button>
-        </form>
+        </Stack>
 
         {/* Divider */}
         <div className="relative my-6">

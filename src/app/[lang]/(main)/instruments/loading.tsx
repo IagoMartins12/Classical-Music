@@ -1,6 +1,6 @@
 import {
   EsqueletoCabecalho,
-  EsqueletoGrade,
+  EsqueletoFaixas,
   EsqueletoPagina,
 } from '@/app/components/ui/Carregando';
 
@@ -8,7 +8,7 @@ export default function Carregando() {
   return (
     <EsqueletoPagina rotulo="Carregando instrumentos">
       <EsqueletoCabecalho centro />
-      <EsqueletoGrade colunas={3} quantos={6} />
+      <EsqueletoFaixas quantos={6} icone="grande" lado="numero" />
     </EsqueletoPagina>
   );
 }

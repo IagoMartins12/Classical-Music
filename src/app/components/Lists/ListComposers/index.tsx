@@ -71,7 +71,7 @@ const ListComposers: React.FC<listComposersProps> = ({ composers }) => {
                 animationFillMode: 'backwards',
               }}
             >
-              <Card densidade="compacta" className="space-y-4">
+              <Card densidade="compacta" className="gap-4 flex flex-col">
                 <div className="aspect-square loading-skeleton rounded-xl"></div>
                 <Stack gap={2}>
                   <div className="h-4 loading-skeleton rounded"></div>
@@ -85,15 +85,12 @@ const ListComposers: React.FC<listComposersProps> = ({ composers }) => {
       {/* Action Buttons Section */}
       <div className="mt-12 text-center">
         {visibleCount < composers.length ? (
-          <div className="space-y-4">
+          <div className="gap-4 flex flex-col">
             {/* Load More Button */}
             <button
               onClick={handleLoadMore}
               disabled={isLoading}
-              className={`
-                btn-classical-primary text-lg px-8 py-4 disabled:opacity-50 disabled:cursor-not-allowed hover:scale-105 active:scale-95 shadow-theme-glow
-                ${isLoading ? 'animate-pulse' : ''}
-              `}
+              className={` btn-classical-primary text-lg px-8 py-4 disabled:opacity-50 disabled:cursor-not-allowed hover:scale-105 active:scale-95 shadow-theme-glow self-center ${isLoading ? 'animate-pulse' : ''} `}
             >
               {isLoading ? (
                 <>
@@ -115,9 +112,9 @@ const ListComposers: React.FC<listComposersProps> = ({ composers }) => {
             </Text>
           </div>
         ) : (
-          <div className="space-y-6">
+          <div className="gap-6 flex flex-col">
             {/* Completion message */}
-            <Card className="max-w-md mx-auto">
+            <Card className="max-w-md mx-auto w-full">
               <div className="flex items-center justify-center mb-4">
                 <div className="w-12 h-12 rounded-full flex items-center justify-center shadow-theme-glow">
                   <PiMusicNotes className="w-6 h-6 text-theme-primary" />
@@ -134,6 +131,7 @@ const ListComposers: React.FC<listComposersProps> = ({ composers }) => {
 
             {/* See All Button */}
             <Button
+              className="self-center"
               variante="secundario"
               type="submit"
               onClick={() => navigateToUrl('composers')}

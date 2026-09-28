@@ -1,3 +1,4 @@
+import { Button } from '@/app/components/ui/Button';
 // 🔧 COMPONENTE DE DEBUG PARA DESENVOLVEDORES
 import React from 'react';
 import { adminCache } from './adminDebug';
@@ -47,16 +48,18 @@ export const AdminDebugPanel: React.FC<AdminDebugPanelProps> = ({
         </div>
       )}
 
-      <button
+      <Button
+        variante="perigo"
+        tamanho="p"
         onClick={() => {
           console.log('🔍 Full Debug Data:', { stats, filters, performance });
           adminCache.clear();
           console.log('🗑️ Cache cleared');
         }}
-        className="mt-2 px-2 py-1 bg-red-600 text-white rounded text-xs hover:bg-red-700"
+        className="mt-2"
       >
         Log Full Data & Clear Cache
-      </button>
+      </Button>
     </div>
   );
 };

@@ -1,7 +1,14 @@
 // app/components/modals/CreateWorkModal.tsx - COM INTEGRAÇÃO DE SUGESTÃO DE OBRA PAI
 'use client';
 
-import { useState, useEffect, useRef, useMemo, useCallback } from 'react';
+import {
+  useState,
+  useEffect,
+  useRef,
+  useMemo,
+  useCallback,
+  useId,
+} from 'react';
 import { useRouter } from 'next/navigation';
 import {
   PiArrowSquareOut,
@@ -107,6 +114,7 @@ const CreateWorkModal = ({
   epochs,
   editingWork,
 }: CreateWorkModalProps) => {
+  const idCampo = useId();
   const router = useRouter();
   const { t, language } = useTranslation({ sections: ['pages/uploads'] });
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -1053,7 +1061,7 @@ const CreateWorkModal = ({
 
             {/* Content */}
             <div className="mt-4">
-              <form onSubmit={handleSubmit} className="space-y-6" noValidate>
+              <Stack gap={6} as="form" onSubmit={handleSubmit} noValidate>
                 {/* URL Scraping */}
                 <AnimatedCard
                   className="classical-card-simple p-4"
@@ -1223,10 +1231,14 @@ const CreateWorkModal = ({
                     />
 
                     <div ref={fieldRefs.composerId}>
-                      <label className="block text-sm font-medium text-theme-tertiary mb-2">
+                      <label
+                        htmlFor={`${idCampo}-1`}
+                        className="block text-sm font-medium text-theme-tertiary mb-2"
+                      >
                         {t('modal_work_basic_composer')} *
                       </label>
                       <ComposerSearchInput
+                        id={`${idCampo}-1`}
                         selectedComposer={formData.composerId}
                         onComposerSelect={handleComposerSelect}
                         popularComposers={composers}
@@ -1366,10 +1378,14 @@ const CreateWorkModal = ({
                       {/* Work Search Input para Parent Work */}
                       {formData.composerId ? (
                         <div>
-                          <label className="block text-sm font-medium text-theme-tertiary mb-2">
+                          <label
+                            htmlFor={`${idCampo}-2`}
+                            className="block text-sm font-medium text-theme-tertiary mb-2"
+                          >
                             Obra da Coleção *
                           </label>
                           <SimpleWorkSearchInput
+                            id={`${idCampo}-2`}
                             selectedWork={formData.parentWorkId}
                             onWorkSelect={handleParentWorkSelect}
                             userSuggestions={parentWorks}
@@ -1551,7 +1567,7 @@ const CreateWorkModal = ({
                     <span>{t('modal_work_categories_title')}</span>
                   </Inline>
 
-                  <div className="space-y-4">
+                  <Stack>
                     <MultiSelect
                       label={t('modal_work_categories_label')}
                       options={validCategoryOptions}
@@ -1573,7 +1589,7 @@ const CreateWorkModal = ({
                       placeholder={t('modal_work_genres_placeholder')}
                       excludeValues={workGenresExcludeValues}
                     />
-                  </div>
+                  </Stack>
                 </AnimatedCard>
 
                 {/* External Links */}
@@ -1649,7 +1665,7 @@ const CreateWorkModal = ({
                       className="border-t border-theme-secondary pt-4"
                     >
                       {/* Spotify */}
-                      <div className="space-y-3">
+                      <Stack gap={3}>
                         <Inline gap={2}>
                           <PiSpotifyLogo className="w-5 h-5 text-green-400" />
                           <h4 className="text-lg font-semibold text-theme-primary">
@@ -1668,10 +1684,10 @@ const CreateWorkModal = ({
                           placeholder="https://open.spotify.com/track/..."
                           leftIcon={<PiSpotifyLogo />}
                         />
-                      </div>
+                      </Stack>
 
                       {/* YouTube */}
-                      <div className="space-y-3">
+                      <Stack gap={3}>
                         <Inline gap={2}>
                           <PiYoutubeLogo className="w-5 h-5 text-red-400" />
                           <h4 className="text-lg font-semibold text-theme-primary">
@@ -1690,7 +1706,7 @@ const CreateWorkModal = ({
                           placeholder="https://www.youtube.com/watch?v=..."
                           leftIcon={<PiYoutubeLogo />}
                         />
-                      </div>
+                      </Stack>
 
                       {/* Custom Audio */}
                       <Stack gap={3}>
@@ -1778,7 +1794,7 @@ const CreateWorkModal = ({
                           </div>
 
                           {mediaData.hasVideoAula && (
-                            <div className="space-y-4 p-4 bg-purple-900/10 rounded-xl">
+                            <Stack className="p-4 bg-purple-900/10 rounded-xl">
                               {/* Type and Source */}
                               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                                 <div>
@@ -1901,7 +1917,7 @@ const CreateWorkModal = ({
                                   )}
                                 </div>
                               )}
-                            </div>
+                            </Stack>
                           )}
                         </Stack>
                       )}
@@ -1944,7 +1960,7 @@ const CreateWorkModal = ({
                         : t('form_create') + ' Obra'}
                   </Button>
                 </Inline>
-              </form>
+              </Stack>
             </div>
           </div>
         </AnimatedItem>

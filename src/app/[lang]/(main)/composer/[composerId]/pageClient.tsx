@@ -33,7 +33,7 @@ import {
 } from '../../../../components/animation/AnimatedComponents';
 import { getComposerNationalityDisplay } from '../../../../components/Utils/nationalityFlags';
 import { INSTRUMENT_MAPPING } from '../../../../../../scripts/imslp-works-scraper-util';
-import VerificationBadge from '../../../../components/Verification/VerificationBadge';
+import { SeloNoTitulo } from '../../../../components/Verification/VerificationBadge';
 import ReportButton from '../../../../components/Report/ReportButton';
 import VerificationModal from '../../../../components/Verification/VerificationModal';
 import VerificationButton from '../../../../components/Verification/VerificationButton';
@@ -239,14 +239,9 @@ export default function ComposerDetailsClient({
   return (
     <div className="">
       {/* Background Pattern */}
-      <div className="absolute inset-0 pointer-events-none opacity-5">
-        <div className="absolute top-20 left-20 w-64 h-64 rounded-full blur-3xl"></div>
-        <div className="absolute bottom-40 right-32 w-48 h-48 rounded-full blur-2xl"></div>
-        <div className="absolute top-1/2 left-1/4 w-32 h-32 rounded-full blur-xl"></div>
-        <div className="absolute bottom-20 left-10 w-40 h-40 rounded-full blur-2xl"></div>
-      </div>
+      <div className="absolute inset-0 pointer-events-none opacity-5"></div>
 
-      <div className="section-wrap space-y-8 relative z-10 ">
+      <Stack gap={8} className="section-wrap relative z-10">
         {/* Breadcrumb */}
         <AnimatedItem direction="down" springType="gentle">
           <Inline
@@ -293,28 +288,24 @@ export default function ComposerDetailsClient({
             <div className=" p-2 md:p-8 relative z-10">
               <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
                 {/* Informações do Compositor */}
-                <div className="lg:col-span-2 space-y-6 order-2 lg:order-1">
+                <Stack gap={6} className="lg:col-span-2 order-2 lg:order-1">
                   {/* Nome e título */}
                   <AnimatedItem direction="up" springType="bouncy">
                     <Stack gap={3}>
                       <div className="flex flex-col-reverse md:flex-row items-start justify-between">
                         <div className="flex-1 ">
+                          {/* O selo fica no nome, e não no nome completo: antes ele
+                              sumia quando os dois eram iguais. */}
                           <h1 className="text-4xl md:text-5xl font-bold text-gradient-brand classical-title leading-tight">
-                            {composer.name}
+                            <SeloNoTitulo
+                              texto={composer.name}
+                              verified={isVerified}
+                            />
                           </h1>
                           {composer.fullName !== composer.name && (
-                            <Inline gap={2}>
-                              <p className="text-xl text-theme-secondary">
-                                {composer.fullName}
-                              </p>
-                              {/* Sempre montado: o selo precisa ver a obra passar a verificada
-    para se desenhar (sem nada, ele não ocupa espaço). */}
-                              <VerificationBadge
-                                verified={isVerified}
-                                size="md"
-                                variant="text"
-                              />
-                            </Inline>
+                            <p className="text-xl text-theme-secondary">
+                              {composer.fullName}
+                            </p>
                           )}
                         </div>
                         {/* Ações */}
@@ -617,7 +608,7 @@ export default function ComposerDetailsClient({
                       </div>
                     </Stack>
                   </AnimatedItem>
-                </div>
+                </Stack>
 
                 {/* Imagem do Compositor */}
                 <AnimatedItem
@@ -770,7 +761,7 @@ export default function ComposerDetailsClient({
             filterOptions={filterOptions}
           />
         </AnimatedContainer>
-      </div>
+      </Stack>
       {podeVerificar && (
         <VerificationModal
           isOpen={showVerificationModal}

@@ -8,6 +8,7 @@ import { Editor } from '@tiptap/react';
 import Modal from '@/app/components/Modal';
 import Input from '@/app/components/Common/Inputs';
 import Button from '@/app/components/Common/Button';
+import { Stack } from '@/app/components/ui/Layout';
 
 interface YoutubeModalProps {
   editor: Editor;
@@ -46,7 +47,7 @@ export function YoutubeModal({ editor, onClose }: YoutubeModalProps) {
       title="Inserir Vídeo do YouTube"
       maxWidth="md"
     >
-      <form onSubmit={handleSubmit} className="space-y-4">
+      <Stack as="form" onSubmit={handleSubmit}>
         <Input
           label="URL do YouTube"
           type="url"
@@ -67,7 +68,7 @@ export function YoutubeModal({ editor, onClose }: YoutubeModalProps) {
             Inserir
           </Button>
         </div>
-      </form>
+      </Stack>
     </Modal>
   );
 }

@@ -787,8 +787,8 @@ export default function PricingPage({ pricing }: PricingProps) {
       {/* Benefícios por Persona */}
       <section className="py-8 bg-gradient-to-b from-transparent">
         <AnimatedContainer delay={0.1} staggerSpeed="normal">
-          <div className="section-wrap">
-            <div className="text-center mb-16">
+          <Stack gap={16} className="section-wrap">
+            <div className="text-center">
               <div className="inline-flex items-center px-4 py-2 rounded-full mb-6 bg-sup-2">
                 <PiTarget className="w-4 h-4 mr-2" />
                 <span className="font-medium text-sm">Benefícios</span>
@@ -848,7 +848,7 @@ export default function PricingPage({ pricing }: PricingProps) {
                 highlighted
               />
             </SequentialGrid>
-          </div>
+          </Stack>
         </AnimatedContainer>
       </section>
 
@@ -969,7 +969,7 @@ export default function PricingPage({ pricing }: PricingProps) {
             const plan = PLAN_DETAILS[selectedPlan.type];
 
             return (
-              <div className="rounded-2xl p-5 w-full relative space-y-6">
+              <Stack gap={6} className="rounded-2xl p-5 w-full relative">
                 {/* Header */}
                 <div className="text-center">
                   <h3 className="text-2xl font-bold text-theme-primary">
@@ -1086,11 +1086,17 @@ export default function PricingPage({ pricing }: PricingProps) {
 
                 {/* Cupom */}
                 <div>
-                  <label className="block text-sm font-medium text-theme-secondary mb-2">
+                  {/* Dentro de uma função de desenho, sem `useId`: o campo
+                      recebe o nome direto, e o texto de cima fica só visual. */}
+                  <span
+                    aria-hidden="true"
+                    className="block text-sm font-medium text-theme-secondary mb-2"
+                  >
                     Cupom de desconto (opcional)
-                  </label>
+                  </span>
                   <div className="flex gap-2">
                     <Input
+                      aria-label="Cupom de desconto (opcional)"
                       type="text"
                       value={couponCode}
                       onChange={(e) =>
@@ -1146,7 +1152,7 @@ export default function PricingPage({ pricing }: PricingProps) {
                   Você será redirecionado para o Stripe para completar o
                   pagamento com segurança.
                 </Text>
-              </div>
+              </Stack>
             );
           })()}
         </Modal>

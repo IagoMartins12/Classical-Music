@@ -562,7 +562,7 @@ const ParentWorkSuggestionModal: React.FC<ParentWorkSuggestionModalProps> = ({
 
             {/* Content */}
             <div className="p-6  overflow-y-auto">
-              <div className="space-y-6">
+              <Stack gap={6}>
                 {/* Info */}
                 <AnimatedCard
                   className="bg-blue-50 border-blue-200 p-4"
@@ -637,7 +637,7 @@ const ParentWorkSuggestionModal: React.FC<ParentWorkSuggestionModalProps> = ({
                           </Text>
                         </Inline>
 
-                        <div className="space-y-3">
+                        <div className="gap-3 flex flex-col">
                           {suggestions.map((suggestion) => {
                             const Icon = suggestion.icon;
                             const isSelected = selectedFields.has(
@@ -691,7 +691,7 @@ const ParentWorkSuggestionModal: React.FC<ParentWorkSuggestionModalProps> = ({
                     );
                   }
                 )}
-              </div>
+              </Stack>
             </div>
 
             {/* Actions */}

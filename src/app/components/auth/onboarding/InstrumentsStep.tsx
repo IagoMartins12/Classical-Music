@@ -1,5 +1,6 @@
 // components/onboarding/InstrumentsStep.tsx
 'use client';
+import { Button } from '@/app/components/ui/Button';
 
 import { useOnboardingModal } from '@/app/stores/authStore';
 import React from 'react';
@@ -222,13 +223,14 @@ const InstrumentsStep: React.FC<InstrumentsStepProps> = ({ instruments }) => {
                   )}
                 </div>
 
-                <button
+                <Button
+                  variante="fantasma"
+                  tamanho="p"
                   onClick={() => removeInstrument(instrument.id)}
-                  className="p-2 text-theme-tertiary transition-colors"
+                  icone={PiX}
                 >
-                  <PiX className="w-4 h-4" />
                   <NomeAcao acao="fechar" />
-                </button>
+                </Button>
               </Card>
             ))}
           </Stack>

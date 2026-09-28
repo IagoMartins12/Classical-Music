@@ -1,5 +1,6 @@
 // app/components/Admin/Modals/CreateBackupModal.tsx
 'use client';
+import { Button as Botao } from '@/app/components/ui/Button';
 
 import { useState } from 'react';
 import {
@@ -89,13 +90,9 @@ export default function CreateBackupModal({
             </Text>
           </div>
         </Inline>
-        <button
-          onClick={onClose}
-          className="p-2 rounded-lg text-theme-tertiary transition-all"
-        >
-          <PiX className="w-5 h-5" />
+        <Botao variante="fantasma" tamanho="p" onClick={onClose} icone={PiX}>
           <NomeAcao acao="fechar" />
-        </button>
+        </Botao>
       </div>
 
       {/* Form */}

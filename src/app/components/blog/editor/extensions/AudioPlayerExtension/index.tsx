@@ -1,3 +1,4 @@
+import { Button as Botao } from '@/app/components/ui/Button';
 // ============================================
 // AudioPlayerExtension - COM UPLOAD/YOUTUBE (ÁUDIO APENAS)
 // ============================================
@@ -210,13 +211,15 @@ const AudioPlayerComponent = (props: any) => {
             gap={2}
             className="absolute top-4 right-4 z-10 p-2 shadow-lg rounded-lg"
           >
-            <button
+            <Botao
+              variante="fantasma"
+              tamanho="p"
               onClick={handleDelete}
-              className="p-2 hover:bg-red-50 rounded transition-colors !text-erro"
               title="Remover"
-            >
-              <PiTrash className="w-4 h-4" />
-            </button>
+              icone={PiTrash}
+              rotulo="Remover"
+              className="text-erro"
+            />
           </Inline>
         )}
 

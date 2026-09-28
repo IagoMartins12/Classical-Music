@@ -1,10 +1,14 @@
 'use client';
+import {
+  EsqueletoCompositores,
+  EsqueletoLista,
+} from '@/app/components/ui/Carregando';
 // app/composers/ComposersClient.tsx - Premium version com Animação Sequencial
 import { useReordenacao } from '@/app/components/ui/useReordenacao';
 import { NomeAcao } from '@/app/components/ui/NomeAcao';
 import { useLocalizedRouter } from '@/app/hooks/useLocalizedRouter';
 
-import { useState, useTransition, useCallback } from 'react';
+import { useState, useTransition, useCallback, useId } from 'react';
 
 import { PiClock, PiMagnifyingGlass, PiUser, PiX } from 'react-icons/pi';
 import ComposerCard from '../../../components/ComposersClient/ComposerCard';
@@ -25,7 +29,6 @@ import { currentSearchParams } from '@/app/utils/currentSearchParams';
 import { Inline } from '@/app/components/ui/Layout';
 import { Text } from '@/app/components/ui/Text';
 import { Button } from '@/app/components/ui/Button';
-import { Card } from '@/app/components/ui/Card';
 
 export interface ComposerImslp {
   epochName: string;
@@ -70,6 +73,7 @@ export default function ComposersClient({
   searchTerm: initialSearchTerm,
   selectedEpoch: initialSelectedEpoch,
 }: ComposersClientProps) {
+  const idCampo = useId();
   const { t } = useTranslation({ sections: ['pages/composers'] });
   const router = useLocalizedRouter();
 
@@ -123,19 +127,16 @@ export default function ComposersClient({
     [router]
   );
 
-  // Debounce para busca
-  const handleSearchChange = useCallback(
-    (value: string) => {
-      setSearchTerm(value);
-
-      const timeoutId = setTimeout(() => {
-        updateUrl({ search: value, page: 1 });
-      }, 800);
-
-      return () => clearTimeout(timeoutId);
-    },
+  // A busca só vai quando a pessoa pede (botão ou Enter): buscar a cada
+  // letra refazia a lista — e a página inteira — no meio da digitação.
+  const buscar = useCallback(
+    (valor: string) => updateUrl({ search: valor.trim(), page: 1 }),
     [updateUrl]
   );
+  const limparBusca = useCallback(() => {
+    setSearchTerm('');
+    buscar('');
+  }, [buscar]);
 
   const handleEpochChange = useCallback(
     (value: string) => {
@@ -215,40 +216,66 @@ export default function ComposersClient({
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
             {/* Search Field */}
-            <div className="space-y-2">
-              <label className="text-sm font-medium text-theme-secondary">
+            <div className="gap-2 flex flex-col">
+              <label
+                htmlFor={`${idCampo}-1`}
+                className="text-sm font-medium text-theme-secondary self-start"
+              >
                 {t('client_jsx_label_children_0__pesquisar_por_nome')}
               </label>
-              <div className="relative mt-2">
-                <PiMagnifyingGlass className="absolute left-4 top-1/2 transform -translate-y-1/2 w-5 h-5 text-theme-tertiary" />
-                <input
-                  type="text"
-                  placeholder={t(
-                    'client_jsx_input_placeholder__digite_nome_compositor'
+              <form
+                role="search"
+                onSubmit={(e) => {
+                  e.preventDefault();
+                  buscar(searchTerm);
+                }}
+                className="flex gap-2"
+              >
+                <div className="relative flex-1">
+                  <PiMagnifyingGlass className="absolute left-4 top-1/2 transform -translate-y-1/2 w-5 h-5 text-theme-tertiary" />
+                  <input
+                    id={`${idCampo}-1`}
+                    type="search"
+                    enterKeyHint="search"
+                    placeholder={t(
+                      'client_jsx_input_placeholder__digite_nome_compositor'
+                    )}
+                    value={searchTerm}
+                    onChange={(e) => setSearchTerm(e.target.value)}
+                    className="input-classical pl-12 pr-10 w-full [&::-webkit-search-cancel-button]:hidden"
+                  />
+                  {searchTerm && (
+                    <button
+                      type="button"
+                      onClick={limparBusca}
+                      className="absolute right-4 top-1/2 transform -translate-y-1/2 text-theme-tertiary transition-colors"
+                    >
+                      <PiX aria-hidden className="h-4 w-4" />
+                      <NomeAcao acao="limpar" />
+                    </button>
                   )}
-                  value={searchTerm}
-                  onChange={(e) => handleSearchChange(e.target.value)}
-                  className="input-classical pl-12 w-full"
-                />
-                {searchTerm && (
-                  <button
-                    onClick={() => handleSearchChange('')}
-                    className="absolute right-4 top-1/2 transform -translate-y-1/2 text-theme-tertiary transition-colors"
-                  >
-                    <PiX aria-hidden className="h-4 w-4" />
-                    <NomeAcao acao="limpar" />
-                  </button>
-                )}
-              </div>
+                </div>
+                <Button
+                  type="submit"
+                  variante="primario"
+                  icone={PiMagnifyingGlass}
+                >
+                  {t('client_jsx_button_buscar')}
+                </Button>
+              </form>
             </div>
 
             {/* Epoch Filter */}
-            <div className="space-y-2">
-              <label className="text-sm font-medium text-theme-secondary">
+            <div className="gap-2 flex flex-col">
+              <label
+                htmlFor={`${idCampo}-2`}
+                className="text-sm font-medium text-theme-secondary self-start"
+              >
                 {t('client_jsx_label_children_0__filtrar_por_periodo')}
               </label>
-              <div className="relative mt-2">
+              <div className="relative ">
                 <Select
+                  id={`${idCampo}-2`}
                   options={[
                     {
                       label: t('client_jsx_option_children_0__todos_periodos'),
@@ -340,7 +367,15 @@ export default function ComposersClient({
 
         {/* Results Section - AQUI ESTÁ A ANIMAÇÃO SEQUENCIAL! */}
         <div className="relative mt-6 pt-4">
-          {composers.length > 0 ? (
+          {/* Na espera do filtro, o esqueleto com a forma dos cards; ao
+              chegar, cada card que continua desliza de onde estava. */}
+          {isPending ? (
+            viewMode === 'cards' ? (
+              <EsqueletoCompositores quantos={8} />
+            ) : (
+              <EsqueletoLista quantos={6} />
+            )
+          ) : composers.length > 0 ? (
             viewMode === 'cards' ? (
               // 🎬 ANIMAÇÃO SEQUENCIAL - Cards aparecem um por vez!
               <div ref={gradeRef}>
@@ -407,21 +442,6 @@ export default function ComposersClient({
                   </Button>
                 )}
               </div>
-            </AnimatedItem>
-          )}
-
-          {/* Loading Overlay com animação */}
-          {isPending && (
-            <AnimatedItem
-              direction="scale"
-              className="absolute inset-0 backdrop-blur-sm flex items-center justify-center z-10 rounded-2xl"
-            >
-              <Card densidade="larga" className="text-center">
-                <LoadingSpinner size="lg" />
-                <p className="text-theme-primary font-medium mt-4">
-                  {t('client_jsx_p_children_0__carregando_compositores')}
-                </p>
-              </Card>
             </AnimatedItem>
           )}
         </div>

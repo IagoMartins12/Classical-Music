@@ -79,12 +79,10 @@ const UserTypeStep: React.FC = () => {
               <div className="flex items-start space-x-4 relative">
                 <div
                   className={`
-                  w-12 h-12 ${type.color} rounded-full flex items-center justify-center flex-shrink-0
+                  w-12 h-12 rounded-full flex items-center justify-center flex-shrink-0
                 `}
                 >
-                  <Icon
-                    className={`w-6 h-6 ${type.color.replace('bg-', 'text-')}`}
-                  />
+                  <Icon className="w-6 h-6" />
                 </div>
 
                 <div className="flex-1">

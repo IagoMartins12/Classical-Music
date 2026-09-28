@@ -92,7 +92,7 @@ export default function AnnotationsStatsWidget({
     ) || 0;
 
   return (
-    <div className="space-y-6">
+    <Stack gap={6}>
       {/* Estatísticas por categoria */}
       {topCategories.length > 0 && (
         <AnimatedCard hover="lift" className="classical-card-2">
@@ -105,7 +105,7 @@ export default function AnnotationsStatsWidget({
               <PiTrendUp className="w-4 h-4" />
               <span>Suas Categorias Favoritas</span>
             </Inline>
-            <div className="space-y-3">
+            <Stack gap={3}>
               {topCategories.map((category: any, index: number) => {
                 const config =
                   CATEGORY_CONFIG[
@@ -162,7 +162,7 @@ export default function AnnotationsStatsWidget({
                   </AnimatedItem>
                 );
               })}
-            </div>
+            </Stack>
           </Stack>
         </AnimatedCard>
       )}
@@ -179,7 +179,7 @@ export default function AnnotationsStatsWidget({
               <PiTrophy className="w-4 h-4" />
               <span>Suas Anotações Mais Populares</span>
             </Inline>
-            <div className="space-y-3">
+            <Stack gap={3}>
               {topAnnotations.map((annotation, index) => {
                 const categoryConfig =
                   CATEGORY_CONFIG[
@@ -239,7 +239,7 @@ export default function AnnotationsStatsWidget({
                   </AnimatedItem>
                 );
               })}
-            </div>
+            </Stack>
           </Stack>
         </AnimatedCard>
       )}
@@ -256,7 +256,7 @@ export default function AnnotationsStatsWidget({
               <PiMusicNotes className="w-4 h-4" />
               <span>Obras Que Você Mais Anota</span>
             </Inline>
-            <div className="space-y-3">
+            <Stack gap={3}>
               {mostAnnotatedWorks.map((work, index) => (
                 <AnimatedItem
                   key={work.id}
@@ -299,7 +299,7 @@ export default function AnnotationsStatsWidget({
                   </Link>
                 </AnimatedItem>
               ))}
-            </div>
+            </Stack>
           </Stack>
         </AnimatedCard>
       )}
@@ -360,6 +360,6 @@ export default function AnnotationsStatsWidget({
           </div>
         </AnimatedCard>
       )}
-    </div>
+    </Stack>
   );
 }

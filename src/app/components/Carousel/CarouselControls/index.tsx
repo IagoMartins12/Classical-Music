@@ -23,7 +23,7 @@ const CarouselControls: React.FC<CarouselControlsProps> = ({
         onClick={onPrevious}
         disabled={!canGoPrevious || isAnimating}
         className={`
-          absolute left-0 top-1/2 -translate-y-1/2 z-20 w-12 h-12 backdrop-blur-md disabled:opacity-30 disabled:cursor-not-allowed rounded-full transition-all duration-300 hover:scale-110 hover:-translate-x-1 transform -translate-x-3 group
+          absolute left-0 top-1/2 -translate-y-1/2 z-elevado w-12 h-12 backdrop-blur-md disabled:opacity-30 disabled:cursor-not-allowed rounded-full transition-all duration-300 hover:scale-110 hover:-translate-x-1 transform -translate-x-3 group
         `}
         aria-label="Compositor anterior"
       >
@@ -38,7 +38,7 @@ const CarouselControls: React.FC<CarouselControlsProps> = ({
         onClick={onNext}
         disabled={!canGoNext || isAnimating}
         className={`
-          absolute right-0 top-1/2 -translate-y-1/2 z-20 w-12 h-12 backdrop-blur-md disabled:opacity-30 disabled:cursor-not-allowed rounded-full transition-all duration-300 hover:scale-110 hover:translate-x-1 transform translate-x-3 group
+          absolute right-0 top-1/2 -translate-y-1/2 z-elevado w-12 h-12 backdrop-blur-md disabled:opacity-30 disabled:cursor-not-allowed rounded-full transition-all duration-300 hover:scale-110 hover:translate-x-1 transform translate-x-3 group
         `}
         aria-label="Próximo compositor"
       >

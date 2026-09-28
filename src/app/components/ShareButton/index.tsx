@@ -1,7 +1,8 @@
 // components/ShareButton.tsx - COM TRADUÇÕES
 'use client';
+import { Button } from '@/app/components/ui/Button';
 
-import { useState } from 'react';
+import { useState, useId } from 'react';
 import {
   PiCheck,
   PiCopy,
@@ -35,6 +36,7 @@ export default function ShareButton({
   size = 'md',
   className = '',
 }: ShareButtonProps) {
+  const idCampo = useId();
   const { t } = useTranslation({ sections: ['pages/workId'] });
   const [isOpen, setIsOpen] = useState(false);
   const [copied, setCopied] = useState(false);
@@ -139,23 +141,24 @@ export default function ShareButton({
         <>
           {/* Overlay */}
           <div
-            className="fixed inset-0 z-40"
+            className="fixed inset-0 z-menu"
             onClick={() => setIsOpen(false)}
           />
 
           {/* Menu */}
-          <div className="absolute top-full right-0 mt-2 bg-theme-elevated rounded-2xl shadow-theme-glow p-4 z-50 min-w-64 animate-fade-in-up">
+          <div className="absolute top-full right-0 mt-2 bg-theme-elevated rounded-2xl shadow-theme-glow p-4 z-menu min-w-64 animate-fade-in-up">
             <div className="flex items-center justify-between mb-4">
               <h3 className="text-lg font-semibold text-theme-primary">
                 {t('share_compartilhar')}
               </h3>
-              <button
+              <Button
+                variante="fantasma"
+                tamanho="p"
                 onClick={() => setIsOpen(false)}
-                className="w-8 h-8 rounded-lg flex items-center justify-center text-theme-tertiary transition-colors"
+                icone={PiX}
               >
-                <PiX className="w-4 h-4" />
                 <NomeAcao acao="fechar" />
-              </button>
+              </Button>
             </div>
 
             {/* Título da página */}
@@ -177,11 +180,15 @@ export default function ShareButton({
 
             {/* Copiar URL */}
             <div className="mb-4">
-              <label className="text-sm font-medium text-theme-secondary mb-2 block">
+              <label
+                htmlFor={`${idCampo}-1`}
+                className="text-sm font-medium text-theme-secondary mb-2 block"
+              >
                 {t('share_copiar_link')}
               </label>
               <Inline gap={2}>
                 <Input
+                  id={`${idCampo}-1`}
                   type="text"
                   value={shareUrl}
                   readOnly
@@ -211,9 +218,9 @@ export default function ShareButton({
 
             {/* Plataformas de compartilhamento */}
             <Stack gap={3}>
-              <label className="text-sm font-medium text-theme-secondary block">
+              <span className="text-sm font-medium text-theme-secondary block">
                 {t('share_compartilhar_em')}
-              </label>
+              </span>
               <div className="grid grid-cols-2 gap-3">
                 <Inline
                   as="button"

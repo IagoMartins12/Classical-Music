@@ -260,8 +260,8 @@ export default function NewsletterDashboardClient() {
 
           {/* Quick Actions */}
           <AnimatedItem direction="up" springType="gentle">
-            <div className="mb-8">
-              <h2 className="text-2xl font-bold text-theme-primary mb-6">
+            <Stack gap={6} className="mb-8">
+              <h2 className="text-2xl font-bold text-theme-primary">
                 Ações Rápidas
               </h2>
               <SequentialGrid cols={3} gap={6} delayBetweenItems={0.1}>
@@ -312,7 +312,7 @@ export default function NewsletterDashboardClient() {
                   </Link>
                 ))}
               </SequentialGrid>
-            </div>
+            </Stack>
           </AnimatedItem>
 
           {/* Recent Activity & Top Campaigns */}

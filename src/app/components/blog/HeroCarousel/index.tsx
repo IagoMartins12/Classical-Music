@@ -1,4 +1,5 @@
 'use client';
+import { nomeDeArtigo } from '@/app/components/ui/nomeDeArtigo';
 
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
@@ -91,7 +92,10 @@ export function HeroCarousel({ articles }: { articles: Article[] }) {
   return (
     <div className="relative rounded-2xl overflow-hidden shadow-theme-large h-full">
       {/* Main Slide */}
-      <div className="relative h-[500px] md:h-[600px]">
+      <div
+        data-vira={nomeDeArtigo(currentArticle.slug)}
+        className="relative h-[500px] md:h-[600px]"
+      >
         {/* Background Image */}
         {currentArticle.coverImage ? (
           <Image

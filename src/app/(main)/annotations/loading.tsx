@@ -1,18 +1,16 @@
 import {
   EsqueletoCabecalho,
-  EsqueletoControles,
-  EsqueletoGrade,
-  EsqueletoNumeros,
+  EsqueletoControlesComAbas,
   EsqueletoPagina,
+  EsqueletoSecaoCartoes,
 } from '@/app/components/ui/Carregando';
 
 export default function Carregando() {
   return (
     <EsqueletoPagina rotulo="Carregando anotações">
-      <EsqueletoCabecalho />
-      <EsqueletoNumeros quantos={4} />
-      <EsqueletoControles filtros={1} />
-      <EsqueletoGrade colunas={3} quantos={6} />
+      <EsqueletoCabecalho centro />
+      <EsqueletoControlesComAbas abas={3} />
+      <EsqueletoSecaoCartoes quantos={6} />
     </EsqueletoPagina>
   );
 }

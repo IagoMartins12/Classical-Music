@@ -509,7 +509,7 @@ const RegisterModal: React.FC = () => {
             <PiCheckCircle className="w-4 h-4 mr-2" />
             {t('register_success_next_steps')}
           </h4>
-          <ul className="text-sm text-theme-tertiary space-y-2">
+          <Stack gap={2} as="ul" className="text-sm text-theme-tertiary">
             <li className="flex items-start">
               <span className="text-ouro-texto mr-2 font-medium">1.</span>
               {t('register_success_step_1')}
@@ -534,10 +534,10 @@ const RegisterModal: React.FC = () => {
                 ? t('register_success_step_3_google')
                 : t('register_success_step_4_credentials')}
             </li>
-          </ul>
+          </Stack>
         </Stack>
 
-        <div className="space-y-3">
+        <Stack gap={3}>
           {registerStep.userData?.isLoggedIn ? (
             <Button
               variant="primary"
@@ -568,7 +568,7 @@ const RegisterModal: React.FC = () => {
               ? t('register_success_explore_button')
               : t('register_success_close_button')}
           </Button>
-        </div>
+        </Stack>
 
         {/* Informação adicional - adaptada para Google */}
         <div className="text-center pt-4 border-t border-theme-secondary">

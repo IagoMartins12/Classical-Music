@@ -517,7 +517,7 @@ const HistoryClient = ({
         {/* Filters */}
         <AnimatedItem direction="up" springType="gentle">
           <AnimatedCard className="classical-card p-6 mb-8">
-            <div className="space-y-4">
+            <Stack>
               {/* Filter Toggle */}
               <div className="flex items-center justify-between">
                 <div>
@@ -590,7 +590,7 @@ const HistoryClient = ({
                   </Inline>
                 </AnimatedItem>
               )}
-            </div>
+            </Stack>
           </AnimatedCard>
         </AnimatedItem>
 

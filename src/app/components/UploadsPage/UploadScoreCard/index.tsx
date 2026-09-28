@@ -1,5 +1,6 @@
 // app/components/uploads/UploadScoreCard.tsx - TRADUZIDO
 'use client';
+import { Button } from '@/app/components/ui/Button';
 
 import { useState } from 'react';
 import Link from 'next/link';
@@ -181,13 +182,14 @@ const UploadScoreCard = ({
             )}
 
             <Inline gap={1} className="duration-300">
-              <button
+              <Button
+                variante="fantasma"
+                tamanho="p"
                 onClick={onEdit}
-                className="w-8 h-8 rounded-lg bg-theme-secondary text-theme-tertiary transition-colors flex items-center justify-center"
+                icone={PiNotePencil}
               >
-                <PiNotePencil className="w-4 h-4" />
                 <NomeAcao acao="editar" />
-              </button>
+              </Button>
 
               <button
                 onClick={handleDeleteClick}
@@ -214,15 +216,16 @@ const UploadScoreCard = ({
           {/* Floating action buttons */}
           <Stack
             gap={2}
-            className="absolute top-4 right-4 z-50 opacity-100 transition-all duration-300 transform translate-y-2 group-hover:translate-y-0"
+            className="absolute top-4 right-4 z-elevado opacity-100 transition-all duration-300 transform translate-y-2 group-hover:translate-y-0"
           >
-            <button
+            <Button
+              variante="fantasma"
+              tamanho="p"
               onClick={onEdit}
-              className="w-8 h-8 rounded-lg bg-theme-elevated text-theme-tertiary transition-colors flex items-center justify-center shadow-theme-medium"
+              icone={PiNotePencil}
             >
-              <PiNotePencil className="w-4 h-4" />
               <NomeAcao acao="editar" />
-            </button>
+            </Button>
 
             <button
               onClick={handleDeleteClick}
@@ -254,7 +257,7 @@ const UploadScoreCard = ({
         {/* Content Section */}
         <div className="p-6 flex-1 w-full flex flex-col">
           {/* Score Details */}
-          <div className="space-y-3 mb-4 flex-1">
+          <div className="gap-3 mb-4 flex-1 flex flex-col">
             {/* Work info */}
             <Stack gap={2} className="text-center">
               {item.workId && item.workTitle ? (

@@ -354,9 +354,9 @@ const AccountSettingsSection: React.FC<AccountSettingsSectionProps> = ({
         <Stack>
           <div>
             <div className="flex items-center justify-between mb-2">
-              <label className="block text-sm font-medium text-theme-secondary">
+              <span className="block text-sm font-medium text-theme-secondary">
                 {t('account_email')}
-              </label>
+              </span>
               {!isChangingEmail && canChangeEmail && (
                 <Button
                   variant="outline"
@@ -406,7 +406,11 @@ const AccountSettingsSection: React.FC<AccountSettingsSectionProps> = ({
                 )}
               </Stack>
             ) : (
-              <Card nivel={2} densidade="compacta" className="space-y-4">
+              <Card
+                nivel={2}
+                densidade="compacta"
+                className="gap-4 flex flex-col"
+              >
                 <div className="rounded-lg p-4 bg-sup-2">
                   <div className="flex items-start">
                     <PiWarning className="w-5 h-5 mr-3 mt-0.5 flex-shrink-0" />
@@ -414,13 +418,13 @@ const AccountSettingsSection: React.FC<AccountSettingsSectionProps> = ({
                       <h4 className="font-medium">
                         {t('account_email_change_warning')}
                       </h4>
-                      <ul className="text-sm opacity-90 space-y-1">
+                      <Stack gap={1} as="ul" className="text-sm opacity-90">
                         <li>{t('account_email_verify_new')}</li>
                         <li>{t('account_upload_disabled')}</li>
                         <li>{t('account_limited_features')}</li>
                         <li>{t('account_confirmation_email')}</li>
                         <li>{t('account_session_update')}</li>
-                      </ul>
+                      </Stack>
                     </Stack>
                   </div>
                 </div>
@@ -566,7 +570,7 @@ const AccountSettingsSection: React.FC<AccountSettingsSectionProps> = ({
           )}
 
         {isChangingPassword && (
-          <Card nivel={2} densidade="compacta" className="space-y-4">
+          <Card nivel={2} densidade="compacta" className="gap-4 flex flex-col">
             {/* Mostrar campo de senha atual apenas se o usuário já tem senha */}
             {loginMethod.hasPassword && (
               <Input
@@ -743,7 +747,7 @@ const AccountSettingsSection: React.FC<AccountSettingsSectionProps> = ({
             </div>
           </Card>
         ) : (
-          <Card nivel={2} densidade="compacta" className="space-y-4">
+          <Card nivel={2} densidade="compacta" className="gap-4 flex flex-col">
             <div className="rounded-lg p-4 bg-sup-2">
               <div className="flex items-start">
                 <PiInfo className="w-5 h-5 mr-3 mt-0.5 flex-shrink-0" />

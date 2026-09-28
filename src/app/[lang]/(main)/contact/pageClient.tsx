@@ -263,8 +263,8 @@ export default function ContactPageClient() {
       {/* Contact Options */}
       <section className="py-8">
         <AnimatedContainer delay={0.1} staggerSpeed="fast">
-          <div className="">
-            <div className="text-center mb-12">
+          <Stack gap={12} className="">
+            <div className="text-center">
               <h2 className="text-3xl lg:text-4xl font-bold classical-title text-theme-primary mb-4">
                 {t('contact_jsx_h2_children_0__como_podemos_ajudar')}
               </h2>
@@ -312,7 +312,7 @@ export default function ContactPageClient() {
                 </AnimatedCard>
               ))}
             </SequentialGrid>
-          </div>
+          </Stack>
         </AnimatedContainer>
       </section>
 
@@ -430,9 +430,9 @@ export default function ContactPageClient() {
                       disabled={loading || success}
                     />
                     <div>
-                      <label className="font-medium text-theme-primary cursor-pointer">
+                      <span className="font-medium text-theme-primary cursor-pointer">
                         {t('contact_jsx_label_children_0__receber_newsletter')}
-                      </label>
+                      </span>
                       <Text papel="rotulo" tom="fraco" as="p">
                         {t('contact_jsx_p_children_0__newsletter_description')}
                       </Text>
@@ -477,7 +477,7 @@ export default function ContactPageClient() {
               </AnimatedCard>
 
               {/* Contact Info */}
-              <div className="space-y-8">
+              <Stack gap={8}>
                 <AnimatedCard hover="lift" className="classical-card !p-8">
                   <h3 className="text-2xl font-bold classical-title text-theme-primary mb-6">
                     {t('contact_jsx_h3_children_0__informações_contato')}
@@ -607,7 +607,7 @@ export default function ContactPageClient() {
                     </Link>
                   </Stack>
                 </AnimatedCard>
-              </div>
+              </Stack>
             </div>
           </div>
         </AnimatedContainer>

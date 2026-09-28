@@ -1,7 +1,7 @@
 // app/annotations/components/CreateAnnotationModal.tsx - VERSÃO CORRIGIDA
 'use client';
 
-import { useState, useEffect, useRef, useMemo } from 'react';
+import { useState, useEffect, useRef, useMemo, useId } from 'react';
 import { z } from 'zod';
 import {
   PiBookOpen,
@@ -267,6 +267,7 @@ export default function CreateAnnotationModal({
   composerName = '',
   editingAnnotation,
 }: CreateAnnotationModalProps) {
+  const idCampo = useId();
   const { t, language } = useTranslation({ sections: ['pages/annotations'] });
   const { user } = useAuth();
   const { createAnnotation, updateAnnotation, loading } = useAnnotationsStore();
@@ -1074,10 +1075,14 @@ export default function CreateAnnotationModal({
 
         {/* Content */}
         <div>
-          <label className="block text-sm font-medium text-theme-primary mb-2">
+          <label
+            htmlFor={`${idCampo}-1`}
+            className="block text-sm font-medium text-theme-primary mb-2"
+          >
             {t('create_modal_annotation_content')} *
           </label>
           <textarea
+            id={`${idCampo}-1`}
             ref={fieldRefs.content}
             value={formData.content}
             onChange={(e) =>
@@ -1100,9 +1105,9 @@ export default function CreateAnnotationModal({
 
         {/* Tags */}
         <div>
-          <label className="block text-sm font-medium text-theme-primary mb-2">
+          <span className="block text-sm font-medium text-theme-primary mb-2">
             {t('create_modal_tags_optional')}
-          </label>
+          </span>
 
           {/* Current Tags */}
           <div className="flex flex-wrap gap-2 mb-3">

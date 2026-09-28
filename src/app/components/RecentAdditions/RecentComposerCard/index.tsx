@@ -30,7 +30,10 @@ const RecentComposerCard = ({
   return (
     <div className="group cursor-pointer select-none">
       <Link href={`/composer/${composer.id}`}>
-        <div className="classical-card-simple overflow-hidden transition-all duration-500 ease-out relative">
+        <div
+          data-vira={`compositor-${composer.id}`}
+          className="classical-card-simple overflow-hidden transition-all duration-500 ease-out relative"
+        >
           {/* New badge */}
           {/* <div className="absolute top-3 left-3 z-10">
             <div className="bg-sup-2 border border-green-500/30 backdrop-blur-md rounded-full px-2 py-1 text-xs font-medium text-ouro-texto flex items-center gap-1">

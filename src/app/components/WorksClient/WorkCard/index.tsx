@@ -1,7 +1,6 @@
 // app/works/WorkCard.tsx - Premium version with translations
 'use client';
 
-import { nomeDeTransicao } from '@/app/components/ui/transicao';
 import { WorkListItem } from '@/app/requests/work-details';
 import Link from '@/app/components/LocalizedLink';
 import {
@@ -20,16 +19,11 @@ import { Text } from '@/app/components/ui/Text';
 
 interface workCardProps {
   work: WorkListItem;
-  goToWorkPage: (composerId: string) => void;
-  /** Pré-carrega a página da obra quando o ponteiro entra no card. */
-  preverObra?: (workId: string) => void;
 }
 
-const WorkCard: React.FC<workCardProps> = ({
-  work,
-  goToWorkPage,
-  preverObra,
-}) => {
+// O card inteiro leva à obra, e a transição até a página vem do `data-vira`
+// (ver `CartoesQueViram`).
+const WorkCard: React.FC<workCardProps> = ({ work }) => {
   const { t } = useTranslation({ sections: ['pages/works'] });
 
   const formatDuration = (duration: string | null) => {
@@ -48,12 +42,7 @@ const WorkCard: React.FC<workCardProps> = ({
       className="group cursor-pointer select-none h-full"
     >
       <div
-        onClick={(ev) => {
-          ev.preventDefault();
-          goToWorkPage(work.id);
-        }}
-        onPointerEnter={() => preverObra?.(work.id)}
-        style={nomeDeTransicao(`obra-${work.id}`)}
+        data-vira={`obra-${work.id}`}
         className="classical-card h-full flex flex-col overflow-hidden transition-all duration-700 ease-out group-hover:scale-105 group-hover:-translate-y-2"
       >
         {/* Header Section */}
@@ -64,7 +53,7 @@ const WorkCard: React.FC<workCardProps> = ({
           {/* Floating action buttons */}
           <Stack
             gap={2}
-            className="absolute top-4 right-4 z-50 opacity-100 md:opacity-0 group-hover:opacity-100 transition-all duration-300 transform translate-y-2 group-hover:translate-y-0"
+            className="absolute top-4 right-4 z-elevado opacity-100 md:opacity-0 group-hover:opacity-100 transition-all duration-300 transform translate-y-2 group-hover:translate-y-0"
           >
             <FavoriteButton
               id={work.id}
@@ -79,7 +68,10 @@ const WorkCard: React.FC<workCardProps> = ({
           <div className="relative z-10">
             {/* Title */}
             <h3 className="text-lg flex items-center gap-2 font-bold text-theme-primary classical-title mb-3 line-clamp-2 transition-colors duration-300 leading-tight">
-              <Link href={`/works/${work.id}`} className="transition-colors">
+              <Link
+                href={`/works/${work.id}`}
+                className="min-h-6 transition-colors"
+              >
                 {work.title}
               </Link>
               <VerificationBadge verified={work.isVerified} variant="icon" />
@@ -114,7 +106,7 @@ const WorkCard: React.FC<workCardProps> = ({
         {/* Content Section */}
         <div className="p-4 md:p-6 flex-1 w-full flex flex-col">
           {/* Work Details */}
-          <div className="space-y-3 mb-4 flex-1">
+          <div className="gap-3 mb-4 flex-1 flex flex-col">
             {/* Instrument */}
             {work.instrument?.name && (
               <div className="flex items-center">

@@ -1,3 +1,4 @@
+import { nomeDeArtigo } from '@/app/components/ui/nomeDeArtigo';
 // app/components/blog/ArticleCard.tsx
 import Link from 'next/link';
 import Image from '@/app/components/SmartImage';
@@ -40,10 +41,14 @@ export function ArticleCard({ article }: ArticleCardProps) {
   }`.trim();
 
   return (
-    <article className="classical-card overflow-hidden group h-full flex flex-col transition-all">
+    <article
+      data-vira={nomeDeArtigo(article.slug)}
+      className="classical-card overflow-hidden group h-full flex flex-col transition-all"
+    >
       {/* Image */}
       <Link
         href={`/blog/${article.slug}`}
+        aria-label={article.title}
         className="block relative h-48 overflow-hidden"
       >
         {article.coverImage ? (

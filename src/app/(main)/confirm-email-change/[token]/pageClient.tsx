@@ -287,7 +287,7 @@ export default function ConfirmEmailChangePage() {
             </div>
           </Stack>
 
-          <div className="space-y-3">
+          <Stack gap={3}>
             {/* 🆕 NOVO: Botão para logout manual (caso queira acelerar) */}
             <Button
               variant="primary"
@@ -318,7 +318,7 @@ export default function ConfirmEmailChangePage() {
             >
               {t('pages_token_jsx_button_children_0__ir_para_home')}
             </Button>
-          </div>
+          </Stack>
 
           {/* 🆕 NOVO: Instruções para próximo login */}
           <div className="text-center pt-4 border-t border-theme-secondary mt-6">
@@ -380,7 +380,7 @@ export default function ConfirmEmailChangePage() {
             </div>
           )}
 
-          <div className="space-y-3">
+          <Stack gap={3}>
             {(result.errorCode === 'EXPIRED_TOKEN' ||
               result.errorCode === 'NETWORK_ERROR') && (
               <>
@@ -430,7 +430,7 @@ export default function ConfirmEmailChangePage() {
             >
               {t('pages_token_jsx_button_children_0__voltar_ao_início')}
             </Button>
-          </div>
+          </Stack>
         </Stack>
       </div>
     );

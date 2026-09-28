@@ -8,7 +8,7 @@ import {
   getComposerWorkTypeCounts,
 } from '@/app/requests/composer-details';
 import Link from '@/app/components/LocalizedLink';
-import { useState, useCallback, useEffect, useMemo } from 'react';
+import { useState, useCallback, useEffect, useMemo, useId } from 'react';
 import {
   GiViolin,
   GiFlute,
@@ -153,6 +153,7 @@ export default function ComposerWorks({
   initialHasMore,
   filterOptions,
 }: ComposerWorksProps) {
+  const idCampo = useId();
   const { t, language } = useTranslation({ sections: ['pages/composerId'] });
 
   // Função para traduzir opções de filtros
@@ -600,12 +601,16 @@ export default function ComposerWorks({
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4 p-4 rounded-xl bg-sup-2">
                 {/* Filtro de instrumento */}
                 <Stack gap={2} className="gap-1">
-                  <label className="text-sm font-medium text-theme-secondary">
+                  <label
+                    htmlFor={`${idCampo}-1`}
+                    className="text-sm font-medium text-theme-secondary"
+                  >
                     {t('instrument_filter_label')} (
                     {filterOptions.instruments.length})
                   </label>
                   <div className="relative">
                     <Select
+                      id={`${idCampo}-1`}
                       options={[
                         { label: t('all_instruments'), value: '' },
                         ...getTranslatedInstruments().map((instrument) => ({
@@ -624,12 +629,16 @@ export default function ComposerWorks({
 
                 {/* Filtro de gênero */}
                 <Stack gap={2} className="gap-1">
-                  <label className="text-sm font-medium text-theme-secondary">
+                  <label
+                    htmlFor={`${idCampo}-2`}
+                    className="text-sm font-medium text-theme-secondary"
+                  >
                     {t('genre_filter_label')} ({filterOptions.workGenres.length}
                     )
                   </label>
                   <div className="relative">
                     <Select
+                      id={`${idCampo}-2`}
                       options={[
                         { label: t('all_genres'), value: '' },
                         ...getTranslatedGenres().map((genre) => ({
@@ -648,12 +657,16 @@ export default function ComposerWorks({
 
                 {/* Filtro de categoria */}
                 <Stack gap={2} className="gap-1">
-                  <label className="text-sm font-medium text-theme-secondary">
+                  <label
+                    htmlFor={`${idCampo}-3`}
+                    className="text-sm font-medium text-theme-secondary"
+                  >
                     {t('category_filter_label')} (
                     {filterOptions.categories.length})
                   </label>
                   <div className="relative">
                     <Select
+                      id={`${idCampo}-3`}
                       options={[
                         { label: t('all_categories'), value: '' },
                         ...getTranslatedCategories().map((category) => ({
@@ -827,6 +840,7 @@ export default function ComposerWorks({
                     <Link
                       href={`/works/${work.id}`}
                       key={work.id}
+                      data-vira={`obra-${work.id}`}
                       className="classical-card-simple w-full transition-all duration-300 group block"
                     >
                       <div className="p-6">
@@ -949,6 +963,7 @@ export default function ComposerWorks({
                     <AnimatedItem key={work.id} direction="left" speed="fast">
                       <Link
                         href={`/works/${work.id}`}
+                        data-vira={`obra-${work.id}`}
                         className="classical-card-simple transition-all duration-300 group block mb-4"
                       >
                         <div className="p-6">

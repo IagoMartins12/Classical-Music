@@ -147,25 +147,6 @@ function GuideCard({ guide, t }: GuideCardProps): JSX.Element {
                 <h4 className="text-lg font-semibold classical-title text-theme-primary">
                   {guide.title}
                 </h4>
-                <Text
-                  papel="rotulo"
-                  tom="ouro"
-                  className="hidden md:flex font-medium"
-                >
-                  {isExpanded ? t('help_guide_close') : t('help_guide_open')}
-                </Text>
-
-                <Text
-                  papel="rotulo"
-                  tom="ouro"
-                  className="block md:hidden font-medium"
-                >
-                  {isExpanded ? (
-                    <PiArrowRight className="w-5 h-5 text-ouro-texto rotate-90 transition-transform duration-300" />
-                  ) : (
-                    <PiArrowRight className="w-5 h-5 text-ouro-texto transition-transform duration-300" />
-                  )}
-                </Text>
               </Inline>
               <Text
                 papel="rotulo"
@@ -196,7 +177,7 @@ function GuideCard({ guide, t }: GuideCardProps): JSX.Element {
               </Inline>
             </div>
           </Inline>
-          <div className="flex-shrink-0 ml-4 hidden md:flex">
+          <div className="flex flex-shrink-0 ml-4">
             <Stack gap={1} className="items-center">
               {isExpanded ? (
                 <PiArrowRight className="w-5 h-5 text-ouro-texto rotate-90 transition-transform duration-300" />
@@ -572,8 +553,8 @@ export default function HelpPage(): JSX.Element {
         <section className="py-8">
           <AnimatedContainer delay={0.1} staggerSpeed="fast">
             <div>
-              <div className="max-w-6xl mx-auto">
-                <div className="text-center mb-12">
+              <Stack gap={12} className="max-w-6xl mx-auto">
+                <div className="text-center">
                   <h2 className="text-3xl lg:text-4xl font-bold classical-title text-theme-primary mb-4">
                     {t('help_jsx_h2_children_0__categorias_ajuda')}
                   </h2>
@@ -615,7 +596,7 @@ export default function HelpPage(): JSX.Element {
                     </div>
                   ))}
                 </SequentialGrid>
-              </div>
+              </Stack>
             </div>
           </AnimatedContainer>
         </section>
@@ -644,7 +625,7 @@ export default function HelpPage(): JSX.Element {
                 <p className="text-theme-secondary">{category.description}</p>
               </div>
 
-              <div className="space-y-4">
+              <Stack>
                 {category.guides.map((guide, index) => (
                   <AnimatedItem
                     key={guide.id}
@@ -655,7 +636,7 @@ export default function HelpPage(): JSX.Element {
                     <GuideCard guide={guide} t={t} />
                   </AnimatedItem>
                 ))}
-              </div>
+              </Stack>
             </Stack>
           </div>
         </AnimatedContainer>

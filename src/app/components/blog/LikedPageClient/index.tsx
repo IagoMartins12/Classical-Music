@@ -205,7 +205,7 @@ export function LikedPageClient({ categories }: LikedPageClientProps) {
               ))}
             </div>
           ) : (
-            <div className="space-y-6">
+            <div className="gap-6 flex flex-col">
               {articles.map((article) => (
                 <ArticleCardList key={article.id} article={article} />
               ))}

@@ -1,7 +1,7 @@
 // components/blog/ShareModal.tsx - Modal de Compartilhamento
 'use client';
 
-import { useState } from 'react';
+import { useState, useId } from 'react';
 import Modal from '@/app/components/Modal';
 import {
   PiCheck,
@@ -27,6 +27,7 @@ export function ShareModalBlog({
   title,
   url,
 }: ShareModalProps) {
+  const idCampo = useId();
   const [copied, setCopied] = useState(false);
 
   const encodedUrl = encodeURIComponent(url);
@@ -127,11 +128,15 @@ export function ShareModalBlog({
 
         {/* Copiar Link */}
         <Stack gap={2} className="pt-4 border-t border-theme-secondary">
-          <label className="block text-sm font-medium text-theme-primary">
+          <label
+            htmlFor={`${idCampo}-1`}
+            className="block text-sm font-medium text-theme-primary"
+          >
             Ou copie o link:
           </label>
           <Inline gap={2}>
             <input
+              id={`${idCampo}-1`}
               type="text"
               value={url}
               readOnly

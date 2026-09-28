@@ -8,7 +8,7 @@ import {
   routeLanguage,
   type LangParams,
 } from '@/app/utils/translations/routeLanguage';
-import { WorksView, worksMetadata } from './view';
+import { WorksView, worksMetadata } from '../view';
 
 interface WorksPageProps {
   params: LangParams;

@@ -1,7 +1,8 @@
 // components/Common/RichTextEditor.tsx
 'use client';
+import { Button } from '@/app/components/ui/Button';
 
-import { useRef, forwardRef, useState, useEffect } from 'react';
+import { useRef, forwardRef, useState, useEffect, useId } from 'react';
 import {
   PiCode,
   PiEye,
@@ -40,6 +41,7 @@ const RichTextEditor = forwardRef<HTMLDivElement, RichTextEditorProps>(
     },
     ref
   ) => {
+    const idCampo = useId();
     const editorRef = useRef<HTMLDivElement>(null);
     const [isPreview, setIsPreview] = useState(false);
     const [isActive, setIsActive] = useState({
@@ -175,24 +177,24 @@ const RichTextEditor = forwardRef<HTMLDivElement, RichTextEditorProps>(
       level: number;
       onClick: () => void;
     }) => (
-      <button
-        type="button"
-        onClick={onClick}
-        disabled={disabled}
-        className="px-3 py-1 text-sm text-theme-tertiary rounded transition-all bg-sup-2"
-      >
+      <Button tamanho="p" type="button" onClick={onClick} disabled={disabled}>
         H{level}
-      </button>
+      </Button>
     );
 
     return (
       <div ref={ref} className="w-full">
         {label && (
           <div className="flex items-center justify-between mb-2">
-            <label className="block text-sm font-medium text-theme-tertiary">
+            <span
+              id={`${idCampo}-1`}
+              className="block text-sm font-medium text-theme-tertiary"
+            >
               {label}
-            </label>
+            </span>
             <button
+              role="group"
+              aria-labelledby={`${idCampo}-1`}
               type="button"
               onClick={togglePreview}
               className="p-1 text-theme-tertiary transition-colors"

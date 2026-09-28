@@ -30,7 +30,7 @@ import {
   updateWorkMediaRequest,
   uploadWorkMediaFileRequest,
 } from '@/app/requests/work-media';
-import { Inline } from '@/app/components/ui/Layout';
+import { Stack, Inline } from '@/app/components/ui/Layout';
 import { Text } from '@/app/components/ui/Text';
 
 interface MediaData {
@@ -723,9 +723,9 @@ const MediaSection: React.FC<MediaSectionProps> = ({
 
               {/* Seção de áudio customizado */}
               <div>
-                <label className="block text-sm font-medium text-theme-tertiary mb-2">
+                <span className="block text-sm font-medium text-theme-tertiary mb-2">
                   {t('media_audio_personalizado')}
-                </label>
+                </span>
 
                 {/* Mostrar áudio existente com opção de deletar */}
                 {mediaData.customAudio && (
@@ -928,11 +928,11 @@ const MediaSection: React.FC<MediaSectionProps> = ({
           <>
             {/* Layout para apenas áudio OU apenas vídeo - VERTICAL */}
             {(hasOnlyAudio || hasOnlyVideo) && (
-              <div className="space-y-6">
+              <Stack gap={6}>
                 {/* Spotify */}
                 {mediaData.spotify && (
                   <AnimatedItem direction="up" delay={0.1}>
-                    <div className="space-y-4">
+                    <div className="gap-4 flex flex-col">
                       <Inline gap={2}>
                         <PiSpotifyLogo className="w-5 h-5 text-green-400" />
                         <h3 className="text-lg font-semibold text-theme-primary classical-title">
@@ -983,7 +983,7 @@ const MediaSection: React.FC<MediaSectionProps> = ({
                 {/* YouTube */}
                 {mediaData.youtube && (
                   <AnimatedItem direction="up" delay={0.3}>
-                    <div className="space-y-4">
+                    <div className="gap-4 flex flex-col">
                       <Inline gap={2}>
                         <PiYoutubeLogo className="w-5 h-5 text-red-400" />
                         <h3 className="text-lg font-semibold text-theme-primary classical-title">
@@ -1005,18 +1005,18 @@ const MediaSection: React.FC<MediaSectionProps> = ({
                     </div>
                   </AnimatedItem>
                 )}
-              </div>
+              </Stack>
             )}
 
             {/* Layout para áudio E vídeo - GRID 2 COLUNAS */}
             {hasAudioAndVideo && (
               <div className="grid grid-cols-1 xl:grid-cols-2 gap-6">
                 {/* Coluna 1: Áudio */}
-                <div className="space-y-6">
+                <Stack gap={6}>
                   {/* Spotify */}
                   {mediaData.spotify && (
                     <AnimatedItem direction="up" delay={0.2}>
-                      <div className="space-y-4">
+                      <div className="gap-4 flex flex-col">
                         <Inline gap={2}>
                           <PiSpotifyLogo className="w-5 h-5 text-green-400" />
                           <h3 className="text-lg font-semibold text-theme-primary classical-title">
@@ -1064,13 +1064,13 @@ const MediaSection: React.FC<MediaSectionProps> = ({
                       </div>
                     </AnimatedItem>
                   )}
-                </div>
+                </Stack>
 
                 {/* Coluna 2: Vídeo */}
                 {mediaData.youtube && (
-                  <div className="space-y-6">
+                  <Stack gap={6}>
                     <AnimatedItem direction="up" delay={0.3}>
-                      <div className="space-y-4">
+                      <div className="gap-4 flex flex-col">
                         <Inline gap={2}>
                           <PiYoutubeLogo className="w-5 h-5 text-red-400" />
                           <h3 className="text-lg font-semibold text-theme-primary classical-title">
@@ -1091,7 +1091,7 @@ const MediaSection: React.FC<MediaSectionProps> = ({
                         />
                       </div>
                     </AnimatedItem>
-                  </div>
+                  </Stack>
                 )}
               </div>
             )}

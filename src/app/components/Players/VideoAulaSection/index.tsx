@@ -1,7 +1,8 @@
 // app/components/Players/VideoAulaSection.tsx - TIKTOK E INSTAGRAM EXTERNOS COM TRADUÇÕES
 'use client';
+import { Button as Botao } from '@/app/components/ui/Button';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useId } from 'react';
 import {
   PiArrowSquareOut,
   PiClock,
@@ -71,6 +72,7 @@ const VideoAulaSection: React.FC<VideoAulaSectionProps> = ({
   work,
   canEditMedia = false,
 }) => {
+  const idCampo = useId();
   const { t } = useTranslation({ sections: ['pages/workId'] });
   const [isPlayerVisible, setIsPlayerVisible] = useState(false);
   const [videoInfo, setVideoInfo] = useState<VideoInfo | null>(null);
@@ -831,7 +833,7 @@ const VideoAulaSection: React.FC<VideoAulaSectionProps> = ({
                 {t('video_aula_adicionar')}
               </h3>
 
-              <div className="space-y-4">
+              <Stack>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <Select
                     label={t('video_aula_tipo')}
@@ -903,10 +905,15 @@ const VideoAulaSection: React.FC<VideoAulaSectionProps> = ({
                   />
                 ) : (
                   <div>
-                    <label className="block text-sm font-medium text-theme-tertiary mb-2">
+                    <span
+                      id={`${idCampo}-1`}
+                      className="block text-sm font-medium text-theme-tertiary mb-2"
+                    >
                       {t('video_aula_upload')}
-                    </label>
+                    </span>
                     <input
+                      role="group"
+                      aria-labelledby={`${idCampo}-1`}
                       type="file"
                       accept="video/*"
                       onChange={(e) =>
@@ -958,7 +965,7 @@ const VideoAulaSection: React.FC<VideoAulaSectionProps> = ({
                     {t('video_aula_cancelar')}
                   </Button>
                 </Inline>
-              </div>
+              </Stack>
             </Stack>
           </div>
         ) : (
@@ -1034,7 +1041,9 @@ const VideoAulaSection: React.FC<VideoAulaSectionProps> = ({
             {videoInfo &&
               !videoInfo.canEmbed &&
               (work.videoAulaUrl || work.videoAulaFile) && (
-                <button
+                <Botao
+                  variante="fantasma"
+                  tamanho="p"
                   onClick={() => {
                     const url =
                       videoInfo?.originalUrl ||
@@ -1044,11 +1053,10 @@ const VideoAulaSection: React.FC<VideoAulaSectionProps> = ({
                       window.open(url, '_blank', 'noopener,noreferrer');
                     }
                   }}
-                  className="text-blue-400 hover:text-blue-300 transition-colors p-2 hover:bg-blue-400/10 rounded-lg"
                   title={t('video_aula_abrir_nova_aba')}
-                >
-                  <PiArrowSquareOut className="w-5 h-5" />
-                </button>
+                  icone={PiArrowSquareOut}
+                  rotulo={t('video_aula_abrir_nova_aba')}
+                />
               )}
           </Inline>
         </div>
@@ -1079,7 +1087,7 @@ const VideoAulaSection: React.FC<VideoAulaSectionProps> = ({
               )}
             </div>
 
-            <div className="space-y-4">
+            <Stack>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <Select
                   label={t('video_aula_tipo')}
@@ -1151,10 +1159,15 @@ const VideoAulaSection: React.FC<VideoAulaSectionProps> = ({
                 />
               ) : (
                 <div>
-                  <label className="block text-sm font-medium text-theme-tertiary mb-2">
+                  <span
+                    id={`${idCampo}-2`}
+                    className="block text-sm font-medium text-theme-tertiary mb-2"
+                  >
                     {t('video_aula_upload')}
-                  </label>
+                  </span>
                   <input
+                    role="group"
+                    aria-labelledby={`${idCampo}-2`}
                     type="file"
                     accept="video/*"
                     onChange={(e) =>
@@ -1222,7 +1235,7 @@ const VideoAulaSection: React.FC<VideoAulaSectionProps> = ({
                   {t('video_aula_cancelar')}
                 </Button>
               </Inline>
-            </div>
+            </Stack>
           </Stack>
         </div>
       )}
@@ -1425,7 +1438,7 @@ const VideoAulaSection: React.FC<VideoAulaSectionProps> = ({
             </Text>
 
             {!isPlayerVisible && (
-              <div className="space-y-2">
+              <Stack gap={2}>
                 <Button
                   onClick={showPlayer}
                   variant="primary"
@@ -1475,7 +1488,7 @@ const VideoAulaSection: React.FC<VideoAulaSectionProps> = ({
                     </Inline>
                   )}
                 </Inline>
-              </div>
+              </Stack>
             )}
 
             {isPlayerVisible && (

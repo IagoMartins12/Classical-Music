@@ -1,4 +1,5 @@
 'use client';
+import { Button as Botao } from '@/app/components/ui/Button';
 
 import { useEffect, useRef, useState } from 'react';
 import Link from 'next/link';
@@ -351,14 +352,16 @@ export function CategoryList({
               </Link>
 
               {/* Delete */}
-              <button
+              <Botao
+                variante="fantasma"
+                tamanho="p"
                 onClick={() => setDeleteModal(category.id)}
-                className="p-2 rounded-lg transition-all !text-erro"
                 title="Deletar"
                 disabled={category._count.articles > 0}
-              >
-                <PiTrash className="w-4 h-4" />
-              </button>
+                icone={PiTrash}
+                rotulo="Deletar"
+                className="text-erro"
+              />
             </Inline>{' '}
           </div>
         ))}

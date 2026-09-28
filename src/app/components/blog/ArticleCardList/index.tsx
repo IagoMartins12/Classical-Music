@@ -1,3 +1,4 @@
+import { nomeDeArtigo } from '@/app/components/ui/nomeDeArtigo';
 // app/components/blog/ArticleCardList.tsx
 import Link from 'next/link';
 import Image from '@/app/components/SmartImage';
@@ -46,7 +47,10 @@ export function ArticleCardList({ article }: ArticleCardListProps) {
   }`.trim();
 
   return (
-    <article className="classical-card overflow-hidden group transition-all">
+    <article
+      data-vira={nomeDeArtigo(article.slug)}
+      className="classical-card overflow-hidden group transition-all"
+    >
       <div className="flex flex-col md:flex-row">
         {/* Image */}
         <Link

@@ -1,6 +1,8 @@
 // app/teacher/lessons/pageClient.tsx - Client Component para Gerenciamento de Aulas - ATUALIZADO
 
 'use client';
+import { EsqueletoLista } from '@/app/components/ui/Carregando';
+import { AreaCarregando } from '@/app/components/ui/Skeleton';
 
 import { useState, useMemo, useCallback, useEffect } from 'react';
 import {
@@ -1198,10 +1200,9 @@ export default function TeacherLessonsPageClient({
         <AnimatedItem direction="up" springType="gentle">
           <Stack>
             {loading.lessons && lessons.length === 0 ? (
-              <div className="text-center py-12">
-                <PiArrowsClockwise className="w-8 h-8 animate-spin text-ouro-texto mx-auto mb-4" />
-                <p className="text-theme-secondary">{t('loading_lessons')}</p>
-              </div>
+              <AreaCarregando rotulo={t('loading_lessons')}>
+                <EsqueletoLista quantos={6} />
+              </AreaCarregando>
             ) : filteredLessons.length === 0 ? (
               <div className="text-center py-12">
                 <PiBookOpen className="w-16 h-16 text-theme-tertiary mx-auto mb-4" />

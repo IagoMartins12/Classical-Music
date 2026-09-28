@@ -1,5 +1,6 @@
 // app/favorites/FavoritesClient.tsx - COM LAYOUT ADAPTATIVO
 'use client';
+import { Aba, Abas } from '@/app/components/ui/Abas';
 
 import { useState, useMemo } from 'react';
 import Link from 'next/link';
@@ -153,49 +154,33 @@ export default function FavoritesClient() {
           <AnimatedCard hover="none" className="classical-card p-6">
             <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between  gap-4">
               {/* Tabs atualizadas para incluir 'scores' */}
-              <div className="flex classical-scrollbar-mini  bg-theme-secondary rounded-xl p-1 overflow-x-auto">
-                <button
+              <Abas rotulo="Filtrar favoritos">
+                <Aba
+                  ativa={activeTab === 'all'}
                   onClick={() => setActiveTab('all')}
-                  className={`px-4 py-2 rounded-lg text-sm font-medium transition-all whitespace-nowrap ${
-                    activeTab === 'all'
-                      ? 'bg-theme-tertiary text-theme-primary shadow-md'
-                      : 'text-theme-tertiary'
-                  }`}
                 >
                   {t('tab_all')} ({stats.totalItems})
-                </button>
-                <button
+                </Aba>
+                <Aba
+                  ativa={activeTab === 'composers'}
                   onClick={() => setActiveTab('composers')}
-                  className={`px-4 py-2 rounded-lg text-sm font-medium transition-all whitespace-nowrap ${
-                    activeTab === 'composers'
-                      ? 'bg-theme-tertiary text-theme-primary shadow-md'
-                      : 'text-theme-tertiary'
-                  }`}
                 >
                   {t('tab_composers')} ({stats.composersCount})
-                </button>
-                <button
+                </Aba>
+                <Aba
+                  ativa={activeTab === 'works'}
                   onClick={() => setActiveTab('works')}
-                  className={`px-4 py-2 rounded-lg text-sm font-medium transition-all whitespace-nowrap ${
-                    activeTab === 'works'
-                      ? 'bg-theme-tertiary text-theme-primary shadow-md'
-                      : 'text-theme-tertiary'
-                  }`}
                 >
                   {t('tab_works')} ({stats.worksCount})
-                </button>
+                </Aba>
                 {/* Nova aba para partituras */}
-                <button
+                <Aba
+                  ativa={activeTab === 'scores'}
                   onClick={() => setActiveTab('scores')}
-                  className={`px-4 py-2 rounded-lg text-sm font-medium transition-all whitespace-nowrap ${
-                    activeTab === 'scores'
-                      ? 'bg-theme-tertiary text-theme-primary shadow-md'
-                      : 'text-theme-tertiary'
-                  }`}
                 >
                   {t('tab_scores')} ({stats.scoresCount})
-                </button>
-              </div>
+                </Aba>
+              </Abas>
 
               {/* Search, Stats Toggle and View Mode */}
               <div className="flex flex-col sm:flex-row gap-3">
@@ -305,7 +290,7 @@ export default function FavoritesClient() {
                             ))}
                           </SequentialGrid>
                         ) : (
-                          <div className="space-y-4">
+                          <Stack>
                             {filteredData.composers.map((favorite, index) => (
                               <AnimatedItem
                                 key={favorite.id}
@@ -323,7 +308,7 @@ export default function FavoritesClient() {
                                 />
                               </AnimatedItem>
                             ))}
-                          </div>
+                          </Stack>
                         )}
                       </AnimatedItem>
                     ) : (
@@ -391,7 +376,7 @@ export default function FavoritesClient() {
                             ))}
                           </SequentialGrid>
                         ) : (
-                          <div className="space-y-4">
+                          <Stack>
                             {filteredData.works.map((favorite, index) => (
                               <AnimatedItem
                                 key={favorite.id}
@@ -409,7 +394,7 @@ export default function FavoritesClient() {
                                 />
                               </AnimatedItem>
                             ))}
-                          </div>
+                          </Stack>
                         )}
                       </AnimatedItem>
                     ) : (
@@ -477,7 +462,7 @@ export default function FavoritesClient() {
                             ))}
                           </SequentialGrid>
                         ) : (
-                          <div className="space-y-4">
+                          <Stack>
                             {filteredData.scores.map((favorite, index) => (
                               <AnimatedItem
                                 key={favorite.id}
@@ -495,7 +480,7 @@ export default function FavoritesClient() {
                                 />
                               </AnimatedItem>
                             ))}
-                          </div>
+                          </Stack>
                         )}
                       </AnimatedItem>
                     ) : (
@@ -584,7 +569,8 @@ function ComposerFavoriteCard({
 }: ComposerFavoriteCardProps) {
   return (
     <div
-      className={`classical-card p-6 group transition-all ${
+      data-vira={`compositor-${favorite.composer?.id}`}
+      className={`relative classical-card p-6 group transition-all ${
         viewMode === 'list' ? 'flex items-center space-x-6' : ''
       }`}
     >
@@ -682,7 +668,8 @@ interface WorkFavoriteCardProps {
 function WorkFavoriteCard({ favorite, viewMode, t }: WorkFavoriteCardProps) {
   return (
     <div
-      className={`classical-card p-6 group transition-all ${
+      data-vira={`obra-${favorite.work?.id}`}
+      className={`relative classical-card p-6 group transition-all ${
         viewMode === 'list' ? 'flex items-center space-x-6' : ''
       }`}
     >
@@ -776,7 +763,8 @@ interface ScoreFavoriteCardProps {
 function ScoreFavoriteCard({ favorite, viewMode, t }: ScoreFavoriteCardProps) {
   return (
     <div
-      className={`classical-card p-6 group transition-all ${
+      data-vira={`obra-${favorite.workId}`}
+      className={`relative classical-card p-6 group transition-all ${
         viewMode === 'list' ? 'flex items-center space-x-6' : ''
       }`}
     >

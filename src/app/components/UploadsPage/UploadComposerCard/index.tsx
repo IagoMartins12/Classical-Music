@@ -1,5 +1,6 @@
 // app/components/uploads/UploadComposerCard.tsx - TRADUZIDO
 'use client';
+import { Button } from '@/app/components/ui/Button';
 
 import { useState } from 'react';
 import Image from '@/app/components/SmartImage';
@@ -194,22 +195,24 @@ const UploadComposerCard = ({
             <Inline gap={1} className="transition-opacity duration-300">
               {/* Botão de Bulk Insert de Obras */}
               {item.isIMSLP && onBulkInsertWorks && (
-                <button
+                <Button
+                  variante="fantasma"
+                  tamanho="p"
                   onClick={onBulkInsertWorks}
-                  className="w-8 h-8 rounded-lg bg-theme-secondary text-theme-tertiary transition-colors flex items-center justify-center"
                   title={t('card_import_all_works')}
-                >
-                  <PiMusicNotes className="w-4 h-4" />
-                </button>
+                  icone={PiMusicNotes}
+                  rotulo={t('card_import_all_works')}
+                />
               )}
 
-              <button
+              <Button
+                variante="fantasma"
+                tamanho="p"
                 onClick={onEdit}
-                className="w-8 h-8 rounded-lg bg-theme-secondary text-theme-tertiary transition-colors flex items-center justify-center"
+                icone={PiNotePencil}
               >
-                <PiNotePencil className="w-4 h-4" />
                 <NomeAcao acao="editar" />
-              </button>
+              </Button>
 
               <button
                 onClick={handleDeleteClick}
@@ -280,22 +283,24 @@ const UploadComposerCard = ({
           >
             {/* Botão de Bulk Insert de Obras */}
             {item.isIMSLP && onBulkInsertWorks && (
-              <button
+              <Button
+                variante="fantasma"
+                tamanho="p"
                 onClick={onBulkInsertWorks}
-                className="w-8 h-8 rounded-lg bg-theme-elevated text-theme-tertiary transition-colors flex items-center justify-center shadow-theme-medium"
                 title={t('card_import_all_works')}
-              >
-                <PiMusicNotes className="w-4 h-4" />
-              </button>
+                icone={PiMusicNotes}
+                rotulo={t('card_import_all_works')}
+              />
             )}
 
-            <button
+            <Button
+              variante="fantasma"
+              tamanho="p"
               onClick={onEdit}
-              className="w-8 h-8 rounded-lg bg-theme-elevated text-theme-tertiary transition-colors flex items-center justify-center shadow-theme-medium"
+              icone={PiNotePencil}
             >
-              <PiNotePencil className="w-4 h-4" />
               <NomeAcao acao="editar" />
-            </button>
+            </Button>
 
             <button
               onClick={handleDeleteClick}

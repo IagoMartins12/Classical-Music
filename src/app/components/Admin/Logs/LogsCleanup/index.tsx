@@ -1,7 +1,7 @@
 // app/components/Admin/Logs/LogsCleanup/index.tsx
 'use client';
 
-import { useState } from 'react';
+import { useState, useId } from 'react';
 import {
   PiCalendarBlank,
   PiCheck,
@@ -29,6 +29,7 @@ interface LogsCleanupProps {
 }
 
 export default function LogsCleanup({ onClose }: LogsCleanupProps) {
+  const idCampo = useId();
   const { stats, deleteLogs, cleanupOldLogs, exportLogs } = useAdminLogs();
 
   const [selectedDates, setSelectedDates] = useState<Set<string>>(new Set());
@@ -200,10 +201,14 @@ export default function LogsCleanup({ onClose }: LogsCleanupProps) {
 
             <Inline gap={4}>
               <Inline gap={2}>
-                <label className="text-sm font-medium text-theme-primary">
+                <label
+                  htmlFor={`${idCampo}-1`}
+                  className="text-sm font-medium text-theme-primary"
+                >
                   Deletar logs mais antigos que:
                 </label>
                 <select
+                  id={`${idCampo}-1`}
                   value={cleanupDays}
                   onChange={(e) => setCleanupDays(parseInt(e.target.value))}
                   className="input-classical-2 w-auto"

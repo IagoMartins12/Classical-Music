@@ -88,21 +88,7 @@ export function MusicHistoryPageClient({ epochs, composersTimeline }: Props) {
   return (
     <div className="w-full">
       {/* Background Pattern */}
-      <div className="fixed inset-0 pointer-events-none opacity-5 z-0">
-        <div className="absolute top-20 left-20 w-64 h-64 rounded-full blur-3xl animate-pulse"></div>
-        <div
-          className="absolute bottom-40 right-32 w-48 h-48 rounded-full blur-2xl animate-pulse"
-          style={{ animationDelay: '1s' }}
-        ></div>
-        <div
-          className="absolute top-1/2 left-1/4 w-32 h-32 rounded-full blur-xl animate-pulse"
-          style={{ animationDelay: '2s' }}
-        ></div>
-        <div
-          className="absolute bottom-20 left-10 w-40 h-40 rounded-full blur-2xl animate-pulse"
-          style={{ animationDelay: '0.5s' }}
-        ></div>
-      </div>
+      <div className="fixed inset-0 pointer-events-none opacity-5 z-0"></div>
 
       <div className="relative z-10">
         <HeroSection />
@@ -113,7 +99,7 @@ export function MusicHistoryPageClient({ epochs, composersTimeline }: Props) {
           <NavigationTabs activeTab={activeTab} onTabChange={setActiveTab} />
 
           {activeTab === 'history' && (
-            <div className="space-y-20">
+            <div className="gap-20 flex flex-col">
               {sortedEpochs.map((epoch, index) => (
                 <EpochSection
                   key={epoch.epochId}

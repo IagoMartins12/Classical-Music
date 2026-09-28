@@ -673,7 +673,7 @@ export function CommentSection({
         title="Denunciar Comentário"
         maxWidth="sm"
       >
-        <div className="space-y-4">
+        <Stack>
           <p className="text-theme-secondary">
             Por que você está denunciando este comentário?
           </p>
@@ -740,7 +740,7 @@ export function CommentSection({
               {reportingComment ? 'Enviando...' : 'Denunciar'}
             </Button>
           </div>
-        </div>
+        </Stack>
       </Modal>
     </>
   );

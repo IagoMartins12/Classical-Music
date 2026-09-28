@@ -1,7 +1,8 @@
 // CreateComposerModal.tsx - TRADUZIDO - Versão Atualizada
 'use client';
+import { Button as Botao } from '@/app/components/ui/Button';
 
-import { useState, useEffect, useRef, useMemo } from 'react';
+import { useState, useEffect, useRef, useMemo, useId } from 'react';
 import { useRouter } from 'next/navigation';
 import {
   PiArrowSquareOut,
@@ -224,6 +225,7 @@ const CreateComposerModal = ({
   roles,
   editingComposer,
 }: CreateComposerModalProps) => {
+  const idCampo = useId();
   const router = useRouter();
   const { t, language } = useTranslation({ sections: ['pages/uploads'] });
   const toast = useToast();
@@ -935,7 +937,7 @@ const CreateComposerModal = ({
 
           {/* Content */}
           <div className="mt-4 ">
-            <form onSubmit={handleSubmit} className="space-y-6">
+            <Stack gap={6} as="form" onSubmit={handleSubmit}>
               {/* URL Scraping */}
               <AnimatedCard className="classical-card-simple p-4" hover="none">
                 <div className="flex items-center justify-between mb-4">
@@ -1186,10 +1188,14 @@ const CreateComposerModal = ({
                   />
 
                   <div ref={fieldRefs.nationality}>
-                    <label className="block text-sm font-medium text-theme-tertiary mb-2">
+                    <label
+                      htmlFor={`${idCampo}-1`}
+                      className="block text-sm font-medium text-theme-tertiary mb-2"
+                    >
                       {t('modal_composer_basic_nationality')}
                     </label>
                     <NationalitySelect
+                      id={`${idCampo}-1`}
                       value={formData.nationality}
                       onChange={handleNationalityChange}
                       error={errors.nationality}
@@ -1367,9 +1373,9 @@ const CreateComposerModal = ({
                   </div>
 
                   <Stack className="md:col-span-2 s">
-                    <label className="block text-sm font-medium text-theme-tertiary">
+                    <span className="block text-sm font-medium text-theme-tertiary">
                       {t('modal_composer_classification_secondary_roles')}
-                    </label>
+                    </span>
                     <div className="flex flex-wrap gap-6">
                       {filteredSecondaryRoles.map((role) => (
                         <Inline gap={2} key={role.id}>
@@ -1644,7 +1650,8 @@ const CreateComposerModal = ({
                     </Inline>
                   )}
 
-                  <button
+                  <Botao
+                    tamanho="p"
                     type="button"
                     onClick={() => {
                       setBiographies((prev) => ({
@@ -1654,20 +1661,19 @@ const CreateComposerModal = ({
                       setBioMessage({ type: '', text: '' });
                     }}
                     disabled={!biographies[biographyTab]}
-                    className="px-4 py-2 bg-theme-elevated text-theme-tertiary rounded-lg font-medium transition-all disabled:opacity-50 disabled:cursor-not-allowed"
                   >
                     Limpar
-                  </button>
+                  </Botao>
                 </div>
 
                 {/* Text Editor */}
-                <div className="space-y-2">
+                <Stack gap={2}>
                   <div className="flex items-center justify-between">
-                    <label className="block text-sm font-medium text-theme-tertiary">
+                    <span className="block text-sm font-medium text-theme-tertiary">
                       {biographyTab === 'pt'
                         ? 'Biografia em Português'
                         : 'Biography in English'}
-                    </label>
+                    </span>
                     <Text papel="legenda" tom="fraco">
                       {biographies[biographyTab]?.length || 0} caracteres
                     </Text>
@@ -1690,7 +1696,7 @@ const CreateComposerModal = ({
                         : 'Type the biography in English or click "Generate with AI"...'
                     }
                   />
-                </div>
+                </Stack>
 
                 {/* Status Cards */}
                 <div className="grid grid-cols-2 gap-4 mt-4">
@@ -1773,7 +1779,7 @@ const CreateComposerModal = ({
                       : t('form_create') + ' Compositor'}
                 </Button>
               </Inline>
-            </form>
+            </Stack>
           </div>
         </div>
       </AnimatedItem>

@@ -16,6 +16,7 @@
     "client_jsx_option_all_instruments": "Todos os instrumentos",
     "client_jsx_label_epoch": "Período",
     "client_jsx_option_all_epochs": "Todos os períodos",
+    "client_jsx_option_all_genres": "Todos os gêneros",
     "client_jsx_label_genre": "Gênero",
     "client_jsx_button_hide_filters": "Ocultar Filtros",
     "client_jsx_button_show_filters": "Mostrar Filtros",
@@ -74,7 +75,8 @@
     "epochs_modernismo": "Modernismo",
     "epochs_desconhecido": "Desconhecido",
     "epochs_moderno": "Moderno",
-    "epochs_contemporaneo": "Contemporâneo"
+    "epochs_contemporaneo": "Contemporâneo",
+    "client_jsx_button_buscar": "Buscar"
   },
   "en": {
     "server_jsx_fallback_title": "Service Temporarily Unavailable",
@@ -93,6 +95,7 @@
     "client_jsx_option_all_instruments": "All instruments",
     "client_jsx_label_epoch": "Period",
     "client_jsx_option_all_epochs": "All periods",
+    "client_jsx_option_all_genres": "All genres",
     "client_jsx_label_genre": "Genre",
     "client_jsx_button_hide_filters": "Hide Filters",
     "client_jsx_button_show_filters": "Show Filters",
@@ -151,6 +154,7 @@
     "epochs_modernismo": "Modernism",
     "epochs_desconhecido": "Unknown",
     "epochs_moderno": "Modern",
-    "epochs_contemporaneo": "Contemporary"
+    "epochs_contemporaneo": "Contemporary",
+    "client_jsx_button_buscar": "Search"
   }
 }

@@ -1,5 +1,6 @@
 // app/components/Footer.tsx - VERSÃO FINAL INTEGRADA
 'use client';
+import { Button as Botao } from '@/app/components/ui/Button';
 
 import React, { useState } from 'react';
 import Link from '@/app/components/LocalizedLink';
@@ -161,7 +162,7 @@ const Footer: React.FC = () => {
   const renderNewsletterStatus = () => {
     if (success) {
       return (
-        <div className="space-y-3">
+        <Stack gap={3}>
           <Inline gap={2} className="">
             <PiCheck className="w-4 h-4" />
             <span className="text-sm font-medium">
@@ -179,11 +180,11 @@ const Footer: React.FC = () => {
 
           <button
             onClick={handleReset}
-            className="text-xs text-theme-tertiary underline"
+            className="text-xs text-theme-tertiary underline self-start"
           >
             {t('footer_jsx_button_children_0__email')}
           </button>
-        </div>
+        </Stack>
       );
     }
 
@@ -198,14 +199,15 @@ const Footer: React.FC = () => {
           {/* 🆕 OPÇÕES BASEADAS NO TIPO DE ERRO */}
           <div className="flex flex-wrap gap-2">
             {canResend && (
-              <button
+              <Botao
+                variante="fantasma"
+                tamanho="p"
                 onClick={handleResendConfirmation}
                 disabled={loading}
-                className="text-xs px-2 py-1 rounded transition-colors disabled:opacity-50"
               >
                 <PiArrowsClockwise className="w-3 h-3 inline mr-1" />
                 {t('footer_jsx_button_children_2__send')}
-              </button>
+              </Botao>
             )}
 
             <button
@@ -273,7 +275,7 @@ const Footer: React.FC = () => {
                 <PiBookOpen className="w-5 h-5 mr-2 text-ouro-texto" />
                 {t('footer_jsx_h3_children_2__explorar')}
               </h3>
-              <ul className="space-y-3">
+              <Stack gap={3} as="ul">
                 {quickLinks.map(({ label, href, icon: Icon }) => (
                   <li key={label}>
                     <Link
@@ -286,7 +288,7 @@ const Footer: React.FC = () => {
                     </Link>
                   </li>
                 ))}
-              </ul>
+              </Stack>
             </Stack>
 
             {/* Support Links */}
@@ -295,7 +297,7 @@ const Footer: React.FC = () => {
                 <PiInfo className="w-5 h-5 mr-2 text-ouro-texto" />
                 {t('footer_jsx_h3_children_2__suporte')}
               </h3>
-              <ul className="space-y-3">
+              <Stack gap={3} as="ul">
                 {supportLinks.map(({ label, href }) => (
                   <li key={label}>
                     <Link
@@ -306,7 +308,7 @@ const Footer: React.FC = () => {
                     </Link>
                   </li>
                 ))}
-              </ul>
+              </Stack>
             </Stack>
 
             {/* Legal & Social */}
@@ -315,7 +317,7 @@ const Footer: React.FC = () => {
                 <PiShield className="w-5 h-5 mr-2 text-ouro-texto" />
                 {t('footer_jsx_h3_children_2__legal')}
               </h3>
-              <ul className="space-y-3">
+              <Stack gap={3} as="ul">
                 {legalLinks.map(({ label, href }) => (
                   <li key={label}>
                     <Link
@@ -326,7 +328,7 @@ const Footer: React.FC = () => {
                     </Link>
                   </li>
                 ))}
-              </ul>
+              </Stack>
 
               {/* Social Media */}
               <Stack className="pt-4">

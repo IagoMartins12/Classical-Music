@@ -64,6 +64,7 @@ export function HistoryComposerCard({ composer }: Props) {
   return (
     <Link
       href={`/composer/${composer.id}`}
+      data-vira={`compositor-${composer.id}`}
       className="block classical-card-simple p-4 transition-all duration-500 hover:scale-105 group relative overflow-hidden"
     >
       <div className="relative z-10">

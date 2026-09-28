@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useState, useId } from 'react';
 import toast from 'react-hot-toast';
 import {
   PiCheckCircle,
@@ -40,6 +40,7 @@ function quando(iso: string | null): string {
 }
 
 export default function BackupManagementClient() {
+  const idCampo = useId();
   const backup = useBackup();
 
   const [keep, setKeep] = useState(3);
@@ -232,10 +233,14 @@ export default function BackupManagementClient() {
         </Card>
 
         <Card densidade="compacta">
-          <label className="text-theme-tertiary text-xs uppercase tracking-wide">
+          <label
+            htmlFor={`${idCampo}-1`}
+            className="text-theme-tertiary text-xs uppercase tracking-wide"
+          >
             Arquivos mantidos
           </label>
           <input
+            id={`${idCampo}-1`}
             type="number"
             min={1}
             max={30}

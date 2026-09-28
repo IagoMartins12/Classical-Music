@@ -159,9 +159,9 @@ export default function MultiSelect({
   return (
     <div className="relative">
       {/* Label */}
-      <label className="block text-sm font-medium text-theme-tertiary mb-2">
+      <span className="block text-sm font-medium text-theme-tertiary mb-2">
         {label}
-      </label>
+      </span>
 
       {/* Main Input */}
       <div

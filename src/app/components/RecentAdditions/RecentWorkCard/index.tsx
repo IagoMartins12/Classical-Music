@@ -90,7 +90,10 @@ const RecentWorkCard = ({ work }: RecentWorkCardProps) => {
   return (
     <div className="group cursor-pointer select-none">
       <Link href={`/works/${work.id}`}>
-        <div className="classical-card-simple overflow-hidden transition-all duration-500 ease-out relative">
+        <div
+          data-vira={`obra-${work.id}`}
+          className="classical-card-simple overflow-hidden transition-all duration-500 ease-out relative"
+        >
           {/* Badges */}
           {/* <div className="absolute top-3 left-3 z-10 flex flex-col gap-2">
             <div className="bg-sup-2 border border-green-500/30 backdrop-blur-md rounded-full px-2 py-1 text-xs font-medium text-ouro-texto flex items-center gap-1">

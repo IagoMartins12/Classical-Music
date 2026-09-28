@@ -1,3 +1,4 @@
+import { Button } from '@/app/components/ui/Button';
 // ============================================
 // ScoreViewerExtension - COM EDIÇÃO/REMOÇÃO
 // ============================================
@@ -52,13 +53,15 @@ const ScoreViewerComponent = (props: any) => {
             <Inline gap={2}>
               {/* ✅ Controles de Edição */}
               {showControls && (
-                <button
+                <Button
+                  variante="fantasma"
+                  tamanho="p"
                   onClick={handleDelete}
-                  className="p-2 bg-red-600 rounded-lg hover:bg-red-700 transition-colors !text-erro"
                   title="Remover"
-                >
-                  <PiTrash className="w-4 h-4" />
-                </button>
+                  icone={PiTrash}
+                  rotulo="Remover"
+                  className="text-erro"
+                />
               )}
 
               {allowDownload && (

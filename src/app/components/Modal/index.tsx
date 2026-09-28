@@ -227,7 +227,6 @@ const Modal = forwardRef<ModalRef, ModalProps>(
         ultimoFechamento = performance.now();
         origem?.focus?.({ preventScroll: true });
       };
-      // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [isOpen]);
 
     // ── Arraste da alça, no telefone ──────────────────────────────────────

@@ -1,4 +1,6 @@
+import type { CSSProperties } from 'react';
 import Image from '@/app/components/SmartImage';
+import { nomeDeArtigo } from '@/app/components/ui/nomeDeArtigo';
 import Link from 'next/link';
 import { PiCalendarBlank, PiClock, PiUser } from 'react-icons/pi';
 import { AdminOnly } from '../AdminOnly';
@@ -7,6 +9,7 @@ import { Text } from '@/app/components/ui/Text';
 
 interface ArticleHeaderProps {
   article: {
+    slug: string;
     title: string;
     coverImage: string | null;
     coverImageAlt: string | null;
@@ -44,7 +47,17 @@ export function ArticleHeader({ article, isAdmin }: ArticleHeaderProps) {
   }`.trim();
 
   return (
-    <header className="section-wrap  !pb-0">
+    // O card do artigo (lista, carrossel, relacionados) se transforma neste
+    // cabeçalho: mesmo nome de transição (ver `ui/CartoesQueViram`).
+    <header
+      className="section-wrap  !pb-0"
+      style={
+        {
+          viewTransitionName: nomeDeArtigo(article.slug),
+          viewTransitionClass: 'cartao',
+        } as CSSProperties
+      }
+    >
       {/* <div className="max-w-4xl mx-auto"> */}
       <div className=" mx-auto max-w-4xl ">
         {/* Title */}

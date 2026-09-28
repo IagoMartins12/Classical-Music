@@ -1,7 +1,8 @@
 // components/FavoriteScoreButton.tsx
 'use client';
+import { Button } from '@/app/components/ui/Button';
 
-import { MouseEvent, useState } from 'react';
+import { MouseEvent, useState, useId } from 'react';
 import { useSession } from '@/app/libs/session';
 import { useFavoritesStore } from '@/app/stores/useFavoritesStore';
 import {
@@ -65,6 +66,7 @@ const FavoriteModal = ({
   initialData,
   scoreTitle,
 }: FavoriteModalProps) => {
+  const idCampo = useId();
   const [personalRating, setPersonalRating] = useState(
     initialData?.personalRating || 0
   );
@@ -122,10 +124,13 @@ const FavoriteModal = ({
       <Stack gap={6}>
         {/* Avaliação Pessoal */}
         <Stack gap={3}>
-          <label className="block text-sm font-medium text-theme-secondary">
+          <span
+            id={`${idCampo}-1`}
+            className="block text-sm font-medium text-theme-secondary"
+          >
             Avaliação Pessoal
-          </label>
-          <Inline gap={2}>
+          </span>
+          <Inline role="group" aria-labelledby={`${idCampo}-1`} gap={2}>
             {[1, 2, 3, 4, 5].map((star) => (
               <button
                 key={star}
@@ -163,10 +168,14 @@ const FavoriteModal = ({
 
         {/* Notas */}
         <div>
-          <label className="block text-sm font-medium text-theme-secondary mb-3">
+          <label
+            htmlFor={`${idCampo}-2`}
+            className="block text-sm font-medium text-theme-secondary mb-3"
+          >
             Notas Pessoais
           </label>
           <textarea
+            id={`${idCampo}-2`}
             value={notes}
             onChange={(e) => setNotes(e.target.value)}
             placeholder="Adicione suas observações sobre esta partitura..."
@@ -185,10 +194,17 @@ const FavoriteModal = ({
 
         {/* Tags */}
         <Stack gap={3}>
-          <label className="block text-sm font-medium text-theme-secondary">
+          <span
+            id={`${idCampo}-3`}
+            className="block text-sm font-medium text-theme-secondary"
+          >
             Tags
-          </label>
-          <div className="flex flex-wrap gap-2">
+          </span>
+          <div
+            role="group"
+            aria-labelledby={`${idCampo}-3`}
+            className="flex flex-wrap gap-2"
+          >
             {tags.map((tag) => (
               <Inline
                 as="span"
@@ -216,25 +232,23 @@ const FavoriteModal = ({
               className="flex-1 px-3 py-2 bg-theme-elevated border border-theme-secondary rounded-xl text-theme-primary text-sm focus:outline-none transition-all duration-300"
               maxLength={20}
             />
-            <button
+            <Button
+              variante="fantasma"
+              tamanho="p"
               onClick={addTag}
               disabled={!newTag.trim() || tags.includes(newTag.trim())}
-              className="px-4 py-2 text-theme-primary rounded-xl text-sm font-medium disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-300"
             >
               Adicionar
-            </button>
+            </Button>
           </div>
         </Stack>
       </Stack>
 
       {/* Actions */}
       <div className="flex justify-end space-x-3 mt-8">
-        <button
-          onClick={onClose}
-          className="px-4 py-2 bg-theme-elevated text-theme-secondary rounded-xl transition-colors"
-        >
+        <Button tamanho="p" onClick={onClose}>
           Cancelar
-        </button>
+        </Button>
         <Inline
           as="button"
           gap={2}

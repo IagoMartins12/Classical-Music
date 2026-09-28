@@ -1,3 +1,4 @@
+import { Button } from '@/app/components/ui/Button';
 // ============================================
 // WorkCardExtension - COM EDIÇÃO/REMOÇÃO
 // ============================================
@@ -33,13 +34,15 @@ const WorkCardComponent = (props: any) => {
           gap={2}
           className="absolute top-2 right-2 p-2 bg-white shadow-lg rounded-lg z-10"
         >
-          <button
+          <Button
+            variante="fantasma"
+            tamanho="p"
             onClick={handleDelete}
-            className="p-2 hover:bg-red-50 rounded transition-colors !text-erro"
             title="Remover"
-          >
-            <PiTrash className="w-4 h-4" />
-          </button>
+            icone={PiTrash}
+            rotulo="Remover"
+            className="text-erro"
+          />
         </Inline>
       )}
 

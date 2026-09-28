@@ -1,7 +1,7 @@
 // app/pageServer.tsx - Enhanced Home Page com Cache Híbrido
-import HeroMainPage from '../../components/HeroMainPage';
-import PopularComposers from '../../components/PopularComposers';
-import EssentialComposers from '../../components/EssentialComposers';
+import HeroMainPage from '../../../components/HeroMainPage';
+import PopularComposers from '../../../components/PopularComposers';
+import EssentialComposers from '../../../components/EssentialComposers';
 import {
   getCachedEpochs,
   getCachedRecommendedComposers,
@@ -10,18 +10,18 @@ import {
   getCachedRandomDiscoveries,
   getCachedRecentAdditions,
   getCachedMusicalFacts,
-} from '../../requests/cached-requests/cached-home-functions';
+} from '../../../requests/cached-requests/cached-home-functions';
 
-import FeaturedComposer from '../../components/FeaturedComposer';
-import ComposersByEpoch from '../../components/ComposersByEpoch';
-import RandomDiscoveries from '../../components/RandomDiscoveries';
-import RecentAdditions from '../../components/RecentAdditions';
-import MusicalFacts from '../../components/MusicalFacts';
-import { TranslationProvider } from '../../context/TranslationContext';
+import FeaturedComposer from '../../../components/FeaturedComposer';
+import ComposersByEpoch from '../../../components/ComposersByEpoch';
+import RandomDiscoveries from '../../../components/RandomDiscoveries';
+import RecentAdditions from '../../../components/RecentAdditions';
+import MusicalFacts from '../../../components/MusicalFacts';
+import { TranslationProvider } from '../../../context/TranslationContext';
 import {
   loadPageTranslationsWithCommon,
   type Language,
-} from '../../utils/translations/serverTranslations';
+} from '../../../utils/translations/serverTranslations';
 
 /**
  * O idioma chega de cima (do segmento `[lang]`), não do cookie: ler cookie

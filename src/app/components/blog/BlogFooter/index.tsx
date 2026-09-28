@@ -109,7 +109,7 @@ export function BlogFooter() {
               <h4 className="font-semibold text-theme-primary">
                 {section.title}
               </h4>
-              <ul className="space-y-2">
+              <Stack gap={2} as="ul">
                 {section.links.map((link) => (
                   <li key={link.href}>
                     <Link
@@ -120,7 +120,7 @@ export function BlogFooter() {
                     </Link>
                   </li>
                 ))}
-              </ul>
+              </Stack>
             </Stack>
           ))}
         </div>

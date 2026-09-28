@@ -654,13 +654,10 @@ const ScoreSelectionModal = ({
             ) : activeTabData.length === 0 ? (
               <EmptyState />
             ) : (
-              <div className="space-y-6">
+              <Stack gap={6}>
                 <AnimatedContainer delay={0.1} staggerSpeed="fast">
                   {activeTabData.map((scoreGroup, groupIndex) => (
-                    <div
-                      key={`${scoreGroup.source}-${groupIndex}`}
-                      className="space-y-4"
-                    >
+                    <Stack key={`${scoreGroup.source}-${groupIndex}`}>
                       <SequentialGrid cols={1} gap={3} delayBetweenItems={0.05}>
                         {scoreGroup.scores.map((score) => (
                           <ScoreCard
@@ -675,7 +672,7 @@ const ScoreSelectionModal = ({
                           />
                         ))}
                       </SequentialGrid>
-                    </div>
+                    </Stack>
                   ))}
                 </AnimatedContainer>
 
@@ -753,7 +750,7 @@ const ScoreSelectionModal = ({
                     </Card>
                   </div>
                 )}
-              </div>
+              </Stack>
             )}
           </div>
         </div>

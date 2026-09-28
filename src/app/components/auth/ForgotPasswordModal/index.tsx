@@ -150,7 +150,7 @@ const ForgotPasswordModal: React.FC<ForgotPasswordModalProps> = ({
         </p>
       </div>
 
-      <form onSubmit={handleSubmit} className="space-y-6">
+      <Stack gap={6} as="form" onSubmit={handleSubmit}>
         {state.error && (
           <div className="p-3 rounded-lg text-sm bg-sup-2">
             <div className="flex items-center">
@@ -173,7 +173,7 @@ const ForgotPasswordModal: React.FC<ForgotPasswordModalProps> = ({
           autoFocus
         />
 
-        <div className="space-y-4">
+        <Stack>
           <Button
             type="submit"
             variant="primary"
@@ -197,8 +197,8 @@ const ForgotPasswordModal: React.FC<ForgotPasswordModalProps> = ({
           >
             {t('forgot_password_modal_back_button')}
           </Button>
-        </div>
-      </form>
+        </Stack>
+      </Stack>
 
       <div className="mt-6 text-center">
         <Stack gap={2} className="bg-theme-secondary rounded-lg p-4">
@@ -250,7 +250,7 @@ const ForgotPasswordModal: React.FC<ForgotPasswordModalProps> = ({
             <PiClock className="w-4 h-4 mr-2" />
             {t('forgot_password_success_steps_title')}
           </h4>
-          <ul className="text-sm text-theme-tertiary space-y-2">
+          <Stack gap={2} as="ul" className="text-sm text-theme-tertiary">
             <li className="flex items-start">
               <span className="text-ouro-texto mr-2">1.</span>
               {t('forgot_password_success_step_1')}
@@ -263,10 +263,10 @@ const ForgotPasswordModal: React.FC<ForgotPasswordModalProps> = ({
               <span className="text-ouro-texto mr-2">3.</span>
               {t('forgot_password_success_step_3')}
             </li>
-          </ul>
+          </Stack>
         </Stack>
 
-        <div className="space-y-3">
+        <Stack gap={3}>
           <Button
             variant="ghost"
             size="lg"
@@ -283,7 +283,7 @@ const ForgotPasswordModal: React.FC<ForgotPasswordModalProps> = ({
           >
             {t('forgot_password_success_close_button')}
           </button>
-        </div>
+        </Stack>
       </Stack>
     </>
   );
@@ -328,15 +328,15 @@ const ForgotPasswordModal: React.FC<ForgotPasswordModalProps> = ({
             <h4 className="text-sm font-medium text-theme-primary">
               {t('forgot_password_error_what_to_do')}
             </h4>
-            <ul className="text-sm text-theme-tertiary space-y-1">
+            <Stack gap={1} as="ul" className="text-sm text-theme-tertiary">
               <li>{t('forgot_password_error_wait')}</li>
               <li>{t('forgot_password_error_check_email')}</li>
               <li>{t('forgot_password_error_contact')}</li>
-            </ul>
+            </Stack>
           </Stack>
         )}
 
-        <div className="space-y-3">
+        <Stack gap={3}>
           {!state.rateLimited && (
             <Button
               variant="primary"
@@ -359,7 +359,7 @@ const ForgotPasswordModal: React.FC<ForgotPasswordModalProps> = ({
           >
             {t('forgot_password_modal_back_button')}
           </Button>
-        </div>
+        </Stack>
       </Stack>
     </>
   );

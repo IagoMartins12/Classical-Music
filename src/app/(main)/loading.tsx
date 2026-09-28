@@ -1,14 +1,14 @@
 import {
-  EsqueletoCabecalho,
-  EsqueletoGrade,
+  EsqueletoAviso,
   EsqueletoPagina,
 } from '@/app/components/ui/Carregando';
 
+// Vale para as rotas daqui sem esqueleto próprio: confirmação de conta e de
+// e-mail, nova senha e o retorno da assinatura — todas um card no centro.
 export default function Carregando() {
   return (
     <EsqueletoPagina rotulo="Carregando">
-      <EsqueletoCabecalho />
-      <EsqueletoGrade colunas={3} quantos={6} />
+      <EsqueletoAviso />
     </EsqueletoPagina>
   );
 }

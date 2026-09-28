@@ -73,9 +73,9 @@ const AccordionSection = memo<AccordionSectionProps>(
                 {icon}
               </div>
               <div>
-                <h3 className="text-2xl font-bold text-theme-primary classical-title transition-colors duration-200">
+                <h2 className="text-2xl font-bold text-theme-primary classical-title transition-colors duration-200">
                   {title}
-                </h3>
+                </h2>
                 <Text papel="rotulo" tom="fraco" as="p">
                   {subtitle}
                 </Text>
@@ -172,9 +172,9 @@ const TimelineOverview = memo<SectionProps>(({ isExpanded, onToggle }) => {
             >
               <PiClock className="w-4 h-4 text-theme-primary" />
             </div>
-            <h4 className="font-bold text-lg text-theme-primary classical-title mb-2 transition-colors duration-200">
+            <h3 className="font-bold text-lg text-theme-primary classical-title mb-2 transition-colors duration-200">
               {era.period}
-            </h4>
+            </h3>
             <p
               className={`text-ouro-texto font-semibold mb-2 bg-gradient-to-r ${era.gradient} bg-clip-text text-transparent`}
             >
@@ -247,7 +247,7 @@ const MedievalSection = memo<SectionProps>(({ isExpanded, onToggle }) => {
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
         <div className="classical-body text-theme-secondary">
           <Inline
-            as="h4"
+            as="h3"
             gap={2}
             className="text-xl font-semibold text-theme-primary classical-title mb-4"
           >
@@ -265,7 +265,7 @@ const MedievalSection = memo<SectionProps>(({ isExpanded, onToggle }) => {
         </div>
         <div className="classical-body text-theme-secondary">
           <Inline
-            as="h4"
+            as="h3"
             gap={2}
             className="text-xl font-semibold text-theme-primary classical-title mb-4"
           >
@@ -288,9 +288,9 @@ const MedievalSection = memo<SectionProps>(({ isExpanded, onToggle }) => {
             <GiViolin className="w-4 h-4 text-theme-primary" />
           </div>
           <Stack gap={2}>
-            <h4 className="font-semibold text-theme-primary classical-title">
+            <h3 className="font-semibold text-theme-primary classical-title">
               {t('detailed_jsx_h4_children_0__instrumentos_tipicos_periodo')}
-            </h4>
+            </h3>
             <p className="text-theme-secondary leading-relaxed">
               {t('detailed_jsx_p_children_0__cordas_harpa_alaude')}
             </p>
@@ -331,9 +331,9 @@ const RenaissanceSection = memo<SectionProps>(({ isExpanded, onToggle }) => {
               <div className="w-8 h-8 rounded-xl flex items-center justify-center group-hover:scale-105 transition-transform duration-200">
                 <PiUser className="w-4 h-4 text-theme-primary" />
               </div>
-              <h4 className="text-xl font-semibold text-theme-primary classical-title transition-colors duration-200">
+              <h3 className="text-xl font-semibold text-theme-primary classical-title transition-colors duration-200">
                 {t('detailed_jsx_h4_children_0__mestres_franco_flamengos')}
-              </h4>
+              </h3>
             </Inline>
             <p className="leading-relaxed">
               {t('detailed_jsx_p_children_0__josquin_des_prez')}
@@ -347,9 +347,9 @@ const RenaissanceSection = memo<SectionProps>(({ isExpanded, onToggle }) => {
               <div className="w-8 h-8 rounded-xl flex items-center justify-center group-hover:scale-105 transition-transform duration-200">
                 <PiMusicNotes className="w-4 h-4 text-theme-primary" />
               </div>
-              <h4 className="text-xl font-semibold text-theme-primary classical-title transition-colors duration-200">
+              <h3 className="text-xl font-semibold text-theme-primary classical-title transition-colors duration-200">
                 {t('detailed_jsx_h4_children_0__madrigal_italiano')}
-              </h4>
+              </h3>
             </Inline>
             <p className="leading-relaxed">
               {t('detailed_jsx_p_children_0__esta_forma_musical')}
@@ -363,9 +363,9 @@ const RenaissanceSection = memo<SectionProps>(({ isExpanded, onToggle }) => {
               <PiFileText className="w-4 h-4 text-theme-primary" />
             </div>
             <Stack gap={2}>
-              <h4 className="font-semibold text-theme-primary classical-title">
+              <h3 className="font-semibold text-theme-primary classical-title">
                 {t('detailed_jsx_h4_children_0__revolucao_imprensa')}
-              </h4>
+              </h3>
               <p className="text-theme-secondary leading-relaxed">
                 {t('detailed_jsx_p_children_0__invencao_imprensa_gutenberg')}
               </p>
@@ -429,9 +429,9 @@ const BaroqueSection = memo<SectionProps>(({ isExpanded, onToggle }) => {
                 >
                   <PiUser className="w-4 h-4 text-theme-primary" />
                 </div>
-                <h4 className="font-semibold text-theme-primary classical-title transition-colors duration-200">
+                <h3 className="font-semibold text-theme-primary classical-title transition-colors duration-200">
                   {composer.name}
-                </h4>
+                </h3>
               </Inline>
               <p className="text-sm leading-relaxed">{composer.description}</p>
             </Card>
@@ -444,9 +444,9 @@ const BaroqueSection = memo<SectionProps>(({ isExpanded, onToggle }) => {
               <GiGrandPiano className="w-4 h-4 text-theme-primary" />
             </div>
             <Stack gap={2}>
-              <h4 className="font-semibold text-theme-primary classical-title">
+              <h3 className="font-semibold text-theme-primary classical-title">
                 {t('detailed_jsx_h4_children_0__nascimento_opera')}
-              </h4>
+              </h3>
               <p className="text-theme-secondary leading-relaxed">
                 {t('detailed_jsx_p_children_0__opera_nasceu_tentativa')}
               </p>
@@ -510,9 +510,9 @@ const ClassicalSection = memo<SectionProps>(({ isExpanded, onToggle }) => {
                 >
                   <PiStar className="w-4 h-4 text-theme-primary" />
                 </div>
-                <h4 className="font-semibold text-theme-primary classical-title transition-colors duration-200">
+                <h3 className="font-semibold text-theme-primary classical-title transition-colors duration-200">
                   {composer.name}
-                </h4>
+                </h3>
               </Inline>
               <p className="text-sm leading-relaxed">{composer.description}</p>
             </Card>
@@ -580,9 +580,9 @@ const RomanticSection = memo<SectionProps>(({ isExpanded, onToggle }) => {
                 >
                   <PiUser className="w-4 h-4 text-theme-primary" />
                 </div>
-                <h4 className="font-semibold text-theme-primary classical-title transition-colors duration-200">
+                <h3 className="font-semibold text-theme-primary classical-title transition-colors duration-200">
                   {composer.name}
-                </h4>
+                </h3>
               </Inline>
               <p className="text-sm leading-relaxed">{composer.description}</p>
             </Card>
@@ -617,7 +617,7 @@ const ModernSection = memo<SectionProps>(({ isExpanded, onToggle }) => {
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
           <div className="space-y-6">
             <Inline
-              as="h4"
+              as="h3"
               gap={2}
               className="text-xl font-semibold text-theme-primary classical-title mb-4"
             >
@@ -655,7 +655,7 @@ const ModernSection = memo<SectionProps>(({ isExpanded, onToggle }) => {
           </div>
           <div className="space-y-6">
             <Inline
-              as="h4"
+              as="h3"
               gap={2}
               className="text-xl font-semibold text-theme-primary classical-title mb-4"
             >
@@ -699,9 +699,9 @@ const ModernSection = memo<SectionProps>(({ isExpanded, onToggle }) => {
               <PiStar className="w-4 h-4 text-theme-primary" />
             </div>
             <Stack gap={2}>
-              <h4 className="font-semibold text-theme-primary classical-title">
+              <h3 className="font-semibold text-theme-primary classical-title">
                 {t('detailed_jsx_h4_children_0__experimentalismo_radical')}
-              </h4>
+              </h3>
               <p className="text-theme-secondary leading-relaxed">
                 {t('detailed_jsx_p_children_0__john_cage_levou')}
               </p>
@@ -745,9 +745,9 @@ const ContemporarySection = memo<SectionProps>(({ isExpanded, onToggle }) => {
               <div className="w-8 h-8 rounded-xl flex items-center justify-center group-hover:scale-105 transition-transform duration-200">
                 <PiClock className="w-4 h-4 text-theme-primary" />
               </div>
-              <h4 className="font-semibold text-theme-primary classical-title transition-colors duration-200">
+              <h3 className="font-semibold text-theme-primary classical-title transition-colors duration-200">
                 {t('detailed_jsx_h4_children_0__retorno_simplicidade')}
-              </h4>
+              </h3>
             </Inline>
             <p className="text-sm leading-relaxed">
               {t('detailed_jsx_p_children_0__compositores_como_arvo')}
@@ -761,9 +761,9 @@ const ContemporarySection = memo<SectionProps>(({ isExpanded, onToggle }) => {
               <div className="w-8 h-8 rounded-xl flex items-center justify-center group-hover:scale-105 transition-transform duration-200">
                 <PiTrendUp className="w-4 h-4 text-theme-primary" />
               </div>
-              <h4 className="font-semibold text-theme-primary classical-title transition-colors duration-200">
+              <h3 className="font-semibold text-theme-primary classical-title transition-colors duration-200">
                 {t('detailed_jsx_h4_children_0__tecnologia_ia')}
-              </h4>
+              </h3>
             </Inline>
             <p className="text-sm leading-relaxed">
               {t('detailed_jsx_p_children_0__computadores_podem_gerar')}
@@ -816,13 +816,13 @@ const PopularMusicSection = memo<SectionProps>(({ isExpanded, onToggle }) => {
               <div className="w-8 h-8 rounded-xl flex items-center justify-center group-hover:scale-105 transition-transform duration-200">
                 <PiUser className="w-4 h-4 text-theme-primary" />
               </div>
-              <h4 className="font-semibold text-theme-primary classical-title transition-colors duration-200">
+              <h3 className="font-semibold text-theme-primary classical-title transition-colors duration-200">
                 {t(
                   'detailed_jsx_h4_children_0__caracteristicas_musica_erudita'
                 )}
-              </h4>
+              </h3>
             </Inline>
-            <ul className="text-sm space-y-2 leading-relaxed">
+            <Stack gap={2} as="ul" className="text-sm leading-relaxed">
               <li className="flex items-start space-x-2">
                 <div className="w-1.5 h-1.5 rounded-full mt-2 flex-shrink-0"></div>
                 <span>
@@ -859,7 +859,7 @@ const PopularMusicSection = memo<SectionProps>(({ isExpanded, onToggle }) => {
                   )}
                 </span>
               </li>
-            </ul>
+            </Stack>
           </Card>
           <Card
             nivel={2}
@@ -869,11 +869,11 @@ const PopularMusicSection = memo<SectionProps>(({ isExpanded, onToggle }) => {
               <div className="w-8 h-8 rounded-xl flex items-center justify-center group-hover:scale-105 transition-transform duration-200">
                 <PiMusicNotes className="w-4 h-4 text-theme-primary" />
               </div>
-              <h4 className="font-semibold text-theme-primary classical-title transition-colors duration-200">
+              <h3 className="font-semibold text-theme-primary classical-title transition-colors duration-200">
                 {t('detailed_jsx_h4_children_0__pontes_entre_mundos')}
-              </h4>
+              </h3>
             </Inline>
-            <ul className="text-sm space-y-2 leading-relaxed">
+            <Stack gap={2} as="ul" className="text-sm leading-relaxed">
               <li className="flex items-start space-x-2">
                 <div className="w-1.5 h-1.5 rounded-full mt-2 flex-shrink-0"></div>
                 <span>
@@ -904,7 +904,7 @@ const PopularMusicSection = memo<SectionProps>(({ isExpanded, onToggle }) => {
                   {t('detailed_jsx_li_children_0__guitarra_eletrica')}
                 </span>
               </li>
-            </ul>
+            </Stack>
           </Card>
         </div>
 
@@ -949,17 +949,7 @@ export function DetailedMusicHistory(): JSX.Element {
   return (
     <div className="w-full py-4 md:py-20 lg:py-20 relative overflow-hidden">
       {/* Background Pattern Otimizado */}
-      <div className="absolute inset-0 pointer-events-none opacity-5 will-change-auto">
-        <div className="absolute top-40 left-40 w-32 md:w-96 max-w-full h-96 rounded-full blur-3xl animate-pulse"></div>
-        <div
-          className="absolute bottom-60 right-60 w-64 h-64 rounded-full blur-2xl animate-pulse"
-          style={{ animationDelay: '1s' }}
-        ></div>
-        <div
-          className="absolute top-1/3 left-1/4 w-48 h-48 rounded-full blur-xl animate-pulse"
-          style={{ animationDelay: '2s' }}
-        ></div>
-      </div>
+      <div className="absolute inset-0 pointer-events-none opacity-5 will-change-auto"></div>
 
       <div className="relative z-10">
         <TimelineOverview

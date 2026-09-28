@@ -65,7 +65,6 @@ export default function ConfirmDeleteUploadModal({
     if (isOpen && itemId && (itemType === 'composer' || itemType === 'work')) {
       loadCascadeInfo();
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isOpen, itemId, itemType]);
 
   if (!mounted || !isOpen) return null;

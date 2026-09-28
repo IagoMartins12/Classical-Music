@@ -1,5 +1,6 @@
 // components/Annotations/AnnotationFilters.tsx - VERSÃO COM TRADUÇÕES COMPLETAS
 'use client';
+import { Button } from '@/app/components/ui/Button';
 
 import { useState, useEffect } from 'react';
 import {
@@ -171,13 +172,9 @@ export default function AnnotationFiltersComponent({
               </Text>
             )}
           </Inline>
-          <button
-            onClick={onClose}
-            className="w-8 h-8 rounded-lg bg-theme-elevated flex items-center justify-center text-theme-tertiary transition-all"
-          >
-            <PiX className="w-4 h-4" />
+          <Button variante="fantasma" tamanho="p" onClick={onClose} icone={PiX}>
             <NomeAcao acao="fechar" />
-          </button>
+          </Button>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
@@ -191,7 +188,7 @@ export default function AnnotationFiltersComponent({
               <PiTarget className="w-4 h-4" />
               <span>{t('annotation_filters_nivel_dificuldade')}</span>
             </Inline>
-            <div className="space-y-2">
+            <Stack gap={2}>
               {DIFFICULTY_OPTIONS.map((option) => {
                 const Icon = option.icon;
                 const isSelected = localFilters.difficulty === option.value;
@@ -224,7 +221,7 @@ export default function AnnotationFiltersComponent({
                   </AnimatedItem>
                 );
               })}
-            </div>
+            </Stack>
           </Stack>
 
           {/* ✅ Abrangência com traduções */}
@@ -237,7 +234,7 @@ export default function AnnotationFiltersComponent({
               <PiStack className="w-4 h-4" />
               <span>{t('annotation_filters_abrangencia')}</span>
             </Inline>
-            <div className="space-y-2">
+            <Stack gap={2}>
               {SCOPE_OPTIONS.map((option) => {
                 const Icon = option.icon;
                 const isSelected = localFilters.scope === option.value;
@@ -270,7 +267,7 @@ export default function AnnotationFiltersComponent({
                   </AnimatedItem>
                 );
               })}
-            </div>
+            </Stack>
           </Stack>
 
           {/* ✅ Ordenação com traduções */}
@@ -283,7 +280,7 @@ export default function AnnotationFiltersComponent({
               <PiTrendUp className="w-4 h-4" />
               <span>{t('annotation_filters_ordenar_por')}</span>
             </Inline>
-            <div className="space-y-2">
+            <Stack gap={2}>
               {SORT_OPTIONS.map((option) => {
                 const Icon = option.icon;
                 const isSelected =
@@ -309,7 +306,7 @@ export default function AnnotationFiltersComponent({
                   </AnimatedItem>
                 );
               })}
-            </div>
+            </Stack>
           </Stack>
         </div>
 

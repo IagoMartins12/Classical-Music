@@ -170,13 +170,9 @@ const EditComposerClient = ({
   return (
     <div className="">
       {/* Background Pattern */}
-      <div className="absolute inset-0 pointer-events-none opacity-5">
-        <div className="absolute top-20 left-20 w-64 h-64 rounded-full blur-3xl"></div>
-        <div className="absolute bottom-40 right-32 w-48 h-48 rounded-full blur-2xl"></div>
-        <div className="absolute top-1/2 left-1/4 w-32 h-32 rounded-full blur-xl"></div>
-      </div>
+      <div className="absolute inset-0 pointer-events-none opacity-5"></div>
 
-      <div className="section-wrap space-y-8 relative z-10">
+      <Stack gap={8} className="section-wrap relative z-10">
         {/* Breadcrumb */}
         <AnimatedItem direction="down" springType="gentle">
           <Inline
@@ -241,7 +237,10 @@ const EditComposerClient = ({
             <div className="p-8 relative z-10">
               <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
                 {/* Informações do Compositor */}
-                <div className="lg:col-span-2 space-y-6 order-2 md:order-1 lg:order-1">
+                <Stack
+                  gap={6}
+                  className="lg:col-span-2 order-2 md:order-1 lg:order-1"
+                >
                   <AnimatedItem direction="up" springType="bouncy">
                     <Stack gap={3}>
                       <div className="flex flex-col sm:flex-row items-start justify-between">
@@ -550,7 +549,7 @@ const EditComposerClient = ({
                       </Stack>
                     </AnimatedItem>
                   )}
-                </div>
+                </Stack>
 
                 {/* Imagem do Compositor */}
                 <AnimatedItem
@@ -635,7 +634,7 @@ const EditComposerClient = ({
             </AnimatedCard>
           )}
         </AnimatedContainer>
-      </div>
+      </Stack>
 
       {/* Edit Modal */}
       <CreateComposerModal

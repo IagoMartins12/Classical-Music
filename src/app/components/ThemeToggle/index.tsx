@@ -79,7 +79,7 @@ export const ThemeToggle: React.FC<ThemeToggleProps> = ({
         disabled={isTransitioning}
         className={`
           ${getVariantClasses()}
-          relative bg-theme-elevated rounded-xl active:scale-95 transition-all duration-300 group disabled:opacity-50 disabled:cursor-not-allowed
+          relative fundo-sup-2 border border-linha-forte rounded-xl active:scale-95 transition-all duration-300 group disabled:opacity-50 disabled:cursor-not-allowed
         `}
         aria-label={`Alternar para tema ${
           mode === 'dark' ? 'claro' : 'escuro'
@@ -128,14 +128,6 @@ export const ThemeToggle: React.FC<ThemeToggleProps> = ({
             <div className="w-4 h-4 border-2 border-t-transparent rounded-full animate-spin" />
           </div>
         )}
-
-        {/* 🆕 Indicador de sistema (apenas se showSystemIndicator = true) */}
-        {showSystemIndicator && isSystemControlled && (
-          <div className="absolute -top-1 -left-1 w-2 h-2 rounded-full opacity-75 animate-pulse" />
-        )}
-
-        {/* Subtle animation indicator */}
-        <div className="absolute -top-1 -right-1 w-2 h-2 rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-300 animate-pulse" />
       </button>
     </div>
   );

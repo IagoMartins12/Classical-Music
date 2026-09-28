@@ -1,5 +1,6 @@
 // app/components/Common/EntityActionMenu.tsx - Menu de ações para entidades
 'use client';
+import { Button } from '@/app/components/ui/Button';
 
 import { useState } from 'react';
 import {
@@ -52,13 +53,14 @@ export default function EntityActionMenu({
   return (
     <>
       <div className="relative">
-        <button
+        <Button
+          variante="fantasma"
+          tamanho="p"
           onClick={() => setShowMenu(!showMenu)}
-          className="p-2 rounded-lg text-theme-tertiary transition-all"
           title="Mais ações"
-        >
-          <PiDotsThree className="w-5 h-5" />
-        </button>
+          icone={PiDotsThree}
+          rotulo="Mais ações"
+        />
 
         {showMenu && (
           <>
@@ -69,7 +71,7 @@ export default function EntityActionMenu({
             />
 
             {/* Menu dropdown */}
-            <div className="absolute right-0 top-full mt-2 bg-theme-elevated rounded-lg shadow-theme-medium z-20 min-w-48">
+            <div className="absolute right-0 top-full mt-2 bg-theme-elevated rounded-lg shadow-theme-medium z-menu min-w-48">
               <div className="py-2">
                 {onView && (
                   <Inline

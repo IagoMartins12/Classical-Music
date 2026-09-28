@@ -22,6 +22,7 @@ const CarouselCard: React.FC<CarouselCardProps> = ({
     <div className="group cursor-pointer select-none h-full">
       <Link href={`/composer/${item.id}`}>
         <div
+          data-vira={`compositor-${item.id}`}
           className={`
             relative overflow-hidden rounded-2xl h-full
             classical-card
@@ -134,7 +135,7 @@ const CarouselCard: React.FC<CarouselCardProps> = ({
               <div className="flex items-center justify-between pt-4 border-t border-theme-secondary">
                 <Inline gap={2}>
                   <div className="w-2 h-2 rounded-full animate-pulse"></div>
-                  <Text papel="legenda" tom="fraco" className="font-medium">
+                  <Text papel="legenda" tom="suave" className="font-medium">
                     {t('home_quick_actions_explore')}
                   </Text>
                 </Inline>

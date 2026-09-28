@@ -1,12 +1,12 @@
 // app/components/Admin/Database/ConfirmationModal.tsx
 'use client';
 
-import { useState } from 'react';
+import { useState, useId } from 'react';
 import { PiWarning } from 'react-icons/pi';
 import Modal from '@/app/components/Modal';
 import Button from '@/app/components/Common/Button';
 import Input from '@/app/components/Common/Inputs';
-import { Inline } from '@/app/components/ui/Layout';
+import { Stack, Inline } from '@/app/components/ui/Layout';
 
 interface ConfirmationModalProps {
   isOpen: boolean;
@@ -31,6 +31,7 @@ export default function ConfirmationModal({
   isLoading = false,
   type = 'danger',
 }: ConfirmationModalProps) {
+  const idCampo = useId();
   const [inputValue, setInputValue] = useState('');
   const [error, setError] = useState('');
 
@@ -95,13 +96,17 @@ export default function ConfirmationModal({
         {/* Input de confirmação */}
         <div className="space-y-4">
           <div>
-            <label className="block text-sm font-medium text-theme-secondary mb-2">
+            <label
+              htmlFor={`${idCampo}-1`}
+              className="block text-sm font-medium text-theme-secondary mb-2"
+            >
               Para confirmar, digite:{' '}
               <span className="font-mono font-bold text-theme-primary">
                 {keyword}
               </span>
             </label>
             <Input
+              id={`${idCampo}-1`}
               type="text"
               value={inputValue}
               onChange={(e) => {
@@ -131,11 +136,11 @@ export default function ConfirmationModal({
                 <p className={`text-sm font-medium ${colorScheme.text} mb-1`}>
                   Atenção!
                 </p>
-                <ul className="text-sm text-theme-secondary space-y-1">
+                <Stack gap={1} as="ul" className="text-sm text-theme-secondary">
                   <li>• Esta ação não pode ser desfeita</li>
                   <li>• Os dados podem ser permanentemente perdidos</li>
                   <li>• Verifique se você está certo antes de confirmar</li>
-                </ul>
+                </Stack>
               </div>
             </div>
           </div>

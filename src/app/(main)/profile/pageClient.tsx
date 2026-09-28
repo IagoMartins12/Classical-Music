@@ -23,7 +23,8 @@ import { useAuth } from '@/app/hooks/useAuth';
 // objeto que `useAuth()` entrega, e ele já tem tipo próprio no store.
 import type { User } from '@/app/hooks/userStore';
 import { useAuthStore } from '@/app/stores/authStore';
-import ProfileSkeleton from './loading';
+import { EsqueletoPerfil } from '@/app/components/ui/Carregando';
+import { AreaCarregando } from '@/app/components/ui/Skeleton';
 import { useTranslation } from '@/app/context/TranslationContext';
 import Button from '@/app/components/Common/Button';
 import { Inline } from '@/app/components/ui/Layout';
@@ -124,7 +125,11 @@ export default function ProfilePageClient() {
 
   // Not authenticated
   if (!isAuthenticated || !user) {
-    return <ProfileSkeleton />;
+    return (
+      <AreaCarregando rotulo="Carregando perfil">
+        <EsqueletoPerfil />
+      </AreaCarregando>
+    );
   }
 
   return (
@@ -150,7 +155,7 @@ export default function ProfilePageClient() {
           {/* Sidebar Navigation */}
           <div className="lg:col-span-1">
             <Card nivel={2} densidade="compacta" className="sticky top-8">
-              <nav className="space-y-1">
+              <nav className="gap-1 flex flex-col">
                 {tabs.map((tab) => {
                   const isActive = activeTab === tab.id;
                   return (

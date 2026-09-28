@@ -1,5 +1,6 @@
 // app/components/blog/BlogHeader.tsx - ATUALIZADO
 'use client';
+import { Button as Botao } from '@/app/components/ui/Button';
 
 import React, { useEffect, useRef, useState } from 'react';
 import Link from 'next/link';
@@ -410,7 +411,7 @@ export function BlogHeader() {
 
                       {/* Submenu Dropdown */}
                       {activeSubmenu === label && (
-                        <div className="absolute top-full left-0 mt-2 w-72 bg-theme-tertiary rounded-2xl shadow-xl z-50 overflow-hidden">
+                        <div className="absolute top-full left-0 mt-2 w-72 bg-theme-tertiary rounded-2xl shadow-xl z-menu overflow-hidden">
                           <div className="p-2">
                             {submenu.map((item) => (
                               <Link
@@ -530,7 +531,7 @@ export function BlogHeader() {
 
                   {/* Desktop Profile Dropdown */}
                   {isProfileOpen && (
-                    <div className="absolute right-0 top-full mt-2 w-64 bg-theme-tertiary rounded-2xl z-20 p-2 shadow-xl">
+                    <div className="absolute right-0 top-full mt-2 w-64 bg-theme-tertiary rounded-2xl z-menu p-2 shadow-xl">
                       {/* User Info */}
                       <div className="px-3 py-2 border-b border-theme-secondary mb-2">
                         <p className="font-medium text-theme-primary">
@@ -696,18 +697,20 @@ export function BlogHeader() {
               )}
 
               {/* Mobile Menu Button */}
-              <button
+              <Botao
+                variante="fantasma"
+                tamanho="p"
                 ref={mobileButtonRef}
                 onClick={handleMobileButtonClick}
-                className="lg:hidden p-2 text-theme-secondary transition-colors"
                 aria-label="Menu"
+                className="lg:hidden"
               >
                 {isMenuOpen ? (
                   <PiX className="w-6 h-6" />
                 ) : (
                   <PiList className="w-6 h-6" />
                 )}
-              </button>
+              </Botao>
             </Inline>
           </div>
 
@@ -728,7 +731,7 @@ export function BlogHeader() {
                   ${mobileView === 'main' ? 'translate-x-0' : '-translate-x-full absolute top-0 left-0 w-full'}
                 `}
                 >
-                  <ul className="space-y-2">
+                  <Stack gap={2} as="ul">
                     {navLinks.map(({ label, href, active, submenu }) => (
                       <li key={label}>
                         {submenu ? (
@@ -747,13 +750,15 @@ export function BlogHeader() {
                             >
                               {label}
                             </Link>
-                            <button
+                            <Botao
+                              variante="fantasma"
+                              tamanho="p"
                               onClick={() => goToSubmenuView(label, submenu)}
                               aria-label={`Abrir ${label}`}
-                              className="ml-2 p-2 text-theme-tertiary transition-colors"
-                            >
-                              <PiCaretRight className="w-5 h-5" />
-                            </button>
+                              icone={PiCaretRight}
+                              rotulo={`Abrir ${label}`}
+                              className="ml-2"
+                            />
                           </div>
                         ) : (
                           <Link
@@ -873,7 +878,7 @@ export function BlogHeader() {
                         </Inline>
                       </div>
                     </li>
-                  </ul>
+                  </Stack>
                 </div>
 
                 {/* Profile View */}
@@ -886,13 +891,15 @@ export function BlogHeader() {
                   {isAuthenticated && user && (
                     <Stack>
                       <div className="flex items-center pb-3 border-b border-theme-secondary">
-                        <button
+                        <Botao
+                          variante="fantasma"
+                          tamanho="p"
                           onClick={goBackToMain}
                           aria-label="Voltar ao menu"
-                          className="p-2 mr-2 text-theme-tertiary transition-colors"
-                        >
-                          <PiCaretLeft className="w-5 h-5" />
-                        </button>
+                          icone={PiCaretLeft}
+                          rotulo="Voltar ao menu"
+                          className="mr-2"
+                        />
                         <h3 className="font-medium text-theme-primary">
                           Perfil
                         </h3>
@@ -922,7 +929,7 @@ export function BlogHeader() {
                         </div>
                       </Inline>
 
-                      <ul className="space-y-1">
+                      <Stack gap={1} as="ul">
                         <li>
                           <Link
                             href="/profile"
@@ -1049,7 +1056,7 @@ export function BlogHeader() {
                             <span>Sair</span>
                           </Inline>
                         </li>
-                      </ul>
+                      </Stack>
                     </Stack>
                   )}
                 </div>
@@ -1063,19 +1070,21 @@ export function BlogHeader() {
                 >
                   <Stack>
                     <div className="flex items-center pb-3 border-b border-theme-secondary">
-                      <button
+                      <Botao
+                        variante="fantasma"
+                        tamanho="p"
                         onClick={goBackToMain}
                         aria-label="Voltar ao menu"
-                        className="p-2 mr-2 text-theme-tertiary transition-colors"
-                      >
-                        <PiCaretLeft className="w-5 h-5" />
-                      </button>
+                        icone={PiCaretLeft}
+                        rotulo="Voltar ao menu"
+                        className="mr-2"
+                      />
                       <h3 className="font-medium text-theme-primary">
                         {submenuTitle}
                       </h3>
                     </div>
 
-                    <ul className="space-y-1">
+                    <Stack gap={1} as="ul">
                       {activeSubmenuItems.map((item) => (
                         <li key={item.label}>
                           <Link
@@ -1104,7 +1113,7 @@ export function BlogHeader() {
                           </Link>
                         </li>
                       ))}
-                    </ul>
+                    </Stack>
                   </Stack>
                 </div>
               </div>

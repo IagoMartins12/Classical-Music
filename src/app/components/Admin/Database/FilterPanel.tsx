@@ -303,7 +303,7 @@ export default function FilterPanel({
               </p>
             </div>
           ) : (
-            <div className="space-y-4">
+            <Stack>
               {/* Selecionar campo */}
               <div>
                 <Select
@@ -336,9 +336,9 @@ export default function FilterPanel({
               {/* Valor */}
               {newField && (
                 <div>
-                  <label className="block text-sm font-medium text-theme-secondary mb-2">
+                  <span className="block text-sm font-medium text-theme-secondary mb-2">
                     Valor
-                  </label>
+                  </span>
                   {renderValueInput(newField)}
                 </div>
               )}
@@ -355,7 +355,7 @@ export default function FilterPanel({
                   Adicionar Filtro
                 </Button>
               )}
-            </div>
+            </Stack>
           )}
         </Card>
 

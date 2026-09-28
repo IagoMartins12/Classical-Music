@@ -1,7 +1,7 @@
 // components/blog/editor/modals/ImageModal.tsx - CORRIGIDO
 'use client';
 
-import { useState } from 'react';
+import { useState, useId } from 'react';
 import { Editor } from '@tiptap/react';
 import { PiUploadSimple } from 'react-icons/pi';
 import Modal from '@/app/components/Modal';
@@ -25,6 +25,7 @@ export function ImageModal({
   articleId,
   sessionId,
 }: ImageModalProps) {
+  const idCampo = useId();
   const [activeTab, setActiveTab] = useState<'upload' | 'link'>('upload');
   const [url, setUrl] = useState('');
   const [alt, setAlt] = useState('');
@@ -130,10 +131,17 @@ export function ImageModal({
         {activeTab === 'upload' && (
           <>
             <Stack gap={2}>
-              <label className="block text-sm font-medium text-theme-primary">
+              <span
+                id={`${idCampo}-1`}
+                className="block text-sm font-medium text-theme-primary"
+              >
                 Selecionar Arquivo
-              </label>
-              <div className="border-2 border-dashed border-theme-secondary rounded-lg p-4 text-center transition-colors">
+              </span>
+              <div
+                role="group"
+                aria-labelledby={`${idCampo}-1`}
+                className="border-2 border-dashed border-theme-secondary rounded-lg p-4 text-center transition-colors"
+              >
                 <input
                   type="file"
                   id="image-upload"
@@ -188,9 +196,9 @@ export function ImageModal({
           <>
             {url && (
               <Stack gap={2} className="mb-4">
-                <label className="block text-sm font-medium text-theme-primary">
+                <span className="block text-sm font-medium text-theme-primary">
                   Preview
-                </label>
+                </span>
                 <div className="border-2 border-theme-secondary rounded-lg p-4 text-center bg-gray-50">
                   {!imageError ? (
                     // eslint-disable-next-line @next/next/no-img-element

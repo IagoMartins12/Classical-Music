@@ -185,7 +185,7 @@ export default function UserEditModal({
           </div>
         )}
 
-        <div className="space-y-6">
+        <Stack gap={6}>
           {/* Role do Usuário */}
           <AnimatedCard className="classical-card p-4">
             <h3 className="text-lg font-bold text-theme-primary mb-4 flex items-center gap-2">
@@ -309,7 +309,7 @@ export default function UserEditModal({
               </Stack>
             </AnimatedCard>
           )}
-        </div>
+        </Stack>
       </div>
 
       {/* Footer */}

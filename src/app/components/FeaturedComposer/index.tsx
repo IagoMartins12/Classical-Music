@@ -78,7 +78,10 @@ const FeaturedComposer: React.FC<FeaturedComposerProps> = ({ composer }) => {
 
   return (
     <div className="section-wrap">
-      <div className="relative overflow-hidden rounded-3xl classical-card group hover:scale-[1.01] transition-all duration-700">
+      <div
+        data-vira={`compositor-${composer.id}`}
+        className="relative overflow-hidden rounded-3xl classical-card group hover:scale-[1.01] transition-all duration-700"
+      >
         {/* Background Pattern */}
         <div className="absolute inset-0 music-note-background opacity-5"></div>
 
@@ -256,7 +259,12 @@ const FeaturedComposer: React.FC<FeaturedComposerProps> = ({ composer }) => {
                   </h4>
                   <div className="grid gap-3">
                     {composer.works.map((work) => (
-                      <Link href={`/works/${work.id}`} key={work.id}>
+                      <Link
+                        href={`/works/${work.id}`}
+                        key={work.id}
+                        data-vira={`obra-${work.id}`}
+                        className="block"
+                      >
                         <Card
                           nivel={2}
                           densidade="compacta"

@@ -211,7 +211,7 @@ export default function ResetPasswordPage() {
           </div>
         )}
 
-        <form onSubmit={handleSubmit} className="space-y-6">
+        <Stack gap={6} as="form" onSubmit={handleSubmit}>
           {/* Erro geral */}
           {error && (
             <div className="p-3 rounded-lg text-sm bg-sup-2">
@@ -279,14 +279,14 @@ export default function ResetPasswordPage() {
                   ></div>
                 </div>
                 {passwordStrength.errors.length > 0 && (
-                  <ul className="mt-2 text-xs space-y-1">
+                  <Stack gap={1} as="ul" className="mt-2 text-xs">
                     {passwordStrength.errors.map((error, index) => (
                       <li key={index} className="flex items-center">
                         <span className="w-1 h-1 rounded-full mr-2"></span>
                         {error}
                       </li>
                     ))}
-                  </ul>
+                  </Stack>
                 )}
               </div>
             )}
@@ -329,12 +329,12 @@ export default function ResetPasswordPage() {
           {/* Dicas de Segurança */}
           <Stack gap={2} className="rounded-lg p-4 bg-sup-2">
             <h4 className="text-sm font-medium">{t('security_tips_title')}</h4>
-            <ul className="text-xs opacity-80 space-y-1">
+            <Stack gap={1} as="ul" className="text-xs opacity-80">
               <li>{t('security_tip_1')}</li>
               <li>{t('security_tip_2')}</li>
               <li>{t('security_tip_3')}</li>
               <li>{t('security_tip_4')}</li>
-            </ul>
+            </Stack>
           </Stack>
 
           {/* Botão de Submissão */}
@@ -348,7 +348,7 @@ export default function ResetPasswordPage() {
           >
             {loading ? t('submit_button_loading') : t('submit_button')}
           </Button>
-        </form>
+        </Stack>
 
         {/* Link para voltar ao login */}
         <div className="mt-6 text-center">
@@ -507,8 +507,6 @@ export default function ResetPasswordPage() {
     <div className="min-h-screen flex items-center justify-center p-4">
       {/* Background Decorations */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        <div className="absolute -top-10 -left-10 w-40 h-40 opacity-10 rounded-full blur-3xl"></div>
-        <div className="absolute -bottom-10 -right-10 w-60 h-60 opacity-10 rounded-full blur-3xl"></div>
         <GiGrandPiano className="absolute top-20 right-20 w-12 h-12 text-ouro-texto opacity-5 rotate-12" />
         <GiGrandPiano className="absolute bottom-20 left-20 w-16 h-16 opacity-5 -rotate-12" />
       </div>

@@ -227,10 +227,10 @@ export default function RecordEditorModal({
 
     return (
       <div key={field.name} className="space-y-2">
-        <label className="block text-sm font-medium text-theme-primary">
+        <span className="block text-sm font-medium text-theme-primary">
           {field.name}
           {field.isRequired && <span className="ml-1">*</span>}
-        </label>
+        </span>
 
         {renderBadges()}
 

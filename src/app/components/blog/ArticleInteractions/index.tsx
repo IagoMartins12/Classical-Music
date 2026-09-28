@@ -1,4 +1,5 @@
 'use client';
+import { Button as Botao } from '@/app/components/ui/Button';
 import Link from 'next/link';
 
 import { useState, useEffect } from 'react';
@@ -221,23 +222,21 @@ export function ArticleInteractions({
           </button>
 
           {/* Comment Button */}
-          <button
-            onClick={scrollToComments}
-            className="flex items-center gap-2 px-4 py-2 rounded-lg bg-theme-elevated text-theme-secondary transition-all"
-          >
+          <Botao tamanho="p" onClick={scrollToComments}>
             <PiChatCircle className="w-5 h-5" />
             <span className="font-medium inline">Comentar</span>
-          </button>
+          </Botao>
         </div>
 
         {/* Share Button */}
-        <button
+        <Botao
+          tamanho="p"
           onClick={() => onOpenShareModal?.()}
-          className=" hidden md:flex items-center gap-2 px-4 py-2 rounded-lg bg-theme-elevated text-theme-secondary transition-all"
+          className="hidden md:flex"
         >
           <PiShareNetwork className="w-5 h-5" />
           <span className="font-medium hidden sm:inline">Compartilhar</span>
-        </button>
+        </Botao>
       </div>
 
       {!session && (

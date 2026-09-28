@@ -55,7 +55,10 @@ const DiscoveryComposerCard = ({ composer }: { composer: Composer }) => {
   return (
     <div className="group cursor-pointer select-none">
       <Link href={`/composer/${composer.id}`}>
-        <div className="classical-card overflow-hidden transition-all duration-700 ease-out group-hover:-translate-y-1 relative">
+        <div
+          data-vira={`compositor-${composer.id}`}
+          className="classical-card overflow-hidden transition-all duration-700 ease-out group-hover:-translate-y-1 relative"
+        >
           {/* Discovery badge */}
           <div className="absolute top-3 left-3 z-10">
             <div className="bg-sup-2 backdrop-blur-md rounded-full px-2 py-1 text-xs font-medium text-ouro-texto flex items-center gap-1">
@@ -148,7 +151,10 @@ const DiscoveryWorkCard = ({ work }: { work: Work }) => {
   return (
     <div className="group cursor-pointer select-none">
       <Link href={`/works/${work.id}`}>
-        <div className="classical-card overflow-hidden transition-all duration-700 ease-out group-hover:-translate-y-1 relative">
+        <div
+          data-vira={`obra-${work.id}`}
+          className="classical-card overflow-hidden transition-all duration-700 ease-out group-hover:-translate-y-1 relative"
+        >
           {/* Discovery badge */}
           <div className="absolute top-3 left-3 z-10">
             <div className="bg-sup-2 backdrop-blur-md rounded-full px-2 py-1 text-xs font-medium text-ouro-texto flex items-center gap-1">

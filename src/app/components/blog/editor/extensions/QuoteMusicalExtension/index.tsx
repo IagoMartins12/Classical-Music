@@ -1,3 +1,4 @@
+import { Button } from '@/app/components/ui/Button';
 // ============================================
 // QuoteMusicalExtension - COM PLAYER CUSTOMIZADO (corrigido)
 // ============================================
@@ -167,16 +168,18 @@ const QuoteMusicalComponent = (props: any) => {
         {showControls && (
           <Inline
             gap={2}
-            className="absolute top-2 right-2 z-20 p-2 shadow-lg rounded-lg"
+            className="absolute top-2 right-2 z-elevado p-2 shadow-lg rounded-lg"
           >
-            <button
+            <Button
+              variante="fantasma"
+              tamanho="p"
               type="button"
               onClick={handleDelete}
-              className="p-2 hover:bg-red-50 rounded transition-colors !text-erro"
               title="Remover"
-            >
-              <PiTrash className="w-4 h-4" />
-            </button>
+              icone={PiTrash}
+              rotulo="Remover"
+              className="text-erro"
+            />
           </Inline>
         )}
 

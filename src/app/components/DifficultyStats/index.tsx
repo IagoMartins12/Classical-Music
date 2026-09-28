@@ -120,7 +120,7 @@ export default function DifficultyStats({ stats }: DifficultyStatsProps) {
           <h4 className="text-lg font-semibold text-theme-primary">
             Distribuição por Sistema
           </h4>
-          <div className="space-y-3">
+          <Stack gap={3}>
             {stats.systemDistribution.map((system, index) => (
               <AnimatedItem
                 key={system.system}
@@ -149,7 +149,7 @@ export default function DifficultyStats({ stats }: DifficultyStatsProps) {
                 </div>
               </AnimatedItem>
             ))}
-          </div>
+          </Stack>
         </Stack>
       )}
     </AnimatedCard>

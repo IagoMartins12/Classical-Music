@@ -5,6 +5,7 @@
   "scripts": {
     "prepare": "husky",
     "type-check": "tsc --noEmit",
+    "design:auditoria": "node --max-old-space-size=1024 scripts/auditoria-design.mjs",
     "api:types": "openapi-typescript ${API_DOCS_URL:-http://localhost:4000/api/docs-json} -o src/app/libs/api/schema.d.ts --empty-objects-unknown",
     "dev": "next dev --turbopack",
     "build": "next build",
