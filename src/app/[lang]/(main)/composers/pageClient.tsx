@@ -78,7 +78,10 @@ export default function ComposersClient({
   const [selectedEpoch, setSelectedEpoch] = useState(initialSelectedEpoch);
   const [viewMode, setViewMode] = useState<'cards' | 'list'>('cards');
   // Ao filtrar, cada card desliza até o novo lugar (FLIP).
-  const gradeRef = useReordenacao<HTMLDivElement>(composers.map((c) => c.id));
+  const gradeRef = useReordenacao<HTMLDivElement>(
+    composers.map((c) => c.id),
+    'compositores'
+  );
 
   // Função para atualizar URL com debounce
   const updateUrl = useCallback(

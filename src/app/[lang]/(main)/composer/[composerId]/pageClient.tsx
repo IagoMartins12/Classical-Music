@@ -307,13 +307,13 @@ export default function ComposerDetailsClient({
                               <p className="text-xl text-theme-secondary">
                                 {composer.fullName}
                               </p>
-                              {isVerified && (
-                                <VerificationBadge
-                                  verified={isVerified}
-                                  size="md"
-                                  variant="text"
-                                />
-                              )}
+                              {/* Sempre montado: o selo precisa ver a obra passar a verificada
+    para se desenhar (sem nada, ele não ocupa espaço). */}
+                              <VerificationBadge
+                                verified={isVerified}
+                                size="md"
+                                variant="text"
+                              />
                             </Inline>
                           )}
                         </div>

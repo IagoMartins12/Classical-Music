@@ -648,14 +648,14 @@ export default function WorkDetailsClient({
                           <h1 className="text-4xl md:text-5xl font-bold text-gradient-brand classical-title leading-tight">
                             {work.title}
                           </h1>
-                          {isVerified && (
-                            <VerificationBadge
-                              verified={isVerified}
-                              size="lg"
-                              variant="icon"
-                              title="Peça"
-                            />
-                          )}
+                          {/* Sempre montado: o selo precisa ver a obra passar a verificada
+    para se desenhar (sem nada, ele não ocupa espaço). */}
+                          <VerificationBadge
+                            verified={isVerified}
+                            size="lg"
+                            variant="icon"
+                            title="Peça"
+                          />
                         </div>
                         {/* Subtitle */}
                         {work.subtitle && (

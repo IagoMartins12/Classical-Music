@@ -46,17 +46,19 @@ export function navegarComTransicao(
         const antes = window.location.pathname;
         const inicio = performance.now();
         empurrar(href);
+        // `setTimeout`, e não `requestAnimationFrame`: durante a transição o
+        // navegador suspende a pintura, e o rAF parava — a tela ficava
+        // congelada na foto antiga até a página chegar (4,6s no dev).
         const esperar = () => {
-          if (
-            window.location.pathname !== antes ||
-            performance.now() - inicio > 800
-          ) {
-            requestAnimationFrame(() => resolver());
+          if (window.location.pathname !== antes) {
+            setTimeout(resolver, 0);
+          } else if (performance.now() - inicio > 800) {
+            resolver();
           } else {
-            requestAnimationFrame(esperar);
+            setTimeout(esperar, 16);
           }
         };
-        requestAnimationFrame(esperar);
+        setTimeout(esperar, 16);
       })
   );
 }

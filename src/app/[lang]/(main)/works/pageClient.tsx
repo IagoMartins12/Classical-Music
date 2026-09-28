@@ -349,7 +349,8 @@ const WorksClient = memo(
     const [viewMode, setViewMode] = useState<'list' | 'cards'>('cards');
     // Ao filtrar, cada card desliza até o novo lugar (FLIP).
     const gradeRef = useReordenacao<HTMLDivElement>(
-      worksData.works.map((w) => w.id)
+      worksData.works.map((w) => w.id),
+      'obras'
     );
 
     // O card vira a página da obra (View Transition); pré-carregar ao

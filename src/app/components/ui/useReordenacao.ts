@@ -12,10 +12,29 @@ import { useLayoutEffect, useRef } from 'react';
  * tela. Usa a Web Animations API; com movimento reduzido, nada se mexe.
  *
  * Uso: o contêiner recebe o `ref`, e cada item um `data-chave` estável.
+ *
+ * **Por que as posições moram fora do componente.** Nas listas de obras e de
+ * compositores, a lista sem filtro e a filtrada são rotas diferentes
+ * (`/works` e `/works/filtered`, para a primeira poder ser estática): o
+ * primeiro filtro desmonta a página inteira, e uma posição guardada num
+ * `useRef` sumia junto. Guardadas pelo nome da lista, por alguns segundos, a
+ * página nova encontra onde cada card estava.
  */
-export function useReordenacao<T extends HTMLElement>(chaves: string[]) {
+type Posicoes = Map<string, { x: number; y: number }>;
+const ultimas = new Map<string, { posicoes: Posicoes; quando: number }>();
+const VALIDADE_MS = 8000;
+
+export function useReordenacao<T extends HTMLElement>(
+  chaves: string[],
+  lista?: string
+) {
   const ref = useRef<T>(null);
-  const antes = useRef(new Map<string, { x: number; y: number }>());
+  const guardada = lista ? ultimas.get(lista) : undefined;
+  const antes = useRef<Posicoes>(
+    guardada && performance.now() - guardada.quando < VALIDADE_MS
+      ? guardada.posicoes
+      : new Map()
+  );
   const assinatura = chaves.join('|');
 
   useLayoutEffect(() => {
@@ -68,6 +87,8 @@ export function useReordenacao<T extends HTMLElement>(chaves: string[]) {
       }
     }
     antes.current = agora;
+    if (lista)
+      ultimas.set(lista, { posicoes: agora, quando: performance.now() });
   }, [assinatura]);
 
   return ref;
