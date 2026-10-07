@@ -26,7 +26,7 @@ import AnimatedMusicalNotes from '../components/AnimatedMusicalNotes';
 import { useLoginModal, useRegisterModal } from '../stores/authStore';
 import { useAuth } from '../hooks/useAuth';
 import Footer from '../components/Footer';
-import Navbar from '../components/Navbar';
+import { SiteHeader } from '@/app/components/site/header/SiteHeader';
 import { useTranslation } from '../context/TranslationContext';
 import { Stack, Inline } from '@/app/components/ui/Layout';
 import { Text } from '@/app/components/ui/Text';
@@ -246,7 +246,7 @@ export default function NotAuthenticated() {
 
   return (
     <>
-      <Navbar />
+      <SiteHeader />
 
       {/* Evitar renderizar se estiver carregando ou se o usuário estiver autenticado */}
       {isAuthenticated ? (

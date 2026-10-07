@@ -30,6 +30,7 @@ export const LANGUAGE_COOKIE = 'opus-atlas-language';
  */
 export const LOCALIZED_ROUTES = [
   '/about-us',
+  '/blog',
   '/composer',
   '/composers',
   '/contact',
@@ -49,6 +50,26 @@ export const LOCALIZED_ROUTES = [
 ];
 
 /**
+ * Endereços **dentro** de uma rota traduzida que não são traduzidos.
+ *
+ * O blog é público e vive em `[lang]`, mas parte dele é por pessoa (salvos,
+ * curtidos), lê parâmetros a cada visita (busca), é de quem administra
+ * (prévia, painel) ou é arquivo (`rss.xml`). Esses seguem em `app/blog/`,
+ * dinâmicos e sem versão em `/en`.
+ */
+export const UNLOCALIZED_SUBROUTES = [
+  '/blog/admin',
+  '/blog/bookmarks',
+  '/blog/liked',
+  '/blog/search',
+  '/blog/preview',
+  '/blog/rss.xml',
+  '/blog/my-articles',
+  '/blog/articles/create',
+  '/blog/articles/edit',
+];
+
+/**
  * Rotas partidas em duas: uma variante sem `searchParams`, que o Next gera e
  * guarda, e uma `/filtered` que lê os parâmetros e renderiza sob demanda.
  *
@@ -63,6 +84,14 @@ export const SPLIT_ROUTES = ['/composers', '/works', '/teachers'];
 export const FILTERED_SEGMENT = '/filtered';
 
 export function isLocalizedRoute(pathname: string): boolean {
+  if (
+    UNLOCALIZED_SUBROUTES.some(
+      (route) => pathname === route || pathname.startsWith(`${route}/`)
+    )
+  ) {
+    return false;
+  }
+
   return (
     pathname === '/' ||
     LOCALIZED_ROUTES.some(
@@ -105,4 +134,11 @@ export function languageOfPathname(pathname: string): RouteLanguage {
   }
 
   return DEFAULT_ROUTE_LANGUAGE;
+}
+
+/** The path without its language prefix: `/en/works` → `/works`, `/en` → `/`. */
+export function stripLanguagePrefix(pathname: string): string {
+  const language = languageOfPathname(pathname);
+  if (language === DEFAULT_ROUTE_LANGUAGE) return pathname || '/';
+  return pathname.slice(language.length + 1) || '/';
 }

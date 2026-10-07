@@ -6,7 +6,7 @@
 // está logado e seguem dinâmicas). Um componente só, para as duas não
 // divergirem — nada aqui mudou de aparência.
 import { Toaster } from 'react-hot-toast';
-import Navbar from '../Navbar';
+import { SiteHeader } from '@/app/components/site/header/SiteHeader';
 import Footer from '../Footer';
 import { FavoritesProvider } from '../../providers/FavoritesProvider';
 import AdsProvider from '../Ads/AdsProvider';
@@ -16,7 +16,7 @@ export default function MainShell({ children }: { children: React.ReactNode }) {
     <AdsProvider>
       <FavoritesProvider>
         <div className="min-h-screen">
-          <Navbar />
+          <SiteHeader />
           <main>{children}</main>
           <Footer />
 

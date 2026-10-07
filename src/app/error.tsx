@@ -22,12 +22,11 @@ import AnimatedMusicalNotes from './components/AnimatedMusicalNotes';
 // Importar navegações específicas
 import TeacherNavigation from './components/TeacherSystem/TeacherNavigation';
 import StudentNavigation from './components/TeacherSystem/StudentNavigation';
-import Navbar from './components/Navbar';
-import AdminHeader from './components/Admin/AdminHeader';
-import AdminSidebar from './components/Admin/AdminSidebar';
+import { SiteHeader } from '@/app/components/site/header/SiteHeader';
 import { useTranslation } from '@/app/hooks/useTranslation';
 import { useClientMetadata } from './hooks/useClientMetadata';
-import { BlogHeader } from './components/blog/BlogHeader';
+import { CabecalhoDoBlog } from './components/blog/site/Cabecalho';
+import { languageOfPathname } from './utils/localizedRoutes';
 import { Stack, Inline } from '@/app/components/ui/Layout';
 import { Text } from '@/app/components/ui/Text';
 import { Card } from '@/app/components/ui/Card';
@@ -43,7 +42,6 @@ export default function Error({ error, reset }: ErrorProps) {
   const pathname = usePathname();
   const { data: session } = useSession();
   const [currentArea, setCurrentArea] = useState<AreaType>('main');
-  const [showAdminSidebar, setShowAdminSidebar] = useState(false);
   const { t, language } = useTranslation({ sections: ['pages/error'] });
 
   // Configurar metadata dinâmica baseada no idioma
@@ -81,7 +79,7 @@ export default function Error({ error, reset }: ErrorProps) {
       setCurrentArea('student');
     } else if (pathname.startsWith('/admin')) {
       setCurrentArea('admin');
-    } else if (pathname.startsWith('/blog')) {
+    } else if (pathname.replace(/^\/en(?=\/|$)/, '').startsWith('/blog')) {
       setCurrentArea('blog');
     } else {
       setCurrentArea('main');
@@ -97,45 +95,16 @@ export default function Error({ error, reset }: ErrorProps) {
         return session?.user ? <StudentNavigation user={session.user} /> : null;
 
       case 'blog':
-        return <BlogHeader />;
-
-      case 'admin':
         return (
-          <>
-            <AdminHeader onMenuClick={() => setShowAdminSidebar(true)} />
-            <div className="flex">
-              {/* Desktop Sidebar */}
-              <div className="hidden lg:block">
-                <AdminSidebar />
-              </div>
-
-              {/* Mobile Sidebar */}
-              <div
-                className={`lg:hidden fixed inset-y-0 left-0 z-dialogo w-72 bg-theme-elevated border-r border-theme-primary transform transition-transform duration-300 ease-in-out ${
-                  showAdminSidebar ? 'translate-x-0' : '-translate-x-full'
-                }`}
-                style={{ top: '80px' }}
-              >
-                <div className="h-full overflow-y-auto">
-                  <AdminSidebar />
-                </div>
-              </div>
-
-              {/* Mobile Overlay */}
-              {showAdminSidebar && (
-                <div
-                  className="lg:hidden fixed inset-0 bg-black/50 backdrop-blur-sm z-menu"
-                  style={{ top: '80px' }}
-                  onClick={() => setShowAdminSidebar(false)}
-                />
-              )}
-            </div>
-          </>
+          <CabecalhoDoBlog
+            idioma={languageOfPathname(pathname ?? '/')}
+            categorias={[]}
+          />
         );
 
       case 'main':
       default:
-        return <Navbar />;
+        return <SiteHeader />;
     }
   };
 
@@ -176,9 +145,7 @@ export default function Error({ error, reset }: ErrorProps) {
 
       {/* Conteúdo principal da página de erro */}
       <main
-        className={`classical-theme min-h-screen flex items-center justify-center relative overflow-hidden ${
-          currentArea === 'admin' ? 'lg:ml-72' : ''
-        }`}
+        className={`classical-theme min-h-screen flex items-center justify-center relative overflow-hidden ${''}`}
       >
         {/* Background Pattern */}
         <AnimatedMusicalNotes />

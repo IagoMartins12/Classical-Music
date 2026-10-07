@@ -20,7 +20,7 @@ import {
 import AnimatedMusicalNotes from '../../AnimatedMusicalNotes';
 import Button from '../../Common/Button';
 import { useEmailRefreshSimple } from '@/app/hooks/useEmailRefresh';
-import Navbar from '../../Navbar';
+import { SiteHeader } from '@/app/components/site/header/SiteHeader';
 import { Toaster } from 'react-hot-toast';
 import { Stack, Inline } from '@/app/components/ui/Layout';
 import { Text } from '@/app/components/ui/Text';
@@ -39,7 +39,7 @@ export default function TeacherVerificationRequired({
 
   return (
     <>
-      <Navbar />
+      <SiteHeader />
       <div className="classical-theme min-h-screen flex items-center justify-center relative overflow-hidden">
         {/* Background Pattern */}
         <AnimatedMusicalNotes />

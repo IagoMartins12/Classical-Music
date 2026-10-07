@@ -1,0 +1,32 @@
+{
+  "medieval": {
+    "title": "File:Codex Manesse Heinrich von Meißen (Frauenlob).jpg",
+    "source": "https://commons.wikimedia.org/wiki/File:Codex_Manesse_Heinrich_von_Mei%C3%9Fen_(Frauenlob).jpg",
+    "artist": "<bdi><a href=\"https://www.wikidata.org/wiki/Q59285704\" class=\"extiw\" title=\"d:Q59285704\"><span title=\"German painter\">Ma",
+    "license": "Public domain"
+  },
+  "renaissance": {
+    "title": "File:Lorenzo Costa - Un concerto (National Gallery, London).jpg",
+    "source": "https://commons.wikimedia.org/wiki/File:Lorenzo_Costa_-_Un_concerto_(National_Gallery,_London).jpg",
+    "artist": "<bdi><a href=\"https://en.wikipedia.org/wiki/en:Lorenzo_Costa\" class=\"extiw\" title=\"w:en:Lorenzo Costa\"><span title=\"Ital",
+    "license": "Public domain"
+  },
+  "baroque": {
+    "title": "File:Vermeer The Concert.jpg",
+    "source": "https://commons.wikimedia.org/wiki/File:Vermeer_The_Concert.jpg",
+    "artist": "<bdi><a href=\"https://en.wikipedia.org/wiki/en:Johannes_Vermeer\" class=\"extiw\" title=\"w:en:Johannes Vermeer\"><span title",
+    "license": "Public domain"
+  },
+  "romantic": {
+    "title": "File:Josef Danhauser Liszt am Flügel 1840 01.jpg",
+    "source": "https://commons.wikimedia.org/wiki/File:Josef_Danhauser_Liszt_am_Fl%C3%BCgel_1840_01.jpg",
+    "artist": "<bdi><a href=\"https://en.wikipedia.org/wiki/en:Josef_Danhauser\" class=\"extiw\" title=\"w:en:Josef Danhauser\"><span title=\"",
+    "license": "Public domain"
+  },
+  "modern": {
+    "title": "File:Wassily Kandinsky - Impression III (Concert) - Google Art Project.jpg",
+    "source": "https://commons.wikimedia.org/wiki/File:Wassily_Kandinsky_-_Impression_III_(Concert)_-_Google_Art_Project.jpg",
+    "artist": "<bdi><a href=\"https://en.wikipedia.org/wiki/en:Wassily_Kandinsky\" class=\"extiw\" title=\"w:en:Wassily Kandinsky\"><span tit",
+    "license": "Public domain"
+  }
+}

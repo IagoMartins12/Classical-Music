@@ -22,6 +22,8 @@
 
   --color-erro: var(--erro);
   --color-sobre-erro: var(--sobre-erro);
+  --color-sobre-foto: var(--sobre-foto);
+  --color-veu-foto: var(--veu-foto);
   --color-ok: var(--ok);
   --color-atencao: var(--atencao);
   --color-aviso: var(--aviso);
@@ -156,6 +158,15 @@
 
   /* --- Ouro: marca, hierarquia, e nada além. --- */
   --ouro: #d4af37;
+  /* Fatias da pizza do painel: o ouro em quatro degraus, da maior fatia
+     para a menor, e um cinza para "Outras". Uma cor só, como o resto do
+     painel — validados (skill de dataviz, modo ordinal) contra a superfície
+     escura: degraus monótonos, ΔL >= 0,06, a mais clara >= 2:1. */
+  --grafico-1: #d4af37;
+  --grafico-2: #a38832;
+  --grafico-3: #806c2e;
+  --grafico-4: #64562c;
+  --grafico-outras: #605e6c;
   --ouro-texto: #e0bc5c;
   --ouro-fill: linear-gradient(var(--angulo), #debc4c, #c9a32d);
   --ouro-fill-hover: linear-gradient(var(--angulo), #e8c863, #d4af37);
@@ -175,6 +186,10 @@
   --erro: #e8735a;
   /* Texto sobre o vermelho: o erro do escuro é claro, e branco nele dá 2,9:1. */
   --sobre-erro: #0c0d12;
+  /* Texto sobre fotografia (legenda de retrato): a foto é a mesma nos dois
+     temas, então a legenda e o véu por baixo também são. */
+  --sobre-foto: #f3f1ec;
+  --veu-foto: rgba(12, 13, 18, 0.78);
   --ok: #6a9b6e;
   --atencao: #d9a441;
   --aviso: #6f8fbf;
@@ -293,6 +308,12 @@
    ========================================================================= */
 [data-theme='light'] {
   --fundo: #faf7f0;
+  /* Os mesmos degraus, validados contra o papel claro. */
+  --grafico-1: #8a6508;
+  --grafico-2: #9f8134;
+  --grafico-3: #b2995c;
+  --grafico-4: #c2af7f;
+  --grafico-outras: #a6a3ae;
   --campo: #faf7f0;
   --sup-1-a: #ffffff;
   --sup-1-b: #fbf8f2;
@@ -1004,6 +1025,144 @@ body {
   }
 }
 
+/* Entrada ao chegar à vista (`Revelar`). Só se esconde o que o componente
+   marcou `data-pronto` (montado e abaixo da dobra): o HTML chega visível, e
+   sem JS ou com hidratação lenta nada fica invisível. */
+@media (prefers-reduced-motion: no-preference) {
+  .revela,
+  .revela-filhos > * {
+    transition:
+      opacity 720ms var(--saida),
+      transform 720ms var(--saida),
+      filter 720ms var(--saida);
+  }
+  .revela-filhos > * {
+    transition-delay: calc(var(--i, 0) * 90ms);
+  }
+  .revela[data-pronto]:not([data-visivel]),
+  .revela-filhos[data-pronto]:not([data-visivel]) > * {
+    opacity: 0;
+    transform: translateY(22px);
+    filter: blur(6px);
+  }
+
+  /* O visto se traça quando o bloco em volta entra rolando. */
+  [data-pronto] .visto-desenha path {
+    stroke-dasharray: 1;
+    stroke-dashoffset: 1;
+  }
+  [data-pronto][data-visivel] .visto-desenha path {
+    animation: visto-traca 460ms var(--saida) forwards;
+    animation-delay: calc(240ms + var(--d, 0) * 35ms);
+  }
+}
+
+@keyframes visto-traca {
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+
+/* Entrada do topo da página (`.entra`, em cascata por `--i`). Só CSS: roda na
+   primeira pintura, sem esperar o JavaScript — o título não fica invisível
+   até a hidratação, como ficaria com o `Revelar`. */
+@media (prefers-reduced-motion: no-preference) {
+  .entra {
+    animation: entra 820ms var(--saida) both;
+    animation-delay: calc(var(--i, 0) * 110ms);
+  }
+}
+
+@keyframes entra {
+  from {
+    opacity: 0;
+    transform: translateY(16px);
+    filter: blur(6px);
+  }
+}
+
+/* As cenas do quadro da página Sobre (`about-us/QuadroDoSite`): cada peça
+   entra uma vez, em cascata por `--i`, quando a aba abre. Com movimento
+   reduzido, tudo aparece pronto. */
+@media (prefers-reduced-motion: no-preference) {
+  .cena-surge,
+  .cena-cai,
+  .cena-desliza {
+    animation-duration: 620ms;
+    animation-timing-function: var(--saida);
+    animation-fill-mode: both;
+    animation-delay: calc(120ms + var(--i, 0) * 110ms);
+  }
+  .cena-surge {
+    animation-name: cena-surge;
+  }
+  .cena-cai {
+    animation-name: cena-cai;
+  }
+  .cena-desliza {
+    animation-name: cena-desliza;
+    animation-duration: 760ms;
+  }
+  .quadro-tempo {
+    animation: quadro-tempo linear forwards;
+  }
+}
+@keyframes cena-surge {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+    filter: blur(4px);
+  }
+}
+@keyframes cena-cai {
+  from {
+    opacity: 0;
+    transform: translateY(-18px) scaleY(0.6);
+  }
+}
+@keyframes cena-desliza {
+  from {
+    opacity: 0;
+    transform: translateY(-24px);
+  }
+}
+@keyframes quadro-tempo {
+  from {
+    transform: scaleX(0);
+  }
+  to {
+    transform: scaleX(1);
+  }
+}
+
+/* O selo dentro de um bloco que ainda não apareceu espera para se traçar. */
+[data-pronto]:not([data-visivel]) .selo-desenha path {
+  animation-play-state: paused;
+}
+
+/* Odômetro (`NumeroRolante`): cada dígito é uma coluna de 0 a 9 que desliza
+   até o seu valor. A coluna tem a altura de uma linha e esconde o resto. */
+.odometro-coluna {
+  display: inline-block;
+  height: 1em;
+  line-height: 1;
+  overflow: hidden;
+}
+.odometro-faixa {
+  display: flex;
+  flex-direction: column;
+  transition: transform 760ms cubic-bezier(0.2, 0.9, 0.1, 1);
+}
+.odometro-faixa > span {
+  height: 1em;
+  line-height: 1;
+}
+@media (prefers-reduced-motion: reduce) {
+  .odometro-faixa {
+    transition: none;
+  }
+}
+
 @keyframes selecao-entra {
   from {
     opacity: 0;
@@ -1022,6 +1181,13 @@ body {
   .selecao-lista:popover-open {
     animation: none;
   }
+}
+
+/* Rolagem do painel: fina e neutra. A dourada é do site; num painel denso
+   ela vira uma faixa de cor em cada lista. */
+.rolagem-discreta {
+  scrollbar-width: thin;
+  scrollbar-color: var(--linha-forte) transparent;
 }
 
 /* Scrollbar personalizada */
@@ -1251,6 +1417,47 @@ body {
   .selo-desenha .selo-visto {
     animation: none;
     stroke-dashoffset: 0;
+  }
+}
+
+/* Tabela de leitura (documentos: termos, privacidade). Frases longas não
+   cabem em "rótulo: valor" lado a lado; abaixo de 768px cada linha vira um
+   bloco, com o rótulo da coluna em cima do texto (`data-rotulo`). */
+@media (max-width: 767px) {
+  .tabela-leitura thead {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+  }
+  .tabela-leitura,
+  .tabela-leitura tbody,
+  .tabela-leitura tr,
+  .tabela-leitura td {
+    display: block;
+    width: 100%;
+  }
+  .tabela-leitura tr {
+    padding-block: 1rem;
+  }
+  .tabela-leitura tr + tr {
+    border-top: 1px solid var(--linha);
+  }
+  .tabela-leitura td {
+    padding: 0.25rem 0 !important;
+  }
+  .tabela-leitura td:first-child {
+    font-weight: 600;
+    color: var(--texto);
+  }
+  .tabela-leitura td:not(:first-child)::before {
+    content: attr(data-rotulo);
+    display: block;
+    font-size: 0.75rem;
+    letter-spacing: 0.02em;
+    color: var(--texto-fraco);
   }
 }
 
@@ -1586,39 +1793,6 @@ html {
 /* A segunda definição de `.loading-skeleton` saiu daqui: era idêntica à do
    começo do arquivo, com outro nome de animação, e a apagava. */
 
-.ProseMirror img {
-  position: relative;
-  cursor: pointer;
-  transition: all 0.2s;
-}
-
-.ProseMirror img:hover {
-  opacity: 0.9;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-}
-
-.ProseMirror .image-wrapper {
-  position: relative;
-  display: inline-block;
-}
-
-.ProseMirror .image-controls {
-  position: absolute;
-  top: 8px;
-  right: 8px;
-  display: none;
-  background: white;
-  border-radius: 8px;
-  padding: 4px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
-  z-index: 10;
-}
-
-.ProseMirror .image-wrapper:hover .image-controls {
-  display: flex;
-  gap: 4px;
-}
-
 /* Smooth scrolling no carrossel */
 .scroll-smooth {
   scroll-behavior: smooth;
@@ -1700,5 +1874,474 @@ html {
     text-shadow:
       0 0 14px rgba(212, 175, 55, 0.7),
       0 0 20px rgba(212, 175, 55, 0.4);
+  }
+}
+
+/* =========================================================================
+   Blog (30/09/2026). O corpo do artigo é a única leitura longa em serifada
+   do produto (7.8.2: "Blog: serifada no corpo"). Ficam em `@layer
+   components`, como as do sistema: um utilitário ao lado sobrescreve.
+   ========================================================================= */
+@layer components {
+  /* A Garamond tem o olho pequeno: em 17px ela lê como 15. O corpo do
+     artigo é de 19px no telefone e 21px a partir do `sm`. */
+  .blog-corpo {
+    font-family: var(--fonte-display);
+    font-size: 1.1875rem;
+    line-height: 1.62;
+    color: var(--texto);
+    font-variant-numeric: oldstyle-nums;
+    hanging-punctuation: first;
+    overflow-wrap: break-word;
+  }
+  @media (min-width: 640px) {
+    .blog-corpo {
+      font-size: 1.3125rem;
+    }
+  }
+  .blog-corpo > * + * {
+    margin-top: 1.25em;
+  }
+  .blog-corpo h2,
+  .blog-corpo h3,
+  .blog-corpo h4 {
+    line-height: 1.18;
+    font-weight: 500;
+    letter-spacing: -0.01em;
+    text-wrap: balance;
+    /* O cabeçalho é fixo: a âncora do sumário para abaixo dele. */
+    scroll-margin-top: 6.5rem;
+  }
+  .blog-corpo h2 {
+    font-size: 1.5em;
+    margin-top: 2em;
+  }
+  .blog-corpo h3 {
+    font-size: 1.25em;
+    margin-top: 1.75em;
+  }
+  .blog-corpo h4 {
+    font-size: 1.0625em;
+    font-style: italic;
+    margin-top: 1.5em;
+  }
+  .blog-corpo :is(h2, h3, h4) + * {
+    margin-top: 0.6em;
+  }
+  .blog-corpo a {
+    text-decoration: underline;
+    text-decoration-color: color-mix(in srgb, var(--ouro) 60%, transparent);
+    text-decoration-thickness: 1px;
+    text-underline-offset: 0.2em;
+    transition: text-decoration-color var(--t-resposta) var(--saida);
+  }
+  .blog-corpo a:hover {
+    text-decoration-color: var(--ouro);
+  }
+  .blog-corpo strong {
+    font-weight: 600;
+  }
+  .blog-corpo code {
+    font-family: var(--fonte-mono);
+    font-size: 0.82em;
+    padding: 0.08em 0.35em;
+    border-radius: 6px;
+    background: var(--sup-2);
+  }
+  .blog-corpo pre {
+    font-family: var(--fonte-mono);
+    font-size: 0.8125rem;
+    line-height: 1.6;
+    padding: 1rem 1.25rem;
+    border-radius: var(--r-controle);
+    background: var(--sup-2);
+    overflow-x: auto;
+  }
+  .blog-corpo pre code {
+    padding: 0;
+    background: none;
+    font-size: inherit;
+  }
+  .blog-corpo ul,
+  .blog-corpo ol {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5em;
+  }
+  .blog-corpo ul > li {
+    position: relative;
+    padding-left: 1.5em;
+  }
+  /* O marcador da lista é um traço de ouro, não a bolinha do navegador. */
+  .blog-corpo ul > li::before {
+    content: '';
+    position: absolute;
+    left: 0.15em;
+    top: 0.8em;
+    width: 0.6em;
+    height: 1px;
+    background: var(--ouro);
+  }
+  .blog-corpo ol {
+    padding-left: 1.6em;
+    list-style: decimal;
+  }
+  .blog-corpo ol > li::marker {
+    color: var(--ouro-texto);
+    font-variant-numeric: lining-nums;
+  }
+  .blog-corpo li > p + p {
+    margin-top: 0.5em;
+  }
+  .blog-corpo blockquote {
+    margin-block: 2em;
+  }
+  .blog-corpo blockquote > p {
+    font-size: 1.3em;
+    line-height: 1.32;
+    font-style: italic;
+    text-wrap: balance;
+  }
+  .blog-corpo blockquote > p + p {
+    margin-top: 0.5em;
+  }
+  .blog-corpo :is(blockquote footer, figcaption) {
+    margin-top: 0.75rem;
+    font-family: var(--fonte-sans);
+    font-size: 0.8125rem;
+    line-height: 1.5;
+    font-style: normal;
+    color: var(--texto-fraco);
+    font-variant-numeric: normal;
+  }
+  .blog-corpo figure,
+  .blog-corpo .blog-bloco {
+    margin-block: 2em;
+  }
+  .blog-corpo hr {
+    margin-block: 2.5em;
+    border: 0;
+    height: 1px;
+    background: var(--linha-forte);
+  }
+  /* Os blocos próprios do editor (cartão, player, linha do tempo) falam a
+     língua da interface, não a do texto. */
+  .blog-corpo .blog-bloco {
+    font-family: var(--fonte-sans);
+    font-size: 1rem;
+    line-height: 1.55;
+    font-variant-numeric: normal;
+  }
+  /* As listas dos blocos são estrutura, não texto: sem marcador nem recuo. */
+  .blog-corpo .blog-bloco :is(ul, ol) {
+    padding-left: 0;
+    list-style: none;
+    gap: 0;
+  }
+  .blog-corpo .blog-bloco li {
+    padding-left: 0;
+  }
+  .blog-corpo .blog-bloco li::before {
+    content: none;
+  }
+
+  /* -----------------------------------------------------------------------
+     O editor do artigo escreve no `.blog-corpo` (ver `BlogEditor`). O que
+     só existe nele: o texto de espera, o `h1` dos artigos antigos (o leitor
+     o nivela para `h2`; aqui ele se parece com o `h2` que vai virar) e a
+     imagem selecionada.
+     ----------------------------------------------------------------------- */
+  .blog-corpo.ProseMirror h1 {
+    font-size: 1.5em;
+    line-height: 1.18;
+    font-weight: 500;
+    margin-top: 2em;
+  }
+  .blog-corpo.ProseMirror p.is-editor-empty:first-child::before {
+    content: attr(data-placeholder);
+    float: left;
+    height: 0;
+    pointer-events: none;
+    color: var(--texto-fraco);
+  }
+  /* A vista do bloco (`VistaDoBloco`) já separa o nome do bloco; a margem
+     que o leitor põe em volta do bloco, aqui dentro, só abria um buraco. */
+  .blog-corpo .vista-do-bloco > :last-child {
+    margin-block: 0;
+  }
+  .blog-corpo.ProseMirror img.ProseMirror-selectednode {
+    outline: 2px solid var(--ouro);
+    outline-offset: 4px;
+  }
+
+  /* O player do artigo (`PlayerDoArtigo`): o painel sobe do pé da tela ao
+     abrir e desce ao minimizar; a pílula entra crescendo do canto. Só
+     `transform` e `opacity` (a posição do painel no computador usa a
+     propriedade `translate`, que não briga com estas). */
+  .player-sobe {
+    animation: player-sobe var(--t-folha) var(--saida) backwards;
+  }
+  .player-desce {
+    animation: player-desce 200ms var(--saida) forwards;
+  }
+  .player-pilula {
+    transform-origin: bottom right;
+    animation: player-pilula 260ms var(--saida) backwards;
+  }
+  @keyframes player-sobe {
+    from {
+      transform: translateY(100%);
+      opacity: 0;
+    }
+  }
+  @keyframes player-desce {
+    to {
+      transform: translateY(110%);
+      opacity: 0;
+    }
+  }
+  @keyframes player-pilula {
+    from {
+      transform: scale(0.6);
+      opacity: 0;
+    }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .player-sobe,
+    .player-desce,
+    .player-pilula {
+      animation: none;
+    }
+  }
+
+  /* -----------------------------------------------------------------------
+     A capa de reserva: a pauta. Entra quando o artigo não tem capa ou a
+     imagem falha. Cinco linhas e a inicial do título sentada nela como uma
+     clave. Nenhuma cor nova, nenhum ícone. O tamanho segue a largura da
+     própria capa (`cqw`).
+     ----------------------------------------------------------------------- */
+  .blog-pauta {
+    container-type: inline-size;
+    background: var(--sup-2);
+  }
+  .blog-pauta-linhas {
+    position: absolute;
+    inset-inline: 0;
+    top: 50%;
+    height: calc(18cqw + 1px);
+    transform: translateY(-50%);
+    background: repeating-linear-gradient(
+      to bottom,
+      var(--linha-forte) 0 1px,
+      transparent 1px 4.5cqw
+    );
+  }
+  .blog-pauta-letra {
+    position: absolute;
+    left: 11cqw;
+    top: 50%;
+    transform: translateY(-54%);
+    font-family: var(--fonte-display);
+    font-style: italic;
+    font-size: 34cqw;
+    line-height: 1;
+    color: var(--ouro-texto);
+  }
+
+  /* -----------------------------------------------------------------------
+     Progresso da leitura: a largura da barra é a rolagem da página, direto
+     no CSS, sem script. Sem a API (Firefox, por ora) a barra não aparece.
+     ----------------------------------------------------------------------- */
+  .blog-progresso {
+    display: none;
+  }
+  @supports (animation-timeline: scroll()) {
+    .blog-progresso {
+      display: block;
+      position: fixed;
+      inset: 0 0 auto 0;
+      height: 2px;
+      background: var(--ouro);
+      transform-origin: 0 50%;
+      animation: blog-progresso linear both;
+      animation-timeline: scroll(root block);
+      z-index: calc(var(--z-barra) + 1);
+      pointer-events: none;
+    }
+  }
+
+  /* O título do card sublinha em ouro quando o card inteiro está sob o
+     cursor: o card é um link só (o `::after` do título cobre a caixa). */
+  .blog-titulo-link {
+    text-decoration: underline;
+    text-decoration-color: transparent;
+    text-decoration-thickness: 1px;
+    text-underline-offset: 0.18em;
+    transition: text-decoration-color var(--t-resposta) var(--saida);
+  }
+  .blog-titulo-link:hover,
+  .blog-titulo-link:focus-visible {
+    text-decoration-color: currentColor;
+  }
+  .blog-titulo-link::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+  }
+
+  /* Prateleira: rola para o lado, de card em card. */
+  .blog-prateleira {
+    display: grid;
+    grid-auto-flow: column;
+    overflow-x: auto;
+    overscroll-behavior-x: contain;
+    scroll-snap-type: x proximity;
+    scrollbar-width: none;
+  }
+  .blog-prateleira::-webkit-scrollbar {
+    display: none;
+  }
+  .blog-prateleira > * {
+    scroll-snap-align: start;
+  }
+
+  /* A faixa do player: barra de posição e de volume no ouro do sistema. */
+  .blog-faixa {
+    appearance: none;
+    height: 1.5rem;
+    background: transparent;
+    cursor: pointer;
+    --cheio: 0%;
+  }
+  .blog-faixa::-webkit-slider-runnable-track {
+    height: 4px;
+    border-radius: 999px;
+    background: linear-gradient(
+      to right,
+      var(--ouro) var(--cheio),
+      var(--linha-forte) var(--cheio)
+    );
+  }
+  .blog-faixa::-moz-range-track {
+    height: 4px;
+    border-radius: 999px;
+    background: var(--linha-forte);
+  }
+  .blog-faixa::-moz-range-progress {
+    height: 4px;
+    border-radius: 999px;
+    background: var(--ouro);
+  }
+  .blog-faixa::-webkit-slider-thumb {
+    appearance: none;
+    width: 14px;
+    height: 14px;
+    margin-top: -5px;
+    border-radius: 999px;
+    background: var(--ouro);
+    border: 2px solid var(--fundo);
+  }
+  .blog-faixa::-moz-range-thumb {
+    width: 12px;
+    height: 12px;
+    border-radius: 999px;
+    background: var(--ouro);
+    border: 2px solid var(--fundo);
+  }
+  .blog-faixa:focus-visible {
+    outline: none;
+  }
+  .blog-faixa:focus-visible::-webkit-slider-thumb {
+    box-shadow: var(--foco-anel);
+  }
+  .blog-faixa:focus-visible::-moz-range-thumb {
+    box-shadow: var(--foco-anel);
+  }
+}
+
+@keyframes blog-progresso {
+  from {
+    transform: scaleX(0);
+  }
+  to {
+    transform: scaleX(1);
+  }
+}
+
+/* ==========================================================================
+   Public site (main redesign, Oct 2026)
+   ========================================================================== */
+@layer components {
+  /* The Opus Atlas seal is gold on black; on cream the gold darkens for contrast. */
+  [data-theme='light'] .brand-seal {
+    filter: brightness(0.58) saturate(1.35) contrast(1.15);
+  }
+  /* Engraved orbits and lines start drawn (no motion by default). */
+  .engraving > :is(circle, ellipse, path)[pathLength] {
+    stroke-dasharray: 1;
+    stroke-dashoffset: 0;
+  }
+  /* The celestial globe behind the mobile hero: brighter on cream, where
+     thin gold lines would otherwise vanish. */
+  .hero-globe {
+    --globe-ink: var(--ouro);
+    opacity: 0.6;
+  }
+  [data-theme='light'] .hero-globe {
+    --globe-ink: var(--ouro-texto);
+    opacity: 0.9;
+  }
+  [data-theme='light'] .hero-globe :is(circle, ellipse, path, line) {
+    stroke-width: 1.6;
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .engraving > :is(circle, ellipse, path)[pathLength] {
+    stroke-dashoffset: 1;
+    animation: engrave 1800ms var(--saida) both;
+    animation-delay: calc(var(--i, 0) * 140ms + 100ms);
+  }
+  .engraving-ring {
+    animation: spin 240s linear infinite;
+  }
+  .rise {
+    animation: rise 620ms var(--saida) both;
+    animation-delay: var(--delay, 0ms);
+  }
+  .seal-reveal {
+    animation: seal-print 1500ms var(--saida) 100ms both;
+  }
+  .heart-beat {
+    animation: heart-beat 420ms var(--saida);
+  }
+}
+
+@keyframes engrave {
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+@keyframes rise {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+}
+@keyframes seal-print {
+  from {
+    clip-path: inset(100% 0 0 0);
+    filter: blur(6px);
+    opacity: 0.4;
+  }
+}
+@keyframes heart-beat {
+  40% {
+    transform: scale(1.22);
   }
 }

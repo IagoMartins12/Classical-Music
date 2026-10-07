@@ -29,9 +29,7 @@ import AnimatedMusicalNotes from '../components/AnimatedMusicalNotes';
 // Importar navegações específicas
 import TeacherNavigation from '../components/TeacherSystem/TeacherNavigation';
 import StudentNavigation from '../components/TeacherSystem/StudentNavigation';
-import Navbar from '../components/Navbar';
-import AdminHeader from '../components/Admin/AdminHeader';
-import AdminSidebar from '../components/Admin/AdminSidebar';
+import { SiteHeader } from '@/app/components/site/header/SiteHeader';
 import Image from '@/app/components/SmartImage';
 import { useTranslation } from '../context/TranslationContext';
 import { Stack, Inline } from '@/app/components/ui/Layout';
@@ -52,7 +50,6 @@ export default function AccessDenied() {
   const pathname = usePathname();
   const { data: session } = useSession();
   const [currentArea, setCurrentArea] = useState<AreaType>('main');
-  const [showAdminSidebar, setShowAdminSidebar] = useState(false);
   const { t } = useTranslation({ sections: ['pages/access-denied'] });
 
   // Detectar área atual baseada na URL
@@ -76,43 +73,9 @@ export default function AccessDenied() {
       case 'student':
         return session?.user ? <StudentNavigation user={session.user} /> : null;
 
-      case 'admin':
-        return (
-          <>
-            <AdminHeader onMenuClick={() => setShowAdminSidebar(true)} />
-            <div className="flex">
-              {/* Desktop Sidebar */}
-              <div className="hidden lg:block">
-                <AdminSidebar />
-              </div>
-
-              {/* Mobile Sidebar */}
-              <div
-                className={`lg:hidden fixed inset-y-0 left-0 z-dialogo w-72 bg-theme-elevated border-r border-theme-primary transform transition-transform duration-300 ease-in-out ${
-                  showAdminSidebar ? 'translate-x-0' : '-translate-x-full'
-                }`}
-                style={{ top: '80px' }}
-              >
-                <div className="h-full overflow-y-auto">
-                  <AdminSidebar />
-                </div>
-              </div>
-
-              {/* Mobile Overlay */}
-              {showAdminSidebar && (
-                <div
-                  className="lg:hidden fixed inset-0 bg-black/50 backdrop-blur-sm z-menu"
-                  style={{ top: '80px' }}
-                  onClick={() => setShowAdminSidebar(false)}
-                />
-              )}
-            </div>
-          </>
-        );
-
       case 'main':
       default:
-        return <Navbar />;
+        return <SiteHeader />;
     }
   };
 
@@ -369,9 +332,7 @@ export default function AccessDenied() {
 
       {/* Conteúdo principal da página de acesso negado */}
       <main
-        className={`classical-theme min-h-screen flex items-center justify-center relative overflow-hidden ${
-          currentArea === 'admin' ? 'lg:ml-72' : ''
-        }`}
+        className={`classical-theme min-h-screen flex items-center justify-center relative overflow-hidden ${''}`}
       >
         {/* Background Pattern */}
         <AnimatedMusicalNotes />

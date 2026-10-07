@@ -24,13 +24,12 @@ import AnimatedMusicalNotes from './components/AnimatedMusicalNotes';
 // Importar navegações específicas
 import TeacherNavigation from './components/TeacherSystem/TeacherNavigation';
 import StudentNavigation from './components/TeacherSystem/StudentNavigation';
-import Navbar from './components/Navbar';
-import AdminHeader from './components/Admin/AdminHeader';
-import AdminSidebar from './components/Admin/AdminSidebar';
+import { SiteHeader } from '@/app/components/site/header/SiteHeader';
 import Footer from './components/Footer';
 import { useTranslation } from '@/app/hooks/useTranslation';
 import { useClientMetadata } from './hooks/useClientMetadata';
-import { BlogHeader } from './components/blog/BlogHeader';
+import { CabecalhoDoBlog } from './components/blog/site/Cabecalho';
+import { languageOfPathname } from './utils/localizedRoutes';
 import { Text } from '@/app/components/ui/Text';
 import { Card } from '@/app/components/ui/Card';
 
@@ -40,7 +39,6 @@ export default function NotFound() {
   const pathname = usePathname();
   const { data: session } = useSession();
   const [currentArea, setCurrentArea] = useState<AreaType>('main');
-  const [showAdminSidebar, setShowAdminSidebar] = useState(false);
   const { t, language } = useTranslation({ sections: ['pages/not-found'] });
 
   const metadataContent = {
@@ -71,7 +69,7 @@ export default function NotFound() {
       setCurrentArea('teacher');
     } else if (pathname.startsWith('/student')) {
       setCurrentArea('student');
-    } else if (pathname.startsWith('/blog')) {
+    } else if (pathname.replace(/^\/en(?=\/|$)/, '').startsWith('/blog')) {
       setCurrentArea('blog');
     } else if (pathname.startsWith('/admin')) {
       setCurrentArea('admin');
@@ -88,179 +86,15 @@ export default function NotFound() {
       case 'student':
         return session?.user ? <StudentNavigation user={session.user} /> : null;
       case 'blog':
-        return <BlogHeader />;
-      case 'admin':
         return (
-          <>
-            <AdminHeader onMenuClick={() => setShowAdminSidebar(true)} />
-            <div className="flex">
-              {/* Desktop Sidebar */}
-              <div className="hidden lg:block">
-                <AdminSidebar />
-              </div>
-
-              {/* Mobile Sidebar */}
-              <div
-                className={`lg:hidden fixed inset-y-0 left-0 z-dialogo w-72 bg-theme-elevated border-r border-theme-primary transform transition-transform duration-300 ease-in-out ${
-                  showAdminSidebar ? 'translate-x-0' : '-translate-x-full'
-                }`}
-                style={{ top: '80px' }}
-              >
-                <div className="h-full overflow-y-auto">
-                  <AdminSidebar />
-                </div>
-              </div>
-
-              <div
-                className={`flex w-full items-center justify-center relative overflow-hidden`}
-              >
-                {/* Background Pattern */}
-                <AnimatedMusicalNotes />
-                <div className="absolute inset-0 pointer-events-none opacity-5"></div>
-
-                <div className="section-wrap relative z-10">
-                  <AnimatedContainer
-                    staggerSpeed="normal"
-                    className="max-w-4xl mx-auto text-center"
-                  >
-                    {/* Logo (apenas se não for admin) */}
-                    <AnimatedItem direction="scale" springType="bouncy">
-                      <div className="mb-8">
-                        <Link
-                          href={getHomeLink()}
-                          className="inline-flex items-center group"
-                        >
-                          <GiGrandPiano className="w-12 h-12 mr-4 text-ouro-texto icon-glow transition-all duration-300 group-hover:scale-110" />
-                          <div className="text-left">
-                            <span className="text-2xl font-bold text-gradient-brand classical-title">
-                              {t('not_found_jsx_span_children_0__opus_atlas')}
-                            </span>
-                            <Text papel="rotulo" tom="fraco" as="div">
-                              {getAreaTitle()}
-                            </Text>
-                          </div>
-                        </Link>
-                      </div>
-                    </AnimatedItem>
-
-                    {/* 404 Number */}
-                    <AnimatedItem direction="scale" springType="bouncy">
-                      <div className="relative mb-8">
-                        <div className="text-9xl md:text-[12rem] font-bold text-gradient-brand classical-title leading-none opacity-90">
-                          404
-                        </div>
-                      </div>
-                    </AnimatedItem>
-
-                    {/* Title */}
-                    <AnimatedItem direction="up" springType="bouncy">
-                      <h1 className="text-4xl md:text-5xl font-bold text-theme-primary classical-title mb-6">
-                        {t('not_found_jsx_h1_children_0__page')}
-                      </h1>
-                    </AnimatedItem>
-
-                    {/* Subtitle */}
-                    <AnimatedItem direction="up" springType="smooth">
-                      <p className="text-xl md:text-2xl text-theme-secondary mb-12 leading-relaxed medida-texto mx-auto">
-                        {t('not_found_jsx_p_children_0__page')} {getAreaTitle()}{' '}
-                        <br />
-                        <span className="text-lg text-theme-tertiary mt-2 block">
-                          {t(
-                            'not_found_jsx_span_children_0__tal_explorar_outras'
-                          )}
-                        </span>
-                      </p>
-                    </AnimatedItem>
-
-                    {/* Contextual Navigation Cards */}
-                    <AnimatedContainer
-                      staggerSpeed="fast"
-                      className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-12"
-                    >
-                      {getContextualSuggestions().map((suggestion, index) => (
-                        <AnimatedCard
-                          key={index}
-                          hover="lift"
-                          className="classical-card p-6"
-                        >
-                          <Link href={suggestion.href} className="block group">
-                            <div className="w-16 h-16 rounded-2xl flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform duration-300">
-                              <suggestion.icon className="w-8 h-8 text-ouro-texto" />
-                            </div>
-                            <h2 className="text-xl font-bold text-theme-primary mb-2 classical-title transition-colors">
-                              {suggestion.title}
-                            </h2>
-                            <Text
-                              papel="rotulo"
-                              tom="suave"
-                              as="p"
-                              className="leading-relaxed"
-                            >
-                              {suggestion.description}
-                            </Text>
-                          </Link>
-                        </AnimatedCard>
-                      ))}
-                    </AnimatedContainer>
-
-                    {/* Action Buttons */}
-                    <AnimatedContainer
-                      staggerSpeed="fast"
-                      className="flex flex-col sm:flex-row gap-4 justify-center mb-12"
-                    >
-                      <AnimatedItem hover="scale" springType="bouncy">
-                        <Link
-                          href={getHomeLink()}
-                          className="btn-classical-primary flex items-center space-x-3 group text-lg px-8 py-4"
-                        >
-                          <PiHouse className="w-5 h-5 group-hover:scale-110 transition-transform duration-300" />
-                          <span>{getAreaTitle()}</span>
-                        </Link>
-                      </AnimatedItem>
-                    </AnimatedContainer>
-
-                    {/* Quote */}
-                    <AnimatedItem direction="up" springType="gentle">
-                      <Card nivel={2} className="max-w-2xl mx-auto mb-8">
-                        <blockquote className="text-lg text-theme-secondary italic mb-4 leading-relaxed">
-                          &quot;
-                          {t('not_found_jsx_blockquote_children_0__music')}
-                          &quot;
-                        </blockquote>
-                        <cite className="text-ouro-texto font-semibold">
-                          {t(
-                            'not_found_jsx_cite_children_0__henry_wadsworth_longfellow'
-                          )}
-                        </cite>
-                      </Card>
-                    </AnimatedItem>
-                  </AnimatedContainer>
-                </div>
-
-                {/* Decorative Elements */}
-                <div className="absolute top-4 left-4 w-12 h-12 rounded-2xl flex items-center justify-center opacity-40">
-                  <PiMusicNotes className="w-6 h-6" />
-                </div>
-
-                <div className="absolute bottom-4 right-4 w-16 h-16 rounded-3xl flex items-center justify-center opacity-50">
-                  <PiMusicNotes className="w-8 h-8 text-ouro-texto" />
-                </div>
-              </div>
-              {/* Mobile Overlay */}
-              {showAdminSidebar && (
-                <div
-                  className="lg:hidden fixed inset-0 bg-black/50 backdrop-blur-sm z-menu"
-                  style={{ top: '80px' }}
-                  onClick={() => setShowAdminSidebar(false)}
-                />
-              )}
-            </div>
-          </>
+          <CabecalhoDoBlog
+            idioma={languageOfPathname(pathname ?? '/')}
+            categorias={[]}
+          />
         );
-
       case 'main':
       default:
-        return <Navbar />;
+        return <SiteHeader />;
     }
   };
 
