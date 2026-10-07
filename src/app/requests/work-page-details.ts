@@ -131,28 +131,6 @@ export async function getWorkById(workId: string): Promise<WorkDetails | null> {
   }
 }
 
-/**
- * Resumo de mídia da obra. Sai do mesmo detalhe de `getWorkById` — o `fetch`
- * do Next deduplica a chamada na mesma renderização.
- */
-export async function getWorkMediaStats(workId: string) {
-  const work = await getWorkById(workId);
-
-  if (!work) return null;
-
-  return {
-    hasSpotify: !!work.spotifyTrackId,
-    hasYoutube: !!work.youtubeVideoId,
-    hasCustomAudio: !!(work.customAudioFile || work.customAudioUrl),
-    hasThumbnail: !!work.spotifyThumbnail,
-    audioSource: work.customAudioSource,
-    mediaSource: work.mediaSource,
-    lastSearched: work.lastMediaSearch,
-    completeness: calculateMediaCompleteness(work),
-  };
-}
-
-/** Limpa o cache das páginas de obra (usado por rota de envio do legado). */
 export async function revalidateWorkCache(workId?: string) {
   const { revalidateTag } = await import('next/cache');
   revalidateTag('works');
@@ -233,32 +211,4 @@ function toWorkDetails(work: WorkDetailDto): WorkDetails {
 
 function toDate(value?: string | null): Date | null {
   return value ? new Date(value) : null;
-}
-
-function calculateMediaCompleteness(work: WorkDetails): number {
-  let score = 0;
-  let maxScore = 0;
-
-  // Spotify (40 pontos máximo)
-  maxScore += 40;
-  if (work.spotifyTrackId) {
-    score += 20; // Track ID
-    if (work.spotifyDuration) score += 5; // Duração
-    if (work.spotifyThumbnail) score += 10; // Thumbnail
-    if (work.spotifyDisplayTitle) score += 5; // Display title
-  }
-
-  // YouTube (30 pontos máximo)
-  maxScore += 30;
-  if (work.youtubeVideoId) {
-    score += 30;
-  }
-
-  // Áudio customizado (30 pontos máximo)
-  maxScore += 30;
-  if (work.customAudioFile || work.customAudioUrl) {
-    score += 30;
-  }
-
-  return Math.round((score / maxScore) * 100);
 }

@@ -15,9 +15,15 @@ export interface ComposerDetails {
 
   birthDate?: string;
   deathDate?: string;
+  /** The same dates as numbers, as far as the record goes. */
+  birth?: ApiSchema<'DatePartsDto'>;
+  death?: ApiSchema<'DatePartsDto'>;
 
   portraitUrl?: string;
   bio?: string;
+  bioEn?: string;
+  /** The Portuguese bio was written by AI and nobody reviewed it yet. */
+  bioGeneratedByAi: boolean;
   permLinkImslp?: string;
   wikipediaLink?: string;
   epochId: string;
@@ -133,9 +139,13 @@ export async function getComposerById(
       alternativeNames: composer.alternativeNames || undefined,
       birthDate: composer.birthDate || undefined,
       deathDate: composer.deathDate || undefined,
+      birth: composer.birth,
+      death: composer.death,
       videoUrl: composer.videoUrl || undefined,
       portraitUrl: composer.portraitUrl || undefined,
       bio: composer.bio || undefined,
+      bioEn: composer.bioEn || undefined,
+      bioGeneratedByAi: composer.bioGeneratedByAi,
       permLinkImslp: composer.permLinkImslp || undefined,
       wikipediaLink: composer.wikipediaLink || undefined,
       epochId: composer.epochId,
@@ -292,4 +302,33 @@ function composerPath(composerId: string): string {
 
 function toDate(value?: string | null): Date | undefined {
   return value ? new Date(value) : undefined;
+}
+
+export type ComposerOverview = ApiSchema<'ComposerOverviewDto'>;
+
+const EMPTY_OVERVIEW: ComposerOverview = {
+  writtenFor: [],
+  startingPoints: [],
+  contemporaries: [],
+};
+
+/**
+ * What the composer wrote for, where to start and contemporaries, in one
+ * request (`GET /composers/:id/overview`). Secondary content: on failure the
+ * page renders without those sections.
+ */
+export async function getComposerOverview(
+  composerId: string
+): Promise<ComposerOverview> {
+  try {
+    return await apiFetch<ComposerOverview>(
+      `${composerPath(composerId)}/overview`,
+      {
+        next: { revalidate: 3600, tags: ['composers'] },
+        buildFallback: EMPTY_OVERVIEW,
+      }
+    );
+  } catch {
+    return EMPTY_OVERVIEW;
+  }
 }

@@ -6,6 +6,7 @@ import { MusicalFacts } from '@/app/components/site/home/MusicalFacts';
 import { PlansCallout } from '@/app/components/site/home/PlansCallout';
 import { PopularComposers } from '@/app/components/site/home/PopularComposers';
 import { UpcomingConcerts } from '@/app/components/site/home/UpcomingConcerts';
+import { workTitle } from '@/app/components/site/workTitle';
 import { HOME } from '@/app/conteudo/site/home';
 import { loadCalendar } from '@/app/requests/calendar-requests';
 import {
@@ -96,7 +97,7 @@ export default async function HomePage({ language }: { language: Language }) {
           composers: discoveries.composers,
           works: discoveries.works.map((w) => ({
             id: w.id,
-            title: w.opOrCatalog ? `${w.title}, ${w.opOrCatalog}` : w.title,
+            title: workTitle(w.title, w.opOrCatalog),
             composerName: w.composerName,
             detail: w.instrumentName,
           })),

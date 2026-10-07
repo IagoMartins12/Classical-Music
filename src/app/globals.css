@@ -2294,6 +2294,28 @@ html {
   [data-theme='light'] .hero-globe :is(circle, ellipse, path, line) {
     stroke-width: 1.6;
   }
+  /* Search fields: a gold ring while focused. */
+  .search-field:focus-within {
+    box-shadow:
+      0 0 0 1px var(--ouro),
+      var(--sombra-2);
+  }
+  /* A biography opens with a three-line Garamond drop cap. */
+  .drop-cap::first-letter {
+    float: left;
+    font-family: var(--fonte-display);
+    font-size: 4.2em;
+    line-height: 0.82;
+    padding: 0.06em 0.12em 0 0;
+    color: var(--ouro-texto);
+  }
+  /* Horizontal strips without a scrollbar. */
+  .scroll-strip {
+    scrollbar-width: none;
+  }
+  .scroll-strip::-webkit-scrollbar {
+    display: none;
+  }
 }
 
 @media (prefers-reduced-motion: no-preference) {
@@ -2314,6 +2336,27 @@ html {
   }
   .heart-beat {
     animation: heart-beat 420ms var(--saida);
+  }
+  /* Popovers (menus, live results) open from their edge. */
+  .popover-open {
+    transform-origin: top;
+    animation: popover-open 220ms var(--saida) both;
+  }
+  /* A biography being written: lines appear one by one, the quill bobs. */
+  .bio-line {
+    stroke-dasharray: 1;
+    animation: bio-write 4s var(--saida) infinite both;
+    animation-delay: calc(var(--i, 0) * 500ms);
+  }
+  .bio-quill {
+    transform-box: fill-box;
+    transform-origin: bottom left;
+    animation: bio-quill 1s ease-in-out infinite alternate;
+  }
+  .bio-blot {
+    transform-box: fill-box;
+    transform-origin: center;
+    animation: bio-blot 900ms var(--saida) both;
   }
 }
 
@@ -2338,6 +2381,37 @@ html {
     clip-path: inset(100% 0 0 0);
     filter: blur(6px);
     opacity: 0.4;
+  }
+}
+@keyframes popover-open {
+  from {
+    opacity: 0;
+    transform: translateY(-4px) scaleY(0.98);
+  }
+}
+@keyframes bio-write {
+  0% {
+    stroke-dashoffset: 1;
+  }
+  20%,
+  85% {
+    stroke-dashoffset: 0;
+    opacity: 1;
+  }
+  100% {
+    stroke-dashoffset: 0;
+    opacity: 0;
+  }
+}
+@keyframes bio-quill {
+  to {
+    transform: translate(-6px, 4px) rotate(-6deg);
+  }
+}
+@keyframes bio-blot {
+  from {
+    transform: scale(0.2);
+    opacity: 0;
   }
 }
 @keyframes heart-beat {

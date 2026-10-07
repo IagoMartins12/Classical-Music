@@ -88,6 +88,46 @@ export interface paths {
     patch?: never;
     trace?: never;
   };
+  '/api/scrapers/runs/{jobId}/preview': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /**
+     * A prévia de uma rodada manual
+     * @description Os eventos lidos, cada um conferido de novo contra a agenda: novo ou já existente. Nada foi gravado pela rodada.
+     */
+    get: operations['ScrapersController_previewOf'];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/api/scrapers/runs/{jobId}/import': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    /**
+     * Importa os eventos escolhidos de uma prévia
+     * @description Recebe só as posições. O que já está na agenda é pulado, não duplicado.
+     */
+    post: operations['ScrapersController_importFromPreview'];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
   '/api/scrapers/events/{id}': {
     parameters: {
       query?: never;
@@ -463,6 +503,26 @@ export interface paths {
     patch?: never;
     trace?: never;
   };
+  '/api/works/{id}/scores/imslp-status': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /**
+     * Situação da busca das partituras da obra no IMSLP
+     * @description Barata e sem efeito: é o que a página da obra pergunta, de tempos em tempos, enquanto mostra "buscando partituras" (`imslp.status = pending` na listagem).
+     */
+    get: operations['WorksController_getImslpStatus'];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
   '/api/works/{id}/scores/refresh': {
     parameters: {
       query?: never;
@@ -616,6 +676,26 @@ export interface paths {
      * @description Escolha determinística baseada no dia do ano — todos os visitantes veem o mesmo compositor durante as 24h. Substitui a rota legada `featured-composer`.
      */
     get: operations['ComposersController_findFeatured'];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/api/composers/{id}/overview': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /**
+     * What the composer wrote for, where to start and contemporaries
+     * @description One cached response for the composer page: top instrumentations, the three easiest of the most studied works, and up to 15 random composers alive at the same time (reshuffled hourly).
+     */
+    get: operations['ComposersController_getOverview'];
     put?: never;
     post?: never;
     delete?: never;
@@ -1355,6 +1435,47 @@ export interface paths {
     patch?: never;
     trace?: never;
   };
+  '/api/notifications/preferences': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /**
+     * Por onde quero ser avisado
+     * @description Temas de aviso dos meus papéis, com e-mail/SMS e o horário de silêncio. O portal recebe sempre.
+     */
+    get: operations['NotificationsController_getPreferences'];
+    /** Ajusta por onde quero ser avisado */
+    put: operations['NotificationsController_updatePreferences'];
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/api/notifications/announcements': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    /**
+     * Professor envia um aviso a alunos dele
+     * @description Chega no portal; por e-mail/SMS só para quem aceita. `sendAt` agenda.
+     */
+    post: operations['NotificationsController_announce'];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
   '/api/notifications/unread-count': {
     parameters: {
       query?: never;
@@ -1513,6 +1634,26 @@ export interface paths {
     patch?: never;
     trace?: never;
   };
+  '/api/teacher/students/{studentId}': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /**
+     * Um aluno do professor (Student.id)
+     * @description O vínculo mais recente com o aluno e os números da tabela de alunos.
+     */
+    get: operations['RelationshipsController_getStudent'];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
   '/api/teacher/students/{relationshipId}/resend-invite': {
     parameters: {
       query?: never;
@@ -1574,6 +1715,60 @@ export interface paths {
     patch?: never;
     trace?: never;
   };
+  '/api/student/invites/{relationshipId}/accept': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    /** O aluno aceita o convite de dentro do portal */
+    post: operations['RelationshipsController_acceptAsStudent'];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/api/student/invites/{relationshipId}/decline': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    /** O aluno recusa o convite de dentro do portal */
+    post: operations['RelationshipsController_declineAsStudent'];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/api/student/teachers/{relationshipId}/leave': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    /**
+     * O aluno sai da turma
+     * @description O histórico (aulas, tarefas, relatórios) continua dos dois.
+     */
+    post: operations['RelationshipsController_leave'];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
   '/api/invites/student/accept/{token}': {
     parameters: {
       query?: never;
@@ -1629,6 +1824,26 @@ export interface paths {
      * @description A verificação de conflito cobre todas as ocorrências da série, não apenas a primeira, e considera tanto a agenda do professor quanto a do aluno. Havendo conflito, a resposta 409 traz os choques e sugestões de horário; `force: true` cria mesmo assim.
      */
     post: operations['LessonsController_create'];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/api/lessons/check': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    /**
+     * Confere um horário (ou uma série) sem marcar
+     * @description O que a agenda diz de cada ocorrência: choque com aulas do professor e do aluno (em qualquer turma), bloqueios, atendimento, folga, deslocamento, limites e plano do aluno — com sugestões de horário limpo. É o mesmo motor da criação.
+     */
+    post: operations['LessonsController_check'];
     delete?: never;
     options?: never;
     head?: never;
@@ -1928,6 +2143,65 @@ export interface paths {
     patch?: never;
     trace?: never;
   };
+  '/api/calendar/feed': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /** Se a assinatura do calendário está ligada */
+    get: operations['CalendarController_feedStatus'];
+    put?: never;
+    /**
+     * Gera (ou troca) o link de assinatura
+     * @description O token só volta aqui, uma vez. Gerar outro derruba o link anterior.
+     */
+    post: operations['CalendarController_rotateFeed'];
+    /** Desliga a assinatura (o link para de funcionar) */
+    delete: operations['CalendarController_revokeFeed'];
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/api/calendar/feed/{token}': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /**
+     * O calendário assinado (iCalendar)
+     * @description Pública: o Google e a Apple buscam sem login. O token aleatório é a credencial.
+     */
+    get: operations['CalendarController_feed'];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/api/calendar/ics': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /** Baixa as aulas de um período, ou uma aula, em .ics */
+    get: operations['CalendarController_download'];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
   '/api/availability': {
     parameters: {
       query?: never;
@@ -1947,6 +2221,30 @@ export interface paths {
     options?: never;
     head?: never;
     patch?: never;
+    trace?: never;
+  };
+  '/api/availability/settings': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /**
+     * Meu esquema de aulas
+     * @description Duração padrão, folga, deslocamento, limites e regras de pedido de aula.
+     */
+    get: operations['AvailabilityController_getSettings'];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    /**
+     * Ajustar o esquema de aulas
+     * @description Muda só os campos enviados. `null` em um limite tira o limite.
+     */
+    patch: operations['AvailabilityController_updateSettings'];
     trace?: never;
   };
   '/api/availability/blocks': {
@@ -2023,6 +2321,26 @@ export interface paths {
     patch?: never;
     trace?: never;
   };
+  '/api/dashboard/onboarding': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    /**
+     * Marca que a pessoa passou pelas boas-vindas do portal
+     * @description Concluídas ou puladas: as boas-vindas não abrem sozinhas de novo naquele papel.
+     */
+    post: operations['DashboardController_finishOnboarding'];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
   '/api/reports/progress/{studentId}': {
     parameters: {
       query?: never;
@@ -2092,6 +2410,26 @@ export interface paths {
     patch: operations['ReportsController_update'];
     trace?: never;
   };
+  '/api/reports/shared/{id}/publish': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    /**
+     * Compartilha com o aluno um relatório que era só do professor
+     * @description O conteúdo não muda; o aluno passa a ver e é avisado.
+     */
+    patch: operations['ReportsController_publish'];
+    trace?: never;
+  };
   '/api/reports/shared/{id}/comments': {
     parameters: {
       query?: never;
@@ -2150,6 +2488,190 @@ export interface paths {
     get: operations['SchoolActivitiesController_export'];
     put?: never;
     post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/api/lesson-requests': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /** Pedidos de aula (do professor ou do aluno) */
+    get: operations['LessonRequestsController_list'];
+    put?: never;
+    /**
+     * Aluno pede uma aula num horário livre
+     * @description Respeita o esquema do professor: aceita pedidos, antecedência, horizonte e horário livre para os dois.
+     */
+    post: operations['LessonRequestsController_create'];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/api/lesson-requests/{id}/accept': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    /** Professor aceita: a aula é marcada pelas regras de sempre */
+    patch: operations['LessonRequestsController_accept'];
+    trace?: never;
+  };
+  '/api/lesson-requests/{id}/decline': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    /** Professor recusa, com recado opcional */
+    patch: operations['LessonRequestsController_decline'];
+    trace?: never;
+  };
+  '/api/lesson-requests/{id}/cancel': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    /** Aluno desiste do pedido */
+    patch: operations['LessonRequestsController_cancel'];
+    trace?: never;
+  };
+  '/api/practice': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /**
+     * Diário de prática de um período
+     * @description Do próprio aluno, ou de um aluno do professor (`studentId`). Com soma por dia e por obra.
+     */
+    get: operations['PracticeController_list'];
+    put?: never;
+    /** Registra uma sessão de prática */
+    post: operations['PracticeController_log'];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/api/practice/goal': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    /** Define a meta semanal de prática */
+    put: operations['PracticeController_setGoal'];
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/api/practice/{id}': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    post?: never;
+    /** Apaga um registro do próprio diário */
+    delete: operations['PracticeController_remove'];
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/api/student/repertoire': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /** Meu repertório: estudando, quero aprender e já aprendi */
+    get: operations['RepertoireController_mine'];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/api/teacher/students/{studentId}/repertoire': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /**
+     * O repertório de um aluno
+     * @description Só do aluno do professor, e se o aluno compartilha (`allowProgressShare`).
+     */
+    get: operations['RepertoireController_ofStudent'];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/api/teacher/students/{studentId}/suggestions': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    /**
+     * Sugere uma obra ao aluno
+     * @description Entra no "quero aprender" do aluno, com o nome de quem sugeriu. O aluno é avisado.
+     */
+    post: operations['RepertoireController_suggest'];
     delete?: never;
     options?: never;
     head?: never;
@@ -2571,7 +3093,7 @@ export interface paths {
     };
     /**
      * Lista artigos do blog publicados (com filtros, busca e paginação)
-     * @description Endpoint público. Anônimos e usuários comuns só veem artigos com status `PUBLISHED` e já dentro da data de publicação. Chamadores com `role >= 1` (admin) podem filtrar por qualquer status.
+     * @description Endpoint público. Anônimos e usuários comuns só veem artigos com status `PUBLISHED` e já dentro da data de publicação. Administradores (`role >= 2`) podem filtrar por qualquer status.
      */
     get: operations['ArticlesController_findAll'];
     put?: never;
@@ -2808,6 +3330,47 @@ export interface paths {
     patch?: never;
     trace?: never;
   };
+  '/api/blog/my-articles': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /** Os artigos de quem pede, em qualquer estado */
+    get: operations['AuthorArticlesController_list'];
+    put?: never;
+    /**
+     * Cria um artigo próprio
+     * @description Rascunho ou revisão; publicar vira revisão. Sem destaque e sem agendamento.
+     */
+    post: operations['AuthorArticlesController_create'];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/api/blog/my-articles/{id}': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    /**
+     * Edita um artigo próprio
+     * @description Só enquanto rascunho ou em revisão.
+     */
+    patch: operations['AuthorArticlesController_update'];
+    trace?: never;
+  };
   '/api/blog/media/upload': {
     parameters: {
       query?: never;
@@ -3019,6 +3582,26 @@ export interface paths {
     patch?: never;
     trace?: never;
   };
+  '/api/blog/admin/categories/home-sections': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    /**
+     * Define as seções do início do blog, na ordem
+     * @description As listadas ganham seção, de cima para baixo; as outras saem do início.
+     */
+    post: operations['CategoriesAdminController_homeSections'];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
   '/api/blog/admin/categories/{id}': {
     parameters: {
       query?: never;
@@ -3175,7 +3758,7 @@ export interface paths {
     };
     /**
      * Busca textual em artigos publicados do blog
-     * @description Chamadores admin (`role >= 1`) buscam em artigos de qualquer status.
+     * @description Administradores (`role >= 2`) buscam em artigos de qualquer status.
      */
     get: operations['SearchController_search'];
     put?: never;
@@ -4004,7 +4587,7 @@ export interface paths {
     put?: never;
     /**
      * Registra uma visita
-     * @description Uma por leitor a cada 30 minutos, só em artigo publicado. O legado somava um a cada chamada, sem nenhuma deduplicação. **Nenhuma tela do front atual chama esta rota.**
+     * @description Uma por leitor a cada 30 minutos, só em artigo publicado, com reserva atômica (duas chamadas ao mesmo tempo contam uma). O legado somava um a cada chamada. Chamada pela página do artigo (`ContadorDeLeitura`), uma vez por visita.
      */
     post: operations['InteractionsController_view'];
     delete?: never;
@@ -4199,6 +4782,46 @@ export interface paths {
      * @description Só administração — o legado aceitava qualquer usuário logado. Apaga o arquivo de verdade: o legado errava o identificador no Cloudinary e o arquivo ficava lá.
      */
     delete: operations['TtsController_remove'];
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/api/blog/admin/translate': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    /**
+     * Traduz textos do blog entre português e inglês
+     * @description Devolve a lista na mesma ordem. Não grava nada: a tradução volta para o formulário. Os textos do artigo vão separados da estrutura (ver `BlogTranslationService`).
+     */
+    post: operations['BlogTranslationController_translate'];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/api/search': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /**
+     * Unified site search: composers, works and blog articles
+     * @description Used by the header live search and the /search page. Each group is searched in parallel and capped at `limit` results.
+     */
+    get: operations['SiteSearchController_search'];
+    put?: never;
+    post?: never;
+    delete?: never;
     options?: never;
     head?: never;
     patch?: never;
@@ -4476,6 +5099,128 @@ export interface paths {
      * @description Faz o aviso de conquista nova parar de aparecer.
      */
     post: operations['AchievementsController_markAsViewed'];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/api/admin/portal/overview': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /**
+     * O portal num relance
+     * @description Professores e alunos (e quantos tiveram aula no período), vínculos, aulas por desfecho, aulas que passaram sem desfecho, presença e tarefas em vigor, atrasadas e entregues.
+     */
+    get: operations['AdminPortalController_overview'];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/api/admin/portal/lessons': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /** Aulas: próximas, passadas ou sem desfecho */
+    get: operations['AdminPortalController_lessons'];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/api/admin/portal/lessons/{id}': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /** Uma aula, com tudo o que foi registrado nela */
+    get: operations['AdminPortalController_lesson'];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/api/admin/portal/assignments': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /** Tarefas: em vigor, atrasadas ou concluídas */
+    get: operations['AdminPortalController_assignments'];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/api/admin/portal/assignments/{id}': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /** Uma tarefa */
+    get: operations['AdminPortalController_assignment'];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/api/admin/portal/teachers': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /** Professores, com alunos ativos e aulas */
+    get: operations['AdminPortalController_teachers'];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/api/admin/portal/students': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /** Alunos, com professores e tarefas */
+    get: operations['AdminPortalController_students'];
+    put?: never;
+    post?: never;
     delete?: never;
     options?: never;
     head?: never;
@@ -5899,6 +6644,26 @@ export interface paths {
     patch?: never;
     trace?: never;
   };
+  '/api/admin/audit/purge': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    /**
+     * Apaga registros da trilha
+     * @description Os escolhidos (`ids`) ou os que casam com os filtros. Exige um dos dois. Cada limpeza grava um `audit.purge` com quem, quantos e o critério — e esse registro nenhuma limpeza alcança.
+     */
+    post: operations['AdminOperationsController_purge'];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
   '/api/admin/audit/summary': {
     parameters: {
       query?: never;
@@ -6060,6 +6825,103 @@ export interface paths {
      * @description Só o que está esperando ou agendado. Job em execução não é cancelável por fora — o processor precisa terminar ou falhar, e interrompê-lo no meio deixaria efeito pela metade.
      */
     delete: operations['AdminJobsController_cancel'];
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/api/admin/maintenance/orphans': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /**
+     * Arquivos órfãos, um a um
+     * @description A imagem, de onde era (e o nome do registro removido, quando a remoção passou pela auditoria), quem enviou, quando e quanto pesa. `tipo=sem-dono` lista os que não declaram dono — indeterminados, não órfãos de certeza. Sem datas, todos.
+     */
+    get: operations['AdminMaintenanceController_listOrphans'];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/api/admin/maintenance/orphans/delete': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    /**
+     * Remove arquivos órfãos
+     * @description Confere de novo cada arquivo antes de apagar (o dono pode ter voltado). Apaga do armazenamento e deixa o registro como removido. Até 200 por vez.
+     */
+    post: operations['AdminMaintenanceController_deleteOrphans'];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/api/admin/maintenance/runs': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /**
+     * Histórico de execuções das tarefas
+     * @description Manutenção, varreduras do portal, publicação de artigos e rodadas de scraper: quem disparou (o agendamento ou uma pessoa), quanto levou, o que mudou e uma amostra do que foi afetado. As varreduras de minuto só entram quando fizeram algo.
+     */
+    get: operations['AdminMaintenanceController_listRuns'];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/api/admin/maintenance/runs/summary': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /** Por tarefa: quantas vezes rodou, a última, falhas */
+    get: operations['AdminMaintenanceController_runsSummary'];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/api/admin/maintenance/runs/delete': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    /**
+     * Apaga execuções do histórico
+     * @description As escolhidas (`ids`) ou todas antes de `before` (de uma tarefa, com `task`). Sem nenhum dos dois, não apaga nada.
+     */
+    post: operations['AdminMaintenanceController_deleteRuns'];
+    delete?: never;
     options?: never;
     head?: never;
     patch?: never;
@@ -6537,6 +7399,17 @@ export interface components {
       /** @example a1b2c3d4 */
       requestId?: string;
     };
+    ImportarDaPreviaDto: {
+      /**
+       * @description Posições dos eventos na prévia (`eventos[].indice`). O conteúdo de cada evento é lido da rodada guardada, não do corpo.
+       * @example [
+       *       0,
+       *       3,
+       *       4
+       *     ]
+       */
+      indices: number[];
+    };
     SetScraperScheduleDto: {
       /**
        * @description Expressão cron de cinco campos, no fuso America/Sao_Paulo. Madrugada é a hora certa: é quando o site da casa tem menos gente e a rodada não disputa recursos com o tráfego de usuário.
@@ -6883,6 +7756,14 @@ export interface components {
       editor?: string | null;
       publisher?: string | null;
     };
+    ImslpScoresStatusDto: {
+      /**
+       * @description `stored`: já guardadas · `pending`: a busca está na fila — pergunte de novo em `GET /works/:id/scores/imslp-status` · `none`: o IMSLP não tem arquivo · `unavailable`: não deu para buscar agora (IMSLP fora, fila cheia, robô)
+       * @example pending
+       * @enum {string}
+       */
+      status: 'stored' | 'pending' | 'none' | 'unavailable';
+    };
     WorkScoresResponseDto: {
       scores: components['schemas']['WorkScoreItemDto'][];
       /** @example 12 */
@@ -6901,6 +7782,8 @@ export interface components {
        *     }
        */
       totalByType?: Record<string, unknown>;
+      /** @description Situação das partituras do IMSLP — só na listagem (sem `sourceId`) */
+      imslp?: components['schemas']['ImslpScoresStatusDto'];
     };
     RefreshWorkScoresResponseDto: {
       /** @description Partituras que não existiam aqui. */
@@ -7147,6 +8030,42 @@ export interface components {
       isVerified: boolean;
       works: components['schemas']['FeaturedComposerWorkDto'][];
     };
+    WrittenForDto: {
+      /** @example 685d… */
+      instrumentId: string;
+      /** @example Piano */
+      name: string;
+      /** @example 158 */
+      works: number;
+    };
+    StartingPointDto: {
+      id: string;
+      title: string;
+      opOrCatalog: string | null;
+      instrumentName: string | null;
+      /** @description IMSLP difficulty, 1 (easiest) to 12 */
+      difficulty: number | null;
+      /** @description People who want to learn it */
+      studying: number;
+      /** @description People who already learned it */
+      learned: number;
+    };
+    ContemporaryDto: {
+      id: string;
+      name: string;
+      fullName: string;
+      portraitUrl: string | null;
+      birthYear: number | null;
+      deathYear: number | null;
+    };
+    ComposerOverviewDto: {
+      /** @description Top instrumentations */
+      writtenFor: components['schemas']['WrittenForDto'][];
+      /** @description Most studied works first, then easiest first */
+      startingPoints: components['schemas']['StartingPointDto'][];
+      /** @description Random composers alive at the same time (reshuffled hourly) */
+      contemporaries: components['schemas']['ContemporaryDto'][];
+    };
     ComposerWorkTypeCountsResponseDto: {
       /**
        * @description Contagem de obras por `workType` do compositor
@@ -7230,6 +8149,11 @@ export interface components {
       categories: string[];
       difficultyLevels: components['schemas']['DifficultyLevelDto'][];
     };
+    DatePartsDto: {
+      year: number | null;
+      month: number | null;
+      day: number | null;
+    };
     ComposerDetailEpochDto: {
       /** @example Romântico */
       name: string;
@@ -7245,6 +8169,9 @@ export interface components {
       alternativeNames?: string | null;
       birthDate?: string | null;
       deathDate?: string | null;
+      /** @description Numeric parts read from birthDate (null where the text is vague) */
+      birth: components['schemas']['DatePartsDto'];
+      death: components['schemas']['DatePartsDto'];
       portraitUrl?: string | null;
       bio?: string | null;
       /** @description Biografia em inglês (antes num JSON em disco do front) */
@@ -8252,6 +9179,13 @@ export interface components {
         | 'WELCOME_NEW_TEACHER'
         | 'STUDENT_DECLINED_INVITE'
         | 'STUDENT_ACCEPTED_INVITE'
+        | 'LESSON_REQUESTED'
+        | 'LESSON_REQUEST_ACCEPTED'
+        | 'LESSON_REQUEST_DECLINED'
+        | 'TEACHER_ANNOUNCEMENT'
+        | 'PROGRESS_REPORT_SHARED'
+        | 'STUDENT_ADDED_BY_TEACHER'
+        | 'WORK_SUGGESTED'
         | 'LESSON_NO_SHOW'
         | 'ASSIGNMENT_FEEDBACK_NEEDED'
         | 'ASSIGNMENT_COMPLETED'
@@ -8296,6 +9230,41 @@ export interface components {
        */
       unreadCount: number;
     };
+    UpdatePreferencesDto: {
+      /**
+       * @description Por tema: `{ "lesson-reminder": { "email": true, "sms": false } }`. Temas desconhecidos são ignorados.
+       * @example {
+       *       "lesson-reminder": {
+       *         "email": true,
+       *         "sms": false
+       *       }
+       *     }
+       */
+      channels?: Record<string, unknown>;
+      /**
+       * @description Início do silêncio. `null` tira o silêncio.
+       * @example 22:00
+       */
+      quietHoursStart?: string | null;
+      /** @example 07:00 */
+      quietHoursEnd?: string | null;
+    };
+    ChannelChoiceDto: {
+      email?: boolean;
+      sms?: boolean;
+    };
+    AnnouncementDto: {
+      /** @description Alunos (Student.id) que recebem. */
+      studentIds: string[];
+      /** @example Recital de novembro */
+      title: string;
+      /** @example O recital será no sábado, 21, às 16h. */
+      message: string;
+      /** @description Canais além do portal; valem só para quem aceita. */
+      channels?: components['schemas']['ChannelChoiceDto'];
+      /** @description Envio agendado. Sem valor: agora. */
+      sendAt?: string;
+    };
     MarkShownDto: {
       /**
        * @description Canal em que a notificação foi exibida.
@@ -8309,6 +9278,11 @@ export interface components {
        * @example 685d591c1e3db0c5aaa893e4
        */
       studentUserId: string;
+      /**
+       * @description Evita a verificação: o vínculo nasce aceito, sem e-mail de convite (só para conta existente).
+       * @default false
+       */
+      skipVerification: boolean;
       /** @default 1 */
       maxLessonsPerWeek: number;
       /**
@@ -8349,6 +9323,11 @@ export interface components {
       reportFrequency?: string;
     };
     UpdateRelationshipDto: {
+      /**
+       * @description Evita a verificação: o vínculo nasce aceito, sem e-mail de convite (só para conta existente).
+       * @default false
+       */
+      skipVerification: boolean;
       /** @default 1 */
       maxLessonsPerWeek: number;
       /**
@@ -8388,6 +9367,12 @@ export interface components {
       /** @example monthly */
       reportFrequency?: string;
     };
+    MovedOccurrenceDto: {
+      /** @description O início original da ocorrência. */
+      from: string;
+      /** @description O novo início. */
+      to: string;
+    };
     CreateLessonDto: {
       /**
        * @description Aluno da aula.
@@ -8422,6 +9407,8 @@ export interface components {
       objectives?: string[];
       /** @description Obras trabalhadas. */
       worksIds?: string[];
+      /** @description Compositores em foco, com ou sem obra (aula de escuta, de história). */
+      composerIds?: string[];
       /** @description Partituras usadas. */
       workScoreIds?: string[];
       topics?: string[];
@@ -8451,11 +9438,34 @@ export interface components {
        * @example 2026-12-15T19:00:00.000Z
        */
       recurrenceEnd?: string;
+      /** @description Ocorrências da série a pular (o início de cada uma, em UTC). */
+      skipOccurrences?: string[];
+      /** @description Ocorrências da série movidas para outro horário (a que chocava vai para a sugestão). */
+      moveOccurrences?: components['schemas']['MovedOccurrenceDto'][];
       /**
        * @description Cria mesmo havendo conflito de horário. A resposta lista os conflitos aceitos.
        * @default false
        */
       force: boolean;
+    };
+    CheckLessonDto: {
+      studentId: string;
+      scheduledAt: string;
+      /** @default 60 */
+      duration: number;
+      location?: string;
+      /** @default false */
+      isRecurring: boolean;
+      /** @enum {string} */
+      recurrenceType?:
+        | 'WEEKLY'
+        | 'BIWEEKLY'
+        | 'MONTHLY'
+        | 'TWICE_WEEKLY'
+        | 'NONE';
+      recurrenceEnd?: string;
+      /** @description Remarcação: a própria aula não conta. */
+      excludeLessonId?: string;
     };
     UpdateLessonDto: {
       /** @example Sonata ao Luar — 1º movimento */
@@ -8481,6 +9491,8 @@ export interface components {
       objectives?: string[];
       /** @description Obras trabalhadas. */
       worksIds?: string[];
+      /** @description Compositores em foco, com ou sem obra (aula de escuta, de história). */
+      composerIds?: string[];
       /** @description Partituras usadas. */
       workScoreIds?: string[];
       topics?: string[];
@@ -8493,6 +9505,10 @@ export interface components {
       teacherNotes?: string;
       /** @description Anotações visíveis ao aluno. */
       publicNotes?: string;
+      /** @description Ocorrências da série a pular (o início de cada uma, em UTC). */
+      skipOccurrences?: string[];
+      /** @description Ocorrências da série movidas para outro horário (a que chocava vai para a sugestão). */
+      moveOccurrences?: components['schemas']['MovedOccurrenceDto'][];
       /**
        * @description Cria mesmo havendo conflito de horário. A resposta lista os conflitos aceitos.
        * @default false
@@ -8525,6 +9541,15 @@ export interface components {
       studentPresent: boolean;
       /** @description Resumo do que foi trabalhado. */
       lessonSummary?: string;
+      /**
+       * @description Chegou no horário, atrasado ou adiantado.
+       * @enum {string}
+       */
+      punctuality?: 'on_time' | 'late' | 'early';
+      /** @description O que foi trabalhado (objetivos, obras, técnicas). */
+      skillsWorked?: string[];
+      /** @description O que o aluno deve trazer na próxima aula. */
+      nextLessonPrep?: string;
       /**
        * @description Engajamento, de 1 a 5.
        * @example 4
@@ -8667,6 +9692,50 @@ export interface components {
       studentNotes?: string;
       studentRating?: number;
     };
+    SchedulingSettingsDto: {
+      /**
+       * @description Duração padrão de uma aula, em minutos.
+       * @example 60
+       */
+      defaultLessonDuration?: number;
+      /**
+       * @description Folga mínima entre duas aulas.
+       * @example 15
+       */
+      bufferMinutes?: number;
+      /**
+       * @description Tempo para ir de um lugar físico a outro.
+       * @example 40
+       */
+      travelMinutes?: number;
+      /**
+       * @description Sem valor: sem limite.
+       * @example 6
+       */
+      maxLessonsPerDay?: number | null;
+      /** @example 25 */
+      maxLessonsPerWeek?: number | null;
+      /** @default true */
+      acceptsLessonRequests: boolean;
+      /**
+       * @description Antecedência mínima de um pedido de aula, em horas.
+       * @example 12
+       */
+      requestLeadHours?: number;
+      /**
+       * @description Até quantos dias à frente o aluno pode pedir.
+       * @example 45
+       */
+      requestHorizonDays?: number;
+      /**
+       * @description Lembretes, em minutos antes da aula.
+       * @example [
+       *       1440,
+       *       30
+       *     ]
+       */
+      lessonReminderMinutes?: number[];
+    };
     WeeklySlotDto: {
       /** @description 0 = domingo … 6 = sábado */
       weekday: number;
@@ -8694,6 +9763,10 @@ export interface components {
       endsAt: string;
       /** @example Férias */
       reason?: string;
+    };
+    PortalOnboardingDto: {
+      /** @enum {string} */
+      role?: 'teacher' | 'student';
     };
     ShareReportDto: {
       /** @example 685d591c1e3db0c5aaa893e4 */
@@ -8728,6 +9801,12 @@ export interface components {
         | 'recommendations';
       /** @default false */
       allowComments: boolean;
+      /**
+       * @description TEACHER_ONLY: só o professor vê (acompanhamento); dá para compartilhar depois.
+       * @default SHARED
+       * @enum {string}
+       */
+      visibility: 'TEACHER_ONLY' | 'SHARED';
       /** @description Validade em dias. Sem valor, o relatório não expira. */
       expiresInDays?: number;
     };
@@ -8757,6 +9836,64 @@ export interface components {
         | 'comparison'
         | 'recommendations';
     };
+    CreateLessonRequestDto: {
+      /** @description O professor (Teacher.id). */
+      teacherId: string;
+      /** @example 2026-10-02T19:00:00.000Z */
+      scheduledAt: string;
+      /** @description Minutos. Padrão: a duração do vínculo. */
+      duration?: number;
+      /** @example Dá para uma aula extra antes da prova? */
+      note?: string;
+    };
+    AcceptLessonRequestDto: {
+      /** @example Aula extra: Noturno */
+      title?: string;
+      /** @example Estúdio */
+      location?: string;
+      /**
+       * @description Marca mesmo havendo conflito.
+       * @default false
+       */
+      force: boolean;
+    };
+    DeclineLessonRequestDto: {
+      /** @example Nessa sexta não consigo; que tal segunda às 16h? */
+      answer?: string;
+    };
+    LogPracticeDto: {
+      /**
+       * @description Minutos estudados.
+       * @example 30
+       */
+      minutes: number;
+      /** @description Quando estudou. Sem valor: agora. */
+      practicedAt?: string;
+      /** @description Obra do acervo estudada. */
+      workId?: string;
+      /**
+       * @description Quando não é uma obra.
+       * @example Escalas
+       */
+      topic?: string;
+      /** @example O pedal do c. 9 ainda embola. */
+      note?: string;
+    };
+    PracticeGoalDto: {
+      /**
+       * @description Meta semanal em minutos. 0 tira a meta.
+       * @example 240
+       */
+      weeklyMinutes: number;
+    };
+    SuggestWorkDto: {
+      /** @description Obra do acervo. */
+      workId: string;
+      /** @description Partitura escolhida, quando houver. */
+      workScoreId?: string;
+      /** @example Boa para trabalhar o rubato depois do Noturno. */
+      note?: string;
+    };
     PeriodPricingDto: {
       /** @example 191.04 */
       price: number;
@@ -8770,8 +9907,6 @@ export interface components {
     PlanPricingDto: {
       /** @example 19.9 */
       monthly: number;
-      quarterly: components['schemas']['PeriodPricingDto'];
-      biannual: components['schemas']['PeriodPricingDto'];
       yearly: components['schemas']['PeriodPricingDto'];
       /** @example 7 */
       trialDays: number;
@@ -9645,6 +10780,17 @@ export interface components {
       /** @default true */
       autoplay: boolean;
     };
+    ArticleTranslationDto: {
+      title?: string | null;
+      description?: string | null;
+      /** @description JSON do editor, com a mesma política de conteúdo do original */
+      content?: {
+        [key: string]: unknown;
+      } | null;
+      metaTitle?: string | null;
+      metaDescription?: string | null;
+      coverImageAlt?: string | null;
+    };
     CreateArticleDto: {
       title: string;
       /**
@@ -9708,6 +10854,14 @@ export interface components {
       metaTitle?: string | null;
       metaDescription?: string | null;
       keywords?: string[];
+      /**
+       * @description Idioma em que o artigo foi escrito
+       * @default pt
+       * @enum {string}
+       */
+      language: 'pt' | 'en';
+      /** @description O artigo no outro idioma. `null` apaga a tradução. */
+      translation?: components['schemas']['ArticleTranslationDto'] | null;
     };
     FeaturedOrderDto: {
       id: string;
@@ -9779,6 +10933,14 @@ export interface components {
       metaTitle?: string | null;
       metaDescription?: string | null;
       keywords?: string[];
+      /**
+       * @description Idioma em que o artigo foi escrito
+       * @default pt
+       * @enum {string}
+       */
+      language: 'pt' | 'en';
+      /** @description O artigo no outro idioma. `null` apaga a tradução. */
+      translation?: components['schemas']['ArticleTranslationDto'] | null;
       /** @description O que mudou. Fica gravado na versão. */
       changeLog?: string;
       /** @description Versão que o editor abriu. Se o artigo já estiver em outra, a gravação é recusada com 409 — em vez de apagar em silêncio o que outra pessoa gravou no meio tempo. */
@@ -9918,6 +11080,12 @@ export interface components {
       success: boolean;
       category: components['schemas']['CategoryDto'];
     };
+    CategoryTranslationDto: {
+      name?: string | null;
+      description?: string | null;
+      metaTitle?: string | null;
+      metaDescription?: string | null;
+    };
     CreateCategoryDto: {
       name: string;
       /** @description Sem ele, o slug sai do nome. */
@@ -9938,6 +11106,18 @@ export interface components {
       showInMenu: boolean;
       metaTitle?: string | null;
       metaDescription?: string | null;
+      /**
+       * @description Atalho no menu "Categorias" do cabeçalho do blog (chevron)
+       * @default false
+       */
+      inMoreMenu: boolean;
+      /**
+       * @description Ganha seção no início do blog, com os últimos artigos
+       * @default false
+       */
+      showOnHome: boolean;
+      /** @description A categoria em inglês. `null` apaga. */
+      translation?: components['schemas']['CategoryTranslationDto'] | null;
     };
     CategoryOrderDto: {
       id: string;
@@ -9945,6 +11125,10 @@ export interface components {
     };
     ReorderCategoriesDto: {
       categories: components['schemas']['CategoryOrderDto'][];
+    };
+    HomeSectionsDto: {
+      /** @description Ids, de cima para baixo */
+      ids: string[];
     };
     UpdateCategoryDto: {
       name?: string;
@@ -9966,6 +11150,18 @@ export interface components {
       showInMenu: boolean;
       metaTitle?: string | null;
       metaDescription?: string | null;
+      /**
+       * @description Atalho no menu "Categorias" do cabeçalho do blog (chevron)
+       * @default false
+       */
+      inMoreMenu: boolean;
+      /**
+       * @description Ganha seção no início do blog, com os últimos artigos
+       * @default false
+       */
+      showOnHome: boolean;
+      /** @description A categoria em inglês. `null` apaga. */
+      translation?: components['schemas']['CategoryTranslationDto'] | null;
     };
     TagDto: {
       id: string;
@@ -9985,6 +11181,10 @@ export interface components {
       success: boolean;
       tag: components['schemas']['TagDto'];
     };
+    TagTranslationDto: {
+      name?: string | null;
+      description?: string | null;
+    };
     CreateTagDto: {
       name: string;
       /** @description Sem ele, o slug sai do nome — pelo mesmo algoritmo que a gravação de artigo usa. */
@@ -9992,6 +11192,8 @@ export interface components {
       description?: string | null;
       /** @example #d4af37 */
       color?: string | null;
+      /** @description A tag em inglês. `null` apaga. */
+      translation?: components['schemas']['TagTranslationDto'] | null;
     };
     UpdateTagDto: {
       name?: string;
@@ -10000,6 +11202,8 @@ export interface components {
       description?: string | null;
       /** @example #d4af37 */
       color?: string | null;
+      /** @description A tag em inglês. `null` apaga. */
+      translation?: components['schemas']['TagTranslationDto'] | null;
     };
     SearchArticlesResponseDto: {
       success: boolean;
@@ -11346,7 +12550,13 @@ export interface components {
       externalUrl?: string | null;
       ageRating?: string | null;
       isFeatured?: boolean;
+      /** @description Posição no mosaico de destaques do mês. Sem ela, a menor livre; ocupada, o evento que estava nela deixa de ser destaque. */
       featuredOrder?: number | null;
+      /**
+       * @description `large` ocupa a largura do mosaico; `normal`, uma coluna
+       * @enum {string|null}
+       */
+      featuredSize?: 'large' | 'normal' | null;
       isVerified?: boolean;
       venueDetails?: string | null;
       metaTitle?: string | null;
@@ -11423,7 +12633,13 @@ export interface components {
       externalUrl?: string | null;
       ageRating?: string | null;
       isFeatured?: boolean;
+      /** @description Posição no mosaico de destaques do mês. Sem ela, a menor livre; ocupada, o evento que estava nela deixa de ser destaque. */
       featuredOrder?: number | null;
+      /**
+       * @description `large` ocupa a largura do mosaico; `normal`, uma coluna
+       * @enum {string|null}
+       */
+      featuredSize?: 'large' | 'normal' | null;
       isVerified?: boolean;
       venueDetails?: string | null;
       metaTitle?: string | null;
@@ -11503,6 +12719,22 @@ export interface components {
     };
     DeleteTtsDto: {
       articleId: string;
+    };
+    TranslateTextsDto: {
+      texts: string[];
+      /** @enum {string} */
+      from: 'pt' | 'en';
+      /** @enum {string} */
+      to: 'pt' | 'en';
+    };
+    TranslatedTextsDto: {
+      texts: string[];
+    };
+    SiteSearchResponseDto: {
+      query: string;
+      composers: components['schemas']['ComposerListItemDto'][];
+      works: components['schemas']['WorkSummaryDto'][];
+      articles: components['schemas']['ArticleSummaryDto'][];
     };
     PublicTeacherSummaryDto: {
       /**
@@ -12378,13 +13610,9 @@ export interface components {
        */
       monthlyPrice: number;
       /**
-       * @description Desconto trimestral, em %.
-       * @default 10
+       * @description Desconto do anual sobre doze mensais, em %. Só se vende mensal e anual: o Stripe não tem outro período.
+       * @default 20
        */
-      quarterlyDiscount: number;
-      /** @default 15 */
-      biannualDiscount: number;
-      /** @default 20 */
       yearlyDiscount: number;
       /** @default 0 */
       trialDays: number;
@@ -12538,6 +13766,64 @@ export interface components {
        * @enum {string}
        */
       period: '7d' | '30d' | '90d' | '1y';
+    };
+    ListAuditQueryDto: {
+      /** @description Id do último item da página anterior. Com ele, a lista continua de onde parou (rolagem infinita) e `page` é ignorado. */
+      cursor?: string;
+      /** @default 1 */
+      page: number;
+      /** @default 50 */
+      limit: number;
+      /** @description Ação exata, ex.: `user.update`, `ad.delete`. */
+      action?: string;
+      /** @description Prefixo da ação, ex.: `newsletter`. */
+      actionPrefix?: string;
+      /** @description Quem realizou a ação. */
+      actorId?: string;
+      entityType?: string;
+      entityId?: string;
+      /** @description Só as tentativas negadas. É o filtro que interessa numa investigação. */
+      onlyFailures?: boolean;
+      /**
+       * @description O tipo da operação, pelo fim da ação (`.create`, `.update`/`.verify…`, `.delete`).
+       * @enum {string}
+       */
+      verb?: 'create' | 'update' | 'delete' | 'other';
+      /**
+       * @description Papel de quem agiu no momento da ação.
+       * @enum {number}
+       */
+      actorRole?: 0 | 1 | 2;
+      /** @description Rede de origem (contém). */
+      ip?: string;
+      /** @description Nome do registro afetado, como estava na hora (contém). */
+      target?: string;
+      /** @description Só as ações que mudaram este campo (ex.: `role`, `isVerified`, `price`). */
+      field?: string;
+      /** @example 2026-01-01T00:00:00.000Z */
+      from?: string;
+      /** @example 2026-06-30T23:59:59.000Z */
+      to?: string;
+      /**
+       * @default json
+       * @enum {string}
+       */
+      format: 'csv' | 'json';
+    };
+    PurgeAuditDto: {
+      /** @description Registros escolhidos */
+      ids?: string[];
+      /** @description Os mesmos filtros da lista; apaga tudo o que casa */
+      filtros?: components['schemas']['ListAuditQueryDto'];
+    };
+    DeleteOrphansDto: {
+      ids: string[];
+    };
+    DeleteTaskRunsDto: {
+      ids?: string[];
+      /** @description Apaga as execuções que começaram antes desta data */
+      before?: string;
+      task?: string;
     };
     RunMaintenanceTaskDto: {
       /**
@@ -12822,6 +14108,50 @@ export interface operations {
     requestBody?: never;
     responses: {
       /** @description Página de eventos importados */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
+  ScrapersController_previewOf: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        jobId: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description Eventos da prévia, com o índice de cada um */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
+  ScrapersController_importFromPreview: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        jobId: string;
+      };
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['ImportarDaPreviaDto'];
+      };
+    };
+    responses: {
+      /** @description O que entrou, o que já existia, o que falhou */
       200: {
         headers: {
           [name: string]: unknown;
@@ -13704,7 +15034,9 @@ export interface operations {
         limitPerType?: number;
         offset?: number;
       };
-      header?: never;
+      header: {
+        'user-agent': string;
+      };
       path: {
         id: string;
       };
@@ -13718,6 +15050,27 @@ export interface operations {
         };
         content: {
           'application/json': components['schemas']['WorkScoresResponseDto'];
+        };
+      };
+    };
+  };
+  WorksController_getImslpStatus: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        id: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ImslpScoresStatusDto'];
         };
       };
     };
@@ -14026,6 +15379,35 @@ export interface operations {
         };
         content: {
           'application/json': components['schemas']['FeaturedComposerResponseDto'];
+        };
+      };
+    };
+  };
+  ComposersController_getOverview: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        id: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ComposerOverviewDto'];
+        };
+      };
+      404: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
         };
       };
     };
@@ -15414,6 +16796,65 @@ export interface operations {
       };
     };
   };
+  NotificationsController_getPreferences: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
+  NotificationsController_updatePreferences: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['UpdatePreferencesDto'];
+      };
+    };
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
+  NotificationsController_announce: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['AnnouncementDto'];
+      };
+    };
+    responses: {
+      201: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
   NotificationsController_unreadCount: {
     parameters: {
       query?: never;
@@ -15671,6 +17112,34 @@ export interface operations {
       };
     };
   };
+  RelationshipsController_getStudent: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        studentId: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description Vínculo, aluno e números */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+      404: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+    };
+  };
   RelationshipsController_resendInvite: {
     parameters: {
       query?: never;
@@ -15786,6 +17255,89 @@ export interface operations {
       };
     };
   };
+  RelationshipsController_acceptAsStudent: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        relationshipId: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description Convite aceito */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+      404: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+    };
+  };
+  RelationshipsController_declineAsStudent: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        relationshipId: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description Convite recusado */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+      404: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+    };
+  };
+  RelationshipsController_leave: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        relationshipId: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      204: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+      404: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+    };
+  };
   RelationshipsController_acceptInvite: {
     parameters: {
       query?: never;
@@ -15858,9 +17410,15 @@ export interface operations {
           | 'RESCHEDULED';
         /** @description Filtra por aluno. Só vale para o professor. */
         studentId?: string;
+        /** @description Filtra por professor (Teacher.id). Só vale para o aluno. */
+        teacherId?: string;
         from?: string;
         to?: string;
         order?: 'asc' | 'desc';
+        /** @description Só as que passaram e seguem agendadas (sem desfecho). */
+        pendingOutcome?: boolean;
+        /** @description Busca no título da aula e no nome do aluno. */
+        q?: string;
       };
       header?: never;
       path?: never;
@@ -15925,6 +17483,36 @@ export interface operations {
       };
       /** @description Conflito de horário, com sugestões de alternativa */
       409: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+    };
+  };
+  LessonsController_check: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['CheckLessonDto'];
+      };
+    };
+    responses: {
+      /** @description Achados por ocorrência e o resumo */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+      403: {
         headers: {
           [name: string]: unknown;
         };
@@ -16233,7 +17821,13 @@ export interface operations {
         limit?: number;
         /** @description De qual lado consultar. Sem valor, usa o perfil de professor. */
         as?: 'teacher' | 'student';
-        status?: 'PENDING' | 'IN_PROGRESS' | 'COMPLETED' | 'OVERDUE';
+        status?:
+          | 'PENDING'
+          | 'IN_PROGRESS'
+          | 'COMPLETED'
+          | 'OVERDUE'
+          | 'AWAITING_FEEDBACK'
+          | 'OPEN';
         type?:
           | 'practice'
           | 'theory'
@@ -16670,6 +18264,102 @@ export interface operations {
       };
     };
   };
+  CalendarController_feedStatus: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
+  CalendarController_rotateFeed: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
+  CalendarController_revokeFeed: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      204: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
+  CalendarController_feed: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        token: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': string;
+        };
+      };
+    };
+  };
+  CalendarController_download: {
+    parameters: {
+      query?: {
+        /** @description Início. Padrão: agora. */
+        from?: string;
+        /** @description Fim. Padrão: 31 dias depois do início; no máximo um ano. */
+        to?: string;
+        /** @description Uma aula só. */
+        lessonId?: string;
+      };
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
   AvailabilityController_getMine: {
     parameters: {
       query?: never;
@@ -16718,6 +18408,63 @@ export interface operations {
         content?: never;
       };
       /** @description Janela inválida, sobreposta, ou fuso desconhecido */
+      400: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+    };
+  };
+  AvailabilityController_getSettings: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description O esquema */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+      /** @description Sem perfil de professor */
+      403: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+    };
+  };
+  AvailabilityController_updateSettings: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['SchedulingSettingsDto'];
+      };
+    };
+    responses: {
+      /** @description O esquema como ficou */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
       400: {
         headers: {
           [name: string]: unknown;
@@ -16851,6 +18598,27 @@ export interface operations {
       };
     };
   };
+  DashboardController_finishOnboarding: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['PortalOnboardingDto'];
+      };
+    };
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
   ReportsController_generate: {
     parameters: {
       query?: {
@@ -16922,6 +18690,12 @@ export interface operations {
         as?: 'teacher' | 'student';
         /** @description Filtra por aluno. Só para o professor. */
         studentId?: string;
+        /** @description Só para o professor. */
+        visibility?: 'TEACHER_ONLY' | 'SHARED';
+        /** @description Criados a partir de (inclusive). */
+        from?: string;
+        /** @description Criados até (exclusive). */
+        to?: string;
       };
       header?: never;
       path?: never;
@@ -17073,6 +18847,34 @@ export interface operations {
       };
     };
   };
+  ReportsController_publish: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        id: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description Relatório compartilhado */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+      404: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+    };
+  };
   ReportsController_listComments: {
     parameters: {
       query: {
@@ -17169,8 +18971,31 @@ export interface operations {
           | 'LESSON_RESCHEDULE_REQUESTED'
           | 'LESSON_ABSENCE_INFORMED'
           | 'LESSON_COMPLETED'
-          | 'STUDENT_PROFILE_UPDATED';
-        entityType?: 'lesson' | 'assignment' | 'student' | 'profile' | 'report';
+          | 'STUDENT_PROFILE_UPDATED'
+          | 'LESSON_REQUESTED'
+          | 'LESSON_REQUEST_ANSWERED'
+          | 'PRACTICE_LOGGED'
+          | 'REPORT_SHARED'
+          | 'ANNOUNCEMENT_SENT'
+          | 'WORK_SUGGESTED'
+          | 'PRACTICE_REMOVED'
+          | 'PRACTICE_GOAL_SET'
+          | 'LESSON_REQUEST_CANCELLED'
+          | 'INVITE_ACCEPTED'
+          | 'INVITE_DECLINED'
+          | 'TEACHER_LEFT'
+          | 'ASSIGNMENT_PROGRESS_UPDATED'
+          | 'ASSIGNMENT_SUBMISSION_REMOVED'
+          | 'REPORT_COMMENTED'
+          | 'WORK_WANTED'
+          | 'WORK_LEARNED';
+        entityType?:
+          | 'lesson'
+          | 'assignment'
+          | 'student'
+          | 'profile'
+          | 'report'
+          | 'practice';
         from?: string;
         to?: string;
         /** @description Inclui o resumo por ação e por entidade. Fora do padrão porque são quatro agregações a mais, e a maioria das telas só quer a lista. */
@@ -17212,8 +19037,31 @@ export interface operations {
           | 'LESSON_RESCHEDULE_REQUESTED'
           | 'LESSON_ABSENCE_INFORMED'
           | 'LESSON_COMPLETED'
-          | 'STUDENT_PROFILE_UPDATED';
-        entityType?: 'lesson' | 'assignment' | 'student' | 'profile' | 'report';
+          | 'STUDENT_PROFILE_UPDATED'
+          | 'LESSON_REQUESTED'
+          | 'LESSON_REQUEST_ANSWERED'
+          | 'PRACTICE_LOGGED'
+          | 'REPORT_SHARED'
+          | 'ANNOUNCEMENT_SENT'
+          | 'WORK_SUGGESTED'
+          | 'PRACTICE_REMOVED'
+          | 'PRACTICE_GOAL_SET'
+          | 'LESSON_REQUEST_CANCELLED'
+          | 'INVITE_ACCEPTED'
+          | 'INVITE_DECLINED'
+          | 'TEACHER_LEFT'
+          | 'ASSIGNMENT_PROGRESS_UPDATED'
+          | 'ASSIGNMENT_SUBMISSION_REMOVED'
+          | 'REPORT_COMMENTED'
+          | 'WORK_WANTED'
+          | 'WORK_LEARNED';
+        entityType?:
+          | 'lesson'
+          | 'assignment'
+          | 'student'
+          | 'profile'
+          | 'report'
+          | 'practice';
         from?: string;
         to?: string;
         /** @description Nome do arquivo, sem extensão. */
@@ -17227,6 +19075,319 @@ export interface operations {
     responses: {
       /** @description Atividades exportadas */
       200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
+  LessonRequestsController_list: {
+    parameters: {
+      query?: {
+        status?: 'PENDING' | 'ACCEPTED' | 'DECLINED' | 'CANCELLED' | 'EXPIRED';
+        /** @description Para quem tem os dois papéis. */
+        as?: 'teacher' | 'student';
+      };
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description Pendentes primeiro */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
+  LessonRequestsController_create: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['CreateLessonRequestDto'];
+      };
+    };
+    responses: {
+      /** @description O pedido, pendente */
+      201: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+      /** @description Fora da antecedência ou do horizonte */
+      400: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      403: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description Horário ocupado, com sugestões */
+      409: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+    };
+  };
+  LessonRequestsController_accept: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        id: string;
+      };
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['AcceptLessonRequestDto'];
+      };
+    };
+    responses: {
+      /** @description Pedido aceito e a aula criada */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+      /** @description O horário deixou de estar livre */
+      409: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+    };
+  };
+  LessonRequestsController_decline: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        id: string;
+      };
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['DeclineLessonRequestDto'];
+      };
+    };
+    responses: {
+      /** @description Pedido recusado */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
+  LessonRequestsController_cancel: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        id: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      204: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
+  PracticeController_list: {
+    parameters: {
+      query?: {
+        /** @description Início (inclusive). Padrão: 28 dias atrás. */
+        from?: string;
+        /** @description Fim (exclusive). Padrão: amanhã. */
+        to?: string;
+        /** @description Professor lendo o diário de um aluno dele (Student.id). */
+        studentId?: string;
+      };
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description Registros, somas e a meta semanal */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
+  PracticeController_log: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['LogPracticeDto'];
+      };
+    };
+    responses: {
+      /** @description O registro */
+      201: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+      /** @description Sem perfil de aluno */
+      403: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+    };
+  };
+  PracticeController_setGoal: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['PracticeGoalDto'];
+      };
+    };
+    responses: {
+      /** @description A meta */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
+  PracticeController_remove: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        id: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      204: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
+  RepertoireController_mine: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description As três listas */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
+  RepertoireController_ofStudent: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        studentId: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description As três listas */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+      /** @description O aluno não compartilha */
+      403: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+    };
+  };
+  RepertoireController_suggest: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        studentId: string;
+      };
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['SuggestWorkDto'];
+      };
+    };
+    responses: {
+      201: {
         headers: {
           [name: string]: unknown;
         };
@@ -18950,6 +21111,92 @@ export interface operations {
       };
     };
   };
+  AuthorArticlesController_list: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description Lista */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+      403: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+    };
+  };
+  AuthorArticlesController_create: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['CreateArticleDto'];
+      };
+    };
+    responses: {
+      /** @description Artigo criado */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+      201: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
+  AuthorArticlesController_update: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        id: string;
+      };
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['UpdateArticleDto'];
+      };
+    };
+    responses: {
+      /** @description Artigo atualizado */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+      403: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+    };
+  };
   BlogMediaController_upload: {
     parameters: {
       query?: never;
@@ -19424,6 +21671,36 @@ export interface operations {
     };
     responses: {
       /** @description Ordem gravada */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+      400: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+    };
+  };
+  CategoriesAdminController_homeSections: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['HomeSectionsDto'];
+      };
+    };
+    responses: {
+      /** @description Seções gravadas */
       200: {
         headers: {
           [name: string]: unknown;
@@ -22181,6 +24458,60 @@ export interface operations {
       };
     };
   };
+  BlogTranslationController_translate: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['TranslateTextsDto'];
+      };
+    };
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['TranslatedTextsDto'];
+        };
+      };
+      201: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['TranslatedTextsDto'];
+        };
+      };
+    };
+  };
+  SiteSearchController_search: {
+    parameters: {
+      query: {
+        q: string;
+        /** @description Results per group (composers, works, articles) */
+        limit?: number;
+      };
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['SiteSearchResponseDto'];
+        };
+      };
+    };
+  };
   PublicTeachersController_findAll: {
     parameters: {
       query?: {
@@ -22562,6 +24893,187 @@ export interface operations {
         content: {
           'application/json': components['schemas']['ErrorResponseDto'];
         };
+      };
+    };
+  };
+  AdminPortalController_overview: {
+    parameters: {
+      query?: {
+        dias?: number;
+      };
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description Números do período */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
+  AdminPortalController_lessons: {
+    parameters: {
+      query?: {
+        page?: number;
+        limit?: number;
+        /** @description Trecho do título ou do nome */
+        search?: string;
+        /** @description `sem-desfecho`: já passou e continua "agendada" */
+        quando?: 'proximas' | 'passadas' | 'sem-desfecho';
+        status?:
+          | 'SCHEDULED'
+          | 'COMPLETED'
+          | 'CANCELLED'
+          | 'NO_SHOW'
+          | 'RESCHEDULED';
+        /** @description Id do professor (Teacher) */
+        teacherId?: string;
+        /** @description Id do aluno (Student) */
+        studentId?: string;
+        from?: string;
+        to?: string;
+      };
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description Aulas paginadas, com professor e aluno */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
+  AdminPortalController_lesson: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        id: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+      404: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+    };
+  };
+  AdminPortalController_assignments: {
+    parameters: {
+      query?: {
+        page?: number;
+        limit?: number;
+        /** @description Trecho do título ou do nome */
+        search?: string;
+        situacao?: 'em-vigor' | 'atrasadas' | 'concluidas';
+        teacherId?: string;
+        studentId?: string;
+      };
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description Tarefas paginadas, com aluno e professor */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
+  AdminPortalController_assignment: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        id: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+      404: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+    };
+  };
+  AdminPortalController_teachers: {
+    parameters: {
+      query?: {
+        page?: number;
+        limit?: number;
+        /** @description Trecho do título ou do nome */
+        search?: string;
+      };
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
+  AdminPortalController_students: {
+    parameters: {
+      query?: {
+        page?: number;
+        limit?: number;
+        /** @description Trecho do título ou do nome */
+        search?: string;
+      };
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
       };
     };
   };
@@ -25350,6 +27862,28 @@ export interface operations {
       };
     };
   };
+  AdminOperationsController_purge: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['PurgeAuditDto'];
+      };
+    };
+    responses: {
+      /** @description Quantos foram apagados */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
   AdminOperationsController_summary: {
     parameters: {
       query?: {
@@ -25459,7 +27993,12 @@ export interface operations {
       };
       header?: never;
       path: {
-        queue: 'newsletter' | 'maintenance' | 'scraper' | 'notifications';
+        queue:
+          | 'newsletter'
+          | 'maintenance'
+          | 'scraper'
+          | 'notifications'
+          | 'imslp';
       };
       cookie?: never;
     };
@@ -25483,7 +28022,12 @@ export interface operations {
       };
       header?: never;
       path: {
-        queue: 'newsletter' | 'maintenance' | 'scraper' | 'notifications';
+        queue:
+          | 'newsletter'
+          | 'maintenance'
+          | 'scraper'
+          | 'notifications'
+          | 'imslp';
       };
       cookie?: never;
     };
@@ -25503,7 +28047,12 @@ export interface operations {
       query?: never;
       header?: never;
       path: {
-        queue: 'newsletter' | 'maintenance' | 'scraper' | 'notifications';
+        queue:
+          | 'newsletter'
+          | 'maintenance'
+          | 'scraper'
+          | 'notifications'
+          | 'imslp';
       };
       cookie?: never;
     };
@@ -25523,7 +28072,12 @@ export interface operations {
       query?: never;
       header?: never;
       path: {
-        queue: 'newsletter' | 'maintenance' | 'scraper' | 'notifications';
+        queue:
+          | 'newsletter'
+          | 'maintenance'
+          | 'scraper'
+          | 'notifications'
+          | 'imslp';
         jobId: string;
       };
       cookie?: never;
@@ -25551,7 +28105,12 @@ export interface operations {
       query?: never;
       header?: never;
       path: {
-        queue: 'newsletter' | 'maintenance' | 'scraper' | 'notifications';
+        queue:
+          | 'newsletter'
+          | 'maintenance'
+          | 'scraper'
+          | 'notifications'
+          | 'imslp';
         jobId: string;
       };
       cookie?: never;
@@ -25567,6 +28126,131 @@ export interface operations {
       };
       /** @description Job inexistente ou já em execução */
       404: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
+  AdminMaintenanceController_listOrphans: {
+    parameters: {
+      query?: {
+        /** @description Enviados a partir de (ISO). Sem datas, todos. */
+        de?: string;
+        /** @description Enviados até (ISO) */
+        ate?: string;
+        /** @description Tipo do dono removido, ou `sem-dono` para os sem dono declarado */
+        tipo?:
+          | 'user'
+          | 'composer'
+          | 'work'
+          | 'workScore'
+          | 'assignment'
+          | 'blogArticle'
+          | 'blogCategory'
+          | 'advertisement'
+          | 'sem-dono';
+        page?: number;
+        limit?: number;
+      };
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description Órfãos paginados, com o resumo */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
+  AdminMaintenanceController_deleteOrphans: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['DeleteOrphansDto'];
+      };
+    };
+    responses: {
+      /** @description Quantos saíram e quais foram recusados */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
+  AdminMaintenanceController_listRuns: {
+    parameters: {
+      query?: {
+        /** @description Id da tarefa ("tokens.prune", "scraper:osesp") */
+        task?: string;
+        trigger?: 'agendado' | 'manual';
+        status?: 'ok' | 'falhou';
+        from?: string;
+        to?: string;
+        page?: number;
+        limit?: number;
+      };
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description Execuções paginadas, da mais recente */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
+  AdminMaintenanceController_runsSummary: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description Uma linha por tarefa que já rodou */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
+  AdminMaintenanceController_deleteRuns: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['DeleteTaskRunsDto'];
+      };
+    };
+    responses: {
+      /** @description Quantas foram apagadas */
+      200: {
         headers: {
           [name: string]: unknown;
         };

@@ -49,7 +49,7 @@ export function ExploreMenu({
       {open && (
         <div
           id="explore-panel"
-          className="c-resultados sup-alta absolute inset-x-0 top-full z-menu !rounded-none !rounded-b-card"
+          className="popover-open sup-alta absolute inset-x-0 top-full z-menu !rounded-none !rounded-b-card"
         >
           <ul className="section-wrap grid grid-cols-5 gap-4 py-6">
             {EXPLORE_PATHS.map((item) => {

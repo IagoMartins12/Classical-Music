@@ -1,12 +1,7 @@
 import { apiFetch } from '@/app/libs/api/client';
 import type { ApiSchema } from '@/app/libs/api/types';
 
-export interface SiteSearchResult {
-  query: string;
-  composers: ApiSchema<'ComposerListItemDto'>[];
-  works: ApiSchema<'WorkSummaryDto'>[];
-  articles: ApiSchema<'ArticleSummaryDto'>[];
-}
+export type SiteSearchResult = ApiSchema<'SiteSearchResponseDto'>;
 
 /** Unified search (`GET /search`): composers, works and blog articles. */
 export function searchSite(q: string, limit: number, signal?: AbortSignal) {

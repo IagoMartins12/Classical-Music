@@ -7,21 +7,15 @@ import {
   PiBookmarkSimpleFill,
   PiCheck,
   PiEnvelopeSimple,
-  PiFacebookLogo,
   PiHeart,
   PiHeartFill,
-  PiLinkSimple,
-  PiLinkedinLogo,
   PiShareNetwork,
-  PiTelegramLogo,
-  PiWhatsappLogo,
-  PiXLogo,
 } from 'react-icons/pi';
 import { Capa } from './Capa';
 import { Button } from '@/app/components/ui/Button';
 import { Field } from '@/app/components/ui/Field';
 import { Icon } from '@/app/components/ui/Icon';
-import { Sheet } from '@/app/components/ui/Sheet';
+import { useShare } from '@/app/components/ui/ShareSheet';
 import { cx } from '@/app/components/ui/cx';
 import { useAuth } from '@/app/hooks/useAuth';
 import { useLoginModal } from '@/app/stores/authStore';
@@ -71,7 +65,6 @@ export function AcoesDoArtigo({
   const [salvou, setSalvou] = useState(false);
   const [curtidas, setCurtidas] = useState(curtidasIniciais);
   const [aviso, setAviso] = useState('');
-  const [compartilhando, setCompartilhando] = useState(false);
 
   useEffect(() => {
     if (!isAuthenticated) return;
@@ -126,20 +119,26 @@ export function AcoesDoArtigo({
     }
   }
 
-  async function compartilhar() {
-    // No celular, só a folha de compartilhar do próprio sistema — cancelar
-    // ali não abre nada nosso por cima. Sem ela, copia o link. No
-    // computador, a nossa folha.
-    if (window.matchMedia('(pointer: coarse)').matches) {
-      if (typeof navigator.share === 'function') {
-        await navigator.share({ title: titulo, url }).catch(() => undefined);
-      } else {
-        await copiarLink(url, idioma);
-      }
-      return;
-    }
-    setCompartilhando(true);
-  }
+  const { share: compartilhar, sheet: folhaDeCompartilhar } = useShare({
+    title: titulo,
+    url,
+    copy: {
+      title: t.compartilhar,
+      shareOn: t.compartilharEm,
+      copyLink: t.copiar,
+      copied: t.copiado,
+      email: t.email,
+    },
+    thumbnail: (
+      <Capa
+        src={capa}
+        alt=""
+        inicial={titulo}
+        sizes="80px"
+        className="aspect-square w-16 shrink-0 rounded-controle"
+      />
+    ),
+  });
 
   return (
     <div className={cx('flex flex-col gap-2', empilhado ? 'items-start' : '')}>
@@ -189,14 +188,7 @@ export function AcoesDoArtigo({
         {aviso}
       </p>
 
-      <Compartilhar
-        aberto={compartilhando}
-        aoFechar={() => setCompartilhando(false)}
-        idioma={idioma}
-        titulo={titulo}
-        url={url}
-        capa={capa}
-      />
+      {folhaDeCompartilhar}
     </div>
   );
 }
@@ -211,153 +203,6 @@ function avisar(texto: string, icone: typeof PiHeart) {
     duration: 2400,
     icon: <Icon de={icone} className="text-ouro-texto" />,
   });
-}
-
-async function copiarLink(url: string, idioma: Idioma) {
-  const t = BLOG[idioma].acoes;
-  try {
-    await navigator.clipboard.writeText(url);
-    avisar(t.copiado, PiCheck);
-    return true;
-  } catch {
-    return false;
-  }
-}
-
-/**
- * A folha de compartilhar do computador: o artigo como vai aparecer (capa,
- * título, endereço), as redes em ícones e o link para copiar. No celular ela
- * não abre: quem compartilha é a folha do próprio sistema.
- */
-function Compartilhar({
-  aberto,
-  aoFechar,
-  idioma,
-  titulo,
-  url,
-  capa,
-}: {
-  aberto: boolean;
-  aoFechar: () => void;
-  idioma: Idioma;
-  titulo: string;
-  url: string;
-  capa: string | null;
-}) {
-  const t = BLOG[idioma].acoes;
-  const [copiado, setCopiado] = useState(false);
-  const texto = encodeURIComponent(titulo);
-  const link = encodeURIComponent(url);
-  const endereco = url.replace(/^https?:\/\/(www\.)?/, '');
-
-  const destinos = [
-    {
-      nome: 'WhatsApp',
-      icone: PiWhatsappLogo,
-      href: `https://wa.me/?text=${texto}%20${link}`,
-    },
-    {
-      nome: 'X',
-      icone: PiXLogo,
-      href: `https://x.com/intent/post?text=${texto}&url=${link}`,
-    },
-    {
-      nome: 'Facebook',
-      icone: PiFacebookLogo,
-      href: `https://www.facebook.com/sharer/sharer.php?u=${link}`,
-    },
-    {
-      nome: 'LinkedIn',
-      icone: PiLinkedinLogo,
-      href: `https://www.linkedin.com/sharing/share-offsite/?url=${link}`,
-    },
-    {
-      nome: 'Telegram',
-      icone: PiTelegramLogo,
-      href: `https://t.me/share/url?url=${link}&text=${texto}`,
-    },
-    {
-      nome: t.email,
-      icone: PiEnvelopeSimple,
-      href: `mailto:?subject=${texto}&body=${link}`,
-    },
-  ];
-
-  async function copiar() {
-    if (await copiarLink(url, idioma)) {
-      setCopiado(true);
-      setTimeout(() => setCopiado(false), 2400);
-    }
-  }
-
-  return (
-    <Sheet
-      aberto={aberto}
-      aoFechar={aoFechar}
-      titulo={t.compartilhar}
-      largura="p"
-    >
-      <div className="flex flex-col gap-7">
-        <div className="flex items-center gap-4 rounded-card bg-sup-2 p-3">
-          <Capa
-            src={capa}
-            alt=""
-            inicial={titulo}
-            sizes="80px"
-            className="aspect-square w-16 shrink-0 rounded-controle"
-          />
-          <div className="min-w-0">
-            <p className="line-clamp-2 font-display text-[1.125rem] leading-snug">
-              {titulo}
-            </p>
-            <p className="t-dado mt-0.5 truncate text-[0.75rem] text-texto-fraco">
-              {endereco}
-            </p>
-          </div>
-        </div>
-
-        <ul aria-label={t.compartilharEm} className="grid grid-cols-3 gap-y-5">
-          {destinos.map((d) => (
-            <li key={d.nome}>
-              <a
-                href={d.href}
-                target={d.href.startsWith('mailto:') ? undefined : '_blank'}
-                rel="noopener noreferrer"
-                className="group flex flex-col items-center gap-2 rounded-controle text-[0.8125rem] text-texto-suave"
-              >
-                <span className="grid h-12 w-12 place-items-center rounded-full bg-sup-2 text-texto transition-[background-color,color,transform] duration-[var(--t-toque)] ease-saida group-hover:bg-[var(--interactive-hover)] group-hover:text-ouro-texto group-active:scale-95 motion-reduce:transition-none">
-                  <Icon de={d.icone} tamanho="m" />
-                </span>
-                {d.nome}
-              </a>
-            </li>
-          ))}
-        </ul>
-
-        <div className="flex items-center gap-2 rounded-controle bg-[var(--campo)] p-1.5 pl-4">
-          <label htmlFor="link-do-artigo" className="sr-only">
-            {t.copiar}
-          </label>
-          <input
-            id="link-do-artigo"
-            readOnly
-            value={url}
-            onFocus={(e) => e.currentTarget.select()}
-            className="t-dado min-w-0 flex-1 truncate bg-transparent text-[0.8125rem] text-texto-suave outline-none"
-          />
-          <Button
-            tamanho="p"
-            variante={copiado ? 'secundario' : 'primario'}
-            icone={copiado ? PiCheck : PiLinkSimple}
-            onClick={copiar}
-            className="shrink-0"
-          >
-            {copiado ? t.copiado : t.copiar}
-          </Button>
-        </div>
-      </div>
-    </Sheet>
-  );
 }
 
 // ---------------------------------------------------------------------------

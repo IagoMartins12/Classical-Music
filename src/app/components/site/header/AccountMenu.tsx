@@ -54,7 +54,7 @@ export function AccountMenu({
       {open && (
         <div
           role="menu"
-          className="c-resultados sup-alta absolute right-0 top-full z-menu mt-2 flex w-72 flex-col gap-1 !rounded-card p-2"
+          className="popover-open sup-alta absolute right-0 top-full z-menu mt-2 flex w-72 flex-col gap-1 !rounded-card p-2"
         >
           <div className="flex flex-col px-3 pb-3 pt-2">
             <span className="truncate font-display text-[1.25rem]">{name}</span>

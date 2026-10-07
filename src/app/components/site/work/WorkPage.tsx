@@ -1,0 +1,164 @@
+import Link from '@/app/components/LocalizedLink';
+import { SeloVerificada } from '@/app/components/ui/SeloVerificada';
+import type { Idioma } from '@/app/conteudo/legal/tipos';
+import { WORK } from '@/app/conteudo/site/work';
+import type { ComposerWork } from '@/app/requests/composer-details';
+import type { WorkDetails } from '@/app/requests/work-page-details';
+import type { ScoreLibrary } from '@/app/requests/work-score-library';
+import { localizeHref } from '@/app/utils/localizedRoutes';
+import { SITE_URL } from '@/app/utils/seoAlternates';
+import { CurationActions } from '../CurationActions';
+import { FavoriteHeart } from '../FavoriteHeart';
+import { Portrait } from '../Portrait';
+import { ReportButton } from '../ReportButton';
+import { ShareAction } from '../ShareAction';
+import { workTitle } from '../workTitle';
+import { MoreFromComposer } from './MoreFromComposer';
+import { StudyActions } from './StudyActions';
+import { WorkAnnotations, WorkMedia } from './WorkMedia';
+import { WorkDetailsPanel } from './WorkDetailsPanel';
+import { WorkScores } from './WorkScores';
+import type { StudyContext } from './useStudy';
+
+const textLink =
+  'underline decoration-transparent underline-offset-4 hover:decoration-[var(--ouro)]';
+
+/**
+ * The work page: title and study actions, then listening, then the details
+ * beside the scores (the details give way to a score preview on click),
+ * annotations and more by the composer.
+ */
+export function WorkPage({
+  work,
+  scores,
+  moreWorks,
+  language,
+}: {
+  work: WorkDetails;
+  scores: ScoreLibrary;
+  moreWorks: ComposerWork[];
+  language: Idioma;
+}) {
+  const copy = WORK[language];
+  const title = workTitle(work.title, work.opOrCatalog);
+  const composerName = work.composer.fullName || work.composer.name;
+  const subtitle = [
+    work.instrumentation || work.instrument?.name,
+    work.compositionYear,
+    work.dedicateTo && copy.dedicatedTo(work.dedicateTo),
+  ]
+    .filter(Boolean)
+    .join(' · ');
+  const context: StudyContext = {
+    workId: work.id,
+    workTitle: work.title,
+    composerName,
+    epochName: work.epoch?.name ?? work.composer.epochName ?? undefined,
+    instrumentName: work.instrument?.name,
+  };
+  const url = `${SITE_URL}${localizeHref(`/works/${work.id}`, language)}`;
+
+  return (
+    <article className="section-wrap py-10 md:py-14">
+      <nav
+        aria-label={composerName}
+        className="t-rotulo mb-8 flex flex-wrap items-center gap-x-2 gap-y-1 text-texto-fraco"
+      >
+        <Link
+          href={`/composer/${work.composer.id}`}
+          className={`flex items-center gap-2 ${textLink}`}
+        >
+          <Portrait
+            name={composerName}
+            src={work.composer.portraitUrl}
+            sizes="32px"
+            className="h-7 w-7 rounded-full text-[0.75rem]"
+          />
+          {composerName}
+        </Link>
+        {work.parentWork && (
+          <>
+            <span aria-hidden="true">/</span>
+            <span>
+              {copy.partOf}{' '}
+              <Link href={`/works/${work.parentWork.id}`} className={textLink}>
+                {work.parentWork.title}
+              </Link>
+            </span>
+          </>
+        )}
+      </nav>
+
+      <header className="grid grid-cols-1 gap-8 lg:grid-cols-[minmax(0,7fr)_minmax(0,5fr)] lg:items-end">
+        <div className="flex flex-col gap-5">
+          <h1 className="font-display text-[clamp(2.5rem,6.5vw,5.25rem)] leading-[0.98] tracking-[-0.02em] [overflow-wrap:anywhere]">
+            {title}
+            {work.isVerified && (
+              <SeloVerificada
+                desenhar
+                className="ml-2 inline-block h-[0.42em] w-[0.42em] align-[0.35em] text-verificado"
+              />
+            )}
+          </h1>
+          {work.subtitle && (
+            <p className="font-display text-[1.375rem] text-texto-suave">
+              {work.subtitle}
+            </p>
+          )}
+          {subtitle && (
+            <p className="t-corpo max-w-[60ch] text-texto-suave">{subtitle}</p>
+          )}
+        </div>
+        <div className="flex flex-col gap-3">
+          <StudyActions context={context} />
+          <div className="flex flex-wrap items-center gap-2">
+            <FavoriteHeart
+              type="work"
+              id={work.id}
+              name={work.title}
+              withLabel
+            />
+            <ShareAction
+              title={`${title} — ${composerName}`}
+              url={url}
+              image={work.composer.portraitUrl}
+              imageName={composerName}
+            />
+            <ReportButton entityType="work" entityId={work.id} name={title} />
+            <CurationActions
+              type="work"
+              id={work.id}
+              name={title}
+              verified={work.isVerified}
+            />
+          </div>
+        </div>
+      </header>
+
+      <section className="mt-12 flex flex-col gap-4">
+        <h2 className="t-subtitulo">{copy.listen}</h2>
+        <WorkMedia work={work} />
+      </section>
+
+      <WorkScores
+        initial={scores}
+        context={context}
+        details={
+          <WorkDetailsPanel work={work} language={language} copy={copy} />
+        }
+      />
+
+      <section className="mt-20 flex flex-col gap-6">
+        <h2 className="sr-only">{copy.annotations}</h2>
+        <WorkAnnotations work={work} />
+      </section>
+
+      <MoreFromComposer
+        composer={{ id: work.composer.id, name: work.composer.name }}
+        works={moreWorks}
+        language={language}
+        copy={copy}
+      />
+    </article>
+  );
+}

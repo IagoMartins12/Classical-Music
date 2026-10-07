@@ -18,6 +18,7 @@ import { useSiteSearch } from '@/app/hooks/useSiteSearch';
 import { rotasDoBlog } from '@/app/utils/blog/rotas';
 import { localizeHref, type RouteLanguage } from '@/app/utils/localizedRoutes';
 import { composerYears } from '../composerYears';
+import { workTitle } from '../workTitle';
 import { SEARCH_HREF } from './navigation';
 
 interface ResultItem {
@@ -83,7 +84,7 @@ export function HeaderSearch({
       ...result.works.map((w) => ({
         id: w.id,
         group: 'works' as const,
-        title: w.opOrCatalog ? `${w.title}, ${w.opOrCatalog}` : w.title,
+        title: workTitle(w.title, w.opOrCatalog),
         detail: w.composer.name,
         href: localizeHref(`/works/${w.id}`, language),
       })),
@@ -142,7 +143,7 @@ export function HeaderSearch({
       </label>
       <div
         className={cx(
-          'c-busca sup-1 flex items-center gap-3 !rounded-full',
+          'search-field sup-1 flex items-center gap-3 !rounded-full',
           {
             bar: 'min-h-11 py-1 pl-4 pr-1',
             hero: 'min-h-14 py-2 pl-6 pr-2 shadow-[var(--sombra-1)]',
@@ -198,7 +199,7 @@ export function HeaderSearch({
           className={cx(
             'flex flex-col gap-1 p-2 text-left',
             dropdown
-              ? 'c-resultados sup-alta absolute inset-x-0 top-full z-menu mt-2 max-h-[70vh] overflow-y-auto !rounded-card'
+              ? 'popover-open sup-alta absolute inset-x-0 top-full z-menu mt-2 max-h-[70vh] overflow-y-auto !rounded-card'
               : 'mt-4'
           )}
         >

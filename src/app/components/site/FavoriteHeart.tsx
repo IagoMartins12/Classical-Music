@@ -19,17 +19,35 @@ import { useFavoritesStore } from '@/app/stores/useFavoritesStore';
  * - `onPhoto`: dark veil behind the heart, readable over any portrait.
  * - `withLabel`: the text button next to "Share" on the detail pages.
  */
+/** A score is favorited per work and source (`sourceId` + `IMSLP`, `UPLOAD`…). */
+export interface ScoreFavoriteTarget {
+  workId: string;
+  source: string;
+  /** Kept with the favorite so the favorites page lists it without a lookup. */
+  data: {
+    title: string;
+    type: string;
+    downloadUrl?: string | null;
+    fileSize?: string | null;
+    pageCount?: string | null;
+    fileFormat: string;
+  };
+}
+
 export function FavoriteHeart({
   type,
   id,
   name,
+  score,
   onPhoto = false,
   withLabel = false,
   className,
 }: {
-  type: 'composer' | 'work';
+  type: 'composer' | 'work' | 'score';
   id: string;
   name: string;
+  /** Required when `type` is `score`. */
+  score?: ScoreFavoriteTarget;
   onPhoto?: boolean;
   withLabel?: boolean;
   className?: string;
@@ -37,14 +55,24 @@ export function FavoriteHeart({
   const copy = COMMON[useRouteLanguage().language].favorite;
   const { user, isAuthenticated } = useAuth();
   const { open: openLogin } = useLoginModal();
+  const scoreKey = score && `${score.workId}-${id}-${score.source}`;
   const favorited = useFavoritesStore((s) =>
-    type === 'composer' ? s.isComposerFavorited(id) : s.isWorkFavorited(id)
+    type === 'composer'
+      ? s.isComposerFavorited(id)
+      : type === 'work'
+        ? s.isWorkFavorited(id)
+        : !!score && s.isScoreFavorited(score.workId, id, score.source)
   );
   const busy = useFavoritesStore((s) =>
-    type === 'composer' ? s.loading.composers.has(id) : s.loading.works.has(id)
+    type === 'composer'
+      ? s.loading.composers.has(id)
+      : type === 'work'
+        ? s.loading.works.has(id)
+        : !!scoreKey && s.loading.scores.has(scoreKey)
   );
   const toggleComposer = useFavoritesStore((s) => s.toggleComposerFavorite);
   const toggleWork = useFavoritesStore((s) => s.toggleWorkFavorite);
+  const toggleScore = useFavoritesStore((s) => s.toggleScoreFavorite);
   const [beat, setBeat] = useState(0);
 
   const onClick = async (event: React.MouseEvent) => {
@@ -56,7 +84,15 @@ export function FavoriteHeart({
       const now =
         type === 'composer'
           ? await toggleComposer(id, user.id)
-          : await toggleWork(id, user.id);
+          : type === 'work'
+            ? await toggleWork(id, user.id)
+            : await toggleScore(
+                score!.workId,
+                id,
+                score!.source,
+                user.id,
+                score!.data
+              );
       setBeat((b) => b + 1);
       toast.success(now ? copy.added(name) : copy.removed(name));
     } catch {
