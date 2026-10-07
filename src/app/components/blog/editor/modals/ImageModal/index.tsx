@@ -1,16 +1,15 @@
-// components/blog/editor/modals/ImageModal.tsx - CORRIGIDO
 'use client';
 
-import { useState, useId } from 'react';
-import { Editor } from '@tiptap/react';
+import { useId, useState, type ChangeEvent } from 'react';
+import type { Editor } from '@tiptap/react';
 import { PiUploadSimple } from 'react-icons/pi';
-import Modal from '@/app/components/Modal';
-import Input from '@/app/components/Common/Inputs';
-import Button from '@/app/components/Common/Button';
-import Select from '@/app/components/Common/Select';
+import { Chip } from '@/app/components/ui/Badge';
+import { classesDeBotao } from '@/app/components/ui/Button';
+import { Field } from '@/app/components/ui/Field';
+import { Icon } from '@/app/components/ui/Icon';
+import { cx } from '@/app/components/ui/cx';
 import { uploadBlogMedia } from '@/app/requests/blog/interactions';
-import { Text } from '@/app/components/ui/Text';
-import { Stack } from '@/app/components/ui/Layout';
+import { FolhaDoEditor } from '../FolhaDoEditor';
 
 interface ImageModalProps {
   editor: Editor;
@@ -19,284 +18,175 @@ interface ImageModalProps {
   sessionId?: string;
 }
 
+/**
+ * Imagem no texto: enviar um arquivo ou colar um endereço.
+ *
+ * **Sem largura, altura e alinhamento.** O diálogo antigo pedia os três e
+ * gravava `float` no estilo da imagem; o leitor novo ignora os três (a
+ * imagem ocupa a coluna do texto, como no resto do blog), então perguntar
+ * era prometer o que não acontece. **A descrição é obrigatória**: é o que o
+ * leitor de tela lê e o que o Google indexa da imagem.
+ */
 export function ImageModal({
   editor,
   onClose,
   articleId,
   sessionId,
 }: ImageModalProps) {
-  const idCampo = useId();
-  const [activeTab, setActiveTab] = useState<'upload' | 'link'>('upload');
+  const id = useId();
+  const [origem, setOrigem] = useState<'arquivo' | 'link'>('arquivo');
   const [url, setUrl] = useState('');
   const [alt, setAlt] = useState('');
-  const [caption, setCaption] = useState('');
-  const [uploading, setUploading] = useState(false);
-  const [imageError, setImageError] = useState(false);
+  const [legenda, setLegenda] = useState('');
+  const [enviando, setEnviando] = useState(false);
+  const [erro, setErro] = useState('');
+  const [quebrada, setQuebrada] = useState(false);
 
-  const [width, setWidth] = useState('');
-  const [height, setHeight] = useState('');
-  const [alignment, setAlignment] = useState('center');
-
-  const alignmentOptions = [
-    { value: 'left', label: 'Esquerda' },
-    { value: 'center', label: 'Centro' },
-    { value: 'right', label: 'Direita' },
-  ];
-
-  const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (!file) return;
-
-    setUploading(true);
+  async function enviar(e: ChangeEvent<HTMLInputElement>) {
+    const arquivo = e.target.files?.[0];
+    e.target.value = '';
+    if (!arquivo) return;
+    setEnviando(true);
+    setErro('');
     try {
       setUrl(
-        await uploadBlogMedia(file, { folder: 'content', articleId, sessionId })
+        await uploadBlogMedia(arquivo, {
+          folder: 'content',
+          articleId,
+          sessionId,
+        })
       );
-    } catch (error) {
-      console.error('Erro ao fazer upload:', error);
-      alert(
-        error instanceof Error
-          ? `Erro ao fazer upload: ${error.message}`
-          : 'Erro ao fazer upload da imagem'
+      setQuebrada(false);
+    } catch (falha) {
+      setErro(
+        falha instanceof Error
+          ? `Não deu para enviar: ${falha.message}`
+          : 'Não deu para enviar a imagem.'
       );
     } finally {
-      setUploading(false);
+      setEnviando(false);
     }
-  };
+  }
 
-  // ✅ CORRIGIDO: Adicionar stopPropagation
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    e.stopPropagation(); // ✅ IMPEDE QUE O FORM PAI SEJA SUBMETIDO
-
-    if (url) {
-      const attrs: any = {
+  function inserir() {
+    editor
+      .chain()
+      .focus()
+      .setImage({
         src: url,
-        alt,
-        title: caption,
-      };
+        alt: alt.trim(),
+        title: legenda.trim() || undefined,
+      })
+      .run();
+    onClose();
+  }
 
-      if (width) attrs.width = width;
-      if (height) attrs.height = height;
-
-      if (alignment === 'left') {
-        attrs.style = 'float: left; margin-right: 1rem;';
-      } else if (alignment === 'right') {
-        attrs.style = 'float: right; margin-left: 1rem;';
-      } else {
-        attrs.style = 'display: block; margin: 0 auto;';
-      }
-
-      editor.chain().focus().setImage(attrs).run();
-      onClose();
-    }
-  };
-
-  const handleTabChange = (tab: 'upload' | 'link') => {
-    setActiveTab(tab);
+  function trocarOrigem(nova: 'arquivo' | 'link') {
+    setOrigem(nova);
     setUrl('');
-    setImageError(false);
-  };
+    setErro('');
+    setQuebrada(false);
+  }
 
   return (
-    <Modal isOpen={true} onClose={onClose} title="Inserir Imagem" maxWidth="md">
-      <form onSubmit={handleSubmit} className="space-y-4">
-        {/* TABS */}
-        <div className="flex ">
-          <button
-            type="button" // ✅ IMPORTANTE: type="button" para não submeter
-            onClick={() => handleTabChange('upload')}
-            className={`flex-1 px-4 py-2 text-sm font-medium transition-colors ${
-              activeTab === 'upload'
-                ? 'border-b-2 text-ouro-texto border-linha'
-                : 'text-theme-tertiary'
-            }`}
-          >
-            Fazer Upload
-          </button>
-          <button
-            type="button" // ✅ IMPORTANTE: type="button" para não submeter
-            onClick={() => handleTabChange('link')}
-            className={`flex-1 px-4 py-2 text-sm font-medium transition-colors ${
-              activeTab === 'link'
-                ? 'border-b-2 text-ouro-texto border-linha'
-                : 'text-theme-tertiary'
-            }`}
-          >
-            Link Externo
-          </button>
-        </div>
+    <FolhaDoEditor
+      titulo="Imagem"
+      aoFechar={onClose}
+      aoEnviar={inserir}
+      podeEnviar={Boolean(url && alt.trim() && !quebrada)}
+      enviando={enviando}
+    >
+      <div
+        role="group"
+        aria-label="De onde vem a imagem"
+        className="flex gap-1.5"
+      >
+        <Chip
+          selecionado={origem === 'arquivo'}
+          onClick={() => trocarOrigem('arquivo')}
+        >
+          Enviar arquivo
+        </Chip>
+        <Chip
+          selecionado={origem === 'link'}
+          onClick={() => trocarOrigem('link')}
+        >
+          Colar endereço
+        </Chip>
+      </div>
 
-        {/* ABA - UPLOAD */}
-        {activeTab === 'upload' && (
-          <>
-            <Stack gap={2}>
-              <span
-                id={`${idCampo}-1`}
-                className="block text-sm font-medium text-theme-primary"
-              >
-                Selecionar Arquivo
-              </span>
-              <div
-                role="group"
-                aria-labelledby={`${idCampo}-1`}
-                className="border-2 border-dashed border-theme-secondary rounded-lg p-4 text-center transition-colors"
-              >
-                <input
-                  type="file"
-                  id="image-upload"
-                  accept="image/*"
-                  onChange={handleFileUpload}
-                  className="hidden"
-                  disabled={uploading}
-                />
-
-                {url && !uploading ? (
-                  <div className="space-y-3">
-                    {/* eslint-disable-next-line @next/next/no-img-element */}
-                    <img
-                      src={url}
-                      alt="Preview"
-                      className="max-w-full max-h-48 mx-auto rounded-lg shadow-md"
-                    />
-                    <label
-                      htmlFor="image-upload"
-                      className="inline-block cursor-pointer text-sm text-ouro-texto underline"
-                    >
-                      Alterar imagem
-                    </label>
-                  </div>
-                ) : (
-                  <label htmlFor="image-upload" className="cursor-pointer">
-                    <PiUploadSimple className="w-8 h-8 text-theme-tertiary mx-auto mb-2" />
-                    <Text papel="rotulo" tom="suave">
-                      {uploading ? 'Enviando...' : 'Clique para fazer upload'}
-                    </Text>
-                  </label>
-                )}
-              </div>
-            </Stack>
-
-            {url && (
-              <Input
-                label="Caminho da Imagem"
-                type="text"
-                value={url}
-                onChange={() => {}}
-                readOnly={true}
-                disabled={true}
-                widhtFull
-              />
+      {origem === 'arquivo' ? (
+        <div className="flex flex-col gap-2">
+          <input
+            id={`${id}-arquivo`}
+            type="file"
+            accept="image/jpeg,image/png,image/webp,image/avif"
+            onChange={enviar}
+            disabled={enviando}
+            className="sr-only"
+          />
+          <label
+            htmlFor={`${id}-arquivo`}
+            className={cx(
+              classesDeBotao('secundario'),
+              'cursor-pointer self-start'
             )}
-          </>
-        )}
-
-        {/* ABA - LINK */}
-        {activeTab === 'link' && (
-          <>
-            {url && (
-              <Stack gap={2} className="mb-4">
-                <span className="block text-sm font-medium text-theme-primary">
-                  Preview
-                </span>
-                <div className="border-2 border-theme-secondary rounded-lg p-4 text-center bg-gray-50">
-                  {!imageError ? (
-                    // eslint-disable-next-line @next/next/no-img-element
-                    <img
-                      src={url}
-                      alt="Preview"
-                      className="max-w-full max-h-48 mx-auto rounded-lg shadow-md"
-                      onError={() => setImageError(true)}
-                    />
-                  ) : (
-                    <p className="text-sm text-red-500">
-                      Não foi possível carregar a imagem
-                    </p>
-                  )}
-                </div>
-              </Stack>
-            )}
-
-            <Input
-              label="URL da Imagem"
-              type="url"
-              value={url}
-              onChange={(e) => {
-                setUrl(e.target.value);
-                setImageError(false);
-              }}
-              placeholder="https://exemplo.com/imagem.jpg"
-              required
-              widhtFull
-            />
-          </>
-        )}
-
-        {/* Dimensões */}
-        <div className="grid grid-cols-2 gap-4">
-          <Input
-            label="Largura (opcional)"
-            type="text"
-            value={width}
-            onChange={(e) => setWidth(e.target.value)}
-            placeholder="Ex: 500px ou 100%"
-            widhtFull
-          />
-          <Input
-            label="Altura (opcional)"
-            type="text"
-            value={height}
-            onChange={(e) => setHeight(e.target.value)}
-            placeholder="Ex: 300px ou auto"
-            widhtFull
-          />
-        </div>
-
-        {/* Alinhamento */}
-        <div>
-          <Select
-            label="Alinhamento"
-            options={alignmentOptions}
-            value={alignment}
-            onChange={(e) => setAlignment(e.target.value)}
-          />
-        </div>
-
-        <Input
-          label="Texto Alternativo (ALT)"
-          type="text"
-          value={alt}
-          onChange={(e) => setAlt(e.target.value)}
-          placeholder="Descrição da imagem"
-          widhtFull
-        />
-
-        <Input
-          label="Legenda"
-          type="text"
-          value={caption}
-          onChange={(e) => setCaption(e.target.value)}
-          placeholder="Legenda da imagem (opcional)"
-          widhtFull
-        />
-
-        <div className="flex justify-end space-x-2 pt-4">
-          <Button
-            type="button" // ✅ IMPORTANTE: type="button"
-            variant="secondary"
-            onClick={onClose}
           >
-            Cancelar
-          </Button>
-          <Button
-            type="submit" // ✅ Este é o único que deve ser type="submit"
-            variant="primary"
-            disabled={!url}
-          >
-            Inserir
-          </Button>
+            <Icon de={PiUploadSimple} tamanho="p" />
+            {enviando
+              ? 'Enviando…'
+              : url
+                ? 'Trocar arquivo'
+                : 'Escolher arquivo'}
+          </label>
+          <p className="t-legenda">JPG, PNG, WebP ou AVIF.</p>
         </div>
-      </form>
-    </Modal>
+      ) : (
+        <Field
+          label="Endereço da imagem"
+          type="url"
+          inputMode="url"
+          value={url}
+          onChange={(e) => {
+            setUrl(e.target.value.trim());
+            setQuebrada(false);
+          }}
+          placeholder="https://"
+          erro={quebrada ? 'A imagem não abriu neste endereço.' : undefined}
+          autoFocus
+        />
+      )}
+
+      {erro && (
+        <p role="alert" className="t-legenda text-erro">
+          {erro}
+        </p>
+      )}
+
+      {url && !quebrada && (
+        // A prévia é do endereço como digitado, antes de passar pelo
+        // otimizador de imagens; por isso `<img>` e não `Image`.
+        // eslint-disable-next-line @next/next/no-img-element
+        <img
+          src={url}
+          alt={alt.trim() || 'Prévia da imagem'}
+          onError={() => setQuebrada(true)}
+          className="max-h-56 w-full rounded-card bg-sup-2 object-contain"
+        />
+      )}
+
+      <Field
+        label="Descrição da imagem"
+        value={alt}
+        onChange={(e) => setAlt(e.target.value)}
+        ajuda="O que a imagem mostra, para quem não a vê. Ex.: Brahms ao piano, por volta de 1890."
+      />
+      <Field
+        label="Legenda (opcional)"
+        value={legenda}
+        onChange={(e) => setLegenda(e.target.value)}
+        ajuda="Aparece sob a imagem. Bom lugar para o crédito."
+      />
+    </FolhaDoEditor>
   );
 }

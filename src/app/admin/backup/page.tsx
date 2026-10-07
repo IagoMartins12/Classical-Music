@@ -1,16 +1,8 @@
-// app/admin/backup/page.tsx
-import { Metadata } from 'next';
-import BackupManagementClient from '@/app/components/Admin/Backup/BackupManagementClient';
+import type { Metadata } from 'next';
+import Backup from '@/app/components/Admin/telas/Backup';
 
-// Painel em CSR: o dado vem da API pelo navegador.
-export const dynamic = 'force-dynamic';
+export const metadata: Metadata = { title: 'Backup' };
 
-export const metadata: Metadata = {
-  title: 'Gerenciamento de Backup | Admin Panel',
-  description: 'Gerenciar backups do banco de dados',
-  robots: 'noindex, nofollow',
-};
-
-export default function BackupManagementPage() {
-  return <BackupManagementClient />;
+export default function BackupPage() {
+  return <Backup />;
 }

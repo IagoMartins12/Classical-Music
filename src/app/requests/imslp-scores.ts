@@ -52,11 +52,65 @@ function toImslpScore(score: ScoreItem): IMSLPScore {
   };
 }
 
-export async function fetchImslpScores(workId: string) {
-  const data = await apiFetch<ApiSchema<'WorkScoresResponseDto'>>(
-    `/works/${workId}/scores`,
-    { query: { source: 'IMSLP', limit: 1000 } }
-  );
+type ImslpStatus = 'stored' | 'pending' | 'none' | 'unavailable';
+type ScoresResponse = ApiSchema<'WorkScoresResponseDto'> & {
+  imslp?: { status: ImslpStatus };
+};
+
+/** De quanto em quanto tempo perguntar, e até quando esperar a fila. */
+const INTERVALO_MS = 2_500;
+const ESPERA_MAX_MS = 60_000;
+
+const esperar = (ms: number, signal?: AbortSignal) =>
+  new Promise<void>((resolve, reject) => {
+    const id = setTimeout(resolve, ms);
+    signal?.addEventListener('abort', () => {
+      clearTimeout(id);
+      reject(new DOMException('Cancelado', 'AbortError'));
+    });
+  });
+
+function listar(workId: string) {
+  return apiFetch<ScoresResponse>(`/works/${workId}/scores`, {
+    query: { source: 'IMSLP', limit: 1000 },
+  });
+}
+
+/**
+ * Obra cujas partituras ainda não foram lidas do IMSLP: a API enfileira a
+ * leitura e responde `imslp.status = pending` na hora (ver
+ * `ImslpScoresService` na API). Aqui se pergunta pela situação — rota barata —
+ * até a fila terminar, e só então se lista de novo. `aoBuscar` avisa a tela,
+ * que troca "carregando" por "buscando no IMSLP".
+ */
+async function listarEsperandoAFila(
+  workId: string,
+  opcoes: { aoBuscar?: () => void; signal?: AbortSignal }
+): Promise<ScoresResponse> {
+  const primeira = await listar(workId);
+  if (primeira.imslp?.status !== 'pending') return primeira;
+
+  opcoes.aoBuscar?.();
+  const limite = Date.now() + ESPERA_MAX_MS;
+
+  while (Date.now() < limite) {
+    await esperar(INTERVALO_MS, opcoes.signal);
+    const { status } = await apiFetch<{ status: ImslpStatus }>(
+      `/works/${workId}/scores/imslp-status`
+    );
+    if (status !== 'pending') {
+      return status === 'stored' ? listar(workId) : primeira;
+    }
+  }
+
+  return primeira;
+}
+
+export async function fetchImslpScores(
+  workId: string,
+  opcoes: { aoBuscar?: () => void; signal?: AbortSignal } = {}
+) {
+  const data = await listarEsperandoAFila(workId, opcoes);
 
   const scoresByType = Object.fromEntries(
     TAB_TYPES.map((tab) => [tab, [] as IMSLPScoreGroup[]])

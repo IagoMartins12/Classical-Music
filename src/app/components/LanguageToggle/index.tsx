@@ -1,6 +1,9 @@
 'use client';
 
-import { useLanguageWithRefresh } from '@/app/stores/useLanguageStore';
+import {
+  useLanguageStore,
+  useLanguageWithRefresh,
+} from '@/app/stores/useLanguageStore';
 import React from 'react';
 import { PiGlobe } from 'react-icons/pi';
 import { Inline } from '@/app/components/ui/Layout';
@@ -11,6 +14,13 @@ interface LanguageToggleProps {
   showLabel?: boolean;
   showSystemIndicator?: boolean; // 🆕 Mostrar se está seguindo o sistema
   className?: string;
+  /**
+   * Troca de idioma por rota (o blog vai de `/blog` a `/en/blog`). Sem ela,
+   * a troca grava o cookie e recarrega a página no mesmo endereço.
+   */
+  aoTrocar?: (idioma: 'pt' | 'en') => void;
+  /** O idioma da página, quando ele vem do endereço (ver `aoTrocar`). */
+  idioma?: 'pt' | 'en';
 }
 
 export const LanguageToggle: React.FC<LanguageToggleProps> = ({
@@ -18,13 +28,27 @@ export const LanguageToggle: React.FC<LanguageToggleProps> = ({
   showLabel = false,
   showSystemIndicator = false, // 🆕 Padrão false para não quebrar componentes existentes
   className = '',
+  aoTrocar,
+  idioma: idiomaForcado,
 }) => {
   const {
-    language,
-    toggleLanguage,
+    language: idiomaDoStore,
+    toggleLanguage: recarregarNoOutroIdioma,
     isTranslating,
     hasUserPreference, // 🆕 Nova propriedade
   } = useLanguageWithRefresh();
+  const setTranslating = useLanguageStore((s) => s.setTranslating);
+  const setStoreLanguage = useLanguageStore((s) => s.setLanguage);
+  // Com troca por rota, quem manda é o endereço: `/en/blog` é inglês mesmo
+  // que o cookie diga outra coisa.
+  const language = idiomaForcado ?? idiomaDoStore;
+  const toggleLanguage = () => {
+    if (!aoTrocar) return recarregarNoOutroIdioma();
+    const novo = language === 'pt' ? 'en' : 'pt';
+    setTranslating(true);
+    setStoreLanguage(novo, true);
+    aoTrocar(novo);
+  };
 
   const getVariantClasses = () => {
     switch (variant) {

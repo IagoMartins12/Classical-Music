@@ -1,14 +1,14 @@
 import {
-  EsqueletoCabecalho,
-  EsqueletoGrade,
+  EsqueletoAbertura,
   EsqueletoPagina,
+  EsqueletoPlanos,
 } from '@/app/components/ui/Carregando';
 
 export default function Carregando() {
   return (
     <EsqueletoPagina rotulo="Carregando planos">
-      <EsqueletoCabecalho centro />
-      <EsqueletoGrade colunas={3} quantos={3} />
+      <EsqueletoAbertura linhas={1} />
+      <EsqueletoPlanos />
     </EsqueletoPagina>
   );
 }

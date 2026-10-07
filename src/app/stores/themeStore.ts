@@ -36,7 +36,7 @@ function getSystemTheme(): ThemeMode {
  *   voltando para o escuro, o claro encolhe de volta para dentro dele, com a
  *   mesma curva espelhada.
  */
-export const INVERSE_THEME_CIRCLE = true;
+export const INVERSE_THEME_CIRCLE = false;
 
 /** Ponto da tela de onde a troca de tema parte: o botão que a pessoa apertou. */
 export interface OrigemDaTroca {

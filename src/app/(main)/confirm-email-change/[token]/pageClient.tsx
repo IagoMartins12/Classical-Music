@@ -1,5 +1,6 @@
 // app/confirm-email-change/[token]/page.tsx
 'use client';
+import { mailto } from '@/app/utils/contato';
 
 import { legacyAuth } from '@/app/libs/api/compat';
 import { useState, useEffect } from 'react';
@@ -463,7 +464,7 @@ export default function ConfirmEmailChangePage() {
           <Text papel="legenda" tom="fraco" as="p">
             {t('pages_token_jsx_p_children_0__problemas_contato')}{' '}
             <a
-              href="mailto:suporte@opusatlas.com"
+              href={mailto('suporte')}
               className="text-ouro-texto hover:underline"
             >
               {t('pages_token_jsx_a_children_0__suporte')}

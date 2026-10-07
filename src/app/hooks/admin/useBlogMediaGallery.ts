@@ -38,6 +38,8 @@ export interface BlogMediaFile {
   folder: string;
   isTemporary: boolean;
   inGallery: boolean;
+  /** A API só apaga arquivo registrado por ela e fora de uso. */
+  deletable?: boolean;
   // 🆕 CAMPOS DE USO
   isUsed: boolean;
   usedIn: Array<{
@@ -62,7 +64,7 @@ export interface MediaGalleryStats {
   unusedFiles: number;
   multiUseFiles: number;
 }
-// ✅ Tipo correto para os dados por categoria
+// Dados por categoria
 type CategoryStats = Record<MediaCategory, { count: number; size: number }>;
 export interface MediaGalleryResult {
   files: BlogMediaFile[];
@@ -122,6 +124,7 @@ function toMediaFile(file: ApiGalleryFile): BlogMediaFile {
     folder: '',
     isTemporary: file.isTemporary,
     inGallery: file.category === 'gallery',
+    deletable: file.deletable,
     isUsed: file.isUsed,
     usedIn: file.usedIn,
     usageCount: file.usageCount,
@@ -172,11 +175,11 @@ export interface GalleryOptions {
   includeTemp?: boolean;
 }
 
-const galleryKey = (options: GalleryOptions) =>
+export const galleryKey = (options: GalleryOptions) =>
   adminKeys.list('blog-media', options);
 
 /** A galeria da API (`GET /blog/admin/media`); origem e temporários se filtram aqui. */
-async function fetchGallery(
+export async function fetchGallery(
   options: GalleryOptions
 ): Promise<MediaGalleryResult> {
   const startedAt = Date.now();

@@ -1,3 +1,4 @@
+import { CONTATO } from '@/app/utils/contato';
 // app/page.tsx - Homepage com metadata SEO DEFINITIVO
 import { Metadata } from 'next';
 import PageServer from './pageServer';
@@ -370,7 +371,7 @@ export async function generateMetadata({
           contactPoint: {
             '@type': 'ContactPoint',
             contactType: 'Customer Service',
-            email: 'contato@opusatlas.com.br',
+            email: CONTATO.contato,
             availableLanguage: ['Portuguese', 'English'],
           },
         },

@@ -1,16 +1,8 @@
-// app/admin/uploads/page.tsx
-import { Metadata } from 'next';
-import UploadsManagement from '@/app/components/Admin/Managements/UploadsManagement';
+import type { Metadata } from 'next';
+import Envios from '@/app/components/Admin/telas/Envios';
 
-// Painel em CSR: o dado vem da API pelo navegador.
-export const dynamic = 'force-dynamic';
+export const metadata: Metadata = { title: 'Envios' };
 
-export const metadata: Metadata = {
-  title: 'Gerenciar Uploads | Admin Panel',
-  description: 'Administre uploads e moderação de conteúdo',
-  robots: 'noindex, nofollow',
-};
-
-export default function AdminUploadsPage() {
-  return <UploadsManagement />;
+export default function EnviosPage() {
+  return <Envios />;
 }

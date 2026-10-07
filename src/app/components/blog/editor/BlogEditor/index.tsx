@@ -1,4 +1,3 @@
-// components/blog/editor/BlogEditor.tsx - COM SESSIONID
 'use client';
 
 import { useEditor, EditorContent } from '@tiptap/react';
@@ -20,6 +19,16 @@ import { TimelineExtension } from '../extensions/TimelineExtension';
 import { VideoComparisonExtension } from '../extensions/VideoComparisonExtension';
 import { QuoteMusicalExtension } from '../extensions/QuoteMusicalExtension';
 import { EditorToolbar } from '../EditorToolbar';
+import { Skeleton } from '@/app/components/ui/Skeleton';
+
+/**
+ * O editor do artigo (TipTap).
+ *
+ * **Escreve-se no texto do artigo.** A área usa o `.blog-corpo` do leitor (a
+ * Garamond, o tamanho, o ritmo dos títulos e listas) e os blocos próprios se
+ * desenham como no artigo (`VistaDoBloco`): o que se vê aqui é o que sai
+ * publicado. O link não é azul nem leva classe: o `.blog-corpo` já desenha.
+ */
 
 interface BlogEditorProps {
   content: any;
@@ -27,7 +36,7 @@ interface BlogEditorProps {
   placeholder?: string;
   editable?: boolean;
   articleId?: string;
-  sessionId?: string; // ✅ NOVO
+  sessionId?: string;
 }
 
 export function BlogEditor({
@@ -36,7 +45,7 @@ export function BlogEditor({
   placeholder = 'Comece a escrever seu artigo...',
   editable = true,
   articleId,
-  sessionId, // ✅ NOVO
+  sessionId,
 }: BlogEditorProps) {
   const editor = useEditor({
     immediatelyRender: false,
@@ -46,23 +55,14 @@ export function BlogEditor({
           levels: [1, 2, 3],
         },
       }),
-      Link.configure({
-        openOnClick: false,
-        HTMLAttributes: {
-          class: 'text-blue-600 underline hover:text-blue-800',
-        },
-      }),
+      Link.configure({ openOnClick: false }),
       Image.configure({
-        HTMLAttributes: {
-          class: 'rounded-lg max-w-full h-auto',
-        },
+        HTMLAttributes: { class: 'h-auto max-w-full rounded-card' },
       }),
       Youtube.configure({
         width: 640,
         height: 360,
-        HTMLAttributes: {
-          class: 'rounded-lg',
-        },
+        HTMLAttributes: { class: 'aspect-video h-auto w-full rounded-card' },
       }),
       Underline,
       TextAlign.configure({
@@ -89,8 +89,9 @@ export function BlogEditor({
     },
     editorProps: {
       attributes: {
-        class:
-          'prose prose-lg max-w-none focus:outline-none min-h-[500px] px-8 py-6',
+        class: 'blog-corpo min-h-[32rem] px-5 py-8 focus:outline-none sm:px-10',
+        lang: 'pt-BR',
+        'aria-label': 'Texto do artigo',
       },
     },
   });
@@ -106,16 +107,16 @@ export function BlogEditor({
   }, [content, editor]);
 
   if (!editor) {
-    return <div className="animate-pulse bg-gray-100 rounded-lg h-[600px]" />;
+    return <Skeleton className="h-[28rem] w-full rounded-card" />;
   }
 
   return (
-    <div className="rounded-lg overflow-hidden classical-card-simple">
+    <div className="rounded-card bg-[var(--campo)]">
       {editable && (
         <EditorToolbar
           editor={editor}
           articleId={articleId}
-          sessionId={sessionId} // ✅ PASSAR sessionId
+          sessionId={sessionId}
         />
       )}
       <EditorContent editor={editor} />

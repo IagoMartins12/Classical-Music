@@ -15,6 +15,8 @@ import { fetchImslpScores } from '@/app/requests/imslp-scores';
 export interface UseIMSLPScoresIncrementalResult {
   scores: IMSLPWorkScoresIncremental | null;
   loading: boolean;
+  /** A API está lendo o IMSLP na fila (obra sem partitura guardada). */
+  buscandoNoImslp: boolean;
   loadingMore: boolean;
   error: string | null;
   hasMore: boolean;
@@ -71,6 +73,9 @@ export function useIMSLPScoresIncremental(
   // Estados principais
   const [scores, setScores] = useState<IMSLPWorkScoresIncremental | null>(null);
   const [loading, setLoading] = useState(false);
+  // A obra ainda não tinha partitura guardada e a API está lendo o IMSLP na
+  // fila: a tela diz "buscando no IMSLP" em vez de só "carregando".
+  const [buscandoNoImslp, setBuscandoNoImslp] = useState(false);
   const [loadingMore, setLoadingMore] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [fromCache, setFromCache] = useState(false);
@@ -134,7 +139,10 @@ export function useIMSLPScoresIncremental(
           throw new Error('Obra sem identificador');
         }
 
-        const data = await fetchImslpScores(options.workId);
+        const data = await fetchImslpScores(options.workId, {
+          aoBuscar: () => setBuscandoNoImslp(true),
+          signal: abortControllerRef.current.signal,
+        });
 
         // 🆕 Interpretar a estratégia da API
         const apiStrategy = data._metadata?.strategy || 'unknown';
@@ -204,6 +212,8 @@ export function useIMSLPScoresIncremental(
           startCacheProgressMonitoring(options.workId);
         }
       } catch (err) {
+        // Saiu da página enquanto esperava a fila: não é erro de ninguém.
+        if (err instanceof DOMException && err.name === 'AbortError') return;
         const errorMessage =
           err instanceof Error ? err.message : 'Erro desconhecido';
         console.error(`❌ [HOOK-FIXED] Erro:`, errorMessage);
@@ -216,6 +226,7 @@ export function useIMSLPScoresIncremental(
         }
       } finally {
         setLoading(false);
+        setBuscandoNoImslp(false);
         setLoadingMore(false);
         loadingRef.current = false;
       }
@@ -423,6 +434,7 @@ export function useIMSLPScoresIncremental(
   return {
     scores,
     loading,
+    buscandoNoImslp,
     loadingMore,
     error,
     hasMore,

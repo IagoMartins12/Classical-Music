@@ -198,6 +198,7 @@ export default function WorkDetailsClient({
   const {
     scores: imslpScores,
     loading: loadingScores,
+    buscandoNoImslp,
     loadingMore,
     error: scoresError,
     hasMore,
@@ -459,6 +460,7 @@ export default function WorkDetailsClient({
                   // Props IMSLP (se disponível)
                   imslpData={work.imslpPermlink ? imslpScores : null}
                   imslpLoading={loadingScores}
+                  imslpBuscando={buscandoNoImslp}
                   imslpLoadingMore={loadingMore}
                   imslpError={scoresError}
                   onImslpRefetch={refetchScores}
@@ -1330,6 +1332,7 @@ export default function WorkDetailsClient({
               // Props IMSLP (se disponível)
               imslpData={work.imslpPermlink ? imslpScores : null}
               imslpLoading={loadingScores}
+              imslpBuscando={buscandoNoImslp}
               imslpLoadingMore={loadingMore}
               imslpError={scoresError}
               onImslpRefetch={refetchScores}

@@ -1,83 +1,75 @@
-// components/blog/editor/modals/LinkModal.tsx
 'use client';
 
 import { useState } from 'react';
-import { Editor } from '@tiptap/react';
-import Modal from '@/app/components/Modal';
-import Input from '@/app/components/Common/Inputs';
-import Button from '@/app/components/Common/Button';
-import { Stack } from '@/app/components/ui/Layout';
+import type { Editor } from '@tiptap/react';
+import { Field } from '@/app/components/ui/Field';
+import { FolhaDoEditor } from '../FolhaDoEditor';
 
 interface LinkModalProps {
   editor: Editor;
   onClose: () => void;
 }
 
+/**
+ * Link no texto. Com texto selecionado, o link vai nele; sem seleção, o
+ * "Texto" vira as palavras do link. Abrir sobre um link existente traz o
+ * endereço dele, e apagar o endereço tira o link.
+ */
 export function LinkModal({ editor, onClose }: LinkModalProps) {
-  const [url, setUrl] = useState('');
+  const atual = (editor.getAttributes('link').href as string | undefined) ?? '';
+  const temSelecao = !editor.state.selection.empty;
+  const [url, setUrl] = useState(atual);
   const [text, setText] = useState('');
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    e.stopPropagation(); // ✅ ADICIONAR ESTA LINHA
-
-    if (url) {
-      if (text) {
-        editor
-          .chain()
-          .focus()
-          .insertContent({
-            type: 'text',
-            text,
-            marks: [{ type: 'link', attrs: { href: url } }],
-          })
-          .run();
-      } else {
-        editor.chain().focus().setLink({ href: url }).run();
-      }
+  function inserir() {
+    const href = url.trim();
+    if (!href) {
+      editor.chain().focus().extendMarkRange('link').unsetLink().run();
+    } else if (!temSelecao && !atual) {
+      editor
+        .chain()
+        .focus()
+        .insertContent({
+          type: 'text',
+          text: text.trim() || href,
+          marks: [{ type: 'link', attrs: { href } }],
+        })
+        .run();
+    } else {
+      editor.chain().focus().extendMarkRange('link').setLink({ href }).run();
     }
-
     onClose();
-  };
+  }
 
   return (
-    <Modal
-      isOpen={true}
-      onClose={onClose}
-      title="Inserir Link"
-      maxWidth="md"
-      preventBodyScroll={true}
+    <FolhaDoEditor
+      titulo={atual ? 'Editar link' : 'Inserir link'}
+      aoFechar={onClose}
+      aoEnviar={inserir}
+      rotuloDoEnvio={
+        atual && !url.trim() ? 'Tirar link' : atual ? 'Salvar' : 'Inserir'
+      }
+      podeEnviar={Boolean(url.trim() || atual)}
+      largura="p"
     >
-      <Stack as="form" onSubmit={handleSubmit}>
-        <Input
-          label="URL"
-          type="url"
-          value={url}
-          onChange={(e) => setUrl(e.target.value)}
-          placeholder="https://exemplo.com"
-          required
-          autoFocus
-          widhtFull
-        />
-
-        <Input
-          label="Texto (opcional)"
-          type="text"
+      <Field
+        label="Endereço"
+        type="url"
+        inputMode="url"
+        value={url}
+        onChange={(e) => setUrl(e.target.value)}
+        placeholder="https://"
+        ajuda="Links para o próprio Opus Atlas abrem na mesma aba; os de fora, em outra."
+        autoFocus
+      />
+      {!temSelecao && !atual && (
+        <Field
+          label="Texto do link"
           value={text}
           onChange={(e) => setText(e.target.value)}
-          placeholder="Texto do link"
-          widhtFull
+          ajuda="Sem texto, o endereço vira o link."
         />
-
-        <div className="flex justify-end space-x-2 pt-4">
-          <Button type="button" variant="secondary" onClick={onClose}>
-            Cancelar
-          </Button>
-          <Button type="submit" variant="primary">
-            Inserir
-          </Button>
-        </div>
-      </Stack>
-    </Modal>
+      )}
+    </FolhaDoEditor>
   );
 }

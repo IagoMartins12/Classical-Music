@@ -88,6 +88,27 @@ type ButtonProps = BaseProps &
       }
   );
 
+/**
+ * As classes do botão, para o que **navega**. Link com cara de botão
+ * ("Explorar compositores", "Ver planos") continua sendo `<a>` — botão que
+ * troca de página quebra o abrir em nova aba e o que o leitor de tela anuncia.
+ */
+export function classesDeBotao(
+  variante: Variante = 'secundario',
+  tamanho: Tamanho = 'm',
+  soIcone = false
+) {
+  return cx(
+    'inline-flex items-center justify-center gap-2 rounded-controle border',
+    'transition-[transform,background-color,border-color,color] duration-[var(--t-toque)] ease-saida',
+    'active:scale-[0.98] motion-reduce:transition-none motion-reduce:active:scale-100',
+    'disabled:cursor-not-allowed disabled:opacity-40',
+    VARIANTE[variante],
+    TAMANHO[tamanho],
+    soIcone ? 'aspect-square' : RECUO[tamanho]
+  );
+}
+
 export function Button({
   variante = 'secundario',
   tamanho = 'm',
@@ -110,16 +131,7 @@ export function Button({
       aria-label={rotulo}
       aria-busy={carregando || undefined}
       disabled={disabled || carregando}
-      className={cx(
-        'inline-flex items-center justify-center gap-2 rounded-controle border',
-        'transition-[transform,background-color,border-color,color] duration-[var(--t-toque)] ease-saida',
-        'active:scale-[0.98] motion-reduce:transition-none motion-reduce:active:scale-100',
-        'disabled:cursor-not-allowed disabled:opacity-40',
-        VARIANTE[variante],
-        TAMANHO[tamanho],
-        soIcone ? 'aspect-square' : RECUO[tamanho],
-        className
-      )}
+      className={cx(classesDeBotao(variante, tamanho, soIcone), className)}
       {...resto}
     >
       {carregando ? (

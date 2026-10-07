@@ -31,6 +31,7 @@ import {
   UserTypeValueOptions,
 } from '@/app/utils/accountValidation';
 import DeleteAccountModal from '../../DeleteAccountModal';
+import { AssinaturaEDados } from './AssinaturaEDados';
 import EmailVerificationBanner2 from '../../EmailVerification/EmailVerificationBanner2';
 import { useTranslation } from '@/app/context/TranslationContext';
 import { Stack, Inline } from '@/app/components/ui/Layout';
@@ -828,6 +829,9 @@ const AccountSettingsSection: React.FC<AccountSettingsSectionProps> = ({
           </Card>
         </div>
       </Stack>
+
+      {/* Assinatura (cancelar, portal da Stripe) e exportação dos dados. */}
+      <AssinaturaEDados />
 
       {/* Danger Zone */}
       <Stack className="border-t pt-8 border-linha">

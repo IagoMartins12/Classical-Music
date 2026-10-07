@@ -31,10 +31,11 @@ const DEFAULT_STALE_TIME = 30_000;
 export const errorMessage = (error: unknown) =>
   error instanceof Error ? error.message : 'Erro desconhecido';
 
-export interface AdminQueryOptions {
+export interface AdminQueryOptions<T = unknown> {
   enabled?: boolean;
   staleTime?: number;
-  refetchInterval?: number | false;
+  /** Número fixo, ou decidido pelo dado (ex.: parar quando o job termina). */
+  refetchInterval?: number | false | ((dado: T | undefined) => number | false);
 }
 
 export interface AdminQueryResult<T> {
@@ -51,14 +52,18 @@ export interface AdminQueryResult<T> {
 export function useAdminQuery<T>(
   key: QueryKey,
   queryFn: () => Promise<T>,
-  options: AdminQueryOptions = {}
+  options: AdminQueryOptions<T> = {}
 ): AdminQueryResult<T> {
+  const intervalo = options.refetchInterval;
   const query = useQuery({
     queryKey: key,
     queryFn,
     enabled: options.enabled ?? true,
     staleTime: options.staleTime ?? DEFAULT_STALE_TIME,
-    refetchInterval: options.refetchInterval ?? false,
+    refetchInterval:
+      typeof intervalo === 'function'
+        ? (q: { state: { data: T | undefined } }) => intervalo(q.state.data)
+        : (intervalo ?? false),
     retry: false,
   });
 
@@ -93,11 +98,15 @@ export interface AdminPage<T> {
   total: number | null;
   /** Id do último item; `null` quando acabou. */
   nextCursor: string | null;
+  /** O que a primeira fatia traz além da lista (um resumo do recorte). */
+  extra?: unknown;
 }
 
 export interface AdminInfiniteResult<T> {
   items: T[];
   total: number | null;
+  /** O `extra` da primeira fatia, quando a tela pediu. */
+  extra: unknown;
   loading: boolean;
   fetching: boolean;
   /** Buscando a fatia seguinte (a lista já está na tela). */
@@ -156,6 +165,7 @@ export function useAdminInfinite<T>(
       items,
       // O total vem da primeira fatia, a única que a API conta.
       total: query.data?.pages[0]?.total ?? null,
+      extra: query.data?.pages[0]?.extra,
       loading: query.isPending && query.fetchStatus !== 'idle',
       fetching: query.isFetching,
       loadingMore: query.isFetchingNextPage,

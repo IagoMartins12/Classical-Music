@@ -1,16 +1,8 @@
-// app/admin/reports/page.tsx
-import { Metadata } from 'next';
-import AdvancedReports from '@/app/components/Admin/Reports/AdvancedReports';
+import type { Metadata } from 'next';
+import Relatorios from '@/app/components/Admin/telas/Relatorios';
 
-// Painel em CSR: o dado vem da API pelo navegador.
-export const dynamic = 'force-dynamic';
+export const metadata: Metadata = { title: 'Relatórios' };
 
-export const metadata: Metadata = {
-  title: 'Relatórios Avançados | Admin Panel',
-  description: 'Geração e agendamento de relatórios customizados',
-  robots: 'noindex, nofollow',
-};
-
-export default function AdminReportsPage() {
-  return <AdvancedReports />;
+export default function RelatoriosPage() {
+  return <Relatorios />;
 }

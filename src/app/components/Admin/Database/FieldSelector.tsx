@@ -2,15 +2,16 @@
 'use client';
 
 import { useState, useMemo } from 'react';
-import { PiCheck, PiLock, PiMagnifyingGlass, PiWarning } from 'react-icons/pi';
-import Modal from '@/app/components/Modal';
-import Button from '@/app/components/Common/Button';
-import Input from '@/app/components/Common/Inputs';
-import Checkbox from '@/app/components/Common/Checkbox';
+import { PiLock } from 'react-icons/pi';
+import { Sheet } from '@/app/components/ui/Sheet';
+import { Segmentos } from '@/app/components/Admin/painel/Controles';
+import { Button } from '@/app/components/ui/Button';
+import { Field } from '@/app/components/ui/Field';
 import { ModelSchema, ModelField } from '@/app/hooks/admin/useDatabaseStudio';
 import { Stack, Inline } from '@/app/components/ui/Layout';
 import { Text } from '@/app/components/ui/Text';
-import { Card } from '@/app/components/ui/Card';
+import { Badge } from '@/app/components/ui/Badge';
+import { Icon } from '@/app/components/ui/Icon';
 
 interface FieldSelectorProps {
   isOpen: boolean;
@@ -37,7 +38,9 @@ export default function FieldSelector({
 }: FieldSelectorProps) {
   const [searchQuery, setSearchQuery] = useState('');
   const [showSensitive, setShowSensitive] = useState(false);
-  const [filterType, setFilterType] = useState<string>('all');
+  const [filterType, setFilterType] = useState<
+    'all' | 'editable' | 'readonly' | 'relations'
+  >('all');
 
   // Agrupar campos por tipo
   const fieldsByCategory = useMemo(() => {
@@ -126,44 +129,22 @@ export default function FieldSelector({
 
     if ((field as any).isSensitive) {
       return (
-        <Inline
-          as="span"
-          gap={1}
-          className="px-2 py-0.5 bg-red-500/20 text-red-500 text-xs rounded-full"
-        >
-          <PiLock className="w-3 h-3" />
-          <span>Sensível</span>
-        </Inline>
+        <Badge>
+          <Icon de={PiLock} tamanho="pp" /> Sensível
+        </Badge>
       );
     }
 
     if (field.isRequired && !(field as any).isEditableByConfig) {
-      return (
-        <Inline
-          as="span"
-          gap={1}
-          className="px-2 py-0.5 bg-amber-500/20 text-amber-500 text-xs rounded-full"
-        >
-          <PiWarning className="w-3 h-3" />
-          <span>Somente leitura</span>
-        </Inline>
-      );
+      return <Badge>Somente leitura</Badge>;
     }
 
     if ((field as any).requiresConfirmation) {
-      return (
-        <span className="px-2 py-0.5 bg-orange-500/20 text-orange-500 text-xs rounded-full">
-          Exige confirmação
-        </span>
-      );
+      return <Badge>Exige confirmação</Badge>;
     }
 
     if (field.kind === 'object') {
-      return (
-        <span className="px-2 py-0.5 bg-purple-500/20 text-purple-500 text-xs rounded-full">
-          Relação
-        </span>
-      );
+      return <Badge>Relação</Badge>;
     }
 
     return null;
@@ -179,207 +160,116 @@ export default function FieldSelector({
   };
 
   return (
-    <Modal
-      isOpen={isOpen}
-      onClose={onClose}
-      title="Selecionar Campos"
-      maxWidth="3xl"
+    <Sheet
+      aberto={isOpen}
+      aoFechar={onClose}
+      titulo="Campos da tabela"
+      descricao="Quais colunas aparecem. O documento inteiro abre no editor."
+      largura="g"
+      rodape={
+        <>
+          <Button variante="fantasma" tamanho="p" onClick={onClose}>
+            Cancelar
+          </Button>
+          <Button variante="primario" tamanho="p" onClick={handleApply}>
+            Mostrar {selectedFields.length} campos
+          </Button>
+        </>
+      }
     >
       <Stack gap={6}>
-        {/* Header com estatísticas */}
-        <div className="grid grid-cols-4 gap-4">
-          <Card densidade="compacta">
-            <div className="text-2xl font-bold text-ouro-texto">
-              {stats.total}
-            </div>
-            <Text papel="rotulo" tom="fraco" as="div">
-              Total
-            </Text>
-          </Card>
-          <Card densidade="compacta">
-            <div className="text-2xl font-bold text-green-500">
-              {stats.selected}
-            </div>
-            <Text papel="rotulo" tom="fraco" as="div">
-              Selecionados
-            </Text>
-          </Card>
-          <Card densidade="compacta">
-            <div className="text-2xl font-bold text-red-500">
-              {stats.sensitive}
-            </div>
-            <Text papel="rotulo" tom="fraco" as="div">
-              Sensíveis
-            </Text>
-          </Card>
-          <Card densidade="compacta">
-            <div className="text-2xl font-bold text-amber-500">
-              {stats.readonly}
-            </div>
-            <Text papel="rotulo" tom="fraco" as="div">
-              Somente leitura
-            </Text>
-          </Card>
-        </div>
+        <Text papel="rotulo" tom="suave" as="p" className="t-dado">
+          {stats.selected} de {stats.total} campos selecionados ·{' '}
+          {stats.sensitive} sensíveis · {stats.readonly} somente leitura
+        </Text>
 
-        {/* Controles */}
-        <Stack>
-          {/* Busca */}
-          <div className="relative">
-            <PiMagnifyingGlass className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-theme-tertiary" />
-            <Input
-              type="text"
-              placeholder="Buscar campos..."
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              className="pl-10"
+        <Stack gap={3}>
+          <Field
+            label="Buscar campo"
+            rotuloOculto
+            type="search"
+            placeholder="Buscar campo"
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+          />
+          <div className="flex flex-wrap items-center justify-between gap-3">
+            <Segmentos
+              rotulo="Quais campos"
+              valor={filterType}
+              aoMudar={setFilterType}
+              opcoes={[
+                { valor: 'all', rotulo: 'Todos' },
+                { valor: 'editable', rotulo: 'Editáveis' },
+                { valor: 'readonly', rotulo: 'Somente leitura' },
+                { valor: 'relations', rotulo: 'Relações' },
+              ]}
             />
-          </div>
-
-          {/* Filtros */}
-          <div className="flex items-center justify-between">
-            <Inline gap={2}>
-              <button
-                onClick={() => setFilterType('all')}
-                className={`px-3 py-1.5 rounded-lg text-sm transition-colors ${
-                  filterType === 'all'
-                    ? 'text-white'
-                    : 'bg-theme-secondary text-theme-tertiary'
-                }`}
-              >
-                Todos
-              </button>
-              <button
-                onClick={() => setFilterType('editable')}
-                className={`px-3 py-1.5 rounded-lg text-sm transition-colors ${
-                  filterType === 'editable'
-                    ? 'text-white'
-                    : 'bg-theme-secondary text-theme-tertiary'
-                }`}
-              >
-                Editáveis
-              </button>
-              <button
-                onClick={() => setFilterType('readonly')}
-                className={`px-3 py-1.5 rounded-lg text-sm transition-colors ${
-                  filterType === 'readonly'
-                    ? 'text-white'
-                    : 'bg-theme-secondary text-theme-tertiary'
-                }`}
-              >
-                Somente leitura
-              </button>
-              <button
-                onClick={() => setFilterType('relations')}
-                className={`px-3 py-1.5 rounded-lg text-sm transition-colors ${
-                  filterType === 'relations'
-                    ? 'text-white'
-                    : 'bg-theme-secondary text-theme-tertiary'
-                }`}
-              >
-                Relações
-              </button>
-            </Inline>
-
-            <Inline gap={4}>
-              <Inline as="label" gap={2} className="cursor-pointer">
-                <Checkbox
-                  checked={showSensitive}
-                  onChange={(e) => setShowSensitive(e.target.checked)}
-                />
-                <Text papel="rotulo" tom="suave">
-                  Mostrar sensíveis
-                </Text>
-              </Inline>
-            </Inline>
+            <label className="flex min-h-11 cursor-pointer items-center gap-2">
+              <input
+                type="checkbox"
+                checked={showSensitive}
+                onChange={(e) => setShowSensitive(e.target.checked)}
+                className="h-4 w-4 accent-[var(--ouro)]"
+              />
+              <Text papel="rotulo" tom="suave">
+                Mostrar sensíveis
+              </Text>
+            </label>
           </div>
         </Stack>
 
-        {/* Lista de campos */}
-        <Card
-          densidade="compacta"
-          className="max-h-96 overflow-y-auto classical-scrollbar"
-        >
-          <div className="gap-2 flex flex-col">
-            {filteredFields.length === 0 ? (
-              <div className="text-center py-8 text-theme-tertiary">
-                Nenhum campo encontrado
-              </div>
-            ) : (
-              filteredFields.map((field) => {
-                const isSelected = selectedFields.includes(field);
-                const fieldInfo = getFieldInfo(field);
-                const badge = getFieldBadge(field);
-
-                return (
-                  <div
-                    key={field}
-                    className={`p-3 rounded-lg border transition-all cursor-pointer ${
-                      isSelected ? '' : 'border-theme-primary'
-                    }`}
-                    onClick={() => onToggleField(field)}
-                  >
-                    <div className="flex items-center justify-between">
-                      <Inline gap={3} className="flex-1 min-w-0">
-                        <Checkbox
-                          checked={isSelected}
-                          onChange={() => {}}
-                          onClick={(e) => e.stopPropagation()}
-                        />
-                        <div className="flex-1 min-w-0">
-                          <Inline gap={2}>
-                            <span className="font-medium text-theme-primary">
-                              {field}
-                            </span>
-                            {badge}
-                          </Inline>
-                          {fieldInfo && (
-                            <Text
-                              papel="legenda"
-                              tom="fraco"
-                              as="div"
-                              className="mt-1"
-                            >
-                              {fieldInfo.type}
-                              {fieldInfo.isList && '[]'}
-                              {fieldInfo.isRequired && ' • Obrigatório'}
-                              {fieldInfo.isUnique && ' • Único'}
-                            </Text>
-                          )}
-                        </div>
-                      </Inline>
-                      {isSelected && (
-                        <PiCheck className="w-5 h-5 text-ouro-texto" />
+        {filteredFields.length === 0 ? (
+          <Text papel="rotulo" tom="suave" as="p" className="py-6 text-center">
+            Nenhum campo com esse nome.
+          </Text>
+        ) : (
+          <ul className="sup-2 max-h-96 overflow-y-auto rolagem-discreta !p-0">
+            {filteredFields.map((field) => {
+              const fieldInfo = getFieldInfo(field);
+              return (
+                <li
+                  key={field}
+                  className="border-t border-linha first:border-0"
+                >
+                  <label className="flex min-h-11 cursor-pointer items-center gap-3 px-4 py-2.5 transition-colors hover:bg-[var(--interactive-hover)]">
+                    <input
+                      type="checkbox"
+                      checked={selectedFields.includes(field)}
+                      onChange={() => onToggleField(field)}
+                      className="h-4 w-4 shrink-0 accent-[var(--ouro)]"
+                    />
+                    <span className="flex min-w-0 flex-1 flex-col">
+                      <span className="flex flex-wrap items-center gap-2">
+                        <span className="t-dado text-sm text-texto">
+                          {field}
+                        </span>
+                        {getFieldBadge(field)}
+                      </span>
+                      {fieldInfo && (
+                        <span className="t-legenda">
+                          {fieldInfo.type}
+                          {fieldInfo.isList && '[]'}
+                          {fieldInfo.isRequired && ' · obrigatório'}
+                          {fieldInfo.isUnique && ' · único'}
+                        </span>
                       )}
-                    </div>
-                  </div>
-                );
-              })
-            )}
-          </div>
-        </Card>
+                    </span>
+                  </label>
+                </li>
+              );
+            })}
+          </ul>
+        )}
 
-        {/* Ações rápidas */}
-        <div className="flex items-center justify-between">
-          <Inline gap={2}>
-            <Button variant="ghost" size="sm" onClick={onSelectAll}>
-              Selecionar Todos
-            </Button>
-            <Button variant="ghost" size="sm" onClick={onClearSelection}>
-              Limpar Seleção
-            </Button>
-          </Inline>
-
-          <Inline gap={3}>
-            <Button variant="ghost" onClick={onClose}>
-              Cancelar
-            </Button>
-            <Button variant="primary" onClick={handleApply}>
-              Aplicar ({selectedFields.length} campos)
-            </Button>
-          </Inline>
-        </div>
+        <Inline gap={2}>
+          <Button variante="texto" tamanho="p" onClick={onSelectAll}>
+            Marcar todos
+          </Button>
+          <Button variante="texto" tamanho="p" onClick={onClearSelection}>
+            Desmarcar todos
+          </Button>
+        </Inline>
       </Stack>
-    </Modal>
+    </Sheet>
   );
 }

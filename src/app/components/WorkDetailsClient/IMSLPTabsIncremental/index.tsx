@@ -73,6 +73,8 @@ interface MixedScoreGroup {
 interface IMSLPTabsIncrementalProps {
   imslpData?: IMSLPWorkScoresIncremental | null;
   imslpLoading?: boolean;
+  /** A API está lendo o IMSLP na fila: o texto diz isso, não só "carregando". */
+  imslpBuscando?: boolean;
   imslpLoadingMore?: boolean;
   imslpError?: string | null;
   onImslpRefetch?: () => void;
@@ -549,6 +551,7 @@ const useAutoScrollToPreview = (selectedScore: MixedScoreData | null) => {
 export default function IMSLPTabsIncremental({
   imslpData,
   imslpLoading,
+  imslpBuscando,
   imslpLoadingMore,
   imslpError,
   onImslpRefetch,
@@ -757,7 +760,7 @@ export default function IMSLPTabsIncremental({
   const hasError = imslpError || workScoresError;
 
   if (isLoading && activeTabData.length === 0) {
-    return <LoadingState t={t} />;
+    return <LoadingState t={t} buscando={imslpBuscando} />;
   }
 
   if (hasError) {
@@ -1101,39 +1104,48 @@ export default function IMSLPTabsIncremental({
 }
 
 // ✅ COMPONENTES AUXILIARES OTIMIZADOS
-const LoadingState = React.memo(({ t }: { t: any }) => (
-  <div className="classical-card overflow-hidden animate-fade-in-up">
-    <div className="border-b border-theme-secondary p-8">
-      <Inline gap={3}>
-        <div className="w-12 h-12 rounded-2xl flex items-center justify-center">
-          <PiMusicNotes className="w-6 h-6 text-theme-primary" />
-        </div>
-        <div>
-          <h2 className="text-2xl font-bold text-theme-primary classical-title">
-            {t('imslp_tabs_partituras_disponiveis')}
-          </h2>
-          <p className="text-theme-secondary classical-subtitle">
-            {t('imslp_tabs_carregando_partituras')}
-          </p>
-        </div>
-      </Inline>
+const LoadingState = React.memo(
+  ({ t, buscando }: { t: any; buscando?: boolean }) => (
+    <div className="classical-card overflow-hidden animate-fade-in-up">
+      <div className="border-b border-theme-secondary p-8">
+        <Inline gap={3}>
+          <div className="w-12 h-12 rounded-2xl flex items-center justify-center">
+            <PiMusicNotes className="w-6 h-6 text-theme-primary" />
+          </div>
+          <div>
+            <h2 className="text-2xl font-bold text-theme-primary classical-title">
+              {t('imslp_tabs_partituras_disponiveis')}
+            </h2>
+            <p className="text-theme-secondary classical-subtitle">
+              {buscando
+                ? t('imslp_tabs_buscando_no_imslp')
+                : t('imslp_tabs_carregando_partituras')}
+            </p>
+          </div>
+        </Inline>
+      </div>
+      <div className="p-8">
+        <Inline gap={3} className="justify-center py-12">
+          <div className="relative">
+            <div className="w-8 h-8 border-4 rounded-full animate-spin"></div>
+            <div
+              className="absolute inset-0 w-8 h-8 border-4 border-transparent rounded-full animate-spin"
+              style={{
+                animationDirection: 'reverse',
+                animationDuration: '1.5s',
+              }}
+            ></div>
+          </div>
+          <span className="text-theme-primary font-medium">
+            {buscando
+              ? t('imslp_tabs_buscando_aguarde')
+              : t('imslp_tabs_carregando_partituras')}
+          </span>
+        </Inline>
+      </div>
     </div>
-    <div className="p-8">
-      <Inline gap={3} className="justify-center py-12">
-        <div className="relative">
-          <div className="w-8 h-8 border-4 rounded-full animate-spin"></div>
-          <div
-            className="absolute inset-0 w-8 h-8 border-4 border-transparent rounded-full animate-spin"
-            style={{ animationDirection: 'reverse', animationDuration: '1.5s' }}
-          ></div>
-        </div>
-        <span className="text-theme-primary font-medium">
-          {t('imslp_tabs_carregando_partituras')}
-        </span>
-      </Inline>
-    </div>
-  </div>
-));
+  )
+);
 LoadingState.displayName = 'LoadingState';
 
 const ErrorState = React.memo(

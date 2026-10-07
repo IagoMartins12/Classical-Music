@@ -1,207 +1,157 @@
-// ============================================
-// 9. components/blog/editor/modals/VideoComparisonModal.tsx
-// ============================================
 'use client';
 
-import { useState, useId } from 'react';
-import { Editor } from '@tiptap/react';
-import Modal from '@/app/components/Modal';
-import Input from '@/app/components/Common/Inputs';
-import Button from '@/app/components/Common/Button';
-import Checkbox from '@/app/components/Common/Checkbox';
-import { Card } from '@/app/components/ui/Card';
-import { Stack } from '@/app/components/ui/Layout';
+import { useState } from 'react';
+import type { Editor } from '@tiptap/react';
+import { idDoYoutube } from '@/app/components/blog/site/useFonteDeAudio';
+import { Chip } from '@/app/components/ui/Badge';
+import { Field } from '@/app/components/ui/Field';
+import { FolhaDoEditor } from '../FolhaDoEditor';
 
 interface VideoComparisonModalProps {
   editor: Editor;
   onClose: () => void;
 }
 
+interface Video {
+  url: string;
+  title: string;
+  description: string;
+}
+
+const VAZIO: Video = { url: '', title: '', description: '' };
+
+/**
+ * Duas gravações da mesma peça, lado a lado ou uma sobre a outra.
+ *
+ * O "sincronizar reprodução (experimental)" saiu: o leitor nunca o fez, e a
+ * opção gravava `syncPlayback` sem efeito nenhum.
+ */
 export function VideoComparisonModal({
   editor,
   onClose,
 }: VideoComparisonModalProps) {
-  const idCampo = useId();
-  const [title, setTitle] = useState('Comparação de Performances');
-  const [video1, setVideo1] = useState({ url: '', title: '', description: '' });
-  const [video2, setVideo2] = useState({ url: '', title: '', description: '' });
+  const [titulo, setTitulo] = useState('');
+  const [videos, setVideos] = useState<[Video, Video]>([
+    { ...VAZIO },
+    { ...VAZIO },
+  ]);
   const [layout, setLayout] = useState<'side-by-side' | 'top-bottom'>(
     'side-by-side'
   );
-  const [syncPlayback, setSyncPlayback] = useState(false);
 
-  const extractVideoId = (url: string): string | null => {
-    const regExp =
-      /^.*((youtu.be\/)|(v\/)|(\/u\/\w\/)|(embed\/)|(watch\?))\??v?=?([^#&?]*).*/;
-    const match = url.match(regExp);
-    return match && match[7].length === 11 ? match[7] : null;
-  };
+  const validos = videos.every((v) => idDoYoutube(v.url) && v.title.trim());
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    e.stopPropagation();
-    if (!video1.url || !video2.url) {
-      alert('Preencha as URLs dos dois vídeos');
-      return;
-    }
-
-    if (!extractVideoId(video1.url) || !extractVideoId(video2.url)) {
-      alert('URLs do YouTube inválidas');
-      return;
-    }
-
-    editor.commands.insertContent({
-      type: 'videoComparison',
-      attrs: {
-        title,
-        video1,
-        video2,
-        layout,
-        syncPlayback,
-      },
+  function mudar(i: 0 | 1, campo: keyof Video, valor: string) {
+    setVideos((atual) => {
+      const novo: [Video, Video] = [{ ...atual[0] }, { ...atual[1] }];
+      novo[i][campo] = valor;
+      return novo;
     });
+  }
+
+  function inserir() {
+    const [video1, video2] = videos.map((v) => ({
+      url: v.url.trim(),
+      title: v.title.trim(),
+      description: v.description.trim(),
+    }));
+    editor
+      .chain()
+      .focus()
+      .insertContent({
+        type: 'videoComparison',
+        attrs: {
+          title: titulo.trim() || null,
+          video1,
+          video2,
+          layout,
+          syncPlayback: false,
+        },
+      })
+      .run();
     onClose();
-  };
+  }
 
   return (
-    <Modal
-      isOpen={true}
-      onClose={onClose}
-      title="Inserir Comparação de Vídeos"
-      maxWidth="3xl"
+    <FolhaDoEditor
+      titulo="Comparar gravações"
+      descricao="Dois vídeos do YouTube; no artigo, cada um só carrega quando o leitor aperta o play."
+      aoFechar={onClose}
+      aoEnviar={inserir}
+      podeEnviar={validos}
+      largura="g"
     >
-      <Stack gap={6} as="form" onSubmit={handleSubmit}>
-        <Input
-          label="Título da Comparação"
-          type="text"
-          value={title}
-          onChange={(e) => setTitle(e.target.value)}
-          placeholder="Ex: Glenn Gould vs Lang Lang - Goldberg Variations"
-          widhtFull
-        />
+      <Field
+        label="Título (opcional)"
+        value={titulo}
+        onChange={(e) => setTitulo(e.target.value)}
+        placeholder="Ex.: Variações Goldberg, Gould em 1955 e 1981"
+      />
 
-        <Card nivel={2} densidade="compacta" className="bg-theme-secondary">
-          <h4 className="font-medium text-theme-primary mb-3">Vídeo 1</h4>
-
-          <Stack gap={3}>
-            <Input
-              label="URL do YouTube *"
-              type="url"
-              value={video1.url}
-              onChange={(e) => setVideo1({ ...video1, url: e.target.value })}
-              placeholder="https://www.youtube.com/watch?v=..."
-              required
-              widhtFull
-            />
-
-            <Input
-              label="Título *"
-              type="text"
-              value={video1.title}
-              onChange={(e) => setVideo1({ ...video1, title: e.target.value })}
-              placeholder="Ex: Glenn Gould (1955)"
-              required
-              widhtFull
-            />
-
-            <Input
-              label="Descrição"
-              type="text"
-              value={video1.description}
-              onChange={(e) =>
-                setVideo1({ ...video1, description: e.target.value })
-              }
-              placeholder="Ex: Gravação histórica de estúdio"
-              widhtFull
-            />
-          </Stack>
-        </Card>
-
-        <Card nivel={2} densidade="compacta" className="bg-theme-secondary">
-          <h4 className="font-medium text-theme-primary mb-3">Vídeo 2</h4>
-
-          <Stack gap={3}>
-            <Input
-              label="URL do YouTube *"
-              type="url"
-              value={video2.url}
-              onChange={(e) => setVideo2({ ...video2, url: e.target.value })}
-              placeholder="https://www.youtube.com/watch?v=..."
-              required
-              widhtFull
-            />
-
-            <Input
-              label="Título *"
-              type="text"
-              value={video2.title}
-              onChange={(e) => setVideo2({ ...video2, title: e.target.value })}
-              placeholder="Ex: Lang Lang (2020)"
-              required
-              widhtFull
-            />
-
-            <Input
-              label="Descrição"
-              type="text"
-              value={video2.description}
-              onChange={(e) =>
-                setVideo2({ ...video2, description: e.target.value })
-              }
-              placeholder="Ex: Performance ao vivo em Berlim"
-              widhtFull
-            />
-          </Stack>
-        </Card>
-
-        <Stack className="border-t border-theme-secondary pt-4">
-          <Stack gap={2}>
-            <span
-              id={`${idCampo}-1`}
-              className="block text-sm font-medium text-theme-primary"
+      <div className="grid gap-4 md:grid-cols-2">
+        {([0, 1] as const).map((i) => {
+          const v = videos[i];
+          return (
+            <fieldset
+              key={i}
+              className="flex flex-col gap-4 rounded-card bg-sup-2 p-4"
             >
-              Layout
-            </span>
-            <div
-              role="group"
-              aria-labelledby={`${idCampo}-1`}
-              className="flex space-x-2"
-            >
-              <Button
-                type="button"
-                variant={layout === 'side-by-side' ? 'primary' : 'outline'}
-                onClick={() => setLayout('side-by-side')}
-                className="flex-1"
-              >
-                Lado a Lado
-              </Button>
-              <Button
-                type="button"
-                variant={layout === 'top-bottom' ? 'primary' : 'outline'}
-                onClick={() => setLayout('top-bottom')}
-                className="flex-1"
-              >
-                Um sobre o Outro
-              </Button>
-            </div>
-          </Stack>
+              <legend className="sr-only">Vídeo {i + 1}</legend>
+              <span aria-hidden="true" className="t-rotulo text-texto-fraco">
+                Vídeo {i + 1}
+              </span>
+              <Field
+                label="Endereço no YouTube"
+                type="url"
+                inputMode="url"
+                value={v.url}
+                onChange={(e) => mudar(i, 'url', e.target.value)}
+                placeholder="https://www.youtube.com/watch?v=…"
+                erro={
+                  v.url.trim() && !idDoYoutube(v.url)
+                    ? 'Não é um endereço de vídeo do YouTube.'
+                    : undefined
+                }
+              />
+              <Field
+                label="Quem toca"
+                value={v.title}
+                onChange={(e) => mudar(i, 'title', e.target.value)}
+                placeholder="Ex.: Glenn Gould (1955)"
+              />
+              <Field
+                label="Nota (opcional)"
+                value={v.description}
+                onChange={(e) => mudar(i, 'description', e.target.value)}
+                placeholder="Ex.: gravação de estúdio"
+              />
+            </fieldset>
+          );
+        })}
+      </div>
 
-          <Checkbox
-            label="Sincronizar reprodução (experimental)"
-            checked={syncPlayback}
-            onChange={(e) => setSyncPlayback(e.target.checked)}
-          />
-        </Stack>
-
-        <div className="flex justify-end space-x-2 pt-4">
-          <Button type="button" variant="secondary" onClick={onClose}>
-            Cancelar
-          </Button>
-          <Button type="submit" variant="primary">
-            Inserir Comparação
-          </Button>
+      <fieldset>
+        <legend className="mb-2 text-sm font-medium text-texto">
+          Disposição
+        </legend>
+        <div className="flex flex-wrap gap-1.5">
+          <Chip
+            selecionado={layout === 'side-by-side'}
+            onClick={() => setLayout('side-by-side')}
+          >
+            Lado a lado
+          </Chip>
+          <Chip
+            selecionado={layout === 'top-bottom'}
+            onClick={() => setLayout('top-bottom')}
+          >
+            Um sobre o outro
+          </Chip>
         </div>
-      </Stack>
-    </Modal>
+        <p className="t-legenda mt-2">
+          No telefone, ficam sempre um sobre o outro.
+        </p>
+      </fieldset>
+    </FolhaDoEditor>
   );
 }

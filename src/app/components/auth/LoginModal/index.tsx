@@ -126,7 +126,6 @@ const LoginModal: React.FC = () => {
     email: '',
     password: '',
   });
-  const [errors, setErrors] = useState<{ [key: string]: string }>({});
 
   // `/login` e o painel sem sessão chegam aqui como `/?login=1`: abre o modal
   // para quem não entrou; quem já entrou (inclusive voltando do Google) segue
@@ -180,32 +179,21 @@ const LoginModal: React.FC = () => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
 
-    // Clear errors when user starts typing
-    if (errors[name]) {
-      setErrors((prev) => ({ ...prev, [name]: '' }));
-    }
-
     // Limpar erro de conflito ao digitar
     if (emailConflictError) {
       setEmailConflictError(null);
     }
   };
 
+  // No login nada aparece no modal: o erro é só o toast, e genérico — dizer
+  // qual campo está errado ajuda quem tenta adivinhar. Regra de senha é do
+  // cadastro.
   const validateForm = () => {
-    const newErrors: { [key: string]: string } = {};
-
-    if (!formData.email.trim()) {
-      newErrors.email = t('login_modal_email_required');
-    } else if (!/\S+@\S+\.\S+/.test(formData.email)) {
-      newErrors.email = t('login_modal_email_invalid');
+    if (!formData.email.trim() || !formData.password) {
+      toast.error(t('login_modal_fill_fields'));
+      return false;
     }
-
-    if (!formData.password.trim()) {
-      newErrors.password = t('login_modal_password_required');
-    }
-
-    setErrors(newErrors);
-    return Object.keys(newErrors).length === 0;
+    return true;
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -223,12 +211,13 @@ const LoginModal: React.FC = () => {
       );
 
       if (!result.ok) {
-        const message =
-          result.status === 401
-            ? t('login_modal_credentials_error')
-            : result.message;
-        setErrors({ general: message });
-        toast.error(message);
+        toast.error(
+          result.status === 429
+            ? t('login_modal_too_many_attempts')
+            : result.status === 0 || result.status >= 500
+              ? t('login_modal_internal_error')
+              : t('login_modal_credentials_error')
+        );
       } else {
         toast.success(t('login_modal_success'));
         close();
@@ -242,7 +231,6 @@ const LoginModal: React.FC = () => {
       }
     } catch (error) {
       console.error('Login error:', error);
-      setErrors({ general: t('login_modal_internal_error') });
       toast.error(t('login_modal_internal_error'));
     } finally {
       setIsLoading(false);
@@ -267,7 +255,6 @@ const LoginModal: React.FC = () => {
 
   const handleClose = () => {
     setFormData({ email: '', password: '' });
-    setErrors({});
     setEmailConflictError(null); // Limpar erro de conflito
     // Fechou sem entrar: o pedido da URL não deve reabrir o modal.
     limparPedidoDeLogin();
@@ -346,13 +333,6 @@ const LoginModal: React.FC = () => {
 
         {/* Email/Password Form */}
         <Stack gap={6} as="form" onSubmit={handleSubmit}>
-          {/* General Error */}
-          {errors.general && (
-            <div className="p-3 rounded-lg text-red-400 text-sm bg-sup-2">
-              {errors.general}
-            </div>
-          )}
-
           {/* Email */}
           <Input
             label={t('login_modal_email_label')}
@@ -362,7 +342,6 @@ const LoginModal: React.FC = () => {
             onChange={handleInputChange}
             leftIcon={<PiEnvelopeSimple className="w-4 h-4" />}
             placeholder={t('login_modal_email_placeholder')}
-            error={errors.email}
             disabled={isLoading || isGoogleLoading}
             autoComplete="email"
           />
@@ -376,7 +355,6 @@ const LoginModal: React.FC = () => {
             leftIcon={<PiLock className="w-4 h-4" />}
             placeholder={t('login_modal_password_placeholder')}
             isPassword
-            error={errors.password}
             disabled={isLoading || isGoogleLoading}
             autoComplete="current-password"
           />
@@ -445,15 +423,24 @@ const LoginModal: React.FC = () => {
           </p>
         </div>
 
-        {/* Terms */}
+        {/* Termos e privacidade: ao seguir o link, o modal fecha — a página
+            abre inteira, sem o login por cima. */}
         <div className="mt-6 text-center">
           <Text papel="legenda" tom="fraco" as="p">
             {t('login_modal_terms_text')}{' '}
-            <Link href="/terms" className="text-ouro-texto hover:underline">
+            <Link
+              href="/terms"
+              onClick={handleClose}
+              className="text-ouro-texto hover:underline"
+            >
               {t('login_modal_terms_link')}
             </Link>{' '}
             {t('login_modal_terms_and')}{' '}
-            <Link href="/privacy" className="text-ouro-texto hover:underline">
+            <Link
+              href="/privacy"
+              onClick={handleClose}
+              className="text-ouro-texto hover:underline"
+            >
               {t('login_modal_privacy_link')}
             </Link>
           </Text>

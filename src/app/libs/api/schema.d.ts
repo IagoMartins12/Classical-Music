@@ -68,6 +68,43 @@ export interface paths {
     patch?: never;
     trace?: never;
   };
+  '/api/scrapers/events': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /**
+     * Eventos que entraram por scraper
+     * @description Todos os eventos de origem `SCRAPER`, dos mais recentes na importação para os mais antigos, com a casa. Filtra por casa, estado, título, futuros/passados e data de importação.
+     */
+    get: operations['ScrapersController_events'];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/api/scrapers/events/{id}': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /** Um evento importado, com a casa */
+    get: operations['ScrapersController_event'];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
   '/api/scrapers/{scraperId}/run': {
     parameters: {
       query?: never;
@@ -2594,6 +2631,26 @@ export interface paths {
     patch: operations['ArticlesAdminController_update'];
     trace?: never;
   };
+  '/api/blog/articles/admin/overview': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /**
+     * Números do painel de artigos
+     * @description Quantos em cada estado, visualizações somadas dos publicados e autores com a contagem de artigos. Dois segmentos de propósito: `blog/articles/:id` é a leitura pública e engoliria `overview` como id.
+     */
+    get: operations['ArticlesAdminController_overview'];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
   '/api/blog/articles/featured/reorder': {
     parameters: {
       query?: never;
@@ -2842,6 +2899,26 @@ export interface paths {
      * @description Só arquivo registrado; em uso, só com `force`. A rota do legado apagava pelo caminho vindo do corpo, e `..` saía da pasta.
      */
     delete: operations['BlogMediaAdminController_remove'];
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/api/blog/authors/{username}': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /**
+     * Perfil público de quem escreve no blog
+     * @description Aceita o nome de usuário ou o id. Só existe para quem tem ao menos um artigo publicado: qualquer outra conta responde 404, para a rota não expor contas da plataforma. Traz o nome, a foto e a bio (os mesmos que aparecem nos artigos), o número de artigos publicados, as visitas somadas e as categorias em que o autor escreve. Cacheado por 5 minutos e invalidado junto com os artigos.
+     */
+    get: operations['AuthorsController_findOne'];
+    put?: never;
+    post?: never;
+    delete?: never;
     options?: never;
     head?: never;
     patch?: never;
@@ -4442,6 +4519,23 @@ export interface paths {
     patch?: never;
     trace?: never;
   };
+  '/api/admin/users/overview': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /** Resumo da base: chegada, retorno, cadastro, uso e pagantes */
+    get: operations['AdminUsersController_overview'];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
   '/api/admin/users/export': {
     parameters: {
       query?: never;
@@ -4484,6 +4578,23 @@ export interface paths {
      * @description Valor de `role` validado; ninguém rebaixa a si mesmo; o último super admin não pode ser rebaixado; e o perfil de professor muda na mesma transação que a conta.
      */
     patch: operations['AdminUsersController_update'];
+    trace?: never;
+  };
+  '/api/admin/users/{id}/items': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /** O que a conta guardou ou fez: favoritos, aprendidas, quero aprender, anotações, envios, arquivos */
+    get: operations['AdminUsersController_items'];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
     trace?: never;
   };
   '/api/invites/teacher/accept/{token}': {
@@ -4560,6 +4671,23 @@ export interface paths {
     patch?: never;
     trace?: never;
   };
+  '/api/admin/composers/overview': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /** Retrato do cadastro: verificação, biografias, retratos, obras */
+    get: operations['AdminCatalogController_composersOverview'];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
   '/api/admin/composers/{id}': {
     parameters: {
       query?: never;
@@ -4567,7 +4695,8 @@ export interface paths {
       path?: never;
       cookie?: never;
     };
-    get?: never;
+    /** Um compositor, no formato da lista */
+    get: operations['AdminCatalogController_getComposer'];
     put?: never;
     post?: never;
     /**
@@ -4584,6 +4713,43 @@ export interface paths {
     patch: operations['AdminCatalogController_updateComposer'];
     trace?: never;
   };
+  '/api/admin/composers/{id}/summary': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /** Obra do compositor no catálogo, uso e origem do cadastro */
+    get: operations['AdminCatalogController_composerSummary'];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/api/admin/works/verify-bulk': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    /**
+     * Verifica ou desverifica obras em lote
+     * @description Auditada; a resposta diz quais foram tocadas e quais ids não existiam. Máximo de 500 por chamada.
+     */
+    post: operations['AdminCatalogController_verifyWorksBulk'];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
   '/api/admin/composers/verify-bulk': {
     parameters: {
       query?: never;
@@ -4598,6 +4764,82 @@ export interface paths {
      * @description A "auditoria" desta operação no legado era um `console.log` de um objeto chamado `auditLog`: mudar o selo de verificação de uma lista arbitrária de compositores não deixava registro consultável nenhum. Agora é uma ação auditada, e a resposta diz quais foram tocados e quais ids não existiam. Máximo de 500 por chamada.
      */
     post: operations['AdminCatalogController_verifyComposersBulk'];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/api/admin/works/overview': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /** Retrato do catálogo de obras */
+    get: operations['AdminCatalogController_worksOverview'];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/api/admin/works/{id}': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /** Uma obra, no formato da lista */
+    get: operations['AdminCatalogController_getWork'];
+    put?: never;
+    post?: never;
+    /**
+     * Remove uma obra sem dados de usuário
+     * @description A verificação inclui **anotação privada** e partituras. O legado só contava anotação pública, mas o cascade apaga todas — e anotação privada é a que o autor não recupera de lugar nenhum.
+     */
+    delete: operations['AdminCatalogController_deleteWork'];
+    options?: never;
+    head?: never;
+    /**
+     * Edita uma obra
+     * @description Sem `dataQuality` nem `verificationNotes`: esses campos não existem em `Work`. O legado os gravava mesmo assim, e por isso verificar uma obra sempre respondia 500.
+     */
+    patch: operations['AdminCatalogController_updateWork'];
+    trace?: never;
+  };
+  '/api/admin/works/{id}/people': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /** Quem favoritou, quer aprender ou aprendeu a obra */
+    get: operations['AdminCatalogController_workPeople'];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/api/admin/works/{id}/summary': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /** Uso, partituras e origem da obra */
+    get: operations['AdminCatalogController_workSummary'];
+    put?: never;
+    post?: never;
     delete?: never;
     options?: never;
     head?: never;
@@ -4624,28 +4866,21 @@ export interface paths {
     patch?: never;
     trace?: never;
   };
-  '/api/admin/works/{id}': {
+  '/api/admin/scores/overview': {
     parameters: {
       query?: never;
       header?: never;
       path?: never;
       cookie?: never;
     };
-    get?: never;
+    /** Retrato das partituras */
+    get: operations['AdminCatalogController_scoresOverview'];
     put?: never;
     post?: never;
-    /**
-     * Remove uma obra sem dados de usuário
-     * @description A verificação inclui **anotação privada** e partituras. O legado só contava anotação pública, mas o cascade apaga todas — e anotação privada é a que o autor não recupera de lugar nenhum.
-     */
-    delete: operations['AdminCatalogController_deleteWork'];
+    delete?: never;
     options?: never;
     head?: never;
-    /**
-     * Edita uma obra
-     * @description Sem `dataQuality` nem `verificationNotes`: esses campos não existem em `Work`. O legado os gravava mesmo assim, e por isso verificar uma obra sempre respondia 500.
-     */
-    patch: operations['AdminCatalogController_updateWork'];
+    patch?: never;
     trace?: never;
   };
   '/api/admin/scores': {
@@ -4672,7 +4907,8 @@ export interface paths {
       path?: never;
       cookie?: never;
     };
-    get?: never;
+    /** Uma partitura, no formato da lista */
+    get: operations['AdminCatalogController_getScore'];
     put?: never;
     post?: never;
     delete?: never;
@@ -4985,6 +5221,26 @@ export interface paths {
     patch: operations['AdminBillingController_toggleCoupon'];
     trace?: never;
   };
+  '/api/admin/coupons/{id}/sync': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    /**
+     * Cria ou refaz o cupom no Stripe
+     * @description O checkout só dá o desconto se o cupom existir no Stripe. Criar e editar já espelham; esta rota é para o cupom antigo ou para quando o Stripe recusou. O motivo de uma falha volta em `stripeSyncError`.
+     */
+    post: operations['AdminBillingController_syncCoupon'];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
   '/api/admin/plan-pricing': {
     parameters: {
       query?: never;
@@ -5006,6 +5262,66 @@ export interface paths {
     patch?: never;
     trace?: never;
   };
+  '/api/admin/plan-pricing/stripe': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /**
+     * Painel e Stripe lado a lado
+     * @description Para cada plano pago: o preço do painel, o Price que vale no Stripe (mensal e anual) e se os dois batem — em valor e no id que o checkout usa.
+     */
+    get: operations['AdminBillingController_pricingStripeStatus'];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/api/admin/plan-pricing/{planType}/push': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    /**
+     * Envia o preço do painel ao Stripe
+     * @description Cria o Price que falta, faz dele o padrão do produto e arquiva o anterior. Quem já assina continua no preço antigo.
+     */
+    post: operations['AdminBillingController_pushPricing'];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/api/admin/plan-pricing/{planType}/pull': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    /**
+     * Traz para o painel o preço que vale no Stripe
+     * @description Cria uma versão nova com os valores do Stripe (origem `stripe`). É o mesmo que o webhook faz sozinho quando o preço muda lá. Auditada pelo serviço, que sabe o antes e o depois.
+     */
+    post: operations['AdminBillingController_pullPricing'];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
   '/api/admin/plan-pricing/{planType}/history': {
     parameters: {
       query?: never;
@@ -5018,6 +5334,63 @@ export interface paths {
      * @description Permite conferir o que estava valendo na data de uma fatura.
      */
     get: operations['AdminBillingController_pricingHistory'];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/api/admin/subscriptions/overview': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /**
+     * Receita e assinantes
+     * @description Receita total e no período (com o período anterior para comparar), receita por mês nos últimos 12, recorrente mensal, assinantes vivos por plano e período, novos, cancelamentos, taxa de cancelamento e quem deixou vencer sem voltar.
+     */
+    get: operations['AdminSubscriptionsController_overview'];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/api/admin/subscriptions': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /**
+     * Lista de assinaturas
+     * @description Por estado (ativas, teste, atraso, vão sair, não renovaram, expiradas, pendentes), plano, período e busca por nome ou e-mail. Paginada por cursor.
+     */
+    get: operations['AdminSubscriptionsController_list'];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/api/admin/subscriptions/{id}': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /** Detalhe de uma assinatura, com pagamentos e histórico */
+    get: operations['AdminSubscriptionsController_detail'];
     put?: never;
     post?: never;
     delete?: never;
@@ -5365,6 +5738,26 @@ export interface paths {
     patch?: never;
     trace?: never;
   };
+  '/api/admin/metrics/attention': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /**
+     * O que pede alguém hoje
+     * @description Denúncias abertas e atrasadas, comentários e artigos esperando, falhas de fila nas últimas 24 h e filas sem worker, backup, cobrança em atraso e a próxima campanha. Cada bloco falha sozinho (`{ erro }`) sem derrubar os outros.
+     */
+    get: operations['AdminMetricsController_attention'];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
   '/api/admin/metrics/overview': {
     parameters: {
       query?: never;
@@ -5377,6 +5770,26 @@ export interface paths {
      * @description As contagens da mesma coleção vão numa passada só, com `$facet`. O legado disparava uma consulta por número.
      */
     get: operations['AdminMetricsController_overview'];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/api/admin/metrics/activity': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /**
+     * Cadastros, anotações e envios por dia
+     * @description Série diária no fuso de São Paulo, com zero nos dias sem registro. `days` de 7 a 90.
+     */
+    get: operations['AdminMetricsController_activity'];
     put?: never;
     post?: never;
     delete?: never;
@@ -5506,6 +5919,26 @@ export interface paths {
     patch?: never;
     trace?: never;
   };
+  '/api/admin/audit/facets': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /**
+     * Filtros disponíveis
+     * @description Ações, tipos de entidade e pessoas que aparecem na trilha, com contagem.
+     */
+    get: operations['AdminOperationsController_facets'];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
   '/api/admin/audit/export': {
     parameters: {
       query?: never;
@@ -5558,6 +5991,26 @@ export interface paths {
      * @description Responde "o que quebrou" sem obrigar a abrir job por job.
      */
     get: operations['AdminJobsController_failures'];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/api/admin/jobs/{queue}/recent': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /**
+     * Rodadas recentes de uma fila
+     * @description Em andamento, esperando, feitas e falhas, as mais novas primeiro, com progresso e resultado. `job` filtra pelo nome do job ou pelo que ele roda (o id da tarefa de manutenção, o id do scraper). Some com a retenção da fila (7 dias feitas, 30 falhas).
+     */
+    get: operations['AdminJobsController_recent'];
     put?: never;
     post?: never;
     delete?: never;
@@ -5733,6 +6186,104 @@ export interface paths {
     patch?: never;
     trace?: never;
   };
+  '/api/admin/backup/collections': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /**
+     * Coleções que podem entrar no backup
+     * @description Sai do próprio schema, com a contagem atual de cada uma — model novo aparece aqui sozinho.
+     */
+    get: operations['AdminBackupController_colecoes'];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/api/admin/backup/settings': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /** Configuração do backup */
+    get: operations['AdminBackupController_lerConfiguracao'];
+    /**
+     * Define o que entra no backup e quantos arquivos manter
+     * @description Coleção fora da lista não entra no arquivo. `limit` nulo é "tudo".
+     */
+    put: operations['AdminBackupController_gravarConfiguracao'];
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/api/admin/backup/runs': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /**
+     * Histórico de execuções
+     * @description Guardar o resultado é o que separa "temos backup" de "achamos que temos": aqui aparece se o arquivo foi verificado depois de enviado.
+     */
+    get: operations['AdminBackupController_execucoes'];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/api/admin/backup/files': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /** Arquivos que estão no bucket agora */
+    get: operations['AdminBackupController_arquivos'];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/api/admin/backup/files/download': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /**
+     * Link temporário para baixar um backup
+     * @description O bucket é privado e continua privado: o link é assinado e vale uma hora. Tornar o objeto público para facilitar o download seria publicar a base inteira.
+     */
+    get: operations['AdminBackupController_baixar'];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
   '/api/admin/database/models': {
     parameters: {
       query?: never;
@@ -5867,6 +6418,27 @@ export interface components {
       /** Format: date-time */
       lastModified: string;
     };
+    SitemapSlugDto: {
+      /** @example historia */
+      slug: string;
+      /**
+       * Format: date-time
+       * @description Data do artigo mais recente da página
+       */
+      lastModified: string;
+    };
+    SitemapAuthorDto: {
+      /**
+       * @description Nome de usuário; o id quando a conta não tem um.
+       * @example helena-prado
+       */
+      id: string;
+      /**
+       * Format: date-time
+       * @description Data do artigo mais recente do autor
+       */
+      lastModified: string;
+    };
     SitemapTeacherDto: {
       /**
        * @description O id do usuário — é o que a URL pública usa.
@@ -5882,6 +6454,12 @@ export interface components {
       composers: components['schemas']['SitemapComposerDto'][];
       works: components['schemas']['SitemapWorkDto'][];
       articles: components['schemas']['SitemapArticleDto'][];
+      /** @description Categorias do blog ativas e com artigo publicado */
+      blogCategories: components['schemas']['SitemapSlugDto'][];
+      /** @description Tags do blog com artigo publicado */
+      blogTags: components['schemas']['SitemapSlugDto'][];
+      /** @description Autores com artigo publicado */
+      blogAuthors: components['schemas']['SitemapAuthorDto'][];
       teachers: components['schemas']['SitemapTeacherDto'][];
     };
     PublicAdInstrumentDto: {
@@ -9272,6 +9850,36 @@ export interface components {
        */
       force: boolean;
     };
+    AuthorStatsDto: {
+      /** @description Artigos publicados */
+      articles: number;
+      /** @description Visitas somadas dos artigos publicados */
+      views: number;
+      /**
+       * Format: date-time
+       * @description Data do primeiro artigo publicado
+       */
+      firstPublishedAt?: string | null;
+      /**
+       * Format: date-time
+       * @description Data do artigo publicado mais recente
+       */
+      lastPublishedAt?: string | null;
+    };
+    AuthorCategoryDto: {
+      id: string;
+      name: string;
+      slug: string;
+      /** @description Artigos publicados do autor nesta categoria */
+      articles: number;
+    };
+    AuthorProfileResponseDto: {
+      success: boolean;
+      author: components['schemas']['AuthorRefWithBioDto'];
+      stats: components['schemas']['AuthorStatsDto'];
+      /** @description As categorias em que o autor escreve, da mais usada à menos */
+      categories: components['schemas']['AuthorCategoryDto'][];
+    };
     CategoryParentDto: {
       id: string;
       name: string;
@@ -11318,16 +11926,24 @@ export interface components {
       /** @example 27 */
       total: number;
     };
+    TeacherPlanGrantDto: {
+      /** @enum {string} */
+      planType: 'MENTOR' | 'MAESTRO';
+      /** @description Vencimento (ISO 8601). Ausente ou nulo: sem vencimento. */
+      expiresAt?: string | null;
+    };
     UpdateAdminUserDto: {
       /**
-       * @description 0 comum, 1 admin, 2 super admin.
+       * @description 0 pessoa, 1 professor do legado (não abre o painel), 2 administrador. Ver `common/auth/roles.ts`.
        * @enum {number}
        */
       role?: 0 | 1 | 2;
       /** @enum {string} */
       userType?: 'MUSIC_STUDENT' | 'CASUAL_USER' | 'PROFESSIONAL' | 'TEACHER';
-      /** @description Marca a conta como de professor, criando o perfil se faltar. Mudar `role` para 1 já faz isso. */
+      /** @description Marca a conta como de professor e envia o convite por e-mail (o perfil fica pendente até o aceite). Independe de `role`: 1 é admin. */
       isTeacher?: boolean;
+      /** @description Só com `isTeacher: true`: plano concedido quando o convite for aceito. */
+      teacherPlanGrant?: components['schemas']['TeacherPlanGrantDto'];
       isStudent?: boolean;
     };
     UpdateComposerDto: {
@@ -11336,6 +11952,11 @@ export interface components {
       verificationNotes?: string;
       /** @enum {string} */
       dataQuality?: 'high' | 'medium' | 'low';
+    };
+    VerifyWorksBulkDto: {
+      workIds: string[];
+      /** @description Verdadeiro verifica; falso retira a verificação. */
+      isVerified: boolean;
     };
     VerifyComposersBulkDto: {
       composerIds: string[];
@@ -11940,6 +12561,79 @@ export interface components {
       confirm: boolean;
       retentionDays?: number;
     };
+    BackupAvailableCollectionDto: {
+      /** @example blog_articles */
+      name: string;
+      /** @example BlogArticle */
+      model: string;
+      /** @example 207892 */
+      documents: number;
+    };
+    BackupCollectionDto: {
+      /**
+       * @description Nome da coleção no banco.
+       * @example Work
+       */
+      name: string;
+      /**
+       * @description Quantos documentos guardar desta coleção. Ausente ou nulo é "tudo".
+       * @example 1000
+       */
+      limit?: number | null;
+    };
+    BackupSettingsResponseDto: {
+      /** @example 3 */
+      keep: number;
+      collections: components['schemas']['BackupCollectionDto'][];
+      /**
+       * @description O que impede o backup de rodar, quando impede. Nulo quando está tudo no lugar.
+       * @example Armazenamento de backup não configurado. Falta: BACKUP_R2_BUCKET.
+       */
+      storageIssue?: string | null;
+    };
+    UpdateBackupSettingsDto: {
+      /**
+       * @description Quantos arquivos manter no bucket. O mais antigo sai quando um novo entra — e só depois de o novo passar na verificação.
+       * @example 3
+       */
+      keep: number;
+      /** @description As coleções que entram no backup. Fora daqui, fora do arquivo. */
+      collections: components['schemas']['BackupCollectionDto'][];
+    };
+    BackupRunDto: {
+      /** @example 68d0a1c21e3db0c5aaa89512 */
+      id: string;
+      /** @example 2026-09-21T03:00:00.000Z */
+      startedAt: string;
+      finishedAt?: string | null;
+      /**
+       * @example ok
+       * @enum {string}
+       */
+      status: 'running' | 'ok' | 'failed';
+      objectKey?: string | null;
+      sizeBytes?: number | null;
+      documentCount?: number | null;
+      /** @description Quando o arquivo foi baixado de volta e lido com sucesso. */
+      verifiedAt?: string | null;
+      error?: string | null;
+      collections?: components['schemas']['BackupCollectionDto'][];
+      rotated?: string[];
+    };
+    BackupFileDto: {
+      /** @example backups/backup-2026-09-21.json.gz */
+      key: string;
+      /** @example 18234567 */
+      sizeBytes: number;
+      /** @example 2026-09-21T03:00:00.000Z */
+      createdAt: string;
+    };
+    BackupDownloadDto: {
+      /** @description Link assinado, válido por uma hora. */
+      url: string;
+      /** @example 3600 */
+      expiresInSeconds: number;
+    };
     CreateRecordDto: {
       /** @example Epoch */
       model: string;
@@ -12088,6 +12782,80 @@ export interface operations {
           [name: string]: unknown;
         };
         content?: never;
+      };
+    };
+  };
+  ScrapersController_events: {
+    parameters: {
+      query?: {
+        /** @description Página atual (1-indexed) */
+        page?: number;
+        /** @description Itens por página */
+        limit?: number;
+        /** @description Só os eventos desta casa */
+        scraperId?:
+          | 'osesp'
+          | 'theatro-municipal'
+          | 'sala-cecilia-meireles'
+          | 'teatro-amazonas'
+          | 'theatro-da-paz'
+          | 'auditorio-ibirapuera'
+          | 'cidade-das-artes';
+        status?:
+          | 'DRAFT'
+          | 'PENDING'
+          | 'PUBLISHED'
+          | 'CANCELLED'
+          | 'POSTPONED'
+          | 'COMPLETED';
+        /** @description Trecho do título */
+        search?: string;
+        /** @description Pela data do evento, não da importação */
+        when?: 'futuros' | 'passados';
+        /** @description Importados a partir de (ISO) */
+        importedFrom?: string;
+      };
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description Página de eventos importados */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
+  ScrapersController_event: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        id: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description O evento */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+      /** @description Não existe */
+      404: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
       };
     };
   };
@@ -17889,6 +18657,24 @@ export interface operations {
       };
     };
   };
+  ArticlesAdminController_overview: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description Contagens, visualizações e autores */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
   ArticlesAdminController_reorderFeatured: {
     parameters: {
       query?: never;
@@ -18426,6 +19212,46 @@ export interface operations {
         content?: never;
       };
       400: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+    };
+  };
+  AuthorsController_findOne: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        /** @description Nome de usuário ou id do autor */
+        username: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['AuthorProfileResponseDto'];
+        };
+      };
+      /** @description Conta inexistente ou sem artigo publicado */
+      404: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description Rate limit excedido */
+      429: {
         headers: {
           [name: string]: unknown;
         };
@@ -21753,6 +22579,20 @@ export interface operations {
         role?: 0 | 1 | 2;
         /** @description Só quem tem perfil de professor. */
         isTeacher?: boolean;
+        /** @description E-mail confirmado (true) ou não. */
+        emailVerified?: boolean;
+        /** @description Cadastro inicial concluído ou não. */
+        onboardingCompleted?: boolean;
+        /** @description Perfil público ou privado. */
+        profilePublic?: boolean;
+        /** @description Plano com acesso hoje (assinatura viva). FREE: quem não tem nenhuma. */
+        plan?: 'FREE' | 'PLUS' | 'MENTOR' | 'MAESTRO';
+        /** @description Último acesso: nos últimos 7 ou 30 dias, sem acesso há 90 dias, ou nunca. */
+        activity?: '7d' | '30d' | 'inactive90' | 'never';
+        /** @description Conta criada a partir de (ISO 8601). */
+        createdFrom?: string;
+        /** @description Conta criada até (ISO 8601). */
+        createdTo?: string;
         sortBy?: 'createdAt' | 'lastSeen' | 'email' | 'firstName';
         sortOrder?: 'asc' | 'desc';
       };
@@ -21799,6 +22639,24 @@ export interface operations {
       };
     };
   };
+  AdminUsersController_overview: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description Contagens da base de usuários */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
   AdminUsersController_export: {
     parameters: {
       query?: {
@@ -21813,6 +22671,20 @@ export interface operations {
         role?: 0 | 1 | 2;
         /** @description Só quem tem perfil de professor. */
         isTeacher?: boolean;
+        /** @description E-mail confirmado (true) ou não. */
+        emailVerified?: boolean;
+        /** @description Cadastro inicial concluído ou não. */
+        onboardingCompleted?: boolean;
+        /** @description Perfil público ou privado. */
+        profilePublic?: boolean;
+        /** @description Plano com acesso hoje (assinatura viva). FREE: quem não tem nenhuma. */
+        plan?: 'FREE' | 'PLUS' | 'MENTOR' | 'MAESTRO';
+        /** @description Último acesso: nos últimos 7 ou 30 dias, sem acesso há 90 dias, ou nunca. */
+        activity?: '7d' | '30d' | 'inactive90' | 'never';
+        /** @description Conta criada a partir de (ISO 8601). */
+        createdFrom?: string;
+        /** @description Conta criada até (ISO 8601). */
+        createdTo?: string;
         sortBy?: 'createdAt' | 'lastSeen' | 'email' | 'firstName';
         sortOrder?: 'asc' | 'desc';
         format?: 'csv' | 'json';
@@ -21910,6 +22782,45 @@ export interface operations {
       };
     };
   };
+  AdminUsersController_items: {
+    parameters: {
+      query: {
+        kind:
+          | 'favoritos'
+          | 'aprendidas'
+          | 'quero-aprender'
+          | 'anotacoes'
+          | 'envios'
+          | 'arquivos';
+        page?: number;
+        limit?: number;
+      };
+      header?: never;
+      path: {
+        /** @description Id do usuário */
+        id: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description Itens paginados, num formato só */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+      404: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+    };
+  };
   TeacherInvitationsController_accept: {
     parameters: {
       query?: never;
@@ -21995,6 +22906,26 @@ export interface operations {
         isVerified?: boolean;
         dataQuality?: 'high' | 'medium' | 'low';
         epochId?: string;
+        /** @description No mínimo N obras no catálogo. */
+        minWorks?: 'name' | 'createdAt' | 'birthYear';
+        /** @description No máximo N obras. `maxWorks=0`: compositores sem obra. */
+        maxWorks?: number;
+        /** @description Tem biografia em português. */
+        hasBio?: boolean;
+        /** @description Tem biografia em inglês. */
+        hasBioEn?: boolean;
+        /** @description Tem retrato. */
+        hasPortrait?: boolean;
+        /** @description Tem datas de nascimento e morte. */
+        hasDates?: boolean;
+        /** @description Cadastrado pela comunidade (true) ou importado (false). */
+        isCustom?: boolean;
+        /** @description Nacionalidade (contém). */
+        nationality?: string;
+        /** @description Entrou no catálogo a partir de (ISO). */
+        createdFrom?: string;
+        /** @description Entrou no catálogo até (ISO). */
+        createdTo?: string;
         sortBy?: 'name' | 'createdAt' | 'birthYear';
       };
       header?: never;
@@ -22004,6 +22935,44 @@ export interface operations {
     requestBody?: never;
     responses: {
       /** @description Compositores paginados */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
+  AdminCatalogController_composersOverview: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description Contagens do cadastro de compositores */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
+  AdminCatalogController_getComposer: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        id: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description Compositor */
       200: {
         headers: {
           [name: string]: unknown;
@@ -22089,6 +23058,63 @@ export interface operations {
       };
     };
   };
+  AdminCatalogController_composerSummary: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        id: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description Resumo do compositor */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
+  AdminCatalogController_verifyWorksBulk: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['VerifyWorksBulkDto'];
+      };
+    };
+    responses: {
+      /** @description Quantas foram atualizadas, quais, e os ids inexistentes */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+      201: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+      /** @description Nenhum dos ids informados existe */
+      404: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+    };
+  };
   AdminCatalogController_verifyComposersBulk: {
     parameters: {
       query?: never;
@@ -22126,45 +23152,36 @@ export interface operations {
       };
     };
   };
-  AdminCatalogController_listWorks: {
+  AdminCatalogController_worksOverview: {
     parameters: {
-      query?: {
-        page?: number;
-        limit?: number;
-        sortOrder?: 'asc' | 'desc';
-        search?: string;
-        composerId?: string;
-        epochId?: string;
-        instrumentId?: string;
-        workType?:
-          | 'INDIVIDUAL'
-          | 'COMPLETE_WORK'
-          | 'ARRANGEMENT'
-          | 'COLLECTION'
-          | 'COLLABORATION'
-          | 'COMPOSITION'
-          | 'COLLECTED_WORKS'
-          | 'COLLECTIONS_WITH';
-        /** @description Nível na fonte, de "1" a "12". */
-        difficultyLevel?: string;
-        isVerified?: boolean;
-        /** @description Mínimo de favoritos. Filtro por contagem — ver a nota de cobertura na resposta. */
-        minFavorites?: number;
-        /** @description Mínimo de "quero aprender". */
-        minWantToLearn?: number;
-        /** @description Mínimo de "já aprendi". */
-        minLearned?: number;
-        /** @description Mínimo de partituras. */
-        minScores?: number;
-        sortBy?: 'title' | 'createdAt';
-      };
+      query?: never;
       header?: never;
       path?: never;
       cookie?: never;
     };
     requestBody?: never;
     responses: {
-      /** @description Obras paginadas */
+      /** @description Contagens e as obras mais usadas */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
+  AdminCatalogController_getWork: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        id: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description Obra */
       200: {
         headers: {
           [name: string]: unknown;
@@ -22250,6 +23267,130 @@ export interface operations {
       };
     };
   };
+  AdminCatalogController_workPeople: {
+    parameters: {
+      query?: {
+        kind?: 'favoritos' | 'quero-aprender' | 'aprendidas';
+        page?: number;
+      };
+      header?: never;
+      path: {
+        id: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description Pessoas paginadas */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
+  AdminCatalogController_workSummary: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        id: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description Resumo da obra */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
+  AdminCatalogController_listWorks: {
+    parameters: {
+      query?: {
+        page?: number;
+        limit?: number;
+        sortOrder?: 'asc' | 'desc';
+        search?: string;
+        composerId?: string;
+        epochId?: string;
+        instrumentId?: string;
+        workType?:
+          | 'INDIVIDUAL'
+          | 'COMPLETE_WORK'
+          | 'ARRANGEMENT'
+          | 'COLLECTION'
+          | 'COLLABORATION'
+          | 'COMPOSITION'
+          | 'COLLECTED_WORKS'
+          | 'COLLECTIONS_WITH';
+        /** @description Nível na fonte, de "1" a "12". */
+        difficultyLevel?: string;
+        isVerified?: boolean;
+        /** @description Mínimo de favoritos. Filtro por contagem — ver a nota de cobertura na resposta. */
+        minFavorites?: number;
+        /** @description Mínimo de "quero aprender". */
+        minWantToLearn?: number;
+        /** @description Mínimo de "já aprendi". */
+        minLearned?: number;
+        /** @description Mínimo de partituras. */
+        minScores?: number;
+        /** @description No máximo N favoritos (0: nenhum). */
+        maxFavorites?: 'title' | 'createdAt';
+        /** @description No máximo N pessoas querendo aprender. */
+        maxWantToLearn?: number;
+        /** @description No máximo N pessoas que aprenderam. */
+        maxLearned?: number;
+        /** @description Tem partitura (true) ou nenhuma (false). */
+        hasScore?: boolean;
+        /** @description Tem vídeo. */
+        hasVideo?: boolean;
+        /** @description Cadastrada pela comunidade (true) ou importada (false). */
+        isCustom?: boolean;
+        /** @description Entrou no catálogo a partir de (ISO). */
+        createdFrom?: string;
+        /** @description Entrou no catálogo até (ISO). */
+        createdTo?: string;
+        sortBy?: 'title' | 'createdAt';
+      };
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description Obras paginadas */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
+  AdminCatalogController_scoresOverview: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description Contagens por estado, tipo e origem */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
   AdminCatalogController_listScores: {
     parameters: {
       query?: {
@@ -22259,6 +23400,22 @@ export interface operations {
         search?: string;
         workId?: string;
         isActive?: boolean;
+        /** @description Partituras das obras deste compositor. */
+        composerId?: string;
+        type?:
+          | 'SCORES'
+          | 'PARTS'
+          | 'ARRANGEMENTS'
+          | 'LIBRETTOS'
+          | 'OTHERS'
+          | 'SOURCES';
+        source?: 'IMSLP' | 'CUSTOM' | 'UPLOAD';
+        /** @description Tem arquivo para baixar. */
+        hasFile?: boolean;
+        /** @description Entrou a partir de (ISO). */
+        createdFrom?: string;
+        /** @description Entrou até (ISO). */
+        createdTo?: string;
       };
       header?: never;
       path?: never;
@@ -22267,6 +23424,26 @@ export interface operations {
     requestBody?: never;
     responses: {
       /** @description Partituras paginadas */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
+  AdminCatalogController_getScore: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        id: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description Partitura */
       200: {
         headers: {
           [name: string]: unknown;
@@ -22398,8 +23575,12 @@ export interface operations {
   AdminUploadsController_stats: {
     parameters: {
       query?: {
-        /** @description Dias na linha do tempo. */
+        /** @description Janela em dias até hoje. Ignorado quando `from` vem. Sem `days` e sem `from`: desde o início. */
         days?: number;
+        /** @description Início da janela (ISO 8601). */
+        from?: string;
+        /** @description Fim da janela (ISO 8601). Padrão: agora. */
+        to?: string;
       };
       header?: never;
       path?: never;
@@ -22952,6 +24133,34 @@ export interface operations {
       };
     };
   };
+  AdminBillingController_syncCoupon: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        id: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description Cupom com o estado do espelho */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+      404: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+    };
+  };
   AdminBillingController_listPricing: {
     parameters: {
       query?: never;
@@ -23001,6 +24210,64 @@ export interface operations {
       };
     };
   };
+  AdminBillingController_pricingStripeStatus: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description Estado da sincronização por plano */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
+  AdminBillingController_pushPricing: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        planType: 'PLUS' | 'MENTOR' | 'MAESTRO';
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description Versão vigente, com os ids do Stripe */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
+  AdminBillingController_pullPricing: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        planType: 'PLUS' | 'MENTOR' | 'MAESTRO';
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description Se adotou, e por quê */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
   AdminBillingController_pricingHistory: {
     parameters: {
       query?: never;
@@ -23018,6 +24285,90 @@ export interface operations {
           [name: string]: unknown;
         };
         content?: never;
+      };
+    };
+  };
+  AdminSubscriptionsController_overview: {
+    parameters: {
+      query?: {
+        /** @description Janela, em dias, dos números "no período". */
+        days?: 1 | 7 | 30 | 90 | 180 | 365;
+      };
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description Panorama de cobrança */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
+  AdminSubscriptionsController_list: {
+    parameters: {
+      query?: {
+        estado?:
+          | 'ativas'
+          | 'teste'
+          | 'atraso'
+          | 'vao-sair'
+          | 'nao-renovaram'
+          | 'expiradas'
+          | 'pendentes'
+          | 'todas';
+        plano?: 'FREE' | 'PLUS' | 'MENTOR' | 'MAESTRO';
+        periodo?: 'MONTHLY' | 'YEARLY';
+        /** @description Nome ou e-mail de quem assina. */
+        busca?: string;
+        /** @description Id do último item recebido. */
+        cursor?: string;
+        limit?: number;
+      };
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description Assinaturas com total pago */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
+  AdminSubscriptionsController_detail: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        id: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description Assinatura */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+      404: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
       };
     };
   };
@@ -23773,6 +25124,24 @@ export interface operations {
       };
     };
   };
+  AdminMetricsController_attention: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description Contagens e datas por área */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
   AdminMetricsController_overview: {
     parameters: {
       query?: never;
@@ -23783,6 +25152,26 @@ export interface operations {
     requestBody?: never;
     responses: {
       /** @description Usuários, catálogo, portal e biblioteca */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
+  AdminMetricsController_activity: {
+    parameters: {
+      query?: {
+        days?: number;
+      };
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description Série diária e totais */
       200: {
         headers: {
           [name: string]: unknown;
@@ -23932,6 +25321,16 @@ export interface operations {
         entityId?: string;
         /** @description Só as tentativas negadas. É o filtro que interessa numa investigação. */
         onlyFailures?: boolean;
+        /** @description O tipo da operação, pelo fim da ação (`.create`, `.update`/`.verify…`, `.delete`). */
+        verb?: 'create' | 'update' | 'delete' | 'other';
+        /** @description Papel de quem agiu no momento da ação. */
+        actorRole?: 0 | 1 | 2;
+        /** @description Rede de origem (contém). */
+        ip?: string;
+        /** @description Nome do registro afetado, como estava na hora (contém). */
+        target?: string;
+        /** @description Só as ações que mudaram este campo (ex.: `role`, `isVerified`, `price`). */
+        field?: string;
         from?: string;
         to?: string;
         format?: 'csv' | 'json';
@@ -23971,6 +25370,24 @@ export interface operations {
       };
     };
   };
+  AdminOperationsController_facets: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description Ações, tipos e pessoas */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
   AdminOperationsController_export: {
     parameters: {
       query?: {
@@ -23988,6 +25405,16 @@ export interface operations {
         entityId?: string;
         /** @description Só as tentativas negadas. É o filtro que interessa numa investigação. */
         onlyFailures?: boolean;
+        /** @description O tipo da operação, pelo fim da ação (`.create`, `.update`/`.verify…`, `.delete`). */
+        verb?: 'create' | 'update' | 'delete' | 'other';
+        /** @description Papel de quem agiu no momento da ação. */
+        actorRole?: 0 | 1 | 2;
+        /** @description Rede de origem (contém). */
+        ip?: string;
+        /** @description Nome do registro afetado, como estava na hora (contém). */
+        target?: string;
+        /** @description Só as ações que mudaram este campo (ex.: `role`, `isVerified`, `price`). */
+        field?: string;
         from?: string;
         to?: string;
         format?: 'csv' | 'json';
@@ -24039,6 +25466,30 @@ export interface operations {
     requestBody?: never;
     responses: {
       /** @description Falhas mais recentes primeiro */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
+  AdminJobsController_recent: {
+    parameters: {
+      query?: {
+        limit?: number;
+        /** @description Só os jobs com este nome, ou que rodam esta tarefa/casa (`taskId` ou `scraperId` do payload). */
+        job?: string;
+      };
+      header?: never;
+      path: {
+        queue: 'newsletter' | 'maintenance' | 'scraper' | 'notifications';
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description Rodadas mais recentes primeiro */
       200: {
         headers: {
           [name: string]: unknown;
@@ -24190,7 +25641,8 @@ export interface operations {
           | 'tokens.prune'
           | 'notifications.prune'
           | 'audit.prune'
-          | 'search.reindex';
+          | 'search.reindex'
+          | 'database.backup';
       };
       cookie?: never;
     };
@@ -24247,7 +25699,8 @@ export interface operations {
           | 'tokens.prune'
           | 'notifications.prune'
           | 'audit.prune'
-          | 'search.reindex';
+          | 'search.reindex'
+          | 'database.backup';
       };
       cookie?: never;
     };
@@ -24286,7 +25739,8 @@ export interface operations {
           | 'tokens.prune'
           | 'notifications.prune'
           | 'audit.prune'
-          | 'search.reindex';
+          | 'search.reindex'
+          | 'database.backup';
       };
       cookie?: never;
     };
@@ -24307,6 +25761,135 @@ export interface operations {
         content: {
           'application/json': components['schemas']['ErrorResponseDto'];
         };
+      };
+    };
+  };
+  AdminBackupController_colecoes: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['BackupAvailableCollectionDto'][];
+        };
+      };
+    };
+  };
+  AdminBackupController_lerConfiguracao: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['BackupSettingsResponseDto'];
+        };
+      };
+    };
+  };
+  AdminBackupController_gravarConfiguracao: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['UpdateBackupSettingsDto'];
+      };
+    };
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['BackupSettingsResponseDto'];
+        };
+      };
+    };
+  };
+  AdminBackupController_execucoes: {
+    parameters: {
+      query: {
+        limit: string;
+      };
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['BackupRunDto'][];
+        };
+      };
+    };
+  };
+  AdminBackupController_arquivos: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['BackupFileDto'][];
+        };
+      };
+    };
+  };
+  AdminBackupController_baixar: {
+    parameters: {
+      query: {
+        key: string;
+      };
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['BackupDownloadDto'];
+        };
+      };
+      /** @description Arquivo não encontrado no bucket. */
+      404: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
       };
     };
   };

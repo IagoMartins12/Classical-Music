@@ -80,4 +80,11 @@ export const profileApi = {
       method: 'POST',
       body,
     }),
+  /**
+   * Portabilidade (LGPD, RN-2): tudo o que é da pessoa, num documento. A API
+   * limita a 3 pedidos por hora e declara no próprio arquivo o que fica de
+   * fora (credenciais, trilha administrativa, notas privadas do professor).
+   */
+  exportarDados: () =>
+    apiFetch<unknown>('/profile/export', { cache: 'no-store' }),
 };

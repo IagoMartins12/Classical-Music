@@ -14,13 +14,98 @@ import {
   displayName,
   downloadFromApi,
 } from '@/app/requests/admin/common';
-import type { AdminUser, UserAnalytics } from '@/app/hooks/admin/useAdminUsers';
+
+export interface AdminUser {
+  id: string;
+  name: string;
+  email: string;
+  username?: string;
+  userType?: 'MUSIC_STUDENT' | 'CASUAL_USER' | 'PROFESSIONAL' | 'TEACHER';
+  experienceLevel?: 'BEGINNER' | 'INTERMEDIATE' | 'ADVANCED';
+  role?: number;
+  annotationsCount: number;
+  uploadsCount: number;
+  uploadScore: number;
+  createdAt: Date;
+  lastActive: Date;
+  /** Último acesso de verdade; nulo quando a pessoa nunca entrou. */
+  lastSeen?: Date | null;
+  isProfilePublic: boolean;
+  onboardingCompleted: boolean;
+  moderationsCount?: number;
+  teacherInviteStatus?: 'pending' | 'accepted' | 'declined' | null;
+  teacherInviteAcceptedAt?: Date;
+  isTeacher?: boolean;
+  image?: string | null;
+  emailVerified?: boolean;
+  teacherProfile?: {
+    id: string;
+    status: 'ACTIVE' | 'INACTIVE' | 'PENDING';
+    isVerified: boolean;
+    specialties?: string[];
+    instruments?: string[];
+    isPublicProfile?: boolean;
+  };
+}
+
+export interface UserAnalytics {
+  totalUsers: number;
+  activeUsers: {
+    today: number;
+    thisWeek: number;
+    thisMonth: number;
+    period: number;
+    growthRate: number;
+  };
+  newUsers: {
+    today: number;
+    thisWeek: number;
+    thisMonth: number;
+    period: number;
+    recentlyAdded: number;
+    growthRate: number;
+  };
+  userTypes: Array<{
+    type: string;
+    count: number;
+    percentage: number;
+  }>;
+  topContributors: Array<{
+    id: string;
+    name: string;
+    email: string;
+    totalUploads: number;
+    uploadScore: number;
+    verifiedUploads: number;
+    annotationsCount: number;
+  }>;
+  userGrowth: Array<{
+    date: string;
+    newUsers: number;
+    activeUsers: number;
+    totalUsers: number;
+  }>;
+  engagementMetrics: {
+    averageAnnotationsPerUser: number;
+    averageUploadsPerUser: number;
+  };
+  retentionRate?: number;
+  retentionGrowth?: number;
+  activityRate?: number;
+  contributorsPercentage?: number;
+}
 
 export interface UserListFilters {
   search?: string;
   userType?: string;
   experienceLevel?: string;
-  sortBy?: 'name' | 'createdAt' | 'annotationsCount' | 'uploadsCount';
+  sortBy?:
+    | 'name'
+    | 'createdAt'
+    | 'lastSeen'
+    | 'email'
+    | 'annotationsCount'
+    | 'uploadsCount';
   sortOrder?: 'asc' | 'desc';
   page?: number;
   limit?: number;
@@ -29,7 +114,16 @@ export interface UserListFilters {
   hasAnnotations?: boolean;
   hasModerations?: boolean;
   role?: number;
+  isTeacher?: boolean;
   period?: AdminPeriod;
+  emailVerified?: boolean;
+  onboardingCompleted?: boolean;
+  profilePublic?: boolean;
+  /** Plano com acesso hoje; FREE é quem não tem assinatura viva. */
+  plan?: 'FREE' | 'PLUS' | 'MENTOR' | 'MAESTRO';
+  activity?: '7d' | '30d' | 'inactive90' | 'never';
+  createdFrom?: string;
+  createdTo?: string;
 }
 
 interface ApiAdminUser {
@@ -47,6 +141,7 @@ interface ApiAdminUser {
   isStudent: boolean;
   profilePublic: boolean;
   onboardingCompleted: boolean;
+  emailVerified?: string | null;
   createdAt: string;
   updatedAt: string;
   lastSeen: string | null;
@@ -57,6 +152,8 @@ interface ApiAdminUser {
     favorites: number;
     learned: number;
     uploads: number;
+    wantToLearn?: number;
+    contributions?: number;
   };
 }
 
@@ -85,9 +182,12 @@ function toAdminUser(user: ApiAdminUser): AdminUser {
     uploadScore: 0,
     createdAt: new Date(user.createdAt),
     lastActive: new Date(user.lastSeen ?? user.updatedAt),
+    lastSeen: user.lastSeen ? new Date(user.lastSeen) : null,
     isProfilePublic: user.profilePublic,
     onboardingCompleted: user.onboardingCompleted,
     isTeacher: user.isTeacher,
+    image: user.image,
+    emailVerified: !!user.emailVerified,
   };
 }
 
@@ -95,6 +195,8 @@ function toAdminUser(user: ApiAdminUser): AdminUser {
 const SORT_BY: Record<string, string> = {
   name: 'firstName',
   createdAt: 'createdAt',
+  lastSeen: 'lastSeen',
+  email: 'email',
 };
 
 function listQuery(filters: UserListFilters) {
@@ -103,6 +205,14 @@ function listQuery(filters: UserListFilters) {
     userType: filters.userType || undefined,
     experienceLevel: filters.experienceLevel || undefined,
     role: filters.role,
+    isTeacher: filters.isTeacher,
+    emailVerified: filters.emailVerified,
+    onboardingCompleted: filters.onboardingCompleted,
+    profilePublic: filters.profilePublic,
+    plan: filters.plan,
+    activity: filters.activity,
+    createdFrom: filters.createdFrom,
+    createdTo: filters.createdTo,
     sortBy: filters.sortBy ? SORT_BY[filters.sortBy] : undefined,
     sortOrder: filters.sortOrder,
   };
@@ -222,6 +332,14 @@ export async function updateAdminUser(
     userType?: string;
     isTeacher?: boolean;
     isStudent?: boolean;
+    /**
+     * Só com `isTeacher: true`: o plano que vai com o convite de professor,
+     * concedido quando a pessoa aceita. `expiresAt` nulo é sem vencimento.
+     */
+    teacherPlanGrant?: {
+      planType: 'MENTOR' | 'MAESTRO';
+      expiresAt?: string | null;
+    };
   }
 ) {
   const updated = await apiFetch<ApiAdminUser>(`/admin/users/${userId}`, {
@@ -231,6 +349,7 @@ export async function updateAdminUser(
       userType: data.userType,
       isTeacher: data.isTeacher,
       isStudent: data.isStudent,
+      teacherPlanGrant: data.teacherPlanGrant,
     },
   });
 
@@ -299,3 +418,13 @@ export async function getAdminUserDetails(userId: string) {
     isStudent: user.isStudent,
   };
 }
+
+/** Busca de pessoas para os filtros "por pessoa". */
+export const buscarPessoas = async (termo: string) => {
+  const r = await listAdminUsers({ search: termo, limit: 8 });
+  return r.users.map((u) => ({
+    id: u.id,
+    rotulo: u.name || u.username || u.email,
+    detalhe: u.email,
+  }));
+};

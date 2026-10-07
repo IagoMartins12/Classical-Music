@@ -1,19 +1,25 @@
-// components/authModals/TermsAcceptance.tsx
 'use client';
 
-import React, { useState } from 'react';
-import {
-  PiCheckSquare,
-  PiFileText,
-  PiShield,
-  PiSquare,
-  PiWarningCircle,
-} from 'react-icons/pi';
+import React, { useId, useState } from 'react';
+import { PiArrowSquareOut, PiWarningCircle } from 'react-icons/pi';
 import { useTranslation } from '@/app/context/TranslationContext';
 import Modal from '../../Modal';
-import { Stack, Inline } from '@/app/components/ui/Layout';
-import { Text } from '@/app/components/ui/Text';
+import { Button } from '@/app/components/ui/Button';
+import { Inline } from '@/app/components/ui/Layout';
+import { TextoRico } from '@/app/components/ui/TextoRico';
+import { TERMOS } from '@/app/conteudo/legal/termos';
+import { PRIVACIDADE } from '@/app/conteudo/legal/privacidade';
+import type { DocumentoBilingue } from '@/app/conteudo/legal/tipos';
+import LocalizedLink from '@/app/components/LocalizedLink';
 
+/**
+ * O aceite dos Termos e da Política no cadastro.
+ *
+ * Os dois modais mostram "O essencial" do documento de verdade
+ * (`conteudo/legal`) — o mesmo texto das páginas `/terms` e `/privacy` — e
+ * levam ao documento completo numa aba nova, para o cadastro não se perder.
+ * Havia aqui um resumo próprio, escrito à parte, que contradizia a política.
+ */
 interface TermsAcceptanceProps {
   accepted: boolean;
   onChange: (accepted: boolean) => void;
@@ -21,10 +27,83 @@ interface TermsAcceptanceProps {
   disabled?: boolean;
 }
 
-interface TermsContent {
-  title: string;
-  content: React.ReactNode;
-  icon: React.ReactNode;
+const ROTULOS = {
+  pt: {
+    vigor: 'Em vigor desde',
+    completo: {
+      terms: 'Ler os Termos de Uso completos',
+      privacy: 'Ler a Política de Privacidade completa',
+    },
+    entendi: 'Entendi',
+  },
+  en: {
+    vigor: 'Effective from',
+    completo: {
+      terms: 'Read the full Terms of Use',
+      privacy: 'Read the full Privacy Policy',
+    },
+    entendi: 'Got it',
+  },
+} as const;
+
+function data(iso: string, idioma: 'pt' | 'en') {
+  return new Intl.DateTimeFormat(idioma === 'pt' ? 'pt-BR' : 'en-US', {
+    day: 'numeric',
+    month: 'long',
+    year: 'numeric',
+    timeZone: 'UTC',
+  }).format(new Date(iso));
+}
+
+function Resumo({
+  qual,
+  documento,
+  idioma,
+  aoFechar,
+}: {
+  qual: 'terms' | 'privacy';
+  documento: DocumentoBilingue;
+  idioma: 'pt' | 'en';
+  aoFechar: () => void;
+}) {
+  const doc = documento[idioma];
+  const r = ROTULOS[idioma];
+  return (
+    <div className="flex flex-col gap-6">
+      <p className="text-[0.9375rem] leading-relaxed text-texto-suave">
+        {doc.abertura}
+      </p>
+      <ul className="flex list-disc flex-col gap-3 pl-5 text-[0.9375rem] leading-relaxed text-texto-suave marker:text-ouro-texto">
+        {doc.essencial.map((e, i) => (
+          <li key={i} className="pl-1">
+            <TextoRico texto={e} />
+          </li>
+        ))}
+      </ul>
+      <p className="text-sm text-texto-fraco">
+        {r.vigor}{' '}
+        <time dateTime={doc.vigencia}>{data(doc.vigencia, idioma)}</time>
+      </p>
+      <div className="flex flex-col-reverse gap-3 sm:flex-row sm:items-center sm:justify-between">
+        <LocalizedLink
+          href={`/${qual}`}
+          target="_blank"
+          rel="noopener"
+          className="inline-flex items-center gap-2 text-sm font-medium text-ouro-texto underline decoration-ouro/40 underline-offset-[3px] hover:decoration-ouro"
+        >
+          {r.completo[qual]}
+          <PiArrowSquareOut aria-hidden="true" className="h-4 w-4" />
+        </LocalizedLink>
+        <Button
+          variante="primario"
+          onClick={aoFechar}
+          className="w-full sm:w-auto"
+        >
+          {r.entendi}
+        </Button>
+      </div>
+    </div>
+  );
 }
 
 const TermsAcceptance: React.FC<TermsAcceptanceProps> = ({
@@ -33,311 +112,90 @@ const TermsAcceptance: React.FC<TermsAcceptanceProps> = ({
   error,
   disabled = false,
 }) => {
-  const { t } = useTranslation({ sections: ['components/auth-modals'] });
-  const [showPrivacyModal, setShowPrivacyModal] = useState(false);
-  const [showTermsModal, setShowTermsModal] = useState(false);
-
-  const handleCheckboxChange = () => {
-    if (!disabled) {
-      onChange(!accepted);
-    }
-  };
-
-  const privacyContent: TermsContent = {
-    title: t('privacy_policy_title'),
-    icon: <PiShield className="w-5 h-5 text-ouro-texto" />,
-    content: (
-      <Text
-        papel="rotulo"
-        tom="suave"
-        as="div"
-        className="space-y-6 leading-relaxed"
-      >
-        <Stack gap={2} className="rounded-lg p-4">
-          <h4 className="font-semibold flex items-center">
-            <PiShield className="w-4 h-4 mr-2" />
-            {t('privacy_policy_summary_title')}
-          </h4>
-          <p className="">{t('privacy_policy_summary_text')}</p>
-        </Stack>
-
-        <Stack gap={3}>
-          <h4 className="font-semibold text-theme-primary">
-            {t('privacy_policy_data_collection_title')}
-          </h4>
-          <Stack gap={2} as="ul" className="ml-4">
-            <li>{t('privacy_policy_data_registration')}</li>
-            <li>{t('privacy_policy_data_usage')}</li>
-            <li>{t('privacy_policy_data_technical')}</li>
-          </Stack>
-        </Stack>
-
-        <Stack gap={3}>
-          <h4 className="font-semibold text-theme-primary">
-            {t('privacy_policy_how_we_use_title')}
-          </h4>
-          <Stack gap={2} as="ul" className="ml-4">
-            <li>{t('privacy_policy_use_personalize')}</li>
-            <li>{t('privacy_policy_use_security')}</li>
-            <li>{t('privacy_policy_use_updates')}</li>
-            <li>{t('privacy_policy_use_statistics')}</li>
-          </Stack>
-        </Stack>
-
-        <Stack gap={3}>
-          <h4 className="font-semibold text-theme-primary">
-            {t('privacy_policy_rights_title')}
-          </h4>
-          <div className="rounded-lg p-3">
-            <Stack gap={1} as="ul">
-              <li>{t('privacy_policy_right_access')}</li>
-              <li>{t('privacy_policy_right_correction')}</li>
-              <li>{t('privacy_policy_right_deletion')}</li>
-              <li>{t('privacy_policy_right_portability')}</li>
-              <li>{t('privacy_policy_right_revocation')}</li>
-            </Stack>
-          </div>
-        </Stack>
-
-        <Stack gap={3}>
-          <h4 className="font-semibold text-theme-primary">
-            {t('privacy_policy_security_title')}
-          </h4>
-          <Stack gap={2} as="ul" className="ml-4">
-            <li>{t('privacy_policy_security_encryption')}</li>
-            <li>{t('privacy_policy_security_passwords')}</li>
-            <li>{t('privacy_policy_security_backups')}</li>
-            <li>{t('privacy_policy_security_monitoring')}</li>
-          </Stack>
-        </Stack>
-
-        <Stack gap={3}>
-          <h4 className="font-semibold text-theme-primary">
-            {t('privacy_policy_retention_title')}
-          </h4>
-          <Stack gap={2} as="ul" className="ml-4">
-            <li>{t('privacy_policy_retention_account')}</li>
-            <li>{t('privacy_policy_retention_usage')}</li>
-            <li>{t('privacy_policy_retention_cookies')}</li>
-            <li>{t('privacy_policy_retention_annotations')}</li>
-          </Stack>
-        </Stack>
-
-        <Stack gap={2} className="rounded-lg p-4 bg-sup-2">
-          <h4 className="font-semibold">{t('privacy_policy_contact_title')}</h4>
-          <p className="">
-            {t('privacy_policy_contact_text')}
-            <br />
-            <strong>{t('privacy_policy_contact_email')}</strong>
-          </p>
-        </Stack>
-      </Text>
-    ),
-  };
-
-  const termsContent: TermsContent = {
-    title: t('terms_of_use_title'),
-    icon: <PiFileText className="w-5 h-5 text-ouro-texto" />,
-    content: (
-      <Text
-        papel="rotulo"
-        tom="suave"
-        as="div"
-        className="space-y-6 leading-relaxed"
-      >
-        <Stack gap={2} className="bg-theme-elevated rounded-lg p-4">
-          <h4 className="font-semibold flex items-center">
-            <PiFileText className="w-4 h-4 mr-2" />
-            {t('terms_of_use_summary_title')}
-          </h4>
-          <p className="">{t('terms_of_use_summary_text')}</p>
-        </Stack>
-
-        <Stack gap={3}>
-          <h4 className="font-semibold text-theme-primary">
-            {t('terms_of_use_permitted_title')}
-          </h4>
-          <Stack gap={2} as="ul" className="ml-4">
-            <li>{t('terms_of_use_permitted_explore')}</li>
-            <li>{t('terms_of_use_permitted_notes')}</li>
-            <li>{t('terms_of_use_permitted_community')}</li>
-            <li>{t('terms_of_use_permitted_tools')}</li>
-          </Stack>
-        </Stack>
-
-        <Stack gap={3}>
-          <h4 className="font-semibold text-theme-primary">
-            {t('terms_of_use_prohibited_title')}
-          </h4>
-          <Stack gap={2} as="ul" className="ml-4">
-            <li>{t('terms_of_use_prohibited_commercial')}</li>
-            <li>{t('terms_of_use_prohibited_spam')}</li>
-            <li>{t('terms_of_use_prohibited_copyright')}</li>
-            <li>{t('terms_of_use_prohibited_offensive')}</li>
-          </Stack>
-        </Stack>
-
-        <Stack gap={3}>
-          <h4 className="font-semibold text-theme-primary">
-            {t('terms_of_use_content_title')}
-          </h4>
-          <Stack gap={2} as="ul" className="ml-4">
-            <li>{t('terms_of_use_content_scores')}</li>
-            <li>{t('terms_of_use_content_annotations')}</li>
-            <li>{t('terms_of_use_content_uploads')}</li>
-            <li>{t('terms_of_use_content_points')}</li>
-          </Stack>
-        </Stack>
-
-        <Stack gap={3}>
-          <h4 className="font-semibold text-theme-primary">
-            {t('terms_of_use_favorites_title')}
-          </h4>
-          <Stack gap={2} as="ul" className="ml-4">
-            <li>{t('terms_of_use_favorites_organize')}</li>
-            <li>{t('terms_of_use_favorites_privacy')}</li>
-            <li>{t('terms_of_use_favorites_educational')}</li>
-          </Stack>
-        </Stack>
-
-        <Stack gap={3}>
-          <h4 className="font-semibold text-theme-primary">
-            {t('terms_of_use_responsibilities_title')}
-          </h4>
-          <div className="rounded-lg p-3">
-            <Stack gap={1} as="ul">
-              <li>{t('terms_of_use_responsibility_security')}</li>
-              <li>{t('terms_of_use_responsibility_respect')}</li>
-              <li>{t('terms_of_use_responsibility_moderation')}</li>
-              <li>{t('terms_of_use_responsibility_collaboration')}</li>
-            </Stack>
-          </div>
-        </Stack>
-
-        <Stack gap={3}>
-          <h4 className="font-semibold text-theme-primary">
-            {t('terms_of_use_suspension_title')}
-          </h4>
-          <Stack gap={2} as="ul" className="ml-4">
-            <li>{t('terms_of_use_suspension_violations')}</li>
-            <li>{t('terms_of_use_suspension_user_choice')}</li>
-            <li>{t('terms_of_use_suspension_annotations')}</li>
-          </Stack>
-        </Stack>
-
-        <Stack gap={2} className="rounded-lg p-4">
-          <h4 className="font-semibold">
-            {t('terms_of_use_limitations_title')}
-          </h4>
-          <p className="">{t('terms_of_use_limitations_text')}</p>
-        </Stack>
-      </Text>
-    ),
-  };
+  const { t, language } = useTranslation({
+    sections: ['components/auth-modals'],
+  });
+  const idioma = language === 'en' ? 'en' : 'pt';
+  const [aberto, setAberto] = useState<'terms' | 'privacy' | null>(null);
+  const idCaixa = useId();
+  const idErro = useId();
 
   return (
     <>
-      <div className="gap-3 flex flex-col">
-        <div
-          className={`
-            flex items-start space-x-3 p-4 rounded-lg  transition-all cursor-pointer
-            ${accepted ? '' : ''}
-            ${error ? '' : ''}
-            ${disabled ? 'opacity-50 cursor-not-allowed' : ''}
-          `}
-          onClick={handleCheckboxChange}
-        >
-          <div className="flex items-center">
-            {accepted ? (
-              <PiCheckSquare className="w-5 h-5" />
-            ) : (
-              <PiSquare className="w-5 h-5 text-theme-tertiary" />
-            )}
-          </div>
-
-          <div className="flex-1 flex-nowrap min-w-0">
-            <Text papel="rotulo" tom="suave" as="p">
-              {t('terms_acceptance_text')}{' '}
-              <button
-                type="button"
-                onClick={(e) => {
-                  e.stopPropagation();
-                  setShowTermsModal(true);
-                }}
-                className="text-ouro-texto font-medium underline inline-flex items-center"
-                disabled={disabled}
-              >
-                {t('terms_acceptance_terms_link')}
-              </button>{' '}
-              {t('terms_acceptance_and')}{' '}
-              <button
-                type="button"
-                onClick={(e) => {
-                  e.stopPropagation();
-                  setShowPrivacyModal(true);
-                }}
-                className="text-ouro-texto font-medium underline inline-flex items-center"
-                disabled={disabled}
-              >
-                {t('terms_acceptance_privacy_link')}
-              </button>{' '}
-            </Text>
-          </div>
+      <div className="flex flex-col gap-3">
+        <div className="flex items-start gap-3">
+          <input
+            id={idCaixa}
+            type="checkbox"
+            checked={accepted}
+            onChange={(e) => onChange(e.target.checked)}
+            disabled={disabled}
+            aria-invalid={error ? true : undefined}
+            aria-describedby={error ? idErro : undefined}
+            className="mt-0.5 h-5 w-5 shrink-0 cursor-pointer accent-[var(--ouro)] disabled:cursor-not-allowed"
+          />
+          <p className="text-sm leading-relaxed text-texto-suave">
+            <label htmlFor={idCaixa} className="cursor-pointer">
+              {t('terms_acceptance_text')}
+            </label>{' '}
+            <button
+              type="button"
+              onClick={() => setAberto('terms')}
+              disabled={disabled}
+              className="font-medium text-ouro-texto underline decoration-ouro/40 underline-offset-[3px] hover:decoration-ouro"
+            >
+              {t('terms_acceptance_terms_link')}
+            </button>{' '}
+            {t('terms_acceptance_and')}{' '}
+            <button
+              type="button"
+              onClick={() => setAberto('privacy')}
+              disabled={disabled}
+              className="font-medium text-ouro-texto underline decoration-ouro/40 underline-offset-[3px] hover:decoration-ouro"
+            >
+              {t('terms_acceptance_privacy_link')}
+            </button>
+          </p>
         </div>
 
-        {/* Mensagem de Erro */}
         {error && (
-          <Inline gap={2} className="text-red-500 text-sm">
-            <PiWarningCircle className="w-4 h-4 flex-shrink-0" />
+          <Inline gap={2} id={idErro} className="text-sm text-erro">
+            <PiWarningCircle aria-hidden="true" className="h-4 w-4 shrink-0" />
             <span>{error}</span>
           </Inline>
         )}
       </div>
 
-      {/* Modal da Política de Privacidade */}
       <Modal
-        isOpen={showPrivacyModal}
-        onClose={() => setShowPrivacyModal(false)}
-        title={privacyContent.title}
-        maxWidth="3xl"
-        showCloseButton={true}
+        isOpen={aberto === 'terms'}
+        onClose={() => setAberto(null)}
+        title={TERMOS[idioma].titulo}
+        maxWidth="xl"
+        showCloseButton
         setPr
       >
-        <Inline gap={3} className="mb-6">
-          {privacyContent.icon}
-          <div>
-            <h3 className="text-lg font-semibold text-theme-primary">
-              {t('privacy_policy_subtitle')}
-            </h3>
-            <Text papel="rotulo" tom="fraco" as="p">
-              {t('privacy_policy_last_update')}
-            </Text>
-          </div>
-        </Inline>
-        {privacyContent.content}
+        <Resumo
+          qual="terms"
+          documento={TERMOS}
+          idioma={idioma}
+          aoFechar={() => setAberto(null)}
+        />
       </Modal>
 
-      {/* Modal dos Termos de Uso */}
       <Modal
-        isOpen={showTermsModal}
-        onClose={() => setShowTermsModal(false)}
-        title={termsContent.title}
-        maxWidth="3xl"
-        showCloseButton={true}
+        isOpen={aberto === 'privacy'}
+        onClose={() => setAberto(null)}
+        title={PRIVACIDADE[idioma].titulo}
+        maxWidth="xl"
+        showCloseButton
         setPr
       >
-        <Inline gap={3} className="mb-6">
-          {termsContent.icon}
-          <div>
-            <h3 className="text-lg font-semibold text-theme-primary">
-              {t('terms_of_use_subtitle')}
-            </h3>
-            <Text papel="rotulo" tom="fraco" as="p">
-              {t('terms_of_use_last_update')}
-            </Text>
-          </div>
-        </Inline>
-        {termsContent.content}
+        <Resumo
+          qual="privacy"
+          documento={PRIVACIDADE}
+          idioma={idioma}
+          aoFechar={() => setAberto(null)}
+        />
       </Modal>
     </>
   );

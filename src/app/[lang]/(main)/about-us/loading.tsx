@@ -1,14 +1,14 @@
 import {
-  EsqueletoCabecalho,
-  EsqueletoDetalhe,
+  EsqueletoAbertura,
   EsqueletoPagina,
+  EsqueletoVerbetes,
 } from '@/app/components/ui/Carregando';
 
 export default function Carregando() {
   return (
     <EsqueletoPagina rotulo="Carregando">
-      <EsqueletoCabecalho centro />
-      <EsqueletoDetalhe blocos={1} />
+      <EsqueletoAbertura linhas={3} acoes />
+      <EsqueletoVerbetes />
     </EsqueletoPagina>
   );
 }

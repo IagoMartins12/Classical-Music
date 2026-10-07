@@ -1,5 +1,6 @@
 // app/contact/ContactPageClient.tsx - VERSÃO ATUALIZADA FUNCIONAL
 'use client';
+import { CONTATO, mailto } from '@/app/utils/contato';
 
 import React, { useState } from 'react';
 import { GiGrandPiano } from 'react-icons/gi';
@@ -492,25 +493,31 @@ export default function ContactPageClient() {
                         <h4 className="font-semibold text-theme-primary">
                           {t('contact_jsx_h4_children_0__email')}
                         </h4>
-                        <p className="text-theme-secondary">
-                          {t('contact_jsx_p_children_0__email_address')}
-                        </p>
+                        <a
+                          href={mailto('contato')}
+                          className="text-theme-secondary hover:text-texto"
+                        >
+                          {CONTATO.contato}
+                        </a>
                       </div>
                     </Inline>
 
-                    <Inline gap={4}>
-                      <div className="w-12 h-12 rounded-xl flex items-center justify-center">
-                        <PiPhone className="w-6 h-6 text-theme-primary" />
-                      </div>
-                      <div>
-                        <h4 className="font-semibold text-theme-primary">
-                          {t('contact_jsx_h4_children_0__telefone')}
-                        </h4>
-                        <p className="text-theme-secondary">
-                          {t('contact_jsx_p_children_0__telefone_number')}
-                        </p>
-                      </div>
-                    </Inline>
+                    {/* Só com um número de atendimento de verdade (`CONTATO`). */}
+                    {CONTATO.telefone && (
+                      <Inline gap={4}>
+                        <div className="w-12 h-12 rounded-xl flex items-center justify-center">
+                          <PiPhone className="w-6 h-6 text-theme-primary" />
+                        </div>
+                        <div>
+                          <h4 className="font-semibold text-theme-primary">
+                            {t('contact_jsx_h4_children_0__telefone')}
+                          </h4>
+                          <p className="text-theme-secondary">
+                            {CONTATO.telefone}
+                          </p>
+                        </div>
+                      </Inline>
+                    )}
 
                     <Inline gap={4}>
                       <div className="w-12 h-12 rounded-xl flex items-center justify-center">

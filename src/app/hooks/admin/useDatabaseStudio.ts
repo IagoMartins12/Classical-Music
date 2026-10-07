@@ -35,13 +35,13 @@ export interface ModelSchema {
 export interface ModelField {
   name: string;
   type: string;
-  kind: 'scalar' | 'object' | 'enum' | 'unsupported'; // 🔧 ADICIONADO
+  kind: 'scalar' | 'object' | 'enum' | 'unsupported';
   isRequired: boolean;
   isUnique: boolean;
   isId: boolean;
   isList: boolean;
-  isReadOnly?: boolean; // 🔧 ADICIONADO
-  hasDefaultValue?: boolean; // 🔧 ADICIONADO
+  isReadOnly?: boolean;
+  hasDefaultValue?: boolean;
   defaultValue?: any;
   relationTo?: string;
 
@@ -130,7 +130,7 @@ interface UseDatabaseStudioReturn {
 }
 
 /**
- * Estúdio de banco. Os models, o schema do model escolhido e a página de
+ * Database Studio. Os models, o schema do model escolhido e a página de
  * registros são estado de servidor (TanStack Query): a chave dos registros
  * leva model, página, busca, ordenação, campos e filtros, então voltar a uma
  * combinação já vista mostra o cache enquanto revalida. Cada escrita invalida
@@ -292,11 +292,8 @@ export const useDatabaseStudio = (): UseDatabaseStudioReturn => {
     async (id: string) => {
       if (!selectedModel) return;
 
-      const confirmed = window.confirm(
-        'Tem certeza que deseja deletar este registro? Esta ação não pode ser desfeita.'
-      );
-      if (!confirmed) return;
-
+      // A confirmação é a frase digitada na tela (a que a API exige); um
+      // `window.confirm` aqui era uma segunda pergunta, na caixa do navegador.
       const toastId = toast.loading('Deletando registro...');
 
       try {
@@ -323,11 +320,6 @@ export const useDatabaseStudio = (): UseDatabaseStudioReturn => {
   const deleteMultipleRecords = useCallback(
     async (ids: string[]) => {
       if (!selectedModel || ids.length === 0) return;
-
-      const confirmed = window.confirm(
-        `Tem certeza que deseja deletar ${ids.length} registro(s)? Esta ação não pode ser desfeita.`
-      );
-      if (!confirmed) return;
 
       const toastId = toast.loading(`Deletando ${ids.length} registro(s)...`);
 

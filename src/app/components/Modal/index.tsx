@@ -75,7 +75,10 @@ const unlockBodyScroll = () => {
     document.body.style.top = '';
     document.body.style.width = '';
     document.body.style.overflow = '';
-    window.scrollTo(0, savedScrollY);
+    // Instantâneo: o `html` tem `scroll-behavior: smooth`, e a volta ao
+    // lugar virava uma animação do topo da página até ele (o "sobe tudo e
+    // desce de novo" ao fechar qualquer modal).
+    window.scrollTo({ top: savedScrollY, left: 0, behavior: 'instant' });
   }
 };
 
@@ -104,6 +107,7 @@ const Modal = forwardRef<ModalRef, ModalProps>(
     ref
   ) => {
     const idTitulo = `${useId()}-titulo`;
+    const dialogoRef = useRef<HTMLDialogElement>(null);
     const modalRef = useRef<HTMLDivElement>(null);
     const contentRef = useRef<HTMLDivElement>(null);
     const isLargeModal = [
@@ -143,6 +147,19 @@ const Modal = forwardRef<ModalRef, ModalProps>(
       '5xl': 'max-w-5xl',
       '6xl': 'max-w-6xl',
     };
+
+    // O modal vive num <dialog> aberto com showModal(): vai para a camada de
+    // topo do navegador, na ordem em que abriu. Sem isto, um modal aberto de
+    // dentro de uma folha (`Sheet`, que já é um <dialog>) ficava por baixo
+    // dela — nenhum z-index passa por cima da camada de topo.
+    useLayoutEffect(() => {
+      const dialogo = dialogoRef.current;
+      if (!isOpen || !dialogo || dialogo.open) return;
+      dialogo.showModal();
+      return () => {
+        if (dialogo.open) dialogo.close();
+      };
+    }, [isOpen]);
 
     // CORREÇÃO: Usar contador global
     useLayoutEffect(() => {
@@ -300,7 +317,14 @@ const Modal = forwardRef<ModalRef, ModalProps>(
     const temCabecalho = !!title || showCloseButton;
 
     const modalContent = (
-      <>
+      <dialog
+        ref={dialogoRef}
+        aria-labelledby={title ? idTitulo : undefined}
+        // O Esc é do próprio modal (pede confirmação quando há alteração);
+        // o fechamento nativo do <dialog> passaria por cima disso.
+        onCancel={(e) => e.preventDefault()}
+        className="m-0 h-full max-h-none w-full max-w-none overflow-visible bg-transparent p-0 backdrop:bg-transparent"
+      >
         {/* No telefone, a folha presa embaixo; a partir de 640px, no centro. */}
         <div className="fixed inset-0 z-dialogo flex items-end justify-center sm:items-center sm:p-4">
           <div
@@ -398,7 +422,7 @@ const Modal = forwardRef<ModalRef, ModalProps>(
             isLoading={isConfirming}
           />
         )}
-      </>
+      </dialog>
     );
 
     return typeof window !== 'undefined'

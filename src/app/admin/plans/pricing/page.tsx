@@ -1,16 +1,8 @@
-// app/admin/backup/page.tsx
-import { Metadata } from 'next';
-import AdminPlanPricingPage from '@/app/components/Admin/AdminPlanPricing';
+import type { Metadata } from 'next';
+import PlanosEPrecos from '@/app/components/Admin/telas/PlanosEPrecos';
 
-// Painel em CSR: o dado vem da API pelo navegador.
-export const dynamic = 'force-dynamic';
+export const metadata: Metadata = { title: 'Planos e preços' };
 
-export const metadata: Metadata = {
-  title: 'Gerenciamento de Planos | Admin Panel',
-  description: 'Gerenciar planos do banco de dados',
-  robots: 'noindex, nofollow',
-};
-
-export default function CouponsPage() {
-  return <AdminPlanPricingPage />;
+export default function PrecosPage() {
+  return <PlanosEPrecos />;
 }

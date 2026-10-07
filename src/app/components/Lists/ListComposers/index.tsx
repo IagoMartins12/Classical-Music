@@ -11,7 +11,6 @@ import { useIsMobile } from '@/app/hooks/useMobile';
 import { Text } from '@/app/components/ui/Text';
 import { Button } from '@/app/components/ui/Button';
 import { Card } from '@/app/components/ui/Card';
-import { Stack } from '@/app/components/ui/Layout';
 
 interface listComposersProps {
   composers: composerHomeProps[];
@@ -19,18 +18,14 @@ interface listComposersProps {
 
 const ListComposers: React.FC<listComposersProps> = ({ composers }) => {
   const [activeComposerId, setActiveComposerId] = useState<string | null>(null);
-  const [visibleCount, setVisibleCount] = useState(12); // Começar com 12 para melhor grid
-  const [isLoading, setIsLoading] = useState(false);
+  // Abre com 12; "carregar mais" mostra todos de uma vez (pedido do dono,
+  // 01/10). A lista já veio inteira do servidor: não há o que esperar.
+  const [visibleCount, setVisibleCount] = useState(12);
   const { t } = useTranslation({ sections: ['pages/home'] });
 
   const { navigateToUrl } = useNavigate();
 
-  const handleLoadMore = async () => {
-    setIsLoading(true);
-    await new Promise((resolve) => setTimeout(resolve, 300));
-    setVisibleCount((prev) => prev + 12);
-    setIsLoading(false);
-  };
+  const handleLoadMore = () => setVisibleCount(composers.length);
 
   const visibleComposers = composers.slice(0, visibleCount);
 
@@ -46,7 +41,9 @@ const ListComposers: React.FC<listComposersProps> = ({ composers }) => {
             key={composer.id}
             className="animate-fade-in-up"
             style={{
-              animationDelay: `${index * 0.05}s`,
+              // Cascata por leva de 12: com a lista inteira aberta, o último
+              // compositor esperaria segundos para aparecer.
+              animationDelay: `${(index % 12) * 0.05}s`,
               animationFillMode: 'backwards',
             }}
             onMouseEnter={() => setActiveComposerId(composer.id)}
@@ -59,27 +56,6 @@ const ListComposers: React.FC<listComposersProps> = ({ composers }) => {
             />
           </div>
         ))}
-
-        {/* Loading skeletons */}
-        {isLoading &&
-          Array.from({ length: 12 }).map((_, index) => (
-            <div
-              key={`skeleton-${index}`}
-              className="animate-fade-in-up"
-              style={{
-                animationDelay: `${index * 0.05}s`,
-                animationFillMode: 'backwards',
-              }}
-            >
-              <Card densidade="compacta" className="gap-4 flex flex-col">
-                <div className="aspect-square loading-skeleton rounded-xl"></div>
-                <Stack gap={2}>
-                  <div className="h-4 loading-skeleton rounded"></div>
-                  <div className="h-3 loading-skeleton rounded w-3/4"></div>
-                </Stack>
-              </Card>
-            </div>
-          ))}
       </div>
 
       {/* Action Buttons Section */}
@@ -87,23 +63,14 @@ const ListComposers: React.FC<listComposersProps> = ({ composers }) => {
         {visibleCount < composers.length ? (
           <div className="gap-4 flex flex-col">
             {/* Load More Button */}
-            <button
+            <Button
+              className="self-center"
+              variante="primario"
+              icone={PiCaretDown}
               onClick={handleLoadMore}
-              disabled={isLoading}
-              className={` btn-classical-primary text-lg px-8 py-4 disabled:opacity-50 disabled:cursor-not-allowed hover:scale-105 active:scale-95 shadow-theme-glow self-center ${isLoading ? 'animate-pulse' : ''} `}
             >
-              {isLoading ? (
-                <>
-                  <div className="w-5 h-5 border-2 border-t-transparent rounded-full animate-spin mr-2 inline-block"></div>
-                  {t('loading')}
-                </>
-              ) : (
-                <>
-                  <PiCaretDown className="w-5 h-5 mr-2 inline" />
-                  {t('loading_more_composers')}
-                </>
-              )}
-            </button>
+              {t('loading_more_composers')}
+            </Button>
 
             {/* Progress info */}
             <Text papel="rotulo" tom="fraco" as="p">

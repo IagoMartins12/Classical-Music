@@ -1,16 +1,8 @@
-// app/admin/backup/page.tsx
-import { Metadata } from 'next';
-import AdminCouponsPageClient from './pageClient';
+import type { Metadata } from 'next';
+import Cupons from '@/app/components/Admin/telas/Cupons';
 
-// Painel em CSR: o dado vem da API pelo navegador.
-export const dynamic = 'force-dynamic';
+export const metadata: Metadata = { title: 'Cupons' };
 
-export const metadata: Metadata = {
-  title: 'Gerenciamento de Cupons | Admin Panel',
-  description: 'Gerenciar cupons do banco de dados',
-  robots: 'noindex, nofollow',
-};
-
-export default function CouponsPage() {
-  return <AdminCouponsPageClient />;
+export default function CuponsPage() {
+  return <Cupons />;
 }

@@ -1,16 +1,10 @@
-// app/admin/page.tsx
-import { Metadata } from 'next';
+import type { Metadata } from 'next';
 import AdminDashboardClient from './AdminDashboardClient';
 
-// Painel em CSR: o dado vem da API pelo navegador.
-export const dynamic = 'force-dynamic';
-
 export const metadata: Metadata = {
-  title: 'Admin Dashboard | Classical Music Platform',
-  description: 'Painel principal de administração da plataforma',
-  robots: 'noindex, nofollow',
+  title: { absolute: 'Painel · Opus Atlas' },
 };
 
-export default function AdminDashboardPage() {
+export default function PainelPage() {
   return <AdminDashboardClient />;
 }

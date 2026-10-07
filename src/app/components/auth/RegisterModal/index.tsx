@@ -108,91 +108,13 @@ const RegisterModal: React.FC = () => {
 
   const [errors, setErrors] = useState<{ [key: string]: string }>({});
 
-  // Verificar se retornou de um registro Google
+  // A volta do Google com conta nova abre as boas-vindas pelo
+  // `GoogleRegistrationHandler` (a API marca `?new-user=true`); aqui só o erro.
   useEffect(() => {
     if (isOpen) {
-      checkGoogleRegistrationReturn();
       checkUrlErrors();
     }
   }, [isOpen]);
-
-  // Verificar retorno do registro Google
-  const checkGoogleRegistrationReturn = () => {
-    if (typeof window === 'undefined') return;
-
-    // 🔧 VERIFICAR ERRO NA URL PRIMEIRO
-    const currentUrl = new URL(window.location.href);
-    const urlError = currentUrl.searchParams.get('error');
-
-    if (urlError) {
-      console.log(
-        '❌ Erro na URL detectado, não processando como sucesso:',
-        urlError
-      );
-
-      // Limpar todas as flags de sucesso em caso de erro
-      sessionStorage.removeItem('google-register-pending');
-      sessionStorage.removeItem('google-register-email');
-      sessionStorage.removeItem('google-register-name');
-      sessionStorage.removeItem('google-register-timestamp');
-
-      // Não processar como sucesso - o checkUrlErrors() irá lidar com o erro
-      return;
-    }
-
-    // Verificar flags apenas se NÃO há erro
-    const googleRegisterFlag = sessionStorage.getItem(
-      'google-register-pending'
-    );
-    const googleRegisterEmail = sessionStorage.getItem('google-register-email');
-    const googleRegisterName = sessionStorage.getItem('google-register-name');
-    const googleRegisterTimestamp = sessionStorage.getItem(
-      'google-register-timestamp'
-    );
-
-    // 🔧 LÓGICA MAIS RIGOROSA: Só processar como sucesso se:
-    // 1. Há flag de pending
-    // 2. Há timestamp recente (últimos 5 minutos)
-    // 3. NÃO há erro na URL
-    // 4. Há dados válidos
-    if (googleRegisterFlag === 'true' && googleRegisterTimestamp && !urlError) {
-      const now = Date.now();
-      const timestamp = parseInt(googleRegisterTimestamp);
-      const timeDiff = now - timestamp;
-
-      // Verificar se é recente (últimos 5 minutos)
-      if (timeDiff < 5 * 60 * 1000) {
-        console.log('✅ Retorno de registro Google válido detectado');
-
-        // Limpar flags antes de processar
-        sessionStorage.removeItem('google-register-pending');
-        sessionStorage.removeItem('google-register-email');
-        sessionStorage.removeItem('google-register-name');
-        sessionStorage.removeItem('google-register-timestamp');
-
-        // Mostrar tela de confirmação para usuário Google
-        setRegisterStep({
-          step: 'confirmation-sent',
-          userData: {
-            firstName: googleRegisterName || 'Usuário',
-            email: googleRegisterEmail || '',
-            isLoggedIn: true,
-            registrationMethod: 'google',
-          },
-        });
-
-        toast.success(t('register_modal_google_tip_registered'));
-      } else {
-        console.log('⏰ Timestamp muito antigo, limpando flags:', timeDiff);
-
-        // Timestamp muito antigo - limpar flags
-        sessionStorage.removeItem('google-register-pending');
-        sessionStorage.removeItem('google-register-email');
-        sessionStorage.removeItem('google-register-name');
-        sessionStorage.removeItem('google-register-timestamp');
-      }
-    }
-  };
 
   // 🔧 FUNÇÃO CORRIGIDA - checkUrlErrors
   const checkUrlErrors = () => {
@@ -321,18 +243,11 @@ const RegisterModal: React.FC = () => {
       });
 
       if (result.ok) {
-        const loginSuccess = true;
+        // A conta nasce com a sessão aberta: as boas-vindas abrem na hora
+        // (pedido do dono, 01/10). O aviso de confirmação vai no toast e no
+        // banner de e-mail não confirmado.
         toast.success(t('register_modal_auto_login_success'));
-
-        setRegisterStep({
-          step: 'confirmation-sent',
-          userData: {
-            firstName: formData.username.trim(),
-            email: formData.email.trim(),
-            isLoggedIn: loginSuccess,
-            registrationMethod: 'credentials',
-          },
-        });
+        handleProceedToOnboarding();
       } else {
         if (
           result.message.toLowerCase().includes('já existe') ||
@@ -367,29 +282,9 @@ const RegisterModal: React.FC = () => {
     setIsGoogleLoading(true);
     setEmailConflictError(null);
 
-    try {
-      console.log('🔄 Iniciando registro com Google...');
-
-      // Salvar flags no sessionStorage antes do redirect
-      sessionStorage.setItem('google-register-pending', 'true');
-      sessionStorage.setItem(
-        'google-register-timestamp',
-        Date.now().toString()
-      );
-
-      // A API conduz o login com o Google e devolve o navegador para cá.
-      signInWithGoogle('/?google-register=true');
-    } catch (error) {
-      console.error('❌ Erro no Google SignUp:', error);
-
-      // Limpar flags em caso de erro
-      sessionStorage.removeItem('google-register-pending');
-      sessionStorage.removeItem('google-register-timestamp');
-
-      toast.error(t('register_modal_google_error'));
-    } finally {
-      setIsGoogleLoading(false);
-    }
+    // Volta para a mesma página; conta nova chega com `?new-user=true` e as
+    // boas-vindas abrem lá.
+    signInWithGoogle();
   };
 
   const { open } = usePromptModal();

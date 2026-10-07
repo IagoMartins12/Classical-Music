@@ -1,3 +1,4 @@
+import { CONTATO } from '@/app/utils/contato';
 // app/libs/newsletter/emailTemplates.ts - VERSÃO COMPLETA CORRIGIDA PARA iOS DARK MODE
 
 export type Language = 'pt' | 'en';
@@ -66,9 +67,9 @@ export function processTemplate(
  */
 const OPUS_ATLAS_CONFIG = {
   pt: {
-    FROM_EMAIL: 'noreply@opusatlas.com',
-    CONTACT_EMAIL: 'contato@opusatlas.com',
-    SUPPORT_EMAIL: 'suporte@opusatlas.com',
+    FROM_EMAIL: CONTATO.semResposta,
+    CONTACT_EMAIL: CONTATO.contato,
+    SUPPORT_EMAIL: CONTATO.suporte,
     SITE_URL: 'https://opusatlas.com',
     BRAND_NAME: 'Opus Atlas',
     TAGLINE: 'A música clássica em suas mãos',
@@ -77,9 +78,9 @@ const OPUS_ATLAS_CONFIG = {
     LOGO_PLACEHOLDER: '🎼',
   },
   en: {
-    FROM_EMAIL: 'noreply@opusatlas.com',
-    CONTACT_EMAIL: 'contact@opusatlas.com',
-    SUPPORT_EMAIL: 'support@opusatlas.com',
+    FROM_EMAIL: CONTATO.semResposta,
+    CONTACT_EMAIL: CONTATO.contato,
+    SUPPORT_EMAIL: CONTATO.suporte,
     SITE_URL: 'https://opusatlas.com',
     BRAND_NAME: 'Opus Atlas',
     TAGLINE: 'Classical music at your fingertips',

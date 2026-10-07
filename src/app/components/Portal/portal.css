@@ -1,0 +1,171 @@
+/* components/Portal/portal.css — as classes próprias do portal (04/10/2026).
+   Vieram dos esboços de 01/10. Em @layer components, como
+   as do sistema; toda animação some com prefers-reduced-motion. */
+@layer components {
+  /* Fora do atendimento, dia bloqueado: riscado no tom da linha, sem cor. */
+  .portal-hachura {
+    background-image: repeating-linear-gradient(
+      135deg,
+      var(--linha) 0 1px,
+      transparent 1px 7px
+    );
+  }
+
+  /* A linha da fila que sai: a altura encolhe em vez de sumir de uma vez. */
+  .portal-linha {
+    display: grid;
+    grid-template-rows: 1fr;
+    transition:
+      grid-template-rows 280ms var(--saida),
+      opacity 200ms var(--saida);
+  }
+  .portal-linha > * {
+    min-height: 0;
+    overflow: hidden;
+  }
+  .portal-linha[data-saiu] {
+    grid-template-rows: 0fr;
+    opacity: 0;
+  }
+
+  
+  .portal-cartao {
+    transition:
+      opacity 200ms var(--saida),
+      transform 240ms var(--saida);
+  }
+  .portal-cartao[data-saiu] {
+    display: none;
+  }
+
+  /* A pauta: cinco linhas, a barra de compasso à direita. */
+  .pauta-compasso {
+    border-right: 1px solid var(--linha-forte);
+  }
+  .pauta-final {
+    border-right: 4px double var(--texto-suave);
+  }
+  .pauta-linhas {
+    background:
+      linear-gradient(var(--linha), var(--linha)) 0 18% / 100% 1px no-repeat,
+      linear-gradient(var(--linha), var(--linha)) 0 34% / 100% 1px no-repeat,
+      linear-gradient(var(--linha), var(--linha)) 0 50% / 100% 1px no-repeat,
+      linear-gradient(var(--linha), var(--linha)) 0 66% / 100% 1px no-repeat,
+      linear-gradient(var(--linha), var(--linha)) 0 82% / 100% 1px no-repeat;
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  /* Progresso e barras de prática crescem da origem ao chegar. */
+  .portal-cresce {
+    animation: portal-cresce 720ms var(--saida) both;
+  }
+  .portal-sobe {
+    transform-origin: bottom;
+    animation: portal-sobe 620ms var(--saida) both;
+  }
+  /* O "agora" se desenha da esquerda. */
+  .portal-agora {
+    transform-origin: left;
+    animation: portal-cresce 760ms var(--saida) 120ms both;
+  }
+  .portal-aviso {
+    animation: portal-aviso 240ms var(--saida) both;
+  }
+  .portal-tocando {
+    animation: portal-largura 20s linear both;
+  }
+  /* A pauta: as linhas correm da esquerda, as notas entram em cascata. */
+  .pauta-linhas {
+    animation: pauta-desenha 900ms var(--saida) both;
+  }
+  .pauta-nota {
+    animation: entra 620ms var(--saida) both;
+    animation-delay: calc(240ms + var(--i, 0) * 45ms);
+  }
+  /* O detalhe ao lado (aulas, calendário): o novo desliza do lado. */
+  .portal-contexto {
+    view-transition-name: contexto;
+  }
+  ::view-transition-old(contexto) {
+    animation: portal-sai-contexto 180ms var(--saida) both;
+  }
+  ::view-transition-new(contexto) {
+    animation: portal-entra-contexto 320ms var(--saida) both;
+  }
+}
+
+@keyframes portal-cresce {
+  from {
+    transform: scaleX(0);
+  }
+}
+@keyframes portal-sobe {
+  from {
+    transform: scaleY(0);
+  }
+}
+@keyframes portal-aviso {
+  from {
+    opacity: 0;
+    transform: translateY(-8px);
+    filter: blur(4px);
+  }
+}
+@keyframes portal-largura {
+  from {
+    width: 0;
+  }
+  to {
+    width: 100%;
+  }
+}
+@keyframes pauta-desenha {
+  from {
+    clip-path: inset(0 100% 0 0);
+  }
+  to {
+    clip-path: inset(0 0 0 0);
+  }
+}
+@keyframes portal-sai-contexto {
+  to {
+    opacity: 0;
+    transform: translateX(-12px);
+  }
+}
+@keyframes portal-entra-contexto {
+  from {
+    opacity: 0;
+    transform: translateX(16px);
+  }
+}
+
+/* Terceira rodada: tour, boas-vindas e criação de aula */
+@media (prefers-reduced-motion: no-preference) {
+  /* O holofote do tour anda de uma parte à outra em vez de saltar. */
+  .portal-holofote {
+    transition:
+      top 320ms var(--saida),
+      left 320ms var(--saida),
+      width 320ms var(--saida),
+      height 320ms var(--saida);
+  }
+  .portal-cartao-tour {
+    animation: portal-aviso 240ms var(--saida) both;
+  }
+  /* Cada passo das boas-vindas entra do lado, como uma página virando. */
+  .portal-passo {
+    animation: portal-passo 320ms var(--saida) both;
+  }
+  .portal-achado {
+    animation: portal-aviso 200ms var(--saida) both;
+  }
+}
+
+@keyframes portal-passo {
+  from {
+    opacity: 0;
+    transform: translateX(14px);
+  }
+}

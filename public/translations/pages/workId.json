@@ -2,7 +2,6 @@
   "ptBr": {
     "breadcrumb_obras": "Obras",
     "breadcrumb_voltar_inicio": "Voltar ao Início",
-
     "work_details_por": "por",
     "work_details_nivel": "Nível:",
     "work_details_ano_composicao": "Ano de Composição",
@@ -31,7 +30,6 @@
     "work_details_movimento": "Movimento:",
     "work_details_catalogado_em": "Catalogado em:",
     "work_details_cache_status": "Cache Status:",
-
     "work_types_individual": "Obra Individual",
     "work_types_complete_work": "Obra Completa",
     "work_types_arrangement": "Arranjo",
@@ -40,11 +38,9 @@
     "work_types_composition": "Composição Original",
     "work_types_collected_works": "Coleção de peças",
     "work_types_collections_with": "Coleção com outros",
-
     "difficulty_beginner": "Iniciante",
     "difficulty_intermediate": "Intermediário",
     "difficulty_advanced": "Avançado",
-
     "epochs_medieval": "Medieval",
     "epochs_renascentista": "Renascentista",
     "epochs_barroco": "Barroco",
@@ -54,7 +50,6 @@
     "epochs_moderno": "Moderno",
     "epochs_contemporaneo": "Contemporâneo",
     "epochs_desconhecido": "Desconhecido",
-
     "tone_do_maior": "Dó maior",
     "tone_do_menor": "Dó menor",
     "tone_dos_maior": "Dó# maior",
@@ -102,7 +97,6 @@
     "tone_dodecafonica": "Dodecafônica",
     "tone_pentatonica": "Pentatônica",
     "tone_nao_especificada": "Não especificada",
-
     "selection_mode_selecionar_partitura": "Selecionar Partitura para",
     "selection_mode_quero_aprender": "Quero Aprender",
     "selection_mode_ja_aprendi": "Já Aprendi",
@@ -113,7 +107,6 @@
     "selection_mode_preview_partitura": "Preview da Partitura",
     "selection_mode_selecione_partitura": "Selecione uma Partitura",
     "selection_mode_clique_preview": "Clique em uma partitura ao lado para ver o preview aqui",
-
     "favorite_login_required": "Faça login para favoritar itens",
     "favorite_adicionado_aos": "adicionado aos",
     "favorite_removido_dos": "removido dos",
@@ -125,7 +118,6 @@
     "favorite_remover_obra": "Remover obra dos favoritos",
     "favorite_adicionar_compositor": "Adicionar compositor aos favoritos",
     "favorite_adicionar_obra": "Adicionar obra aos favoritos",
-
     "learning_quero_estudar": "Quero estudar",
     "learning_ja_aprendi": "Já aprendi",
     "learning_marcar_aprendida": "Marcar como aprendida",
@@ -143,7 +135,6 @@
     "learning_mastery_intermediario": "Intermediário",
     "learning_mastery_avancado": "Avançado",
     "learning_mastery_expert": "Expert",
-
     "share_compartilhar": "Compartilhar",
     "share_copiar_link": "Copiar Link",
     "share_link_copiado": "Link copiado!",
@@ -152,7 +143,6 @@
     "share_twitter": "Twitter",
     "share_facebook": "Facebook",
     "share_telegram": "Telegram",
-
     "annotations_titulo": "Anotações da Comunidade",
     "annotations_subtitulo": "Compartilhe conhecimentos sobre interpretação e técnica",
     "annotations_nova_anotacao": "Nova Anotação",
@@ -185,7 +175,6 @@
     "annotations_compartilhe_descobertas": "Compartilhe suas descobertas sobre técnica, interpretação e estudo desta obra.",
     "annotations_criar_primeira": "Criar Primeira Anotação",
     "annotations_ver_mais": "Ver Mais Anotações",
-
     "annotation_filters_titulo": "Filtros Avançados",
     "annotation_filters_ativos": "ativos",
     "annotation_filters_nivel_dificuldade": "Nível de Dificuldade",
@@ -205,21 +194,17 @@
     "annotation_filters_dica_strong": "Dica",
     "annotation_filters_dica": "Os filtros avançados buscam no servidor e são mais precisos. Use-os para encontrar anotações específicas por nível de dificuldade, abrangência ou conteúdo da comunidade.",
     "annotation_filters_buscar_titulos": "Buscar em títulos, conteúdo e tags",
-
     "annotation_difficulty_iniciante": "Iniciante",
     "annotation_difficulty_intermediario": "Intermediário",
     "annotation_difficulty_avancado": "Avançado",
     "annotation_difficulty_todos_niveis": "Todos os níveis",
-
     "annotation_scope_obra_inteira": "Obra inteira",
     "annotation_scope_movimento": "Movimento",
     "annotation_scope_secao": "Seção",
     "annotation_scope_compasso_especifico": "Compasso específico",
-
     "annotation_sort_mais_uteis": "Mais úteis",
     "annotation_sort_mais_recentes": "Mais recentes",
     "annotation_sort_mais_antigas": "Mais antigas",
-
     "media_titulo": "Multimídia",
     "media_subtitulo": "Áudio, vídeos e conteúdo musical.",
     "media_editar": "Editar Mídia",
@@ -270,7 +255,6 @@
     "media_nenhuma_encontrada": "Nenhuma mídia encontrada",
     "media_erro_busca_geral": "Erro na busca:",
     "media_dica_busca": "Dica: A busca automática ajuda a encontrar conteúdo já disponível antes de adicionar manualmente",
-
     "video_aula_titulo": "Video aula",
     "video_aula_subtitulo": "Veja a video aula desta peça.",
     "video_aula_adicionar": "Adicionar Video Aula",
@@ -319,7 +303,6 @@
     "video_aula_erro_deletar": "Erro ao deletar video aula",
     "video_aula_salva_sucesso": "Video aula salva com sucesso!",
     "video_aula_erro_salvar": "Erro ao salvar video aula",
-
     "verification_modal_titulo": "Verificação de Compositor",
     "verification_modal_status_atual": "Status atual:",
     "verification_modal_verificado": "Verificado",
@@ -334,17 +317,14 @@
     "verification_modal_sucesso": "Sucesso",
     "verification_modal_erro": "Erro",
     "verification_modal_erro_alterar": "Erro ao alterar verificação",
-
     "verification_badge_verificado": "Verificado",
     "verification_badge_compositor": "Compositor",
     "verification_badge_peca": "Peça",
     "verification_badge_compositor_verificado": "Compositor verificado",
     "verification_badge_peca_verificada": "Peça verificada",
-
     "verification_button_verificar": "Verificar",
     "verification_button_verificar_compositor": "Verificar compositor",
     "verification_button_verificar_obra": "Verificar obra",
-
     "report_button_reportar": "Reportar",
     "report_modal_titulo": "Reportar ",
     "report_modal_motivo": "Motivo do report *",
@@ -369,7 +349,6 @@
     "report_reason_duplicate_desc": "Item já existe na plataforma",
     "report_reason_other": "Outros",
     "report_reason_other_desc": "Outro motivo não listado",
-
     "score_preview_imslp": "IMSLP",
     "score_preview_open_atlas": "Opus Atlas",
     "score_preview_baixar": "Baixar partitura",
@@ -388,7 +367,6 @@
     "score_preview_notas": "Notas:",
     "score_preview_baixar_partitura": "Baixar Partitura",
     "score_preview_ampliado": "Preview ampliado de",
-
     "works_page_title": "Catálogo de Obras Clássicas",
     "works_page_subtitle": "Descubra partituras, aprenda técnicas e explore o repertório clássico",
     "works_filters_title": "Filtros e Busca",
@@ -417,7 +395,6 @@
     "works_adjust_filters": "Ajuste os filtros ou termos de busca para encontrar obras.",
     "works_clear_and_view_all": "Limpar filtros e ver todas",
     "works_loading_works": "Carregando obras...",
-
     "universal_audio_player_carregando": "Carregando...",
     "universal_audio_player_inicializando": "Inicializando player de áudio...",
     "universal_audio_player_procurando": "Procurando áudio...",
@@ -426,7 +403,6 @@
     "universal_audio_player_personalizado": "Áudio Personalizado",
     "universal_audio_player_salvo": "(Salvo)",
     "universal_audio_player_banco": "Salvo no banco",
-
     "spotify_card_disponivel": "Disponível no Spotify",
     "spotify_card_ouvir_completa": "Ouça a música completa",
     "spotify_card_preview_30s": "Preview de 30s",
@@ -436,7 +412,6 @@
     "spotify_card_ouvir_spotify": "Ouvir no Spotify",
     "spotify_card_ver_album": "Ver álbum completo:",
     "spotify_card_nao_suporta_audio": "Seu navegador não suporta o elemento de áudio.",
-
     "imslp_tabs_partituras_disponiveis": "Partituras Disponíveis",
     "imslp_tabs_partitura_selecionada": "Partitura selecionada:",
     "imslp_tabs_selecione_partitura": "Selecione uma partitura abaixo",
@@ -468,26 +443,23 @@
     "imslp_tabs_carregando_mais": "Carregando mais partituras...",
     "imslp_tabs_mostrando_partituras": "Mostrando {current} de {total} partituras",
     "imslp_tabs_carregar_mais_20": "Carregar Mais (20)",
-
     "score_card_download": "Download",
     "score_card_paginas": "páginas",
     "score_card_favorita_comunidade": "Favorita da comunidade",
-
     "entity_type_compositor": "compositor",
     "entity_type_obra": "obra",
     "entity_type_partitura": "partitura",
-
     "youtube_button_span": "Reproduzir vídeo",
-
     "work_details_relacoes_colecao": "Coleção",
     "work_details_parte_de_colecao": "Esta peça faz parte da coleção:",
     "work_details_possui_obras_relacionadas": "Esta coleção possui as seguintes obras:",
-    "youtube_abrir_no_youtube": "Abrir no YouTube"
+    "youtube_abrir_no_youtube": "Abrir no YouTube",
+    "imslp_tabs_buscando_no_imslp": "Buscando as partituras no IMSLP",
+    "imslp_tabs_buscando_aguarde": "É a primeira visita a esta obra. Leva alguns segundos."
   },
   "en": {
     "breadcrumb_obras": "Works",
     "breadcrumb_voltar_inicio": "Back to Home",
-
     "work_details_por": "by",
     "work_details_nivel": "Level:",
     "work_details_ano_composicao": "Composition Year",
@@ -516,7 +488,6 @@
     "work_details_movimento": "Movement:",
     "work_details_catalogado_em": "Catalogued on:",
     "work_details_cache_status": "Cache Status:",
-
     "work_types_individual": "Individual Work",
     "work_types_complete_work": "Complete Work",
     "work_types_arrangement": "Arrangement",
@@ -525,11 +496,9 @@
     "work_types_composition": "Original Composition",
     "work_types_collected_works": "Collected Works",
     "work_types_collections_with": "Collection with others",
-
     "difficulty_beginner": "Beginner",
     "difficulty_intermediate": "Intermediate",
     "difficulty_advanced": "Advanced",
-
     "epochs_medieval": "Medieval",
     "epochs_renascentista": "Renaissance",
     "epochs_barroco": "Baroque",
@@ -539,7 +508,6 @@
     "epochs_moderno": "Modern",
     "epochs_contemporaneo": "Contemporary",
     "epochs_desconhecido": "Unknown",
-
     "tone_do_maior": "C major",
     "tone_do_menor": "C minor",
     "tone_dos_maior": "C# major",
@@ -587,7 +555,6 @@
     "tone_dodecafonica": "Twelve-tone",
     "tone_pentatonica": "Pentatonic",
     "tone_nao_especificada": "Not specified",
-
     "selection_mode_selecionar_partitura": "Select Score for",
     "selection_mode_quero_aprender": "Want to Learn",
     "selection_mode_ja_aprendi": "Already Learned",
@@ -598,7 +565,6 @@
     "selection_mode_preview_partitura": "Score Preview",
     "selection_mode_selecione_partitura": "Select a Score",
     "selection_mode_clique_preview": "Click on a score on the side to see the preview here",
-
     "favorite_login_required": "Please log in to favorite items",
     "favorite_adicionado_aos": "added to",
     "favorite_removido_dos": "removed from",
@@ -610,7 +576,6 @@
     "favorite_remover_obra": "Remove work from favorites",
     "favorite_adicionar_compositor": "Add composer to favorites",
     "favorite_adicionar_obra": "Add work to favorites",
-
     "learning_quero_estudar": "Want to study",
     "learning_ja_aprendi": "Already learned",
     "learning_marcar_aprendida": "Mark as learned",
@@ -628,7 +593,6 @@
     "learning_mastery_intermediario": "Intermediate",
     "learning_mastery_avancado": "Advanced",
     "learning_mastery_expert": "Expert",
-
     "share_compartilhar": "Share",
     "share_copiar_link": "Copy Link",
     "share_link_copiado": "Link copied!",
@@ -637,7 +601,6 @@
     "share_twitter": "Twitter",
     "share_facebook": "Facebook",
     "share_telegram": "Telegram",
-
     "annotations_titulo": "Community Annotations",
     "annotations_subtitulo": "Share knowledge about interpretation and technique",
     "annotations_nova_anotacao": "New Annotation",
@@ -670,7 +633,6 @@
     "annotations_compartilhe_descobertas": "Share your discoveries about technique, interpretation and study of this work.",
     "annotations_criar_primeira": "Create First Annotation",
     "annotations_ver_mais": "View More Annotations",
-
     "annotation_filters_titulo": "Advanced Filters",
     "annotation_filters_ativos": "active",
     "annotation_filters_nivel_dificuldade": "Difficulty Level",
@@ -690,21 +652,17 @@
     "annotation_filters_dica_strong": "Tip",
     "annotation_filters_dica": "Advanced filters search on the server and are more precise. Use them to find specific annotations by difficulty level, scope or community content.",
     "annotation_filters_buscar_titulos": "Search in titles, content and tags",
-
     "annotation_difficulty_iniciante": "Beginner",
     "annotation_difficulty_intermediario": "Intermediate",
     "annotation_difficulty_avancado": "Advanced",
     "annotation_difficulty_todos_niveis": "All levels",
-
     "annotation_scope_obra_inteira": "Entire work",
     "annotation_scope_movimento": "Movement",
     "annotation_scope_secao": "Section",
     "annotation_scope_compasso_especifico": "Specific measure",
-
     "annotation_sort_mais_uteis": "Most helpful",
     "annotation_sort_mais_recentes": "Most recent",
     "annotation_sort_mais_antigas": "Oldest",
-
     "media_titulo": "Multimedia",
     "media_subtitulo": "Audio, videos and musical content.",
     "media_editar": "Edit Media",
@@ -755,7 +713,6 @@
     "media_nenhuma_encontrada": "No media found",
     "media_erro_busca_geral": "Search error:",
     "media_dica_busca": "Tip: Automatic search helps find already available content before adding manually",
-
     "video_aula_titulo": "Video lesson",
     "video_aula_subtitulo": "Watch the video lesson for this piece.",
     "video_aula_adicionar": "Add Video Lesson",
@@ -804,7 +761,6 @@
     "video_aula_erro_deletar": "Error deleting video lesson",
     "video_aula_salva_sucesso": "Video lesson saved successfully!",
     "video_aula_erro_salvar": "Error saving video lesson",
-
     "verification_modal_titulo": "Composer Verification",
     "verification_modal_status_atual": "Current status:",
     "verification_modal_verificado": "Verified",
@@ -819,17 +775,14 @@
     "verification_modal_sucesso": "Success",
     "verification_modal_erro": "Error",
     "verification_modal_erro_alterar": "Error changing verification",
-
     "verification_badge_verificado": "Verified",
     "verification_badge_compositor": "Composer",
     "verification_badge_peca": "Piece",
     "verification_badge_compositor_verificado": "Verified composer",
     "verification_badge_peca_verificada": "Verified piece",
-
     "verification_button_verificar": "Verify",
     "verification_button_verificar_compositor": "Verify composer",
     "verification_button_verificar_obra": "Verify work",
-
     "report_button_reportar": "Report",
     "report_modal_titulo": "Report ",
     "report_modal_motivo": "Report reason *",
@@ -854,7 +807,6 @@
     "report_reason_duplicate_desc": "Item already exists on the platform",
     "report_reason_other": "Other",
     "report_reason_other_desc": "Other reason not listed",
-
     "score_preview_imslp": "IMSLP",
     "score_preview_open_atlas": "Opus Atlas",
     "score_preview_baixar": "Download score",
@@ -873,7 +825,6 @@
     "score_preview_notas": "Notes:",
     "score_preview_baixar_partitura": "Download Score",
     "score_preview_ampliado": "Enlarged preview of",
-
     "works_page_title": "Classical Works Catalog",
     "works_page_subtitle": "Discover scores, learn techniques and explore the classical repertoire",
     "works_filters_title": "Filters and Search",
@@ -902,7 +853,6 @@
     "works_adjust_filters": "Adjust the filters or search terms to find works.",
     "works_clear_and_view_all": "Clear filters and view all",
     "works_loading_works": "Loading works...",
-
     "universal_audio_player_carregando": "Loading...",
     "universal_audio_player_inicializando": "Initializing audio player...",
     "universal_audio_player_procurando": "Looking for audio...",
@@ -911,7 +861,6 @@
     "universal_audio_player_personalizado": "Custom Audio",
     "universal_audio_player_salvo": "(Saved)",
     "universal_audio_player_banco": "Saved in database",
-
     "spotify_card_disponivel": "Available on Spotify",
     "spotify_card_ouvir_completa": "Listen to the full song",
     "spotify_card_preview_30s": "30s Preview",
@@ -921,7 +870,6 @@
     "spotify_card_ouvir_spotify": "Listen on Spotify",
     "spotify_card_ver_album": "View full album:",
     "spotify_card_nao_suporta_audio": "Your browser does not support the audio element.",
-
     "imslp_tabs_partituras_disponiveis": "Available Scores",
     "imslp_tabs_partitura_selecionada": "Score selected:",
     "imslp_tabs_selecione_partitura": "Select a score below",
@@ -953,20 +901,18 @@
     "imslp_tabs_carregando_mais": "Loading more scores...",
     "imslp_tabs_mostrando_partituras": "Showing {current} of {total} scores",
     "imslp_tabs_carregar_mais_20": "Load More (20)",
-
     "score_card_download": "Download",
     "score_card_paginas": "pages",
     "score_card_favorita_comunidade": "Community favorite",
-
     "entity_type_compositor": "composer",
     "entity_type_obra": "work",
     "entity_type_partitura": "score",
-
     "youtube_button_span": "Play video",
-
     "work_details_relacoes_colecao": "Collection ",
     "work_details_parte_de_colecao": "This piece is part of the collection:",
     "work_details_possui_obras_relacionadas": "This collection has the following works:",
-    "youtube_abrir_no_youtube": "Open on YouTube"
+    "youtube_abrir_no_youtube": "Open on YouTube",
+    "imslp_tabs_buscando_no_imslp": "Fetching the scores from IMSLP",
+    "imslp_tabs_buscando_aguarde": "This is the first visit to this work. It takes a few seconds."
   }
 }

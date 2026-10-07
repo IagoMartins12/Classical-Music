@@ -1,16 +1,12 @@
-// app/admin/users/page.tsx
-import { Metadata } from 'next';
-import UsersAnalytics from '@/app/components/Admin/Users/UsersAnalytics';
+import type { Metadata } from 'next';
+import Usuarios from '@/app/components/Admin/telas/Usuarios';
 
-// Painel em CSR: o dado vem da API pelo navegador.
-export const dynamic = 'force-dynamic';
+export const metadata: Metadata = { title: 'Usuários' };
 
-export const metadata: Metadata = {
-  title: 'Análise de Usuários | Admin Panel',
-  description: 'Análise detalhada de usuários e comportamento na plataforma',
-  robots: 'noindex, nofollow',
-};
-
-export default function AdminUsersPage() {
-  return <UsersAnalytics />;
+/**
+ * `/admin/users` é a lista de usuários desde 29/09/2026. A "análise de
+ * usuários" que morava aqui foi para Uso da plataforma (`/admin/analytics`).
+ */
+export default function UsuariosPage() {
+  return <Usuarios />;
 }

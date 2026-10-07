@@ -1,29 +1,95 @@
-// ==================== app/components/calendar/CreateEventModal.tsx ====================
 'use client';
 
-import { useState, useEffect, useRef, useMemo } from 'react';
-import { z } from 'zod';
-import { PiCalendarBlank } from 'react-icons/pi';
+import { useEffect, useId, useMemo, useState, type FormEvent } from 'react';
 import { toast } from 'react-hot-toast';
-import Modal from '@/app/components/Modal';
-import Button from '@/app/components/Common/Button';
-import Select from '@/app/components/Common/Select';
-import Input from '@/app/components/Common/Inputs';
-import { useSmartFormChanges } from '@/app/hooks/useFormChanges';
-import { saveEvent } from '@/app/requests/calendar-requests';
-import Image from '@/app/components/SmartImage';
-import { Stack, Inline } from '@/app/components/ui/Layout';
-import { Text } from '@/app/components/ui/Text';
+import { Interruptor } from '@/app/components/Admin/painel/Campos';
+import ConfirmModal from '@/app/components/ConfirmModal';
+import { Chip } from '@/app/components/ui/Badge';
+import { Button } from '@/app/components/ui/Button';
 import { Field } from '@/app/components/ui/Field';
+import { Sheet } from '@/app/components/ui/Sheet';
+import { Skeleton } from '@/app/components/ui/Skeleton';
+import { BLOG } from '@/app/conteudo/blog';
+import {
+  loadEventForEdit,
+  saveEvent,
+  type EventFormValues,
+} from '@/app/requests/calendar-requests';
 
 interface CreateEventModalProps {
   isOpen: boolean;
   onClose: () => void;
   onSuccess?: () => void;
   venues: Array<{ id: string; name: string; city: string }>;
-  editingEvent?: any;
+  /** O evento do calendário (só o `id` é lido: o resto vem da API). */
+  editingEvent?: { id: string } | null;
 }
 
+const VAZIO: EventFormValues = {
+  title: '',
+  subtitle: '',
+  description: '',
+  type: 'CONCERT',
+  status: 'PUBLISHED',
+  venueId: '',
+  room: '',
+  startDate: '',
+  endDate: '',
+  startTime: '',
+  endTime: '',
+  duration: '',
+  doors: '',
+  conductor: '',
+  ensemble: '',
+  ticketUrl: '',
+  isFree: false,
+  imageUrl: '',
+  venueDetails: '',
+  ticketInfo: '',
+  isFeatured: false,
+  featuredOrder: '',
+  featuredSize: 'normal',
+};
+
+const ESTADOS = [
+  { value: 'PUBLISHED', label: 'No ar' },
+  { value: 'PENDING', label: 'Esperando revisão' },
+  { value: 'DRAFT', label: 'Rascunho' },
+  { value: 'POSTPONED', label: 'Adiado' },
+  { value: 'CANCELLED', label: 'Cancelado' },
+  { value: 'COMPLETED', label: 'Encerrado' },
+];
+
+type Erros = Partial<Record<keyof EventFormValues, string>>;
+
+function validar(v: EventFormValues): Erros {
+  const erros: Erros = {};
+  const titulo = v.title.trim();
+  if (titulo.length < 3) erros.title = 'Dê um título de ao menos 3 letras.';
+  else if (titulo.length > 300) erros.title = 'No máximo 300 caracteres.';
+  if (!v.venueId) erros.venueId = 'Escolha o local.';
+  if (!v.startDate) erros.startDate = 'Diga o dia.';
+  if (!v.startTime) erros.startTime = 'Diga a hora.';
+  if (v.endDate && v.startDate && v.endDate < v.startDate)
+    erros.endDate = 'O fim vem antes do começo.';
+  for (const campo of ['ticketUrl', 'imageUrl'] as const) {
+    if (v[campo] && !/^https?:\/\//.test(v[campo].trim()))
+      erros[campo] = 'Comece com https://';
+  }
+  return erros;
+}
+
+/**
+ * Cadastrar e editar evento da agenda (só administrador).
+ *
+ * **Editar lê o evento inteiro da API** (`loadEventForEdit`). O formulário
+ * antigo partia do resumo do calendário: abria com dia, hora e local vazios
+ * e, ao salvar, apagava regente, sala e subtítulo, que o resumo não traz.
+ *
+ * Os campos são os que a API aceita, em quatro grupos (o quê, quando e
+ * onde, ingressos, imagem). Os erros aparecem no campo e o foco vai para o
+ * primeiro; sair com alterações pede confirmação.
+ */
 export default function CreateEventModal({
   isOpen,
   onClose,
@@ -31,500 +97,362 @@ export default function CreateEventModal({
   venues,
   editingEvent,
 }: CreateEventModalProps) {
-  const isEditing = !!editingEvent;
-  const [isSubmitting, setIsSubmitting] = useState(false);
-
-  const eventSchema = useMemo(
-    () =>
-      z.object({
-        title: z
-          .string()
-          .min(1, 'Título é obrigatório')
-          .min(3, 'Título deve ter no mínimo 3 caracteres')
-          .max(200, 'Título deve ter no máximo 200 caracteres'),
-        venueId: z.string().min(1, 'Venue é obrigatória'),
-        startDate: z.string().min(1, 'Data de início é obrigatória'),
-        startTime: z.string().min(1, 'Horário de início é obrigatório'),
-        type: z.enum([
-          'CONCERT',
-          'RECITAL',
-          'OPEN_REHEARSAL',
-          'OPERA',
-          'CHAMBER_MUSIC',
-          'ORCHESTRA',
-          'MASTERCLASS',
-          'WORKSHOP',
-          'FESTIVAL',
-          'COMPETITION',
-          'LECTURE',
-          'EXHIBITION',
-          'OTHER',
-        ]),
-      }),
-    []
-  );
-
-  const [formData, setFormData] = useState({
-    title: '',
-    subtitle: '',
-    description: '',
-    type: 'CONCERT' as any,
-    status: 'PUBLISHED',
-    venueId: '',
-    room: '',
-    startDate: '',
-    endDate: '',
-    startTime: '',
-    endTime: '',
-    duration: '',
-    doors: '',
-    conductor: '',
-    ensemble: '',
-    ticketUrl: '',
-    isFree: false,
-    imageUrl: '',
-    venueDetails: '',
-    ticketInfo: '',
-  });
-
-  const originalData = useMemo(() => {
-    if (!editingEvent) return null;
-    return {
-      title: editingEvent.title || '',
-      subtitle: editingEvent.subtitle || '',
-      description: editingEvent.description || '',
-      type: editingEvent.type || 'CONCERT',
-      status: editingEvent.status || 'PUBLISHED',
-      venueId: editingEvent.venueId || '',
-      room: editingEvent.room || '',
-      startDate: editingEvent.startDate
-        ? new Date(editingEvent.startDate).toISOString().split('T')[0]
-        : '',
-      endDate: editingEvent.endDate
-        ? new Date(editingEvent.endDate).toISOString().split('T')[0]
-        : '',
-      startTime: editingEvent.startTime || '',
-      endTime: editingEvent.endTime || '',
-      duration: editingEvent.duration?.toString() || '',
-      doors: editingEvent.doors || '',
-      conductor: editingEvent.conductor || '',
-      ensemble: editingEvent.ensemble || '',
-      ticketUrl: editingEvent.ticketUrl || '',
-      isFree: editingEvent.isFree || false,
-      imageUrl: editingEvent.imageUrl || '',
-      venueDetails: editingEvent.venueDetails || '',
-      ticketInfo: editingEvent.ticketInfo || '',
-    };
-  }, [editingEvent]);
-
-  const [errors, setErrors] = useState<Record<string, string>>({});
-  const hasChanges = useSmartFormChanges(formData, originalData, [
-    'type',
-    'status',
-    'venueId',
-    'isFree',
-  ]);
-
-  const fieldRefs = {
-    title: useRef<HTMLInputElement>(null),
-    venueId: useRef<HTMLSelectElement>(null),
-    startDate: useRef<HTMLInputElement>(null),
-    startTime: useRef<HTMLInputElement>(null),
-  };
-
-  const EVENT_TYPE_OPTIONS = [
-    { value: 'CONCERT', label: 'Concerto' },
-    { value: 'RECITAL', label: 'Recital' },
-    { value: 'OPERA', label: 'Ópera' },
-    { value: 'CHAMBER_MUSIC', label: 'Música de Câmara' },
-    { value: 'ORCHESTRA', label: 'Orquestra Sinfônica' },
-    { value: 'MASTERCLASS', label: 'Masterclass' },
-    { value: 'WORKSHOP', label: 'Workshop' },
-    { value: 'FESTIVAL', label: 'Festival' },
-    { value: 'COMPETITION', label: 'Competição' },
-    { value: 'LECTURE', label: 'Palestra' },
-    { value: 'EXHIBITION', label: 'Exposição' },
-    { value: 'OPEN_REHEARSAL', label: 'Ensaio Aberto' },
-    { value: 'OTHER', label: 'Outro' },
-  ];
-
-  const STATUS_OPTIONS = [
-    { value: 'DRAFT', label: 'Rascunho' },
-    { value: 'PENDING', label: 'Pendente' },
-    { value: 'PUBLISHED', label: 'Publicado' },
-    { value: 'CANCELLED', label: 'Cancelado' },
-    { value: 'POSTPONED', label: 'Adiado' },
-    { value: 'COMPLETED', label: 'Finalizado' },
-  ];
+  const id = useId();
+  const editando = Boolean(editingEvent?.id);
+  const [valores, setValores] = useState<EventFormValues>(VAZIO);
+  const [original, setOriginal] = useState<EventFormValues>(VAZIO);
+  const [erros, setErros] = useState<Erros>({});
+  const [carregando, setCarregando] = useState(false);
+  const [falhouAoCarregar, setFalhouAoCarregar] = useState(false);
+  const [salvando, setSalvando] = useState(false);
+  const [confirmarSaida, setConfirmarSaida] = useState(false);
 
   useEffect(() => {
-    if (isEditing && editingEvent) {
-      setFormData({
-        title: editingEvent.title || '',
-        subtitle: editingEvent.subtitle || '',
-        description: editingEvent.description || '',
-        type: editingEvent.type || 'CONCERT',
-        status: editingEvent.status || 'PUBLISHED',
-        venueId: editingEvent.venueId || '',
-        room: editingEvent.room || '',
-        startDate: editingEvent.startDate
-          ? new Date(editingEvent.startDate).toISOString().split('T')[0]
-          : '',
-        endDate: editingEvent.endDate
-          ? new Date(editingEvent.endDate).toISOString().split('T')[0]
-          : '',
-        startTime: editingEvent.startTime || '',
-        endTime: editingEvent.endTime || '',
-        duration: editingEvent.duration?.toString() || '',
-        doors: editingEvent.doors || '',
-        conductor: editingEvent.conductor || '',
-        ensemble: editingEvent.ensemble || '',
-        ticketUrl: editingEvent.ticketUrl || '',
-        isFree: editingEvent.isFree || false,
-        imageUrl: editingEvent.imageUrl || '',
-        venueDetails: editingEvent.venueDetails || '',
-        ticketInfo: editingEvent.ticketInfo || '',
-      });
-    } else {
-      setFormData({
-        title: '',
-        subtitle: '',
-        description: '',
-        type: 'CONCERT',
-        status: 'PUBLISHED',
-        venueId: '',
-        room: '',
-        startDate: '',
-        endDate: '',
-        startTime: '',
-        endTime: '',
-        duration: '',
-        doors: '',
-        conductor: '',
-        ensemble: '',
-        ticketUrl: '',
-        isFree: false,
-        imageUrl: '',
-        venueDetails: '',
-        ticketInfo: '',
-      });
+    if (!isOpen) return;
+    setErros({});
+    setFalhouAoCarregar(false);
+    if (!editingEvent?.id) {
+      setValores(VAZIO);
+      setOriginal(VAZIO);
+      return;
     }
-    setErrors({});
-  }, [isEditing, editingEvent, isOpen]);
+    let vivo = true;
+    setCarregando(true);
+    loadEventForEdit(editingEvent.id)
+      .then((v) => {
+        if (!vivo) return;
+        setValores(v);
+        setOriginal(v);
+      })
+      .catch(() => vivo && setFalhouAoCarregar(true))
+      .finally(() => vivo && setCarregando(false));
+    return () => {
+      vivo = false;
+    };
+  }, [isOpen, editingEvent?.id]);
 
-  const scrollToFirstError = (errorFields: string[]) => {
-    if (errorFields.length > 0) {
-      const firstErrorField = errorFields[0] as keyof typeof fieldRefs;
-      const fieldRef = fieldRefs[firstErrorField];
+  const mudou = useMemo(
+    () => JSON.stringify(valores) !== JSON.stringify(original),
+    [valores, original]
+  );
 
-      if (fieldRef?.current) {
-        fieldRef.current.scrollIntoView({
-          behavior: 'smooth',
-          block: 'center',
-        });
-        setTimeout(() => fieldRef.current?.focus(), 500);
-      }
+  function mudar<K extends keyof EventFormValues>(
+    campo: K,
+    valor: EventFormValues[K]
+  ) {
+    setValores((v) => ({ ...v, [campo]: valor }));
+    if (erros[campo]) setErros((e) => ({ ...e, [campo]: undefined }));
+  }
+
+  function fechar() {
+    if (mudou && !salvando) setConfirmarSaida(true);
+    else onClose();
+  }
+
+  async function salvar(e: FormEvent) {
+    e.preventDefault();
+    const novos = validar(valores);
+    setErros(novos);
+    const primeiro = Object.keys(novos)[0];
+    if (primeiro) {
+      document.getElementById(`${id}-${primeiro}`)?.focus();
+      return;
     }
-  };
-
-  const validateForm = () => {
-    const newErrors: Record<string, string> = {};
-
+    setSalvando(true);
     try {
-      eventSchema.parse(formData);
-    } catch (error) {
-      if (error instanceof z.ZodError) {
-        error.errors.forEach((err) => {
-          if (err.path.length > 0) {
-            newErrors[err.path[0] as string] = err.message;
-          }
-        });
-      }
-    }
-
-    setErrors(newErrors);
-
-    const errorFields = Object.keys(newErrors);
-    if (errorFields.length > 0) {
-      setTimeout(() => scrollToFirstError(errorFields), 100);
-    }
-
-    return Object.keys(newErrors).length === 0;
-  };
-
-  const handleSubmit = async () => {
-    if (!validateForm()) return;
-
-    setIsSubmitting(true);
-
-    try {
-      await saveEvent(formData, isEditing ? editingEvent.id : undefined);
-
-      toast.success(
-        isEditing
-          ? 'Evento atualizado com sucesso!'
-          : 'Evento criado com sucesso!',
-        { icon: '🎉' }
-      );
+      await saveEvent(valores, editingEvent?.id);
+      toast.success(editando ? 'Evento salvo.' : 'Evento criado.');
       onSuccess?.();
       onClose();
-    } catch (error) {
-      console.error('Erro ao salvar evento:', error);
+    } catch (falha) {
       toast.error(
-        error instanceof Error ? error.message : 'Erro ao salvar evento'
+        falha instanceof Error ? falha.message : 'Não deu para salvar o evento.'
       );
     } finally {
-      setIsSubmitting(false);
+      setSalvando(false);
     }
-  };
+  }
+
+  const campo = (nome: keyof EventFormValues) => ({
+    id: `${id}-${nome}`,
+    erro: erros[nome],
+  });
 
   return (
-    <Modal
-      isOpen={isOpen}
-      onClose={onClose}
-      maxWidth="3xl"
-      showCloseButton
-      confirmOnClose
-      hasChanges={hasChanges}
-      isProcessing={isSubmitting}
-      processName="Salvamento de evento"
-    >
-      {/* Header */}
-      <div className="px-6 py-4 border-b border-theme-secondary">
-        <Inline gap={3}>
-          <div className="w-10 h-10 rounded-xl flex items-center justify-center shadow-theme-glow">
-            <PiCalendarBlank className="w-5 h-5 text-theme-primary" />
+    <>
+      <Sheet
+        aberto={isOpen}
+        aoFechar={fechar}
+        titulo={editando ? 'Editar evento' : 'Novo evento'}
+        largura="g"
+        rodape={
+          <>
+            <Button variante="fantasma" onClick={fechar}>
+              Cancelar
+            </Button>
+            <Button
+              type="submit"
+              form={`${id}-form`}
+              variante="primario"
+              carregando={salvando}
+              disabled={carregando || falhouAoCarregar}
+            >
+              {editando ? 'Salvar' : 'Criar evento'}
+            </Button>
+          </>
+        }
+      >
+        {carregando ? (
+          <div className="flex flex-col gap-4" aria-busy="true">
+            <Skeleton className="h-12 w-full" />
+            <Skeleton className="h-12 w-2/3" />
+            <Skeleton className="h-28 w-full" />
           </div>
-          <div>
-            <h2 className="text-xl font-bold text-theme-primary classical-title">
-              {isEditing ? 'Editar Evento' : 'Novo Evento'}
-            </h2>
-            <Text papel="rotulo" tom="suave" as="p">
-              {isEditing
-                ? 'Atualize as informações do evento'
-                : 'Adicione um novo evento ao calendário'}
-            </Text>
-          </div>
-        </Inline>
-      </div>
-
-      {/* Form Content */}
-      <Stack gap={6} className="px-6 py-6 overflow-y-auto">
-        {/* Title */}
-        <div>
-          <Input
-            label="Título do Evento *"
-            ref={fieldRefs.title}
-            type="text"
-            value={formData.title}
-            onChange={(e) =>
-              setFormData((prev) => ({ ...prev, title: e.target.value }))
-            }
-            className={`w-full input-classical-2 ${
-              errors.title ? '!border-red-400' : ''
-            }`}
-            placeholder="Ex: Concerto de Ano Novo"
-            maxLength={200}
-          />
-          {errors.title && (
-            <p className="text-red-500 text-sm mt-1">{errors.title}</p>
-          )}
-        </div>
-
-        {/* Type and Status */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <div>
-            <Select
-              label="Tipo de Evento *"
-              options={EVENT_TYPE_OPTIONS}
-              value={formData.type}
-              onChange={(e) =>
-                setFormData((prev) => ({
-                  ...prev,
-                  type: e.target.value as any,
-                }))
-              }
-              className="w-full input-classical-2"
-            />
-          </div>
-
-          <div>
-            <Select
-              label="Status"
-              options={STATUS_OPTIONS}
-              value={formData.status}
-              onChange={(e) =>
-                setFormData((prev) => ({ ...prev, status: e.target.value }))
-              }
-              className="w-full input-classical-2"
-            />
-          </div>
-        </div>
-
-        {/* Venue */}
-        <div>
-          <Select
-            label="Local *"
-            ref={fieldRefs.venueId}
-            options={[
-              { value: '', label: 'Selecione um local' },
-              ...venues.map((v) => ({
-                value: v.id,
-                label: `${v.name} - ${v.city}`,
-              })),
-            ]}
-            value={formData.venueId}
-            onChange={(e) =>
-              setFormData((prev) => ({ ...prev, venueId: e.target.value }))
-            }
-            className={`w-full input-classical-2 ${
-              errors.venueId ? '!border-red-400' : ''
-            }`}
-          />
-          {errors.venueId && (
-            <p className="text-red-500 text-sm mt-1">{errors.venueId}</p>
-          )}
-        </div>
-
-        {/* Date and Time */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <div>
-            <Input
-              label="Data de Início *"
-              ref={fieldRefs.startDate}
-              type="date"
-              value={formData.startDate}
-              onChange={(e) =>
-                setFormData((prev) => ({ ...prev, startDate: e.target.value }))
-              }
-              className={`w-full input-classical-2 ${
-                errors.startDate ? '!border-red-400' : ''
-              }`}
-            />
-            {errors.startDate && (
-              <p className="text-red-500 text-sm mt-1">{errors.startDate}</p>
-            )}
-          </div>
-
-          <div>
-            <Input
-              label="Horário de Início *"
-              ref={fieldRefs.startTime}
-              type="time"
-              value={formData.startTime}
-              onChange={(e) =>
-                setFormData((prev) => ({ ...prev, startTime: e.target.value }))
-              }
-              className={`w-full input-classical-2 ${
-                errors.startTime ? '!border-red-400' : ''
-              }`}
-            />
-            {errors.startTime && (
-              <p className="text-red-500 text-sm mt-1">{errors.startTime}</p>
-            )}
-          </div>
-        </div>
-
-        {/* Description */}
-        <div>
-          <Field.Area
-            label="Descrição"
-            classeCampo="resize-none"
-            value={formData.description}
-            onChange={(e) =>
-              setFormData((prev) => ({ ...prev, description: e.target.value }))
-            }
-            rows={4}
-            placeholder="Descreva o evento..."
-            maxLength={500}
-          />
-          <Text papel="legenda" tom="fraco" as="p" className="mt-1">
-            {formData.description.length}/500 caracteres
-          </Text>
-        </div>
-
-        {/* Image URL */}
-        <div>
-          <Input
-            label="Imagem do Evento"
-            type="url"
-            value={formData.imageUrl}
-            onChange={(e) =>
-              setFormData((prev) => ({ ...prev, imageUrl: e.target.value }))
-            }
-            className="w-full input-classical-2"
-            placeholder="https://exemplo.com/imagem.jpg"
-          />
-          {formData.imageUrl && (
-            <Stack gap={2} className="mt-3">
-              <Text papel="rotulo" tom="suave" as="p">
-                Preview:
-              </Text>
-              <div className="relative w-full h-48 rounded-lg overflow-hidden">
-                <Image
-                  src={formData.imageUrl}
-                  alt="Preview"
-                  className="w-full h-full object-cover"
-                  onError={(e) => {
-                    e.currentTarget.src = '/placeholder-event.jpg';
-                  }}
-                  height={100}
-                  width={100}
+        ) : falhouAoCarregar ? (
+          <p role="alert" className="text-erro">
+            Não deu para abrir o evento. Feche e tente de novo.
+          </p>
+        ) : (
+          <form
+            id={`${id}-form`}
+            onSubmit={salvar}
+            noValidate
+            className="flex flex-col gap-8"
+          >
+            <Grupo titulo="O quê">
+              <Field
+                label="Título"
+                {...campo('title')}
+                value={valores.title}
+                onChange={(e) => mudar('title', e.target.value)}
+                placeholder="Ex.: Concerto de Ano Novo"
+                maxLength={300}
+              />
+              <Field
+                label="Subtítulo (opcional)"
+                {...campo('subtitle')}
+                value={valores.subtitle}
+                onChange={(e) => mudar('subtitle', e.target.value)}
+              />
+              <div className="grid gap-4 sm:grid-cols-2">
+                <Field.Selecao
+                  label="Tipo"
+                  value={valores.type}
+                  onChange={(e) => mudar('type', e.target.value)}
+                >
+                  {Object.entries(BLOG.pt.agenda.tipos).map(
+                    ([valor, rotulo]) => (
+                      <option key={valor} value={valor}>
+                        {rotulo}
+                      </option>
+                    )
+                  )}
+                </Field.Selecao>
+                <Field.Selecao
+                  label="Estado"
+                  value={valores.status}
+                  onChange={(e) => mudar('status', e.target.value)}
+                >
+                  {ESTADOS.map((o) => (
+                    <option key={o.value} value={o.value}>
+                      {o.label}
+                    </option>
+                  ))}
+                </Field.Selecao>
+              </div>
+              <div className="grid gap-4 sm:grid-cols-2">
+                <Field
+                  label="Regência (opcional)"
+                  value={valores.conductor}
+                  onChange={(e) => mudar('conductor', e.target.value)}
+                />
+                <Field
+                  label="Grupo ou solista (opcional)"
+                  value={valores.ensemble}
+                  onChange={(e) => mudar('ensemble', e.target.value)}
                 />
               </div>
-            </Stack>
-          )}
-        </div>
-
-        {/* Tickets */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <div>
-            <Input
-              label="Link para Ingressos"
-              type="url"
-              value={formData.ticketUrl}
-              onChange={(e) =>
-                setFormData((prev) => ({ ...prev, ticketUrl: e.target.value }))
-              }
-              className="w-full input-classical-2"
-              placeholder="https://..."
-            />
-          </div>
-
-          <div className="flex items-center pt-6">
-            <Inline as="label" gap={2} className="cursor-pointer">
-              <input
-                type="checkbox"
-                checked={formData.isFree}
-                onChange={(e) =>
-                  setFormData((prev) => ({ ...prev, isFree: e.target.checked }))
-                }
-                className="w-4 h-4 rounded border-theme-secondary"
+              <Field.Area
+                label="Descrição (opcional)"
+                rows={4}
+                maxLength={500}
+                value={valores.description}
+                onChange={(e) => mudar('description', e.target.value)}
+                ajuda={`${valores.description.length} de 500 caracteres.`}
               />
-              <Text papel="rotulo" tom="forte">
-                Evento Gratuito
-              </Text>
-            </Inline>
-          </div>
-        </div>
-      </Stack>
+            </Grupo>
 
-      {/* Footer */}
-      <Inline
-        gap={3}
-        className="px-6 py-4 border-t border-theme-secondary justify-end"
-      >
-        <Button variant="secondary" onClick={onClose}>
-          Cancelar
-        </Button>
-        <Button
-          variant="primary"
-          onClick={handleSubmit}
-          isLoading={isSubmitting}
-        >
-          {isEditing ? 'Atualizar' : 'Criar'} Evento
-        </Button>
-      </Inline>
-    </Modal>
+            <Grupo titulo="Quando e onde">
+              <div className="grid gap-4 sm:grid-cols-[minmax(0,2fr)_minmax(0,1fr)]">
+                <Field.Selecao
+                  label="Local"
+                  {...campo('venueId')}
+                  value={valores.venueId}
+                  onChange={(e) => mudar('venueId', e.target.value)}
+                >
+                  <option value="">Escolha o local</option>
+                  {venues.map((v) => (
+                    <option key={v.id} value={v.id}>
+                      {v.name}, {v.city}
+                    </option>
+                  ))}
+                </Field.Selecao>
+                <Field
+                  label="Sala (opcional)"
+                  value={valores.room}
+                  onChange={(e) => mudar('room', e.target.value)}
+                />
+              </div>
+              <div className="grid grid-cols-2 gap-4">
+                <Field
+                  label="Dia"
+                  type="date"
+                  {...campo('startDate')}
+                  value={valores.startDate}
+                  onChange={(e) => mudar('startDate', e.target.value)}
+                />
+                <Field
+                  label="Hora"
+                  type="time"
+                  {...campo('startTime')}
+                  value={valores.startTime}
+                  onChange={(e) => mudar('startTime', e.target.value)}
+                />
+                <Field
+                  label="Até o dia (opcional)"
+                  type="date"
+                  {...campo('endDate')}
+                  value={valores.endDate}
+                  min={valores.startDate || undefined}
+                  onChange={(e) => mudar('endDate', e.target.value)}
+                  ajuda="Para temporadas e festivais."
+                />
+                <Field
+                  label="Termina às (opcional)"
+                  type="time"
+                  value={valores.endTime}
+                  onChange={(e) => mudar('endTime', e.target.value)}
+                />
+              </div>
+            </Grupo>
+
+            <Grupo titulo="Ingressos">
+              <Interruptor
+                rotulo="Entrada gratuita"
+                ligado={valores.isFree}
+                aoMudar={(v) => mudar('isFree', v)}
+              />
+              <Field
+                label="Onde comprar ou retirar (opcional)"
+                type="url"
+                inputMode="url"
+                {...campo('ticketUrl')}
+                value={valores.ticketUrl}
+                onChange={(e) => mudar('ticketUrl', e.target.value)}
+                placeholder="https://"
+              />
+              <Field
+                label="Preços e observações (opcional)"
+                value={valores.ticketInfo}
+                onChange={(e) => mudar('ticketInfo', e.target.value)}
+                placeholder="Ex.: R$ 40 a R$ 120; meia para estudantes"
+              />
+            </Grupo>
+
+            <Grupo titulo="Destaque do mês">
+              <Interruptor
+                rotulo="Mostrar no topo da agenda"
+                ajuda="Até três por mês, pelo mês em que o evento começa. Escolher uma posição já ocupada tira o destaque que estava nela."
+                ligado={valores.isFeatured}
+                aoMudar={(v) => mudar('isFeatured', v)}
+              />
+              {valores.isFeatured && (
+                <div className="flex flex-col gap-4">
+                  <fieldset>
+                    <legend className="mb-2 text-sm font-medium text-texto">
+                      Posição
+                    </legend>
+                    <div className="flex gap-1.5">
+                      <Chip
+                        selecionado={!valores.featuredOrder}
+                        onClick={() => mudar('featuredOrder', '')}
+                      >
+                        A primeira livre
+                      </Chip>
+                      {['1', '2', '3'].map((n) => (
+                        <Chip
+                          key={n}
+                          selecionado={valores.featuredOrder === n}
+                          onClick={() => mudar('featuredOrder', n)}
+                        >
+                          {n}º
+                        </Chip>
+                      ))}
+                    </div>
+                  </fieldset>
+                </div>
+              )}
+              {valores.isFeatured && !valores.imageUrl && (
+                <p className="t-legenda">
+                  Sem imagem, o destaque usa a capa de reserva. Com imagem ele
+                  fica bem melhor.
+                </p>
+              )}
+            </Grupo>
+
+            <Grupo titulo="Imagem">
+              <Field
+                label="Endereço da imagem (opcional)"
+                type="url"
+                inputMode="url"
+                {...campo('imageUrl')}
+                value={valores.imageUrl}
+                onChange={(e) => mudar('imageUrl', e.target.value)}
+                placeholder="https://"
+                ajuda="Sem imagem, o evento usa a capa de reserva do blog."
+              />
+              {/^https?:\/\//.test(valores.imageUrl) && (
+                // Prévia do endereço como digitado, antes do otimizador.
+                // eslint-disable-next-line @next/next/no-img-element
+                <img
+                  src={valores.imageUrl}
+                  alt={`Imagem de ${valores.title || 'evento'}`}
+                  className="aspect-[16/10] w-full max-w-sm rounded-card bg-sup-2 object-cover"
+                />
+              )}
+            </Grupo>
+          </form>
+        )}
+      </Sheet>
+
+      <ConfirmModal
+        isOpen={confirmarSaida}
+        onClose={() => setConfirmarSaida(false)}
+        onConfirm={() => {
+          setConfirmarSaida(false);
+          onClose();
+        }}
+        type="warning"
+        title="Sair sem salvar?"
+        message="As alterações neste evento se perdem."
+        confirmText="Sair sem salvar"
+        cancelText="Continuar editando"
+      />
+    </>
+  );
+}
+
+function Grupo({
+  titulo,
+  children,
+}: {
+  titulo: string;
+  children: React.ReactNode;
+}) {
+  return (
+    <fieldset className="flex flex-col gap-4">
+      <legend className="t-rotulo mb-4 text-texto-fraco">{titulo}</legend>
+      {children}
+    </fieldset>
   );
 }

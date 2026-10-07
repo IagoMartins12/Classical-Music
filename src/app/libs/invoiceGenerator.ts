@@ -1,3 +1,4 @@
+import { CONTATO } from '@/app/utils/contato';
 // app/libs/invoiceGenerator.ts
 import {
   formatPrice,
@@ -410,7 +411,7 @@ export function generateInvoiceHTML(data: InvoiceData): string {
         <!-- Footer -->
         <div class="footer">
           <p>Este documento é uma nota fiscal simplificada gerada eletronicamente.</p>
-          <p>Para dúvidas, entre em contato: suporte@opusatlas.com</p>
+          <p>Para dúvidas, entre em contato: ${CONTATO.suporte}</p>
         </div>
       </div>
     </body>

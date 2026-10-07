@@ -1,5 +1,6 @@
 // app/components/Footer.tsx - VERSÃO FINAL INTEGRADA
 'use client';
+import { CONTATO, mailto } from '@/app/utils/contato';
 import { Button as Botao } from '@/app/components/ui/Button';
 
 import React, { useState } from 'react';
@@ -254,12 +255,17 @@ const Footer: React.FC = () => {
               <Stack gap={3}>
                 <Inline gap={3} className="text-sm text-theme-tertiary">
                   <PiEnvelopeSimple className="w-4 h-4 text-ouro-texto" />
-                  <span>opusatlas@gmail.com</span>
+                  <a href={mailto('contato')} className="hover:text-texto">
+                    {CONTATO.contato}
+                  </a>
                 </Inline>
-                <Inline gap={3} className="text-sm text-theme-tertiary">
-                  <PiPhone className="w-4 h-4 text-ouro-texto" />
-                  <span>{t('footer_jsx_span_children_0__text')}</span>
-                </Inline>
+                {/* Só com um número de atendimento de verdade (`CONTATO`). */}
+                {CONTATO.telefone && (
+                  <Inline gap={3} className="text-sm text-theme-tertiary">
+                    <PiPhone className="w-4 h-4 text-ouro-texto" />
+                    <span>{CONTATO.telefone}</span>
+                  </Inline>
+                )}
                 <Inline gap={3} className="text-sm text-theme-tertiary">
                   <PiMapPin className="w-4 h-4 text-ouro-texto" />
                   <span>

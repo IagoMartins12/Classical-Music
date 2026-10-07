@@ -74,6 +74,15 @@ export function cancelSubscriptionRequest(reason?: string, feedback?: string) {
   );
 }
 
+/** Abre o Portal do Cliente da Stripe: cartão, faturas e cancelamento. */
+export function openBillingPortalRequest() {
+  return call<{ success: true; url: string }>(
+    '/stripe/portal',
+    { method: 'POST' },
+    'Erro ao abrir o portal de pagamento'
+  );
+}
+
 export function reactivateSubscriptionRequest() {
   return call<SubscriptionAction>(
     '/subscription/reactivate',
