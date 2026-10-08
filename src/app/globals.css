@@ -1,5 +1,16 @@
 @import 'tailwindcss';
 
+/* Lists render one markup in two layouts. `row:` styles an item as a row:
+   always on phones, and from sm up when its list says `data-view="list"`. */
+@custom-variant row {
+  @media (width < 40rem) {
+    @slot;
+  }
+  &:where([data-view='list'] *) {
+    @slot;
+  }
+}
+
 /* =========================================================================
    Os tokens do sistema como utilitário do Tailwind.
    Sem este bloco, `bg-fundo` e `text-ouro-texto` não existem: o Tailwind v4

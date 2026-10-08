@@ -8,7 +8,7 @@ import {
 export default function Carregando() {
   return (
     <EsqueletoPagina rotulo="Carregando obras">
-      <EsqueletoCabecalho centro />
+      <EsqueletoCabecalho />
       <EsqueletoBusca />
       <EsqueletoObras quantos={8} />
     </EsqueletoPagina>

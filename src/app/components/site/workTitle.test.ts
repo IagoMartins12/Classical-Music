@@ -15,3 +15,11 @@ describe('workTitle', () => {
     expect(workTitle('Berceuse', null)).toBe('Berceuse');
   });
 });
+
+describe('workTitle punctuation', () => {
+  it('ignores spaces, dots and commas when comparing', () => {
+    expect(workTitle('Prelude op 28 no 4', 'Op.28, no. 4')).toBe(
+      'Prelude op 28 no 4'
+    );
+  });
+});

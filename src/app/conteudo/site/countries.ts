@@ -34,3 +34,27 @@ export const countryOf = (
   nationality: string | null | undefined,
   language: Idioma
 ) => (nationality ? (COUNTRIES[nationality]?.[language] ?? nationality) : null);
+
+/**
+ * Countries for the list filter: one entry per country, with every stored
+ * spelling of its demonym (`German`, `Alemão`). The URL carries the first.
+ */
+export function countryFilters(language: Idioma) {
+  const byCountry = new Map<
+    string,
+    { value: string; label: string; demonyms: string[] }
+  >();
+  for (const [demonym, names] of Object.entries(COUNTRIES)) {
+    const entry = byCountry.get(names.en);
+    if (entry) entry.demonyms.push(demonym);
+    else
+      byCountry.set(names.en, {
+        value: demonym,
+        label: names[language],
+        demonyms: [demonym],
+      });
+  }
+  return [...byCountry.values()].sort((a, b) =>
+    a.label.localeCompare(b.label, language)
+  );
+}

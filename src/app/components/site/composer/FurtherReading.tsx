@@ -25,47 +25,50 @@ export function FurtherReading({
           {copy.blog} <Icon de={PiArrowRight} tamanho="pp" />
         </Link>
       </div>
-      <ul className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
-        {articles.map((article) => (
-          <li key={article.id}>
-            <Link
-              href={`/blog/${article.slug}`}
-              className="group flex h-full items-center gap-4 rounded-card bg-sup-2 p-3 pr-4"
-            >
-              <span className="relative grid h-16 w-16 shrink-0 place-items-center overflow-hidden rounded-controle bg-[var(--fundo)]">
-                {article.coverImage ? (
-                  <Image
-                    src={article.coverImage}
-                    alt=""
-                    fill
-                    sizes="64px"
-                    className="object-cover object-top"
-                  />
-                ) : (
-                  <Icon
-                    de={PiArticle}
-                    tamanho="m"
-                    className="text-texto-fraco"
-                  />
-                )}
-              </span>
-              <span className="flex min-w-0 flex-col">
-                <span className="line-clamp-2 font-display text-[1.125rem] leading-snug group-hover:text-ouro-texto">
-                  {article.title}
-                </span>
-                <span className="t-legenda">
-                  {[
-                    article.authorName,
-                    article.readTime && `${article.readTime} min`,
-                  ]
-                    .filter(Boolean)
-                    .join(' · ')}
-                </span>
-              </span>
-            </Link>
-          </li>
-        ))}
-      </ul>
+      <ArticleCards articles={articles} />
     </section>
+  );
+}
+
+/** Blog articles as small cards: cover, title, author and reading time. */
+export function ArticleCards({ articles }: { articles: BlogArticlePreview[] }) {
+  return (
+    <ul className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
+      {articles.map((article) => (
+        <li key={article.id}>
+          <Link
+            href={`/blog/${article.slug}`}
+            className="group flex h-full items-center gap-4 rounded-card bg-sup-2 p-3 pr-4"
+          >
+            <span className="relative grid h-16 w-16 shrink-0 place-items-center overflow-hidden rounded-controle bg-[var(--fundo)]">
+              {article.coverImage ? (
+                <Image
+                  src={article.coverImage}
+                  alt=""
+                  fill
+                  sizes="64px"
+                  className="object-cover object-top"
+                />
+              ) : (
+                <Icon de={PiArticle} tamanho="m" className="text-texto-fraco" />
+              )}
+            </span>
+            <span className="flex min-w-0 flex-col">
+              <span className="line-clamp-2 font-display text-[1.125rem] leading-snug group-hover:text-ouro-texto">
+                {article.title}
+              </span>
+              <span className="t-legenda">
+                {[
+                  article.authorName,
+                  article.readTime && `${article.readTime} min`,
+                ]
+                  .filter(Boolean)
+                  .join(' · ')}
+              </span>
+            </span>
+          </Link>
+        </li>
+      ))}
+    </ul>
   );
 }

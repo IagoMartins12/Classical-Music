@@ -8,6 +8,7 @@ import Link from '@/app/components/LocalizedLink';
 import { ThemeToggle } from '@/app/components/ThemeToggle';
 import { Button } from '@/app/components/ui/Button';
 import { Icon } from '@/app/components/ui/Icon';
+import { OnThisDayCallout } from '../on-this-day/OnThisDayCallout';
 import { MenuScreen, MenuScreenHeader } from '@/app/components/ui/MenuScreen';
 import { Sheet } from '@/app/components/ui/Sheet';
 import { cx } from '@/app/components/ui/cx';
@@ -212,6 +213,9 @@ export function MobileMenu({
               );
             })}
           </ul>
+          {screen === 'explore' && (
+            <OnThisDayCallout onNavigate={close} className="mt-4" />
+          )}
         </MenuScreen>
 
         {user && (

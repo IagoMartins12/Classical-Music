@@ -76,7 +76,7 @@ export default function GenresClient({ genres }: GenresClientProps) {
 
   const handleGenreSelect = (genreId: string, genreName: string) => {
     // Redirecionar para /works com o gênero selecionado
-    router.push(`/works?workGenresArr=${genreName}`);
+    router.push(`/works?genre=${encodeURIComponent(genreName)}`);
   };
 
   const clearSearch = () => {

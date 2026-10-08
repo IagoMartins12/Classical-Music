@@ -4,7 +4,8 @@
  */
 export function workTitle(title: string, catalog?: string | null) {
   if (!catalog) return title;
-  const normalize = (s: string) => s.toLowerCase().replace(/[\s.]/g, '');
+  const normalize = (s: string) =>
+    s.toLowerCase().replace(/[^\p{L}\p{N}]/gu, '');
   return normalize(title).includes(normalize(catalog))
     ? title
     : `${title}, ${catalog}`;

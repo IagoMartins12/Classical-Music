@@ -1,6 +1,7 @@
 import { apiFetch } from './client';
 
 type Level = 'BEGINNER' | 'INTERMEDIATE' | 'ADVANCED';
+export type ListView = 'cards' | 'list';
 
 /**
  * A conta, como `GET /profile?include=account` a devolve — os mesmos campos da
@@ -33,6 +34,8 @@ export interface ProfileAccount {
   practiceTimePerWeek: number | null;
   profilePublic: boolean;
   showLocation: boolean;
+  /** How lists render on the site; `null` until the person picks one. */
+  listView: ListView | null;
   currentPlan: string;
   planExpiresAt: string | null;
   isTrialActive: boolean;
@@ -59,6 +62,7 @@ export interface ProfileWriteBody {
     practiceTimePerWeek: number | null;
     profilePublic: boolean;
     showLocation: boolean;
+    listView: ListView;
   }>;
   instruments?: Array<{
     instrumentId: string;
@@ -73,6 +77,12 @@ export const profileApi = {
   me: () =>
     apiFetch<{ account: ProfileAccount }>('/profile', {
       query: { include: 'account' },
+    }),
+
+  update: (body: ProfileWriteBody) =>
+    apiFetch<{ account: ProfileAccount }>('/profile', {
+      method: 'PATCH',
+      body,
     }),
 
   completeOnboarding: (body: ProfileWriteBody) =>

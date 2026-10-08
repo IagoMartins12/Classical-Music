@@ -684,6 +684,26 @@ export interface paths {
     patch?: never;
     trace?: never;
   };
+  '/api/composers/on-this-day': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /**
+     * Composers born and who died on a calendar day
+     * @description For "born on a day like today": up to 48 each, best known first. Only records whose date has month and day.
+     */
+    get: operations['ComposersController_getOnThisDay'];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
   '/api/composers/{id}/overview': {
     parameters: {
       query?: never;
@@ -7637,6 +7657,7 @@ export interface components {
       fullName?: string | null;
       /** @example Romantismo */
       epochName: string | null;
+      portraitUrl?: string | null;
     };
     WorkCatalogInstrumentDto: {
       /** @example Piano */
@@ -7661,6 +7682,10 @@ export interface components {
       workType: string;
       /** @example true */
       isVerified: boolean;
+      /** @description Tem gravação (Spotify, YouTube ou áudio) */
+      hasRecording: boolean;
+      /** @description Nível IMSLP 1–12, ou BEGINNER/INTERMEDIATE/ADVANCED */
+      difficultyLevel?: string | null;
       epoch?: components['schemas']['WorkCatalogEpochDto'] | null;
       composer: components['schemas']['WorkCatalogComposerDto'];
       instrument: components['schemas']['WorkCatalogInstrumentDto'] | null;
@@ -8001,6 +8026,8 @@ export interface components {
       imslpId?: string | null;
       /** @example true */
       isVerified: boolean;
+      /** @description Gentílico gravado (ex.: "Polish") */
+      nationality?: string | null;
       epoch?: components['schemas']['ComposerEpochDto'] | null;
     };
     FeaturedComposerWorkDto: {
@@ -8029,6 +8056,24 @@ export interface components {
       /** @example true */
       isVerified: boolean;
       works: components['schemas']['FeaturedComposerWorkDto'][];
+    };
+    OnThisDayComposerDto: {
+      id: string;
+      name: string;
+      fullName: string;
+      /** @description Só retrato válido (sem o "no photo" do IMSLP) */
+      portraitUrl?: string | null;
+      birthYear?: number | null;
+      deathYear?: number | null;
+      nationality?: string | null;
+      epochName?: string | null;
+      isVerified: boolean;
+    };
+    OnThisDayDto: {
+      month: number;
+      day: number;
+      born: components['schemas']['OnThisDayComposerDto'][];
+      died: components['schemas']['OnThisDayComposerDto'][];
     };
     WrittenForDto: {
       /** @example 685d… */
@@ -8744,6 +8789,8 @@ export interface components {
       practiceTimePerWeek?: number | null;
       profilePublic: boolean;
       showLocation: boolean;
+      /** @enum {string|null} */
+      listView?: 'cards' | 'list' | null;
       /** @enum {string} */
       currentPlan: 'FREE' | 'PLUS' | 'MENTOR' | 'MAESTRO';
       /** Format: date-time */
@@ -8978,6 +9025,8 @@ export interface components {
       practiceTimePerWeek?: number | null;
       profilePublic?: boolean;
       showLocation?: boolean;
+      /** @enum {string} */
+      listView?: 'cards' | 'list';
     };
     UserInstrumentInputDto: {
       instrumentId: string;
@@ -14883,6 +14932,8 @@ export interface operations {
         workGenresArr?: string;
         /** @description Filtra por nível de dificuldade */
         difficultyLevel?: string;
+        /** @description Ordem. Sem ela: as recém-chegadas sem filtro, A–Z com filtro (como antes). */
+        sort?: 'recent' | 'title' | 'title-desc';
       };
       header?: never;
       path?: never;
@@ -15245,14 +15296,26 @@ export interface operations {
   ComposersController_findAll: {
     parameters: {
       query?: {
+        /** @description Busca por nome, nome completo ou nomes alternativos (apelidos, transliterações) */
+        search?: string;
+        /** @description Filtra por época */
+        epochId?: string;
+        /** @description Nacionalidades como gravadas (gentílico), separadas por vírgula: `German,Alemão` */
+        nationality?: string;
+        /** @description Só quem compôs para este instrumento */
+        instrumentId?: string;
+        /** @description Só com retrato válido */
+        withPortrait?: boolean;
+        /** @description Nasceu a partir deste ano */
+        bornFrom?: number;
+        /** @description Nasceu até este ano */
+        bornTo?: number;
+        /** @description Na contagem, só importa se é por nascimento (conta quem tem o ano) */
+        sort?: 'featured' | 'name' | 'name-desc' | 'born' | 'born-desc';
         /** @description Página da listagem */
         page?: number;
         /** @description Itens por página */
         limit?: number;
-        /** @description Busca por nome ou nome completo do compositor */
-        search?: string;
-        /** @description Filtra por época */
-        epochId?: string;
       };
       header?: never;
       path?: never;
@@ -15292,10 +15355,22 @@ export interface operations {
   ComposersController_count: {
     parameters: {
       query?: {
-        /** @description Busca por nome ou nome completo do compositor */
+        /** @description Busca por nome, nome completo ou nomes alternativos (apelidos, transliterações) */
         search?: string;
         /** @description Filtra por época */
         epochId?: string;
+        /** @description Nacionalidades como gravadas (gentílico), separadas por vírgula: `German,Alemão` */
+        nationality?: string;
+        /** @description Só quem compôs para este instrumento */
+        instrumentId?: string;
+        /** @description Só com retrato válido */
+        withPortrait?: boolean;
+        /** @description Nasceu a partir deste ano */
+        bornFrom?: number;
+        /** @description Nasceu até este ano */
+        bornTo?: number;
+        /** @description Na contagem, só importa se é por nascimento (conta quem tem o ano) */
+        sort?: 'featured' | 'name' | 'name-desc' | 'born' | 'born-desc';
       };
       header?: never;
       path?: never;
@@ -15379,6 +15454,28 @@ export interface operations {
         };
         content: {
           'application/json': components['schemas']['FeaturedComposerResponseDto'];
+        };
+      };
+    };
+  };
+  ComposersController_getOnThisDay: {
+    parameters: {
+      query: {
+        month: number;
+        day: number;
+      };
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['OnThisDayDto'];
         };
       };
     };

@@ -4,6 +4,9 @@ import { useState } from 'react';
 import Image from '@/app/components/SmartImage';
 import { cx } from '@/app/components/ui/cx';
 
+/** IMSLP's "no composer photo available" file, stored as the portrait of thousands. */
+const PLACEHOLDER = /nocomposerphotoavailable/i;
+
 /**
  * A composer portrait. Without a photo (or when it fails to load) it shows
  * the initial in Garamond, never a hole or a generic silhouette.
@@ -22,11 +25,12 @@ export function Portrait({
   className?: string;
 }) {
   const [broken, setBroken] = useState(false);
+  const photo = src && !PLACEHOLDER.test(src) ? src : null;
   return (
     <span className={cx('relative block overflow-hidden bg-sup-2', className)}>
-      {src && !broken ? (
+      {photo && !broken ? (
         <Image
-          src={src}
+          src={photo}
           alt={name}
           fill
           sizes={sizes}
