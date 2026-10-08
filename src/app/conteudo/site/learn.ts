@@ -1,0 +1,97 @@
+import type { Idioma } from '../legal/tipos';
+
+/** Interface copy for the history and instruments pages (the chapters live in `conteudo/history` and `conteudo/instruments`). */
+const pt = {
+  history: {
+    title: 'Mil e quinhentos anos de música',
+    text: 'Do canto gregoriano a quem compõe hoje, em sete épocas. Cada capítulo conta o que mudou, como a música soa e por onde começar a ouvir.',
+    startAtStart: 'Começar pela Idade Média',
+    eras: 'Épocas',
+    readChapter: 'Ler o capítulo',
+    sound: 'Como soa',
+    changes: 'O que mudou',
+    forms: 'As formas da época',
+    instruments: 'Instrumentos',
+    people: 'Quem viveu nela',
+    peopleText: 'Alguns compositores da época, na linha do tempo.',
+    listen: 'Por onde começar a ouvir',
+    didYouKnow: 'Você sabia?',
+    before: 'Antes',
+    after: 'Depois',
+    composers: 'Compositores desta época',
+    works: 'Obras desta época',
+    today: 'hoje',
+    metaTitle: (era: string) =>
+      `${era}: história, formas e obras para ouvir · Opus Atlas`,
+  },
+  instruments: {
+    title: 'Da flauta de osso ao piano de cauda',
+    text: 'Os instrumentos da música de concerto: de onde vieram, como funcionam, como mudaram e o que ouvir em cada um.',
+    ruler: 'Quando cada um surgiu',
+    families: 'Famílias',
+    all: 'Todos',
+    howItWorks: 'Como funciona',
+    story: 'A história',
+    timeline: 'Como chegou até aqui',
+    repertoire: 'O que se escreveu para ele',
+    listen: 'Por onde começar a ouvir',
+    didYouKnow: 'Você sabia?',
+    worksFor: (name: string) => `Obras para ${name.toLowerCase()}`,
+    family: 'Família',
+    since: 'Desde',
+    others: 'Outros instrumentos',
+    imageCredit: 'Imagem',
+    metaTitle: (name: string) =>
+      `${name}: história, como funciona e obras para ouvir · Opus Atlas`,
+  },
+  searchListen: 'Procurar no acervo',
+};
+
+const en: typeof pt = {
+  history: {
+    title: 'Fifteen hundred years of music',
+    text: 'From Gregorian chant to the composers of today, in seven eras. Each chapter tells what changed, how the music sounds and where to start listening.',
+    startAtStart: 'Start with the Middle Ages',
+    eras: 'Eras',
+    readChapter: 'Read the chapter',
+    sound: 'How it sounds',
+    changes: 'What changed',
+    forms: 'The forms of the era',
+    instruments: 'Instruments',
+    people: 'Who lived in it',
+    peopleText: 'Some composers of the era, on the timeline.',
+    listen: 'Where to start listening',
+    didYouKnow: 'Did you know?',
+    before: 'Before',
+    after: 'After',
+    composers: 'Composers of this era',
+    works: 'Works of this era',
+    today: 'today',
+    metaTitle: (era: string) =>
+      `${era}: history, forms and works to hear · Opus Atlas`,
+  },
+  instruments: {
+    title: 'From a bone flute to the grand piano',
+    text: 'The instruments of concert music: where they came from, how they work, how they changed and what to hear on each.',
+    ruler: 'When each one appeared',
+    families: 'Families',
+    all: 'All',
+    howItWorks: 'How it works',
+    story: 'The story',
+    timeline: 'How it got here',
+    repertoire: 'What was written for it',
+    listen: 'Where to start listening',
+    didYouKnow: 'Did you know?',
+    worksFor: (name: string) => `Works for ${name.toLowerCase()}`,
+    family: 'Family',
+    since: 'Since',
+    others: 'Other instruments',
+    imageCredit: 'Image',
+    metaTitle: (name: string) =>
+      `${name}: history, how it works and works to hear · Opus Atlas`,
+  },
+  searchListen: 'Find it in the archive',
+};
+
+export const LEARN: Record<Idioma, typeof pt> = { pt, en };
+export type LearnCopy = typeof pt;

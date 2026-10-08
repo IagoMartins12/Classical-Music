@@ -1,6 +1,6 @@
 // app/instruments/page.tsx - Instrumentos históricos ULTRA otimizado
 import { Metadata } from 'next';
-import { InstrumentsPageServer } from './pageServer';
+import { InstrumentsIndex } from '@/app/components/site/instruments/InstrumentsIndex';
 import {
   routeLanguage,
   type LangParams,
@@ -22,7 +22,7 @@ export async function generateMetadata({
       title:
         'Instrumentos Clássicos - Opus Atlas | Piano, Violino, Órgão Histórico',
       description:
-        'Explore a rica história dos instrumentos de música clássica. Piano de Bach, violino Stradivarius, órgão barroco, harpa de concerto. Evolução dos instrumentos que moldaram obras de Chopin, Beethoven, Mozart e grandes mestres.',
+        'De onde vieram e como funcionam o piano, o violino, o órgão, a harpa, a flauta e os outros instrumentos da música de concerto, com o que ouvir em cada um.',
       keywords: [
         'instrumentos música clássica',
         'piano clássico história',
@@ -58,7 +58,7 @@ export async function generateMetadata({
       title:
         'Classical Instruments - Opus Atlas | Piano, Violin, Historical Organ',
       description:
-        'Explore the rich history of classical music instruments. Bach piano, Stradivarius violin, baroque organ, concert harp. Evolution of instruments that shaped works by Chopin, Beethoven, Mozart and great masters.',
+        'Where the piano, violin, organ, harp, flute and the other instruments of concert music came from, how they work and what to hear on each.',
       keywords: [
         'classical music instruments',
         'classical piano history',
@@ -148,6 +148,5 @@ export const revalidate = 3600;
 
 export default async function InstrumentsPage({ params }: LangPageProps) {
   const language = await routeLanguage(params);
-
-  return <InstrumentsPageServer language={language} />;
+  return <InstrumentsIndex language={language} />;
 }

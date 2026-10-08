@@ -1,5 +1,5 @@
 /** The year in a stored date: "16 December 1770", "1770-12-16" or "c. 1770". */
-const yearOf = (date: string | null | undefined) =>
+export const yearOf = (date: string | null | undefined) =>
   date?.match(/\b(\d{3,4})\b/)?.[1];
 
 /** "1810–1849", "n. 1932" (b. 1932) or "". */
