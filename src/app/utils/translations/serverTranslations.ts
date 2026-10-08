@@ -249,8 +249,7 @@ export const COMMON_TRANSLATION_SECTIONS = [
 /**
  * Seções que **não** vão no payload da página.
  *
- * `components/auth-modals` e `components/onboarding` são 22,9 kB dos 25,4 kB
- * que as seções comuns pesavam — e são texto de modal: nada disso aparece na
+ * `components/auth-modals` pesava quase tudo o que as seções comuns pesavam — e são texto de modal: nada disso aparece na
  * primeira pintura de nenhuma página. Ir no payload significava mandar 23 kB
  * de texto (o dobro contando HTML e RSC) em toda visita anônima para uma
  * janela que a maioria nunca abre.
@@ -260,10 +259,7 @@ export const COMMON_TRANSLATION_SECTIONS = [
  * declara `useTranslation({ sections: [...] })`, e o `TranslationProvider`
  * carrega o que for pedido (ver `context/TranslationContext`).
  */
-export const DEFERRED_TRANSLATION_SECTIONS = [
-  'components/auth-modals',
-  'components/onboarding',
-];
+export const DEFERRED_TRANSLATION_SECTIONS = ['components/auth-modals'];
 
 /**
  * Carregar traduções com seções comuns incluídas

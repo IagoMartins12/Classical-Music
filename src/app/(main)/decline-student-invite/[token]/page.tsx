@@ -1,85 +1,14 @@
-// app/decline-student-invite/[token]/page.tsx - Recusar convite de estudante
-import {
-  getServerLanguageStatic,
-  loadPageTranslationsWithCommon,
-} from '@/app/utils/translations/serverTranslations';
-import DeclineStudentInvitePageClient from './pageClient';
-import { TranslationProvider } from '@/app/context/TranslationContext';
+import { DeclineStudentInviteView } from '@/app/components/site/tokens/TokenPages';
+import { tokenMetadata } from '@/app/components/site/tokens/tokenMetadata';
 
 /**
- * Nunca cacheada: o token vale uma vez e a página age sobre ele (confirma,
- * recusa, cancela). Sem esta linha, o Next guardaria o resultado por token e
- * uma segunda visita veria a resposta da primeira.
+ * Never cached: the token works once and the page acts on it. Cached, a
+ * second visit would see the first one's answer.
  */
 export const dynamic = 'force-dynamic';
 
-interface DeclineStudentInviteParams {
-  token: string;
-}
+export const generateMetadata = () => tokenMetadata('studentDecline');
 
-interface DeclineStudentInvitePageProps {
-  params: Promise<DeclineStudentInviteParams>;
-}
-
-export async function generateMetadata({
-  params,
-}: DeclineStudentInvitePageProps) {
-  const resolvedParams = await params;
-  const language = await getServerLanguageStatic();
-
-  const content = {
-    pt: {
-      title: 'Recusar Convite de Estudante - Opus Atlas | Gerenciar Convites',
-      description:
-        'Recuse o convite para estudante no Opus Atlas. Você pode continuar usando a plataforma como usuário regular e aceitar convites futuros.',
-    },
-    en: {
-      title: 'Decline Student Invite - Opus Atlas | Manage Invites',
-      description:
-        'Decline the student invitation on Opus Atlas. You can continue using the platform as a regular user and accept future invitations.',
-    },
-  };
-
-  const t = content[language];
-
-  return {
-    title: t.title,
-    description: t.description,
-    robots: {
-      index: false,
-      follow: false,
-      googleBot: {
-        index: false,
-        follow: false,
-      },
-    },
-    openGraph: {
-      title: t.title,
-      description: t.description,
-      type: 'website',
-      locale: language === 'pt' ? 'pt_BR' : 'en_US',
-      siteName: 'Opus Atlas',
-    },
-    twitter: {
-      card: 'summary',
-      title: t.title,
-      description: t.description,
-    },
-    alternates: {
-      canonical: `https://opusatlas.com.br/decline-student-invite/${resolvedParams.token}`,
-    },
-  };
-}
-
-export default async function DeclineStudentInvitePage() {
-  const language = await getServerLanguageStatic();
-  const { translations } = await loadPageTranslationsWithCommon(language, [
-    'pagesToken',
-  ]);
-
-  return (
-    <TranslationProvider language={language} translations={translations}>
-      <DeclineStudentInvitePageClient />
-    </TranslationProvider>
-  );
+export default function Page() {
+  return <DeclineStudentInviteView />;
 }

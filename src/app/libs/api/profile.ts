@@ -2,6 +2,8 @@ import { apiFetch } from './client';
 
 type Level = 'BEGINNER' | 'INTERMEDIATE' | 'ADVANCED';
 export type ListView = 'cards' | 'list';
+/** Students: how long they mean to study. */
+export type StudyHorizon = 'MONTHS' | 'YEAR' | 'YEARS' | 'LIFE';
 
 /**
  * A conta, como `GET /profile?include=account` a devolve — os mesmos campos da
@@ -31,7 +33,9 @@ export interface ProfileAccount {
   favoriteComposerId: string | null;
   favoriteEpochId: string | null;
   experienceLevel: Level;
+  /** Minutes per week. */
   practiceTimePerWeek: number | null;
+  studyHorizon: StudyHorizon | null;
   profilePublic: boolean;
   showLocation: boolean;
   /** How lists render on the site; `null` until the person picks one. */
@@ -60,6 +64,7 @@ export interface ProfileWriteBody {
     favoriteComposerId: string | null;
     favoriteEpochId: string | null;
     practiceTimePerWeek: number | null;
+    studyHorizon: StudyHorizon | null;
     profilePublic: boolean;
     showLocation: boolean;
     listView: ListView;

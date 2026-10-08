@@ -13,6 +13,9 @@ import {
   PiX,
 } from 'react-icons/pi';
 
+import { STUDY_HORIZONS, WELCOME } from '@/app/conteudo/site/welcome';
+import { useRouteLanguage } from '@/app/hooks/useRouteLanguage';
+import type { StudyHorizon } from '@/app/libs/api/profile';
 import { updateMusicalPreferences } from '@/app/actions/profile';
 import { toast } from 'react-hot-toast';
 import Button from '../../Common/Button';
@@ -51,6 +54,7 @@ const MusicalPreferencesSection: React.FC<MusicalPreferencesSectionProps> = ({
       | 'ADVANCED'
       | '',
     practiceTimePerWeek: user.practiceTimePerWeek || 0,
+    studyHorizon: (user.studyHorizon || '') as StudyHorizon | '',
   });
 
   const EXPERIENCE_LEVELS = [
@@ -85,6 +89,7 @@ const MusicalPreferencesSection: React.FC<MusicalPreferencesSectionProps> = ({
         | 'ADVANCED'
         | '',
       practiceTimePerWeek: user.practiceTimePerWeek || 0,
+      studyHorizon: (user.studyHorizon || '') as StudyHorizon | '',
     });
   }, [user]);
 
@@ -103,6 +108,15 @@ const MusicalPreferencesSection: React.FC<MusicalPreferencesSectionProps> = ({
       setIsLoadingData(false);
     }
   };
+
+  const horizonCopy = WELCOME[useRouteLanguage().language].study;
+  const HORIZON_OPTIONS = [
+    { value: '', label: t('preferences_not_selected') },
+    ...STUDY_HORIZONS.map((h) => ({
+      value: h,
+      label: horizonCopy.horizons[h],
+    })),
+  ];
 
   const handleInputChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     const { name, value } = e.target;
@@ -138,6 +152,7 @@ const MusicalPreferencesSection: React.FC<MusicalPreferencesSectionProps> = ({
           | 'ADVANCED'
           | undefined,
         practiceTimePerWeek: formData.practiceTimePerWeek,
+        studyHorizon: formData.studyHorizon || null,
       };
 
       const result = await updateMusicalPreferences(user.id, dataToSave);
@@ -153,6 +168,7 @@ const MusicalPreferencesSection: React.FC<MusicalPreferencesSectionProps> = ({
             | 'ADVANCED'
             | null,
           practiceTimePerWeek: formData.practiceTimePerWeek,
+          studyHorizon: formData.studyHorizon || null,
         };
 
         await syncUserData(syncData);
@@ -179,6 +195,7 @@ const MusicalPreferencesSection: React.FC<MusicalPreferencesSectionProps> = ({
         | 'ADVANCED'
         | '',
       practiceTimePerWeek: user.practiceTimePerWeek || 0,
+      studyHorizon: (user.studyHorizon || '') as StudyHorizon | '',
     });
     setIsEditing(false);
   };
@@ -303,6 +320,21 @@ const MusicalPreferencesSection: React.FC<MusicalPreferencesSectionProps> = ({
             disabled={!isEditing}
           />
         </Stack>
+
+        {user.userType === 'MUSIC_STUDENT' && (
+          <Stack gap={3}>
+            <span className="text-sm font-medium text-theme-secondary">
+              {horizonCopy.horizon}
+            </span>
+            <Select
+              value={formData.studyHorizon}
+              onChange={handleInputChange}
+              name="studyHorizon"
+              options={HORIZON_OPTIONS}
+              disabled={!isEditing}
+            />
+          </Stack>
+        )}
       </div>
 
       {/* Favorites */}

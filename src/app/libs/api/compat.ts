@@ -300,6 +300,13 @@ export const legacyOnboarding = {
           userType: data.userType,
           experienceLevel: data.experienceLevel,
           practiceTimePerWeek: data.practiceTimePerWeek,
+          studyHorizon:
+            data.userType === 'MUSIC_STUDENT' ? data.studyHorizon : undefined,
+          // A blank name field leaves the account's name alone.
+          firstName: data.firstName?.trim() || undefined,
+          lastName: data.lastName?.trim() || undefined,
+          profilePublic: data.profilePublic,
+          showLocation: data.showLocation,
           favoriteComposerId: data.favoriteComposerId,
           favoriteEpochId: data.favoriteEpochId,
           bio: data.bio,

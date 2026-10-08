@@ -10,6 +10,7 @@ import {
 import { usePathname, useRouter } from 'next/navigation';
 import {
   isLocalizedRoute,
+  LANGUAGE_COOKIE,
   languageOfPathname,
   localizeHref,
   stripLanguagePrefix,
@@ -63,4 +64,25 @@ export function useRouteLanguage() {
     path,
     switchLanguage: localized ? switchLanguage : null,
   };
+}
+
+/**
+ * For overlays mounted at the root, outside any page's provider, that only
+ * render after an interaction (never on the server): on routes without an
+ * `/en` version, the language cookie decides.
+ */
+export function useOverlayLanguage(): RouteLanguage {
+  const { language } = useRouteLanguage();
+  const pathname = usePathname() ?? '/';
+  const provided = useContext(CookieLanguage);
+  if (
+    provided ||
+    typeof document === 'undefined' ||
+    isLocalizedRoute(stripLanguagePrefix(pathname))
+  )
+    return language;
+  const match = document.cookie.match(
+    new RegExp(`(?:^|; )${LANGUAGE_COOKIE}=(pt|en)`)
+  );
+  return (match?.[1] as RouteLanguage | undefined) ?? language;
 }

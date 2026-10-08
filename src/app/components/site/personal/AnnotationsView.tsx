@@ -16,7 +16,6 @@ import Link from '@/app/components/LocalizedLink';
 import { Button, classesDeBotao } from '@/app/components/ui/Button';
 import { Icon } from '@/app/components/ui/Icon';
 import { Selecao } from '@/app/components/ui/Selecao';
-import { cx } from '@/app/components/ui/cx';
 import { PERSONAL, type PersonalCopy } from '@/app/conteudo/site/personal';
 import { useAuth } from '@/app/hooks/useAuth';
 import { useRouteLanguage } from '@/app/hooks/useRouteLanguage';
@@ -27,6 +26,7 @@ import {
 import type { WorkAnnotation } from '@/app/stores/useAnnotationsStore';
 import { ListResults, ViewToggle } from '../lists/ViewToggle';
 import { workTitle } from '../workTitle';
+import { chip } from '../choice';
 
 const CreateAnnotationModal = dynamic(
   () => import('@/app/components/Annotations/CreateAnnotationModal'),
@@ -65,14 +65,6 @@ const normalize = (s: string) =>
     .normalize('NFD')
     .replace(/\p{Diacritic}/gu, '')
     .toLowerCase();
-
-const chip = (active: boolean) =>
-  cx(
-    'inline-flex min-h-10 shrink-0 items-center rounded-full px-4 text-[0.9375rem] transition-colors duration-[var(--t-toque)]',
-    active
-      ? 'tint-ouro text-ouro-na-tinta'
-      : 'bg-sup-2 text-texto-suave hover:text-texto'
-  );
 
 /** "Your annotations": every note you left on a work, filtered by visibility, work and text. */
 export function AnnotationsView() {

@@ -8,7 +8,7 @@ import dynamic from 'next/dynamic';
 // Import modals
 import LoginModal from '@/app/components/auth/LoginModal';
 import RegisterModal from '@/app/components/auth/RegisterModal';
-import OnboardingModal from '@/app/components/auth/OnboardingModal';
+import { WelcomeModal } from '@/app/components/site/welcome/WelcomeModal';
 
 // Import hooks and stores
 import { useAuth } from '@/app/hooks/useAuth';
@@ -17,7 +17,7 @@ import { useHydration } from '../hooks/useHydration';
 import { useUserStore } from '../hooks/userStore';
 import { useOnboardingPersistence } from '../hooks/useOnboardingPersistence';
 import { useOnlineStatus } from '../hooks/useOnlineStatus'; // 🆕
-import OnboardingPrompt from '../components/auth/onboarding/OnboardingPrompt';
+import { WelcomePrompt } from '../components/site/welcome/WelcomePrompt';
 
 // Dynamic import do GoogleRegistrationHandler sem SSR
 const GoogleRegistrationHandler = dynamic(
@@ -247,10 +247,11 @@ const HydratedContent: React.FC<{ children: React.ReactNode }> = ({
       )}
 
       {/* 🚀 OTIMIZAÇÃO: Modais de onboarding só se logado e sem onboarding */}
+      {/* Stays mounted once the answers are saved, to show the closing step. */}
+      {isAuthenticated && <WelcomeModal />}
       {shouldRenderOnboardingModals && (
         <>
-          <OnboardingModal />
-          <OnboardingPrompt />
+          <WelcomePrompt />
           <OnboardingManager shouldRender={true} />
         </>
       )}

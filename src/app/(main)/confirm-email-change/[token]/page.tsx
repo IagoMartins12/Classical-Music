@@ -1,85 +1,14 @@
-// app/confirm-email-change/[token]/page.tsx - Confirmação de mudança de email
-import {
-  getServerLanguageStatic,
-  loadPageTranslationsWithCommon,
-} from '@/app/utils/translations/serverTranslations';
-import ConfirmEmailChangePageClient from './pageClient';
-import { TranslationProvider } from '@/app/context/TranslationContext';
+import { ConfirmEmailChangeView } from '@/app/components/site/tokens/TokenPages';
+import { tokenMetadata } from '@/app/components/site/tokens/tokenMetadata';
 
 /**
- * Nunca cacheada: o token vale uma vez e a página age sobre ele (confirma,
- * recusa, cancela). Sem esta linha, o Next guardaria o resultado por token e
- * uma segunda visita veria a resposta da primeira.
+ * Never cached: the token works once and the page acts on it. Cached, a
+ * second visit would see the first one's answer.
  */
 export const dynamic = 'force-dynamic';
 
-interface ConfirmEmailChangeParams {
-  token: string;
-}
+export const generateMetadata = () => tokenMetadata('emailChange');
 
-interface ConfirmEmailChangePageProps {
-  params: Promise<ConfirmEmailChangeParams>;
-}
-
-export async function generateMetadata({
-  params,
-}: ConfirmEmailChangePageProps) {
-  const resolvedParams = await params;
-  const language = await getServerLanguageStatic();
-
-  const content = {
-    pt: {
-      title: 'Confirmar Mudança de Email - Opus Atlas | Atualizar Conta',
-      description:
-        'Confirme a mudança do seu email no Opus Atlas para manter acesso seguro à sua conta musical e biblioteca de partituras.',
-    },
-    en: {
-      title: 'Confirm Email Change - Opus Atlas | Update Account',
-      description:
-        'Confirm your email change on Opus Atlas to maintain secure access to your musical account and sheet music library.',
-    },
-  };
-
-  const t = content[language];
-
-  return {
-    title: t.title,
-    description: t.description,
-    robots: {
-      index: false,
-      follow: false,
-      googleBot: {
-        index: false,
-        follow: false,
-      },
-    },
-    openGraph: {
-      title: t.title,
-      description: t.description,
-      type: 'website',
-      locale: language === 'pt' ? 'pt_BR' : 'en_US',
-      siteName: 'Opus Atlas',
-    },
-    twitter: {
-      card: 'summary',
-      title: t.title,
-      description: t.description,
-    },
-    alternates: {
-      canonical: `https://opusatlas.com.br/confirm-email-change/${resolvedParams.token}`,
-    },
-  };
-}
-
-export default async function ConfirmEmailChangePage() {
-  const language = await getServerLanguageStatic();
-  const { translations } = await loadPageTranslationsWithCommon(language, [
-    'pagesToken',
-  ]);
-
-  return (
-    <TranslationProvider language={language} translations={translations}>
-      <ConfirmEmailChangePageClient />
-    </TranslationProvider>
-  );
+export default function Page() {
+  return <ConfirmEmailChangeView />;
 }

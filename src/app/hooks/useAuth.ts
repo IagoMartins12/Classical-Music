@@ -63,6 +63,7 @@ export function useAuth() {
           favoriteEpochId: session.user.favoriteEpochId,
           experienceLevel: session.user.experienceLevel,
           practiceTimePerWeek: session.user.practiceTimePerWeek,
+          studyHorizon: session.user.studyHorizon,
           profilePublic: session.user.profilePublic,
           showLocation: session.user.showLocation,
           isStudent: session.user.isStudent,

@@ -1,85 +1,14 @@
-// app/decline-teacher-invite/[token]/page.tsx - Recusar convite de professor
-import {
-  getServerLanguageStatic,
-  loadPageTranslationsWithCommon,
-} from '@/app/utils/translations/serverTranslations';
-import ResetPasswordPageClient from './pageClient';
-import { TranslationProvider } from '@/app/context/TranslationContext';
+import { ResetPasswordView } from '@/app/components/site/tokens/ResetPasswordView';
+import { tokenMetadata } from '@/app/components/site/tokens/tokenMetadata';
 
 /**
- * Nunca cacheada: o token vale uma vez e a página age sobre ele (confirma,
- * recusa, cancela). Sem esta linha, o Next guardaria o resultado por token e
- * uma segunda visita veria a resposta da primeira.
+ * Never cached: the token works once and the page acts on it. Cached, a
+ * second visit would see the first one's answer.
  */
 export const dynamic = 'force-dynamic';
 
-interface DeclineTeacherInviteParams {
-  token: string;
-}
+export const generateMetadata = () => tokenMetadata('reset');
 
-interface DeclineTeacherInvitePageProps {
-  params: Promise<DeclineTeacherInviteParams>;
-}
-
-export async function generateMetadata({
-  params,
-}: DeclineTeacherInvitePageProps) {
-  const resolvedParams = await params;
-  const language = await getServerLanguageStatic();
-
-  const content = {
-    pt: {
-      title: 'Esqueci minha senha - Opus Atlas | Registrar nova senha',
-      description:
-        'Registre uma nova senha e volte a ter acesso a sua conta em nossa plataforma.',
-    },
-    en: {
-      title: 'Forgot password - Opus Atlas | Register new password',
-      description:
-        'Register a new password and regain access to your account on our platform.',
-    },
-  };
-
-  const t = content[language];
-
-  return {
-    title: t.title,
-    description: t.description,
-    robots: {
-      index: false,
-      follow: false,
-      googleBot: {
-        index: false,
-        follow: false,
-      },
-    },
-    openGraph: {
-      title: t.title,
-      description: t.description,
-      type: 'website',
-      locale: language === 'pt' ? 'pt_BR' : 'en_US',
-      siteName: 'Opus Atlas',
-    },
-    twitter: {
-      card: 'summary',
-      title: t.title,
-      description: t.description,
-    },
-    alternates: {
-      canonical: `https://opusatlas.com.br/decline-teacher-invite/${resolvedParams.token}`,
-    },
-  };
-}
-
-export default async function DeclineTeacherInvitePage() {
-  const language = await getServerLanguageStatic();
-  const { translations } = await loadPageTranslationsWithCommon(language, [
-    'pages/reset-password',
-  ]);
-
-  return (
-    <TranslationProvider language={language} translations={translations}>
-      <ResetPasswordPageClient />
-    </TranslationProvider>
-  );
+export default function Page() {
+  return <ResetPasswordView />;
 }

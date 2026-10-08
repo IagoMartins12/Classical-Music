@@ -37,6 +37,7 @@ export interface User {
   favoriteEpochId?: string | null;
   experienceLevel?: 'BEGINNER' | 'INTERMEDIATE' | 'ADVANCED' | null;
   practiceTimePerWeek?: number | null;
+  studyHorizon?: 'MONTHS' | 'YEAR' | 'YEARS' | 'LIFE' | null;
   profilePublic: boolean;
   showLocation: boolean;
   isTeacher?: boolean | null;
