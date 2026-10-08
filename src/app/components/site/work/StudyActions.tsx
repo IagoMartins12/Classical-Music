@@ -1,20 +1,14 @@
 'use client';
 
-import dynamic from 'next/dynamic';
 import { useEffect, useState } from 'react';
 import { PiBookmarkSimple, PiCheckCircle } from 'react-icons/pi';
 import { Button } from '@/app/components/ui/Button';
 import { Icon } from '@/app/components/ui/Icon';
 import { WORK } from '@/app/conteudo/site/work';
 import { useRouteLanguage } from '@/app/hooks/useRouteLanguage';
-import { useLearningModalStore } from '@/app/stores/useLearningModalStore';
 import { useLearningStore } from '@/app/stores/useLearningStore';
+import { LearningModalHost } from '../LearningModalHost';
 import { useStudy, type StudyContext } from './useStudy';
-
-/** The study modal loads only once someone opens it. */
-const LearningModal = dynamic(() => import('@/app/components/LearningModal'), {
-  ssr: false,
-});
 
 const badge =
   'inline-flex min-h-[var(--alvo)] items-center gap-2 rounded-controle tint-ouro px-4 text-ouro-na-tinta';
@@ -32,13 +26,6 @@ export function StudyActions({ context }: { context: StudyContext }) {
   const learned = useLearningStore(
     (s) => mounted && s.isLearned(context.workId)
   );
-  const modalActive = useLearningModalStore(
-    (s) => s.isOpen || s.isInSelectionMode
-  );
-  const [modalUsed, setModalUsed] = useState(false);
-  useEffect(() => {
-    if (modalActive) setModalUsed(true);
-  }, [modalActive]);
 
   return (
     <>
@@ -73,7 +60,7 @@ export function StudyActions({ context }: { context: StudyContext }) {
           </Button>
         </div>
       )}
-      {modalUsed && <LearningModal />}
+      <LearningModalHost />
     </>
   );
 }

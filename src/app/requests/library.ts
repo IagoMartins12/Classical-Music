@@ -58,6 +58,12 @@ export function listWorkFavorites() {
   );
 }
 
+export function listScoreFavorites() {
+  return toResult(
+    apiFetch<{ favorites: FavoriteScore[]; count: number }>('/favorites/scores')
+  );
+}
+
 export function toggleComposerFavoriteRequest(
   composerId: string,
   action: AddOrRemove

@@ -5,11 +5,17 @@
 // não podem ser cacheadas e por isso não entraram em `app/[lang]/(main)/`.
 // A casca é a mesma — ver `components/MainShell`.
 import MainShell from '../components/MainShell';
+import { CookieLanguageProvider } from '../hooks/useRouteLanguage';
+import { getServerLanguageStatic } from '../utils/translations/serverTranslations';
 
-export default function MainLayout({
+export default async function MainLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
-  return <MainShell>{children}</MainShell>;
+  return (
+    <CookieLanguageProvider language={await getServerLanguageStatic()}>
+      <MainShell>{children}</MainShell>
+    </CookieLanguageProvider>
+  );
 }
