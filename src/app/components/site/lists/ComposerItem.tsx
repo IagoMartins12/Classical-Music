@@ -37,7 +37,7 @@ export function ComposerItem({
     <li className="relative">
       <Link
         href={`/composer/${composer.id}`}
-        data-vira={`composer-${composer.id}`}
+        data-vira={`compositor-${composer.id}`}
         className="group flex flex-col gap-3 row:flex-row row:items-center row:gap-4 row:py-3 row:pr-12"
       >
         <Portrait

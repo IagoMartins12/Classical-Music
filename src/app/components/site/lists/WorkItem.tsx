@@ -39,7 +39,7 @@ export function WorkItem({
     <li className="relative">
       <Link
         href={`/works/${work.id}`}
-        data-vira={`work-${work.id}`}
+        data-vira={`obra-${work.id}`}
         className="group flex h-full flex-col gap-1.5 rounded-card bg-sup-2 p-5 pr-12 row:flex-row row:items-center row:gap-4 row:rounded-none row:bg-transparent! row:bg-none! row:px-0 row:py-4"
       >
         <Portrait

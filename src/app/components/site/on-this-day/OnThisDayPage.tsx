@@ -19,6 +19,7 @@ import {
 } from '@/app/requests/on-this-day';
 import { FavoriteHeart } from '../FavoriteHeart';
 import { Portrait } from '../Portrait';
+import { DayPicker } from './DayPicker';
 
 /**
  * One calendar day: who was born (portrait cards; a swipeable row on phones)
@@ -54,7 +55,8 @@ export async function OnThisDayPage({
             {copy.text}
           </p>
         </div>
-        <nav aria-label={copy.otherDays} className="flex gap-2">
+        <nav aria-label={copy.otherDays} className="flex flex-wrap gap-2">
+          <DayPicker current={date} language={language} />
           <Link
             href={`/on-this-day/${daySlug(prev)}`}
             rel="prev"

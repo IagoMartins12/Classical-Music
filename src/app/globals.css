@@ -2292,6 +2292,10 @@ html {
     stroke-dasharray: 1;
     stroke-dashoffset: 0;
   }
+  /* The biography quill rests beside the written sheet without motion. */
+  .bio-pen {
+    transform: translate(150px, 40px);
+  }
   /* The celestial globe behind the mobile hero: brighter on cream, where
      thin gold lines would otherwise vanish. */
   .hero-globe {
@@ -2354,15 +2358,27 @@ html {
     animation: popover-open 220ms var(--saida) both;
   }
   /* A biography being written: lines appear one by one, the quill bobs. */
-  .bio-line {
+  .bio-l0,
+  .bio-l1,
+  .bio-l2,
+  .bio-l3 {
     stroke-dasharray: 1;
-    animation: bio-write 4s var(--saida) infinite both;
-    animation-delay: calc(var(--i, 0) * 500ms);
+    animation: 6s linear infinite both;
   }
-  .bio-quill {
-    transform-box: fill-box;
-    transform-origin: bottom left;
-    animation: bio-quill 1s ease-in-out infinite alternate;
+  .bio-l0 {
+    animation-name: bio-l0;
+  }
+  .bio-l1 {
+    animation-name: bio-l1;
+  }
+  .bio-l2 {
+    animation-name: bio-l2;
+  }
+  .bio-l3 {
+    animation-name: bio-l3;
+  }
+  .bio-pen {
+    animation: bio-pen 6s ease-in-out infinite both;
   }
   .bio-blot {
     transform-box: fill-box;
@@ -2400,12 +2416,16 @@ html {
     transform: translateY(-4px) scaleY(0.98);
   }
 }
-@keyframes bio-write {
+@keyframes bio-l0 {
   0% {
     stroke-dashoffset: 1;
+    opacity: 0;
   }
-  20%,
-  85% {
+  1% {
+    opacity: 1;
+  }
+  18%,
+  90% {
     stroke-dashoffset: 0;
     opacity: 1;
   }
@@ -2414,9 +2434,97 @@ html {
     opacity: 0;
   }
 }
-@keyframes bio-quill {
-  to {
-    transform: translate(-6px, 4px) rotate(-6deg);
+@keyframes bio-l1 {
+  0%,
+  20% {
+    stroke-dashoffset: 1;
+    opacity: 0;
+  }
+  21% {
+    opacity: 1;
+  }
+  38%,
+  90% {
+    stroke-dashoffset: 0;
+    opacity: 1;
+  }
+  100% {
+    stroke-dashoffset: 0;
+    opacity: 0;
+  }
+}
+@keyframes bio-l2 {
+  0%,
+  40% {
+    stroke-dashoffset: 1;
+    opacity: 0;
+  }
+  41% {
+    opacity: 1;
+  }
+  58%,
+  90% {
+    stroke-dashoffset: 0;
+    opacity: 1;
+  }
+  100% {
+    stroke-dashoffset: 0;
+    opacity: 0;
+  }
+}
+@keyframes bio-l3 {
+  0%,
+  60% {
+    stroke-dashoffset: 1;
+    opacity: 0;
+  }
+  61% {
+    opacity: 1;
+  }
+  78%,
+  90% {
+    stroke-dashoffset: 0;
+    opacity: 1;
+  }
+  100% {
+    stroke-dashoffset: 0;
+    opacity: 0;
+  }
+}
+@keyframes bio-pen {
+  0% {
+    transform: translate(64px, 52px);
+  }
+  0% {
+    transform: translate(64px, 52px);
+  }
+  18% {
+    transform: translate(136px, 52px);
+  }
+  20% {
+    transform: translate(64px, 70px);
+  }
+  38% {
+    transform: translate(136px, 70px);
+  }
+  40% {
+    transform: translate(64px, 88px);
+  }
+  58% {
+    transform: translate(136px, 88px);
+  }
+  60% {
+    transform: translate(64px, 106px);
+  }
+  78% {
+    transform: translate(112px, 106px);
+  }
+  86%,
+  94% {
+    transform: translate(150px, 40px);
+  }
+  100% {
+    transform: translate(64px, 52px);
   }
 }
 @keyframes bio-blot {

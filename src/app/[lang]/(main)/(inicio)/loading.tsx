@@ -1,14 +1,8 @@
-// No grupo `(inicio)`, e não na raiz de `(main)`: lá ele valeria para as
-// páginas de detalhe também — ver `../README-loading.md`.
-import {
-  EsqueletoInicio,
-  EsqueletoPagina,
-} from '@/app/components/ui/Carregando';
+import { HomeSkeleton } from '@/app/components/site/skeletons';
+import { LOADING } from '@/app/conteudo/site/loading';
 
-export default function Carregando() {
-  return (
-    <EsqueletoPagina rotulo="Carregando a página inicial">
-      <EsqueletoInicio />
-    </EsqueletoPagina>
-  );
+// The language is not known here (a loading file gets no params), so the
+// screen-reader label is bilingual.
+export default function Loading() {
+  return <HomeSkeleton label={LOADING.home} />;
 }

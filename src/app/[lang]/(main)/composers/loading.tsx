@@ -1,16 +1,8 @@
-import {
-  EsqueletoBusca,
-  EsqueletoCabecalho,
-  EsqueletoCompositores,
-  EsqueletoPagina,
-} from '@/app/components/ui/Carregando';
+import { ComposersSkeleton } from '@/app/components/site/skeletons';
+import { LOADING } from '@/app/conteudo/site/loading';
 
-export default function Carregando() {
-  return (
-    <EsqueletoPagina rotulo="Carregando compositores">
-      <EsqueletoCabecalho />
-      <EsqueletoBusca seletores={1} />
-      <EsqueletoCompositores quantos={8} />
-    </EsqueletoPagina>
-  );
+// The language is not known here (a loading file gets no params), so the
+// screen-reader label is bilingual.
+export default function Loading() {
+  return <ComposersSkeleton label={LOADING.composers} />;
 }

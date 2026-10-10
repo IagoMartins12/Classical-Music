@@ -1,3 +1,4 @@
+import { nomeDeTransicao } from '@/app/components/ui/nomeDeTransicao';
 import Link from '@/app/components/LocalizedLink';
 import { SeloVerificada } from '@/app/components/ui/SeloVerificada';
 import type { Idioma } from '@/app/conteudo/legal/tipos';
@@ -89,7 +90,11 @@ export function WorkPage({
         )}
       </nav>
 
-      <header className="grid grid-cols-1 gap-8 lg:grid-cols-[minmax(0,7fr)_minmax(0,5fr)] lg:items-end">
+      {/* The card clicked in a list turns into this header (CartoesQueViram). */}
+      <header
+        className="grid grid-cols-1 gap-8 lg:grid-cols-[minmax(0,7fr)_minmax(0,5fr)] lg:items-end"
+        style={nomeDeTransicao(`obra-${work.id}`, 'cartao')}
+      >
         <div className="flex flex-col gap-5">
           <h1 className="font-display text-[clamp(2.5rem,6.5vw,5.25rem)] leading-[0.98] tracking-[-0.02em] [overflow-wrap:anywhere]">
             {title}

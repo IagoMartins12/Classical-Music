@@ -1,3 +1,4 @@
+import { nomeDeTransicao } from '@/app/components/ui/nomeDeTransicao';
 import { PiArrowSquareOut } from 'react-icons/pi';
 import Link from '@/app/components/LocalizedLink';
 import { Icon } from '@/app/components/ui/Icon';
@@ -113,7 +114,11 @@ export function ComposerPage({
 
       <div className="grid grid-cols-1 gap-10 md:grid-cols-[minmax(0,5fr)_minmax(0,7fr)] lg:gap-16">
         <aside className="flex flex-col gap-6 md:sticky md:top-24 md:self-start">
-          <div className="relative">
+          {/* The card clicked in a list turns into this portrait (CartoesQueViram). */}
+          <div
+            className="relative"
+            style={nomeDeTransicao(`compositor-${composer.id}`, 'cartao')}
+          >
             <Portrait
               name={fullName}
               src={composer.portraitUrl}

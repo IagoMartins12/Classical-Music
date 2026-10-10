@@ -12,6 +12,10 @@ const pt = {
   diedIn: (year: number) => `Morreu em ${year}`,
   aged: (n: number) => `aos ${n} anos`,
   otherDays: 'Outros dias',
+  pick: 'Escolher um dia',
+  prevMonth: 'Mês anterior',
+  nextMonth: 'Próximo mês',
+  goToday: 'Ir para hoje',
   nobodyBorn:
     'Nenhum compositor do acervo nasceu neste dia, que a gente saiba.',
   nobodyDied:
@@ -35,6 +39,10 @@ const en: typeof pt = {
   diedIn: (year: number) => `Died in ${year}`,
   aged: (n: number) => `aged ${n}`,
   otherDays: 'Other days',
+  pick: 'Pick a day',
+  prevMonth: 'Previous month',
+  nextMonth: 'Next month',
+  goToday: 'Go to today',
   nobodyBorn:
     'No composer in the archive was born on this day, as far as we know.',
   nobodyDied: 'No composer in the archive died on this day, as far as we know.',
@@ -67,6 +75,9 @@ export function today(now = new Date()): CalendarDay {
     Number(parts.find((p) => p.type === type)?.value);
   return { month: get('month'), day: get('day') };
 }
+
+/** Days in a month, counting 29 February: the calendar has no year. */
+export const daysInMonth = (month: number) => DAYS_IN_MONTH[month - 1];
 
 /** "10-08" in the URL. */
 export const daySlug = ({ month, day }: CalendarDay) =>
