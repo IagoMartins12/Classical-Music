@@ -34,7 +34,6 @@ const pt = {
       detail: 'Vidas, obras e épocas',
     },
     works: { label: 'Obras', detail: 'Com a partitura para baixar' },
-    genres: { label: 'Gêneros', detail: 'Noturno, sonata, fuga…' },
     history: {
       label: 'História da música',
       detail: 'As épocas, em ordem',
@@ -59,6 +58,7 @@ const pt = {
     label: 'Buscar no Opus Atlas',
     placeholder: 'Buscar compositor, obra, artigo',
     open: 'Abrir a busca',
+    shortcut: 'Ctrl K',
     title: 'Buscar',
     hint: 'Digite ao menos duas letras',
     searching: 'Buscando…',
@@ -95,7 +95,6 @@ const en: typeof pt = {
   explorePaths: {
     composers: { label: 'Composers', detail: 'Lives, works and eras' },
     works: { label: 'Works', detail: 'With the score to download' },
-    genres: { label: 'Genres', detail: 'Nocturne, sonata, fugue…' },
     history: { label: 'History of music', detail: 'The eras, in order' },
     instruments: {
       label: 'Instruments',
@@ -117,6 +116,7 @@ const en: typeof pt = {
     label: 'Search Opus Atlas',
     placeholder: 'Search composer, work, article',
     open: 'Open search',
+    shortcut: 'Ctrl K',
     title: 'Search',
     hint: 'Type at least two letters',
     searching: 'Searching…',

@@ -218,6 +218,7 @@ export function ComposerPage({
       <WatchAndCuriosities
         videoId={youtubeId(composer.videoUrl)}
         title={fullName}
+        name={composer.name || fullName}
         curiosities={curiosities}
         copy={copy}
       />

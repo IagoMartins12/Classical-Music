@@ -37,7 +37,6 @@ export const LOCALIZED_ROUTES = [
   '/copyright',
   '/difficulty',
   '/faq',
-  '/genres',
   '/help',
   '/instruments',
   '/music-history',

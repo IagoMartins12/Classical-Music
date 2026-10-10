@@ -1,11 +1,12 @@
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { PiList, PiMagnifyingGlass } from 'react-icons/pi';
 import { LanguageToggle } from '@/app/components/LanguageToggle';
 import Link from '@/app/components/LocalizedLink';
 import { ThemeToggle } from '@/app/components/ThemeToggle';
 import { Button } from '@/app/components/ui/Button';
+import { Icon } from '@/app/components/ui/Icon';
 import { Sheet } from '@/app/components/ui/Sheet';
 import { HEADER } from '@/app/conteudo/site/header';
 import { useAuth } from '@/app/hooks/useAuth';
@@ -53,6 +54,18 @@ export function SiteHeader() {
   const [menuOpen, setMenuOpen] = useState(false);
   const [searchOpen, setSearchOpen] = useState(false);
 
+  // Ctrl K / ⌘K opens the search, as on the blog.
+  useEffect(() => {
+    const shortcut = (event: KeyboardEvent) => {
+      if ((event.ctrlKey || event.metaKey) && event.key.toLowerCase() === 'k') {
+        event.preventDefault();
+        setSearchOpen(true);
+      }
+    };
+    document.addEventListener('keydown', shortcut);
+    return () => document.removeEventListener('keydown', shortcut);
+  }, []);
+
   const signedUser = isAuthenticated && user ? user : null;
   const languageToggle = (
     <LanguageToggle
@@ -85,9 +98,21 @@ export function SiteHeader() {
 
         <div className="ml-auto flex flex-1 items-center justify-end gap-1.5 lg:gap-2">
           {!pageHasSearch(path) && (
-            <div className="w-full max-w-sm max-lg:hidden">
-              <HeaderSearch copy={copy.search} language={language} />
-            </div>
+            <button
+              type="button"
+              onClick={() => setSearchOpen(true)}
+              aria-haspopup="dialog"
+              aria-keyshortcuts="Control+K Meta+K"
+              className="search-field sup-1 flex min-h-11 w-full max-w-sm items-center gap-3 !rounded-full px-4 text-[0.9375rem] text-texto-fraco transition-colors duration-[var(--t-toque)] hover:text-texto-suave max-lg:hidden"
+            >
+              <Icon de={PiMagnifyingGlass} />
+              <span className="flex-1 truncate text-left">
+                {copy.search.placeholder}
+              </span>
+              <kbd className="t-dado rounded-[6px] bg-[var(--fundo)] px-1.5 py-0.5 text-[0.75rem] text-texto-fraco">
+                {copy.search.shortcut}
+              </kbd>
+            </button>
           )}
           <Button
             variante="fantasma"
@@ -159,7 +184,6 @@ export function SiteHeader() {
           <HeaderSearch
             copy={copy.search}
             language={language}
-            variant="sheet"
             autoFocus
             onNavigate={() => setSearchOpen(false)}
           />

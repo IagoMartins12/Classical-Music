@@ -21,7 +21,6 @@ export const SEARCH_HREF = '/search';
 export const EXPLORE_PATHS = [
   { key: 'composers', href: '/composers' },
   { key: 'works', href: '/works' },
-  { key: 'genres', href: '/genres' },
   { key: 'history', href: '/music-history' },
   { key: 'instruments', href: '/instruments' },
 ] as const satisfies readonly {

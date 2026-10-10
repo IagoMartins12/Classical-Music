@@ -6,6 +6,7 @@
 // às 23h com o trecho em que você atende. Embaixo, o total da semana.
 
 import { Chip } from '@/app/components/ui/Badge';
+import { Selecao } from '@/app/components/ui/Selecao';
 import { cx } from '@/app/components/ui/cx';
 import { duration } from '../format';
 
@@ -194,31 +195,31 @@ export function WeekHoursEditor({
 
               {day.on ? (
                 <span className="flex items-center gap-1.5 text-sm">
-                  <select
-                    aria-label={`${WEEKDAYS[d]}, das`}
-                    value={day.from}
-                    onChange={(e) => set(d, { from: e.target.value })}
-                    className="input-classical t-dado w-[5.5rem] py-1.5"
-                  >
-                    {timesWith(day.from).map((t) => (
-                      <option key={t} value={t}>
-                        {spoken(t)}
-                      </option>
-                    ))}
-                  </select>
+                  <span className="w-[6.5rem]">
+                    <Selecao
+                      aria-label={`${WEEKDAYS[d]}, das`}
+                      className="t-dado py-1.5!"
+                      opcoes={timesWith(day.from).map((t) => ({
+                        value: t,
+                        label: spoken(t),
+                      }))}
+                      valor={day.from}
+                      aoMudar={(v) => set(d, { from: v })}
+                    />
+                  </span>
                   <span className="text-texto-fraco">às</span>
-                  <select
-                    aria-label={`${WEEKDAYS[d]}, até`}
-                    value={day.to}
-                    onChange={(e) => set(d, { to: e.target.value })}
-                    className="input-classical t-dado w-[5.5rem] py-1.5"
-                  >
-                    {timesWith(day.to).map((t) => (
-                      <option key={t} value={t}>
-                        {spoken(t)}
-                      </option>
-                    ))}
-                  </select>
+                  <span className="w-[6.5rem]">
+                    <Selecao
+                      aria-label={`${WEEKDAYS[d]}, até`}
+                      className="t-dado py-1.5!"
+                      opcoes={timesWith(day.to).map((t) => ({
+                        value: t,
+                        label: spoken(t),
+                      }))}
+                      valor={day.to}
+                      aoMudar={(v) => set(d, { to: v })}
+                    />
+                  </span>
                 </span>
               ) : (
                 <span className="text-sm text-texto-fraco">Não atende</span>

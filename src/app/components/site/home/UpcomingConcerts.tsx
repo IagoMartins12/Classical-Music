@@ -1,5 +1,9 @@
-import Link from 'next/link';
-import { Revelar } from '@/app/components/ui/Revelar';
+'use client';
+
+import {
+  BotaoDoEvento,
+  ProvedorDeEventos,
+} from '@/app/components/blog/site/DetalheDoEvento';
 import type { Idioma } from '@/app/conteudo/legal/tipos';
 import type { HomeCopy } from '@/app/conteudo/site/home';
 import type { CalendarEventData } from '@/app/requests/calendar-requests';
@@ -7,7 +11,10 @@ import { rotasDoBlog } from '@/app/utils/blog/rotas';
 import { diaDoMes, horaDoEvento, mesCurto } from '@/app/utils/blog/formatos';
 import { SectionHeading } from '../SectionHeading';
 
-/** The next concerts from the blog calendar, as date-led rows. */
+/**
+ * The next concerts, beside the curiosities: date-led rows. A row opens the
+ * event's details in the same sheet as the blog's calendar.
+ */
 export function UpcomingConcerts({
   copy,
   language,
@@ -17,20 +24,18 @@ export function UpcomingConcerts({
   language: Idioma;
   events: CalendarEventData[];
 }) {
-  if (!events.length) return null;
-  const agenda = rotasDoBlog.agenda(language);
   return (
-    <Revelar as="section" className="section-wrap flex flex-col gap-6 py-12">
-      <SectionHeading
-        title={copy.title}
-        action={{ label: copy.agenda, href: agenda }}
-      />
-      <ul className="grid grid-cols-1 gap-3 md:grid-cols-2">
-        {events.map((event) => (
-          <li key={event.id}>
-            <Link
-              href={agenda}
-              className="group flex h-full items-center gap-5 rounded-card bg-sup-2 p-4"
+    <ProvedorDeEventos idioma={language}>
+      <div className="flex flex-col gap-6">
+        <SectionHeading
+          title={copy.title}
+          action={{ label: copy.agenda, href: rotasDoBlog.agenda(language) }}
+        />
+        <ul className="flex flex-col gap-3">
+          {events.map((event) => (
+            <li
+              key={event.id}
+              className="group relative flex items-center gap-5 rounded-card bg-sup-2 p-4"
             >
               <span className="flex w-14 shrink-0 flex-col items-center">
                 <span className="font-display text-[2.25rem] leading-none text-ouro-texto">
@@ -41,9 +46,12 @@ export function UpcomingConcerts({
                 </span>
               </span>
               <span className="flex min-w-0 flex-col gap-0.5">
-                <span className="font-medium leading-snug group-hover:text-ouro-texto">
+                <BotaoDoEvento
+                  evento={event}
+                  className="font-medium leading-snug group-hover:text-ouro-texto"
+                >
                   {event.title}
-                </span>
+                </BotaoDoEvento>
                 <span className="t-rotulo text-texto-suave">
                   {[
                     event.venue.name,
@@ -60,10 +68,10 @@ export function UpcomingConcerts({
                     .join(' · ')}
                 </span>
               </span>
-            </Link>
-          </li>
-        ))}
-      </ul>
-    </Revelar>
+            </li>
+          ))}
+        </ul>
+      </div>
+    </ProvedorDeEventos>
   );
 }

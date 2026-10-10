@@ -1,8 +1,7 @@
 'use client';
 
 import { useCallback } from 'react';
-import { useAuth } from '@/app/hooks/useAuth';
-import { useLoginModal } from '@/app/stores/authStore';
+import { useSignInGate } from '@/app/hooks/useSignInGate';
 import {
   useLearningModalStore,
   type LearningType,
@@ -20,18 +19,17 @@ export interface StudyContext {
 
 /** Opens the study modal ("want to study" / "learned"), optionally with a score. */
 export function useStudy(context: StudyContext) {
-  const { isAuthenticated } = useAuth();
-  const { open: openLogin } = useLoginModal();
+  const allowed = useSignInGate();
   const openModal = useLearningModalStore((s) => s.openModal);
   return useCallback(
     (type: LearningType, score?: ScoreFile) => {
-      if (!isAuthenticated) return openLogin();
+      if (!allowed('study')) return;
       openModal({
         ...context,
         type,
         initialWorkScore: score ? toSelectedScore(score) : undefined,
       });
     },
-    [isAuthenticated, openLogin, openModal, context]
+    [allowed, openModal, context]
   );
 }

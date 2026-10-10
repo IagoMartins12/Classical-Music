@@ -49,6 +49,7 @@ const VAZIO: EventFormValues = {
   isFeatured: false,
   featuredOrder: '',
   featuredSize: 'normal',
+  showOnMainHome: false,
 };
 
 const ESTADOS = [
@@ -392,6 +393,12 @@ export default function CreateEventModal({
                   </fieldset>
                 </div>
               )}
+              <Interruptor
+                rotulo="Mostrar na home do site"
+                ajuda="No mês do evento, ele aparece nos próximos concertos da home antes dos outros. Depois que passa, sai sozinho."
+                ligado={valores.showOnMainHome}
+                aoMudar={(v) => mudar('showOnMainHome', v)}
+              />
               {valores.isFeatured && !valores.imageUrl && (
                 <p className="t-legenda">
                   Sem imagem, o destaque usa a capa de reserva. Com imagem ele

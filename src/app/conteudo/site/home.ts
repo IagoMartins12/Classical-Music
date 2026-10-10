@@ -43,11 +43,9 @@ const pt = {
     free: 'Entrada gratuita',
   },
   facts: {
-    title: 'Curiosidades Musicais',
-    subtitle:
-      'Fatos fascinantes e histórias interessantes do mundo da música clássica',
-    filter: 'Filtrar por período:',
-    all: 'Todos os Períodos',
+    title: 'Curiosidades musicais',
+    filter: 'Filtrar por período',
+    all: 'Todos os períodos',
     shuffle: 'Embaralhar',
   },
   discover: {
@@ -119,10 +117,9 @@ const en: typeof pt = {
     free: 'Free entry',
   },
   facts: {
-    title: 'Musical Curiosities',
-    subtitle: 'Fascinating facts and stories from the world of classical music',
-    filter: 'Filter by era:',
-    all: 'All Eras',
+    title: 'Musical curiosities',
+    filter: 'Filter by era',
+    all: 'All eras',
     shuffle: 'Shuffle',
   },
   discover: {

@@ -6,6 +6,9 @@ import { MusicalFacts } from '@/app/components/site/home/MusicalFacts';
 import { PlansCallout } from '@/app/components/site/home/PlansCallout';
 import { PopularComposers } from '@/app/components/site/home/PopularComposers';
 import { UpcomingConcerts } from '@/app/components/site/home/UpcomingConcerts';
+import { homeConcerts } from '@/app/components/site/home/homeConcerts';
+import { Revelar } from '@/app/components/ui/Revelar';
+import { cx } from '@/app/components/ui/cx';
 import { workTitle } from '@/app/components/site/workTitle';
 import { HOME } from '@/app/conteudo/site/home';
 import { loadCalendar } from '@/app/requests/calendar-requests';
@@ -32,11 +35,7 @@ async function upcomingConcerts() {
   end.setUTCDate(end.getUTCDate() + CONCERT_WINDOW_DAYS);
   try {
     const { events } = await loadCalendar(start, end);
-    const now = Date.now();
-    return events
-      .filter((event) => event.end.getTime() >= now)
-      .sort((a, b) => a.start.getTime() - b.start.getTime())
-      .slice(0, CONCERTS_SHOWN);
+    return homeConcerts(events, new Date(), CONCERTS_SHOWN);
   } catch {
     return [];
   }
@@ -84,12 +83,22 @@ export default async function HomePage({ language }: { language: Language }) {
         />
       )}
       <ErasCarousel copy={copy.eras} language={language} />
-      <UpcomingConcerts
-        copy={copy.concerts}
-        language={language}
-        events={concerts}
-      />
-      <MusicalFacts copy={copy.facts} language={language} initial={facts} />
+      <Revelar
+        as="section"
+        className={cx(
+          'section-wrap grid grid-cols-1 gap-12 py-12',
+          concerts.length > 0 && 'lg:grid-cols-[minmax(0,1fr)_24rem]'
+        )}
+      >
+        <MusicalFacts copy={copy.facts} language={language} initial={facts} />
+        {concerts.length > 0 && (
+          <UpcomingConcerts
+            copy={copy.concerts}
+            language={language}
+            events={concerts}
+          />
+        )}
+      </Revelar>
       <DiscoverSection
         copy={copy.discover}
         language={language}

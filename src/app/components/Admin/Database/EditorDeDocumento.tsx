@@ -1,5 +1,6 @@
 'use client';
 
+import { Selecao } from '@/app/components/ui/Selecao';
 import { useEffect, useMemo, useState } from 'react';
 import toast from 'react-hot-toast';
 import { PiArrowRight, PiLock } from 'react-icons/pi';
@@ -493,19 +494,15 @@ function Campo({
     );
   } else if (f.kind === 'enum' && !f.isList && f.enumValues?.length) {
     controle = (
-      <select
+      <Selecao
         id={id}
-        value={valor}
-        onChange={(e) => aoMudar(e.target.value)}
-        className="input-classical w-full pl-4"
-      >
-        {!f.isRequired && <option value="">(vazio)</option>}
-        {f.enumValues.map((v) => (
-          <option key={v} value={v}>
-            {v}
-          </option>
-        ))}
-      </select>
+        opcoes={[
+          ...(f.isRequired ? [] : [{ value: '', label: '(vazio)' }]),
+          ...f.enumValues.map((v) => ({ value: v, label: v })),
+        ]}
+        valor={valor}
+        aoMudar={aoMudar}
+      />
     );
   } else if (usaJson(f) || TEXTO_LONGO.test(f.name) || valor.length > 80) {
     controle = (

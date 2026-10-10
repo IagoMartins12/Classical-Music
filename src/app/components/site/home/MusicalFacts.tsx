@@ -1,12 +1,12 @@
 'use client';
 
 import { useState } from 'react';
-import { PiArrowsClockwise, PiBookOpen, PiFunnel } from 'react-icons/pi';
+import { PiArrowsClockwise, PiFunnel } from 'react-icons/pi';
 import { Button } from '@/app/components/ui/Button';
-import { Icon } from '@/app/components/ui/Icon';
-import { Revelar } from '@/app/components/ui/Revelar';
+import { Selecao } from '@/app/components/ui/Selecao';
 import type { Idioma } from '@/app/conteudo/legal/tipos';
 import type { HomeCopy } from '@/app/conteudo/site/home';
+import { SectionHeading } from '../SectionHeading';
 
 export interface MusicalFact {
   id: string;
@@ -35,8 +35,8 @@ const shuffle = <T,>(items: readonly T[]) =>
   [...items].sort(() => Math.random() - 0.5);
 
 /**
- * "Curiosidades Musicais", as on today's home: title, the era filter,
- * shuffle and four facts, two per row. The first four come from the server;
+ * "Curiosidades musicais": the era filter, shuffle and four facts, two per
+ * row. The first four come from the server;
  * the full list (a few hundred facts) loads only when someone filters or
  * shuffles.
  */
@@ -67,38 +67,28 @@ export function MusicalFacts({
   if (!facts.length) return null;
 
   return (
-    <Revelar as="section" className="section-wrap flex flex-col gap-8 py-12">
-      <div className="flex items-start gap-4">
-        <span className="grid h-12 w-12 shrink-0 place-items-center rounded-card bg-sup-2 text-ouro-texto">
-          <Icon de={PiBookOpen} tamanho="m" />
-        </span>
-        <div className="flex flex-col gap-1">
-          <h2 className="t-titulo max-sm:!text-[1.75rem]">{copy.title}</h2>
-          <p className="t-corpo text-texto-suave">{copy.subtitle}</p>
-        </div>
-      </div>
-      <div className="flex flex-col items-start justify-between gap-4 sm:flex-row sm:items-center">
-        <label className="flex items-center gap-3">
-          <span className="inline-flex items-center gap-2 t-rotulo text-texto-suave">
-            <Icon de={PiFunnel} tamanho="p" /> {copy.filter}
-          </span>
-          <select
-            value={category}
+    <div className="flex flex-col gap-6">
+      <SectionHeading title={copy.title} />
+      <div className="flex flex-wrap items-center justify-between gap-3">
+        <div className="w-56 max-sm:w-full">
+          <Selecao
+            aria-label={copy.filter}
+            icone={PiFunnel}
             disabled={busy}
-            onChange={(event) => {
-              setCategory(event.target.value);
-              void draw(event.target.value);
+            opcoes={[
+              { value: 'all', label: copy.all },
+              ...CATEGORIES.map((c) => ({
+                value: c,
+                label: label(c, language),
+              })),
+            ]}
+            valor={category}
+            aoMudar={(next) => {
+              setCategory(next);
+              void draw(next);
             }}
-            className="input-classical min-h-10 min-w-[150px] rounded-controle px-3 text-[0.9375rem]"
-          >
-            <option value="all">{copy.all}</option>
-            {CATEGORIES.map((c) => (
-              <option key={c} value={c}>
-                {label(c, language)}
-              </option>
-            ))}
-          </select>
-        </label>
+          />
+        </div>
         <Button
           icone={PiArrowsClockwise}
           disabled={busy}
@@ -123,6 +113,6 @@ export function MusicalFacts({
           </li>
         ))}
       </ul>
-    </Revelar>
+    </div>
   );
 }

@@ -5,6 +5,7 @@ import { PiMagnifyingGlass } from 'react-icons/pi';
 import Link from '@/app/components/LocalizedLink';
 import { Button } from '@/app/components/ui/Button';
 import { Icon } from '@/app/components/ui/Icon';
+import { Selecao } from '@/app/components/ui/Selecao';
 import {
   COMPOSER,
   LEVEL_VALUES,
@@ -41,7 +42,8 @@ const toResult = (response: ComposerWorksResponse): Result => ({
   hasMore: response.hasMore,
 });
 
-const select = 'input-classical min-h-10 rounded-full px-4 text-[0.9375rem]';
+/** The filters sit in a row of pills: same height and shape. */
+const select = 'min-h-10! rounded-full! py-0! text-[0.9375rem]';
 
 /**
  * The composer's works with genre, instrument, level and text filters. Every
@@ -181,37 +183,37 @@ export function ComposerCatalog({
           />
         </label>
         {options.instruments.length > 1 && (
-          <label className="flex items-center gap-2 t-rotulo text-texto-suave">
-            <span className="sr-only">{t.instrument}</span>
-            <select
-              value={instrumentId}
-              onChange={(e) => setInstrumentId(e.target.value)}
+          <div className="w-52 max-sm:w-full">
+            <Selecao
+              aria-label={t.instrument}
               className={select}
-            >
-              <option value="">{t.anyInstrument}</option>
-              {options.instruments.map((i) => (
-                <option key={i.id} value={i.id}>
-                  {i.name}
-                </option>
-              ))}
-            </select>
-          </label>
+              opcoes={[
+                { value: '', label: t.anyInstrument },
+                ...options.instruments.map((i) => ({
+                  value: i.id,
+                  label: i.name,
+                })),
+              ]}
+              valor={instrumentId}
+              aoMudar={setInstrumentId}
+            />
+          </div>
         )}
-        <label className="flex items-center gap-2 t-rotulo text-texto-suave">
-          <span className="sr-only">{t.level}</span>
-          <select
-            value={level}
-            onChange={(e) => setLevel(e.target.value)}
+        <div className="w-44 max-sm:w-full">
+          <Selecao
+            aria-label={t.level}
             className={select}
-          >
-            <option value="">{t.anyLevel}</option>
-            {Object.entries(LEVEL_VALUES).map(([value, label]) => (
-              <option key={value} value={value}>
-                {copy.startHere.levels[label]}
-              </option>
-            ))}
-          </select>
-        </label>
+            opcoes={[
+              { value: '', label: t.anyLevel },
+              ...Object.entries(LEVEL_VALUES).map(([value, label]) => ({
+                value,
+                label: copy.startHere.levels[label],
+              })),
+            ]}
+            valor={level}
+            aoMudar={setLevel}
+          />
+        </div>
         {filtered && (
           <Button variante="texto" tamanho="p" onClick={clear}>
             {t.clear}

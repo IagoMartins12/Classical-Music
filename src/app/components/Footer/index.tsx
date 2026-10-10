@@ -11,7 +11,6 @@ import {
   PiBookOpen,
   PiCheck,
   PiEnvelopeSimple,
-  PiGlobe,
   PiHeart,
   PiInfo,
   PiInstagramLogo,
@@ -79,7 +78,6 @@ const Footer: React.FC = () => {
       href: '/instruments',
       icon: GiViolin,
     },
-    { label: t('footer_quicklinks_4__label'), href: '/genres', icon: PiGlobe },
   ];
 
   const supportLinks = [

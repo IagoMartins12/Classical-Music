@@ -1,6 +1,7 @@
 // components/Annotations/AnnotationsSection.tsx - COM TRADUÇÕES COMPLETAS
 'use client';
 
+import { useSignInGate } from '@/app/hooks/useSignInGate';
 import { useState, useEffect } from 'react';
 import {
   PiBookOpen,
@@ -29,8 +30,6 @@ import {
   AnimatedContainer,
   AnimatedItem,
 } from '../../animation/AnimatedComponents';
-import toast from 'react-hot-toast';
-import { useLoginModal } from '@/app/stores/authStore';
 import Input from '../../Common/Inputs';
 import { useTranslation } from '@/app/context/TranslationContext';
 import { Stack, Inline } from '@/app/components/ui/Layout';
@@ -50,6 +49,7 @@ export default function AnnotationsSection({
 }: AnnotationsSectionProps) {
   const { t } = useTranslation({ sections: ['pages/workId'] });
   const { isAuthenticated, user } = useAuth();
+  const allowed = useSignInGate();
   const [showCreateModal, setShowCreateModal] = useState(false);
   const [showFilters, setShowFilters] = useState(false);
   const [localSearchTerm, setLocalSearchTerm] = useState('');
@@ -59,7 +59,6 @@ export default function AnnotationsSection({
     sortBy: 'helpful',
   });
 
-  const { open } = useLoginModal();
   const {
     getWorkAnnotations,
     getAnnotationStats,
@@ -292,12 +291,7 @@ export default function AnnotationsSection({
                 variante="primario"
                 type="submit"
                 onClick={() => {
-                  if (!isAuthenticated) {
-                    toast.error(t('annotations_login_required'));
-                    open();
-                    return;
-                  }
-                  setShowCreateModal(true);
+                  if (allowed('annotate')) setShowCreateModal(true);
                 }}
                 className="hidden md:flex items-center"
               >
@@ -312,12 +306,7 @@ export default function AnnotationsSection({
                 as="button"
                 gap={2}
                 onClick={() => {
-                  if (!isAuthenticated) {
-                    toast.error(t('annotations_login_required'));
-                    open();
-                    return;
-                  }
-                  setShowCreateModal(true);
+                  if (allowed('annotate')) setShowCreateModal(true);
                 }}
                 className="btn-classical-primary w-full text-center justify-center md:hidden"
               >

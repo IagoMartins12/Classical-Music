@@ -1,5 +1,6 @@
 'use client';
 
+import { useSignInGate } from '@/app/hooks/useSignInGate';
 import { useState } from 'react';
 import { PiFlag } from 'react-icons/pi';
 import toast from 'react-hot-toast';
@@ -7,10 +8,8 @@ import { Button } from '@/app/components/ui/Button';
 import { Sheet } from '@/app/components/ui/Sheet';
 import { cx } from '@/app/components/ui/cx';
 import { COMMON } from '@/app/conteudo/site/common';
-import { useAuth } from '@/app/hooks/useAuth';
 import { useRouteLanguage } from '@/app/hooks/useRouteLanguage';
 import { reportContent } from '@/app/requests/moderation';
-import { useLoginModal } from '@/app/stores/authStore';
 
 /**
  * "Reportar", visible next to Share on the composer and work pages. Same
@@ -27,8 +26,7 @@ export function ReportButton({
   name: string;
 }) {
   const copy = COMMON[useRouteLanguage().language].report;
-  const { isAuthenticated } = useAuth();
-  const { open: openLogin } = useLoginModal();
+  const allowed = useSignInGate();
   const [open, setOpen] = useState(false);
   const [reason, setReason] = useState<string | null>(null);
   const [details, setDetails] = useState('');
@@ -62,10 +60,7 @@ export function ReportButton({
 
   return (
     <>
-      <Button
-        icone={PiFlag}
-        onClick={() => (isAuthenticated ? setOpen(true) : openLogin())}
-      >
+      <Button icone={PiFlag} onClick={() => allowed('report') && setOpen(true)}>
         {copy.action}
       </Button>
       <Sheet

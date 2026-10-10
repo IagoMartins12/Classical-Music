@@ -45,6 +45,8 @@ export interface CalendarEventData {
   isFeatured?: boolean;
   featuredOrder?: number;
   featuredSize?: 'large' | 'normal';
+  /** Picked by an admin for the main site's home. */
+  showOnMainHome?: boolean;
 }
 
 export interface CalendarFilterOptions {
@@ -89,6 +91,7 @@ interface ApiCalendarEvent {
   isFeatured?: boolean;
   featuredOrder?: number | null;
   featuredSize?: string | null;
+  showOnMainHome?: boolean;
 }
 
 interface ApiCalendar {
@@ -139,6 +142,7 @@ function toEvent(event: ApiCalendarEvent): CalendarEventData {
         : event.isFeatured
           ? 'normal'
           : undefined,
+    showOnMainHome: !!event.showOnMainHome,
   };
 }
 
@@ -219,6 +223,7 @@ export interface EventFormValues {
   isFeatured: boolean;
   featuredOrder: string;
   featuredSize: 'large' | 'normal';
+  showOnMainHome: boolean;
 }
 
 /**
@@ -254,6 +259,7 @@ export function saveEvent(values: EventFormValues, id?: string) {
     venueDetails: blankToNull(values.venueDetails),
     ticketInfo: blankToNull(values.ticketInfo),
     isFeatured: values.isFeatured,
+    showOnMainHome: values.showOnMainHome,
     ...(values.isFeatured
       ? {
           featuredOrder: values.featuredOrder
@@ -320,6 +326,7 @@ export async function loadEventForEdit(id: string): Promise<EventFormValues> {
     featuredOrder:
       typeof e.featuredOrder === 'number' ? String(e.featuredOrder) : '',
     featuredSize: e.featuredSize === 'large' ? 'large' : 'normal',
+    showOnMainHome: e.showOnMainHome === true,
   };
 }
 

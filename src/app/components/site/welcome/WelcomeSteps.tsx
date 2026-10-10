@@ -8,6 +8,7 @@ import InternationalPhoneInput from '@/app/components/Common/InternationalPhoneI
 import LocationSelector from '@/app/components/Common/LocationSelector';
 import { Field } from '@/app/components/ui/Field';
 import { Icon } from '@/app/components/ui/Icon';
+import { Selecao } from '@/app/components/ui/Selecao';
 import { cx } from '@/app/components/ui/cx';
 import { ERAS, eraOf } from '@/app/conteudo/site/eras';
 import {
@@ -217,20 +218,18 @@ export function InstrumentsStep({
               <span className="min-w-0 flex-1 font-display text-[1.25rem]">
                 {i.name}
               </span>
-              <select
-                aria-label={`${i.name}: ${copy.study.level}`}
-                value={i.level}
-                onChange={(e) =>
-                  patch(i.id, { level: e.target.value as Level })
-                }
-                className="input-classical min-h-10 rounded-full px-4 text-[0.9375rem]"
-              >
-                {LEVELS.map((l) => (
-                  <option key={l} value={l}>
-                    {copy.levels[l]}
-                  </option>
-                ))}
-              </select>
+              <div className="w-40">
+                <Selecao
+                  aria-label={`${i.name}: ${copy.study.level}`}
+                  className="min-h-10! rounded-full! py-0! text-[0.9375rem]"
+                  opcoes={LEVELS.map((l) => ({
+                    value: l,
+                    label: copy.levels[l],
+                  }))}
+                  valor={i.level}
+                  aoMudar={(level) => patch(i.id, { level: level as Level })}
+                />
+              </div>
               <label className="t-rotulo flex min-h-10 items-center gap-2">
                 <input
                   type="checkbox"

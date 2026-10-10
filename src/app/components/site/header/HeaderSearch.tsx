@@ -31,20 +31,20 @@ interface ResultItem {
 }
 
 /**
- * The header's live search (desktop bar and the mobile search sheet).
+ * The site's live search: the search sheet the header opens, and the home hero.
  * Results arrive as you type, grouped by kind; arrow keys move through them,
  * Enter opens the highlighted one or, with none, the full results page.
  */
 export function HeaderSearch({
   copy,
   language,
-  variant = 'bar',
+  variant = 'sheet',
   autoFocus = false,
   onNavigate,
 }: {
   copy: HeaderCopy['search'];
   language: RouteLanguage;
-  variant?: 'bar' | 'hero' | 'sheet';
+  variant?: 'hero' | 'sheet';
   autoFocus?: boolean;
   onNavigate?: () => void;
 }) {
@@ -145,7 +145,6 @@ export function HeaderSearch({
         className={cx(
           'search-field sup-1 flex items-center gap-3 !rounded-full',
           {
-            bar: 'min-h-11 py-1 pl-4 pr-1',
             hero: 'min-h-14 py-2 pl-6 pr-2 shadow-[var(--sombra-1)]',
             sheet: 'min-h-14 px-5',
           }[variant]

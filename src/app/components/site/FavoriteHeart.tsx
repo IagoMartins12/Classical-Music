@@ -1,5 +1,6 @@
 'use client';
 
+import { useSignInGate } from '@/app/hooks/useSignInGate';
 import { useState } from 'react';
 import { PiHeart, PiHeartFill } from 'react-icons/pi';
 import toast from 'react-hot-toast';
@@ -9,7 +10,6 @@ import { cx } from '@/app/components/ui/cx';
 import { COMMON } from '@/app/conteudo/site/common';
 import { useAuth } from '@/app/hooks/useAuth';
 import { useRouteLanguage } from '@/app/hooks/useRouteLanguage';
-import { useLoginModal } from '@/app/stores/authStore';
 import { useFavoritesStore } from '@/app/stores/useFavoritesStore';
 
 /**
@@ -53,8 +53,8 @@ export function FavoriteHeart({
   className?: string;
 }) {
   const copy = COMMON[useRouteLanguage().language].favorite;
-  const { user, isAuthenticated } = useAuth();
-  const { open: openLogin } = useLoginModal();
+  const { user } = useAuth();
+  const allowed = useSignInGate();
   const scoreKey = score && `${score.workId}-${id}-${score.source}`;
   const favorited = useFavoritesStore((s) =>
     type === 'composer'
@@ -78,8 +78,7 @@ export function FavoriteHeart({
   const onClick = async (event: React.MouseEvent) => {
     event.preventDefault();
     event.stopPropagation();
-    if (!isAuthenticated || !user?.id) return openLogin();
-    if (busy) return;
+    if (!allowed('favorite') || !user?.id || busy) return;
     try {
       const now =
         type === 'composer'

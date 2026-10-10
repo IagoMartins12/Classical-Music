@@ -3626,34 +3626,7 @@ export const getComposerCuriosities = (
     ],
   };
 
-  return (
-    curiositiesMap[composerName] || [
-      {
-        id: '1',
-        icon: '🎵',
-        text: {
-          pt: 'Um dos grandes mestres da música clássica.',
-          en: 'One of the great masters of classical music.',
-        },
-      },
-      {
-        id: '2',
-        icon: '🎼',
-        text: {
-          pt: 'Suas obras continuam inspirando músicos até hoje.',
-          en: 'His works continue to inspire musicians to this day.',
-        },
-      },
-      {
-        id: '3',
-        icon: '⭐',
-        text: {
-          pt: 'Deixou um legado duradouro na história da música.',
-          en: 'Left a lasting legacy in music history.',
-        },
-      },
-    ]
-  );
+  return curiositiesMap[composerName] ?? [];
 };
 
 export const allFamousNames = [

@@ -90,7 +90,13 @@ const nextConfig: NextConfig = withBundleAnalyzer({
       hostname,
     })),
   },
-  // REMOVER completamente a seção rewrites
+  async redirects() {
+    return [
+      // The genre index was retired: the works list filters by genre.
+      { source: '/genres', destination: '/works', permanent: true },
+      { source: '/en/genres', destination: '/en/works', permanent: true },
+    ];
+  },
   async headers() {
     return [
       // Homologação: nada é indexável. Ver `utils/indexing.ts`.

@@ -100,7 +100,6 @@ export const SOBRE: Record<Idioma, ConteudoSobre> = {
           links: [
             { rotulo: 'Compositores', href: '/composers' },
             { rotulo: 'Obras', href: '/works' },
-            { rotulo: 'Gêneros', href: '/genres' },
             { rotulo: 'Instrumentos', href: '/instruments' },
             { rotulo: 'História da música', href: '/music-history' },
           ],
@@ -251,7 +250,6 @@ export const SOBRE: Record<Idioma, ConteudoSobre> = {
           links: [
             { rotulo: 'Composers', href: '/composers' },
             { rotulo: 'Works', href: '/works' },
-            { rotulo: 'Genres', href: '/genres' },
             { rotulo: 'Instruments', href: '/instruments' },
             { rotulo: 'Music history', href: '/music-history' },
           ],
