@@ -4,6 +4,7 @@ import {
   PiChalkboardTeacher,
   PiGearSix,
   PiHeart,
+  PiMedal,
   PiNotePencil,
   PiShieldCheck,
   PiStudent,
@@ -68,6 +69,7 @@ export function accountLinks(user: HeaderUser): AccountLink[] {
     { key: 'favorites', href: '/favorites', icon: PiHeart },
     { key: 'annotations', href: '/annotations', icon: PiNotePencil },
     { key: 'uploads', href: '/upload', icon: PiUploadSimple },
+    { key: 'achievements', href: '/achievements', icon: PiMedal },
     { key: 'profile', href: '/profile', icon: PiUserCircle },
   ];
   if (role === ROLE_TEACHER) {

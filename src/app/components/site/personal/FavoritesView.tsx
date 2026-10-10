@@ -35,7 +35,7 @@ const normalize = (s: string) =>
 const listClass =
   'grid grid-cols-1 gap-4 divide-[var(--linha)] sm:grid-cols-2 xl:grid-cols-3 max-sm:gap-0 max-sm:divide-y data-[view=list]:grid-cols-1! data-[view=list]:gap-0 data-[view=list]:divide-y';
 const cardClass =
-  'relative flex items-center gap-4 rounded-card bg-sup-2 p-4 pr-14 row:rounded-none row:bg-transparent! row:px-0 row:py-3';
+  'relative flex items-center gap-4 rounded-card bg-sup-2 p-4 pr-14 row:rounded-none row:bg-transparent! row:bg-none! row:px-0 row:py-3';
 
 /** "Your favorites": composers, works and scores, with an "All" overview. */
 export function FavoritesView() {

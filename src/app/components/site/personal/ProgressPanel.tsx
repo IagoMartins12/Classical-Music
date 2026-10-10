@@ -19,7 +19,7 @@ type List = ApiSchema<'AchievementListResponseDto'>;
 const NEXT_SHOWN = 3;
 
 /** Level, XP and unlocked achievements, shared by every personal page. */
-function useAchievements() {
+export function useAchievements() {
   const stats = useQuery({
     queryKey: ['achievements', 'stats'],
     queryFn: () => apiFetch<Stats>('/achievements/stats'),
@@ -33,7 +33,7 @@ function useAchievements() {
   return { stats, list };
 }
 
-function Bar({
+export function Bar({
   value,
   max,
   className,

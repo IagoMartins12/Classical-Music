@@ -164,7 +164,7 @@ export function AssignmentsScreen({
             {numbers.map(([label, value]) => (
               <div
                 key={label}
-                className="flex min-w-[9.5rem] shrink-0 snap-start flex-col gap-1 rounded-card bg-sup-2 p-4 sm:min-w-0 sm:bg-transparent sm:p-0"
+                className="flex min-w-[9.5rem] shrink-0 snap-start flex-col gap-1 rounded-card bg-sup-2 p-4 sm:min-w-0 sm:bg-transparent sm:bg-none sm:p-0"
               >
                 <dt className="t-legenda">{label}</dt>
                 <dd className="font-display text-[1.75rem] leading-none">

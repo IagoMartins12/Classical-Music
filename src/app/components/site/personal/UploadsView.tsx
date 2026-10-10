@@ -442,7 +442,7 @@ function UploadRow({
   const quality = item.dataQuality ? copy.quality[item.dataQuality] : null;
 
   return (
-    <li className="flex flex-col gap-3 rounded-card bg-sup-2 p-4 row:flex-row row:items-center row:gap-4 row:rounded-none row:bg-transparent! row:px-0 row:py-3">
+    <li className="flex flex-col gap-3 rounded-card bg-sup-2 p-4 row:flex-row row:items-center row:gap-4 row:rounded-none row:bg-transparent! row:bg-none! row:px-0 row:py-3">
       <div className="flex min-w-0 flex-1 items-center gap-4">
         {item.type === 'composer' ? (
           <Portrait

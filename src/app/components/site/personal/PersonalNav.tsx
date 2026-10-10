@@ -11,6 +11,7 @@ const PAGES = [
   ['favorites', '/favorites'],
   ['annotations', '/annotations'],
   ['uploads', '/upload'],
+  ['achievements', '/achievements'],
   ['profile', '/profile'],
 ] as const;
 

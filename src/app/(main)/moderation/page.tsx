@@ -65,9 +65,8 @@ export default async function ModerationPage({
 }) {
   const session = await getServerSession();
 
-  if (!session?.user?.id || session.user.role !== 2) {
-    redirect('/');
-  }
+  if (!session?.user?.id) redirect('/not-authenticated');
+  if (session.user.role !== 2) redirect('/access-denied');
 
   const resolvedSearchParams = await searchParams;
   const page = Number(resolvedSearchParams.page) || 1;

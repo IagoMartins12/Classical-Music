@@ -262,7 +262,7 @@ function AnnotationCard({
     year: 'numeric',
   }).format(new Date(a.createdAt));
   return (
-    <li className="flex flex-col gap-3 rounded-card bg-sup-2 p-5 row:flex-row row:items-center row:gap-4 row:rounded-none row:bg-transparent! row:px-0 row:py-4">
+    <li className="flex flex-col gap-3 rounded-card bg-sup-2 p-5 row:flex-row row:items-center row:gap-4 row:rounded-none row:bg-transparent! row:bg-none! row:px-0 row:py-4">
       <div className="flex min-w-0 flex-1 flex-col gap-1.5">
         <span className="flex flex-wrap items-center gap-x-2 gap-y-1 t-legenda">
           <span>{copy.categories[a.category]}</span>

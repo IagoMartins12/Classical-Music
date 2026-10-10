@@ -1,5 +1,6 @@
 import type { ReactNode } from 'react';
 import { PageHeader } from '@/app/components/Portal/pieces';
+import { cx } from '@/app/components/ui/cx';
 import { PersonalNav } from './PersonalNav';
 import {
   ProgressButton,
@@ -17,18 +18,27 @@ export function PersonalPage({
   description,
   actions,
   category,
+  progress = true,
   children,
 }: {
   title: string;
   description: string;
   actions?: ReactNode;
   category?: AchievementCategory;
+  /** The progress panel beside the content; off where the page is the progress. */
+  progress?: boolean;
   children: ReactNode;
 }) {
   return (
     <div className="flex flex-col">
       <PersonalNav />
-      <div className="section-wrap grid grid-cols-1 gap-10 py-10 lg:grid-cols-[minmax(0,1fr)_18rem] xl:grid-cols-[minmax(0,1fr)_20rem]">
+      <div
+        className={cx(
+          'section-wrap grid grid-cols-1 gap-10 py-10',
+          progress &&
+            'lg:grid-cols-[minmax(0,1fr)_18rem] xl:grid-cols-[minmax(0,1fr)_20rem]'
+        )}
+      >
         <div className="flex min-w-0 flex-col">
           <PageHeader
             title={title}
@@ -36,15 +46,17 @@ export function PersonalPage({
             actions={
               <>
                 {actions}
-                <ProgressButton category={category} />
+                {progress && <ProgressButton category={category} />}
               </>
             }
           />
           {children}
         </div>
-        <aside className="max-lg:hidden lg:sticky lg:top-24 lg:self-start">
-          <ProgressPanel category={category} />
-        </aside>
+        {progress && (
+          <aside className="max-lg:hidden lg:sticky lg:top-24 lg:self-start">
+            <ProgressPanel category={category} />
+          </aside>
+        )}
       </div>
     </div>
   );

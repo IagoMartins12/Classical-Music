@@ -8,6 +8,7 @@ const pt = {
     favorites: 'Favoritos',
     annotations: 'Anotações',
     uploads: 'Envios',
+    achievements: 'Conquistas',
     profile: 'Perfil',
   },
   progress: {
@@ -168,6 +169,32 @@ const pt = {
       'Comece por uma partitura que você tem em PDF: ela entra no ar com o seu nome e ajuda quem estuda a mesma obra.',
     noResults: 'Nenhum envio com essa busca.',
   },
+  achievements: {
+    title: 'Suas conquistas',
+    text: 'O que você já alcançou estudando, favoritando e anotando, e o que está perto de chegar.',
+    level: 'nível',
+    xpLine: (xp: string, left: string, next: number) =>
+      `${xp} XP · faltam ${left} para o nível ${next}`,
+    note: 'As conquistas chegam na hora, em qualquer página do site.',
+    unlocked: (n: number) => `Conquistadas · ${n}`,
+    onTheWay: 'A caminho',
+    on: (date: string) => `em ${date}`,
+    of: (a: number, b: number) => `${a} de ${b}`,
+    reward: (n: number) => `+${n} XP`,
+    noneYet:
+      'Nenhuma ainda. A primeira costuma vir com a primeira obra nos estudos.',
+    allDone: 'Você desbloqueou todas as conquistas que existem hoje.',
+    error: 'Não foi possível carregar as conquistas.',
+    categories: {
+      all: 'Todas',
+      LEARNING: 'Estudos',
+      FAVORITES: 'Favoritos',
+      ANNOTATIONS: 'Anotações',
+      GENERAL: 'Gerais',
+      SOCIAL: 'Comunidade',
+      MILESTONE: 'Marcos',
+    },
+  },
   favorites: {
     title: 'Seus favoritos',
     text: 'Os compositores, as obras e as partituras que você marcou com o coração, num lugar só.',
@@ -198,6 +225,7 @@ const en: typeof pt = {
     favorites: 'Favorites',
     annotations: 'Annotations',
     uploads: 'Uploads',
+    achievements: 'Achievements',
     profile: 'Profile',
   },
   progress: {
@@ -352,6 +380,31 @@ const en: typeof pt = {
     emptyText:
       'Start with a score you have as a PDF: it goes live with your name and helps others studying the same work.',
     noResults: 'No uploads match that search.',
+  },
+  achievements: {
+    title: 'Your achievements',
+    text: 'What you have reached by studying, saving favorites and writing annotations, and what is close.',
+    level: 'level',
+    xpLine: (xp, left, next) => `${xp} XP · ${left} to level ${next}`,
+    note: 'Achievements arrive right away, on any page of the site.',
+    unlocked: (n) => `Unlocked · ${n}`,
+    onTheWay: 'On the way',
+    on: (date) => `on ${date}`,
+    of: (a, b) => `${a} of ${b}`,
+    reward: (n) => `+${n} XP`,
+    noneYet:
+      'None yet. The first one usually comes with your first work in your studies.',
+    allDone: 'You have unlocked every achievement there is today.',
+    error: 'Could not load the achievements.',
+    categories: {
+      all: 'All',
+      LEARNING: 'Studies',
+      FAVORITES: 'Favorites',
+      ANNOTATIONS: 'Annotations',
+      GENERAL: 'General',
+      SOCIAL: 'Community',
+      MILESTONE: 'Milestones',
+    },
   },
   favorites: {
     title: 'Your favorites',

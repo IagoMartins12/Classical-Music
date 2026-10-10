@@ -70,7 +70,7 @@ export function ComposerItem({
         id={composer.id}
         name={composer.name}
         onPhoto
-        className="absolute right-2 top-2 z-elevado row:right-0 row:top-1/2 row:-translate-y-1/2 row:bg-transparent! row:text-texto-fraco"
+        className="absolute right-2 top-2 z-elevado row:right-0 row:top-1/2 row:-translate-y-1/2 row:bg-transparent! row:bg-none! row:text-texto-fraco"
       />
     </li>
   );
