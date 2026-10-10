@@ -1,32 +1,69 @@
 {
   "medieval": {
-    "title": "File:Codex Manesse Heinrich von Meißen (Frauenlob).jpg",
-    "source": "https://commons.wikimedia.org/wiki/File:Codex_Manesse_Heinrich_von_Mei%C3%9Fen_(Frauenlob).jpg",
-    "artist": "<bdi><a href=\"https://www.wikidata.org/wiki/Q59285704\" class=\"extiw\" title=\"d:Q59285704\"><span title=\"German painter\">Ma",
-    "license": "Public domain"
+    "composer": "Hildegard von Bingen",
+    "title": "File:Hildegard von Bingen.jpg",
+    "source": "https://commons.wikimedia.org/wiki/File:Hildegard_von_Bingen.jpg",
+    "artist": "Unknown authorUnknown author",
+    "license": "Public domain",
+    "file": "medieval-hildegard.webp"
   },
   "renaissance": {
-    "title": "File:Lorenzo Costa - Un concerto (National Gallery, London).jpg",
-    "source": "https://commons.wikimedia.org/wiki/File:Lorenzo_Costa_-_Un_concerto_(National_Gallery,_London).jpg",
-    "artist": "<bdi><a href=\"https://en.wikipedia.org/wiki/en:Lorenzo_Costa\" class=\"extiw\" title=\"w:en:Lorenzo Costa\"><span title=\"Ital",
-    "license": "Public domain"
+    "composer": "Orlande de Lassus",
+    "title": "File:Orlande de Lassus bavar.jpg",
+    "source": "https://commons.wikimedia.org/wiki/File:Orlande_de_Lassus_bavar.jpg",
+    "artist": "Sine nomine",
+    "license": "Public domain",
+    "note": "Cropped to the engraving from a photographed book page.",
+    "file": "renaissance-lassus.webp"
   },
   "baroque": {
-    "title": "File:Vermeer The Concert.jpg",
-    "source": "https://commons.wikimedia.org/wiki/File:Vermeer_The_Concert.jpg",
-    "artist": "<bdi><a href=\"https://en.wikipedia.org/wiki/en:Johannes_Vermeer\" class=\"extiw\" title=\"w:en:Johannes Vermeer\"><span title",
-    "license": "Public domain"
+    "composer": "Johann Sebastian Bach",
+    "title": "File:Johann Sebastian Bach - Google Arts Project.jpg",
+    "source": "https://commons.wikimedia.org/wiki/File:Johann_Sebastian_Bach_-_Google_Arts_Project.jpg",
+    "artist": "Elias Gottlob Haussmann",
+    "license": "Public domain",
+    "file": "baroque-bach.webp"
+  },
+  "classical": {
+    "composer": "Wolfgang Amadeus Mozart",
+    "title": "File:Wolfgang-amadeus-mozart 1.jpg",
+    "source": "https://commons.wikimedia.org/wiki/File:Wolfgang-amadeus-mozart_1.jpg",
+    "artist": "Barbara Krafft",
+    "license": "Public domain",
+    "file": "classical-mozart.webp"
   },
   "romantic": {
-    "title": "File:Josef Danhauser Liszt am Flügel 1840 01.jpg",
-    "source": "https://commons.wikimedia.org/wiki/File:Josef_Danhauser_Liszt_am_Fl%C3%BCgel_1840_01.jpg",
-    "artist": "<bdi><a href=\"https://en.wikipedia.org/wiki/en:Josef_Danhauser\" class=\"extiw\" title=\"w:en:Josef Danhauser\"><span title=\"",
-    "license": "Public domain"
+    "composer": "Frédéric Chopin",
+    "title": "File:Frédéric Chopin - Eugène Delacroix - Musée du Louvre Peintures RF 1717.jpg",
+    "source": "https://commons.wikimedia.org/wiki/File:Fr%C3%A9d%C3%A9ric_Chopin_-_Eug%C3%A8ne_Delacroix_-_Mus%C3%A9e_du_Louvre_Peintures_RF_1717.jpg",
+    "artist": "Eugène Delacroix",
+    "license": "Public domain",
+    "file": "romantic-chopin.webp"
   },
   "modern": {
-    "title": "File:Wassily Kandinsky - Impression III (Concert) - Google Art Project.jpg",
-    "source": "https://commons.wikimedia.org/wiki/File:Wassily_Kandinsky_-_Impression_III_(Concert)_-_Google_Art_Project.jpg",
-    "artist": "<bdi><a href=\"https://en.wikipedia.org/wiki/en:Wassily_Kandinsky\" class=\"extiw\" title=\"w:en:Wassily Kandinsky\"><span tit",
-    "license": "Public domain"
+    "composer": "Claude Debussy",
+    "title": "File:M. Claude Debussy. Compositeur de musique - btv1b532322417.jpg",
+    "source": "https://commons.wikimedia.org/wiki/File:M._Claude_Debussy._Compositeur_de_musique_-_btv1b532322417.jpg",
+    "artist": "Atelier Nadar. Photographe",
+    "license": "Public domain",
+    "note": "Cropped to the photograph, without the archive mount.",
+    "file": "modern-debussy.webp"
+  },
+  "contemporary": {
+    "composer": "Steve Reich",
+    "title": "File:Steve Reich, composer 02.jpg",
+    "source": "https://commons.wikimedia.org/wiki/File:Steve_Reich,_composer_02.jpg",
+    "artist": "Gotfryd, Bernard, photographer",
+    "license": "Public domain",
+    "file": "contemporary-reich.webp"
+  },
+  "all": {
+    "composer": "Pyotr Ilyich Tchaikovsky",
+    "title": "File:Tchaikovsky by Reutlinger (cropped).jpg",
+    "source": "https://commons.wikimedia.org/wiki/File:Tchaikovsky_by_Reutlinger_(cropped).jpg",
+    "artist": "Émile Reutlinger",
+    "license": "Public domain",
+    "note": "The \"All eras\" card on the home page.",
+    "file": "all-tchaikovsky.webp"
   }
 }

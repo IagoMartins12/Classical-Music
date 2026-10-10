@@ -7,8 +7,9 @@ import type { Idioma } from '../legal/tipos';
  * plus the variants older imports used). The history page (wave 4) adds the
  * long-form chapters on top of this list.
  *
- * Images are public-domain paintings from Wikimedia Commons, resized to WebP;
- * the credits are in `public/eras/CREDITS.json`.
+ * Each era's image is a portrait of one of its composers (Hildegard, Lassus,
+ * Bach, Mozart, Chopin, Debussy, Reich), public domain, from Wikimedia
+ * Commons at up to 3840px; the credits are in `public/eras/CREDITS.json`.
  */
 
 export type EraKey =
@@ -35,7 +36,7 @@ export const ERAS: readonly Era[] = [
     key: 'medieval',
     dbNames: ['Medieval'],
     span: { from: 500, to: 1400 },
-    image: '/eras/medieval.webp',
+    image: '/eras/medieval-hildegard.webp',
     name: { pt: 'Medieval', en: 'Medieval' },
     tagline: {
       pt: 'O canto gregoriano e a primeira notação.',
@@ -46,7 +47,7 @@ export const ERAS: readonly Era[] = [
     key: 'renaissance',
     dbNames: ['Renascentista', 'Renascimento', 'Renaissance'],
     span: { from: 1400, to: 1600 },
-    image: '/eras/renaissance.webp',
+    image: '/eras/renaissance-lassus.webp',
     name: { pt: 'Renascimento', en: 'Renaissance' },
     tagline: {
       pt: 'A polifonia de Josquin e Palestrina.',
@@ -57,7 +58,7 @@ export const ERAS: readonly Era[] = [
     key: 'baroque',
     dbNames: ['Barroco', 'Baroque'],
     span: { from: 1600, to: 1750 },
-    image: '/eras/baroque.webp',
+    image: '/eras/baroque-bach.webp',
     name: { pt: 'Barroco', en: 'Baroque' },
     tagline: {
       pt: 'Bach, Vivaldi, Handel e a fuga.',
@@ -68,7 +69,7 @@ export const ERAS: readonly Era[] = [
     key: 'classical',
     dbNames: ['Clássico', 'Classical'],
     span: { from: 1750, to: 1820 },
-    image: '/eras/classical.webp',
+    image: '/eras/classical-mozart.webp',
     name: { pt: 'Clássico', en: 'Classical' },
     tagline: {
       pt: 'Haydn, Mozart e a forma sonata.',
@@ -79,7 +80,7 @@ export const ERAS: readonly Era[] = [
     key: 'romantic',
     dbNames: ['Romântico', 'Romantic'],
     span: { from: 1820, to: 1900 },
-    image: '/eras/romantic.webp',
+    image: '/eras/romantic-chopin.webp',
     name: { pt: 'Romântico', en: 'Romantic' },
     tagline: {
       pt: 'O piano de Chopin, a orquestra de Wagner.',
@@ -90,7 +91,7 @@ export const ERAS: readonly Era[] = [
     key: 'modern',
     dbNames: ['Modernismo', 'Moderno', 'Impressionismo', 'Modern'],
     span: { from: 1900, to: 1950 },
-    image: '/eras/modern.webp',
+    image: '/eras/modern-debussy.webp',
     name: { pt: 'Modernismo', en: 'Modernism' },
     tagline: {
       pt: 'Debussy, Stravinsky e o fim da tonalidade.',
@@ -101,7 +102,7 @@ export const ERAS: readonly Era[] = [
     key: 'contemporary',
     dbNames: ['Contemporâneo', 'Contemporary'],
     span: { from: 1950, to: null },
-    image: '/eras/contemporary.webp',
+    image: '/eras/contemporary-reich.webp',
     name: { pt: 'Contemporâneo', en: 'Contemporary' },
     tagline: {
       pt: 'De Reich a quem escreve hoje.',

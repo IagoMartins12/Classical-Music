@@ -27,7 +27,7 @@ export function ErasCarousel({
     {
       key: 'all',
       href: '/composers',
-      image: '/eras/all.webp',
+      image: '/eras/all-tchaikovsky.webp',
       years: eraYears(
         { ...ERAS[0], span: { from: ERAS[0].span.from, to: null } },
         language
