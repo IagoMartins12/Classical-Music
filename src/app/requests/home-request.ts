@@ -2,7 +2,8 @@
 import { apiFetch } from '@/app/libs/api/client';
 import type { ApiSchema } from '@/app/libs/api/types';
 import { unstable_cache } from 'next/cache';
-import { getComposerCuriosities, musicalFacts } from '../utils/utils';
+import { musicalFacts } from '../utils/musicalFacts';
+import { composerCuriosities } from './contributions';
 
 /**
  * Cache do `fetch` do Next. O dado vem do cache da API (Redis); ela avisa pelas
@@ -24,6 +25,11 @@ export async function getFeaturedComposer() {
       { next: CACHE.FEATURED }
     );
 
+    const [pt, en] = await Promise.all([
+      composerCuriosities(composer.id, 'pt'),
+      composerCuriosities(composer.id, 'en'),
+    ]);
+
     return {
       id: composer.id,
       name: composer.name,
@@ -37,8 +43,11 @@ export async function getFeaturedComposer() {
       epochName: composer.epochName || 'Clássico',
       isVerified: composer.isVerified,
       works: composer.works,
-      // As curiosidades são conteúdo do front, pelo nome do compositor.
-      curiosities: getComposerCuriosities(composer.fullName) || [],
+      // Up to three per language, editorial first (the API's order).
+      curiosities: {
+        pt: pt.slice(0, 3).map((c) => ({ id: c.id, text: c.text })),
+        en: en.slice(0, 3).map((c) => ({ id: c.id, text: c.text })),
+      },
     };
   } catch (error) {
     console.error('Error in getFeaturedComposer:', error);

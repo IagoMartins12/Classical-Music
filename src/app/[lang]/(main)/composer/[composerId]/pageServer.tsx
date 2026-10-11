@@ -2,6 +2,10 @@ import { notFound } from 'next/navigation';
 import { ComposerPage } from '@/app/components/site/composer/ComposerPage';
 import { getComposerArticles } from '@/app/requests/blog/composer-articles';
 import {
+  composerCuriosities,
+  entityContributions,
+} from '@/app/requests/contributions';
+import {
   getComposerById,
   getComposerFilterOptions,
   getComposerOverview,
@@ -33,11 +37,20 @@ export default async function ComposerDetailsServer({
   const composer = await getComposerById(composerId);
   if (!composer) notFound();
 
-  const [overview, works, filterOptions, { articles }] = await Promise.all([
+  const [
+    overview,
+    works,
+    filterOptions,
+    { articles },
+    curiosities,
+    contributions,
+  ] = await Promise.all([
     getComposerOverview(composerId),
     getComposerWorksWithFilters(composerId, 1, FIRST_PAGE),
     getComposerFilterOptions(composerId),
     getComposerArticles(composerId, 6),
+    composerCuriosities(composerId, language),
+    entityContributions('composer', composerId),
   ]);
 
   return (
@@ -47,6 +60,8 @@ export default async function ComposerDetailsServer({
       works={works}
       filterOptions={filterOptions}
       articles={articles}
+      curiosities={curiosities}
+      contributions={contributions}
       language={language}
     />
   );

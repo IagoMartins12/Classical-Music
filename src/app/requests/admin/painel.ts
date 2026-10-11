@@ -485,7 +485,14 @@ export type AcaoDenuncia = 'approve' | 'reject' | 'delete';
 
 export interface Denuncia {
   id: string;
-  entityType: 'composer' | 'work' | 'score' | 'blog-comment' | 'annotation';
+  entityType:
+    | 'composer'
+    | 'work'
+    | 'score'
+    | 'blog-comment'
+    | 'annotation'
+    | 'curiosity'
+    | 'contribution';
   entityId: string;
   reason: string;
   description: string | null;
@@ -518,6 +525,14 @@ export interface Denuncia {
     subtitle?: string | null;
     content?: string;
     workId?: string;
+    /** Curiosity. */
+    text?: string;
+    composerId?: string;
+    /** Contribution: the field changed and what was written. */
+    field?: string | null;
+    after?: unknown;
+    entityType?: string;
+    entityId?: string;
     isVerified?: boolean;
     downloadUrl?: string | null;
     composer?: { name: string; fullName: string | null } | null;

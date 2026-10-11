@@ -25,7 +25,7 @@ export interface FeaturedComposerData {
   epochName: string;
   isVerified?: boolean;
   works: { id: string; title: string }[];
-  curiosities: { id: string; text: Record<Idioma, string> }[];
+  curiosities: Record<Idioma, { id: string; text: string }[]>;
 }
 
 const pillLink =
@@ -135,11 +135,11 @@ export function FeaturedComposer({
             </div>
           )}
 
-          {composer.curiosities.length > 0 && (
+          {composer.curiosities[language].length > 0 && (
             <div className="flex flex-col gap-3">
               <h4 className="t-subtitulo">{copy.curiosities}</h4>
               <ul className="flex flex-col gap-3">
-                {composer.curiosities.map((curiosity) => (
+                {composer.curiosities[language].map((curiosity) => (
                   <li
                     key={curiosity.id}
                     className="flex items-start gap-3 rounded-card bg-sup-2 p-4"
@@ -149,7 +149,7 @@ export function FeaturedComposer({
                       tamanho="m"
                       className="mt-0.5 shrink-0 text-ouro-texto"
                     />
-                    <span className="t-rotulo">{curiosity.text[language]}</span>
+                    <span className="t-rotulo">{curiosity.text}</span>
                   </li>
                 ))}
               </ul>

@@ -1,24 +1,30 @@
-import { PiLightbulb } from 'react-icons/pi';
-import { Icon } from '@/app/components/ui/Icon';
 import { cx } from '@/app/components/ui/cx';
 import type { ComposerCopy } from '@/app/conteudo/site/composer';
+import type { Contribution, Curiosity } from '@/app/requests/contributions';
 import { LiteYouTube } from '../LiteYouTube';
+import { ContributionCredit } from '../contribute/ContributionCredit';
+import { ComposerCuriosities } from './ComposerCuriosities';
 
 /**
  * "Para ver" and "Curiosidades" side by side; curiosities alone fill the row.
- * A composer with none says so instead of padding the space.
+ * A composer with none invites the first one instead of padding the space.
  */
 export function WatchAndCuriosities({
+  composerId,
   videoId,
+  videoCredit,
   title,
   name,
   curiosities,
   copy,
 }: {
+  composerId: string;
   videoId: string | null;
+  /** Who suggested the video, when someone did. */
+  videoCredit: Contribution | null;
   title: string;
   name: string;
-  curiosities: string[];
+  curiosities: Curiosity[];
   copy: ComposerCopy;
 }) {
   const both = !!videoId;
@@ -32,37 +38,21 @@ export function WatchAndCuriosities({
       {videoId && (
         <section className="flex flex-col gap-6">
           <h2 className="t-titulo max-sm:!text-[1.75rem]">{copy.watch}</h2>
-          <div className={both ? undefined : 'max-w-4xl'}>
+          <div className="flex flex-col gap-2">
             <LiteYouTube id={videoId} title={title} />
+            {videoCredit && (
+              <ContributionCredit contribution={videoCredit} name={title} />
+            )}
           </div>
         </section>
       )}
-      <section className="flex flex-col gap-6">
-        <h2 className="t-titulo max-sm:!text-[1.75rem]">{copy.curiosities}</h2>
-        {curiosities.length ? (
-          <ul
-            className={cx('grid grid-cols-1 gap-3', !both && 'md:grid-cols-2')}
-          >
-            {curiosities.map((text) => (
-              <li
-                key={text}
-                className="flex items-start gap-3 rounded-card bg-sup-2 p-4"
-              >
-                <Icon
-                  de={PiLightbulb}
-                  tamanho="m"
-                  className="mt-0.5 text-ouro-texto"
-                />
-                <span className="t-rotulo">{text}</span>
-              </li>
-            ))}
-          </ul>
-        ) : (
-          <p className="t-corpo rounded-card bg-sup-2 p-6 text-texto-suave">
-            {copy.noCuriosities(name)}
-          </p>
-        )}
-      </section>
+      <ComposerCuriosities
+        composerId={composerId}
+        name={name}
+        initial={curiosities}
+        heading={copy.curiosities}
+        wide={!both}
+      />
     </div>
   );
 }

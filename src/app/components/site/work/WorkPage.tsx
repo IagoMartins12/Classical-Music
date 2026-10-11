@@ -135,6 +135,14 @@ export function WorkPage({
               id={work.id}
               name={title}
               verified={work.isVerified}
+              current={{
+                compositionYear: work.compositionYear,
+                firstPublishDate: work.firstPublishDate,
+                tone: work.tone,
+                dedicateTo: work.dedicateTo,
+                instrumentation: work.instrumentation,
+                subtitle: work.subtitle,
+              }}
             />
           </div>
         </div>

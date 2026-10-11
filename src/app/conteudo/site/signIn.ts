@@ -6,6 +6,7 @@ export type GatedAction =
   | 'study'
   | 'annotate'
   | 'report'
+  | 'contribute'
   | 'other';
 
 const pt: Record<GatedAction, string> = {
@@ -13,6 +14,7 @@ const pt: Record<GatedAction, string> = {
   study: 'Entre na sua conta para montar a sua lista de estudos.',
   annotate: 'Entre na sua conta para escrever anotações.',
   report: 'Entre na sua conta para reportar um problema.',
+  contribute: 'Entre na sua conta para contribuir com o acervo.',
   other: 'Entre na sua conta para continuar.',
 };
 
@@ -21,6 +23,7 @@ const en: typeof pt = {
   study: 'Sign in to build your study list.',
   annotate: 'Sign in to write annotations.',
   report: 'Sign in to report a problem.',
+  contribute: 'Sign in to contribute to the catalog.',
   other: 'Sign in to continue.',
 };
 

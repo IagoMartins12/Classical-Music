@@ -8,6 +8,7 @@ import type { Idioma } from '@/app/conteudo/legal/tipos';
 import { COMPOSER } from '@/app/conteudo/site/composer';
 import { eraName } from '@/app/conteudo/site/eras';
 import type { BlogArticlePreview } from '@/app/requests/blog/composer-articles';
+import type { Contribution, Curiosity } from '@/app/requests/contributions';
 import type {
   ComposerDetails,
   ComposerFilterOptions,
@@ -16,13 +17,13 @@ import type {
 } from '@/app/requests/composer-details';
 import { localizeHref } from '@/app/utils/localizedRoutes';
 import { SITE_URL } from '@/app/utils/seoAlternates';
-import { getComposerCuriosities } from '@/app/utils/utils';
 import { FavoriteHeart } from '../FavoriteHeart';
 import { youtubeId } from '../youtube';
 import { Portrait } from '../Portrait';
 import { ShareAction } from '../ShareAction';
 import { AlternativeNames } from './AlternativeNames';
 import { BiographyText } from './BiographyText';
+import { ContributionCredit } from '../contribute/ContributionCredit';
 import { BiographyWriter } from './BiographyWriter';
 import { ComposerCatalog } from './ComposerCatalog';
 import { ComposerFacts } from './ComposerFacts';
@@ -65,6 +66,8 @@ export function ComposerPage({
   works,
   filterOptions,
   articles,
+  curiosities,
+  contributions,
   language,
 }: {
   composer: ComposerDetails;
@@ -72,6 +75,8 @@ export function ComposerPage({
   works: ComposerWorksResponse;
   filterOptions: ComposerFilterOptions;
   articles: BlogArticlePreview[];
+  curiosities: Curiosity[];
+  contributions: Contribution[];
   language: Idioma;
 }) {
   const copy = COMPOSER[language];
@@ -82,9 +87,13 @@ export function ComposerPage({
   ];
   const bio = language === 'pt' ? composer.bio : composer.bioEn;
   const era = eraName(composer.epochName, language);
-  const curiosities = getComposerCuriosities(fullName).map(
-    (c) => c.text[language]
-  );
+  // The newest live contribution of each kind is the one on screen.
+  const bioCredit =
+    contributions.find(
+      (c) =>
+        c.kind === 'BIO' && c.field === (language === 'en' ? 'bioEn' : 'bio')
+    ) ?? null;
+  const videoCredit = contributions.find((c) => c.kind === 'VIDEO') ?? null;
   const url = `${SITE_URL}${localizeHref(`/composer/${composer.id}`, language)}`;
   const external = [
     composer.wikipediaLink && [
@@ -194,6 +203,15 @@ export function ComposerPage({
                 id={composer.id}
                 name={fullName}
                 verified={!!composer.isVerified}
+                current={{
+                  // Only the page's language: the sheet edits that one.
+                  [language === 'en' ? 'bioEn' : 'bio']: bio,
+                  videoUrl: composer.videoUrl,
+                  birthDate: composer.birthDate,
+                  deathDate: composer.deathDate,
+                  nationality: composer.nationality,
+                  wikipediaLink: composer.wikipediaLink,
+                }}
               />
             </div>
           </header>
@@ -201,10 +219,18 @@ export function ComposerPage({
           <section className="flex flex-col gap-4">
             <h2 className="sr-only">{copy.bio.heading}</h2>
             {bio ? (
-              <BiographyText
-                text={bio}
-                aiNote={composer.bioGeneratedByAi ? copy.bio.aiNote : null}
-              />
+              <>
+                <BiographyText
+                  text={bio}
+                  aiNote={composer.bioGeneratedByAi ? copy.bio.aiNote : null}
+                />
+                {bioCredit && (
+                  <ContributionCredit
+                    contribution={bioCredit}
+                    name={copy.bio.heading}
+                  />
+                )}
+              </>
             ) : (
               <BiographyWriter composerId={composer.id} name={composer.name} />
             )}
@@ -215,7 +241,9 @@ export function ComposerPage({
       </div>
 
       <WatchAndCuriosities
+        composerId={composer.id}
         videoId={youtubeId(composer.videoUrl)}
+        videoCredit={videoCredit}
         title={fullName}
         name={composer.name || fullName}
         curiosities={curiosities}

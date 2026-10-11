@@ -39,8 +39,6 @@ const pt = {
   },
   watch: 'Para ver',
   curiosities: 'Curiosidades',
-  noCuriosities: (name: string) =>
-    `Ainda não há curiosidades sobre ${name} no Opus Atlas.`,
   catalog: {
     title: 'Obras',
     search: (name: string) => `Buscar nas obras de ${name}`,
@@ -101,8 +99,6 @@ const en: typeof pt = {
   },
   watch: 'Watch',
   curiosities: 'Curiosities',
-  noCuriosities: (name: string) =>
-    `There are no curiosities about ${name} on Opus Atlas yet.`,
   catalog: {
     title: 'Works',
     search: (name: string) => `Search the works of ${name}`,

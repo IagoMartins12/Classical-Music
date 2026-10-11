@@ -19,7 +19,7 @@ import {
   PiPlus,
 } from 'react-icons/pi';
 import Image from '@/app/components/SmartImage';
-import { categories, musicalFacts } from '@/app/utils/utils';
+import { categories, musicalFacts } from '@/app/utils/musicalFacts';
 import { Carrossel as CarrosselComPontos } from '@/app/components/blog/site/Carrossel';
 import { Button, classesDeBotao } from '@/app/components/ui/Button';
 import { Icon } from '@/app/components/ui/Icon';

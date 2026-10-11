@@ -2,6 +2,7 @@
 
 import { Elo, useNavegar } from '@/app/components/Admin/painel/Navegador';
 
+import { useQuery } from '@tanstack/react-query';
 import { useState } from 'react';
 import Link from 'next/link';
 import toast from 'react-hot-toast';
@@ -37,6 +38,11 @@ import {
   useResolverDenuncias,
 } from '@/app/hooks/admin/usePainel';
 import type { Denuncia, EstadoDenuncia } from '@/app/requests/admin/painel';
+import { CONTRIBUTE } from '@/app/conteudo/site/contribute';
+import {
+  fetchContributions,
+  revertContribution,
+} from '@/app/requests/contributions';
 
 /**
  * Denúncias: a fila de moderação e os números dela, numa tela só.
@@ -71,7 +77,31 @@ const TIPOS: Record<string, string> = {
   score: 'Partitura',
   'blog-comment': 'Comentário do blog',
   annotation: 'Anotação de obra',
+  curiosity: 'Curiosidade de compositor',
+  contribution: 'Contribuição da comunidade',
 };
+
+const CAMPO: Record<string, string> = {
+  ...CONTRIBUTE.pt.fields,
+  bio: 'Biografia',
+  bioEn: 'Biografia em inglês',
+  videoUrl: 'Vídeo',
+};
+
+/** How the detail names the text that was reported. */
+const ESCRITO: Record<string, string> = {
+  'blog-comment': 'O comentário',
+  annotation: 'A anotação',
+  curiosity: 'A curiosidade',
+  contribution: 'O que a pessoa escreveu no campo',
+};
+
+const escrito = (d: Denuncia) =>
+  d.entityType === 'curiosity'
+    ? d.entity?.text
+    : d.entityType === 'contribution' && typeof d.entity?.after === 'string'
+      ? d.entity.after
+      : d.entity?.content;
 
 const PRIORIDADE: Record<string, string> = {
   urgent: 'Urgente',
@@ -84,8 +114,16 @@ function nomeDoItem(d: Denuncia) {
   const e = d.entity;
   if (!e) return 'Item já removido';
   if (d.entityType === 'annotation' && e.title) return e.title;
-  if (d.entityType === 'blog-comment' || d.entityType === 'annotation')
-    return `“${(e.content ?? '').slice(0, 90)}${(e.content ?? '').length > 90 ? '…' : ''}”`;
+  if (d.entityType === 'contribution')
+    return `${CAMPO[e.field ?? ''] ?? 'Campo'}: contribuição da comunidade`;
+  if (
+    d.entityType === 'blog-comment' ||
+    d.entityType === 'annotation' ||
+    d.entityType === 'curiosity'
+  ) {
+    const text = escrito(d) ?? '';
+    return `“${text.slice(0, 90)}${text.length > 90 ? '…' : ''}”`;
+  }
   return e.title ?? e.fullName ?? e.name ?? '—';
 }
 
@@ -106,6 +144,12 @@ function linkDoItem(d: Denuncia) {
     return `/works/${d.entity.work.id}`;
   if (d.entityType === 'annotation' && d.entity.workId)
     return `/works/${d.entity.workId}`;
+  if (d.entityType === 'curiosity' && d.entity.composerId)
+    return `/composer/${d.entity.composerId}`;
+  if (d.entityType === 'contribution' && d.entity.entityId)
+    return d.entity.entityType === 'work'
+      ? `/works/${d.entity.entityId}`
+      : `/composer/${d.entity.entityId}`;
   return null;
 }
 
@@ -532,20 +576,23 @@ export default function Denuncias() {
                 </blockquote>
               </Stack>
             )}
-            {(aberta.entityType === 'blog-comment' ||
-              aberta.entityType === 'annotation') &&
-              aberta.entity?.content && (
-                <Stack gap={1}>
-                  <Text papel="legenda" as="p">
-                    {aberta.entityType === 'annotation'
-                      ? 'A anotação'
-                      : 'O comentário'}
-                  </Text>
-                  <blockquote className="rounded-controle bg-sup-2 px-4 py-3 text-[0.9375rem] text-texto">
-                    {aberta.entity.content}
-                  </blockquote>
-                </Stack>
-              )}
+            {escrito(aberta) && aberta.entityType !== 'score' && (
+              <Stack gap={1}>
+                <Text papel="legenda" as="p">
+                  {ESCRITO[aberta.entityType] ?? 'O conteúdo'}
+                </Text>
+                <blockquote className="max-h-80 overflow-y-auto whitespace-pre-line rounded-controle bg-sup-2 px-4 py-3 text-[0.9375rem] text-texto">
+                  {escrito(aberta)}
+                </blockquote>
+              </Stack>
+            )}
+            {(aberta.entityType === 'composer' ||
+              aberta.entityType === 'work') && (
+              <ContribuicoesRecentes
+                tipo={aberta.entityType}
+                id={aberta.entityId}
+              />
+            )}
             {aberta.moderationNotes && (
               <Stack gap={1}>
                 <Text papel="legenda" as="p">
@@ -620,5 +667,69 @@ function Info({
       <dt className="t-legenda">{rotulo}</dt>
       <dd className="text-sm text-texto">{children}</dd>
     </div>
+  );
+}
+
+/**
+ * The live contributions to a reported composer or work: "dado errado"
+ * usually means one of them. Undoing brings the old value back and takes
+ * the XP; it never overwrites a later edit.
+ */
+function ContribuicoesRecentes({
+  tipo,
+  id,
+}: {
+  tipo: 'composer' | 'work';
+  id: string;
+}) {
+  const lista = useQuery({
+    queryKey: ['admin', 'contribuicoes', tipo, id],
+    queryFn: () => fetchContributions(tipo, id),
+  });
+  const [desfazendo, setDesfazendo] = useState<string | null>(null);
+
+  const desfazer = async (contribuicao: string) => {
+    setDesfazendo(contribuicao);
+    const result = await revertContribution(contribuicao).catch(() => null);
+    setDesfazendo(null);
+    if (!result?.ok) return toast.error('Não foi possível desfazer.');
+    toast.success('Contribuição desfeita.');
+    void lista.refetch();
+  };
+
+  if (!lista.data?.length) return null;
+  return (
+    <Stack gap={2}>
+      <Text papel="legenda" as="p">
+        Contribuições da comunidade em vigor
+      </Text>
+      <ul className="flex flex-col">
+        {lista.data.map((c) => (
+          <li
+            key={c.id}
+            className="flex items-center gap-3 border-b border-linha py-2 last:border-0"
+          >
+            <span className="flex min-w-0 flex-1 flex-col">
+              <span className="text-[0.9375rem] text-texto">
+                {c.field ? (CAMPO[c.field] ?? c.field) : 'Curiosidade'}
+              </span>
+              <span className="t-legenda">
+                {c.author.name} · {relativo(c.createdAt)}
+              </span>
+            </span>
+            {c.kind !== 'CURIOSITY' && (
+              <Button
+                tamanho="p"
+                variante="fantasma"
+                carregando={desfazendo === c.id}
+                onClick={() => void desfazer(c.id)}
+              >
+                Desfazer
+              </Button>
+            )}
+          </li>
+        ))}
+      </ul>
+    </Stack>
   );
 }
