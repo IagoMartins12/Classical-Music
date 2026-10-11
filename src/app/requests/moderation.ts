@@ -9,7 +9,7 @@
 import { apiFetch } from '@/app/libs/api/client';
 import { type ApiResult, toResult } from '@/app/requests/api-result';
 
-type ReportableEntity = 'composer' | 'work' | 'score';
+type ReportableEntity = 'composer' | 'work' | 'score' | 'annotation';
 type ModerationAction = 'approve' | 'reject' | 'delete';
 
 const CATEGORY_BY_REASON: Record<string, string> = {

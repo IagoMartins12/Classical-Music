@@ -70,6 +70,7 @@ const TIPOS: Record<string, string> = {
   composer: 'Compositor',
   score: 'Partitura',
   'blog-comment': 'Comentário do blog',
+  annotation: 'Anotação de obra',
 };
 
 const PRIORIDADE: Record<string, string> = {
@@ -82,7 +83,8 @@ const PRIORIDADE: Record<string, string> = {
 function nomeDoItem(d: Denuncia) {
   const e = d.entity;
   if (!e) return 'Item já removido';
-  if (d.entityType === 'blog-comment')
+  if (d.entityType === 'annotation' && e.title) return e.title;
+  if (d.entityType === 'blog-comment' || d.entityType === 'annotation')
     return `“${(e.content ?? '').slice(0, 90)}${(e.content ?? '').length > 90 ? '…' : ''}”`;
   return e.title ?? e.fullName ?? e.name ?? '—';
 }
@@ -102,6 +104,8 @@ function linkDoItem(d: Denuncia) {
   if (d.entityType === 'composer') return `/composer/${d.entityId}`;
   if (d.entityType === 'score' && d.entity.work)
     return `/works/${d.entity.work.id}`;
+  if (d.entityType === 'annotation' && d.entity.workId)
+    return `/works/${d.entity.workId}`;
   return null;
 }
 
@@ -528,16 +532,20 @@ export default function Denuncias() {
                 </blockquote>
               </Stack>
             )}
-            {aberta.entityType === 'blog-comment' && aberta.entity?.content && (
-              <Stack gap={1}>
-                <Text papel="legenda" as="p">
-                  O comentário
-                </Text>
-                <blockquote className="rounded-controle bg-sup-2 px-4 py-3 text-[0.9375rem] text-texto">
-                  {aberta.entity.content}
-                </blockquote>
-              </Stack>
-            )}
+            {(aberta.entityType === 'blog-comment' ||
+              aberta.entityType === 'annotation') &&
+              aberta.entity?.content && (
+                <Stack gap={1}>
+                  <Text papel="legenda" as="p">
+                    {aberta.entityType === 'annotation'
+                      ? 'A anotação'
+                      : 'O comentário'}
+                  </Text>
+                  <blockquote className="rounded-controle bg-sup-2 px-4 py-3 text-[0.9375rem] text-texto">
+                    {aberta.entity.content}
+                  </blockquote>
+                </Stack>
+              )}
             {aberta.moderationNotes && (
               <Stack gap={1}>
                 <Text papel="legenda" as="p">

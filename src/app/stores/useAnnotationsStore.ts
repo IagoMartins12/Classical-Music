@@ -49,6 +49,8 @@ export interface WorkAnnotation {
   difficulty: AnnotationDifficulty;
   tags: string[];
   isPublic: boolean;
+  /** Held after a serious report: only its author still sees it. */
+  isHidden?: boolean | null;
   isVerified: boolean;
   helpfulCount: number;
   viewCount: number;

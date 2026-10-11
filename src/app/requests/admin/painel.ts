@@ -485,7 +485,7 @@ export type AcaoDenuncia = 'approve' | 'reject' | 'delete';
 
 export interface Denuncia {
   id: string;
-  entityType: 'composer' | 'work' | 'score' | 'blog-comment';
+  entityType: 'composer' | 'work' | 'score' | 'blog-comment' | 'annotation';
   entityId: string;
   reason: string;
   description: string | null;
@@ -517,6 +517,7 @@ export interface Denuncia {
     title?: string;
     subtitle?: string | null;
     content?: string;
+    workId?: string;
     isVerified?: boolean;
     downloadUrl?: string | null;
     composer?: { name: string; fullName: string | null } | null;

@@ -4,6 +4,7 @@ import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { useMemo, useState } from 'react';
 import toast from 'react-hot-toast';
 import {
+  PiFlag,
   PiLockSimple,
   PiNotePencil,
   PiPencilSimple,
@@ -36,6 +37,7 @@ import type {
   WorkAnnotation,
 } from '@/app/stores/useAnnotationsStore';
 import { chip } from '../choice';
+import { ReportSheet } from '../ReportButton';
 import { AnnotationSheet } from './AnnotationSheet';
 
 type Order = 'helpful' | 'recent' | 'measure';
@@ -96,6 +98,7 @@ function AnnotationCard({
   const [vote, setVote] = useState<boolean | null>(a.userVote);
   const [helpful, setHelpful] = useState(a.helpfulCount);
   const [open, setOpen] = useState(false);
+  const [reporting, setReporting] = useState(false);
   const long = a.content.length > short;
   const name =
     [a.user.firstName, a.user.lastName].filter(Boolean).join(' ') ||
@@ -165,11 +168,11 @@ function AnnotationCard({
             />
           )}
           <span className="text-texto-fraco">· {date}</span>
-          {!a.isPublic && (
+          {(!a.isPublic || a.isHidden) && (
             <Icon
               de={PiLockSimple}
               tamanho="pp"
-              rotulo={copy.privateNote}
+              rotulo={a.isHidden ? copy.held : copy.privateNote}
               className="text-texto-fraco"
             />
           )}
@@ -202,6 +205,15 @@ function AnnotationCard({
           >
             <Icon de={PiThumbsDown} tamanho="p" />
           </button>
+          {!mine && (
+            <Button
+              tamanho="p"
+              variante="fantasma"
+              icone={PiFlag}
+              rotulo={copy.report}
+              onClick={() => allowed('report') && setReporting(true)}
+            />
+          )}
           {mine && (
             <>
               <Button
@@ -222,6 +234,15 @@ function AnnotationCard({
           )}
         </span>
       </div>
+      {!mine && (
+        <ReportSheet
+          entityType="annotation"
+          entityId={a.id}
+          name={a.title}
+          open={reporting}
+          onClose={() => setReporting(false)}
+        />
+      )}
     </li>
   );
 }

@@ -28,6 +28,17 @@ const pt = {
   signOut: 'Sair',
   signedOut: 'Você saiu da conta.',
   signOutError: 'Não foi possível sair. Tente de novo.',
+  notifications: {
+    label: 'Avisos',
+    unread: (n: number) =>
+      n === 1 ? 'Avisos, 1 não lido' : `Avisos, ${n} não lidos`,
+    empty:
+      'Nenhum aviso por enquanto. A resposta das suas denúncias e as novidades da sua conta aparecem aqui.',
+    failed: 'Não foi possível carregar os avisos.',
+    retry: 'Tentar de novo',
+    readAll: 'Marcar todos como lidos',
+    unreadMark: 'não lido',
+  },
   explorePaths: {
     composers: {
       label: 'Compositores',
@@ -100,6 +111,17 @@ const en: typeof pt = {
   signOut: 'Sign out',
   signedOut: 'You signed out.',
   signOutError: 'Could not sign out. Try again.',
+  notifications: {
+    label: 'Notifications',
+    unread: (n: number) =>
+      n === 1 ? 'Notifications, 1 unread' : `Notifications, ${n} unread`,
+    empty:
+      'Nothing yet. Answers to your reports and news about your account show up here.',
+    failed: 'Could not load your notifications.',
+    retry: 'Try again',
+    readAll: 'Mark all as read',
+    unreadMark: 'unread',
+  },
   explorePaths: {
     composers: { label: 'Composers', detail: 'Lives, works and eras' },
     works: { label: 'Works', detail: 'With the score to download' },

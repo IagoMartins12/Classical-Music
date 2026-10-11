@@ -22,6 +22,7 @@ import { BrandLink } from './BrandLink';
 import { ExploreMenu } from './ExploreMenu';
 import { HeaderSearch } from './HeaderSearch';
 import { MobileMenu } from './MobileMenu';
+import { NotificationsBell } from './NotificationsBell';
 import { NavLink } from './NavLink';
 import {
   PLANS_HREF,
@@ -127,6 +128,9 @@ export function SiteHeader() {
           </Link>
           <span className="max-md:hidden">{languageToggle}</span>
           <ThemeToggle variant="navbar" className="max-md:hidden" />
+          {signedUser && (
+            <NotificationsBell copy={copy.notifications} language={language} />
+          )}
           {signedUser ? (
             <span className="max-md:hidden">
               <AccountMenu

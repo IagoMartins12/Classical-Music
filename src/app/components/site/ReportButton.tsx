@@ -12,7 +12,7 @@ import { useRouteLanguage } from '@/app/hooks/useRouteLanguage';
 import { reportContent } from '@/app/requests/moderation';
 
 type Target = {
-  entityType: 'composer' | 'work' | 'score';
+  entityType: 'composer' | 'work' | 'score' | 'annotation';
   entityId: string;
   name: string;
 };
