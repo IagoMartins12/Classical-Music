@@ -1,7 +1,9 @@
 'use client';
 
+import ConfirmModal from '@/app/components/ConfirmModal';
+import { ANNOTATIONS } from '@/app/conteudo/site/annotations';
+import { AnnotationSheet } from '../annotations/AnnotationSheet';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
-import dynamic from 'next/dynamic';
 import { useMemo, useState } from 'react';
 import {
   PiGlobeSimple,
@@ -27,15 +29,6 @@ import type { WorkAnnotation } from '@/app/stores/useAnnotationsStore';
 import { ListResults, ViewToggle } from '../lists/ViewToggle';
 import { workTitle } from '../workTitle';
 import { chip } from '../choice';
-
-const CreateAnnotationModal = dynamic(
-  () => import('@/app/components/Annotations/CreateAnnotationModal'),
-  { ssr: false }
-);
-const DeleteAnnotationModal = dynamic(
-  () => import('@/app/components/Annotations/DeleteAnnotationModal'),
-  { ssr: false }
-);
 
 type Visibility = 'all' | 'public' | 'private';
 /** The API serves 50 per page; a person's notes rarely pass a few pages. */
@@ -70,6 +63,7 @@ const normalize = (s: string) =>
 export function AnnotationsView() {
   const { language } = useRouteLanguage();
   const copy = PERSONAL[language].annotations;
+  const sheetCopy = ANNOTATIONS[language];
   const { user } = useAuth();
   const queryClient = useQueryClient();
   const key = ['annotations', 'mine', user?.id];
@@ -212,28 +206,23 @@ export function AnnotationsView() {
         <p className="t-rotulo text-texto-suave">{copy.noResults}</p>
       )}
 
-      {editing && (
-        <CreateAnnotationModal
-          isOpen
-          editingAnnotation={editing}
-          workId={editing.workId}
-          workTitle={editing.work?.title}
-          composerName={editing.work?.composer.fullName}
-          onClose={() => {
-            setEditing(null);
-            refresh();
-          }}
-        />
-      )}
-      {removing && (
-        <DeleteAnnotationModal
-          isOpen
-          isLoading={busy}
-          annotationTitle={removing.title}
-          onClose={() => setRemoving(null)}
-          onConfirm={remove}
-        />
-      )}
+      <AnnotationSheet
+        open={!!editing}
+        onClose={() => setEditing(null)}
+        onSaved={() => void refresh()}
+        workId={editing?.workId ?? ''}
+        editing={editing}
+      />
+      <ConfirmModal
+        isOpen={!!removing}
+        onClose={() => setRemoving(null)}
+        onConfirm={remove}
+        type="danger"
+        title={sheetCopy.removeTitle}
+        message={sheetCopy.removeText}
+        confirmText={sheetCopy.removeConfirm}
+        isLoading={busy}
+      />
     </div>
   );
 }

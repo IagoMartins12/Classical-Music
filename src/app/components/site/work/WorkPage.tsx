@@ -16,7 +16,8 @@ import { ShareAction } from '../ShareAction';
 import { workTitle } from '../workTitle';
 import { MoreFromComposer } from './MoreFromComposer';
 import { StudyActions } from './StudyActions';
-import { WorkAnnotations, WorkVideoLesson } from './WorkMedia';
+import { WorkLesson } from './WorkLesson';
+import { WorkAnnotations } from '../annotations/WorkAnnotations';
 import { WorkDetailsPanel } from './WorkDetailsPanel';
 import { WorkScores } from './WorkScores';
 import type { StudyContext } from './useStudy';
@@ -152,10 +153,9 @@ export function WorkPage({
         }
       />
 
-      <section className="mt-20 flex flex-col gap-6">
-        <h2 className="sr-only">{copy.annotations}</h2>
-        <WorkAnnotations work={work} />
-      </section>
+      <div className="mt-20">
+        <WorkAnnotations workId={work.id} />
+      </div>
 
       <MoreFromComposer
         composer={{ id: work.composer.id, name: work.composer.name }}
@@ -165,7 +165,7 @@ export function WorkPage({
       />
 
       <section className="mt-20">
-        <WorkVideoLesson work={work} />
+        <WorkLesson work={work} />
       </section>
     </article>
   );
