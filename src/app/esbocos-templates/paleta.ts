@@ -17,6 +17,8 @@ export interface Paleta {
   linha: string;
   botao: string;
   botaoTexto: string;
+  /** The gold hairline of frames and rules. */
+  filete: string;
 }
 
 export const PALETAS: Record<Tema, Paleta> = {
@@ -32,6 +34,7 @@ export const PALETAS: Record<Tema, Paleta> = {
     linha: '#e4dccb',
     botao: '#d4af37',
     botaoTexto: '#1c1b22',
+    filete: 'rgba(187, 134, 10, 0.45)',
   },
   escuro: {
     fora: '#0c0d12',
@@ -45,8 +48,12 @@ export const PALETAS: Record<Tema, Paleta> = {
     linha: 'rgba(243, 241, 236, 0.12)',
     botao: '#d4af37',
     botaoTexto: '#0c0d12',
+    filete: 'rgba(212, 175, 55, 0.38)',
   },
 };
+
+/** The night band stays night in both themes: it is the sky, not a tint. */
+export const NOITE = { fundo: '#12131d', ouro: '#d4af37', texto: '#f3f1ec' };
 
 export const SERIFA = "'EB Garamond', Georgia, 'Times New Roman', serif";
 export const SANS =

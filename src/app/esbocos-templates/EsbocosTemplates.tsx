@@ -5,11 +5,16 @@ import { PiDesktop, PiDeviceMobile, PiMoon, PiSun } from 'react-icons/pi';
 import { chip } from '@/app/components/site/choice';
 import { Icon } from '@/app/components/ui/Icon';
 import { cx } from '@/app/components/ui/cx';
-import { Carta, Ingresso, Partitura, type Props } from './direcoes';
+import {
+  CartaCeleste,
+  CartaComCanhoto,
+  IngressoCeleste,
+  type Props,
+} from './direcoes';
 import { EMAILS, REMETENTE } from './emails';
 import { PALETAS, SANS, SELO, type Tema } from './paleta';
 
-type Direcao = 'a' | 'b' | 'c';
+type Direcao = 'd' | 'e' | 'f';
 
 const DIRECOES: {
   id: Direcao;
@@ -20,34 +25,34 @@ const DIRECOES: {
   desenho: (p: Props) => React.ReactNode;
 }[] = [
   {
-    id: 'a',
-    nome: 'O ingresso',
+    id: 'd',
+    nome: 'A carta com canhoto',
     ideia:
-      'Cada e-mail é um ingresso: a mensagem em cima, uma linha picotada e um canhoto com o que vale guardar (valor, prazo, quem convidou). Nas boas-vindas, o canhoto traz os três caminhos para começar.',
-    bom: 'O mais memorável e o que mais organiza: o dado importante tem lugar fixo, e um recibo de pagamento parece mesmo um comprovante.',
+      'A junção de A e C: a equipe escreve uma carta (papel timbrado, filete dourado, assinatura) e, abaixo de uma linha picotada, entrega o canhoto com o que vale guardar, o valor ou prazo grande em Garamond. O emblema gravado abre a carta como um lacre.',
+    bom: 'Une o calor da carta à utilidade do ingresso: quem só quer o dado encontra no canhoto, quem lê tem uma carta de verdade.',
     custo:
-      'O picote pede imagem ou truque de tabela para sair perfeito no Outlook; nos e-mails sem dado, o canhoto fica com pouco a dizer.',
-    desenho: (p) => <Ingresso {...p} />,
+      'É o mais comprido dos três; nos avisos curtos (senha) a carta e o canhoto juntos podem parecer muito para pouca coisa.',
+    desenho: (p) => <CartaComCanhoto {...p} />,
   },
   {
-    id: 'b',
-    nome: 'A folha de partitura',
+    id: 'e',
+    nome: 'O ingresso, refeito',
     ideia:
-      'Cada e-mail é a primeira página de uma partitura: a pauta no alto, o título centralizado como o de uma obra, "Opus Atlas" creditado à direita como o compositor, os dados em compassos entre barras e a barra dupla que fecha a peça antes do rodapé.',
-    bom: 'O que mais diz "música" sem ilustração nenhuma, só com linhas finas, e funciona igual em qualquer cliente.',
+      'Um ingresso de verdade: largo no computador, com a mensagem sobre um recorte das órbitas, picote na vertical e o canhoto à direita com o valor grande. No celular o canhoto desce. O emblema fica no centro das órbitas, como no globo da home.',
+    bom: 'O mais reconhecível: na caixa de entrada inteira, nenhum outro e-mail tem esse formato. O recibo de pagamento parece um comprovante.',
     custo:
-      'Centralizado e cerimonioso: nos avisos curtos (senha, confirmação) a solenidade pode pesar mais que a mensagem.',
-    desenho: (p) => <Partitura {...p} />,
+      'O formato em duas colunas pede mais cuidado de tabela no Outlook; nas boas-vindas, o canhoto vira uma lista de atalhos.',
+    desenho: (p) => <IngressoCeleste {...p} />,
   },
   {
-    id: 'c',
-    nome: 'A carta com selo',
+    id: 'f',
+    nome: 'A carta, refeita',
     ideia:
-      'Cada e-mail é uma carta da equipe: o selo e a data como papel timbrado, o texto em Garamond, a assinatura no fim e, nas boas-vindas, um P.S. com os caminhos para começar.',
-    bom: 'O mais caloroso e o mais simples de manter: é praticamente texto, e o Gmail e o Outlook mostram quase igual ao desenho.',
+      'A carta sob o céu: uma faixa noturna com as órbitas e o emblema no centro abre cada e-mail, e logo abaixo vem a carta, com capitular, o valor separado por filetes, a assinatura com o selo e, nas boas-vindas, um P.S.',
+    bom: 'O mais bonito de abrir e o que mais carrega a cara do Opus: a faixa é o globo da home em forma de e-mail.',
     custo:
-      'O menos marcante dos três; quem recebe muitos e-mails pode não reconhecer o Opus Atlas só pelo layout.',
-    desenho: (p) => <Carta {...p} />,
+      'A faixa é uma imagem: se o cliente bloquear imagens, o e-mail abre com um bloco escuro vazio até a pessoa liberar.',
+    desenho: (p) => <CartaCeleste {...p} />,
   },
 ];
 
@@ -131,7 +136,7 @@ function Cabecalho({
 }
 
 export function EsbocosTemplates() {
-  const [direcao, setDirecao] = useState<Direcao>('a');
+  const [direcao, setDirecao] = useState<Direcao>('d');
   const [emailId, setEmailId] = useState(EMAILS[0].id);
   const [celular, setCelular] = useState(false);
   const [tema, setTema] = useState<Tema>('escuro');
@@ -254,8 +259,8 @@ export function EsbocosTemplates() {
           </div>
           <p className="t-legenda max-w-[60ch] text-center">
             Nomes, datas e valores são de exemplo. Onde o cliente de e-mail não
-            carrega fontes (Gmail, Outlook), o Garamond vira Georgia, como aqui
-            pode acontecer.
+            carrega fontes (Gmail, Outlook), o Garamond vira Georgia. Emblemas e
+            órbitas vão como imagem (PNG) no e-mail final.
           </p>
         </div>
       </div>

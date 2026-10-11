@@ -11,6 +11,16 @@
 
 export type Rodape = 'conta' | 'seguranca' | 'cobranca' | 'newsletter';
 
+export type Emblema =
+  | 'bussola'
+  | 'envelope'
+  | 'chave'
+  | 'turma'
+  | 'recibo'
+  | 'balanca'
+  | 'estrela'
+  | 'lua';
+
 export interface Caminho {
   titulo: string;
   texto: string;
@@ -30,19 +40,14 @@ export interface Email {
   dados?: { rotulo: string; valor: string }[];
   /** Só no de boas-vindas: os caminhos, como links discretos. */
   caminhos?: Caminho[];
-  /** Ilustração do topo, quando o e-mail pede uma. */
-  imagem?: { src: string; alt: string; largura: number; altura: number };
+  /** O símbolo no centro do emblema gravado. */
+  emblema: Emblema;
+  /** O dado que vale ver de longe: valor, prazo, resultado. */
+  destaque?: { valor: string; rotulo: string };
   rodape: Rodape;
   /** Newsletter: as notas abaixo do artigo principal. */
   notas?: { rotulo: string; titulo: string; texto: string }[];
 }
-
-const GRAVURA_AULA = {
-  src: '/illustrations/music-lesson.webp',
-  alt: 'Gravura de uma aula de música, em traço dourado',
-  largura: 1000,
-  altura: 715,
-};
 
 export const EMAILS: Email[] = [
   {
@@ -74,7 +79,7 @@ export const EMAILS: Email[] = [
         link: 'Conhecer o portal',
       },
     ],
-    imagem: GRAVURA_AULA,
+    emblema: 'bussola',
     rodape: 'conta',
   },
   {
@@ -90,6 +95,8 @@ export const EMAILS: Email[] = [
       rotulo: 'Confirmar meu e-mail',
       dica: 'O link vale por 24 horas.',
     },
+    emblema: 'envelope',
+    destaque: { valor: '24 horas', rotulo: 'para usar o link' },
     rodape: 'seguranca',
   },
   {
@@ -102,6 +109,8 @@ export const EMAILS: Email[] = [
       'Recebemos um pedido para trocar a senha da sua conta. Toque no botão e escolha a nova.',
     ],
     acao: { rotulo: 'Criar nova senha', dica: 'O link vale por uma hora.' },
+    emblema: 'chave',
+    destaque: { valor: '1 hora', rotulo: 'para usar o link' },
     rodape: 'seguranca',
   },
   {
@@ -115,10 +124,8 @@ export const EMAILS: Email[] = [
       'Quando você aceitar, as aulas marcadas e as tarefas aparecem na sua conta, ao lado das partituras que você já usa.',
     ],
     acao: { rotulo: 'Ver o convite' },
-    dados: [
-      { rotulo: 'Professora', valor: 'Helena Costa' },
-      { rotulo: 'Instrumento', valor: 'Piano' },
-    ],
+    emblema: 'turma',
+    destaque: { valor: 'Helena Costa', rotulo: 'professora de piano' },
     rodape: 'conta',
   },
   {
@@ -137,6 +144,8 @@ export const EMAILS: Email[] = [
       { rotulo: 'Valor', valor: 'R$ 39,90' },
       { rotulo: 'Data', valor: '11 de outubro de 2026' },
     ],
+    emblema: 'recibo',
+    destaque: { valor: 'R$ 39,90', rotulo: 'Mentor · mensal' },
     rodape: 'cobranca',
   },
   {
@@ -150,6 +159,8 @@ export const EMAILS: Email[] = [
       'Obrigado por avisar. É assim que o acervo continua confiável para quem estuda por ele.',
     ],
     acao: { rotulo: 'Ver a página de Chopin' },
+    emblema: 'balanca',
+    destaque: { valor: 'Removido', rotulo: 'resultado da análise' },
     rodape: 'conta',
   },
   {
@@ -163,6 +174,8 @@ export const EMAILS: Email[] = [
       'Se você tiver uma fonte que mostre o contrário, denuncie de novo pela própria página e conte o que encontrou.',
     ],
     acao: { rotulo: 'Ver a página de Chopin' },
+    emblema: 'balanca',
+    destaque: { valor: 'Mantido', rotulo: 'resultado da análise' },
     rodape: 'conta',
   },
   {
@@ -181,6 +194,8 @@ export const EMAILS: Email[] = [
       { rotulo: 'Página', valor: 'Frédéric Chopin' },
       { rotulo: 'XP', valor: '+30' },
     ],
+    emblema: 'estrela',
+    destaque: { valor: '+30 XP', rotulo: 'curiosidade sobre Chopin' },
     rodape: 'conta',
   },
   {
@@ -194,12 +209,7 @@ export const EMAILS: Email[] = [
       'John Field deu o nome; Chopin deu a alma. Nesta edição, a história de uma forma feita para tocar baixinho, à luz de vela, e por que ela continua sendo a porta de entrada de tanta gente no piano.',
     ],
     acao: { rotulo: 'Ler o artigo no blog' },
-    imagem: {
-      src: '/illustrations/beethoven-manuscript.webp',
-      alt: 'Manuscrito de Beethoven em traço dourado',
-      largura: 1000,
-      altura: 778,
-    },
+    emblema: 'lua',
     notas: [
       {
         rotulo: 'Obra da semana',
