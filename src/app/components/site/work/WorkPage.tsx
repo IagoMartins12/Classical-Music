@@ -1,3 +1,5 @@
+import { MoreActions } from '../MoreActions';
+import { WorkListen } from './WorkListen';
 import { nomeDeTransicao } from '@/app/components/ui/nomeDeTransicao';
 import Link from '@/app/components/LocalizedLink';
 import { SeloVerificada } from '@/app/components/ui/SeloVerificada';
@@ -8,15 +10,13 @@ import type { WorkDetails } from '@/app/requests/work-page-details';
 import type { ScoreLibrary } from '@/app/requests/work-score-library';
 import { localizeHref } from '@/app/utils/localizedRoutes';
 import { SITE_URL } from '@/app/utils/seoAlternates';
-import { CurationActions } from '../CurationActions';
 import { FavoriteHeart } from '../FavoriteHeart';
 import { Portrait } from '../Portrait';
-import { ReportButton } from '../ReportButton';
 import { ShareAction } from '../ShareAction';
 import { workTitle } from '../workTitle';
 import { MoreFromComposer } from './MoreFromComposer';
 import { StudyActions } from './StudyActions';
-import { WorkAnnotations, WorkMedia } from './WorkMedia';
+import { WorkAnnotations, WorkVideoLesson } from './WorkMedia';
 import { WorkDetailsPanel } from './WorkDetailsPanel';
 import { WorkScores } from './WorkScores';
 import type { StudyContext } from './useStudy';
@@ -129,8 +129,7 @@ export function WorkPage({
               image={work.composer.portraitUrl}
               imageName={composerName}
             />
-            <ReportButton entityType="work" entityId={work.id} name={title} />
-            <CurationActions
+            <MoreActions
               type="work"
               id={work.id}
               name={title}
@@ -142,7 +141,7 @@ export function WorkPage({
 
       <section className="mt-12 flex flex-col gap-4">
         <h2 className="t-subtitulo">{copy.listen}</h2>
-        <WorkMedia work={work} />
+        <WorkListen work={work} />
       </section>
 
       <WorkScores
@@ -164,6 +163,10 @@ export function WorkPage({
         language={language}
         copy={copy}
       />
+
+      <section className="mt-20">
+        <WorkVideoLesson work={work} />
+      </section>
     </article>
   );
 }

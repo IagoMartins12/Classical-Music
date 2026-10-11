@@ -3,7 +3,8 @@
 import { useQuery } from '@tanstack/react-query';
 import { useState } from 'react';
 import { PiMedal, PiTrophy } from 'react-icons/pi';
-import { Button } from '@/app/components/ui/Button';
+import Link from '@/app/components/LocalizedLink';
+import { Button, classesDeBotao } from '@/app/components/ui/Button';
 import { Icon } from '@/app/components/ui/Icon';
 import { Sheet } from '@/app/components/ui/Sheet';
 import { cx } from '@/app/components/ui/cx';
@@ -63,20 +64,16 @@ export function Bar({
 }
 
 /**
- * Level, XP and the achievements this page brings closer (its category
- * first). "All achievements" opens the full list in a sheet.
+ * Level and XP, then only this page's achievements: how many of its kind are
+ * unlocked and the ones closest to unlocking. The full list is the
+ * achievements page.
  */
-export function ProgressPanel({
-  category,
-}: {
-  category?: AchievementCategory;
-}) {
+export function ProgressPanel({ category }: { category: AchievementCategory }) {
   const { language } = useRouteLanguage();
   const copy = PERSONAL[language].progress;
   const fmt = (n: number) =>
     n.toLocaleString(language === 'pt' ? 'pt-BR' : 'en-US');
   const { stats, list } = useAchievements();
-  const [all, setAll] = useState(false);
 
   if (stats.isError || list.isError) {
     return <p className="t-rotulo text-texto-suave">{copy.error}</p>;
@@ -90,12 +87,10 @@ export function ProgressPanel({
     );
   }
   const s = stats.data;
-  const pending = [...list.data.locked]
-    .sort(
-      (a, b) =>
-        Number(b.category === category) - Number(a.category === category) ||
-        b.percentage - a.percentage
-    )
+  const unlocked = list.data.unlocked.filter((a) => a.category === category);
+  const locked = list.data.locked.filter((a) => a.category === category);
+  const pending = [...locked]
+    .sort((a, b) => b.percentage - a.percentage)
     .slice(0, NEXT_SHOWN);
 
   return (
@@ -117,7 +112,11 @@ export function ProgressPanel({
         <Bar value={s.xpIntoLevel} max={s.xpIntoLevel + s.xpToNextLevel} />
         <span className="t-legenda">{copy.toNext(fmt(s.xpToNextLevel))}</span>
         <span className="t-rotulo text-texto-suave">
-          {copy.unlocked(s.unlockedCount, s.totalCount)}
+          {copy.unlockedHere(
+            unlocked.length,
+            unlocked.length + locked.length,
+            copy.kinds[category]
+          )}
         </span>
       </section>
 
@@ -140,64 +139,18 @@ export function ProgressPanel({
             ))}
           </ul>
         ) : (
-          <p className="t-rotulo text-texto-suave">{copy.empty}</p>
+          <p className="t-rotulo text-texto-suave">
+            {unlocked.length ? copy.emptyHere : copy.empty}
+          </p>
         )}
       </section>
 
-      <Button
-        variante="texto"
-        className="self-start"
-        icone={PiMedal}
-        onClick={() => setAll(true)}
+      <Link
+        href="/achievements"
+        className={cx(classesDeBotao('texto'), 'self-start')}
       >
-        {copy.all}
-      </Button>
-
-      <Sheet
-        aberto={all}
-        aoFechar={() => setAll(false)}
-        titulo={copy.unlocked(s.unlockedCount, s.totalCount)}
-        largura="m"
-      >
-        <ul className="flex flex-col divide-y divide-[var(--linha)]">
-          {list.data.unlocked.map((a) => (
-            <li key={a.badgeId} className="flex items-start gap-3 py-3">
-              <Icon
-                de={PiMedal}
-                tamanho="m"
-                className="mt-0.5 text-ouro-texto"
-              />
-              <span className="flex flex-col gap-0.5">
-                <span className="font-medium">{a.name}</span>
-                <span className="t-legenda">{a.description}</span>
-              </span>
-              <span className="t-dado ml-auto shrink-0 text-[0.75rem] text-texto-suave">
-                {copy.reward(a.xpReward)}
-              </span>
-            </li>
-          ))}
-          {list.data.locked.map((a) => (
-            <li
-              key={a.badgeId}
-              className="flex items-start gap-3 py-3 opacity-80"
-            >
-              <Icon
-                de={PiMedal}
-                tamanho="m"
-                className="mt-0.5 text-texto-fraco"
-              />
-              <span className="flex min-w-0 flex-1 flex-col gap-1.5">
-                <span className="font-medium">{a.name}</span>
-                <span className="t-legenda">{a.description}</span>
-                <Bar value={a.progress} max={a.maxProgress} />
-              </span>
-              <span className="t-dado shrink-0 text-[0.75rem] text-texto-fraco">
-                {copy.of(a.progress, a.maxProgress)}
-              </span>
-            </li>
-          ))}
-        </ul>
-      </Sheet>
+        <Icon de={PiMedal} /> {copy.all}
+      </Link>
     </div>
   );
 }
@@ -206,7 +159,7 @@ export function ProgressPanel({
 export function ProgressButton({
   category,
 }: {
-  category?: AchievementCategory;
+  category: AchievementCategory;
 }) {
   const copy = PERSONAL[useRouteLanguage().language].progress;
   const [open, setOpen] = useState(false);

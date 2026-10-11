@@ -4,17 +4,18 @@ import dynamic from 'next/dynamic';
 import { useEffect, useState } from 'react';
 import { useLearningModalStore } from '@/app/stores/useLearningModalStore';
 
-/** The study modal's code loads only once someone opens it. */
-const LearningModal = dynamic(() => import('@/app/components/LearningModal'), {
-  ssr: false,
-});
+/** The study sheet's code loads only once someone opens it. */
+const StudySheet = dynamic(
+  () => import('./study/StudySheet').then((m) => m.StudySheet),
+  { ssr: false }
+);
 
-/** Mounts the study modal ("want to learn" / "learned") the first time it opens. */
+/** Mounts the study sheet ("want to learn" / "learned") the first time it opens. */
 export function LearningModalHost() {
   const active = useLearningModalStore((s) => s.isOpen || s.isInSelectionMode);
   const [used, setUsed] = useState(false);
   useEffect(() => {
     if (active) setUsed(true);
   }, [active]);
-  return used ? <LearningModal /> : null;
+  return used ? <StudySheet /> : null;
 }

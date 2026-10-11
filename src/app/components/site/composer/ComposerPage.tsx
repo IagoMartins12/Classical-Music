@@ -1,3 +1,4 @@
+import { MoreActions } from '../MoreActions';
 import { nomeDeTransicao } from '@/app/components/ui/nomeDeTransicao';
 import { PiArrowSquareOut } from 'react-icons/pi';
 import Link from '@/app/components/LocalizedLink';
@@ -16,11 +17,9 @@ import type {
 import { localizeHref } from '@/app/utils/localizedRoutes';
 import { SITE_URL } from '@/app/utils/seoAlternates';
 import { getComposerCuriosities } from '@/app/utils/utils';
-import { CurationActions } from '../CurationActions';
 import { FavoriteHeart } from '../FavoriteHeart';
 import { youtubeId } from '../youtube';
 import { Portrait } from '../Portrait';
-import { ReportButton } from '../ReportButton';
 import { ShareAction } from '../ShareAction';
 import { AlternativeNames } from './AlternativeNames';
 import { BiographyText } from './BiographyText';
@@ -190,12 +189,7 @@ export function ComposerPage({
                 image={composer.portraitUrl}
                 imageName={fullName}
               />
-              <ReportButton
-                entityType="composer"
-                entityId={composer.id}
-                name={fullName}
-              />
-              <CurationActions
+              <MoreActions
                 type="composer"
                 id={composer.id}
                 name={fullName}

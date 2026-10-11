@@ -1,5 +1,6 @@
 'use client';
 
+import { SearchHighlights } from './SearchHighlights';
 import { useId, useMemo, useRef, useState, type KeyboardEvent } from 'react';
 import { useRouter } from 'next/navigation';
 import {
@@ -189,6 +190,10 @@ export function HeaderSearch({
           </Button>
         )}
       </div>
+
+      {variant === 'sheet' && term.trim().length < 2 && (
+        <SearchHighlights copy={copy} onNavigate={onNavigate} />
+      )}
 
       {showPanel && (
         <div

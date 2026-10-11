@@ -13,6 +13,7 @@ const pt = {
   },
   verified: 'Verificado',
   curation: { edit: 'Editar', verify: 'Verificação' },
+  more: 'Mais ações',
   share: {
     action: 'Compartilhar',
     title: 'Compartilhar',
@@ -65,6 +66,7 @@ const en: typeof pt = {
   },
   verified: 'Verified',
   curation: { edit: 'Edit', verify: 'Verification' },
+  more: 'More actions',
   share: {
     action: 'Share',
     title: 'Share',

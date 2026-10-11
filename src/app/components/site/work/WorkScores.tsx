@@ -1,5 +1,6 @@
 'use client';
 
+import { QuillOnPaper } from '../QuillOnPaper';
 import { useEffect, useMemo, useRef, useState, type ReactNode } from 'react';
 import {
   PiArrowLeft,
@@ -7,7 +8,6 @@ import {
   PiCaretDown,
   PiDownloadSimple,
   PiFiles,
-  PiMagnifyingGlass,
   PiUploadSimple,
 } from 'react-icons/pi';
 import Link from '@/app/components/LocalizedLink';
@@ -438,34 +438,20 @@ function EditionBox({
   );
 }
 
+/** Fetching from IMSLP: the same quill as a biography being written. */
 function Searching({ copy }: { copy: WorkCopy['scores'] }) {
   return (
     <div
       role="status"
-      className="flex flex-col gap-4 rounded-card bg-sup-2 p-6"
+      className="flex flex-col items-center gap-6 rounded-card bg-sup-2 px-6 py-10 text-center"
     >
-      <span className="flex items-center gap-3">
-        <span className="grid h-10 w-10 shrink-0 place-items-center rounded-full bg-[var(--fundo)] text-ouro-texto">
-          <Icon de={PiMagnifyingGlass} />
-        </span>
-        <span className="flex flex-col">
-          <span className="font-medium">{copy.searching}</span>
-          <span className="t-rotulo text-texto-suave">
-            {copy.searchingText}
-          </span>
-        </span>
-      </span>
-      <ul
-        className="grid grid-cols-[repeat(auto-fill,minmax(8.75rem,1fr))] gap-4"
-        aria-hidden="true"
-      >
-        {Array.from({ length: 6 }, (_, i) => (
-          <li
-            key={i}
-            className="loading-skeleton aspect-[1/1.3] rounded-[8px]"
-          />
-        ))}
-      </ul>
+      <QuillOnPaper />
+      <div className="flex max-w-[44ch] flex-col items-center gap-2">
+        <p className="font-display text-[1.375rem] leading-snug">
+          {copy.searching}
+        </p>
+        <p className="t-rotulo text-texto-suave">{copy.searchingText}</p>
+      </div>
     </div>
   );
 }

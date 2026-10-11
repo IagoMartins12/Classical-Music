@@ -14,6 +14,18 @@ const pt = {
   progress: {
     title: 'Seu progresso',
     show: 'Ver seu progresso',
+    hide: 'Esconder progresso',
+    unlockedHere: (a: number, b: number, kind: string) =>
+      `${a} de ${b} conquistas de ${kind}`,
+    kinds: {
+      LEARNING: 'estudos',
+      FAVORITES: 'favoritos',
+      ANNOTATIONS: 'anotações',
+      GENERAL: 'uso geral',
+      SOCIAL: 'comunidade',
+      MILESTONE: 'marcos',
+    },
+    emptyHere: 'Você já desbloqueou todas as conquistas desta página.',
     level: (n: number) => `Nível ${n}`,
     xp: (n: string) => `${n} XP`,
     toNext: (n: string) => `faltam ${n} XP para o próximo nível`,
@@ -231,6 +243,18 @@ const en: typeof pt = {
   progress: {
     title: 'Your progress',
     show: 'See your progress',
+    hide: 'Hide progress',
+    unlockedHere: (a: number, b: number, kind: string) =>
+      `${a} of ${b} ${kind} achievements`,
+    kinds: {
+      LEARNING: 'study',
+      FAVORITES: 'favorites',
+      ANNOTATIONS: 'annotation',
+      GENERAL: 'general',
+      SOCIAL: 'community',
+      MILESTONE: 'milestone',
+    },
+    emptyHere: 'You have unlocked every achievement on this page.',
     level: (n: number) => `Level ${n}`,
     xp: (n: string) => `${n} XP`,
     toNext: (n: string) => `${n} XP to the next level`,

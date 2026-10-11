@@ -25,7 +25,7 @@ export default async function AchievementsPage() {
   const copy = PERSONAL[await getServerLanguageStatic()].achievements;
   return (
     <AchievementProvider>
-      <PersonalPage title={copy.title} description={copy.text} progress={false}>
+      <PersonalPage title={copy.title} description={copy.text}>
         <AchievementsView />
       </PersonalPage>
     </AchievementProvider>
