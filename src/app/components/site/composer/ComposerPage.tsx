@@ -24,6 +24,12 @@ import { ShareAction } from '../ShareAction';
 import { AlternativeNames } from './AlternativeNames';
 import { BiographyText } from './BiographyText';
 import { ContributionCredit } from '../contribute/ContributionCredit';
+import {
+  CompleteInvite,
+  ContributeProvider,
+  type ContributionTarget,
+  WrongOnThisPage,
+} from '../contribute/Contribute';
 import { BiographyWriter } from './BiographyWriter';
 import { ComposerCatalog } from './ComposerCatalog';
 import { ComposerFacts } from './ComposerFacts';
@@ -94,6 +100,25 @@ export function ComposerPage({
         c.kind === 'BIO' && c.field === (language === 'en' ? 'bioEn' : 'bio')
     ) ?? null;
   const videoCredit = contributions.find((c) => c.kind === 'VIDEO') ?? null;
+  const contribution: ContributionTarget = {
+    type: 'composer',
+    id: composer.id,
+    name: composer.name || fullName,
+    current: {
+      // Only the page's language: the sheet edits that one.
+      [language === 'en' ? 'bioEn' : 'bio']: bio,
+      videoUrl: composer.videoUrl,
+      birthDate: composer.birthDate,
+      deathDate: composer.deathDate,
+      nationality: composer.nationality,
+      wikipediaLink: composer.wikipediaLink,
+    },
+  };
+  const missing = [
+    !bio && { key: 'bio', kind: 'bio' as const },
+    !composer.videoUrl && { key: 'video', kind: 'video' as const },
+    !curiosities.length && { key: 'curiosity', kind: 'curiosity' as const },
+  ].filter((m) => !!m);
   const url = `${SITE_URL}${localizeHref(`/composer/${composer.id}`, language)}`;
   const external = [
     composer.wikipediaLink && [
@@ -104,166 +129,165 @@ export function ComposerPage({
   ].filter(Boolean) as [string, string][];
 
   return (
-    <article className="section-wrap py-10 md:py-14">
-      <nav
-        aria-label={copy.breadcrumb}
-        className="t-rotulo mb-8 text-texto-fraco"
-      >
-        <Link href="/composers" className={textLink}>
-          {copy.breadcrumb}
-        </Link>
-        {era && (
-          <>
-            {' '}
-            <span aria-hidden="true">/</span> {era}
-          </>
-        )}
-      </nav>
-
-      <div className="grid grid-cols-1 gap-10 md:grid-cols-[minmax(0,5fr)_minmax(0,7fr)] lg:gap-16">
-        <aside className="flex flex-col gap-6 md:sticky md:top-24 md:self-start">
-          {/* The card clicked in a list turns into this portrait (CartoesQueViram). */}
-          <div
-            className="relative"
-            style={nomeDeTransicao(`compositor-${composer.id}`, 'cartao')}
-          >
-            <Portrait
-              name={fullName}
-              src={composer.portraitUrl}
-              priority
-              sizes="(max-width: 768px) 100vw, 40vw"
-              className="aspect-[4/5] w-full rounded-card text-[3rem] shadow-[var(--sombra-2)]"
-            />
-            <FavoriteHeart
-              type="composer"
-              id={composer.id}
-              name={composer.name}
-              onPhoto
-              className="absolute right-3 top-3"
-            />
-          </div>
-          {external.length > 0 && (
-            <div className="flex flex-wrap gap-2">
-              {external.map(([label, href]) => (
-                <a
-                  key={label}
-                  href={href}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="inline-flex min-h-10 items-center gap-2 rounded-full bg-sup-2 px-4 text-[0.9375rem] text-texto-suave hover:text-ouro-texto"
-                >
-                  {label} <Icon de={PiArrowSquareOut} tamanho="pp" />
-                </a>
-              ))}
-            </div>
+    <ContributeProvider target={contribution}>
+      <article className="section-wrap py-10 md:py-14">
+        <nav
+          aria-label={copy.breadcrumb}
+          className="t-rotulo mb-8 text-texto-fraco"
+        >
+          <Link href="/composers" className={textLink}>
+            {copy.breadcrumb}
+          </Link>
+          {era && (
+            <>
+              {' '}
+              <span aria-hidden="true">/</span> {era}
+            </>
           )}
-        </aside>
+        </nav>
 
-        <div className="flex min-w-0 flex-col gap-10">
-          <header className="flex flex-col gap-5">
-            <h1 className="font-display text-[clamp(3rem,7vw,5.5rem)] leading-[0.95] tracking-[-0.02em]">
-              {first && `${first} `}
-              <span className="whitespace-nowrap">
-                {last}
-                {composer.isVerified && (
-                  <SeloVerificada
-                    desenhar
-                    className="ml-2 inline-block h-[0.42em] w-[0.42em] align-[0.35em] text-verificado"
-                  />
-                )}
-              </span>
-            </h1>
-            <ComposerFacts
-              composer={composer}
-              writtenFor={overview.writtenFor}
-              language={language}
-              copy={copy.facts}
-            />
-            <AlternativeNames
-              names={splitNames(composer.alternativeNames, [
-                fullName,
-                composer.name,
-              ])}
-            />
-            <div className="flex flex-wrap gap-2">
+        <div className="grid grid-cols-1 gap-10 md:grid-cols-[minmax(0,5fr)_minmax(0,7fr)] lg:gap-16">
+          <aside className="flex flex-col gap-6 md:sticky md:top-24 md:self-start">
+            {/* The card clicked in a list turns into this portrait (CartoesQueViram). */}
+            <div
+              className="relative"
+              style={nomeDeTransicao(`compositor-${composer.id}`, 'cartao')}
+            >
+              <Portrait
+                name={fullName}
+                src={composer.portraitUrl}
+                priority
+                sizes="(max-width: 768px) 100vw, 40vw"
+                className="aspect-[4/5] w-full rounded-card text-[3rem] shadow-[var(--sombra-2)]"
+              />
               <FavoriteHeart
                 type="composer"
                 id={composer.id}
                 name={composer.name}
-                withLabel
-              />
-              <ShareAction
-                title={fullName}
-                url={url}
-                image={composer.portraitUrl}
-                imageName={fullName}
-              />
-              <MoreActions
-                type="composer"
-                id={composer.id}
-                name={fullName}
-                verified={!!composer.isVerified}
-                current={{
-                  // Only the page's language: the sheet edits that one.
-                  [language === 'en' ? 'bioEn' : 'bio']: bio,
-                  videoUrl: composer.videoUrl,
-                  birthDate: composer.birthDate,
-                  deathDate: composer.deathDate,
-                  nationality: composer.nationality,
-                  wikipediaLink: composer.wikipediaLink,
-                }}
+                onPhoto
+                className="absolute right-3 top-3"
               />
             </div>
-          </header>
-
-          <section className="flex flex-col gap-4">
-            <h2 className="sr-only">{copy.bio.heading}</h2>
-            {bio ? (
-              <>
-                <BiographyText
-                  text={bio}
-                  aiNote={composer.bioGeneratedByAi ? copy.bio.aiNote : null}
-                />
-                {bioCredit && (
-                  <ContributionCredit
-                    contribution={bioCredit}
-                    name={copy.bio.heading}
-                  />
-                )}
-              </>
-            ) : (
-              <BiographyWriter composerId={composer.id} name={composer.name} />
+            {external.length > 0 && (
+              <div className="flex flex-wrap gap-2">
+                {external.map(([label, href]) => (
+                  <a
+                    key={label}
+                    href={href}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex min-h-10 items-center gap-2 rounded-full bg-sup-2 px-4 text-[0.9375rem] text-texto-suave hover:text-ouro-texto"
+                  >
+                    {label} <Icon de={PiArrowSquareOut} tamanho="pp" />
+                  </a>
+                ))}
+              </div>
             )}
-          </section>
+          </aside>
 
-          <StartingPoints works={overview.startingPoints} copy={copy} />
+          <div className="flex min-w-0 flex-col gap-10">
+            <header className="flex flex-col gap-5">
+              <h1 className="font-display text-[clamp(3rem,7vw,5.5rem)] leading-[0.95] tracking-[-0.02em]">
+                {first && `${first} `}
+                <span className="whitespace-nowrap">
+                  {last}
+                  {composer.isVerified && (
+                    <SeloVerificada
+                      desenhar
+                      className="ml-2 inline-block h-[0.42em] w-[0.42em] align-[0.35em] text-verificado"
+                    />
+                  )}
+                </span>
+              </h1>
+              <ComposerFacts
+                composer={composer}
+                writtenFor={overview.writtenFor}
+                language={language}
+                copy={copy.facts}
+              />
+              <AlternativeNames
+                names={splitNames(composer.alternativeNames, [
+                  fullName,
+                  composer.name,
+                ])}
+              />
+              <div className="flex flex-wrap gap-2">
+                <FavoriteHeart
+                  type="composer"
+                  id={composer.id}
+                  name={composer.name}
+                  withLabel
+                />
+                <ShareAction
+                  title={fullName}
+                  url={url}
+                  image={composer.portraitUrl}
+                  imageName={fullName}
+                />
+                <MoreActions
+                  type="composer"
+                  id={composer.id}
+                  name={fullName}
+                  verified={!!composer.isVerified}
+                />
+              </div>
+            </header>
+
+            <section className="flex flex-col gap-4">
+              <h2 className="sr-only">{copy.bio.heading}</h2>
+              {bio ? (
+                <>
+                  <BiographyText
+                    text={bio}
+                    aiNote={composer.bioGeneratedByAi ? copy.bio.aiNote : null}
+                  />
+                  {bioCredit && (
+                    <ContributionCredit
+                      contribution={bioCredit}
+                      name={copy.bio.heading}
+                    />
+                  )}
+                </>
+              ) : (
+                <BiographyWriter
+                  composerId={composer.id}
+                  name={composer.name}
+                />
+              )}
+            </section>
+
+            <StartingPoints works={overview.startingPoints} copy={copy} />
+            <CompleteInvite missing={missing} />
+          </div>
         </div>
-      </div>
 
-      <WatchAndCuriosities
-        composerId={composer.id}
-        videoId={youtubeId(composer.videoUrl)}
-        videoCredit={videoCredit}
-        title={fullName}
-        name={composer.name || fullName}
-        curiosities={curiosities}
-        copy={copy}
-      />
+        <WatchAndCuriosities
+          composerId={composer.id}
+          videoId={youtubeId(composer.videoUrl)}
+          videoCredit={videoCredit}
+          title={fullName}
+          name={composer.name || fullName}
+          curiosities={curiosities}
+          copy={copy}
+        />
 
-      <ComposerCatalog
-        composerId={composer.id}
-        name={composer.name}
-        initial={works}
-        options={filterOptions}
-      />
+        <ComposerCatalog
+          composerId={composer.id}
+          name={composer.name}
+          initial={works}
+          options={filterOptions}
+        />
 
-      <FurtherReading articles={articles} copy={copy.reading} />
+        <FurtherReading articles={articles} copy={copy.reading} />
 
-      <Contemporaries
-        composers={overview.contemporaries}
-        language={language}
-        copy={copy.sameTime}
-      />
-    </article>
+        <Contemporaries
+          composers={overview.contemporaries}
+          language={language}
+          copy={copy.sameTime}
+        />
+
+        <WrongOnThisPage uploadHref="/upload" />
+      </article>
+    </ContributeProvider>
   );
 }

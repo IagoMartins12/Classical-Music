@@ -21,6 +21,8 @@ export interface Contribution {
   entityId: string;
   field: string | null;
   xp: number;
+  /** Paid after seven days without an upheld report. */
+  xpGranted: boolean;
   createdAt: string;
   author: ContributionAuthor;
 }
@@ -69,7 +71,7 @@ export function fetchCuriosities(composerId: string, language: 'pt' | 'en') {
 
 export function addCuriosity(
   composerId: string,
-  input: { text: string; language: 'pt' | 'en' }
+  input: { text: string; language: 'pt' | 'en'; source?: string }
 ) {
   return toResult(
     apiFetch<Curiosity>(`/composers/${composerId}/curiosities`, {
@@ -90,6 +92,7 @@ export function contribute(input: {
   entityId: string;
   field: string;
   value: string;
+  source?: string;
 }) {
   return toResult(
     apiFetch<Contribution>('/contributions', { method: 'POST', body: input })

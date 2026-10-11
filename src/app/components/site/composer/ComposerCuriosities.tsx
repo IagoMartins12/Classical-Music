@@ -23,12 +23,13 @@ import {
   removeCuriosity,
 } from '@/app/requests/contributions';
 import { ReportSheet } from '../ReportButton';
-import { CuriositySheet } from '../contribute/CuriositySheet';
+import { useContribute } from '../contribute/Contribute';
 
 /**
  * The composer's curiosities: the editorial ones and what people shared,
  * with who shared it. Painted from the server; a signed-in visitor
- * refetches to also see their own held ones. Anyone signed in can add one.
+ * refetches to also see their own held ones. "Acrescentar" opens the
+ * contribution sheet on its curiosity tab.
  */
 export function ComposerCuriosities({
   composerId,
@@ -58,7 +59,7 @@ export function ComposerCuriosities({
     initialDataUpdatedAt: 0,
     enabled: isAuthenticated,
   });
-  const [writing, setWriting] = useState(false);
+  const { open } = useContribute();
   const [reporting, setReporting] = useState<Curiosity | null>(null);
 
   const update = (next: (current: Curiosity[]) => Curiosity[]) =>
@@ -80,7 +81,7 @@ export function ComposerCuriosities({
             variante="fantasma"
             tamanho="p"
             icone={PiPlus}
-            onClick={() => allowed('contribute') && setWriting(true)}
+            onClick={() => open('curiosity')}
           >
             {copy.add}
           </Button>
@@ -141,19 +142,12 @@ export function ComposerCuriosities({
           <Button
             variante="secundario"
             icone={PiPlus}
-            onClick={() => allowed('contribute') && setWriting(true)}
+            onClick={() => open('curiosity')}
           >
             {copy.add}
           </Button>
         </div>
       )}
-      <CuriositySheet
-        open={writing}
-        onClose={() => setWriting(false)}
-        onAdded={(curiosity) => update((current) => [...current, curiosity])}
-        composerId={composerId}
-        name={name}
-      />
       <ReportSheet
         entityType="curiosity"
         entityId={reporting?.id ?? ''}

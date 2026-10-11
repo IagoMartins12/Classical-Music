@@ -20,13 +20,10 @@ import { useSignInGate } from '@/app/hooks/useSignInGate';
 import { useSession } from '@/app/libs/session';
 import { canEditCatalog, canVerifyCatalog } from '@/app/utils/permissions';
 import { ReportSheet } from './ReportButton';
-import type { ContributionTarget } from './contribute/ContributeSheet';
+import { useContribute } from './contribute/Contribute';
 
 const VerificationModal = dynamic(
   () => import('@/app/components/Verification/VerificationModal')
-);
-const ContributeSheet = dynamic(() =>
-  import('./contribute/ContributeSheet').then((m) => m.ContributeSheet)
 );
 
 const item =
@@ -43,14 +40,11 @@ export function MoreActions({
   id,
   name,
   verified,
-  current,
 }: {
   type: 'composer' | 'work';
   id: string;
   name: string;
   verified: boolean;
-  /** Current values of the fields people can contribute to. */
-  current: ContributionTarget['current'];
 }) {
   const { language } = useRouteLanguage();
   const common = COMMON[language];
@@ -58,7 +52,7 @@ export function MoreActions({
   const allowed = useSignInGate();
   const [open, setOpen] = useState(false);
   const [reporting, setReporting] = useState(false);
-  const [contributing, setContributing] = useState(false);
+  const contribute = useContribute();
   const [verifying, setVerifying] = useState(false);
   const [isVerified, setIsVerified] = useState(verified);
   const close = useCallback(() => setOpen(false), []);
@@ -86,7 +80,7 @@ export function MoreActions({
             className={item}
             onClick={() => {
               close();
-              if (allowed('contribute')) setContributing(true);
+              contribute.open(type === 'composer' ? 'bio' : 'data');
             }}
           >
             <Icon de={PiHandHeart} /> {CONTRIBUTE[language].action}
@@ -134,13 +128,6 @@ export function MoreActions({
         open={reporting}
         onClose={() => setReporting(false)}
       />
-      {contributing && (
-        <ContributeSheet
-          open
-          onClose={() => setContributing(false)}
-          target={{ type, id, name, current }}
-        />
-      )}
       {verifying && (
         <VerificationModal
           isOpen
