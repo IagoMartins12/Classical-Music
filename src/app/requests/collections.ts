@@ -56,9 +56,12 @@ export function myCollections() {
   }>('/collections/mine', { cache: 'no-store' });
 }
 
-export function collectionCandidates(kind: CollectionKind, q: string) {
+/** What the editor offers for what was typed, or the scores of one work. */
+export function collectionCandidates(
+  query: { kind: CollectionKind; q: string } | { kind: 'SCORE'; workId: string }
+) {
   return apiFetch<CollectionEntry[]>('/collections/candidates', {
-    query: { kind, q },
+    query,
     cache: 'no-store',
   });
 }

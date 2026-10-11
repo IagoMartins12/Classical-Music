@@ -70,6 +70,7 @@ export function entryDetail(
   return [
     e.workTitle && workTitle(e.workTitle, e.opOrCatalog),
     e.composerName,
+    e.edition,
     e.pageCount && copy.pages(e.pageCount),
   ]
     .filter(Boolean)

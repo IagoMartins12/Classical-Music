@@ -10906,6 +10906,8 @@ export interface components {
       workId?: string | null;
       workTitle?: string | null;
       pageCount?: string | null;
+      /** @description Partitura: a edição */
+      edition?: string | null;
     };
     CollectionDetailDto: {
       id: string;
@@ -21286,7 +21288,10 @@ export interface operations {
     parameters: {
       query: {
         kind: 'WORK' | 'COMPOSER' | 'SCORE';
-        q: string;
+        /** @description O que a pessoa digitou. */
+        q?: string;
+        /** @description Partituras: as desta obra (no lugar de `q`). */
+        workId?: string;
       };
       header?: never;
       path?: never;

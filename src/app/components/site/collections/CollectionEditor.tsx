@@ -6,8 +6,6 @@ import toast from 'react-hot-toast';
 import {
   PiArrowDown,
   PiArrowUp,
-  PiGlobeSimple,
-  PiLockSimple,
   PiPlus,
   PiStar,
   PiTrash,
@@ -16,8 +14,8 @@ import ConfirmModal from '@/app/components/ConfirmModal';
 import { Button } from '@/app/components/ui/Button';
 import { Field } from '@/app/components/ui/Field';
 import { Icon } from '@/app/components/ui/Icon';
+import { Selecao } from '@/app/components/ui/Selecao';
 import { Sheet } from '@/app/components/ui/Sheet';
-import { cx } from '@/app/components/ui/cx';
 import { COLLECTIONS } from '@/app/conteudo/site/collections';
 import { useRouteLanguage } from '@/app/hooks/useRouteLanguage';
 import {
@@ -35,61 +33,12 @@ const KINDS: CollectionKind[] = ['WORK', 'COMPOSER', 'SCORE'];
 
 type Item = CollectionEntry;
 
-/** A radio as a card, like the sketch: tinted when chosen. */
-function Choice({
-  name,
-  checked,
-  disabled,
-  onChange,
-  icon,
-  title,
-  hint,
-}: {
-  name: string;
-  checked: boolean;
-  disabled?: boolean;
-  onChange: () => void;
-  icon: typeof PiPlus;
-  title: string;
-  hint: string;
-}) {
-  return (
-    <label
-      className={cx(
-        'flex cursor-pointer items-start gap-3 rounded-controle p-3',
-        checked ? 'tint-ouro' : 'bg-sup-2',
-        disabled && 'cursor-not-allowed opacity-60'
-      )}
-    >
-      <input
-        type="radio"
-        name={name}
-        checked={checked}
-        disabled={disabled}
-        onChange={onChange}
-        className="mt-1 accent-[var(--ouro)]"
-      />
-      <span className="flex flex-col">
-        <span
-          className={cx(
-            'inline-flex items-center gap-2 font-medium',
-            checked && 'text-ouro-na-tinta'
-          )}
-        >
-          <Icon de={icon} tamanho="p" />
-          {title}
-        </span>
-        <span className="t-legenda">{hint}</span>
-      </span>
-    </label>
-  );
-}
-
 /**
- * Creating or editing a collection, as in the sketch: the kind (fixed once
- * created), name, description, who sees it; on the side, search the
- * catalog and order the items, each with a note. Closing asks first when
- * something changed.
+ * Creating or editing a collection, in one column: the kind (fixed once
+ * created) and who sees it in the same select as the upload forms, name
+ * and description, then the catalog search and the items in order, each
+ * with a note. A score is added by choosing its work first. Closing asks
+ * first when something changed.
  */
 export function CollectionEditor({
   open,
@@ -114,6 +63,9 @@ export function CollectionEditor({
   const [isPublic, setIsPublic] = useState(true);
   const [items, setItems] = useState<Item[]>([]);
   const [search, setSearch] = useState('');
+  /** Scores: the work picked first, then one of its scores. */
+  const [work, setWork] = useState<CollectionEntry | null>(null);
+  const [scoreId, setScoreId] = useState('');
   const [touched, setTouched] = useState(false);
   const [tried, setTried] = useState(false);
   const [saving, setSaving] = useState(false);
@@ -129,19 +81,36 @@ export function CollectionEditor({
     setIsPublic(editing?.isPublic ?? true);
     setItems(editing?.items ?? []);
     setSearch('');
+    setWork(null);
+    setScoreId('');
     setTouched(false);
     setTried(false);
   }, [open, editing]);
 
+  // Scores search the works; the chosen work then lists its scores.
+  const searchKind: CollectionKind = kind === 'SCORE' ? 'WORK' : kind;
   const results = useQuery({
-    queryKey: ['collection-candidates', kind, term],
-    queryFn: () => collectionCandidates(kind, term),
-    enabled: open && term.length >= 2,
+    queryKey: ['collection-candidates', searchKind, term],
+    queryFn: () => collectionCandidates({ kind: searchKind, q: term }),
+    enabled: open && term.length >= 2 && !(kind === 'SCORE' && work),
+    staleTime: 60_000,
+  });
+  const scores = useQuery({
+    queryKey: ['collection-candidates', 'SCORE', work?.refId],
+    queryFn: () => collectionCandidates({ kind: 'SCORE', workId: work!.refId }),
+    enabled: open && kind === 'SCORE' && !!work,
     staleTime: 60_000,
   });
   const offers = (results.data ?? []).filter(
+    (r) => kind === 'SCORE' || !items.some((i) => i.refId === r.refId)
+  );
+  const scoreOptions = (scores.data ?? []).filter(
     (r) => !items.some((i) => i.refId === r.refId)
   );
+  const add = (entry: CollectionEntry) => {
+    change();
+    setItems((list) => [...list, { ...entry, note: null }]);
+  };
 
   const change = () => setTouched(true);
   const move = (from: number, to: number) => {
@@ -203,7 +172,7 @@ export function CollectionEditor({
         aoFechar={requestClose}
         titulo={editing ? t.editTitle : t.newTitle}
         descricao={t.intro}
-        largura="g"
+        largura="m"
         rodape={
           <div className="flex w-full flex-wrap items-center justify-between gap-3">
             {editing ? (
@@ -237,209 +206,278 @@ export function CollectionEditor({
           </div>
         }
       >
-        <div className="grid grid-cols-1 gap-8 lg:grid-cols-[minmax(0,5fr)_minmax(0,7fr)]">
-          <div className="flex flex-col gap-5">
-            <fieldset className="flex flex-col gap-2">
-              <legend className="t-rotulo mb-2">{t.what}</legend>
-              {editing ? (
-                <span className="t-rotulo inline-flex items-center gap-2 text-texto-suave">
-                  <Icon de={KIND_ICON[kind]} tamanho="p" />
-                  {t.fixed(copy.kinds[kind].plural)}
-                </span>
-              ) : (
-                <div className="grid grid-cols-1 gap-2 sm:grid-cols-3 lg:grid-cols-1">
-                  {KINDS.map((k) => (
-                    <Choice
-                      key={k}
-                      name="collection-kind"
-                      checked={kind === k}
-                      disabled={items.length > 0 && kind !== k}
-                      onChange={() => {
-                        change();
-                        setKind(k);
-                      }}
-                      icon={KIND_ICON[k]}
-                      title={copy.kinds[k].plural}
-                      hint={copy.kindHints[k]}
-                    />
-                  ))}
-                  {items.length > 0 && (
-                    <span className="t-legenda">{t.switchHint}</span>
-                  )}
-                </div>
-              )}
-            </fieldset>
-            <Field
-              label={t.name}
-              maxLength={80}
-              placeholder={t.namePlaceholder}
-              value={title}
-              onChange={(e) => {
-                change();
-                setTitle(e.target.value);
-              }}
-              erro={tried ? nameError : undefined}
-            />
-            <Field.Area
-              label={t.description}
-              rows={3}
-              maxLength={500}
-              value={description}
-              onChange={(e) => {
-                change();
-                setDescription(e.target.value);
-              }}
-            />
-            <fieldset className="flex flex-col gap-2">
-              <legend className="t-rotulo mb-2">{t.who}</legend>
-              <Choice
-                name="collection-visibility"
-                checked={isPublic}
-                onChange={() => {
+        <div className="flex flex-col gap-6">
+          <div className="grid grid-cols-1 gap-5 sm:grid-cols-2">
+            <div className="flex flex-col gap-2">
+              <span className="t-rotulo" id="collection-kind">
+                {t.what}
+              </span>
+              <Selecao
+                aria-labelledby="collection-kind"
+                opcoes={KINDS.map((k) => ({
+                  value: k,
+                  label: copy.kinds[k].plural,
+                }))}
+                valor={kind}
+                disabled={!!editing || items.length > 0}
+                aoMudar={(k) => {
                   change();
-                  setIsPublic(true);
+                  setKind(k as CollectionKind);
+                  setWork(null);
+                  setSearch('');
                 }}
-                icon={PiGlobeSimple}
-                title={copy.publicLabel}
-                hint={t.publicHint}
               />
-              <Choice
-                name="collection-visibility"
-                checked={!isPublic}
-                onChange={() => {
+              <span className="t-legenda">
+                {editing
+                  ? t.fixed(copy.kinds[kind].plural)
+                  : items.length
+                    ? t.switchHint
+                    : copy.kindHints[kind]}
+              </span>
+            </div>
+            <div className="flex flex-col gap-2">
+              <span className="t-rotulo" id="collection-who">
+                {t.who}
+              </span>
+              <Selecao
+                aria-labelledby="collection-who"
+                opcoes={[
+                  { value: 'public', label: copy.publicLabel },
+                  { value: 'private', label: copy.privateLabel },
+                ]}
+                valor={isPublic ? 'public' : 'private'}
+                aoMudar={(v) => {
                   change();
-                  setIsPublic(false);
+                  setIsPublic(v === 'public');
                 }}
-                icon={PiLockSimple}
-                title={copy.privateLabel}
-                hint={t.privateHint}
               />
-            </fieldset>
-            <div className="flex items-start gap-3 rounded-controle bg-sup-2 p-3">
-              <Icon
-                de={PiStar}
-                tamanho="p"
-                className="mt-0.5 text-texto-fraco"
-              />
-              <span className="t-legenda">{t.home}</span>
+              <span className="t-legenda">
+                {isPublic ? t.publicHint : t.privateHint}
+              </span>
             </div>
           </div>
+          <Field
+            label={t.name}
+            maxLength={80}
+            placeholder={t.namePlaceholder}
+            value={title}
+            onChange={(e) => {
+              change();
+              setTitle(e.target.value);
+            }}
+            erro={tried ? nameError : undefined}
+          />
+          <Field.Area
+            label={t.description}
+            rows={3}
+            maxLength={500}
+            value={description}
+            onChange={(e) => {
+              change();
+              setDescription(e.target.value);
+            }}
+          />
+          <p className="t-legenda flex items-start gap-2">
+            <Icon de={PiStar} tamanho="pp" className="mt-0.5 shrink-0" />
+            {t.home}
+          </p>
 
-          <div className="flex flex-col gap-4">
-            <div className="flex flex-col gap-2">
-              <Field
-                label={t.add(copy.kinds[kind].plural)}
-                type="search"
-                placeholder={t.search(copy.kinds[kind].singular)}
-                value={search}
-                onChange={(e) => setSearch(e.target.value)}
-              />
-              {term.length >= 2 && results.isSuccess && !offers.length && (
-                <span className="t-legenda">{t.noResults}</span>
-              )}
-              {offers.length > 0 && (
-                <ul className="flex flex-col gap-1">
-                  {offers.map((o) => (
-                    <li key={o.refId}>
-                      <button
-                        type="button"
-                        onClick={() => {
-                          change();
-                          setItems((list) => [...list, { ...o, note: null }]);
-                        }}
-                        className="flex w-full items-center gap-3 rounded-controle px-3 py-2 text-left hover:bg-sup-2"
-                      >
-                        <Icon
-                          de={PiPlus}
-                          tamanho="p"
-                          className="shrink-0 text-ouro-texto"
-                        />
-                        <span className="flex min-w-0 flex-col">
-                          <span className="truncate">
-                            {entryTitle(kind, o)}
-                          </span>
-                          <span className="t-legenda truncate">
-                            {entryDetail(kind, o, copy, language)}
-                          </span>
-                        </span>
-                      </button>
-                    </li>
-                  ))}
-                </ul>
-              )}
-            </div>
-            <div className="flex flex-col gap-2">
-              <span className="t-rotulo">{t.inIt(items.length)}</span>
-              {items.length ? (
-                <ol className="flex flex-col gap-2">
-                  {items.map((item, i) => (
-                    <li
-                      key={item.refId}
-                      className="flex flex-col gap-2 rounded-controle bg-sup-2 p-3"
+          <div className="flex flex-col gap-2 border-t border-linha pt-6">
+            {kind === 'SCORE' && work ? (
+              <div className="flex flex-col gap-3">
+                <span className="t-rotulo">{t.workFirst}</span>
+                <span className="flex items-center justify-between gap-3 rounded-controle bg-sup-2 px-3 py-2">
+                  <span className="flex min-w-0 flex-col">
+                    <span className="truncate">{entryTitle('WORK', work)}</span>
+                    <span className="t-legenda truncate">
+                      {entryDetail('WORK', work, copy, language)}
+                    </span>
+                  </span>
+                  <Button
+                    variante="fantasma"
+                    tamanho="p"
+                    className="shrink-0 whitespace-nowrap"
+                    onClick={() => {
+                      setWork(null);
+                      setScoreId('');
+                    }}
+                  >
+                    {t.otherWork}
+                  </Button>
+                </span>
+                {scores.isPending ? (
+                  <span className="loading-skeleton h-11 rounded-controle" />
+                ) : !scoreOptions.length ? (
+                  <span className="t-legenda">{t.noScores}</span>
+                ) : (
+                  <div className="flex items-end gap-2">
+                    <div className="flex min-w-0 flex-1 flex-col gap-2">
+                      <span className="t-rotulo" id="collection-score">
+                        {t.score}
+                      </span>
+                      <Selecao
+                        aria-labelledby="collection-score"
+                        placeholder={t.scorePick}
+                        opcoes={scoreOptions.map((o) => ({
+                          value: o.refId,
+                          label: [
+                            o.title,
+                            o.edition,
+                            o.pageCount && copy.pages(o.pageCount),
+                          ]
+                            .filter(Boolean)
+                            .join(' · '),
+                        }))}
+                        valor={scoreId}
+                        aoMudar={setScoreId}
+                      />
+                    </div>
+                    <Button
+                      icone={PiPlus}
+                      disabled={!scoreId}
+                      onClick={() => {
+                        const picked = scoreOptions.find(
+                          (o) => o.refId === scoreId
+                        );
+                        if (picked) add(picked);
+                        setScoreId('');
+                      }}
                     >
-                      <div className="flex items-center gap-3">
-                        <Icon
-                          de={KIND_ICON[kind]}
-                          tamanho="p"
-                          className="shrink-0 text-texto-fraco"
-                        />
-                        <span className="min-w-0 flex-1 truncate">
+                      {t.addScore}
+                    </Button>
+                  </div>
+                )}
+              </div>
+            ) : (
+              <>
+                <Field
+                  label={
+                    kind === 'SCORE'
+                      ? t.workFirst
+                      : t.add(copy.kinds[kind].plural)
+                  }
+                  type="search"
+                  placeholder={
+                    kind === 'SCORE'
+                      ? t.workSearch
+                      : t.search(copy.kinds[kind].singular)
+                  }
+                  value={search}
+                  onChange={(e) => setSearch(e.target.value)}
+                />
+                {term.length >= 2 && results.isSuccess && !offers.length && (
+                  <span className="t-legenda">{t.noResults}</span>
+                )}
+                {offers.length > 0 && (
+                  <ul className="flex flex-col gap-1">
+                    {offers.map((o) => (
+                      <li key={o.refId}>
+                        <button
+                          type="button"
+                          onClick={() => {
+                            if (kind === 'SCORE') {
+                              setWork(o);
+                              setSearch('');
+                            } else add(o);
+                          }}
+                          className="flex w-full items-center gap-3 rounded-controle px-3 py-2 text-left hover:bg-sup-2"
+                        >
+                          <Icon
+                            de={PiPlus}
+                            tamanho="p"
+                            className="shrink-0 text-ouro-texto"
+                          />
+                          <span className="flex min-w-0 flex-col">
+                            <span className="truncate">
+                              {entryTitle(searchKind, o)}
+                            </span>
+                            <span className="t-legenda truncate">
+                              {entryDetail(searchKind, o, copy, language)}
+                            </span>
+                          </span>
+                        </button>
+                      </li>
+                    ))}
+                  </ul>
+                )}
+              </>
+            )}
+          </div>
+
+          <div className="flex flex-col gap-2">
+            <span className="t-rotulo">{t.inIt(items.length)}</span>
+            {items.length ? (
+              <ol className="flex flex-col gap-2">
+                {items.map((item, i) => (
+                  <li
+                    key={item.refId}
+                    className="flex flex-col gap-2 rounded-controle bg-sup-2 p-3"
+                  >
+                    <div className="flex items-center gap-3">
+                      <Icon
+                        de={KIND_ICON[kind]}
+                        tamanho="p"
+                        className="shrink-0 text-texto-fraco"
+                      />
+                      <span className="flex min-w-0 flex-1 flex-col">
+                        <span className="truncate">
                           {entryTitle(kind, item)}
                         </span>
-                        <Button
-                          tamanho="p"
-                          variante="fantasma"
-                          icone={PiArrowUp}
-                          rotulo={t.up}
-                          disabled={i === 0}
-                          onClick={() => move(i, i - 1)}
-                        />
-                        <Button
-                          tamanho="p"
-                          variante="fantasma"
-                          icone={PiArrowDown}
-                          rotulo={t.down}
-                          disabled={i === items.length - 1}
-                          onClick={() => move(i, i + 1)}
-                        />
-                        <Button
-                          tamanho="p"
-                          variante="fantasma"
-                          icone={PiTrash}
-                          rotulo={t.remove}
-                          onClick={() => {
-                            change();
-                            setItems((list) =>
-                              list.filter((x) => x.refId !== item.refId)
-                            );
-                          }}
-                        />
-                      </div>
-                      <input
-                        aria-label={t.note(entryTitle(kind, item))}
-                        value={item.note ?? ''}
-                        maxLength={200}
-                        placeholder={t.notePlaceholder}
-                        onChange={(e) => {
+                        <span className="t-legenda truncate">
+                          {entryDetail(kind, item, copy, language)}
+                        </span>
+                      </span>
+                      <Button
+                        tamanho="p"
+                        variante="fantasma"
+                        icone={PiArrowUp}
+                        rotulo={t.up}
+                        disabled={i === 0}
+                        onClick={() => move(i, i - 1)}
+                      />
+                      <Button
+                        tamanho="p"
+                        variante="fantasma"
+                        icone={PiArrowDown}
+                        rotulo={t.down}
+                        disabled={i === items.length - 1}
+                        onClick={() => move(i, i + 1)}
+                      />
+                      <Button
+                        tamanho="p"
+                        variante="fantasma"
+                        icone={PiTrash}
+                        rotulo={t.remove}
+                        onClick={() => {
                           change();
-                          const note = e.target.value;
                           setItems((list) =>
-                            list.map((x) =>
-                              x.refId === item.refId ? { ...x, note } : x
-                            )
+                            list.filter((x) => x.refId !== item.refId)
                           );
                         }}
-                        className="input-classical min-h-9 rounded-controle px-3 text-[0.875rem]"
                       />
-                    </li>
-                  ))}
-                </ol>
-              ) : (
-                <span className="t-rotulo text-texto-suave">
-                  {t.emptyItems}
-                </span>
-              )}
-            </div>
+                    </div>
+                    <input
+                      aria-label={t.note(entryTitle(kind, item))}
+                      value={item.note ?? ''}
+                      maxLength={200}
+                      placeholder={t.notePlaceholder}
+                      onChange={(e) => {
+                        change();
+                        const note = e.target.value;
+                        setItems((list) =>
+                          list.map((x) =>
+                            x.refId === item.refId ? { ...x, note } : x
+                          )
+                        );
+                      }}
+                      className="input-classical min-h-9 rounded-controle px-3 text-[0.875rem]"
+                    />
+                  </li>
+                ))}
+              </ol>
+            ) : (
+              <span className="t-rotulo text-texto-suave">{t.emptyItems}</span>
+            )}
           </div>
         </div>
       </Sheet>
