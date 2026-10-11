@@ -52,7 +52,7 @@ export function ExploreMenu({
           id="explore-panel"
           className="popover-open sup-alta absolute inset-x-0 top-full z-menu !rounded-none !rounded-b-card"
         >
-          <ul className="section-wrap grid grid-cols-5 gap-4 py-6">
+          <ul className="section-wrap grid grid-cols-[repeat(4,minmax(0,1fr))_minmax(0,1.5fr)] gap-4 py-6">
             {EXPLORE_PATHS.map((item) => {
               const entry = copy.explorePaths[item.key];
               return (

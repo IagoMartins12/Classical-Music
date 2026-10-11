@@ -81,15 +81,25 @@ export function OnThisDayMenuEntry({
       href="/on-this-day"
       onClick={onNavigate}
       aria-current={active ? 'page' : undefined}
-      className="group flex flex-col gap-1 rounded-controle p-3 hover:bg-sup-2"
+      className="group flex items-start gap-3 rounded-controle p-3 hover:bg-sup-2"
     >
-      <span className="font-display text-[1.25rem] transition-colors group-hover:text-ouro-texto">
-        {copy.menuEntry}
-      </span>
-      <span className="t-rotulo text-texto-suave">
-        {star?.birthYear
-          ? copy.menuDetail(star.name, star.birthYear)
-          : copy.menuFallback}
+      {star && (
+        <Portrait
+          name={star.fullName}
+          src={star.portraitUrl}
+          sizes="48px"
+          className="h-14 w-11 shrink-0 rounded-controle text-[0.875rem]"
+        />
+      )}
+      <span className="flex min-w-0 flex-col gap-1">
+        <span className="font-display text-[1.25rem] transition-colors group-hover:text-ouro-texto">
+          {copy.menuEntry}
+        </span>
+        <span className="t-rotulo text-texto-suave">
+          {star?.birthYear
+            ? copy.menuDetail(star.name, star.birthYear)
+            : copy.menuFallback}
+        </span>
       </span>
     </Link>
   );

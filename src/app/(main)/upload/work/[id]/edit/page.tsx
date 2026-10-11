@@ -1,15 +1,7 @@
-// app/uploads/work/[id]/edit/page.tsx - Editar obra específica
-import EditWorkClient from '@/app/(main)/upload/work/[id]/edit/pageClient';
-import { TranslationProvider } from '@/app/context/TranslationContext';
-import {
-  getComposerOptions,
-  getUploadForEdit,
-  getUploadFormData,
-} from '@/app/requests/my-uploads';
-import {
-  getServerLanguageStatic,
-  loadPageTranslationsWithCommon,
-} from '@/app/utils/translations/serverTranslations';
+import { WorkEditForm } from '@/app/components/site/edit/WorkEditForm';
+import type { ApiSchema } from '@/app/libs/api/types';
+import { getUploadForEdit, getUploadFormData } from '@/app/requests/my-uploads';
+import { getServerLanguageStatic } from '@/app/utils/translations/serverTranslations';
 import { notFound, redirect } from 'next/navigation';
 import { getServerSession } from '@/app/libs/api/server-session';
 
@@ -96,27 +88,13 @@ export default async function EditWorkPage({ params }: EditWorkPageProps) {
     redirect('/access-denied');
   }
 
-  const isAdmin = session.user.role === 2;
-  const [formData, composers] = await Promise.all([
-    getUploadFormData(),
-    getComposerOptions(),
-  ]);
-
-  const language = await getServerLanguageStatic();
-  const { translations } = await loadPageTranslationsWithCommon(language, [
-    'pages/uploads',
-  ]);
+  const formData = await getUploadFormData();
 
   return (
-    <TranslationProvider language={language} translations={translations}>
-      <EditWorkClient
-        work={work.data}
-        composers={composers}
-        instruments={formData.instruments}
-        epochs={formData.epochs}
-        isAdmin={isAdmin}
-        userId={session.user.id}
-      />
-    </TranslationProvider>
+    <WorkEditForm
+      work={work.data as ApiSchema<'WorkUploadResponseDto'>}
+      instruments={formData.instruments}
+      epochs={formData.epochs}
+    />
   );
 }

@@ -223,7 +223,7 @@ export function AnnotationSheet({
           </div>
         }
       >
-        <div className="grid grid-cols-1 gap-6 lg:grid-cols-[minmax(0,7fr)_minmax(0,5fr)]">
+        <div className="flex flex-col gap-8">
           <div className="flex flex-col gap-5">
             <Field
               label={t.titleField}
@@ -251,10 +251,10 @@ export function AnnotationSheet({
               maximo={10}
             />
           </div>
-          <div className="flex flex-col gap-6">
+          <div className="flex flex-col gap-8">
             <fieldset className="flex flex-col gap-2">
               <legend className="t-rotulo mb-2">{t.category}</legend>
-              <div className="grid grid-cols-2 gap-2">
+              <div className="grid grid-cols-2 gap-2 sm:grid-cols-3">
                 {CATEGORIES.map((c) => {
                   const active = form.category === c;
                   return (
@@ -276,9 +276,7 @@ export function AnnotationSheet({
                       >
                         {names.categories[c]}
                       </span>
-                      <span className="t-legenda line-clamp-1">
-                        {t.categoryHints[c]}
-                      </span>
+                      <span className="t-legenda">{t.categoryHints[c]}</span>
                     </button>
                   );
                 })}
@@ -300,7 +298,7 @@ export function AnnotationSheet({
                 ))}
               </div>
               {form.scope === 'SPECIFIC_MEASURE' && (
-                <div className="grid grid-cols-3 gap-2">
+                <div className="grid grid-cols-3 gap-3 sm:max-w-md">
                   <Field
                     label={t.from}
                     inputMode="numeric"
@@ -365,7 +363,7 @@ export function AnnotationSheet({
                 ))}
               </div>
             </fieldset>
-            <label className="flex flex-col gap-2">
+            <label className="flex flex-col gap-2 sm:max-w-xs">
               <span className="t-rotulo">{t.level}</span>
               <Selecao
                 aria-label={t.level}
@@ -381,7 +379,7 @@ export function AnnotationSheet({
               <summary className="t-rotulo cursor-pointer text-texto-suave hover:text-texto">
                 {t.more}
               </summary>
-              <div className="mt-3 grid grid-cols-2 gap-2">
+              <div className="mt-3 grid grid-cols-1 gap-3 sm:grid-cols-2">
                 <Field
                   label={t.voice}
                   value={form.voice}

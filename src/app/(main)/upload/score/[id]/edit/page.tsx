@@ -1,11 +1,8 @@
 // app/uploads/score/[id]/page.tsx - Editar partitura específica
-import EditScoreClient from '@/app/(main)/upload/score/[id]/edit/pageClient';
-import { TranslationProvider } from '@/app/context/TranslationContext';
+import { ScoreEditForm } from '@/app/components/site/edit/ScoreEditForm';
+import type { ApiSchema } from '@/app/libs/api/types';
 import { getUploadForEdit } from '@/app/requests/my-uploads';
-import {
-  getServerLanguageStatic,
-  loadPageTranslationsWithCommon,
-} from '@/app/utils/translations/serverTranslations';
+import { getServerLanguageStatic } from '@/app/utils/translations/serverTranslations';
 import { notFound, redirect } from 'next/navigation';
 import { getServerSession } from '@/app/libs/api/server-session';
 
@@ -103,31 +100,9 @@ export default async function EditScorePage({ params }: EditScorePageProps) {
     redirect('/access-denied');
   }
 
-  const score = lookup.data as ScoreForEdit;
-  const isAdmin = session.user.role === 2;
-
-  // O seletor mostra só a obra da própria partitura, como no legado.
-  const works = [
-    {
-      id: score.work.id,
-      title: score.work.title,
-      composer: score.work.composer,
-    },
-  ];
-
-  const language = await getServerLanguageStatic();
-  const { translations } = await loadPageTranslationsWithCommon(language, [
-    'pages/uploads',
-  ]);
-
   return (
-    <TranslationProvider language={language} translations={translations}>
-      <EditScoreClient
-        score={score}
-        works={works}
-        isAdmin={isAdmin}
-        userId={session.user.id}
-      />
-    </TranslationProvider>
+    <ScoreEditForm
+      score={lookup.data as ApiSchema<'ScoreUploadResponseDto'> & ScoreForEdit}
+    />
   );
 }

@@ -729,6 +729,7 @@ export function StudySheet() {
         placeholder={copy.generalNotesPlaceholder}
         onChange={(notes) => learned_({ notes })}
       />
+      {scoreBlock}
       <Panel
         icon={PiVideoCamera}
         title={copy.video}
@@ -856,8 +857,14 @@ export function StudySheet() {
         }
       >
         <div className={cx('flex flex-col gap-6')}>
-          {scoreBlock}
-          {isWant ? wantFields : learnedFields}
+          {isWant ? (
+            <>
+              {wantFields}
+              {scoreBlock}
+            </>
+          ) : (
+            learnedFields
+          )}
         </div>
       </Sheet>
 
