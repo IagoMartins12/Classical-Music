@@ -4,6 +4,7 @@ import { useRef, useState } from 'react';
 import toast from 'react-hot-toast';
 import { PiCamera } from 'react-icons/pi';
 import { Button } from '@/app/components/ui/Button';
+import { asList } from './asList';
 import { CampoDeFichas } from '@/app/components/ui/CampoDeFichas';
 import { Field } from '@/app/components/ui/Field';
 import { Selecao } from '@/app/components/ui/Selecao';
@@ -38,22 +39,22 @@ export function ComposerEditForm({
   const { form, set, dirty, discard, commit } = useEditForm({
     name: composer.name,
     fullName: composer.fullName,
-    alternativeNames: composer.alternativeNames ?? [],
+    alternativeNames: asList(composer.alternativeNames),
     portraitUrl: s(composer.portraitUrl),
     birthDate: s(composer.birthDate),
     deathDate: s(composer.deathDate),
     nationality: s(composer.nationality),
     epochId: composer.epochId,
     primaryRoleId: composer.primaryRoleId,
-    roles: composer.roles ?? [],
-    instruments: composer.instruments ?? [],
+    roles: asList(composer.roles),
+    instruments: asList(composer.instruments),
     bio: s(composer.bio),
     bioEn: s(composer.bioEn),
     imslpId: s(composer.imslpId),
     permLinkImslp: s(composer.permLinkImslp),
     wikipediaLink: s(composer.wikipediaLink),
     videoUrl: s(composer.videoUrl),
-    imslpCategories: composer.imslpCategories ?? [],
+    imslpCategories: asList(composer.imslpCategories),
   });
   const [saving, setSaving] = useState(false);
   const [uploading, setUploading] = useState(false);

@@ -82,7 +82,7 @@ export function accountLinks(user: HeaderUser): AccountLink[] {
   }
   if (role >= ROLE_ADMIN) {
     links.push(
-      { key: 'moderation', href: '/moderation', icon: PiShieldCheck },
+      { key: 'moderation', href: '/admin/moderation', icon: PiShieldCheck },
       { key: 'admin', href: '/admin', icon: PiGearSix }
     );
   }

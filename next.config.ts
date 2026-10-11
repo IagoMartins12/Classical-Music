@@ -95,6 +95,12 @@ const nextConfig: NextConfig = withBundleAnalyzer({
       // The genre index was retired: the works list filters by genre.
       { source: '/genres', destination: '/works', permanent: true },
       { source: '/en/genres', destination: '/en/works', permanent: true },
+      // The old moderation page; the queue lives in the admin now.
+      {
+        source: '/moderation',
+        destination: '/admin/moderation',
+        permanent: true,
+      },
     ];
   },
   async headers() {

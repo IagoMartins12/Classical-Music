@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import toast from 'react-hot-toast';
+import { asList } from './asList';
 import { CampoDeFichas } from '@/app/components/ui/CampoDeFichas';
 import { Field } from '@/app/components/ui/Field';
 import { Selecao } from '@/app/components/ui/Selecao';
@@ -62,9 +63,9 @@ export function WorkEditForm({
     compositionYear: s(work.compositionYear),
     firstPublishDate: s(work.firstPublishDate),
     dedicateTo: s(work.dedicateTo),
-    categoryNames: work.categoryNames ?? [],
-    workGenresArr: work.workGenresArr ?? [],
-    imslpTags: work.imslpTags ?? [],
+    categoryNames: asList(work.categoryNames),
+    workGenresArr: asList(work.workGenresArr),
+    imslpTags: asList(work.imslpTags),
     imslpId: s(work.imslpId),
     imslpPermlink: s(work.imslpPermlink),
     videoUrl: s(work.videoUrl),
