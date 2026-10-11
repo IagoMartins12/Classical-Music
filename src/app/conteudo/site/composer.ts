@@ -31,6 +31,8 @@ const pt = {
   startHere: {
     title: 'Por onde começar',
     automatic: 'As mais estudadas, da mais fácil para a mais difícil',
+    curated: 'Escolhidas pela equipe do Opus Atlas',
+    mixed: 'Escolhidas pela equipe, depois as mais estudadas',
     levels: {
       beginner: 'Iniciante',
       intermediate: 'Intermediário',
@@ -91,6 +93,8 @@ const en: typeof pt = {
   startHere: {
     title: 'Where to start',
     automatic: 'The most studied, from easiest to hardest',
+    curated: 'Chosen by the Opus Atlas team',
+    mixed: 'Chosen by the team, then the most studied',
     levels: {
       beginner: 'Beginner',
       intermediate: 'Intermediate',

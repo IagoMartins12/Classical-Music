@@ -3104,6 +3104,79 @@ export interface paths {
     patch?: never;
     trace?: never;
   };
+  '/api/contributions': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /** Contribuições em vigor de um compositor ou obra */
+    get: operations['ContributionsController_list'];
+    put?: never;
+    /**
+     * Contribui com um campo de compositor ou obra
+     * @description Entra no ar na hora e paga XP (até 10 contribuições com XP por dia). Exige e-mail confirmado. Moderado por denúncia.
+     */
+    post: operations['ContributionsController_contribute'];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/api/contributions/{id}/revert': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    /** Desfaz uma contribuição e retira o XP (admin) */
+    post: operations['ContributionsController_revert'];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/api/composers/{composerId}/curiosities': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /** Curiosidades de um compositor num idioma */
+    get: operations['ContributionsController_curiosities'];
+    put?: never;
+    /** Acrescenta uma curiosidade (vale XP) */
+    post: operations['ContributionsController_addCuriosity'];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/api/curiosities/{id}': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    post?: never;
+    /** Apaga uma curiosidade (autor ou admin) */
+    delete: operations['ContributionsController_removeCuriosity'];
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
   '/api/blog/articles': {
     parameters: {
       query?: never;
@@ -5488,6 +5561,26 @@ export interface paths {
     /** Obra do compositor no catálogo, uso e origem do cadastro */
     get: operations['AdminCatalogController_composerSummary'];
     put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/api/admin/composers/{id}/starting-works': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    /**
+     * "Por onde começar": as obras escolhidas pela equipe
+     * @description Até três obras do próprio compositor, em ordem. A página mostra estas primeiro e completa com as escolhidas automaticamente. Lista vazia devolve tudo ao automático.
+     */
+    put: operations['AdminCatalogController_setStartingWorks'];
     post?: never;
     delete?: never;
     options?: never;
@@ -8094,6 +8187,8 @@ export interface components {
       studying: number;
       /** @description People who already learned it */
       learned: number;
+      /** @description Chosen by the team, not by the numbers */
+      curated: boolean;
     };
     ContemporaryDto: {
       id: string;
@@ -8787,6 +8882,8 @@ export interface components {
       /** @enum {string} */
       experienceLevel: 'BEGINNER' | 'INTERMEDIATE' | 'ADVANCED';
       practiceTimePerWeek?: number | null;
+      /** @enum {string|null} */
+      studyHorizon?: 'MONTHS' | 'YEAR' | 'YEARS' | 'LIFE' | null;
       profilePublic: boolean;
       showLocation: boolean;
       /** @enum {string|null} */
@@ -9021,8 +9118,10 @@ export interface components {
       experienceLevel?: 'BEGINNER' | 'INTERMEDIATE' | 'ADVANCED';
       favoriteComposerId?: string | null;
       favoriteEpochId?: string | null;
-      /** @description Horas de prática por semana. */
+      /** @description Minutos de prática por semana. */
       practiceTimePerWeek?: number | null;
+      /** @enum {string|null} */
+      studyHorizon?: 'MONTHS' | 'YEAR' | 'YEARS' | 'LIFE' | null;
       profilePublic?: boolean;
       showLocation?: boolean;
       /** @enum {string} */
@@ -10601,6 +10700,48 @@ export interface components {
       userVote?: boolean | null;
       helpfulCount: number;
     };
+    CreateContributionDto: {
+      /** @enum {string} */
+      entityType: 'composer' | 'work';
+      entityId: string;
+      /** @description Campo alterado: composer (bio, bioEn, videoUrl, birthDate, deathDate, nationality, wikipediaLink) ou work (compositionYear, firstPublishDate, tone, dedicateTo, instrumentation, subtitle). */
+      field: string;
+      /** @description O novo valor. */
+      value: string;
+    };
+    ContributionAuthorDto: {
+      id: string;
+      name: string;
+    };
+    ContributionResponseDto: {
+      id: string;
+      /** @enum {string} */
+      kind: 'BIO' | 'VIDEO' | 'CURIOSITY' | 'CORRECTION';
+      entityType: string;
+      entityId: string;
+      field?: string | null;
+      /** @description XP pago por esta contribuição. */
+      xp: number;
+      /** Format: date-time */
+      createdAt: string;
+      author: components['schemas']['ContributionAuthorDto'];
+    };
+    CuriosityResponseDto: {
+      id: string;
+      text: string;
+      /** @enum {string} */
+      source: 'EDITORIAL' | 'USER';
+      author?: components['schemas']['ContributionAuthorDto'] | null;
+      /** @description Escrita por quem chama. */
+      mine: boolean;
+      /** @description Fora do ar por denúncia (só o autor vê). */
+      held: boolean;
+    };
+    CreateCuriosityDto: {
+      text: string;
+      /** @enum {string} */
+      language: 'pt' | 'en';
+    };
     AuthorRefDto: {
       id: string;
       firstName?: string | null;
@@ -11577,7 +11718,14 @@ export interface components {
        * @example work
        * @enum {string}
        */
-      entityType: 'composer' | 'work' | 'score' | 'blog-comment';
+      entityType:
+        | 'composer'
+        | 'work'
+        | 'score'
+        | 'blog-comment'
+        | 'annotation'
+        | 'curiosity'
+        | 'contribution';
       /** @example 685d591c1e3db0c5aaa893e4 */
       entityId: string;
       /**
@@ -12599,6 +12747,8 @@ export interface components {
       externalUrl?: string | null;
       ageRating?: string | null;
       isFeatured?: boolean;
+      /** @description Mostrar na home do site principal; no mês do evento, vem antes dos outros */
+      showOnMainHome?: boolean;
       /** @description Posição no mosaico de destaques do mês. Sem ela, a menor livre; ocupada, o evento que estava nela deixa de ser destaque. */
       featuredOrder?: number | null;
       /**
@@ -12682,6 +12832,8 @@ export interface components {
       externalUrl?: string | null;
       ageRating?: string | null;
       isFeatured?: boolean;
+      /** @description Mostrar na home do site principal; no mês do evento, vem antes dos outros */
+      showOnMainHome?: boolean;
       /** @description Posição no mosaico de destaques do mês. Sem ela, a menor livre; ocupada, o evento que estava nela deixa de ser destaque. */
       featuredOrder?: number | null;
       /**
@@ -13226,6 +13378,9 @@ export interface components {
       /** @description Só com `isTeacher: true`: plano concedido quando o convite for aceito. */
       teacherPlanGrant?: components['schemas']['TeacherPlanGrantDto'];
       isStudent?: boolean;
+    };
+    StartingWorksDto: {
+      workIds?: string[];
     };
     UpdateComposerDto: {
       isVerified?: boolean;
@@ -20684,6 +20839,161 @@ export interface operations {
       };
     };
   };
+  ContributionsController_list: {
+    parameters: {
+      query: {
+        entityType: 'composer' | 'work';
+        entityId: string;
+      };
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ContributionResponseDto'][];
+        };
+      };
+    };
+  };
+  ContributionsController_contribute: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['CreateContributionDto'];
+      };
+    };
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ContributionResponseDto'];
+        };
+      };
+      201: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ContributionResponseDto'];
+        };
+      };
+      403: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+    };
+  };
+  ContributionsController_revert: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        id: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      204: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
+  ContributionsController_curiosities: {
+    parameters: {
+      query: {
+        language: 'pt' | 'en';
+      };
+      header?: never;
+      path: {
+        composerId: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['CuriosityResponseDto'][];
+        };
+      };
+    };
+  };
+  ContributionsController_addCuriosity: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        composerId: string;
+      };
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['CreateCuriosityDto'];
+      };
+    };
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['CuriosityResponseDto'];
+        };
+      };
+      201: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['CuriosityResponseDto'];
+        };
+      };
+    };
+  };
+  ContributionsController_removeCuriosity: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        id: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      204: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
   ArticlesController_findAll: {
     parameters: {
       query?: {
@@ -25684,6 +25994,38 @@ export interface operations {
           [name: string]: unknown;
         };
         content?: never;
+      };
+    };
+  };
+  AdminCatalogController_setStartingWorks: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        id: string;
+      };
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['StartingWorksDto'];
+      };
+    };
+    responses: {
+      /** @description As obras escolhidas */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+      400: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
       };
     };
   };

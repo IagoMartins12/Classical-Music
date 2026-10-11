@@ -309,7 +309,22 @@ export interface DetalheCompositor {
     favorites: number;
     scores: number;
   }[];
+  /** "Por onde começar" escolhido pela equipe, em ordem. */
+  startingWorks: ObraEscolhida[];
 }
+
+export interface ObraEscolhida {
+  id: string;
+  title: string;
+  opOrCatalog: string | null;
+}
+
+/** Até três obras do compositor; lista vazia volta tudo ao automático. */
+export const definirPorOndeComecar = (id: string, workIds: string[]) =>
+  apiFetch<ObraEscolhida[]>(`/admin/composers/${id}/starting-works`, {
+    method: 'PUT',
+    body: { workIds },
+  });
 
 export const getDetalheCompositor = (id: string) =>
   apiFetch<DetalheCompositor>(`/admin/composers/${id}/summary`, noStore);

@@ -6,7 +6,11 @@ import type { ComposerOverview } from '@/app/requests/composer-details';
 import { FavoriteHeart } from '../FavoriteHeart';
 import { workTitle } from '../workTitle';
 
-/** "Por onde começar": three works, easiest first, each a step in. */
+/**
+ * "Por onde começar": three works, each a step in. The team's picks lead;
+ * the automatic ones (most studied, easiest first) fill the rest, and the
+ * caption says which is which.
+ */
 export function StartingPoints({
   works,
   copy,
@@ -15,11 +19,17 @@ export function StartingPoints({
   copy: ComposerCopy;
 }) {
   if (!works.length) return null;
+  const curated = works.filter((w) => w.curated).length;
+  const caption = !curated
+    ? copy.startHere.automatic
+    : curated === works.length
+      ? copy.startHere.curated
+      : copy.startHere.mixed;
   return (
     <section className="flex flex-col gap-5">
       <div className="flex flex-wrap items-end justify-between gap-3">
         <h2 className="t-subtitulo">{copy.startHere.title}</h2>
-        <span className="t-legenda">{copy.startHere.automatic}</span>
+        <span className="t-legenda">{caption}</span>
       </div>
       <ol className="flex flex-col gap-3">
         {works.map((work, i) => {

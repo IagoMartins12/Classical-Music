@@ -29,6 +29,7 @@ import {
   useDetalheCompositor,
 } from '@/app/hooks/admin/useCatalogo';
 import { QUALIDADES, type Compositor } from '@/app/requests/admin/catalogo';
+import { PorOndeComecar } from './PorOndeComecar';
 
 export function FichaCompositor({
   compositor: c,
@@ -255,6 +256,17 @@ export function FichaCompositor({
                   </ul>
                 </Stack>
               )}
+
+              <PorOndeComecar
+                key={(d.startingWorks ?? []).map((o) => o.id).join()}
+                compositorId={c.id}
+                escolhidas={d.startingWorks ?? []}
+                sugestoes={d.topWorks.map((w) => ({
+                  id: w.id,
+                  title: w.title,
+                  opOrCatalog: null,
+                }))}
+              />
 
               <Inline gap={4} quebra>
                 <Link
