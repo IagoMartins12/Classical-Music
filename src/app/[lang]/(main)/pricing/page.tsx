@@ -7,17 +7,17 @@ import { VistoQueSeDesenha } from '@/app/components/ui/VistoQueSeDesenha';
 import { PLANOS, type ChavePlano, type Valor } from '@/app/conteudo/planos';
 import { apiFetch } from '@/app/libs/api/client';
 import { getServerAccessToken } from '@/app/libs/api/server-session';
-import type { ApiSchema } from '@/app/libs/api/types';
 import { alternatesFor, SITE_URL } from '@/app/utils/seoAlternates';
 import {
   routeLanguage,
   type LangParams,
 } from '@/app/utils/translations/routeLanguage';
+import { Gravura } from '@/app/components/site/Gravura';
+import { buscarPrecos } from './buscarPrecos';
 import { QuadroDePlanos } from './QuadroDePlanos';
 import {
   formatarPreco,
   maiorDesconto,
-  normalizarPrecos,
   PLANOS_PAGOS,
   type Precos,
 } from './precos';
@@ -39,24 +39,6 @@ const SEM_PRECOS: Precos = { PLUS: null, MENTOR: null, MAESTRO: null };
 
 const endereco = (idioma: 'pt' | 'en') =>
   `${SITE_URL}${idioma === 'en' ? '/en' : ''}/pricing`;
-
-/**
- * Preços da API (`GET /pricing`).
- *
- * **Sem preços padrão quando a API falha, de propósito.** A página fica em
- * cache por uma hora: uma tabela embutida faria o site anunciar, com HTTP 200
- * e em cache, valores que podem não estar à venda. Deixando o erro subir, o
- * Next devolve 500 e não guarda nada. O `buildFallback` vazio só existe para
- * o build do CI, que não tem API.
- */
-async function buscarPrecos(): Promise<Precos | null> {
-  const r = await apiFetch<ApiSchema<'PricingResponseDto'>>('/pricing', {
-    next: { revalidate: 3600, tags: ['billing'] },
-    buildFallback: { success: true, data: {} },
-  });
-  if (Object.keys(r.data).length === 0) return null;
-  return normalizarPrecos(r.data);
-}
 
 /**
  * O plano de quem está vendo, pela API com o token do cookie. Visitante, token
@@ -246,35 +228,43 @@ export default async function Pagina({ params }: LangPageProps) {
       />
 
       <div className="pb-24 md:pb-32">
-        <header className="section-wrap pt-10 md:pt-20">
-          <nav
-            aria-label={idioma === 'pt' ? 'Você está em' : 'You are here'}
-            className="entra"
-          >
-            <ol className="flex items-center gap-2 text-sm text-texto-fraco">
-              <li>
-                <LocalizedLink href="/" className="hover:text-texto">
-                  Opus Atlas
-                </LocalizedLink>
-              </li>
-              <li aria-hidden="true">/</li>
-              <li aria-current="page" className="text-texto-suave">
-                {c.migalha}
-              </li>
-            </ol>
-          </nav>
-          <h1
-            className="entra classical-title mt-8 text-[2.75rem] leading-[1.05] tracking-[-0.015em] text-texto md:mt-10 md:text-6xl lg:text-[4.5rem]"
-            style={{ ['--i' as string]: 1 }}
-          >
-            {c.titulo}
-          </h1>
-          <p
-            style={{ ['--i' as string]: 2 }}
-            className="entra mt-6 max-w-[60ch] text-lg leading-relaxed text-texto-suave md:text-xl md:leading-relaxed"
-          >
-            {c.abertura}
-          </p>
+        <header className="section-wrap grid items-center gap-10 pt-10 md:pt-20 lg:grid-cols-[minmax(0,7fr)_minmax(0,4fr)] lg:gap-16">
+          <div>
+            <nav
+              aria-label={idioma === 'pt' ? 'Você está em' : 'You are here'}
+              className="entra"
+            >
+              <ol className="flex items-center gap-2 text-sm text-texto-fraco">
+                <li>
+                  <LocalizedLink href="/" className="hover:text-texto">
+                    Opus Atlas
+                  </LocalizedLink>
+                </li>
+                <li aria-hidden="true">/</li>
+                <li aria-current="page" className="text-texto-suave">
+                  {c.migalha}
+                </li>
+              </ol>
+            </nav>
+            <h1
+              className="entra classical-title mt-8 text-[2.75rem] leading-[1.05] tracking-[-0.015em] text-texto md:mt-10 md:text-6xl lg:text-[4.5rem]"
+              style={{ ['--i' as string]: 1 }}
+            >
+              {c.titulo}
+            </h1>
+            <p
+              style={{ ['--i' as string]: 2 }}
+              className="entra mt-6 max-w-[60ch] text-lg leading-relaxed text-texto-suave md:text-xl md:leading-relaxed"
+            >
+              {c.abertura}
+            </p>
+          </div>
+          <Gravura
+            src="/instruments/drawings/piano.webp"
+            width={476}
+            height={545}
+            className="mx-auto max-h-80 w-auto"
+          />
         </header>
 
         <QuadroDePlanos

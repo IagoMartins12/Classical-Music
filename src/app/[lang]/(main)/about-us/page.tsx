@@ -20,6 +20,7 @@ import {
   routeLanguage,
   type LangParams,
 } from '@/app/utils/translations/routeLanguage';
+import { Gravura } from '@/app/components/site/Gravura';
 import { QuadroDoSite, type Retrato } from './QuadroDoSite';
 
 /**
@@ -234,8 +235,7 @@ export default async function Pagina({ params }: LangPageProps) {
         {/* Topo: a frase de um lado, rostos do acervo do outro. */}
         <header
           className={cx(
-            'section-wrap grid items-center gap-10 pt-8 md:pt-14',
-            !m && 'lg:grid-cols-[minmax(0,7fr)_minmax(0,5fr)] lg:gap-16'
+            'section-wrap grid items-center gap-10 pt-8 md:pt-14 lg:grid-cols-[minmax(0,7fr)_minmax(0,5fr)] lg:gap-16'
           )}
         >
           <div>
@@ -330,6 +330,16 @@ export default async function Pagina({ params }: LangPageProps) {
               </BotaoCriarConta>
             </div>
           </div>
+
+          {/* Com o layout de telefone em toda largura, o lado direito é a
+              gravura do manuscrito; sem ele, o mosaico de rostos. */}
+          {m && (
+            <Gravura
+              src="/illustrations/beethoven-manuscript.webp"
+              width={1000}
+              height={778}
+            />
+          )}
 
           {/* O mosaico: três colunas desencontradas, cada rosto um link. */}
           {!m && retratos.length >= 7 && (

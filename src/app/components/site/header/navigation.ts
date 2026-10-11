@@ -32,7 +32,7 @@ export const EXPLORE_PATHS = [
 
 export const PRIMARY_LINKS = [
   { key: 'blog', href: '/blog' },
-  { key: 'teaching', href: '/teachers' },
+  { key: 'teaching', href: '/for-teachers' },
   { key: 'about', href: '/about-us' },
 ] as const satisfies readonly {
   key: 'blog' | 'teaching' | 'about';

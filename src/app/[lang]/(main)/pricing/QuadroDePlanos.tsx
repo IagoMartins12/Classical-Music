@@ -7,7 +7,7 @@ import {
   useState,
   type ReactNode,
 } from 'react';
-import { PiArrowDown } from 'react-icons/pi';
+import { PiArrowDown, PiArrowRight } from 'react-icons/pi';
 import toast from 'react-hot-toast';
 import LocalizedLink from '@/app/components/LocalizedLink';
 import { BotaoCriarConta } from '@/app/components/auth/BotaoCriarConta';
@@ -46,16 +46,33 @@ import {
  * fim; ali cada plano é um cartão que se arrasta, com o próximo aparecendo na
  * borda, e o seletor "Para estudar / Para ensinar" pula de grupo.
  */
+type Grupo = 'estudar' | 'ensinar';
+
 type Props = {
   idioma: Idioma;
   precos: Precos;
   /** Plano atual lido no servidor; `null` para visitante. */
   planoInicial: ChavePlano | null;
+  /** Só um grupo (a página para professores mostra "Para ensinar"). */
+  grupo?: Grupo;
+  /** Para onde vai o "comparar todos os planos"; na /pricing, a tabela abaixo. */
+  comparar?: string;
+};
+
+const DO_GRUPO: Record<Grupo, ChavePlano[]> = {
+  estudar: ['FREE', 'PLUS'],
+  ensinar: ['MENTOR', 'MAESTRO'],
 };
 
 const ORDEM: ChavePlano[] = ['FREE', 'PLUS', 'MENTOR', 'MAESTRO'];
 
-export function QuadroDePlanos({ idioma, precos, planoInicial }: Props) {
+export function QuadroDePlanos({
+  idioma,
+  precos,
+  planoInicial,
+  grupo,
+  comparar = '#comparacao',
+}: Props) {
   const c = PLANOS[idioma];
   const [anual, setAnual] = useState(false);
   const [escolhido, setEscolhido] = useState<PlanoPago | null>(null);
@@ -73,6 +90,7 @@ export function QuadroDePlanos({ idioma, precos, planoInicial }: Props) {
       ? (getCurrentPlan() as ChavePlano)
       : planoInicial;
   const desconto = maiorDesconto(precos);
+  const soUm = !!grupo;
 
   function escolher(plano: PlanoPago) {
     if (!logado) {
@@ -167,55 +185,74 @@ export function QuadroDePlanos({ idioma, precos, planoInicial }: Props) {
         />
       </div>
 
-      <CarrosselDePlanos idioma={idioma}>
-        {ORDEM.map((p, i) => cartao(p, 'm', i))}
+      <CarrosselDePlanos idioma={idioma} grupo={grupo}>
+        {(grupo ? DO_GRUPO[grupo] : ORDEM).map((p, i) => cartao(p, 'm', i))}
       </CarrosselDePlanos>
 
-      <div className="section-wrap mt-10 hidden gap-12 md:grid xl:grid-cols-2 xl:gap-8">
-        {(['estudar', 'ensinar'] as const).map((grupo, g) => {
-          const planos: ChavePlano[] =
-            grupo === 'estudar' ? ['FREE', 'PLUS'] : ['MENTOR', 'MAESTRO'];
-          return (
-            <Revelar
-              as="section"
-              key={grupo}
-              id={grupo}
-              aria-labelledby={`${grupo}-titulo`}
-              className="flex scroll-mt-28 flex-col"
-              style={{ transitionDelay: `${g * 120}ms` }}
-            >
-              <h2
-                id={`${grupo}-titulo`}
-                className="classical-title text-2xl leading-tight text-texto md:text-[2rem]"
+      <div
+        className={cx(
+          'section-wrap mt-10 hidden gap-12 md:grid',
+          !grupo && 'xl:grid-cols-2 xl:gap-8'
+        )}
+      >
+        {(grupo ? [grupo] : (['estudar', 'ensinar'] as const)).map(
+          (grupo, g) => {
+            const planos = DO_GRUPO[grupo];
+            return (
+              <Revelar
+                as="section"
+                key={grupo}
+                id={grupo}
+                aria-labelledby={`${grupo}-titulo`}
+                className="flex scroll-mt-28 flex-col"
+                style={{ transitionDelay: `${g * 120}ms` }}
               >
-                {c.grupos[grupo].titulo}
-              </h2>
-              <p className="mt-2 max-w-[52ch] text-[0.9375rem] leading-relaxed text-texto-suave xl:min-h-[3.25em]">
-                {c.grupos[grupo].texto}
-              </p>
-              <div className="mt-6 grid flex-1 grid-cols-2 overflow-hidden rounded-card bg-sup-2">
-                {planos.map((p, i) => (
-                  <div
-                    key={p}
-                    className={cx('flex', i > 0 && 'border-l border-linha')}
-                  >
-                    {cartao(p, 'd', g * 2 + i)}
-                  </div>
-                ))}
-              </div>
-            </Revelar>
-          );
-        })}
+                <h2
+                  id={`${grupo}-titulo`}
+                  className={cx(
+                    'classical-title text-2xl leading-tight text-texto md:text-[2rem]',
+                    // A page showing one group already titles it.
+                    soUm && 'sr-only'
+                  )}
+                >
+                  {c.grupos[grupo].titulo}
+                </h2>
+                <p
+                  className={cx(
+                    'mt-2 max-w-[52ch] text-[0.9375rem] leading-relaxed text-texto-suave xl:min-h-[3.25em]',
+                    soUm && 'hidden'
+                  )}
+                >
+                  {c.grupos[grupo].texto}
+                </p>
+                <div className="mt-6 grid flex-1 grid-cols-2 overflow-hidden rounded-card bg-sup-2">
+                  {planos.map((p, i) => (
+                    <div
+                      key={p}
+                      className={cx('flex', i > 0 && 'border-l border-linha')}
+                    >
+                      {cartao(p, 'd', g * 2 + i)}
+                    </div>
+                  ))}
+                </div>
+              </Revelar>
+            );
+          }
+        )}
       </div>
 
       <p className="section-wrap mt-6 md:mt-8">
-        <a
-          href="#comparacao"
+        <LocalizedLink
+          href={comparar}
           className="inline-flex min-h-6 items-center gap-1.5 text-[0.9375rem] font-medium text-ouro-texto underline decoration-ouro/40 underline-offset-[5px] transition-colors hover:decoration-ouro"
         >
           {c.comparar}
-          <PiArrowDown aria-hidden="true" className="h-3.5 w-3.5" />
-        </a>
+          {comparar.startsWith('#') ? (
+            <PiArrowDown aria-hidden="true" className="h-3.5 w-3.5" />
+          ) : (
+            <PiArrowRight aria-hidden="true" className="h-3.5 w-3.5" />
+          )}
+        </LocalizedLink>
       </p>
 
       {escolhido && precos[escolhido] && (
@@ -316,15 +353,17 @@ function SeletorDePeriodo({
  */
 function CarrosselDePlanos({
   idioma,
+  grupo: soGrupo,
   children,
 }: {
   idioma: Idioma;
+  grupo?: Grupo;
   children: ReactNode[];
 }) {
   const c = PLANOS[idioma];
   const faixa = useRef<HTMLDivElement>(null);
   const [ativo, setAtivo] = useState(0);
-  const nomes = ['FREE', 'PLUS', 'MENTOR', 'MAESTRO'] as const;
+  const nomes = soGrupo ? DO_GRUPO[soGrupo] : ORDEM;
 
   useEffect(() => {
     const el = faixa.current;
@@ -358,11 +397,26 @@ function CarrosselDePlanos({
     });
   };
 
-  const grupo = ativo < 2 ? 'estudar' : 'ensinar';
+  const grupo = soGrupo ?? (ativo < 2 ? 'estudar' : 'ensinar');
+
+  // `/pricing?para=ensinar` (de "comparar todos os planos" na página para
+  // professores) abre já nos planos de quem dá aula.
+  useEffect(() => {
+    if (soGrupo) return;
+    const para = new URLSearchParams(window.location.search).get('para');
+    if (para !== 'ensinar') return;
+    const el = faixa.current;
+    const alvo = el?.children[2] as HTMLElement | undefined;
+    if (el && alvo)
+      el.scrollLeft = alvo.offsetLeft - (el.clientWidth - alvo.offsetWidth) / 2;
+    if (window.matchMedia('(min-width: 768px)').matches) {
+      document.getElementById('ensinar')?.scrollIntoView({ block: 'start' });
+    }
+  }, [soGrupo]);
 
   return (
     <Revelar className="mt-8 md:hidden">
-      <div className="section-wrap">
+      <div className={cx('section-wrap', soGrupo && 'hidden')}>
         <div
           role="group"
           aria-label={c.carrossel.rotulo}

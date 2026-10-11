@@ -38,6 +38,7 @@ export const LOCALIZED_ROUTES = [
   '/copyright',
   '/difficulty',
   '/faq',
+  '/for-teachers',
   '/help',
   '/instruments',
   '/music-history',
