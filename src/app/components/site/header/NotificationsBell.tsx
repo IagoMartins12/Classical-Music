@@ -13,6 +13,7 @@ import type { HeaderCopy } from '@/app/conteudo/site/header';
 import { useMediaQuery } from '@/app/hooks/useMediaQuery';
 import { useNotifications, useUnreadCount } from '@/app/hooks/portal/query';
 import * as api from '@/app/requests/portal/api';
+import { relativeTime } from '../relativeTime';
 
 type Copy = HeaderCopy['notifications'];
 const LATEST = 8;
@@ -188,7 +189,7 @@ function Latest({
                     {n.message}
                   </span>
                   <span className="t-legenda">
-                    {since(n.createdAt, language)}
+                    {relativeTime(n.createdAt, language)}
                     {isUnread && (
                       <span className="sr-only"> · {copy.unreadMark}</span>
                     )}
@@ -220,21 +221,4 @@ function Latest({
       )}
     </>
   );
-}
-
-/** "há 3 h" / "3 hours ago", then the date after a month. */
-function since(value: string, language: 'pt' | 'en') {
-  const locale = language === 'pt' ? 'pt-BR' : 'en-US';
-  const minutes = Math.round((Date.now() - new Date(value).getTime()) / 60_000);
-  const relative = new Intl.RelativeTimeFormat(locale, { numeric: 'auto' });
-  if (minutes < 60) return relative.format(-Math.max(minutes, 0), 'minute');
-  const hours = Math.round(minutes / 60);
-  if (hours < 24) return relative.format(-hours, 'hour');
-  const days = Math.round(hours / 24);
-  if (days < 30) return relative.format(-days, 'day');
-  return new Intl.DateTimeFormat(locale, {
-    day: 'numeric',
-    month: 'short',
-    year: 'numeric',
-  }).format(new Date(value));
 }

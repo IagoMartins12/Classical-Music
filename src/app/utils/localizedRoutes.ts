@@ -31,6 +31,7 @@ export const LANGUAGE_COOKIE = 'opus-atlas-language';
 export const LOCALIZED_ROUTES = [
   '/about-us',
   '/blog',
+  '/collections',
   '/composer',
   '/composers',
   '/contact',

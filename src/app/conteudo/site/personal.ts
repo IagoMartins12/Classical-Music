@@ -9,6 +9,7 @@ const pt = {
     annotations: 'Anotações',
     uploads: 'Envios',
     achievements: 'Conquistas',
+    collections: 'Coleções',
     profile: 'Perfil',
   },
   progress: {
@@ -238,6 +239,7 @@ const en: typeof pt = {
     annotations: 'Annotations',
     uploads: 'Uploads',
     achievements: 'Achievements',
+    collections: 'Collections',
     profile: 'Profile',
   },
   progress: {

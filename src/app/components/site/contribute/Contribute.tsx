@@ -313,7 +313,7 @@ function ContributeSheet({
         descricao={copy.intro}
         largura="m"
         rodape={
-          <div className="flex flex-wrap items-center justify-between gap-3">
+          <div className="flex w-full flex-wrap items-center justify-between gap-3">
             <span className="t-legenda">{copy.xpLater(XP[kind])}</span>
             <div className="flex gap-2">
               <Button

@@ -18,7 +18,8 @@ type Target = {
     | 'score'
     | 'annotation'
     | 'curiosity'
-    | 'contribution';
+    | 'contribution'
+    | 'collection';
   entityId: string;
   name: string;
 };

@@ -13,6 +13,7 @@ const PAGES = [
   ['annotations', '/annotations'],
   ['uploads', '/upload'],
   ['achievements', '/achievements'],
+  ['collections', '/my-collections'],
 ] as const;
 
 /** Tabs between the personal pages. */

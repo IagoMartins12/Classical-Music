@@ -15,7 +15,8 @@ type ReportableEntity =
   | 'score'
   | 'annotation'
   | 'curiosity'
-  | 'contribution';
+  | 'contribution'
+  | 'collection';
 type ModerationAction = 'approve' | 'reject' | 'delete';
 
 const CATEGORY_BY_REASON: Record<string, string> = {

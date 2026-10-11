@@ -1,6 +1,7 @@
 import { DiscoverSection } from '@/app/components/site/home/DiscoverSection';
 import { ErasCarousel } from '@/app/components/site/home/ErasCarousel';
 import { FeaturedComposer } from '@/app/components/site/home/FeaturedComposer';
+import { HomeCollections } from '@/app/components/site/home/HomeCollections';
 import { HomeHero } from '@/app/components/site/home/HomeHero';
 import { MusicalFacts } from '@/app/components/site/home/MusicalFacts';
 import { PlansCallout } from '@/app/components/site/home/PlansCallout';
@@ -12,6 +13,7 @@ import { cx } from '@/app/components/ui/cx';
 import { workTitle } from '@/app/components/site/workTitle';
 import { HOME } from '@/app/conteudo/site/home';
 import { loadCalendar } from '@/app/requests/calendar-requests';
+import { publicCollections } from '@/app/requests/collections';
 import {
   getCachedFeaturedComposer,
   getCachedMusicalFacts,
@@ -49,7 +51,7 @@ async function upcomingConcerts() {
  */
 export default async function HomePage({ language }: { language: Language }) {
   const copy = HOME[language];
-  const [popular, featured, discoveries, recent, facts, concerts] =
+  const [popular, featured, discoveries, recent, facts, concerts, picks] =
     await Promise.all([
       getCachedTop20FamousComposers(),
       getCachedFeaturedComposer(),
@@ -57,6 +59,7 @@ export default async function HomePage({ language }: { language: Language }) {
       getCachedRecentAdditions(),
       getCachedMusicalFacts(),
       upcomingConcerts(),
+      publicCollections({ featured: true, limit: 4 }),
     ]);
 
   return (
@@ -75,6 +78,7 @@ export default async function HomePage({ language }: { language: Language }) {
         />
       )}
       <ErasCarousel copy={copy.eras} language={language} />
+      <HomeCollections language={language} collections={picks.collections} />
       <Revelar
         as="section"
         className={cx(

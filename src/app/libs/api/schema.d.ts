@@ -3177,6 +3177,112 @@ export interface paths {
     patch?: never;
     trace?: never;
   };
+  '/api/collections': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /** Coleções públicas (as da equipe primeiro, depois as mais favoritadas) */
+    get: operations['CollectionsController_list'];
+    put?: never;
+    /** Cria uma coleção (e-mail confirmado) */
+    post: operations['CollectionsController_create'];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/api/collections/mine': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /** As suas coleções e as que você favoritou */
+    get: operations['CollectionsController_mine'];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/api/collections/candidates': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /** O que o editor oferece enquanto a pessoa digita */
+    get: operations['CollectionsController_candidates'];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/api/collections/{id}': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /** Uma coleção, com os itens (pública ou sua) */
+    get: operations['CollectionsController_get'];
+    /** Atualiza a sua coleção (o tipo não muda) */
+    put: operations['CollectionsController_update'];
+    post?: never;
+    /** Apaga uma coleção (dono ou admin) */
+    delete: operations['CollectionsController_remove'];
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/api/collections/{id}/favorite': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    /** Favorita uma coleção pública */
+    post: operations['CollectionsController_favorite'];
+    /** Tira a coleção dos favoritos */
+    delete: operations['CollectionsController_unfavorite'];
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/api/collections/{id}/featured': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    /** Põe ou tira a coleção da home (equipe) */
+    patch: operations['CollectionsController_feature'];
+    trace?: never;
+  };
   '/api/blog/articles': {
     parameters: {
       query?: never;
@@ -10708,6 +10814,8 @@ export interface components {
       field: string;
       /** @description O novo valor. */
       value: string;
+      /** @description Fonte: um link ou um livro. */
+      source?: string;
     };
     ContributionAuthorDto: {
       id: string;
@@ -10720,8 +10828,10 @@ export interface components {
       entityType: string;
       entityId: string;
       field?: string | null;
-      /** @description XP pago por esta contribuição. */
+      /** @description XP que esta contribuição rende. */
       xp: number;
+      /** @description Já pago (sete dias sem denúncia procedente) ou esperando. */
+      xpGranted: boolean;
       /** Format: date-time */
       createdAt: string;
       author: components['schemas']['ContributionAuthorDto'];
@@ -10741,6 +10851,108 @@ export interface components {
       text: string;
       /** @enum {string} */
       language: 'pt' | 'en';
+      /** @description Onde a pessoa leu isso. */
+      source?: string;
+    };
+    CollectionOwnerDto: {
+      id: string;
+      name: string;
+    };
+    CollectionFaceDto: {
+      name: string;
+      portraitUrl?: string | null;
+    };
+    CollectionSummaryDto: {
+      id: string;
+      /** @enum {string} */
+      kind: 'WORK' | 'COMPOSER' | 'SCORE';
+      title: string;
+      description?: string | null;
+      isPublic: boolean;
+      featuredOnHome: boolean;
+      /** @description Fora do ar por denúncia (só o dono vê). */
+      held: boolean;
+      favoritesCount: number;
+      itemCount: number;
+      /** Format: date-time */
+      updatedAt: string;
+      owner: components['schemas']['CollectionOwnerDto'];
+      faces: components['schemas']['CollectionFaceDto'][];
+      /** @description Quem chama é o dono. */
+      mine: boolean;
+      /** @description Quem chama favoritou. */
+      favorited: boolean;
+    };
+    CollectionListDto: {
+      collections: components['schemas']['CollectionSummaryDto'][];
+      total: number;
+    };
+    MyCollectionsDto: {
+      mine: components['schemas']['CollectionSummaryDto'][];
+      favorites: components['schemas']['CollectionSummaryDto'][];
+    };
+    CollectionEntryDto: {
+      refId: string;
+      note?: string | null;
+      title: string;
+      opOrCatalog?: string | null;
+      composerName?: string | null;
+      portraitUrl?: string | null;
+      birthYear?: number | null;
+      deathYear?: number | null;
+      nationality?: string | null;
+      instrumentName?: string | null;
+      /** @description Partitura: a obra */
+      workId?: string | null;
+      workTitle?: string | null;
+      pageCount?: string | null;
+    };
+    CollectionDetailDto: {
+      id: string;
+      /** @enum {string} */
+      kind: 'WORK' | 'COMPOSER' | 'SCORE';
+      title: string;
+      description?: string | null;
+      isPublic: boolean;
+      featuredOnHome: boolean;
+      /** @description Fora do ar por denúncia (só o dono vê). */
+      held: boolean;
+      favoritesCount: number;
+      itemCount: number;
+      /** Format: date-time */
+      updatedAt: string;
+      owner: components['schemas']['CollectionOwnerDto'];
+      faces: components['schemas']['CollectionFaceDto'][];
+      /** @description Quem chama é o dono. */
+      mine: boolean;
+      /** @description Quem chama favoritou. */
+      favorited: boolean;
+      items: components['schemas']['CollectionEntryDto'][];
+    };
+    CollectionItemInputDto: {
+      /** @description Id da obra, do compositor ou da partitura. */
+      refId: string;
+      note?: string;
+    };
+    CreateCollectionDto: {
+      title: string;
+      description?: string;
+      isPublic: boolean;
+      items: components['schemas']['CollectionItemInputDto'][];
+      /**
+       * @description Fixo depois de criada.
+       * @enum {string}
+       */
+      kind: 'WORK' | 'COMPOSER' | 'SCORE';
+    };
+    UpdateCollectionDto: {
+      title: string;
+      description?: string;
+      isPublic: boolean;
+      items: components['schemas']['CollectionItemInputDto'][];
+    };
+    FeatureCollectionDto: {
+      featuredOnHome: boolean;
     };
     AuthorRefDto: {
       id: string;
@@ -11725,7 +11937,8 @@ export interface components {
         | 'blog-comment'
         | 'annotation'
         | 'curiosity'
-        | 'contribution';
+        | 'contribution'
+        | 'collection';
       /** @example 685d591c1e3db0c5aaa893e4 */
       entityId: string;
       /**
@@ -20987,6 +21200,229 @@ export interface operations {
     requestBody?: never;
     responses: {
       204: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
+  CollectionsController_list: {
+    parameters: {
+      query?: {
+        /** @description Só as destacadas na home. */
+        featured?: boolean;
+        kind?: 'WORK' | 'COMPOSER' | 'SCORE';
+        page?: number;
+        limit?: number;
+      };
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['CollectionListDto'];
+        };
+      };
+    };
+  };
+  CollectionsController_create: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['CreateCollectionDto'];
+      };
+    };
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['CollectionDetailDto'];
+        };
+      };
+      201: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['CollectionDetailDto'];
+        };
+      };
+    };
+  };
+  CollectionsController_mine: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['MyCollectionsDto'];
+        };
+      };
+    };
+  };
+  CollectionsController_candidates: {
+    parameters: {
+      query: {
+        kind: 'WORK' | 'COMPOSER' | 'SCORE';
+        q: string;
+      };
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['CollectionEntryDto'][];
+        };
+      };
+    };
+  };
+  CollectionsController_get: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        id: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['CollectionDetailDto'];
+        };
+      };
+    };
+  };
+  CollectionsController_update: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        id: string;
+      };
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['UpdateCollectionDto'];
+      };
+    };
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['CollectionDetailDto'];
+        };
+      };
+    };
+  };
+  CollectionsController_remove: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        id: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      204: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
+  CollectionsController_favorite: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        id: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      201: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
+  CollectionsController_unfavorite: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        id: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
+  CollectionsController_feature: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        id: string;
+      };
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['FeatureCollectionDto'];
+      };
+    };
+    responses: {
+      200: {
         headers: {
           [name: string]: unknown;
         };

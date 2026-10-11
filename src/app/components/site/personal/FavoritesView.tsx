@@ -18,11 +18,12 @@ import {
   type FavoriteWork,
 } from '@/app/stores/useFavoritesStore';
 import { FavoriteHeart } from '../FavoriteHeart';
+import { FavoriteCollections } from '../collections/MyCollectionsView';
 import { Portrait } from '../Portrait';
 import { ListResults, ViewToggle } from '../lists/ViewToggle';
 import { workTitle } from '../workTitle';
 
-type Tab = 'all' | 'composers' | 'works' | 'scores';
+type Tab = 'all' | 'composers' | 'works' | 'scores' | 'collections';
 /** In "All", each kind shows a few and a link to its own tab. */
 const PREVIEW = 6;
 
@@ -77,8 +78,12 @@ export function FavoritesView() {
     ['works', copy.tabs.works, works.length],
     ['scores', copy.tabs.scores, scores.length],
   ] as const;
+  const collectionsLabel = PERSONAL[language].nav.collections;
 
-  const section = (kind: Exclude<Tab, 'all'>, title: string) => {
+  const section = (
+    kind: Exclude<Tab, 'all' | 'collections'>,
+    title: string
+  ) => {
     const items = filtered[kind];
     if (!items.length) return null;
     const visible = tab === 'all' ? items.slice(0, PREVIEW) : items;
@@ -126,43 +131,58 @@ export function FavoritesView() {
               {label} · {n}
             </Aba>
           ))}
+          <Aba
+            ativa={tab === 'collections'}
+            onClick={() => setTab('collections')}
+          >
+            {collectionsLabel}
+          </Aba>
         </Abas>
         <ViewToggle />
       </div>
 
-      {total > 0 && (
-        <label className="search-field flex min-h-12 items-center gap-3 rounded-full bg-sup-2 px-5">
-          <Icon de={PiMagnifyingGlass} className="text-texto-fraco" />
-          <span className="sr-only">{copy.search}</span>
-          <input
-            type="search"
-            value={query}
-            onChange={(e) => setQuery(e.target.value)}
-            placeholder={copy.search}
-            className="min-w-0 flex-1 bg-transparent outline-none placeholder:text-texto-fraco"
-          />
-        </label>
-      )}
-
-      {total === 0 ? (
-        <div className="flex flex-col items-start gap-3 rounded-card bg-sup-2 p-8">
-          <p className="font-display text-[1.5rem]">{copy.empty}</p>
-          <p className="t-rotulo text-texto-suave">{copy.emptyText}</p>
-          <Link href="/composers" className={classesDeBotao('primario', 'p')}>
-            {copy.explore}
-          </Link>
-        </div>
-      ) : shown === 0 ? (
-        <p className="t-rotulo text-texto-suave">{copy.noResults}</p>
+      {tab === 'collections' ? (
+        <FavoriteCollections />
       ) : (
-        <div className="flex flex-col gap-10">
-          {(tab === 'all' || tab === 'composers') &&
-            section('composers', copy.tabs.composers)}
-          {(tab === 'all' || tab === 'works') &&
-            section('works', copy.tabs.works)}
-          {(tab === 'all' || tab === 'scores') &&
-            section('scores', copy.tabs.scores)}
-        </div>
+        <>
+          {total > 0 && (
+            <label className="search-field flex min-h-12 items-center gap-3 rounded-full bg-sup-2 px-5">
+              <Icon de={PiMagnifyingGlass} className="text-texto-fraco" />
+              <span className="sr-only">{copy.search}</span>
+              <input
+                type="search"
+                value={query}
+                onChange={(e) => setQuery(e.target.value)}
+                placeholder={copy.search}
+                className="min-w-0 flex-1 bg-transparent outline-none placeholder:text-texto-fraco"
+              />
+            </label>
+          )}
+
+          {total === 0 ? (
+            <div className="flex flex-col items-start gap-3 rounded-card bg-sup-2 p-8">
+              <p className="font-display text-[1.5rem]">{copy.empty}</p>
+              <p className="t-rotulo text-texto-suave">{copy.emptyText}</p>
+              <Link
+                href="/composers"
+                className={classesDeBotao('primario', 'p')}
+              >
+                {copy.explore}
+              </Link>
+            </div>
+          ) : shown === 0 ? (
+            <p className="t-rotulo text-texto-suave">{copy.noResults}</p>
+          ) : (
+            <div className="flex flex-col gap-10">
+              {(tab === 'all' || tab === 'composers') &&
+                section('composers', copy.tabs.composers)}
+              {(tab === 'all' || tab === 'works') &&
+                section('works', copy.tabs.works)}
+              {(tab === 'all' || tab === 'scores') &&
+                section('scores', copy.tabs.scores)}
+            </div>
+          )}
+        </>
       )}
     </div>
   );
