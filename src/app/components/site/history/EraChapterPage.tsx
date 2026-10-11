@@ -1,3 +1,4 @@
+import { nomeDeTransicao } from '@/app/components/ui/nomeDeTransicao';
 import {
   PiArrowLeft,
   PiArrowRight,
@@ -65,7 +66,11 @@ export async function EraChapterPage({
 
       <article className="section-wrap flex flex-col gap-16 py-12">
         <header className="grid grid-cols-[auto_minmax(0,1fr)] items-end gap-6 sm:gap-10">
-          <span className="relative block aspect-[3/4] w-28 overflow-hidden rounded-card shadow-[var(--sombra-2)] sm:w-44">
+          {/* The era clicked on the index or the home turns into this picture. */}
+          <span
+            className="relative block aspect-[3/4] w-28 overflow-hidden rounded-card shadow-[var(--sombra-2)] sm:w-44"
+            style={nomeDeTransicao(`epoca-${era.key}`, 'cartao')}
+          >
             <Image
               src={era.image}
               alt=""

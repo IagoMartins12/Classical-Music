@@ -90,8 +90,8 @@
     "license": "CC0"
   },
   "timpani": {
-    "title": "File:Kettledrum MET midp1991.137.1.jpg",
-    "source": "https://commons.wikimedia.org/wiki/File:Kettledrum_MET_midp1991.137.1.jpg",
+    "title": "File:Kettle Drums MET DP229625.jpg",
+    "source": "https://commons.wikimedia.org/wiki/File:Kettle_Drums_MET_DP229625.jpg",
     "artist": "The Metropolitan Museum of Art",
     "license": "CC0"
   },
@@ -99,6 +99,12 @@
     "title": "File:Ghent Altarpiece - Singing Angels (left).jpg",
     "source": "https://commons.wikimedia.org/wiki/File:Ghent_Altarpiece_-_Singing_Angels_(left).jpg",
     "artist": "Jan van Eyck, Hubert van Eyck",
-    "license": "Public domain"
+    "license": "Public domain",
+    "drawing": {
+      "title": "File:Portret van de operazanger Giovanni David, RP-P-1949-401.jpg",
+      "source": "https://commons.wikimedia.org/wiki/File:Portret_van_de_operazanger_Giovanni_David,_RP-P-1949-401.jpg",
+      "artist": "Rijksmuseum",
+      "license": "Public domain"
+    }
   }
 }

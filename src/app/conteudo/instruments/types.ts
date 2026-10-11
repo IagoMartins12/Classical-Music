@@ -35,7 +35,10 @@ export interface InstrumentMeta {
   dbNames: readonly string[];
   /** Roughly how far back it goes, for the inventions ruler (negative = BC). */
   since: number;
+  /** Gold line drawing, transparent background. */
   image: string;
+  /** The photograph it was traced from, background removed. */
+  photo: string;
 }
 
 /** One instrument's chapter, written by hand in each language. */

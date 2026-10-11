@@ -65,12 +65,12 @@ const ROLE_ADMIN = 2;
 export function accountLinks(user: HeaderUser): AccountLink[] {
   const role = user.role ?? 0;
   const links: AccountLink[] = [
+    { key: 'profile', href: '/profile', icon: PiUserCircle },
     { key: 'learning', href: '/learning', icon: PiBookOpenText },
     { key: 'favorites', href: '/favorites', icon: PiHeart },
     { key: 'annotations', href: '/annotations', icon: PiNotePencil },
     { key: 'uploads', href: '/upload', icon: PiUploadSimple },
     { key: 'achievements', href: '/achievements', icon: PiMedal },
-    { key: 'profile', href: '/profile', icon: PiUserCircle },
   ];
   if (role === ROLE_TEACHER) {
     links.push({ key: 'teacher', href: '/teacher', icon: PiChalkboardTeacher });

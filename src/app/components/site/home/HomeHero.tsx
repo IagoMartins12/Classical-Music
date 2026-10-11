@@ -14,11 +14,9 @@ import { HeroActions } from './HeroActions';
 export function HomeHero({
   copy,
   language,
-  composerPortrait,
 }: {
   copy: HomeCopy['hero'];
   language: Idioma;
-  composerPortrait?: { name: string; src: string | null };
 }) {
   return (
     <section className="relative isolate overflow-x-clip">
@@ -50,7 +48,7 @@ export function HomeHero({
           </p>
         </div>
         <div className="max-md:hidden">
-          <CelestialAtlas copy={copy} composerPortrait={composerPortrait} />
+          <CelestialAtlas copy={copy} />
         </div>
       </div>
     </section>

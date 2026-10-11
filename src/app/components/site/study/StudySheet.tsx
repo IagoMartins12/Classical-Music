@@ -1,13 +1,32 @@
 'use client';
 
 import { usePathname } from 'next/navigation';
-import { useCallback, useEffect, useState, type ReactNode } from 'react';
+import { CaixaDeMarcar } from '@/app/components/ui/CaixaDeMarcar';
+import {
+  useCallback,
+  useEffect,
+  useState,
+  type ComponentType,
+  type ReactNode,
+  type SVGProps,
+} from 'react';
 import toast from 'react-hot-toast';
-import { PiCheckCircle, PiFilePdf, PiTrash } from 'react-icons/pi';
+import {
+  PiCheckCircle,
+  PiDownloadSimple,
+  PiFileText,
+  PiMusicNotes,
+  PiPencilLine,
+  PiPlus,
+  PiTarget,
+  PiTrash,
+  PiVideoCamera,
+  PiX,
+} from 'react-icons/pi';
 import ConfirmModal from '@/app/components/ConfirmModal';
 import ScoreSelectionModal from '@/app/components/LearningModal/ScoreSelectionModal';
 import type { WorkScore } from '@/app/hooks/useWorkScores';
-import { Button } from '@/app/components/ui/Button';
+import { Button, classesDeBotao } from '@/app/components/ui/Button';
 import { Field } from '@/app/components/ui/Field';
 import { Icon } from '@/app/components/ui/Icon';
 import { Selecao } from '@/app/components/ui/Selecao';
@@ -100,6 +119,80 @@ function Area({
   );
 }
 
+/** A dashed panel with its own heading, as in the earlier study modal. */
+function Panel({
+  icon,
+  title,
+  status,
+  action,
+  children,
+}: {
+  icon: ComponentType<SVGProps<SVGSVGElement>>;
+  title: string;
+  status: ReactNode;
+  action?: ReactNode;
+  children: ReactNode;
+}) {
+  return (
+    <section className="flex flex-col gap-4 rounded-card border border-dashed border-[var(--linha-forte)] p-5">
+      <div className="flex items-center justify-between gap-3">
+        <span className="flex items-center gap-3">
+          <span className="grid h-9 w-9 shrink-0 place-items-center rounded-controle bg-sup-2 text-ouro-texto">
+            <Icon de={icon} />
+          </span>
+          <span className="flex flex-col">
+            <span className="font-medium">{title}</span>
+            <span className="t-rotulo text-texto-suave">{status}</span>
+          </span>
+        </span>
+        {action}
+      </div>
+      {children}
+    </section>
+  );
+}
+
+/** The large dashed "+" target for adding a score or a video. */
+function AddZone({
+  title,
+  text,
+  onClick,
+  htmlFor,
+}: {
+  title: string;
+  text: string;
+  onClick?: () => void;
+  htmlFor?: string;
+}) {
+  const body = (
+    <>
+      <span className="grid h-12 w-12 place-items-center rounded-controle bg-sup-2 text-ouro-texto transition-transform duration-[var(--t-resposta)] group-hover:scale-105 motion-reduce:transition-none">
+        <Icon de={PiPlus} tamanho="m" />
+      </span>
+      <span className="font-medium">{title}</span>
+      <span className="t-rotulo text-texto-suave">{text}</span>
+    </>
+  );
+  const cls =
+    'group flex w-full cursor-pointer flex-col items-center gap-2 rounded-card border border-dashed border-[var(--linha-forte)] p-5 text-center transition-colors duration-[var(--t-toque)] hover:border-[var(--ouro)]';
+  return htmlFor ? (
+    <label htmlFor={htmlFor} className={cls}>
+      {body}
+    </label>
+  ) : (
+    <button type="button" onClick={onClick} className={cls}>
+      {body}
+    </button>
+  );
+}
+
+const fileSize = (bytes?: number | null) =>
+  !bytes
+    ? ''
+    : bytes > 1e6
+      ? `${(bytes / 1e6).toFixed(1)} MB`
+      : `${Math.round(bytes / 1e3)} KB`;
+
 /** A score from the learning item, shaped for the modal store. */
 function asSelected(
   score: SelectedWorkScore | undefined | null
@@ -143,6 +236,7 @@ export function StudySheet() {
   const [confirmLeave, setConfirmLeave] = useState(false);
   const [confirmTransfer, setConfirmTransfer] = useState(false);
   const [pickingScore, setPickingScore] = useState(false);
+  const [marking, setMarking] = useState(false);
   const [milestoneList, setMilestoneList] = useState<ProgressMilestone[]>([]);
   const [milestones, setMilestones] = useState<ProgressMilestones>({});
 
@@ -344,6 +438,10 @@ export function StudySheet() {
   const progress = calculateProgress(milestones, milestoneList);
   const learnedItem =
     !isWant && isCurrentlyActive ? library.getLearnedItem(workId) : null;
+  const videoUrl = video.videoPreviewUrl || learnedItem?.videoUrl || null;
+  const videoName =
+    video.selectedVideo?.name || learnedItem?.videoFileName || '';
+  const videoSize = video.selectedVideo?.size || learnedItem?.videoFileSize;
   const title = isWant
     ? isCurrentlyActive
       ? copy.titles.wantEdit
@@ -352,59 +450,85 @@ export function StudySheet() {
       ? copy.titles.learnedEdit
       : copy.titles.learned;
 
+  const chooseScore = () =>
+    onWorkPage ? startScoreSelection() : setPickingScore(true);
+  const suggested =
+    !isCurrentlyActive &&
+    !!selectedWorkScore &&
+    opposite?.selectedWorkScore?.id === selectedWorkScore.id;
   const scoreBlock = (
-    <section className="flex flex-col gap-3 rounded-card bg-sup-2 p-4">
-      <h3 className="t-rotulo">{copy.score.title}</h3>
+    <Panel
+      icon={PiFileText}
+      title={copy.score.title}
+      status={selectedWorkScore ? copy.score.linked : copy.score.none}
+    >
       {selectedWorkScore ? (
-        <div className="flex items-center gap-3">
-          <Icon
-            de={PiFilePdf}
-            tamanho="m"
-            className="shrink-0 text-texto-fraco"
-          />
-          <span className="flex min-w-0 flex-1 flex-col">
-            <span className="truncate font-medium">
-              {selectedWorkScore.title}
+        <div className="flex flex-col gap-2 rounded-card bg-sup-2 p-4">
+          <div className="flex items-center gap-3">
+            <span className="grid h-10 w-10 shrink-0 place-items-center rounded-controle bg-[var(--fundo)] text-texto-fraco">
+              <Icon de={PiMusicNotes} />
             </span>
-            <span className="t-legenda">
-              {copy.score.from(selectedWorkScore.source)}
+            <span className="flex min-w-0 flex-1 flex-col">
+              <span className="truncate font-medium">
+                {selectedWorkScore.title}
+              </span>
+              <span className="t-legenda truncate">
+                {[
+                  copy.score.from(selectedWorkScore.source),
+                  selectedWorkScore.fileSize,
+                  selectedWorkScore.pageCount &&
+                    copy.score.pages(selectedWorkScore.pageCount),
+                  selectedWorkScore.type,
+                ]
+                  .filter(Boolean)
+                  .join(' · ')}
+              </span>
             </span>
-          </span>
-          <Button
-            tamanho="p"
-            variante="fantasma"
-            onClick={() =>
-              onWorkPage ? startScoreSelection() : setPickingScore(true)
-            }
-          >
-            {copy.score.change}
-          </Button>
-          <Button
-            tamanho="p"
-            variante="fantasma"
-            onClick={() => {
-              setTouched(true);
-              setSelectedWorkScore(null);
-            }}
-          >
-            {copy.score.remove}
-          </Button>
+            {selectedWorkScore.downloadUrl && (
+              <a
+                href={selectedWorkScore.downloadUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label={copy.score.open}
+                title={copy.score.open}
+                className={classesDeBotao('secundario', 'p', true)}
+              >
+                <Icon de={PiDownloadSimple} tamanho="pp" />
+              </a>
+            )}
+            <Button
+              tamanho="p"
+              icone={PiPencilLine}
+              rotulo={copy.score.change}
+              onClick={chooseScore}
+            />
+            <Button
+              tamanho="p"
+              variante="fantasma"
+              icone={PiX}
+              rotulo={copy.score.remove}
+              onClick={() => {
+                setTouched(true);
+                setSelectedWorkScore(null);
+              }}
+            />
+          </div>
+          {suggested && (
+            <span className="t-legenda text-ouro-texto">
+              {copy.score.suggested(
+                isWant ? copy.titles.learned : copy.titles.want
+              )}
+            </span>
+          )}
         </div>
       ) : (
-        <div className="flex flex-wrap items-center justify-between gap-3">
-          <span className="t-rotulo text-texto-suave">{copy.score.none}</span>
-          <Button
-            tamanho="p"
-            icone={PiFilePdf}
-            onClick={() =>
-              onWorkPage ? startScoreSelection() : setPickingScore(true)
-            }
-          >
-            {copy.score.choose}
-          </Button>
-        </div>
+        <AddZone
+          title={isCurrentlyActive ? copy.score.chooseEdit : copy.score.choose}
+          text={onWorkPage ? copy.score.chooseHereText : copy.score.chooseText}
+          onClick={chooseScore}
+        />
       )}
-    </section>
+    </Panel>
   );
 
   const pair = (a: ReactNode, b: ReactNode) => (
@@ -481,37 +605,44 @@ export function StudySheet() {
         onChange={(notes) => want_({ notes })}
       />
       {milestoneList.length > 0 && (
-        <fieldset className="flex flex-col gap-3">
-          <legend className="mb-2 flex w-full items-baseline justify-between gap-3">
-            <span className="t-rotulo">{copy.progress}</span>
-            <span className="t-dado text-[0.8125rem] text-texto-suave">
-              {copy.progressDone(Math.round(progress))}
-            </span>
-          </legend>
-          <span className="block h-1.5 overflow-hidden rounded-full bg-[var(--linha)]">
+        <Panel
+          icon={PiTarget}
+          title={copy.progress}
+          status={copy.progressDone(Math.round(progress))}
+          action={
+            <Button
+              tamanho="p"
+              icone={PiPencilLine}
+              onClick={() => setMarking(true)}
+            >
+              {copy.markProgress}
+            </Button>
+          }
+        >
+          <span className="block h-2 overflow-hidden rounded-full bg-[var(--linha)]">
             <span
-              className="block h-full rounded-full fill-ouro"
+              className="block h-full rounded-full fill-ouro transition-[width] duration-[var(--t-resposta)]"
               style={{ width: `${progress}%` }}
             />
           </span>
-          <div className="flex flex-wrap gap-2">
-            {milestoneList.map((m) => (
-              <button
-                key={m.key}
-                type="button"
-                aria-pressed={!!milestones[m.key]}
-                onClick={() => {
-                  setTouched(true);
-                  setMilestones((prev) => ({ ...prev, [m.key]: !prev[m.key] }));
-                }}
-                className={chip(!!milestones[m.key])}
-              >
-                {milestones[m.key] && <Icon de={PiCheckCircle} tamanho="pp" />}{' '}
-                {tMilestone(m.labelKey)}
-              </button>
-            ))}
-          </div>
-        </fieldset>
+          <ul className="flex flex-wrap gap-x-4 gap-y-1">
+            {milestoneList
+              .filter((m) => milestones[m.key])
+              .map((m) => (
+                <li
+                  key={m.key}
+                  className="t-legenda inline-flex items-center gap-1.5 text-texto-suave"
+                >
+                  <Icon
+                    de={PiCheckCircle}
+                    tamanho="pp"
+                    className="text-ouro-texto"
+                  />
+                  {tMilestone(m.labelKey)}
+                </li>
+              ))}
+          </ul>
+        </Panel>
       )}
     </>
   );
@@ -584,15 +715,12 @@ export function StudySheet() {
             ['publicPerformance', copy.publicPerformance],
           ] as const
         ).map(([key, label]) => (
-          <label key={key} className="flex items-center gap-3 t-rotulo">
-            <input
-              type="checkbox"
-              checked={learned[key]}
-              onChange={(e) => learned_({ [key]: e.target.checked })}
-              className="h-4 w-4 accent-[var(--ouro)]"
-            />
-            {label}
-          </label>
+          <CaixaDeMarcar
+            key={key}
+            rotulo={label}
+            marcado={learned[key]}
+            aoMudar={(on) => learned_({ [key]: on })}
+          />
         ))}
       </div>
       <Area
@@ -601,49 +729,81 @@ export function StudySheet() {
         placeholder={copy.generalNotesPlaceholder}
         onChange={(notes) => learned_({ notes })}
       />
-      <section className="flex flex-col gap-3">
-        <Field
-          label={copy.video}
-          ajuda={copy.videoHelp}
+      <Panel
+        icon={PiVideoCamera}
+        title={copy.video}
+        status={videoUrl ? copy.videoAdded : copy.videoNone}
+      >
+        <input
+          id="study-video"
           type="file"
           accept="video/mp4,video/webm,video/quicktime"
+          className="sr-only"
           onChange={(e) => {
             setTouched(true);
             video.selectVideo(e.target.files?.[0] ?? null);
+            e.target.value = '';
           }}
-          erro={video.uploadError ?? undefined}
         />
-        {(video.videoPreviewUrl || learnedItem?.videoUrl) && (
-          <video
-            src={video.videoPreviewUrl || learnedItem?.videoUrl}
-            controls
-            className="aspect-video w-full rounded-card bg-sup-2"
+        {videoUrl ? (
+          <div className="flex flex-col gap-3 rounded-card bg-sup-2 p-4">
+            <div className="flex items-center justify-between gap-3">
+              <span className="flex min-w-0 flex-col">
+                <span className="truncate font-medium">{videoName}</span>
+                <span className="t-legenda">
+                  {[
+                    fileSize(videoSize),
+                    video.isVideoPublic
+                      ? copy.videoIsPublic
+                      : copy.videoIsPrivate,
+                  ]
+                    .filter(Boolean)
+                    .join(' · ')}
+                </span>
+              </span>
+              {learnedItem?.videoUrl && !video.selectedVideo && (
+                <Button
+                  tamanho="p"
+                  variante="fantasma"
+                  icone={PiTrash}
+                  rotulo={copy.videoRemove}
+                  onClick={() => void removeVideo()}
+                />
+              )}
+            </div>
+            <video
+              src={videoUrl}
+              controls
+              className="max-h-64 w-full rounded-controle bg-[var(--fundo)]"
+            />
+            <label
+              htmlFor="study-video"
+              className="t-rotulo cursor-pointer self-center text-texto-suave underline underline-offset-4 hover:text-texto"
+            >
+              {copy.videoReplace}
+            </label>
+          </div>
+        ) : (
+          <AddZone
+            title={copy.videoAdd}
+            text={copy.videoHelp}
+            htmlFor="study-video"
           />
         )}
-        <label className="flex items-center gap-3 t-rotulo">
-          <input
-            type="checkbox"
-            checked={video.isVideoPublic}
-            onChange={(e) => {
-              setTouched(true);
-              video.setIsVideoPublic(e.target.checked);
-            }}
-            className="h-4 w-4 accent-[var(--ouro)]"
-          />
-          {copy.videoPublic}
-        </label>
-        {learnedItem?.videoUrl && !video.selectedVideo && (
-          <Button
-            tamanho="p"
-            variante="fantasma"
-            icone={PiTrash}
-            className="self-start"
-            onClick={() => void removeVideo()}
-          >
-            {copy.videoRemove}
-          </Button>
+        <CaixaDeMarcar
+          rotulo={copy.videoPublic}
+          marcado={video.isVideoPublic}
+          aoMudar={(on) => {
+            setTouched(true);
+            video.setIsVideoPublic(on);
+          }}
+        />
+        {video.uploadError && (
+          <p role="alert" className="t-rotulo text-erro">
+            {video.uploadError}
+          </p>
         )}
-      </section>
+      </Panel>
     </>
   );
 
@@ -738,6 +898,42 @@ export function StudySheet() {
           }}
         />
       )}
+
+      <Sheet
+        aberto={marking}
+        aoFechar={() => setMarking(false)}
+        titulo={copy.markProgressTitle}
+        descricao={copy.markProgressText}
+        largura="p"
+        rodape={
+          <div className="flex w-full items-center justify-between gap-3">
+            <span className="t-dado text-[0.8125rem] text-texto-suave">
+              {copy.progressDone(Math.round(progress))}
+            </span>
+            <Button variante="primario" onClick={() => setMarking(false)}>
+              {copy.markProgressDone}
+            </Button>
+          </div>
+        }
+      >
+        <ul className="flex flex-col gap-1">
+          {milestoneList.map((m) => (
+            <li key={m.key} className="flex items-center justify-between gap-3">
+              <CaixaDeMarcar
+                rotulo={tMilestone(m.labelKey)}
+                marcado={!!milestones[m.key]}
+                aoMudar={(on) => {
+                  setTouched(true);
+                  setMilestones((prev) => ({ ...prev, [m.key]: on }));
+                }}
+              />
+              <span className="t-dado shrink-0 text-[0.75rem] text-texto-fraco">
+                +{m.weight}%
+              </span>
+            </li>
+          ))}
+        </ul>
+      </Sheet>
 
       <ConfirmModal
         isOpen={confirmLeave}

@@ -59,7 +59,6 @@ const pt = {
     label: 'Buscar no Opus Atlas',
     placeholder: 'Buscar compositor, obra, artigo',
     open: 'Abrir a busca',
-    shortcut: 'Ctrl K',
     featured: 'Compositores em destaque',
     shortcuts: 'Atalhos',
     links: {
@@ -126,7 +125,6 @@ const en: typeof pt = {
     label: 'Search Opus Atlas',
     placeholder: 'Search composer, work, article',
     open: 'Open search',
-    shortcut: 'Ctrl K',
     featured: 'Featured composers',
     shortcuts: 'Shortcuts',
     links: {

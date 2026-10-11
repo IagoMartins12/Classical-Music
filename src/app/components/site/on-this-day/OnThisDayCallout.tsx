@@ -56,3 +56,41 @@ export function OnThisDayCallout({
     </Link>
   );
 }
+
+/**
+ * The same day, as one more entry of the Explore menu: title and a line,
+ * like its neighbours, naming the best-known composer born today.
+ */
+export function OnThisDayMenuEntry({
+  onNavigate,
+  active,
+}: {
+  onNavigate?: () => void;
+  active?: boolean;
+}) {
+  const copy = ON_THIS_DAY[useRouteLanguage().language];
+  const date = today();
+  const { data } = useQuery({
+    queryKey: ['on-this-day', daySlug(date)],
+    queryFn: () => getOnThisDay(date.month, date.day),
+    staleTime: 60 * 60 * 1000,
+  });
+  const star = data?.born.find((c) => c.birthYear);
+  return (
+    <Link
+      href="/on-this-day"
+      onClick={onNavigate}
+      aria-current={active ? 'page' : undefined}
+      className="group flex flex-col gap-1 rounded-controle p-3 hover:bg-sup-2"
+    >
+      <span className="font-display text-[1.25rem] transition-colors group-hover:text-ouro-texto">
+        {copy.menuEntry}
+      </span>
+      <span className="t-rotulo text-texto-suave">
+        {star?.birthYear
+          ? copy.menuDetail(star.name, star.birthYear)
+          : copy.menuFallback}
+      </span>
+    </Link>
+  );
+}

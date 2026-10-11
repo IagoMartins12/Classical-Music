@@ -7,12 +7,12 @@ import { PERSONAL } from '@/app/conteudo/site/personal';
 import { useRouteLanguage } from '@/app/hooks/useRouteLanguage';
 
 const PAGES = [
+  ['profile', '/profile'],
   ['studies', '/learning'],
   ['favorites', '/favorites'],
   ['annotations', '/annotations'],
   ['uploads', '/upload'],
   ['achievements', '/achievements'],
-  ['profile', '/profile'],
 ] as const;
 
 /** Tabs between the personal pages. */

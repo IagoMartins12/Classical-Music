@@ -35,7 +35,7 @@ export async function generateMetadata({
     title: LEARN[language].instruments.metaTitle(chapter.name),
     description: chapter.lede,
     alternates: alternatesFor(`/instruments/${meta.key}`, language),
-    openGraph: { images: [meta.image] },
+    openGraph: { images: [meta.photo] },
   };
 }
 

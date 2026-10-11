@@ -28,7 +28,21 @@ import { nomeDeArtigo, ROTAS_DO_BLOG } from '@/app/components/ui/nomeDeArtigo';
  * passar o ponteiro, a página de destino é pré-carregada: quanto antes ela
  * chega, mais inteira a transição.
  */
-const ROTA = /^(?:\/(?:pt|en))?\/(composer|works)\/([^/]+)\/?$/;
+const ROTA =
+  /^(?:\/(?:pt|en))?\/(composer|works|instruments|music-history)\/([^/]+)\/?$/;
+/** The transition name's prefix for each kind of page. */
+const PREFIXO: Record<string, string> = {
+  composer: 'compositor',
+  works: 'obra',
+  instruments: 'instrumento',
+  'music-history': 'epoca',
+};
+const CAMINHO: Record<string, string> = {
+  compositor: '/composer',
+  obra: '/works',
+  instrumento: '/instruments',
+  epoca: '/music-history',
+};
 const BLOG = /^\/blog\/([^/]+)\/?$/;
 const CARTAO =
   '.classical-card, .classical-card-simple, .classical-card-2, .sup-1, .sup-2, article';
@@ -41,7 +55,7 @@ function nomeDoDestino(url: URL) {
     return ROTAS_DO_BLOG.has(artigo[1]) ? null : nomeDeArtigo(artigo[1]);
   const casou = url.pathname.match(ROTA);
   if (!casou || casou[2] === 'filtered') return null;
-  return `${casou[1] === 'composer' ? 'compositor' : 'obra'}-${casou[2]}`;
+  return `${PREFIXO[casou[1]]}-${casou[2]}`;
 }
 
 function urlDe(link: HTMLAnchorElement) {
@@ -101,7 +115,7 @@ function destinoDoCartao(alvo: EventTarget | null) {
     nome.slice(0, nome.indexOf('-')),
     nome.slice(nome.indexOf('-') + 1),
   ];
-  const caminho = tipo === 'obra' ? `/works/${id}` : `/composer/${id}`;
+  const caminho = `${CAMINHO[tipo] ?? '/composer'}/${id}`;
   // O link do próprio card, se houver (já vem com o idioma certo).
   const link = [...cartao.querySelectorAll<HTMLAnchorElement>('a[href]')].find(
     (a) => {

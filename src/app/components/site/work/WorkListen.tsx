@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useRef, useState } from 'react';
+import { CaixaDeMarcar } from '@/app/components/ui/CaixaDeMarcar';
 import toast from 'react-hot-toast';
 import {
   PiMagnifyingGlass,
@@ -451,15 +452,11 @@ function MediaEditor({
           onChange={(e) => setFile(e.target.files?.[0] ?? null)}
         />
         {media.audio && (
-          <label className="flex items-center gap-3 t-rotulo">
-            <input
-              type="checkbox"
-              checked={removeAudio}
-              onChange={(e) => setRemoveAudio(e.target.checked)}
-              className="h-4 w-4 accent-[var(--ouro)]"
-            />
-            {copy.removeAudio}
-          </label>
+          <CaixaDeMarcar
+            rotulo={copy.removeAudio}
+            marcado={removeAudio}
+            aoMudar={setRemoveAudio}
+          />
         )}
       </div>
     </Sheet>

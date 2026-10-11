@@ -1,3 +1,4 @@
+import { nomeDeTransicao } from '@/app/components/ui/nomeDeTransicao';
 import {
   PiArrowLeft,
   PiArrowRight,
@@ -51,23 +52,20 @@ export async function InstrumentPage({
   return (
     <article className="section-wrap flex flex-col gap-16 py-12">
       <header className="grid grid-cols-1 gap-8 md:grid-cols-[minmax(0,5fr)_minmax(0,7fr)] md:items-center lg:gap-14">
-        <figure className="flex flex-col gap-2">
-          <span className="relative block aspect-[4/5] overflow-hidden rounded-card bg-sobre-foto shadow-[var(--sombra-1)]">
-            <Image
-              src={meta.image}
-              alt={chapter.name}
-              fill
-              priority
-              sizes="(max-width: 768px) 100vw, 40vw"
-              className="object-contain p-6"
-            />
-          </span>
-          {credit && (
-            <figcaption className="t-legenda">
-              {t.imageCredit}: {credit}
-            </figcaption>
-          )}
-        </figure>
+        {/* The card clicked on the index turns into this drawing (CartoesQueViram). */}
+        <span
+          className="relative block aspect-[4/5]"
+          style={nomeDeTransicao(`instrumento-${meta.key}`, 'cartao')}
+        >
+          <Image
+            src={meta.image}
+            alt={chapter.name}
+            fill
+            priority
+            sizes="(max-width: 768px) 100vw, 40vw"
+            className="object-contain p-2"
+          />
+        </span>
         <div className="flex flex-col gap-5">
           <nav aria-label={t.families} className="t-rotulo text-texto-fraco">
             <Link
@@ -101,19 +99,38 @@ export async function InstrumentPage({
             <h2 className="t-legenda">{t.howItWorks}</h2>
             <p className="t-corpo">{chapter.howItWorks}</p>
           </section>
-          <section className="flex flex-col gap-5">
+          <section className="flow-root space-y-5">
             <h2 className="t-titulo max-sm:!text-[1.75rem]">{t.story}</h2>
             {chapter.story.map((paragraph, i) => (
-              <p
-                key={i}
-                className={
-                  i === 0
-                    ? 't-corpo drop-cap max-w-[64ch]'
-                    : 't-corpo max-w-[64ch]'
-                }
-              >
-                {paragraph}
-              </p>
+              <div key={i} className="space-y-5">
+                <p
+                  className={
+                    i === 0
+                      ? 't-corpo drop-cap max-w-[64ch]'
+                      : 't-corpo max-w-[64ch]'
+                  }
+                >
+                  {paragraph}
+                </p>
+                {i === 0 && (
+                  <figure className="flex flex-col gap-2 sm:float-right sm:mb-2 sm:ml-8 sm:w-64">
+                    <span className="relative block aspect-square">
+                      <Image
+                        src={meta.photo}
+                        alt={chapter.name}
+                        fill
+                        sizes="(max-width: 640px) 100vw, 256px"
+                        className="object-contain"
+                      />
+                    </span>
+                    {credit && (
+                      <figcaption className="t-legenda">
+                        {t.imageCredit}: {credit}
+                      </figcaption>
+                    )}
+                  </figure>
+                )}
+              </div>
             ))}
           </section>
           <section className="flex flex-col gap-3">

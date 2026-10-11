@@ -109,9 +109,6 @@ export function SiteHeader() {
               <span className="flex-1 truncate text-left">
                 {copy.search.placeholder}
               </span>
-              <kbd className="t-dado rounded-[6px] bg-[var(--fundo)] px-1.5 py-0.5 text-[0.75rem] text-texto-fraco">
-                {copy.search.shortcut}
-              </kbd>
             </button>
           )}
           <Button

@@ -47,7 +47,10 @@ export function HistoryIndex({ language }: { language: Idioma }) {
                 href={`/music-history/${era.key}`}
                 className="group grid grid-cols-[auto_minmax(0,1fr)] items-center gap-5 py-8 sm:gap-10"
               >
-                <span className="relative block aspect-[3/4] w-24 overflow-hidden rounded-card shadow-[var(--sombra-1)] sm:w-36">
+                <span
+                  data-vira={`epoca-${era.key}`}
+                  className="relative block aspect-[3/4] w-24 overflow-hidden rounded-card shadow-[var(--sombra-1)] sm:w-36"
+                >
                   <Image
                     src={era.image}
                     alt=""

@@ -7,7 +7,7 @@ import { Icon } from '@/app/components/ui/Icon';
 import { cx } from '@/app/components/ui/cx';
 import type { HeaderCopy } from '@/app/conteudo/site/header';
 import { useDismiss } from '@/app/hooks/useDismiss';
-import { OnThisDayCallout } from '../on-this-day/OnThisDayCallout';
+import { OnThisDayMenuEntry } from '../on-this-day/OnThisDayCallout';
 import { EXPLORE_PATHS, isActivePath } from './navigation';
 
 /** "Explorar": the encyclopedia's paths, in a full-width panel. */
@@ -75,10 +75,13 @@ export function ExploreMenu({
                 </li>
               );
             })}
+            <li>
+              <OnThisDayMenuEntry
+                onNavigate={close}
+                active={isActivePath(path, '/on-this-day')}
+              />
+            </li>
           </ul>
-          <div className="section-wrap pb-6">
-            <OnThisDayCallout onNavigate={close} className="max-w-xl" />
-          </div>
         </div>
       )}
     </div>

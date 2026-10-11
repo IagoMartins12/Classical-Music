@@ -145,8 +145,16 @@ export function Selecao({
     const abaixo = window.innerHeight - r.bottom - MARGEM;
     const paraCima = abaixo < altura && r.top > abaixo;
     setAcima(paraCima);
-    l.style.left = `${Math.round(r.left)}px`;
-    l.style.width = `${Math.round(r.width)}px`;
+    // At least as wide as the button, wider when an option needs it (a
+    // short label like "A–Z" must not cut "Chegaram agora"), and never past
+    // the edge of the screen.
+    l.style.width = 'max-content';
+    l.style.minWidth = `${Math.round(r.width)}px`;
+    l.style.maxWidth = `${window.innerWidth - MARGEM * 2}px`;
+    const largura = l.offsetWidth;
+    l.style.left = `${Math.round(
+      Math.max(MARGEM, Math.min(r.left, window.innerWidth - largura - MARGEM))
+    )}px`;
     l.style.top = paraCima
       ? `${Math.round(r.top - Math.min(altura, r.top - MARGEM) - MARGEM)}px`
       : `${Math.round(r.bottom + MARGEM)}px`;

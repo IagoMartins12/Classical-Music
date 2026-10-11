@@ -1,6 +1,7 @@
 'use client';
 
 import { useRouter } from 'next/navigation';
+import { CaixaDeMarcar } from '@/app/components/ui/CaixaDeMarcar';
 import { useEffect, useState, useTransition } from 'react';
 import {
   PiArrowsDownUp,
@@ -226,11 +227,11 @@ export function ListControls({
           {count}
         </p>
         <div className="flex items-center gap-2">
-          <div className="w-48">
+          <div className="shrink-0">
             <Selecao
               aria-label={copy.sort}
               icone={PiArrowsDownUp}
-              className={pill}
+              className={cx(pill, 'w-max! whitespace-nowrap')}
               opcoes={sort.options}
               valor={sort.value}
               aoMudar={(value) => go({ sort: value })}
@@ -297,23 +298,14 @@ export function ListControls({
             </fieldset>
           ))}
           {toggles.map((t) => (
-            <label
+            <CaixaDeMarcar
               key={t.key}
-              className="flex min-h-10 items-center gap-3 t-rotulo"
-            >
-              <input
-                type="checkbox"
-                checked={draft[t.key] === '1'}
-                onChange={(e) =>
-                  setDraft({
-                    ...draft,
-                    [t.key]: e.target.checked ? '1' : undefined,
-                  })
-                }
-                className="h-4 w-4 accent-[var(--ouro)]"
-              />
-              {t.label}
-            </label>
+              rotulo={t.label}
+              marcado={draft[t.key] === '1'}
+              aoMudar={(on) =>
+                setDraft({ ...draft, [t.key]: on ? '1' : undefined })
+              }
+            />
           ))}
           {range && (
             <fieldset className="flex flex-col gap-2">

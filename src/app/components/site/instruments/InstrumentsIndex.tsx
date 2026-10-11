@@ -132,7 +132,10 @@ export function InstrumentsIndex({ language }: { language: Idioma }) {
                       href={`/instruments/${meta.key}`}
                       className="group flex h-full flex-col overflow-hidden rounded-card bg-sup-2"
                     >
-                      <span className="relative block aspect-[4/3] bg-sobre-foto">
+                      <span
+                        data-vira={`instrumento-${meta.key}`}
+                        className="relative block aspect-[4/3]"
+                      >
                         <Image
                           src={meta.image}
                           alt=""

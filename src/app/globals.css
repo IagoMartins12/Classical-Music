@@ -2334,6 +2334,15 @@ html {
 }
 
 @media (prefers-reduced-motion: no-preference) {
+  /* The progress panel of the personal pages slides in from its side. */
+  .lateral-entra {
+    animation: lateral-entra 360ms var(--saida) both;
+  }
+  /* The checkbox tick (ui/CaixaDeMarcar): quick, it answers a click. */
+  .caixa-visto path {
+    stroke-dasharray: 1;
+    animation: engrave 260ms var(--saida) both;
+  }
   .engraving > :is(circle, ellipse, path)[pathLength] {
     stroke-dashoffset: 1;
     animation: engrave 1800ms var(--saida) both;
@@ -2387,6 +2396,12 @@ html {
   }
 }
 
+@keyframes lateral-entra {
+  from {
+    opacity: 0;
+    transform: translateX(24px);
+  }
+}
 @keyframes engrave {
   to {
     stroke-dashoffset: 0;

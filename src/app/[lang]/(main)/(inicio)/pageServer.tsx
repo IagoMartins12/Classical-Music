@@ -59,17 +59,9 @@ export default async function HomePage({ language }: { language: Language }) {
       upcomingConcerts(),
     ]);
 
-  const bach = popular.find((c) => c.name === 'Bach') ?? popular[0];
-
   return (
     <div className="classical-theme">
-      <HomeHero
-        copy={copy.hero}
-        language={language}
-        composerPortrait={
-          bach && { name: bach.fullName, src: bach.portraitUrl }
-        }
-      />
+      <HomeHero copy={copy.hero} language={language} />
       <PopularComposers
         copy={copy.popular}
         language={language}

@@ -1,6 +1,7 @@
 'use client';
 
 import Image from 'next/image';
+import { CaixaDeMarcar } from '@/app/components/ui/CaixaDeMarcar';
 import { useRef, useState } from 'react';
 import toast from 'react-hot-toast';
 import { PiCamera, PiCheck, PiStar, PiStarFill, PiX } from 'react-icons/pi';
@@ -230,17 +231,11 @@ export function InstrumentsStep({
                   aoMudar={(level) => patch(i.id, { level: level as Level })}
                 />
               </div>
-              <label className="t-rotulo flex min-h-10 items-center gap-2">
-                <input
-                  type="checkbox"
-                  checked={i.isLearning}
-                  onChange={(e) =>
-                    patch(i.id, { isLearning: e.target.checked })
-                  }
-                  className="h-4 w-4 accent-[var(--ouro)]"
-                />
-                {copy.instruments.learning}
-              </label>
+              <CaixaDeMarcar
+                rotulo={copy.instruments.learning}
+                marcado={i.isLearning}
+                aoMudar={(on) => patch(i.id, { isLearning: on })}
+              />
               <button
                 type="button"
                 aria-label={copy.instruments.remove(i.name)}
@@ -513,27 +508,17 @@ export function ProfileStep({
         <p className="t-legenda">{t.phoneHelp}</p>
       </div>
       <Group label={t.privacy}>
-        <label className="flex items-start gap-3">
-          <input
-            type="checkbox"
-            checked={data.profilePublic ?? true}
-            onChange={(e) => update({ profilePublic: e.target.checked })}
-            className="mt-1 h-4 w-4 accent-[var(--ouro)]"
-          />
-          <span className="flex flex-col">
-            <span>{t.public}</span>
-            <span className="t-rotulo text-texto-suave">{t.publicHelp}</span>
-          </span>
-        </label>
-        <label className="flex items-center gap-3">
-          <input
-            type="checkbox"
-            checked={data.showLocation ?? false}
-            onChange={(e) => update({ showLocation: e.target.checked })}
-            className="h-4 w-4 accent-[var(--ouro)]"
-          />
-          {t.showLocation}
-        </label>
+        <CaixaDeMarcar
+          rotulo={t.public}
+          ajuda={t.publicHelp}
+          marcado={data.profilePublic ?? true}
+          aoMudar={(on) => update({ profilePublic: on })}
+        />
+        <CaixaDeMarcar
+          rotulo={t.showLocation}
+          marcado={data.showLocation ?? false}
+          aoMudar={(on) => update({ showLocation: on })}
+        />
       </Group>
     </div>
   );

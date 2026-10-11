@@ -63,6 +63,7 @@ export function ErasCarousel({
           <div key={card.key} role="listitem" className="snap-start">
             <Link
               href={card.href}
+              data-vira={card.key === 'all' ? undefined : `epoca-${card.key}`}
               className="group relative flex aspect-[3/4] flex-col justify-end overflow-hidden rounded-card p-5"
             >
               <Image

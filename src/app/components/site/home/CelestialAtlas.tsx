@@ -6,14 +6,13 @@ import {
   PiFileText,
   PiHourglassMedium,
   PiPlay,
-  PiUsers,
+  PiUser,
   PiPianoKeys,
 } from 'react-icons/pi';
 import Link from '@/app/components/LocalizedLink';
 import { Icon } from '@/app/components/ui/Icon';
 import type { HomeCopy } from '@/app/conteudo/site/home';
 import { BrandSeal } from '../BrandSeal';
-import { Portrait } from '../Portrait';
 
 type OrbitKey = keyof HomeCopy['hero']['orbits'];
 
@@ -23,11 +22,11 @@ interface Orbit {
   /** Radius (% of the map) and angle (degrees, 0 = right). */
   r: number;
   angle: number;
-  icon?: IconType;
+  icon: IconType;
 }
 
 const ORBITS: readonly Orbit[] = [
-  { key: 'composers', href: '/composers', r: 25, angle: -125 },
+  { key: 'composers', href: '/composers', r: 25, angle: -125, icon: PiUser },
   { key: 'scores', href: '/works', r: 25, angle: -35, icon: PiFileText },
   { key: 'recordings', href: '/works', r: 25, angle: 55, icon: PiPlay },
   {
@@ -89,13 +88,7 @@ const pos = (r: number, angle: number) => {
  * Hero A (tablet and desktop): an engraved celestial atlas with the seal in
  * the middle and every part of the site in orbit — the hero is also a map.
  */
-export function CelestialAtlas({
-  copy,
-  composerPortrait,
-}: {
-  copy: HomeCopy['hero'];
-  composerPortrait?: { name: string; src: string | null };
-}) {
+export function CelestialAtlas({ copy }: { copy: HomeCopy['hero'] }) {
   return (
     <div className="relative mx-auto aspect-square w-full max-w-[27rem]">
       <svg
@@ -195,16 +188,7 @@ export function CelestialAtlas({
               className="group flex flex-col items-center gap-1.5 text-center"
             >
               <span className="grid h-11 w-11 place-items-center overflow-hidden rounded-full bg-[var(--fundo)] text-ouro-texto shadow-[0_0_0_1px_var(--linha-forte),var(--sombra-1)] transition-shadow duration-[var(--t-resposta)] group-hover:shadow-[0_0_0_2px_var(--ouro),var(--sombra-2)] xl:h-12 xl:w-12">
-                {orbit.icon || !composerPortrait ? (
-                  <Icon de={orbit.icon ?? PiUsers} tamanho="m" />
-                ) : (
-                  <Portrait
-                    name={composerPortrait.name}
-                    src={composerPortrait.src}
-                    sizes="48px"
-                    className="h-full w-full"
-                  />
-                )}
+                <Icon de={orbit.icon} tamanho="m" />
               </span>
               <span className="whitespace-nowrap rounded-[6px] bg-fundo px-1.5 py-0.5 font-display text-[0.9375rem] leading-tight group-hover:text-ouro-texto">
                 {copy.orbits[orbit.key]}

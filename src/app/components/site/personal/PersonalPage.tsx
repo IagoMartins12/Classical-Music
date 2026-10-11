@@ -39,6 +39,8 @@ export function PersonalPage({
 }) {
   const copy = PERSONAL[useRouteLanguage().language].progress;
   const [shown, setShown] = useState(false);
+  // Slides in when the person opens it, not on every page load.
+  const [opened, setOpened] = useState(false);
   useEffect(() => {
     try {
       setShown(localStorage.getItem(STORAGE_KEY) === '1');
@@ -48,6 +50,7 @@ export function PersonalPage({
   }, []);
   const toggle = () =>
     setShown((v) => {
+      setOpened(!v);
       try {
         localStorage.setItem(STORAGE_KEY, v ? '0' : '1');
       } catch {
@@ -94,7 +97,12 @@ export function PersonalPage({
           {children}
         </div>
         {aside && (
-          <aside className="max-lg:hidden lg:sticky lg:top-24 lg:self-start">
+          <aside
+            className={cx(
+              'max-lg:hidden lg:sticky lg:top-24 lg:self-start',
+              opened && 'lateral-entra'
+            )}
+          >
             <ProgressPanel category={category} />
           </aside>
         )}
