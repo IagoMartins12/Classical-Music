@@ -2351,6 +2351,23 @@ html {
   .engraving-ring {
     animation: spin 240s linear infinite;
   }
+  /* The orbits of the editorial pages (site/orbits): each ring turns at its
+     own pace, and its bodies stay upright while it turns. */
+  .orbita-gira {
+    transform-origin: 300px 300px;
+    animation: spin var(--orbita, 120s) linear infinite;
+  }
+  .orbita-gira-reverso {
+    animation-direction: reverse;
+  }
+  .orbita-gira .orbita-de-pe {
+    transform-box: fill-box;
+    transform-origin: center;
+    animation: spin var(--orbita, 120s) linear infinite reverse;
+  }
+  .orbita-gira-reverso .orbita-de-pe {
+    animation-direction: normal;
+  }
   .rise {
     animation: rise 620ms var(--saida) both;
     animation-delay: var(--delay, 0ms);
@@ -2552,4 +2569,13 @@ html {
   40% {
     transform: scale(1.22);
   }
+}
+
+/* Orbits of the editorial pages (site/orbits): gold on the dark page, the
+   deeper gold on cream, where thin gold lines would otherwise vanish. */
+.orbitas {
+  color: var(--ouro);
+}
+[data-theme='light'] .orbitas {
+  color: var(--ouro-texto);
 }

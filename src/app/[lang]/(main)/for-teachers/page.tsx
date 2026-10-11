@@ -2,7 +2,7 @@ import type { Metadata } from 'next';
 import { PiArrowRight, PiCaretDown } from 'react-icons/pi';
 import LocalizedLink from '@/app/components/LocalizedLink';
 import { BotaoCriarConta } from '@/app/components/auth/BotaoCriarConta';
-import { Gravura } from '@/app/components/site/Gravura';
+import { TurmaEmOrbita } from '@/app/components/site/orbits/Orbitas';
 import { classesDeBotao } from '@/app/components/ui/Button';
 import { Revelar } from '@/app/components/ui/Revelar';
 import { TextoRico } from '@/app/components/ui/TextoRico';
@@ -100,12 +100,7 @@ export default async function ParaProfessores({
             </BotaoCriarConta>
           </div>
         </div>
-        <Gravura
-          src="/illustrations/music-lesson.webp"
-          width={1000}
-          height={715}
-          alt={c.gravura}
-        />
+        <TurmaEmOrbita />
       </header>
 
       <section

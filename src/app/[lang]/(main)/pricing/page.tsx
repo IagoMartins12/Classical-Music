@@ -12,7 +12,7 @@ import {
   routeLanguage,
   type LangParams,
 } from '@/app/utils/translations/routeLanguage';
-import { Gravura } from '@/app/components/site/Gravura';
+import { OrbitaDosPlanos } from '@/app/components/site/orbits/Orbitas';
 import { buscarPrecos } from './buscarPrecos';
 import { QuadroDePlanos } from './QuadroDePlanos';
 import {
@@ -259,12 +259,7 @@ export default async function Pagina({ params }: LangPageProps) {
               {c.abertura}
             </p>
           </div>
-          <Gravura
-            src="/instruments/drawings/piano.webp"
-            width={476}
-            height={545}
-            className="mx-auto max-h-80 w-auto"
-          />
+          <OrbitaDosPlanos />
         </header>
 
         <QuadroDePlanos

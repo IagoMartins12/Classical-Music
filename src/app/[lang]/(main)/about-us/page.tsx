@@ -20,7 +20,7 @@ import {
   routeLanguage,
   type LangParams,
 } from '@/app/utils/translations/routeLanguage';
-import { Gravura } from '@/app/components/site/Gravura';
+import { AstrolabioDoSite } from '@/app/components/site/orbits/Orbitas';
 import { QuadroDoSite, type Retrato } from './QuadroDoSite';
 
 /**
@@ -331,15 +331,9 @@ export default async function Pagina({ params }: LangPageProps) {
             </div>
           </div>
 
-          {/* Com o layout de telefone em toda largura, o lado direito é a
-              gravura do manuscrito; sem ele, o mosaico de rostos. */}
-          {m && (
-            <Gravura
-              src="/illustrations/beethoven-manuscript.webp"
-              width={1000}
-              height={778}
-            />
-          )}
+          {/* Com o layout de telefone em toda largura, o lado direito é o
+              astrolábio do site; sem ele, o mosaico de rostos. */}
+          {m && <AstrolabioDoSite />}
 
           {/* O mosaico: três colunas desencontradas, cada rosto um link. */}
           {!m && retratos.length >= 7 && (

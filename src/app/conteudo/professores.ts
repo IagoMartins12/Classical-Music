@@ -16,7 +16,6 @@ export type ConteudoProfessores = {
   titulo: string;
   abertura: string;
   acoes: { planos: string; criarConta: string; portal: string };
-  gravura: string;
   recursos: {
     titulo: string;
     abertura: string;
@@ -52,8 +51,6 @@ const pt: ConteudoProfessores = {
     criarConta: 'Criar conta grátis',
     portal: 'Abrir o portal',
   },
-  gravura:
-    'Gravura de uma aula de música: o professor aponta o teclado enquanto a aluna toca.',
   recursos: {
     titulo: 'O que o portal faz por você',
     abertura:
@@ -175,8 +172,6 @@ const en: ConteudoProfessores = {
     criarConta: 'Create a free account',
     portal: 'Open the portal',
   },
-  gravura:
-    'Engraving of a music lesson: the teacher points at the keyboard while the student plays.',
   recursos: {
     titulo: 'What the portal does for you',
     abertura:
