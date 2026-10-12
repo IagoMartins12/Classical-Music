@@ -218,3 +218,19 @@ export const previaDeEmail = (conteudo: {
     method: 'POST',
     body: conteudo,
   });
+
+/** Os e-mails da plataforma (conta, portal, cobrança, contato, newsletter). */
+export interface EmailDaPlataforma {
+  id: string;
+  group: 'conta' | 'portal' | 'cobranca' | 'contato' | 'newsletter';
+  name: string;
+}
+
+export const getEmailsDaPlataforma = () =>
+  apiFetch<EmailDaPlataforma[]>('/admin/mail/samples', noStore);
+
+export const emailDaPlataforma = (id: string, language: 'pt' | 'en') =>
+  apiFetch<EmailPronto>(`/admin/mail/samples/${encodeURIComponent(id)}`, {
+    ...noStore,
+    query: { language },
+  });

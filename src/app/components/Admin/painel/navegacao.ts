@@ -213,6 +213,11 @@ export const NAVEGACAO: GrupoNav[] = [
         href: '/admin/newsletter/test-lists',
         resumo: 'Quem recebe a prévia antes do envio',
       },
+      {
+        rotulo: 'E-mails da plataforma',
+        href: '/admin/emails',
+        resumo: 'Confirmar conta, senha, pagamento… como chegam',
+      },
     ],
   },
   {
