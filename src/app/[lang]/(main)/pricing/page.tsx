@@ -228,7 +228,7 @@ export default async function Pagina({ params }: LangPageProps) {
       />
 
       <div className="pb-24 md:pb-32">
-        <header className="section-wrap grid items-center gap-10 pt-10 md:pt-20 lg:grid-cols-[minmax(0,7fr)_minmax(0,4fr)] lg:gap-16">
+        <header className="section-wrap grid items-center gap-10 pt-8 md:pt-14 lg:grid-cols-[minmax(0,7fr)_minmax(0,5fr)] lg:gap-16">
           <div>
             <nav
               aria-label={idioma === 'pt' ? 'Você está em' : 'You are here'}

@@ -68,6 +68,11 @@ const pt = {
     fixed: (plural: string) => `${plural}: o tipo não muda depois de criada.`,
     switchHint: 'Para trocar o tipo, tire os itens primeiro.',
     workFirst: 'Primeiro, a obra',
+    composerFilter: 'Compositor (opcional)',
+    composerFilterHint:
+      'Filtra a busca pelas obras de um compositor, para achar mais rápido.',
+    composerPlaceholder: 'Buscar compositor…',
+    clearComposer: 'Tirar o filtro de compositor',
     workSearch: 'Buscar a obra…',
     score: 'Partitura',
     scorePick: 'Escolha a edição',
@@ -81,7 +86,6 @@ const pt = {
     publicHint:
       'Aparece no seu perfil e na lista de coleções; qualquer pessoa pode favoritar.',
     privateHint: 'Fica na sua estante; ninguém mais vê.',
-    home: 'Destacar na home: só a equipe do Opus Atlas. Coleções públicas bem favoritadas são candidatas.',
     add: (plural: string) => `Acrescentar ${plural.toLowerCase()}`,
     search: (singular: string) => `Buscar ${singular}…`,
     searchLabel: 'Buscar no acervo',
@@ -180,6 +184,11 @@ const en: typeof pt = {
       `${plural}: the kind does not change after it is created.`,
     switchHint: 'To change the kind, remove the items first.',
     workFirst: 'First, the work',
+    composerFilter: 'Composer (optional)',
+    composerFilterHint:
+      'Narrows the search to one composer’s works, to find it faster.',
+    composerPlaceholder: 'Search for a composer…',
+    clearComposer: 'Remove the composer filter',
     workSearch: 'Search for the work…',
     score: 'Score',
     scorePick: 'Choose the edition',
@@ -193,7 +202,6 @@ const en: typeof pt = {
     publicHint:
       'Shows on your profile and in the collections list; anyone can favorite it.',
     privateHint: 'Stays on your shelf; nobody else sees it.',
-    home: 'Featuring on the home page is up to the Opus Atlas team. Well-favorited public collections are candidates.',
     add: (plural) => `Add ${plural.toLowerCase()}`,
     search: (singular) => `Search for a ${singular}…`,
     searchLabel: 'Search the catalog',

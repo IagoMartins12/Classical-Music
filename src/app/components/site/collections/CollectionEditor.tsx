@@ -1,21 +1,16 @@
 'use client';
 
-import { useQuery } from '@tanstack/react-query';
+import { keepPreviousData, useQuery } from '@tanstack/react-query';
 import { useDeferredValue, useEffect, useState } from 'react';
 import toast from 'react-hot-toast';
-import {
-  PiArrowDown,
-  PiArrowUp,
-  PiPlus,
-  PiStar,
-  PiTrash,
-} from 'react-icons/pi';
+import { PiArrowDown, PiArrowUp, PiPlus, PiTrash } from 'react-icons/pi';
 import ConfirmModal from '@/app/components/ConfirmModal';
 import { Button } from '@/app/components/ui/Button';
 import { Field } from '@/app/components/ui/Field';
 import { Icon } from '@/app/components/ui/Icon';
 import { Selecao } from '@/app/components/ui/Selecao';
 import { Sheet } from '@/app/components/ui/Sheet';
+import { cx } from '@/app/components/ui/cx';
 import { COLLECTIONS } from '@/app/conteudo/site/collections';
 import { useRouteLanguage } from '@/app/hooks/useRouteLanguage';
 import {
@@ -27,7 +22,9 @@ import {
   deleteCollection,
   updateCollection,
 } from '@/app/requests/collections';
-import { entryDetail, entryTitle, KIND_ICON } from './pieces';
+import { ComposerField, type ComposerOption } from '../edit/ComposerField';
+import { Portrait } from '../Portrait';
+import { entryDetail, entryTitle } from './pieces';
 
 const KINDS: CollectionKind[] = ['WORK', 'COMPOSER', 'SCORE'];
 
@@ -66,6 +63,8 @@ export function CollectionEditor({
   /** Scores: the work picked first, then one of its scores. */
   const [work, setWork] = useState<CollectionEntry | null>(null);
   const [scoreId, setScoreId] = useState('');
+  /** Works and scores: an optional composer that narrows the search. */
+  const [filtro, setFiltro] = useState<ComposerOption | null>(null);
   const [touched, setTouched] = useState(false);
   const [tried, setTried] = useState(false);
   const [saving, setSaving] = useState(false);
@@ -83,18 +82,30 @@ export function CollectionEditor({
     setSearch('');
     setWork(null);
     setScoreId('');
+    setFiltro(null);
     setTouched(false);
     setTried(false);
   }, [open, editing]);
 
   // Scores search the works; the chosen work then lists its scores.
   const searchKind: CollectionKind = kind === 'SCORE' ? 'WORK' : kind;
+  const filtrando = searchKind === 'WORK' && !!filtro;
   const results = useQuery({
-    queryKey: ['collection-candidates', searchKind, term],
-    queryFn: () => collectionCandidates({ kind: searchKind, q: term }),
-    enabled: open && term.length >= 2 && !(kind === 'SCORE' && work),
+    queryKey: ['collection-candidates', searchKind, term, filtro?.id ?? null],
+    queryFn: () =>
+      collectionCandidates({
+        kind: searchKind,
+        q: term || undefined,
+        composerId: filtrando ? filtro!.id : undefined,
+      }),
+    enabled:
+      open && (term.length >= 2 || filtrando) && !(kind === 'SCORE' && work),
     staleTime: 60_000,
+    // Keep the last list while the next one loads: no list folding and
+    // unfolding on every key.
+    placeholderData: keepPreviousData,
   });
+  const buscando = open && (term.length >= 2 || filtrando);
   const scores = useQuery({
     queryKey: ['collection-candidates', 'SCORE', work?.refId],
     queryFn: () => collectionCandidates({ kind: 'SCORE', workId: work!.refId }),
@@ -277,17 +288,19 @@ export function CollectionEditor({
               setDescription(e.target.value);
             }}
           />
-          <p className="t-legenda flex items-start gap-2">
-            <Icon de={PiStar} tamanho="pp" className="mt-0.5 shrink-0" />
-            {t.home}
-          </p>
 
           <div className="flex flex-col gap-2 border-t border-linha pt-6">
             {kind === 'SCORE' && work ? (
               <div className="flex flex-col gap-3">
                 <span className="t-rotulo">{t.workFirst}</span>
                 <span className="flex items-center justify-between gap-3 rounded-controle bg-sup-2 px-3 py-2">
-                  <span className="flex min-w-0 flex-col">
+                  <Portrait
+                    name={work.composerName ?? work.title}
+                    src={work.portraitUrl}
+                    sizes="36px"
+                    className="h-9 w-9 shrink-0 rounded-full text-[0.8125rem]"
+                  />
+                  <span className="flex min-w-0 flex-1 flex-col">
                     <span className="truncate">{entryTitle('WORK', work)}</span>
                     <span className="t-legenda truncate">
                       {entryDetail('WORK', work, copy, language)}
@@ -350,6 +363,19 @@ export function CollectionEditor({
               </div>
             ) : (
               <>
+                {searchKind === 'WORK' && (
+                  <ComposerField
+                    key={kind}
+                    className="mb-2"
+                    label={t.composerFilter}
+                    placeholder={t.composerPlaceholder}
+                    hint={t.composerFilterHint}
+                    clearLabel={t.clearComposer}
+                    value={filtro}
+                    onChange={setFiltro}
+                    onClear={() => setFiltro(null)}
+                  />
+                )}
                 <Field
                   label={
                     kind === 'SCORE'
@@ -365,40 +391,69 @@ export function CollectionEditor({
                   value={search}
                   onChange={(e) => setSearch(e.target.value)}
                 />
-                {term.length >= 2 && results.isSuccess && !offers.length && (
-                  <span className="t-legenda">{t.noResults}</span>
-                )}
-                {offers.length > 0 && (
-                  <ul className="flex flex-col gap-1">
-                    {offers.map((o) => (
-                      <li key={o.refId}>
-                        <button
-                          type="button"
-                          onClick={() => {
-                            if (kind === 'SCORE') {
-                              setWork(o);
-                              setSearch('');
-                            } else add(o);
-                          }}
-                          className="flex w-full items-center gap-3 rounded-controle px-3 py-2 text-left hover:bg-sup-2"
-                        >
-                          <Icon
-                            de={PiPlus}
-                            tamanho="p"
-                            className="shrink-0 text-ouro-texto"
-                          />
-                          <span className="flex min-w-0 flex-col">
-                            <span className="truncate">
-                              {entryTitle(searchKind, o)}
+                {buscando && (
+                  <div className="min-h-40" aria-busy={results.isFetching}>
+                    {results.isPending ? (
+                      <ul className="flex flex-col gap-1" aria-hidden="true">
+                        {[0, 1, 2].map((i) => (
+                          <li
+                            key={i}
+                            className="flex items-center gap-3 px-3 py-2"
+                          >
+                            <span className="loading-skeleton h-9 w-9 shrink-0 rounded-full" />
+                            <span className="flex flex-1 flex-col gap-1.5">
+                              <span className="loading-skeleton h-3.5 w-2/3 rounded" />
+                              <span className="loading-skeleton h-3 w-1/3 rounded" />
                             </span>
-                            <span className="t-legenda truncate">
-                              {entryDetail(searchKind, o, copy, language)}
-                            </span>
-                          </span>
-                        </button>
-                      </li>
-                    ))}
-                  </ul>
+                          </li>
+                        ))}
+                      </ul>
+                    ) : !offers.length ? (
+                      <span className="t-legenda">{t.noResults}</span>
+                    ) : (
+                      <ul
+                        className={cx(
+                          'flex flex-col gap-1 transition-opacity duration-[var(--t-resposta)]',
+                          results.isPlaceholderData && 'opacity-60'
+                        )}
+                      >
+                        {offers.map((o) => (
+                          <li key={o.refId}>
+                            <button
+                              type="button"
+                              onClick={() => {
+                                if (kind === 'SCORE') {
+                                  setWork(o);
+                                  setSearch('');
+                                } else add(o);
+                              }}
+                              className="flex w-full items-center gap-3 rounded-controle px-3 py-2 text-left hover:bg-sup-2"
+                            >
+                              <Portrait
+                                name={o.composerName ?? o.title}
+                                src={o.portraitUrl}
+                                sizes="36px"
+                                className="h-9 w-9 shrink-0 rounded-full text-[0.8125rem]"
+                              />
+                              <span className="flex min-w-0 flex-1 flex-col">
+                                <span className="truncate">
+                                  {entryTitle(searchKind, o)}
+                                </span>
+                                <span className="t-legenda truncate">
+                                  {entryDetail(searchKind, o, copy, language)}
+                                </span>
+                              </span>
+                              <Icon
+                                de={PiPlus}
+                                tamanho="p"
+                                className="shrink-0 text-ouro-texto"
+                              />
+                            </button>
+                          </li>
+                        ))}
+                      </ul>
+                    )}
+                  </div>
                 )}
               </>
             )}
@@ -414,10 +469,11 @@ export function CollectionEditor({
                     className="flex flex-col gap-2 rounded-controle bg-sup-2 p-3"
                   >
                     <div className="flex items-center gap-3">
-                      <Icon
-                        de={KIND_ICON[kind]}
-                        tamanho="p"
-                        className="shrink-0 text-texto-fraco"
+                      <Portrait
+                        name={item.composerName ?? item.title}
+                        src={item.portraitUrl}
+                        sizes="36px"
+                        className="h-9 w-9 shrink-0 rounded-full text-[0.8125rem]"
                       />
                       <span className="flex min-w-0 flex-1 flex-col">
                         <span className="truncate">

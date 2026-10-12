@@ -138,6 +138,50 @@ const pt = {
       'O perfil abre depois das boas-vindas: leva um minuto e deixa as sugestões do site do seu jeito.',
     onboardingAction: 'Terminar o cadastro',
   },
+  history: {
+    title: 'Histórico de envios',
+    text: 'Tudo o que você criou, editou ou apagou no acervo, do mais recente para o mais antigo.',
+    back: 'Voltar aos envios',
+    types: {
+      all: 'Tudo',
+      composer: 'Compositores',
+      work: 'Obras',
+      score: 'Partituras',
+    },
+    actions: {
+      all: 'Qualquer ação',
+      create: 'Criações',
+      update: 'Edições',
+      delete: 'Exclusões',
+    },
+    actionLabel: 'Ação',
+    sentence: {
+      create: 'Você criou',
+      update: 'Você editou',
+      delete: 'Você apagou',
+    } as Record<string, string>,
+    entity: {
+      composer: 'o compositor',
+      work: 'a obra',
+      score: 'a partitura',
+    } as Record<string, string>,
+    bulk: (n: number, composer: string) =>
+      n === 1
+        ? `Você importou 1 obra de ${composer} do IMSLP`
+        : `Você importou ${n} obras de ${composer} do IMSLP`,
+    changes: 'Ver mudanças',
+    hide: 'Esconder mudanças',
+    from: 'de',
+    to: 'para',
+    empty:
+      'Nada por aqui ainda. Quando você enviar ou editar algo no acervo, aparece neste histórico.',
+    emptyFiltered: 'Nada com esses filtros.',
+    error: 'Não foi possível carregar o histórico.',
+    retry: 'Tentar de novo',
+    previous: 'Mais recentes',
+    next: 'Mais antigos',
+    page: (n: number, total: number) => `Página ${n} de ${total}`,
+  },
   uploads: {
     title: 'Seus envios',
     text: 'Os compositores, as obras e as partituras que você colocou no acervo. Tudo entra no ar na hora, com o seu nome.',
@@ -367,6 +411,50 @@ const en: typeof pt = {
     onboardingText:
       'The profile opens after the welcome steps: it takes a minute and tunes the site’s suggestions to you.',
     onboardingAction: 'Finish signing up',
+  },
+  history: {
+    title: 'Upload history',
+    text: 'Everything you created, edited or deleted in the archive, newest first.',
+    back: 'Back to uploads',
+    types: {
+      all: 'All',
+      composer: 'Composers',
+      work: 'Works',
+      score: 'Scores',
+    },
+    actions: {
+      all: 'Any action',
+      create: 'Created',
+      update: 'Edited',
+      delete: 'Deleted',
+    },
+    actionLabel: 'Action',
+    sentence: {
+      create: 'You created',
+      update: 'You edited',
+      delete: 'You deleted',
+    },
+    entity: {
+      composer: 'the composer',
+      work: 'the work',
+      score: 'the score',
+    },
+    bulk: (n: number, composer: string) =>
+      n === 1
+        ? `You imported 1 work by ${composer} from IMSLP`
+        : `You imported ${n} works by ${composer} from IMSLP`,
+    changes: 'See changes',
+    hide: 'Hide changes',
+    from: 'from',
+    to: 'to',
+    empty:
+      'Nothing here yet. When you upload or edit something in the archive, it shows up here.',
+    emptyFiltered: 'Nothing with these filters.',
+    error: 'Could not load the history.',
+    retry: 'Try again',
+    previous: 'Newer',
+    next: 'Older',
+    page: (n: number, total: number) => `Page ${n} of ${total}`,
   },
   uploads: {
     title: 'Your uploads',

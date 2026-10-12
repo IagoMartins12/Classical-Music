@@ -58,7 +58,9 @@ export function myCollections() {
 
 /** What the editor offers for what was typed, or the scores of one work. */
 export function collectionCandidates(
-  query: { kind: CollectionKind; q: string } | { kind: 'SCORE'; workId: string }
+  query:
+    | { kind: CollectionKind; q?: string; composerId?: string }
+    | { kind: 'SCORE'; workId: string }
 ) {
   return apiFetch<CollectionEntry[]>('/collections/candidates', {
     query,

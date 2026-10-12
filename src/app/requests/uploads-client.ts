@@ -288,6 +288,7 @@ export async function searchComposers(q: string, limit: number) {
     id: composer.id,
     name: composer.name,
     fullName: composer.fullName ?? undefined,
+    portraitUrl: composer.portraitUrl ?? null,
   }));
 }
 
