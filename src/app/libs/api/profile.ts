@@ -40,6 +40,8 @@ export interface ProfileAccount {
   showLocation: boolean;
   /** How lists render on the site; `null` until the person picks one. */
   listView: ListView | null;
+  /** The site language the person chose; `null` until the first choice. */
+  language: 'pt' | 'en' | null;
   currentPlan: string;
   planExpiresAt: string | null;
   isTrialActive: boolean;
@@ -88,6 +90,13 @@ export const profileApi = {
     apiFetch<{ account: ProfileAccount }>('/profile', {
       method: 'PATCH',
       body,
+    }),
+
+  /** Guarda o idioma escolhido no site: os e-mails seguem ele. */
+  setLanguage: (language: 'pt' | 'en') =>
+    apiFetch<void>('/profile/language', {
+      method: 'PATCH',
+      body: { language },
     }),
 
   completeOnboarding: (body: ProfileWriteBody) =>

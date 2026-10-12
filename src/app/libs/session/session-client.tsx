@@ -168,7 +168,11 @@ export async function registerWithPassword(
   input: RegisterInput
 ): Promise<AuthResult> {
   try {
-    await authApi.register({ ...input, email: input.email.trim() });
+    await authApi.register({
+      language: useLanguageStore.getState().language,
+      ...input,
+      email: input.email.trim(),
+    });
   } catch (error) {
     return failure(error);
   }
@@ -242,6 +246,7 @@ export function ApiSessionProvider({ children }: { children: ReactNode }) {
 function SessionEffects() {
   const queryClient = useQueryClient();
   const language = useLanguageStore((state) => state.language);
+  const chosen = useLanguageStore((state) => state.hasUserPreference);
   const { data: account } = useQuery({
     queryKey: SESSION_QUERY_KEY,
     queryFn: fetchAccount,
@@ -263,6 +268,21 @@ function SessionEffects() {
 
     return () => window.clearInterval(timer);
   }, [account]);
+
+  // The language picked on the site goes to the account, so emails follow
+  // it. Covers a switch while signed in and a choice made before signing in.
+  useEffect(() => {
+    if (!account || !chosen || account.language === language) return;
+    profileApi
+      .setLanguage(language)
+      .then(() =>
+        queryClient.setQueryData<ProfileAccount | null>(
+          SESSION_QUERY_KEY,
+          (current) => (current ? { ...current, language } : current)
+        )
+      )
+      .catch(() => undefined);
+  }, [account, chosen, language, queryClient]);
 
   // A renovação falhou numa chamada qualquer: a sessão acabou.
   useEffect(() => {
