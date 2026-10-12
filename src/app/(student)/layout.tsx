@@ -4,7 +4,7 @@
 // `NotificationManager` do legado e sem os `console.log` de cada visita.
 import type { Metadata } from 'next';
 import { redirect } from 'next/navigation';
-import { Avisos } from '../components/Admin/painel/Avisos';
+import { Avisos } from '../components/ui/Avisos';
 import { LearningHost } from '../components/Portal/LearningHost';
 import { PortalShell } from '../components/Portal/PortalShell';
 import { StudentGate } from '../components/Portal/screens/StudentGate';

@@ -6,7 +6,7 @@
 // avisos rápidos são os do painel (`Avisos`), por cima das folhas.
 import type { Metadata } from 'next';
 import { redirect } from 'next/navigation';
-import { Avisos } from '../components/Admin/painel/Avisos';
+import { Avisos } from '../components/ui/Avisos';
 import { LearningHost } from '../components/Portal/LearningHost';
 import { PortalShell } from '../components/Portal/PortalShell';
 import TeacherVerificationRequired from '../components/VerificationsProviders/TeacherVerificationRequired';

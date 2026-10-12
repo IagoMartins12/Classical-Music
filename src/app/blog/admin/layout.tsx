@@ -2,7 +2,7 @@ import type { Metadata } from 'next';
 import { redirect } from 'next/navigation';
 import { getServerSession } from '@/app/libs/api/server-session';
 import { AdminShell } from '@/app/components/Admin/painel/AdminShell';
-import { Avisos } from '@/app/components/Admin/painel/Avisos';
+import { Avisos } from '@/app/components/ui/Avisos';
 
 export const metadata: Metadata = {
   title: {

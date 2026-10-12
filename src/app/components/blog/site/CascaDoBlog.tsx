@@ -2,7 +2,7 @@ import type { ReactNode } from 'react';
 import AdsProvider from '@/app/components/Ads/AdsProvider';
 import Footer from '@/app/components/Footer';
 import { FavoritesProvider } from '@/app/providers/FavoritesProvider';
-import { ToasterProvider } from '@/app/providers/ToasterProvider';
+import { Avisos } from '@/app/components/ui/Avisos';
 import type { Idioma } from '@/app/conteudo/blog';
 import {
   listarCategorias,
@@ -53,7 +53,7 @@ export async function CascaDoBlog({
           </main>
           <Footer />
         </div>
-        <ToasterProvider />
+        <Avisos />
       </FavoritesProvider>
     </AdsProvider>
   );
