@@ -1,7 +1,7 @@
 'use client';
 
 import { Children, Fragment, isValidElement, useId } from 'react';
-import type { ChangeEvent, ReactElement } from 'react';
+import type { ChangeEvent, ReactElement, Ref } from 'react';
 import type {
   InputHTMLAttributes,
   ReactNode,
@@ -97,7 +97,10 @@ function Moldura({
 }
 
 type FieldProps = BaseProps &
-  Omit<InputHTMLAttributes<HTMLInputElement>, 'className'>;
+  Omit<InputHTMLAttributes<HTMLInputElement>, 'className'> & {
+    /** Reaches the `<input>` (React 19 passes `ref` as a prop). */
+    ref?: Ref<HTMLInputElement>;
+  };
 
 export function Field({
   label,
@@ -138,7 +141,9 @@ export function Field({
 }
 
 type AreaProps = BaseProps &
-  Omit<TextareaHTMLAttributes<HTMLTextAreaElement>, 'className'>;
+  Omit<TextareaHTMLAttributes<HTMLTextAreaElement>, 'className'> & {
+    ref?: Ref<HTMLTextAreaElement>;
+  };
 
 Field.Area = function FieldArea({
   label,
