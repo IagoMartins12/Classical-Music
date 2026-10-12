@@ -15,6 +15,7 @@ import {
   type LangParams,
 } from '@/app/utils/translations/routeLanguage';
 import { OrbitaDosPlanos } from '@/app/components/site/orbits/Orbitas';
+import { PageHero } from '@/app/components/site/PageHero';
 import { buscarPrecos } from './buscarPrecos';
 import { QuadroDePlanos } from './QuadroDePlanos';
 import {
@@ -230,40 +231,13 @@ export default async function Pagina({ params }: LangPageProps) {
       />
 
       <div className="pb-24 md:pb-32">
-        <header className="section-wrap grid items-center gap-10 pt-8 md:pt-14 lg:grid-cols-[minmax(0,7fr)_minmax(0,5fr)] lg:gap-16">
-          <div>
-            <nav
-              aria-label={idioma === 'pt' ? 'Você está em' : 'You are here'}
-              className="entra"
-            >
-              <ol className="flex items-center gap-2 text-sm text-texto-fraco">
-                <li>
-                  <LocalizedLink href="/" className="hover:text-texto">
-                    Opus Atlas
-                  </LocalizedLink>
-                </li>
-                <li aria-hidden="true">/</li>
-                <li aria-current="page" className="text-texto-suave">
-                  {c.migalha}
-                </li>
-              </ol>
-            </nav>
-            <h1
-              className="entra classical-title mt-6 max-w-[20ch] text-balance text-[2.375rem] leading-[1.06] tracking-[-0.015em] text-texto sm:text-5xl md:mt-8 lg:text-[3.5rem]"
-              style={{ ['--i' as string]: 1 }}
-            >
-              {c.titulo}
-            </h1>
-            <p
-              style={{ ['--i' as string]: 2 }}
-              className="entra mt-6 max-w-[56ch] text-lg leading-relaxed text-texto-suave"
-            >
-              {c.abertura}
-            </p>
-            <div
-              className="entra mt-8 flex flex-col gap-3 sm:flex-row"
-              style={{ ['--i' as string]: 3 }}
-            >
+        <PageHero
+          idioma={idioma}
+          migalha={c.migalha}
+          titulo={c.titulo}
+          abertura={c.abertura}
+          acoes={
+            <>
               <a href="#planos" className={classesDeBotao('primario')}>
                 {c.acoesTopo.planos}
                 <PiArrowDown aria-hidden="true" className="h-4 w-4" />
@@ -277,10 +251,10 @@ export default async function Pagina({ params }: LangPageProps) {
               >
                 {c.acoesTopo.criarConta}
               </BotaoCriarConta>
-            </div>
-          </div>
-          <OrbitaDosPlanos />
-        </header>
+            </>
+          }
+          ilustracao={<OrbitaDosPlanos />}
+        />
 
         <div id="planos" className="scroll-mt-24" />
         <QuadroDePlanos

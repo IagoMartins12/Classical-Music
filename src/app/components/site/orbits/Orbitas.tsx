@@ -268,7 +268,7 @@ export function OrbitaDosPlanos() {
     { r: 266, nome: 'MAESTRO', icone: PiVideoCamera, deg: 20, s: 220 },
   ];
   return (
-    <Moldura className="!max-w-[22rem]">
+    <Moldura>
       {aneis.map((a, i) => (
         <Anel key={a.r} r={a.r} i={i} o={0.28 + i * 0.08} w={1 + i * 0.15} />
       ))}
@@ -375,7 +375,7 @@ export function TurmaEmOrbita() {
     { deg: 255, texto: 'J' },
   ];
   return (
-    <Moldura seal={false} className="!max-w-[22rem]">
+    <Moldura seal={false}>
       <Anel r={280} i={0} o={0.45} w={1.2} />
       <Anel r={200} i={1} o={0.42} w={1.1} />
       <Anel r={122} i={2} tracejado="3 7" o={0.4} />

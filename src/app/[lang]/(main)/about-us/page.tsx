@@ -21,6 +21,7 @@ import {
   type LangParams,
 } from '@/app/utils/translations/routeLanguage';
 import { AstrolabioDoSite } from '@/app/components/site/orbits/Orbitas';
+import { PageHero } from '@/app/components/site/PageHero';
 import { QuadroDoSite, type Retrato } from './QuadroDoSite';
 
 /**
@@ -233,47 +234,17 @@ export default async function Pagina({ params }: LangPageProps) {
 
       <div className="pb-24 md:pb-32">
         {/* Topo: a frase de um lado, rostos do acervo do outro. */}
-        <header
-          className={cx(
-            'section-wrap grid items-center gap-10 pt-8 md:pt-14 lg:grid-cols-[minmax(0,7fr)_minmax(0,5fr)] lg:gap-16'
-          )}
-        >
-          <div>
-            <nav
-              aria-label={idioma === 'pt' ? 'Você está em' : 'You are here'}
-              className="entra"
-            >
-              <ol className="flex items-center gap-2 text-sm text-texto-fraco">
-                <li>
-                  <LocalizedLink href="/" className="hover:text-texto">
-                    Opus Atlas
-                  </LocalizedLink>
-                </li>
-                <li aria-hidden="true">/</li>
-                <li aria-current="page" className="text-texto-suave">
-                  {c.migalha}
-                </li>
-              </ol>
-            </nav>
-
-            <h1
-              className="entra classical-title mt-6 max-w-[20ch] text-balance text-[2.375rem] leading-[1.06] tracking-[-0.015em] text-texto sm:text-5xl md:mt-8 lg:text-[3.5rem]"
-              style={{ ['--i' as string]: 1 }}
-            >
-              {c.titulo}
-            </h1>
-
-            <p
-              className="entra mt-6 max-w-[56ch] text-lg leading-relaxed text-texto-suave [&_strong]:tabular-nums"
-              style={{ ['--i' as string]: 2 }}
-            >
-              <TextoRico
-                texto={c.abertura(numeros, (n) => `**${compacto(n)}**`)}
-              />
-            </p>
-
-            {/* No telefone, os rostos viram uma fileira ao pé do texto. */}
-            {retratos.length > 0 && (
+        <PageHero
+          idioma={idioma}
+          migalha={c.migalha}
+          titulo={c.titulo}
+          abertura={
+            <TextoRico
+              texto={c.abertura(numeros, (n) => `**${compacto(n)}**`)}
+            />
+          }
+          extra={
+            retratos.length > 0 && (
               <div
                 className={cx(
                   'entra mt-6 flex items-center gap-3',
@@ -306,12 +277,10 @@ export default async function Pagina({ params }: LangPageProps) {
                   </p>
                 )}
               </div>
-            )}
-
-            <div
-              className="entra mt-8 flex flex-col gap-3 sm:flex-row"
-              style={{ ['--i' as string]: 3 }}
-            >
+            )
+          }
+          acoes={
+            <>
               <LocalizedLink
                 href="/composers"
                 className={classesDeBotao('primario')}
@@ -328,57 +297,59 @@ export default async function Pagina({ params }: LangPageProps) {
               >
                 {c.acoes.criarConta}
               </BotaoCriarConta>
-            </div>
-          </div>
-
-          {/* Com o layout de telefone em toda largura, o lado direito é o
-              astrolábio do site; sem ele, o mosaico de rostos. */}
-          {m && <AstrolabioDoSite />}
-
-          {/* O mosaico: três colunas desencontradas, cada rosto um link. */}
-          {!m && retratos.length >= 7 && (
-            <ul
-              aria-label={c.retratos.rotulo}
-              className="hidden grid-cols-3 gap-3 lg:grid"
-            >
-              {COLUNAS.map((col, ci) => (
-                <li key={ci} className={`flex flex-col gap-3 ${col.desce}`}>
-                  <ul className="flex flex-col gap-3">
-                    {retratos.slice(col.de, col.ate).map((r, i) => (
-                      <li
-                        key={r.id}
-                        className="entra"
-                        style={{ ['--i' as string]: 2 + col.de + i }}
-                      >
-                        <LocalizedLink
-                          href={`/composer/${r.id}`}
-                          data-vira={`compositor-${r.id}`}
-                          className="group/rosto relative block aspect-[3/4] overflow-hidden rounded-card bg-sup-2"
-                        >
-                          <Image
-                            src={r.foto}
-                            alt=""
-                            fill
-                            sizes="(min-width: 1280px) 180px, 15vw"
-                            className="object-cover grayscale-[40%] transition-[filter,transform] duration-[600ms] ease-saida group-hover/rosto:scale-[1.04] group-hover/rosto:grayscale-0"
-                          />
-                          <span className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-veu-foto to-transparent px-3 pb-2.5 pt-8">
-                            <span className="classical-title block text-sm leading-tight text-sobre-foto">
-                              {r.nome}
-                            </span>
-                            <span className="block text-[0.6875rem] text-sobre-foto/75">
-                              {r.anos}
-                            </span>
-                          </span>
-                        </LocalizedLink>
-                      </li>
-                    ))}
-                  </ul>
-                </li>
-              ))}
-            </ul>
-          )}
-        </header>
+            </>
+          }
+          /* Com o layout de telefone em toda largura, o lado direito é o
+              astrolábio do site; sem ele, o mosaico de rostos. */
+          ilustracao={
+            m ? (
+              <AstrolabioDoSite />
+            ) : (
+              retratos.length >= 7 && (
+                <ul
+                  aria-label={c.retratos.rotulo}
+                  className="hidden grid-cols-3 gap-3 lg:grid"
+                >
+                  {COLUNAS.map((col, ci) => (
+                    <li key={ci} className={`flex flex-col gap-3 ${col.desce}`}>
+                      <ul className="flex flex-col gap-3">
+                        {retratos.slice(col.de, col.ate).map((r, i) => (
+                          <li
+                            key={r.id}
+                            className="entra"
+                            style={{ ['--i' as string]: 2 + col.de + i }}
+                          >
+                            <LocalizedLink
+                              href={`/composer/${r.id}`}
+                              data-vira={`compositor-${r.id}`}
+                              className="group/rosto relative block aspect-[3/4] overflow-hidden rounded-card bg-sup-2"
+                            >
+                              <Image
+                                src={r.foto}
+                                alt=""
+                                fill
+                                sizes="(min-width: 1280px) 180px, 15vw"
+                                className="object-cover grayscale-[40%] transition-[filter,transform] duration-[600ms] ease-saida group-hover/rosto:scale-[1.04] group-hover/rosto:grayscale-0"
+                              />
+                              <span className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-veu-foto to-transparent px-3 pb-2.5 pt-8">
+                                <span className="classical-title block text-sm leading-tight text-sobre-foto">
+                                  {r.nome}
+                                </span>
+                                <span className="block text-[0.6875rem] text-sobre-foto/75">
+                                  {r.anos}
+                                </span>
+                              </span>
+                            </LocalizedLink>
+                          </li>
+                        ))}
+                      </ul>
+                    </li>
+                  ))}
+                </ul>
+              )
+            )
+          }
+        />
 
         {/* As quatro partes do site, num quadro com ilustrações. */}
         <Revelar

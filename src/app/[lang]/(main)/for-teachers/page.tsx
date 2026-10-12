@@ -3,6 +3,7 @@ import { PiArrowRight, PiCaretDown } from 'react-icons/pi';
 import LocalizedLink from '@/app/components/LocalizedLink';
 import { BotaoCriarConta } from '@/app/components/auth/BotaoCriarConta';
 import { TurmaEmOrbita } from '@/app/components/site/orbits/Orbitas';
+import { PageHero } from '@/app/components/site/PageHero';
 import { classesDeBotao } from '@/app/components/ui/Button';
 import { Revelar } from '@/app/components/ui/Revelar';
 import { TextoRico } from '@/app/components/ui/TextoRico';
@@ -51,40 +52,13 @@ export default async function ParaProfessores({
 
   return (
     <div className="pb-24 md:pb-32">
-      <header className="section-wrap grid items-center gap-10 pt-8 md:pt-14 lg:grid-cols-[minmax(0,7fr)_minmax(0,5fr)] lg:gap-16">
-        <div>
-          <nav
-            aria-label={idioma === 'pt' ? 'Você está em' : 'You are here'}
-            className="entra"
-          >
-            <ol className="flex items-center gap-2 text-sm text-texto-fraco">
-              <li>
-                <LocalizedLink href="/" className="hover:text-texto">
-                  Opus Atlas
-                </LocalizedLink>
-              </li>
-              <li aria-hidden="true">/</li>
-              <li aria-current="page" className="text-texto-suave">
-                {c.migalha}
-              </li>
-            </ol>
-          </nav>
-          <h1
-            className="entra classical-title mt-6 max-w-[20ch] text-balance text-[2.375rem] leading-[1.06] tracking-[-0.015em] text-texto sm:text-5xl md:mt-8 lg:text-[3.5rem]"
-            style={{ ['--i' as string]: 1 }}
-          >
-            {c.titulo}
-          </h1>
-          <p
-            className="entra mt-6 max-w-[56ch] text-lg leading-relaxed text-texto-suave"
-            style={{ ['--i' as string]: 2 }}
-          >
-            {c.abertura}
-          </p>
-          <div
-            className="entra mt-8 flex flex-col gap-3 sm:flex-row"
-            style={{ ['--i' as string]: 3 }}
-          >
+      <PageHero
+        idioma={idioma}
+        migalha={c.migalha}
+        titulo={c.titulo}
+        abertura={c.abertura}
+        acoes={
+          <>
             <a href="#planos" className={classesDeBotao('primario')}>
               {c.acoes.planos}
               <PiArrowRight aria-hidden="true" className="h-4 w-4" />
@@ -98,10 +72,10 @@ export default async function ParaProfessores({
             >
               {c.acoes.criarConta}
             </BotaoCriarConta>
-          </div>
-        </div>
-        <TurmaEmOrbita />
-      </header>
+          </>
+        }
+        ilustracao={<TurmaEmOrbita />}
+      />
 
       <section
         aria-labelledby="recursos"
