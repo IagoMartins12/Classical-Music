@@ -25,7 +25,10 @@ export interface Option {
   label: string;
 }
 
-/** A filter shown as a pill (`primary`) and always in "More filters". */
+/**
+ * A choice filter: a pill on the page when `primary`, otherwise in "More
+ * filters". Never in both: the sheet only holds what the page does not show.
+ */
 export interface ChoiceFilter {
   key: string;
   label: string;
@@ -125,6 +128,13 @@ export function ListControls({
   ];
   const allKeys = [
     ...filters.map((f) => f.key),
+    ...toggles.map((t) => t.key),
+    ...(range ? [range.fromKey, range.toKey] : []),
+  ];
+  const sheetFilters = filters.filter((f) => !f.primary);
+  // The sheet applies and clears only its own keys; pills stay as they are.
+  const sheetKeys = [
+    ...sheetFilters.map((f) => f.key),
     ...toggles.map((t) => t.key),
     ...(range ? [range.fromKey, range.toKey] : []),
   ];
@@ -251,7 +261,10 @@ export function ListControls({
             <Button
               variante="fantasma"
               onClick={() =>
-                setDraft(Object.fromEntries(allKeys.map((k) => [k, undefined])))
+                setDraft({
+                  ...draft,
+                  ...Object.fromEntries(sheetKeys.map((k) => [k, undefined])),
+                })
               }
             >
               {copy.clear}
@@ -260,7 +273,7 @@ export function ListControls({
               variante="primario"
               onClick={() => {
                 setSheet(false);
-                go(Object.fromEntries(allKeys.map((k) => [k, draft[k]])));
+                go(Object.fromEntries(sheetKeys.map((k) => [k, draft[k]])));
               }}
             >
               {applyLabel}
@@ -269,7 +282,7 @@ export function ListControls({
         }
       >
         <div className="flex flex-col gap-7">
-          {filters.map((f) => (
+          {sheetFilters.map((f) => (
             <fieldset key={f.key} className="flex flex-col gap-2">
               <legend className="t-rotulo mb-2">{f.label}</legend>
               <div className="flex flex-wrap gap-2">

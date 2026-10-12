@@ -113,6 +113,7 @@ export async function getFilterOptions(): Promise<FilterOptions> {
       next: CACHE.FILTERS,
       buildFallback: {
         instruments: [],
+        ensembles: [],
         epochs: [],
         workGenres: [],
         popularComposers: [],

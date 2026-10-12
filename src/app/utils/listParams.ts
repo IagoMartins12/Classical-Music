@@ -73,6 +73,7 @@ export const COMPOSER_KEYS = [
   'epoch',
   'country',
   'instrument',
+  'formation',
   'portrait',
   'from',
   'to',
@@ -82,6 +83,7 @@ export const COMPOSER_KEYS = [
 export const WORK_KEYS = [
   'search',
   'instrument',
+  'formation',
   'epoch',
   'genre',
   'composer',
@@ -103,7 +105,9 @@ export function parseComposerParams(
     search: text(params.search),
     epochId: id(params.epoch),
     nationality: country ? demonymsOf(country) : undefined,
-    instrumentId: id(params.instrument),
+    // Instrument and ensemble are the same field in the catalog; the
+    // instrument wins when both are set.
+    instrumentId: id(params.instrument) ?? id(params.formation),
     withPortrait: text(params.portrait) === '1' || undefined,
     bornFrom: int(params.from, 400, 2100),
     bornTo: int(params.to, 400, 2100),
@@ -125,7 +129,9 @@ export function parseWorkParams(params: UrlParams): WorkListParams {
     page: int(params.page, 1, 10_000) ?? 1,
     sort: pick(text(params.sort), WORK_SORTS, defaultWorkSort(params)),
     search: text(params.search),
-    instrumentId: id(params.instrument),
+    // Instrument and ensemble are the same field in the catalog; the
+    // instrument wins when both are set.
+    instrumentId: id(params.instrument) ?? id(params.formation),
     epochId: id(params.epoch),
     genre: text(params.genre),
     composerId: id(params.composer),

@@ -7922,6 +7922,8 @@ export interface components {
     };
     WorkFilterOptionsResponseDto: {
       instruments: components['schemas']['WorkFilterOptionItemDto'][];
+      /** @description Formações (orquestra, coro, quarteto…), por número de obras. Ficam fora de `instruments`. */
+      ensembles: components['schemas']['WorkFilterOptionItemDto'][];
       epochs: components['schemas']['WorkFilterOptionItemDto'][];
       workGenres: components['schemas']['WorkFilterOptionItemDto'][];
       popularComposers: components['schemas']['PopularComposerFilterDto'][];
@@ -8424,6 +8426,11 @@ export interface components {
       bioEn?: string | null;
       /** @description A biografia em português foi gerada por IA e ninguém a revisou — o front pode avisar */
       bioGeneratedByAi: boolean;
+      /**
+       * @description Idioma original da biografia quando a do outro idioma é tradução automática ainda não revisada
+       * @enum {string|null}
+       */
+      bioTranslatedFrom?: 'pt' | 'en' | null;
       permLinkImslp?: string | null;
       wikipediaLink?: string | null;
       /** @example 685d59f31e3db0c5aaa89439 */

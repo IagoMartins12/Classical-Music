@@ -103,6 +103,15 @@ export async function ComposersList({
             })),
             primary: true,
           },
+          {
+            key: 'formation',
+            label: t.formation,
+            anyLabel: t.anyFormation,
+            options: options.ensembles.map((e) => ({
+              value: e.id,
+              label: e.name,
+            })),
+          },
         ]}
         toggles={[{ key: 'portrait', label: t.portrait, chip: t.withPortrait }]}
         range={{

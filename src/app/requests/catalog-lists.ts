@@ -55,6 +55,7 @@ export async function getCatalogFilterOptions(): Promise<CatalogFilterOptions> {
     next: { revalidate: 3600, tags: ['works', 'composers'] },
     buildFallback: {
       instruments: [],
+      ensembles: [],
       epochs: [],
       workGenres: [],
       popularComposers: [],

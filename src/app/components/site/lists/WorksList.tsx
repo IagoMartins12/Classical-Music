@@ -85,6 +85,15 @@ export async function WorksList({
             primary: true,
           },
           {
+            key: 'formation',
+            label: t.formation,
+            anyLabel: t.anyFormation,
+            options: options.ensembles.map((e) => ({
+              value: e.id,
+              label: e.name,
+            })),
+          },
+          {
             key: 'composer',
             label: t.composer,
             anyLabel: t.anyComposer,
