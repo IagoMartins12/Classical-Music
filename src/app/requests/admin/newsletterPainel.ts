@@ -201,3 +201,20 @@ export {
   listTestListsRequest as getListasDeTeste,
   type ApiTestList as ListaDeTeste,
 } from './newsletter';
+
+/** Um e-mail como o assinante recebe: variáveis preenchidas, no layout. */
+export interface EmailPronto {
+  subject: string;
+  html: string;
+  text: string;
+}
+
+export const previaDeEmail = (conteudo: {
+  subject: string;
+  htmlContent: string;
+  textContent?: string;
+}) =>
+  apiFetch<EmailPronto>('/admin/newsletter/templates/preview', {
+    method: 'POST',
+    body: conteudo,
+  });

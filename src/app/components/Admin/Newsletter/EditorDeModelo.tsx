@@ -13,8 +13,8 @@ import { Segmentos } from '@/app/components/Admin/painel/Controles';
 import { useNewsletterAdmin } from '@/app/hooks/admin/useNewsletterAdmin';
 import {
   extractVariables,
-  getAllEmailTemplates,
-} from '@/app/libs/newsletter/emailTemplates';
+  MODELOS_PRONTOS,
+} from '@/app/libs/newsletter/modelosProntos';
 import { CONTATO } from '@/app/utils/contato';
 import { PreviaDeEmail } from './PreviaDeEmail';
 
@@ -89,7 +89,6 @@ export function EditorDeModelo({
   const [tentou, setTentou] = useState(false);
   const [salvando, setSalvando] = useState(false);
   const [vendo, setVendo] = useState(false);
-  const prontos = useMemo(() => getAllEmailTemplates(), []);
 
   const variaveis = useMemo(
     () => extractVariables(`${m.subject} ${m.htmlContent} ${m.textContent}`),
@@ -115,14 +114,15 @@ export function EditorDeModelo({
       setM((x) => ({ ...x, [k]: v }));
 
   const partirDe = (tipo: string) => {
-    const p = prontos.find((t) => t.type === tipo);
+    const p = MODELOS_PRONTOS.find((t) => t.type === tipo);
     if (!p) return;
     setM((x) => ({
       ...x,
-      subject: p.template.subject,
-      htmlContent: p.template.htmlContent,
-      textContent: p.template.textContent,
-      description: x.description || p.template.description,
+      type: p.type,
+      subject: p.subject,
+      htmlContent: p.htmlContent,
+      textContent: p.textContent,
+      description: x.description || p.description,
     }));
     toast.success('Conteúdo do modelo pronto carregado.');
   };
@@ -238,9 +238,9 @@ export function EditorDeModelo({
                 onChange={(e) => partirDe(e.target.value)}
               >
                 <option value="">Escolha…</option>
-                {prontos.map((p) => (
+                {MODELOS_PRONTOS.map((p) => (
                   <option key={p.type} value={p.type}>
-                    {TIPOS.find((t) => t.value === p.type)?.label ?? p.type}
+                    {p.rotulo}
                   </option>
                 ))}
               </Field.Selecao>
@@ -265,6 +265,7 @@ export function EditorDeModelo({
           <Stack gap={4}>
             <Field.Area
               label="HTML"
+              ajuda="Só o corpo da carta: selo, data, assinatura e descadastro entram sozinhos. Um <h1> vira o título."
               rows={16}
               classeCampo="t-dado text-xs"
               spellCheck={false}
