@@ -1,5 +1,6 @@
 import type { ReactNode } from 'react';
 import LocalizedLink from '@/app/components/LocalizedLink';
+import { VistoQueSeDesenha } from '@/app/components/ui/VistoQueSeDesenha';
 
 /**
  * The opening of the institutional pages (about-us, pricing, for-teachers):
@@ -17,6 +18,7 @@ export function PageHero({
   titulo,
   abertura,
   extra,
+  destaques,
   acoes,
   ilustracao,
 }: {
@@ -26,6 +28,12 @@ export function PageHero({
   abertura: ReactNode;
   /** A line between the lead and the actions (about-us: faces of the library). */
   extra?: ReactNode;
+  /**
+   * Short facts in place of `extra`, each with a gold check (pricing: the
+   * billing guarantees; for-teachers: what the portal settles). They give
+   * the shorter pages the same weight as about-us with things worth reading.
+   */
+  destaques?: string[];
   acoes: ReactNode;
   ilustracao: ReactNode;
 }) {
@@ -63,6 +71,19 @@ export function PageHero({
           {abertura}
         </p>
         {extra}
+        {destaques && destaques.length > 0 && (
+          <ul
+            className="entra mt-6 flex flex-col gap-2.5 text-[0.9375rem] text-texto-suave"
+            style={{ ['--i' as string]: 3 }}
+          >
+            {destaques.map((item) => (
+              <li key={item} className="flex items-center gap-2">
+                <VistoQueSeDesenha className="h-4 w-4 shrink-0 text-ouro" />
+                {item}
+              </li>
+            ))}
+          </ul>
+        )}
         <div
           className="entra mt-8 flex flex-col gap-3 sm:flex-row"
           style={{ ['--i' as string]: 3 }}

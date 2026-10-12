@@ -236,6 +236,7 @@ export default async function Pagina({ params }: LangPageProps) {
           migalha={c.migalha}
           titulo={c.titulo}
           abertura={c.abertura}
+          destaques={c.garantias}
           acoes={
             <>
               <a href="#planos" className={classesDeBotao('primario')}>

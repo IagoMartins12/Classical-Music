@@ -59,6 +59,8 @@ export type ConteudoPlanos = {
   migalha: string;
   titulo: string;
   abertura: string;
+  /** Facts under the hero's lead that answer "what if I regret it?". */
+  garantias: string[];
   /** The hero's two actions, like the other editorial pages. */
   acoesTopo: { planos: string; criarConta: string; seuPlano: string };
   periodo: {
@@ -145,9 +147,14 @@ export const PLANOS: Record<Idioma, ConteudoPlanos> = {
           : 'A enciclopédia de música clássica e as partituras são grátis. Plus para quem contribui sem limite; Mentor e Maestro para professores, com portal de aulas, tarefas e relatórios.',
     },
     migalha: 'Planos',
-    titulo: 'Planos e preços',
+    titulo:
+      'Já pensou em ter o universo da música clássica na palma das suas mãos?',
     abertura:
-      'Ler a enciclopédia e baixar partituras é grátis e não pede conta. Os planos pagos liberam envios ilimitados ao acervo e, para quem ensina, o portal do professor.',
+      'Grave seus vídeos e envie ao acervo sem limite. Se você dá aula, leve a turma inteira para o portal: aulas, tarefas e o progresso de cada aluno.',
+    garantias: [
+      'Troque ou cancele quando quiser, sem multa',
+      'Desistiu em até 7 dias? O valor volta inteiro',
+    ],
     periodo: {
       rotulo: 'Cobrança',
       mensal: 'Mensal',
@@ -416,9 +423,14 @@ export const PLANOS: Record<Idioma, ConteudoPlanos> = {
           : 'The classical music encyclopedia and the sheet music are free. Plus for unlimited contributions; Mentor and Maestro for teachers, with a portal for lessons, assignments and reports.',
     },
     migalha: 'Plans',
-    titulo: 'Plans and pricing',
+    titulo:
+      'Ever imagined holding the whole world of classical music in your hands?',
     abertura:
-      'Reading the encyclopedia and downloading sheet music is free and needs no account. Paid plans unlock unlimited uploads to the collection and, for those who teach, the teacher portal.',
+      'Record your playing and add to the library without limits. If you teach, bring your whole class to the portal: lessons, assignments and each student’s progress.',
+    garantias: [
+      'Change or cancel any time, with no fee',
+      'Changed your mind within 7 days? Full refund',
+    ],
     periodo: {
       rotulo: 'Billing',
       mensal: 'Monthly',

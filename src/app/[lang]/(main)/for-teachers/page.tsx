@@ -57,6 +57,7 @@ export default async function ParaProfessores({
         migalha={c.migalha}
         titulo={c.titulo}
         abertura={c.abertura}
+        destaques={c.destaques}
         acoes={
           <>
             <a href="#planos" className={classesDeBotao('primario')}>

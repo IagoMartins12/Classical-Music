@@ -15,6 +15,8 @@ export type ConteudoProfessores = {
   migalha: string;
   titulo: string;
   abertura: string;
+  /** Three facts under the hero's lead: what the portal settles for the teacher. */
+  destaques: string[];
   acoes: { planos: string; criarConta: string; portal: string };
   recursos: {
     titulo: string;
@@ -43,9 +45,14 @@ const pt: ConteudoProfessores = {
       'O portal do professor do Opus Atlas junta agenda, tarefas com prazo e relatórios de progresso dos seus alunos, ao lado das partituras e gravações do acervo.',
   },
   migalha: 'Para professores',
-  titulo: 'Sua turma inteira, da agenda ao relatório',
+  titulo: 'Sua turma inteira num lugar só, da agenda ao relatório',
   abertura:
     'O portal do professor junta as aulas, as tarefas e o progresso de cada aluno no mesmo lugar onde ele já estuda as partituras. Você ensina; o portal lembra.',
+  destaques: [
+    'Seus alunos estudam com a conta grátis',
+    'A agenda conversa com o seu calendário',
+    'O aluno pede aula nos seus horários livres',
+  ],
   acoes: {
     planos: 'Ver os planos',
     criarConta: 'Criar conta grátis',
@@ -164,9 +171,14 @@ const en: ConteudoProfessores = {
       "The Opus Atlas teacher portal brings your students' schedule, assignments with due dates and progress reports together, next to the catalog's scores and recordings.",
   },
   migalha: 'For teachers',
-  titulo: 'Your whole class, from schedule to report',
+  titulo: 'Your whole class in one place, from schedule to report',
   abertura:
     'The teacher portal keeps lessons, assignments and each student’s progress in the same place where they already study the scores. You teach; the portal remembers.',
+  destaques: [
+    'Your students study on the free account',
+    'The schedule talks to your calendar',
+    'Students request lessons in your open hours',
+  ],
   acoes: {
     planos: 'See the plans',
     criarConta: 'Create a free account',
