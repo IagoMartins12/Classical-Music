@@ -113,7 +113,7 @@ export default function NationalitySelect({
     <div ref={containerRef} className={`relative ${className}`}>
       {/* Input */}
       <div className="relative">
-        <PiGlobe className="absolute left-4 top-1/2 transform -translate-y-1/2 w-4 h-4 text-theme-tertiary z-10" />
+        <PiGlobe className="absolute left-4 top-1/2 transform -translate-y-1/2 w-4 h-4 text-texto-fraco z-10" />
 
         <input
           id={id}
@@ -127,8 +127,8 @@ export default function NationalitySelect({
           className={`
             input-classical-2 !pl-11 pr-20 w-full
             ${disabled ? 'cursor-not-allowed opacity-50' : 'cursor-text'}
-            ${error ? 'border-red-500' : ''}
-            ${value ? 'text-theme-primary font-medium' : ''}
+            ${error ? 'border-[var(--erro)]' : ''}
+            ${value ? 'text-texto font-medium' : ''}
           `}
         />
 
@@ -140,14 +140,14 @@ export default function NationalitySelect({
             <button
               type="button"
               onClick={handleClear}
-              className="p-1 text-theme-tertiary transition-colors"
+              className="p-1 text-texto-fraco transition-colors"
             >
               <PiX className="w-4 h-4" />
               <NomeAcao acao="fechar" />
             </button>
           )}
 
-          <div className="p-1 text-theme-tertiary">
+          <div className="p-1 text-texto-fraco">
             <PiCaretDown
               className={`w-4 h-4 transition-transform duration-200 ${
                 isOpen ? 'rotate-180' : ''
@@ -158,16 +158,16 @@ export default function NationalitySelect({
       </div>
 
       {/* Error message */}
-      {error && <p className="text-red-500 text-xs mt-1">{error}</p>}
+      {error && <p className="text-erro text-xs mt-1">{error}</p>}
 
       {/* Dropdown */}
       {isOpen && !disabled && (
         <div
           ref={dropdownRef}
-          className="absolute top-full left-0 right-0 mt-2 bg-theme-elevated rounded-xl shadow-xl z-menu max-h-80 overflow-hidden"
+          className="absolute top-full left-0 right-0 mt-2 rounded-controle border border-[var(--linha-forte)] bg-[var(--sup-alta)] shadow-[var(--sombra-alta)] z-menu max-h-80 overflow-hidden"
         >
           {/* Search header */}
-          <div className="flex items-center gap-2 px-4 py-3 border-b border-theme-secondary">
+          <div className="flex items-center gap-2 px-4 py-3 border-b border-[var(--linha)]">
             <PiMagnifyingGlass className="w-4 h-4 text-ouro-texto" />
             <Text papel="rotulo" tom="suave" className="font-medium">
               {searchTerm ? getMessage(searchTerm) : getMessage()}
@@ -186,7 +186,7 @@ export default function NationalitySelect({
                     ${
                       value === nationality.name
                         ? 'text-ouro-texto font-medium'
-                        : 'text-theme-primary'
+                        : 'text-texto'
                     }
                   `}
                 >
@@ -216,7 +216,7 @@ export default function NationalitySelect({
               ))
             ) : (
               <div className="px-4 py-8 text-center">
-                <PiGlobe className="w-8 h-8 text-theme-tertiary mx-auto mb-2" />
+                <PiGlobe className="w-8 h-8 text-texto-fraco mx-auto mb-2" />
                 <Text papel="rotulo" tom="suave" as="p">
                   {searchTerm
                     ? `Nenhuma nacionalidade encontrada para "${searchTerm}"`

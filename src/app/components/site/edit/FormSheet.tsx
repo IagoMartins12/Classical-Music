@@ -1,13 +1,15 @@
 'use client';
 
-import { useState, type ReactNode } from 'react';
+import { useId, useRef, useState, type ReactNode } from 'react';
 import {
+  PiPaperclip,
   PiCheckCircle,
   PiInfo,
   PiSpinnerGap,
   PiWarningCircle,
 } from 'react-icons/pi';
 import ConfirmModal from '@/app/components/ConfirmModal';
+import { Button } from '@/app/components/ui/Button';
 import { Icon } from '@/app/components/ui/Icon';
 import { Sheet } from '@/app/components/ui/Sheet';
 import { cx } from '@/app/components/ui/cx';
@@ -151,6 +153,79 @@ export function Aviso({
         {titulo && <span className="font-medium text-texto">{titulo}</span>}
         {children && <div className="text-texto-suave">{children}</div>}
       </div>
+    </div>
+  );
+}
+
+/**
+ * A file field in the system's look: a button that opens the picker, the
+ * chosen file's name beside it, and the same label, help and error slots as
+ * `Field`. The native input stays hidden but in the form.
+ */
+export function CampoDeArquivo({
+  label,
+  botao,
+  accept,
+  arquivo,
+  aoEscolher,
+  carregando,
+  disabled,
+  ajuda,
+  erro,
+  className,
+}: {
+  label: string;
+  /** The button's text ("Escolher arquivo"). */
+  botao: string;
+  accept?: string;
+  /** The chosen file's name, when there is one. */
+  arquivo?: string | null;
+  aoEscolher: (file: File) => void;
+  carregando?: boolean;
+  disabled?: boolean;
+  ajuda?: ReactNode;
+  erro?: ReactNode;
+  className?: string;
+}) {
+  const id = useId();
+  const ref = useRef<HTMLInputElement>(null);
+  return (
+    <div className={cx('flex flex-col gap-2', className)}>
+      <label htmlFor={id} className="t-rotulo font-medium text-texto">
+        {label}
+      </label>
+      <div className="flex flex-wrap items-center gap-3">
+        <Button
+          tamanho="p"
+          icone={PiPaperclip}
+          carregando={carregando}
+          disabled={disabled}
+          onClick={() => ref.current?.click()}
+        >
+          {botao}
+        </Button>
+        {arquivo && (
+          <span className="t-rotulo min-w-0 truncate text-texto-suave">
+            {arquivo}
+          </span>
+        )}
+      </div>
+      <input
+        ref={ref}
+        id={id}
+        type="file"
+        accept={accept}
+        className="sr-only"
+        tabIndex={-1}
+        disabled={disabled}
+        onChange={(e) => {
+          const file = e.target.files?.[0];
+          if (file) aoEscolher(file);
+          e.target.value = '';
+        }}
+      />
+      {ajuda && !erro && <span className="t-legenda">{ajuda}</span>}
+      {erro && <span className="t-legenda text-erro">{erro}</span>}
     </div>
   );
 }

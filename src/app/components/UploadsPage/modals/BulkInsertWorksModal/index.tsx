@@ -6,33 +6,31 @@ import { useRouter } from 'next/navigation';
 import {
   PiArrowSquareOut,
   PiCheck,
-  PiInfo,
   PiMagnifyingGlass,
-  PiMusicNotes,
   PiPlay,
   PiSpinnerGap,
   PiTrash,
   PiWarningCircle,
   PiX,
 } from 'react-icons/pi';
+import { Button } from '@/app/components/ui/Button';
+import { CaixaDeMarcar } from '@/app/components/ui/CaixaDeMarcar';
+import { Icon } from '@/app/components/ui/Icon';
+import { cx } from '@/app/components/ui/cx';
 import {
-  AnimatedCard,
-  AnimatedItem,
-} from '@/app/components/animation/AnimatedComponents';
-import Button from '@/app/components/Common/Button';
-import Modal from '@/app/components/Modal';
+  Aviso,
+  FormBlock,
+  FormSheet,
+} from '@/app/components/site/edit/FormSheet';
 import CreateWorkModal from '../CreateWorkModal';
 import { useToast } from '@/app/hooks/useToast';
 import { useProcessChanges } from '@/app/hooks/useFormChanges';
 import { useTranslation } from '@/app/context/TranslationContext';
-import Checkbox from '@/app/components/Common/Checkbox';
 import {
   discoverComposerWorks,
   importComposerWorks,
   type ImportOutcome,
 } from '@/app/requests/external-sources';
-import { Inline, Stack } from '@/app/components/ui/Layout';
-import { Text } from '@/app/components/ui/Text';
 
 /**
  * Obras por chamada de importação. A API aceita até 100 e limita a 5 chamadas
@@ -322,531 +320,287 @@ const BulkInsertWorksModal = ({
 
   if (!isOpen) return null;
 
+  const etapas = ['discover', 'select', 'process', 'results'] as const;
+  const etapaAtual = etapas.indexOf(currentStep as (typeof etapas)[number]);
+  const feitas = workProgress.filter(
+    (w) => w.status === 'success' || w.status === 'error'
+  ).length;
+  const contagem = (rotulo: string, valor: number) => (
+    <div className="flex flex-col gap-1">
+      <span className="font-display text-[1.75rem] leading-none text-texto tabular-nums">
+        {valor}
+      </span>
+      <span className="t-legenda">{rotulo}</span>
+    </div>
+  );
+  const iconeDoEstado = (status: string) =>
+    status === 'processing' ? (
+      <PiSpinnerGap
+        aria-hidden="true"
+        className="h-5 w-5 shrink-0 animate-spin text-ouro-texto"
+      />
+    ) : status === 'success' ? (
+      <PiCheck
+        aria-hidden="true"
+        className="h-5 w-5 shrink-0 text-ouro-texto"
+      />
+    ) : status === 'error' ? (
+      <PiX aria-hidden="true" className="h-5 w-5 shrink-0 text-erro" />
+    ) : status === 'duplicate' ? (
+      <PiWarningCircle
+        aria-hidden="true"
+        className="h-5 w-5 shrink-0 text-texto-suave"
+      />
+    ) : (
+      <span
+        aria-hidden="true"
+        className="grid h-5 w-5 shrink-0 place-items-center"
+      >
+        <span className="h-1.5 w-1.5 rounded-full bg-[var(--linha-forte)]" />
+      </span>
+    );
+
+  const rodape =
+    currentStep === 'discover' ? (
+      <Button
+        variante="primario"
+        icone={PiMagnifyingGlass}
+        carregando={isDiscovering}
+        onClick={handleDiscoverWorks}
+        className="w-full"
+      >
+        {isDiscovering ? t('bulk_discovering') : t('bulk_discover_button')}
+      </Button>
+    ) : currentStep === 'select' ? (
+      <div className="flex flex-wrap items-center justify-between gap-2">
+        <div className="flex gap-2">
+          <Button tamanho="p" onClick={() => toggleSelectAll(true)}>
+            {t('bulk_select_all_new')}
+          </Button>
+          <Button
+            tamanho="p"
+            variante="fantasma"
+            onClick={() => toggleSelectAll(false)}
+          >
+            {t('bulk_unselect_all')}
+          </Button>
+        </div>
+        <Button
+          variante="primario"
+          icone={PiPlay}
+          onClick={handleProcessWorks}
+          disabled={stats.selected === 0}
+        >
+          {t('bulk_import_button', {
+            count: stats.selected,
+            plural: stats.selected !== 1 ? 's' : '',
+          })}
+        </Button>
+      </div>
+    ) : currentStep === 'results' ? (
+      <div className="flex justify-end">
+        <Button variante="primario" onClick={handleClose}>
+          {t('bulk_results_complete_button')}
+        </Button>
+      </div>
+    ) : null;
+
   return (
     <>
-      <Modal
-        isOpen={isOpen}
-        onClose={handleClose}
-        maxWidth="4xl"
-        showCloseButton={true}
-        confirmOnClose={true}
-        isProcessing={
-          hasProcess || currentStep === 'process' || currentStep === 'select'
-        }
-        processName={
-          isDiscovering
-            ? 'Descoberta de obras'
-            : currentStep === 'process'
-              ? 'Processamento de obra'
-              : currentStep === 'results'
-                ? 'Resultados de obras'
-                : currentStep === 'select'
-                  ? 'Seleção de obras'
-                  : 'process'
-        }
+      <FormSheet
+        aberto={isOpen}
+        aoFechar={handleClose}
+        titulo={t('bulk_modal_title')}
+        descricao={composer.fullName || composer.name}
+        sujo={hasProcess || currentStep === 'select'}
+        ocupado={currentStep === 'process' || isDiscovering}
+        rodape={rodape}
       >
-        <AnimatedItem direction="scale" springType="bouncy" className="w-full">
-          <div className="max-h-[90vh] overflow-hidden flex flex-col">
-            {/* Header */}
-            <div className="flex items-center justify-between p-6 border-b border-theme-secondary">
-              <Inline gap={3}>
-                <div className="w-10 h-10 rounded-xl flex items-center justify-center">
-                  <PiMusicNotes className="w-5 h-5 text-theme-primary" />
-                </div>
-                <div>
-                  <h2 className="text-xl font-bold text-theme-primary classical-title">
-                    {t('bulk_modal_title')}
-                  </h2>
-                  <Text papel="rotulo" tom="suave" as="p">
-                    {composer.fullName || composer.name}
-                  </Text>
-                </div>
-              </Inline>
+        <ol aria-label="Etapas" className="mb-6 flex items-center gap-2">
+          {etapas.map((etapa, i) => (
+            <li
+              key={etapa}
+              aria-current={i === etapaAtual ? 'step' : undefined}
+              className={cx(
+                'h-1 flex-1 rounded-full',
+                i <= etapaAtual ? 'bg-[var(--ouro)]' : 'bg-[var(--linha)]'
+              )}
+            />
+          ))}
+        </ol>
 
-              {/* Step indicator */}
-              <Inline gap={2}>
-                {['discover', 'select', 'process', 'results'].map(
-                  (step, index) => (
-                    <div
-                      key={step}
-                      className={`w-3 h-3 rounded-full transition-colors ${
-                        currentStep === step
-                          ? 'bg-gray-400'
-                          : index <
-                              [
-                                'discover',
-                                'select',
-                                'process',
-                                'results',
-                              ].indexOf(currentStep)
-                            ? 'bg-green-400'
-                            : 'bg-theme-secondary'
-                      }`}
+        {currentStep === 'discover' && (
+          <FormBlock
+            titulo={t('bulk_step_discover')}
+            nota={t('bulk_step_discover_description', {
+              composer: composer.fullName,
+            })}
+          >
+            <Aviso titulo={t('bulk_step_discover_how_title')}>
+              <ul className="flex list-disc flex-col gap-1 pl-4">
+                <li>{t('bulk_step_discover_how_1')}</li>
+                <li>{t('bulk_step_discover_how_2')}</li>
+                <li>{t('bulk_step_discover_how_3')}</li>
+                <li>{t('bulk_step_discover_how_4')}</li>
+              </ul>
+            </Aviso>
+          </FormBlock>
+        )}
+
+        {currentStep === 'select' && (
+          <div className="flex flex-col gap-6">
+            <div className="grid grid-cols-2 gap-4 sm:grid-cols-4">
+              {contagem(t('bulk_stats_total'), stats.total)}
+              {contagem(t('bulk_stats_new'), stats.new)}
+              {contagem(t('bulk_stats_existing'), stats.existing)}
+              {contagem(t('bulk_stats_selected'), stats.selected)}
+            </div>
+            <ul className="flex flex-col divide-y divide-[var(--linha)]">
+              {discoveredWorks.map((work) => (
+                <li key={work.id} className="flex items-center gap-3 py-3">
+                  {work.alreadyExists ? (
+                    <span className="t-legenda w-28 shrink-0">
+                      {t('bulk_work_exists')}
+                    </span>
+                  ) : (
+                    <CaixaDeMarcar
+                      rotulo={<span className="sr-only">{work.title}</span>}
+                      marcado={work.selected}
+                      aoMudar={() => toggleWorkSelection(work.id)}
                     />
-                  )
-                )}
-              </Inline>
-            </div>
-
-            {/* Content */}
-            <div className="flex-1 overflow-hidden">
-              {/* Step 1: Discover */}
-              {currentStep === 'discover' && (
-                <div className="p-6 text-center">
-                  <AnimatedCard className="classical-card-2 p-8 max-w-md mx-auto">
-                    <div className="w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-6">
-                      <PiMagnifyingGlass className="w-8 h-8 text-theme-primary" />
-                    </div>
-
-                    <h3 className="text-lg font-bold text-theme-primary mb-4">
-                      {t('bulk_step_discover')}
-                    </h3>
-
-                    <p className="text-theme-secondary mb-6">
-                      {t('bulk_step_discover_description', {
-                        composer: composer.fullName,
-                      })}
-                    </p>
-
-                    <Stack gap={3}>
-                      <Text
-                        papel="legenda"
-                        tom="fraco"
-                        as="div"
-                        className="p-3 rounded-lg"
-                      >
-                        <Inline gap={2} className="mb-1">
-                          <PiInfo className="w-3 h-3" />
-                          <span className="font-medium">
-                            {t('bulk_step_discover_how_title')}
-                          </span>
-                        </Inline>
-                        <Stack gap={1} as="ul" className="text-left ml-5">
-                          <li>• {t('bulk_step_discover_how_1')}</li>
-                          <li>• {t('bulk_step_discover_how_2')}</li>
-                          <li>• {t('bulk_step_discover_how_3')}</li>
-                          <li>• {t('bulk_step_discover_how_4')}</li>
-                        </Stack>
-                      </Text>
-
-                      <Button
-                        variant="primary"
-                        size="lg"
-                        leftIcon={
-                          isDiscovering ? (
-                            <PiSpinnerGap className="animate-spin" />
-                          ) : (
-                            <PiMagnifyingGlass />
-                          )
-                        }
-                        onClick={handleDiscoverWorks}
-                        disabled={isDiscovering}
-                        className="w-full"
-                      >
-                        {isDiscovering
-                          ? t('bulk_discovering')
-                          : t('bulk_discover_button')}
-                      </Button>
-                    </Stack>
-                  </AnimatedCard>
-                </div>
-              )}
-
-              {/* Step 2: Select */}
-              {currentStep === 'select' && (
-                <div className="p-6">
-                  {/* Stats and controls */}
-                  <Stack className="mb-6">
-                    <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                      <div className="text-center">
-                        <div className="text-2xl font-bold text-theme-primary">
-                          {stats.total}
-                        </div>
-                        <Text papel="legenda" tom="fraco" as="div">
-                          {t('bulk_stats_total')}
-                        </Text>
-                      </div>
-                      <div className="text-center">
-                        <div className="text-2xl font-bold">{stats.new}</div>
-                        <Text papel="legenda" tom="fraco" as="div">
-                          {t('bulk_stats_new')}
-                        </Text>
-                      </div>
-                      <div className="text-center">
-                        <div className="text-2xl font-bold">
-                          {stats.existing}
-                        </div>
-                        <Text papel="legenda" tom="fraco" as="div">
-                          {t('bulk_stats_existing')}
-                        </Text>
-                      </div>
-                      <div className="text-center">
-                        <div className="text-2xl font-bold text-ouro-texto">
-                          {stats.selected}
-                        </div>
-                        <Text papel="legenda" tom="fraco" as="div">
-                          {t('bulk_stats_selected')}
-                        </Text>
-                      </div>
-                    </div>
-
-                    <div className="flex items-center justify-between">
-                      <Inline gap={2}>
-                        <Button
-                          variant="outline"
-                          size="md"
-                          onClick={() => toggleSelectAll(true)}
-                        >
-                          {t('bulk_select_all_new')}
-                        </Button>
-                        <Button
-                          variant="secondary"
-                          size="md"
-                          onClick={() => toggleSelectAll(false)}
-                        >
-                          {t('bulk_unselect_all')}
-                        </Button>
-                      </Inline>
-
-                      <Button
-                        variant="primary"
-                        leftIcon={<PiPlay />}
-                        onClick={handleProcessWorks}
-                        disabled={stats.selected === 0}
-                      >
-                        {t('bulk_import_button', {
-                          count: stats.selected,
-                          plural: stats.selected !== 1 ? 's' : '',
-                        })}
-                      </Button>
-                    </div>
-                  </Stack>
-
-                  {/* Works list */}
-                  <div className="max-h-96 overflow-y-auto space-y-2">
-                    {discoveredWorks.map((work, index) => (
-                      <AnimatedItem
-                        key={work.id}
-                        direction="left"
-                        style={{
-                          animationDelay: `${index * 0.05}s`,
-                          animationFillMode: 'backwards',
-                        }}
-                      >
-                        <div
-                          className={`classical-card-simple mr-4 rounded-lg p-4 transition-all ${
-                            work.alreadyExists
-                              ? ''
-                              : work.selected
-                                ? ''
-                                : 'bg-theme-elevated border-theme-secondary'
-                          }`}
-                        >
-                          <div className="flex items-center justify-between">
-                            <Inline gap={3} className="flex-1 min-w-0">
-                              {/* Checkbox */}
-                              <Checkbox
-                                type={work.alreadyExists ? 'text' : 'checkbox'}
-                                checked={work.selected}
-                                disabled={work.alreadyExists}
-                                onChange={() => toggleWorkSelection(work.id)}
-                                className="w-4 h-4 text-ouro-texto bg-theme-elevated border-theme-secondary rounded"
-                              />
-
-                              {/* Work info */}
-                              <div className="flex-1 min-w-0">
-                                <h4 className="font-medium text-theme-primary truncate">
-                                  {work.title}
-                                </h4>
-                                <Inline
-                                  gap={4}
-                                  className="text-xs text-theme-tertiary"
-                                >
-                                  {work.opOrCatalog && (
-                                    <span>{work.opOrCatalog}</span>
-                                  )}
-                                  {work.instrument && (
-                                    <span>{work.instrument}</span>
-                                  )}
-                                </Inline>
-                              </div>
-
-                              {/* Status badges */}
-                              <Inline gap={2}>
-                                {work.alreadyExists && (
-                                  <span className="text-xs px-2 py-1 rounded-full">
-                                    {t('bulk_work_exists')}
-                                  </span>
-                                )}
-
-                                <a
-                                  href={work.imslpUrl}
-                                  target="_blank"
-                                  rel="noopener noreferrer"
-                                  className="text-theme-tertiary"
-                                >
-                                  <PiArrowSquareOut className="w-4 h-4" />
-                                </a>
-
-                                <button
-                                  onClick={() => removeWork(work.id)}
-                                  className="!text-erro"
-                                  title={t('bulk_remove_work')}
-                                >
-                                  <PiTrash className="w-4 h-4" />
-                                </button>
-                              </Inline>
-                            </Inline>
-                          </div>
-                        </div>
-                      </AnimatedItem>
-                    ))}
-                  </div>
-                </div>
-              )}
-
-              {/* Step 3: Process - Com progresso individual */}
-              {currentStep === 'process' && (
-                <div className="p-6">
-                  <div className="mb-6 text-center">
-                    <h3 className="text-lg font-bold text-theme-primary mb-2">
-                      {t('bulk_processing_title')}
-                    </h3>
-                    <p className="text-theme-secondary mb-4">
-                      {t('bulk_processing_description', {
-                        count: stats.selected,
-                      })}
-                    </p>
-
-                    {/* Barra de progresso geral */}
-                    <div className="w-full bg-theme-secondary rounded-full h-2 mb-2">
-                      <div
-                        className="progress-bar h-2 rounded-full transition-all duration-300"
-                        style={{
-                          width: `${
-                            (workProgress.filter(
-                              (w) =>
-                                w.status === 'success' || w.status === 'error'
-                            ).length /
-                              workProgress.length) *
-                            100
-                          }%`,
-                        }}
-                      />
-                    </div>
-                    <Text papel="legenda" tom="fraco" as="div">
-                      {t('bulk_processing_progress', {
-                        completed: workProgress.filter(
-                          (w) => w.status === 'success' || w.status === 'error'
-                        ).length,
-                        total: workProgress.length,
-                      })}
-                    </Text>
-                  </div>
-
-                  {/* Lista de obras com progresso individual */}
-                  <div className="max-h-96 overflow-y-auto overflow-x-hidden space-y-3">
-                    {workProgress.map((work) => (
-                      <div
-                        key={work.tempId}
-                        className={`classical-card-simple rounded-lg p-4 transition-all ${
-                          work.status === 'success'
-                            ? ''
-                            : work.status === 'error'
-                              ? ''
-                              : work.status === 'processing'
-                                ? ''
-                                : 'bg-theme-elevated border-theme-secondary'
-                        }`}
-                      >
-                        <Inline gap={3}>
-                          {/* Status icon */}
-                          <div className="flex-shrink-0">
-                            {work.status === 'waiting' && (
-                              <div className="w-5 h-5 rounded-full bg-theme-secondary flex items-center justify-center">
-                                <div className="w-2 h-2 rounded-full bg-theme-tertiary"></div>
-                              </div>
-                            )}
-                            {work.status === 'processing' && (
-                              <PiSpinnerGap className="w-5 h-5 text-ouro-texto animate-spin" />
-                            )}
-                            {work.status === 'success' && (
-                              <div className="w-5 h-5 rounded-full flex items-center justify-center">
-                                <PiCheck className="w-3 h-3 text-white" />
-                              </div>
-                            )}
-                            {work.status === 'error' && (
-                              <div className="w-5 h-5 rounded-full flex items-center justify-center">
-                                <PiX className="w-3 h-3 text-white" />
-                              </div>
-                            )}
-                          </div>
-
-                          {/* Work info */}
-                          <div className="flex-1 min-w-0">
-                            <h4 className="font-medium text-theme-primary truncate">
-                              {work.title}
-                            </h4>
-                            <p
-                              className={`text-xs ${
-                                work.status === 'success'
-                                  ? ''
-                                  : work.status === 'error'
-                                    ? ''
-                                    : work.status === 'processing'
-                                      ? 'text-ouro-texto'
-                                      : 'text-theme-tertiary'
-                              }`}
-                            >
-                              {work.message}
-                            </p>
-                            {work.details?.finalTitle &&
-                              work.details.finalTitle !== work.title && (
-                                <Text papel="legenda" tom="suave" as="p">
-                                  {t('bulk_processing_final_title', {
-                                    title: work.details.finalTitle,
-                                  })}
-                                </Text>
-                              )}
-                          </div>
-
-                          {/* Progress indicator para a obra atual */}
-                          {work.status === 'processing' && (
-                            <div className="flex-shrink-0">
-                              <div className="w-16 bg-theme-secondary rounded-full h-1">
-                                <div className="h-1 rounded-full animate-pulse w-8"></div>
-                              </div>
-                            </div>
-                          )}
-                        </Inline>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              )}
-
-              {/* Step 4: Results */}
-              {currentStep === 'results' && (
-                <div className="p-6">
-                  <div className="mb-6 text-center">
-                    <h3 className="text-lg font-bold text-theme-primary mb-2">
-                      {t('bulk_results_title')}
-                    </h3>
-
-                    <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-4">
-                      <div className="text-center">
-                        <div className="text-2xl font-bold">
-                          {
-                            processResults.filter((r) => r.status === 'success')
-                              .length
-                          }
-                        </div>
-                        <Text papel="legenda" tom="fraco" as="div">
-                          {t('bulk_results_success')}
-                        </Text>
-                      </div>
-                      <div className="text-center">
-                        <div className="text-2xl font-bold">
-                          {
-                            processResults.filter((r) => r.status === 'error')
-                              .length
-                          }
-                        </div>
-                        <Text papel="legenda" tom="fraco" as="div">
-                          {t('bulk_results_errors')}
-                        </Text>
-                      </div>
-                      <div className="text-center">
-                        <div className="text-2xl font-bold">
-                          {
-                            processResults.filter(
-                              (r) => r.status === 'duplicate'
-                            ).length
-                          }
-                        </div>
-                        <Text papel="legenda" tom="fraco" as="div">
-                          {t('bulk_results_duplicates')}
-                        </Text>
-                      </div>
-                      <div className="text-center">
-                        <div className="text-2xl font-bold text-theme-tertiary">
-                          {
-                            processResults.filter((r) => r.status === 'skipped')
-                              .length
-                          }
-                        </div>
-                        <Text papel="legenda" tom="fraco" as="div">
-                          {t('bulk_results_skipped')}
-                        </Text>
-                      </div>
-                    </div>
-                  </div>
-
-                  {/* Results list */}
-                  <Stack
-                    gap={2}
-                    className="max-h-80 gap-2 px-4 py-2 overflow-y-auto overflow-x-hidden"
+                  )}
+                  <span className="flex min-w-0 flex-1 flex-col">
+                    <span className="truncate font-medium text-texto">
+                      {work.title}
+                    </span>
+                    <span className="t-legenda truncate">
+                      {[work.opOrCatalog, work.instrument]
+                        .filter(Boolean)
+                        .join(' · ')}
+                    </span>
+                  </span>
+                  <a
+                    href={work.imslpUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="grid h-9 w-9 shrink-0 place-items-center rounded-full text-texto-suave hover:bg-[var(--interactive-hover)] hover:text-texto"
                   >
-                    {processResults.map((result) => (
-                      <div
-                        key={result.tempId}
-                        className={`rounded-lg border p-3 ${
-                          result.status === 'success'
-                            ? 'border border-green-300'
-                            : result.status === 'error'
-                              ? 'border border-red-300'
-                              : result.status === 'duplicate'
-                                ? 'border-amber-300'
-                                : 'bg-theme-elevated border-theme-secondary'
-                        }`}
-                      >
-                        <Inline gap={3}>
-                          <div className="flex-shrink-0 mt-0.5">
-                            {result.status === 'success' && (
-                              <PiCheck className="w-4 h-4" />
-                            )}
-                            {result.status === 'error' && (
-                              <PiX className="w-4 h-4" />
-                            )}
-                            {result.status === 'duplicate' && (
-                              <PiWarningCircle className="w-4 h-4" />
-                            )}
-                          </div>
+                    <Icon de={PiArrowSquareOut} tamanho="p" rotulo="IMSLP" />
+                  </a>
+                  <Button
+                    tamanho="p"
+                    variante="fantasma"
+                    icone={PiTrash}
+                    rotulo={t('bulk_remove_work')}
+                    onClick={() => removeWork(work.id)}
+                  />
+                </li>
+              ))}
+            </ul>
+          </div>
+        )}
 
-                          <div className="flex-1 min-w-0">
-                            <h4 className="font-medium text-theme-primary truncate">
-                              {result.title}
-                            </h4>
-                            <Text papel="legenda" tom="suave" as="p">
-                              {result.message.includes('__TURBOPACK')
-                                ? t('bulk_results_error_processing')
-                                : result.message}
-                            </Text>
-                            {result.details?.finalTitle &&
-                              result.details.finalTitle !== result.title && (
-                                <Text papel="legenda" tom="ouro" as="p">
-                                  {t('bulk_processing_final_title', {
-                                    title: result.details.finalTitle,
-                                  })}
-                                </Text>
-                              )}
-                          </div>
-                        </Inline>
-                      </div>
-                    ))}
-                  </Stack>
+        {currentStep === 'process' && (
+          <div className="flex flex-col gap-6">
+            <div className="flex flex-col gap-2">
+              <h3 className="t-subtitulo">{t('bulk_processing_title')}</h3>
+              <p className="t-rotulo text-texto-suave">
+                {t('bulk_processing_description', { count: stats.selected })}
+              </p>
+              <div
+                role="progressbar"
+                aria-valuemin={0}
+                aria-valuemax={workProgress.length}
+                aria-valuenow={feitas}
+                className="h-1.5 w-full overflow-hidden rounded-full bg-[var(--linha)]"
+              >
+                <div
+                  className="h-full rounded-full bg-[var(--ouro)] transition-[width] duration-300"
+                  style={{
+                    width: `${workProgress.length ? (feitas / workProgress.length) * 100 : 0}%`,
+                  }}
+                />
+              </div>
+              <span className="t-legenda">
+                {t('bulk_processing_progress', {
+                  completed: feitas,
+                  total: workProgress.length,
+                })}
+              </span>
+            </div>
+            <ul className="flex flex-col divide-y divide-[var(--linha)]">
+              {workProgress.map((work) => (
+                <li key={work.tempId} className="flex items-start gap-3 py-3">
+                  {iconeDoEstado(work.status)}
+                  <span className="flex min-w-0 flex-1 flex-col gap-0.5">
+                    <span className="truncate font-medium text-texto">
+                      {work.title}
+                    </span>
+                    <span className="t-legenda">{work.message}</span>
+                    {work.details?.finalTitle &&
+                      work.details.finalTitle !== work.title && (
+                        <span className="t-legenda">
+                          {t('bulk_processing_final_title', {
+                            title: work.details.finalTitle,
+                          })}
+                        </span>
+                      )}
+                  </span>
+                </li>
+              ))}
+            </ul>
+          </div>
+        )}
 
-                  <div className="mt-6 text-center">
-                    <Button variant="primary" onClick={handleClose}>
-                      {t('bulk_results_complete_button')}
-                    </Button>
-                  </div>
-                </div>
+        {currentStep === 'results' && (
+          <div className="flex flex-col gap-6">
+            <h3 className="t-subtitulo">{t('bulk_results_title')}</h3>
+            <div className="grid grid-cols-2 gap-4 sm:grid-cols-4">
+              {contagem(
+                t('bulk_results_success'),
+                processResults.filter((r) => r.status === 'success').length
+              )}
+              {contagem(
+                t('bulk_results_errors'),
+                processResults.filter((r) => r.status === 'error').length
+              )}
+              {contagem(
+                t('bulk_results_duplicates'),
+                processResults.filter((r) => r.status === 'duplicate').length
+              )}
+              {contagem(
+                t('bulk_results_skipped'),
+                processResults.filter((r) => r.status === 'skipped').length
               )}
             </div>
+            <ul className="flex flex-col divide-y divide-[var(--linha)]">
+              {processResults.map((result) => (
+                <li key={result.tempId} className="flex items-start gap-3 py-3">
+                  {iconeDoEstado(result.status)}
+                  <span className="flex min-w-0 flex-1 flex-col gap-0.5">
+                    <span className="truncate font-medium text-texto">
+                      {result.title}
+                    </span>
+                    <span className="t-legenda">
+                      {result.message.includes('__TURBOPACK')
+                        ? t('bulk_results_error_processing')
+                        : result.message}
+                    </span>
+                    {result.details?.finalTitle &&
+                      result.details.finalTitle !== result.title && (
+                        <span className="t-legenda text-ouro-texto">
+                          {t('bulk_processing_final_title', {
+                            title: result.details.finalTitle,
+                          })}
+                        </span>
+                      )}
+                  </span>
+                </li>
+              ))}
+            </ul>
           </div>
-        </AnimatedItem>
-      </Modal>
+        )}
+      </FormSheet>
 
       {/* Edit Work Modal */}
       {showEditModal && editingWork && (

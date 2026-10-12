@@ -3,9 +3,7 @@
 
 import { useState, useEffect } from 'react';
 import {
-  PiArrowsClockwise,
   PiCheck,
-  PiInfo,
   PiLock,
   PiMusicNotes,
   PiPlus,
@@ -13,8 +11,9 @@ import {
   PiUsers,
 } from 'react-icons/pi';
 import { getScoreGroups } from '@/app/requests/uploads-client';
-import { Stack, Inline } from '@/app/components/ui/Layout';
-import { Text } from '@/app/components/ui/Text';
+import { Icon } from '@/app/components/ui/Icon';
+import { Aviso } from '@/app/components/site/edit/FormSheet';
+import { cx } from '@/app/components/ui/cx';
 
 interface ScoreGroup {
   groupIndex: number;
@@ -142,242 +141,117 @@ export default function GroupingSuggestions({
   if (!visible) return null;
 
   if (loading) {
-    return (
-      <div className="rounded-xl p-4 bg-sup-2">
-        <Inline gap={3} className="justify-center py-4">
-          <div className="w-5 h-5 border-2 rounded-full animate-spin"></div>
-          <Text papel="rotulo" tom="suave">
-            Analisando grupos existentes...
-          </Text>
-        </Inline>
-      </div>
-    );
+    return <Aviso tom="carregando">Analisando os grupos existentes…</Aviso>;
   }
 
   if (error) {
-    return (
-      <div className="bg-red-50 rounded-xl p-4">
-        <Inline gap={2} className="text-red-800">
-          <PiArrowsClockwise className="w-4 h-4" />
-          <span className="text-sm">{error}</span>
-        </Inline>
-      </div>
-    );
+    return <Aviso tom="erro">{error}</Aviso>;
   }
 
+  const opcao = (ativo: boolean, travado = false) =>
+    cx(
+      'flex w-full items-center gap-3 rounded-controle px-4 py-3 text-left transition-colors duration-[var(--t-toque)]',
+      travado
+        ? 'cursor-not-allowed bg-sup-2 opacity-70'
+        : ativo
+          ? 'tint-ouro text-ouro-na-tinta'
+          : 'bg-sup-2 text-texto hover:bg-[var(--interactive-hover)]'
+    );
+  const partituras = (n: number) => `${n} partitura${n !== 1 ? 's' : ''}`;
+
   return (
-    <Stack>
-      {hasExistingScores && (
-        <>
-          {/* Grupos do Usuário (EDITÁVEIS) */}
-          {userGroups.length > 0 && (
-            <div>
-              <Inline
-                as="h4"
-                gap={2}
-                className="text-sm font-semibold text-theme-primary mb-3"
+    <div className="flex flex-col gap-5">
+      {hasExistingScores && userGroups.length > 0 && (
+        <div className="flex flex-col gap-2">
+          <span className="t-rotulo font-medium text-texto">
+            Seus grupos ({userGroups.length})
+          </span>
+          {userGroups.map((group) => {
+            const isSelected =
+              parseInt(currentGroupIndex) === group.groupIndex &&
+              currentGroupTitle === group.groupTitle;
+            return (
+              <button
+                key={`${group.groupIndex}-${group.groupTitle}`}
+                type="button"
+                aria-pressed={isSelected}
+                onClick={() => handleUserGroupSelect(group)}
+                className={opcao(isSelected)}
               >
-                <PiUsers className="w-4 h-4" />
-                <span>Seus Grupos Existentes</span>
-                <span className="px-2 py-0.5 rounded-full text-xs">
-                  {userGroups.length}
+                <Icon de={getSourceIcon(group.source)} tamanho="p" />
+                <span className="flex min-w-0 flex-1 flex-col">
+                  <span className="truncate font-medium">
+                    {group.groupTitle}
+                  </span>
+                  <span className="t-legenda">
+                    {partituras(group.scoresCount)} · índice {group.groupIndex}
+                  </span>
                 </span>
-              </Inline>
-
-              <div className="grid grid-cols-1 gap-2 mb-4">
-                {userGroups.map((group) => {
-                  const Icon = getSourceIcon(group.source);
-                  const isSelected =
-                    parseInt(currentGroupIndex) === group.groupIndex &&
-                    currentGroupTitle === group.groupTitle;
-
-                  return (
-                    <button
-                      key={`${group.groupIndex}-${group.groupTitle}`}
-                      onClick={() => handleUserGroupSelect(group)}
-                      className={`
-                        p-3 rounded-lg border-2 transition-all duration-200 text-left
-                        ${
-                          isSelected
-                            ? ''
-                            : 'border-theme-secondary bg-theme-elevated'
-                        }
-                      `}
-                    >
-                      <div className="flex items-center justify-between">
-                        <Inline gap={3}>
-                          <div
-                            className={`
-                            w-8 h-8 rounded-lg flex items-center justify-center
-                            ${
-                              isSelected
-                                ? 'text-theme-primary'
-                                : 'bg-theme-secondary text-theme-tertiary'
-                            }
-                          `}
-                          >
-                            <Icon className="w-4 h-4" />
-                          </div>
-                          <div>
-                            <h5 className="font-medium text-sm">
-                              {group.groupTitle}
-                            </h5>
-                            <Text papel="legenda" tom="fraco" as="p">
-                              {group.scoresCount} partitura
-                              {group.scoresCount !== 1 ? 's' : ''} • Índice{' '}
-                              {group.groupIndex} • Editável
-                            </Text>
-                          </div>
-                        </Inline>
-
-                        {isSelected && <PiCheck className="w-5 h-5" />}
-                      </div>
-                    </button>
-                  );
-                })}
-              </div>
-            </div>
-          )}
-
-          {/* Grupos IMSLP (APENAS REFERÊNCIA) */}
-          {imslpGroups.length > 0 && (
-            <div>
-              <Inline
-                as="h4"
-                gap={2}
-                className="text-sm font-semibold text-theme-primary mb-3"
-              >
-                <PiMusicNotes className="w-4 h-4" />
-                <span>Grupos Existentes (IMSLP)</span>
-                <Text
-                  papel="legenda"
-                  tom="fraco"
-                  className="px-2 py-0.5 rounded-full"
-                >
-                  Apenas referência
-                </Text>
-              </Inline>
-
-              <div className="grid grid-cols-1 gap-2 mb-4">
-                {imslpGroups.slice(0, 3).map((group) => {
-                  const Icon = getSourceIcon(group.source);
-
-                  return (
-                    <div
-                      key={`${group.groupIndex}-${group.groupTitle}`}
-                      className="p-3 rounded-lg border-2 border-theme-secondary bg-theme-elevated opacity-75 cursor-not-allowed"
-                    >
-                      <div className="flex items-center justify-between">
-                        <Inline gap={3}>
-                          <div className="w-8 h-8 rounded-lg flex items-center justify-center bg-theme-secondary text-theme-tertiary">
-                            <Icon className="w-4 h-4" />
-                          </div>
-                          <div>
-                            <h5 className="font-medium text-sm text-theme-tertiary">
-                              {group.groupTitle}
-                            </h5>
-                            <Text papel="legenda" tom="fraco" as="p">
-                              {group.scoresCount} partitura
-                              {group.scoresCount !== 1 ? 's' : ''} • Índice{' '}
-                              {group.groupIndex}
-                            </Text>
-                          </div>
-                        </Inline>
-
-                        <PiLock className="w-4 h-4 text-theme-tertiary" />
-                      </div>
-                    </div>
-                  );
-                })}
-              </div>
-
-              <div className="bg-blue-50 rounded-lg p-3 mb-4">
-                <div className="flex items-start space-x-2">
-                  <PiInfo className="w-4 h-4 text-blue-600 mt-0.5 flex-shrink-0" />
-                  <Stack gap={1} className="text-xs text-blue-800">
-                    <p className="font-medium">
-                      Grupos IMSLP são apenas referência
-                    </p>
-                    <p>
-                      Você não pode adicionar suas partituras aos grupos do
-                      IMSLP. Suas partituras ficam organizadas em grupos
-                      separados.
-                    </p>
-                  </Stack>
-                </div>
-              </div>
-            </div>
-          )}
-        </>
+                {isSelected && <Icon de={PiCheck} tamanho="p" />}
+              </button>
+            );
+          })}
+        </div>
       )}
 
-      {/* Opção para Novo Grupo */}
-      <Stack gap={3}>
-        <Inline
-          as="h4"
-          gap={2}
-          className="text-sm font-semibold text-theme-primary"
-        >
-          <PiPlus className="w-4 h-4 text-ouro-texto" />
-          <span>Criar Novo Grupo</span>
-        </Inline>
-
-        <button
-          onClick={(e) => {
-            e.preventDefault();
-            const nextIndex =
-              Math.max(
-                0,
-                ...userGroups.map((g) => g.groupIndex),
-                ...suggestions
-                  .filter((s) => s.source === 'USER_UPLOADED')
-                  .map((s) => s.suggestedIndex)
-              ) + 1;
-            onGroupSelect(nextIndex, '');
-          }}
-          className="w-full p-3 rounded-lg border-2 border-dashed text-ouro-texto transition-all duration-200 text-left"
-        >
-          <Inline gap={3}>
-            <div className="w-8 h-8 rounded-lg flex items-center justify-center">
-              <PiPlus className="w-4 h-4 text-ouro-texto" />
+      {hasExistingScores && imslpGroups.length > 0 && (
+        <div className="flex flex-col gap-2">
+          <span className="t-rotulo font-medium text-texto">
+            Grupos do IMSLP{' '}
+            <span className="font-normal text-texto-fraco">
+              · só referência
+            </span>
+          </span>
+          {imslpGroups.slice(0, 3).map((group) => (
+            <div
+              key={`${group.groupIndex}-${group.groupTitle}`}
+              className={opcao(false, true)}
+            >
+              <Icon de={getSourceIcon(group.source)} tamanho="p" />
+              <span className="flex min-w-0 flex-1 flex-col">
+                <span className="truncate font-medium">{group.groupTitle}</span>
+                <span className="t-legenda">
+                  {partituras(group.scoresCount)} · índice {group.groupIndex}
+                </span>
+              </span>
+              <Icon de={PiLock} tamanho="p" className="text-texto-fraco" />
             </div>
-            <div>
-              <h5 className="font-medium text-sm">
-                Definir Título Personalizado
-              </h5>
-              <Text papel="legenda" tom="fraco" as="p">
-                Criar um novo grupo com título próprio
-              </Text>
-            </div>
-          </Inline>
-        </button>
-      </Stack>
-
-      {/* Info Helper Atualizado */}
-      <div className="rounded-lg p-3 bg-sup-2">
-        <div className="flex items-start space-x-2">
-          <PiInfo className="w-4 h-4 text-theme-tertiary mt-0.5 flex-shrink-0" />
-          <Text papel="legenda" tom="fraco" as="div">
-            <p className="font-medium mb-1">
-              Como funciona o novo agrupamento:
-            </p>
-            <Stack gap={1}>
-              <p>
-                • <strong>Grupos IMSLP:</strong> Apenas referência, você não
-                pode editá-los
-              </p>
-              <p>
-                • <strong>Seus grupos:</strong> Apenas você pode adicionar
-                partituras aos seus grupos
-              </p>
-              <p>
-                • <strong>Outros usuários:</strong> Cada usuário tem seus
-                próprios grupos
-              </p>
-            </Stack>
-          </Text>
+          ))}
+          <span className="t-legenda">
+            Suas partituras não entram nos grupos do IMSLP: ficam em grupos
+            seus, separados.
+          </span>
         </div>
-      </div>
-    </Stack>
+      )}
+
+      <button
+        type="button"
+        onClick={(e) => {
+          e.preventDefault();
+          const nextIndex =
+            Math.max(
+              0,
+              ...userGroups.map((g) => g.groupIndex),
+              ...suggestions
+                .filter((s) => s.source === 'USER_UPLOADED')
+                .map((s) => s.suggestedIndex)
+            ) + 1;
+          onGroupSelect(nextIndex, '');
+        }}
+        className="flex w-full items-center gap-3 rounded-controle border border-dashed border-[var(--linha-forte)] px-4 py-3 text-left hover:bg-[var(--interactive-hover)]"
+      >
+        <Icon de={PiPlus} tamanho="p" className="text-ouro-texto" />
+        <span className="flex flex-col">
+          <span className="font-medium text-texto">Criar um grupo novo</span>
+          <span className="t-legenda">Com um título seu</span>
+        </span>
+      </button>
+
+      <ul className="t-legenda flex list-disc flex-col gap-1 pl-4">
+        <li>Grupos do IMSLP são só referência; não dá para editá-los.</li>
+        <li>Só você acrescenta partituras aos seus grupos.</li>
+        <li>Cada pessoa tem os próprios grupos.</li>
+      </ul>
+    </div>
   );
 }

@@ -70,7 +70,6 @@ const SimpleWorkSearchInput: React.FC<SimpleWorkSearchInputProps> = ({
         return;
       }
 
-      console.log('🔍 [SIMPLE-WORK-SEARCH] Buscando para:', searchQuery);
       setIsLoading(true);
 
       try {
@@ -87,14 +86,6 @@ const SimpleWorkSearchInput: React.FC<SimpleWorkSearchInputProps> = ({
           searchQuery
         );
         setWorks(combinedWorks);
-
-        console.log(
-          '✅ [SIMPLE-WORK-SEARCH] Obras combinadas:',
-          combinedWorks.length,
-          '(API:',
-          apiWorks.length,
-          '+ Sugestões)'
-        );
       } catch (error) {
         console.error('❌ [SIMPLE-WORK-SEARCH] Erro:', error);
         setWorks([]);
@@ -194,10 +185,6 @@ const SimpleWorkSearchInput: React.FC<SimpleWorkSearchInputProps> = ({
       const userWork = userSuggestions.find((work) => work.id === workId);
       if (userWork) {
         setSelectedWorkData(userWork);
-        console.log(
-          '✅ [SIMPLE-WORK-SEARCH] Obra encontrada nas sugestões:',
-          userWork.title
-        );
         return;
       }
 
@@ -206,10 +193,6 @@ const SimpleWorkSearchInput: React.FC<SimpleWorkSearchInputProps> = ({
         const workData = await getWorkById(workId);
         if (workData) {
           setSelectedWorkData(workData);
-          console.log(
-            '✅ [SIMPLE-WORK-SEARCH] Obra carregada da API:',
-            workData.title
-          );
         }
       } catch (error) {
         console.error('❌ [SIMPLE-WORK-SEARCH] Erro ao carregar obra:', error);
@@ -259,7 +242,6 @@ const SimpleWorkSearchInput: React.FC<SimpleWorkSearchInputProps> = ({
   // 🔥 HANDLERS
   const handleWorkSelect = useCallback(
     (work: Work) => {
-      console.log('🎯 [SIMPLE-WORK-SEARCH] Obra selecionada:', work.title);
       onWorkSelect(work.id, work);
       setSelectedWorkData(work);
       setQuery('');
@@ -270,7 +252,6 @@ const SimpleWorkSearchInput: React.FC<SimpleWorkSearchInputProps> = ({
   );
 
   const handleClearSelection = useCallback(() => {
-    console.log('🗑️ [SIMPLE-WORK-SEARCH] Limpando seleção');
     onWorkSelect('', null);
     setSelectedWorkData(null);
     setQuery('');
@@ -308,8 +289,8 @@ const SimpleWorkSearchInput: React.FC<SimpleWorkSearchInputProps> = ({
       {/* Campo selecionado */}
       {selectedWorkData ? (
         <div
-          className={`w-full p-3 border rounded-lg bg-theme-elevated ${
-            error ? 'border-red-500' : 'border-theme-secondary'
+          className={`w-full p-3 border rounded-lg bg-sup-2 ${
+            error ? 'border-[var(--erro)]' : 'border-[var(--linha)]'
           } ${disabled ? 'opacity-50 cursor-not-allowed' : ''}`}
         >
           <div className="flex items-center justify-between">
@@ -331,7 +312,7 @@ const SimpleWorkSearchInput: React.FC<SimpleWorkSearchInputProps> = ({
               <button
                 type="button"
                 onClick={handleClearSelection}
-                className="text-theme-tertiary transition-colors p-1"
+                className="text-texto-fraco transition-colors p-1"
               >
                 <PiX className="w-4 h-4" />
                 <NomeAcao acao="fechar" />
@@ -343,7 +324,7 @@ const SimpleWorkSearchInput: React.FC<SimpleWorkSearchInputProps> = ({
         <div className="relative">
           {/* Campo de busca */}
           <div className="relative">
-            <PiMagnifyingGlass className="absolute left-3 top-1/2 transform -translate-y-1/2 text-theme-tertiary w-4 h-4 z-10" />
+            <PiMagnifyingGlass className="absolute left-3 top-1/2 transform -translate-y-1/2 text-texto-fraco w-4 h-4 z-10" />
             <input
               id={id}
               ref={inputRef}
@@ -360,7 +341,7 @@ const SimpleWorkSearchInput: React.FC<SimpleWorkSearchInputProps> = ({
               placeholder={placeholder}
               disabled={disabled}
               className={`input-classical-2 w-full !pl-10 pr-10 ${
-                error ? 'border-red-500' : ''
+                error ? 'border-[var(--erro)]' : ''
               } ${disabled ? 'opacity-50 cursor-not-allowed' : ''}`}
             />
             {(isLoading || loadingUserSuggestions) && (
@@ -372,7 +353,7 @@ const SimpleWorkSearchInput: React.FC<SimpleWorkSearchInputProps> = ({
           {isOpen && !disabled && (
             <div
               ref={dropdownRef}
-              className="absolute top-full left-0 right-0 mt-2 bg-theme-elevated rounded-lg shadow-theme-large max-h-80 overflow-y-auto z-menu"
+              className="absolute top-full left-0 right-0 mt-2 rounded-controle border border-[var(--linha-forte)] bg-[var(--sup-alta)] shadow-[var(--sombra-alta)] max-h-80 overflow-y-auto z-menu"
             >
               {/* Loading */}
               {(isLoading || loadingUserSuggestions) && (
@@ -394,7 +375,7 @@ const SimpleWorkSearchInput: React.FC<SimpleWorkSearchInputProps> = ({
                     papel="legenda"
                     tom="fraco"
                     as="div"
-                    className="px-3 py-2 font-medium uppercase tracking-wide border-b border-theme-secondary mb-2"
+                    className="px-3 py-2 font-medium uppercase tracking-wide border-b border-[var(--linha)] mb-2"
                   >
                     <div className="flex items-center gap-2">
                       {query.length >= 2 ? (
@@ -464,7 +445,7 @@ const SimpleWorkSearchInput: React.FC<SimpleWorkSearchInputProps> = ({
 
               {/* Empty state */}
               {!isLoading && !loadingUserSuggestions && works.length === 0 && (
-                <div className="p-4 text-center text-theme-tertiary">
+                <div className="p-4 text-center text-texto-fraco">
                   <PiMagnifyingGlass className="w-8 h-8 mx-auto mb-2 opacity-50" />
                   <p className="text-sm">
                     {query.length >= 2
@@ -495,11 +476,7 @@ const SimpleWorkSearchInput: React.FC<SimpleWorkSearchInputProps> = ({
       {/* Mensagem de erro */}
       {error && (
         <div>
-          <Inline
-            as="p"
-            gap={1}
-            className="text-red-500 text-sm font-medium mt-1"
-          >
+          <Inline as="p" gap={1} className="text-erro text-sm font-medium mt-1">
             <PiWarningCircle className="w-4 h-4" />
             <span>{error}</span>
           </Inline>

@@ -7,27 +7,19 @@ import {
   PiCalendarBlank,
   PiCheck,
   PiClock,
-  PiCopy,
   PiGlobe,
   PiInfo,
   PiMusicNotes,
   PiSpeakerHigh,
-  PiStack,
   PiStar,
   PiTag,
   PiUser,
-  PiX,
 } from 'react-icons/pi';
-import {
-  AnimatedCard,
-  AnimatedItem,
-} from '@/app/components/animation/AnimatedComponents';
-import Button from '@/app/components/Common/Button';
-import Modal from '@/app/components/Modal';
-import Checkbox from '@/app/components/Common/Checkbox';
-import { Stack, Inline } from '@/app/components/ui/Layout';
-import { Text } from '@/app/components/ui/Text';
-import { Card } from '@/app/components/ui/Card';
+import ConfirmModal from '@/app/components/ConfirmModal';
+import { Button } from '@/app/components/ui/Button';
+import { CaixaDeMarcar } from '@/app/components/ui/CaixaDeMarcar';
+import { cx } from '@/app/components/ui/cx';
+import { FormBlock, FormSheet } from '@/app/components/site/edit/FormSheet';
 
 interface ParentWorkData {
   id: string;
@@ -103,85 +95,24 @@ interface FieldSuggestion {
   category: 'catalog' | 'musical' | 'metadata' | 'classification';
 }
 
-// 🆕 MODAL PEQUENO DE CONFIRMAÇÃO
+/** The first question: whether to look at what the parent work offers. */
 const ParentWorkConfirmationModal: React.FC<{
   isOpen: boolean;
   onClose: () => void;
   onConfirm: () => void;
   parentWorkTitle: string;
-}> = ({ isOpen, onClose, onConfirm, parentWorkTitle }) => {
-  return (
-    <Modal
-      isOpen={isOpen}
-      onClose={onClose}
-      maxWidth="lg"
-      showCloseButton={true}
-    >
-      <AnimatedItem direction="scale" springType="bouncy" className="w-full">
-        <div className="p-6">
-          {/* Header */}
-          <Inline gap={3} className="mb-6">
-            <div className="w-10 h-10 rounded-xl bg-blue-100 flex items-center justify-center">
-              <PiStack className="w-5 h-5 text-blue-600" />
-            </div>
-            <div>
-              <h2 className="text-xl font-bold text-theme-primary">
-                Informações disponíveis
-              </h2>
-              <Text papel="rotulo" tom="suave" as="p">
-                Dados úteis encontrados na obra pai
-              </Text>
-            </div>
-          </Inline>
-
-          {/* Content */}
-          <Stack>
-            <Card nivel={2} densidade="compacta" className="rounded-lg">
-              <div className="flex items-start space-x-3">
-                <PiInfo className="w-5 h-5 text-theme-primary mt-0.5" />
-                <Text papel="rotulo" tom="forte" as="div">
-                  <p className="font-medium mb-2">
-                    Deseja aproveitar informações da obra da coleção?
-                  </p>
-                  <p className="mb-2">
-                    A obra <strong>&quot;{parentWorkTitle}&quot;</strong> possui
-                    dados que podem ser úteis para preencher campos vazios desta
-                    peça.
-                  </p>
-                  <Text papel="legenda" tom="forte" as="p">
-                    Apenas campos vazios serão preenchidos. Suas informações já
-                    digitadas não serão sobrescritas.
-                  </Text>
-                </Text>
-              </div>
-            </Card>
-          </Stack>
-
-          {/* Actions */}
-          <Inline gap={3} className="justify-between mt-6">
-            <Button
-              type="button"
-              variant="secondary"
-              onClick={onClose}
-              leftIcon={<PiX />}
-            >
-              Não, obrigado
-            </Button>
-
-            <Button
-              type="button"
-              variant="primary"
-              onClick={onConfirm}
-              leftIcon={<PiCheck />}
-            >
-              Sim, ver opções
-            </Button>
-          </Inline>
-        </div>
-      </AnimatedItem>
-    </Modal>
-  );
-};
+}> = ({ isOpen, onClose, onConfirm, parentWorkTitle }) => (
+  <ConfirmModal
+    isOpen={isOpen}
+    onClose={onClose}
+    onConfirm={onConfirm}
+    type="question"
+    title="Aproveitar dados da obra da coleção?"
+    message={`"${parentWorkTitle}" tem dados que podem preencher campos vazios desta peça. O que você já digitou não muda.`}
+    confirmText="Ver opções"
+    cancelText="Não, obrigado"
+  />
+);
 
 const ParentWorkSuggestionModal: React.FC<ParentWorkSuggestionModalProps> = ({
   isOpen,
@@ -533,202 +464,87 @@ const ParentWorkSuggestionModal: React.FC<ParentWorkSuggestionModalProps> = ({
         parentWorkTitle={parentWorkData.title}
       />
 
-      {/* MODAL PRINCIPAL (já existente) */}
-      <Modal
-        isOpen={showMainModal}
-        onClose={handleCloseMainModal}
-        maxWidth="3xl"
-        showCloseButton={true}
-      >
-        <AnimatedItem direction="scale" springType="bouncy" className="w-full">
-          <div>
-            {/* Header */}
-            <div className="flex items-center justify-between p-6 border-b border-theme-secondary">
-              <Inline gap={3}>
-                <div className="w-10 h-10 rounded-xl flex items-center justify-center">
-                  <PiCopy className="w-5 h-5 text-theme-primary" />
-                </div>
-                <div>
-                  <h2 className="text-xl font-bold text-theme-primary">
-                    Copiar informações da obra pai
-                  </h2>
-                  <Text papel="rotulo" tom="suave" as="p">
-                    <strong>{parentWorkData.title}</strong> tem informações que
-                    podem ser úteis
-                  </Text>
-                </div>
-              </Inline>
-            </div>
-
-            {/* Content */}
-            <div className="p-6  overflow-y-auto">
-              <Stack gap={6}>
-                {/* Info */}
-                <AnimatedCard
-                  className="bg-blue-50 border-blue-200 p-4"
-                  hover="none"
-                >
-                  <div className="flex items-start space-x-3">
-                    <PiInfo className="w-5 h-5 text-black mt-0.5" />
-                    <Stack gap={1} className="text-sm text-blue-800">
-                      <p className="font-medium">
-                        Campos que podem ser copiados
-                      </p>
-                      <p>
-                        Apenas campos vazios serão preenchidos. Suas informações
-                        já digitadas não serão sobrescritas.
-                      </p>
-                    </Stack>
-                  </div>
-                </AnimatedCard>
-
-                {/* Controls */}
-                <div className="flex items-center justify-between">
-                  <Inline gap={3}>
-                    <Button
-                      type="button"
-                      variant="secondary"
-                      size="sm"
-                      onClick={handleSelectAll}
-                    >
-                      Selecionar Todos
-                    </Button>
-                    <Button
-                      type="button"
-                      variant="secondary"
-                      size="sm"
-                      onClick={handleClearAll}
-                    >
-                      Limpar Seleção
-                    </Button>
-                  </Inline>
-                  <Text papel="rotulo" tom="fraco" as="div">
-                    {selectedFields.size} de {fieldSuggestions.length}{' '}
-                    selecionados
-                  </Text>
-                </div>
-
-                {/* Fields by Category */}
-                {Object.entries(groupedSuggestions).map(
-                  ([category, suggestions]) => {
-                    const categoryInfo =
-                      categoryLabels[category as keyof typeof categoryLabels];
-                    const CategoryIcon = categoryInfo.icon;
-
-                    return (
-                      <AnimatedCard
-                        key={category}
-                        className="classical-card-simple p-4"
-                        hover="none"
-                      >
-                        <Inline gap={2} className="mb-4">
-                          <CategoryIcon
-                            className={`w-5 h-5 text-theme-primary`}
-                          />
-                          <h3 className="text-lg font-semibold text-theme-primary">
-                            {categoryInfo.title}
-                          </h3>
-                          <Text papel="rotulo" tom="fraco">
-                            ({suggestions.length}{' '}
-                            {suggestions.length !== 1
-                              ? 'disponíveis'
-                              : 'disponível'}
-                            )
-                          </Text>
-                        </Inline>
-
-                        <div className="gap-3 flex flex-col">
-                          {suggestions.map((suggestion) => {
-                            const Icon = suggestion.icon;
-                            const isSelected = selectedFields.has(
-                              suggestion.key
-                            );
-                            const displayValue =
-                              suggestion.displayValue || suggestion.parentValue;
-
-                            return (
-                              <div
-                                key={suggestion.key}
-                                className={`p-3 rounded-lg  transition-all cursor-pointer ${
-                                  isSelected
-                                    ? 'bg-theme-tertiary'
-                                    : 'border-theme-secondary border-2 bg-theme-elevated'
-                                }`}
-                                onClick={() =>
-                                  handleFieldToggle(suggestion.key)
-                                }
-                              >
-                                <div className="flex items-start space-x-3">
-                                  <Checkbox
-                                    type="checkbox"
-                                    checked={isSelected}
-                                    onChange={() =>
-                                      handleFieldToggle(suggestion.key)
-                                    }
-                                    className="mt-1"
-                                  />
-                                  <Icon
-                                    className={`w-4 h-4 mt-1 text-theme-tertiary`}
-                                  />
-                                  <div className="flex-1 min-w-0">
-                                    <p
-                                      className={`font-medium text-sm text-theme-primary`}
-                                    >
-                                      {suggestion.label}
-                                    </p>
-                                    <p
-                                      className={`text-xs mt-1 truncate text-theme-secondary`}
-                                    >
-                                      {displayValue || 'Valor não disponível'}
-                                    </p>
-                                  </div>
-                                </div>
-                              </div>
-                            );
-                          })}
-                        </div>
-                      </AnimatedCard>
-                    );
-                  }
-                )}
-              </Stack>
-            </div>
-
-            {/* Actions */}
-            <Inline
-              gap={3}
-              className="justify-end p-6 border-t border-theme-secondary"
-            >
+      <FormSheet
+        aberto={showMainModal}
+        aoFechar={handleCloseMainModal}
+        titulo="Copiar dados da obra da coleção"
+        descricao={`"${parentWorkData.title}" tem dados que podem ser úteis. Só campos vazios são preenchidos.`}
+        ocupado={isApplying}
+        rodape={
+          <div className="flex flex-wrap items-center justify-between gap-2">
+            <span className="t-legenda">
+              {selectedFields.size} de {fieldSuggestions.length} selecionados
+            </span>
+            <div className="flex gap-2">
               <Button
-                type="button"
-                variant="secondary"
+                variante="fantasma"
                 onClick={handleCloseMainModal}
                 disabled={isApplying}
               >
                 Cancelar
               </Button>
-
               <Button
-                type="button"
-                variant="primary"
+                variante="primario"
+                icone={PiCheck}
+                carregando={isApplying}
+                disabled={selectedFields.size === 0}
                 onClick={handleApply}
-                disabled={selectedFields.size === 0 || isApplying}
-                leftIcon={
-                  isApplying ? (
-                    <PiCopy className="animate-pulse" />
-                  ) : (
-                    <PiCheck />
-                  )
-                }
               >
                 {isApplying
-                  ? 'Aplicando...'
+                  ? 'Aplicando…'
                   : `Aplicar ${selectedFields.size} campo${selectedFields.size !== 1 ? 's' : ''}`}
               </Button>
-            </Inline>
+            </div>
           </div>
-        </AnimatedItem>
-      </Modal>
+        }
+      >
+        <div className="mb-6 flex gap-2">
+          <Button tamanho="p" onClick={handleSelectAll}>
+            Selecionar todos
+          </Button>
+          <Button tamanho="p" variante="fantasma" onClick={handleClearAll}>
+            Limpar seleção
+          </Button>
+        </div>
+        {Object.entries(groupedSuggestions).map(([category, suggestions]) => {
+          const categoryInfo =
+            categoryLabels[category as keyof typeof categoryLabels];
+          return (
+            <FormBlock
+              key={category}
+              titulo={categoryInfo.title}
+              nota={`${suggestions.length} ${suggestions.length !== 1 ? 'disponíveis' : 'disponível'}`}
+            >
+              {suggestions.map((suggestion) => {
+                const displayValue =
+                  suggestion.displayValue || suggestion.parentValue;
+                return (
+                  <div
+                    key={suggestion.key}
+                    className={cx(
+                      'rounded-controle px-4 py-3 sm:col-span-2',
+                      selectedFields.has(suggestion.key)
+                        ? 'tint-ouro'
+                        : 'bg-sup-2'
+                    )}
+                  >
+                    <CaixaDeMarcar
+                      rotulo={suggestion.label}
+                      ajuda={
+                        <span className="block truncate">
+                          {displayValue || 'Valor não disponível'}
+                        </span>
+                      }
+                      marcado={selectedFields.has(suggestion.key)}
+                      aoMudar={() => handleFieldToggle(suggestion.key)}
+                    />
+                  </div>
+                );
+              })}
+            </FormBlock>
+          );
+        })}
+      </FormSheet>
     </>
   );
 };

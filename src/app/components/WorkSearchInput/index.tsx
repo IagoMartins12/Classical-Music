@@ -80,7 +80,6 @@ const WorkSearchInput: React.FC<WorkSearchInputProps> = ({
   const [preservedSelectedWork, setPreservedSelectedWork] =
     useState<WorkSearchInputWorkProp | null>(null);
 
-  console.log('selectedWorkData', selectedWorkData);
   const searchTimeoutRef = useRef<NodeJS.Timeout>(null);
   const inputRef = useRef<HTMLInputElement>(null);
   const dropdownRef = useRef<HTMLDivElement>(null);
@@ -207,9 +206,6 @@ const WorkSearchInput: React.FC<WorkSearchInputProps> = ({
       });
 
       if (popularFiltered.length > 0) {
-        console.log(
-          `Obras populares filtradas por compositor: ${popularFiltered.length}`
-        );
         return popularFiltered.slice(0, 8);
       }
     }
@@ -219,7 +215,6 @@ const WorkSearchInput: React.FC<WorkSearchInputProps> = ({
       return stablePopularWorks.slice(0, 8);
     }
 
-    console.log('Nenhuma obra encontrada para as condições atuais');
     return [];
   }, [
     stableUserSuggestions,
@@ -239,20 +234,11 @@ const WorkSearchInput: React.FC<WorkSearchInputProps> = ({
       lastQueryRef.current = searchKey;
 
       try {
-        const startTime = Date.now();
-        console.log('Buscando obras:', {
-          query: searchQuery,
-          filterByComposer: composerFilter,
-        });
-
         const data = await searchWorks({
           q: searchQuery,
           limit: 12,
           composerId: composerFilter?.trim() || undefined,
         });
-        const endTime = Date.now();
-
-        console.log(`Busca completada em ${endTime - startTime}ms`);
 
         setWorks(prioritizeUserWorks(data.works));
       } catch (error) {
@@ -317,23 +303,14 @@ const WorkSearchInput: React.FC<WorkSearchInputProps> = ({
     const foundWork = allWorks.find((w) => w.id === selectedWork);
 
     if (foundWork) {
-      console.log('✅ [LISTAS] Obra encontrada nas listas:', foundWork.title);
       return foundWork;
     }
 
     // 2. FALLBACK: Usar obra preservada se IDs coincidem
     if (preservedSelectedWork && preservedSelectedWork.id === selectedWork) {
-      console.log(
-        '✅ [PRESERVADA] Usando obra preservada:',
-        preservedSelectedWork.title
-      );
       return preservedSelectedWork;
     }
 
-    console.warn(
-      '⚠️ [NOT FOUND] Obra não encontrada em lugar nenhum:',
-      selectedWork
-    );
     return null;
   }, [
     selectedWork,
@@ -347,7 +324,6 @@ const WorkSearchInput: React.FC<WorkSearchInputProps> = ({
   // Effect para atualizar dados da obra selecionada
   useEffect(() => {
     const workData = findSelectedWorkData();
-    console.log('WORK DATA', workData);
     setSelectedWorkData(workData);
   }, [selectedWork, findSelectedWorkData]);
 
@@ -380,8 +356,6 @@ const WorkSearchInput: React.FC<WorkSearchInputProps> = ({
   // 🆕 HANDLER PARA SELEÇÃO DE OBRA - COM PRESERVAÇÃO
   const handleWorkSelect = useCallback(
     (work: WorkSearchInputWorkProp) => {
-      console.log('Obra selecionada:', work);
-
       // 🆕 PRESERVAR a obra selecionada IMEDIATAMENTE
       setPreservedSelectedWork(work);
 
@@ -484,8 +458,8 @@ const WorkSearchInput: React.FC<WorkSearchInputProps> = ({
       {/* Campo selecionado */}
       {selectedWorkData ? (
         <div
-          className={`w-full p-3 border rounded-lg bg-theme-elevated ${
-            error ? 'border-red-500' : 'border-theme-secondary'
+          className={`w-full p-3 border rounded-lg bg-sup-2 ${
+            error ? 'border-[var(--erro)]' : 'border-[var(--linha)]'
           } ${disabled ? 'opacity-50 cursor-not-allowed' : ''}`}
         >
           <div className="flex items-center justify-between">
@@ -507,7 +481,7 @@ const WorkSearchInput: React.FC<WorkSearchInputProps> = ({
               <button
                 type="button"
                 onClick={handleClearSelection}
-                className="text-theme-tertiary transition-colors p-1"
+                className="text-texto-fraco transition-colors p-1"
               >
                 ×
               </button>
@@ -518,7 +492,7 @@ const WorkSearchInput: React.FC<WorkSearchInputProps> = ({
         <div className="relative">
           {/* Campo de busca */}
           <div className="relative">
-            <PiMagnifyingGlass className="absolute left-3 top-1/2 transform -translate-y-1/2 text-theme-tertiary w-4 h-4 z-10" />
+            <PiMagnifyingGlass className="absolute left-3 top-1/2 transform -translate-y-1/2 text-texto-fraco w-4 h-4 z-10" />
             <input
               ref={inputRef}
               type="text"
@@ -528,7 +502,7 @@ const WorkSearchInput: React.FC<WorkSearchInputProps> = ({
               placeholder={placeholder}
               disabled={disabled}
               className={`input-classical-2 w-full !pl-10 pr-10 ${
-                error ? 'border-red-500' : ''
+                error ? 'border-[var(--erro)]' : ''
               } ${disabled ? 'opacity-50 cursor-not-allowed' : ''}`}
             />
             {isLoading && (
@@ -540,7 +514,7 @@ const WorkSearchInput: React.FC<WorkSearchInputProps> = ({
           {isOpen && !disabled && (
             <div
               ref={dropdownRef}
-              className="absolute top-full left-0 right-0 mt-2 bg-theme-elevated rounded-lg shadow-theme-large max-h-80 overflow-y-auto z-menu"
+              className="absolute top-full left-0 right-0 mt-2 rounded-controle border border-[var(--linha-forte)] bg-[var(--sup-alta)] shadow-[var(--sombra-alta)] max-h-80 overflow-y-auto z-menu"
             >
               {/* Loading */}
               {(isLoading || loadingUserSuggestions) && (
@@ -628,7 +602,7 @@ const WorkSearchInput: React.FC<WorkSearchInputProps> = ({
 
               {/* Empty state */}
               {!isLoading && !loadingUserSuggestions && works.length === 0 && (
-                <div className="p-4 text-center text-theme-tertiary">
+                <div className="p-4 text-center text-texto-fraco">
                   <PiMagnifyingGlass className="w-8 h-8 mx-auto mb-2 opacity-50" />
                   <p className="text-sm">
                     {query.length >= 2
@@ -657,11 +631,7 @@ const WorkSearchInput: React.FC<WorkSearchInputProps> = ({
       {/* Mensagem de erro */}
       {error && (
         <div>
-          <Inline
-            as="p"
-            gap={1}
-            className="text-red-500 text-sm font-medium mt-1"
-          >
+          <Inline as="p" gap={1} className="text-erro text-sm font-medium mt-1">
             <PiWarningCircle className="w-4 h-4" />
             <span>{error}</span>
           </Inline>

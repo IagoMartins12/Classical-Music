@@ -159,17 +159,17 @@ export default function MultiSelect({
   return (
     <div className="relative">
       {/* Label */}
-      <span className="block text-sm font-medium text-theme-tertiary mb-2">
+      <span className="block text-sm font-medium text-texto-fraco mb-2">
         {label}
       </span>
 
       {/* Main Input */}
       <div
         className={`
-          relative cursor-pointer border rounded-xl px-4 py-3 bg-theme-elevated
+          relative cursor-pointer border rounded-controle px-4 py-3 bg-sup-2
           transition-all duration-200 min-h-[48px] flex items-center
           ${isDisabled ? 'cursor-not-allowed opacity-50' : ''}
-          ${error ? 'border-red-300' : 'border-theme-secondary'}
+          ${error ? 'border-[var(--erro)]' : 'border-[var(--linha)]'}
           ${isOpen ? 'ring-2' : ''}
         `}
         onClick={handleToggleDropdown}
@@ -237,29 +237,29 @@ export default function MultiSelect({
               className="p-1 rounded transition-colors"
               disabled={isDisabled}
             >
-              <PiX className="w-4 h-4 text-theme-tertiary" />
+              <PiX className="w-4 h-4 text-texto-fraco" />
               <NomeAcao acao="fechar" />
             </button>
           )}
           <PiCaretDown
-            className={`w-4 h-4 text-theme-tertiary transition-transform ${isOpen ? 'rotate-180' : ''}`}
+            className={`w-4 h-4 text-texto-fraco transition-transform ${isOpen ? 'rotate-180' : ''}`}
           />
         </div>
       </div>
 
       {/* Error Message */}
-      {error && <p className="text-red-500 text-xs mt-1">{error}</p>}
+      {error && <p className="text-erro text-xs mt-1">{error}</p>}
 
       {/* Dropdown */}
       {isOpen && (
         <div
           ref={dropdownRef}
-          className="absolute top-full left-0 right-0 mt-2 bg-theme-elevated rounded-xl shadow-xl z-menu max-h-80 overflow-hidden"
+          className="absolute top-full left-0 right-0 mt-2 rounded-controle border border-[var(--linha-forte)] bg-[var(--sup-alta)] shadow-[var(--sombra-alta)] z-menu max-h-80 overflow-hidden"
         >
           {/* Search Input */}
-          <div className="p-3 border-b border-theme-secondary">
+          <div className="p-3 border-b border-[var(--linha)]">
             <div className="relative">
-              <PiMagnifyingGlass className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-theme-tertiary" />
+              <PiMagnifyingGlass className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-texto-fraco" />
               <input
                 ref={inputRef}
                 type="text"
@@ -271,7 +271,7 @@ export default function MultiSelect({
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
                 onKeyDown={handleKeyDown}
-                className="w-full pl-10 pr-4 py-2 bg-theme-primary border border-theme-secondary rounded-lg text-sm focus:outline-none focus:ring-2"
+                className="w-full pl-10 pr-4 py-2 bg-[var(--fundo)] border border-[var(--linha)] rounded-lg text-sm focus:outline-none focus:ring-2"
               />
             </div>
           </div>
@@ -292,10 +292,10 @@ export default function MultiSelect({
                     onChange([...selectedValues, newValue]);
                     setSearchTerm('');
                   }}
-                  className="w-full text-left px-4 py-3 transition-colors duration-200 flex items-center gap-2 border-b bg-green-50 dark:bg-green-900/20 border-linha"
+                  className="w-full text-left px-4 py-3 transition-colors duration-200 flex items-center gap-2 border-b bg-sup-2 border-linha"
                 >
-                  <PiPlus className="w-4 h-4 text-green-600" />
-                  <span className="text-sm font-medium text-green-600">
+                  <PiPlus className="w-4 h-4 text-ouro-texto" />
+                  <span className="text-sm font-medium text-ouro-texto">
                     Criar &quot;{searchTerm}&quot; e adicionar
                   </span>
                 </button>
@@ -322,7 +322,7 @@ export default function MultiSelect({
                     onClick={(e) => handleOptionClick(option, e)}
                     className={`
                       w-full text-left px-4 py-3 transition-colors duration-200 flex items-center justify-between border-b last:border-b-0 border-linha
-                      ${isSelected ? 'text-ouro-texto' : 'text-theme-primary'}
+                      ${isSelected ? 'text-ouro-texto' : 'text-texto'}
                     `}
                   >
                     <span className="text-sm capitalize">{option}</span>
@@ -337,7 +337,7 @@ export default function MultiSelect({
 
           {/* Footer with count */}
           {selectedValues.length > 0 && (
-            <div className="px-4 py-2 border-t border-theme-secondary">
+            <div className="px-4 py-2 border-t border-[var(--linha)]">
               <Text papel="legenda" tom="suave" as="p">
                 {selectedValues.length}{' '}
                 {selectedValues.length === 1

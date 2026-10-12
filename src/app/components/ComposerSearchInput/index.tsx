@@ -49,11 +49,9 @@ export default function ComposerSearchInput({
     try {
       const composer = await findComposerById(composerId);
       if (composer && composer.name) {
-        console.log('✅ Compositor encontrado:', composer.name);
         return composer;
       }
 
-      console.log('⚠️ Compositor não encontrado para ID:', composerId);
       return null;
     } catch (error) {
       console.error('❌ Erro ao buscar compositor por ID:', error);
@@ -72,15 +70,8 @@ export default function ComposerSearchInput({
 
         if (composer) {
           setSelectedComposerName(composer.fullName || composer.name);
-          console.log(
-            '✅ Compositor encontrado na lista local:',
-            composer.name
-          );
         } else {
           // Se não encontrou nas listas locais, busca na API
-          console.log(
-            '🔍 Compositor não encontrado localmente, buscando na API...'
-          );
           const fetchedComposer = await fetchComposerById(selectedComposer);
 
           if (fetchedComposer) {
@@ -126,14 +117,7 @@ export default function ComposerSearchInput({
       debounceRef.current = setTimeout(async () => {
         setIsLoading(true);
         try {
-          console.log('🔍 Fazendo busca para:', term);
-
           const results = await findComposers(term, 20);
-          console.log(
-            '📊 Resultados recebidos:',
-            results.length,
-            'compositores'
-          );
           setComposers(results);
         } catch (error) {
           console.error('❌ Erro ao buscar compositores:', error);
@@ -193,7 +177,6 @@ export default function ComposerSearchInput({
       try {
         const results = await findComposers('', 20);
         setComposers(results);
-        console.log('📊 Compositores populares carregados:', results.length);
       } catch (error) {
         console.error('❌ Erro ao carregar compositores populares:', error);
       } finally {
@@ -203,7 +186,6 @@ export default function ComposerSearchInput({
   };
 
   const handleComposerSelect = (composer: Composer) => {
-    console.log('🎯 Compositor selecionado:', composer.name);
     onComposerSelect(composer.id);
     setSelectedComposerName(composer.fullName || composer.name);
     setIsOpen(false);
@@ -212,7 +194,6 @@ export default function ComposerSearchInput({
   };
 
   const handleClear = () => {
-    console.log('🗑️ Limpando seleção de compositor');
     onComposerSelect('');
     setSelectedComposerName('');
     setSearchTerm('');
@@ -234,7 +215,7 @@ export default function ComposerSearchInput({
   return (
     <div className={`relative ${isOpen ? 'z-menu' : 'z-elevado'}`}>
       <div className="relative">
-        <PiUser className="absolute left-4 top-1/2 transform -translate-y-1/2 w-4 h-4 text-theme-tertiary z-10" />
+        <PiUser className="absolute left-4 top-1/2 transform -translate-y-1/2 w-4 h-4 text-texto-fraco z-10" />
 
         <input
           id={id}
@@ -248,14 +229,14 @@ export default function ComposerSearchInput({
           onFocus={handleInputFocus}
           className={`input-classical pl-11 pr-12 w-full ${
             isDisabled ? 'cursor-not-allowed opacity-50' : ''
-          } ${selectedComposer ? 'text-theme-primary font-medium' : ''}`}
+          } ${selectedComposer ? 'text-texto font-medium' : ''}`}
           disabled={isDisabled}
         />
 
         {(selectedComposer || searchTerm) && (
           <button
             onClick={handleClear}
-            className="absolute right-4 top-1/2 transform -translate-y-1/2 text-theme-tertiary transition-colors z-10"
+            className="absolute right-4 top-1/2 transform -translate-y-1/2 text-texto-fraco transition-colors z-10"
             disabled={isDisabled}
           >
             <PiX className="w-4 h-4" />
@@ -264,7 +245,7 @@ export default function ComposerSearchInput({
         )}
 
         {!searchTerm && !selectedComposer && (
-          <PiMagnifyingGlass className="absolute right-4 top-1/2 transform -translate-y-1/2 w-4 h-4 text-theme-tertiary" />
+          <PiMagnifyingGlass className="absolute right-4 top-1/2 transform -translate-y-1/2 w-4 h-4 text-texto-fraco" />
         )}
       </div>
 
@@ -272,7 +253,7 @@ export default function ComposerSearchInput({
       {isOpen && (
         <div
           ref={dropdownRef}
-          className="absolute top-full left-0 right-0 mt-2 bg-theme-elevated rounded-xl shadow-xl z-menu max-h-80 overflow-hidden"
+          className="absolute top-full left-0 right-0 mt-2 rounded-controle border border-[var(--linha-forte)] bg-[var(--sup-alta)] shadow-[var(--sombra-alta)] z-menu max-h-80 overflow-hidden"
           style={{
             boxShadow:
               '0 25px 50px -12px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(212, 175, 55, 0.3)',
@@ -280,7 +261,7 @@ export default function ComposerSearchInput({
         >
           {/* Header com label */}
           {showPopularLabel && (
-            <div className="flex items-center gap-2 px-4 py-3 border-b border-theme-secondary">
+            <div className="flex items-center gap-2 px-4 py-3 border-b border-[var(--linha)]">
               <PiTrendUp className="w-4 h-4 text-ouro-texto" />
               <Text papel="rotulo" tom="suave" className="font-medium">
                 {t('composer_search_jsx_popular_label')}
@@ -291,7 +272,7 @@ export default function ComposerSearchInput({
           {/* Loading */}
           {isLoading && (
             <div className="flex items-center justify-center py-8">
-              <Inline gap={2} className="text-theme-secondary">
+              <Inline gap={2} className="text-texto-suave">
                 <div className="w-4 h-4 border-2 border-t-transparent rounded-full animate-spin"></div>
                 <span className="text-sm">
                   {t('composer_search_jsx_loading')}
@@ -308,7 +289,7 @@ export default function ComposerSearchInput({
                   key={composer.id}
                   onClick={() => handleComposerSelect(composer)}
                   className={`
-                    w-full text-left px-4 py-3 transition-colors duration-200 border-b last:border-b-0 border-theme-secondary
+                    w-full text-left px-4 py-3 transition-colors duration-200 border-b last:border-b-0 border-[var(--linha)]
                     ${
                       selectedComposer === composer.id
                         ? 'text-ouro-texto font-medium'
@@ -364,7 +345,7 @@ export default function ComposerSearchInput({
           {!isLoading &&
             (!displayComposers || displayComposers.length === 0) && (
               <div className="px-4 py-8 text-center">
-                <PiUser className="w-8 h-8 text-theme-tertiary mx-auto mb-2" />
+                <PiUser className="w-8 h-8 text-texto-fraco mx-auto mb-2" />
                 <Text papel="rotulo" tom="suave" as="p">
                   {searchTerm
                     ? `${t(

@@ -10,35 +10,18 @@ import {
   useId,
 } from 'react';
 import { useRouter } from 'next/navigation';
+import { PiFloppyDisk, PiLock, PiMagnifyingGlass } from 'react-icons/pi';
+import { Button } from '@/app/components/ui/Button';
+import { CaixaDeMarcar } from '@/app/components/ui/CaixaDeMarcar';
+import { Field } from '@/app/components/ui/Field';
+import { Selecao } from '@/app/components/ui/Selecao';
 import {
-  PiArrowSquareOut,
-  PiCheck,
-  PiDatabase,
-  PiFloppyDisk,
-  PiGraduationCap,
-  PiInfo,
-  PiInstagramLogo,
-  PiLink,
-  PiLock,
-  PiMagnifyingGlass,
-  PiMusicNotes,
-  PiSpinnerGap,
-  PiSpotifyLogo,
-  PiStack,
-  PiTag,
-  PiTiktokLogo,
-  PiWarningCircle,
-  PiYoutubeLogo,
-} from 'react-icons/pi';
-import Select from '@/app/components/Common/Select';
-import Input from '@/app/components/Common/Inputs';
+  Aviso,
+  CampoDeArquivo,
+  FormBlock,
+  FormSheet,
+} from '@/app/components/site/edit/FormSheet';
 import MultiSelect from '@/app/components/Common/MultiSelect';
-import {
-  AnimatedCard,
-  AnimatedItem,
-} from '@/app/components/animation/AnimatedComponents';
-import Button from '@/app/components/Common/Button';
-import Modal from '@/app/components/Modal';
 import ComposerSearchInput from '@/app/components/ComposerSearchInput';
 import { useFormValidation, workModalValidations } from '@/app/utils/formUtils';
 import {
@@ -51,7 +34,6 @@ import { useToast } from '@/app/hooks/useToast';
 import { useTranslation } from '@/app/context/TranslationContext';
 import { useAuth } from '@/app/hooks/useAuth';
 import { useSmartFormChanges } from '@/app/hooks/useFormChanges';
-import Checkbox from '@/app/components/Common/Checkbox';
 import SimpleWorkSearchInput from '@/app/components/SimpleWorkSearchInput';
 import { translateEpochName } from '@/app/utils/translations/epochTranslations';
 import { translateInstrument } from '@/app/utils/translations/instrumentsGenresTranslation';
@@ -67,8 +49,6 @@ import {
   updateWorkMediaRequest,
   uploadWorkMediaFileRequest,
 } from '@/app/requests/work-media';
-import { Stack, Inline } from '@/app/components/ui/Layout';
-import { Text } from '@/app/components/ui/Text';
 
 interface CreateWorkModalProps {
   isOpen: boolean;
@@ -115,6 +95,7 @@ const CreateWorkModal = ({
   editingWork,
 }: CreateWorkModalProps) => {
   const idCampo = useId();
+  const formId = `${idCampo}-form`;
   const router = useRouter();
   const { t, language } = useTranslation({ sections: ['pages/uploads'] });
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -264,8 +245,8 @@ const CreateWorkModal = ({
   const fieldRefs = {
     title: useRef<HTMLInputElement>(null),
     composerId: useRef<HTMLDivElement>(null),
-    instrumentId: useRef<HTMLSelectElement>(null),
-    epochId: useRef<HTMLSelectElement>(null),
+    instrumentId: useRef<HTMLDivElement>(null),
+    epochId: useRef<HTMLDivElement>(null),
   };
 
   const [formData, setFormData] = useState({
@@ -1019,954 +1000,543 @@ const CreateWorkModal = ({
 
   if (!isOpen) return null;
 
+  const titulo = editingWork
+    ? t('modal_work_title_edit')
+    : t('modal_work_title_create');
+  const ocupado = isSubmitting || uploadingAudio || uploadingVideoAula;
+  const fechar = () => {
+    if (editingWork && originalData) setFormData(originalData);
+    onClose();
+  };
+  const compositor = formData.composerId
+    ? composers.find((c) => c.id === formData.composerId)?.fullName ||
+      'compositor selecionado'
+    : null;
+  const selecao = (
+    key: string,
+    label: string,
+    opcoes: { value: string; label: string }[],
+    valor: string,
+    aoMudar: (v: string) => void,
+    extra: {
+      erro?: string;
+      ref?: React.Ref<HTMLDivElement>;
+      placeholder?: string;
+    } = {}
+  ) => (
+    <div ref={extra.ref} className="flex flex-col gap-2" key={key}>
+      <span className="t-rotulo font-medium text-texto">{label}</span>
+      <Selecao
+        aria-label={label}
+        opcoes={opcoes}
+        valor={valor}
+        invalido={!!extra.erro}
+        placeholder={extra.placeholder}
+        aoMudar={aoMudar}
+      />
+      {extra.erro && <span className="t-legenda text-erro">{extra.erro}</span>}
+    </div>
+  );
+  const media = <K extends keyof typeof mediaData>(
+    key: K,
+    value: (typeof mediaData)[K]
+  ) => setMediaData((prev) => ({ ...prev, [key]: value }));
+
   return (
     <>
-      <Modal
-        isOpen={isOpen}
-        onClose={() => {
-          if (editingWork && originalData) {
-            setFormData(originalData);
-          }
-          onClose();
-        }}
-        maxWidth="4xl"
-        showCloseButton={true}
-        confirmOnClose={true}
-        hasChanges={hasChanges}
-        isProcessing={isSubmitting || duplicateCheck.loading}
-        processName="criação de peça"
+      <FormSheet
+        aberto={isOpen}
+        aoFechar={fechar}
+        titulo={titulo}
+        descricao={
+          editingWork
+            ? t('modal_work_subtitle_edit')
+            : t('modal_work_subtitle_create')
+        }
+        sujo={hasChanges}
+        ocupado={isSubmitting || duplicateCheck.loading}
+        rodape={
+          <div className="flex justify-end gap-2">
+            <Button
+              variante="fantasma"
+              onClick={fechar}
+              disabled={isSubmitting}
+            >
+              {t('form_cancel')}
+            </Button>
+            <Button
+              type="submit"
+              form={formId}
+              variante="primario"
+              icone={PiFloppyDisk}
+              carregando={ocupado}
+            >
+              {isSubmitting
+                ? t('form_saving')
+                : editingWork
+                  ? `${t('form_update')} Obra`
+                  : `${t('form_create')} Obra`}
+            </Button>
+          </div>
+        }
       >
-        <AnimatedItem direction="scale" springType="bouncy" className="w-full">
-          <div>
-            {/* Header */}
-            <div className="flex items-center justify-between p-0 pt-4 pb-6 md:p-6 border-b border-theme-secondary">
-              <Inline gap={3}>
-                <div className="w-10 h-10 rounded-xl flex items-center justify-center">
-                  <PiMusicNotes className="w-5 h-5 text-theme-primary" />
-                </div>
-                <div>
-                  <h2 className="text-xl font-bold text-theme-primary classical-title">
-                    {editingWork
-                      ? t('modal_work_title_edit')
-                      : t('modal_work_title_create')}
-                  </h2>
-                  <Text papel="rotulo" tom="suave" as="p">
-                    {editingWork
-                      ? t('modal_work_subtitle_edit')
-                      : t('modal_work_subtitle_create')}
-                  </Text>
-                </div>
-              </Inline>
+        <form id={formId} onSubmit={handleSubmit} noValidate>
+          <FormBlock
+            titulo={t('modal_work_scraping_title')}
+            nota={
+              isEditingExternalSource ? (
+                <span className="inline-flex items-center gap-1">
+                  <PiLock aria-hidden="true" className="h-3 w-3" />
+                  Fonte IMSLP detectada automaticamente
+                </span>
+              ) : undefined
+            }
+          >
+            <Field
+              className="sm:col-span-2"
+              label={t('modal_work_scraping_url_label')}
+              type="url"
+              inputMode="url"
+              value={urlToScrape}
+              onChange={(e) => setUrlToScrape(e.target.value)}
+              placeholder="https://imslp.org/wiki/Symphony_No.40_(Mozart,_Wolfgang_Amadeus)"
+              disabled={isEditingExternalSource}
+            />
+            {duplicateCheck.loading && (
+              <Aviso tom="carregando">
+                {t('modal_work_scraping_checking_duplicates')}
+              </Aviso>
+            )}
+            {duplicateCheck.found && (
+              <Aviso
+                tom="erro"
+                titulo={
+                  duplicateCheck.duplicateType === 'url'
+                    ? 'Duplicata encontrada por URL do IMSLP'
+                    : 'Duplicata encontrada por título e compositor'
+                }
+              >
+                <p>
+                  Obra existente: {duplicateCheck.work?.title}
+                  {duplicateCheck.work?.subtitle &&
+                    ` - ${duplicateCheck.work.subtitle}`}
+                </p>
+                <p>Compositor: {duplicateCheck.work?.composerName}</p>
+                {duplicateCheck.work?.opOrCatalog && (
+                  <p>Op./Catálogo: {duplicateCheck.work.opOrCatalog}</p>
+                )}
+                <p className="mt-1">
+                  {duplicateCheck.duplicateType === 'url'
+                    ? 'Uma obra com este link do IMSLP já existe no sistema.'
+                    : `Uma obra com o título "${duplicateCheck.work?.title}" deste compositor já existe no sistema.`}
+                </p>
+              </Aviso>
+            )}
+            {!isEditingExternalSource && (
+              <div className="sm:col-span-2">
+                <Button
+                  tamanho="p"
+                  icone={PiMagnifyingGlass}
+                  carregando={scrapingUrl}
+                  onClick={handleScrapeUrl}
+                >
+                  {scrapingUrl
+                    ? t('modal_work_scraping_extracting')
+                    : t('modal_work_scraping_extract_button')}
+                </Button>
+              </div>
+            )}
+            {scrapingResult && (
+              <Aviso tom="ok" titulo={t('modal_work_scraping_success')}>
+                {t('modal_work_scraping_source', {
+                  source: scrapingResult.source,
+                  quality: scrapingResult.data.pageQuality,
+                  completeness: scrapingResult.data.dataCompleteness,
+                })}
+              </Aviso>
+            )}
+            {isEditingExternalSource && (
+              <Aviso>{t('modal_work_scraping_external_detected')}</Aviso>
+            )}
+          </FormBlock>
+
+          <FormBlock titulo={t('modal_work_basic_title')}>
+            <Field
+              ref={fieldRefs.title}
+              label={`${t('modal_work_basic_title_field')} *`}
+              value={formData.title}
+              onChange={(e) => handleInputChange('title', e.target.value)}
+              erro={errors.title}
+              placeholder="Sinfonia No. 40 em Sol menor"
+            />
+            <Field
+              label={t('modal_work_basic_subtitle')}
+              value={formData.subtitle}
+              onChange={(e) => handleInputChange('subtitle', e.target.value)}
+              placeholder="Subtítulo da obra"
+            />
+            <div
+              ref={fieldRefs.composerId}
+              className="flex flex-col gap-2 sm:col-span-2"
+            >
+              <label
+                htmlFor={`${idCampo}-1`}
+                className="t-rotulo font-medium text-texto"
+              >
+                {t('modal_work_basic_composer')} *
+              </label>
+              <ComposerSearchInput
+                id={`${idCampo}-1`}
+                selectedComposer={formData.composerId}
+                onComposerSelect={handleComposerSelect}
+                popularComposers={composers}
+              />
+              {errors.composerId && (
+                <span className="t-legenda text-erro">{errors.composerId}</span>
+              )}
             </div>
+            {selecao(
+              'instrument',
+              `${t('modal_work_basic_instrument')} *`,
+              instruments.map((instrument) => ({
+                value: instrument.id,
+                label: translateInstrument(instrument.name, language),
+              })),
+              formData.instrumentId,
+              (v) => handleInputChange('instrumentId', v),
+              {
+                erro: errors.instrumentId,
+                ref: fieldRefs.instrumentId,
+                placeholder:
+                  language === 'pt'
+                    ? 'Selecione um instrumento'
+                    : 'Select an instrument',
+              }
+            )}
+            {selecao(
+              'epoch',
+              `${t('modal_work_basic_epoch')} *`,
+              epochs.map((epoch) => ({
+                value: epoch.id,
+                label: translateEpochName(epoch.name, language),
+              })),
+              formData.epochId,
+              (v) => handleInputChange('epochId', v),
+              {
+                erro: errors.epochId,
+                ref: fieldRefs.epochId,
+                placeholder:
+                  language === 'pt' ? 'Selecione uma época' : 'Select an epoch',
+              }
+            )}
+            {selecao(
+              'workType',
+              t('modal_work_basic_work_type'),
+              workTypeOptions,
+              formData.workType,
+              (v) => handleInputChange('workType', v)
+            )}
+          </FormBlock>
 
-            {/* Content */}
-            <div className="mt-4">
-              <Stack gap={6} as="form" onSubmit={handleSubmit} noValidate>
-                {/* URL Scraping */}
-                <AnimatedCard
-                  className="classical-card-simple p-4"
-                  hover="none"
-                >
-                  <div className="flex items-center justify-between mb-4">
-                    <Inline gap={2}>
-                      <PiDatabase className="w-4 h-4 text-theme-tertiary" />
-                      <Text papel="rotulo" tom="forte" className="font-medium">
-                        {t('modal_work_scraping_title')}
-                      </Text>
-                      {isEditingExternalSource && (
-                        <Inline gap={1} className="text-xs text-blue-600">
-                          <PiLock className="w-3 h-3" />
-                          <span>Fonte IMSLP detectada automaticamente</span>
-                        </Inline>
-                      )}
-                    </Inline>
-                  </div>
-
-                  <div className="space-y-4">
-                    <Input
-                      label={t('modal_work_scraping_url_label')}
-                      value={urlToScrape}
-                      onChange={(e) => setUrlToScrape(e.target.value)}
-                      placeholder="https://imslp.org/wiki/Symphony_No.40_(Mozart,_Wolfgang_Amadeus)"
-                      leftIcon={<PiLink />}
-                      disabled={isEditingExternalSource}
-                    />
-
-                    {duplicateCheck.loading && (
-                      <div className="mt-2 p-2 bg-blue-50 rounded-lg">
-                        <Inline gap={2}>
-                          <PiSpinnerGap className="w-4 h-4 animate-spin text-blue-600" />
-                          <span className="text-sm text-blue-800">
-                            {t('modal_work_scraping_checking_duplicates')}
-                          </span>
-                        </Inline>
-                      </div>
-                    )}
-
-                    {duplicateCheck.found && (
-                      <Stack gap={2} className="mt-2 p-3 bg-red-50 rounded-lg">
-                        <Inline gap={2}>
-                          <PiWarningCircle className="w-4 h-4 text-red-600" />
-                          <span className="text-sm font-medium text-red-800">
-                            {duplicateCheck.duplicateType === 'url'
-                              ? 'Duplicata encontrada por URL do IMSLP'
-                              : 'Duplicata encontrada por título e compositor'}
-                          </span>
-                        </Inline>
-                        <div className="space-y-1">
-                          <p className="text-sm text-red-700">
-                            <strong>Obra existente:</strong>{' '}
-                            {duplicateCheck.work?.title}
-                            {duplicateCheck.work?.subtitle &&
-                              ` - ${duplicateCheck.work.subtitle}`}
-                          </p>
-                          <p className="text-sm text-red-700">
-                            <strong>Compositor:</strong>{' '}
-                            {duplicateCheck.work?.composerName}
-                          </p>
-                          {duplicateCheck.work?.opOrCatalog && (
-                            <p className="text-sm text-red-700">
-                              <strong>Op./Catálogo:</strong>{' '}
-                              {duplicateCheck.work.opOrCatalog}
-                            </p>
-                          )}
-                          <p className="text-sm text-red-600 font-medium mt-2">
-                            {duplicateCheck.duplicateType === 'url'
-                              ? 'Uma obra com este link do IMSLP já existe no sistema.'
-                              : `Uma obra com o título "${duplicateCheck.work?.title}" deste compositor já existe no sistema.`}
-                          </p>
-                        </div>
-                      </Stack>
-                    )}
-
-                    {!isEditingExternalSource && (
-                      <div className="mt-3">
-                        <Button
-                          type="button"
-                          variant="secondary"
-                          size="sm"
-                          leftIcon={
-                            scrapingUrl ? (
-                              <PiSpinnerGap className="animate-spin" />
-                            ) : (
-                              <PiMagnifyingGlass />
-                            )
-                          }
-                          onClick={handleScrapeUrl}
-                        >
-                          {scrapingUrl
-                            ? t('modal_work_scraping_extracting')
-                            : t('modal_work_scraping_extract_button')}
-                        </Button>
-                      </div>
-                    )}
-
-                    {scrapingResult && (
-                      <Stack
-                        gap={2}
-                        className="mt-4 p-3 bg-green-50 rounded-lg"
-                      >
-                        <Inline gap={2}>
-                          <PiCheck className="w-4 h-4 text-green-600" />
-                          <span className="text-sm font-medium text-green-800">
-                            {t('modal_work_scraping_success')}
-                          </span>
-                        </Inline>
-                        <div className="text-xs text-green-700">
-                          {t('modal_work_scraping_source', {
-                            source: scrapingResult.source,
-                            quality: scrapingResult.data.pageQuality,
-                            completeness: scrapingResult.data.dataCompleteness,
-                          })}
-                        </div>
-                      </Stack>
-                    )}
-
-                    {isEditingExternalSource && (
-                      <div className="mt-3 p-3 bg-blue-50 rounded-lg">
-                        <Inline gap={2}>
-                          <PiInfo className="w-4 h-4 text-blue-600" />
-                          <span className="text-sm text-blue-800">
-                            {t('modal_work_scraping_external_detected')}
-                          </span>
-                        </Inline>
-                      </div>
-                    )}
-                  </div>
-                </AnimatedCard>
-
-                {/* Basic Information */}
-                <AnimatedCard
-                  className="classical-card-simple p-4"
-                  hover="none"
-                >
-                  <Inline
-                    as="h3"
-                    gap={2}
-                    className="text-lg font-semibold text-theme-primary mb-4"
-                  >
-                    <PiInfo className="w-5 h-5" />
-                    <span>{t('modal_work_basic_title')}</span>
-                  </Inline>
-
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <Input
-                      label={`${t('modal_work_basic_title_field')} *`}
-                      ref={fieldRefs.title}
-                      value={formData.title}
-                      onChange={(e) =>
-                        handleInputChange('title', e.target.value)
+          <FormBlock titulo="Coleção">
+            <div className="sm:col-span-2">
+              <CaixaDeMarcar
+                rotulo="Esta peça faz parte de uma coleção"
+                marcado={isPartOfCollection}
+                aoMudar={(checked) => {
+                  setIsPartOfCollection(checked);
+                  if (!checked) {
+                    setFormData((prev) => ({ ...prev, parentWorkId: '' }));
+                    setParentWorkData(null);
+                    setShowParentSuggestionModal(false);
+                  }
+                }}
+              />
+            </div>
+            {isPartOfCollection && (
+              <>
+                <Aviso>
+                  A obra da coleção deve ser do mesmo compositor (
+                  {compositor ?? 'selecione um compositor primeiro'}).
+                </Aviso>
+                {formData.composerId && (
+                  <div className="flex flex-col gap-2 sm:col-span-2">
+                    <label
+                      htmlFor={`${idCampo}-2`}
+                      className="t-rotulo font-medium text-texto"
+                    >
+                      Obra da coleção *
+                    </label>
+                    <SimpleWorkSearchInput
+                      id={`${idCampo}-2`}
+                      selectedWork={formData.parentWorkId}
+                      onWorkSelect={handleParentWorkSelect}
+                      userSuggestions={parentWorks}
+                      placeholder="Digite para buscar a obra da coleção..."
+                      filterByComposer={formData.composerId}
+                      error={
+                        errors.parentWorkId
+                          ? 'Selecione a obra principal.'
+                          : undefined
                       }
-                      error={errors.title}
-                      placeholder="Sinfonia No. 40 em Sol menor"
+                      disabled={loadingParentWork}
                     />
-
-                    <Input
-                      label={t('modal_work_basic_subtitle')}
-                      value={formData.subtitle}
-                      onChange={(e) =>
-                        handleInputChange('subtitle', e.target.value)
-                      }
-                      placeholder="Subtítulo da obra"
-                    />
-
-                    <div ref={fieldRefs.composerId}>
-                      <label
-                        htmlFor={`${idCampo}-1`}
-                        className="block text-sm font-medium text-theme-tertiary mb-2"
-                      >
-                        {t('modal_work_basic_composer')} *
-                      </label>
-                      <ComposerSearchInput
-                        id={`${idCampo}-1`}
-                        selectedComposer={formData.composerId}
-                        onComposerSelect={handleComposerSelect}
-                        popularComposers={composers}
-                      />
-                      {errors.composerId && (
-                        <Inline
-                          as="p"
-                          gap={1}
-                          className="text-red-500 text-sm font-medium mt-1"
-                        >
-                          <PiWarningCircle className="w-4 h-4" />
-                          <span>{errors.composerId}</span>
-                        </Inline>
-                      )}
-                    </div>
-
-                    <div>
-                      <Select
-                        label={<>{t('modal_work_basic_instrument')}*</>}
-                        ref={fieldRefs.instrumentId}
-                        options={[
-                          {
-                            value: '',
-                            label:
-                              language === 'pt'
-                                ? 'Selecione um instrumento'
-                                : 'Select an instrument',
-                          },
-                          ...instruments.map((instrument) => ({
-                            value: instrument.id,
-                            label: `${translateInstrument(
-                              instrument.name,
-                              language
-                            )}`,
-                          })),
-                        ]}
-                        value={formData.instrumentId}
-                        onChange={(e) =>
-                          handleInputChange('instrumentId', e.target.value)
-                        }
-                        error={errors.instrumentId}
-                      />
-                    </div>
-
-                    <div>
-                      <Select
-                        label={<>{t('modal_work_basic_epoch')}*</>}
-                        ref={fieldRefs.epochId}
-                        options={[
-                          {
-                            value: '',
-                            label:
-                              language === 'pt'
-                                ? 'Selecione uma época'
-                                : 'Select an epoch',
-                          },
-                          ...epochs.map((epoch) => ({
-                            value: epoch.id,
-                            label: translateEpochName(epoch.name, language),
-                          })),
-                        ]}
-                        value={formData.epochId}
-                        onChange={(e) =>
-                          handleInputChange('epochId', e.target.value)
-                        }
-                        error={errors.epochId}
-                      />
-                    </div>
-
-                    <div>
-                      <Select
-                        label={t('modal_work_basic_work_type')}
-                        options={workTypeOptions}
-                        value={formData.workType}
-                        onChange={(e) =>
-                          handleInputChange('workType', e.target.value)
-                        }
-                      />
-                    </div>
+                    <span className="t-legenda">
+                      {loadingParentWork
+                        ? 'Verificando dados da obra pai…'
+                        : 'Busque a obra principal que tem esta peça como parte ou movimento.'}
+                    </span>
                   </div>
-                </AnimatedCard>
+                )}
+              </>
+            )}
+          </FormBlock>
 
-                {/* 🆕 PARENT WORK (COLEÇÃO) SECTION */}
-                <AnimatedCard
-                  className="classical-card-simple p-4"
-                  hover="none"
-                >
-                  <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4 md:gap-0 mb-4">
-                    <Inline gap={2}>
-                      <PiStack className="w-4 h-4 text-theme-tertiary" />
-                      <Text papel="rotulo" tom="forte" className="font-medium">
-                        Coleção
-                      </Text>
-                    </Inline>
+          <FormBlock titulo={t('modal_work_catalog_title')}>
+            <Field
+              label={t('modal_work_catalog_op')}
+              value={formData.opOrCatalog}
+              onChange={(e) => handleInputChange('opOrCatalog', e.target.value)}
+              placeholder="K. 550, Op. 67"
+            />
+            <Field
+              label={t('modal_work_catalog_composition_year')}
+              value={formData.compositionYear}
+              onChange={(e) =>
+                handleInputChange('compositionYear', e.target.value)
+              }
+              placeholder="1788"
+            />
+            <Field
+              label={t('modal_work_catalog_first_publish')}
+              value={formData.firstPublishDate}
+              onChange={(e) =>
+                handleInputChange('firstPublishDate', e.target.value)
+              }
+              placeholder="1794"
+            />
+            {selecao(
+              'tone',
+              t('modal_work_catalog_tonality'),
+              tonalityOptions,
+              formData.tone,
+              (v) => handleInputChange('tone', v)
+            )}
+            <Field
+              label={t('modal_work_catalog_duration')}
+              value={formData.mediaDuration}
+              onChange={(e) =>
+                handleInputChange('mediaDuration', e.target.value)
+              }
+              placeholder="35 minutos"
+            />
+            {selecao(
+              'difficulty',
+              t('modal_work_catalog_difficulty'),
+              difficultyOptions,
+              formData.difficultyLevel,
+              (v) => handleInputChange('difficultyLevel', v)
+            )}
+          </FormBlock>
 
-                    <Inline as="label" gap={2} className="cursor-pointer">
-                      <Checkbox
-                        label="Essa peça faz parte de uma coleção?"
-                        type="checkbox"
-                        checked={isPartOfCollection}
-                        onChange={(e) => {
-                          const checked = e.target.checked;
-                          setIsPartOfCollection(checked);
-                          if (!checked) {
-                            setFormData((prev) => ({
-                              ...prev,
-                              parentWorkId: '',
-                            }));
-                            // Limpar dados da obra pai quando desmarcar
-                            setParentWorkData(null);
-                            setShowParentSuggestionModal(false);
+          <FormBlock titulo={t('modal_work_musical_title')}>
+            <Field
+              label={t('modal_work_musical_style')}
+              value={formData.workStyle}
+              onChange={(e) => handleInputChange('workStyle', e.target.value)}
+              placeholder="Classical"
+            />
+            <Field
+              label={t('modal_work_musical_movement')}
+              value={formData.moviment}
+              onChange={(e) => handleInputChange('moviment', e.target.value)}
+              placeholder="I. Allegro molto"
+            />
+            <Field
+              label={t('modal_work_musical_instrumentation')}
+              value={formData.instrumentation}
+              onChange={(e) =>
+                handleInputChange('instrumentation', e.target.value)
+              }
+              placeholder="2 flautas, 2 oboés, 2 clarinetes..."
+            />
+            <Field
+              label={t('modal_work_musical_dedicated_to')}
+              value={formData.dedicateTo}
+              onChange={(e) => handleInputChange('dedicateTo', e.target.value)}
+              placeholder="Nome do dedicatário"
+            />
+          </FormBlock>
+
+          <FormBlock titulo={t('modal_work_categories_title')}>
+            <div className="sm:col-span-2">
+              <MultiSelect
+                label={t('modal_work_categories_label')}
+                options={validCategoryOptions}
+                selectedValues={formData.categoryNames}
+                onChange={(values) =>
+                  handleInputChange('categoryNames', values)
+                }
+                placeholder={t('modal_work_categories_placeholder')}
+                excludeValues={categoryExcludeValues}
+              />
+            </div>
+            <div className="sm:col-span-2">
+              <MultiSelect
+                label={t('modal_work_genres_label')}
+                options={validWorkGenreOptions}
+                selectedValues={formData.workGenresArr}
+                onChange={(values) =>
+                  handleInputChange('workGenresArr', values)
+                }
+                placeholder={t('modal_work_genres_placeholder')}
+                excludeValues={workGenresExcludeValues}
+              />
+            </div>
+          </FormBlock>
+
+          <FormBlock titulo={t('modal_work_external_links_title')}>
+            <Field
+              className="sm:col-span-2"
+              label={t('modal_work_external_imslp_link')}
+              value={formData.imslpPermlink}
+              onChange={(e) => handleInputChange('imslpId', e.target.value)}
+              placeholder="Symphony_No.40_(Mozart,_Wolfgang_Amadeus)"
+              disabled={!!scrapingResult}
+              ajuda={
+                scrapingResult
+                  ? 'Bloqueado: veio da importação do IMSLP.'
+                  : undefined
+              }
+            />
+          </FormBlock>
+
+          <FormBlock titulo={t('modal_work_media_title')}>
+            <div className="sm:col-span-2">
+              <CaixaDeMarcar
+                rotulo={t('modal_work_media_checkbox')}
+                marcado={includeMedia}
+                aoMudar={setIncludeMedia}
+              />
+            </div>
+            {includeMedia && (
+              <>
+                <Field
+                  label={t('modal_work_media_spotify_url')}
+                  type="url"
+                  inputMode="url"
+                  value={mediaData.spotifyUrl}
+                  onChange={(e) => media('spotifyUrl', e.target.value)}
+                  placeholder="https://open.spotify.com/track/..."
+                />
+                <Field
+                  label={t('modal_work_media_youtube_url')}
+                  type="url"
+                  inputMode="url"
+                  value={mediaData.youtubeUrl}
+                  onChange={(e) => media('youtubeUrl', e.target.value)}
+                  placeholder="https://www.youtube.com/watch?v=..."
+                />
+                <CampoDeArquivo
+                  className="sm:col-span-2"
+                  label={t('modal_work_media_audio_upload')}
+                  botao="Escolher áudio"
+                  accept="audio/*"
+                  arquivo={mediaData.audioFile?.name}
+                  carregando={uploadingAudio}
+                  ajuda={
+                    uploadingAudio
+                      ? t('modal_work_media_audio_uploading')
+                      : undefined
+                  }
+                  aoEscolher={(file) => {
+                    media('audioFile', file);
+                    if (editingWork) handleAudioUpload(file);
+                  }}
+                />
+
+                {user && user.role >= 1 && (
+                  <>
+                    <div className="sm:col-span-2">
+                      <CaixaDeMarcar
+                        rotulo={t('modal_work_media_video_lesson_checkbox')}
+                        ajuda={t('modal_work_media_video_lesson_title')}
+                        marcado={mediaData.hasVideoAula}
+                        aoMudar={(on) => media('hasVideoAula', on)}
+                      />
+                    </div>
+                    {mediaData.hasVideoAula && (
+                      <>
+                        {selecao(
+                          'videoType',
+                          t('modal_work_media_video_type'),
+                          videoAulaTypeOptions,
+                          mediaData.videoAulaType,
+                          (v) => media('videoAulaType', v)
+                        )}
+                        {selecao(
+                          'videoSource',
+                          t('modal_work_media_video_source'),
+                          videoAulaSourceOptions,
+                          mediaData.videoAulaSource,
+                          (v) => media('videoAulaSource', v)
+                        )}
+                        <Field
+                          className="sm:col-span-2"
+                          label={t('modal_work_media_video_title_field')}
+                          value={mediaData.videoAulaTitle}
+                          onChange={(e) =>
+                            media('videoAulaTitle', e.target.value)
                           }
-                        }}
-                      />
-                    </Inline>
-                  </div>
-
-                  {isPartOfCollection && (
-                    <Stack className="border-t border-theme-secondary pt-4">
-                      {/* Informação sobre compositor */}
-                      <div className="p-3 bg-blue-50 rounded-lg">
-                        <Inline gap={2}>
-                          <PiInfo className="w-4 h-4 text-blue-600" />
-                          <span className="text-sm text-blue-800">
-                            <strong>Importante:</strong> A obra da coleção deve
-                            ser do mesmo compositor (
-                            {formData.composerId
-                              ? composers.find(
-                                  (c) => c.id === formData.composerId
-                                )?.fullName || 'compositor selecionado'
-                              : 'selecione um compositor primeiro'}
-                            ).
-                          </span>
-                        </Inline>
-                      </div>
-
-                      {/* Work Search Input para Parent Work */}
-                      {formData.composerId ? (
-                        <div>
-                          <label
-                            htmlFor={`${idCampo}-2`}
-                            className="block text-sm font-medium text-theme-tertiary mb-2"
-                          >
-                            Obra da Coleção *
-                          </label>
-                          <SimpleWorkSearchInput
-                            id={`${idCampo}-2`}
-                            selectedWork={formData.parentWorkId}
-                            onWorkSelect={handleParentWorkSelect}
-                            userSuggestions={parentWorks}
-                            placeholder="Digite para buscar a obra da coleção..."
-                            filterByComposer={formData.composerId}
-                            error={
-                              errors.parentWorkId
-                                ? 'Selecione a obra principal.'
+                          placeholder="Ex.: Técnica no Estudo Op. 10 nº 1 de Chopin"
+                        />
+                        {mediaData.videoAulaSource !== 'local' ? (
+                          <Field
+                            className="sm:col-span-2"
+                            label={t('modal_work_media_video_url')}
+                            type="url"
+                            inputMode="url"
+                            value={mediaData.videoAulaUrl}
+                            onChange={(e) =>
+                              media('videoAulaUrl', e.target.value)
+                            }
+                            placeholder={
+                              mediaData.videoAulaSource === 'youtube'
+                                ? 'https://www.youtube.com/watch?v=...'
+                                : mediaData.videoAulaSource === 'instagram'
+                                  ? 'https://www.instagram.com/reel/...'
+                                  : 'https://...'
+                            }
+                          />
+                        ) : (
+                          <CampoDeArquivo
+                            className="sm:col-span-2"
+                            label={t('modal_work_media_video_upload')}
+                            botao="Escolher vídeo"
+                            accept="video/*"
+                            arquivo={mediaData.videoAulaFile?.name}
+                            carregando={uploadingVideoAula}
+                            ajuda={
+                              uploadingVideoAula
+                                ? t('modal_work_media_video_uploading')
                                 : undefined
                             }
-                            disabled={loadingParentWork}
-                          />
-                          {loadingParentWork && (
-                            <Inline
-                              gap={2}
-                              className="mt-2 text-sm text-blue-600"
-                            >
-                              <PiSpinnerGap className="w-4 h-4 animate-spin" />
-                              <span>Verificando dados da obra pai...</span>
-                            </Inline>
-                          )}
-                          <Text
-                            papel="legenda"
-                            tom="fraco"
-                            as="p"
-                            className="mt-2"
-                          >
-                            Busque pela obra principal que contém esta peça como
-                            parte ou movimento.
-                          </Text>
-                        </div>
-                      ) : (
-                        <></>
-                      )}
-                    </Stack>
-                  )}
-                </AnimatedCard>
-
-                {/* Catalog Information */}
-                <AnimatedCard
-                  className="classical-card-simple p-4"
-                  hover="none"
-                >
-                  <Inline
-                    as="h3"
-                    gap={2}
-                    className="text-lg font-semibold text-theme-primary mb-4"
-                  >
-                    <PiTag className="w-5 h-5" />
-                    <span>{t('modal_work_catalog_title')}</span>
-                  </Inline>
-
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <Input
-                      label={t('modal_work_catalog_op')}
-                      value={formData.opOrCatalog}
-                      onChange={(e) =>
-                        handleInputChange('opOrCatalog', e.target.value)
-                      }
-                      placeholder="K. 550, Op. 67"
-                    />
-
-                    <Input
-                      label={t('modal_work_catalog_composition_year')}
-                      value={formData.compositionYear}
-                      onChange={(e) =>
-                        handleInputChange('compositionYear', e.target.value)
-                      }
-                      placeholder="1788"
-                    />
-
-                    <Input
-                      label={t('modal_work_catalog_first_publish')}
-                      value={formData.firstPublishDate}
-                      onChange={(e) =>
-                        handleInputChange('firstPublishDate', e.target.value)
-                      }
-                      placeholder="1794"
-                    />
-
-                    <div>
-                      <Select
-                        label={t('modal_work_catalog_tonality')}
-                        options={tonalityOptions}
-                        value={formData.tone}
-                        onChange={(e) =>
-                          handleInputChange('tone', e.target.value)
-                        }
-                        placeholder={t('tonality_select_placeholder')}
-                      />
-                    </div>
-
-                    <Input
-                      label={t('modal_work_catalog_duration')}
-                      value={formData.mediaDuration}
-                      onChange={(e) =>
-                        handleInputChange('mediaDuration', e.target.value)
-                      }
-                      placeholder="35 minutos"
-                    />
-
-                    <div>
-                      <Select
-                        label={t('modal_work_catalog_difficulty')}
-                        options={difficultyOptions}
-                        value={formData.difficultyLevel}
-                        onChange={(e) =>
-                          handleInputChange('difficultyLevel', e.target.value)
-                        }
-                      />
-                    </div>
-                  </div>
-                </AnimatedCard>
-
-                {/* Musical Details */}
-                <AnimatedCard
-                  className="classical-card-simple p-4"
-                  hover="none"
-                >
-                  <Inline
-                    as="h3"
-                    gap={2}
-                    className="text-lg font-semibold text-theme-primary mb-4"
-                  >
-                    <PiMusicNotes className="w-5 h-5" />
-                    <span>{t('modal_work_musical_title')}</span>
-                  </Inline>
-
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <Input
-                      label={t('modal_work_musical_style')}
-                      value={formData.workStyle}
-                      onChange={(e) =>
-                        handleInputChange('workStyle', e.target.value)
-                      }
-                      placeholder="Classical"
-                    />
-
-                    <Input
-                      label={t('modal_work_musical_movement')}
-                      value={formData.moviment}
-                      onChange={(e) =>
-                        handleInputChange('moviment', e.target.value)
-                      }
-                      placeholder="I. Allegro molto"
-                    />
-
-                    <Input
-                      label={t('modal_work_musical_instrumentation')}
-                      value={formData.instrumentation}
-                      onChange={(e) =>
-                        handleInputChange('instrumentation', e.target.value)
-                      }
-                      placeholder="2 flautas, 2 oboés, 2 clarinetes..."
-                    />
-
-                    <Input
-                      label={t('modal_work_musical_dedicated_to')}
-                      value={formData.dedicateTo}
-                      onChange={(e) =>
-                        handleInputChange('dedicateTo', e.target.value)
-                      }
-                      placeholder="Nome do dedicatário"
-                    />
-                  </div>
-                </AnimatedCard>
-
-                {/* Categories and Genres */}
-                <AnimatedCard
-                  className="classical-card-simple p-4"
-                  hover="none"
-                >
-                  <Inline
-                    as="h3"
-                    gap={2}
-                    className="text-lg font-semibold text-theme-primary mb-4"
-                  >
-                    <PiTag className="w-5 h-5" />
-                    <span>{t('modal_work_categories_title')}</span>
-                  </Inline>
-
-                  <Stack>
-                    <MultiSelect
-                      label={t('modal_work_categories_label')}
-                      options={validCategoryOptions}
-                      selectedValues={formData.categoryNames}
-                      onChange={(values) =>
-                        handleInputChange('categoryNames', values)
-                      }
-                      placeholder={t('modal_work_categories_placeholder')}
-                      excludeValues={categoryExcludeValues}
-                    />
-
-                    <MultiSelect
-                      label={t('modal_work_genres_label')}
-                      options={validWorkGenreOptions}
-                      selectedValues={formData.workGenresArr}
-                      onChange={(values) =>
-                        handleInputChange('workGenresArr', values)
-                      }
-                      placeholder={t('modal_work_genres_placeholder')}
-                      excludeValues={workGenresExcludeValues}
-                    />
-                  </Stack>
-                </AnimatedCard>
-
-                {/* External Links */}
-                <AnimatedCard
-                  className="classical-card-simple p-4"
-                  hover="none"
-                >
-                  <Inline
-                    as="h3"
-                    gap={2}
-                    className="text-lg font-semibold text-theme-primary mb-4"
-                  >
-                    <PiArrowSquareOut className="w-5 h-5" />
-                    <span>{t('modal_work_external_links_title')}</span>
-                  </Inline>
-
-                  <div className="flex flex-col gap-2">
-                    <Input
-                      label={t('modal_work_external_imslp_link')}
-                      value={formData.imslpPermlink}
-                      onChange={(e) =>
-                        handleInputChange('imslpId', e.target.value)
-                      }
-                      placeholder="Symphony_No.40_(Mozart,_Wolfgang_Amadeus)"
-                      leftIcon={<PiArrowSquareOut />}
-                      disabled={scrapingResult}
-                      className={
-                        scrapingResult ? 'bg-gray-50 cursor-not-allowed' : ''
-                      }
-                    />
-
-                    {scrapingResult && (
-                      <Inline
-                        gap={1}
-                        className="mt-1 text-xs text-theme-primary font-bold"
-                      >
-                        <PiLock className="w-3 h-3" />
-                        <span>
-                          Campo bloqueado pois foi extraído via scraping do
-                          IMSLP
-                        </span>
-                      </Inline>
-                    )}
-                  </div>
-                </AnimatedCard>
-
-                {/* Media Section */}
-                <AnimatedCard
-                  className="classical-card-simple p-4"
-                  hover="none"
-                >
-                  <div className="flex items-center justify-between mb-4">
-                    <Inline gap={2}>
-                      <PiMusicNotes className="w-4 h-4 text-theme-tertiary" />
-                      <Text papel="rotulo" tom="forte" className="font-medium">
-                        {t('modal_work_media_title')}
-                      </Text>
-                    </Inline>
-
-                    <Inline as="label" gap={2} className="cursor-pointer">
-                      <Checkbox
-                        label={t('modal_work_media_checkbox')}
-                        type="checkbox"
-                        checked={includeMedia}
-                        onChange={(e) => setIncludeMedia(e.target.checked)}
-                      />
-                    </Inline>
-                  </div>
-
-                  {includeMedia && (
-                    <Stack
-                      gap={6}
-                      className="border-t border-theme-secondary pt-4"
-                    >
-                      {/* Spotify */}
-                      <Stack gap={3}>
-                        <Inline gap={2}>
-                          <PiSpotifyLogo className="w-5 h-5 text-green-400" />
-                          <h4 className="text-lg font-semibold text-theme-primary">
-                            {t('modal_work_media_spotify_title')}
-                          </h4>
-                        </Inline>
-                        <Input
-                          label={t('modal_work_media_spotify_url')}
-                          value={mediaData.spotifyUrl}
-                          onChange={(e) =>
-                            setMediaData((prev) => ({
-                              ...prev,
-                              spotifyUrl: e.target.value,
-                            }))
-                          }
-                          placeholder="https://open.spotify.com/track/..."
-                          leftIcon={<PiSpotifyLogo />}
-                        />
-                      </Stack>
-
-                      {/* YouTube */}
-                      <Stack gap={3}>
-                        <Inline gap={2}>
-                          <PiYoutubeLogo className="w-5 h-5 text-red-400" />
-                          <h4 className="text-lg font-semibold text-theme-primary">
-                            {t('modal_work_media_youtube_title')}
-                          </h4>
-                        </Inline>
-                        <Input
-                          label={t('modal_work_media_youtube_url')}
-                          value={mediaData.youtubeUrl}
-                          onChange={(e) =>
-                            setMediaData((prev) => ({
-                              ...prev,
-                              youtubeUrl: e.target.value,
-                            }))
-                          }
-                          placeholder="https://www.youtube.com/watch?v=..."
-                          leftIcon={<PiYoutubeLogo />}
-                        />
-                      </Stack>
-
-                      {/* Custom Audio */}
-                      <Stack gap={3}>
-                        <Inline gap={2}>
-                          <PiMusicNotes className="w-5 h-5 text-blue-400" />
-                          <h4 className="text-lg font-semibold text-theme-primary">
-                            {t('modal_work_media_audio_title')}
-                          </h4>
-                        </Inline>
-                        <div>
-                          <Input
-                            label={t('modal_work_media_audio_upload')}
-                            type="file"
-                            accept="audio/*"
-                            onChange={(e) => {
-                              const file = e.target.files?.[0];
-                              if (file) {
-                                setMediaData((prev) => ({
-                                  ...prev,
-                                  audioFile: file,
-                                }));
-                                if (editingWork) {
-                                  handleAudioUpload(file);
-                                }
-                              }
+                            aoEscolher={(file) => {
+                              media('videoAulaFile', file);
+                              if (editingWork) handleVideoAulaUpload(file);
                             }}
-                            className="w-full p-3 bg-theme-elevated border border-theme-secondary rounded-xl text-theme-primary"
-                            disabled={uploadingAudio}
                           />
-                          {uploadingAudio && (
-                            <Inline
-                              as="p"
-                              gap={1}
-                              className="text-sm text-blue-400 mt-1"
-                            >
-                              <PiSpinnerGap className="w-4 h-4 animate-spin" />
-                              <span>
-                                {t('modal_work_media_audio_uploading')}
-                              </span>
-                            </Inline>
-                          )}
-                          {mediaData.audioFile && (
-                            <Text
-                              papel="rotulo"
-                              tom="suave"
-                              as="p"
-                              className="mt-1"
-                            >
-                              Arquivo: {mediaData.audioFile.name}
-                            </Text>
-                          )}
-                        </div>
-                      </Stack>
+                        )}
+                      </>
+                    )}
+                  </>
+                )}
+              </>
+            )}
+          </FormBlock>
+        </form>
+      </FormSheet>
 
-                      {/* Video Lesson */}
-                      {user && user.role >= 1 && (
-                        <Stack>
-                          <div className="flex items-center justify-between">
-                            <Inline gap={2}>
-                              <PiGraduationCap className="w-5 h-5 text-purple-400" />
-                              <h4 className="text-lg font-semibold text-theme-primary">
-                                {t('modal_work_media_video_lesson_title')}
-                              </h4>
-                            </Inline>
-
-                            <Inline
-                              as="label"
-                              gap={2}
-                              className="cursor-pointer"
-                            >
-                              <Checkbox
-                                label={t(
-                                  'modal_work_media_video_lesson_checkbox'
-                                )}
-                                type="checkbox"
-                                checked={mediaData.hasVideoAula}
-                                onChange={(e) =>
-                                  setMediaData((prev) => ({
-                                    ...prev,
-                                    hasVideoAula: e.target.checked,
-                                  }))
-                                }
-                              />
-                            </Inline>
-                          </div>
-
-                          {mediaData.hasVideoAula && (
-                            <Stack className="p-4 bg-purple-900/10 rounded-xl">
-                              {/* Type and Source */}
-                              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                <div>
-                                  <Select
-                                    label={t('modal_work_media_video_type')}
-                                    options={videoAulaTypeOptions}
-                                    value={mediaData.videoAulaType}
-                                    onChange={(e) =>
-                                      setMediaData((prev) => ({
-                                        ...prev,
-                                        videoAulaType: e.target.value,
-                                      }))
-                                    }
-                                  />
-                                </div>
-
-                                <div>
-                                  <Select
-                                    label={t('modal_work_media_video_source')}
-                                    options={videoAulaSourceOptions}
-                                    value={mediaData.videoAulaSource}
-                                    onChange={(e) =>
-                                      setMediaData((prev) => ({
-                                        ...prev,
-                                        videoAulaSource: e.target.value,
-                                      }))
-                                    }
-                                  />
-                                </div>
-                              </div>
-
-                              {/* Custom title */}
-                              <Input
-                                label={t('modal_work_media_video_title_field')}
-                                value={mediaData.videoAulaTitle}
-                                onChange={(e) =>
-                                  setMediaData((prev) => ({
-                                    ...prev,
-                                    videoAulaTitle: e.target.value,
-                                  }))
-                                }
-                                placeholder="Ex: Tutorial de Técnica - Chopin Étude Op. 10 No. 1"
-                              />
-
-                              {/* URL or Upload */}
-                              {mediaData.videoAulaSource !== 'local' ? (
-                                <Input
-                                  label={t('modal_work_media_video_url')}
-                                  value={mediaData.videoAulaUrl}
-                                  onChange={(e) =>
-                                    setMediaData((prev) => ({
-                                      ...prev,
-                                      videoAulaUrl: e.target.value,
-                                    }))
-                                  }
-                                  placeholder={
-                                    mediaData.videoAulaSource === 'youtube'
-                                      ? 'https://www.youtube.com/watch?v=...'
-                                      : mediaData.videoAulaSource ===
-                                          'instagram'
-                                        ? 'https://www.instagram.com/reel/...'
-                                        : 'https://...'
-                                  }
-                                  leftIcon={
-                                    mediaData.videoAulaSource === 'youtube' ? (
-                                      <PiYoutubeLogo />
-                                    ) : mediaData.videoAulaSource ===
-                                      'instagram' ? (
-                                      <PiInstagramLogo />
-                                    ) : mediaData.videoAulaSource ===
-                                      'tiktok' ? (
-                                      <PiTiktokLogo />
-                                    ) : (
-                                      <PiArrowSquareOut />
-                                    )
-                                  }
-                                />
-                              ) : (
-                                <div>
-                                  <Input
-                                    label={t('modal_work_media_video_upload')}
-                                    type="file"
-                                    accept="video/*"
-                                    onChange={(e) => {
-                                      const file = e.target.files?.[0];
-                                      if (file) {
-                                        setMediaData((prev) => ({
-                                          ...prev,
-                                          videoAulaFile: file,
-                                        }));
-                                        if (editingWork) {
-                                          handleVideoAulaUpload(file);
-                                        }
-                                      }
-                                    }}
-                                    className="w-full p-3 bg-theme-elevated border border-theme-secondary rounded-xl text-theme-primary"
-                                    disabled={uploadingVideoAula}
-                                  />
-                                  {uploadingVideoAula && (
-                                    <Inline
-                                      as="p"
-                                      gap={1}
-                                      className="text-sm text-purple-400 mt-1"
-                                    >
-                                      <PiSpinnerGap className="w-4 h-4 animate-spin" />
-                                      <span>
-                                        {t('modal_work_media_video_uploading')}
-                                      </span>
-                                    </Inline>
-                                  )}
-                                  {mediaData.videoAulaFile && (
-                                    <Text
-                                      papel="rotulo"
-                                      tom="suave"
-                                      as="p"
-                                      className="mt-1"
-                                    >
-                                      Arquivo: {mediaData.videoAulaFile.name}
-                                    </Text>
-                                  )}
-                                </div>
-                              )}
-                            </Stack>
-                          )}
-                        </Stack>
-                      )}
-                    </Stack>
-                  )}
-                </AnimatedCard>
-
-                {/* Actions */}
-                <Inline
-                  gap={3}
-                  className="justify-end pt-6 border-t border-theme-secondary"
-                >
-                  <Button
-                    type="button"
-                    variant="secondary"
-                    onClick={onClose}
-                    disabled={isSubmitting}
-                  >
-                    {t('form_cancel')}
-                  </Button>
-
-                  <Button
-                    type="submit"
-                    variant="primary"
-                    leftIcon={
-                      isSubmitting || uploadingAudio || uploadingVideoAula ? (
-                        <PiSpinnerGap className="animate-spin" />
-                      ) : (
-                        <PiFloppyDisk />
-                      )
-                    }
-                    disabled={
-                      isSubmitting || uploadingAudio || uploadingVideoAula
-                    }
-                  >
-                    {isSubmitting
-                      ? t('form_saving')
-                      : editingWork
-                        ? t('form_update') + ' Obra'
-                        : t('form_create') + ' Obra'}
-                  </Button>
-                </Inline>
-              </Stack>
-            </div>
-          </div>
-        </AnimatedItem>
-      </Modal>
-
-      {/* 🆕 MODAL DE SUGESTÃO DE OBRA PAI */}
       <ParentWorkSuggestionModal
         isOpen={showParentSuggestionModal}
         onClose={() => setShowParentSuggestionModal(false)}

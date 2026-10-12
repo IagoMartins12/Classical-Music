@@ -1,21 +1,16 @@
 // app/components/ComposerImageUpload.tsx
 'use client';
-import { Button as Botao } from '@/app/components/ui/Button';
 
 import React, { useState, useRef } from 'react';
-import {
-  PiCamera,
-  PiImage,
-  PiLink,
-  PiSpinnerGap,
-  PiUploadSimple,
-  PiX,
-} from 'react-icons/pi';
+import { PiSpinnerGap, PiUploadSimple, PiX } from 'react-icons/pi';
 import { toast } from 'react-hot-toast';
 import Image from '@/app/components/SmartImage';
 import { uploadComposerImage } from '@/app/requests/uploads-client';
-import { Stack, Inline } from '@/app/components/ui/Layout';
-import { Text } from '@/app/components/ui/Text';
+import { Aba, Abas } from '@/app/components/ui/Abas';
+import { Button } from '@/app/components/ui/Button';
+import { Field } from '@/app/components/ui/Field';
+import { cx } from '@/app/components/ui/cx';
+import { iniciais } from '@/app/components/blog/site/pecas';
 
 interface ComposerImageUploadProps {
   currentImage?: string | null;
@@ -54,13 +49,6 @@ const ComposerImageUpload: React.FC<ComposerImageUploadProps> = ({
     md: 'w-24 h-24',
     lg: 'w-32 h-32',
     xl: 'w-48 h-48',
-  };
-
-  const iconSizeClasses = {
-    sm: 'w-4 h-4',
-    md: 'w-5 h-5',
-    lg: 'w-6 h-6',
-    xl: 'w-8 h-8',
   };
 
   const handleFileSelect = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -153,158 +141,112 @@ const ComposerImageUpload: React.FC<ComposerImageUploadProps> = ({
 
   const currentUploading = uploading || isUploading;
 
+  const nome = composerName || fallbackText;
+
   return (
-    <div className={`flex flex-col items-center space-y-4 ${className}`}>
-      {/* Mode Selection */}
-      <Inline gap={2} className="bg-theme-secondary rounded-lg p-1">
-        <button
-          onClick={(e) => {
-            e.preventDefault();
-            if (inputMode === 'upload') {
-              fileInputRef.current?.click();
-            }
-            handleModeChange('upload');
-          }}
-          className={`flex items-center space-x-2 px-4 py-2 rounded-md transition-colors ${
-            inputMode === 'upload'
-              ? 'text-white shadow-sm'
-              : 'text-theme-primary'
-          }`}
+    <div className={cx('flex flex-col items-center gap-4', className)}>
+      <Abas rotulo="Como enviar o retrato">
+        <Aba
+          ativa={inputMode === 'upload'}
+          onClick={() => handleModeChange('upload')}
         >
-          <PiUploadSimple className="w-4 h-4" />
-          <span className="text-sm font-medium">Upload</span>
-        </button>
-        <button
-          onClick={(e) => {
-            e.preventDefault();
-            handleModeChange('url');
-          }}
-          className={`flex items-center space-x-2 px-4 py-2 rounded-md transition-colors ${
-            inputMode === 'url' ? 'text-white shadow-sm' : 'text-theme-primary'
-          }`}
+          Do aparelho
+        </Aba>
+        <Aba
+          ativa={inputMode === 'url'}
+          onClick={() => handleModeChange('url')}
         >
-          <PiLink className="w-4 h-4" />
-          <span className="text-sm font-medium">URL</span>
-        </button>
-      </Inline>
+          Por link
+        </Aba>
+      </Abas>
 
-      {/* Image Container */}
-      <div className="relative">
-        <div
-          className={`
-            ${sizeClasses[size]} 
-            relative rounded-2xl overflow-hidden border-2 border-theme-secondary bg-gradient-to-br flex items-center justify-center transition-all duration-300
-            ${currentUploading ? 'opacity-50' : ''}
-          `}
-        >
-          {currentImage ? (
-            <Image
-              src={currentImage}
-              alt={`Retrato de ${composerName || fallbackText}`}
-              fill
-              className="object-cover"
-              sizes={`(max-width: 768px) ${sizeClasses[size]}, ${sizeClasses[size]}`}
-              onError={(e) => {
-                console.error('Erro ao carregar imagem:', e);
-                onImageChange?.(null);
-              }}
-            />
-          ) : (
-            <div className="text-center">
-              <PiImage
-                className={`${iconSizeClasses[size]} text-theme-tertiary mx-auto mb-2`}
-              />
-            </div>
-          )}
-
-          {/* Loading Overlay */}
-          {currentUploading && (
-            <div className="absolute inset-0 bg-black flex items-center justify-center">
-              <PiSpinnerGap className="w-8 h-8 text-white animate-spin" />
-            </div>
-          )}
-
-          {/* Remove Button */}
-          {currentImage && showRemove && !currentUploading && (
-            <button
-              onClick={handleRemove}
-              className="absolute -top-2 -right-2 w-6 h-6 text-white rounded-full flex items-center justify-center hover:bg-red-600 transition-colors"
-              title="Remover imagem"
-            >
-              <PiX className="w-3 h-3" />
-            </button>
-          )}
-        </div>
-
-        {/* Upload Button - Only show for upload mode */}
-        {inputMode === 'upload' && !currentUploading && (
-          <button
-            onClick={() => fileInputRef.current?.click()}
-            className="absolute -bottom-2 -right-2 w-10 h-10 text-white rounded-full flex items-center justify-center transition-colors shadow-lg"
-            title="Fazer upload de imagem"
+      <div
+        className={cx(
+          sizeClasses[size],
+          'relative grid place-items-center overflow-hidden rounded-card bg-sup-2',
+          currentUploading && 'opacity-60'
+        )}
+      >
+        {currentImage ? (
+          <Image
+            src={currentImage}
+            alt={`Retrato de ${nome}`}
+            fill
+            className="object-cover"
+            sizes="192px"
+            onError={() => onImageChange?.(null)}
+          />
+        ) : (
+          <span
+            aria-hidden="true"
+            className="font-display text-[2.5rem] text-ouro-texto"
           >
-            <PiCamera className="w-5 h-5" />
-          </button>
+            {iniciais(nome)}
+          </span>
+        )}
+        {currentUploading && (
+          <span className="absolute inset-0 grid place-items-center bg-black/55">
+            <PiSpinnerGap
+              aria-hidden="true"
+              className="h-7 w-7 animate-spin text-white"
+            />
+          </span>
         )}
       </div>
 
-      {/* Input based on mode */}
       {inputMode === 'upload' ? (
-        /* Upload Mode */
-        <div className="text-center">
-          <Inline
-            as="button"
-            gap={2}
-            onClick={(e) => {
-              e.preventDefault();
-              fileInputRef.current?.click();
-            }}
-            disabled={currentUploading}
-            className="px-6 py-3 text-white rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-          >
-            <PiUploadSimple className="w-4 h-4" />
-            <span>Selecionar Arquivo</span>
-          </Inline>
-          <Text papel="legenda" tom="fraco" as="p" className="mt-2">
-            JPG, PNG, GIF ou WebP. Máximo 5MB.
-          </Text>
+        <div className="flex flex-col items-center gap-2">
+          <div className="flex gap-2">
+            <Button
+              tamanho="p"
+              icone={PiUploadSimple}
+              carregando={currentUploading}
+              onClick={() => fileInputRef.current?.click()}
+            >
+              {currentImage ? 'Trocar retrato' : 'Escolher arquivo'}
+            </Button>
+          </div>
+          <span className="t-legenda">JPG, PNG, GIF ou WebP, até 5 MB.</span>
         </div>
       ) : (
-        /* URL Mode */
-        <Stack gap={3} className="w-full max-w-md">
-          <div className="flex space-x-2">
-            <input
-              type="url"
-              value={urlInput}
-              onChange={(e) => setUrlInput(e.target.value)}
-              placeholder="https://exemplo.com/imagem.jpg"
-              className="flex-1 px-3 py-2 border border-theme-secondary rounded-lg focus:outline-none focus:ring-2 focus:border-transparent"
-              onKeyPress={(e) => e.key === 'Enter' && handleUrlSubmit()}
-            />
-            <Botao
-              variante="fantasma"
-              tamanho="p"
-              onClick={(e) => {
+        <div className="flex w-full max-w-md items-end gap-2">
+          <Field
+            className="flex-1"
+            label="Link da imagem"
+            type="url"
+            inputMode="url"
+            value={urlInput}
+            onChange={(e) => setUrlInput(e.target.value)}
+            placeholder="https://exemplo.com/imagem.jpg"
+            onKeyDown={(e) => {
+              if (e.key === 'Enter') {
                 e.preventDefault();
                 handleUrlSubmit();
-              }}
-            >
-              Aplicar
-            </Botao>
-          </div>
-          <Text papel="legenda" tom="fraco" as="p" className="text-center">
-            Insira a URL completa da imagem
-          </Text>
-        </Stack>
+              }
+            }}
+          />
+          <Button onClick={() => handleUrlSubmit()}>Aplicar</Button>
+        </div>
       )}
 
-      {/* Hidden File Input */}
+      {currentImage && showRemove && !currentUploading && (
+        <Button
+          tamanho="p"
+          variante="fantasma"
+          icone={PiX}
+          onClick={handleRemove}
+        >
+          Remover retrato
+        </Button>
+      )}
+
       <input
         ref={fileInputRef}
         type="file"
-        accept="image/*"
+        accept="image/jpeg,image/png,image/gif,image/webp"
         onChange={handleFileSelect}
-        className="hidden"
+        className="sr-only"
+        tabIndex={-1}
       />
     </div>
   );
