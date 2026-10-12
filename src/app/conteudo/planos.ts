@@ -59,6 +59,8 @@ export type ConteudoPlanos = {
   migalha: string;
   titulo: string;
   abertura: string;
+  /** The hero's two actions, like the other editorial pages. */
+  acoesTopo: { planos: string; criarConta: string; seuPlano: string };
   periodo: {
     rotulo: string;
     mensal: string;
@@ -169,6 +171,11 @@ export const PLANOS: Record<Idioma, ConteudoPlanos> = {
     },
     emBreve: 'Em breve',
     comparar: 'Comparar todos os recursos',
+    acoesTopo: {
+      planos: 'Ver os planos',
+      criarConta: 'Criar conta grátis',
+      seuPlano: 'Ver minha assinatura',
+    },
     planos: {
       FREE: {
         nome: 'Free',
@@ -435,6 +442,11 @@ export const PLANOS: Record<Idioma, ConteudoPlanos> = {
     },
     emBreve: 'Coming soon',
     comparar: 'Compare all features',
+    acoesTopo: {
+      planos: 'See the plans',
+      criarConta: 'Create a free account',
+      seuPlano: 'See my subscription',
+    },
     planos: {
       FREE: {
         nome: 'Free',

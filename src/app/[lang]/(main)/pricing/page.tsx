@@ -1,5 +1,7 @@
 import type { Metadata } from 'next';
-import { PiCaretDown, PiMinus } from 'react-icons/pi';
+import { PiArrowDown, PiCaretDown, PiMinus } from 'react-icons/pi';
+import { BotaoCriarConta } from '@/app/components/auth/BotaoCriarConta';
+import { classesDeBotao } from '@/app/components/ui/Button';
 import LocalizedLink from '@/app/components/LocalizedLink';
 import { Revelar } from '@/app/components/ui/Revelar';
 import { TextoRico } from '@/app/components/ui/TextoRico';
@@ -247,21 +249,40 @@ export default async function Pagina({ params }: LangPageProps) {
               </ol>
             </nav>
             <h1
-              className="entra classical-title mt-8 text-[2.75rem] leading-[1.05] tracking-[-0.015em] text-texto md:mt-10 md:text-6xl lg:text-[4.5rem]"
+              className="entra classical-title mt-6 max-w-[20ch] text-balance text-[2.375rem] leading-[1.06] tracking-[-0.015em] text-texto sm:text-5xl md:mt-8 lg:text-[3.5rem]"
               style={{ ['--i' as string]: 1 }}
             >
               {c.titulo}
             </h1>
             <p
               style={{ ['--i' as string]: 2 }}
-              className="entra mt-6 max-w-[60ch] text-lg leading-relaxed text-texto-suave md:text-xl md:leading-relaxed"
+              className="entra mt-6 max-w-[56ch] text-lg leading-relaxed text-texto-suave"
             >
               {c.abertura}
             </p>
+            <div
+              className="entra mt-8 flex flex-col gap-3 sm:flex-row"
+              style={{ ['--i' as string]: 3 }}
+            >
+              <a href="#planos" className={classesDeBotao('primario')}>
+                {c.acoesTopo.planos}
+                <PiArrowDown aria-hidden="true" className="h-4 w-4" />
+              </a>
+              <BotaoCriarConta
+                seLogado={
+                  <LocalizedLink href="/profile" className={classesDeBotao()}>
+                    {c.acoesTopo.seuPlano}
+                  </LocalizedLink>
+                }
+              >
+                {c.acoesTopo.criarConta}
+              </BotaoCriarConta>
+            </div>
           </div>
           <OrbitaDosPlanos />
         </header>
 
+        <div id="planos" className="scroll-mt-24" />
         <QuadroDePlanos
           idioma={idioma}
           precos={precos}
