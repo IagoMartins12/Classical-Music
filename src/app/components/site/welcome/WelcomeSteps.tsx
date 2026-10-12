@@ -5,8 +5,8 @@ import { CaixaDeMarcar } from '@/app/components/ui/CaixaDeMarcar';
 import { useRef, useState } from 'react';
 import toast from 'react-hot-toast';
 import { PiCamera, PiCheck, PiStar, PiStarFill, PiX } from 'react-icons/pi';
-import InternationalPhoneInput from '@/app/components/Common/InternationalPhoneInput';
-import LocationSelector from '@/app/components/Common/LocationSelector';
+import { LocationField } from '@/app/components/site/profile/LocationField';
+import { PhoneField } from '@/app/components/site/profile/PhoneField';
 import { Field } from '@/app/components/ui/Field';
 import { Icon } from '@/app/components/ui/Icon';
 import { Selecao } from '@/app/components/ui/Selecao';
@@ -414,6 +414,7 @@ export function ProfileStep({
   data,
   update,
   copy,
+  language,
   image,
   phoneError,
 }: StepProps & { image: string | null; phoneError?: string }) {
@@ -492,21 +493,20 @@ export function ProfileStep({
         onChange={(e) => update({ bio: e.target.value })}
       />
       <Group label={t.location} className="gap-0">
-        <LocationSelector
+        <LocationField
           value={data.location ?? {}}
           onChange={(location) => update({ location })}
-          showLabels={false}
+          language={language}
         />
       </Group>
-      <div className="flex flex-col gap-1.5">
-        <InternationalPhoneInput
-          label={t.phone}
-          value={data.phone ?? ''}
-          onChange={(phone) => update({ phone })}
-          error={phoneError}
-        />
-        <p className="t-legenda">{t.phoneHelp}</p>
-      </div>
+      <PhoneField
+        label={t.phone}
+        countryLabel={language === 'pt' ? 'País do telefone' : 'Phone country'}
+        value={data.phone ?? ''}
+        onChange={(phone) => update({ phone })}
+        error={phoneError}
+        help={t.phoneHelp}
+      />
       <Group label={t.privacy}>
         <CaixaDeMarcar
           rotulo={t.public}

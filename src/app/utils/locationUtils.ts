@@ -1,5 +1,5 @@
 // utils/locationUtils.ts - VERSÃO OTIMIZADA COM LAZY LOADING
-import { LocationData } from '@/app/components/Common/LocationSelector';
+import type { LocationData } from '@/app/components/site/profile/LocationField';
 
 // 🚀 DADOS BÁSICOS ESTÁTICOS (mesmos do LocationSelector)
 const BASIC_COUNTRIES = [
