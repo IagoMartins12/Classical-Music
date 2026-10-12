@@ -6,6 +6,7 @@ import { useOnboardingModal } from '@/app/stores/authStore';
 import Image from '@/app/components/SmartImage';
 import React, { useRef, useState, useEffect } from 'react';
 import { PiCamera, PiPencilLine, PiTrash } from 'react-icons/pi';
+import { iniciais } from '@/app/components/blog/site/pecas';
 
 interface ProfileImageUploadProps {
   currentImage?: string | null;
@@ -44,6 +45,13 @@ const ProfileImageUpload: React.FC<ProfileImageUploadProps> = ({
     sm: 'w-4 h-4',
     md: 'w-5 h-5',
     lg: 'w-8 h-8',
+  };
+
+  // Same as the navbar avatar: Garamond initials in gold.
+  const initialsSizes = {
+    sm: 'text-xl',
+    md: 'text-2xl',
+    lg: 'text-4xl',
   };
 
   const removeSizes = {
@@ -110,16 +118,14 @@ const ProfileImageUpload: React.FC<ProfileImageUploadProps> = ({
   };
 
   const getFallbackContent = () => {
-    if (fallbackText && fallbackText.length >= 2) {
+    if (fallbackText?.trim()) {
       return (
-        <div className="text-2xl font-bold text-theme-inverse">
-          {fallbackText
-            .split(' ')
-            .map((word) => word[0])
-            .join('')
-            .slice(0, 2)
-            .toUpperCase()}
-        </div>
+        <span
+          aria-hidden="true"
+          className={`font-display text-ouro-texto ${initialsSizes[size]}`}
+        >
+          {iniciais(fallbackText)}
+        </span>
       );
     }
 
@@ -133,8 +139,7 @@ const ProfileImageUpload: React.FC<ProfileImageUploadProps> = ({
         onClick={triggerImageUpload}
         className={`
         ${sizeClasses[size]} 
-        rounded-full overflow-hidden border-4 border-theme-secondary 
-        ${!imagePreview && fallbackText ? '' : 'bg-theme-secondary'}
+        rounded-full overflow-hidden border-4 border-theme-secondary bg-sup-2
         relative cursor-pointer hover:opacity-90 transition-opacity
       `}
       >
@@ -147,20 +152,20 @@ const ProfileImageUpload: React.FC<ProfileImageUploadProps> = ({
             className="w-full h-full object-cover"
           />
         ) : (
-          <div className="w-full h-full flex items-center justify-center text-theme-tertiary">
+          <div className="w-full h-full flex items-center justify-center text-texto-fraco">
             {getFallbackContent()}
           </div>
         )}
 
         {/* Upload Loading Overlay */}
         {isUploading && (
-          <div className="absolute inset-0 bg-black flex items-center justify-center">
+          <div className="absolute inset-0 bg-black/55 flex items-center justify-center">
             <div className="w-6 h-6 border-2 border-white border-t-transparent rounded-full animate-spin" />
           </div>
         )}
 
         {/* Upload Overlay Hint */}
-        <div className="absolute inset-0 bg-black flex items-center justify-center transition-all opacity-0 hover:opacity-100">
+        <div className="absolute inset-0 bg-black/55 flex items-center justify-center transition-all opacity-0 hover:opacity-100">
           <PiPencilLine className="text-white text-lg" />
         </div>
       </div>

@@ -138,7 +138,8 @@ export function TituloLink({
   );
 }
 
-const iniciais = (nome: string) =>
+/** Up to two initials of a name, for avatars without a photo. */
+export const iniciais = (nome: string) =>
   nome
     .split(/\s+/)
     .filter(Boolean)
