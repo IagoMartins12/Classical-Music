@@ -239,7 +239,14 @@ export function ComposerPage({
                 <>
                   <BiographyText
                     text={bio}
-                    aiNote={composer.bioGeneratedByAi ? copy.bio.aiNote : null}
+                    aiNote={
+                      composer.bioTranslatedFrom &&
+                      composer.bioTranslatedFrom !== language
+                        ? copy.bio.translatedNote
+                        : composer.bioGeneratedByAi
+                          ? copy.bio.aiNote
+                          : null
+                    }
                   />
                   {bioCredit && (
                     <ContributionCredit
@@ -256,7 +263,10 @@ export function ComposerPage({
               )}
             </section>
 
-            <StartingPoints works={overview.startingPoints} copy={copy} />
+            <StartingPoints
+              works={overview.startingPoints}
+              language={language}
+            />
             <CompleteInvite missing={missing} />
           </div>
         </div>

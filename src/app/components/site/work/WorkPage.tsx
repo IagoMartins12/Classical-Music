@@ -76,11 +76,15 @@ export function WorkPage({
       dedicateTo: work.dedicateTo,
       firstPublishDate: work.firstPublishDate,
       subtitle: work.subtitle,
+      youtubeVideoId: work.youtubeVideoId,
     },
   };
-  const missing = (['compositionYear', 'tone', 'instrumentation'] as const)
-    .filter((field) => !work[field])
-    .map((key) => ({ key, kind: 'data' as const }));
+  const missing = [
+    ...(work.youtubeVideoId ? [] : [{ key: 'video', kind: 'video' as const }]),
+    ...(['compositionYear', 'tone', 'instrumentation'] as const)
+      .filter((field) => !work[field])
+      .map((key) => ({ key, kind: 'data' as const })),
+  ];
 
   return (
     <ContributeProvider target={contribution}>

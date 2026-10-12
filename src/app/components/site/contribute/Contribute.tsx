@@ -79,8 +79,11 @@ const DATA_FIELDS = {
 
 const KINDS: Record<ContributionTarget['type'], ContributionKind[]> = {
   composer: ['bio', 'curiosity', 'video', 'data'],
-  work: ['data'],
+  work: ['video', 'data'],
 };
+
+/** Where each record keeps its video: a link on the composer, an id on the work. */
+const VIDEO_FIELD = { composer: 'videoUrl', work: 'youtubeVideoId' } as const;
 
 const BIO_MIN = 300;
 const CURIOSITY_MIN = 20;
@@ -222,7 +225,13 @@ function ContributeSheet({
   const [bio, setBio] = useState(target.current[bioField] ?? '');
   const [curiosity, setCuriosity] = useState('');
   const [source, setSource] = useState('');
-  const [video, setVideo] = useState(target.current.videoUrl ?? '');
+  const videoField = VIDEO_FIELD[target.type];
+  const currentVideo = target.current[videoField];
+  const [video, setVideo] = useState(
+    target.type === 'work' && currentVideo
+      ? `https://www.youtube.com/watch?v=${currentVideo}`
+      : (currentVideo ?? '')
+  );
   const [data, setData] = useState<Record<string, string>>(initialData);
   const [touched, setTouched] = useState(false);
   const [tried, setTried] = useState(false);
@@ -274,7 +283,7 @@ function ContributeSheet({
       kind === 'bio'
         ? [[bioField, bio.trim()]]
         : kind === 'video'
-          ? [['videoUrl', video.trim()]]
+          ? [[videoField, video.trim()]]
           : changed.map((f) => [f, data[f].trim()]);
     for (const [field, value] of entries) {
       const result = await contribute({

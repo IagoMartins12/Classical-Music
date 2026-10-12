@@ -201,6 +201,7 @@ function StudyCard({
       <div className="flex min-w-0 flex-1 items-start gap-4 row:items-center">
         <Portrait
           name={work?.composer.fullName ?? '?'}
+          src={work?.composer.portraitUrl}
           sizes="48px"
           className="h-12 w-12 shrink-0 rounded-full text-[0.875rem]"
         />

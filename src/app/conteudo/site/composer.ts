@@ -18,6 +18,8 @@ const pt = {
     heading: 'Biografia',
     aiNote:
       'Texto escrito por inteligência artificial e ainda não revisado por uma pessoa.',
+    translatedNote:
+      'Tradução automática do texto escrito em inglês, ainda não revisada por uma pessoa.',
     writing: (name: string) => `Escrevendo a história de ${name}…`,
     writingText:
       'Leva alguns segundos. O texto aparece aqui assim que ficar pronto.',
@@ -33,6 +35,13 @@ const pt = {
     automatic: 'As mais estudadas, da mais fácil para a mais difícil',
     curated: 'Escolhidas pela equipe do Opus Atlas',
     mixed: 'Escolhidas pela equipe, depois as mais estudadas',
+    /** The caption's second line, for someone who said how long they study. */
+    horizon: {
+      MONTHS: 'Pensadas para quem estuda por alguns meses',
+      YEAR: 'Pensadas para quem estuda por um ano',
+      YEARS: 'Pensadas para quem estuda por alguns anos',
+      LIFE: 'Pensadas para quem estuda para a vida toda',
+    },
     levels: {
       beginner: 'Iniciante',
       intermediate: 'Intermediário',
@@ -80,6 +89,8 @@ const en: typeof pt = {
     heading: 'Biography',
     aiNote:
       'Written by artificial intelligence and not yet reviewed by a person.',
+    translatedNote:
+      'Machine translation of the Portuguese text, not yet reviewed by a person.',
     writing: (name: string) => `Writing the story of ${name}…`,
     writingText:
       'It takes a few seconds. The text appears here as soon as it is ready.',
@@ -95,6 +106,12 @@ const en: typeof pt = {
     automatic: 'The most studied, from easiest to hardest',
     curated: 'Chosen by the Opus Atlas team',
     mixed: 'Chosen by the team, then the most studied',
+    horizon: {
+      MONTHS: 'Picked for someone studying for a few months',
+      YEAR: 'Picked for someone studying for a year',
+      YEARS: 'Picked for someone studying for a few years',
+      LIFE: 'Picked for a lifetime of study',
+    },
     levels: {
       beginner: 'Beginner',
       intermediate: 'Intermediate',

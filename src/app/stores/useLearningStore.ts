@@ -58,6 +58,7 @@ export interface WantToLearnItem {
     composer: {
       name: string;
       fullName: string;
+      portraitUrl?: string | null;
     };
     // 🆕 INSTRUMENTO NECESSÁRIO PARA MILESTONES
     instrument?: {
@@ -122,6 +123,7 @@ export interface LearnedItem {
     composer: {
       name: string;
       fullName: string;
+      portraitUrl?: string | null;
     };
     // 🆕 INSTRUMENTO NECESSÁRIO PARA MILESTONES
     instrument?: {

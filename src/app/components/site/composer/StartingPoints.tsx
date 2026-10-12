@@ -1,38 +1,61 @@
+'use client';
+
 import { PiArrowRight } from 'react-icons/pi';
 import Link from '@/app/components/LocalizedLink';
 import { Icon } from '@/app/components/ui/Icon';
-import { levelLabel, type ComposerCopy } from '@/app/conteudo/site/composer';
+import { COMPOSER, levelLabel } from '@/app/conteudo/site/composer';
 import type { ComposerOverview } from '@/app/requests/composer-details';
 import { FavoriteHeart } from '../FavoriteHeart';
+import { useSession } from '@/app/libs/session/session-client';
 import { workTitle } from '../workTitle';
 
 /**
- * "Por onde começar": three works, each a step in. The team's picks lead;
+ * How many works fit the study horizon the person gave in the welcome
+ * questions: a short plan gets the two easiest; a lifetime gets five,
+ * harder ones included. Visitors and people who did not answer see three.
+ */
+const BY_HORIZON = { MONTHS: 2, YEAR: 3, YEARS: 4, LIFE: 5 } as const;
+const DEFAULT_COUNT = 3;
+
+/**
+ * "Por onde começar": a few works, each a step in. The team's picks lead;
  * the automatic ones (most studied, easiest first) fill the rest, and the
- * caption says which is which.
+ * caption says which is which. The page is cached for everyone, so the
+ * count follows the person's study horizon here, in the browser.
  */
 export function StartingPoints({
   works,
-  copy,
+  language,
 }: {
   works: ComposerOverview['startingPoints'];
-  copy: ComposerCopy;
+  language: 'pt' | 'en';
 }) {
-  if (!works.length) return null;
-  const curated = works.filter((w) => w.curated).length;
+  const copy = COMPOSER[language];
+  const horizon = useSession().data?.user.studyHorizon ?? null;
+  const shown = works.slice(0, horizon ? BY_HORIZON[horizon] : DEFAULT_COUNT);
+  if (!shown.length) return null;
+  const curated = shown.filter((w) => w.curated).length;
   const caption = !curated
     ? copy.startHere.automatic
-    : curated === works.length
+    : curated === shown.length
       ? copy.startHere.curated
       : copy.startHere.mixed;
   return (
     <section className="flex flex-col gap-5">
       <div className="flex flex-wrap items-end justify-between gap-3">
         <h2 className="t-subtitulo">{copy.startHere.title}</h2>
-        <span className="t-legenda">{caption}</span>
+        <span className="t-legenda text-right">
+          {caption}
+          {horizon && (
+            <>
+              <br />
+              {copy.startHere.horizon[horizon]}
+            </>
+          )}
+        </span>
       </div>
       <ol className="flex flex-col gap-3">
-        {works.map((work, i) => {
+        {shown.map((work, i) => {
           const level = levelLabel(work.difficulty, copy);
           return (
             <li
