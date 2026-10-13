@@ -10,6 +10,7 @@ import { PhoneField } from '@/app/components/site/profile/PhoneField';
 import { Field } from '@/app/components/ui/Field';
 import { Icon } from '@/app/components/ui/Icon';
 import { Selecao } from '@/app/components/ui/Selecao';
+import { SelecaoComBusca } from '@/app/components/ui/SelecaoComBusca';
 import { cx } from '@/app/components/ui/cx';
 import { ERAS, eraOf } from '@/app/conteudo/site/eras';
 import {
@@ -19,6 +20,10 @@ import {
 } from '@/app/conteudo/site/welcome';
 import { useSessionUpdate } from '@/app/hooks/useSessionUpdate';
 import { uploadAvatarRequest } from '@/app/requests/account-client';
+import {
+  composerOptions,
+  findComposerById,
+} from '@/app/requests/catalog-search';
 import type { OnboardingData } from '@/app/stores/authStore';
 import { Portrait } from '../Portrait';
 import { chip } from '../choice';
@@ -301,6 +306,10 @@ export function TasteStep({
   options,
 }: StepProps & { options: WelcomeOptions }) {
   const [everyEra, setEveryEra] = useState(false);
+  // A composer found by name, outside the suggested ones.
+  const [found, setFound] = useState<
+    WelcomeOptions['composers'][number] | null
+  >(null);
   // The seven eras the site tells, each matched to its catalog epoch.
   const eras = ERAS.flatMap((era) => {
     const epoch = options.epochs.find((e) => eraOf(e.name)?.key === era.key);
@@ -309,12 +318,29 @@ export function TasteStep({
   const chosenEra = eraOf(
     options.epochs.find((e) => e.id === data.favoriteEpochId)?.name
   );
-  const composers =
+  const suggested =
     chosenEra && !everyEra
       ? options.composers.filter(
           (c) => eraOf(c.epochName)?.key === chosenEra.key
         )
       : options.composers;
+  const composers =
+    found && !suggested.some((c) => c.id === found.id)
+      ? [found, ...suggested]
+      : suggested;
+
+  const choose = async (id: string, label: string) => {
+    if (!id) return update({ favoriteComposerId: undefined });
+    update({ favoriteComposerId: id });
+    const detail = await findComposerById(id).catch(() => null);
+    setFound({
+      id,
+      name: detail?.name ?? label,
+      fullName: detail?.fullName ?? label,
+      portraitUrl: detail?.portraitUrl ?? null,
+      epochName: detail?.epochName ?? null,
+    });
+  };
 
   return (
     <div className="flex flex-col gap-8">
@@ -394,9 +420,25 @@ export function TasteStep({
             );
           })}
         </div>
+        <div className="flex flex-col gap-2 pt-2">
+          <span className="t-rotulo text-texto-suave">{copy.taste.search}</span>
+          <SelecaoComBusca
+            buscar={composerOptions}
+            valor={
+              found && data.favoriteComposerId === found.id ? found.id : ''
+            }
+            rotulo={found?.fullName}
+            placeholder={copy.taste.searchPlaceholder}
+            vazio={copy.taste.searchEmpty}
+            limpavel
+            aria-label={copy.taste.search}
+            aoMudar={(value, option) => void choose(value, option?.label ?? '')}
+            className="max-w-md"
+          />
+        </div>
         {chosenEra &&
           !everyEra &&
-          options.composers.length > composers.length && (
+          options.composers.length > suggested.length && (
             <button
               type="button"
               onClick={() => setEveryEra(true)}
@@ -436,12 +478,12 @@ export function ProfileStep({
 
   return (
     <div className="flex flex-col gap-6">
-      <div className="flex items-center gap-4">
+      <div className="flex flex-col items-center gap-3">
         <Portrait
           name={name || '?'}
           src={data.image ?? image}
-          sizes="80px"
-          className="h-20 w-20 shrink-0 rounded-full text-[1.5rem]"
+          sizes="128px"
+          className="h-28 w-28 shrink-0 rounded-full text-[2.25rem] shadow-[var(--sombra-1)] ring-1 ring-[var(--linha-forte)]"
         />
         <button
           type="button"

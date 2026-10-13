@@ -20,7 +20,7 @@ export function WelcomePrompt() {
   return (
     <aside
       aria-label={copy.title}
-      className="entra fixed inset-x-4 bottom-4 z-aviso flex max-w-sm flex-col gap-3 rounded-card bg-sup-alta p-5 shadow-[var(--sombra-2)] sm:left-auto sm:right-6 sm:bottom-6"
+      className="entra fixed inset-x-4 bottom-4 z-aviso flex max-w-sm flex-col gap-3 rounded-card sup-alta p-5 shadow-[var(--sombra-2)] sm:left-auto sm:right-6 sm:bottom-6"
     >
       <div className="flex items-start justify-between gap-3">
         <p className="font-display text-[1.375rem] leading-tight">

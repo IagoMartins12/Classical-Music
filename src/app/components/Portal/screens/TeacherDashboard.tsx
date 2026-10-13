@@ -362,7 +362,7 @@ function Summary({ queue, attention }: { queue: number; attention: number }) {
           ) : null}
           <span
             role="tooltip"
-            className="pointer-events-none absolute top-full z-menu mt-1 whitespace-nowrap rounded-controle bg-sup-alta px-2 py-1 text-xs text-texto opacity-0 shadow-[var(--sombra-2)] transition-opacity group-hover/dica:opacity-100 group-focus-visible/dica:opacity-100"
+            className="pointer-events-none absolute top-full z-menu mt-1 whitespace-nowrap rounded-controle sup-alta px-2 py-1 text-xs text-texto opacity-0 shadow-[var(--sombra-2)] transition-opacity group-hover/dica:opacity-100 group-focus-visible/dica:opacity-100"
           >
             {i.label}
           </span>

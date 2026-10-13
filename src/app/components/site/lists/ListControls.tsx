@@ -19,7 +19,7 @@ import { useRouteLanguage } from '@/app/hooks/useRouteLanguage';
 import { localizeHref } from '@/app/utils/localizedRoutes';
 import { listHref, type ListQuery } from '@/app/utils/listParams';
 import { SelecaoComBusca } from '@/app/components/ui/SelecaoComBusca';
-import { findComposers } from '@/app/requests/catalog-search';
+import { composerOptions } from '@/app/requests/catalog-search';
 import { ViewToggle } from './ViewToggle';
 
 export interface Option {
@@ -67,38 +67,6 @@ export interface RangeFilter {
   /** The chip once set ("Born 1700–1800"); `null` when empty. */
   chip: string | null;
 }
-
-const semAcento = (t: string) =>
-  t
-    .normalize('NFD')
-    .replace(/[\u0300-\u036f]/g, '')
-    .toLowerCase();
-
-/**
- * Composers by name, or the best known before anything is typed. The API
- * also matches alternative names; a name with a word starting with what was
- * typed comes first, the best known among them first ("cho" → Chopin).
- */
-const buscarCompositores = async (texto: string) => {
-  const q = semAcento(texto.trim());
-  const [achados, famosos] = await Promise.all([
-    findComposers(texto, 30),
-    q ? findComposers('', 40) : Promise.resolve([]),
-  ]);
-  const opcoes = achados.map((c) => ({
-    value: c.id,
-    label: c.fullName || c.name,
-  }));
-  if (!q) return opcoes.slice(0, 12);
-  const conhecido = new Set(famosos.map((c) => c.id));
-  const começa = (label: string) =>
-    semAcento(label)
-      .split(/[\s,.-]+/)
-      .some((w) => w.startsWith(q));
-  const peso = (o: { value: string; label: string }) =>
-    (começa(o.label) ? 0 : 2) + (conhecido.has(o.value) ? 0 : 1);
-  return [...opcoes].sort((a, b) => peso(a) - peso(b)).slice(0, 12);
-};
 
 const pill = 'w-auto! min-h-10! rounded-full! py-0! text-[0.9375rem]';
 
@@ -256,7 +224,7 @@ export function ListControls({
                 'w-full!',
                 query[composer.key] && 'border-[var(--ouro)]!'
               )}
-              buscar={buscarCompositores}
+              buscar={composerOptions}
               valor={query[composer.key] ?? ''}
               rotulo={composer.selectedLabel}
               limpavel

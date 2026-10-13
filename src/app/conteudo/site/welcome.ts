@@ -24,6 +24,19 @@ const pt = {
   loadError: 'Não foi possível carregar as opções.',
   retry: 'Tentar de novo',
   saveError: 'Não foi possível salvar. Tente de novo.',
+  greeting: (name: string) =>
+    name ? `Boas-vindas ao Opus Atlas, ${name}.` : 'Boas-vindas ao Opus Atlas.',
+  close: 'Fechar as boas-vindas',
+  steps: ['Você', 'Instrumentos', 'Estudo', 'Gostos', 'Perfil'],
+  preview: {
+    title: 'Seu Opus Atlas, até agora',
+    label: 'Prévia das suas respostas',
+    noName: 'Seu nome',
+    instruments: 'Instrumentos',
+    era: 'Época',
+    composer: 'Compositor preferido',
+    empty: 'Ainda não',
+  },
   you: {
     title: 'Quem é você na música?',
     text: 'Isso muda o que o Opus Atlas sugere primeiro. Dá para trocar depois no perfil.',
@@ -81,6 +94,9 @@ const pt = {
     era: 'Época preferida',
     composer: 'Compositor preferido',
     allComposers: 'Ver de todas as épocas',
+    search: 'Não está aqui? Busque pelo nome',
+    searchPlaceholder: 'Nome do compositor',
+    searchEmpty: 'Nenhum compositor com esse nome',
   },
   profile: {
     title: 'Seu perfil',
@@ -125,6 +141,19 @@ const en: typeof pt = {
   loadError: 'Could not load the options.',
   retry: 'Try again',
   saveError: 'Could not save. Try again.',
+  greeting: (name: string) =>
+    name ? `Welcome to Opus Atlas, ${name}.` : 'Welcome to Opus Atlas.',
+  close: 'Close the welcome',
+  steps: ['You', 'Instruments', 'Practice', 'Taste', 'Profile'],
+  preview: {
+    title: 'Your Opus Atlas so far',
+    label: 'Preview of your answers',
+    noName: 'Your name',
+    instruments: 'Instruments',
+    era: 'Era',
+    composer: 'Favorite composer',
+    empty: 'Not yet',
+  },
   you: {
     title: 'Who are you in music?',
     text: 'It changes what Opus Atlas suggests first. You can change it later in your profile.',
@@ -185,6 +214,9 @@ const en: typeof pt = {
     era: 'Favorite era',
     composer: 'Favorite composer',
     allComposers: 'Show every era',
+    search: 'Not here? Search by name',
+    searchPlaceholder: 'Composer’s name',
+    searchEmpty: 'No composer by that name',
   },
   profile: {
     title: 'Your profile',
