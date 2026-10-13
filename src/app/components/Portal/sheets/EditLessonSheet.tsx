@@ -36,10 +36,7 @@ export default function EditLessonSheet({
         {lesson.isPending ? (
           <ScreenLoading rows={3} />
         ) : (
-          <ScreenError
-            message={errorText(lesson.error)}
-            onRetry={() => lesson.refetch()}
-          />
+          <ScreenError message={errorText(lesson.error)} />
         )}
       </Sheet>
     );

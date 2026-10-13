@@ -63,10 +63,7 @@ export default function AssignmentSheet({
         {query.isPending ? (
           <ScreenLoading rows={3} />
         ) : (
-          <ScreenError
-            message={errorText(query.error)}
-            onRetry={() => query.refetch()}
-          />
+          <ScreenError message={errorText(query.error)} />
         )}
       </Sheet>
     );

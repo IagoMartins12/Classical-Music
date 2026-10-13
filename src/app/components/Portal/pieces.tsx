@@ -7,6 +7,7 @@
 // diz de um horário. Cor só onde pede ação (ouro) ou em atraso (atenção).
 
 import Link from 'next/link';
+import { recarregarTudo } from '@/app/libs/pwa/recarregar';
 import type { CSSProperties, ReactNode } from 'react';
 import { GiGrandPiano } from 'react-icons/gi';
 import {
@@ -896,18 +897,15 @@ export function ScreenLoading({
   );
 }
 
-export function ScreenError({
-  message,
-  onRetry,
-}: {
-  message: string;
-  onRetry?: () => void;
-}) {
+/** A screen that failed to load; "Tentar de novo" reloads everything. */
+export function ScreenError({ message }: { message: string }) {
   return (
     <Erro
       titulo="Não foi possível carregar esta tela"
       descricao={message}
-      acao={onRetry && <Button onClick={onRetry}>Tentar de novo</Button>}
+      acao={
+        <Button onClick={() => void recarregarTudo()}>Tentar de novo</Button>
+      }
     />
   );
 }

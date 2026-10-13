@@ -73,10 +73,7 @@ export function StudentRepertoire({
         descricao={`${name} escolheu não compartilhar a biblioteca dele. As obras das aulas continuam nas aulas.`}
       />
     ) : (
-      <ScreenError
-        message={errorText(repertoire.error)}
-        onRetry={() => repertoire.refetch()}
-      />
+      <ScreenError message={errorText(repertoire.error)} />
     );
   }
   const r = repertoire.data!;

@@ -63,12 +63,7 @@ export function StudentPage({ studentId }: { studentId: string }) {
   const query = useStudent(studentId);
   if (query.isPending) return <ScreenLoading label="Carregando o aluno" />;
   if (query.error || !query.data)
-    return (
-      <ScreenError
-        message={errorText(query.error)}
-        onRetry={() => query.refetch()}
-      />
-    );
+    return <ScreenError message={errorText(query.error)} />;
   return <Page row={query.data} />;
 }
 

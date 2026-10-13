@@ -166,10 +166,7 @@ export default function RequestLessonSheet({
           {free.isPending ? (
             <ScreenLoading rows={2} label="Buscando os horários livres" />
           ) : free.error ? (
-            <ScreenError
-              message={errorText(free.error)}
-              onRetry={() => free.refetch()}
-            />
+            <ScreenError message={errorText(free.error)} />
           ) : rules && !rules.accepts ? (
             <p className="rounded-controle bg-sup-2 p-4 text-sm text-texto-suave">
               {name} não está recebendo pedidos de aula pelo portal agora.

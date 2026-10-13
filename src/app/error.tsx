@@ -3,16 +3,18 @@
 import { useEffect } from 'react';
 import { ErrorView } from '@/app/components/site/status/StatusViews';
 
-/** "Op. 500": a failure on our side, with a retry and the error id to report. */
+/**
+ * "Op. 500": a failure on our side, with a full reload and the error id to
+ * report. Next's `reset` only re-renders the segment; a failure is better
+ * met with fresh code and data.
+ */
 export default function Error({
   error,
-  reset,
 }: {
   error: Error & { digest?: string };
-  reset: () => void;
 }) {
   useEffect(() => {
     console.error('Application error:', error);
   }, [error]);
-  return <ErrorView reset={reset} digest={error.digest} />;
+  return <ErrorView digest={error.digest} />;
 }

@@ -69,10 +69,7 @@ export default function DeliverySheet({
       {assignment.isPending ? (
         <ScreenLoading rows={3} />
       ) : assignment.error || !a ? (
-        <ScreenError
-          message={errorText(assignment.error)}
-          onRetry={() => assignment.refetch()}
-        />
+        <ScreenError message={errorText(assignment.error)} />
       ) : (
         <div className="flex flex-col gap-6">
           {a.submissions.entries.length > 0 ? (

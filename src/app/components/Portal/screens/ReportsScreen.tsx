@@ -179,10 +179,7 @@ export function ReportsScreen({
           {list.isPending ? (
             <ScreenLoading rows={3} label="Carregando os relatórios" />
           ) : list.error ? (
-            <ScreenError
-              message={errorText(list.error)}
-              onRetry={() => list.refetch()}
-            />
+            <ScreenError message={errorText(list.error)} />
           ) : reports.length === 0 ? (
             <Empty
               icone={PiChartLineUp}

@@ -68,10 +68,9 @@ import { usePortal, type SheetRequest } from '../PortalProvider';
 import { Staff, type StaffDay } from '../schedule/Staff';
 
 export function TeacherDashboard() {
-  const { data, isPending, error, refetch } = useTeacherDashboard();
+  const { data, isPending, error } = useTeacherDashboard();
   if (isPending) return <ScreenLoading label="Carregando o painel" />;
-  if (error || !data)
-    return <ScreenError message={errorText(error)} onRetry={() => refetch()} />;
+  if (error || !data) return <ScreenError message={errorText(error)} />;
   return <Board data={data} />;
 }
 

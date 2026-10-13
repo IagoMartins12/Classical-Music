@@ -28,14 +28,14 @@ export default function CloseLessonSheet({
   onClose,
   closeAll,
 }: SheetProps<{ type: 'close'; id: string }>) {
-  const { data: lesson, isPending, error, refetch } = useLesson(request.id);
+  const { data: lesson, isPending, error } = useLesson(request.id);
   if (isPending || error || !lesson)
     return (
       <Sheet aberto aoFechar={onClose} titulo="Fechar a aula" largura="m">
         {isPending ? (
           <ScreenLoading rows={3} />
         ) : (
-          <ScreenError message={errorText(error)} onRetry={() => refetch()} />
+          <ScreenError message={errorText(error)} />
         )}
       </Sheet>
     );

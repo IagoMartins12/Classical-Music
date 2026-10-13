@@ -56,10 +56,7 @@ export default function ScheduleSheet(
         {original.isPending ? (
           <ScreenLoading rows={3} />
         ) : (
-          <ScreenError
-            message={errorText(original.error)}
-            onRetry={() => original.refetch()}
-          />
+          <ScreenError message={errorText(original.error)} />
         )}
       </Sheet>
     );

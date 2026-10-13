@@ -242,10 +242,7 @@ export function LessonsScreen({
         {lessons.isPending ? (
           <ScreenLoading rows={6} label="Carregando as aulas" />
         ) : lessons.error ? (
-          <ScreenError
-            message={errorText(lessons.error)}
-            onRetry={() => lessons.refetch()}
-          />
+          <ScreenError message={errorText(lessons.error)} />
         ) : groups.length === 0 ? (
           <Empty
             titulo={

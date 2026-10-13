@@ -101,10 +101,7 @@ export default function AvailabilitySheet({ onClose, closeAll }: SheetProps) {
         largura="g"
       >
         {availability.error ? (
-          <ScreenError
-            message={errorText(availability.error)}
-            onRetry={() => availability.refetch()}
-          />
+          <ScreenError message={errorText(availability.error)} />
         ) : (
           <ScreenLoading rows={4} />
         )}

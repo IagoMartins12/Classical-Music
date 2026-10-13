@@ -59,10 +59,9 @@ import { Staff, type StaffDay } from '../schedule/Staff';
 import { PendingInvites } from './StudentGate';
 
 export function StudentDashboard() {
-  const { data, isPending, error, refetch } = useStudentDashboard();
+  const { data, isPending, error } = useStudentDashboard();
   if (isPending) return <ScreenLoading label="Carregando o painel" />;
-  if (error || !data)
-    return <ScreenError message={errorText(error)} onRetry={() => refetch()} />;
+  if (error || !data) return <ScreenError message={errorText(error)} />;
   return <Board data={data} />;
 }
 

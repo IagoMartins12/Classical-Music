@@ -1,6 +1,7 @@
 'use client';
 
 import { useQuery } from '@tanstack/react-query';
+import { recarregarTudo } from '@/app/libs/pwa/recarregar';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import { Fragment, useState } from 'react';
 import {
@@ -146,7 +147,7 @@ export function HistoryView() {
           <Button
             variante="fantasma"
             tamanho="p"
-            onClick={() => list.refetch()}
+            onClick={() => void recarregarTudo()}
           >
             {copy.retry}
           </Button>

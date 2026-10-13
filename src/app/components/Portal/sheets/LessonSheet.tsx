@@ -17,7 +17,7 @@ export default function LessonSheet({
   onClose,
   open,
 }: SheetProps<{ type: 'lesson'; id: string }>) {
-  const { data: lesson, error, isPending, refetch } = useLesson(request.id);
+  const { data: lesson, error, isPending } = useLesson(request.id);
   const head = lesson ? lessonTitle(lesson) : null;
 
   return (
@@ -41,7 +41,7 @@ export default function LessonSheet({
       {isPending ? (
         <ScreenLoading label="Carregando a aula" rows={3} />
       ) : error || !lesson ? (
-        <ScreenError message={errorText(error)} onRetry={() => refetch()} />
+        <ScreenError message={errorText(error)} />
       ) : (
         <LessonDetail lesson={lesson} role={role} open={open} />
       )}

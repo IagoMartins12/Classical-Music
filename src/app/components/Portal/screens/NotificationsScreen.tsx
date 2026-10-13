@@ -103,10 +103,7 @@ export function NotificationsScreen({ role }: { role: Role }) {
         {list.isPending ? (
           <ScreenLoading rows={6} label="Carregando os avisos" />
         ) : list.error ? (
-          <ScreenError
-            message={errorText(list.error)}
-            onRetry={() => list.refetch()}
-          />
+          <ScreenError message={errorText(list.error)} />
         ) : items.length === 0 ? (
           <Empty
             icone={PiBell}

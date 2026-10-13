@@ -299,10 +299,7 @@ export function CalendarScreen({ role }: { role: Role }) {
         </div>
 
         {calendar.error ? (
-          <ScreenError
-            message={errorText(calendar.error)}
-            onRetry={() => calendar.refetch()}
-          />
+          <ScreenError message={errorText(calendar.error)} />
         ) : (
           <div
             data-ajuda="grade"

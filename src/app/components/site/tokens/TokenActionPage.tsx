@@ -1,6 +1,7 @@
 'use client';
 
 import { useParams } from 'next/navigation';
+import { recarregarTudo } from '@/app/libs/pwa/recarregar';
 import {
   useEffect,
   useRef,
@@ -124,7 +125,11 @@ export function TokenActionPage({
         </Button>
       )}
       {state.code === 'CONNECTION_ERROR' && (
-        <Button variante="primario" icone={PiArrowClockwise} onClick={start}>
+        <Button
+          variante="primario"
+          icone={PiArrowClockwise}
+          onClick={() => void recarregarTudo()}
+        >
           {copy.retry}
         </Button>
       )}

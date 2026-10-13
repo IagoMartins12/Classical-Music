@@ -59,10 +59,7 @@ export function LessonPanel({
         </div>
       ) : lesson.error || !lesson.data ? (
         <div className="p-5">
-          <ScreenError
-            message={errorText(lesson.error)}
-            onRetry={() => lesson.refetch()}
-          />
+          <ScreenError message={errorText(lesson.error)} />
         </div>
       ) : (
         <>

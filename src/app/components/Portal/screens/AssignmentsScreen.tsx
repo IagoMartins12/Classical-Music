@@ -203,10 +203,7 @@ export function AssignmentsScreen({
         {list.isPending ? (
           <ScreenLoading rows={5} label="Carregando as tarefas" />
         ) : list.error ? (
-          <ScreenError
-            message={errorText(list.error)}
-            onRetry={() => list.refetch()}
-          />
+          <ScreenError message={errorText(list.error)} />
         ) : items.length === 0 ? (
           <Empty
             icone={PiClipboardText}

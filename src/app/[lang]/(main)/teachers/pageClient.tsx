@@ -2,6 +2,7 @@
 
 'use client';
 import { useLocalizedRouter } from '@/app/hooks/useLocalizedRouter';
+import { recarregarTudo } from '@/app/libs/pwa/recarregar';
 
 import { useState, useCallback, useMemo } from 'react';
 import {
@@ -177,7 +178,7 @@ export default function PublicTeachersPageClient({
             <Inline
               as="button"
               gap={2}
-              onClick={() => window.location.reload()}
+              onClick={() => void recarregarTudo()}
               className="btn-classical-primary w-full justify-center"
             >
               <PiArrowsClockwise className="w-4 h-4" />

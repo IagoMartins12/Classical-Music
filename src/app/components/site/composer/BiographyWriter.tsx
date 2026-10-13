@@ -1,6 +1,7 @@
 'use client';
 
 import { useCallback, useEffect, useState } from 'react';
+import { recarregarTudo } from '@/app/libs/pwa/recarregar';
 import { PiArrowClockwise } from 'react-icons/pi';
 import { Button } from '@/app/components/ui/Button';
 import { COMPOSER } from '@/app/conteudo/site/composer';
@@ -104,10 +105,7 @@ export function BiographyWriter({
             tamanho="p"
             icone={PiArrowClockwise}
             className="mt-1"
-            onClick={() => {
-              setState({ kind: 'writing' });
-              setAttempt((n) => n + 1);
-            }}
+            onClick={() => void recarregarTudo()}
           >
             {copy.retry}
           </Button>

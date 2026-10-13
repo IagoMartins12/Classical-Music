@@ -88,10 +88,7 @@ export default function ReportSheet({
       {report.isPending ? (
         <ScreenLoading rows={4} label="Carregando o relatório" />
       ) : report.error || !r ? (
-        <ScreenError
-          message={errorText(report.error)}
-          onRetry={() => report.refetch()}
-        />
+        <ScreenError message={errorText(report.error)} />
       ) : (
         <div className="flex flex-col gap-12">
           {role === 'teacher' && (

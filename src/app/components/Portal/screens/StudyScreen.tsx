@@ -79,12 +79,7 @@ function Practice() {
   if (practice.isPending)
     return <ScreenLoading rows={3} label="Carregando a prática" />;
   if (practice.error)
-    return (
-      <ScreenError
-        message={errorText(practice.error)}
-        onRetry={() => practice.refetch()}
-      />
-    );
+    return <ScreenError message={errorText(practice.error)} />;
   const p = practice.data!;
   const weekAgo = addDays(today(), -6);
   const last7 = p.entries.filter((e) => dayOf(e.practicedAt) >= weekAgo);
@@ -253,12 +248,7 @@ function Repertoire() {
   if (repertoire.isPending)
     return <ScreenLoading rows={3} label="Carregando o repertório" />;
   if (repertoire.error)
-    return (
-      <ScreenError
-        message={errorText(repertoire.error)}
-        onRetry={() => repertoire.refetch()}
-      />
-    );
+    return <ScreenError message={errorText(repertoire.error)} />;
   const r = repertoire.data!;
   const known = [
     ...r.wantToLearn.map((w) => w.work.id),

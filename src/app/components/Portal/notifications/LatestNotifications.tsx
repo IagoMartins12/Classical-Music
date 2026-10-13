@@ -65,13 +65,7 @@ export function LatestNotificationsList({
         ))}
       </div>
     );
-  if (list.error)
-    return (
-      <ScreenError
-        message={errorText(list.error)}
-        onRetry={() => list.refetch()}
-      />
-    );
+  if (list.error) return <ScreenError message={errorText(list.error)} />;
   if (!items.length)
     return (
       <p className="py-2 text-[0.9375rem] text-texto-suave">

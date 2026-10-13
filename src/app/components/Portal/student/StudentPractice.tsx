@@ -52,12 +52,7 @@ export function StudentPractice({
       </div>
     );
   if (practice.error)
-    return (
-      <ScreenError
-        message={errorText(practice.error)}
-        onRetry={() => practice.refetch()}
-      />
-    );
+    return <ScreenError message={errorText(practice.error)} />;
 
   const p = practice.data!;
   const weekAgo = addDays(today(), -6);

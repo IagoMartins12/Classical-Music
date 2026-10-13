@@ -124,10 +124,7 @@ function PublicProfile() {
     >
       {profile.isPending || !form ? (
         profile.error ? (
-          <ScreenError
-            message={errorText(profile.error)}
-            onRetry={() => profile.refetch()}
-          />
+          <ScreenError message={errorText(profile.error)} />
         ) : (
           <ScreenLoading rows={2} />
         )
@@ -228,12 +225,7 @@ function Schedule() {
   );
 
   if (settings.error)
-    return (
-      <ScreenError
-        message={errorText(settings.error)}
-        onRetry={() => settings.refetch()}
-      />
-    );
+    return <ScreenError message={errorText(settings.error)} />;
   if (!form) return <ScreenLoading rows={3} />;
   const set = <K extends keyof SchedulingSettings>(
     k: K,
@@ -451,10 +443,7 @@ function StudyProfile() {
       detail="Seus professores veem para planejar as aulas"
     >
       {profile.error ? (
-        <ScreenError
-          message={errorText(profile.error)}
-          onRetry={() => profile.refetch()}
-        />
+        <ScreenError message={errorText(profile.error)} />
       ) : !form ? (
         <ScreenLoading rows={2} />
       ) : (
@@ -548,10 +537,7 @@ function Classes() {
       {classes.isPending ? (
         <ScreenLoading rows={2} />
       ) : classes.error ? (
-        <ScreenError
-          message={errorText(classes.error)}
-          onRetry={() => classes.refetch()}
-        />
+        <ScreenError message={errorText(classes.error)} />
       ) : (
         <ul className="flex flex-col">
           {classes.data!.teachers.map((c) => (
@@ -649,10 +635,7 @@ function Preferences({ role }: { role: Role }) {
       help="perfil-avisos"
     >
       {prefs.error ? (
-        <ScreenError
-          message={errorText(prefs.error)}
-          onRetry={() => prefs.refetch()}
-        />
+        <ScreenError message={errorText(prefs.error)} />
       ) : !form ? (
         <ScreenLoading rows={3} />
       ) : (

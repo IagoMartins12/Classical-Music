@@ -1,6 +1,7 @@
 'use client';
 
 import { usePathname, useSearchParams } from 'next/navigation';
+import { recarregarTudo } from '@/app/libs/pwa/recarregar';
 import type { ReactNode } from 'react';
 import {
   PiArrowLeft,
@@ -10,7 +11,7 @@ import {
   PiSignIn,
 } from 'react-icons/pi';
 import { CabecalhoDoBlog } from '@/app/components/blog/site/Cabecalho';
-import Footer from '@/app/components/Footer';
+import { SiteFooter } from '@/app/components/site/footer/SiteFooter';
 import Link from '@/app/components/LocalizedLink';
 import { Button, classesDeBotao } from '@/app/components/ui/Button';
 import { Icon } from '@/app/components/ui/Icon';
@@ -49,7 +50,7 @@ function Chrome({ area, children }: { area: Area; children: ReactNode }) {
       <main className="flex min-h-[70vh] flex-col justify-center">
         {children}
       </main>
-      <Footer />
+      <SiteFooter />
     </>
   );
 }
@@ -214,13 +215,7 @@ export function AccessDeniedView() {
   );
 }
 
-export function ErrorView({
-  reset,
-  digest,
-}: {
-  reset: () => void;
-  digest?: string;
-}) {
+export function ErrorView({ digest }: { digest?: string }) {
   const { language } = useRouteLanguage();
   const copy = STATUS[language];
   const t = copy.error;
@@ -242,7 +237,7 @@ export function ErrorView({
         quote={copy.quote}
         action={
           <div className="flex flex-wrap justify-center gap-3">
-            <Button variante="primario" onClick={reset}>
+            <Button variante="primario" onClick={() => void recarregarTudo()}>
               {t.retry}
             </Button>
             <Link href="/" className={classesDeBotao()}>

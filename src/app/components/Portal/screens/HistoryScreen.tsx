@@ -174,10 +174,7 @@ export function HistoryScreen({ role }: { role: Role }) {
         {list.isPending ? (
           <ScreenLoading rows={6} label="Carregando o histórico" />
         ) : list.error ? (
-          <ScreenError
-            message={errorText(list.error)}
-            onRetry={() => list.refetch()}
-          />
+          <ScreenError message={errorText(list.error)} />
         ) : groups.length === 0 ? (
           <Empty
             titulo="Nada por aqui"

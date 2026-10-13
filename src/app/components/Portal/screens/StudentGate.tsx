@@ -83,13 +83,7 @@ function Gate() {
   });
 
   if (classes.isPending) return <ScreenLoading label="Carregando" />;
-  if (classes.error)
-    return (
-      <ScreenError
-        message={errorText(classes.error)}
-        onRetry={() => classes.refetch()}
-      />
-    );
+  if (classes.error) return <ScreenError message={errorText(classes.error)} />;
   const { invitations, past, teachers } = classes.data!;
   const name = session?.user?.firstName ?? '';
 

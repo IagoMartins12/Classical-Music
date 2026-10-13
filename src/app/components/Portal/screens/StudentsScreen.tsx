@@ -165,10 +165,7 @@ export function StudentsScreen() {
         {current.isPending ? (
           <ScreenLoading rows={4} label="Carregando os alunos" />
         ) : current.error ? (
-          <ScreenError
-            message={errorText(current.error)}
-            onRetry={() => current.refetch()}
-          />
+          <ScreenError message={errorText(current.error)} />
         ) : rows.length === 0 ? (
           <Empty
             icone={tab === 'active' ? PiUserPlus : undefined}
