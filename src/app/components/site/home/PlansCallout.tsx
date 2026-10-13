@@ -16,7 +16,10 @@ export function PlansCallout({ copy }: { copy: HomeCopy['plans'] }) {
             <Link href="/pricing" className={classesDeBotao('primario', 'm')}>
               {copy.cta}
             </Link>
-            <Link href="/teachers" className={classesDeBotao('fantasma', 'm')}>
+            <Link
+              href="/for-teachers"
+              className={classesDeBotao('fantasma', 'm')}
+            >
               {copy.teachers}
             </Link>
           </div>

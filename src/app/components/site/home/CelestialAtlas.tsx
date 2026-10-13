@@ -46,7 +46,7 @@ const ORBITS: readonly Orbit[] = [
   },
   {
     key: 'lessons',
-    href: '/teachers',
+    href: '/for-teachers',
     r: 43,
     angle: 10,
     icon: PiChalkboardTeacher,

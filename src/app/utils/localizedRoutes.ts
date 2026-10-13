@@ -47,7 +47,6 @@ export const LOCALIZED_ROUTES = [
   '/privacy',
   '/search',
   '/support',
-  '/teachers',
   '/terms',
   '/works',
 ];
@@ -81,7 +80,7 @@ export const UNLOCALIZED_SUBROUTES = [
  * declara não vale nada. Mas a visita que importa nestas páginas, a que vem do
  * buscador e do menu, chega sem parâmetro nenhum.
  */
-export const SPLIT_ROUTES = ['/composers', '/works', '/teachers'];
+export const SPLIT_ROUTES = ['/composers', '/works'];
 
 /** O sufixo interno; ver `SPLIT_ROUTES`. */
 export const FILTERED_SEGMENT = '/filtered';
