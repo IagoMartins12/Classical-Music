@@ -15,6 +15,7 @@ import { PiX } from 'react-icons/pi';
 import ConfirmationModal from './ConfirmationModal';
 import { useModalConfirmation } from '@/app/hooks/useModalConfirmation';
 import { Button } from '@/app/components/ui/Button';
+import { AreaCarregando, Skeleton } from '@/app/components/ui/Skeleton';
 
 interface ModalProps {
   isOpen: boolean;
@@ -36,6 +37,8 @@ interface ModalProps {
   setPr?: boolean;
   middlePosition?: boolean;
   minHeight?: boolean | null;
+  /** Its text is still loading: a skeleton stands in, never the keys. */
+  carregando?: boolean;
 }
 
 export interface ModalRef {
@@ -103,6 +106,7 @@ const Modal = forwardRef<ModalRef, ModalProps>(
       setPr,
       middlePosition,
       minHeight,
+      carregando = false,
     },
     ref
   ) => {
@@ -407,7 +411,20 @@ const Modal = forwardRef<ModalRef, ModalProps>(
                   : 'p-4 md:p-6'
               }`}
             >
-              {children}
+              {carregando ? (
+                <AreaCarregando>
+                  <div className="flex flex-col gap-4">
+                    <Skeleton className="h-6 w-2/3" />
+                    <Skeleton className="w-full" />
+                    <Skeleton className="w-5/6" />
+                    <Skeleton forma="bloco" className="h-12 w-full" />
+                    <Skeleton forma="bloco" className="h-12 w-full" />
+                    <Skeleton forma="bloco" className="mt-2 h-11 w-full" />
+                  </div>
+                </AreaCarregando>
+              ) : (
+                children
+              )}
             </div>
           </div>
         </div>

@@ -37,7 +37,7 @@ const ForgotPasswordModal: React.FC<ForgotPasswordModalProps> = ({
   onClose,
   onBackToLogin,
 }) => {
-  const { t } = useTranslation({ sections: ['components/auth-modals'] });
+  const { t, ready } = useTranslation({ sections: ['components/auth-modals'] });
   const [state, setState] = useState<ForgotPasswordState>({
     step: 'email',
     email: '',
@@ -379,6 +379,7 @@ const ForgotPasswordModal: React.FC<ForgotPasswordModalProps> = ({
 
   return (
     <Modal
+      carregando={!ready}
       isOpen={isOpen}
       onClose={handleClose}
       maxWidth="lg"

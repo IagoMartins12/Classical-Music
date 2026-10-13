@@ -54,7 +54,7 @@ const DeleteAccountModal: React.FC<DeleteAccountModalProps> = ({
   userName,
   userEmail,
 }) => {
-  const { t } = useTranslation({ sections: ['pages/profile'] });
+  const { t, ready } = useTranslation({ sections: ['pages/profile'] });
   const [mounted, setMounted] = useState(false);
   const [confirmText, setConfirmText] = useState('');
   const [currentPassword, setCurrentPassword] = useState('');
@@ -164,6 +164,7 @@ const DeleteAccountModal: React.FC<DeleteAccountModalProps> = ({
 
   const modalContent = (
     <Modal
+      carregando={!ready}
       isOpen={isOpen}
       onClose={() => {
         if (!isLoading) handleClose();

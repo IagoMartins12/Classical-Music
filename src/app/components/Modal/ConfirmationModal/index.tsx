@@ -22,7 +22,7 @@ const ConfirmationModal: React.FC<ConfirmationModalProps> = ({
   onCancel,
   isLoading = false,
 }) => {
-  const { t } = useTranslation({
+  const { t, ready } = useTranslation({
     sections: ['components/confimationModal'],
   });
 
@@ -82,6 +82,9 @@ const ConfirmationModal: React.FC<ConfirmationModalProps> = ({
       <p className="t-rotulo text-texto-suave">{texto}</p>
     </Stack>
   );
+
+  // Its few words are not here yet: the dialog waits a moment, keyless.
+  if (!ready) return null;
 
   return (
     <ConfirmModal

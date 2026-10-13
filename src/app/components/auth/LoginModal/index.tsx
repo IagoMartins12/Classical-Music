@@ -113,7 +113,7 @@ const LoginModal: React.FC = () => {
   const [isGoogleLoading, setIsGoogleLoading] = useState(false);
   const [forgotPasswordOpen, setForgotPasswordOpen] = useState(false);
   const router = useRouter();
-  const { t, language } = useTranslation({
+  const { t, language, ready } = useTranslation({
     sections: ['components/auth-modals'],
   });
 
@@ -276,6 +276,7 @@ const LoginModal: React.FC = () => {
   return (
     <>
       <Modal
+        carregando={!ready}
         isOpen={isOpen}
         onClose={handleClose}
         maxWidth="xl"

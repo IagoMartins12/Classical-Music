@@ -101,7 +101,7 @@ const ScoreSelectionModal = ({
   onScoreSelected,
   isEditing = false,
 }: ScoreSelectionModalProps) => {
-  const { t } = useTranslation({ sections: ['pages/learning'] });
+  const { t, ready } = useTranslation({ sections: ['pages/learning'] });
 
   // TABS para categorias traduzidas
   const SCORE_TABS = [
@@ -492,6 +492,7 @@ const ScoreSelectionModal = ({
 
   return (
     <Modal
+      carregando={!ready}
       isOpen={isOpen}
       onClose={onClose}
       maxWidth="6xl"

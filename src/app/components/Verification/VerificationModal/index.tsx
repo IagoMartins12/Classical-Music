@@ -32,7 +32,7 @@ export default function VerificationModal({
   currentVerificationStatus,
   onVerificationChange,
 }: VerificationModalProps) {
-  const { t } = useTranslation({ sections: ['pages/workId'] });
+  const { t, ready } = useTranslation({ sections: ['pages/workId'] });
   const [notes, setNotes] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -83,7 +83,12 @@ export default function VerificationModal({
   if (!isOpen) return null;
 
   return (
-    <Modal isOpen={isOpen} onClose={onClose} closeOnOverlayClick>
+    <Modal
+      carregando={!ready}
+      isOpen={isOpen}
+      onClose={onClose}
+      closeOnOverlayClick
+    >
       <AnimatedItem direction="scale" springType="bouncy">
         <div className="">
           {/* Header */}

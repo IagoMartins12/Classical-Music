@@ -1,13 +1,10 @@
 // contexts/TranslationContext.tsx - Context provider for server translations
 'use client';
 
-import { SkeletonText } from '@/app/components/SkeletonText';
 import { useLanguageWithRefresh } from '@/app/stores/useLanguageStore';
 import { Language } from '@/app/utils/translations/serverTranslations';
 import React, {
   createContext,
-  createElement,
-  JSX,
   useCallback,
   useContext,
   useEffect,
@@ -109,7 +106,7 @@ export function TranslationProvider({
         return interpolateTranslation(sectionData[key], params);
       }
 
-      return formatKeyAsFallback(key);
+      return missing(key);
     };
 
     // Função t() principal
@@ -130,8 +127,7 @@ export function TranslationProvider({
         }
       }
 
-      // Fallback: formatar chave como texto legível
-      return formatKeyAsFallback(key);
+      return missing(key);
     };
 
     return {
@@ -192,8 +188,8 @@ export function useTranslation(
 ) {
   const context = useContext(TranslationContext);
 
-  // Chama SEMPRE o hook original
-  const original = useOriginalTranslation(options);
+  // Always called (rules of hooks); with a provider it has nothing to fetch.
+  const original = useOriginalTranslation(context ? {} : options);
 
   // Quem declara as seções que usa passa a ser quem dispara o carregamento
   // delas — o provider não precisa adivinhar. `join` porque o array costuma
@@ -208,33 +204,14 @@ export function useTranslation(
 
   // Se existir contexto (server translations), sobrescreve o retorno
   if (context) {
+    const ready = (options.sections ?? []).every(
+      (section) => section in context.translations
+    );
     return {
       t: context.t,
       tSection: context.tSection,
       language: context.language,
-      isLoading: false,
-      loadedSections: Object.keys(context.translations),
-      error: null,
-      changeLanguage: () => {
-        console.warn(
-          'changeLanguage not available when using server translations'
-        );
-      },
-      toggleLanguage: () => {
-        console.warn(
-          'toggleLanguage not available when using server translations'
-        );
-      },
-      loadSection: async () => {
-        console.warn(
-          'loadSection not available when using server translations'
-        );
-      },
-      preloadSections: async () => {
-        console.warn(
-          'preloadSections not available when using server translations'
-        );
-      },
+      ready,
     };
   }
 
@@ -255,208 +232,116 @@ function interpolateTranslation(
   });
 }
 
-// Função utilitária para fallback
-function formatKeyAsFallback(key: string): string {
-  return key
-    .split('_')
-    .map((part) => part.charAt(0).toUpperCase() + part.slice(1))
-    .join(' ');
+/**
+ * A key with no text. Never shown: an empty string while the section loads
+ * (the component shows a skeleton when `ready` is false) or when the key is
+ * missing from the file, which development reports.
+ */
+function missing(key: string): string {
+  if (process.env.NODE_ENV === 'development')
+    console.warn(`[i18n] texto ausente: ${key}`);
+  return '';
 }
 
-// Cache global para todas as seções carregadas (do hook original)
+/** Sections fetched outside a provider, both languages, by section. */
 const sectionCache = new Map<
   string,
-  { ptBr: Record<string, string>; en: Record<string, string> }
+  { ptBr: TranslationData; en: TranslationData }
 >();
+const pending = new Map<string, Promise<void>>();
 
-interface UseTranslationOptions {
+function loadSection(section: string): Promise<void> {
+  const inFlight = pending.get(section);
+  if (inFlight) return inFlight;
+  const load = fetch(`/translations/${section}.json`)
+    .then((response) => {
+      if (!response.ok) throw new Error(String(response.status));
+      return response.json() as Promise<{
+        ptBr?: TranslationData;
+        en?: TranslationData;
+      }>;
+    })
+    .then((data) => {
+      sectionCache.set(section, { ptBr: data.ptBr ?? {}, en: data.en ?? {} });
+    })
+    .catch(() => {
+      // Without the file `t()` gives empty strings, never the keys.
+      sectionCache.set(section, { ptBr: {}, en: {} });
+    });
+  pending.set(section, load);
+  return load;
+}
+
+/**
+ * Outside a provider (modals, the study sheet): the sections are fetched
+ * here. `ready` is false until every one has arrived, decided on the first
+ * render, so a component never paints a key before the fetch starts.
+ */
+function useOriginalTranslation(options: {
   sections?: string[];
   defaultSection?: string;
-}
+}) {
+  const { defaultSection } = options;
+  const sections = useMemo(
+    () => options.sections ?? [],
 
-interface UseTranslationResult {
-  t: (key: string, params?: Record<string, string | number>) => string | any;
-  tSection: (
-    section: string,
-    key: string,
-    params?: Record<string, string | number>
-  ) => string;
-  language: Language;
-  isLoading: boolean;
-  loadedSections: string[];
-  error: string | null;
-  changeLanguage: (lang: Language) => void;
-  toggleLanguage: () => void;
-  loadSection: (section: string) => Promise<void>;
-  preloadSections: (sections: string[]) => Promise<void>;
-}
-
-// Hook original (client-side) para fallback
-function useOriginalTranslation(
-  options: UseTranslationOptions = {}
-): UseTranslationResult {
-  const { sections, defaultSection } = options;
-
-  const { language, setLanguage, toggleLanguage } = useLanguageWithRefresh();
-  const [isLoading, setIsLoading] = useState(false);
-  const [loadedSections, setLoadedSections] = useState<string[]>([]);
-  const [error, setError] = useState<string | null>(null);
-
-  // Carregar seção específica
-  const loadSection = useCallback(
-    async (section: string) => {
-      if (sectionCache.has(section)) {
-        if (!loadedSections.includes(section)) {
-          setLoadedSections((prev) => [...prev, section]);
-        }
-        return;
-      }
-
-      try {
-        setIsLoading(true);
-        setError(null);
-
-        const response = await fetch(`/translations/${section}.json`);
-
-        if (!response.ok) {
-          throw new Error(`Failed to load section ${section}`);
-        }
-
-        const translationData = await response.json();
-
-        if (!translationData.ptBr && !translationData.en) {
-          return;
-        }
-
-        sectionCache.set(section, {
-          ptBr: translationData.ptBr || {},
-          en: translationData.en || {},
-        });
-
-        setLoadedSections((prev) => {
-          if (!prev.includes(section)) {
-            return [...prev, section];
-          }
-          return prev;
-        });
-      } catch (err) {
-        setError(
-          err instanceof Error ? err.message : 'Erro ao carregar tradução'
-        );
-        sectionCache.set(section, { ptBr: {}, en: {} });
-      } finally {
-        setIsLoading(false);
-      }
-    },
-    [loadedSections]
+    [(options.sections ?? []).join('|')]
   );
+  const { language } = useLanguageWithRefresh();
+  const [, setLoaded] = useState(0);
+  const ready = sections.every((section) => sectionCache.has(section));
 
-  // Pré-carregar múltiplas seções
-  const preloadSections = useCallback(
-    async (sectionsToLoad: string[]) => {
-      const promises = sectionsToLoad.map((section) => loadSection(section));
-      await Promise.all(promises);
-    },
-    [loadSection]
-  );
-
-  // Carregar seções iniciais
   useEffect(() => {
-    if (sections && sections.length > 0) {
-      const loadInitialSections = async () => {
-        for (const section of sections) {
-          await loadSection(section);
-        }
-      };
-      loadInitialSections();
-    }
-  }, [sections, loadSection]);
+    if (ready) return;
+    let alive = true;
+    void Promise.all(sections.map(loadSection)).then(
+      () => alive && setLoaded((n) => n + 1)
+    );
+    return () => {
+      alive = false;
+    };
+  }, [ready, sections]);
 
-  // Função para traduzir com seção específica
+  const lookup = useCallback(
+    (section: string, key: string) => {
+      const data = sectionCache.get(section);
+      return (
+        (language === 'pt' ? data?.ptBr[key] : data?.en[key]) ?? data?.ptBr[key]
+      );
+    },
+    [language]
+  );
+
   const tSection = useCallback(
     (
       section: string,
       key: string,
       params?: Record<string, string | number>
-    ): string => {
-      const sectionData = sectionCache.get(section);
-
-      if (!sectionData) {
-        return formatKeyAsFallback(key);
-      }
-
-      const currentLangKey = language === 'pt' ? 'ptBr' : 'en';
-      let translation = sectionData[currentLangKey]?.[key];
-
-      if (!translation && language === 'en') {
-        translation = sectionData.ptBr?.[key];
-      }
-
-      if (!translation) {
-        return formatKeyAsFallback(key);
-      }
-
-      return interpolateTranslation(translation, params);
+    ) => {
+      const text = lookup(section, key);
+      return text ? interpolateTranslation(text, params) : missing(key);
     },
-    [language]
+    [lookup]
   );
 
-  // Função principal de tradução
   const t = useCallback(
-    (
-      key: string,
-      params?: Record<string, string | number>
-    ): string | JSX.Element => {
-      // Mostrar skeleton se ainda estiver carregando
-      if (isLoading && sections?.length) {
-        return createElement(SkeletonText, { width: 'w-24', height: 'h-5' });
-      }
-
+    (key: string, params?: Record<string, string | number>) => {
+      if (!ready) return '';
       if (key.includes(':')) {
         const [section, actualKey] = key.split(':', 2);
         return tSection(section, actualKey, params);
       }
-
-      if (defaultSection) {
-        const translation = tSection(defaultSection, key, params);
-        if (translation !== formatKeyAsFallback(key)) {
-          return translation;
-        }
+      const order = defaultSection
+        ? [defaultSection, ...sections.filter((s) => s !== defaultSection)]
+        : sections;
+      for (const section of order) {
+        const text = lookup(section, key);
+        if (text) return interpolateTranslation(text, params);
       }
-
-      if (loadedSections.length > 0) {
-        for (const section of loadedSections) {
-          if (section !== defaultSection) {
-            const sectionTranslation = tSection(section, key, params);
-            if (sectionTranslation !== formatKeyAsFallback(key)) {
-              return sectionTranslation;
-            }
-          }
-        }
-      }
-
-      return formatKeyAsFallback(key);
+      return missing(key);
     },
-    [defaultSection, loadedSections, tSection, isLoading, sections]
+    [ready, defaultSection, sections, lookup, tSection]
   );
 
-  const changeLanguage = useCallback(
-    (lang: Language) => {
-      setLanguage(lang);
-    },
-    [setLanguage]
-  );
-
-  return {
-    t,
-    tSection,
-    language,
-    isLoading,
-    loadedSections,
-    error,
-    changeLanguage,
-    toggleLanguage,
-    loadSection,
-    preloadSections,
-  };
+  return { t, tSection, language, ready };
 }

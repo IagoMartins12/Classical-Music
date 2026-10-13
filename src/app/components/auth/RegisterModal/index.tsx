@@ -81,7 +81,7 @@ const getRegisterErrorMessage = (
 const RegisterModal: React.FC = () => {
   const { isOpen, close, switchToLogin } = useRegisterModal();
   const { open: openOnboarding } = useOnboardingModal();
-  const { t, language } = useTranslation({
+  const { t, language, ready } = useTranslation({
     sections: ['components/auth-modals'],
   });
 
@@ -633,6 +633,7 @@ const RegisterModal: React.FC = () => {
 
   return (
     <Modal
+      carregando={!ready}
       isOpen={isOpen}
       onClose={handleClose}
       maxWidth="xl"
