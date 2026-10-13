@@ -1,13 +1,9 @@
 // app/uploads/page.tsx - Meus uploads otimizado
-import {
-  getServerLanguageStatic,
-  loadPageTranslationsWithCommon,
-} from '@/app/utils/translations/serverTranslations';
+import { getServerLanguageStatic } from '@/app/utils/translations/serverTranslations';
 import UploadsPageServer from './pageServer';
 import EmailVerificationRequired from '@/app/components/VerificationsProviders/EmailVerificationRequired';
 import { getCurrentAccount } from '@/app/requests/my-uploads';
 import { redirect } from 'next/navigation';
-import { TranslationProvider } from '@/app/context/TranslationContext';
 import { getServerSession } from '@/app/libs/api/server-session';
 
 // "Meus envios" é por pessoa: renderizada a cada pedido, sem cache de página.
@@ -88,18 +84,11 @@ export default async function UploadsPage({
   }
 
   if (!userData.emailVerified && userData.email) {
-    const language = await getServerLanguageStatic();
-    const { translations } = await loadPageTranslationsWithCommon(language, [
-      'components/email-verification',
-    ]);
-
     return (
-      <TranslationProvider language={language} translations={translations}>
-        <EmailVerificationRequired
-          userEmail={userData.email}
-          userName={userData.firstName || undefined}
-        />
-      </TranslationProvider>
+      <EmailVerificationRequired
+        userEmail={userData.email}
+        idioma={await getServerLanguageStatic()}
+      />
     );
   }
 
