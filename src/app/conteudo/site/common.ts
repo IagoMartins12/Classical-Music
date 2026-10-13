@@ -36,6 +36,8 @@ const pt = {
     cancel: 'Cancelar',
     send: 'Enviar report',
     sent: 'Report enviado. Obrigado por avisar.',
+    /** The API already explains in Portuguese; this is the fallback. */
+    duplicate: 'Você já denunciou este item.',
     failed: 'Não foi possível enviar. Tente de novo.',
     reasons: {
       false_information: [
@@ -89,6 +91,8 @@ const en: typeof pt = {
     cancel: 'Cancel',
     send: 'Send report',
     sent: 'Report sent. Thanks for letting us know.',
+    duplicate:
+      'You have already reported this item, or reached the limit for it.',
     failed: 'Could not send. Try again.',
     reasons: {
       false_information: [

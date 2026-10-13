@@ -29,7 +29,8 @@ type Target = {
  * first: a report carries the name of who sent it.
  */
 export function ReportButton(target: Target) {
-  const copy = COMMON[useRouteLanguage().language].report;
+  const { language } = useRouteLanguage();
+  const copy = COMMON[language].report;
   const allowed = useSignInGate();
   const [open, setOpen] = useState(false);
   return (
@@ -53,7 +54,8 @@ export function ReportSheet({
   open,
   onClose,
 }: Target & { open: boolean; onClose: () => void }) {
-  const copy = COMMON[useRouteLanguage().language].report;
+  const { language } = useRouteLanguage();
+  const copy = COMMON[language].report;
   const [reason, setReason] = useState<string | null>(null);
   const [details, setDetails] = useState('');
   const [sending, setSending] = useState(false);
@@ -78,6 +80,12 @@ export function ReportSheet({
     setSending(false);
     if (result.ok) {
       toast.success(copy.sent);
+      close();
+    } else if (result.status === 409) {
+      // One open report per item, each subject once, three at most.
+      toast.error(
+        language === 'pt' ? result.error || copy.duplicate : copy.duplicate
+      );
       close();
     } else {
       toast.error(copy.failed);
