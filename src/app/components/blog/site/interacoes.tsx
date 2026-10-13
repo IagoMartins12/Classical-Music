@@ -1,5 +1,6 @@
 'use client';
 
+import { NumeroVivo } from '@/app/components/ui/NumeroVivo';
 import { useEffect, useRef, useState, type FormEvent } from 'react';
 import { toast } from 'react-hot-toast';
 import {
@@ -158,9 +159,7 @@ export function AcoesDoArtigo({
           onClick={alternarCurtida}
           className={curtiu ? 'text-ouro-texto' : undefined}
         >
-          <span className="t-dado" aria-hidden="true">
-            {curtidas}
-          </span>
+          <NumeroVivo valor={curtidas} className="t-dado" oculto />
           <span className="sr-only">
             {t.curtidas(curtidas)}. {curtiu ? t.curtido : t.curtir}
           </span>

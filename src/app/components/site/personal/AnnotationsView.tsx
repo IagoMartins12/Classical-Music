@@ -1,5 +1,6 @@
 'use client';
 
+import { useSaidas } from '@/app/components/ui/useSaida';
 import ConfirmModal from '@/app/components/ConfirmModal';
 import { ANNOTATIONS } from '@/app/conteudo/site/annotations';
 import { AnnotationSheet } from '../annotations/AnnotationSheet';
@@ -77,7 +78,6 @@ export function AnnotationsView() {
   const [query, setQuery] = useState('');
   const [editing, setEditing] = useState<WorkAnnotation | null>(null);
   const [removing, setRemoving] = useState<WorkAnnotation | null>(null);
-  const [busy, setBusy] = useState(false);
   const annotations = useMemo(() => data ?? [], [data]);
 
   const works = useMemo(() => {
@@ -105,15 +105,22 @@ export function AnnotationsView() {
   const refresh = () => queryClient.invalidateQueries({ queryKey: key });
   const remove = async () => {
     if (!removing) return;
-    setBusy(true);
-    const result = await deleteAnnotationRequest(removing.id).catch(() => null);
-    setBusy(false);
+    // The confirmation closes and the card leaves while the API removes it;
+    // a failure brings it back.
+    const item = removing;
+    setRemoving(null);
+    const exit = leaving.sair(item.id);
+    const result = await deleteAnnotationRequest(item.id).catch(() => null);
+    await exit;
     if (result?.ok) {
       toast.success(copy.removed);
-      setRemoving(null);
       refresh();
-    } else toast.error(copy.removeFailed);
+    } else {
+      leaving.voltar(item.id);
+      toast.error(copy.removeFailed);
+    }
   };
+  const leaving = useSaidas();
 
   if (isError) return <p className="t-rotulo text-texto-suave">{copy.error}</p>;
   if (isPending)
@@ -190,7 +197,7 @@ export function AnnotationsView() {
       </div>
 
       {visible.length ? (
-        <ListResults className="grid grid-cols-1 gap-4 divide-[var(--linha)] xl:grid-cols-2 max-sm:gap-0 max-sm:divide-y data-[view=list]:grid-cols-1! data-[view=list]:gap-0 data-[view=list]:divide-y">
+        <ListResults className="cascata grid grid-cols-1 gap-4 divide-[var(--linha)] xl:grid-cols-2 max-sm:gap-0 max-sm:divide-y data-[view=list]:grid-cols-1! data-[view=list]:gap-0 data-[view=list]:divide-y">
           {visible.map((a) => (
             <AnnotationCard
               key={a.id}
@@ -199,6 +206,7 @@ export function AnnotationsView() {
               language={language}
               onEdit={() => setEditing(a)}
               onRemove={() => setRemoving(a)}
+              itemRef={leaving.refDe(a.id)}
             />
           ))}
         </ListResults>
@@ -221,7 +229,6 @@ export function AnnotationsView() {
         title={sheetCopy.removeTitle}
         message={sheetCopy.removeText}
         confirmText={sheetCopy.removeConfirm}
-        isLoading={busy}
       />
     </div>
   );
@@ -233,12 +240,15 @@ function AnnotationCard({
   language,
   onEdit,
   onRemove,
+  itemRef,
 }: {
   annotation: WorkAnnotation;
   copy: PersonalCopy['annotations'];
   language: 'pt' | 'en';
   onEdit: () => void;
   onRemove: () => void;
+  /** The list's exit (`useSaidas`) reaches the card through this. */
+  itemRef: (el: HTMLElement | null) => void;
 }) {
   const where = [
     copy.measures(a.measureStart, a.measureEnd),
@@ -251,7 +261,10 @@ function AnnotationCard({
     year: 'numeric',
   }).format(new Date(a.createdAt));
   return (
-    <li className="flex flex-col gap-3 rounded-card bg-sup-2 p-5 row:flex-row row:items-center row:gap-4 row:rounded-none row:bg-transparent! row:bg-none! row:px-0 row:py-4">
+    <li
+      ref={itemRef}
+      className="flex flex-col gap-3 rounded-card bg-sup-2 p-5 row:flex-row row:items-center row:gap-4 row:rounded-none row:bg-transparent! row:bg-none! row:px-0 row:py-4"
+    >
       <div className="flex min-w-0 flex-1 flex-col gap-1.5">
         <span className="flex flex-wrap items-center gap-x-2 gap-y-1 t-legenda">
           <span>{copy.categories[a.category]}</span>

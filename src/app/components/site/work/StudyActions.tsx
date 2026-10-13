@@ -4,6 +4,7 @@ import { useEffect, useRef, useState } from 'react';
 import { PiBookmarkSimple, PiCheckCircle } from 'react-icons/pi';
 import { Button } from '@/app/components/ui/Button';
 import { Icon } from '@/app/components/ui/Icon';
+import { NotasSobem } from '@/app/components/ui/NotasSobem';
 import { usePulso } from '@/app/components/ui/usePulso';
 import { WORK } from '@/app/conteudo/site/work';
 import { useRouteLanguage } from '@/app/hooks/useRouteLanguage';
@@ -31,16 +32,21 @@ export function StudyActions({ context }: { context: StudyContext }) {
   const { pulsar, pulso } = usePulso();
   const state = learned ? 'learned' : studying ? 'studying' : 'none';
   const previous = useRef<string | null>(null);
+  const [celebrate, setCelebrate] = useState(0);
   useEffect(() => {
     if (!mounted) return;
-    if (previous.current && previous.current !== state) pulsar();
+    if (previous.current && previous.current !== state) {
+      pulsar();
+      if (state === 'learned') setCelebrate((n) => n + 1);
+    }
     previous.current = state;
   }, [mounted, state, pulsar]);
 
   return (
     <>
       {learned ? (
-        <span className={badge} {...pulso}>
+        <span className={`relative ${badge}`} {...pulso}>
+          {celebrate > 0 && <NotasSobem key={celebrate} />}
           <Icon de={PiCheckCircle} /> {copy.done}
         </span>
       ) : studying ? (

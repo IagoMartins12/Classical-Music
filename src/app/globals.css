@@ -1068,6 +1068,36 @@ body {
   }
 }
 
+/* Abas: once measured, one pill draws the active tab's surface and slides
+   to the chosen tab; the tab itself goes transparent. */
+.abas[data-pilula]::before {
+  content: '';
+  position: absolute;
+  z-index: -1;
+  top: 0.25rem;
+  bottom: 0.25rem;
+  left: 0;
+  width: var(--aba-w);
+  transform: translateX(var(--aba-x));
+  border-radius: 0.5rem;
+  /* Same surface and shadow as the tab's `bg-theme-tertiary shadow-md`. */
+  background: var(--bg-tertiary);
+  box-shadow:
+    0 4px 6px -1px rgb(0 0 0 / 0.1),
+    0 2px 4px -2px rgb(0 0 0 / 0.1);
+}
+.abas[data-pilula] .aba[aria-selected='true'] {
+  background: transparent;
+  box-shadow: none;
+}
+@media (prefers-reduced-motion: no-preference) {
+  .abas[data-pilula='pronta']::before {
+    transition:
+      transform 340ms var(--saida),
+      width 340ms var(--saida);
+  }
+}
+
 /* O sinal dos avisos (`Avisos`): o anel e o traço se desenham ao chegar, e
    o astro do "carregando" gira na órbita. */
 @media (prefers-reduced-motion: no-preference) {
@@ -2401,6 +2431,118 @@ html {
   .heart-beat {
     animation: heart-beat 420ms var(--saida);
   }
+  /* Unfavoriting: the heart lets go, a small drop and a tilt. */
+  .heart-solta {
+    animation: heart-solta 380ms var(--saida);
+  }
+  /* Favoriting: six gold sparks leave the heart. */
+  .faiscas {
+    position: absolute;
+    inset: 50% auto auto 50%;
+    pointer-events: none;
+  }
+  .faiscas i {
+    position: absolute;
+    width: 4px;
+    height: 4px;
+    margin: -2px 0 0 -2px;
+    border-radius: 9999px;
+    background: var(--ouro);
+    transform: rotate(calc(var(--k) * 60deg)) translateY(-6px) scale(1);
+    animation: faisca 560ms var(--saida) forwards;
+  }
+  /* Something achieved ("Já aprendi"): gold notes rise and fade. */
+  .notas-sobem {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+  }
+  .notas-sobem svg {
+    position: absolute;
+    left: 50%;
+    top: 30%;
+    width: 1rem;
+    height: 1rem;
+    color: var(--ouro);
+    opacity: 0;
+    animation: nota-celebra 1100ms var(--saida) both;
+  }
+  /* A count that changed (`NumeroVivo`). */
+  .numero-sobe,
+  .numero-desce {
+    display: inline-block;
+    animation: numero-sobe 320ms var(--saida);
+  }
+  .numero-desce {
+    animation-name: numero-desce;
+  }
+  /* Lists arriving: each item rises a little, one after the other.
+     `.cascata` on the list (first ten in turn), `.item-entra` with `--i`
+     on items whose order is known (live search results). */
+  .cascata > *,
+  .item-entra {
+    animation: item-entra 420ms var(--saida) both;
+  }
+  .item-entra {
+    animation-duration: 300ms;
+    animation-delay: calc(var(--i, 0) * 28ms);
+  }
+  .cascata > :nth-child(2) {
+    animation-delay: 40ms;
+  }
+  .cascata > :nth-child(3) {
+    animation-delay: 80ms;
+  }
+  .cascata > :nth-child(4) {
+    animation-delay: 120ms;
+  }
+  .cascata > :nth-child(5) {
+    animation-delay: 160ms;
+  }
+  .cascata > :nth-child(6) {
+    animation-delay: 200ms;
+  }
+  .cascata > :nth-child(7) {
+    animation-delay: 240ms;
+  }
+  .cascata > :nth-child(8) {
+    animation-delay: 280ms;
+  }
+  .cascata > :nth-child(9) {
+    animation-delay: 320ms;
+  }
+  .cascata > :nth-child(n + 10) {
+    animation-delay: 360ms;
+  }
+  /* "Tentar de novo": the page fades while it reloads everything. */
+  .recarregando body {
+    opacity: 0.35;
+    transition: opacity 260ms var(--saida);
+  }
+  /* Every <details> (FAQ, legal pages, help) opens and closes smoothly
+     where the browser can size to `auto`; elsewhere it just opens. */
+  :root {
+    interpolate-size: allow-keywords;
+  }
+  details::details-content {
+    block-size: 0;
+    overflow: hidden;
+    transition:
+      block-size 320ms var(--saida),
+      content-visibility 320ms allow-discrete;
+  }
+  details[open]::details-content {
+    block-size: auto;
+  }
+  /* A small mark appearing (the bell's unread dot). */
+  .ponto-surge {
+    animation: ponto-surge 360ms var(--saida);
+  }
+  /* The bell rings when something new arrives. */
+  .sino-toca {
+    transform-origin: 50% 10%;
+    animation: sino-toca 720ms var(--saida);
+  }
   /* An action that landed (copied, saved, marked): `usePulso`. */
   [data-pulso='a'] {
     animation: pulso-a 360ms var(--saida);
@@ -2598,6 +2740,75 @@ html {
 @keyframes heart-beat {
   40% {
     transform: scale(1.22);
+  }
+}
+
+@keyframes heart-solta {
+  35% {
+    transform: translateY(2px) scale(0.78) rotate(-14deg);
+  }
+  70% {
+    transform: translateY(-1px) scale(1.05) rotate(4deg);
+  }
+}
+@keyframes nota-celebra {
+  0% {
+    opacity: 0;
+    transform: translate(calc(-50% + var(--x) * 0.2), 0) rotate(-8deg)
+      scale(0.6);
+  }
+  25% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+    transform: translate(calc(-50% + var(--x)), -2.75rem) rotate(10deg) scale(1);
+  }
+}
+@keyframes numero-sobe {
+  from {
+    opacity: 0;
+    transform: translateY(0.45em);
+  }
+}
+@keyframes numero-desce {
+  from {
+    opacity: 0;
+    transform: translateY(-0.45em);
+  }
+}
+@keyframes item-entra {
+  from {
+    opacity: 0;
+    transform: translateY(0.5rem);
+  }
+}
+@keyframes ponto-surge {
+  from {
+    transform: scale(0);
+  }
+  60% {
+    transform: scale(1.4);
+  }
+}
+@keyframes sino-toca {
+  15% {
+    transform: rotate(14deg);
+  }
+  35% {
+    transform: rotate(-11deg);
+  }
+  55% {
+    transform: rotate(7deg);
+  }
+  75% {
+    transform: rotate(-3deg);
+  }
+}
+@keyframes faisca {
+  to {
+    transform: rotate(calc(var(--k) * 60deg)) translateY(-20px) scale(0);
+    opacity: 0;
   }
 }
 

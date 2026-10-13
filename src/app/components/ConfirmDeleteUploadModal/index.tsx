@@ -23,7 +23,7 @@ interface ConfirmDeleteUploadModalProps {
   isOpen: boolean;
   onClose: () => void;
   onConfirm: () => void;
-  isLoading: boolean;
+  isLoading?: boolean;
   itemTitle: string;
   itemType: 'composer' | 'work' | 'score';
   itemId?: string;
@@ -33,7 +33,7 @@ export default function ConfirmDeleteUploadModal({
   isOpen,
   onClose,
   onConfirm,
-  isLoading,
+  isLoading = false,
   itemTitle,
   itemType,
   itemId,

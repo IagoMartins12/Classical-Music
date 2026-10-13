@@ -9,6 +9,7 @@ import { CACHE_PARTITURAS } from './caches';
  * window reloads. Scores saved on the device stay: the person chose them.
  */
 export async function recarregarTudo() {
+  document.documentElement.classList.add('recarregando');
   try {
     if (typeof caches !== 'undefined') {
       const nomes = await caches.keys();

@@ -18,6 +18,8 @@ import {
   type FavoriteWork,
 } from '@/app/stores/useFavoritesStore';
 import { FavoriteHeart } from '../FavoriteHeart';
+import { NumeroVivo } from '@/app/components/ui/NumeroVivo';
+import { useSaida } from '@/app/components/ui/useSaida';
 import { FavoriteCollections } from '../collections/MyCollectionsView';
 import { Portrait } from '../Portrait';
 import { ListResults, ViewToggle } from '../lists/ViewToggle';
@@ -34,7 +36,7 @@ const normalize = (s: string) =>
     .toLowerCase();
 
 const listClass =
-  'grid grid-cols-1 gap-4 divide-[var(--linha)] sm:grid-cols-2 xl:grid-cols-3 max-sm:gap-0 max-sm:divide-y data-[view=list]:grid-cols-1! data-[view=list]:gap-0 data-[view=list]:divide-y';
+  'cascata grid grid-cols-1 gap-4 divide-[var(--linha)] sm:grid-cols-2 xl:grid-cols-3 max-sm:gap-0 max-sm:divide-y data-[view=list]:grid-cols-1! data-[view=list]:gap-0 data-[view=list]:divide-y';
 const cardClass =
   'relative flex items-center gap-4 rounded-card bg-sup-2 p-4 pr-14 row:rounded-none row:bg-transparent! row:bg-none! row:px-0 row:py-3';
 
@@ -128,7 +130,7 @@ export function FavoritesView() {
         <Abas rotulo={copy.title}>
           {tabs.map(([key, label, n]) => (
             <Aba key={key} ativa={tab === key} onClick={() => setTab(key)}>
-              {label} · {n}
+              {label} · <NumeroVivo valor={n} />
             </Aba>
           ))}
           <Aba
@@ -197,8 +199,9 @@ function ComposerFavorite({
 }) {
   const composer = favorite.composer;
   const name = composer?.fullName || composer?.name || '';
+  const leaving = useSaida();
   return (
-    <li className={cardClass}>
+    <li ref={leaving.ref} className={cardClass}>
       <Portrait
         name={name}
         src={composer?.portraitUrl}
@@ -218,6 +221,7 @@ function ComposerFavorite({
       </Link>
       <FavoriteHeart
         type="composer"
+        leaving={leaving}
         id={favorite.composerId}
         name={composer?.name ?? name}
         className="absolute right-3 top-1/2 -translate-y-1/2"
@@ -228,8 +232,9 @@ function ComposerFavorite({
 
 function WorkFavorite({ favorite }: { favorite: FavoriteWork }) {
   const work = favorite.work;
+  const leaving = useSaida();
   return (
-    <li className={cardClass}>
+    <li ref={leaving.ref} className={cardClass}>
       <Portrait
         name={work?.composer.fullName ?? '?'}
         sizes="48px"
@@ -248,6 +253,7 @@ function WorkFavorite({ favorite }: { favorite: FavoriteWork }) {
       </Link>
       <FavoriteHeart
         type="work"
+        leaving={leaving}
         id={favorite.workId}
         name={work?.title ?? ''}
         className="absolute right-3 top-1/2 -translate-y-1/2"
@@ -271,8 +277,9 @@ function ScoreFavorite({
     month: 'short',
     year: 'numeric',
   }).format(new Date(favorite.addedAt));
+  const leaving = useSaida();
   return (
-    <li className={cardClass}>
+    <li ref={leaving.ref} className={cardClass}>
       <span className="grid h-12 w-12 shrink-0 place-items-center rounded-controle bg-[var(--fundo)] text-texto-fraco row:bg-sup-2">
         <Icon de={PiFilePdf} tamanho="m" />
       </span>
@@ -292,6 +299,7 @@ function ScoreFavorite({
       </Link>
       <FavoriteHeart
         type="score"
+        leaving={leaving}
         id={favorite.scoreId}
         name={favorite.scoreTitle}
         score={{

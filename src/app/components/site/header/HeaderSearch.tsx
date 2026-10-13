@@ -243,8 +243,9 @@ export function HeaderSearch({
                       aria-selected={index === active}
                       onPointerEnter={() => setActive(index)}
                       onClick={() => go(item.href)}
+                      style={{ ['--i' as string]: Math.min(index, 8) }}
                       className={cx(
-                        'flex w-full items-center gap-3 rounded-controle px-3 py-2 text-left',
+                        'item-entra flex w-full items-center gap-3 rounded-controle px-3 py-2 text-left',
                         index === active ? 'bg-sup-2' : 'hover:bg-sup-2'
                       )}
                     >

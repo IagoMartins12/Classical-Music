@@ -35,6 +35,13 @@ export function NotificationsBell({
   const desktop = useMediaQuery('(min-width: 768px)');
   const unread = useUnreadCount().data?.unreadCount ?? 0;
   const [open, setOpen] = useState(false);
+  // The bell rings when the count goes up after the first load.
+  const seen = useRef<number | null>(null);
+  const [ring, setRing] = useState(0);
+  useEffect(() => {
+    if (seen.current !== null && unread > seen.current) setRing((n) => n + 1);
+    seen.current = unread;
+  }, [unread]);
   const box = useRef<HTMLDivElement>(null);
   const bell = useRef<HTMLButtonElement>(null);
 
@@ -73,11 +80,13 @@ export function NotificationsBell({
           open && 'bg-sup-2 text-texto'
         )}
       >
-        <Icon de={PiBell} />
+        <span key={ring} className={cx('grid', ring > 0 && 'sino-toca')}>
+          <Icon de={PiBell} />
+        </span>
         {unread > 0 && (
           <span
             aria-hidden="true"
-            className="absolute right-2 top-2 h-2 w-2 rounded-full bg-ouro"
+            className="ponto-surge absolute right-2 top-2 h-2 w-2 rounded-full bg-ouro"
           />
         )}
       </button>

@@ -224,7 +224,9 @@ function Newsletter({ copy }: { copy: FooterCopy['newsletter'] }) {
       {state.kind === 'done' ? (
         <div role="status" className="flex flex-col items-start gap-2">
           <p className="flex items-center gap-2 font-medium text-texto">
-            <Icon de={PiCheckCircle} className="text-ouro-texto" />
+            <span className="ponto-surge grid">
+              <Icon de={PiCheckCircle} className="text-ouro-texto" />
+            </span>
             {state.resent
               ? copy.resent
               : state.status === 'RESUBSCRIBED'

@@ -41,6 +41,7 @@ export function FavoriteHeart({
   score,
   onPhoto = false,
   withLabel = false,
+  leaving,
   className,
 }: {
   type: 'composer' | 'work' | 'score';
@@ -50,6 +51,11 @@ export function FavoriteHeart({
   score?: ScoreFavoriteTarget;
   onPhoto?: boolean;
   withLabel?: boolean;
+  /**
+   * The card this heart takes out of a list (`useSaida`): unfavoriting
+   * plays its exit first and removes it after; a failure brings it back.
+   */
+  leaving?: { sair: () => Promise<void>; voltar: () => void };
   className?: string;
 }) {
   const copy = COMMON[useRouteLanguage().language].favorite;
@@ -73,12 +79,20 @@ export function FavoriteHeart({
   const toggleComposer = useFavoritesStore((s) => s.toggleComposerFavorite);
   const toggleWork = useFavoritesStore((s) => s.toggleWorkFavorite);
   const toggleScore = useFavoritesStore((s) => s.toggleScoreFavorite);
-  const [beat, setBeat] = useState(0);
+  // Each gesture replays its motion: sparks on, the heart letting go off.
+  const [gesture, setGesture] = useState<{ n: number; on: boolean } | null>(
+    null
+  );
 
   const onClick = async (event: React.MouseEvent) => {
     event.preventDefault();
     event.stopPropagation();
     if (!allowed('favorite') || !user?.id || busy) return;
+    const removing = favorited && leaving;
+    if (removing) {
+      setGesture((g) => ({ n: (g?.n ?? 0) + 1, on: false }));
+      await leaving.sair();
+    }
     try {
       const now =
         type === 'composer'
@@ -92,22 +106,30 @@ export function FavoriteHeart({
                 user.id,
                 score!.data
               );
-      setBeat((b) => b + 1);
+      if (!removing) setGesture((g) => ({ n: (g?.n ?? 0) + 1, on: now }));
       toast.success(now ? copy.added(name) : copy.removed(name));
     } catch {
+      leaving?.voltar();
       toast.error(copy.failed);
     }
   };
 
   const heart = (
     <span
-      key={beat}
+      key={gesture?.n ?? 0}
       className={cx(
-        'grid place-items-center',
-        beat > 0 && favorited && 'heart-beat'
+        'relative grid place-items-center',
+        gesture && (gesture.on ? 'heart-beat' : 'heart-solta')
       )}
     >
       <Icon de={favorited ? PiHeartFill : PiHeart} tamanho="m" />
+      {gesture?.on && (
+        <span aria-hidden="true" className="faiscas">
+          {[0, 1, 2, 3, 4, 5].map((k) => (
+            <i key={k} style={{ ['--k' as string]: k }} />
+          ))}
+        </span>
+      )}
     </span>
   );
 

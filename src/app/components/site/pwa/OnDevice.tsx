@@ -1,5 +1,6 @@
 'use client';
 
+import { useSaidas } from '@/app/components/ui/useSaida';
 import Link from 'next/link';
 import { useEffect, useState } from 'react';
 import {
@@ -42,6 +43,11 @@ export function OnDevice() {
   const online = useOnline();
   const [lista, setLista] = useState<PartituraGuardada[]>([]);
   const [uso, setUso] = useState<{ usado: number; total: number } | null>(null);
+  const leaving = useSaidas();
+  const remover = async (url: string) => {
+    await leaving.sair(url);
+    await removerPartitura(url).catch(() => leaving.voltar(url));
+  };
 
   useEffect(() => {
     const atualizar = () => {
@@ -98,7 +104,11 @@ export function OnDevice() {
         ) : (
           <ul className="flex flex-col divide-y divide-[var(--linha)]">
             {lista.map((p) => (
-              <li key={p.url} className="flex items-center gap-4 py-4">
+              <li
+                key={p.url}
+                ref={leaving.refDe(p.url)}
+                className="flex items-center gap-4 py-4"
+              >
                 <span className="grid h-11 w-11 shrink-0 place-items-center rounded-controle bg-sup-2">
                   <Icon
                     de={PiFilePdf}
@@ -129,7 +139,7 @@ export function OnDevice() {
                   variante="fantasma"
                   icone={PiTrash}
                   rotulo={`${copy.remover} ${p.titulo}`}
-                  onClick={() => void removerPartitura(p.url)}
+                  onClick={() => void remover(p.url)}
                 />
               </li>
             ))}

@@ -1,5 +1,6 @@
 'use client';
 
+import { NumeroVivo } from '@/app/components/ui/NumeroVivo';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { useMemo, useState } from 'react';
 import toast from 'react-hot-toast';
@@ -189,7 +190,8 @@ function AnnotationCard({
                 : 'text-texto-suave hover:bg-[var(--fundo)]'
             )}
           >
-            <Icon de={PiThumbsUp} tamanho="p" /> {copy.helpful} · {helpful}
+            <Icon de={PiThumbsUp} tamanho="p" /> {copy.helpful} ·{' '}
+            <NumeroVivo valor={helpful} />
           </button>
           <button
             type="button"

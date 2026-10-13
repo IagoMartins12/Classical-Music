@@ -125,7 +125,7 @@ export function StudiesView({
       )}
 
       {entries.length ? (
-        <ListResults className="grid grid-cols-1 gap-4 divide-[var(--linha)] xl:grid-cols-2 max-sm:gap-0 max-sm:divide-y data-[view=list]:grid-cols-1! data-[view=list]:gap-0 data-[view=list]:divide-y">
+        <ListResults className="cascata grid grid-cols-1 gap-4 divide-[var(--linha)] xl:grid-cols-2 max-sm:gap-0 max-sm:divide-y data-[view=list]:grid-cols-1! data-[view=list]:gap-0 data-[view=list]:divide-y">
           {entries.map((entry) => (
             <StudyCard
               key={`${entry.kind}-${entry.item.id}`}

@@ -1,5 +1,6 @@
 'use client';
 
+import { useSaidas } from '@/app/components/ui/useSaida';
 import { useQuery } from '@tanstack/react-query';
 import dynamic from 'next/dynamic';
 import { useRouter } from 'next/navigation';
@@ -98,7 +99,6 @@ export function UploadsView({
   const [creating, setCreating] = useState<Kind | null>(null);
   const [bulk, setBulk] = useState<UserUpload | null>(null);
   const [removing, setRemoving] = useState<UserUpload | null>(null);
-  const [busy, setBusy] = useState(false);
   const [forms, setForms] = useState<UploadFormLists | null>(null);
   const { data: session } = useSession();
 
@@ -135,17 +135,22 @@ export function UploadsView({
   };
   const remove = async () => {
     if (!removing) return;
-    setBusy(true);
-    const result = await deleteUpload(removing.type, removing.id).catch(
-      () => null
-    );
-    setBusy(false);
+    // The confirmation closes and the card leaves while the API removes it;
+    // a failure brings it back.
+    const item = removing;
+    setRemoving(null);
+    const exit = leaving.sair(item.id);
+    const result = await deleteUpload(item.type, item.id).catch(() => null);
+    await exit;
     if (result?.ok) {
       toast.success(copy.removed);
-      setRemoving(null);
       refresh();
-    } else toast.error(copy.removeFailed);
+    } else {
+      leaving.voltar(item.id);
+      toast.error(copy.removeFailed);
+    }
   };
+  const leaving = useSaidas();
 
   const plan = session?.user.currentPlan ?? 'FREE';
   const used = totals.data?.total ?? 0;
@@ -177,7 +182,7 @@ export function UploadsView({
             )}
           </div>
         )}
-        <ListResults className="grid grid-cols-1 gap-3 divide-[var(--linha)] xl:grid-cols-2 max-sm:gap-0 max-sm:divide-y data-[view=list]:grid-cols-1! data-[view=list]:gap-0 data-[view=list]:divide-y">
+        <ListResults className="cascata grid grid-cols-1 gap-3 divide-[var(--linha)] xl:grid-cols-2 max-sm:gap-0 max-sm:divide-y data-[view=list]:grid-cols-1! data-[view=list]:gap-0 data-[view=list]:divide-y">
           {visible.map((item) => (
             <UploadRow
               key={item.id}
@@ -185,6 +190,7 @@ export function UploadsView({
               copy={copy}
               language={language}
               onRemove={() => setRemoving(item)}
+              itemRef={leaving.refDe(item.id)}
               onBulk={() => openBulk(item)}
               onScore={() => openForm('score')}
             />
@@ -384,7 +390,6 @@ export function UploadsView({
       {removing && (
         <ConfirmDeleteUploadModal
           isOpen
-          isLoading={busy}
           itemTitle={removing.title}
           itemType={removing.type}
           itemId={removing.id}
@@ -401,6 +406,7 @@ function UploadRow({
   copy,
   language,
   onRemove,
+  itemRef,
   onBulk,
   onScore,
 }: {
@@ -408,6 +414,8 @@ function UploadRow({
   copy: PersonalCopy['uploads'];
   language: 'pt' | 'en';
   onRemove: () => void;
+  /** The list's exit (`useSaidas`) reaches the card through this. */
+  itemRef: (el: HTMLElement | null) => void;
   onBulk: () => void;
   onScore: () => void;
 }) {
@@ -442,7 +450,10 @@ function UploadRow({
   const quality = item.dataQuality ? copy.quality[item.dataQuality] : null;
 
   return (
-    <li className="flex flex-col gap-3 rounded-card bg-sup-2 p-4 row:flex-row row:items-center row:gap-4 row:rounded-none row:bg-transparent! row:bg-none! row:px-0 row:py-3">
+    <li
+      ref={itemRef}
+      className="flex flex-col gap-3 rounded-card bg-sup-2 p-4 row:flex-row row:items-center row:gap-4 row:rounded-none row:bg-transparent! row:bg-none! row:px-0 row:py-3"
+    >
       <div className="flex min-w-0 flex-1 items-center gap-4">
         {item.type === 'composer' ? (
           <Portrait
