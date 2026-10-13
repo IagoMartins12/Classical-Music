@@ -3,9 +3,11 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import {
   PiCheckCircle,
+  PiCompass,
   PiDotsThreeVertical,
   PiDownloadSimple,
   PiExport,
+  PiGoogleChromeLogo,
   PiPlusSquare,
 } from 'react-icons/pi';
 import { BrandSeal } from '@/app/components/site/BrandSeal';
@@ -148,8 +150,13 @@ export function InstallInvite() {
   };
 
   const icones = {
-    ios: [PiExport, PiPlusSquare, PiCheckCircle],
-    android: [PiDotsThreeVertical, PiDownloadSimple, PiCheckCircle],
+    ios: [PiCompass, PiExport, PiPlusSquare, PiCheckCircle],
+    android: [
+      PiGoogleChromeLogo,
+      PiDotsThreeVertical,
+      PiDownloadSimple,
+      PiCheckCircle,
+    ],
   };
 
   return (

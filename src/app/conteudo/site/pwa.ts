@@ -18,6 +18,10 @@ const pt = {
     abas: { ios: 'iPhone e iPad', android: 'Android' },
     ios: [
       {
+        titulo: 'Abra o Opus Atlas no Safari',
+        texto: 'No iPhone e no iPad, só o Safari instala o app.',
+      },
+      {
         titulo: 'Toque em Compartilhar',
         texto: 'O quadrado com a seta para cima, na barra do Safari.',
       },
@@ -31,6 +35,10 @@ const pt = {
       },
     ],
     android: [
+      {
+        titulo: 'Abra o Opus Atlas no Chrome',
+        texto: 'É pelo Chrome que a instalação funciona melhor.',
+      },
       {
         titulo: 'Abra o menu do Chrome',
         texto: 'Os três pontos no canto de cima.',
@@ -95,6 +103,10 @@ const en: typeof pt = {
     abas: { ios: 'iPhone and iPad', android: 'Android' },
     ios: [
       {
+        titulo: 'Open Opus Atlas in Safari',
+        texto: 'On iPhone and iPad, only Safari installs the app.',
+      },
+      {
         titulo: 'Tap Share',
         texto: 'The square with the arrow pointing up, in Safari’s bar.',
       },
@@ -108,6 +120,10 @@ const en: typeof pt = {
       },
     ],
     android: [
+      {
+        titulo: 'Open Opus Atlas in Chrome',
+        texto: 'Installing works best from Chrome.',
+      },
       {
         titulo: 'Open Chrome’s menu',
         texto: 'The three dots in the top corner.',
