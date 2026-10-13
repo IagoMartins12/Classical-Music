@@ -43,9 +43,6 @@ export function HomeHero({
             />
             <HeroActions copy={copy} />
           </div>
-          <p className="entra t-legenda" style={{ ['--i' as string]: 3 }}>
-            {copy.freeNote}
-          </p>
         </div>
         <div className="max-md:hidden">
           <CelestialAtlas copy={copy} />

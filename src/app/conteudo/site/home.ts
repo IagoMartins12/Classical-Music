@@ -8,6 +8,7 @@ const pt = {
     start: 'Começar grátis',
     exploreComposers: 'Explorar os compositores',
     teach: 'Dá aula? Conheça o portal',
+    openPortal: 'Abrir o portal',
     continue: 'Continuar meus estudos',
     freeNote: 'Ler, ouvir e baixar é grátis. A conta guarda o que você estuda.',
     atlasLabel: 'O que tem no Opus Atlas',
@@ -81,6 +82,7 @@ const en: typeof pt = {
     start: 'Start for free',
     exploreComposers: 'Explore the composers',
     teach: 'Do you teach? See the portal',
+    openPortal: 'Open the portal',
     continue: 'Continue my studies',
     freeNote:
       'Reading, listening and downloading are free. An account keeps what you study.',

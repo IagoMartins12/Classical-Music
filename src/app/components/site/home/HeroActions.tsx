@@ -9,31 +9,52 @@ import type { HomeCopy } from '@/app/conteudo/site/home';
 import { useAuth } from '@/app/hooks/useAuth';
 import { useRegisterModal } from '@/app/stores/authStore';
 
-const linkText =
-  'inline-flex min-h-10 items-center gap-1.5 t-rotulo underline decoration-transparent underline-offset-4 transition-colors hover:decoration-[var(--ouro)]';
-
-/** Visitors: sign up, explore, teach. Signed in: back to the studies. */
+/**
+ * Two buttons (the main path, then the composers) and, under them, the
+ * portal: an invitation for visitors, a shortcut for whoever already has one.
+ * Visitors also read that reading and listening need no account. On phones the buttons take the full width, stacked.
+ */
 export function HeroActions({ copy }: { copy: HomeCopy['hero'] }) {
-  const { isAuthenticated } = useAuth();
+  const { isAuthenticated, user } = useAuth();
   const { open: openRegister } = useRegisterModal();
+  const hasPortal = !!(user?.isTeacher || user?.isStudent);
 
   return (
-    <div className="flex flex-wrap items-center gap-x-6 gap-y-3 max-md:justify-center">
-      {isAuthenticated ? (
-        <Link href="/learning" className={classesDeBotao('primario', 'm')}>
-          {copy.continue} <Icon de={PiArrowRight} tamanho="p" />
+    <div className="flex flex-col gap-4 max-md:items-center">
+      <div className="flex w-full flex-col gap-3 sm:w-auto sm:flex-row">
+        {isAuthenticated ? (
+          <Link
+            href="/learning"
+            className={cx(classesDeBotao('primario', 'm'), 'max-sm:w-full')}
+          >
+            {copy.continue} <Icon de={PiArrowRight} tamanho="p" />
+          </Link>
+        ) : (
+          <Button
+            variante="primario"
+            onClick={openRegister}
+            className="max-sm:w-full"
+          >
+            {copy.start}
+          </Button>
+        )}
+        <Link
+          href="/composers"
+          className={cx(classesDeBotao('secundario', 'm'), 'max-sm:w-full')}
+        >
+          {copy.exploreComposers}
         </Link>
-      ) : (
-        <Button variante="primario" onClick={openRegister}>
-          {copy.start}
-        </Button>
+      </div>
+      <Link
+        href={hasPortal ? '/portal' : '/for-teachers'}
+        className="inline-flex min-h-10 items-center gap-1.5 self-start t-rotulo text-texto-suave underline decoration-transparent underline-offset-4 transition-colors hover:text-texto hover:decoration-[var(--ouro)] max-md:self-center"
+      >
+        {hasPortal ? copy.openPortal : copy.teach}
+        <Icon de={PiArrowRight} tamanho="pp" />
+      </Link>
+      {!isAuthenticated && (
+        <p className="t-legenda max-md:text-center">{copy.freeNote}</p>
       )}
-      <Link href="/composers" className={cx(linkText, 'text-texto')}>
-        {copy.exploreComposers} <Icon de={PiArrowRight} tamanho="pp" />
-      </Link>
-      <Link href="/teachers" className={cx(linkText, 'text-texto-suave')}>
-        {copy.teach}
-      </Link>
     </div>
   );
 }
