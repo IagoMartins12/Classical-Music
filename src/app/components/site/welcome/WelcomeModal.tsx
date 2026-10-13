@@ -90,12 +90,15 @@ export function WelcomeModal() {
   useEffect(() => {
     const dialog = ref.current;
     if (!dialog) return;
-    if (isOpen && !dialog.open) {
-      dialog.showModal();
-      document.documentElement.style.overflow = 'hidden';
+    if (!isOpen) {
+      if (dialog.open) dialog.close();
+      return;
     }
-    if (!isOpen && dialog.open) dialog.close();
+    if (!dialog.open) dialog.showModal();
+    document.body.style.overflow = 'hidden';
+    document.documentElement.style.overflow = 'hidden';
     return () => {
+      document.body.style.overflow = '';
       document.documentElement.style.overflow = '';
     };
   }, [isOpen]);
