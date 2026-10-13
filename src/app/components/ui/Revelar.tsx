@@ -2,18 +2,13 @@ import type { CSSProperties, ElementType, ReactNode } from 'react';
 import { cx } from './cx';
 
 /**
- * Entra na tela quando chega à vista: sobe um pouco, perde o desfoque e
- * aparece — uma vez só. Os filhos com `style={{ '--i': n }}` entram em
- * cascata (`.revela-filhos`).
+ * Entra na tela quando chega à vista: sobe um pouco e aparece, acompanhando
+ * a rolagem. Os filhos de `cascata` entram cada um na sua vez.
  *
- * **O conteúdo nunca depende disto para existir.** O HTML chega visível; só
- * depois de montar, e só o que está abaixo da dobra, ganha `data-pronto` e se
- * esconde até chegar à vista. Sem script, com hidratação lenta, ou para o
- * robô que não rola a página, está tudo lá desde o começo. Com movimento
- * reduzido, o CSS não esconde nada.
- *
- * Componente de servidor: quem observa a rolagem é um só, para a página
- * inteira (`RevelarAoRolar`), em vez de uma ilha de cliente por bloco.
+ * Só CSS (`.revela` / `.revela-filhos` em `globals.css`, com
+ * `animation-timeline: view()`): o conteúdo nunca some depois de pintado,
+ * não depende de script e, sem suporte ou com movimento reduzido, aparece
+ * inteiro de uma vez.
  */
 export function Revelar({
   children,

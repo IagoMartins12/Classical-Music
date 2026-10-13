@@ -1036,35 +1036,39 @@ body {
   }
 }
 
-/* Entrada ao chegar à vista (`Revelar`). Só se esconde o que o componente
-   marcou `data-pronto` (montado e abaixo da dobra): o HTML chega visível, e
-   sem JS ou com hidratação lenta nada fica invisível. */
+/* Entrada ao chegar à vista (`Revelar`), ligada à rolagem e só em CSS
+   (`animation-timeline: view()`): nada é escondido depois de pintado, nada
+   depende de script, e o que já está na tela ao carregar está com a
+   animação concluída. Sem suporte (ou com movimento reduzido), tudo aparece
+   de uma vez. Cada filho de `.revela-filhos` tem a própria linha do tempo,
+   então a cascata sai da posição de cada um. */
 @media (prefers-reduced-motion: no-preference) {
-  .revela,
-  .revela-filhos > * {
-    transition:
-      opacity 720ms var(--saida),
-      transform 720ms var(--saida),
-      filter 720ms var(--saida);
+  @supports (animation-timeline: view()) {
+    .revela,
+    .revela-filhos {
+      view-timeline: --bloco block;
+    }
+    .revela,
+    .revela-filhos > * {
+      animation: revela-entra linear both;
+      animation-timeline: view();
+      animation-range: entry 0% entry 60%;
+    }
+    /* O visto se traça enquanto o bloco em volta entra. */
+    :is(.revela, .revela-filhos) .visto-desenha path {
+      stroke-dasharray: 1;
+      stroke-dashoffset: 1;
+      animation: visto-traca linear both;
+      animation-timeline: --bloco;
+      animation-range: entry 40% cover 35%;
+    }
   }
-  .revela-filhos > * {
-    transition-delay: calc(var(--i, 0) * 90ms);
-  }
-  .revela[data-pronto]:not([data-visivel]),
-  .revela-filhos[data-pronto]:not([data-visivel]) > * {
+}
+
+@keyframes revela-entra {
+  from {
     opacity: 0;
     transform: translateY(22px);
-    filter: blur(6px);
-  }
-
-  /* O visto se traça quando o bloco em volta entra rolando. */
-  [data-pronto] .visto-desenha path {
-    stroke-dasharray: 1;
-    stroke-dashoffset: 1;
-  }
-  [data-pronto][data-visivel] .visto-desenha path {
-    animation: visto-traca 460ms var(--saida) forwards;
-    animation-delay: calc(240ms + var(--d, 0) * 35ms);
   }
 }
 
@@ -1098,8 +1102,11 @@ body {
   }
 }
 
-/* A portrait whose photo failed (`RetratosQueFalham`): the initial under it
-   shows instead. */
+/* A portrait (`Portrait`) shows its initial only without a photo or when
+   the photo failed (`RetratosQueFalham` marks it) — never while it loads. */
+img[data-retrato]:not([data-falhou]) ~ .retrato-inicial {
+  display: none;
+}
 img[data-retrato][data-falhou] {
   display: none;
 }
@@ -1212,11 +1219,6 @@ img[data-retrato][data-falhou] {
   to {
     transform: scaleX(1);
   }
-}
-
-/* O selo dentro de um bloco que ainda não apareceu espera para se traçar. */
-[data-pronto]:not([data-visivel]) .selo-desenha path {
-  animation-play-state: paused;
 }
 
 /* Odômetro (`NumeroRolante`): cada dígito é uma coluna de 0 a 9 que desliza

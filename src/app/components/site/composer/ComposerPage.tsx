@@ -157,6 +157,7 @@ export function ComposerPage({
                 name={fullName}
                 src={composer.portraitUrl}
                 priority
+                fromCard
                 sizes="(max-width: 768px) 100vw, 40vw"
                 className="aspect-[4/5] w-full rounded-card text-[3rem] shadow-[var(--sombra-2)]"
               />
