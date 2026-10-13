@@ -1,10 +1,5 @@
 import { nomeDeTransicao } from '@/app/components/ui/nomeDeTransicao';
-import {
-  PiArrowLeft,
-  PiArrowRight,
-  PiLightbulb,
-  PiMagnifyingGlass,
-} from 'react-icons/pi';
+import { PiArrowLeft, PiArrowRight, PiLightbulb } from 'react-icons/pi';
 import Link from '@/app/components/LocalizedLink';
 import Image from '@/app/components/SmartImage';
 import { Icon } from '@/app/components/ui/Icon';
@@ -23,6 +18,24 @@ import { LifeRuler } from './LifeRuler';
 const RULER_SIZE = 10;
 const textLink =
   'underline decoration-transparent underline-offset-4 hover:decoration-[var(--ouro)]';
+
+/** The next or previous era's picture: on a click it grows into the header. */
+function StepPicture({ era }: { era: Era }) {
+  return (
+    <span
+      data-vira={`epoca-${era.key}`}
+      className="relative block aspect-[3/4] shrink-0 overflow-hidden rounded-[8px] shadow-[var(--sombra-1)] w-10 sm:w-14"
+    >
+      <Image
+        src={era.image}
+        alt=""
+        fill
+        sizes="56px"
+        className="object-cover"
+      />
+    </span>
+  );
+}
 
 /**
  * One era: the opening, the story, how it sounds, what changed, its forms
@@ -221,12 +234,14 @@ export async function EraChapterPage({
             )}
           </div>
           <ol className="grid grid-cols-1 gap-3 md:grid-cols-2 lg:grid-cols-3">
-            {chapter.listenFirst.map((item, i) => (
-              <li key={item.work}>
-                <Link
-                  href={`/search?q=${encodeURIComponent(`${item.work} ${item.composer === 'Anônimo' || item.composer === 'Anonymous' ? '' : item.composer}`.trim())}`}
-                  className="group flex h-full flex-col gap-2 rounded-card bg-sup-2 p-5"
-                >
+            {chapter.listenFirst.map((item, i) => {
+              const href = item.workId
+                ? `/works/${item.workId}`
+                : item.composerId
+                  ? `/composer/${item.composerId}`
+                  : null;
+              const body = (
+                <>
                   <span className="t-dado text-[0.8125rem] text-texto-fraco">
                     {String(i + 1).padStart(2, '0')}
                   </span>
@@ -237,13 +252,28 @@ export async function EraChapterPage({
                     {item.composer}
                   </span>
                   <span className="t-rotulo mt-1">{item.note}</span>
-                  <span className="mt-auto inline-flex items-center gap-1.5 pt-2 t-legenda text-ouro-texto">
-                    <Icon de={PiMagnifyingGlass} tamanho="pp" />{' '}
-                    {copy.searchListen}
-                  </span>
-                </Link>
-              </li>
-            ))}
+                  {href && (
+                    <span className="mt-auto inline-flex items-center gap-1.5 pt-2 t-legenda text-ouro-texto">
+                      {item.workId ? copy.openWork : copy.openComposer}{' '}
+                      <Icon de={PiArrowRight} tamanho="pp" />
+                    </span>
+                  )}
+                </>
+              );
+              const card =
+                'group flex h-full flex-col gap-2 rounded-card bg-sup-2 p-5';
+              return (
+                <li key={item.work}>
+                  {href ? (
+                    <Link href={href} className={card}>
+                      {body}
+                    </Link>
+                  ) : (
+                    <div className={card}>{body}</div>
+                  )}
+                </li>
+              );
+            })}
           </ol>
         </section>
 
@@ -271,13 +301,16 @@ export async function EraChapterPage({
             <Link
               href={`/music-history/${before.key}`}
               rel="prev"
-              className="group flex flex-col items-start gap-1 rounded-card bg-sup-2 p-5"
+              className="group flex items-center gap-4 rounded-card bg-sup-2 p-4 sm:p-5"
             >
-              <span className="inline-flex items-center gap-1.5 t-legenda">
-                <Icon de={PiArrowLeft} tamanho="pp" /> {t.before}
-              </span>
-              <span className="font-display text-[1.5rem] group-hover:text-ouro-texto">
-                {before.name[language]}
+              <StepPicture era={before} />
+              <span className="flex min-w-0 flex-col items-start gap-1">
+                <span className="inline-flex items-center gap-1.5 t-legenda">
+                  <Icon de={PiArrowLeft} tamanho="pp" /> {t.before}
+                </span>
+                <span className="font-display text-[1.5rem] group-hover:text-ouro-texto">
+                  {before.name[language]}
+                </span>
               </span>
             </Link>
           ) : (
@@ -287,14 +320,17 @@ export async function EraChapterPage({
             <Link
               href={`/music-history/${after.key}`}
               rel="next"
-              className="group flex flex-col items-end gap-1 rounded-card bg-sup-2 p-5 text-right"
+              className="group flex items-center justify-end gap-4 rounded-card bg-sup-2 p-4 text-right sm:p-5"
             >
-              <span className="inline-flex items-center gap-1.5 t-legenda">
-                {t.after} <Icon de={PiArrowRight} tamanho="pp" />
+              <span className="flex min-w-0 flex-col items-end gap-1">
+                <span className="inline-flex items-center gap-1.5 t-legenda">
+                  {t.after} <Icon de={PiArrowRight} tamanho="pp" />
+                </span>
+                <span className="font-display text-[1.5rem] group-hover:text-ouro-texto">
+                  {after.name[language]}
+                </span>
               </span>
-              <span className="font-display text-[1.5rem] group-hover:text-ouro-texto">
-                {after.name[language]}
-              </span>
+              <StepPicture era={after} />
             </Link>
           )}
         </nav>

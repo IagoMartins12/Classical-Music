@@ -45,6 +45,8 @@ const pt = {
       `${name}: história, como funciona e obras para ouvir · Opus Atlas`,
   },
   searchListen: 'Procurar no acervo',
+  openWork: 'Abrir a obra',
+  openComposer: 'Ver o compositor',
 };
 
 const en: typeof pt = {
@@ -91,6 +93,8 @@ const en: typeof pt = {
       `${name}: history, how it works and works to hear · Opus Atlas`,
   },
   searchListen: 'Find it in the archive',
+  openWork: 'Open the work',
+  openComposer: 'See the composer',
 };
 
 export const LEARN: Record<Idioma, typeof pt> = { pt, en };

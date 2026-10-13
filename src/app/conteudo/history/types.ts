@@ -17,7 +17,17 @@ export interface EraChapter {
   /** The forms of the era, each explained in a line. */
   forms: { name: string; text: string }[];
   instruments: string[];
-  /** Where to start listening, with what to listen for. */
-  listenFirst: { composer: string; work: string; note: string }[];
+  /**
+   * Where to start listening, with what to listen for. `workId` opens the
+   * work itself; a work not in the catalog falls back to its composer
+   * (`composerId`), when there is one.
+   */
+  listenFirst: {
+    composer: string;
+    work: string;
+    workId?: string;
+    composerId?: string;
+    note: string;
+  }[];
   didYouKnow: string[];
 }

@@ -67,11 +67,13 @@ export const ERAS_PT: EraChapter[] = [
       {
         composer: 'Anônimo',
         work: 'Victimae paschali laudes',
+        workId: '6877f70dc9181a7b52adcbf8',
         note: 'Uma sequência gregoriana de Páscoa. Boa para sentir o canto em uníssono, sem pressa.',
       },
       {
         composer: 'Hildegard von Bingen',
         work: 'O vis aeternitatis',
+        workId: '686b82de4206d8332943f8d6',
         note: 'Linhas muito largas, que sobem e descem uma oitava inteira em poucas notas.',
       },
       {
@@ -82,11 +84,13 @@ export const ERAS_PT: EraChapter[] = [
       {
         composer: 'Anônimo',
         work: 'Sumer is icumen in',
+        workId: '68712edcd4375027987db035',
         note: 'Um cânone inglês do século XIII sobre a chegada do verão, com o cuco cantando.',
       },
       {
         composer: 'Guillaume de Machaut',
         work: 'Messe de Nostre Dame',
+        workId: '686a8fa5c93ef3be836d8835',
         note: 'Comece pelo Kyrie: quatro vozes, ritmos que se encaixam e um som áspero e brilhante.',
       },
     ],
@@ -166,26 +170,31 @@ export const ERAS_PT: EraChapter[] = [
       {
         composer: 'Josquin des Prez',
         work: 'Ave Maria… virgo serena',
+        workId: '68633073204a67621b0bf764',
         note: 'As vozes entram uma a uma com a mesma frase. Ótima para ouvir a imitação acontecendo.',
       },
       {
         composer: 'Giovanni Pierluigi da Palestrina',
         work: 'Missa Papae Marcelli',
+        workId: '686ab218c93ef3be836d8f8e',
         note: 'Clareza total: dá para seguir cada linha e entender o texto.',
       },
       {
         composer: 'Thomas Tallis',
         work: 'Spem in alium',
+        workId: '6870a4cfbc43a28afb5ab6fa',
         note: 'Quarenta vozes independentes. Com fones de ouvido, o som parece girar ao seu redor.',
       },
       {
         composer: 'John Dowland',
         work: 'Flow, my tears',
+        workId: '68668194e541852612dfff46',
         note: 'Uma voz e um alaúde. A canção mais conhecida do período na Inglaterra.',
       },
       {
         composer: 'Carlo Gesualdo',
         work: 'Moro, lasso, al mio duolo',
+        workId: '686ad622c93ef3be836d9726',
         note: 'Um madrigal com acordes tão estranhos que parecem do século XX.',
       },
     ],
@@ -267,26 +276,31 @@ export const ERAS_PT: EraChapter[] = [
       {
         composer: 'Antonio Vivaldi',
         work: 'As Quatro Estações: A Primavera',
+        workId: '6878798a30e79c884ed67afa',
         note: 'Siga os pássaros nos violinos solo e o trovão nas cordas graves.',
       },
       {
         composer: 'Johann Sebastian Bach',
         work: 'Prelúdio em dó maior, BWV 846',
+        workId: '686d8556e3de9a37f27c507c',
         note: 'O primeiro do Cravo Bem Temperado. Só acordes desdobrados, e mesmo assim não cansa.',
       },
       {
         composer: 'Johann Sebastian Bach',
         work: 'Concerto de Brandemburgo nº 3',
+        workId: '686398f8204a67621b0c0c1b',
         note: 'Cordas divididas em três grupos que se respondem o tempo todo.',
       },
       {
         composer: 'Henry Purcell',
         work: 'When I am laid in earth (Lamento de Dido)',
+        workId: '686504c78f2800416032b20d',
         note: 'Uma linha grave que desce e se repete por baixo de toda a ária.',
       },
       {
         composer: 'George Frideric Handel',
         work: 'Messias: Hallelujah',
+        workId: '686a915ac93ef3be836d8897',
         note: 'Coro e trompetes em festa. O trecho mais cantado do repertório coral.',
       },
     ],
@@ -366,26 +380,31 @@ export const ERAS_PT: EraChapter[] = [
       {
         composer: 'Wolfgang Amadeus Mozart',
         work: 'Eine kleine Nachtmusik, K. 525',
+        workId: '6865cc5ce541852612dfda61',
         note: 'Uma serenata para cordas. Equilíbrio clássico em estado puro.',
       },
       {
         composer: 'Joseph Haydn',
         work: 'Sinfonia nº 94, “Surpresa”',
+        workId: '687508dcfed73ac7cb1c035a',
         note: 'No segundo movimento, uma melodia baixinha e, de repente, um acorde fortíssimo.',
       },
       {
         composer: 'Wolfgang Amadeus Mozart',
         work: 'Sinfonia nº 40, K. 550',
+        workId: '6875030efed73ac7cb1c0211',
         note: 'O primeiro tema é dos mais conhecidos da música. Repare na inquietação que corre por baixo.',
       },
       {
         composer: 'Wolfgang Amadeus Mozart',
         work: 'Concerto para clarinete, K. 622: Adagio',
+        workId: '6864459e8f28004160328ccd',
         note: 'Escrito meses antes de morrer, para um instrumento que ele ajudou a firmar na orquestra.',
       },
       {
         composer: 'Ludwig van Beethoven',
         work: 'Sonata para piano nº 8, “Patética”',
+        workId: '686c98703d4f77ce841eb684',
         note: 'Clássica na forma, mas com uma fúria que já anuncia o Romantismo.',
       },
     ],
@@ -465,26 +484,31 @@ export const ERAS_PT: EraChapter[] = [
       {
         composer: 'Franz Schubert',
         work: 'Erlkönig',
+        workId: '6865f721e541852612dfe2e6',
         note: 'Um cantor, quatro personagens. O piano faz o cavalo galopando do começo ao fim.',
       },
       {
         composer: 'Frédéric Chopin',
         work: 'Noturno op. 9 nº 2',
+        workId: '686b45924206d8332943ebfd',
         note: 'A melodia canta como uma voz de ópera sobre um acompanhamento que balança.',
       },
       {
         composer: 'Ludwig van Beethoven',
         work: 'Sinfonia nº 9: final',
+        workId: '687508a1fed73ac7cb1c034f',
         note: 'A melodia da Ode à Alegria aparece primeiro nos violoncelos e contrabaixos, sem palavras, antes do coro.',
       },
       {
         composer: 'Bedřich Smetana',
         work: 'Moldava',
+        workId: '6879344430e79c884ed68433',
         note: 'O rio nasce em duas flautas e atravessa a Boêmia até Praga.',
       },
       {
         composer: 'Antonín Dvořák',
         work: 'Sinfonia nº 9, “Do Novo Mundo”: Largo',
+        workId: '687508bbfed73ac7cb1c0355',
         note: 'O corne inglês canta uma das melodias mais conhecidas do repertório.',
       },
     ],
@@ -559,26 +583,31 @@ export const ERAS_PT: EraChapter[] = [
       {
         composer: 'Claude Debussy',
         work: 'Clair de lune',
+        workId: '68711dbfd4375027987dac04',
         note: 'Para piano solo. A porta de entrada mais suave para o som de Debussy.',
       },
       {
         composer: 'Maurice Ravel',
         work: 'Boléro',
+        workId: '68638e53204a67621b0c0a2b',
         note: 'Uma melodia repetida por quinze minutos, mudando só de instrumento e crescendo sem parar.',
       },
       {
         composer: 'Igor Stravinsky',
         work: 'A Sagração da Primavera: Augúrios primaveris',
+        workId: '6875c17fabb1ea4be867dd7b',
         note: 'O mesmo acorde batido com acentos que você não consegue prever.',
       },
       {
         composer: 'Heitor Villa-Lobos',
         work: 'Bachianas Brasileiras nº 5: Ária',
+        workId: '68633e1a204a67621b0bfa15',
         note: 'Soprano e oito violoncelos. A melodia sem palavras do começo é inesquecível.',
       },
       {
         composer: 'Sergei Prokofiev',
         work: 'Pedro e o Lobo',
+        workId: '686c2ca86df8a20650ffce73',
         note: 'Uma história para crianças em que cada personagem é um instrumento.',
       },
     ],
@@ -662,16 +691,19 @@ export const ERAS_PT: EraChapter[] = [
       {
         composer: 'Steve Reich',
         work: 'Music for 18 Musicians',
+        composerId: '685f2686c6bd886c5b49878c',
         note: 'Pulsos que se repetem e se transformam por quase uma hora. Deixe-se levar.',
       },
       {
         composer: 'Philip Glass',
         work: 'Metamorphosis One',
+        composerId: '685e669fc6bd886c5b496a4a',
         note: 'Piano solo, repetição e uma melancolia que conquista na primeira escuta.',
       },
       {
         composer: 'György Ligeti',
         work: 'Atmosphères',
+        composerId: '685ec5f0c6bd886c5b4978fb',
         note: 'Uma nuvem de som que muda de cor. A mesma de 2001: Uma Odisseia no Espaço.',
       },
       {

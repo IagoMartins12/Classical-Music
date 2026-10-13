@@ -52,3 +52,13 @@ describe.each([
     }
   });
 });
+
+describe('where to start listening', () => {
+  it('points both languages to the same works and composers', () => {
+    const links = (chapters: typeof ERAS_PT) =>
+      chapters.flatMap((c) =>
+        c.listenFirst.map((item) => item.workId ?? item.composerId ?? null)
+      );
+    expect(links(ERAS_EN)).toEqual(links(ERAS_PT));
+  });
+});
