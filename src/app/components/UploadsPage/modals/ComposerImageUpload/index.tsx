@@ -11,6 +11,7 @@ import { Button } from '@/app/components/ui/Button';
 import { Field } from '@/app/components/ui/Field';
 import { cx } from '@/app/components/ui/cx';
 import { iniciais } from '@/app/components/blog/site/pecas';
+import { useTx } from '@/app/hooks/useTx';
 
 interface ComposerImageUploadProps {
   currentImage?: string | null;
@@ -39,6 +40,7 @@ const ComposerImageUpload: React.FC<ComposerImageUploadProps> = ({
   composerName,
   className = '',
 }) => {
+  const tx = useTx();
   const [inputMode, setInputMode] = useState<'upload' | 'url'>('upload');
   const [urlInput, setUrlInput] = useState('');
   const [uploading, setUploading] = useState(false);
@@ -64,13 +66,23 @@ const ComposerImageUpload: React.FC<ComposerImageUploadProps> = ({
     // Validações básicas
     const allowedTypes = ['image/jpeg', 'image/png', 'image/gif', 'image/webp'];
     if (!allowedTypes.includes(file.type)) {
-      toast.error('Tipo de arquivo não permitido. Use JPG, PNG, GIF ou WebP.');
+      toast.error(
+        tx(
+          'Tipo de arquivo não permitido. Use JPG, PNG, GIF ou WebP.',
+          'File type not allowed. Use JPG, PNG, GIF or WebP.'
+        )
+      );
       return;
     }
 
     if (file.size > 5 * 1024 * 1024) {
       // 5MB
-      toast.error('Arquivo muito grande. Máximo 5MB.');
+      toast.error(
+        tx(
+          'Arquivo muito grande. Máximo 5MB.',
+          'File too large. The maximum is 5 MB.'
+        )
+      );
       return;
     }
 
@@ -86,9 +98,11 @@ const ComposerImageUpload: React.FC<ComposerImageUploadProps> = ({
         if (result.success) {
           onImageChange?.(result.imageUrl);
           onImageUrlChange?.(result.imageUrl);
-          toast.success('Imagem carregada com sucesso!');
+          toast.success(tx('Imagem carregada com sucesso!', 'Image uploaded.'));
         } else {
-          throw new Error(result.message || 'Erro ao fazer upload');
+          throw new Error(
+            result.message || tx('Erro ao fazer upload', 'Upload failed')
+          );
         }
       }
     } catch (error) {
@@ -96,7 +110,7 @@ const ComposerImageUpload: React.FC<ComposerImageUploadProps> = ({
       toast.error(
         error instanceof Error
           ? error.message
-          : 'Erro ao fazer upload da imagem'
+          : tx('Erro ao fazer upload da imagem', 'Could not upload the image')
       );
     } finally {
       setUploading(false);
@@ -105,7 +119,7 @@ const ComposerImageUpload: React.FC<ComposerImageUploadProps> = ({
 
   const handleUrlSubmit = () => {
     if (!urlInput.trim()) {
-      toast.error('Digite uma URL válida');
+      toast.error(tx('Digite uma URL válida', 'Enter a valid URL'));
       return;
     }
 
@@ -122,14 +136,16 @@ const ComposerImageUpload: React.FC<ComposerImageUploadProps> = ({
 
     onImageChange?.(urlInput);
     onImageUrlChange?.(urlInput);
-    toast.success('URL da imagem adicionada com sucesso!');
+    toast.success(
+      tx('URL da imagem adicionada com sucesso!', 'Image link added.')
+    );
   };
 
   const handleRemove = () => {
     onImageChange?.(null);
     onImageUrlChange?.('');
     setUrlInput('');
-    toast.success('Imagem removida');
+    toast.success(tx('Imagem removida', 'Image removed'));
   };
 
   const handleModeChange = (mode: 'upload' | 'url') => {
@@ -145,18 +161,18 @@ const ComposerImageUpload: React.FC<ComposerImageUploadProps> = ({
 
   return (
     <div className={cx('flex flex-col items-center gap-4', className)}>
-      <Abas rotulo="Como enviar o retrato">
+      <Abas rotulo={tx('Como enviar o retrato', 'How to send the portrait')}>
         <Aba
           ativa={inputMode === 'upload'}
           onClick={() => handleModeChange('upload')}
         >
-          Do aparelho
+          {tx('Do aparelho', 'From the device')}
         </Aba>
         <Aba
           ativa={inputMode === 'url'}
           onClick={() => handleModeChange('url')}
         >
-          Por link
+          {tx('Por link', 'By link')}
         </Aba>
       </Abas>
 
@@ -203,16 +219,23 @@ const ComposerImageUpload: React.FC<ComposerImageUploadProps> = ({
               carregando={currentUploading}
               onClick={() => fileInputRef.current?.click()}
             >
-              {currentImage ? 'Trocar retrato' : 'Escolher arquivo'}
+              {currentImage
+                ? tx('Trocar retrato', 'Change portrait')
+                : tx('Escolher arquivo', 'Choose file')}
             </Button>
           </div>
-          <span className="t-legenda">JPG, PNG, GIF ou WebP, até 5 MB.</span>
+          <span className="t-legenda">
+            {tx(
+              'JPG, PNG, GIF ou WebP, até 5 MB.',
+              'JPG, PNG, GIF or WebP, up to 5 MB.'
+            )}
+          </span>
         </div>
       ) : (
         <div className="flex w-full max-w-md items-end gap-2">
           <Field
             className="flex-1"
-            label="Link da imagem"
+            label={tx('Link da imagem', 'Image link')}
             type="url"
             inputMode="url"
             value={urlInput}
@@ -225,7 +248,9 @@ const ComposerImageUpload: React.FC<ComposerImageUploadProps> = ({
               }
             }}
           />
-          <Button onClick={() => handleUrlSubmit()}>Aplicar</Button>
+          <Button onClick={() => handleUrlSubmit()}>
+            {tx('Aplicar', 'Apply')}
+          </Button>
         </div>
       )}
 
@@ -236,7 +261,7 @@ const ComposerImageUpload: React.FC<ComposerImageUploadProps> = ({
           icone={PiX}
           onClick={handleRemove}
         >
-          Remover retrato
+          {tx('Remover retrato', 'Remove portrait')}
         </Button>
       )}
 

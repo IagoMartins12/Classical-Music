@@ -13,6 +13,7 @@ import { getWorkById, searchWorks } from '@/app/requests/catalog-search';
 import { Inline } from '@/app/components/ui/Layout';
 import { Text } from '@/app/components/ui/Text';
 import { NomeAcao } from '@/app/components/ui/NomeAcao';
+import { useTx } from '@/app/hooks/useTx';
 
 interface Work {
   id: string;
@@ -42,7 +43,7 @@ const SimpleWorkSearchInput: React.FC<SimpleWorkSearchInputProps> = ({
   id,
   selectedWork,
   onWorkSelect,
-  placeholder = 'Digite para buscar uma obra...',
+  placeholder,
   error,
   disabled = false,
   filterByComposer = '',
@@ -50,6 +51,7 @@ const SimpleWorkSearchInput: React.FC<SimpleWorkSearchInputProps> = ({
   userSuggestions = [],
   loadingUserSuggestions = false,
 }) => {
+  const tx = useTx();
   const [query, setQuery] = useState('');
   const [works, setWorks] = useState<Work[]>([]);
   const [isLoading, setIsLoading] = useState(false);
@@ -271,17 +273,20 @@ const SimpleWorkSearchInput: React.FC<SimpleWorkSearchInputProps> = ({
   const getHeaderLabel = () => {
     if (query.length >= 2) {
       return filterByComposer
-        ? 'Resultados filtrados por compositor'
-        : 'Resultados da busca';
+        ? tx(
+            'Resultados filtrados por compositor',
+            'Results filtered by composer'
+          )
+        : tx('Resultados da busca', 'Search results');
     }
 
     if (userSuggestions.length > 0) {
       return filterByComposer
-        ? 'Obras do compositor selecionado'
-        : 'Sugestões para você';
+        ? tx('Obras do compositor selecionado', 'Works by the chosen composer')
+        : tx('Sugestões para você', 'Suggestions for you');
     }
 
-    return 'Obras populares';
+    return tx('Obras populares', 'Popular works');
   };
 
   return (
@@ -338,7 +343,10 @@ const SimpleWorkSearchInput: React.FC<SimpleWorkSearchInputProps> = ({
                   setWorks(userSuggestions.slice(0, 8));
                 }
               }}
-              placeholder={placeholder}
+              placeholder={
+                placeholder ??
+                tx('Digite para buscar uma obra…', 'Type to search a work…')
+              }
               disabled={disabled}
               className={`input-classical-2 w-full !pl-10 pr-10 ${
                 error ? 'border-[var(--erro)]' : ''
@@ -361,8 +369,8 @@ const SimpleWorkSearchInput: React.FC<SimpleWorkSearchInputProps> = ({
                   <PiSpinnerGap className="w-5 h-5 mx-auto animate-spin text-ouro-texto mb-2" />
                   <Text papel="rotulo" tom="fraco" as="p">
                     {loadingUserSuggestions
-                      ? 'Carregando sugestões...'
-                      : 'Buscando obras...'}
+                      ? tx('Carregando sugestões...', 'Loading suggestions…')
+                      : tx('Buscando obras...', 'Searching works…')}
                   </Text>
                 </div>
               )}
@@ -423,7 +431,7 @@ const SimpleWorkSearchInput: React.FC<SimpleWorkSearchInputProps> = ({
                               </Text>
                               {isUserWork && (
                                 <span className="text-xs px-1.5 py-0.5 rounded">
-                                  Sugerida
+                                  {tx('Sugerida', 'Suggested')}
                                 </span>
                               )}
                             </Inline>
@@ -451,11 +459,19 @@ const SimpleWorkSearchInput: React.FC<SimpleWorkSearchInputProps> = ({
                     {query.length >= 2
                       ? `Nenhuma obra encontrada para "${query}"`
                       : userSuggestions.length === 0
-                        ? 'Nenhuma sugestão disponível'
-                        : 'Digite pelo menos 2 caracteres para buscar'}
+                        ? tx(
+                            'Nenhuma sugestão disponível',
+                            'No suggestions available'
+                          )
+                        : tx(
+                            'Digite pelo menos 2 caracteres para buscar',
+                            'Type at least 2 characters to search'
+                          )}
                   </p>
                   {query.length >= 2 && (
-                    <p className="text-xs mt-1">Tente termos diferentes</p>
+                    <p className="text-xs mt-1">
+                      {tx('Tente termos diferentes', 'Try different terms')}
+                    </p>
                   )}
                 </div>
               )}
@@ -467,7 +483,10 @@ const SimpleWorkSearchInput: React.FC<SimpleWorkSearchInputProps> = ({
             <Text papel="legenda" tom="fraco" as="div" className="mt-2">
               {userSuggestions.length > 0
                 ? ``
-                : 'Digite pelo menos 2 caracteres para buscar obras'}
+                : tx(
+                    'Digite pelo menos 2 caracteres para buscar obras',
+                    'Type at least 2 characters to search works'
+                  )}
             </Text>
           )}
         </div>

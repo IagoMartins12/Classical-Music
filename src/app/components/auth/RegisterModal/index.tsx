@@ -250,8 +250,8 @@ const RegisterModal: React.FC = () => {
         handleProceedToOnboarding();
       } else {
         if (
-          result.message.toLowerCase().includes('já existe') ||
-          result.message.toLowerCase().includes('já cadastrado')
+          result.key.toLowerCase().includes('já existe') ||
+          result.key.toLowerCase().includes('já cadastrado')
         ) {
           setEmailConflictError(result.message);
         } else {

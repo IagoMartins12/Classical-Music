@@ -49,6 +49,7 @@ import {
   uploadScoreFile,
 } from '@/app/requests/uploads-client';
 import { Field } from '@/app/components/ui/Field';
+import { useTx } from '@/app/hooks/useTx';
 
 interface CreateScoreModalProps {
   isOpen: boolean;
@@ -82,6 +83,7 @@ const CreateScoreModal = ({
   works,
   editingScore,
 }: CreateScoreModalProps) => {
+  const tx = useTx();
   const idCampo = useId();
   const formId = `${idCampo}-form`;
   const fileInputId = `${idCampo}-file`;
@@ -464,7 +466,7 @@ const CreateScoreModal = ({
         setFileValidation({
           isValidating: false,
           isValid: false,
-          error: 'Erro ao validar arquivo',
+          error: tx('Erro ao validar arquivo', 'Could not validate the file'),
         });
       } finally {
         setValidatingFile(false);
@@ -526,11 +528,15 @@ const CreateScoreModal = ({
               t('modal_score_file_preview_success')
             );
           } else {
-            setThumbnailError(thumbnailResult.error || 'Erro desconhecido');
+            setThumbnailError(
+              thumbnailResult.error || tx('Erro desconhecido', 'Unknown error')
+            );
             toast.info(t('toast_info'), t('toast_score_preview_not_available'));
           }
         } catch {
-          setThumbnailError('Erro ao gerar preview');
+          setThumbnailError(
+            tx('Erro ao gerar preview', 'Could not make the preview')
+          );
           toast.error(t('toast_error'), t('toast_score_preview_error'));
         } finally {
           setGeneratingThumbnail(false);
@@ -562,7 +568,7 @@ const CreateScoreModal = ({
       setFileValidation({
         isValidating: false,
         isValid: false,
-        error: 'Erro no upload',
+        error: tx('Erro no upload', 'Upload failed'),
       });
     } finally {
       setUploadingFile(false);
@@ -675,13 +681,19 @@ const CreateScoreModal = ({
       id: 'url' as const,
       icone: PiLink,
       titulo: t('modal_score_upload_url'),
-      texto: 'PDF, PNG, JPG ou outras imagens por um link',
+      texto: tx(
+        'PDF, PNG, JPG ou outras imagens por um link',
+        'PDF, PNG, JPG or other images by link'
+      ),
     },
     {
       id: 'file' as const,
       icone: PiUploadSimple,
       titulo: t('modal_score_upload_file'),
-      texto: 'PDF ou imagens do seu aparelho',
+      texto: tx(
+        'PDF ou imagens do seu aparelho',
+        'PDF or images from your device'
+      ),
     },
   ];
 
@@ -758,7 +770,7 @@ const CreateScoreModal = ({
         )}
 
         {uploadMode === 'file' && !editingScore && (
-          <FormBlock titulo="Enviar arquivo">
+          <FormBlock titulo={tx('Enviar arquivo', 'Upload file')}>
             <div
               role="button"
               tabIndex={0}
@@ -799,7 +811,8 @@ const CreateScoreModal = ({
                     aria-hidden="true"
                     className="h-5 w-5 animate-spin text-ouro-texto"
                   />
-                  Enviando arquivo…
+
+                  {tx('Enviando arquivo…', 'Uploading file…')}
                 </span>
               ) : selectedFile ? (
                 <>
@@ -820,15 +833,18 @@ const CreateScoreModal = ({
                   {generatingThumbnail && (
                     <span className="t-legenda">
                       {isLargeFile
-                        ? 'Processando arquivo grande; pode levar um pouco mais.'
-                        : 'Gerando a prévia…'}
+                        ? tx(
+                            'Processando arquivo grande; pode levar um pouco mais.',
+                            'Processing a large file; it may take a bit longer.'
+                          )
+                        : tx('Gerando a prévia…', 'Making the preview…')}
                     </span>
                   )}
                   {generatedThumbnail && thumbnailGenerated && (
                     <span className="block h-32 w-24 overflow-hidden rounded-controle shadow-[var(--sombra-alta)]">
                       <Image
                         src={generatedThumbnail}
-                        alt="Prévia do arquivo"
+                        alt={tx('Prévia do arquivo', 'File preview')}
                         width={96}
                         height={128}
                         className="h-full w-full object-cover"
@@ -837,7 +853,8 @@ const CreateScoreModal = ({
                   )}
                   {thumbnailError && !generatingThumbnail && (
                     <span className="t-legenda">
-                      Prévia indisponível: {thumbnailError}
+                      {tx('Prévia indisponível:', 'Preview unavailable:')}{' '}
+                      {thumbnailError}
                     </span>
                   )}
                 </>
@@ -848,11 +865,16 @@ const CreateScoreModal = ({
                     className="h-10 w-10 text-texto-fraco"
                   />
                   <span className="text-texto">
-                    Toque para escolher ou arraste o arquivo para cá
+                    {tx(
+                      'Toque para escolher ou arraste o arquivo para cá',
+                      'Tap to choose or drag the file here'
+                    )}
                   </span>
                   <span className="t-legenda">
-                    PDF, PNG, JPG, GIF, BMP ou WEBP, até 50 MB. A prévia sai
-                    sozinha.
+                    {tx(
+                      'PDF, PNG, JPG, GIF, BMP ou WEBP, até 50 MB. A prévia sai sozinha.',
+                      'PDF, PNG, JPG, GIF, BMP or WEBP, up to 50 MB. The preview makes itself.'
+                    )}
                   </span>
                 </>
               )}
@@ -871,7 +893,7 @@ const CreateScoreModal = ({
                     resetUploadMode();
                   }}
                 >
-                  Remover arquivo
+                  {tx('Remover arquivo', 'Remove file')}
                 </Button>
               </div>
             )}
@@ -879,11 +901,11 @@ const CreateScoreModal = ({
         )}
 
         {uploadMode === 'url' && !editingScore && (
-          <FormBlock titulo="Link do arquivo">
+          <FormBlock titulo={tx('Link do arquivo', 'File link')}>
             <Field
               className="sm:col-span-2"
               ref={fieldRefs.downloadUrl}
-              label="Link do arquivo *"
+              label={tx('Link do arquivo *', 'File link *')}
               type="url"
               inputMode="url"
               value={formData.downloadUrl}
@@ -892,10 +914,14 @@ const CreateScoreModal = ({
               placeholder="https://exemplo.com/partitura.pdf"
             />
             {validatingFile && (
-              <Aviso tom="carregando">Validando o arquivo…</Aviso>
+              <Aviso tom="carregando">
+                {tx('Validando o arquivo…', 'Validating the file…')}
+              </Aviso>
             )}
             {fileValidation.isValid && (
-              <Aviso tom="ok">Arquivo válido encontrado.</Aviso>
+              <Aviso tom="ok">
+                {tx('Arquivo válido encontrado.', 'Valid file found.')}
+              </Aviso>
             )}
             {fileValidation.error && (
               <Aviso tom="erro">{fileValidation.error}</Aviso>
@@ -994,7 +1020,7 @@ const CreateScoreModal = ({
             value={formData.title}
             onChange={(e) => handleInputChange('title', e.target.value)}
             erro={errors.title}
-            placeholder="Título da partitura"
+            placeholder={tx('Título da partitura', 'Score title')}
           />
           {selecao(
             t('modal_score_basic_type'),
@@ -1016,7 +1042,7 @@ const CreateScoreModal = ({
             disabled
           />
           <Field
-            label="Páginas ou imagens"
+            label={tx('Páginas ou imagens', 'Pages or images')}
             type="number"
             inputMode="numeric"
             value={formData.pageCount}
@@ -1030,19 +1056,19 @@ const CreateScoreModal = ({
             label={t('modal_score_publication_editor')}
             value={formData.editor}
             onChange={(e) => handleInputChange('editor', e.target.value)}
-            placeholder="Nome do editor"
+            placeholder={tx('Nome do editor', 'Editor’s name')}
           />
           <Field
             label={t('modal_score_publication_publisher')}
             value={formData.publisher}
             onChange={(e) => handleInputChange('publisher', e.target.value)}
-            placeholder="Nome da editora"
+            placeholder={tx('Nome da editora', 'Publisher’s name')}
           />
           <Field
             label={t('modal_score_publication_copyright')}
             value={formData.copyright}
             onChange={(e) => handleInputChange('copyright', e.target.value)}
-            placeholder="Informações de copyright"
+            placeholder={tx('Informações de copyright', 'Copyright details')}
           />
           {!generatedThumbnail && (
             <Field
@@ -1089,7 +1115,10 @@ const CreateScoreModal = ({
             label={t('modal_score_grouping_title_field')}
             value={formData.groupTitle}
             onChange={(e) => handleInputChange('groupTitle', e.target.value)}
-            placeholder="Ex.: Partitura completa, Versão simplificada"
+            placeholder={tx(
+              'Ex.: Partitura completa, Versão simplificada',
+              'E.g. Full score, Simplified version'
+            )}
           />
           <Aviso titulo={t('modal_score_grouping_example_title')}>
             <ul className="flex flex-col gap-1">

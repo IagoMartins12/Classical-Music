@@ -1,5 +1,6 @@
 'use client';
 
+import { NomeAcao } from './NomeAcao';
 import { useEffect, useRef } from 'react';
 import {
   ToastBar,
@@ -98,10 +99,10 @@ export function Avisos() {
                   <button
                     type="button"
                     onClick={() => toast.dismiss(t.id)}
-                    aria-label="Fechar aviso"
                     className="grid h-8 w-8 shrink-0 place-items-center rounded-full text-texto-suave transition-colors hover:bg-[var(--interactive-hover)] hover:text-texto focus-visible:outline-2 focus-visible:outline-ouro"
                   >
                     <PiX aria-hidden="true" className="h-4 w-4" />
+                    <NomeAcao acao="fecharAviso" />
                   </button>
                 )}
               </div>

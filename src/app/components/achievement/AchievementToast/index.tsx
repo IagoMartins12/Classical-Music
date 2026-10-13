@@ -4,10 +4,10 @@
 import { useState, useEffect, createContext, useContext } from 'react';
 import { PiLightning, PiMedal, PiShield, PiStar, PiX } from 'react-icons/pi';
 import { AnimatedItem } from '../../animation/AnimatedComponents';
-import { markAchievementViewed } from '@/app/requests/achievements';
 import { Inline } from '@/app/components/ui/Layout';
 import { Text } from '@/app/components/ui/Text';
 import { NomeAcao } from '@/app/components/ui/NomeAcao';
+import { useTx } from '@/app/hooks/useTx';
 
 // Interface para achievement
 interface AchievementData {
@@ -127,6 +127,7 @@ interface AchievementToastProps {
 }
 
 function AchievementToast({ achievement, onClose }: AchievementToastProps) {
+  const tx = useTx();
   const [isVisible, setIsVisible] = useState(false);
   const [progress, setProgress] = useState(100);
   const Icon = achievement.icon;
@@ -173,25 +174,25 @@ function AchievementToast({ achievement, onClose }: AchievementToastProps) {
     COMMON: {
       gradient: 'from-slate-400 to-slate-600',
       icon: PiMedal,
-      label: 'Comum',
+      label: tx('Comum', 'Common'),
       border: 'border-slate-400/30',
     },
     RARE: {
       gradient: 'from-blue-400 to-blue-600',
       icon: PiStar,
-      label: 'Raro',
+      label: tx('Raro', 'Rare'),
       border: 'border-blue-400/30',
     },
     EPIC: {
       gradient: 'from-purple-400 to-purple-600',
       icon: PiLightning,
-      label: 'Épico',
+      label: tx('Épico', 'Epic'),
       border: 'border-purple-400/30',
     },
     LEGENDARY: {
       gradient: 'from-amber-400 to-amber-600',
       icon: PiShield,
-      label: 'Lendário',
+      label: tx('Lendário', 'Legendary'),
       border: 'border-amber-400/30',
     },
   };
@@ -226,7 +227,7 @@ function AchievementToast({ achievement, onClose }: AchievementToastProps) {
           <div className="flex-1">
             <Inline gap={2} className="mb-1">
               <h4 className="font-bold text-theme-primary text-sm">
-                Conquista Desbloqueada!
+                {tx('Conquista Desbloqueada!', 'Achievement unlocked')}
               </h4>
               {achievement.rarity === 'LEGENDARY' && (
                 <div className="flex space-x-1">
@@ -330,155 +331,4 @@ function getXPForRarity(rarity: string): number {
     LEGENDARY: 100,
   };
   return xpMap[rarity] || 10;
-}
-
-// Hook para simular conquistas (para demonstração/teste)
-export const useAchievementDemo = () => {
-  const { showAchievement } = useAchievements();
-
-  const triggerDemoAchievement = (
-    rarity: 'COMMON' | 'RARE' | 'EPIC' | 'LEGENDARY' = 'RARE'
-  ) => {
-    const demoAchievements = {
-      COMMON: {
-        id: 'demo-common',
-        name: 'Primeiro Passo',
-        description: 'Você deu seus primeiros passos na jornada musical!',
-        icon: PiMedal,
-        category: 'milestone',
-        rarity: 'COMMON' as const,
-        unlocked: true,
-        color: {
-          from: 'from-slate-400',
-          to: 'to-slate-600',
-          border: 'border-slate-400/30',
-          text: 'text-slate-600',
-        },
-      },
-      RARE: {
-        id: 'demo-rare',
-        name: 'Colecionador Dedicado',
-        description:
-          'Você acumulou 25 favoritos e mostra verdadeira paixão pela música clássica!',
-        icon: PiStar,
-        category: 'collection',
-        rarity: 'RARE' as const,
-        unlocked: true,
-        color: {
-          from: 'from-blue-400',
-          to: 'to-blue-600',
-          border: 'border-blue-400/30',
-          text: 'text-blue-600',
-        },
-      },
-      EPIC: {
-        id: 'demo-epic',
-        name: 'Mestre do Conhecimento',
-        description:
-          'Sua contribuição para a comunidade é excepcional - 50+ anotações úteis!',
-        icon: PiLightning,
-        category: 'expertise',
-        rarity: 'EPIC' as const,
-        unlocked: true,
-        color: {
-          from: 'from-purple-400',
-          to: 'to-purple-600',
-          border: 'border-purple-400/30',
-          text: 'text-purple-600',
-        },
-      },
-      LEGENDARY: {
-        id: 'demo-legendary',
-        name: 'Lenda Musical',
-        description:
-          'Você alcançou o ápice - um verdadeiro virtuoso em todos os aspectos!',
-        icon: PiShield,
-        category: 'milestone',
-        rarity: 'LEGENDARY' as const,
-        unlocked: true,
-        color: {
-          from: 'from-amber-400',
-          to: 'to-amber-600',
-          border: 'border-amber-400/30',
-          text: 'text-amber-600',
-        },
-      },
-    };
-
-    showAchievement(demoAchievements[rarity]);
-  };
-
-  return { triggerDemoAchievement };
-};
-
-// Hook para integração com o sistema de achievements do backend
-export const useBackendAchievements = () => {
-  const { showAchievement } = useAchievements();
-
-  const handleNewAchievement = async (achievementData: any) => {
-    // Converter dados do backend para formato do toast
-    const rarityColors = {
-      COMMON: {
-        from: 'from-slate-400',
-        to: 'to-slate-600',
-        border: 'border-slate-400/30',
-        text: 'text-slate-600',
-      },
-      RARE: {
-        from: 'from-blue-400',
-        to: 'to-blue-600',
-        border: 'border-blue-400/30',
-        text: 'text-blue-600',
-      },
-      EPIC: {
-        from: 'from-purple-400',
-        to: 'to-purple-600',
-        border: 'border-purple-400/30',
-        text: 'text-purple-600',
-      },
-      LEGENDARY: {
-        from: 'from-amber-400',
-        to: 'to-amber-600',
-        border: 'border-amber-400/30',
-        text: 'text-amber-600',
-      },
-    };
-
-    showAchievement({
-      id: achievementData.badgeId,
-      name: achievementData.name,
-      description: achievementData.description,
-      icon: getIconForBadgeId(achievementData.badgeId),
-      category: achievementData.category.toLowerCase(),
-      rarity: achievementData.rarity,
-      unlocked: true,
-      color: rarityColors[achievementData.rarity as keyof typeof rarityColors],
-      xpReward: achievementData.xpReward,
-    });
-
-    // Marcar como visto no backend após mostrar o toast
-    try {
-      await markAchievementViewed(achievementData.badgeId);
-    } catch (error) {
-      console.error('Erro ao marcar achievement como visto:', error);
-    }
-  };
-
-  return { handleNewAchievement };
-};
-
-// Função auxiliar para mapear badgeId para ícone
-function getIconForBadgeId(
-  badgeId: string
-): React.ComponentType<{ className?: string }> {
-  const iconMap: Record<string, React.ComponentType<{ className?: string }>> = {
-    'first-goal': PiMedal,
-    'first-completion': PiMedal,
-    'dedicated-student': PiMedal,
-    'first-favorite': PiMedal,
-    'collector-bronze': PiStar,
-    'first-contribution': PiMedal,
-  };
-
-  return iconMap[badgeId] || PiMedal;
 }

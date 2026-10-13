@@ -14,6 +14,7 @@ import { getScoreGroups } from '@/app/requests/uploads-client';
 import { Icon } from '@/app/components/ui/Icon';
 import { Aviso } from '@/app/components/site/edit/FormSheet';
 import { cx } from '@/app/components/ui/cx';
+import { useTx } from '@/app/hooks/useTx';
 
 interface ScoreGroup {
   groupIndex: number;
@@ -55,6 +56,7 @@ export default function GroupingSuggestions({
   currentGroupTitle,
   visible,
 }: GroupingSuggestionsProps) {
+  const tx = useTx();
   const [imslpGroups, setImslpGroups] = useState<ScoreGroup[]>([]);
   const [userGroups, setUserGroups] = useState<ScoreGroup[]>([]);
   const [suggestions, setSuggestions] = useState<GroupSuggestion[]>([]);
@@ -111,7 +113,12 @@ export default function GroupingSuggestions({
       }
     } catch (error) {
       console.error('❌ [GROUPING] Erro ao carregar grupos:', error);
-      setError('Erro ao carregar grupos existentes');
+      setError(
+        tx(
+          'Erro ao carregar grupos existentes',
+          'Could not load the existing groups'
+        )
+      );
     } finally {
       setLoading(false);
     }
@@ -141,7 +148,14 @@ export default function GroupingSuggestions({
   if (!visible) return null;
 
   if (loading) {
-    return <Aviso tom="carregando">Analisando os grupos existentes…</Aviso>;
+    return (
+      <Aviso tom="carregando">
+        {tx(
+          'Analisando os grupos existentes…',
+          'Looking at the existing groups…'
+        )}
+      </Aviso>
+    );
   }
 
   if (error) {
@@ -184,7 +198,8 @@ export default function GroupingSuggestions({
                     {group.groupTitle}
                   </span>
                   <span className="t-legenda">
-                    {partituras(group.scoresCount)} · índice {group.groupIndex}
+                    {partituras(group.scoresCount)} {tx('· índice', '· index')}{' '}
+                    {group.groupIndex}
                   </span>
                 </span>
                 {isSelected && <Icon de={PiCheck} tamanho="p" />}
@@ -197,9 +212,9 @@ export default function GroupingSuggestions({
       {hasExistingScores && imslpGroups.length > 0 && (
         <div className="flex flex-col gap-2">
           <span className="t-rotulo font-medium text-texto">
-            Grupos do IMSLP{' '}
+            {tx('Grupos do IMSLP', 'IMSLP groups')}{' '}
             <span className="font-normal text-texto-fraco">
-              · só referência
+              {tx('· só referência', '· reference only')}
             </span>
           </span>
           {imslpGroups.slice(0, 3).map((group) => (
@@ -211,15 +226,18 @@ export default function GroupingSuggestions({
               <span className="flex min-w-0 flex-1 flex-col">
                 <span className="truncate font-medium">{group.groupTitle}</span>
                 <span className="t-legenda">
-                  {partituras(group.scoresCount)} · índice {group.groupIndex}
+                  {partituras(group.scoresCount)} {tx('· índice', '· index')}{' '}
+                  {group.groupIndex}
                 </span>
               </span>
               <Icon de={PiLock} tamanho="p" className="text-texto-fraco" />
             </div>
           ))}
           <span className="t-legenda">
-            Suas partituras não entram nos grupos do IMSLP: ficam em grupos
-            seus, separados.
+            {tx(
+              'Suas partituras não entram nos grupos do IMSLP: ficam em grupos seus, separados.',
+              'Your scores do not join the IMSLP groups: they go into groups of your own.'
+            )}
           </span>
         </div>
       )}
@@ -242,15 +260,34 @@ export default function GroupingSuggestions({
       >
         <Icon de={PiPlus} tamanho="p" className="text-ouro-texto" />
         <span className="flex flex-col">
-          <span className="font-medium text-texto">Criar um grupo novo</span>
-          <span className="t-legenda">Com um título seu</span>
+          <span className="font-medium text-texto">
+            {tx('Criar um grupo novo', 'Create a new group')}
+          </span>
+          <span className="t-legenda">
+            {tx('Com um título seu', 'With a title of your own')}
+          </span>
         </span>
       </button>
 
       <ul className="t-legenda flex list-disc flex-col gap-1 pl-4">
-        <li>Grupos do IMSLP são só referência; não dá para editá-los.</li>
-        <li>Só você acrescenta partituras aos seus grupos.</li>
-        <li>Cada pessoa tem os próprios grupos.</li>
+        <li>
+          {tx(
+            'Grupos do IMSLP são só referência; não dá para editá-los.',
+            'IMSLP groups are reference only; they cannot be edited.'
+          )}
+        </li>
+        <li>
+          {tx(
+            'Só você acrescenta partituras aos seus grupos.',
+            'Only you add scores to your groups.'
+          )}
+        </li>
+        <li>
+          {tx(
+            'Cada pessoa tem os próprios grupos.',
+            'Each person has their own groups.'
+          )}
+        </li>
       </ul>
     </div>
   );

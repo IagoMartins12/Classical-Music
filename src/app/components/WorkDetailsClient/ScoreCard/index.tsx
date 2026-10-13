@@ -3,7 +3,7 @@ import { PiClock, PiDownloadSimple, PiFileText, PiUser } from 'react-icons/pi';
 import { useState } from 'react';
 import { createPortal } from 'react-dom';
 import Image from '@/app/components/SmartImage';
-import FavoriteScoreButton from '../../FavoriteScoreButton';
+import { FavoriteHeart } from '@/app/components/site/FavoriteHeart';
 import { useLearningModalStore } from '@/app/stores/useLearningModalStore';
 import type { WorkScore } from '@/app/types/catalog';
 import { useTranslation } from '@/app/context/TranslationContext';
@@ -144,19 +144,21 @@ const ScoreCard = ({
 
               {/* Action buttons */}
               <Inline gap={2} className="flex-shrink-0">
-                {/* Botão de favoritar */}
-                <FavoriteScoreButton
-                  workId={workId}
-                  score={score}
-                  variant="default"
-                  size="md"
-                  showToast={true}
-                  onFavoriteChange={(isFavorited) => {
-                    console.log(
-                      `Partitura ${score.title} ${
-                        isFavorited ? 'favoritada' : 'desfavoritada'
-                      }`
-                    );
+                <FavoriteHeart
+                  type="score"
+                  id={score.id}
+                  name={score.title}
+                  score={{
+                    workId,
+                    source: score.source || 'IMSLP',
+                    data: {
+                      title: score.title,
+                      type: score.type ?? '',
+                      downloadUrl: score.downloadUrl,
+                      fileSize: score.fileSize,
+                      pageCount: score.pageCount,
+                      fileFormat: score.fileFormat || 'pdf',
+                    },
                   }}
                 />
 

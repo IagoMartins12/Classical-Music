@@ -27,6 +27,7 @@ import { useTranslation } from '@/app/context/TranslationContext';
 import { Stack, Inline } from '@/app/components/ui/Layout';
 import { Text } from '@/app/components/ui/Text';
 import { Card } from '@/app/components/ui/Card';
+import { porIdioma } from '@/app/utils/porIdioma';
 
 interface MusicalPreferencesSectionProps {
   user: User;
@@ -103,7 +104,12 @@ const MusicalPreferencesSection: React.FC<MusicalPreferencesSectionProps> = ({
       setEpochs(epochsData);
     } catch (error) {
       console.error('Erro ao carregar opções:', error);
-      toast.error('Erro ao carregar opções');
+      toast.error(
+        porIdioma(
+          'Não foi possível carregar as opções',
+          'Could not load the options'
+        )
+      );
     } finally {
       setIsLoadingData(false);
     }
@@ -179,7 +185,7 @@ const MusicalPreferencesSection: React.FC<MusicalPreferencesSectionProps> = ({
       }
     } catch (error) {
       console.error('Erro ao salvar preferências:', error);
-      toast.error('Erro ao atualizar preferências.');
+      toast.error(porIdioma('Não foi possível salvar.', 'Could not save.'));
     } finally {
       setIsLoading(false);
     }

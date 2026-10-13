@@ -15,6 +15,7 @@ import { useTranslation } from '@/app/context/TranslationContext';
 import { Stack, Inline } from '@/app/components/ui/Layout';
 import { Text } from '@/app/components/ui/Text';
 import { Card } from '@/app/components/ui/Card';
+import { porIdioma } from '@/app/utils/porIdioma';
 
 interface PrivacySectionProps {
   user: User;
@@ -84,7 +85,7 @@ const PrivacySection: React.FC<PrivacySectionProps> = ({
       }
     } catch (error) {
       console.error('Erro ao salvar configurações de privacidade:', error);
-      toast.error('Erro ao atualizar configurações.');
+      toast.error(porIdioma('Não foi possível salvar.', 'Could not save.'));
     } finally {
       setIsLoading(false);
     }

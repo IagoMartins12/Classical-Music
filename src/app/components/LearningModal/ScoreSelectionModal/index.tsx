@@ -30,6 +30,7 @@ import { Inline, Stack } from '@/app/components/ui/Layout';
 import { Text } from '@/app/components/ui/Text';
 import { NomeAcao } from '@/app/components/ui/NomeAcao';
 import { Card } from '@/app/components/ui/Card';
+import { useTx } from '@/app/hooks/useTx';
 
 // Interface para dados unificados
 interface MixedScoreData {
@@ -101,6 +102,7 @@ const ScoreSelectionModal = ({
   onScoreSelected,
   isEditing = false,
 }: ScoreSelectionModalProps) => {
+  const tx = useTx();
   const { t, ready } = useTranslation({ sections: ['pages/learning'] });
 
   // TABS para categorias traduzidas
@@ -462,7 +464,12 @@ const ScoreSelectionModal = ({
       onClose();
     } catch (error) {
       console.error('Erro ao confirmar seleção:', error);
-      toast.error('Erro ao selecionar partitura. Tente novamente.');
+      toast.error(
+        tx(
+          'Erro ao selecionar partitura. Tente novamente.',
+          'Could not choose the score. Try again.'
+        )
+      );
     } finally {
       setIsConverting(false);
     }
@@ -473,7 +480,9 @@ const ScoreSelectionModal = ({
       try {
         await loadMoreForType(tabType);
       } catch {
-        toast.error('Erro ao carregar mais partituras');
+        toast.error(
+          tx('Erro ao carregar mais partituras', 'Could not load more scores')
+        );
       }
     },
     [loadMoreForType]

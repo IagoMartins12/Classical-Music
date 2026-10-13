@@ -9,6 +9,7 @@
 import { ApiError, apiFetch, type ApiRequest } from '@/app/libs/api/client';
 import type { ApiSchema } from '@/app/libs/api/types';
 import type { BillingPeriod, PlanType } from '@/app/libs/subscriptionConstants';
+import { porIdioma } from '@/app/utils/porIdioma';
 
 type SubscriptionAction = ApiSchema<'SubscriptionActionResponseDto'>;
 type CurrentSubscription = ApiSchema<'CurrentSubscriptionResponseDto'>;
@@ -100,7 +101,7 @@ export async function validateCouponRequest(
   const result = await call<CouponValidation>(
     '/coupon/validate',
     { method: 'POST', body: { code, planType, billingPeriod } },
-    'Cupom inválido'
+    porIdioma('Cupom inválido', 'Invalid coupon')
   );
 
   // O legado sempre mandava `message` (válido) ou `error` (inválido).

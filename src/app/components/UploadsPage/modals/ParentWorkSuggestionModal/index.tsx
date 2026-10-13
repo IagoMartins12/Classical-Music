@@ -20,6 +20,7 @@ import { Button } from '@/app/components/ui/Button';
 import { CaixaDeMarcar } from '@/app/components/ui/CaixaDeMarcar';
 import { cx } from '@/app/components/ui/cx';
 import { FormBlock, FormSheet } from '@/app/components/site/edit/FormSheet';
+import { useTx } from '@/app/hooks/useTx';
 
 interface ParentWorkData {
   id: string;
@@ -101,18 +102,27 @@ const ParentWorkConfirmationModal: React.FC<{
   onClose: () => void;
   onConfirm: () => void;
   parentWorkTitle: string;
-}> = ({ isOpen, onClose, onConfirm, parentWorkTitle }) => (
-  <ConfirmModal
-    isOpen={isOpen}
-    onClose={onClose}
-    onConfirm={onConfirm}
-    type="question"
-    title="Aproveitar dados da obra da coleção?"
-    message={`"${parentWorkTitle}" tem dados que podem preencher campos vazios desta peça. O que você já digitou não muda.`}
-    confirmText="Ver opções"
-    cancelText="Não, obrigado"
-  />
-);
+}> = ({ isOpen, onClose, onConfirm, parentWorkTitle }) => {
+  const tx = useTx();
+  return (
+    <ConfirmModal
+      isOpen={isOpen}
+      onClose={onClose}
+      onConfirm={onConfirm}
+      type="question"
+      title={tx(
+        'Aproveitar dados da obra da coleção?',
+        'Use details from the collection work?'
+      )}
+      message={tx(
+        `“${parentWorkTitle}” tem dados que podem preencher campos vazios desta peça. O que você já digitou não muda.`,
+        `“${parentWorkTitle}” has details that can fill this piece’s empty fields. What you typed stays.`
+      )}
+      confirmText={tx('Ver opções', 'See options')}
+      cancelText={tx('Não, obrigado', 'No, thanks')}
+    />
+  );
+};
 
 const ParentWorkSuggestionModal: React.FC<ParentWorkSuggestionModalProps> = ({
   isOpen,
@@ -121,6 +131,7 @@ const ParentWorkSuggestionModal: React.FC<ParentWorkSuggestionModalProps> = ({
   currentFormData,
   onApplyData,
 }) => {
+  const tx = useTx();
   const [selectedFields, setSelectedFields] = useState<Set<string>>(new Set());
   const [isApplying, setIsApplying] = useState(false);
 
@@ -136,7 +147,7 @@ const ParentWorkSuggestionModal: React.FC<ParentWorkSuggestionModalProps> = ({
       // Catálogo
       {
         key: 'opOrCatalog',
-        label: 'Op./Catálogo',
+        label: tx('Op./Catálogo', 'Op./Catalog'),
         icon: PiBookOpen,
         parentValue: parentWorkData.opOrCatalog,
         currentValue: currentFormData.opOrCatalog,
@@ -146,7 +157,7 @@ const ParentWorkSuggestionModal: React.FC<ParentWorkSuggestionModalProps> = ({
       },
       {
         key: 'compositionYear',
-        label: 'Ano de Composição',
+        label: tx('Ano de Composição', 'Year of composition'),
         icon: PiCalendarBlank,
         parentValue: parentWorkData.compositionYear,
         currentValue: currentFormData.compositionYear,
@@ -157,7 +168,7 @@ const ParentWorkSuggestionModal: React.FC<ParentWorkSuggestionModalProps> = ({
       },
       {
         key: 'firstPublishDate',
-        label: 'Primeira Publicação',
+        label: tx('Primeira Publicação', 'First publication'),
         icon: PiCalendarBlank,
         parentValue: parentWorkData.firstPublishDate,
         currentValue: currentFormData.firstPublishDate,
@@ -168,7 +179,7 @@ const ParentWorkSuggestionModal: React.FC<ParentWorkSuggestionModalProps> = ({
       },
       {
         key: 'tone',
-        label: 'Tonalidade',
+        label: tx('Tonalidade', 'Key'),
         icon: PiMusicNotes,
         parentValue: parentWorkData.tone,
         currentValue: currentFormData.tone,
@@ -177,7 +188,7 @@ const ParentWorkSuggestionModal: React.FC<ParentWorkSuggestionModalProps> = ({
       },
       {
         key: 'mediaDuration',
-        label: 'Duração',
+        label: tx('Duração', 'Duration'),
         icon: PiClock,
         parentValue: parentWorkData.mediaDuration,
         currentValue: currentFormData.mediaDuration,
@@ -190,7 +201,7 @@ const ParentWorkSuggestionModal: React.FC<ParentWorkSuggestionModalProps> = ({
       // Musical
       {
         key: 'workStyle',
-        label: 'Estilo Musical',
+        label: tx('Estilo Musical', 'Musical style'),
         icon: PiSpeakerHigh,
         parentValue: parentWorkData.workStyle,
         currentValue: currentFormData.workStyle,
@@ -200,7 +211,7 @@ const ParentWorkSuggestionModal: React.FC<ParentWorkSuggestionModalProps> = ({
       },
       {
         key: 'moviment',
-        label: 'Movimento',
+        label: tx('Movimento', 'Movement'),
         icon: PiMusicNotes,
         parentValue: parentWorkData.moviment,
         currentValue: currentFormData.moviment,
@@ -209,7 +220,7 @@ const ParentWorkSuggestionModal: React.FC<ParentWorkSuggestionModalProps> = ({
       },
       {
         key: 'instrumentation',
-        label: 'Instrumentação',
+        label: tx('Instrumentação', 'Instrumentation'),
         icon: PiUser,
         parentValue: parentWorkData.instrumentation,
         currentValue: currentFormData.instrumentation,
@@ -220,7 +231,7 @@ const ParentWorkSuggestionModal: React.FC<ParentWorkSuggestionModalProps> = ({
       },
       {
         key: 'dedicateTo',
-        label: 'Dedicado a',
+        label: tx('Dedicado a', 'Dedicated to'),
         icon: PiStar,
         parentValue: parentWorkData.dedicateTo,
         currentValue: currentFormData.dedicateTo,
@@ -232,7 +243,7 @@ const ParentWorkSuggestionModal: React.FC<ParentWorkSuggestionModalProps> = ({
       // Arrays
       {
         key: 'categoryNames',
-        label: 'Categorias',
+        label: tx('Categorias', 'Categories'),
         icon: PiTag,
         parentValue: parentWorkData.categoryNames,
         currentValue: currentFormData.categoryNames,
@@ -245,7 +256,7 @@ const ParentWorkSuggestionModal: React.FC<ParentWorkSuggestionModalProps> = ({
       },
       {
         key: 'workGenresArr',
-        label: 'Gêneros',
+        label: tx('Gêneros', 'Genres'),
         icon: PiTag,
         parentValue: parentWorkData.workGenresArr,
         currentValue: currentFormData.workGenresArr,
@@ -260,7 +271,7 @@ const ParentWorkSuggestionModal: React.FC<ParentWorkSuggestionModalProps> = ({
       // Special fields
       {
         key: 'workType',
-        label: 'Tipo de Obra',
+        label: tx('Tipo de Obra', 'Work type'),
         icon: PiGlobe,
         parentValue: parentWorkData.workType,
         currentValue: currentFormData.workType,
@@ -271,7 +282,7 @@ const ParentWorkSuggestionModal: React.FC<ParentWorkSuggestionModalProps> = ({
       },
       {
         key: 'difficultyLevel',
-        label: 'Nível de Dificuldade',
+        label: tx('Nível de Dificuldade', 'Difficulty level'),
         icon: PiStar,
         parentValue: parentWorkData.difficultyLevel,
         currentValue: currentFormData.difficultyLevel,
@@ -284,7 +295,7 @@ const ParentWorkSuggestionModal: React.FC<ParentWorkSuggestionModalProps> = ({
       // IMSLP Tags
       {
         key: 'imslpTags',
-        label: 'Tags IMSLP',
+        label: tx('Tags IMSLP', 'IMSLP tags'),
         icon: PiTag,
         parentValue: parentWorkData.imslpTags,
         currentValue: currentFormData.imslpTags
@@ -302,7 +313,7 @@ const ParentWorkSuggestionModal: React.FC<ParentWorkSuggestionModalProps> = ({
       // IDs (special handling)
       {
         key: 'epochId',
-        label: 'Época',
+        label: tx('Época', 'Era'),
         icon: PiCalendarBlank,
         parentValue: parentWorkData.epoch?.name,
         currentValue: currentFormData.epochId,
@@ -312,7 +323,7 @@ const ParentWorkSuggestionModal: React.FC<ParentWorkSuggestionModalProps> = ({
       },
       {
         key: 'instrumentId',
-        label: 'Instrumento',
+        label: tx('Instrumento', 'Instrument'),
         icon: PiMusicNotes,
         parentValue: parentWorkData.instrument?.name,
         currentValue: currentFormData.instrumentId,
@@ -341,11 +352,19 @@ const ParentWorkSuggestionModal: React.FC<ParentWorkSuggestionModalProps> = ({
   }, [fieldSuggestions]);
 
   const categoryLabels = {
-    catalog: { title: 'Catálogo', icon: PiBookOpen, color: 'text-blue-600' },
+    catalog: {
+      title: tx('Catálogo', 'Catalog'),
+      icon: PiBookOpen,
+      color: 'text-blue-600',
+    },
     musical: { title: 'Musical', icon: PiMusicNotes, color: 'text-purple-600' },
-    metadata: { title: 'Metadados', icon: PiInfo, color: 'text-green-600' },
+    metadata: {
+      title: tx('Metadados', 'Metadata'),
+      icon: PiInfo,
+      color: 'text-green-600',
+    },
     classification: {
-      title: 'Classificação',
+      title: tx('Classificação', 'Classification'),
       icon: PiTag,
       color: 'text-orange-600',
     },
@@ -467,13 +486,20 @@ const ParentWorkSuggestionModal: React.FC<ParentWorkSuggestionModalProps> = ({
       <FormSheet
         aberto={showMainModal}
         aoFechar={handleCloseMainModal}
-        titulo="Copiar dados da obra da coleção"
-        descricao={`"${parentWorkData.title}" tem dados que podem ser úteis. Só campos vazios são preenchidos.`}
+        titulo={tx(
+          'Copiar dados da obra da coleção',
+          'Copy details from the collection work'
+        )}
+        descricao={tx(
+          `“${parentWorkData.title}” tem dados que podem ser úteis. Só campos vazios são preenchidos.`,
+          `“${parentWorkData.title}” has details that may help. Only empty fields are filled.`
+        )}
         ocupado={isApplying}
         rodape={
           <div className="flex flex-wrap items-center justify-between gap-2">
             <span className="t-legenda">
-              {selectedFields.size} de {fieldSuggestions.length} selecionados
+              {selectedFields.size} {tx('de', 'of')} {fieldSuggestions.length}{' '}
+              {tx('selecionados', 'selected')}
             </span>
             <div className="flex gap-2">
               <Button
@@ -481,7 +507,7 @@ const ParentWorkSuggestionModal: React.FC<ParentWorkSuggestionModalProps> = ({
                 onClick={handleCloseMainModal}
                 disabled={isApplying}
               >
-                Cancelar
+                {tx('Cancelar', 'Cancel')}
               </Button>
               <Button
                 variante="primario"
@@ -500,10 +526,10 @@ const ParentWorkSuggestionModal: React.FC<ParentWorkSuggestionModalProps> = ({
       >
         <div className="mb-6 flex gap-2">
           <Button tamanho="p" onClick={handleSelectAll}>
-            Selecionar todos
+            {tx('Selecionar todos', 'Select all')}
           </Button>
           <Button tamanho="p" variante="fantasma" onClick={handleClearAll}>
-            Limpar seleção
+            {tx('Limpar seleção', 'Clear selection')}
           </Button>
         </div>
         {Object.entries(groupedSuggestions).map(([category, suggestions]) => {
@@ -513,7 +539,10 @@ const ParentWorkSuggestionModal: React.FC<ParentWorkSuggestionModalProps> = ({
             <FormBlock
               key={category}
               titulo={categoryInfo.title}
-              nota={`${suggestions.length} ${suggestions.length !== 1 ? 'disponíveis' : 'disponível'}`}
+              nota={tx(
+                `${suggestions.length} ${suggestions.length !== 1 ? 'disponíveis' : 'disponível'}`,
+                `${suggestions.length} available`
+              )}
             >
               {suggestions.map((suggestion) => {
                 const displayValue =
@@ -532,7 +561,8 @@ const ParentWorkSuggestionModal: React.FC<ParentWorkSuggestionModalProps> = ({
                       rotulo={suggestion.label}
                       ajuda={
                         <span className="block truncate">
-                          {displayValue || 'Valor não disponível'}
+                          {displayValue ||
+                            tx('Valor não disponível', 'Value not available')}
                         </span>
                       }
                       marcado={selectedFields.has(suggestion.key)}

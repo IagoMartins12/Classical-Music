@@ -1,5 +1,6 @@
 'use client';
 
+import { NomeAcao } from './NomeAcao';
 import { useId, useState, type KeyboardEvent } from 'react';
 import { PiX } from 'react-icons/pi';
 import { cx } from './cx';
@@ -86,7 +87,8 @@ export function CampoDeFichas({
                 className="grid h-6 w-6 place-items-center rounded-full text-texto-fraco hover:text-texto"
               >
                 <Icon de={PiX} tamanho="pp" />
-                <span className="sr-only">Tirar {valor}</span>
+                <NomeAcao acao="tirar" />
+                <span className="sr-only"> {valor}</span>
               </button>
             </li>
           ))}

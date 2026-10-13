@@ -9,7 +9,12 @@ import { ReactNode, useCallback, useEffect, useMemo } from 'react';
 import { toast } from 'react-hot-toast';
 import { useLanguageStore } from '@/app/stores/useLanguageStore';
 import { authApi, RegisterInput } from '../api/auth';
-import { ApiError, refreshSession, SESSION_EXPIRED_EVENT } from '../api/client';
+import {
+  ApiError,
+  connectionError,
+  refreshSession,
+  SESSION_EXPIRED_EVENT,
+} from '../api/client';
 import { ProfileAccount, profileApi } from '../api/profile';
 import { getQueryClient } from '../query-client';
 import { lembrarConta, limparCachesPessoais } from '../pwa/limpar';
@@ -44,7 +49,7 @@ export type SessionStatus = 'loading' | 'authenticated' | 'unauthenticated';
 
 export type AuthResult =
   | { ok: true }
-  | { ok: false; status: number; message: string };
+  | { ok: false; status: number; message: string; key: string };
 
 /**
  * Há sessão para perguntar? O marcador (`<prefixo>_session`) é gravado pela
@@ -136,8 +141,13 @@ export function useSession(): {
 
 function failure(error: unknown): AuthResult {
   return error instanceof ApiError
-    ? { ok: false, status: error.status, message: error.message }
-    : { ok: false, status: 0, message: 'Sem conexão com o servidor.' };
+    ? {
+        ok: false,
+        status: error.status,
+        message: error.message,
+        key: error.key,
+      }
+    : { ok: false, status: 0, message: connectionError(), key: '' };
 }
 
 /** Relê a sessão da API. */

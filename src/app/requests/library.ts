@@ -27,6 +27,7 @@ import type {
   LearnedItem,
   WantToLearnItem,
 } from '@/app/stores/useLearningStore';
+import { porIdioma } from '@/app/utils/porIdioma';
 
 type AddOrRemove = 'add' | 'remove';
 
@@ -383,7 +384,9 @@ export async function uploadPerformanceVideo(workId: string, file: File) {
   const upload = await fetch(signed.uploadUrl, { method: 'POST', body: form });
 
   if (!upload.ok) {
-    throw new Error('Não foi possível enviar o vídeo');
+    throw new Error(
+      porIdioma('Não foi possível enviar o vídeo', 'Could not send the video')
+    );
   }
 
   await apiFetch(`/uploads/${signed.assetId}/confirm`, { method: 'POST' });

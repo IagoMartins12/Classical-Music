@@ -1,6 +1,7 @@
 // app/hooks/useContactForm.ts
 import { useState, useCallback } from 'react';
 import { submitContact } from '@/app/requests/contact';
+import { connectionError } from '@/app/libs/api/client';
 
 interface ContactFormData {
   name: string;
@@ -51,7 +52,7 @@ export const useContactForm = (): UseContactFormReturn => {
       }
     } catch (err) {
       console.error('Erro no envio do formulário:', err);
-      setError('Erro de conexão. Tente novamente.');
+      setError(connectionError());
       setSuccess(false);
     } finally {
       setLoading(false);

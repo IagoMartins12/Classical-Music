@@ -9,6 +9,7 @@ import Button from '../../Common/Button';
 import { legacyAuth } from '@/app/libs/api/compat';
 import { useTranslation } from '@/app/context/TranslationContext';
 import { NomeAcao } from '@/app/components/ui/NomeAcao';
+import { porIdioma } from '@/app/utils/porIdioma';
 
 interface EmailVerificationBannerProps {
   onDismiss?: () => void;
@@ -50,13 +51,29 @@ const EmailVerificationBanner2: React.FC<EmailVerificationBannerProps> = ({
       );
 
       if (result.success) {
-        toast.success('Email de verificação enviado!');
+        toast.success(
+          porIdioma(
+            'E-mail de confirmação enviado.',
+            'Confirmation email sent.'
+          )
+        );
       } else {
-        toast.error(result.message || 'Erro ao enviar email');
+        toast.error(
+          result.message ||
+            porIdioma(
+              'Não foi possível enviar o e-mail',
+              'Could not send the email'
+            )
+        );
       }
     } catch (error) {
       console.error('Erro ao reenviar verificação:', error);
-      toast.error('Erro ao enviar email de verificação');
+      toast.error(
+        porIdioma(
+          'Não foi possível enviar o e-mail',
+          'Could not send the email'
+        )
+      );
     } finally {
       setIsResending(false);
     }

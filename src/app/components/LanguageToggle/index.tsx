@@ -186,10 +186,10 @@ export const LanguageToggle: React.FC<LanguageToggleProps> = ({
             relative fundo-sup-2 border border-linha-forte rounded-xl active:scale-95 transition-all duration-300 group disabled:opacity-50 disabled:cursor-not-allowed focus:outline-none focus:ring-2 focus:ring-offset-2
             ${isTranslating ? 'animate-pulse cursor-wait' : ''}
           `}
-          aria-label={`Alterar para ${
-            language === 'pt' ? 'inglês' : 'português'
-          }`}
-          title={`Trocar para ${language === 'pt' ? 'English' : 'Português'}`}
+          aria-label={
+            language === 'pt' ? 'Mudar para inglês' : 'Switch to Portuguese'
+          }
+          title={language === 'pt' ? 'English' : 'Português'}
         >
           {/* Background gradient effect */}
           <div className="absolute inset-0 opacity-0 group-hover:opacity-10 rounded-xl transition-opacity duration-300" />
@@ -260,7 +260,7 @@ export const LanguageDropdown: React.FC<{
               {/* 🆕 Mostrar (Sistema) se aplicável */}
               {showSystemIndicator && !hasUserPreference && (
                 <Text papel="legenda" tom="fraco" className="ml-1">
-                  (Sistema)
+                  {language === 'pt' ? '(Sistema)' : '(System)'}
                 </Text>
               )}
             </Text>

@@ -9,6 +9,7 @@
 import { ApiError, apiFetch } from '@/app/libs/api/client';
 import type { ApiSchema } from '@/app/libs/api/types';
 import { asFetchResponse } from '@/app/requests/fetch-like';
+import { porIdioma } from '@/app/utils/porIdioma';
 
 const MEDIA_KEYS = [
   'spotifyTrackId',
@@ -73,7 +74,10 @@ export function updateWorkMediaRequest(
       method: 'PATCH',
       body,
     }),
-    (result) => ({ ...result, message: 'Mídia atualizada com sucesso' })
+    (result) => ({
+      ...result,
+      message: porIdioma('Mídia atualizada.', 'Media updated.'),
+    })
   );
 }
 
@@ -121,7 +125,10 @@ export function uploadWorkMediaFileRequest(
       if (!upload.ok) {
         throw new ApiError(
           upload.status,
-          'Não foi possível enviar o arquivo',
+          porIdioma(
+            'Não foi possível enviar o arquivo',
+            'Could not send the file'
+          ),
           null
         );
       }

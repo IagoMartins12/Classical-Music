@@ -8,6 +8,7 @@ import {
   updateAnnotationRequest,
   voteAnnotationRequest,
 } from '@/app/requests/library';
+import { porIdioma } from '@/app/utils/porIdioma';
 
 export type AnnotationCategory =
   | 'TECHNIQUE'
@@ -298,7 +299,12 @@ export const useAnnotationsStore = create<AnnotationsStore>()(
           const response = await listAnnotations(searchParams);
 
           if (!response.ok) {
-            throw new Error('Erro ao buscar anotações');
+            throw new Error(
+              porIdioma(
+                'Não foi possível carregar as anotações',
+                'Could not load the annotations'
+              )
+            );
           }
 
           const data = response.data;
@@ -424,7 +430,12 @@ export const useAnnotationsStore = create<AnnotationsStore>()(
           const response = await listAnnotations(searchParams);
 
           if (!response.ok) {
-            throw new Error('Erro ao buscar anotações do usuário');
+            throw new Error(
+              porIdioma(
+                'Não foi possível carregar suas anotações',
+                'Could not load your annotations'
+              )
+            );
           }
 
           const data = response.data;
@@ -495,7 +506,12 @@ export const useAnnotationsStore = create<AnnotationsStore>()(
         } = get();
 
         if (!data.workId || !data.title || !data.content) {
-          throw new Error('Dados incompletos para criar anotação');
+          throw new Error(
+            porIdioma(
+              'Faltam dados para criar a anotação',
+              'Missing details to create the annotation'
+            )
+          );
         }
 
         setCreateLoading(true);
@@ -528,7 +544,7 @@ export const useAnnotationsStore = create<AnnotationsStore>()(
           updatedAt: new Date().toISOString(),
           user: {
             id: data.userId || '',
-            firstName: 'Você',
+            firstName: porIdioma('Você', 'You'),
             lastName: '',
           },
           work: data.work,
@@ -545,7 +561,12 @@ export const useAnnotationsStore = create<AnnotationsStore>()(
           const response = await createAnnotationRequest(data);
 
           if (!response.ok) {
-            throw new Error('Erro ao criar anotação');
+            throw new Error(
+              porIdioma(
+                'Não foi possível criar a anotação',
+                'Could not create the annotation'
+              )
+            );
           }
 
           const result = response.data;
@@ -581,7 +602,12 @@ export const useAnnotationsStore = create<AnnotationsStore>()(
             return result.annotation;
           }
 
-          throw new Error('Resposta inválida do servidor');
+          throw new Error(
+            porIdioma(
+              'Resposta inválida do servidor',
+              'Invalid server response'
+            )
+          );
         } catch (error) {
           console.error('Erro ao criar anotação:', error);
           removeOptimisticAnnotation(data.workId, optimisticId);
@@ -670,7 +696,12 @@ export const useAnnotationsStore = create<AnnotationsStore>()(
               };
             });
 
-            throw new Error('Erro ao atualizar anotação');
+            throw new Error(
+              porIdioma(
+                'Não foi possível atualizar a anotação',
+                'Could not update the annotation'
+              )
+            );
           }
 
           const result = response.data;
@@ -757,7 +788,12 @@ export const useAnnotationsStore = create<AnnotationsStore>()(
               '❌ [Revertido] Erro na API, anotação restaurada:',
               annotationId
             );
-            throw new Error('Erro ao deletar anotação');
+            throw new Error(
+              porIdioma(
+                'Não foi possível apagar a anotação',
+                'Could not delete the annotation'
+              )
+            );
           }
 
           // Sucesso
@@ -819,7 +855,9 @@ export const useAnnotationsStore = create<AnnotationsStore>()(
               currentVote,
               annotation.helpfulCount
             );
-            throw new Error('Erro ao votar');
+            throw new Error(
+              porIdioma('Não foi possível votar', 'Could not vote')
+            );
           }
 
           const result = response.data;

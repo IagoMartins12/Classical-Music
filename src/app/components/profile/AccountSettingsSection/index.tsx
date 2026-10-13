@@ -37,6 +37,8 @@ import { useTranslation } from '@/app/context/TranslationContext';
 import { Stack, Inline } from '@/app/components/ui/Layout';
 import { Text } from '@/app/components/ui/Text';
 import { Card } from '@/app/components/ui/Card';
+import { porIdioma } from '@/app/utils/porIdioma';
+import { useTx } from '@/app/hooks/useTx';
 
 interface AccountSettingsSectionProps {
   user: User;
@@ -52,7 +54,8 @@ interface LoginMethodInfo {
 const AccountSettingsSection: React.FC<AccountSettingsSectionProps> = ({
   user,
 }) => {
-  const { t } = useTranslation({ sections: ['pages/profile'] });
+  const tx = useTx();
+  const { t, language } = useTranslation({ sections: ['pages/profile'] });
   const {
     isEmailChanging,
     isUserTypeChanging,
@@ -165,22 +168,32 @@ const AccountSettingsSection: React.FC<AccountSettingsSectionProps> = ({
   const handlePasswordChange = async () => {
     // Validações básicas
     if (!passwordData.currentPassword || !passwordData.newPassword) {
-      toast.error('Preencha todos os campos');
+      toast.error(tx('Preencha todos os campos', 'Fill in every field'));
       return;
     }
 
     if (passwordData.newPassword !== passwordData.confirmPassword) {
-      toast.error('Senhas não coincidem');
+      toast.error(
+        porIdioma('As senhas não coincidem', 'Passwords do not match')
+      );
       return;
     }
 
     if (!passwordValidation.isValid) {
-      toast.error(passwordValidation.error || 'Senha inválida');
+      toast.error(
+        passwordValidation.error ||
+          porIdioma('Senha inválida', 'Invalid password')
+      );
       return;
     }
 
     if (passwordData.currentPassword === passwordData.newPassword) {
-      toast.error('A nova senha deve ser diferente da atual');
+      toast.error(
+        tx(
+          'A nova senha deve ser diferente da atual',
+          'The new password must differ from the current one'
+        )
+      );
       return;
     }
 
@@ -204,7 +217,12 @@ const AccountSettingsSection: React.FC<AccountSettingsSectionProps> = ({
       }
     } catch (error) {
       console.error('Erro ao alterar senha:', error);
-      toast.error('Erro ao alterar senha. Tente novamente.');
+      toast.error(
+        tx(
+          'Erro ao alterar senha. Tente novamente.',
+          'Could not change the password. Try again.'
+        )
+      );
     } finally {
       setIsPasswordLoading(false);
     }
@@ -212,17 +230,19 @@ const AccountSettingsSection: React.FC<AccountSettingsSectionProps> = ({
 
   const handleEmailChange = async () => {
     if (!emailData.newEmail || !emailData.currentPassword) {
-      toast.error('Preencha todos os campos');
+      toast.error(tx('Preencha todos os campos', 'Fill in every field'));
       return;
     }
 
     if (emailData.newEmail === user.email) {
-      toast.error('Este já é seu email atual');
+      toast.error(
+        porIdioma('Este já é o seu e-mail', 'This is already your email')
+      );
       return;
     }
 
     if (!validateEmail(emailData.newEmail)) {
-      toast.error('Email inválido');
+      toast.error(porIdioma('E-mail inválido', 'Invalid email'));
       return;
     }
 
@@ -242,7 +262,12 @@ const AccountSettingsSection: React.FC<AccountSettingsSectionProps> = ({
 
   const handleUserTypeChange = async () => {
     if (newUserType === user.userType) {
-      toast.error('Este já é seu tipo de conta atual');
+      toast.error(
+        porIdioma(
+          'Este já é o seu tipo de conta',
+          'This is already your account type'
+        )
+      );
       return;
     }
 
@@ -444,7 +469,9 @@ const AccountSettingsSection: React.FC<AccountSettingsSectionProps> = ({
                   placeholder={t('account_new_email_placeholder')}
                   error={
                     emailData.newEmail && !validateEmail(emailData.newEmail)
-                      ? 'Email inválido'
+                      ? language === 'en'
+                        ? 'Invalid email'
+                        : 'E-mail inválido'
                       : undefined
                   }
                 />
@@ -585,7 +612,10 @@ const AccountSettingsSection: React.FC<AccountSettingsSectionProps> = ({
                   }))
                 }
                 leftIcon={<PiLock className="w-4 h-4" />}
-                placeholder="Digite sua senha atual"
+                placeholder={tx(
+                  'Digite sua senha atual',
+                  'Enter your current password'
+                )}
               />
             )}
 
@@ -670,7 +700,9 @@ const AccountSettingsSection: React.FC<AccountSettingsSectionProps> = ({
               error={
                 passwordData.confirmPassword &&
                 passwordData.newPassword !== passwordData.confirmPassword
-                  ? 'Senhas não coincidem'
+                  ? language === 'en'
+                    ? 'Passwords do not match'
+                    : 'As senhas não coincidem'
                   : undefined
               }
             />
@@ -874,7 +906,11 @@ const AccountSettingsSection: React.FC<AccountSettingsSectionProps> = ({
         isLoading={isDeleting}
         isCascadeLoading={isCascadeLoading}
         cascadeInfo={cascadeInfo}
-        userName={user.firstName || user.name || 'Usuário'}
+        userName={
+          user.firstName ||
+          user.name ||
+          (language === 'en' ? 'User' : 'Usuário')
+        }
         userEmail={user.email || ''}
       />
     </div>

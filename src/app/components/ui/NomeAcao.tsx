@@ -35,6 +35,8 @@ const NOMES = {
   compartilhar: { pt: 'Compartilhar', en: 'Share' },
   buscar: { pt: 'Buscar', en: 'Search' },
   limpar: { pt: 'Limpar', en: 'Clear' },
+  tirar: { pt: 'Tirar', en: 'Remove' },
+  fecharAviso: { pt: 'Fechar aviso', en: 'Dismiss' },
 } as const;
 
 export type Acao = keyof typeof NOMES;

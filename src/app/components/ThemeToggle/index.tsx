@@ -1,6 +1,7 @@
 // components/ThemeToggle.tsx
 'use client';
 
+import { useRouteLanguage } from '@/app/hooks/useRouteLanguage';
 import { useTheme } from '@/app/stores/themeStore';
 import React from 'react';
 import { PiMoon, PiSun } from 'react-icons/pi';
@@ -25,6 +26,11 @@ export const ThemeToggle: React.FC<ThemeToggleProps> = ({
     isTransitioning,
     isSystemControlled, // 🆕
   } = useTheme();
+  const { language } = useRouteLanguage();
+  const label =
+    language === 'en'
+      ? `Switch to ${mode === 'dark' ? 'light' : 'dark'} theme`
+      : `Mudar para o tema ${mode === 'dark' ? 'claro' : 'escuro'}`;
 
   const getVariantClasses = () => {
     switch (variant) {
@@ -81,10 +87,8 @@ export const ThemeToggle: React.FC<ThemeToggleProps> = ({
           ${getVariantClasses()}
           relative fundo-sup-2 border border-linha-forte rounded-xl active:scale-95 transition-all duration-300 group disabled:opacity-50 disabled:cursor-not-allowed
         `}
-        aria-label={`Alternar para tema ${
-          mode === 'dark' ? 'claro' : 'escuro'
-        }`}
-        title={`Trocar para tema ${mode === 'dark' ? 'claro' : 'escuro'}`}
+        aria-label={label}
+        title={label}
       >
         {/* Background gradient effect */}
         <div className="absolute inset-0 opacity-0 group-hover:opacity-10 rounded-xl transition-opacity duration-300" />
@@ -131,61 +135,4 @@ export const ThemeToggle: React.FC<ThemeToggleProps> = ({
       </button>
     </div>
   );
-};
-
-// 🆕 Componente adicional para mostrar status do sistema
-export const ThemeSystemStatus: React.FC<{
-  className?: string;
-}> = ({ className = '' }) => {
-  const { mode, hasUserPreference } = useTheme();
-
-  if (hasUserPreference) {
-    return (
-      <div
-        className={`flex items-center gap-2 text-xs text-theme-tertiary ${className}`}
-      >
-        <div className="w-2 h-2 rounded-full" />
-        <span>Tema personalizado: {mode === 'dark' ? 'Escuro' : 'Claro'}</span>
-      </div>
-    );
-  }
-
-  return (
-    <div
-      className={`flex items-center gap-2 text-xs text-theme-tertiary ${className}`}
-    >
-      <div className="w-2 h-2 rounded-full animate-pulse" />
-      <span>Seguindo sistema: {mode === 'dark' ? 'Escuro' : 'Claro'}</span>
-    </div>
-  );
-};
-
-// 🆕 Hook avançado com mais informações
-export const useThemeAdvanced = () => {
-  const themeData = useTheme();
-  const [systemTheme, setSystemTheme] = React.useState<'dark' | 'light'>(
-    'dark'
-  );
-
-  // Detectar mudanças no tema do sistema
-  React.useEffect(() => {
-    const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
-
-    const updateSystemTheme = () => {
-      setSystemTheme(mediaQuery.matches ? 'dark' : 'light');
-    };
-
-    updateSystemTheme(); // Atualizar inicialmente
-    mediaQuery.addEventListener('change', updateSystemTheme);
-
-    return () => mediaQuery.removeEventListener('change', updateSystemTheme);
-  }, []);
-
-  return {
-    ...themeData,
-    systemTheme,
-    isFollowingSystem: themeData.isSystemControlled,
-    isDifferentFromSystem:
-      themeData.hasUserPreference && themeData.mode !== systemTheme,
-  };
 };

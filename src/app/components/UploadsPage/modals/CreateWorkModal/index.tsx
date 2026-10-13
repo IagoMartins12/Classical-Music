@@ -49,6 +49,7 @@ import {
   updateWorkMediaRequest,
   uploadWorkMediaFileRequest,
 } from '@/app/requests/work-media';
+import { useTx } from '@/app/hooks/useTx';
 
 interface CreateWorkModalProps {
   isOpen: boolean;
@@ -94,6 +95,7 @@ const CreateWorkModal = ({
   epochs,
   editingWork,
 }: CreateWorkModalProps) => {
+  const tx = useTx();
   const idCampo = useId();
   const formId = `${idCampo}-form`;
   const router = useRouter();
@@ -225,7 +227,7 @@ const CreateWorkModal = ({
       'Cromática',
       'Dodecafônica',
       'Pentatônica',
-      'Não especificada',
+      tx('Não especificada', 'Not specified'),
     ];
 
     return [
@@ -291,7 +293,10 @@ const CreateWorkModal = ({
       ...workModalValidations,
       parentWorkId: (value: string) => {
         if (isPartOfCollection && !value?.trim()) {
-          return 'Selecione uma obra da coleção';
+          return tx(
+            'Selecione uma obra da coleção',
+            'Choose a work from the collection'
+          );
         }
         return null;
       },
@@ -481,8 +486,11 @@ const CreateWorkModal = ({
       setErrors(updatedErrors);
 
       toast.success(
-        'Sucesso',
-        `${Object.keys(selectedData).length} campo(s) preenchido(s) com dados da obra pai`
+        tx('Sucesso', 'Done'),
+        tx(
+          `${Object.keys(selectedData).length} campo(s) preenchido(s) com dados da obra pai`,
+          `${Object.keys(selectedData).length} field(s) filled from the parent work`
+        )
       );
     },
     [errors, toast]
@@ -731,7 +739,7 @@ const CreateWorkModal = ({
       if (await checkDuplicateByTitle()) {
         const composerName =
           composers.find((c) => c.id === formData.composerId)?.fullName ||
-          'compositor selecionado';
+          tx('compositor selecionado', 'chosen composer');
         toast.error(
           t('toast_error'),
           t('toast_work_duplicate_title_composer', {
@@ -1010,7 +1018,7 @@ const CreateWorkModal = ({
   };
   const compositor = formData.composerId
     ? composers.find((c) => c.id === formData.composerId)?.fullName ||
-      'compositor selecionado'
+      tx('compositor selecionado', 'chosen composer')
     : null;
   const selecao = (
     key: string,
@@ -1087,7 +1095,11 @@ const CreateWorkModal = ({
               isEditingExternalSource ? (
                 <span className="inline-flex items-center gap-1">
                   <PiLock aria-hidden="true" className="h-3 w-3" />
-                  Fonte IMSLP detectada automaticamente
+
+                  {tx(
+                    'Fonte IMSLP detectada automaticamente',
+                    'IMSLP source detected automatically'
+                  )}
                 </span>
               ) : undefined
             }
@@ -1112,23 +1124,42 @@ const CreateWorkModal = ({
                 tom="erro"
                 titulo={
                   duplicateCheck.duplicateType === 'url'
-                    ? 'Duplicata encontrada por URL do IMSLP'
-                    : 'Duplicata encontrada por título e compositor'
+                    ? tx(
+                        'Duplicata encontrada por URL do IMSLP',
+                        'Duplicate found by IMSLP URL'
+                      )
+                    : tx(
+                        'Duplicata encontrada por título e compositor',
+                        'Duplicate found by title and composer'
+                      )
                 }
               >
                 <p>
-                  Obra existente: {duplicateCheck.work?.title}
+                  {tx('Obra existente:', 'Existing work:')}{' '}
+                  {duplicateCheck.work?.title}
                   {duplicateCheck.work?.subtitle &&
                     ` - ${duplicateCheck.work.subtitle}`}
                 </p>
-                <p>Compositor: {duplicateCheck.work?.composerName}</p>
+                <p>
+                  {tx('Compositor:', 'Composer:')}{' '}
+                  {duplicateCheck.work?.composerName}
+                </p>
                 {duplicateCheck.work?.opOrCatalog && (
-                  <p>Op./Catálogo: {duplicateCheck.work.opOrCatalog}</p>
+                  <p>
+                    {tx('Op./Catálogo:', 'Op./Catalog:')}{' '}
+                    {duplicateCheck.work.opOrCatalog}
+                  </p>
                 )}
                 <p className="mt-1">
                   {duplicateCheck.duplicateType === 'url'
-                    ? 'Uma obra com este link do IMSLP já existe no sistema.'
-                    : `Uma obra com o título "${duplicateCheck.work?.title}" deste compositor já existe no sistema.`}
+                    ? tx(
+                        'Uma obra com este link do IMSLP já existe no sistema.',
+                        'A work with this IMSLP link already exists.'
+                      )
+                    : tx(
+                        `Uma obra com o título “${duplicateCheck.work?.title}” deste compositor já existe no sistema.`,
+                        `A work titled “${duplicateCheck.work?.title}” by this composer already exists.`
+                      )}
                 </p>
               </Aviso>
             )}
@@ -1167,13 +1198,16 @@ const CreateWorkModal = ({
               value={formData.title}
               onChange={(e) => handleInputChange('title', e.target.value)}
               erro={errors.title}
-              placeholder="Sinfonia No. 40 em Sol menor"
+              placeholder={tx(
+                'Sinfonia No. 40 em Sol menor',
+                'Symphony No. 40 in G minor'
+              )}
             />
             <Field
               label={t('modal_work_basic_subtitle')}
               value={formData.subtitle}
               onChange={(e) => handleInputChange('subtitle', e.target.value)}
-              placeholder="Subtítulo da obra"
+              placeholder={tx('Subtítulo da obra', 'Work subtitle')}
             />
             <div
               ref={fieldRefs.composerId}
@@ -1238,10 +1272,13 @@ const CreateWorkModal = ({
             )}
           </FormBlock>
 
-          <FormBlock titulo="Coleção">
+          <FormBlock titulo={tx('Coleção', 'Collection')}>
             <div className="sm:col-span-2">
               <CaixaDeMarcar
-                rotulo="Esta peça faz parte de uma coleção"
+                rotulo={tx(
+                  'Esta peça faz parte de uma coleção',
+                  'This piece is part of a collection'
+                )}
                 marcado={isPartOfCollection}
                 aoMudar={(checked) => {
                   setIsPartOfCollection(checked);
@@ -1256,8 +1293,17 @@ const CreateWorkModal = ({
             {isPartOfCollection && (
               <>
                 <Aviso>
-                  A obra da coleção deve ser do mesmo compositor (
-                  {compositor ?? 'selecione um compositor primeiro'}).
+                  {tx(
+                    'A obra da coleção deve ser do mesmo compositor',
+                    'The collection work must be by the same composer'
+                  )}{' '}
+                  (
+                  {compositor ??
+                    tx(
+                      'selecione um compositor primeiro',
+                      'choose a composer first'
+                    )}
+                  ).
                 </Aviso>
                 {formData.composerId && (
                   <div className="flex flex-col gap-2 sm:col-span-2">
@@ -1265,26 +1311,38 @@ const CreateWorkModal = ({
                       htmlFor={`${idCampo}-2`}
                       className="t-rotulo font-medium text-texto"
                     >
-                      Obra da coleção *
+                      {tx('Obra da coleção *', 'Collection work *')}
                     </label>
                     <SimpleWorkSearchInput
                       id={`${idCampo}-2`}
                       selectedWork={formData.parentWorkId}
                       onWorkSelect={handleParentWorkSelect}
                       userSuggestions={parentWorks}
-                      placeholder="Digite para buscar a obra da coleção..."
+                      placeholder={tx(
+                        'Digite para buscar a obra da coleção...',
+                        'Type to search the collection work…'
+                      )}
                       filterByComposer={formData.composerId}
                       error={
                         errors.parentWorkId
-                          ? 'Selecione a obra principal.'
+                          ? tx(
+                              'Selecione a obra principal.',
+                              'Choose the main work.'
+                            )
                           : undefined
                       }
                       disabled={loadingParentWork}
                     />
                     <span className="t-legenda">
                       {loadingParentWork
-                        ? 'Verificando dados da obra pai…'
-                        : 'Busque a obra principal que tem esta peça como parte ou movimento.'}
+                        ? tx(
+                            'Verificando dados da obra pai…',
+                            'Checking the parent work’s details…'
+                          )
+                        : tx(
+                            'Busque a obra principal que tem esta peça como parte ou movimento.',
+                            'Search the main work that has this piece as a part or movement.'
+                          )}
                     </span>
                   </div>
                 )}
@@ -1358,13 +1416,16 @@ const CreateWorkModal = ({
               onChange={(e) =>
                 handleInputChange('instrumentation', e.target.value)
               }
-              placeholder="2 flautas, 2 oboés, 2 clarinetes..."
+              placeholder={tx(
+                '2 flautas, 2 oboés, 2 clarinetes...',
+                '2 flutes, 2 oboes, 2 clarinets…'
+              )}
             />
             <Field
               label={t('modal_work_musical_dedicated_to')}
               value={formData.dedicateTo}
               onChange={(e) => handleInputChange('dedicateTo', e.target.value)}
-              placeholder="Nome do dedicatário"
+              placeholder={tx('Nome do dedicatário', 'Dedicatee’s name')}
             />
           </FormBlock>
 
@@ -1405,7 +1466,10 @@ const CreateWorkModal = ({
               disabled={!!scrapingResult}
               ajuda={
                 scrapingResult
-                  ? 'Bloqueado: veio da importação do IMSLP.'
+                  ? tx(
+                      'Bloqueado: veio da importação do IMSLP.',
+                      'Locked: it came from the IMSLP import.'
+                    )
                   : undefined
               }
             />
@@ -1440,7 +1504,7 @@ const CreateWorkModal = ({
                 <CampoDeArquivo
                   className="sm:col-span-2"
                   label={t('modal_work_media_audio_upload')}
-                  botao="Escolher áudio"
+                  botao={tx('Escolher áudio', 'Choose audio')}
                   accept="audio/*"
                   arquivo={mediaData.audioFile?.name}
                   carregando={uploadingAudio}
@@ -1488,7 +1552,10 @@ const CreateWorkModal = ({
                           onChange={(e) =>
                             media('videoAulaTitle', e.target.value)
                           }
-                          placeholder="Ex.: Técnica no Estudo Op. 10 nº 1 de Chopin"
+                          placeholder={tx(
+                            'Ex.: Técnica no Estudo Op. 10 nº 1 de Chopin',
+                            'E.g. Technique in Chopin’s Étude Op. 10 No. 1'
+                          )}
                         />
                         {mediaData.videoAulaSource !== 'local' ? (
                           <Field
@@ -1512,7 +1579,7 @@ const CreateWorkModal = ({
                           <CampoDeArquivo
                             className="sm:col-span-2"
                             label={t('modal_work_media_video_upload')}
-                            botao="Escolher vídeo"
+                            botao={tx('Escolher vídeo', 'Choose video')}
                             accept="video/*"
                             arquivo={mediaData.videoAulaFile?.name}
                             carregando={uploadingVideoAula}

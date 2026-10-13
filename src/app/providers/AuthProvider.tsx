@@ -18,6 +18,7 @@ import { useUserStore } from '../hooks/userStore';
 import { useOnboardingPersistence } from '../hooks/useOnboardingPersistence';
 import { useOnlineStatus } from '../hooks/useOnlineStatus'; // 🆕
 import { WelcomePrompt } from '../components/site/welcome/WelcomePrompt';
+import { useTx } from '@/app/hooks/useTx';
 
 // Dynamic import do GoogleRegistrationHandler sem SSR
 const GoogleRegistrationHandler = dynamic(
@@ -172,6 +173,7 @@ const StoreManager: React.FC = () => {
 const PersistenceErrorBoundary: React.FC<{ children: React.ReactNode }> = ({
   children,
 }) => {
+  const tx = useTx();
   const [hasError, setHasError] = useState(false);
 
   useEffect(() => {
@@ -194,7 +196,10 @@ const PersistenceErrorBoundary: React.FC<{ children: React.ReactNode }> = ({
     return (
       <div className="fixed top-4 right-4 z-aviso rounded-lg p-3 max-w-sm bg-sup-2">
         <p className="text-sm">
-          Armazenamento limitado. Dados serão salvos temporariamente.
+          {tx(
+            'Armazenamento limitado. Dados serão salvos temporariamente.',
+            'Limited storage. Data will be kept only for now.'
+          )}
         </p>
       </div>
     );

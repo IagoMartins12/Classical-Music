@@ -31,6 +31,7 @@ import {
   importComposerWorks,
   type ImportOutcome,
 } from '@/app/requests/external-sources';
+import { useTx } from '@/app/hooks/useTx';
 
 /**
  * Obras por chamada de importação. A API aceita até 100 e limita a 5 chamadas
@@ -90,6 +91,7 @@ const BulkInsertWorksModal = ({
   instruments,
   epochs,
 }: BulkInsertWorksModalProps) => {
+  const tx = useTx();
   const router = useRouter();
   const toast = useToast();
   const { t } = useTranslation({ sections: ['pages/uploads'] });
@@ -416,7 +418,10 @@ const BulkInsertWorksModal = ({
         ocupado={currentStep === 'process' || isDiscovering}
         rodape={rodape}
       >
-        <ol aria-label="Etapas" className="mb-6 flex items-center gap-2">
+        <ol
+          aria-label={tx('Etapas', 'Steps')}
+          className="mb-6 flex items-center gap-2"
+        >
           {etapas.map((etapa, i) => (
             <li
               key={etapa}

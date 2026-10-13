@@ -33,6 +33,8 @@ import {
 import { useTranslation } from '@/app/context/TranslationContext';
 import { Stack } from '@/app/components/ui/Layout';
 import { Text } from '@/app/components/ui/Text';
+import { porIdioma } from '@/app/utils/porIdioma';
+import { useTx } from '@/app/hooks/useTx';
 
 /** The API's limit for `bio` (`UpdateAccountDto`). */
 const BIO_MAX = 2000;
@@ -46,6 +48,7 @@ const PersonalInfoSection: React.FC<PersonalInfoSectionProps> = ({
   user,
   updateUser: localUpdateUser,
 }) => {
+  const tx = useTx();
   const { language } = useRouteLanguage();
   const { updateUser: globalUpdateUser } = useAuth();
   const { updateUserSession } = useSessionUpdate();
@@ -187,7 +190,7 @@ const PersonalInfoSection: React.FC<PersonalInfoSectionProps> = ({
         toast.error(result.message);
       }
     } catch (error: any) {
-      toast.error('Erro ao atualizar informações.');
+      toast.error(porIdioma('Não foi possível salvar.', 'Could not save.'));
       console.error('Update error:', error);
     } finally {
       setIsLoading(false);
@@ -226,12 +229,12 @@ const PersonalInfoSection: React.FC<PersonalInfoSectionProps> = ({
       const imageUpdate = { image: imageUrl };
       await syncUserData(imageUpdate);
       setFormData((prev) => ({ ...prev, image: imageUrl }));
-      toast.success('Foto atualizada com sucesso!');
+      toast.success(tx('Foto atualizada com sucesso!', 'Photo updated.'));
     } catch (error: any) {
       toast.error(
         error instanceof ApiError && error.message
           ? error.message
-          : 'Erro ao fazer upload da imagem'
+          : tx('Erro ao fazer upload da imagem', 'Could not upload the image')
       );
       console.error('Upload error:', error);
     } finally {

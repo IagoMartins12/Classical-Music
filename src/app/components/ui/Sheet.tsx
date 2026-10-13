@@ -1,5 +1,6 @@
 'use client';
 
+import { NomeAcao } from './NomeAcao';
 import { useEffect, useId, useRef, useState, type PointerEvent } from 'react';
 import { PiX } from 'react-icons/pi';
 import type { ReactNode } from 'react';
@@ -209,10 +210,11 @@ export function Sheet({
           <Button
             variante="fantasma"
             icone={PiX}
-            rotulo="Fechar"
             onClick={aoFechar}
             className="-mr-2 -mt-2"
-          />
+          >
+            <NomeAcao acao="fechar" />
+          </Button>
         </header>
 
         {/* Sem rolagem lateral: texto longo sem espaço (URL, JSON, id) quebra

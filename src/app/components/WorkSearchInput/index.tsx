@@ -20,6 +20,7 @@ import {
 import { searchWorks } from '@/app/requests/catalog-search';
 import { Inline } from '@/app/components/ui/Layout';
 import { Text } from '@/app/components/ui/Text';
+import { useTx } from '@/app/hooks/useTx';
 
 export interface WorkSearchInputWorkProp {
   id: string;
@@ -58,13 +59,14 @@ const WorkSearchInput: React.FC<WorkSearchInputProps> = ({
   selectedWork,
   onWorkSelect,
   popularWorks = [],
-  placeholder = 'Digite para buscar uma obra...',
+  placeholder,
   error,
   disabled = false,
   filterByComposer = '',
   userSuggestions = [],
   loadingUserSuggestions = false,
 }) => {
+  const tx = useTx();
   const [query, setQuery] = useState('');
   const [works, setWorks] = useState<WorkSearchInputWorkProp[]>([]);
   const [isLoading, setIsLoading] = useState(false);
@@ -389,8 +391,11 @@ const WorkSearchInput: React.FC<WorkSearchInputProps> = ({
     const getSuggestionsLabel = () => {
       if (query.length >= 2) {
         return stableFilterByComposer && stableFilterByComposer.trim() !== ''
-          ? 'Resultados filtrados por compositor'
-          : 'Resultados da busca';
+          ? tx(
+              'Resultados filtrados por compositor',
+              'Results filtered by composer'
+            )
+          : tx('Resultados da busca', 'Search results');
       }
 
       if (
@@ -413,14 +418,17 @@ const WorkSearchInput: React.FC<WorkSearchInputProps> = ({
         stableUserSuggestions.length > 0 &&
         (!stableFilterByComposer || stableFilterByComposer.trim() === '')
       ) {
-        return 'Suas obras recentes';
+        return tx('Suas obras recentes', 'Your recent works');
       }
 
       if (stableFilterByComposer && stableFilterByComposer.trim() !== '') {
-        return 'Obras do compositor selecionado';
+        return tx(
+          'Obras do compositor selecionado',
+          'Works by the chosen composer'
+        );
       }
 
-      return 'Obras populares';
+      return tx('Obras populares', 'Popular works');
     };
 
     const getIconAndColor = () => {
@@ -499,7 +507,10 @@ const WorkSearchInput: React.FC<WorkSearchInputProps> = ({
               value={query}
               onChange={(e) => handleInputChange(e.target.value)}
               onFocus={() => setIsOpen(true)}
-              placeholder={placeholder}
+              placeholder={
+                placeholder ??
+                tx('Digite para buscar uma obra…', 'Type to search a work…')
+              }
               disabled={disabled}
               className={`input-classical-2 w-full !pl-10 pr-10 ${
                 error ? 'border-[var(--erro)]' : ''
@@ -522,8 +533,8 @@ const WorkSearchInput: React.FC<WorkSearchInputProps> = ({
                   <PiSpinnerGap className="w-5 h-5 mx-auto animate-spin text-ouro-texto mb-2" />
                   <Text papel="rotulo" tom="fraco" as="p">
                     {loadingUserSuggestions
-                      ? 'Carregando suas obras...'
-                      : 'Buscando obras...'}
+                      ? tx('Carregando suas obras...', 'Loading your works…')
+                      : tx('Buscando obras...', 'Searching works…')}
                   </Text>
                 </div>
               )}
@@ -580,7 +591,7 @@ const WorkSearchInput: React.FC<WorkSearchInputProps> = ({
                               </Text>
                               {isUserWork && (
                                 <span className="text-xs px-1.5 py-0.5 rounded">
-                                  Sua
+                                  {tx('Sua', 'Yours')}
                                 </span>
                               )}
                             </Inline>
@@ -609,15 +620,21 @@ const WorkSearchInput: React.FC<WorkSearchInputProps> = ({
                       ? `Nenhuma obra encontrada para "${query}"`
                       : stableFilterByComposer &&
                           stableFilterByComposer.trim() !== ''
-                        ? 'Nenhuma obra encontrada para este compositor'
-                        : 'Nenhuma obra disponível'}
+                        ? tx(
+                            'Nenhuma obra encontrada para este compositor',
+                            'No works found for this composer'
+                          )
+                        : tx('Nenhuma obra disponível', 'No works available')}
                   </p>
                   {query.length >= 2 && (
                     <p className="text-xs mt-1">
-                      Tente termos diferentes
+                      {tx('Tente termos diferentes', 'Try different terms')}
                       {stableFilterByComposer &&
                       stableFilterByComposer.trim() !== ''
-                        ? ' ou remova o filtro de compositor'
+                        ? tx(
+                            ' ou remova o filtro de compositor',
+                            ' or remove the composer filter'
+                          )
                         : ''}
                     </p>
                   )}
@@ -650,19 +667,25 @@ const WorkSearchInput: React.FC<WorkSearchInputProps> = ({
             {stableFilterByComposer && stableFilterByComposer.trim() !== '' && (
               <Inline as="span" gap={1}>
                 <PiFunnel className="w-3 h-3" />
-                <span>Filtrado por compositor</span>
+                <span>
+                  {tx('Filtrado por compositor', 'Filtered by composer')}
+                </span>
               </Inline>
             )}
             {stableUserSuggestions.length > 0 && (
               <Inline as="span" gap={1}>
                 <PiUser className="w-3 h-3" />
-                <span>{stableUserSuggestions.length} obra(s) sua(s)</span>
+                <span>
+                  {stableUserSuggestions.length}{' '}
+                  {tx('obra(s) sua(s)', 'work(s) of yours')}
+                </span>
               </Inline>
             )}
           </Inline>
           {composerWorks.length > 0 && (
             <span className="text-ouro-texto">
-              {composerWorks.length} obra(s) do compositor
+              {composerWorks.length}{' '}
+              {tx('obra(s) do compositor', 'work(s) by the composer')}
             </span>
           )}
         </Text>

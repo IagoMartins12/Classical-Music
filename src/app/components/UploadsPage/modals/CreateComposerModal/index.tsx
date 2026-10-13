@@ -42,6 +42,7 @@ import {
   loadComposerBiographies,
   translateBiographyText,
 } from '@/app/requests/composer-biography';
+import { useTx } from '@/app/hooks/useTx';
 
 interface DuplicateCheckState {
   loading: boolean;
@@ -209,6 +210,7 @@ const CreateComposerModal = ({
   roles,
   editingComposer,
 }: CreateComposerModalProps) => {
+  const tx = useTx();
   const idCampo = useId();
   const formId = `${idCampo}-form`;
   const router = useRouter();
@@ -275,8 +277,11 @@ const CreateComposerModal = ({
   const handleGenerateBiography = async (lang: 'pt' | 'en') => {
     if (!formData.name || !formData.fullName) {
       toast.warning(
-        'Campos obrigatórios',
-        'Preencha pelo menos o nome e nome completo antes de gerar biografia'
+        tx('Campos obrigatórios', 'Required fields'),
+        tx(
+          'Preencha pelo menos o nome e nome completo antes de gerar biografia',
+          'Fill in at least the name and full name before generating a biography'
+        )
       );
       return;
     }
@@ -303,7 +308,10 @@ const CreateComposerModal = ({
 
       if (data.biography === null) {
         throw new Error(
-          'A IA não tem informação confiável sobre este compositor'
+          tx(
+            'A IA não tem informação confiável sobre este compositor',
+            'The AI has no reliable information about this composer'
+          )
         );
       }
 
@@ -313,14 +321,19 @@ const CreateComposerModal = ({
       }));
       setBioMessage({
         type: 'success',
-        text: `Biografia em ${lang === 'pt' ? 'português' : 'inglês'} gerada com sucesso!`,
+        text: tx(
+          `Biografia em ${lang === 'pt' ? 'português' : 'inglês'} gerada.`,
+          `${lang === 'pt' ? 'Portuguese' : 'English'} biography generated.`
+        ),
       });
     } catch (error) {
       console.error('Erro ao gerar biografia:', error);
       setBioMessage({
         type: 'error',
         text:
-          error instanceof Error ? error.message : 'Erro ao gerar biografia',
+          error instanceof Error
+            ? error.message
+            : tx('Erro ao gerar biografia', 'Could not generate the biography'),
       });
     } finally {
       setIsGeneratingBio(false);
@@ -335,7 +348,10 @@ const CreateComposerModal = ({
     if (!biographies[from]) {
       setBioMessage({
         type: 'error',
-        text: `Não há biografia em ${from === 'pt' ? 'português' : 'inglês'} para traduzir`,
+        text: tx(
+          `Não há biografia em ${from === 'pt' ? 'português' : 'inglês'} para traduzir`,
+          `There is no ${from === 'pt' ? 'Portuguese' : 'English'} biography to translate`
+        ),
       });
       return;
     }
@@ -345,7 +361,10 @@ const CreateComposerModal = ({
     if (from !== 'pt' || to !== 'en') {
       setBioMessage({
         type: 'error',
-        text: 'A tradução automática é só do português para o inglês',
+        text: tx(
+          'A tradução automática é só do português para o inglês',
+          'Automatic translation only goes from Portuguese to English'
+        ),
       });
       return;
     }
@@ -362,14 +381,22 @@ const CreateComposerModal = ({
       }));
       setBioMessage({
         type: 'success',
-        text: 'Biografia traduzida para inglês!',
+        text: tx(
+          'Biografia traduzida para inglês!',
+          'Biography translated to English.'
+        ),
       });
     } catch (error) {
       console.error('Erro ao traduzir biografia:', error);
       setBioMessage({
         type: 'error',
         text:
-          error instanceof Error ? error.message : 'Erro ao traduzir biografia',
+          error instanceof Error
+            ? error.message
+            : tx(
+                'Erro ao traduzir biografia',
+                'Could not translate the biography'
+              ),
       });
     } finally {
       setIsTranslatingBio(false);
@@ -768,7 +795,7 @@ const CreateComposerModal = ({
           ? t('toast_composer_duplicate_reason_name', {
               name: `${duplicateCheck.composer?.fullName}`,
             })
-          : duplicateCheck.reason === 'link do IMSLP'
+          : duplicateCheck.reason === tx('link do IMSLP', 'IMSLP link')
             ? t('toast_composer_duplicate_reason_imslp', {
                 name: `${duplicateCheck.composer?.fullName}`,
               })
@@ -887,7 +914,7 @@ const CreateComposerModal = ({
   const motivo =
     duplicateCheck.reason === 'nome'
       ? t('modal_composer_scraping_duplicate_reason_name')
-      : duplicateCheck.reason === 'link do IMSLP'
+      : duplicateCheck.reason === tx('link do IMSLP', 'IMSLP link')
         ? t('modal_composer_scraping_duplicate_reason_imslp')
         : t('modal_composer_scraping_duplicate_reason_wikipedia');
   const fechar = () => {
@@ -1125,7 +1152,11 @@ const CreateComposerModal = ({
               }
               size="xl"
               isUploading={isUploadingImage}
-              fallbackText={formData.fullName || formData.name || 'Compositor'}
+              fallbackText={
+                formData.fullName ||
+                formData.name ||
+                tx('Compositor', 'Composer')
+              }
               showRemove={!!formData.portraitUrl}
               composerName={formData.fullName || formData.name}
             />
@@ -1151,7 +1182,7 @@ const CreateComposerModal = ({
                 handleInputChange(
                   'epochName',
                   epochs.find((epoch) => epoch.id === value)?.name ??
-                    'Desconhecido'
+                    tx('Desconhecido', 'Unknown')
                 );
               }}
             />
@@ -1259,7 +1290,7 @@ const CreateComposerModal = ({
                 carregando={isGeneratingBio}
                 onClick={() => handleGenerateBiography(biographyTab)}
               >
-                Gerar com IA
+                {tx('Gerar com IA', 'Generate with AI')}
               </Button>
               <Button
                 tamanho="p"
@@ -1273,8 +1304,8 @@ const CreateComposerModal = ({
                 }
               >
                 {biographyTab === 'pt'
-                  ? 'Traduzir para inglês'
-                  : 'Traduzir para português'}
+                  ? tx('Traduzir para inglês', 'Translate to English')
+                  : tx('Traduzir para português', 'Translate to Portuguese')}
               </Button>
               <Button
                 tamanho="p"
@@ -1285,12 +1316,15 @@ const CreateComposerModal = ({
                   setBioMessage({ type: '', text: '' });
                 }}
               >
-                Limpar
+                {tx('Limpar', 'Clear')}
               </Button>
             </>
           }
         >
-          <Abas rotulo="Idioma da biografia" className="sm:col-span-2">
+          <Abas
+            rotulo={tx('Idioma da biografia', 'Biography language')}
+            className="sm:col-span-2"
+          >
             {(['pt', 'en'] as const).map((lang) => (
               <Aba
                 key={lang}

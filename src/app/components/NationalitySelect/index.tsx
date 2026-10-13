@@ -12,6 +12,7 @@ import { useLanguageStore } from '@/app/stores/useLanguageStore';
 import { Inline } from '@/app/components/ui/Layout';
 import { Text } from '@/app/components/ui/Text';
 import { NomeAcao } from '@/app/components/ui/NomeAcao';
+import { useTx } from '@/app/hooks/useTx';
 
 interface NationalitySelectProps {
   /** Id do campo, para o `<label htmlFor>` de quem usa. */
@@ -29,10 +30,11 @@ export default function NationalitySelect({
   value,
   onChange,
   error,
-  placeholder = 'Selecione a nacionalidade...',
+  placeholder,
   disabled = false,
   className = '',
 }: NationalitySelectProps) {
+  const tx = useTx();
   const [isOpen, setIsOpen] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
   const [filteredNationalities, setFilteredNationalities] =
@@ -122,7 +124,10 @@ export default function NationalitySelect({
           value={displayValue}
           onChange={handleInputChange}
           onFocus={handleInputFocus}
-          placeholder={placeholder}
+          placeholder={
+            placeholder ??
+            tx('Escolha a nacionalidade…', 'Choose a nationality…')
+          }
           disabled={disabled}
           className={`
             input-classical-2 !pl-11 pr-20 w-full
@@ -220,11 +225,14 @@ export default function NationalitySelect({
                 <Text papel="rotulo" tom="suave" as="p">
                   {searchTerm
                     ? `Nenhuma nacionalidade encontrada para "${searchTerm}"`
-                    : 'Nenhuma nacionalidade disponível'}
+                    : tx(
+                        'Nenhuma nacionalidade disponível',
+                        'No nationality available'
+                      )}
                 </Text>
                 {searchTerm && (
                   <Text papel="legenda" tom="fraco" as="p" className="mt-1">
-                    Tente uma busca mais geral
+                    {tx('Tente uma busca mais geral', 'Try a broader search')}
                   </Text>
                 )}
               </div>

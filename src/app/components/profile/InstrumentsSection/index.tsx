@@ -29,6 +29,8 @@ import Checkbox from '../../Common/Checkbox';
 import { Stack, Inline } from '@/app/components/ui/Layout';
 import { Text } from '@/app/components/ui/Text';
 import { Card } from '@/app/components/ui/Card';
+import { porIdioma } from '@/app/utils/porIdioma';
+import { useTx } from '@/app/hooks/useTx';
 
 interface Instrument {
   id: string;
@@ -52,6 +54,7 @@ interface InstrumentsSectionProps {
 }
 
 const InstrumentsSection: React.FC<InstrumentsSectionProps> = ({ user }) => {
+  const tx = useTx();
   const { updateUserSession } = useSessionUpdate();
   const { t } = useTranslation({ sections: ['pages/profile'] });
   const [isEditing, setIsEditing] = useState(false);
@@ -93,7 +96,9 @@ const InstrumentsSection: React.FC<InstrumentsSectionProps> = ({ user }) => {
       await loadUserInstruments();
     } catch (error) {
       console.error('Erro ao carregar dados iniciais:', error);
-      toast.error('Erro ao carregar instrumentos');
+      toast.error(
+        tx('Erro ao carregar instrumentos', 'Could not load the instruments')
+      );
     } finally {
       setIsLoadingData(false);
     }
@@ -125,11 +130,21 @@ const InstrumentsSection: React.FC<InstrumentsSectionProps> = ({ user }) => {
       if (result.success && result.data) {
         setAvailableInstruments(result.data);
       } else {
-        toast.error('Erro ao carregar instrumentos disponíveis');
+        toast.error(
+          porIdioma(
+            'Não foi possível carregar os instrumentos',
+            'Could not load the instruments'
+          )
+        );
       }
     } catch (error) {
       console.error('Erro ao carregar instrumentos disponíveis:', error);
-      toast.error('Erro ao carregar instrumentos disponíveis');
+      toast.error(
+        porIdioma(
+          'Não foi possível carregar os instrumentos',
+          'Could not load the instruments'
+        )
+      );
     }
   };
 
@@ -143,7 +158,7 @@ const InstrumentsSection: React.FC<InstrumentsSectionProps> = ({ user }) => {
 
   const handleAddInstrument = () => {
     if (!newInstrument.instrumentId) {
-      toast.error('Selecione um instrumento');
+      toast.error(tx('Selecione um instrumento', 'Choose an instrument'));
       return;
     }
 
@@ -177,12 +192,16 @@ const InstrumentsSection: React.FC<InstrumentsSectionProps> = ({ user }) => {
       isLearning: true,
     });
     setShowAddForm(false);
-    toast.success('Instrumento adicionado à lista!');
+    toast.success(
+      tx('Instrumento adicionado à lista!', 'Instrument added to the list.')
+    );
   };
 
   const handleRemoveInstrument = (id: string) => {
     setUserInstruments((prev) => prev.filter((inst) => inst.id !== id));
-    toast.success('Instrumento removido da lista!');
+    toast.success(
+      tx('Instrumento removido da lista!', 'Instrument removed from the list.')
+    );
   };
 
   const handleUpdateInstrument = (
@@ -251,7 +270,9 @@ const InstrumentsSection: React.FC<InstrumentsSectionProps> = ({ user }) => {
       }
     } catch (error) {
       console.error('Erro ao salvar instrumentos:', error);
-      toast.error('Erro ao salvar instrumentos.');
+      toast.error(
+        tx('Erro ao salvar instrumentos.', 'Could not save the instruments.')
+      );
     } finally {
       setIsLoading(false);
     }
@@ -462,9 +483,9 @@ const InstrumentsSection: React.FC<InstrumentsSectionProps> = ({ user }) => {
                     variante="fantasma"
                     tamanho="p"
                     onClick={() => handleRemoveInstrument(instrument.id)}
-                    title="Remover instrumento"
+                    title={tx('Remover instrumento', 'Remove instrument')}
                     icone={PiTrash}
-                    rotulo="Remover instrumento"
+                    rotulo={tx('Remover instrumento', 'Remove instrument')}
                     className="text-erro"
                   />
                 )}
@@ -501,7 +522,7 @@ const InstrumentsSection: React.FC<InstrumentsSectionProps> = ({ user }) => {
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <Select
-                  label="Instrumento"
+                  label={tx('Instrumento', 'Instrument')}
                   value={newInstrument.instrumentId}
                   onChange={(e) =>
                     setNewInstrument((prev) => ({

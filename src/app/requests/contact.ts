@@ -6,6 +6,7 @@
  */
 import { ApiError, apiFetch } from '@/app/libs/api/client';
 import type { ApiSchema } from '@/app/libs/api/types';
+import { porIdioma } from '@/app/utils/porIdioma';
 
 // O gerador marca como obrigatório o campo que tem `default` no Swagger; a API
 // aceita o `subscribeNewsletter` ausente.
@@ -68,7 +69,7 @@ export async function submitContact(
 
 function contactErrorMessage(error: ApiError): string {
   if (error.status === 400) {
-    return 'Dados inválidos';
+    return porIdioma('Dados inválidos', 'Invalid data');
   }
 
   // A API limita a 3 mensagens por minuto; o legado não tinha limite.

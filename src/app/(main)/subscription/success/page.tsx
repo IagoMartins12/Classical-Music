@@ -1,7 +1,6 @@
-// Retorno do checkout do Stripe. A API manda a pessoa para
-// `/subscription/success?session_id=…`; a página antiga ficou em `sucess`, e
-// nada chegava nela (o legado mandava para `/success`, que não existe).
-import SubscriptionSuccessPage from '@/app/(main)/subscription/sucess/page';
+// Retorno do checkout do Stripe: a API manda a pessoa para
+// `/subscription/success?session_id=…`.
+import { SubscriptionSuccess } from './SubscriptionSuccess';
 import { confirmCheckoutSession } from '@/app/requests/billing';
 
 /**
@@ -24,5 +23,5 @@ export default async function SubscriptionReturnPage({
     await confirmCheckoutSession(sessionId).catch(() => undefined);
   }
 
-  return <SubscriptionSuccessPage />;
+  return <SubscriptionSuccess />;
 }

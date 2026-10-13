@@ -15,6 +15,7 @@ import { PiX } from 'react-icons/pi';
 import ConfirmationModal from './ConfirmationModal';
 import { useModalConfirmation } from '@/app/hooks/useModalConfirmation';
 import { Button } from '@/app/components/ui/Button';
+import { NomeAcao } from '@/app/components/ui/NomeAcao';
 import { AreaCarregando, Skeleton } from '@/app/components/ui/Skeleton';
 
 interface ModalProps {
@@ -391,12 +392,13 @@ const Modal = forwardRef<ModalRef, ModalProps>(
                   <Button
                     variante="fantasma"
                     icone={PiX}
-                    rotulo="Fechar"
                     onClick={handleClose}
                     // Caixa visível de 32px, mesmo ícone; a faixa invisível do
                     // `after` completa os 44px de alvo para o dedo.
                     className="relative -mr-1 -mt-1 ml-auto h-8 w-8 !min-h-8 after:absolute after:-inset-1.5 after:content-['']"
-                  />
+                  >
+                    <NomeAcao acao="fechar" />
+                  </Button>
                 )}
               </div>
             )}

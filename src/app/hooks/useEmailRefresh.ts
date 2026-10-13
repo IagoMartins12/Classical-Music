@@ -7,6 +7,7 @@ import { toast } from 'react-hot-toast';
 import { useRouter } from 'next/navigation';
 import { useToast } from './useToast';
 import { useLanguageStore } from '../stores/useLanguageStore';
+import { porIdioma } from '@/app/utils/porIdioma';
 
 interface UseEmailRefreshReturn {
   isRefreshing: boolean;
@@ -97,7 +98,12 @@ export function useEmailRefreshSimple() {
           updatedSession.user.isTeacher &&
           updatedSession.user.teacherVerified
         ) {
-          toast.success('Professor verificado! Redirecionando...');
+          toast.success(
+            porIdioma(
+              'Professor verificado. Abrindo o portal…',
+              'Teacher verified. Opening the portal…'
+            )
+          );
           setTimeout(() => {
             router.refresh(); // Força reload da página para aplicar as verificações do layout
           }, 1000);
@@ -106,7 +112,12 @@ export function useEmailRefreshSimple() {
 
         // Verificar se student foi aceito
         if (updatedSession.user.studentInviteStatus === 'ACCEPTED') {
-          toast.success('Convite aceito! Redirecionando...');
+          toast.success(
+            porIdioma(
+              'Convite aceito. Abrindo o portal…',
+              'Invite accepted. Opening the portal…'
+            )
+          );
           setTimeout(() => {
             router.refresh(); // Força reload da página para aplicar as verificações do layout
           }, 1000);
@@ -115,18 +126,33 @@ export function useEmailRefreshSimple() {
 
         if (updatedSession.user.studentInviteStatus === 'PENDING') {
           console.log('caiu aqui');
-          toast.info('Aguardando aprovação do convite.');
+          toast.info(
+            porIdioma(
+              'Aguardando a aprovação do convite.',
+              'Waiting for the invite to be approved.'
+            )
+          );
         } else if (updatedSession.user.studentInviteStatus === 'DECLINED') {
-          toast.error('Seu convite foi recusado.');
+          toast.error(
+            porIdioma('Seu convite foi recusado.', 'Your invite was declined.')
+          );
         } else if (updatedSession.user.studentInviteStatus === 'EXPIRED') {
-          toast.error('Seu convite expirou. Entre em contato com o professor.');
+          toast.error(
+            porIdioma(
+              'Seu convite expirou. Fale com o professor.',
+              'Your invite expired. Talk to your teacher.'
+            )
+          );
         } else if (
           !updatedSession.user.isStudent &&
           !updatedSession.user.isTeacher &&
           updatedSession.user.teacherVerified
         ) {
           toast.error(
-            'Seu convite foi declinado. Entre em contato com o nosso suporte.'
+            porIdioma(
+              'Seu convite foi recusado. Fale com o suporte.',
+              'Your invite was declined. Contact support.'
+            )
           );
 
           setTimeout(() => {
@@ -134,11 +160,21 @@ export function useEmailRefreshSimple() {
           }, 2000);
         }
       } else {
-        toast.error('Erro ao verificar status. Tente fazer login novamente.');
+        toast.error(
+          porIdioma(
+            'Não foi possível verificar. Entre de novo.',
+            'Could not check. Sign in again.'
+          )
+        );
       }
     } catch (error) {
       console.error('❌ Erro ao verificar status:', error);
-      toast.error('Erro ao verificar status. Tente novamente.');
+      toast.error(
+        porIdioma(
+          'Não foi possível verificar. Tente de novo.',
+          'Could not check. Try again.'
+        )
+      );
     } finally {
       setIsRefreshing(false);
     }

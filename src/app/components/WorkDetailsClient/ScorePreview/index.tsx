@@ -18,6 +18,7 @@ import { NomeAcao } from '@/app/components/ui/NomeAcao';
 import { Button } from '@/app/components/ui/Button';
 import { Card } from '@/app/components/ui/Card';
 import { Stack } from '@/app/components/ui/Layout';
+import { useTx } from '@/app/hooks/useTx';
 
 interface ScorePreviewProps {
   score: IMSLPScore & {
@@ -98,6 +99,7 @@ ImageZoomModal.displayName = 'ImageZoomModal';
 
 // ✅ COMPONENTE PRINCIPAL OTIMIZADO
 const ScorePreview = React.memo(({ score }: ScorePreviewProps) => {
+  const tx = useTx();
   const { t } = useTranslation({ sections: ['pages/workId'] });
   const [imageError, setImageError] = useState(false);
   const [isImageLoading, setIsImageLoading] = useState(true);
@@ -246,7 +248,7 @@ const ScorePreview = React.memo(({ score }: ScorePreviewProps) => {
           {score.fileSize && (
             <div className="flex flex-col">
               <span className="text-theme-tertiary font-medium mb-1">
-                Tamanho
+                {tx('Tamanho', 'Size')}
               </span>
               <span className="text-theme-primary font-semibold">
                 {formatFileSize(score.fileSize)}
@@ -257,7 +259,7 @@ const ScorePreview = React.memo(({ score }: ScorePreviewProps) => {
           {score.pageCount && (
             <div className="flex flex-col">
               <span className="text-theme-tertiary font-medium mb-1">
-                Páginas
+                {tx('Páginas', 'Pages')}
               </span>
               <span className="text-theme-primary font-semibold">
                 {formatPageCount(score.pageCount)}
@@ -268,7 +270,7 @@ const ScorePreview = React.memo(({ score }: ScorePreviewProps) => {
           {score.rating && (
             <div className="flex flex-col">
               <span className="text-theme-tertiary font-medium mb-1">
-                Avaliação
+                {tx('Avaliação', 'Rating')}
               </span>
               <div className="flex items-center gap-1">
                 <PiStarFill className="w-3 h-3 text-yellow-500 fill-current" />
@@ -314,7 +316,7 @@ const ScorePreview = React.memo(({ score }: ScorePreviewProps) => {
               {score.publisher && (
                 <div className="flex justify-between">
                   <span className="text-theme-tertiary font-medium">
-                    Editora
+                    {tx('Editora', 'Publisher')}
                   </span>
                   <span className="text-theme-primary text-right">
                     {score.publisher}
@@ -349,7 +351,7 @@ const ScorePreview = React.memo(({ score }: ScorePreviewProps) => {
             {score.notes && (
               <Stack gap={1}>
                 <Text papel="legenda" tom="fraco" className="font-medium block">
-                  Notas
+                  {tx('Notas', 'Notes')}
                 </Text>
                 <Text
                   papel="legenda"
@@ -373,7 +375,8 @@ const ScorePreview = React.memo(({ score }: ScorePreviewProps) => {
               className="flex gap-2 justify-center items-center disabled:opacity-50 disabled:cursor-not-allowed"
             >
               <PiArrowSquareOut className="w-4 h-4" />
-              Baixar partitura
+
+              {tx('Baixar partitura', 'Download score')}
             </Button>
           </div>
         )}

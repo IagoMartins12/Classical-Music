@@ -11,6 +11,7 @@ import {
 } from 'react-icons/pi';
 import { Text } from '@/app/components/ui/Text';
 import { NomeAcao } from '@/app/components/ui/NomeAcao';
+import { useTx } from '@/app/hooks/useTx';
 
 interface MultiSelectProps {
   label: string;
@@ -30,13 +31,14 @@ export default function MultiSelect({
   options,
   selectedValues,
   onChange,
-  placeholder = 'Selecione opções...',
+  placeholder,
   maxDisplay = 10,
   isDisabled = false,
   error,
   excludeValues = [],
   allowCreate = false, // ✅ NOVO: Padrão false
 }: MultiSelectProps) {
+  const tx = useTx();
   const [isOpen, setIsOpen] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
   const [filteredOptions, setFilteredOptions] = useState(options);
@@ -178,7 +180,7 @@ export default function MultiSelect({
         <div className="flex-1 flex flex-wrap gap-1 mr-2">
           {selectedValues.length === 0 ? (
             <Text papel="rotulo" tom="suave">
-              {placeholder}
+              {placeholder ?? tx('Escolha as opções…', 'Choose options…')}
             </Text>
           ) : selectedValues.length <= maxDisplay ? (
             selectedValues.map((value) => (
@@ -222,7 +224,7 @@ export default function MultiSelect({
                 </Text>
               ))}
               <Text papel="legenda" tom="suave">
-                +{selectedValues.length - maxDisplay} mais
+                +{selectedValues.length - maxDisplay} {tx('mais', 'more')}
               </Text>
             </div>
           )}
@@ -265,8 +267,11 @@ export default function MultiSelect({
                 type="text"
                 placeholder={
                   allowCreate
-                    ? 'Buscar ou criar nova opção (Enter)...'
-                    : 'Buscar opções...'
+                    ? tx(
+                        'Buscar ou criar nova opção (Enter)...',
+                        'Search or create an option (Enter)…'
+                      )
+                    : tx('Buscar opções...', 'Search options…')
                 }
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
@@ -296,7 +301,10 @@ export default function MultiSelect({
                 >
                   <PiPlus className="w-4 h-4 text-ouro-texto" />
                   <span className="text-sm font-medium text-ouro-texto">
-                    Criar &quot;{searchTerm}&quot; e adicionar
+                    {tx(
+                      `Criar “${searchTerm}” e adicionar`,
+                      `Create “${searchTerm}” and add it`
+                    )}
                   </span>
                 </button>
               )}
@@ -306,10 +314,16 @@ export default function MultiSelect({
               <div className="px-4 py-8 text-center">
                 <Text papel="rotulo" tom="suave" as="p" className="capitalize">
                   {searchTerm
-                    ? `Nenhuma opção encontrada para "${searchTerm}"`
+                    ? tx(
+                        `Nenhuma opção encontrada para “${searchTerm}”`,
+                        `No options found for “${searchTerm}”`
+                      )
                     : stableExcludeValues.length > 0
-                      ? 'Todas as opções disponíveis já foram selecionadas ou excluídas'
-                      : 'Nenhuma opção disponível'}
+                      ? tx(
+                          'Todas as opções disponíveis já foram selecionadas ou excluídas',
+                          'Every available option is already chosen or excluded'
+                        )
+                      : tx('Nenhuma opção disponível', 'No options available')}
                 </Text>
               </div>
             ) : (
@@ -341,8 +355,8 @@ export default function MultiSelect({
               <Text papel="legenda" tom="suave" as="p">
                 {selectedValues.length}{' '}
                 {selectedValues.length === 1
-                  ? 'item selecionado'
-                  : 'itens selecionados'}
+                  ? tx('item selecionado', 'item selected')
+                  : tx('itens selecionados', 'items selected')}
               </Text>
             </div>
           )}

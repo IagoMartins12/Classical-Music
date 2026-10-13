@@ -7,6 +7,8 @@ import Image from '@/app/components/SmartImage';
 import React, { useRef, useState, useEffect } from 'react';
 import { PiCamera, PiPencilLine, PiTrash } from 'react-icons/pi';
 import { iniciais } from '@/app/components/blog/site/pecas';
+import { porIdioma } from '@/app/utils/porIdioma';
+import { useTx } from '@/app/hooks/useTx';
 
 interface ProfileImageUploadProps {
   currentImage?: string | null;
@@ -29,6 +31,7 @@ const ProfileImageUpload: React.FC<ProfileImageUploadProps> = ({
   fallbackText,
   className = '',
 }) => {
+  const tx = useTx();
   const { updateData } = useOnboardingModal();
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [imagePreview, setImagePreview] = useState<string | null>(
@@ -76,13 +79,17 @@ const ProfileImageUpload: React.FC<ProfileImageUploadProps> = ({
 
     // Validar tamanho (max 5MB)
     if (file.size > 5 * 1024 * 1024) {
-      toast.error('Imagem deve ter no máximo 5MB');
+      toast.error(
+        porIdioma('A imagem pode ter até 5 MB', 'The image can be up to 5 MB')
+      );
       return;
     }
 
     // Validar tipo
     if (!file.type.startsWith('image/')) {
-      toast.error('Arquivo deve ser uma imagem');
+      toast.error(
+        tx('Arquivo deve ser uma imagem', 'The file must be an image')
+      );
       return;
     }
 
@@ -148,7 +155,7 @@ const ProfileImageUpload: React.FC<ProfileImageUploadProps> = ({
             src={imagePreview}
             width={100}
             height={100}
-            alt="Foto do perfil"
+            alt={tx('Foto do perfil', 'Profile photo')}
             className="w-full h-full object-cover"
           />
         ) : (
@@ -181,7 +188,7 @@ const ProfileImageUpload: React.FC<ProfileImageUploadProps> = ({
           className={`absolute -top-2 -right-2 !text-erro ${removeSizes[size]}
             rounded-full flex items-center justify-center text-white hover:scale-110 transition-transform shadow-lg disabled:opacity-50 disabled:cursor-not-allowed
           `}
-          title="Remover foto"
+          title={tx('Remover foto', 'Remove photo')}
         >
           <PiTrash className="w-3 h-3" />
         </button>
