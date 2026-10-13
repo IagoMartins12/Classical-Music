@@ -122,6 +122,7 @@ export function WorkScores({
           </button>
           <SidePreview
             workId={context.workId}
+            owner={context}
             target={side}
             onStudy={onStudy}
             studyLabel={studyLabel}
@@ -206,6 +207,7 @@ export function WorkScores({
 
       <SheetPreview
         title={context.workTitle}
+        owner={context}
         target={sheet}
         onClose={() => setSheet(null)}
         onStudy={onStudy}

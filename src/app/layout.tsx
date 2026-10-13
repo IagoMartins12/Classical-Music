@@ -254,10 +254,18 @@ export default function RootLayout({
           sizes="16x16"
           href="/favicon-16x16.png"
         />
-        <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
-        <link rel="manifest" href="/manifest.json" />
+        <link rel="apple-touch-icon" href="/icons/apple-touch-icon.png" />
+        {/* The app (PWA): the manifest link comes from `app/manifest.ts`;
+            these are what iOS reads when the site is added to the home
+            screen. */}
+        <meta name="apple-mobile-web-app-capable" content="yes" />
+        <meta name="apple-mobile-web-app-title" content="Opus Atlas" />
+        <meta
+          name="apple-mobile-web-app-status-bar-style"
+          content="black-translucent"
+        />
 
-        <meta name="msapplication-TileColor" content="#da532c" />
+        <meta name="msapplication-TileColor" content="#0c0d12" />
       </head>
       <body className="antialiased">
         <ClientThemeWrapper>

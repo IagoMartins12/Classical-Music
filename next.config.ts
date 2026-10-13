@@ -1,4 +1,5 @@
 import type { NextConfig } from 'next';
+import withSerwistInit from '@serwist/next';
 import { OPTIMIZED_IMAGE_HOSTS } from './src/app/utils/imageHosts';
 import { SITE_NOINDEX } from './src/app/utils/indexing';
 import {
@@ -134,4 +135,20 @@ const nextConfig: NextConfig = withBundleAnalyzer({
   },
 });
 
-export default nextConfig;
+/**
+ * The PWA's service worker (Serwist), built from `src/app/sw.ts` into
+ * `public/sw.js`. Off in development: with Turbopack there is no webpack
+ * build to inject the precache list into, and a worker caching the dev
+ * server only gets in the way.
+ */
+const withSerwist = withSerwistInit({
+  swSrc: 'src/app/sw.ts',
+  swDest: 'public/sw.js',
+  disable: process.env.NODE_ENV === 'development',
+  // The offline page is ready before the first time it is needed.
+  additionalPrecacheEntries: [
+    { url: '/offline', revision: process.env.VERCEL_GIT_COMMIT_SHA ?? null },
+  ],
+});
+
+export default withSerwist(nextConfig);

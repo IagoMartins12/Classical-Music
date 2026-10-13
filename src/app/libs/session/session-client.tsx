@@ -12,6 +12,7 @@ import { authApi, RegisterInput } from '../api/auth';
 import { ApiError, refreshSession, SESSION_EXPIRED_EVENT } from '../api/client';
 import { ProfileAccount, profileApi } from '../api/profile';
 import { getQueryClient } from '../query-client';
+import { lembrarConta, limparCachesPessoais } from '../pwa/limpar';
 import { SESSION_HINT_COOKIE } from '@/app/utils/authCookies';
 
 /**
@@ -197,6 +198,9 @@ export async function signOut(
   options: { redirect?: boolean; callbackUrl?: string } = {}
 ): Promise<void> {
   await authApi.logout().catch(() => undefined);
+  // What the app kept offline for this account goes with the session.
+  await lembrarConta(null);
+  await limparCachesPessoais();
 
   const client = getQueryClient();
   client.clear();
@@ -283,6 +287,11 @@ function SessionEffects() {
       )
       .catch(() => undefined);
   }, [account, chosen, language, queryClient]);
+
+  // Another account on this device: its offline copies are not this one's.
+  useEffect(() => {
+    if (account) void lembrarConta(account.id);
+  }, [account]);
 
   // A renovação falhou numa chamada qualquer: a sessão acabou.
   useEffect(() => {

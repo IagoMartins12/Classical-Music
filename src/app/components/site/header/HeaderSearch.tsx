@@ -20,6 +20,8 @@ import { rotasDoBlog } from '@/app/utils/blog/rotas';
 import { localizeHref, type RouteLanguage } from '@/app/utils/localizedRoutes';
 import { composerYears } from '../composerYears';
 import { workTitle } from '../workTitle';
+import { PWA } from '@/app/conteudo/site/pwa';
+import { useOnline } from '@/app/hooks/useOnline';
 import { SEARCH_HREF } from './navigation';
 
 interface ResultItem {
@@ -99,6 +101,7 @@ export function HeaderSearch({
     ];
   }, [result, language]);
 
+  const online = useOnline();
   const resultsHref = localizeHref(
     `${SEARCH_HREF}?q=${encodeURIComponent(term.trim())}`,
     language
@@ -208,7 +211,9 @@ export function HeaderSearch({
           )}
         >
           {state.status === 'error' && (
-            <p className="px-3 py-4 t-rotulo text-texto-suave">{copy.error}</p>
+            <p className="px-3 py-4 t-rotulo text-texto-suave">
+              {online ? copy.error : PWA[language].offline.busca}
+            </p>
           )}
           {state.status === 'loading' && !items.length && (
             <p

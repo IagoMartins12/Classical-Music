@@ -3,6 +3,8 @@
 
 import { useThemeStore } from '@/app/stores/themeStore';
 import { TranslationLoadingGate } from '../TranslationLoadingGate';
+import { InstallInvite } from '../site/pwa/InstallInvite';
+import { OfflineBar } from '../site/pwa/OfflineBar';
 import React, { useEffect, useState } from 'react';
 import { IconContext } from 'react-icons';
 import type { IconContext as IconContextValue } from 'react-icons';
@@ -69,6 +71,10 @@ export const ClientThemeWrapper: React.FC<ClientThemeWrapperProps> = ({
       <div className="classical-theme">
         {children}
         {isHydrated && <TranslationLoadingGate />}
+        {/* The app (PWA): the install invite on phones and the offline
+            notice, once for the whole site, blog and portal. */}
+        {isHydrated && <InstallInvite />}
+        {isHydrated && <OfflineBar />}
       </div>
     </IconContext.Provider>
   );

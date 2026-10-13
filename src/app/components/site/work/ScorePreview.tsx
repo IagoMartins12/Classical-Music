@@ -18,6 +18,7 @@ import type {
   ScoreFile,
 } from '@/app/requests/work-score-library';
 import { FavoriteHeart } from '../FavoriteHeart';
+import { SaveScoreButton } from '../pwa/SaveScoreButton';
 import { editionCard, scoreFavorite } from './scoreLabels';
 
 /** What the preview shows: one edition, opened at one of its files. */
@@ -230,13 +231,22 @@ function FileStrip({
   );
 }
 
+/** The work a preview belongs to, for "Guardar no aparelho". */
+export interface ScoreOwner {
+  workId: string;
+  workTitle: string;
+  composerName?: string;
+}
+
 function PrimaryActions({
   file,
+  owner,
   onStudy,
   studyLabel,
   copy,
 }: {
   file: ScoreFile;
+  owner: ScoreOwner;
   onStudy: (file: ScoreFile) => void;
   studyLabel: string;
   copy: WorkCopy['scores'];
@@ -256,6 +266,17 @@ function PrimaryActions({
       <Button icone={PiBookmarkSimple} onClick={() => onStudy(file)}>
         {studyLabel}
       </Button>
+      {file.downloadUrl && (
+        <SaveScoreButton
+          dados={{
+            url: file.downloadUrl,
+            titulo: file.title,
+            obra: owner.workTitle,
+            compositor: owner.composerName,
+            pagina: `/works/${owner.workId}`,
+          }}
+        />
+      )}
     </>
   );
 }
@@ -263,6 +284,7 @@ function PrimaryActions({
 /** From lg up: the preview takes the details column, beside the list. */
 export function SidePreview({
   workId,
+  owner,
   target,
   onStudy,
   studyLabel,
@@ -270,6 +292,7 @@ export function SidePreview({
   copy,
 }: {
   workId: string;
+  owner: ScoreOwner;
   target: PreviewTarget;
   onStudy: (file: ScoreFile) => void;
   studyLabel: string;
@@ -319,6 +342,7 @@ export function SidePreview({
       <div className="grid grid-cols-2 gap-2">
         <PrimaryActions
           file={file}
+          owner={owner}
           onStudy={onStudy}
           studyLabel={studyLabel}
           copy={copy}
@@ -332,6 +356,7 @@ export function SidePreview({
 /** Below lg: the same preview in a bottom sheet. */
 export function SheetPreview({
   title,
+  owner,
   target,
   onClose,
   onStudy,
@@ -340,6 +365,7 @@ export function SheetPreview({
   copy,
 }: {
   title: string;
+  owner: ScoreOwner;
   target: PreviewTarget | null;
   onClose: () => void;
   onStudy: (file: ScoreFile) => void;
@@ -367,6 +393,7 @@ export function SheetPreview({
           <div className="flex flex-wrap items-center gap-2">
             <PrimaryActions
               file={file}
+              owner={owner}
               onStudy={onStudy}
               studyLabel={studyLabel}
               copy={copy}

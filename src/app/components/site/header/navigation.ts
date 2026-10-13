@@ -1,6 +1,7 @@
 import type { IconType } from 'react-icons';
 import {
   PiBooks,
+  PiDeviceMobile,
   PiBookOpenText,
   PiChalkboardTeacher,
   PiGearSix,
@@ -73,6 +74,7 @@ export function accountLinks(user: HeaderUser): AccountLink[] {
     { key: 'uploads', href: '/upload', icon: PiUploadSimple },
     { key: 'achievements', href: '/achievements', icon: PiMedal },
     { key: 'collections', href: '/my-collections', icon: PiBooks },
+    { key: 'device', href: '/offline', icon: PiDeviceMobile },
   ];
   if (role === ROLE_TEACHER) {
     links.push({ key: 'teacher', href: '/teacher', icon: PiChalkboardTeacher });
