@@ -12,6 +12,7 @@ import {
   WORK_KEYS,
   type UrlParams,
 } from '@/app/utils/listParams';
+import { findComposerById } from '@/app/requests/catalog-search';
 import { eraOptions } from './ComposersList';
 import { EmptyList, ListHero } from './ListHero';
 import { ListControls } from './ListControls';
@@ -39,6 +40,17 @@ export async function WorksList({
     listWorks(parsed),
   ]);
   const levels = COMPOSER[language].startHere.levels;
+  // The composer in the URL, named for the field and the chip.
+  const famous = options.popularComposers.find(
+    (c) => c.id === parsed.composerId
+  );
+  const composerLabel = parsed.composerId
+    ? famous
+      ? famous.name
+      : await findComposerById(parsed.composerId)
+          .then((c) => (c ? c.fullName || c.name : undefined))
+          .catch(() => undefined)
+    : undefined;
 
   return (
     <div className="section-wrap flex flex-col gap-8 py-12">
@@ -55,6 +67,12 @@ export async function WorksList({
             value,
             label: t.sorts[value],
           })),
+        }}
+        composer={{
+          key: 'composer',
+          label: t.composer,
+          placeholder: t.composer,
+          selectedLabel: composerLabel,
         }}
         filters={[
           {
@@ -91,15 +109,6 @@ export async function WorksList({
             options: options.ensembles.map((e) => ({
               value: e.id,
               label: e.name,
-            })),
-          },
-          {
-            key: 'composer',
-            label: t.composer,
-            anyLabel: t.anyComposer,
-            options: options.popularComposers.map((c) => ({
-              value: c.id,
-              label: c.name,
             })),
           },
           {

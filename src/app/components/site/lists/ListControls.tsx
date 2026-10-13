@@ -18,6 +18,8 @@ import { LISTS } from '@/app/conteudo/site/lists';
 import { useRouteLanguage } from '@/app/hooks/useRouteLanguage';
 import { localizeHref } from '@/app/utils/localizedRoutes';
 import { listHref, type ListQuery } from '@/app/utils/listParams';
+import { SelecaoComBusca } from '@/app/components/ui/SelecaoComBusca';
+import { findComposers } from '@/app/requests/catalog-search';
 import { ViewToggle } from './ViewToggle';
 
 export interface Option {
@@ -37,6 +39,18 @@ export interface ChoiceFilter {
   primary?: boolean;
 }
 
+/**
+ * A pill on the page that searches as the person types (composer on the
+ * works list): the list is too long to load as options.
+ */
+export interface ComposerFilter {
+  key: string;
+  label: string;
+  placeholder: string;
+  /** Name of the composer in the URL, resolved on the server. */
+  selectedLabel?: string;
+}
+
 export interface ToggleFilter {
   key: string;
   label: string;
@@ -54,6 +68,38 @@ export interface RangeFilter {
   chip: string | null;
 }
 
+const semAcento = (t: string) =>
+  t
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '')
+    .toLowerCase();
+
+/**
+ * Composers by name, or the best known before anything is typed. The API
+ * also matches alternative names; a name with a word starting with what was
+ * typed comes first, the best known among them first ("cho" → Chopin).
+ */
+const buscarCompositores = async (texto: string) => {
+  const q = semAcento(texto.trim());
+  const [achados, famosos] = await Promise.all([
+    findComposers(texto, 30),
+    q ? findComposers('', 40) : Promise.resolve([]),
+  ]);
+  const opcoes = achados.map((c) => ({
+    value: c.id,
+    label: c.fullName || c.name,
+  }));
+  if (!q) return opcoes.slice(0, 12);
+  const conhecido = new Set(famosos.map((c) => c.id));
+  const começa = (label: string) =>
+    semAcento(label)
+      .split(/[\s,.-]+/)
+      .some((w) => w.startsWith(q));
+  const peso = (o: { value: string; label: string }) =>
+    (começa(o.label) ? 0 : 2) + (conhecido.has(o.value) ? 0 : 1);
+  return [...opcoes].sort((a, b) => peso(a) - peso(b)).slice(0, 12);
+};
+
 const pill = 'w-auto! min-h-10! rounded-full! py-0! text-[0.9375rem]';
 
 /**
@@ -67,6 +113,7 @@ export function ListControls({
   placeholder,
   filters,
   toggles = [],
+  composer,
   range,
   sort,
   count,
@@ -77,6 +124,7 @@ export function ListControls({
   placeholder: string;
   filters: ChoiceFilter[];
   toggles?: ToggleFilter[];
+  composer?: ComposerFilter;
   range?: RangeFilter;
   sort: { value: string; options: Option[] };
   count: string;
@@ -109,6 +157,15 @@ export function ListControls({
         ? [{ key: f.key, label: option.label, clear: { [f.key]: undefined } }]
         : [];
     }),
+    ...(composer && query[composer.key] && composer.selectedLabel
+      ? [
+          {
+            key: composer.key,
+            label: composer.selectedLabel,
+            clear: { [composer.key]: undefined },
+          },
+        ]
+      : []),
     ...toggles
       .filter((t) => query[t.key])
       .map((t) => ({
@@ -128,6 +185,7 @@ export function ListControls({
   ];
   const allKeys = [
     ...filters.map((f) => f.key),
+    ...(composer ? [composer.key] : []),
     ...toggles.map((t) => t.key),
     ...(range ? [range.fromKey, range.toKey] : []),
   ];
@@ -188,6 +246,26 @@ export function ListControls({
               />
             </div>
           ))}
+        {composer && (
+          <div className="w-64 max-w-full">
+            <SelecaoComBusca
+              aria-label={composer.label}
+              placeholder={composer.placeholder}
+              className={cx(
+                pill,
+                'w-full!',
+                query[composer.key] && 'border-[var(--ouro)]!'
+              )}
+              buscar={buscarCompositores}
+              valor={query[composer.key] ?? ''}
+              rotulo={composer.selectedLabel}
+              limpavel
+              rotuloLimpar={copy.remove(composer.selectedLabel ?? '')}
+              vazio={copy.noMatch}
+              aoMudar={(value) => go({ [composer.key]: value || undefined })}
+            />
+          </div>
+        )}
         <Button
           tamanho="p"
           icone={PiFunnelSimple}

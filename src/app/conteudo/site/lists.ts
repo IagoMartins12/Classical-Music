@@ -18,6 +18,7 @@ const pt = {
     page: (n: number) => `Página ${n}`,
     search: 'Buscar',
     empty: 'Nada com esses filtros.',
+    noMatch: 'Nenhum resultado',
     emptyText: 'Tente tirar um filtro ou buscar por outra grafia.',
   },
   composers: {
@@ -96,6 +97,7 @@ const en: typeof pt = {
     page: (n: number) => `Page ${n}`,
     search: 'Search',
     empty: 'Nothing matches these filters.',
+    noMatch: 'No match',
     emptyText: 'Try removing a filter or searching another spelling.',
   },
   composers: {
