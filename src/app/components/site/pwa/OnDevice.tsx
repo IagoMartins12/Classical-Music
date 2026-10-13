@@ -5,12 +5,15 @@ import Link from 'next/link';
 import { useEffect, useState } from 'react';
 import {
   PiArrowSquareOut,
+  PiCheck,
   PiDeviceMobile,
+  PiMinus,
   PiFilePdf,
   PiTrash,
 } from 'react-icons/pi';
 import { Button, classesDeBotao } from '@/app/components/ui/Button';
 import { Icon } from '@/app/components/ui/Icon';
+import { cx } from '@/app/components/ui/cx';
 import { PWA } from '@/app/conteudo/site/pwa';
 import { useOnline } from '@/app/hooks/useOnline';
 import { useRouteLanguage } from '@/app/hooks/useRouteLanguage';
@@ -21,6 +24,7 @@ import {
   removerPartitura,
   type PartituraGuardada,
 } from '@/app/libs/pwa/partituras';
+import { AppGravado } from './AppGravado';
 import { ABRIR_PASSOS } from './eventos';
 
 const tamanho = (bytes: number, language: 'pt' | 'en') => {
@@ -65,30 +69,103 @@ export function OnDevice() {
     return aoMudarPartituras(atualizar);
   }, []);
 
+  const a = copy.apresentacao;
+  const instalar = () => window.dispatchEvent(new Event(ABRIR_PASSOS));
+
   return (
-    <div className="section-wrap flex flex-col gap-10 py-12 md:py-16">
-      <header className="flex max-w-[60ch] flex-col gap-4">
-        <h1 className="classical-title text-[2.375rem] leading-[1.06] text-texto sm:text-5xl">
-          {online ? copy.titulo : copy.tituloOffline}
-        </h1>
-        <p className="text-lg leading-relaxed text-texto-suave">
-          {online ? copy.texto : copy.textoOffline}
-        </p>
-        <div className="flex flex-wrap gap-3">
-          <Link href="/" className={classesDeBotao()}>
-            {copy.voltar}
-          </Link>
-          <Button
-            icone={PiDeviceMobile}
-            variante="fantasma"
-            onClick={() => window.dispatchEvent(new Event(ABRIR_PASSOS))}
-          >
-            {copy.instalar}
-          </Button>
-        </div>
-      </header>
+    <div className="section-wrap flex flex-col gap-16 py-12 md:gap-20 md:py-16">
+      {online ? (
+        <header className="grid items-center gap-10 lg:grid-cols-[minmax(0,7fr)_minmax(0,5fr)] lg:gap-16">
+          <div className="flex flex-col gap-5">
+            <h1 className="entra classical-title text-[2.375rem] leading-[1.06] text-texto sm:text-5xl lg:text-[3.5rem]">
+              {a.titulo}
+            </h1>
+            <p
+              className="entra max-w-[58ch] text-lg leading-relaxed text-texto-suave"
+              style={{ ['--i' as string]: 1 }}
+            >
+              {a.abertura}
+            </p>
+            <p
+              className="entra max-w-[58ch] t-rotulo text-texto-suave"
+              style={{ ['--i' as string]: 2 }}
+            >
+              {a.tecnologia}
+            </p>
+            <div
+              className="entra flex flex-wrap gap-3 pt-2"
+              style={{ ['--i' as string]: 3 }}
+            >
+              <Button
+                variante="primario"
+                icone={PiDeviceMobile}
+                onClick={instalar}
+              >
+                {copy.instalar}
+              </Button>
+              <Link href="/" className={classesDeBotao('fantasma')}>
+                {copy.voltar}
+              </Link>
+            </div>
+          </div>
+          <AppGravado />
+        </header>
+      ) : (
+        <header className="flex max-w-[60ch] flex-col gap-4">
+          <h1 className="classical-title text-[2.375rem] leading-[1.06] text-texto sm:text-5xl">
+            {copy.tituloOffline}
+          </h1>
+          <p className="text-lg leading-relaxed text-texto-suave">
+            {copy.textoOffline}
+          </p>
+        </header>
+      )}
+
+      {online && (
+        <section className="flex flex-col gap-6">
+          <h2 className="font-display text-[1.75rem] leading-tight">
+            {a.comparar}
+          </h2>
+          <ul className="grid gap-x-10 gap-y-1 md:grid-cols-2">
+            {a.itens.map((item) => (
+              <li
+                key={item.titulo}
+                className="flex items-start gap-4 border-b border-[var(--linha)] py-4"
+              >
+                <span
+                  className={cx(
+                    'mt-0.5 grid h-8 w-8 shrink-0 place-items-center rounded-full',
+                    item.tem
+                      ? 'tint-ouro text-ouro-na-tinta'
+                      : 'bg-sup-2 text-texto-fraco'
+                  )}
+                >
+                  <Icon de={item.tem ? PiCheck : PiMinus} tamanho="p" />
+                </span>
+                <span className="flex flex-col gap-0.5">
+                  <span
+                    className={cx(
+                      'font-medium',
+                      item.tem ? 'text-texto' : 'text-texto-suave'
+                    )}
+                  >
+                    {item.titulo}
+                  </span>
+                  <span className="t-rotulo text-texto-suave">
+                    {item.texto}
+                  </span>
+                </span>
+              </li>
+            ))}
+          </ul>
+        </section>
+      )}
 
       <section className="flex flex-col gap-4">
+        <h2 className="font-display text-[1.75rem] leading-tight">
+          {a.seuAparelho}
+        </h2>
+        <p className="max-w-[60ch] t-rotulo text-texto-suave">{copy.texto}</p>
         {uso && (
           <p className="t-legenda">
             {copy.ocupado(

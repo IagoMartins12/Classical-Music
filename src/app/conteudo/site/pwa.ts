@@ -74,6 +74,52 @@ const pt = {
       `${usado} usados de ${total} disponíveis para o site neste aparelho.`,
     voltar: 'Ir para o início',
     instalar: 'Instalar o app',
+    apresentacao: {
+      titulo: 'O Opus Atlas no seu celular',
+      abertura:
+        'Ainda não temos um app nas lojas. Mas o site sabe se instalar como um: fica na tela de início, abre em tela cheia, guarda partituras e continua funcionando sem internet.',
+      tecnologia:
+        'A tecnologia se chama Progressive Web App. É o próprio site, instalado pelo navegador: nada para baixar de loja, e cada melhoria chega sozinha.',
+      comparar: 'O que você tem com ele instalado',
+      itens: [
+        {
+          titulo: 'Na tela de início',
+          texto:
+            'Um ícone ao lado dos seus outros apps, um toque e está aberto.',
+          tem: true,
+        },
+        {
+          titulo: 'Em tela cheia',
+          texto:
+            'Sem a barra do navegador: só a partitura, o estudo, o portal.',
+          tem: true,
+        },
+        {
+          titulo: 'Partituras sem internet',
+          texto:
+            'Guarde as que você está estudando e abra na sala de aula sem sinal.',
+          tem: true,
+        },
+        {
+          titulo: 'O que você visitou, offline',
+          texto:
+            'Páginas abertas ficam salvas, até um limite, e abrem sem conexão.',
+          tem: true,
+        },
+        {
+          titulo: 'Sempre atualizado',
+          texto:
+            'Não há versão para baixar: a próxima vez que abrir, já é a nova.',
+          tem: true,
+        },
+        {
+          titulo: 'Na App Store e no Google Play',
+          texto: 'Ainda não. Por enquanto, a instalação é pelo navegador.',
+          tem: false,
+        },
+      ],
+      seuAparelho: 'Neste aparelho',
+    },
   },
   guardar: {
     guardar: 'Guardar no aparelho',
@@ -159,6 +205,50 @@ const en: typeof pt = {
       `${usado} used of ${total} available to the site on this device.`,
     voltar: 'Go to the home page',
     instalar: 'Install the app',
+    apresentacao: {
+      titulo: 'Opus Atlas on your phone',
+      abertura:
+        'We do not have an app in the stores yet. But the site can install itself like one: it sits on your home screen, opens full screen, keeps scores and keeps working without internet.',
+      tecnologia:
+        'The technology is called a Progressive Web App. It is the site itself, installed by the browser: nothing to download from a store, and every improvement arrives on its own.',
+      comparar: 'What you get with it installed',
+      itens: [
+        {
+          titulo: 'On your home screen',
+          texto: 'An icon next to your other apps; one tap and it is open.',
+          tem: true,
+        },
+        {
+          titulo: 'Full screen',
+          texto: 'No browser bar: just the score, the practice, the portal.',
+          tem: true,
+        },
+        {
+          titulo: 'Scores without internet',
+          texto:
+            'Save the ones you are learning and open them in a lesson with no signal.',
+          tem: true,
+        },
+        {
+          titulo: 'What you visited, offline',
+          texto:
+            'Pages you opened are saved, up to a limit, and open without a connection.',
+          tem: true,
+        },
+        {
+          titulo: 'Always up to date',
+          texto:
+            'There is no version to download: next time you open it, it is the new one.',
+          tem: true,
+        },
+        {
+          titulo: 'On the App Store and Google Play',
+          texto: 'Not yet. For now, it installs through the browser.',
+          tem: false,
+        },
+      ],
+      seuAparelho: 'On this device',
+    },
   },
   guardar: {
     guardar: 'Save to device',
