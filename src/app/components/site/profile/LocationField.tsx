@@ -2,6 +2,7 @@
 
 import { useEffect, useId, useMemo, useState } from 'react';
 import { Selecao } from '@/app/components/ui/Selecao';
+import { SelecaoComBusca } from '@/app/components/ui/SelecaoComBusca';
 import { translateCountryName } from '@/app/utils/phones_and_location/countryTranslations';
 
 /** Where the person lives, as the profile stores it (names) plus codes. */
@@ -23,8 +24,8 @@ const norm = (s: string) =>
  * The profile keeps names, not codes (`country: "Brasil"`), so a value read
  * from the database arrives without `isoCode`; once the place library loads
  * (lazily, it is large) the names are matched to codes, in Portuguese or
- * English. Typing letters on an open select jumps to the option, which is
- * how a long city list stays usable.
+ * English. Country and state filter as the person types
+ * (`SelecaoComBusca`); in the city list, typing letters jumps to the option.
  */
 export function LocationField({
   value,
@@ -208,14 +209,27 @@ export function LocationField({
           >
             {f.label}
           </label>
-          <Selecao
-            aria-labelledby={`${id}-${f.key}`}
-            opcoes={f.opts}
-            valor={f.valor}
-            placeholder={f.placeholder}
-            disabled={f.off}
-            aoMudar={f.change}
-          />
+          {f.key === 'city' ? (
+            <Selecao
+              aria-labelledby={`${id}-${f.key}`}
+              opcoes={f.opts}
+              valor={f.valor}
+              placeholder={f.placeholder}
+              disabled={f.off}
+              aoMudar={f.change}
+            />
+          ) : (
+            // Long lists: country and state filter as the person types.
+            <SelecaoComBusca
+              aria-labelledby={`${id}-${f.key}`}
+              opcoes={f.opts}
+              valor={f.valor}
+              placeholder={f.placeholder}
+              disabled={f.off}
+              vazio={language === 'pt' ? 'Nada encontrado' : 'No match'}
+              aoMudar={(v) => f.change(v)}
+            />
+          )}
         </div>
       ))}
     </div>

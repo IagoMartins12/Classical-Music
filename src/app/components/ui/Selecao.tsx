@@ -5,7 +5,6 @@ import {
   useEffect,
   useId,
   useImperativeHandle,
-  useLayoutEffect,
   useMemo,
   useRef,
   useState,
@@ -19,6 +18,7 @@ import type {
 } from 'react';
 import { PiCaretDown, PiCheck } from 'react-icons/pi';
 import { cx } from './cx';
+import { useListaFlutuante } from './useListaFlutuante';
 
 /**
  * O select do sistema: um *select-only combobox* (WAI-ARIA APG), no lugar do
@@ -72,9 +72,6 @@ export interface SelecaoProps {
   ref?: Ref<HTMLButtonElement | null>;
 }
 
-const MARGEM = 6;
-const ALTURA_MAX = 288;
-
 export function Selecao({
   opcoes,
   valor,
@@ -102,7 +99,6 @@ export function Selecao({
 
   const [aberta, setAberta] = useState(false);
   const [ativa, setAtiva] = useState(-1);
-  const [acima, setAcima] = useState(false);
   const busca = useRef({ texto: '', ate: 0 });
 
   const indiceSelecionado = useMemo(
@@ -136,33 +132,6 @@ export function Selecao({
 
   // ---- abrir e fechar -----------------------------------------------------
 
-  const posicionar = useCallback(() => {
-    const b = botao.current;
-    const l = lista.current;
-    if (!b || !l) return;
-    const r = b.getBoundingClientRect();
-    const altura = Math.min(l.scrollHeight, ALTURA_MAX);
-    const abaixo = window.innerHeight - r.bottom - MARGEM;
-    const paraCima = abaixo < altura && r.top > abaixo;
-    setAcima(paraCima);
-    // At least as wide as the button, wider when an option needs it (a
-    // short label like "A–Z" must not cut "Chegaram agora"), and never past
-    // the edge of the screen.
-    l.style.width = 'max-content';
-    l.style.minWidth = `${Math.round(r.width)}px`;
-    l.style.maxWidth = `${window.innerWidth - MARGEM * 2}px`;
-    const largura = l.offsetWidth;
-    l.style.left = `${Math.round(
-      Math.max(MARGEM, Math.min(r.left, window.innerWidth - largura - MARGEM))
-    )}px`;
-    l.style.top = paraCima
-      ? `${Math.round(r.top - Math.min(altura, r.top - MARGEM) - MARGEM)}px`
-      : `${Math.round(r.bottom + MARGEM)}px`;
-    l.style.maxHeight = `${Math.round(
-      Math.min(ALTURA_MAX, paraCima ? r.top - MARGEM * 2 : abaixo - MARGEM)
-    )}px`;
-  }, []);
-
   const abrir = useCallback(
     (destaque?: number) => {
       if (disabled) return;
@@ -189,40 +158,12 @@ export function Selecao({
     [habilitada, opcoes, valor, aoMudar, fechar]
   );
 
-  useLayoutEffect(() => {
-    const l = lista.current as
-      | (HTMLUListElement & {
-          showPopover?: () => void;
-          hidePopover?: () => void;
-        })
-      | null;
-    if (!l) return;
-    if (aberta) {
-      if (l.showPopover && !l.matches(':popover-open')) l.showPopover();
-      posicionar();
-    } else if (l.hidePopover && l.matches(':popover-open')) {
-      l.hidePopover();
-    }
-  }, [aberta, posicionar]);
-
-  // A lista acompanha o botão; clique fora fecha.
-  useEffect(() => {
-    if (!aberta) return;
-    const aoRolar = () => posicionar();
-    const aoClicar = (e: PointerEvent) => {
-      const alvo = e.target as Node;
-      if (!botao.current?.contains(alvo) && !lista.current?.contains(alvo))
-        fechar(false);
-    };
-    window.addEventListener('scroll', aoRolar, true);
-    window.addEventListener('resize', aoRolar);
-    document.addEventListener('pointerdown', aoClicar);
-    return () => {
-      window.removeEventListener('scroll', aoRolar, true);
-      window.removeEventListener('resize', aoRolar);
-      document.removeEventListener('pointerdown', aoClicar);
-    };
-  }, [aberta, posicionar, fechar]);
+  const { acima } = useListaFlutuante({
+    ancora: botao,
+    lista,
+    aberta,
+    aoClicarFora: useCallback(() => fechar(false), [fechar]),
+  });
 
   // A opção ativa sempre à vista dentro da lista.
   useEffect(() => {
