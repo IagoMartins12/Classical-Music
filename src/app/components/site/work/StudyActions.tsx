@@ -1,9 +1,10 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { PiBookmarkSimple, PiCheckCircle } from 'react-icons/pi';
 import { Button } from '@/app/components/ui/Button';
 import { Icon } from '@/app/components/ui/Icon';
+import { usePulso } from '@/app/components/ui/usePulso';
 import { WORK } from '@/app/conteudo/site/work';
 import { useRouteLanguage } from '@/app/hooks/useRouteLanguage';
 import { useLearningStore } from '@/app/stores/useLearningStore';
@@ -26,11 +27,20 @@ export function StudyActions({ context }: { context: StudyContext }) {
   const learned = useLearningStore(
     (s) => mounted && s.isLearned(context.workId)
   );
+  // The new state pulses once when the person changes it, not on load.
+  const { pulsar, pulso } = usePulso();
+  const state = learned ? 'learned' : studying ? 'studying' : 'none';
+  const previous = useRef<string | null>(null);
+  useEffect(() => {
+    if (!mounted) return;
+    if (previous.current && previous.current !== state) pulsar();
+    previous.current = state;
+  }, [mounted, state, pulsar]);
 
   return (
     <>
       {learned ? (
-        <span className={badge}>
+        <span className={badge} {...pulso}>
           <Icon de={PiCheckCircle} /> {copy.done}
         </span>
       ) : studying ? (
@@ -39,6 +49,7 @@ export function StudyActions({ context }: { context: StudyContext }) {
             type="button"
             className={badge}
             onClick={() => open('want-to-learn')}
+            {...pulso}
           >
             <Icon de={PiBookmarkSimple} /> {copy.studying}
           </button>

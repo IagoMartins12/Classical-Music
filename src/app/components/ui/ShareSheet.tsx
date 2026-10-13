@@ -15,6 +15,7 @@ import {
 import { Button } from './Button';
 import { Icon } from './Icon';
 import { Sheet } from './Sheet';
+import { usePulso } from './usePulso';
 
 export interface ShareCopy {
   title: string;
@@ -94,6 +95,7 @@ function ShareSheet({
   thumbnail?: ReactNode;
 }) {
   const [copied, setCopied] = useState(false);
+  const { pulsar, pulso } = usePulso();
   const text = encodeURIComponent(title);
   const link = encodeURIComponent(url);
   const address = url.replace(/^https?:\/\/(www\.)?/, '');
@@ -134,6 +136,7 @@ function ShareSheet({
   const onCopy = async () => {
     if (await copyToClipboard(url, copy.copied)) {
       setCopied(true);
+      pulsar();
       setTimeout(() => setCopied(false), 2400);
     }
   };
@@ -190,6 +193,7 @@ function ShareSheet({
             icone={copied ? PiCheck : PiLinkSimple}
             onClick={onCopy}
             className="shrink-0"
+            {...pulso}
           >
             {copied ? copy.copied : copy.copyLink}
           </Button>

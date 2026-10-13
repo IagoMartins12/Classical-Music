@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react';
 import toast from 'react-hot-toast';
 import { PiCheckCircle, PiDeviceMobile } from 'react-icons/pi';
 import { Button } from '@/app/components/ui/Button';
+import { usePulso } from '@/app/components/ui/usePulso';
 import { PWA } from '@/app/conteudo/site/pwa';
 import { useRouteLanguage } from '@/app/hooks/useRouteLanguage';
 import {
@@ -29,6 +30,7 @@ export function SaveScoreButton({
   const [suportado, setSuportado] = useState(false);
   const [guardada, setGuardada] = useState(false);
   const [ocupado, setOcupado] = useState(false);
+  const { pulsar, pulso } = usePulso();
 
   useEffect(() => {
     setSuportado(typeof caches !== 'undefined');
@@ -47,6 +49,7 @@ export function SaveScoreButton({
         toast.success(copy.removida);
       } else {
         await guardarPartitura(dados);
+        pulsar();
         toast.success(copy.ok);
       }
     } catch {
@@ -65,6 +68,7 @@ export function SaveScoreButton({
       aria-pressed={guardada}
       title={guardada ? copy.remover : undefined}
       onClick={() => void alternar()}
+      {...pulso}
     >
       {ocupado ? copy.guardando : guardada ? copy.guardada : copy.guardar}
     </Button>

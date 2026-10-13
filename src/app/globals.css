@@ -2401,6 +2401,13 @@ html {
   .heart-beat {
     animation: heart-beat 420ms var(--saida);
   }
+  /* An action that landed (copied, saved, marked): `usePulso`. */
+  [data-pulso='a'] {
+    animation: pulso-a 360ms var(--saida);
+  }
+  [data-pulso='b'] {
+    animation: pulso-b 360ms var(--saida);
+  }
   /* Popovers (menus, live results) open from their edge. */
   .popover-open {
     transform-origin: top;
@@ -2591,6 +2598,17 @@ html {
 @keyframes heart-beat {
   40% {
     transform: scale(1.22);
+  }
+}
+
+@keyframes pulso-a {
+  40% {
+    transform: scale(1.06);
+  }
+}
+@keyframes pulso-b {
+  40% {
+    transform: scale(1.06);
   }
 }
 
