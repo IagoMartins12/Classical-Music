@@ -49,13 +49,17 @@ export function Portrait({
   const photo = src && !PLACEHOLDER.test(src) ? src : null;
   return (
     <span
-      className={cx(
-        'relative block overflow-hidden bg-sup-2 bg-cover bg-top',
-        className
-      )}
+      className={cx('relative block overflow-hidden bg-sup-2', className)}
       style={
         photo && fromCard
-          ? { backgroundImage: fundoDoCartao(photo) }
+          ? {
+              // Inline: `bg-sup-2` is a `background` shorthand that would
+              // reset size and repeat, tiling the photo.
+              backgroundImage: fundoDoCartao(photo),
+              backgroundSize: 'cover',
+              backgroundPosition: 'top',
+              backgroundRepeat: 'no-repeat',
+            }
           : undefined
       }
     >
