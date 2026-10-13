@@ -62,7 +62,8 @@ const pt = {
     title: 'Grátis para sempre. Mais, quando você precisar.',
     text: 'Ler, ouvir e baixar não custa nada. Os planos pagos são para quem envia muito ou dá aula.',
     cta: 'Ver os planos',
-    teachers: 'Para professores',
+    teachers: 'Mentor e Maestro trazem o portal de aulas.',
+    teachersLink: 'Conheça o portal',
     items: [
       {
         name: 'Free',
@@ -137,7 +138,8 @@ const en: typeof pt = {
     title: 'Free forever. More, when you need it.',
     text: 'Reading, listening and downloading cost nothing. Paid plans are for heavy uploaders and teachers.',
     cta: 'See the plans',
-    teachers: 'For teachers',
+    teachers: 'Mentor and Maestro include the lesson portal.',
+    teachersLink: 'See the portal',
     items: [
       {
         name: 'Free',

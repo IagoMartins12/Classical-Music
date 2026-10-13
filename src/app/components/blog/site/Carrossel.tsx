@@ -87,7 +87,8 @@ export function Carrossel({
 
   return (
     <div className={className}>
-      <div className="mx-auto max-w-[1360px] px-4 sm:px-6 lg:px-10">
+      {/* No right padding on wide screens: "See all" sits at the edge. */}
+      <div className="mx-auto max-w-[1360px] px-4 sm:px-6 lg:pl-10 lg:pr-0">
         {cabecalho}
       </div>
       <div
