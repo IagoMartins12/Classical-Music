@@ -1052,7 +1052,10 @@ body {
     .revela-filhos > * {
       animation: revela-entra linear both;
       animation-timeline: view();
-      animation-range: entry 0% entry 60%;
+      /* A fixed distance, not a share of the block: a tall section already
+         on screen at load stayed half transparent (the pricing page looked
+         dark until scrolled). */
+      animation-range: entry 0px entry 180px;
     }
     /* O visto se traça enquanto o bloco em volta entra. */
     :is(.revela, .revela-filhos) .visto-desenha path {
