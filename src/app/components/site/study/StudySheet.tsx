@@ -16,7 +16,6 @@ import {
   PiCheckCircle,
   PiDownloadSimple,
   PiFileText,
-  PiMusicNotes,
   PiPencilLine,
   PiPlus,
   PiTarget,
@@ -26,7 +25,7 @@ import {
 } from 'react-icons/pi';
 import ConfirmModal from '@/app/components/ConfirmModal';
 import ScoreSelectionModal from '@/app/components/LearningModal/ScoreSelectionModal';
-import type { WorkScore } from '@/app/hooks/useWorkScores';
+import { ScorePage } from '@/app/components/site/work/ScorePreview';
 import { Button, classesDeBotao } from '@/app/components/ui/Button';
 import { Field } from '@/app/components/ui/Field';
 import { Icon } from '@/app/components/ui/Icon';
@@ -485,8 +484,8 @@ export function StudySheet() {
       {selectedWorkScore ? (
         <div className="flex flex-col gap-2 rounded-card bg-sup-2 p-4">
           <div className="flex items-center gap-3">
-            <span className="grid h-10 w-10 shrink-0 place-items-center rounded-controle bg-[var(--fundo)] text-texto-fraco">
-              <Icon de={PiMusicNotes} />
+            <span className="relative block aspect-[1/1.3] w-10 shrink-0 overflow-hidden rounded-[4px] bg-sobre-foto shadow-[var(--sombra-1)]">
+              <ScorePage file={selectedWorkScore} sizes="40px" small />
             </span>
             <span className="flex min-w-0 flex-1 flex-col">
               <span className="truncate font-medium">
@@ -498,7 +497,6 @@ export function StudySheet() {
                   selectedWorkScore.fileSize,
                   selectedWorkScore.pageCount &&
                     copy.score.pages(selectedWorkScore.pageCount),
-                  selectedWorkScore.type,
                 ]
                   .filter(Boolean)
                   .join(' · ')}
@@ -831,7 +829,7 @@ export function StudySheet() {
   return (
     <>
       <Sheet
-        aberto={isOpen && !pickingScore}
+        aberto={isOpen}
         aoFechar={requestClose}
         titulo={title}
         descricao={`${workTitle} · ${composerName}`}
@@ -910,7 +908,7 @@ export function StudySheet() {
           composerName={composerName}
           currentSelectedScore={selectedWorkScore}
           isEditing={isCurrentlyActive}
-          onScoreSelected={(score: WorkScore) => {
+          onScoreSelected={(score) => {
             setTouched(true);
             setSelectedWorkScore(
               score

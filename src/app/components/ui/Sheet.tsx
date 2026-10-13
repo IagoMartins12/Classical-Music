@@ -42,7 +42,7 @@ interface SheetProps {
   descricao?: string;
   /** Botões de ação. Ficam presos ao rodapé. */
   rodape?: ReactNode;
-  largura?: 'p' | 'm' | 'g';
+  largura?: 'p' | 'm' | 'g' | 'gg';
   /** A alça de arrastar no telefone (padrão: sim). */
   alca?: boolean;
   children: ReactNode;
@@ -52,6 +52,7 @@ const LARGURA = {
   p: 'sm:max-w-md',
   m: 'sm:max-w-xl',
   g: 'sm:max-w-3xl',
+  gg: 'sm:max-w-5xl',
 } as const;
 
 export function Sheet({
@@ -114,6 +115,13 @@ export function Sheet({
   useEffect(() => {
     const dialogo = ref.current;
     if (!dialogo) return;
+    // Another dialog may stay open under this one (a sheet stacked on a
+    // sheet): the page behind unlocks only when the last one closes.
+    const destravar = () => {
+      if (document.querySelector('dialog[open]')) return;
+      document.body.style.overflow = '';
+      document.documentElement.style.overflow = '';
+    };
 
     if (aberto && !dialogo.open) {
       dialogo.showModal();
@@ -125,13 +133,13 @@ export function Sheet({
 
     if (!aberto && dialogo.open) {
       dialogo.close();
-      document.body.style.overflow = '';
-      document.documentElement.style.overflow = '';
+      destravar();
     }
 
+    // Unmounting removes the dialog from the page (and the top layer); only
+    // the lock is left to undo, after it is gone.
     return () => {
-      document.body.style.overflow = '';
-      document.documentElement.style.overflow = '';
+      queueMicrotask(destravar);
     };
   }, [aberto]);
 

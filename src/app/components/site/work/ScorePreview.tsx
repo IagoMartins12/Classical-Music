@@ -67,7 +67,10 @@ export function ScorePage({
   small = false,
   priority = false,
 }: {
-  file: ScoreFile;
+  file: Pick<ScoreFile, 'title'> & {
+    thumbnailUrl?: string | null;
+    pageCount?: string | null;
+  };
   sizes: string;
   small?: boolean;
   priority?: boolean;
