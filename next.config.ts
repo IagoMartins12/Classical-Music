@@ -34,6 +34,13 @@ const nextConfig: NextConfig = withBundleAnalyzer({
   trailingSlash: false,
   compress: true,
 
+  experimental: {
+    // Serwist adds a custom `webpack` function, and with one Next turns the
+    // build worker off: server, client and edge then compile in one process
+    // and the heap passed 3 GB. On again, each compiles in its own worker.
+    webpackBuildWorker: true,
+  },
+
   /**
    * Cache de ISR e de `fetch` no Redis, compartilhado pelas réplicas.
    *
@@ -145,6 +152,11 @@ const withSerwist = withSerwistInit({
   swSrc: 'src/app/sw.ts',
   swDest: 'public/sw.js',
   disable: process.env.NODE_ENV === 'development',
+  // Only what the app shell needs offline. By default every file in
+  // `public/` went into the precache: installing the app downloaded the era
+  // pictures and sketch assets, megabytes nobody asked for. Pictures are
+  // cached when a page shows them.
+  globPublicPatterns: ['icons/**/*'],
   // The offline page is ready before the first time it is needed.
   additionalPrecacheEntries: [
     { url: '/offline', revision: process.env.VERCEL_GIT_COMMIT_SHA ?? null },
