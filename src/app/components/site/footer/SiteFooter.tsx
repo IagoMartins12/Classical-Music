@@ -3,6 +3,7 @@
 import { useState, type FormEvent } from 'react';
 import {
   PiCheckCircle,
+  PiHeartFill,
   PiInstagramLogo,
   PiLinkedinLogo,
   PiTiktokLogo,
@@ -64,6 +65,18 @@ const SOCIAL = [
   },
 ];
 
+/**
+ * A footer link changes page while the window glides back to the top,
+ * instead of jumping there (instant with reduced motion).
+ */
+const subirAoTopo = () =>
+  window.scrollTo({
+    top: 0,
+    behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches
+      ? 'auto'
+      : 'smooth',
+  });
+
 const linkClass =
   't-rotulo text-texto-suave underline decoration-transparent underline-offset-4 transition-colors hover:text-texto hover:decoration-[var(--ouro)]';
 
@@ -104,7 +117,12 @@ export function SiteFooter() {
                     return (
                       <li key={key}>
                         {href ? (
-                          <Link href={href} className={linkClass}>
+                          <Link
+                            href={href}
+                            className={linkClass}
+                            scroll={false}
+                            onClick={subirAoTopo}
+                          >
                             {label}
                           </Link>
                         ) : (
@@ -130,12 +148,24 @@ export function SiteFooter() {
 
       <div className="section-wrap">
         <div className="flex flex-col items-center justify-between gap-4 border-t border-linha py-6 md:flex-row">
-          <p className="t-legenda max-md:text-center">
-            © {year} {copy.rights}{' '}
-            <a href={mailto('contato')} className={linkClass}>
-              {CONTATO.contato}
-            </a>
-          </p>
+          <div className="flex flex-col gap-1 max-md:items-center max-md:text-center">
+            <p className="t-legenda">
+              © {year} {copy.rights}{' '}
+              <a href={mailto('contato')} className={linkClass}>
+                {CONTATO.contato}
+              </a>
+            </p>
+            <p className="t-legenda inline-flex items-center gap-1.5">
+              {copy.madeWith[0]}
+              <Icon
+                de={PiHeartFill}
+                tamanho="pp"
+                className="heart-pulsa text-ouro-texto"
+                rotulo={language === 'en' ? 'love' : 'amor'}
+              />
+              {copy.madeWith[1]}
+            </p>
+          </div>
           <ul aria-label={copy.follow} className="flex gap-1">
             {SOCIAL.map(({ icon, href, label }) => (
               <li key={label}>

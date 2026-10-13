@@ -1102,6 +1102,33 @@ body {
   }
 }
 
+/* The veil over a full reload (`recarregarTudo`), until the new page paints. */
+#recarregando-veu {
+  position: fixed;
+  inset: 0;
+  z-index: 2147483000;
+  display: grid;
+  place-content: center;
+  justify-items: center;
+  gap: 0.75rem;
+  color: var(--ouro);
+  font-size: 0.9375rem;
+  color-scheme: inherit;
+  animation: veu-surge 220ms var(--saida) both;
+}
+#recarregando-veu svg {
+  width: 2.75rem;
+  height: 2.75rem;
+}
+#recarregando-veu span {
+  color: var(--texto-suave);
+}
+@keyframes veu-surge {
+  from {
+    opacity: 0;
+  }
+}
+
 /* A portrait (`Portrait`) shows its initial only without a photo or when
    the photo failed (`RetratosQueFalham` marks it) — never while it loads. */
 img[data-retrato]:not([data-falhou]) ~ .retrato-inicial {
@@ -2458,6 +2485,10 @@ html {
   .heart-beat {
     animation: heart-beat 420ms var(--saida);
   }
+  /* The footer's "Feito com ♥": a calm heartbeat, two beats then rest. */
+  .heart-pulsa {
+    animation: heart-pulsa 2.4s ease-in-out infinite;
+  }
   /* Unfavoriting: the heart lets go, a small drop and a tilt. */
   .heart-solta {
     animation: heart-solta 380ms var(--saida);
@@ -2567,8 +2598,8 @@ html {
     animation-delay: 360ms;
   }
   /* "Tentar de novo": the page fades while it reloads everything. */
-  .recarregando body {
-    opacity: 0.35;
+  .recarregando body > :not(#recarregando-veu) {
+    opacity: 0.25;
     transition: opacity 260ms var(--saida);
   }
   /* Every <details> (FAQ, legal pages, help) opens and closes smoothly
@@ -2795,6 +2826,17 @@ html {
   }
 }
 
+@keyframes heart-pulsa {
+  0%,
+  28%,
+  100% {
+    transform: scale(1);
+  }
+  8%,
+  20% {
+    transform: scale(1.2);
+  }
+}
 @keyframes heart-solta {
   35% {
     transform: translateY(2px) scale(0.78) rotate(-14deg);

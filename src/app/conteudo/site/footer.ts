@@ -75,6 +75,7 @@ const pt = {
   },
   follow: 'Siga o Opus Atlas',
   rights: 'Opus Atlas. Todos os direitos reservados.',
+  madeWith: ['Feito com', 'para a música clássica'],
 };
 
 const en: typeof pt = {
@@ -147,6 +148,7 @@ const en: typeof pt = {
   },
   follow: 'Follow Opus Atlas',
   rights: 'Opus Atlas. All rights reserved.',
+  madeWith: ['Made with', 'for classical music'],
 };
 
 export const FOOTER: Record<Idioma, typeof pt> = { pt, en };
