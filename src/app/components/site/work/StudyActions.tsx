@@ -4,6 +4,7 @@ import { useEffect, useRef, useState } from 'react';
 import { PiBookmarkSimple, PiCheckCircle } from 'react-icons/pi';
 import { Button } from '@/app/components/ui/Button';
 import { Icon } from '@/app/components/ui/Icon';
+import { cx } from '@/app/components/ui/cx';
 import { NotasSobem } from '@/app/components/ui/NotasSobem';
 import { usePulso } from '@/app/components/ui/usePulso';
 import { WORK } from '@/app/conteudo/site/work';
@@ -33,11 +34,14 @@ export function StudyActions({ context }: { context: StudyContext }) {
   const state = learned ? 'learned' : studying ? 'studying' : 'none';
   const previous = useRef<string | null>(null);
   const [celebrate, setCelebrate] = useState(0);
+  // "Quero aprender": the bookmark drops into the page like a ribbon.
+  const [marked, setMarked] = useState(0);
   useEffect(() => {
     if (!mounted) return;
     if (previous.current && previous.current !== state) {
       pulsar();
       if (state === 'learned') setCelebrate((n) => n + 1);
+      if (state === 'studying') setMarked((n) => n + 1);
     }
     previous.current = state;
   }, [mounted, state, pulsar]);
@@ -53,11 +57,14 @@ export function StudyActions({ context }: { context: StudyContext }) {
         <div className="flex flex-wrap items-center gap-2">
           <button
             type="button"
-            className={badge}
+            className={cx(badge, marked > 0 && 'marcado-agora')}
             onClick={() => open('want-to-learn')}
             {...pulso}
           >
-            <Icon de={PiBookmarkSimple} /> {copy.studying}
+            <span className={cx('grid', marked > 0 && 'marcador-cai')}>
+              <Icon de={PiBookmarkSimple} />
+            </span>{' '}
+            {copy.studying}
           </button>
           <Button icone={PiCheckCircle} onClick={() => open('learned')}>
             {copy.learned}
