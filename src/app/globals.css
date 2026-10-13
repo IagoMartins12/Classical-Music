@@ -1098,6 +1098,12 @@ body {
   }
 }
 
+/* A portrait whose photo failed (`RetratosQueFalham`): the initial under it
+   shows instead. */
+img[data-retrato][data-falhou] {
+  display: none;
+}
+
 /* O sinal dos avisos (`Avisos`): o anel e o traço se desenham ao chegar, e
    o astro do "carregando" gira na órbita. */
 @media (prefers-reduced-motion: no-preference) {
@@ -2427,19 +2433,17 @@ html {
   }
   /* The orbits of the editorial pages (site/orbits): each ring turns at its
      own pace, and its bodies stay upright while it turns. */
-  .orbita-gira {
-    transform-origin: 300px 300px;
+  .orbita-camada {
     animation: spin var(--orbita, 120s) linear infinite;
+    will-change: transform;
   }
-  .orbita-gira-reverso {
+  .orbita-camada-reversa {
     animation-direction: reverse;
   }
-  .orbita-gira .orbita-de-pe {
-    transform-box: fill-box;
-    transform-origin: center;
+  .orbita-camada .orbita-de-pe {
     animation: spin var(--orbita, 120s) linear infinite reverse;
   }
-  .orbita-gira-reverso .orbita-de-pe {
+  .orbita-camada-reversa .orbita-de-pe {
     animation-direction: normal;
   }
   .rise {
@@ -2487,6 +2491,31 @@ html {
     color: var(--ouro);
     opacity: 0;
     animation: nota-celebra 1100ms var(--saida) both;
+  }
+  /* "Quero aprender": the bookmark drops in like a ribbon placed between
+     pages, swings and settles; a gold light crosses the badge once. */
+  .marcador-cai {
+    transform-origin: 50% 0;
+    /* Linear overall: each beat has its own curve below. */
+    animation: marcador-cai 820ms linear both;
+  }
+  .marcado-agora {
+    position: relative;
+    overflow: hidden;
+  }
+  .marcado-agora::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(
+      100deg,
+      transparent 30%,
+      color-mix(in srgb, var(--ouro) 40%, transparent) 50%,
+      transparent 70%
+    );
+    transform: translateX(-120%);
+    animation: brilho-passa 900ms 180ms var(--saida) both;
+    pointer-events: none;
   }
   /* A count that changed (`NumeroVivo`). */
   .numero-sobe,
@@ -2784,6 +2813,41 @@ html {
   100% {
     opacity: 0;
     transform: translate(calc(-50% + var(--x)), -2.75rem) rotate(10deg) scale(1);
+  }
+}
+@keyframes marcador-cai {
+  /* Falls, speeding up like something dropped… */
+  0% {
+    opacity: 0;
+    transform: translateY(-140%) scaleY(1.25);
+    animation-timing-function: cubic-bezier(0.55, 0, 1, 0.45);
+  }
+  /* …lands and gives a little… */
+  32% {
+    opacity: 1;
+    transform: translateY(8%) scaleY(0.88);
+    animation-timing-function: cubic-bezier(0.22, 1, 0.36, 1);
+  }
+  /* …then swings like a ribbon and settles. */
+  50% {
+    transform: translateY(0) rotate(-10deg);
+    animation-timing-function: cubic-bezier(0.45, 0, 0.55, 1);
+  }
+  72% {
+    transform: rotate(6deg);
+    animation-timing-function: cubic-bezier(0.45, 0, 0.55, 1);
+  }
+  88% {
+    transform: rotate(-2deg);
+    animation-timing-function: cubic-bezier(0.45, 0, 0.55, 1);
+  }
+  100% {
+    transform: none;
+  }
+}
+@keyframes brilho-passa {
+  to {
+    transform: translateX(120%);
   }
 }
 @keyframes numero-sobe {

@@ -1,4 +1,4 @@
-import type { ReactNode } from 'react';
+import { Children, isValidElement, type ReactNode } from 'react';
 import { CamadaQueGira } from './CamadaQueGira';
 import type { IconType } from 'react-icons';
 import {
@@ -70,7 +70,7 @@ function Moldura({
     <div
       aria-hidden="true"
       className={cx(
-        'orbitas relative mx-auto hidden aspect-square w-full max-w-[26rem] lg:block',
+        'orbitas relative mx-auto hidden aspect-square w-full max-w-[26rem] [container-type:inline-size] lg:block',
         className
       )}
     >
@@ -78,7 +78,7 @@ function Moldura({
         viewBox="0 0 600 600"
         className="engraving absolute inset-0 h-full w-full"
       >
-        {children}
+        {Children.toArray(children).filter((c) => !foraDoDesenho(c))}
         {STARS.map(([x, y], i) => (
           <circle
             key={i}
@@ -91,6 +91,7 @@ function Moldura({
         ))}
       </svg>
       {regua}
+      {Children.toArray(children).filter(foraDoDesenho)}
       {seal && (
         <BrandSeal className="absolute left-1/2 top-1/2 w-[20%] -translate-x-1/2 -translate-y-1/2" />
       )}
@@ -177,9 +178,14 @@ function Rotulo({
   );
 }
 
+/** A length in the drawing's 600-unit box, as a share of the frame. */
+const pct = (n: number) => `${r2(n / 6)}%`;
+
 /**
- * A body on an orbit: a disc with an icon, kept upright while its orbit
- * turns (`orbita-gira` on the group, `orbita-de-pe` on the body).
+ * A body on an orbit: a disc with an icon or a letter. HTML laid over the
+ * drawing, not SVG inside it, so a turning orbit (`Gira`) can keep it
+ * upright with a composited counter-turn (`orbita-de-pe`) — inside the SVG
+ * each frame repainted the whole drawing.
  */
 function Corpo({
   r,
@@ -195,46 +201,36 @@ function Corpo({
   texto?: string;
 }) {
   const { x, y } = at(r, deg);
-  const h = tamanho / 2;
   return (
-    <g className="orbita-de-pe">
-      <circle
-        cx={x}
-        cy={y}
-        r={h}
-        fill="var(--fundo)"
-        stroke="currentColor"
-        strokeWidth={1.2}
-      />
-      {Icone && (
-        <svg
-          x={x - h * 0.5}
-          y={y - h * 0.5}
-          width={h}
-          height={h}
-          viewBox="0 0 256 256"
-          className="text-ouro-texto"
-        >
-          <Icone size={256} />
-        </svg>
-      )}
+    <span
+      className="orbita-de-pe absolute grid place-items-center rounded-full border border-current bg-[var(--fundo)]"
+      style={{
+        left: pct(x),
+        top: pct(y),
+        width: pct(tamanho),
+        height: pct(tamanho),
+        translate: '-50% -50%',
+      }}
+    >
+      {Icone && <Icone aria-hidden className="h-1/2 w-1/2 text-ouro-texto" />}
       {texto && (
-        <text
-          x={x}
-          y={y + 1}
-          textAnchor="middle"
-          dominantBaseline="middle"
-          fill="var(--ouro-texto)"
-          fontFamily={DISPLAY}
-          fontSize={h * 0.95}
+        <span
+          className="font-display leading-none text-ouro-texto"
+          // The letter keeps its size against the drawing (container units).
+          style={{ fontSize: `${r2(((tamanho / 2) * 0.95) / 6)}cqw` }}
         >
           {texto}
-        </text>
+        </span>
       )}
-    </g>
+    </span>
   );
 }
 
+/**
+ * An orbit that turns: its own layer over the drawing, rotated as an HTML
+ * box (the GPU turns it, nothing repaints). Strokes inside it are drawn in a
+ * layer `<svg>`; bodies stay upright.
+ */
 function Gira({
   segundos,
   children,
@@ -244,15 +240,30 @@ function Gira({
   children: ReactNode;
   reverso?: boolean;
 }) {
+  const itens = Children.toArray(children);
+  const corpos = itens.filter((c) => isValidElement(c) && c.type === Corpo);
+  const tracos = itens.filter((c) => !corpos.includes(c));
   return (
-    <g
-      className={cx('orbita-gira', reverso && 'orbita-gira-reverso')}
+    <div
+      className={cx(
+        'orbita-camada absolute inset-0',
+        reverso && 'orbita-camada-reversa'
+      )}
       style={{ ['--orbita' as string]: `${segundos}s` }}
     >
-      {children}
-    </g>
+      {tracos.length > 0 && (
+        <svg viewBox="0 0 600 600" className="absolute inset-0 h-full w-full">
+          {tracos}
+        </svg>
+      )}
+      {corpos}
+    </div>
   );
 }
+
+/** Bodies and turning orbits live over the drawing, not inside it. */
+const foraDoDesenho = (c: ReactNode) =>
+  isValidElement(c) && (c.type === Corpo || c.type === Gira);
 
 // ---------------------------------------------------------------------------
 

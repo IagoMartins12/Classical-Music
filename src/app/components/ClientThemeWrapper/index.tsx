@@ -3,6 +3,8 @@
 
 import { useThemeStore } from '@/app/stores/themeStore';
 import dynamic from 'next/dynamic';
+import { RetratosQueFalham } from '../site/RetratosQueFalham';
+import { RevelarAoRolar } from '../ui/RevelarAoRolar';
 import React, { useEffect, useState } from 'react';
 import { IconContext } from 'react-icons';
 import type { IconContext as IconContextValue } from 'react-icons';
@@ -88,6 +90,8 @@ export const ClientThemeWrapper: React.FC<ClientThemeWrapperProps> = ({
             notice, once for the whole site, blog and portal. */}
         {isHydrated && <InstallInvite />}
         {isHydrated && <OfflineBar />}
+        <RetratosQueFalham />
+        <RevelarAoRolar />
       </div>
     </IconContext.Provider>
   );

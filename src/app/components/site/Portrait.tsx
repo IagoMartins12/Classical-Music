@@ -1,6 +1,3 @@
-'use client';
-
-import { useState } from 'react';
 import Image from '@/app/components/SmartImage';
 import { cx } from '@/app/components/ui/cx';
 
@@ -8,8 +5,12 @@ import { cx } from '@/app/components/ui/cx';
 const PLACEHOLDER = /nocomposerphotoavailable/i;
 
 /**
- * A composer portrait. Without a photo (or when it fails to load) it shows
- * the initial in Garamond, never a hole or a generic silhouette.
+ * A composer portrait. Without a photo, or when it fails to load, the initial
+ * in Garamond shows — never a hole or a generic silhouette.
+ *
+ * A server component: the initial is always drawn underneath, and a photo
+ * that fails is hidden by `RetratosQueFalham` (one listener for the page),
+ * so a list of composers no longer hydrates one island per picture.
  */
 export function Portrait({
   name,
@@ -24,27 +25,25 @@ export function Portrait({
   priority?: boolean;
   className?: string;
 }) {
-  const [broken, setBroken] = useState(false);
   const photo = src && !PLACEHOLDER.test(src) ? src : null;
   return (
     <span className={cx('relative block overflow-hidden bg-sup-2', className)}>
-      {photo && !broken ? (
+      <span
+        aria-hidden="true"
+        className="absolute inset-0 grid place-items-center font-display text-[2.5em] text-texto-fraco"
+      >
+        {name.trim().charAt(0)}
+      </span>
+      {photo && (
         <Image
           src={photo}
           alt={name}
           fill
           sizes={sizes}
           priority={priority}
-          onError={() => setBroken(true)}
+          data-retrato=""
           className="object-cover object-top"
         />
-      ) : (
-        <span
-          aria-hidden="true"
-          className="absolute inset-0 grid place-items-center font-display text-[2.5em] text-texto-fraco"
-        >
-          {name.trim().charAt(0)}
-        </span>
       )}
     </span>
   );

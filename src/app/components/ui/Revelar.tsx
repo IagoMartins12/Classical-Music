@@ -1,12 +1,4 @@
-'use client';
-
-import {
-  useEffect,
-  useRef,
-  type CSSProperties,
-  type ElementType,
-  type ReactNode,
-} from 'react';
+import type { CSSProperties, ElementType, ReactNode } from 'react';
 import { cx } from './cx';
 
 /**
@@ -19,6 +11,9 @@ import { cx } from './cx';
  * esconde até chegar à vista. Sem script, com hidratação lenta, ou para o
  * robô que não rola a página, está tudo lá desde o começo. Com movimento
  * reduzido, o CSS não esconde nada.
+ *
+ * Componente de servidor: quem observa a rolagem é um só, para a página
+ * inteira (`RevelarAoRolar`), em vez de uma ilha de cliente por bloco.
  */
 export function Revelar({
   children,
@@ -39,36 +34,8 @@ export function Revelar({
   'aria-labelledby'?: string;
   'aria-label'?: string;
 }) {
-  const ref = useRef<HTMLElement>(null);
-
-  useEffect(() => {
-    const el = ref.current;
-    if (!el) return;
-    // Já na tela ao montar (ou sem IntersectionObserver): fica como está,
-    // sem sumir e voltar. Só o que está abaixo da dobra se esconde para
-    // entrar quando a pessoa rolar até lá.
-    const naDobra = el.getBoundingClientRect().top < window.innerHeight * 0.88;
-    if (naDobra || !('IntersectionObserver' in window)) {
-      el.dataset.visivel = '';
-      return;
-    }
-    el.dataset.pronto = '';
-    const obs = new IntersectionObserver(
-      ([e]) => {
-        if (e.isIntersecting) {
-          el.dataset.visivel = '';
-          obs.disconnect();
-        }
-      },
-      { rootMargin: '0px 0px -12% 0px' }
-    );
-    obs.observe(el);
-    return () => obs.disconnect();
-  }, []);
-
   return (
     <Tag
-      ref={ref}
       id={id}
       style={style}
       className={cx(cascata ? 'revela-filhos' : 'revela', className)}
