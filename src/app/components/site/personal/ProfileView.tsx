@@ -1,12 +1,13 @@
 'use client';
 
-import type { ComponentType } from 'react';
+import { useEffect, useRef, useState, type ComponentType } from 'react';
 import AccountSettingsSection from '@/app/components/profile/AccountSettingsSection';
 import InstrumentsSection from '@/app/components/profile/InstrumentsSection';
 import MusicalPreferencesSection from '@/app/components/profile/MusicalPreferencesSection';
 import PersonalInfoSection from '@/app/components/profile/PersonalInfoSection';
 import PrivacySection from '@/app/components/profile/PrivacySection';
 import { Button } from '@/app/components/ui/Button';
+import { cx } from '@/app/components/ui/cx';
 import { EsqueletoPerfil } from '@/app/components/ui/Carregando';
 import { PERSONAL } from '@/app/conteudo/site/personal';
 import { useAuth } from '@/app/hooks/useAuth';
@@ -27,11 +28,47 @@ const SECTIONS: [
   ['account', AccountSettingsSection],
 ];
 
+type Key = (typeof SECTIONS)[number][0];
+
+/**
+ * The section in the reading band of the window (a third from the top):
+ * the jump list marks it in gold as the person scrolls.
+ */
+function useSecaoAtual(ativo: boolean) {
+  const [atual, setAtual] = useState<Key>(SECTIONS[0][0]);
+  useEffect(() => {
+    if (!ativo) return;
+    const obs = new IntersectionObserver(
+      (entradas) => {
+        const vista = entradas.find((e) => e.isIntersecting);
+        if (vista) setAtual(vista.target.id.replace('profile-', '') as Key);
+      },
+      { rootMargin: '-30% 0px -60% 0px' }
+    );
+    for (const [key] of SECTIONS) {
+      const el = document.getElementById(`profile-${key}`);
+      if (el) obs.observe(el);
+    }
+    return () => obs.disconnect();
+  }, [ativo]);
+  return [atual, setAtual] as const;
+}
+
 /** The profile's five sections on one page, with a jump list beside them. */
 export function ProfileView() {
   const copy = PERSONAL[useRouteLanguage().language].profile;
   const { user, isAuthenticated, updateUser } = useAuth();
   const openOnboarding = useAuthStore((s) => s.openOnboardingModal);
+  const pronto = !!(isAuthenticated && user?.onboardingCompleted);
+  const [atual, setAtual] = useSecaoAtual(pronto);
+  const lista = useRef<HTMLElement>(null);
+
+  // On phones the list is a strip: keep the current one in sight.
+  useEffect(() => {
+    lista.current
+      ?.querySelector<HTMLElement>('[aria-current="true"]')
+      ?.scrollIntoView({ block: 'nearest', inline: 'nearest' });
+  }, [atual]);
 
   if (!isAuthenticated || !user) return <EsqueletoPerfil />;
 
@@ -50,6 +87,7 @@ export function ProfileView() {
   return (
     <div className="grid grid-cols-1 gap-6 md:grid-cols-[11rem_minmax(0,1fr)]">
       <nav
+        ref={lista}
         aria-label={copy.sectionsLabel}
         className="scroll-strip flex gap-1 overflow-x-auto md:sticky md:top-24 md:flex-col md:self-start"
       >
@@ -57,7 +95,14 @@ export function ProfileView() {
           <a
             key={key}
             href={`#profile-${key}`}
-            className="inline-flex min-h-10 shrink-0 items-center rounded-controle px-3 text-[0.9375rem] text-texto-suave hover:bg-sup-2 hover:text-texto"
+            aria-current={atual === key || undefined}
+            onClick={() => setAtual(key)}
+            className={cx(
+              'relative inline-flex min-h-10 shrink-0 items-center rounded-controle px-3 text-[0.9375rem] transition-colors duration-[var(--t-toque)]',
+              atual === key
+                ? 'bg-sup-2 font-medium text-ouro-texto before:absolute before:inset-y-2 before:left-0 before:w-0.5 before:rounded-full before:bg-[var(--ouro)] max-md:before:hidden'
+                : 'text-texto-suave hover:bg-sup-2 hover:text-texto'
+            )}
           >
             {copy.sections[key]}
           </a>
