@@ -1,66 +1,178 @@
+import type { ReactNode } from 'react';
 import { PiArrowRight, PiMagnifyingGlass } from 'react-icons/pi';
 import Link from '@/app/components/LocalizedLink';
-import { Button } from '@/app/components/ui/Button';
+import { Button, classesDeBotao } from '@/app/components/ui/Button';
 import { Icon } from '@/app/components/ui/Icon';
 import { cx } from '@/app/components/ui/cx';
 import type { Idioma } from '@/app/conteudo/legal/tipos';
 import { SEARCH } from '@/app/conteudo/site/search';
-import { toArticlePreview } from '@/app/requests/blog/composer-articles';
+import type { BlogArticlePreview } from '@/app/requests/blog/composer-articles';
+import {
+  buscarArtigos,
+  type ResumoDeArtigo,
+} from '@/app/requests/blog/leitura';
 import { listComposers, listWorks } from '@/app/requests/catalog-lists';
-import { searchSite } from '@/app/requests/site-search';
 import { localizeHref } from '@/app/utils/localizedRoutes';
-import { rotasDoBlog } from '@/app/utils/blog/rotas';
 import { ArticleCards } from '../composer/FurtherReading';
 import { ComposerItem } from '../lists/ComposerItem';
 import { WorkItem } from '../lists/WorkItem';
 
+export const SEARCH_TABS = ['all', 'works', 'composers', 'articles'] as const;
+export type SearchTab = (typeof SEARCH_TABS)[number];
+
 const WORKS_SHOWN = 8;
 const COMPOSERS_SHOWN = 4;
 const ARTICLES_SHOWN = 6;
+/** "Load all" reads every page at once: past this many, a sharper search. */
+const MAX_PAGES = 10;
 const textLink =
   'underline decoration-transparent underline-offset-4 hover:decoration-[var(--ouro)]';
 
+const range = (pages: number) => Array.from({ length: pages }, (_, i) => i + 1);
+
+const toPreview = (a: ResumoDeArtigo): BlogArticlePreview => ({
+  id: a.id,
+  title: a.titulo,
+  slug: a.slug,
+  coverImage: a.capa ?? undefined,
+  publishedAt: a.publicadoEm ? new Date(a.publicadoEm) : null,
+  readTime: a.minutos || undefined,
+  authorName: a.autor.nome || undefined,
+  authorImage: a.autor.imagem ?? undefined,
+});
+
 /**
- * "Resultados para…": works lead, composers and articles beside them. Each
- * group links to its full, paginated list (the lists search the same way),
- * so this page never has to paginate three things at once.
+ * "Resultados para…". "All" shows works first, composers and articles
+ * beside them; each tab lists one kind in full, here, with "Load more" and
+ * "Load all" — the search never sends the visitor to another list.
+ * `pages` is how many pages the open tab shows.
  */
 export async function SearchPage({
   language,
   q,
+  tab,
+  pages,
 }: {
   language: Idioma;
   q: string;
+  tab: SearchTab;
+  pages: number;
 }) {
   const copy = SEARCH[language];
   const fmt = (n: number) =>
     n.toLocaleString(language === 'pt' ? 'pt-BR' : 'en-US');
   const ready = q.length >= 2;
+  const shown = Math.min(Math.max(pages, 1), MAX_PAGES);
+  const pagesOf = (kind: SearchTab) => range(tab === kind ? shown : 1);
 
-  const [works, composers, site] = ready
+  const [works, composers, articles] = ready
     ? await Promise.all([
-        listWorks({ page: 1, sort: 'title', search: q }),
-        listComposers({ page: 1, sort: 'featured', search: q }),
-        searchSite(q, ARTICLES_SHOWN).catch(() => null),
+        Promise.all(
+          pagesOf('works').map((page) =>
+            listWorks({ page, sort: 'title', search: q })
+          )
+        ),
+        Promise.all(
+          pagesOf('composers').map((page) =>
+            listComposers({ page, sort: 'featured', search: q })
+          )
+        ),
+        Promise.all(
+          pagesOf('articles').map((pagina) =>
+            buscarArtigos({ q, pagina, idioma: language })
+          )
+        ).catch(() => null),
       ])
     : [null, null, null];
-  const articles = (site?.articles ?? []).map(toArticlePreview);
-  const empty = ready && !works?.total && !composers?.total && !articles.length;
-  const encoded = encodeURIComponent(q);
-  const tabs = [
-    { label: copy.tabs.all, href: null },
-    {
-      label: copy.tabs.works,
-      href: `/works?search=${encoded}`,
-      n: works?.total,
-    },
-    {
-      label: copy.tabs.composers,
-      href: `/composers?search=${encoded}`,
-      n: composers?.total,
-    },
-    { label: copy.tabs.articles, href: rotasDoBlog.busca(q) },
+
+  const found = {
+    works: works?.flatMap((p) => p.works) ?? [],
+    composers: composers?.flatMap((p) => p.composers) ?? [],
+    articles: articles?.flatMap((p) => p.artigos.map(toPreview)) ?? [],
+  };
+  const totals = {
+    works: works?.[0]?.total ?? 0,
+    composers: composers?.[0]?.total ?? 0,
+    articles: articles?.[0]?.paginacao.total ?? 0,
+  };
+  const lastPage = {
+    works: works?.[0]?.pages ?? 1,
+    composers: composers?.[0]?.pages ?? 1,
+    articles: articles?.[0]?.paginacao.paginas ?? 1,
+  };
+  const empty = ready && !totals.works && !totals.composers && !totals.articles;
+
+  const href = (next: SearchTab, more?: number) => {
+    const params = new URLSearchParams({ q });
+    if (next !== 'all') params.set('tab', next);
+    if (more && more > 1) params.set('pages', String(more));
+    return `/search?${params}`;
+  };
+  const tabs: { key: SearchTab; label: string; n?: number }[] = [
+    { key: 'all', label: copy.tabs.all },
+    { key: 'works', label: copy.tabs.works, n: totals.works },
+    { key: 'composers', label: copy.tabs.composers, n: totals.composers },
+    { key: 'articles', label: copy.tabs.articles, n: totals.articles },
   ];
+
+  const seeAll = (kind: Exclude<SearchTab, 'all'>, label: string) => (
+    <Link
+      href={href(kind)}
+      scroll={false}
+      className={cx(
+        'inline-flex items-center gap-1.5 self-start t-rotulo text-ouro-texto',
+        textLink
+      )}
+    >
+      {label} <Icon de={PiArrowRight} tamanho="pp" />
+    </Link>
+  );
+
+  /** The open tab's foot: how many are shown, and the way to more. */
+  const more = (kind: Exclude<SearchTab, 'all'>, count: number) => {
+    const total = totals[kind];
+    const hasMore = count < total && shown < lastPage[kind];
+    const all = Math.min(lastPage[kind], MAX_PAGES);
+    return (
+      <div className="flex flex-col items-center gap-3 border-t border-[var(--linha)] pt-6">
+        <span className="t-dado text-[0.8125rem] text-texto-suave">
+          {copy.showing(fmt(count), fmt(total))}
+        </span>
+        {hasMore && (
+          <div className="flex flex-wrap justify-center gap-2">
+            <Link
+              href={href(kind, shown + 1)}
+              scroll={false}
+              className={classesDeBotao('secundario')}
+            >
+              {copy.loadMore}
+            </Link>
+            {all > shown + 1 && (
+              <Link
+                href={href(kind, all)}
+                scroll={false}
+                className={classesDeBotao('fantasma')}
+              >
+                {copy.loadAll}
+              </Link>
+            )}
+          </div>
+        )}
+        {count < total && !hasMore && (
+          <p className="t-rotulo text-texto-suave">{copy.narrow}</p>
+        )}
+      </div>
+    );
+  };
+
+  const list = (children: ReactNode) => (
+    <ul
+      data-view="list"
+      className="cascata flex flex-col divide-y divide-[var(--linha)]"
+    >
+      {children}
+    </ul>
+  );
 
   return (
     <div className="section-wrap flex flex-col gap-10 py-12">
@@ -89,6 +201,7 @@ export async function SearchPage({
             placeholder={copy.placeholder}
             className="min-w-0 flex-1 bg-transparent text-[1.0625rem] outline-none placeholder:text-texto-fraco"
           />
+          {tab !== 'all' && <input type="hidden" name="tab" value={tab} />}
           <Button
             type="submit"
             variante="primario"
@@ -119,30 +232,35 @@ export async function SearchPage({
           aria-label={copy.tabsLabel}
           className="scroll-strip -mx-4 flex gap-2 overflow-x-auto px-4"
         >
-          {tabs.map((tab) =>
-            tab.href ? (
+          {tabs.map((t) => {
+            const active = t.key === tab;
+            return (
               <Link
-                key={tab.label}
-                href={tab.href}
-                className="inline-flex min-h-10 shrink-0 items-center rounded-full bg-sup-2 px-4 text-[0.9375rem] text-texto-suave hover:text-texto"
+                key={t.key}
+                href={href(t.key)}
+                scroll={false}
+                aria-current={active ? 'page' : undefined}
+                className={cx(
+                  'inline-flex min-h-10 shrink-0 items-center rounded-full px-4 text-[0.9375rem] transition-colors duration-[var(--t-toque)]',
+                  active
+                    ? 'tint-ouro text-ouro-na-tinta'
+                    : 'bg-sup-2 text-texto-suave hover:text-texto'
+                )}
               >
-                {tab.label}
-                {tab.n ? (
-                  <span className="t-dado ml-2 text-[0.8125rem] text-texto-fraco">
-                    {fmt(tab.n)}
+                {t.label}
+                {t.n ? (
+                  <span
+                    className={cx(
+                      't-dado ml-2 text-[0.8125rem]',
+                      active ? 'text-ouro-na-tinta' : 'text-texto-fraco'
+                    )}
+                  >
+                    {fmt(t.n)}
                   </span>
                 ) : null}
               </Link>
-            ) : (
-              <span
-                key={tab.label}
-                aria-current="page"
-                className="inline-flex min-h-10 shrink-0 items-center rounded-full tint-ouro px-4 text-[0.9375rem] text-ouro-na-tinta"
-              >
-                {tab.label}
-              </span>
-            )
-          )}
+            );
+          })}
         </nav>
       )}
 
@@ -153,49 +271,35 @@ export async function SearchPage({
         </div>
       )}
 
-      {ready && !empty && (
+      {ready && !empty && tab === 'all' && (
         <div className="grid grid-cols-1 gap-12 lg:grid-cols-[minmax(0,8fr)_minmax(0,4fr)]">
           <section
             className={cx(
               'flex flex-col gap-3',
-              !works?.total && 'max-lg:hidden'
+              !totals.works && 'max-lg:hidden'
             )}
           >
             <h2 className="t-subtitulo">{copy.works}</h2>
-            {works && works.total > 0 && (
+            {totals.works > 0 && (
               <>
-                <ul
-                  data-view="list"
-                  className="flex flex-col divide-y divide-[var(--linha)]"
-                >
-                  {works.works.slice(0, WORKS_SHOWN).map((work) => (
-                    <WorkItem key={work.id} work={work} language={language} />
-                  ))}
-                </ul>
-                {works.total > WORKS_SHOWN && (
-                  <Link
-                    href={`/works?search=${encoded}`}
-                    className={cx(
-                      'inline-flex items-center gap-1.5 self-start t-rotulo text-ouro-texto',
-                      textLink
-                    )}
-                  >
-                    {copy.seeAllWorks(fmt(works.total))}{' '}
-                    <Icon de={PiArrowRight} tamanho="pp" />
-                  </Link>
+                {list(
+                  found.works
+                    .slice(0, WORKS_SHOWN)
+                    .map((work) => (
+                      <WorkItem key={work.id} work={work} language={language} />
+                    ))
                 )}
+                {totals.works > WORKS_SHOWN &&
+                  seeAll('works', copy.seeAllWorks(fmt(totals.works)))}
               </>
             )}
           </section>
           <aside className="flex flex-col gap-10">
-            {composers && composers.total > 0 && (
+            {totals.composers > 0 && (
               <section className="flex flex-col gap-3">
                 <h2 className="t-legenda">{copy.composers}</h2>
-                <ul
-                  data-view="list"
-                  className="flex flex-col divide-y divide-[var(--linha)]"
-                >
-                  {composers.composers
+                {list(
+                  found.composers
                     .slice(0, COMPOSERS_SHOWN)
                     .map((composer) => (
                       <ComposerItem
@@ -203,39 +307,63 @@ export async function SearchPage({
                         composer={composer}
                         language={language}
                       />
-                    ))}
-                </ul>
-                {composers.total > COMPOSERS_SHOWN && (
-                  <Link
-                    href={`/composers?search=${encoded}`}
-                    className={cx(
-                      'inline-flex items-center gap-1.5 self-start t-rotulo text-ouro-texto',
-                      textLink
-                    )}
-                  >
-                    {copy.seeAllComposers(fmt(composers.total))}{' '}
-                    <Icon de={PiArrowRight} tamanho="pp" />
-                  </Link>
+                    ))
                 )}
+                {totals.composers > COMPOSERS_SHOWN &&
+                  seeAll(
+                    'composers',
+                    copy.seeAllComposers(fmt(totals.composers))
+                  )}
               </section>
             )}
-            {articles.length > 0 && (
+            {totals.articles > 0 && (
               <section className="flex flex-col gap-3 [&_ul]:grid-cols-1!">
                 <h2 className="t-legenda">{copy.articles}</h2>
-                <ArticleCards articles={articles} />
-                <Link
-                  href={rotasDoBlog.busca(q)}
-                  className={cx(
-                    'inline-flex items-center gap-1.5 self-start t-rotulo text-ouro-texto',
-                    textLink
-                  )}
-                >
-                  {copy.moreArticles} <Icon de={PiArrowRight} tamanho="pp" />
-                </Link>
+                <ArticleCards
+                  articles={found.articles.slice(0, ARTICLES_SHOWN)}
+                />
+                {totals.articles > ARTICLES_SHOWN &&
+                  seeAll('articles', copy.seeAllArticles(fmt(totals.articles)))}
               </section>
             )}
           </aside>
         </div>
+      )}
+
+      {ready && !empty && tab === 'works' && (
+        <section className="flex flex-col gap-3">
+          <h2 className="sr-only">{copy.works}</h2>
+          {list(
+            found.works.map((work) => (
+              <WorkItem key={work.id} work={work} language={language} />
+            ))
+          )}
+          {more('works', found.works.length)}
+        </section>
+      )}
+
+      {ready && !empty && tab === 'composers' && (
+        <section className="flex flex-col gap-3">
+          <h2 className="sr-only">{copy.composers}</h2>
+          {list(
+            found.composers.map((composer) => (
+              <ComposerItem
+                key={composer.id}
+                composer={composer}
+                language={language}
+              />
+            ))
+          )}
+          {more('composers', found.composers.length)}
+        </section>
+      )}
+
+      {ready && !empty && tab === 'articles' && (
+        <section className="flex flex-col gap-6">
+          <h2 className="sr-only">{copy.articles}</h2>
+          <ArticleCards articles={found.articles} />
+          {more('articles', found.articles.length)}
+        </section>
       )}
     </div>
   );

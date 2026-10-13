@@ -1,5 +1,9 @@
 import type { Metadata } from 'next';
-import { SearchPage } from '@/app/components/site/search/SearchPage';
+import {
+  SEARCH_TABS,
+  SearchPage,
+  type SearchTab,
+} from '@/app/components/site/search/SearchPage';
 import { SEARCH } from '@/app/conteudo/site/search';
 import {
   routeLanguage,
@@ -8,13 +12,23 @@ import {
 
 interface SearchRouteProps {
   params: LangParams;
-  searchParams: Promise<{ q?: string | string[] }>;
+  searchParams: Promise<{
+    q?: string | string[];
+    tab?: string | string[];
+    pages?: string | string[];
+  }>;
 }
 
-const termOf = async (searchParams: SearchRouteProps['searchParams']) => {
-  const { q } = await searchParams;
-  return (Array.isArray(q) ? q[0] : q)?.trim().slice(0, 120) ?? '';
-};
+const first = (value?: string | string[]) =>
+  Array.isArray(value) ? value[0] : value;
+
+const termOf = async (searchParams: SearchRouteProps['searchParams']) =>
+  first((await searchParams).q)
+    ?.trim()
+    .slice(0, 120) ?? '';
+
+const tabOf = (value?: string | string[]): SearchTab =>
+  SEARCH_TABS.find((tab) => tab === first(value)) ?? 'all';
 
 /** Every query is its own answer: rendered per request, never indexed. */
 export const dynamic = 'force-dynamic';
@@ -34,10 +48,13 @@ export default async function SearchRoute({
   params,
   searchParams,
 }: SearchRouteProps) {
+  const { tab, pages } = await searchParams;
   return (
     <SearchPage
       language={await routeLanguage(params)}
       q={await termOf(searchParams)}
+      tab={tabOf(tab)}
+      pages={Number.parseInt(first(pages) ?? '1', 10) || 1}
     />
   );
 }
