@@ -9,7 +9,16 @@ import { Icon } from '@/app/components/ui/Icon';
  * A YouTube video that costs nothing until it is played: the thumbnail and a
  * play button in place of the ~1 MB iframe, which loads on click.
  */
-export function LiteYouTube({ id, title }: { id: string; title: string }) {
+export function LiteYouTube({
+  id,
+  title,
+  priority = false,
+}: {
+  id: string;
+  title: string;
+  /** The poster is the page's largest image above the fold. */
+  priority?: boolean;
+}) {
   const [playing, setPlaying] = useState(false);
   return (
     <div className="relative aspect-video overflow-hidden rounded-card bg-sup-2">
@@ -33,6 +42,7 @@ export function LiteYouTube({ id, title }: { id: string; title: string }) {
             alt=""
             fill
             sizes="(max-width: 1024px) 100vw, 50vw"
+            priority={priority}
             className="object-cover"
           />
           <span className="absolute inset-0 bg-gradient-to-t from-veu-foto to-transparent" />

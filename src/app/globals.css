@@ -1137,11 +1137,20 @@ body {
   }
 }
 
+/* Entrances never start at opacity 0: Chrome does not count an element first
+   painted invisible as Largest Contentful Paint, and the page's title then
+   lost LCP to whatever painted after the scripts. 0.08 reads the same to
+   the eye. No blur either: a filter repaints the text every frame, where
+   opacity and transform stay on the compositor. */
 @keyframes entra {
   from {
-    opacity: 0;
+    opacity: 0.08;
     transform: translateY(16px);
-    filter: blur(6px);
+  }
+}
+@keyframes globo-surge {
+  from {
+    opacity: 0;
   }
 }
 
@@ -2401,8 +2410,20 @@ html {
     animation: engrave 1800ms var(--saida) both;
     animation-delay: calc(var(--i, 0) * 140ms + 100ms);
   }
-  .engraving-ring {
+  .coroa-gira {
     animation: spin 240s linear infinite;
+    will-change: transform;
+  }
+  /* On phones the globe behind the hero appears whole, fading in as one
+     layer: drawing its dozen ellipses stroke by stroke repainted the whole
+     drawing every frame, right while the page loads. The desktop atlas
+     keeps the engraving. */
+  .hero-globe {
+    animation: globo-surge 1400ms var(--saida) both;
+  }
+  .hero-globe .engraving > :is(circle, ellipse, path)[pathLength] {
+    animation: none;
+    stroke-dashoffset: 0;
   }
   /* The orbits of the editorial pages (site/orbits): each ring turns at its
      own pace, and its bodies stay upright while it turns. */
@@ -2603,7 +2624,7 @@ html {
 }
 @keyframes rise {
   from {
-    opacity: 0;
+    opacity: 0.08;
     transform: translateY(10px);
   }
 }

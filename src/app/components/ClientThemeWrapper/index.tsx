@@ -2,12 +2,25 @@
 'use client';
 
 import { useThemeStore } from '@/app/stores/themeStore';
-import { TranslationLoadingGate } from '../TranslationLoadingGate';
-import { InstallInvite } from '../site/pwa/InstallInvite';
-import { OfflineBar } from '../site/pwa/OfflineBar';
+import dynamic from 'next/dynamic';
 import React, { useEffect, useState } from 'react';
 import { IconContext } from 'react-icons';
 import type { IconContext as IconContextValue } from 'react-icons';
+
+// Mounted after hydration anyway: their code loads off the critical path.
+const TranslationLoadingGate = dynamic(
+  () =>
+    import('../TranslationLoadingGate').then((m) => m.TranslationLoadingGate),
+  { ssr: false }
+);
+const InstallInvite = dynamic(
+  () => import('../site/pwa/InstallInvite').then((m) => m.InstallInvite),
+  { ssr: false }
+);
+const OfflineBar = dynamic(
+  () => import('../site/pwa/OfflineBar').then((m) => m.OfflineBar),
+  { ssr: false }
+);
 
 /**
  * Todo ícone do react-icons nasce decorativo (`aria-hidden`).

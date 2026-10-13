@@ -17,6 +17,7 @@ import { Icon } from '@/app/components/ui/Icon';
 import { Sheet } from '@/app/components/ui/Sheet';
 import { PWA } from '@/app/conteudo/site/pwa';
 import { useOverlayLanguage } from '@/app/hooks/useRouteLanguage';
+import { ABRIR_PASSOS } from './eventos';
 
 /** The browser's install prompt (Chromium), kept for the "Instalar" button. */
 interface PedidoDeInstalacao extends Event {
@@ -28,8 +29,6 @@ const CHAVE = 'opus-atlas:convite-app';
 const SESSAO = 'opus-atlas:convite-app-sessao';
 const ADIAR_DIAS = 14;
 const ESPERA_MS = 20_000;
-/** Other components open the steps with this event (footer, offline page). */
-export const ABRIR_PASSOS = 'opus:instalar-app';
 
 type Estado = { visitas: number; adiarAte?: number; nunca?: boolean };
 

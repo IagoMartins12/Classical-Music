@@ -1,3 +1,4 @@
+import { CamadaQueGira } from '../orbits/CamadaQueGira';
 const C = 300;
 const R = 220;
 const PARALLELS = [-60, -36, -12, 12, 36, 60];
@@ -123,25 +124,21 @@ export function CelestialGlobe({ className }: { className?: string }) {
             opacity={0.55}
           />
         ))}
-        <g
-          className="engraving-ring"
-          style={{ transformOrigin: `${C}px ${C}px` }}
-          opacity={0.45}
-        >
-          {Array.from({ length: 90 }, (_, k) => k * 4).map((deg) => (
-            <line
-              key={deg}
-              x1={C}
-              y1={C - R - (deg % 40 ? 22 : 32)}
-              x2={C}
-              y2={C - R - 12}
-              stroke="currentColor"
-              strokeWidth={deg % 40 ? 0.8 : 1.4}
-              transform={`rotate(${deg} ${C} ${C})`}
-            />
-          ))}
-        </g>
       </svg>
+      <CamadaQueGira opacity={0.45} className="text-[var(--globe-ink)]">
+        {Array.from({ length: 90 }, (_, k) => k * 4).map((deg) => (
+          <line
+            key={deg}
+            x1={C}
+            y1={C - R - (deg % 40 ? 22 : 32)}
+            x2={C}
+            y2={C - R - 12}
+            stroke="currentColor"
+            strokeWidth={deg % 40 ? 0.8 : 1.4}
+            transform={`rotate(${deg} ${C} ${C})`}
+          />
+        ))}
+      </CamadaQueGira>
     </div>
   );
 }

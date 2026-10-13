@@ -5,10 +5,29 @@ import React, { useEffect, useState, useCallback, Suspense } from 'react';
 import { ApiSessionProvider } from '../libs/session';
 import dynamic from 'next/dynamic';
 
-// Import modals
-import LoginModal from '@/app/components/auth/LoginModal';
-import RegisterModal from '@/app/components/auth/RegisterModal';
-import { WelcomeModal } from '@/app/components/site/welcome/WelcomeModal';
+// The modals load after the page is up: every page used to hydrate the
+// sign-in, sign-up and welcome code before anyone opened them.
+const LoginModal = dynamic(() => import('@/app/components/auth/LoginModal'), {
+  ssr: false,
+});
+const RegisterModal = dynamic(
+  () => import('@/app/components/auth/RegisterModal'),
+  { ssr: false }
+);
+const WelcomeModal = dynamic(
+  () =>
+    import('@/app/components/site/welcome/WelcomeModal').then(
+      (m) => m.WelcomeModal
+    ),
+  { ssr: false }
+);
+const WelcomePrompt = dynamic(
+  () =>
+    import('../components/site/welcome/WelcomePrompt').then(
+      (m) => m.WelcomePrompt
+    ),
+  { ssr: false }
+);
 
 // Import hooks and stores
 import { useAuth } from '@/app/hooks/useAuth';
@@ -17,7 +36,6 @@ import { useHydration } from '../hooks/useHydration';
 import { useUserStore } from '../hooks/userStore';
 import { useOnboardingPersistence } from '../hooks/useOnboardingPersistence';
 import { useOnlineStatus } from '../hooks/useOnlineStatus'; // 🆕
-import { WelcomePrompt } from '../components/site/welcome/WelcomePrompt';
 import { useTx } from '@/app/hooks/useTx';
 
 // Dynamic import do GoogleRegistrationHandler sem SSR

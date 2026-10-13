@@ -1,4 +1,5 @@
 import type { ReactNode } from 'react';
+import { CamadaQueGira } from './CamadaQueGira';
 import type { IconType } from 'react-icons';
 import {
   PiArticle,
@@ -56,10 +57,13 @@ const arc = (r: number, deg: number) => {
 function Moldura({
   children,
   seal = true,
+  regua,
   className,
 }: {
   children: ReactNode;
   seal?: boolean;
+  /** The graduated rim, turning on its own layer (`CamadaQueGira`). */
+  regua?: ReactNode;
   className?: string;
 }) {
   return (
@@ -86,6 +90,7 @@ function Moldura({
           />
         ))}
       </svg>
+      {regua}
       {seal && (
         <BrandSeal className="absolute left-1/2 top-1/2 w-[20%] -translate-x-1/2 -translate-y-1/2" />
       )}
@@ -125,11 +130,7 @@ function Anel({
 /** The graduated rim, turning very slowly, as on the home atlas. */
 function Regua({ r = 278, o = 0.4 }: { r?: number; o?: number }) {
   return (
-    <g
-      className="engraving-ring"
-      style={{ transformOrigin: '300px 300px' }}
-      opacity={o}
-    >
+    <CamadaQueGira opacity={o}>
       {Array.from({ length: 72 }, (_, k) => k * 5).map((deg) => (
         <line
           key={deg}
@@ -142,7 +143,7 @@ function Regua({ r = 278, o = 0.4 }: { r?: number; o?: number }) {
           transform={`rotate(${deg} 300 300)`}
         />
       ))}
-    </g>
+    </CamadaQueGira>
   );
 }
 
@@ -375,11 +376,10 @@ export function TurmaEmOrbita() {
     { deg: 255, texto: 'J' },
   ];
   return (
-    <Moldura seal={false}>
+    <Moldura seal={false} regua={<Regua r={268} o={0.3} />}>
       <Anel r={280} i={0} o={0.45} w={1.2} />
       <Anel r={200} i={1} o={0.42} w={1.1} />
       <Anel r={122} i={2} tracejado="3 7" o={0.4} />
-      <Regua r={268} o={0.3} />
       {dias.map((d, i) => (
         <Rotulo
           key={d}

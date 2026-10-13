@@ -1,4 +1,5 @@
 // app/layout.tsx - Versão otimizada para performance
+import { SITE_URL } from '@/app/utils/seoAlternates';
 import type { Metadata, Viewport } from 'next';
 import { EB_Garamond, Geist, Geist_Mono } from 'next/font/google';
 import './globals.css';
@@ -105,6 +106,9 @@ export async function generateMetadata(): Promise<Metadata> {
   const t = content[language] || content.pt;
 
   return {
+    // Relative Open Graph and Twitter images resolve against the real site,
+    // not the host that rendered the page.
+    metadataBase: new URL(SITE_URL),
     title: {
       template: `%s | Opus Atlas`,
       default: t.title,
@@ -273,20 +277,21 @@ export default function RootLayout({
           <CartoesQueViram />
         </ClientThemeWrapper>
 
-        {/* 🚀 Analytics otimizados - carregamento assíncrono */}
+        {/* Analytics wait for the page to finish loading (`lazyOnload`):
+            176 kB of gtag no longer compete with the first paint. */}
         {process.env.NODE_ENV === 'production' && (
           <>
             <Script
               src="https://www.googletagmanager.com/gtag/js?id=G-W2993PXTWQ"
-              strategy="afterInteractive"
+              strategy="lazyOnload"
             />
-            <Script id="ga" strategy="afterInteractive">
+            <Script id="ga" strategy="lazyOnload">
               {`window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-W2993PXTWQ');`}
             </Script>
             <Script
               src="https://analytics.opusatlas.com.br/analytics"
               data-website-id="f3475284-e507-4e7e-af4a-3a1ecd932652"
-              strategy="afterInteractive"
+              strategy="lazyOnload"
             />
           </>
         )}

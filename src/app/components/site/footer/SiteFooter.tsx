@@ -10,7 +10,7 @@ import {
 } from 'react-icons/pi';
 import Link from '@/app/components/LocalizedLink';
 import { BrandLink } from '@/app/components/site/header/BrandLink';
-import { ABRIR_PASSOS } from '@/app/components/site/pwa/InstallInvite';
+import { ABRIR_PASSOS } from '@/app/components/site/pwa/eventos';
 import { Button } from '@/app/components/ui/Button';
 import { Field } from '@/app/components/ui/Field';
 import { Icon } from '@/app/components/ui/Icon';

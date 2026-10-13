@@ -267,7 +267,11 @@ export function WorkListen({ work }: { work: WorkDetails }) {
         </div>
       )}
       {current === 'youtube' && media.youtube && (
-        <LiteYouTube id={media.youtube.id} title={media.youtube.title} />
+        <LiteYouTube
+          id={media.youtube.id}
+          title={media.youtube.title}
+          priority
+        />
       )}
       {editor}
     </div>

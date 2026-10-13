@@ -1,4 +1,5 @@
 import type { IconType } from 'react-icons';
+import { CamadaQueGira } from '../orbits/CamadaQueGira';
 import {
   PiArticle,
   PiBookmarkSimple,
@@ -147,25 +148,21 @@ export function CelestialAtlas({ copy }: { copy: HomeCopy['hero'] }) {
             opacity={0.5}
           />
         ))}
-        <g
-          className="engraving-ring"
-          style={{ transformOrigin: '300px 300px' }}
-          opacity={0.45}
-        >
-          {Array.from({ length: 72 }, (_, k) => k * 5).map((deg) => (
-            <line
-              key={deg}
-              x1={300}
-              y1={deg % 30 ? 22 : 14}
-              x2={300}
-              y2={30}
-              stroke="currentColor"
-              strokeWidth={deg % 30 ? 0.8 : 1.4}
-              transform={`rotate(${deg} 300 300)`}
-            />
-          ))}
-        </g>
       </svg>
+      <CamadaQueGira opacity={0.45} className="text-[var(--ouro)]">
+        {Array.from({ length: 72 }, (_, k) => k * 5).map((deg) => (
+          <line
+            key={deg}
+            x1={300}
+            y1={deg % 30 ? 22 : 14}
+            x2={300}
+            y2={30}
+            stroke="currentColor"
+            strokeWidth={deg % 30 ? 0.8 : 1.4}
+            transform={`rotate(${deg} 300 300)`}
+          />
+        ))}
+      </CamadaQueGira>
 
       <BrandSeal
         reveal

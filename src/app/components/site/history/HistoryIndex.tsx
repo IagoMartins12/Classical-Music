@@ -39,7 +39,7 @@ export function HistoryIndex({ language }: { language: Idioma }) {
       <EraTabs language={language} label={copy.eras} />
 
       <ol className="section-wrap flex flex-col divide-y divide-[var(--linha)] py-6">
-        {ERAS.map((era) => {
+        {ERAS.map((era, i) => {
           const chapter = eraChapter(era.key, language);
           return (
             <li key={era.key}>
@@ -56,6 +56,8 @@ export function HistoryIndex({ language }: { language: Idioma }) {
                     alt=""
                     fill
                     sizes="144px"
+                    // The first two covers are above the fold on phones.
+                    priority={i < 2}
                     className="object-cover transition-transform duration-[var(--t-resposta)] group-hover:scale-[1.03]"
                   />
                 </span>

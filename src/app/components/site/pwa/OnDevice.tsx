@@ -21,7 +21,7 @@ import {
   removerPartitura,
   type PartituraGuardada,
 } from '@/app/libs/pwa/partituras';
-import { ABRIR_PASSOS } from './InstallInvite';
+import { ABRIR_PASSOS } from './eventos';
 
 const tamanho = (bytes: number, language: 'pt' | 'en') => {
   const fmt = new Intl.NumberFormat(language === 'pt' ? 'pt-BR' : 'en-US', {

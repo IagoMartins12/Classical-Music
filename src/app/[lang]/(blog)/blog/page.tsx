@@ -179,11 +179,13 @@ export default async function InicioDoBlog({ params }: Props) {
                   : 'lg:min-h-[min(64dvh,560px)]'
               )}
             />
-            {laterais.map((artigo) => (
+            {laterais.map((artigo, i) => (
               <Peca
                 key={artigo.id}
                 artigo={artigo}
                 idioma={idioma}
+                // On phones the first one is above the fold too.
+                prioridade={i === 0}
                 className={cx(
                   'lg:col-span-5',
                   laterais.length === 1 && 'lg:row-span-2'
