@@ -29,12 +29,6 @@ jobs:
 
       - run: npm ci
 
-      # O client do Prisma é gerado, não versionado. A aplicação não o importa
-      # mais (Etapa 7), mas os 18 scripts de manutenção sim, e eles entram no
-      # type-check.
-      - name: Gerar Prisma Client
-        run: npx prisma generate
-
       - name: Lint
         run: npm run lint
 
@@ -58,7 +52,6 @@ jobs:
           cache: npm
 
       - run: npm ci
-      - run: npx prisma generate
 
       # As páginas públicas são geradas no build, lendo a API — e aqui não há
       # API nem banco. `ALLOW_BUILD_WITHOUT_API` deixa a geração seguir com

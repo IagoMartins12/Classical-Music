@@ -266,7 +266,8 @@ export default function AdModal({ ad, onClose, onTrackEvent }: AdModalProps) {
               as="div"
               className="text-center mb-6 leading-relaxed max-w-lg mx-auto"
             >
-              <div dangerouslySetInnerHTML={{ __html: ad.content }} />
+              {/* Text, not markup (the API says so): never injected as HTML. */}
+              <span className="whitespace-pre-line">{ad.content}</span>
             </Text>
           )}
 

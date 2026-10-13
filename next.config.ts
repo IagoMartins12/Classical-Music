@@ -103,6 +103,17 @@ const nextConfig: NextConfig = withBundleAnalyzer({
       // The genre index was retired: the works list filters by genre.
       { source: '/genres', destination: '/works', permanent: true },
       { source: '/en/genres', destination: '/en/works', permanent: true },
+      // The public teacher directory is gone; teaching lives on /for-teachers.
+      {
+        source: '/teachers/:path*',
+        destination: '/for-teachers',
+        permanent: true,
+      },
+      {
+        source: '/en/teachers/:path*',
+        destination: '/en/for-teachers',
+        permanent: true,
+      },
       // The old moderation page; the queue lives in the admin now.
       {
         source: '/moderation',
@@ -113,6 +124,26 @@ const nextConfig: NextConfig = withBundleAnalyzer({
   },
   async headers() {
     return [
+      // Baseline hardening for every page (the API has its own Helmet).
+      // No CSP yet: analytics, YouTube and the score hosts need an audited
+      // allow-list first.
+      {
+        source: '/:path*',
+        headers: [
+          { key: 'X-Content-Type-Options', value: 'nosniff' },
+          { key: 'Referrer-Policy', value: 'strict-origin-when-cross-origin' },
+          { key: 'X-Frame-Options', value: 'SAMEORIGIN' },
+          {
+            key: 'Permissions-Policy',
+            value:
+              'camera=(), microphone=(), geolocation=(), browsing-topics=()',
+          },
+          {
+            key: 'Strict-Transport-Security',
+            value: 'max-age=63072000; includeSubDomains',
+          },
+        ],
+      },
       // Homologação: nada é indexável. Ver `utils/indexing.ts`.
       ...(SITE_NOINDEX
         ? [
@@ -122,22 +153,6 @@ const nextConfig: NextConfig = withBundleAnalyzer({
             },
           ]
         : []),
-      {
-        source: '/api/auth/:path*',
-        headers: [
-          { key: 'Access-Control-Allow-Credentials', value: 'true' },
-          { key: 'Access-Control-Allow-Origin', value: '*' },
-          {
-            key: 'Access-Control-Allow-Methods',
-            value: 'GET,OPTIONS,PATCH,DELETE,POST,PUT',
-          },
-          {
-            key: 'Access-Control-Allow-Headers',
-            value:
-              'X-CSRF-Token, X-Requested-With, Accept, Accept-Version, Content-Length, Content-MD5, Content-Type, Date, X-Api-Version',
-          },
-        ],
-      },
     ];
   },
 });

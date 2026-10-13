@@ -1,6 +1,6 @@
 // scripts/valid-categories-and-genres.ts
 
-import { WORK_GENRE_TRANSLATIONS } from '../../../scripts/imslp-works-scraper-util';
+import { WORK_GENRE_TRANSLATIONS } from './translations/workGenreTranslations';
 
 // Categorias válidas aceitas no sistema
 export const VALID_CATEGORIES: Record<string, string> = {

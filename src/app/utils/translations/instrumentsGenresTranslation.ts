@@ -1,6 +1,6 @@
 // app/utils/translations/instrumentsGenresTranslation.ts
 import { Language } from '@/app/stores/useLanguageStore';
-import { WORK_GENRE_TRANSLATIONS } from '../../../../scripts/imslp-works-scraper-util';
+import { WORK_GENRE_TRANSLATIONS } from './workGenreTranslations';
 
 // Mapeamento de instrumentos (português -> inglês)
 const INSTRUMENT_TRANSLATIONS: Record<string, { pt: string; en: string }> = {
