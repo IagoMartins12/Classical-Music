@@ -9,6 +9,7 @@ const pt = {
       : `dedicada a ${name}`,
   partOf: 'Parte de',
   study: {
+    label: 'Seu estudo desta obra',
     want: 'Quero estudar',
     learned: 'Já aprendi',
     studying: 'Estudando',
@@ -147,6 +148,7 @@ const en: typeof pt = {
     /^to\s/i.test(name) ? `dedicated ${name}` : `dedicated to ${name}`,
   partOf: 'Part of',
   study: {
+    label: 'Your study of this work',
     want: 'I want to study it',
     learned: 'I learned it',
     studying: 'Studying',

@@ -12,6 +12,7 @@ import {
 } from 'react';
 import toast from 'react-hot-toast';
 import {
+  PiBookmarkSimple,
   PiCheckCircle,
   PiDownloadSimple,
   PiFileText,
@@ -326,6 +327,8 @@ export function StudySheet() {
           done(copy.toasts.wantUpdated);
         } else {
           await library.toggleWantToLearn(workId, user.id, want.priority, data);
+          // The API keeps the lists exclusive; the local copy follows.
+          library.removeLearnedLocal(workId);
           done(copy.toasts.wantAdded);
         }
         return;
@@ -365,6 +368,7 @@ export function StudySheet() {
           ...data,
           isVideoPublic: video.isVideoPublic,
         });
+        library.removeWantToLearnLocal(workId);
         done(copy.toasts.learnedAdded);
       }
     } catch {
@@ -387,6 +391,22 @@ export function StudySheet() {
       setSaving(false);
     }
   };
+
+  // Same work, the other list: the sheet turns into it, keeping the score.
+  const switchTo = (next: 'want-to-learn' | 'learned') =>
+    store.openModal({
+      workId,
+      workTitle,
+      composerName,
+      epochName: store.epochName ?? undefined,
+      instrumentName: instrumentName ?? undefined,
+      type: next,
+      isCurrentlyActive:
+        next === 'learned'
+          ? library.isLearned(workId)
+          : library.isWantToLearn(workId),
+      initialWorkScore: selectedWorkScore,
+    });
 
   const transfer = async () => {
     if (!user?.id) return;
@@ -815,7 +835,7 @@ export function StudySheet() {
         aoFechar={requestClose}
         titulo={title}
         descricao={`${workTitle} · ${composerName}`}
-        largura="m"
+        largura="g"
         rodape={
           <div className="flex w-full flex-wrap items-center gap-2">
             {isCurrentlyActive && (
@@ -828,14 +848,27 @@ export function StudySheet() {
                 {copy.remove}
               </Button>
             )}
-            {isWant && isCurrentlyActive && (
+            {isWant ? (
               <Button
                 variante="fantasma"
                 icone={PiCheckCircle}
-                onClick={() => setConfirmTransfer(true)}
+                onClick={() =>
+                  isCurrentlyActive
+                    ? setConfirmTransfer(true)
+                    : switchTo('learned')
+                }
                 disabled={saving}
               >
                 {copy.toLearned}
+              </Button>
+            ) : (
+              <Button
+                variante="fantasma"
+                icone={PiBookmarkSimple}
+                onClick={() => switchTo('want-to-learn')}
+                disabled={saving}
+              >
+                {isCurrentlyActive ? copy.studyAgain : copy.toWant}
               </Button>
             )}
             <span className="flex-1" />

@@ -89,6 +89,8 @@ const pt = {
   cancel: 'Cancelar',
   remove: 'Tirar da lista',
   toLearned: 'Já aprendi',
+  toWant: 'Quero estudar',
+  studyAgain: 'Voltar a estudar',
   transferTitle: 'Passar para "Já aprendi"?',
   transferText:
     'A obra sai da sua lista de estudo e entra em "Já aprendi", com a prioridade como domínio inicial, a dificuldade, as notas e a partitura.',
@@ -189,6 +191,8 @@ const en: typeof pt = {
   cancel: 'Cancel',
   remove: 'Remove from the list',
   toLearned: 'Already learned',
+  toWant: 'I want to study it',
+  studyAgain: 'Study it again',
   transferTitle: 'Move to "Already learned"?',
   transferText:
     'The work leaves your study list and goes to "Already learned", with the priority as initial mastery, the difficulty, the notes and the score.',

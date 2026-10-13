@@ -2,7 +2,6 @@
 
 import { useEffect, useRef, useState } from 'react';
 import { PiBookmarkSimple, PiCheckCircle } from 'react-icons/pi';
-import { Button } from '@/app/components/ui/Button';
 import { Icon } from '@/app/components/ui/Icon';
 import { cx } from '@/app/components/ui/cx';
 import { NotasSobem } from '@/app/components/ui/NotasSobem';
@@ -13,10 +12,12 @@ import { useLearningStore } from '@/app/stores/useLearningStore';
 import { LearningModalHost } from '../LearningModalHost';
 import { useStudy, type StudyContext } from './useStudy';
 
-const badge =
-  'inline-flex min-h-[var(--alvo)] items-center gap-2 rounded-controle tint-ouro px-4 text-ouro-na-tinta';
-
-/** "Quero estudar" / "Já aprendi", or where the visitor already is. */
+/**
+ * "Quero estudar" and "Já aprendi" as one segmented control, equal in weight:
+ * neutral surface, gold icons, and the state the person is in drawn in the
+ * gold tint. Both sides always answer — the active one edits, the other
+ * moves the work to its list — so a learned work can go back to studying.
+ */
 export function StudyActions({ context }: { context: StudyContext }) {
   const copy = WORK[useRouteLanguage().language].study;
   const open = useStudy(context);
@@ -29,12 +30,13 @@ export function StudyActions({ context }: { context: StudyContext }) {
   const learned = useLearningStore(
     (s) => mounted && s.isLearned(context.workId)
   );
-  // The new state pulses once when the person changes it, not on load.
+
+  // The new state moves once when the person changes it, not on load.
   const { pulsar, pulso } = usePulso();
   const state = learned ? 'learned' : studying ? 'studying' : 'none';
   const previous = useRef<string | null>(null);
   const [celebrate, setCelebrate] = useState(0);
-  // "Quero aprender": the bookmark drops into the page like a ribbon.
+  // "Quero estudar": the bookmark drops into the page like a ribbon.
   const [marked, setMarked] = useState(0);
   useEffect(() => {
     if (!mounted) return;
@@ -46,44 +48,56 @@ export function StudyActions({ context }: { context: StudyContext }) {
     previous.current = state;
   }, [mounted, state, pulsar]);
 
+  const lado = (ativo: boolean) =>
+    cx(
+      'relative inline-flex min-h-[var(--alvo)] flex-1 items-center sm:flex-none justify-center gap-2 rounded-lg px-4 text-[0.9375rem] font-medium',
+      'transition-colors duration-[var(--t-toque)] ease-saida',
+      ativo
+        ? 'tint-ouro text-ouro-na-tinta'
+        : 'text-texto-suave hover:bg-[var(--interactive-hover)] hover:text-texto'
+    );
+
   return (
     <>
-      {learned ? (
-        <span className={`relative ${badge}`} {...pulso}>
-          {celebrate > 0 && <NotasSobem key={celebrate} />}
-          <Icon de={PiCheckCircle} /> {copy.done}
-        </span>
-      ) : studying ? (
-        <div className="flex flex-wrap items-center gap-2">
-          <button
-            type="button"
-            className={cx(badge, marked > 0 && 'marcado-agora')}
-            onClick={() => open('want-to-learn')}
-            {...pulso}
+      <div
+        role="group"
+        aria-label={copy.label}
+        className="inline-flex w-full gap-1 rounded-xl bg-sup-2 p-1 sm:w-auto sm:self-start"
+      >
+        <button
+          type="button"
+          aria-pressed={studying}
+          onClick={() => open('want-to-learn')}
+          className={cx(
+            lado(studying),
+            studying && marked > 0 && 'marcado-agora'
+          )}
+          {...(studying ? pulso : {})}
+        >
+          <span
+            className={cx(
+              'grid text-ouro-texto',
+              studying && marked > 0 && 'marcador-cai'
+            )}
           >
-            <span className={cx('grid', marked > 0 && 'marcador-cai')}>
-              <Icon de={PiBookmarkSimple} />
-            </span>{' '}
-            {copy.studying}
-          </button>
-          <Button icone={PiCheckCircle} onClick={() => open('learned')}>
-            {copy.learned}
-          </Button>
-        </div>
-      ) : (
-        <div className="flex flex-wrap gap-2">
-          <Button
-            variante="primario"
-            icone={PiBookmarkSimple}
-            onClick={() => open('want-to-learn')}
-          >
-            {copy.want}
-          </Button>
-          <Button icone={PiCheckCircle} onClick={() => open('learned')}>
-            {copy.learned}
-          </Button>
-        </div>
-      )}
+            <Icon de={PiBookmarkSimple} />
+          </span>
+          {studying ? copy.studying : copy.want}
+        </button>
+        <button
+          type="button"
+          aria-pressed={learned}
+          onClick={() => open('learned')}
+          className={lado(learned)}
+          {...(learned ? pulso : {})}
+        >
+          {learned && celebrate > 0 && <NotasSobem key={celebrate} />}
+          <span className="grid text-ouro-texto">
+            <Icon de={PiCheckCircle} />
+          </span>
+          {learned ? copy.done : copy.learned}
+        </button>
+      </div>
       <LearningModalHost />
     </>
   );
