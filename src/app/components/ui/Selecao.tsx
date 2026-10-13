@@ -338,7 +338,12 @@ export function Selecao({
                 data-ativa={i === ativa || undefined}
                 className="selecao-opcao"
                 onPointerMove={() => !o.disabled && ativa !== i && setAtiva(i)}
-                onClick={() => escolher(i)}
+                onClick={(e) => {
+                  // Inside a <label>, the click would also reach the label,
+                  // which clicks the field again and reopens the list.
+                  e.preventDefault();
+                  escolher(i);
+                }}
               >
                 <span className="flex-1 truncate">{o.label}</span>
                 {escolhida && (
