@@ -1,11 +1,12 @@
 'use client';
 
 import { useEffect, useRef, useState } from 'react';
-import { PiMagnifyingGlass } from 'react-icons/pi';
+import { PiArrowsDownUp, PiMagnifyingGlass } from 'react-icons/pi';
 import Link from '@/app/components/LocalizedLink';
 import { Button } from '@/app/components/ui/Button';
 import { Icon } from '@/app/components/ui/Icon';
 import { Selecao } from '@/app/components/ui/Selecao';
+import { trocarVista } from '@/app/components/ui/transicao';
 import {
   COMPOSER,
   LEVEL_VALUES,
@@ -17,6 +18,7 @@ import {
   type ComposerFilterOptions,
   type ComposerWork,
   type ComposerWorksFilters,
+  type ComposerWorkSort,
   type ComposerWorksResponse,
 } from '@/app/requests/composer-details';
 import { FavoriteHeart } from '../FavoriteHeart';
@@ -24,6 +26,7 @@ import { workTitle } from '../workTitle';
 import { chip } from '../choice';
 
 const PAGE_SIZE = 30;
+const SORTS: ComposerWorkSort[] = ['famous', 'title', 'title-desc', 'recent'];
 const SEARCH_DELAY_MS = 300;
 
 interface Result {
@@ -46,7 +49,8 @@ const toResult = (response: ComposerWorksResponse): Result => ({
 const select = 'min-h-10! rounded-full! py-0! text-[0.9375rem]';
 
 /**
- * The composer's works with genre, instrument, level and text filters. Every
+ * The composer's works with genre, category, level and text filters, and an
+ * order (best known first, A–Z, Z–A, recently added). Every
  * filter combination is kept in memory: going back to one never calls the
  * API again. The first page (no filters) comes rendered from the server.
  */
@@ -64,7 +68,8 @@ export function ComposerCatalog({
   const copy = COMPOSER[useRouteLanguage().language];
   const t = copy.catalog;
   const [genre, setGenre] = useState('');
-  const [instrumentId, setInstrumentId] = useState('');
+  const [category, setCategory] = useState('');
+  const [sort, setSort] = useState<ComposerWorkSort>('famous');
   const [level, setLevel] = useState('');
   const [query, setQuery] = useState('');
   const [search, setSearch] = useState('');
@@ -79,16 +84,26 @@ export function ComposerCatalog({
 
   const filters: ComposerWorksFilters = {
     ...(genre && { workGenresArr: genre }),
-    ...(instrumentId && { instrumentId }),
+    ...(category && { categoryNames: category }),
     ...(level && { difficultyLevel: level }),
     ...(search && { search }),
+    ...(sort !== 'famous' && { sort }),
   };
   const key = JSON.stringify(filters);
+
+  // A new filter or order: each work slides to its new place, as when the
+  // works page switches view (the rows carry `data-vira`).
+  const shown = useRef(key);
+  const show = (next: Result) => {
+    if (shown.current === key) return setResult(next);
+    shown.current = key;
+    trocarVista(() => setResult(next));
+  };
 
   useEffect(() => {
     const cached = cache.current.get(key);
     if (cached) {
-      setResult(cached);
+      show(cached);
       setStatus('idle');
       return;
     }
@@ -99,7 +114,7 @@ export function ComposerCatalog({
         if (!live) return;
         const next = toResult(response);
         cache.current.set(key, next);
-        setResult(next);
+        show(next);
         setStatus('idle');
       })
       .catch(() => live && setStatus('error'));
@@ -123,10 +138,10 @@ export function ComposerCatalog({
       .catch(() => setStatus('error'));
   };
 
-  const filtered = !!(genre || instrumentId || level || search);
+  const filtered = !!(genre || category || level || search);
   const clear = () => {
     setGenre('');
-    setInstrumentId('');
+    setCategory('');
     setLevel('');
     setQuery('');
     setSearch('');
@@ -182,20 +197,17 @@ export function ComposerCatalog({
             className="min-w-0 flex-1 bg-transparent text-[0.9375rem] outline-none placeholder:text-texto-fraco"
           />
         </label>
-        {options.instruments.length > 1 && (
-          <div className="w-52 max-sm:w-full">
+        {options.categories.length > 1 && (
+          <div className="w-60 max-sm:w-full">
             <Selecao
-              aria-label={t.instrument}
+              aria-label={t.category}
               className={select}
               opcoes={[
-                { value: '', label: t.anyInstrument },
-                ...options.instruments.map((i) => ({
-                  value: i.id,
-                  label: i.name,
-                })),
+                { value: '', label: t.anyCategory },
+                ...options.categories.map((c) => ({ value: c, label: c })),
               ]}
-              valor={instrumentId}
-              aoMudar={setInstrumentId}
+              valor={category}
+              aoMudar={setCategory}
             />
           </div>
         )}
@@ -212,6 +224,16 @@ export function ComposerCatalog({
             ]}
             valor={level}
             aoMudar={setLevel}
+          />
+        </div>
+        <div className="shrink-0 max-sm:w-full">
+          <Selecao
+            aria-label={t.sort}
+            icone={PiArrowsDownUp}
+            className={`${select} sm:w-max! whitespace-nowrap`}
+            opcoes={SORTS.map((value) => ({ value, label: t.sorts[value] }))}
+            valor={sort}
+            aoMudar={(value) => setSort(value as ComposerWorkSort)}
           />
         </div>
         {filtered && (
@@ -272,6 +294,7 @@ function WorkRow({ work, copy }: { work: ComposerWork; copy: ComposerCopy }) {
     <li className="flex items-center gap-2">
       <Link
         href={`/works/${work.id}`}
+        data-vira={`obra-${work.id}`}
         className="group grid min-w-0 flex-1 grid-cols-1 gap-x-6 gap-y-0.5 py-4 sm:grid-cols-[minmax(0,1fr)_auto] sm:items-baseline"
       >
         <span className="truncate font-display text-[1.25rem] group-hover:text-ouro-texto">

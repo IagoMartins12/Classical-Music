@@ -1317,6 +1317,26 @@ export interface paths {
     patch?: never;
     trace?: never;
   };
+  '/api/profile/language': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    /**
+     * Guarda o idioma do site
+     * @description Chamada quando a pessoa troca o idioma no site. Os e-mails passam a chegar nesse idioma.
+     */
+    patch: operations['ProfileController_updateLanguage'];
+    trace?: never;
+  };
   '/api/profile/password': {
     parameters: {
       query?: never;
@@ -6606,6 +6626,26 @@ export interface paths {
     patch?: never;
     trace?: never;
   };
+  '/api/admin/newsletter/templates/preview': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    /**
+     * Prévia de um template
+     * @description Devolve assunto, HTML e texto como um assinante de exemplo receberia: variáveis preenchidas e o corpo dentro do layout dos e-mails.
+     */
+    post: operations['AdminTemplatesController_previewTemplate'];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
   '/api/admin/newsletter/templates/bulk-delete': {
     parameters: {
       query?: never;
@@ -6694,6 +6734,40 @@ export interface paths {
     };
     /** Exporta os números do período */
     get: operations['AdminTemplatesController_exportAnalytics'];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/api/admin/mail/samples': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /** Lista os e-mails da plataforma, por grupo */
+    get: operations['AdminMailController_list'];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/api/admin/mail/samples/{id}': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /** Um e-mail pronto (assunto, HTML e texto), com dados de exemplo */
+    get: operations['AdminMailController_render'];
     put?: never;
     post?: never;
     delete?: never;
@@ -8839,6 +8913,11 @@ export interface components {
       firstName?: string;
       /** @example Silva */
       lastName?: string;
+      /**
+       * @description O idioma do site no cadastro; os e-mails seguem ele.
+       * @enum {string}
+       */
+      language?: 'pt' | 'en';
     };
     AuthUserDto: {
       /** @example 685d591c1e3db0c5aaa893e4 */
@@ -9001,6 +9080,11 @@ export interface components {
       showLocation: boolean;
       /** @enum {string|null} */
       listView?: 'cards' | 'list' | null;
+      /**
+       * @description O idioma escolhido no site; `null` até a primeira escolha.
+       * @enum {string|null}
+       */
+      language?: 'pt' | 'en' | null;
       /** @enum {string} */
       currentPlan: 'FREE' | 'PLUS' | 'MENTOR' | 'MAESTRO';
       /** Format: date-time */
@@ -9316,6 +9400,10 @@ export interface components {
       teacher?: components['schemas']['UpdateTeacherProfileDto'];
       /** @description Só para conta de aluno. */
       student?: components['schemas']['UpdateStudentProfileDto'];
+    };
+    UpdateLanguageDto: {
+      /** @enum {string} */
+      language: 'pt' | 'en';
     };
     ChangePasswordDto: {
       /** @description Obrigatória se a conta já tem senha (login por e-mail/senha). Se a conta só usa login social, este campo é ignorado — a chamada define a primeira senha da conta. */
@@ -14110,6 +14198,12 @@ export interface components {
       /** @enum {string} */
       experienceLevel?: 'BEGINNER' | 'INTERMEDIATE' | 'ADVANCED';
     };
+    PreviewTemplateDto: {
+      /** @example Novidades do acervo, {{firstName}} */
+      subject: string;
+      htmlContent: string;
+      textContent?: string;
+    };
     CreateTemplateDto: {
       /** @example Boas-vindas */
       name: string;
@@ -15936,6 +16030,8 @@ export interface operations {
         workType?: string;
         /** @description Filtra por nível de dificuldade */
         difficultyLevel?: string;
+        /** @description Ordem: as mais conhecidas (escolhas da equipe, depois as mais estudadas, aprendidas e favoritadas), A–Z, Z–A ou as recém-chegadas. */
+        sort?: 'famous' | 'title' | 'title-desc' | 'recent';
       };
       header?: never;
       path: {
@@ -17007,6 +17103,36 @@ export interface operations {
       };
       /** @description O cadastro inicial já foi concluído */
       409: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+    };
+  };
+  ProfileController_updateLanguage: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['UpdateLanguageDto'];
+      };
+    };
+    responses: {
+      /** @description Idioma guardado */
+      204: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+      400: {
         headers: {
           [name: string]: unknown;
         };
@@ -21299,6 +21425,8 @@ export interface operations {
         q?: string;
         /** @description Partituras: as desta obra (no lugar de `q`). */
         workId?: string;
+        /** @description Obras: só as deste compositor (filtro opcional; sem `q`, as mais completas dele). */
+        composerId?: string;
       };
       header?: never;
       path?: never;
@@ -28327,6 +28455,37 @@ export interface operations {
       };
     };
   };
+  AdminTemplatesController_previewTemplate: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['PreviewTemplateDto'];
+      };
+    };
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': Record<string, unknown>;
+        };
+      };
+      400: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+    };
+  };
   AdminTemplatesController_bulkDelete: {
     parameters: {
       query?: never;
@@ -28520,6 +28679,46 @@ export interface operations {
           [name: string]: unknown;
         };
         content?: never;
+      };
+    };
+  };
+  AdminMailController_list: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
+  AdminMailController_render: {
+    parameters: {
+      query?: {
+        language?: 'pt' | 'en';
+      };
+      header?: never;
+      path: {
+        id: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': Record<string, unknown>;
+        };
       };
     };
   };

@@ -97,7 +97,10 @@ export type ComposerWorksFilters = {
   search?: string;
   workType?: string;
   difficultyLevel?: string;
+  sort?: ComposerWorkSort;
 };
+
+export type ComposerWorkSort = 'famous' | 'title' | 'title-desc' | 'recent';
 
 type ComposerWorksPage = ApiSchema<'ComposerWorksResponseDto'>;
 
