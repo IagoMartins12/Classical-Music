@@ -1,6 +1,6 @@
 import type { ReactNode } from 'react';
 import AdsProvider from '@/app/components/Ads/AdsProvider';
-import Footer from '@/app/components/Footer';
+import { SiteFooter } from '@/app/components/site/footer/SiteFooter';
 import { FavoritesProvider } from '@/app/providers/FavoritesProvider';
 import { Avisos } from '@/app/components/ui/Avisos';
 import type { Idioma } from '@/app/conteudo/blog';
@@ -51,7 +51,7 @@ export async function CascaDoBlog({
           <main id="conteudo" className="flex-1 pb-24">
             <ProvedorDeEventos idioma={idioma}>{children}</ProvedorDeEventos>
           </main>
-          <Footer />
+          <SiteFooter />
         </div>
         <Avisos />
       </FavoritesProvider>

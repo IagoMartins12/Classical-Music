@@ -7,7 +7,7 @@
 // divergirem — nada aqui mudou de aparência.
 import { Avisos } from '@/app/components/ui/Avisos';
 import { SiteHeader } from '@/app/components/site/header/SiteHeader';
-import Footer from '../Footer';
+import { SiteFooter } from '@/app/components/site/footer/SiteFooter';
 import { FavoritesProvider } from '../../providers/FavoritesProvider';
 import AdsProvider from '../Ads/AdsProvider';
 
@@ -18,7 +18,7 @@ export default function MainShell({ children }: { children: React.ReactNode }) {
         <div className="min-h-screen">
           <SiteHeader />
           <main>{children}</main>
-          <Footer />
+          <SiteFooter />
           <Avisos />
         </div>
       </FavoritesProvider>

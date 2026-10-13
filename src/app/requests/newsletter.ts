@@ -1,8 +1,8 @@
 /**
  * Newsletter pela API (`/newsletter/*`), chamada do navegador.
  *
- * Devolve o formato que o `useNewsletterSubscription` e a página de
- * descadastro já liam do legado.
+ * Devolve o formato que o rodapé (`SiteFooter`) e a página de descadastro
+ * leem.
  */
 import { ApiError, apiFetch } from '@/app/libs/api/client';
 import type { ApiSchema } from '@/app/libs/api/types';
