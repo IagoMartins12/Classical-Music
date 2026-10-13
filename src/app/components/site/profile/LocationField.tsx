@@ -12,7 +12,11 @@ export interface LocationData {
   city?: { name: string; stateCode: string; countryCode: string };
 }
 
-type Library = typeof import('country-state-city');
+// Countries and states only (~640 kB); the cities come from `/geo/cities`.
+type Library = {
+  Country: typeof import('country-state-city/lib/country').default;
+  State: typeof import('country-state-city/lib/state').default;
+};
 
 const norm = (s: string) =>
   s.normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase().trim();
@@ -43,7 +47,13 @@ export function LocationField({
 
   useEffect(() => {
     let alive = true;
-    import('country-state-city').then((m) => alive && setLib(m));
+    Promise.all([
+      import('country-state-city/lib/country'),
+      import('country-state-city/lib/state'),
+    ]).then(
+      ([country, state]) =>
+        alive && setLib({ Country: country.default, State: state.default })
+    );
     return () => {
       alive = false;
     };
@@ -95,15 +105,24 @@ export function LocationField({
       states.find((s) => norm(s.label) === norm(value.state!.name))?.value) ||
     '';
 
+  const [cityNames, setCityNames] = useState<string[]>([]);
+  useEffect(() => {
+    setCityNames([]);
+    if (!countryCode || !stateCode) return;
+    let alive = true;
+    fetch(
+      `/geo/cities?country=${encodeURIComponent(countryCode)}&state=${encodeURIComponent(stateCode)}`
+    )
+      .then((r) => (r.ok ? (r.json() as Promise<string[]>) : []))
+      .then((names) => alive && setCityNames(names))
+      .catch(() => undefined);
+    return () => {
+      alive = false;
+    };
+  }, [countryCode, stateCode]);
   const cities = useMemo(
-    () =>
-      lib && countryCode && stateCode
-        ? lib.City.getCitiesOfState(countryCode, stateCode).map((c) => ({
-            value: c.name,
-            label: c.name,
-          }))
-        : [],
-    [lib, countryCode, stateCode]
+    () => cityNames.map((name) => ({ value: name, label: name })),
+    [cityNames]
   );
 
   const t =
