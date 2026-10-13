@@ -81,6 +81,12 @@ const pt = {
     emptyText: 'Encontre uma obra e use “Quero estudar” na página dela.',
     explore: 'Explorar as obras',
     noResults: 'Nada encontrado com essa busca.',
+    hours: (n: number) =>
+      n === 1 ? '1 hora prevista' : `${n} horas previstas`,
+    started: (date: string) => `Começou em ${date}`,
+    videoWith: (visibility: string) => `Vídeo da performance · ${visibility}`,
+    more: 'Ver tudo',
+    less: 'Ver menos',
   },
   annotations: {
     title: 'Suas anotações',
@@ -355,6 +361,11 @@ const en: typeof pt = {
     emptyText: 'Find a work and use “I want to study it” on its page.',
     explore: 'Explore the works',
     noResults: 'Nothing matches that search.',
+    hours: (n: number) => (n === 1 ? '1 hour planned' : `${n} hours planned`),
+    started: (date: string) => `Started on ${date}`,
+    videoWith: (visibility: string) => `Performance video · ${visibility}`,
+    more: 'Show all',
+    less: 'Show less',
   },
   annotations: {
     title: 'Your annotations',

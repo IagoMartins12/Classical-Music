@@ -16,6 +16,9 @@ import { Button, classesDeBotao } from '@/app/components/ui/Button';
 import { Icon } from '@/app/components/ui/Icon';
 import { cx } from '@/app/components/ui/cx';
 import { PERSONAL, type PersonalCopy } from '@/app/conteudo/site/personal';
+import { STUDY } from '@/app/conteudo/site/study';
+
+type StudyCopy = (typeof STUDY)['pt'];
 import { useRouteLanguage } from '@/app/hooks/useRouteLanguage';
 import { useLearningModalStore } from '@/app/stores/useLearningModalStore';
 import {
@@ -25,6 +28,7 @@ import {
 } from '@/app/stores/useLearningStore';
 import { LearningModalHost } from '../LearningModalHost';
 import { Portrait } from '../Portrait';
+import { ScorePage } from '../work/ScorePreview';
 import { ListResults, ViewToggle } from '../lists/ViewToggle';
 import { workTitle } from '../workTitle';
 import { daysUntil, studyEditParams } from './studyEdit';
@@ -225,21 +229,36 @@ function StudyCard({
 
       <div className="flex flex-col gap-3 row:hidden">
         {entry.kind === 'want' ? (
-          <WantDetails item={entry.item} copy={copy} date={date} />
+          <WantDetails
+            item={entry.item}
+            copy={copy}
+            study={STUDY[language]}
+            date={date}
+          />
         ) : (
-          <LearnedDetails item={entry.item} copy={copy} date={date} />
+          <LearnedDetails
+            item={entry.item}
+            copy={copy}
+            study={STUDY[language]}
+            date={date}
+          />
         )}
-        <p className="flex items-center gap-2 t-rotulo">
-          <Icon de={PiFilePdf} className="shrink-0 text-texto-fraco" />
-          {score ? (
-            <span className="truncate">
-              <span className="text-texto-suave">{copy.score}: </span>
-              {score.title}
+        {score ? (
+          <p className="flex items-center gap-3 t-rotulo">
+            <span className="relative block aspect-[1/1.3] w-9 shrink-0 overflow-hidden rounded-[4px] bg-sobre-foto shadow-[var(--sombra-1)]">
+              <ScorePage file={score} sizes="36px" small />
             </span>
-          ) : (
-            <span className="text-texto-suave">{copy.noScore}</span>
-          )}
-        </p>
+            <span className="flex min-w-0 flex-col">
+              <span className="t-legenda">{copy.score}</span>
+              <span className="truncate">{score.title}</span>
+            </span>
+          </p>
+        ) : (
+          <p className="flex items-center gap-2 t-rotulo text-texto-suave">
+            <Icon de={PiFilePdf} className="shrink-0 text-texto-fraco" />
+            {copy.noScore}
+          </p>
+        )}
       </div>
 
       <div className="flex flex-wrap gap-2 row:shrink-0">
@@ -275,13 +294,62 @@ function StudyCard({
   );
 }
 
+/**
+ * The long answers from the study sheet, each under its label. Long ones
+ * fold at three lines; "Show all" opens the whole card.
+ */
+function Texts({
+  entries,
+  copy,
+}: {
+  entries: [label: string, text: string | undefined][];
+  copy: PersonalCopy['studies'];
+}) {
+  const [open, setOpen] = useState(false);
+  const filled = entries.filter(([, text]) => text?.trim());
+  if (!filled.length) return null;
+  const long =
+    filled.length > 2 || filled.some(([, text]) => text!.length > 140);
+  return (
+    <div className="flex flex-col gap-2">
+      <dl className="flex flex-col gap-2">
+        {filled.map(([label, text]) => (
+          <div key={label} className="flex flex-col">
+            <dt className="t-legenda">{label}</dt>
+            <dd
+              className={cx(
+                't-rotulo whitespace-pre-line',
+                !open && long && 'line-clamp-3'
+              )}
+            >
+              {text}
+            </dd>
+          </div>
+        ))}
+      </dl>
+      {long && (
+        <button
+          type="button"
+          aria-expanded={open}
+          onClick={() => setOpen(!open)}
+          className="t-rotulo self-start text-texto-suave underline decoration-[var(--linha-forte)] underline-offset-4 hover:text-texto hover:decoration-[var(--ouro)]"
+        >
+          {open ? copy.less : copy.more}
+        </button>
+      )}
+    </div>
+  );
+}
+
 function WantDetails({
   item,
   copy,
+  study,
   date,
 }: {
   item: WantToLearnItem;
   copy: PersonalCopy['studies'];
+  study: StudyCopy;
   date: (iso: string) => string;
 }) {
   const left = item.targetDate ? daysUntil(item.targetDate) : null;
@@ -294,6 +362,9 @@ function WantDetails({
             {copy.due(date(item.targetDate))} ·{' '}
             {left < 0 ? copy.overdue : copy.daysLeft(left)}
           </span>
+        )}
+        {!!item.estimatedStudyTime && (
+          <span>{copy.hours(item.estimatedStudyTime)}</span>
         )}
         {!item.targetDate && item.addedAt && (
           <span>{copy.since(date(item.addedAt))}</span>
@@ -312,7 +383,14 @@ function WantDetails({
           </span>
         </div>
       )}
-      {item.notes && <p className="t-rotulo line-clamp-2">{item.notes}</p>}
+      <Texts
+        copy={copy}
+        entries={[
+          [study.motivation, item.motivation],
+          [study.context, item.context],
+          [study.notes, item.notes],
+        ]}
+      />
     </>
   );
 }
@@ -320,10 +398,12 @@ function WantDetails({
 function LearnedDetails({
   item,
   copy,
+  study,
   date,
 }: {
   item: LearnedItem;
   copy: PersonalCopy['studies'];
+  study: StudyCopy;
   date: (iso: string) => string;
 }) {
   return (
@@ -337,31 +417,55 @@ function LearnedDetails({
               : ''}
           </span>
         )}
+        {item.studyStartDate && (
+          <span>{copy.started(date(item.studyStartDate))}</span>
+        )}
         {item.wouldRecommend && <span>{copy.recommends}</span>}
+        {item.publicPerformance && <span>{study.publicPerformance}</span>}
         {item.videoUrl && (
           <span className="inline-flex items-center gap-1">
-            <Icon de={PiVideoCamera} tamanho="pp" /> {copy.video}
+            <Icon de={PiVideoCamera} tamanho="pp" />{' '}
+            {copy.videoWith(
+              item.isVideoPublic ? study.videoIsPublic : study.videoIsPrivate
+            )}
           </span>
         )}
       </div>
-      {item.mastery > 0 && (
-        <span className="flex items-center gap-2 t-rotulo">
-          <span className="text-texto-suave">{copy.mastery}</span>
-          <span
-            className="flex text-ouro-texto"
-            aria-label={`${item.mastery}/5`}
-          >
-            {[1, 2, 3, 4, 5].map((n) => (
-              <Icon
-                key={n}
-                de={n <= item.mastery ? PiStarFill : PiStar}
-                tamanho="pp"
-              />
-            ))}
-          </span>
-        </span>
+      {(item.mastery > 0 || !!item.enjoyment) && (
+        <div className="flex flex-wrap items-center gap-x-5 gap-y-1 t-rotulo">
+          {item.mastery > 0 && (
+            <span className="flex items-center gap-2">
+              <span className="text-texto-suave">{copy.mastery}</span>
+              <span
+                className="flex text-ouro-texto"
+                aria-label={`${item.mastery}/5`}
+              >
+                {[1, 2, 3, 4, 5].map((n) => (
+                  <Icon
+                    key={n}
+                    de={n <= item.mastery ? PiStarFill : PiStar}
+                    tamanho="pp"
+                  />
+                ))}
+              </span>
+            </span>
+          )}
+          {!!item.enjoyment && (
+            <span>
+              <span className="text-texto-suave">{study.enjoyment}: </span>
+              {study.enjoyments[item.enjoyment - 1]}
+            </span>
+          )}
+        </div>
       )}
-      {item.notes && <p className="t-rotulo line-clamp-2">{item.notes}</p>}
+      <Texts
+        copy={copy}
+        entries={[
+          [study.challenges, item.technicalChallenges],
+          [study.insights, item.musicalInsights],
+          [study.generalNotes, item.notes],
+        ]}
+      />
     </>
   );
 }
