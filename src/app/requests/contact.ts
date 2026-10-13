@@ -1,8 +1,8 @@
 /**
  * Formulário de contato pela API (`POST /contact`), chamado do navegador.
  *
- * Devolve o formato que o `useContactForm` já lia do legado
- * (`{ success, message, error?, ticketId? }`).
+ * Devolve `{ success, message, error?, ticketId? }`, o que a página de
+ * contato (`ContactView`) lê.
  */
 import { ApiError, apiFetch } from '@/app/libs/api/client';
 import type { ApiSchema } from '@/app/libs/api/types';
