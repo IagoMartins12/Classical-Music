@@ -36,98 +36,6 @@ export function EsqueletoPagina({
   );
 }
 
-/**
- * Título e linha de apoio; com `acao`, o botão principal à direita.
- *
- * `centro` é a abertura das páginas públicas (obras, compositores, FAQ,
- * termos…): o ícone, o título grande em serifa e duas linhas de apoio, com o
- * mesmo respiro — assim o conteúdo abaixo nasce na altura em que vai ficar.
- */
-export function EsqueletoCabecalho({
-  centro = false,
-  acao = false,
-}: {
-  centro?: boolean;
-  acao?: boolean;
-}) {
-  if (centro) {
-    return (
-      <Stack gap={6} alinhar="centro" className="py-10 md:py-16">
-        <Skeleton forma="bloco" className="h-14 w-14 rounded-2xl" />
-        <Skeleton forma="bloco" className="h-10 w-[34rem] max-w-full md:h-14" />
-        <Stack gap={3} alinhar="centro" className="w-full">
-          <Skeleton className="h-4 w-[36rem] max-w-full" />
-          <Skeleton className="h-4 w-[24rem] max-w-[80%]" />
-        </Stack>
-      </Stack>
-    );
-  }
-  return (
-    <Inline extremos quebra gap={4}>
-      <Stack gap={3} className="min-w-0 flex-1">
-        <Skeleton forma="bloco" className="h-9 w-72 max-w-full" />
-        <Skeleton className="h-4 w-96 max-w-full" />
-      </Stack>
-      {acao && <Skeleton forma="bloco" className="h-11 w-40" />}
-    </Inline>
-  );
-}
-
-const COLUNAS_GRADE = {
-  1: '',
-  2: 'md:grid-cols-2',
-  3: 'md:grid-cols-2 lg:grid-cols-3',
-  4: 'md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4',
-} as const;
-
-/** Grade de cards, com o esqueleto do próprio `Card`. */
-export function EsqueletoGrade({
-  colunas = 3,
-  quantos = 6,
-}: {
-  colunas?: 1 | 2 | 3 | 4;
-  quantos?: number;
-}) {
-  return (
-    <div className={cx('grid grid-cols-1 gap-6', COLUNAS_GRADE[colunas])}>
-      <Card.Skeleton repetir={quantos} />
-    </div>
-  );
-}
-
-/** Seções de formulário: rótulo e campo, em duas colunas. */
-export function EsqueletoFormulario({
-  secoes = 2,
-  campos = 4,
-}: {
-  secoes?: number;
-  campos?: number;
-}) {
-  return (
-    <Stack gap={6}>
-      {Array.from({ length: secoes }, (_, s) => (
-        <Card key={s}>
-          <Stack gap={6}>
-            <Skeleton forma="bloco" className="h-6 w-48" />
-            <div className="grid grid-cols-1 gap-5 md:grid-cols-2">
-              {Array.from({ length: campos }, (_, c) => (
-                <Stack key={c} gap={2}>
-                  <Skeleton className="w-28" />
-                  <Skeleton forma="bloco" className="h-11 w-full" />
-                </Stack>
-              ))}
-            </div>
-          </Stack>
-        </Card>
-      ))}
-      <Inline gap={3} className="justify-end">
-        <Skeleton forma="bloco" className="h-11 w-28" />
-        <Skeleton forma="bloco" className="h-11 w-36" />
-      </Inline>
-    </Stack>
-  );
-}
-
 /** Página de aviso curta (confirmação, descadastro): um card no centro. */
 export function EsqueletoAviso() {
   return (
@@ -145,43 +53,48 @@ export function EsqueletoAviso() {
 }
 
 /**
- * O perfil: a coluna das abas à esquerda e o conteúdo da aba (um
- * formulário) à direita. Sem cabeçalho de página — o perfil não tem.
+ * O perfil (`ProfileView`): a lista das cinco seções numa coluna de 11rem
+ * (uma faixa no telefone) e, ao lado, as seções empilhadas — a primeira, dos
+ * dados pessoais, com a foto e os campos.
  */
 export function EsqueletoPerfil() {
   return (
-    <div className="grid grid-cols-1 gap-8 lg:grid-cols-4">
-      <Card nivel={2} densidade="compacta">
-        <Stack gap={1}>
-          {Array.from({ length: 6 }, (_, i) => (
-            <Inline key={i} gap={3} className="px-3 py-2.5">
-              <Skeleton forma="bloco" className="h-5 w-5 shrink-0" />
-              <Skeleton className="w-28" />
-            </Inline>
-          ))}
-        </Stack>
-      </Card>
-      <Card nivel={2} className="lg:col-span-3">
-        <Stack gap={6}>
-          <Stack gap={2}>
+    <div className="grid grid-cols-1 gap-6 md:grid-cols-[11rem_minmax(0,1fr)]">
+      <div className="flex gap-1 overflow-hidden md:flex-col">
+        {Array.from({ length: 5 }, (_, i) => (
+          <Skeleton
+            key={i}
+            forma="bloco"
+            className="h-10 w-28 shrink-0 md:w-full"
+          />
+        ))}
+      </div>
+      <Stack gap={6}>
+        <Card nivel={2}>
+          <Stack gap={6}>
             <Skeleton forma="bloco" className="h-6 w-48" />
-            <Skeleton className="w-72 max-w-full" />
+            <Inline gap={4}>
+              <Skeleton forma="circulo" className="h-20 w-20 shrink-0" />
+              <Skeleton forma="bloco" className="h-10 w-36" />
+            </Inline>
+            <div className="grid grid-cols-1 gap-5 md:grid-cols-2">
+              {Array.from({ length: 6 }, (_, i) => (
+                <Stack key={i} gap={2}>
+                  <Skeleton className="w-28" />
+                  <Skeleton forma="bloco" className="h-11 w-full" />
+                </Stack>
+              ))}
+            </div>
+            <Skeleton forma="bloco" className="ml-auto h-11 w-40" />
           </Stack>
-          <Inline gap={4}>
-            <Skeleton forma="circulo" className="h-20 w-20 shrink-0" />
-            <Skeleton forma="bloco" className="h-10 w-36" />
-          </Inline>
-          <div className="grid grid-cols-1 gap-5 md:grid-cols-2">
-            {Array.from({ length: 6 }, (_, i) => (
-              <Stack key={i} gap={2}>
-                <Skeleton className="w-28" />
-                <Skeleton forma="bloco" className="h-11 w-full" />
-              </Stack>
-            ))}
-          </div>
-          <Skeleton forma="bloco" className="ml-auto h-11 w-40" />
-        </Stack>
-      </Card>
+        </Card>
+        <Card nivel={2}>
+          <Stack gap={4}>
+            <Skeleton forma="bloco" className="h-6 w-40" />
+            <Skeleton forma="bloco" className="h-12 w-full" />
+          </Stack>
+        </Card>
+      </Stack>
     </div>
   );
 }

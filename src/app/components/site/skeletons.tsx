@@ -107,11 +107,18 @@ export function HomeSkeleton({ label }: { label: string }) {
             <Skeleton className="h-14 w-[min(26rem,90%)] rounded-controle" />
             <Skeleton className="h-14 w-[min(20rem,70%)] rounded-controle" />
           </span>
-          <Skeleton className="h-5 w-[min(30rem,90%)]" />
-          <Skeleton className="h-14 w-full max-w-xl rounded-full" />
-          <span className="flex gap-3">
-            <Skeleton className="h-11 w-40 rounded-controle" />
-            <Skeleton className="h-11 w-32 rounded-controle" />
+          <span className="flex w-full max-w-[52ch] flex-col gap-2.5 max-md:items-center">
+            <Skeleton className="h-4 w-full" />
+            <Skeleton className="h-4 w-11/12" />
+            <Skeleton className="h-4 w-2/3" />
+          </span>
+          <span className="flex w-full max-w-xl flex-col gap-4 max-md:items-center">
+            <Skeleton className="h-14 w-full rounded-full" />
+            <span className="flex w-full flex-col gap-3 sm:w-auto sm:flex-row">
+              <Skeleton className="h-11 w-full rounded-controle sm:w-48" />
+              <Skeleton className="h-11 w-full rounded-controle sm:w-52" />
+            </span>
+            <Skeleton className="h-4 w-44" />
           </span>
         </div>
         <Skeleton className="aspect-square w-full rounded-full max-md:hidden" />
