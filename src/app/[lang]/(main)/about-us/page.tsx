@@ -18,6 +18,7 @@ import {
   type LangParams,
 } from '@/app/utils/translations/routeLanguage';
 import { AstrolabioDoSite } from '@/app/components/site/orbits/Orbitas';
+import { FileiraDoAcervo } from '@/app/components/site/FileiraDoAcervo';
 import { PageHero } from '@/app/components/site/PageHero';
 import { QuadroDoSite, type Retrato } from './QuadroDoSite';
 
@@ -213,40 +214,18 @@ export default async function Pagina({ params }: LangPageProps) {
             />
           }
           extra={
-            retratos.length > 0 && (
-              <div
-                className={cx(
-                  'entra mt-6 flex items-center gap-3',
-                  !m && 'lg:hidden'
-                )}
-                style={{ ['--i' as string]: 3 }}
-              >
-                <ul
-                  aria-label={c.retratos.rotulo}
-                  className="flex [&>li+li]:-ml-2.5"
-                >
-                  {retratos.slice(0, 5).map((r) => (
-                    <li
-                      key={r.id}
-                      className="relative h-10 w-10 overflow-hidden rounded-full bg-sup-2 ring-2 ring-[var(--fundo)]"
-                    >
-                      <Image
-                        src={r.foto}
-                        alt={r.nome}
-                        fill
-                        sizes="40px"
-                        className="object-cover"
-                      />
-                    </li>
-                  ))}
-                </ul>
-                {numeros && (
-                  <p className="text-sm text-texto-suave">
-                    {c.retratos.mais(compacto(numeros.compositores))}
-                  </p>
-                )}
-              </div>
-            )
+            <FileiraDoAcervo
+              rotulo={c.retratos.rotulo}
+              itens={retratos.map((r) => ({
+                chave: r.id,
+                foto: r.foto,
+                nome: r.nome,
+              }))}
+              legenda={
+                numeros && c.retratos.mais(compacto(numeros.compositores))
+              }
+              className={cx(!m && 'lg:hidden')}
+            />
           }
           acoes={
             <>

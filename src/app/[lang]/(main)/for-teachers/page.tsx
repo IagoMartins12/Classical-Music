@@ -3,11 +3,12 @@ import { PiArrowRight, PiCaretDown } from 'react-icons/pi';
 import LocalizedLink from '@/app/components/LocalizedLink';
 import { BotaoCriarConta } from '@/app/components/auth/BotaoCriarConta';
 import { TurmaEmOrbita } from '@/app/components/site/orbits/Orbitas';
-import { LinhaDoAcervo } from '@/app/components/site/LinhaDoAcervo';
+import { FileiraDoAcervo } from '@/app/components/site/FileiraDoAcervo';
 import { PageHero } from '@/app/components/site/PageHero';
 import { classesDeBotao } from '@/app/components/ui/Button';
 import { Revelar } from '@/app/components/ui/Revelar';
 import { TextoRico } from '@/app/components/ui/TextoRico';
+import { instrumentChapter, instrumentMeta } from '@/app/conteudo/instruments';
 import { PROFESSORES } from '@/app/conteudo/professores';
 import { compacto, numerosDoAcervo } from '@/app/requests/catalog-numbers';
 import { alternatesFor } from '@/app/utils/seoAlternates';
@@ -43,6 +44,9 @@ export async function generateMetadata({
  * Mentor and Maestro cards (the /pricing component and prices), questions
  * and contact. Same editorial frame as /about-us and /pricing.
  */
+/** The instruments shown beside the archive line: what teachers teach. */
+const ENSINADOS = ['piano', 'violin', 'cello', 'guitar', 'voice'] as const;
+
 export default async function ParaProfessores({
   params,
 }: {
@@ -63,8 +67,21 @@ export default async function ParaProfessores({
         titulo={c.titulo}
         abertura={c.abertura}
         extra={
-          <LinhaDoAcervo
-            texto={c.acervo(numeros, (n) => `**${compacto(n)}**`)}
+          <FileiraDoAcervo
+            rotulo={c.instrumentos}
+            itens={ENSINADOS.flatMap((key) => {
+              const meta = instrumentMeta(key);
+              return meta
+                ? [
+                    {
+                      chave: key,
+                      foto: meta.photo,
+                      nome: instrumentChapter(meta.key, idioma)?.name ?? key,
+                    },
+                  ]
+                : [];
+            })}
+            legenda={c.acervo(numeros, (n) => `**${compacto(n)}**`)}
           />
         }
         acoes={

@@ -21,6 +21,8 @@ export type ConteudoProfessores = {
    * ("200k+"); without them (no API), no line at all.
    */
   acervo: (n: Numeros, formatar: (x: number) => string) => string | null;
+  /** The label of the instruments beside that line. */
+  instrumentos: string;
   acoes: { planos: string; criarConta: string; portal: string };
   recursos: {
     titulo: string;
@@ -54,8 +56,9 @@ const pt: ConteudoProfessores = {
     'O portal do professor junta as aulas, as tarefas e o progresso de cada aluno no mesmo lugar onde ele já estuda as partituras. Você ensina; o portal lembra.',
   acervo: (n, f) =>
     n
-      ? `Seus alunos estudam num acervo de ${f(n.obras)} obras de ${f(n.compositores)} compositores, com partituras para abrir e baixar.`
+      ? `Para quem ensina qualquer instrumento: ${f(n.obras)} obras de ${f(n.compositores)} compositores para seus alunos estudarem.`
       : null,
+  instrumentos: 'Instrumentos que se ensinam aqui',
   acoes: {
     planos: 'Ver os planos',
     criarConta: 'Criar conta grátis',
@@ -179,8 +182,9 @@ const en: ConteudoProfessores = {
     'The teacher portal keeps lessons, assignments and each student’s progress in the same place where they already study the scores. You teach; the portal remembers.',
   acervo: (n, f) =>
     n
-      ? `Your students study in an archive of ${f(n.obras)} works by ${f(n.compositores)} composers, with scores to open and download.`
+      ? `For whoever teaches any instrument: ${f(n.obras)} works by ${f(n.compositores)} composers for your students to study.`
       : null,
+  instrumentos: 'Instruments taught here',
   acoes: {
     planos: 'See the plans',
     criarConta: 'Create a free account',

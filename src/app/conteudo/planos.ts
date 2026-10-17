@@ -61,7 +61,11 @@ export type ConteudoPlanos = {
   titulo: string;
   abertura: string;
   /** Facts under the hero's lead that answer "what if I regret it?". */
-  garantias: string[];
+  /** The free layer as icons beside the archive line. */
+  gratis: {
+    rotulo: string;
+    itens: Record<'ler' | 'ouvir' | 'partituras' | 'baixar', string>;
+  };
   /** What is free before any plan, with live numbers rounded down. */
   acervo: (n: Numeros, formatar: (x: number) => string) => string | null;
   /** The hero's two actions, like the other editorial pages. */
@@ -158,10 +162,15 @@ export const PLANOS: Record<Idioma, ConteudoPlanos> = {
       n
         ? `Ler, ouvir e baixar já é grátis, sem conta: ${f(n.obras)} obras de ${f(n.compositores)} compositores.`
         : null,
-    garantias: [
-      'Troque ou cancele quando quiser, sem multa',
-      'Desistiu em até 7 dias? O valor volta inteiro',
-    ],
+    gratis: {
+      rotulo: 'O que já é grátis',
+      itens: {
+        ler: 'Ler sobre compositores e obras',
+        ouvir: 'Ouvir as gravações',
+        partituras: 'Partituras de domínio público',
+        baixar: 'Baixar as partituras',
+      },
+    },
     periodo: {
       rotulo: 'Cobrança',
       mensal: 'Mensal',
@@ -438,10 +447,15 @@ export const PLANOS: Record<Idioma, ConteudoPlanos> = {
       n
         ? `Reading, listening and downloading are already free, no account needed: ${f(n.obras)} works by ${f(n.compositores)} composers.`
         : null,
-    garantias: [
-      'Change or cancel any time, with no fee',
-      'Changed your mind within 7 days? Full refund',
-    ],
+    gratis: {
+      rotulo: 'What is already free',
+      itens: {
+        ler: 'Reading about composers and works',
+        ouvir: 'Listening to the recordings',
+        partituras: 'Public-domain scores',
+        baixar: 'Downloading the scores',
+      },
+    },
     periodo: {
       rotulo: 'Billing',
       mensal: 'Monthly',

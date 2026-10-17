@@ -1,5 +1,13 @@
 import type { Metadata } from 'next';
-import { PiArrowDown, PiCaretDown, PiMinus } from 'react-icons/pi';
+import {
+  PiArrowDown,
+  PiBookOpenText,
+  PiCaretDown,
+  PiDownloadSimple,
+  PiFileText,
+  PiHeadphones,
+  PiMinus,
+} from 'react-icons/pi';
 import { BotaoCriarConta } from '@/app/components/auth/BotaoCriarConta';
 import { classesDeBotao } from '@/app/components/ui/Button';
 import LocalizedLink from '@/app/components/LocalizedLink';
@@ -16,7 +24,7 @@ import {
 } from '@/app/utils/translations/routeLanguage';
 import { OrbitaDosPlanos } from '@/app/components/site/orbits/Orbitas';
 import { compacto, numerosDoAcervo } from '@/app/requests/catalog-numbers';
-import { LinhaDoAcervo } from '@/app/components/site/LinhaDoAcervo';
+import { FileiraDoAcervo } from '@/app/components/site/FileiraDoAcervo';
 import { PageHero } from '@/app/components/site/PageHero';
 import { buscarPrecos } from './buscarPrecos';
 import { QuadroDePlanos } from './QuadroDePlanos';
@@ -116,6 +124,14 @@ export async function generateMetadata({
 /** Texto limpo da marcação do `TextoRico`, para o JSON-LD. */
 const semMarcacao = (t: string) =>
   t.replace(/\*\*(.+?)\*\*/g, '$1').replace(/\[([^\]]+)\]\([^)]+\)/g, '$1');
+
+/** What is free before any plan, as gold icons beside the archive line. */
+const GRATIS = [
+  ['ler', PiBookOpenText],
+  ['ouvir', PiHeadphones],
+  ['partituras', PiFileText],
+  ['baixar', PiDownloadSimple],
+] as const;
 
 export default async function Pagina({ params }: LangPageProps) {
   const idioma = await routeLanguage(params);
@@ -240,11 +256,16 @@ export default async function Pagina({ params }: LangPageProps) {
           titulo={c.titulo}
           abertura={c.abertura}
           extra={
-            <LinhaDoAcervo
-              texto={c.acervo(numeros, (n) => `**${compacto(n)}**`)}
+            <FileiraDoAcervo
+              rotulo={c.gratis.rotulo}
+              itens={GRATIS.map(([chave, icone]) => ({
+                chave,
+                icone,
+                nome: c.gratis.itens[chave],
+              }))}
+              legenda={c.acervo(numeros, (n) => `**${compacto(n)}**`)}
             />
           }
-          destaques={c.garantias}
           acoes={
             <>
               <a href="#planos" className={classesDeBotao('primario')}>
