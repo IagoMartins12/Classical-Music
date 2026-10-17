@@ -17,6 +17,7 @@ import { Icon } from '@/app/components/ui/Icon';
 import { Sheet } from '@/app/components/ui/Sheet';
 import { PWA } from '@/app/conteudo/site/pwa';
 import { useOverlayLanguage } from '@/app/hooks/useRouteLanguage';
+import { emAppInstalado } from '@/app/libs/pwa/app';
 import { ABRIR_PASSOS } from './eventos';
 
 /** The browser's install prompt (Chromium), kept for the "Instalar" button. */
@@ -47,10 +48,6 @@ const gravar = (estado: Estado) => {
   }
 };
 
-const instalado = () =>
-  window.matchMedia('(display-mode: standalone)').matches ||
-  (navigator as Navigator & { standalone?: boolean }).standalone === true;
-
 const sistema = (): 'ios' | 'android' | 'outro' => {
   const ua = navigator.userAgent;
   if (/iPhone|iPad|iPod/.test(ua)) return 'ios';
@@ -69,9 +66,10 @@ const celular = () =>
 /**
  * The app invite on phones. On the second visit, after twenty seconds of
  * browsing, a short sheet says there is an app; "Ver como instalar" opens
- * the steps for the person's system. On Android the browser can install in
- * one tap, so the steps open with an "Instalar agora" button; on the iPhone,
- * which has no such prompt, the steps are the way.
+ * the steps for the person's system. Where the browser can install by itself
+ * (Android, Chrome, Edge), every "Instalar" button opens its own install
+ * dialog in one tap; on the iPhone, which has no such prompt, the steps are
+ * the way.
  *
  * Never with the app already installed. "Agora não" hides it for fourteen
  * days; "Não mostrar mais" for good. Anything can open the steps directly
@@ -84,6 +82,8 @@ export function InstallInvite() {
   const [aba, setAba] = useState<'ios' | 'android'>('android');
   const [podeInstalar, setPodeInstalar] = useState(false);
   const pedido = useRef<PedidoDeInstalacao | null>(null);
+  // The latest `instalar`, for the event listener set up once below.
+  const instalarAgora = useRef<() => Promise<void>>(async () => {});
 
   useEffect(() => {
     setAba(sistema() === 'ios' ? 'ios' : 'android');
@@ -97,13 +97,17 @@ export function InstallInvite() {
       gravar({ ...ler(), nunca: true });
       setAberto(null);
     };
-    const aoAbrir = () => setAberto('passos');
+    // Where the browser can install by itself (Android, Chrome, Edge), the
+    // button installs in one tap — no steps for someone who would get lost in
+    // menus. Only the iPhone, which has no such prompt, needs the steps.
+    const aoAbrir = () =>
+      pedido.current ? void instalarAgora.current() : setAberto('passos');
     window.addEventListener('beforeinstallprompt', aoPedir);
     window.addEventListener('appinstalled', aoInstalar);
     window.addEventListener(ABRIR_PASSOS, aoAbrir);
 
     let espera: ReturnType<typeof setTimeout> | undefined;
-    if (celular() && !instalado()) {
+    if (celular() && !emAppInstalado()) {
       const estado = ler();
       // One visit per browser session.
       let nova = false;
@@ -147,6 +151,7 @@ export function InstallInvite() {
     setPodeInstalar(false);
     if (outcome === 'accepted') nuncaMais();
   };
+  instalarAgora.current = instalar;
 
   const icones = {
     ios: [PiCompass, PiExport, PiPlusSquare, PiCheckCircle],
@@ -171,9 +176,19 @@ export function InstallInvite() {
               <Button variante="fantasma" onClick={adiar}>
                 {copy.convite.agoraNao}
               </Button>
-              <Button variante="primario" onClick={() => setAberto('passos')}>
-                {copy.convite.ver}
-              </Button>
+              {podeInstalar ? (
+                <Button
+                  variante="primario"
+                  icone={PiDownloadSimple}
+                  onClick={() => void instalar()}
+                >
+                  {copy.passos.instalar}
+                </Button>
+              ) : (
+                <Button variante="primario" onClick={() => setAberto('passos')}>
+                  {copy.convite.ver}
+                </Button>
+              )}
             </div>
             <button
               type="button"
