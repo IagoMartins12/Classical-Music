@@ -1,0 +1,31 @@
+{
+  "_note": "Square crops of the photographs below, made for the small round discs beside the for-teachers hero. Crops of CC BY-SA files are shared under the same license.",
+  "piano": {
+    "title": "File:Steinway & Sons concert grand piano, model D-274, manufactured at Steinway's factory in Hamburg, Germany.png",
+    "source": "https://commons.wikimedia.org/wiki/File:Steinway_%26_Sons_concert_grand_piano,_model_D-274,_manufactured_at_Steinway%27s_factory_in_Hamburg,_Germany.png",
+    "artist": "Steinway & Sons",
+    "license": "CC BY-SA 3.0",
+    "changes": "White background removed, cropped to a square"
+  },
+  "violin": {
+    "title": "File:Violin VL100.png",
+    "source": "https://commons.wikimedia.org/wiki/File:Violin_VL100.png",
+    "artist": "Just plain Bill",
+    "license": "CC0",
+    "changes": "Front view only, rotated, cropped to a square"
+  },
+  "cello": {
+    "title": "File:Cello front side.png",
+    "source": "https://commons.wikimedia.org/wiki/File:Cello_front_side.png",
+    "artist": "Feitscherg",
+    "license": "CC BY 3.0",
+    "changes": "Front view only, cropped to the body"
+  },
+  "guitar": {
+    "title": "File:Classicalguitar.png",
+    "source": "https://commons.wikimedia.org/wiki/File:Classicalguitar.png",
+    "artist": "Martin Möller",
+    "license": "CC BY-SA 2.0 de",
+    "changes": "Cropped to the body"
+  }
+}

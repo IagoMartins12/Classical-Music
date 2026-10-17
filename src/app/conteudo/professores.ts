@@ -54,10 +54,7 @@ const pt: ConteudoProfessores = {
   titulo: 'Sua turma inteira num lugar só, da agenda ao relatório',
   abertura:
     'O portal do professor junta as aulas, as tarefas e o progresso de cada aluno no mesmo lugar onde ele já estuda as partituras. Você ensina; o portal lembra.',
-  acervo: (n, f) =>
-    n
-      ? `Para quem ensina qualquer instrumento: ${f(n.obras)} obras de ${f(n.compositores)} compositores para seus alunos estudarem.`
-      : null,
+  acervo: (n, f) => (n ? `${f(n.obras)} obras para seus alunos` : null),
   instrumentos: 'Instrumentos que se ensinam aqui',
   acoes: {
     planos: 'Ver os planos',
@@ -180,10 +177,7 @@ const en: ConteudoProfessores = {
   titulo: 'Your whole class in one place, from schedule to report',
   abertura:
     'The teacher portal keeps lessons, assignments and each student’s progress in the same place where they already study the scores. You teach; the portal remembers.',
-  acervo: (n, f) =>
-    n
-      ? `For whoever teaches any instrument: ${f(n.obras)} works by ${f(n.compositores)} composers for your students to study.`
-      : null,
+  acervo: (n, f) => (n ? `${f(n.obras)} works for your students` : null),
   instrumentos: 'Instruments taught here',
   acoes: {
     planos: 'See the plans',

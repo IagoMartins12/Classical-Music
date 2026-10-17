@@ -5,7 +5,7 @@ import { TextoRico } from '@/app/components/ui/TextoRico';
 import { cx } from '@/app/components/ui/cx';
 
 export type ItemDaFileira =
-  | { chave: string; foto: string; nome: string }
+  | { chave: string; foto: string; nome: string; credito?: string }
   | { chave: string; icone: IconType; nome: string };
 
 /**
@@ -35,6 +35,7 @@ export function FileiraDoAcervo({
         {itens.slice(0, 5).map((item) => (
           <li
             key={item.chave}
+            title={'credito' in item ? item.credito : undefined}
             className="relative grid h-10 w-10 place-items-center overflow-hidden rounded-full bg-sup-2 text-ouro-texto ring-2 ring-[var(--fundo)]"
           >
             {'foto' in item ? (

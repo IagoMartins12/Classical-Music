@@ -8,7 +8,8 @@ import { PageHero } from '@/app/components/site/PageHero';
 import { classesDeBotao } from '@/app/components/ui/Button';
 import { Revelar } from '@/app/components/ui/Revelar';
 import { TextoRico } from '@/app/components/ui/TextoRico';
-import { instrumentChapter, instrumentMeta } from '@/app/conteudo/instruments';
+import { instrumentChapter } from '@/app/conteudo/instruments';
+import { discCredit } from '@/app/conteudo/instruments/credits';
 import { PROFESSORES } from '@/app/conteudo/professores';
 import { compacto, numerosDoAcervo } from '@/app/requests/catalog-numbers';
 import { alternatesFor } from '@/app/utils/seoAlternates';
@@ -45,7 +46,7 @@ export async function generateMetadata({
  * and contact. Same editorial frame as /about-us and /pricing.
  */
 /** The instruments shown beside the archive line: what teachers teach. */
-const ENSINADOS = ['piano', 'violin', 'cello', 'guitar', 'voice'] as const;
+const ENSINADOS = ['piano', 'violin', 'cello', 'guitar'] as const;
 
 export default async function ParaProfessores({
   params,
@@ -69,18 +70,13 @@ export default async function ParaProfessores({
         extra={
           <FileiraDoAcervo
             rotulo={c.instrumentos}
-            itens={ENSINADOS.flatMap((key) => {
-              const meta = instrumentMeta(key);
-              return meta
-                ? [
-                    {
-                      chave: key,
-                      foto: meta.photo,
-                      nome: instrumentChapter(meta.key, idioma)?.name ?? key,
-                    },
-                  ]
-                : [];
-            })}
+            itens={ENSINADOS.map((key) => ({
+              chave: key,
+              // Square crops where the instrument fills the disc.
+              foto: `/instruments/discs/${key}.webp`,
+              nome: instrumentChapter(key, idioma)?.name ?? key,
+              credito: discCredit(key),
+            }))}
             legenda={c.acervo(numeros, (n) => `**${compacto(n)}**`)}
           />
         }
