@@ -247,12 +247,15 @@ function PrimaryActions({
   onStudy,
   studyLabel,
   copy,
+  saveClassName,
 }: {
   file: ScoreFile;
   owner: ScoreOwner;
   onStudy: (file: ScoreFile) => void;
   studyLabel: string;
   copy: WorkCopy['scores'];
+  /** Where the third button sits: the full row under the other two. */
+  saveClassName?: string;
 }) {
   return (
     <>
@@ -271,6 +274,7 @@ function PrimaryActions({
       </Button>
       {file.downloadUrl && (
         <SaveScoreButton
+          className={saveClassName}
           dados={{
             url: file.downloadUrl,
             titulo: file.title,
@@ -349,6 +353,7 @@ export function SidePreview({
           onStudy={onStudy}
           studyLabel={studyLabel}
           copy={copy}
+          saveClassName="col-span-2"
         />
       </div>
       <FileStrip files={files} index={index} setIndex={setIndex} copy={copy} />
@@ -393,13 +398,14 @@ export function SheetPreview({
       largura="m"
       rodape={
         file ? (
-          <div className="flex flex-wrap items-center gap-2">
+          <div className="grid w-full grid-cols-2 gap-2">
             <PrimaryActions
               file={file}
               owner={owner}
               onStudy={onStudy}
               studyLabel={studyLabel}
               copy={copy}
+              saveClassName="col-span-2"
             />
           </div>
         ) : undefined
