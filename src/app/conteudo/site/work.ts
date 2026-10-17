@@ -89,6 +89,7 @@ const pt = {
     era: 'Época',
     movements: 'Movimentos',
     tags: 'Gêneros e categorias',
+    imslp: 'Página no IMSLP',
   },
   scores: {
     title: 'Partituras',
@@ -125,13 +126,13 @@ const pt = {
     previous: 'Arquivo anterior',
     next: 'Próximo arquivo',
     filesOfEdition: 'Arquivos desta edição',
-    searching: 'Buscando as partituras no IMSLP',
+    searching: 'Buscando as partituras desta obra',
     searchingText:
       'É a primeira visita a esta obra. Leva alguns segundos; a lista aparece sozinha.',
     none: 'Ainda não há partitura desta obra',
     noneText:
       'Tem uma de domínio público, ou uma digitação sua? Envie: entra no ar com o seu nome.',
-    unavailable: 'O IMSLP não respondeu agora',
+    unavailable: 'Não conseguimos buscar as partituras agora',
     unavailableText: 'Tente de novo em alguns minutos.',
     upload: 'Enviar uma partitura desta obra',
     selecting: 'Escolha a partitura que você vai estudar',
@@ -225,6 +226,7 @@ const en: typeof pt = {
     era: 'Era',
     movements: 'Movements',
     tags: 'Genres and categories',
+    imslp: 'IMSLP page',
   },
   scores: {
     title: 'Scores',
@@ -261,13 +263,13 @@ const en: typeof pt = {
     previous: 'Previous file',
     next: 'Next file',
     filesOfEdition: 'Files in this edition',
-    searching: 'Fetching the scores from IMSLP',
+    searching: 'Fetching the scores for this work',
     searchingText:
       'This is the first visit to this work. It takes a few seconds; the list shows up on its own.',
     none: 'There is no score for this work yet',
     noneText:
       'Have a public-domain one, or your own engraving? Upload it: it goes live with your name.',
-    unavailable: 'IMSLP did not answer right now',
+    unavailable: 'We could not fetch the scores right now',
     unavailableText: 'Try again in a few minutes.',
     upload: 'Upload a score for this work',
     selecting: 'Choose the score you will study',

@@ -1,4 +1,6 @@
+import { PiArrowSquareOut } from 'react-icons/pi';
 import Link from '@/app/components/LocalizedLink';
+import { Icon } from '@/app/components/ui/Icon';
 import type { Idioma } from '@/app/conteudo/legal/tipos';
 import { COMPOSER, LEVEL_VALUES } from '@/app/conteudo/site/composer';
 import { eraName } from '@/app/conteudo/site/eras';
@@ -99,6 +101,16 @@ export function WorkDetailsPanel({
             ))}
           </ul>
         </div>
+      )}
+      {/^https?:\/\//.test(work.imslpPermlink) && (
+        <a
+          href={work.imslpPermlink}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="inline-flex min-h-10 items-center gap-2 self-start rounded-full bg-sup-2 px-4 text-[0.9375rem] text-texto-suave hover:text-ouro-texto"
+        >
+          {t.imslp} <Icon de={PiArrowSquareOut} tamanho="pp" />
+        </a>
       )}
     </>
   );
