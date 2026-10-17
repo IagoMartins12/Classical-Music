@@ -174,6 +174,19 @@ export function WorkListen({ work }: { work: WorkDetails }) {
     />
   );
 
+  // Searching with nothing to show yet: the shape of a player, loading.
+  if (searching && !available.length) {
+    return (
+      <div role="status" className="flex flex-col gap-3">
+        <span
+          aria-hidden="true"
+          className="loading-skeleton block h-[152px] rounded-card"
+        />
+        <span className="t-rotulo text-texto-suave">{copy.searching}</span>
+      </div>
+    );
+  }
+
   if (!available.length) {
     return (
       <div

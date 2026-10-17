@@ -172,11 +172,6 @@ export function WorkPage({
           </div>
         </header>
 
-        <section className="mt-12 flex flex-col gap-4">
-          <h2 className="t-subtitulo">{copy.listen}</h2>
-          <WorkListen work={work} />
-        </section>
-
         <WorkScores
           initial={scores}
           context={context}
@@ -187,6 +182,13 @@ export function WorkPage({
             </div>
           }
         />
+
+        {/* Below the scores, above the notes: first the score, then how it
+            sounds, then what people wrote about it. */}
+        <section className="mt-20 flex flex-col gap-6">
+          <h2 className="t-titulo max-sm:!text-[1.75rem]">{copy.listen}</h2>
+          <WorkListen work={work} />
+        </section>
 
         <div className="mt-20">
           <WorkAnnotations workId={work.id} />
