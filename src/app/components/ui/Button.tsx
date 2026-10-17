@@ -78,7 +78,7 @@ interface BaseProps extends ButtonHTMLAttributes<HTMLButtonElement> {
  * em `/works`, `/composers` e no blog: botões de ícone que o leitor de tela
  * anunciava só como "botão".
  */
-type ButtonProps = BaseProps &
+export type ButtonProps = BaseProps &
   (
     | { children: ReactNode; rotulo?: string }
     | {

@@ -1,7 +1,7 @@
 'use client';
 
 import { useQuery } from '@tanstack/react-query';
-import { recarregarTudo } from '@/app/libs/pwa/recarregar';
+import { TentarDeNovo } from '@/app/components/ui/TentarDeNovo';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import { Fragment, useState } from 'react';
 import {
@@ -144,13 +144,9 @@ export function HistoryView() {
       ) : list.error ? (
         <div className="flex flex-col items-start gap-3 rounded-card bg-sup-2 p-6">
           <p className="t-rotulo text-texto-suave">{copy.error}</p>
-          <Button
-            variante="fantasma"
-            tamanho="p"
-            onClick={() => void recarregarTudo()}
-          >
+          <TentarDeNovo variante="fantasma" tamanho="p">
             {copy.retry}
-          </Button>
+          </TentarDeNovo>
         </div>
       ) : !entries.length ? (
         <p className="t-rotulo rounded-card bg-sup-2 p-6 text-texto-suave">

@@ -1,7 +1,7 @@
 'use client';
 
 import { useCallback, useEffect, useState } from 'react';
-import { recarregarTudo } from '@/app/libs/pwa/recarregar';
+import { TentarDeNovo } from '@/app/components/ui/TentarDeNovo';
 import Link from 'next/link';
 import { PiBookmarkSimple, PiHeart } from 'react-icons/pi';
 import { Button, classesDeBotao } from '@/app/components/ui/Button';
@@ -94,9 +94,7 @@ export function ListaPessoal({
       <Erro
         titulo={t.erro}
         acao={
-          <Button onClick={() => void recarregarTudo()}>
-            {BLOG[idioma].comentarios.tentarDeNovo}
-          </Button>
+          <TentarDeNovo>{BLOG[idioma].comentarios.tentarDeNovo}</TentarDeNovo>
         }
       />
     );

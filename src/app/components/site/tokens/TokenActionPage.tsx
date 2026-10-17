@@ -1,7 +1,7 @@
 'use client';
 
 import { useParams } from 'next/navigation';
-import { recarregarTudo } from '@/app/libs/pwa/recarregar';
+import { TentarDeNovo } from '@/app/components/ui/TentarDeNovo';
 import {
   useEffect,
   useRef,
@@ -125,13 +125,9 @@ export function TokenActionPage({
         </Button>
       )}
       {state.code === 'CONNECTION_ERROR' && (
-        <Button
-          variante="primario"
-          icone={PiArrowClockwise}
-          onClick={() => void recarregarTudo()}
-        >
+        <TentarDeNovo variante="primario" icone={PiArrowClockwise}>
           {copy.retry}
-        </Button>
+        </TentarDeNovo>
       )}
       <Link href="/" className={classesDeBotao()}>
         {copy.home}

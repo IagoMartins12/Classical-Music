@@ -1,9 +1,8 @@
 'use client';
 
 import { useCallback, useEffect, useState } from 'react';
-import { recarregarTudo } from '@/app/libs/pwa/recarregar';
+import { TentarDeNovo } from '@/app/components/ui/TentarDeNovo';
 import { PiArrowClockwise } from 'react-icons/pi';
-import { Button } from '@/app/components/ui/Button';
 import { COMPOSER } from '@/app/conteudo/site/composer';
 import { useRouteLanguage } from '@/app/hooks/useRouteLanguage';
 import { composerBiography } from '@/app/requests/composer-biography';
@@ -101,14 +100,9 @@ export function BiographyWriter({
               : copy.errorText}
         </p>
         {state.kind === 'error' && (
-          <Button
-            tamanho="p"
-            icone={PiArrowClockwise}
-            className="mt-1"
-            onClick={() => void recarregarTudo()}
-          >
+          <TentarDeNovo tamanho="p" icone={PiArrowClockwise} className="mt-1">
             {copy.retry}
-          </Button>
+          </TentarDeNovo>
         )}
       </div>
     </div>

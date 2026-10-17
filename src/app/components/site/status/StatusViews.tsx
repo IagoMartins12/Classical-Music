@@ -1,7 +1,7 @@
 'use client';
 
 import { usePathname, useSearchParams } from 'next/navigation';
-import { recarregarTudo } from '@/app/libs/pwa/recarregar';
+import { TentarDeNovo } from '@/app/components/ui/TentarDeNovo';
 import type { ReactNode } from 'react';
 import {
   PiArrowLeft,
@@ -237,9 +237,7 @@ export function ErrorView({ digest }: { digest?: string }) {
         quote={copy.quote}
         action={
           <div className="flex flex-wrap justify-center gap-3">
-            <Button variante="primario" onClick={() => void recarregarTudo()}>
-              {t.retry}
-            </Button>
+            <TentarDeNovo variante="primario">{t.retry}</TentarDeNovo>
             <Link href="/" className={classesDeBotao()}>
               <Icon de={PiHouse} /> {t.home}
             </Link>

@@ -1,7 +1,7 @@
 'use client';
 
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { recarregarTudo } from '@/app/libs/pwa/recarregar';
+import { TentarDeNovo } from '@/app/components/ui/TentarDeNovo';
 import { useRouter } from 'next/navigation';
 import { useEffect, useRef, useState } from 'react';
 import { PiBell } from 'react-icons/pi';
@@ -158,13 +158,9 @@ function Latest({
     body = (
       <div className="flex flex-col items-start gap-2 py-2">
         <p className="text-[0.9375rem] text-texto-suave">{copy.failed}</p>
-        <Button
-          variante="fantasma"
-          tamanho="p"
-          onClick={() => void recarregarTudo()}
-        >
+        <TentarDeNovo variante="fantasma" tamanho="p">
           {copy.retry}
-        </Button>
+        </TentarDeNovo>
       </div>
     );
   else if (!items.length)

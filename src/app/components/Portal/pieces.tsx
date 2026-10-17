@@ -7,7 +7,7 @@
 // diz de um horário. Cor só onde pede ação (ouro) ou em atraso (atenção).
 
 import Link from 'next/link';
-import { recarregarTudo } from '@/app/libs/pwa/recarregar';
+import { TentarDeNovo } from '@/app/components/ui/TentarDeNovo';
 import type { CSSProperties, ReactNode } from 'react';
 import { GiGrandPiano } from 'react-icons/gi';
 import {
@@ -20,7 +20,6 @@ import {
   PiWarning,
 } from 'react-icons/pi';
 import { Badge, Chip } from '@/app/components/ui/Badge';
-import { Button } from '@/app/components/ui/Button';
 import { Erro, Vazio } from '@/app/components/ui/Estados';
 import { Icon } from '@/app/components/ui/Icon';
 import { AreaCarregando, Skeleton } from '@/app/components/ui/Skeleton';
@@ -903,9 +902,7 @@ export function ScreenError({ message }: { message: string }) {
     <Erro
       titulo="Não foi possível carregar esta tela"
       descricao={message}
-      acao={
-        <Button onClick={() => void recarregarTudo()}>Tentar de novo</Button>
-      }
+      acao={<TentarDeNovo>Tentar de novo</TentarDeNovo>}
     />
   );
 }
