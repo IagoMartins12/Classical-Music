@@ -1,4 +1,3 @@
-import type { ReactNode } from 'react';
 import type { IconType } from 'react-icons';
 import { CamadaQueGira } from '../orbits/CamadaQueGira';
 import {
@@ -90,22 +89,9 @@ const pos = (r: number, angle: number) => {
  * Hero A (tablet and desktop): an engraved celestial atlas with the seal in
  * the middle and every part of the site in orbit — the hero is also a map.
  */
-export function CelestialAtlas({
-  copy,
-  asPicture = false,
-  className,
-}: {
-  copy: HomeCopy['hero'];
-  /** A picture of the site (the welcome), not a way into it: no links. */
-  asPicture?: boolean;
-  className?: string;
-}) {
+export function CelestialAtlas({ copy }: { copy: HomeCopy['hero'] }) {
   return (
-    <div
-      className={
-        className ?? 'relative mx-auto aspect-square w-full max-w-[27rem]'
-      }
-    >
+    <div className="relative mx-auto aspect-square w-full max-w-[27rem]">
       <svg
         viewBox="0 0 600 600"
         aria-hidden="true"
@@ -194,8 +180,8 @@ export function CelestialAtlas({
               ['--delay' as string]: `${900 + i * 120}ms`,
             }}
           >
-            <OrbitBody
-              href={asPicture ? undefined : orbit.href}
+            <Link
+              href={orbit.href}
               className="group flex flex-col items-center gap-1.5 text-center"
             >
               <span className="grid h-11 w-11 place-items-center overflow-hidden rounded-full bg-[var(--fundo)] text-ouro-texto shadow-[0_0_0_1px_var(--linha-forte),var(--sombra-1)] transition-shadow duration-[var(--t-resposta)] group-hover:shadow-[0_0_0_2px_var(--ouro),var(--sombra-2)] xl:h-12 xl:w-12">
@@ -204,28 +190,10 @@ export function CelestialAtlas({
               <span className="whitespace-nowrap rounded-[6px] bg-fundo px-1.5 py-0.5 font-display text-[0.9375rem] leading-tight group-hover:text-ouro-texto">
                 {copy.orbits[orbit.key]}
               </span>
-            </OrbitBody>
+            </Link>
           </li>
         ))}
       </ul>
     </div>
-  );
-}
-
-function OrbitBody({
-  href,
-  className,
-  children,
-}: {
-  href?: string;
-  className: string;
-  children: ReactNode;
-}) {
-  return href ? (
-    <Link href={href} className={className}>
-      {children}
-    </Link>
-  ) : (
-    <span className={className}>{children}</span>
   );
 }

@@ -172,7 +172,6 @@ export async function composerOptions(texto: string) {
     value: c.id,
     label: c.fullName || c.name,
     retrato: { src: c.portraitUrl ?? null, nome: c.name },
-    detalhe: [c.birthDate, c.deathDate].filter(Boolean).join('–') || undefined,
   }));
   if (!q) return opcoes.slice(0, 12);
   const conhecido = new Set(famosos.map((c) => c.id));

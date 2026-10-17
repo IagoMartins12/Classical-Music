@@ -226,7 +226,9 @@ export function SelecaoComBusca({
             setAberta(true);
           }}
           onKeyDown={aoTeclar}
-          className="min-w-0 flex-1 bg-transparent outline-none placeholder:text-texto-fraco"
+          // The field around it shows the focus; a second ring inside drew
+          // a box within the pill.
+          className="min-w-0 flex-1 bg-transparent outline-none placeholder:text-texto-fraco focus-visible:shadow-none"
           {...aria}
         />
         {buscando && aberta && (

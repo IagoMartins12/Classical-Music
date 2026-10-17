@@ -973,6 +973,11 @@ body {
   .input-classical.selecao-aberta {
     border-color: var(--ouro);
   }
+  /* The searchable select: its field, not the input inside, shows focus. */
+  .input-classical:has(input:focus-visible) {
+    border-color: var(--ouro);
+    box-shadow: var(--foco-anel);
+  }
 
   /* A lista abre na camada de topo (popover): nada a corta, nada a cobre. O
      navegador põe margem, borda e `inset` de popover; tudo zerado aqui. */
