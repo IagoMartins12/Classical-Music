@@ -3,7 +3,7 @@
 import Image from 'next/image';
 import { CaixaDeMarcar } from '@/app/components/ui/CaixaDeMarcar';
 import { useQueryClient } from '@tanstack/react-query';
-import { useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import toast from 'react-hot-toast';
 import {
   PiBookmarkSimple,
@@ -387,6 +387,8 @@ export function StudyStep({ data, update, copy }: StepProps) {
   );
 }
 
+const SEARCH_ID = 'welcome-composer-search';
+
 export function TasteStep({
   data,
   update,
@@ -400,6 +402,10 @@ export function TasteStep({
     WelcomeOptions['composers'][number] | null
   >(null);
   const [searching, setSearching] = useState(false);
+  // Opening the search puts the cursor in it, ready to type.
+  useEffect(() => {
+    if (searching) document.getElementById(SEARCH_ID)?.focus();
+  }, [searching]);
   // The seven eras the site tells, each matched to its catalog epoch.
   const eras = ERAS.flatMap((era) => {
     const epoch = options.epochs.find((e) => eraOf(e.name)?.key === era.key);
@@ -473,7 +479,38 @@ export function TasteStep({
         </div>
       </Group>
       <Group label={copy.taste.composer}>
+        {searching && (
+          <div className="item-entra pb-2 sm:max-w-md">
+            <SelecaoComBusca
+              id={SEARCH_ID}
+              buscar={composerOptions}
+              valor=""
+              icone={PiMagnifyingGlass}
+              placeholder={copy.taste.search}
+              vazio={copy.taste.searchEmpty}
+              aria-label={copy.taste.search}
+              aoMudar={(_value, option) => choose(option)}
+              className="!rounded-full"
+            />
+          </div>
+        )}
         <div className="grid grid-cols-3 gap-x-3 gap-y-4 sm:grid-cols-5 lg:grid-cols-6">
+          {/* Someone not among them: the first place in the grid opens the
+              search above it; the one picked joins the portraits. */}
+          <button
+            type="button"
+            aria-expanded={searching}
+            aria-controls={searching ? SEARCH_ID : undefined}
+            onClick={() => setSearching(true)}
+            className="group flex flex-col items-center gap-2 text-center"
+          >
+            <span className="grid h-[4.5rem] w-[4.5rem] place-items-center rounded-full border border-dashed border-[var(--linha-forte)] text-texto-suave transition-colors duration-[var(--t-toque)] group-hover:border-[var(--ouro)] group-hover:text-ouro-texto">
+              <Icon de={PiMagnifyingGlass} tamanho="m" />
+            </span>
+            <span className="t-rotulo leading-tight text-texto-suave group-hover:text-ouro-texto">
+              {copy.taste.other}
+            </span>
+          </button>
           {composers.map((c) => {
             const active = data.favoriteComposerId === c.id;
             return (
@@ -507,36 +544,7 @@ export function TasteStep({
               </button>
             );
           })}
-          {/* Someone not among them: the last place in the grid opens the
-              search, and the one picked joins the portraits, first. */}
-          <button
-            type="button"
-            aria-expanded={searching}
-            onClick={() => setSearching(true)}
-            className="group flex flex-col items-center gap-2 text-center"
-          >
-            <span className="grid h-[4.5rem] w-[4.5rem] place-items-center rounded-full border border-dashed border-[var(--linha-forte)] text-texto-suave transition-colors duration-[var(--t-toque)] group-hover:border-[var(--ouro)] group-hover:text-ouro-texto">
-              <Icon de={PiMagnifyingGlass} tamanho="m" />
-            </span>
-            <span className="t-rotulo leading-tight text-texto-suave group-hover:text-ouro-texto">
-              {copy.taste.other}
-            </span>
-          </button>
         </div>
-        {searching && (
-          <div className="item-entra sm:max-w-md">
-            <SelecaoComBusca
-              buscar={composerOptions}
-              valor=""
-              icone={PiMagnifyingGlass}
-              placeholder={copy.taste.search}
-              vazio={copy.taste.searchEmpty}
-              aria-label={copy.taste.search}
-              aoMudar={(_value, option) => choose(option)}
-              className="!rounded-full"
-            />
-          </div>
-        )}
       </Group>
     </div>
   );
