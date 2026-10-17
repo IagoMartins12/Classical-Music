@@ -19,8 +19,8 @@ const DEFAULT_COUNT = 3;
 
 /**
  * "Por onde começar": a few works, each a step in. The team's picks lead;
- * the automatic ones (most studied, easiest first) fill the rest, and the
- * caption says which is which. The page is cached for everyone, so the
+ * the automatic ones (most studied, easiest first) fill the rest; a caption
+ * says when the team chose. The page is cached for everyone, so the
  * count follows the person's study horizon here, in the browser.
  */
 export function StartingPoints({
@@ -35,8 +35,10 @@ export function StartingPoints({
   const shown = works.slice(0, horizon ? BY_HORIZON[horizon] : DEFAULT_COUNT);
   if (!shown.length) return null;
   const curated = shown.filter((w) => w.curated).length;
+  // Only the team's picks are worth a caption; the automatic ones speak for
+  // themselves.
   const caption = !curated
-    ? copy.startHere.automatic
+    ? null
     : curated === shown.length
       ? copy.startHere.curated
       : copy.startHere.mixed;
@@ -44,15 +46,7 @@ export function StartingPoints({
     <section className="flex flex-col gap-5">
       <div className="flex flex-wrap items-end justify-between gap-3">
         <h2 className="t-subtitulo">{copy.startHere.title}</h2>
-        <span className="t-legenda text-right">
-          {caption}
-          {horizon && (
-            <>
-              <br />
-              {copy.startHere.horizon[horizon]}
-            </>
-          )}
-        </span>
+        {caption && <span className="t-legenda text-right">{caption}</span>}
       </div>
       <ol className="flex flex-col gap-3">
         {shown.map((work, i) => {

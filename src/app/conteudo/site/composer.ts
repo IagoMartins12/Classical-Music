@@ -32,16 +32,8 @@ const pt = {
   },
   startHere: {
     title: 'Por onde começar',
-    automatic: 'As mais estudadas, da mais fácil para a mais difícil',
     curated: 'Escolhidas pela equipe do Opus Atlas',
     mixed: 'Escolhidas pela equipe, depois as mais estudadas',
-    /** The caption's second line, for someone who said how long they study. */
-    horizon: {
-      MONTHS: 'Pensadas para quem estuda por alguns meses',
-      YEAR: 'Pensadas para quem estuda por um ano',
-      YEARS: 'Pensadas para quem estuda por alguns anos',
-      LIFE: 'Pensadas para quem estuda para a vida toda',
-    },
     levels: {
       beginner: 'Iniciante',
       intermediate: 'Intermediário',
@@ -110,15 +102,8 @@ const en: typeof pt = {
   },
   startHere: {
     title: 'Where to start',
-    automatic: 'The most studied, from easiest to hardest',
     curated: 'Chosen by the Opus Atlas team',
     mixed: 'Chosen by the team, then the most studied',
-    horizon: {
-      MONTHS: 'Picked for someone studying for a few months',
-      YEAR: 'Picked for someone studying for a year',
-      YEARS: 'Picked for someone studying for a few years',
-      LIFE: 'Picked for a lifetime of study',
-    },
     levels: {
       beginner: 'Beginner',
       intermediate: 'Intermediate',
