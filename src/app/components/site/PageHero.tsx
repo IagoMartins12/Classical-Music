@@ -26,13 +26,12 @@ export function PageHero({
   migalha: string;
   titulo: ReactNode;
   abertura: ReactNode;
-  /** A line between the lead and the actions (about-us: faces of the library). */
-  extra?: ReactNode;
   /**
-   * Short facts in place of `extra`, each with a gold check (pricing: the
-   * billing guarantees; for-teachers: what the portal settles). They give
-   * the shorter pages the same weight as about-us with things worth reading.
+   * A line between the lead and the actions: about-us, faces of the library;
+   * for-teachers and pricing, the archive's size (`LinhaDoAcervo`).
    */
+  extra?: ReactNode;
+  /** Short facts, each with a gold check (pricing: the billing guarantees). */
   destaques?: string[];
   acoes: ReactNode;
   ilustracao: ReactNode;

@@ -8,12 +8,9 @@ import { cx } from '@/app/components/ui/cx';
 import { Revelar } from '@/app/components/ui/Revelar';
 import { SeloVerificada } from '@/app/components/ui/SeloVerificada';
 import { TextoRico } from '@/app/components/ui/TextoRico';
-import { SOBRE, type Numeros } from '@/app/conteudo/sobre';
-import {
-  getComposersCount,
-  getTop20FamousComposers,
-} from '@/app/requests/composers';
-import { getWorks } from '@/app/requests/work-details';
+import { SOBRE } from '@/app/conteudo/sobre';
+import { compacto, numerosDoAcervo } from '@/app/requests/catalog-numbers';
+import { getTop20FamousComposers } from '@/app/requests/composers';
 import { CONTATO } from '@/app/utils/contato';
 import { alternatesFor, SITE_URL } from '@/app/utils/seoAlternates';
 import {
@@ -85,22 +82,6 @@ export async function generateMetadata({
   };
 }
 
-/**
- * Os números do acervo, ao vivo. Sem API (build do CI) ou com erro, a
- * abertura fica sem números — nunca com um número inventado.
- */
-async function numerosDoAcervo(): Promise<Numeros> {
-  try {
-    const [compositores, obras] = await Promise.all([
-      getComposersCount({}),
-      getWorks(1, 1).then((r) => r.totalCount),
-    ]);
-    return compositores > 0 && obras > 0 ? { compositores, obras } : null;
-  } catch {
-    return null;
-  }
-}
-
 /** O ano de uma data da API, que chega por extenso ("16 December 1770"). */
 const ano = (d: string | null) => d?.match(/\d{4}/)?.[0] ?? '';
 
@@ -142,18 +123,6 @@ async function retratosDoAcervo(): Promise<Retrato[]> {
   } catch {
     return [];
   }
-}
-
-/**
- * O número do acervo sem a precisão de balcão: "10k+", "200k+". Arredonda
- * para baixo (dois algarismos abaixo de 100 mil, um acima), para o "+" ser
- * verdade.
- */
-function compacto(n: number): string {
-  if (n < 1000) return String(n);
-  const digitos = Math.floor(Math.log10(n)) + 1;
-  const passo = 10 ** (digitos - (n >= 100_000 ? 1 : 2));
-  return `${Math.floor(n / passo) * (passo / 1000)}k+`;
 }
 
 const LINK =

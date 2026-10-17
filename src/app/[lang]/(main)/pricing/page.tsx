@@ -15,6 +15,8 @@ import {
   type LangParams,
 } from '@/app/utils/translations/routeLanguage';
 import { OrbitaDosPlanos } from '@/app/components/site/orbits/Orbitas';
+import { compacto, numerosDoAcervo } from '@/app/requests/catalog-numbers';
+import { LinhaDoAcervo } from '@/app/components/site/LinhaDoAcervo';
 import { PageHero } from '@/app/components/site/PageHero';
 import { buscarPrecos } from './buscarPrecos';
 import { QuadroDePlanos } from './QuadroDePlanos';
@@ -121,9 +123,10 @@ export default async function Pagina({ params }: LangPageProps) {
   // página aparece mesmo assim, com o Free e os pagos "indisponíveis" — nunca
   // em branco, e nunca com preço inventado. Se a API cair, o erro sobe e o
   // Next devolve 500 sem guardar nada.
-  const [precosDaApi, planoAtual] = await Promise.all([
+  const [precosDaApi, planoAtual, numeros] = await Promise.all([
     buscarPrecos(),
     buscarPlanoAtual(),
+    numerosDoAcervo(),
   ]);
   const precos = precosDaApi ?? SEM_PRECOS;
 
@@ -236,6 +239,11 @@ export default async function Pagina({ params }: LangPageProps) {
           migalha={c.migalha}
           titulo={c.titulo}
           abertura={c.abertura}
+          extra={
+            <LinhaDoAcervo
+              texto={c.acervo(numeros, (n) => `**${compacto(n)}**`)}
+            />
+          }
           destaques={c.garantias}
           acoes={
             <>

@@ -3,11 +3,13 @@ import { PiArrowRight, PiCaretDown } from 'react-icons/pi';
 import LocalizedLink from '@/app/components/LocalizedLink';
 import { BotaoCriarConta } from '@/app/components/auth/BotaoCriarConta';
 import { TurmaEmOrbita } from '@/app/components/site/orbits/Orbitas';
+import { LinhaDoAcervo } from '@/app/components/site/LinhaDoAcervo';
 import { PageHero } from '@/app/components/site/PageHero';
 import { classesDeBotao } from '@/app/components/ui/Button';
 import { Revelar } from '@/app/components/ui/Revelar';
 import { TextoRico } from '@/app/components/ui/TextoRico';
 import { PROFESSORES } from '@/app/conteudo/professores';
+import { compacto, numerosDoAcervo } from '@/app/requests/catalog-numbers';
 import { alternatesFor } from '@/app/utils/seoAlternates';
 import {
   routeLanguage,
@@ -48,7 +50,10 @@ export default async function ParaProfessores({
 }) {
   const idioma = await routeLanguage(params);
   const c = PROFESSORES[idioma];
-  const precos = await buscarPrecos().catch(() => null);
+  const [precos, numeros] = await Promise.all([
+    buscarPrecos().catch(() => null),
+    numerosDoAcervo(),
+  ]);
 
   return (
     <div className="pb-24 md:pb-32">
@@ -57,7 +62,11 @@ export default async function ParaProfessores({
         migalha={c.migalha}
         titulo={c.titulo}
         abertura={c.abertura}
-        destaques={c.destaques}
+        extra={
+          <LinhaDoAcervo
+            texto={c.acervo(numeros, (n) => `**${compacto(n)}**`)}
+          />
+        }
         acoes={
           <>
             <a href="#planos" className={classesDeBotao('primario')}>

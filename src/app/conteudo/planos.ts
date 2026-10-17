@@ -1,5 +1,6 @@
 import { CONTATO } from '@/app/utils/contato';
 import type { Idioma } from './legal/tipos';
+import type { Numeros } from './sobre';
 
 /**
  * O texto da página de planos (`/pricing`).
@@ -61,6 +62,8 @@ export type ConteudoPlanos = {
   abertura: string;
   /** Facts under the hero's lead that answer "what if I regret it?". */
   garantias: string[];
+  /** What is free before any plan, with live numbers rounded down. */
+  acervo: (n: Numeros, formatar: (x: number) => string) => string | null;
   /** The hero's two actions, like the other editorial pages. */
   acoesTopo: { planos: string; criarConta: string; seuPlano: string };
   periodo: {
@@ -151,6 +154,10 @@ export const PLANOS: Record<Idioma, ConteudoPlanos> = {
       'Já pensou em ter o universo da música clássica na palma das suas mãos?',
     abertura:
       'Grave seus vídeos e envie ao acervo sem limite. Se você dá aula, leve a turma inteira para o portal: aulas, tarefas e o progresso de cada aluno.',
+    acervo: (n, f) =>
+      n
+        ? `Ler, ouvir e baixar já é grátis, sem conta: ${f(n.obras)} obras de ${f(n.compositores)} compositores.`
+        : null,
     garantias: [
       'Troque ou cancele quando quiser, sem multa',
       'Desistiu em até 7 dias? O valor volta inteiro',
@@ -427,6 +434,10 @@ export const PLANOS: Record<Idioma, ConteudoPlanos> = {
       'Ever imagined holding the whole world of classical music in your hands?',
     abertura:
       'Record your playing and add to the library without limits. If you teach, bring your whole class to the portal: lessons, assignments and each student’s progress.',
+    acervo: (n, f) =>
+      n
+        ? `Reading, listening and downloading are already free, no account needed: ${f(n.obras)} works by ${f(n.compositores)} composers.`
+        : null,
     garantias: [
       'Change or cancel any time, with no fee',
       'Changed your mind within 7 days? Full refund',

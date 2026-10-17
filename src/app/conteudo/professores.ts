@@ -1,5 +1,6 @@
 import { LIMITES } from './planos';
 import type { Idioma } from './legal/tipos';
+import type { Numeros } from './sobre';
 
 /**
  * O texto da página para professores (`/for-teachers`).
@@ -15,8 +16,11 @@ export type ConteudoProfessores = {
   migalha: string;
   titulo: string;
   abertura: string;
-  /** Three facts under the hero's lead: what the portal settles for the teacher. */
-  destaques: string[];
+  /**
+   * The archive the students study in, with live numbers rounded down
+   * ("200k+"); without them (no API), no line at all.
+   */
+  acervo: (n: Numeros, formatar: (x: number) => string) => string | null;
   acoes: { planos: string; criarConta: string; portal: string };
   recursos: {
     titulo: string;
@@ -48,11 +52,10 @@ const pt: ConteudoProfessores = {
   titulo: 'Sua turma inteira num lugar só, da agenda ao relatório',
   abertura:
     'O portal do professor junta as aulas, as tarefas e o progresso de cada aluno no mesmo lugar onde ele já estuda as partituras. Você ensina; o portal lembra.',
-  destaques: [
-    'Seus alunos estudam com a conta grátis',
-    'A agenda conversa com o seu calendário',
-    'O aluno pede aula nos seus horários livres',
-  ],
+  acervo: (n, f) =>
+    n
+      ? `Seus alunos estudam num acervo de ${f(n.obras)} obras de ${f(n.compositores)} compositores, com partituras para abrir e baixar.`
+      : null,
   acoes: {
     planos: 'Ver os planos',
     criarConta: 'Criar conta grátis',
@@ -174,11 +177,10 @@ const en: ConteudoProfessores = {
   titulo: 'Your whole class in one place, from schedule to report',
   abertura:
     'The teacher portal keeps lessons, assignments and each student’s progress in the same place where they already study the scores. You teach; the portal remembers.',
-  destaques: [
-    'Your students study on the free account',
-    'The schedule talks to your calendar',
-    'Students request lessons in your open hours',
-  ],
+  acervo: (n, f) =>
+    n
+      ? `Your students study in an archive of ${f(n.obras)} works by ${f(n.compositores)} composers, with scores to open and download.`
+      : null,
   acoes: {
     planos: 'See the plans',
     criarConta: 'Create a free account',
