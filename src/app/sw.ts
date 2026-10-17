@@ -37,7 +37,8 @@ const ehApi = (url: URL) =>
 
 /**
  * The Opus Atlas service worker: one app for the main site, the blog and
- * the portal, offline-first.
+ * the portal, offline-first. Registered only by the installed app
+ * (`libs/pwa/app.ts`); in a browser tab the site is always the live one.
  *
  * - **Pages** the person visited open without network (network first, the
  *   saved copy when there is none). Personal and portal pages live in their

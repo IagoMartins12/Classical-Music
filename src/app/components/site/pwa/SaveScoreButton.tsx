@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
+import { emAppInstalado } from '@/app/libs/pwa/app';
 import toast from 'react-hot-toast';
 import { PiCheckCircle, PiDeviceMobile } from 'react-icons/pi';
 import { Button } from '@/app/components/ui/Button';
@@ -22,8 +23,10 @@ import {
  */
 export function SaveScoreButton({
   dados,
+  className,
 }: {
   dados: Omit<PartituraGuardada, 'bytes' | 'guardadaEm'>;
+  className?: string;
 }) {
   const { language } = useRouteLanguage();
   const copy = PWA[language].guardar;
@@ -33,7 +36,9 @@ export function SaveScoreButton({
   const { pulsar, pulso } = usePulso();
 
   useEffect(() => {
-    setSuportado(typeof caches !== 'undefined');
+    // Saving for offline is part of the installed app, like the rest of
+    // the offline layer; a browser tab is always the live site.
+    setSuportado(typeof caches !== 'undefined' && emAppInstalado());
     const atualizar = () => setGuardada(estaGuardada(dados.url));
     atualizar();
     return aoMudarPartituras(atualizar);
@@ -61,8 +66,8 @@ export function SaveScoreButton({
 
   return (
     <Button
-      tamanho="p"
       variante={guardada ? 'fantasma' : 'secundario'}
+      className={className}
       icone={guardada ? PiCheckCircle : PiDeviceMobile}
       carregando={ocupado}
       aria-pressed={guardada}

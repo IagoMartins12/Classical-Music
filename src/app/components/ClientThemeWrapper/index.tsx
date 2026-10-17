@@ -5,6 +5,7 @@ import { useThemeStore } from '@/app/stores/themeStore';
 import dynamic from 'next/dynamic';
 import { RetratosQueFalham } from '../site/RetratosQueFalham';
 import React, { useEffect, useState } from 'react';
+import { prepararAppInstalado } from '@/app/libs/pwa/app';
 import { IconContext } from 'react-icons';
 import type { IconContext as IconContextValue } from 'react-icons';
 
@@ -49,6 +50,11 @@ export const ClientThemeWrapper: React.FC<ClientThemeWrapperProps> = ({
   // Evita hydration mismatch
   useEffect(() => {
     if (!isHydrated) setIsHydrated(true);
+  }, []);
+
+  // The offline layer only in the installed app (`libs/pwa/app.ts`).
+  useEffect(() => {
+    prepararAppInstalado().catch(() => undefined);
   }, []);
   // // Aplica o tema quando o componente monta ou o tema muda
   // useEffect(() => {

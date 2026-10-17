@@ -167,6 +167,10 @@ const withSerwist = withSerwistInit({
   swSrc: 'src/app/sw.ts',
   swDest: 'public/sw.js',
   disable: process.env.NODE_ENV === 'development',
+  // Registered by hand, only inside the installed app
+  // (`libs/pwa/app.ts`): a browser tab is always the live site, never a
+  // saved copy.
+  register: false,
   // Only what the app shell needs offline. By default every file in
   // `public/` went into the precache: installing the app downloaded the era
   // pictures and sketch assets, megabytes nobody asked for. Pictures are
