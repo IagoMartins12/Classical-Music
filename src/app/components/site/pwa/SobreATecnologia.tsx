@@ -37,7 +37,6 @@ export function SobreATecnologia({
       aberto={aberto}
       aoFechar={aoFechar}
       titulo={t.titulo}
-      descricao={t.abertura}
       largura="m"
       rodape={
         <div className="flex flex-wrap justify-end gap-2">

@@ -81,8 +81,6 @@ const pt = {
       tecnologia: 'Quer saber mais sobre a tecnologia? Clique aqui.',
       sobre: {
         titulo: 'Um app que é o próprio site',
-        abertura:
-          'Pense numa partitura. A obra é a mesma no concerto e na estante da sua casa; muda só onde ela está. O Opus Atlas instalado é assim: o mesmo site, agora na tela de início do seu celular.',
         comoFunciona: 'Como funciona',
         partes: [
           {
@@ -261,8 +259,6 @@ const en: typeof pt = {
       tecnologia: 'Want to know more about the technology? Click here.',
       sobre: {
         titulo: 'An app that is the site itself',
-        abertura:
-          'Think of a score. The piece is the same in the concert hall and on your music stand at home; only where it sits changes. Installed Opus Atlas is like that: the same site, now on your phone’s home screen.',
         comoFunciona: 'How it works',
         partes: [
           {

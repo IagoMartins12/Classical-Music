@@ -87,24 +87,7 @@ export function OnDevice() {
               className="entra max-w-[58ch] text-lg leading-relaxed text-texto-suave"
               style={{ ['--i' as string]: 1 }}
             >
-              {a.abertura}{' '}
-              {/* Nobody needs the technology's name to use it: a quiet sign
-                  for the curious, the explanation one click away, here. */}
-              <button
-                type="button"
-                onClick={() => setSobre(true)}
-                aria-haspopup="dialog"
-                aria-label={a.tecnologia}
-                className="group relative inline-grid h-6 w-6 place-items-center rounded-full align-middle text-texto-fraco transition-colors hover:text-ouro-texto focus-visible:text-ouro-texto"
-              >
-                <Icon de={PiQuestion} tamanho="p" />
-                <span
-                  role="tooltip"
-                  className="pointer-events-none absolute bottom-full left-1/2 z-elevado mb-2 w-max max-w-[16rem] -translate-x-1/2 sup-alta !rounded-controle px-3 py-2 text-left text-[0.8125rem] leading-snug text-texto opacity-0 shadow-[var(--sombra-2)] transition-opacity duration-[var(--t-resposta)] group-hover:opacity-100 group-focus-visible:opacity-100"
-                >
-                  {a.tecnologia}
-                </span>
-              </button>
+              {a.abertura}
             </p>
             <div
               className="entra flex flex-wrap gap-3 pt-2"
@@ -120,6 +103,23 @@ export function OnDevice() {
               <Link href="/" className={classesDeBotao('fantasma')}>
                 {copy.voltar}
               </Link>
+              {/* Nobody needs the technology's name to use it: a quiet sign
+                  beside the actions, the explanation one click away. */}
+              <button
+                type="button"
+                onClick={() => setSobre(true)}
+                aria-haspopup="dialog"
+                aria-label={a.tecnologia}
+                className="group relative grid h-[var(--alvo)] w-[var(--alvo)] place-items-center rounded-full text-texto-suave transition-colors hover:bg-sup-2 hover:text-ouro-texto focus-visible:text-ouro-texto"
+              >
+                <Icon de={PiQuestion} tamanho="m" />
+                <span
+                  role="tooltip"
+                  className="pointer-events-none absolute bottom-full left-1/2 z-elevado mb-2 w-max max-w-[16rem] -translate-x-1/2 sup-alta !rounded-controle px-3 py-2 text-left text-[0.8125rem] leading-snug text-texto opacity-0 shadow-[var(--sombra-2)] transition-opacity duration-[var(--t-resposta)] group-hover:opacity-100 group-focus-visible:opacity-100"
+                >
+                  {a.tecnologia}
+                </span>
+              </button>
             </div>
           </div>
           <AppGravado />
