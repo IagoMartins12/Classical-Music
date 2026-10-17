@@ -152,9 +152,19 @@ const pt = {
     close: 'Fechar o aviso',
   },
   done: {
-    title: (name: string) => (name ? `Tudo pronto, ${name}` : 'Tudo pronto'),
-    text: 'Suas respostas já valem para as sugestões. Mudou de ideia? O perfil guarda tudo isso.',
-    start: 'Começar',
+    title: (name: string) =>
+      name ? `Parabéns, ${name}. Tudo pronto.` : 'Parabéns. Tudo pronto.',
+    text: 'Seu perfil está montado e as sugestões já seguem as suas respostas. Mudou de ideia? Dá para trocar tudo no perfil.',
+    card: 'Seu perfil',
+    instruments: 'Toca',
+    era: 'Época preferida',
+    composer: 'Compositor preferido',
+    help: 'Ficou com alguma dúvida?',
+    helpText:
+      'A central de ajuda explica cada parte do Opus Atlas. Se não achar a resposta, fale com a gente: alguém da equipe responde.',
+    helpCenter: 'Central de ajuda',
+    contact: 'Falar com a gente',
+    start: 'Começar a explorar',
     profile: 'Abrir o perfil',
   },
 };
@@ -295,9 +305,19 @@ const en: typeof pt = {
     close: 'Close the notice',
   },
   done: {
-    title: (name) => (name ? `All set, ${name}` : 'All set'),
-    text: 'Your answers already shape the suggestions. Changed your mind? Your profile keeps all of this.',
-    start: 'Get started',
+    title: (name) =>
+      name ? `Congratulations, ${name}. All set.` : 'Congratulations. All set.',
+    text: 'Your profile is ready and the suggestions already follow your answers. Changed your mind? You can change everything in your profile.',
+    card: 'Your profile',
+    instruments: 'Plays',
+    era: 'Favorite era',
+    composer: 'Favorite composer',
+    help: 'Any questions?',
+    helpText:
+      'The help center explains every part of Opus Atlas. If you cannot find the answer, talk to us: someone on the team replies.',
+    helpCenter: 'Help center',
+    contact: 'Talk to us',
+    start: 'Start exploring',
     profile: 'Open your profile',
   },
 };

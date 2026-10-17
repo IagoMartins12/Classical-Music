@@ -4,10 +4,8 @@ import { useQuery } from '@tanstack/react-query';
 import { useEffect, useRef, useState } from 'react';
 import toast from 'react-hot-toast';
 import { PiArrowLeft, PiArrowRight, PiX } from 'react-icons/pi';
-import Link from '@/app/components/LocalizedLink';
-import { Button, classesDeBotao } from '@/app/components/ui/Button';
+import { Button } from '@/app/components/ui/Button';
 import { Icon } from '@/app/components/ui/Icon';
-import { VistoQueSeDesenha } from '@/app/components/ui/VistoQueSeDesenha';
 import { cx } from '@/app/components/ui/cx';
 import { WELCOME } from '@/app/conteudo/site/welcome';
 import { useAuth } from '@/app/hooks/useAuth';
@@ -20,6 +18,7 @@ import {
   getPhoneValidationMessage,
 } from '@/app/utils/phones_and_location/phoneValidation';
 import { BrandSeal } from '../BrandSeal';
+import { WelcomeDone } from './WelcomeDone';
 import {
   InstrumentsStep,
   IntroStep,
@@ -200,35 +199,15 @@ export function WelcomeModal() {
       className="m-0 h-dvh max-h-none w-screen max-w-none bg-fundo p-0 text-texto backdrop:bg-[var(--bg-overlay)]"
     >
       {finished ? (
-        <div className="grid h-full place-items-center px-5 py-10">
-          <div className="entra flex max-w-lg flex-col items-center gap-6 text-center">
-            <span className="grid h-24 w-24 place-items-center rounded-full tint-ouro text-ouro-na-tinta">
-              <VistoQueSeDesenha className="h-12 w-12" />
-            </span>
-            <h2
-              ref={heading}
-              tabIndex={-1}
-              className="font-display text-[clamp(2rem,4vw,3rem)] leading-tight outline-none"
-            >
-              {copy.done.title(firstName)}
-            </h2>
-            <p className="t-corpo max-w-[40ch] text-texto-suave">
-              {copy.done.text}
-            </p>
-            <div className="flex flex-wrap justify-center gap-3">
-              <Button variante="primario" onClick={closeAll}>
-                {copy.done.start}
-              </Button>
-              <Link
-                href="/profile"
-                onClick={closeAll}
-                className={classesDeBotao()}
-              >
-                {copy.done.profile}
-              </Link>
-            </div>
-          </div>
-        </div>
+        <WelcomeDone
+          data={data}
+          image={data.image ?? user?.image ?? null}
+          copy={copy}
+          language={language}
+          options={options.data}
+          heading={heading}
+          onClose={closeAll}
+        />
       ) : (
         <div className="grid h-full grid-rows-[auto_minmax(0,1fr)_auto]">
           <header className="flex items-center gap-4 px-5 py-4 lg:px-10">
