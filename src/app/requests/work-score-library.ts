@@ -46,8 +46,15 @@ export interface ScoreShelf {
   editions: number;
 }
 
+/**
+ * `none`: the work truly has no score · `unavailable`: the source could not
+ * be read now (down, queue full, timed out) · `error`: our own request
+ * failed. Each one tells the visitor something different.
+ */
+export type LibraryStatus = ImslpStatus | 'error';
+
 export interface ScoreLibrary {
-  status: ImslpStatus;
+  status: LibraryStatus;
   shelves: ScoreShelf[];
 }
 
@@ -159,7 +166,7 @@ export async function getWorkScoreLibrary(
       await list(workId, { next: { revalidate: 300, tags: ['works'] } })
     );
   } catch {
-    return { status: 'unavailable', shelves: [] };
+    return { status: 'error', shelves: [] };
   }
 }
 

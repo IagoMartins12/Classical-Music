@@ -133,7 +133,12 @@ const pt = {
     noneText:
       'Tem uma de domínio público, ou uma digitação sua? Envie: entra no ar com o seu nome.',
     unavailable: 'Não conseguimos buscar as partituras agora',
-    unavailableText: 'Tente de novo em alguns minutos.',
+    unavailableText:
+      'A fonte das partituras não respondeu. Pode ser momentâneo: tente de novo em alguns minutos.',
+    error: 'Erro ao carregar as partituras',
+    errorText:
+      'Algo deu errado do nosso lado ao buscar as partituras desta obra.',
+    retry: 'Tentar de novo',
     upload: 'Enviar uma partitura desta obra',
     selecting: 'Escolha a partitura que você vai estudar',
     selectingText: 'Toque em uma edição abaixo. Ela fica salva no seu estudo.',
@@ -270,7 +275,12 @@ const en: typeof pt = {
     noneText:
       'Have a public-domain one, or your own engraving? Upload it: it goes live with your name.',
     unavailable: 'We could not fetch the scores right now',
-    unavailableText: 'Try again in a few minutes.',
+    unavailableText:
+      'The score source did not answer. It may be momentary: try again in a few minutes.',
+    error: 'The scores failed to load',
+    errorText:
+      'Something went wrong on our side while fetching the scores for this work.',
+    retry: 'Try again',
     upload: 'Upload a score for this work',
     selecting: 'Choose the score you will study',
     selectingText: 'Tap an edition below. It is saved with your study.',

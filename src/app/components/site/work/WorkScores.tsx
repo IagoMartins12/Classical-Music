@@ -3,6 +3,7 @@
 import { QuillOnPaper } from '../QuillOnPaper';
 import { useEffect, useMemo, useRef, useState, type ReactNode } from 'react';
 import {
+  PiArrowClockwise,
   PiArrowLeft,
   PiBookmarkSimple,
   PiCaretDown,
@@ -14,6 +15,7 @@ import Link from '@/app/components/LocalizedLink';
 import { Abas, Aba } from '@/app/components/ui/Abas';
 import { Button, classesDeBotao } from '@/app/components/ui/Button';
 import { Icon } from '@/app/components/ui/Icon';
+import { TentarDeNovo } from '@/app/components/ui/TentarDeNovo';
 import { cx } from '@/app/components/ui/cx';
 import { WORK, type WorkCopy } from '@/app/conteudo/site/work';
 import { useRouteLanguage } from '@/app/hooks/useRouteLanguage';
@@ -21,6 +23,7 @@ import {
   awaitWorkScoreLibrary,
   type ScoreEdition,
   type ScoreFile,
+  type LibraryStatus,
   type ScoreLibrary,
   type ScoreSection,
 } from '@/app/requests/work-score-library';
@@ -77,7 +80,11 @@ export function WorkScores({
         setLibrary(next);
         setKind(next.shelves[0]?.kind);
       })
-      .catch(() => {});
+      .catch((error) => {
+        // Leaving the page aborts the wait; anything else is our failure.
+        if (!controller.signal.aborted && error?.name !== 'AbortError')
+          setLibrary({ status: 'error', shelves: [] });
+      });
     return () => controller.abort();
   }, [library.status, context.workId]);
 
@@ -157,11 +164,7 @@ export function WorkScores({
         {library.status === 'pending' ? (
           <Searching copy={copy} />
         ) : !shelf ? (
-          <Empty
-            workId={context.workId}
-            unavailable={library.status === 'unavailable'}
-            copy={copy}
-          />
+          <Empty workId={context.workId} status={library.status} copy={copy} />
         ) : (
           <>
             <div className="flex flex-wrap items-center justify-between gap-3">
@@ -458,31 +461,48 @@ function Searching({ copy }: { copy: WorkCopy['scores'] }) {
   );
 }
 
+/**
+ * No score to show, and why: the work has none, the source did not answer,
+ * or our own request failed. Only the first is a fact about the work.
+ */
 function Empty({
   workId,
-  unavailable,
+  status,
   copy,
 }: {
   workId: string;
-  unavailable: boolean;
+  status: LibraryStatus;
   copy: WorkCopy['scores'];
 }) {
+  const failed = status === 'unavailable' || status === 'error';
+  const [title, text] =
+    status === 'error'
+      ? [copy.error, copy.errorText]
+      : status === 'unavailable'
+        ? [copy.unavailable, copy.unavailableText]
+        : [copy.none, copy.noneText];
   return (
-    <div className="flex flex-col items-start gap-3 rounded-card bg-sup-2 p-6">
-      <span className="font-medium">
-        {unavailable ? copy.unavailable : copy.none}
-      </span>
-      <span className="t-rotulo text-texto-suave">
-        {unavailable ? copy.unavailableText : copy.noneText}
-      </span>
-      {!unavailable && (
-        <Link
-          href={`/upload?type=score&work=${workId}`}
-          className={classesDeBotao()}
-        >
-          <Icon de={PiUploadSimple} /> {copy.upload}
-        </Link>
-      )}
+    <div
+      role={failed ? 'alert' : undefined}
+      className="flex flex-col items-start gap-3 rounded-card bg-sup-2 p-6"
+    >
+      <span className="font-medium">{title}</span>
+      <span className="t-rotulo text-texto-suave">{text}</span>
+      <div className="flex flex-wrap gap-2">
+        {failed && (
+          <TentarDeNovo variante="primario" icone={PiArrowClockwise}>
+            {copy.retry}
+          </TentarDeNovo>
+        )}
+        {status !== 'error' && (
+          <Link
+            href={`/upload?type=score&work=${workId}`}
+            className={classesDeBotao()}
+          >
+            <Icon de={PiUploadSimple} /> {copy.upload}
+          </Link>
+        )}
+      </div>
     </div>
   );
 }
