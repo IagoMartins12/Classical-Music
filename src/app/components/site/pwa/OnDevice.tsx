@@ -27,6 +27,7 @@ import {
 } from '@/app/libs/pwa/partituras';
 import { AppGravado } from './AppGravado';
 import { ABRIR_PASSOS } from './eventos';
+import { SobreATecnologia } from './SobreATecnologia';
 
 const tamanho = (bytes: number, language: 'pt' | 'en') => {
   const fmt = new Intl.NumberFormat(language === 'pt' ? 'pt-BR' : 'en-US', {
@@ -72,6 +73,7 @@ export function OnDevice() {
 
   const a = copy.apresentacao;
   const instalar = () => window.dispatchEvent(new Event(ABRIR_PASSOS));
+  const [sobre, setSobre] = useState(false);
 
   return (
     <div className="section-wrap flex flex-col gap-16 py-12 md:gap-20 md:py-16">
@@ -87,11 +89,11 @@ export function OnDevice() {
             >
               {a.abertura}{' '}
               {/* Nobody needs the technology's name to use it: a quiet sign
-                  for the curious, with the explanation one click away. */}
-              <a
-                href={a.tecnologiaLink}
-                target="_blank"
-                rel="noopener noreferrer"
+                  for the curious, the explanation one click away, here. */}
+              <button
+                type="button"
+                onClick={() => setSobre(true)}
+                aria-haspopup="dialog"
                 aria-label={a.tecnologia}
                 className="group relative inline-grid h-6 w-6 place-items-center rounded-full align-middle text-texto-fraco transition-colors hover:text-ouro-texto focus-visible:text-ouro-texto"
               >
@@ -102,7 +104,7 @@ export function OnDevice() {
                 >
                   {a.tecnologia}
                 </span>
-              </a>
+              </button>
             </p>
             <div
               className="entra flex flex-wrap gap-3 pt-2"
@@ -235,6 +237,12 @@ export function OnDevice() {
           </ul>
         )}
       </section>
+      <SobreATecnologia
+        aberto={sobre}
+        aoFechar={() => setSobre(false)}
+        aoInstalar={instalar}
+        copy={copy}
+      />
     </div>
   );
 }

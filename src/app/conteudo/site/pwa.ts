@@ -79,8 +79,56 @@ const pt = {
       abertura:
         'Ainda não temos um app nas lojas. Mas o site sabe se instalar como um: fica na tela de início, abre em tela cheia, guarda partituras e continua funcionando sem internet.',
       tecnologia: 'Quer saber mais sobre a tecnologia? Clique aqui.',
-      tecnologiaLink:
-        'https://developer.mozilla.org/pt-BR/docs/Web/Progressive_web_apps',
+      sobre: {
+        titulo: 'Um app que é o próprio site',
+        abertura:
+          'Pense numa partitura. A obra é a mesma no concerto e na estante da sua casa; muda só onde ela está. O Opus Atlas instalado é assim: o mesmo site, agora na tela de início do seu celular.',
+        comoFunciona: 'Como funciona',
+        partes: [
+          {
+            titulo: 'Um ícone na tela de início',
+            texto:
+              'Ao instalar, o navegador cria um atalho com cara de aplicativo. Um toque e o Opus Atlas abre em tela cheia, sem a barra de endereço.',
+            analogia:
+              'Como encadernar as sonatas que você mais toca: o conteúdo é o mesmo, mas agora tem capa e lugar fixo na estante.',
+          },
+          {
+            titulo: 'Um copista trabalhando por você',
+            texto:
+              'Por trás, o navegador guarda uma cópia das páginas que você visitou e das partituras que você escolheu. Sem internet, são essas cópias que aparecem.',
+            analogia:
+              'Como os copistas do tempo de Bach, que passavam as partes a limpo para cada músico levar para casa.',
+          },
+          {
+            titulo: 'Edições novas chegam sozinhas',
+            texto:
+              'Quando você abre o app com internet, ele busca a versão mais recente do site. Não há loja, nem atualização para baixar.',
+            analogia:
+              'Como uma edição revisada que aparece na sua estante sem você precisar voltar à loja de partituras.',
+          },
+        ],
+        exemplos: 'No dia a dia',
+        usos: [
+          [
+            'Na aula, sem sinal',
+            'Guarde a partitura no aparelho em casa e abra na sala de aula, mesmo sem internet.',
+          ],
+          [
+            'Antes do ensaio',
+            'Abra pelo ícone e vá direto ao seu estudo, sem procurar o site no navegador.',
+          ],
+          [
+            'No ônibus ou no metrô',
+            'As páginas de compositores e obras que você já visitou continuam abrindo.',
+          ],
+          [
+            'Na estante',
+            'Em tela cheia, a partitura ocupa a tela inteira, sem a barra do navegador.',
+          ],
+        ] as [string, string][],
+        nome: 'Para os curiosos: o nome técnico disso é Progressive Web App (PWA). Funciona no Chrome e no Edge do Android e do computador, e no Safari do iPhone.',
+        fechar: 'Entendi',
+      },
       comparar: 'O que você tem com ele instalado',
       itens: [
         {
@@ -211,8 +259,56 @@ const en: typeof pt = {
       abertura:
         'We do not have an app in the stores yet. But the site can install itself like one: it sits on your home screen, opens full screen, keeps scores and keeps working without internet.',
       tecnologia: 'Want to know more about the technology? Click here.',
-      tecnologiaLink:
-        'https://developer.mozilla.org/en-US/docs/Web/Progressive_web_apps',
+      sobre: {
+        titulo: 'An app that is the site itself',
+        abertura:
+          'Think of a score. The piece is the same in the concert hall and on your music stand at home; only where it sits changes. Installed Opus Atlas is like that: the same site, now on your phone’s home screen.',
+        comoFunciona: 'How it works',
+        partes: [
+          {
+            titulo: 'An icon on your home screen',
+            texto:
+              'When you install it, the browser creates a shortcut that looks like an app. One tap and Opus Atlas opens full screen, without the address bar.',
+            analogia:
+              'Like binding the sonatas you play the most: the music is the same, but now it has a cover and its own place on the shelf.',
+          },
+          {
+            titulo: 'A copyist working for you',
+            texto:
+              'Behind the scenes, the browser keeps a copy of the pages you visited and the scores you chose. Without internet, those copies are what you see.',
+            analogia:
+              'Like the copyists of Bach’s time, who wrote out the parts for each musician to take home.',
+          },
+          {
+            titulo: 'New editions arrive on their own',
+            texto:
+              'When you open the app with internet, it fetches the latest version of the site. No store, no update to download.',
+            analogia:
+              'Like a revised edition that shows up on your shelf without a trip back to the music shop.',
+          },
+        ],
+        exemplos: 'Day to day',
+        usos: [
+          [
+            'In class, without signal',
+            'Save the score on your device at home and open it in the classroom, even offline.',
+          ],
+          [
+            'Before rehearsal',
+            'Open it from the icon and go straight to your practice, without looking for the site in the browser.',
+          ],
+          [
+            'On the bus or the subway',
+            'The composer and work pages you have visited keep opening.',
+          ],
+          [
+            'On the stand',
+            'Full screen, the score fills the whole screen, without the browser bar.',
+          ],
+        ] as [string, string][],
+        nome: 'For the curious: the technical name is Progressive Web App (PWA). It works in Chrome and Edge on Android and computers, and in Safari on the iPhone.',
+        fechar: 'Got it',
+      },
       comparar: 'What you get with it installed',
       itens: [
         {
