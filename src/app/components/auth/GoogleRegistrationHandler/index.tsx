@@ -37,6 +37,9 @@ const GoogleRegistrationHandler: React.FC = () => {
       url.searchParams.delete('new-user');
       url.searchParams.delete('google-register');
       window.history.replaceState({}, '', url.toString());
+      // The mark only says the account is new; whoever already answered (or
+      // typed the mark into the address bar) does not see the welcome again.
+      if (session.user.onboardingCompleted) return;
       try {
         localStorage.setItem(`boas-vindas-abertas-${userId}`, '1');
       } catch {
