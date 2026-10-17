@@ -44,7 +44,7 @@ const pt = {
       ],
       scores: [
         'Partituras do acervo',
-        'Edições do IMSLP e as enviadas pela comunidade, para abrir e baixar.',
+        'Edições de domínio público e as enviadas pela comunidade, para abrir, baixar e ligar ao seu estudo.',
       ],
       favorites: [
         'Seus favoritos',
@@ -76,8 +76,8 @@ const pt = {
     empty: 'Ainda não',
   },
   you: {
-    title: 'Quem é você na música?',
-    text: 'Isso muda o que o Opus Atlas sugere primeiro. Dá para trocar depois no perfil.',
+    title: 'Queremos conhecer você',
+    text: 'Quem é você na música? Isso muda o que o Opus Atlas sugere primeiro, e dá para trocar depois no perfil.',
     types: {
       MUSIC_STUDENT: [
         'Estudo música',
@@ -128,10 +128,9 @@ const pt = {
   } as Record<Level, string>,
   taste: {
     title: 'O que você gosta de ouvir?',
-    text: 'Escolha uma época e, se quiser, um compositor. A página inicial começa por eles.',
+    text: 'Uma época e um compositor, de qualquer época. A página inicial começa por eles.',
     era: 'Época preferida',
     composer: 'Compositor preferido',
-    allComposers: 'Ver de todas as épocas',
     search: 'Buscar outro compositor pelo nome',
     searchEmpty: 'Nenhum compositor com esse nome',
   },
@@ -191,7 +190,7 @@ const en: typeof pt = {
       ],
       scores: [
         'Scores from the archive',
-        'Editions from IMSLP and those sent by the community, to open and download.',
+        'Public-domain editions and those sent by the community, to open, download and tie to your practice.',
       ],
       favorites: [
         'Your favorites',
@@ -223,8 +222,8 @@ const en: typeof pt = {
     empty: 'Not yet',
   },
   you: {
-    title: 'Who are you in music?',
-    text: 'It changes what Opus Atlas suggests first. You can change it later in your profile.',
+    title: 'We want to know you',
+    text: 'Who are you in music? It changes what Opus Atlas suggests first, and you can change it later in your profile.',
     types: {
       MUSIC_STUDENT: [
         'I study music',
@@ -278,10 +277,9 @@ const en: typeof pt = {
   },
   taste: {
     title: 'What do you like to hear?',
-    text: 'Pick an era and, if you like, a composer. The home page starts with them.',
+    text: 'An era and a composer, from any era. The home page starts with them.',
     era: 'Favorite era',
     composer: 'Favorite composer',
-    allComposers: 'Show every era',
     search: 'Search another composer by name',
     searchEmpty: 'No composer by that name',
   },

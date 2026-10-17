@@ -156,20 +156,29 @@ const INTRO: [IntroItem, IconType][] = [
   ['lessons', PiChalkboardTeacher],
 ];
 
-/** The first step: what Opus Atlas keeps for you, before any question. */
+/**
+ * The first step: what Opus Atlas keeps for the person, before any question.
+ * A reading list, not a grid of cards — the picture of the atlas sits beside
+ * it on wide screens.
+ */
 export function IntroStep({ copy }: StepProps) {
   return (
     <div className="flex flex-col gap-8">
-      <ul className="cascata grid grid-cols-1 gap-3 sm:grid-cols-2 xl:grid-cols-3">
+      <ul className="cascata grid grid-cols-1 gap-x-10 sm:grid-cols-2">
         {INTRO.map(([key, icon]) => {
           const [title, text] = copy.intro.items[key];
           return (
-            <li key={key} className="flex gap-4 rounded-card bg-sup-2 p-5">
-              <span className="grid h-11 w-11 shrink-0 place-items-center rounded-full tint-ouro text-ouro-na-tinta">
-                <Icon de={icon} tamanho="m" />
-              </span>
+            <li
+              key={key}
+              className="flex gap-4 border-t border-[var(--linha)] py-5"
+            >
+              <Icon
+                de={icon}
+                tamanho="m"
+                className="mt-1 shrink-0 text-ouro-texto"
+              />
               <span className="flex flex-col gap-1">
-                <span className="font-display text-[1.25rem] leading-snug">
+                <span className="font-display text-[1.375rem] leading-snug">
                   {title}
                 </span>
                 <span className="t-rotulo text-texto-suave">{text}</span>
@@ -387,7 +396,6 @@ export function TasteStep({
   language,
   options,
 }: StepProps & { options: WelcomeOptions }) {
-  const [everyEra, setEveryEra] = useState(false);
   // A composer found by name, outside the suggested ones.
   const [found, setFound] = useState<
     WelcomeOptions['composers'][number] | null
@@ -397,15 +405,9 @@ export function TasteStep({
     const epoch = options.epochs.find((e) => eraOf(e.name)?.key === era.key);
     return epoch ? [{ era, epoch }] : [];
   });
-  const chosenEra = eraOf(
-    options.epochs.find((e) => e.id === data.favoriteEpochId)?.name
-  );
-  const suggested =
-    chosenEra && !everyEra
-      ? options.composers.filter(
-          (c) => eraOf(c.epochName)?.key === chosenEra.key
-        )
-      : options.composers;
+  // The composers are not tied to the era: someone can love the medieval
+  // and have Chopin as a favorite.
+  const suggested = options.composers;
   const composers =
     found && !suggested.some((c) => c.id === found.id)
       ? [found, ...suggested]
@@ -516,17 +518,6 @@ export function TasteStep({
             );
           })}
         </div>
-        {chosenEra &&
-          !everyEra &&
-          options.composers.length > suggested.length && (
-            <button
-              type="button"
-              onClick={() => setEveryEra(true)}
-              className="t-rotulo self-start text-ouro-texto hover:underline"
-            >
-              {copy.taste.allComposers}
-            </button>
-          )}
       </Group>
     </div>
   );
