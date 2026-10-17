@@ -274,7 +274,10 @@ export default async function Pagina({ params }: LangPageProps) {
               </a>
               <BotaoCriarConta
                 seLogado={
-                  <LocalizedLink href="/profile" className={classesDeBotao()}>
+                  <LocalizedLink
+                    href="/profile#profile-subscription"
+                    className={classesDeBotao()}
+                  >
                     {c.acoesTopo.seuPlano}
                   </LocalizedLink>
                 }

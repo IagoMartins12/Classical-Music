@@ -6,6 +6,7 @@ import InstrumentsSection from '@/app/components/profile/InstrumentsSection';
 import MusicalPreferencesSection from '@/app/components/profile/MusicalPreferencesSection';
 import PersonalInfoSection from '@/app/components/profile/PersonalInfoSection';
 import PrivacySection from '@/app/components/profile/PrivacySection';
+import SubscriptionSection from '@/app/components/profile/SubscriptionSection';
 import { Button } from '@/app/components/ui/Button';
 import { cx } from '@/app/components/ui/cx';
 import { EsqueletoPerfil } from '@/app/components/ui/Carregando';
@@ -25,6 +26,7 @@ const SECTIONS: [
   ['instruments', InstrumentsSection],
   ['preferences', MusicalPreferencesSection],
   ['privacy', PrivacySection],
+  ['subscription', SubscriptionSection],
   ['account', AccountSettingsSection],
 ];
 
@@ -54,7 +56,7 @@ function useSecaoAtual(ativo: boolean) {
   return [atual, setAtual] as const;
 }
 
-/** The profile's five sections on one page, with a jump list beside them. */
+/** The profile's sections on one page, with a jump list beside them. */
 export function ProfileView() {
   const copy = PERSONAL[useRouteLanguage().language].profile;
   const { user, isAuthenticated, updateUser } = useAuth();
@@ -69,6 +71,18 @@ export function ProfileView() {
       ?.querySelector<HTMLElement>('[aria-current="true"]')
       ?.scrollIntoView({ block: 'nearest', inline: 'nearest' });
   }, [atual]);
+
+  // A link straight to a section (pricing's "Ver minha assinatura"): the
+  // page paints after the account loads, too late for the browser's own jump.
+  useEffect(() => {
+    if (!pronto) return;
+    const alvo = window.location.hash.replace('#profile-', '') as Key;
+    if (!SECTIONS.some(([key]) => key === alvo)) return;
+    document
+      .getElementById(`profile-${alvo}`)
+      ?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    setAtual(alvo);
+  }, [pronto, setAtual]);
 
   if (!isAuthenticated || !user) return <EsqueletoPerfil />;
 

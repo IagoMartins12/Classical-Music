@@ -8,14 +8,11 @@ import { Button } from '@/app/components/ui/Button';
 import { Card } from '@/app/components/ui/Card';
 import { Inline, Stack } from '@/app/components/ui/Layout';
 import { profileApi } from '@/app/libs/api/profile';
-import { GerenciarAssinatura } from './GerenciarAssinatura';
 
 /**
- * Assinatura e dados pessoais, nas Configurações da Conta.
- *
- * A assinatura (trocar de plano, pagamento, cancelar) mora em
- * `GerenciarAssinatura`. Exportar os próprios dados cumpre a LGPD, art. 18
- * (portabilidade), prometida nos Termos e na Política.
+ * Os dados pessoais, nas Configurações da Conta. A assinatura tem a própria
+ * seção no perfil (`SubscriptionSection`). Exportar os próprios dados cumpre
+ * a LGPD, art. 18 (portabilidade), prometida nos Termos e na Política.
  */
 const R = {
   pt: {
@@ -70,8 +67,6 @@ export function AssinaturaEDados() {
 
   return (
     <>
-      <GerenciarAssinatura idioma={idioma} />
-
       <Card nivel={2}>
         <Stack gap={4}>
           <Inline gap={3}>
