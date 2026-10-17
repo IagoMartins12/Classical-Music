@@ -66,15 +66,6 @@ const pt = {
     then: 'Agora, algumas perguntas rápidas para deixar tudo do seu jeito. Leva um minuto, e dá para mudar depois no perfil.',
     start: 'Começar',
   },
-  preview: {
-    title: 'Seu Opus Atlas, até agora',
-    label: 'Prévia das suas respostas',
-    noName: 'Seu nome',
-    instruments: 'Instrumentos',
-    era: 'Época',
-    composer: 'Compositor preferido',
-    empty: 'Ainda não',
-  },
   you: {
     title: 'Queremos conhecer você',
     text: 'Quem é você na música? Isso muda o que o Opus Atlas sugere primeiro, e dá para trocar depois no perfil.',
@@ -212,15 +203,6 @@ const en: typeof pt = {
     } as Record<IntroItem, [string, string]>,
     then: 'Now a few quick questions to make it yours. It takes a minute, and you can change it later in your profile.',
     start: 'Get started',
-  },
-  preview: {
-    title: 'Your Opus Atlas so far',
-    label: 'Preview of your answers',
-    noName: 'Your name',
-    instruments: 'Instruments',
-    era: 'Era',
-    composer: 'Favorite composer',
-    empty: 'Not yet',
   },
   you: {
     title: 'We want to know you',

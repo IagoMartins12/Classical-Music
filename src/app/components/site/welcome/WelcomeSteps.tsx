@@ -2,7 +2,6 @@
 
 import Image from 'next/image';
 import { CaixaDeMarcar } from '@/app/components/ui/CaixaDeMarcar';
-import { useQueryClient } from '@tanstack/react-query';
 import { useEffect, useRef, useState } from 'react';
 import toast from 'react-hot-toast';
 import {
@@ -396,7 +395,6 @@ export function TasteStep({
   language,
   options,
 }: StepProps & { options: WelcomeOptions }) {
-  const queryClient = useQueryClient();
   // A composer found by name, outside the suggested ones.
   const [found, setFound] = useState<
     WelcomeOptions['composers'][number] | null
@@ -419,8 +417,7 @@ export function TasteStep({
       ? [found, ...suggested]
       : suggested;
 
-  // The picked composer keeps the portrait the list showed; the preview
-  // reads the same entry instead of asking the API again.
+  // The picked composer keeps the portrait the list showed.
   const choose = (option: OpcaoSelecao | null) => {
     setSearching(false);
     if (!option) return;
@@ -432,7 +429,6 @@ export function TasteStep({
       epochName: null,
     };
     setFound(composer);
-    queryClient.setQueryData(['composer', composer.id], composer);
     update({ favoriteComposerId: composer.id });
   };
 
@@ -494,7 +490,7 @@ export function TasteStep({
             />
           </div>
         )}
-        <div className="grid grid-cols-3 gap-x-3 gap-y-4 sm:grid-cols-5 lg:grid-cols-6">
+        <div className="grid grid-cols-3 gap-x-3 gap-y-4 sm:grid-cols-5 lg:grid-cols-7">
           {/* Someone not among them: the first place in the grid opens the
               search above it; the one picked joins the portraits. */}
           <button

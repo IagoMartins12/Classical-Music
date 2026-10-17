@@ -3,35 +3,29 @@
 import { useQuery } from '@tanstack/react-query';
 import { useEffect, useRef, useState } from 'react';
 import toast from 'react-hot-toast';
-import { PiArrowLeft, PiArrowRight, PiStarFill, PiX } from 'react-icons/pi';
+import { PiArrowLeft, PiArrowRight, PiX } from 'react-icons/pi';
 import Link from '@/app/components/LocalizedLink';
 import { Button, classesDeBotao } from '@/app/components/ui/Button';
 import { Icon } from '@/app/components/ui/Icon';
 import { VistoQueSeDesenha } from '@/app/components/ui/VistoQueSeDesenha';
 import { cx } from '@/app/components/ui/cx';
-import { WELCOME, type WelcomeCopy } from '@/app/conteudo/site/welcome';
+import { WELCOME } from '@/app/conteudo/site/welcome';
 import { useAuth } from '@/app/hooks/useAuth';
 import { useOverlayLanguage } from '@/app/hooks/useRouteLanguage';
 import { useSessionUpdate } from '@/app/hooks/useSessionUpdate';
 import { legacyOnboarding } from '@/app/libs/api/compat';
-import { findComposerById } from '@/app/requests/catalog-search';
-import {
-  useOnboardingModal,
-  type OnboardingData,
-} from '@/app/stores/authStore';
+import { useOnboardingModal } from '@/app/stores/authStore';
 import {
   canProceedWithPhone,
   getPhoneValidationMessage,
 } from '@/app/utils/phones_and_location/phoneValidation';
 import { BrandSeal } from '../BrandSeal';
-import { Portrait } from '../Portrait';
 import {
   InstrumentsStep,
   IntroStep,
   ProfileStep,
   StudyStep,
   TasteStep,
-  WelcomeAvatar,
   YouStep,
   type StepProps,
   type WelcomeOptions,
@@ -47,9 +41,9 @@ const STEPS = [
 ] as const;
 
 /**
- * The welcome questions after sign-up, full screen: who you are, what you
- * play, how you study, what you like and your profile — and, beside them on
- * wide screens, the answers taking shape as they come. The draft lives in
+ * The welcome after sign-up, full screen: what Opus Atlas keeps for you,
+ * then who you are, what you play, how you study, what you like and your
+ * profile. The draft lives in
  * the auth store (saved in the browser), so closing midway keeps them.
  */
 export function WelcomeModal() {
@@ -236,8 +230,8 @@ export function WelcomeModal() {
           </div>
         </div>
       ) : (
-        <div className="grid h-full grid-rows-[auto_minmax(0,1fr)_auto] lg:grid-cols-[minmax(0,1fr)_minmax(20rem,26rem)]">
-          <header className="flex items-center gap-4 px-5 py-4 lg:col-span-2 lg:px-10">
+        <div className="grid h-full grid-rows-[auto_minmax(0,1fr)_auto]">
+          <header className="flex items-center gap-4 px-5 py-4 lg:px-10">
             <span className="font-display text-[1.25rem] text-ouro-texto">
               Opus Atlas
             </span>
@@ -277,8 +271,8 @@ export function WelcomeModal() {
           <main
             key={step}
             className={cx(
-              'entra flex min-h-0 flex-col gap-8 overflow-y-auto px-5 py-6 lg:px-10 lg:py-10',
-              step === 'intro' && 'items-center text-center lg:col-span-2'
+              'entra flex min-h-0 flex-col gap-8 overflow-y-auto px-5 py-6 lg:px-[max(2.5rem,calc((100%-64rem)/2))] lg:py-10',
+              step === 'intro' && 'items-center text-center'
             )}
           >
             <div
@@ -308,21 +302,7 @@ export function WelcomeModal() {
             {body}
           </main>
 
-          {step !== 'intro' && (
-            <Preview
-              data={data}
-              copy={copy}
-              options={options.data}
-              image={data.image ?? user?.image ?? null}
-            />
-          )}
-
-          <footer
-            className={cx(
-              'flex items-center justify-between gap-3 border-t border-[var(--linha)] px-5 py-4 lg:px-10',
-              step === 'intro' ? 'lg:col-span-2' : 'lg:col-start-1'
-            )}
-          >
+          <footer className="flex items-center justify-between gap-3 border-t border-[var(--linha)] px-5 py-4 lg:px-[max(2.5rem,calc((100%-64rem)/2))]">
             <Button
               variante="fantasma"
               onClick={closeAll}
@@ -358,137 +338,5 @@ export function WelcomeModal() {
         </div>
       )}
     </dialog>
-  );
-}
-
-/**
- * The answers so far, as the profile will show them. Wide screens only —
- * on a phone the questions need the whole width.
- */
-function Preview({
-  data,
-  copy,
-  options,
-  image,
-}: {
-  data: OnboardingData;
-  copy: WelcomeCopy;
-  options: WelcomeOptions | undefined;
-  image: string | null;
-}) {
-  const name = [data.firstName, data.lastName].filter(Boolean).join(' ');
-  const listed = options?.composers.find(
-    (c) => c.id === data.favoriteComposerId
-  );
-  // A composer found by name is not among the suggested ones.
-  const searched = useQuery({
-    queryKey: ['composer', data.favoriteComposerId],
-    enabled: !!data.favoriteComposerId && !!options && !listed,
-    staleTime: 60 * 60_000,
-    queryFn: () => findComposerById(data.favoriteComposerId!),
-  });
-  const composer = listed ?? searched.data ?? null;
-  const era = options?.epochs.find((e) => e.id === data.favoriteEpochId);
-  const facts = [
-    data.experienceLevel && copy.levels[data.experienceLevel],
-    data.practiceTimePerWeek !== undefined &&
-      copy.study.minutes(data.practiceTimePerWeek),
-  ].filter(Boolean);
-
-  return (
-    <aside
-      aria-label={copy.preview.label}
-      className="hidden min-h-0 flex-col gap-5 overflow-y-auto bg-sup-2 p-8 lg:col-start-2 lg:row-span-2 lg:row-start-2 lg:flex"
-    >
-      <span className="t-legenda">{copy.preview.title}</span>
-      <div className="flex flex-col items-center gap-2 rounded-card bg-[var(--fundo)] px-5 py-5 text-center">
-        <WelcomeAvatar
-          name={name}
-          image={image}
-          className="h-16 w-16 bg-sup-2 text-[1.375rem]"
-        />
-        <span
-          className={cx(
-            'font-display text-[1.25rem] leading-tight',
-            name ? 'text-ouro-texto' : 'text-texto-fraco'
-          )}
-        >
-          {name || copy.preview.noName}
-        </span>
-        {data.userType && (
-          <span className="t-rotulo text-texto-suave">
-            {copy.you.types[data.userType][0]}
-          </span>
-        )}
-      </div>
-
-      <PreviewRow label={copy.preview.instruments} empty={copy.preview.empty}>
-        {data.instruments?.length ? (
-          <div className="flex flex-col gap-2">
-            <div className="flex flex-wrap gap-1.5">
-              {data.instruments.map((i) => (
-                <span
-                  key={i.id}
-                  className="item-entra inline-flex items-center gap-1.5 rounded-full bg-[var(--fundo)] px-3 py-1 text-[0.875rem]"
-                >
-                  {i.isPrimary && (
-                    <Icon
-                      de={PiStarFill}
-                      tamanho="pp"
-                      className="text-ouro-texto"
-                    />
-                  )}
-                  {i.name}
-                </span>
-              ))}
-            </div>
-            {facts.length > 0 && (
-              <span className="t-rotulo text-texto-suave">
-                {facts.join(' · ')}
-              </span>
-            )}
-          </div>
-        ) : null}
-      </PreviewRow>
-
-      <PreviewRow label={copy.preview.era} empty={copy.preview.empty}>
-        {era ? (
-          <span className="font-display text-[1.25rem]">{era.name}</span>
-        ) : null}
-      </PreviewRow>
-
-      <PreviewRow label={copy.preview.composer} empty={copy.preview.empty}>
-        {composer ? (
-          <span className="item-entra flex items-center gap-3">
-            <Portrait
-              name={composer.name}
-              src={composer.portraitUrl ?? null}
-              sizes="48px"
-              className="h-12 w-12 shrink-0 rounded-full"
-            />
-            <span className="font-display text-[1.25rem] leading-snug">
-              {composer.fullName || composer.name}
-            </span>
-          </span>
-        ) : null}
-      </PreviewRow>
-    </aside>
-  );
-}
-
-function PreviewRow({
-  label,
-  empty,
-  children,
-}: {
-  label: string;
-  empty: string;
-  children: React.ReactNode;
-}) {
-  return (
-    <div className="flex flex-col gap-2">
-      <span className="t-legenda">{label}</span>
-      {children ?? <span className="t-rotulo text-texto-fraco">{empty}</span>}
-    </div>
   );
 }
