@@ -337,13 +337,22 @@ export function CabecalhoDoBlog({
                 aria-haspopup="menu"
                 aria-expanded={conta}
                 onClick={() => setConta((c) => !c)}
-                className="ml-1 flex min-h-[var(--alvo)] items-center rounded-full"
+                aria-label={t.nav.conta}
+                // Same trigger as the site header: picture, first name, caret.
+                className="ml-1 flex min-h-[var(--alvo)] items-center gap-2 rounded-full py-1 pl-1 pr-2 hover:bg-sup-2"
               >
                 <Avatar
                   autor={{ nome: nomeDoUsuario, imagem: user?.image ?? null }}
                   tamanho="p"
                 />
-                <span className="sr-only">{t.nav.conta}</span>
+                <span className="max-w-32 truncate text-[0.9375rem] max-xl:hidden">
+                  {user?.firstName || nomeDoUsuario}
+                </span>
+                <Icon
+                  de={PiCaretDown}
+                  tamanho="pp"
+                  className={cx('transition-transform', conta && 'rotate-180')}
+                />
               </button>
               {conta && (
                 <div
