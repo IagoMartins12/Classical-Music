@@ -37,7 +37,7 @@ export function ErasCarousel({
     },
     ...ERAS.map((era) => ({
       key: era.key,
-      href: `/music-history#${era.key}`,
+      href: `/music-history/${era.key}`,
       image: era.image,
       years: eraYears(era, language),
       name: era.name[language],
