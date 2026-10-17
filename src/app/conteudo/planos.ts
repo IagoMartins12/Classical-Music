@@ -1,6 +1,5 @@
 import { CONTATO } from '@/app/utils/contato';
 import type { Idioma } from './legal/tipos';
-import type { Numeros } from './sobre';
 
 /**
  * O texto da página de planos (`/pricing`).
@@ -61,13 +60,15 @@ export type ConteudoPlanos = {
   titulo: string;
   abertura: string;
   /** Facts under the hero's lead that answer "what if I regret it?". */
-  /** The free layer as icons beside the archive line. */
-  gratis: {
+  /**
+   * What the paid plans unlock, as gold icons and one line under the hero's
+   * lead; the entry price comes from the price table (none without it).
+   */
+  pagos: {
     rotulo: string;
-    itens: Record<'ler' | 'ouvir' | 'partituras' | 'baixar', string>;
+    itens: Record<'videos' | 'envios' | 'portal' | 'relatorios', string>;
+    chamada: (aPartirDe: string | null) => string;
   };
-  /** What is free before any plan, with live numbers rounded down. */
-  acervo: (n: Numeros, formatar: (x: number) => string) => string | null;
   /** The hero's two actions, like the other editorial pages. */
   acoesTopo: { planos: string; criarConta: string; seuPlano: string };
   periodo: {
@@ -158,15 +159,18 @@ export const PLANOS: Record<Idioma, ConteudoPlanos> = {
       'Já pensou em ter o universo da música clássica na palma das suas mãos?',
     abertura:
       'Grave seus vídeos e envie ao acervo sem limite. Se você dá aula, leve a turma inteira para o portal: aulas, tarefas e o progresso de cada aluno.',
-    acervo: (n, f) => (n ? `${f(n.obras)} obras grátis, sem conta` : null),
-    gratis: {
-      rotulo: 'O que já é grátis',
+    pagos: {
+      rotulo: 'O que os planos destravam',
       itens: {
-        ler: 'Ler sobre compositores e obras',
-        ouvir: 'Ouvir as gravações',
-        partituras: 'Partituras de domínio público',
-        baixar: 'Baixar as partituras',
+        videos: 'Vídeos de performance sem limite',
+        envios: 'Envios ao acervo sem limite',
+        portal: 'Portal do professor',
+        relatorios: 'Relatórios de progresso',
       },
+      chamada: (p) =>
+        p
+          ? `Vídeos sem limite, portal da turma e relatórios, a partir de **${p}/mês**`
+          : 'Vídeos sem limite, portal da turma e relatórios de progresso',
     },
     periodo: {
       rotulo: 'Cobrança',
@@ -440,15 +444,18 @@ export const PLANOS: Record<Idioma, ConteudoPlanos> = {
       'Ever imagined holding the whole world of classical music in your hands?',
     abertura:
       'Record your playing and add to the library without limits. If you teach, bring your whole class to the portal: lessons, assignments and each student’s progress.',
-    acervo: (n, f) => (n ? `${f(n.obras)} free works, no account` : null),
-    gratis: {
-      rotulo: 'What is already free',
+    pagos: {
+      rotulo: 'What the plans unlock',
       itens: {
-        ler: 'Reading about composers and works',
-        ouvir: 'Listening to the recordings',
-        partituras: 'Public-domain scores',
-        baixar: 'Downloading the scores',
+        videos: 'Unlimited performance videos',
+        envios: 'Unlimited uploads to the archive',
+        portal: 'Teacher portal',
+        relatorios: 'Progress reports',
       },
+      chamada: (p) =>
+        p
+          ? `Unlimited videos, a class portal and reports, from **${p}/month**`
+          : 'Unlimited videos, a class portal and progress reports',
     },
     periodo: {
       rotulo: 'Billing',

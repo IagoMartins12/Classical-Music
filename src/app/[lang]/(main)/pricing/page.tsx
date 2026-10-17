@@ -1,12 +1,12 @@
 import type { Metadata } from 'next';
 import {
   PiArrowDown,
-  PiBookOpenText,
   PiCaretDown,
-  PiDownloadSimple,
-  PiFileText,
-  PiHeadphones,
+  PiChalkboardTeacher,
+  PiChartLineUp,
   PiMinus,
+  PiUploadSimple,
+  PiVideoCamera,
 } from 'react-icons/pi';
 import { BotaoCriarConta } from '@/app/components/auth/BotaoCriarConta';
 import { classesDeBotao } from '@/app/components/ui/Button';
@@ -23,7 +23,6 @@ import {
   type LangParams,
 } from '@/app/utils/translations/routeLanguage';
 import { OrbitaDosPlanos } from '@/app/components/site/orbits/Orbitas';
-import { compacto, numerosDoAcervo } from '@/app/requests/catalog-numbers';
 import { FileiraDoAcervo } from '@/app/components/site/FileiraDoAcervo';
 import { PageHero } from '@/app/components/site/PageHero';
 import { buscarPrecos } from './buscarPrecos';
@@ -125,12 +124,12 @@ export async function generateMetadata({
 const semMarcacao = (t: string) =>
   t.replace(/\*\*(.+?)\*\*/g, '$1').replace(/\[([^\]]+)\]\([^)]+\)/g, '$1');
 
-/** What is free before any plan, as gold icons beside the archive line. */
-const GRATIS = [
-  ['ler', PiBookOpenText],
-  ['ouvir', PiHeadphones],
-  ['partituras', PiFileText],
-  ['baixar', PiDownloadSimple],
+/** What the paid plans unlock, as gold icons beside the hero's line. */
+const PAGOS = [
+  ['videos', PiVideoCamera],
+  ['envios', PiUploadSimple],
+  ['portal', PiChalkboardTeacher],
+  ['relatorios', PiChartLineUp],
 ] as const;
 
 export default async function Pagina({ params }: LangPageProps) {
@@ -139,10 +138,9 @@ export default async function Pagina({ params }: LangPageProps) {
   // página aparece mesmo assim, com o Free e os pagos "indisponíveis" — nunca
   // em branco, e nunca com preço inventado. Se a API cair, o erro sobe e o
   // Next devolve 500 sem guardar nada.
-  const [precosDaApi, planoAtual, numeros] = await Promise.all([
+  const [precosDaApi, planoAtual] = await Promise.all([
     buscarPrecos(),
     buscarPlanoAtual(),
-    numerosDoAcervo(),
   ]);
   const precos = precosDaApi ?? SEM_PRECOS;
 
@@ -257,13 +255,15 @@ export default async function Pagina({ params }: LangPageProps) {
           abertura={c.abertura}
           extra={
             <FileiraDoAcervo
-              rotulo={c.gratis.rotulo}
-              itens={GRATIS.map(([chave, icone]) => ({
+              rotulo={c.pagos.rotulo}
+              itens={PAGOS.map(([chave, icone]) => ({
                 chave,
                 icone,
-                nome: c.gratis.itens[chave],
+                nome: c.pagos.itens[chave],
               }))}
-              legenda={c.acervo(numeros, (n) => `**${compacto(n)}**`)}
+              legenda={c.pagos.chamada(
+                precos.PLUS ? formatarPreco(precos.PLUS.mensal, idioma) : null
+              )}
             />
           }
           acoes={
