@@ -35,7 +35,7 @@ const pt = {
     warning: 'Report falso de propósito pode suspender a conta.',
     cancel: 'Cancelar',
     send: 'Enviar report',
-    sent: 'Report enviado. Obrigado por avisar.',
+    sent: 'Recebemos sua denúncia. Vamos analisar, e o resultado chega nas suas notificações.',
     /** The API already explains in Portuguese; this is the fallback. */
     duplicate: 'Você já denunciou este item.',
     failed: 'Não foi possível enviar. Tente de novo.',
@@ -90,7 +90,7 @@ const en: typeof pt = {
     warning: 'Deliberately false reports can suspend the account.',
     cancel: 'Cancel',
     send: 'Send report',
-    sent: 'Report sent. Thanks for letting us know.',
+    sent: 'We got your report. We will look into it, and the result will arrive in your notifications.',
     duplicate:
       'You have already reported this item, or reached the limit for it.',
     failed: 'Could not send. Try again.',

@@ -98,7 +98,7 @@ export function ReportSheet({
       aoFechar={close}
       titulo={copy.title(name)}
       descricao={copy.intro}
-      largura="p"
+      largura="m"
       rodape={
         <div className="flex justify-end gap-2">
           <Button variante="fantasma" onClick={close}>
