@@ -165,9 +165,9 @@ export const SOBRE: Record<Idioma, ConteudoSobre> = {
         'Uma enciclopédia só vale o que se sabe sobre a origem dela. Esta é a nossa.',
       itens: [
         {
-          titulo: 'As partituras vêm do IMSLP',
+          titulo: 'Partituras de domínio público',
           texto:
-            'São edições de domínio público da Petrucci Music Library (IMSLP). Quando uma obra ainda não tem os arquivos guardados aqui, a primeira visita os busca por lá. Uma denúncia de direito autoral tira a partitura do ar na hora — [veja como denunciar](/copyright).',
+            'Vêm de acervos abertos, como a Petrucci Music Library (IMSLP), e dos envios da comunidade. Quando uma obra ainda não tem os arquivos guardados aqui, a primeira visita os busca na fonte. Uma denúncia de direito autoral tira a partitura do ar na hora — [veja como denunciar](/copyright).',
         },
         {
           titulo: 'A comunidade escreve junto',
@@ -313,9 +313,9 @@ export const SOBRE: Record<Idioma, ConteudoSobre> = {
         'An encyclopedia is only worth what you know about where it comes from. This is ours.',
       itens: [
         {
-          titulo: 'The scores come from IMSLP',
+          titulo: 'Public-domain scores',
           texto:
-            'They are public-domain editions from the Petrucci Music Library (IMSLP). When a work does not yet have its files stored here, the first visit fetches them from there. A copyright notice takes a score down immediately — [see how to report](/copyright).',
+            'They come from open archives such as the Petrucci Music Library (IMSLP) and from what the community sends. When a work does not yet have its files stored here, the first visit fetches them from the source. A copyright notice takes a score down immediately — [see how to report](/copyright).',
         },
         {
           titulo: 'The community writes along',
