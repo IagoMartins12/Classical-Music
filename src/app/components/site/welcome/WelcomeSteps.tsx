@@ -4,7 +4,22 @@ import Image from 'next/image';
 import { CaixaDeMarcar } from '@/app/components/ui/CaixaDeMarcar';
 import { useRef, useState } from 'react';
 import toast from 'react-hot-toast';
-import { PiCamera, PiCheck, PiStar, PiStarFill, PiX } from 'react-icons/pi';
+import {
+  PiBookmarkSimple,
+  PiCamera,
+  PiChalkboardTeacher,
+  PiCheck,
+  PiFileText,
+  PiHeart,
+  PiMagnifyingGlass,
+  PiNotePencil,
+  PiStack,
+  PiStar,
+  PiStarFill,
+  PiX,
+} from 'react-icons/pi';
+import type { IconType } from 'react-icons';
+import { iniciais } from '@/app/components/blog/site/pecas';
 import { LocationField } from '@/app/components/site/profile/LocationField';
 import { PhoneField } from '@/app/components/site/profile/PhoneField';
 import { Field } from '@/app/components/ui/Field';
@@ -16,6 +31,7 @@ import { ERAS, eraOf } from '@/app/conteudo/site/eras';
 import {
   PRACTICE_MINUTES,
   STUDY_HORIZONS,
+  type IntroItem,
   type WelcomeCopy,
 } from '@/app/conteudo/site/welcome';
 import { useSessionUpdate } from '@/app/hooks/useSessionUpdate';
@@ -97,6 +113,72 @@ function Pills<T extends string | number>({
           {label(option)}
         </button>
       ))}
+    </div>
+  );
+}
+
+/**
+ * The person's picture, or their initials in gold Garamond on a plain disc —
+ * the same as the account menu and the profile, never a cropped letter.
+ * The disc's surface comes in `className`, against what is around it.
+ */
+export function WelcomeAvatar({
+  name,
+  image,
+  className,
+}: {
+  name: string;
+  image: string | null;
+  className?: string;
+}) {
+  return (
+    <span
+      className={cx(
+        'relative grid shrink-0 place-items-center overflow-hidden rounded-full font-display leading-none text-ouro-texto shadow-[var(--sombra-1)]',
+        className
+      )}
+    >
+      {image ? (
+        <Image src={image} alt="" fill sizes="128px" className="object-cover" />
+      ) : (
+        <span aria-hidden="true">{iniciais(name) || '?'}</span>
+      )}
+    </span>
+  );
+}
+
+const INTRO: [IntroItem, IconType][] = [
+  ['repertoire', PiBookmarkSimple],
+  ['scores', PiFileText],
+  ['favorites', PiHeart],
+  ['notes', PiNotePencil],
+  ['collections', PiStack],
+  ['lessons', PiChalkboardTeacher],
+];
+
+/** The first step: what Opus Atlas keeps for you, before any question. */
+export function IntroStep({ copy }: StepProps) {
+  return (
+    <div className="flex flex-col gap-8">
+      <ul className="cascata grid grid-cols-1 gap-3 sm:grid-cols-2 xl:grid-cols-3">
+        {INTRO.map(([key, icon]) => {
+          const [title, text] = copy.intro.items[key];
+          return (
+            <li key={key} className="flex gap-4 rounded-card bg-sup-2 p-5">
+              <span className="grid h-11 w-11 shrink-0 place-items-center rounded-full tint-ouro text-ouro-na-tinta">
+                <Icon de={icon} tamanho="m" />
+              </span>
+              <span className="flex flex-col gap-1">
+                <span className="font-display text-[1.25rem] leading-snug">
+                  {title}
+                </span>
+                <span className="t-rotulo text-texto-suave">{text}</span>
+              </span>
+            </li>
+          );
+        })}
+      </ul>
+      <p className="t-corpo max-w-[56ch] text-texto-suave">{copy.intro.then}</p>
     </div>
   );
 }
@@ -385,7 +467,21 @@ export function TasteStep({
         </div>
       </Group>
       <Group label={copy.taste.composer}>
-        <div className="grid grid-cols-3 gap-x-3 gap-y-4 sm:grid-cols-5">
+        {/* Someone not among the suggestions: the same search pill as the
+            catalog's, above the portraits it adds to. */}
+        <SelecaoComBusca
+          buscar={composerOptions}
+          valor={found && data.favoriteComposerId === found.id ? found.id : ''}
+          rotulo={found?.fullName}
+          icone={PiMagnifyingGlass}
+          placeholder={copy.taste.search}
+          vazio={copy.taste.searchEmpty}
+          limpavel
+          aria-label={copy.taste.search}
+          aoMudar={(value, option) => void choose(value, option?.label ?? '')}
+          className="!rounded-full sm:max-w-md"
+        />
+        <div className="grid grid-cols-3 gap-x-3 gap-y-4 pt-2 sm:grid-cols-5">
           {composers.map((c) => {
             const active = data.favoriteComposerId === c.id;
             return (
@@ -419,22 +515,6 @@ export function TasteStep({
               </button>
             );
           })}
-        </div>
-        <div className="flex flex-col gap-2 pt-2">
-          <span className="t-rotulo text-texto-suave">{copy.taste.search}</span>
-          <SelecaoComBusca
-            buscar={composerOptions}
-            valor={
-              found && data.favoriteComposerId === found.id ? found.id : ''
-            }
-            rotulo={found?.fullName}
-            placeholder={copy.taste.searchPlaceholder}
-            vazio={copy.taste.searchEmpty}
-            limpavel
-            aria-label={copy.taste.search}
-            aoMudar={(value, option) => void choose(value, option?.label ?? '')}
-            className="max-w-md"
-          />
         </div>
         {chosenEra &&
           !everyEra &&
@@ -478,13 +558,17 @@ export function ProfileStep({
 
   return (
     <div className="flex flex-col gap-6">
-      <div className="flex flex-col items-center gap-3">
-        <Portrait
-          name={name || '?'}
-          src={data.image ?? image}
-          sizes="128px"
-          className="h-28 w-28 shrink-0 rounded-full text-[2.25rem] shadow-[var(--sombra-1)] ring-1 ring-[var(--linha-forte)]"
+      <div className="flex flex-col items-center gap-3 rounded-card bg-sup-2 p-6 text-center">
+        <WelcomeAvatar
+          name={name}
+          image={data.image ?? image}
+          className="h-28 w-28 bg-[var(--fundo)] text-[2.5rem]"
         />
+        {name && (
+          <span className="font-display text-[1.5rem] leading-tight text-ouro-texto">
+            {name}
+          </span>
+        )}
         <button
           type="button"
           onClick={() => fileRef.current?.click()}

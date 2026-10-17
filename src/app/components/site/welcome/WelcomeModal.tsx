@@ -26,15 +26,24 @@ import {
 import { Portrait } from '../Portrait';
 import {
   InstrumentsStep,
+  IntroStep,
   ProfileStep,
   StudyStep,
   TasteStep,
+  WelcomeAvatar,
   YouStep,
   type StepProps,
   type WelcomeOptions,
 } from './WelcomeSteps';
 
-const STEPS = ['you', 'instruments', 'study', 'taste', 'profile'] as const;
+const STEPS = [
+  'intro',
+  'you',
+  'instruments',
+  'study',
+  'taste',
+  'profile',
+] as const;
 
 /**
  * The welcome questions after sign-up, full screen: who you are, what you
@@ -141,7 +150,9 @@ export function WelcomeModal() {
   };
 
   const props: StepProps = { data, update: updateData, copy, language };
+  const firstName = data.firstName ?? user?.firstName ?? '';
   const titles = {
+    intro: { title: copy.greeting(firstName), text: copy.intro.text },
     you: copy.you,
     instruments: copy.instruments,
     study: copy.study,
@@ -161,6 +172,8 @@ export function WelcomeModal() {
       aria-hidden="true"
       className="loading-skeleton block h-64 rounded-card"
     />
+  ) : step === 'intro' ? (
+    <IntroStep {...props} />
   ) : step === 'you' ? (
     <YouStep {...props} />
   ) : step === 'instruments' ? (
@@ -180,8 +193,6 @@ export function WelcomeModal() {
       }
     />
   );
-
-  const firstName = data.firstName ?? user?.firstName ?? '';
 
   return (
     <dialog
@@ -231,7 +242,7 @@ export function WelcomeModal() {
             </span>
             <ol
               aria-hidden="true"
-              className="mx-auto hidden max-w-xl flex-1 grid-cols-5 gap-2 sm:grid"
+              className="mx-auto hidden max-w-2xl flex-1 grid-cols-6 gap-2 sm:grid"
             >
               {copy.steps.map((label, n) => (
                 <li key={label} className="flex flex-col gap-1.5">
@@ -272,11 +283,6 @@ export function WelcomeModal() {
                 tabIndex={-1}
                 className="font-display text-[clamp(2rem,4vw,3.25rem)] leading-tight outline-none"
               >
-                {step === 'you' && (
-                  <span className="block text-ouro-texto">
-                    {copy.greeting(firstName)}
-                  </span>
-                )}
                 {titles[step].title}
               </h2>
               <p className="t-corpo text-texto-suave">{titles[step].text}</p>
@@ -315,7 +321,11 @@ export function WelcomeModal() {
                 disabled={!canGo && step === 'you'}
                 carregando={isLoading}
               >
-                {last ? copy.finish : copy.next}
+                {last
+                  ? copy.finish
+                  : step === 'intro'
+                    ? copy.intro.start
+                    : copy.next}
                 {!last && <Icon de={PiArrowRight} tamanho="p" />}
               </Button>
             </div>
@@ -366,28 +376,25 @@ function Preview({
       className="hidden min-h-0 flex-col gap-7 overflow-y-auto bg-sup-2 p-10 lg:col-start-2 lg:row-span-2 lg:row-start-2 lg:flex"
     >
       <span className="t-legenda">{copy.preview.title}</span>
-      <div className="flex items-center gap-4">
-        <Portrait
-          name={name || '?'}
-          src={image}
-          sizes="64px"
-          className="h-16 w-16 shrink-0 rounded-full text-[1.5rem]"
+      <div className="flex flex-col items-center gap-3 rounded-card bg-[var(--fundo)] p-6 text-center">
+        <WelcomeAvatar
+          name={name}
+          image={image}
+          className="h-24 w-24 bg-sup-2 text-[2rem]"
         />
-        <span className="flex min-w-0 flex-col">
-          <span
-            className={cx(
-              'truncate font-display text-[1.5rem] leading-tight',
-              !name && 'text-texto-fraco'
-            )}
-          >
-            {name || copy.preview.noName}
-          </span>
-          {data.userType && (
-            <span className="t-rotulo text-texto-suave">
-              {copy.you.types[data.userType][0]}
-            </span>
+        <span
+          className={cx(
+            'font-display text-[1.625rem] leading-tight',
+            name ? 'text-ouro-texto' : 'text-texto-fraco'
           )}
+        >
+          {name || copy.preview.noName}
         </span>
+        {data.userType && (
+          <span className="t-rotulo text-texto-suave">
+            {copy.you.types[data.userType][0]}
+          </span>
+        )}
       </div>
 
       <PreviewRow label={copy.preview.instruments} empty={copy.preview.empty}>

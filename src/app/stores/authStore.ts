@@ -452,7 +452,8 @@ export const useAuthStore = create<AuthState>()(
           },
         }),
         // 4: the welcome questions were regrouped into five steps.
-        version: 4,
+        // 5: a presentation step opens them; a draft keeps its question.
+        version: 5,
         migrate: (persistedState: any, version: number) => {
           // Migração para versão 3 (objetos completos de localização)
           if (version < 3) {
@@ -486,6 +487,9 @@ export const useAuthStore = create<AuthState>()(
           }
           if (version < 4 && persistedState.onboarding) {
             persistedState.onboarding.currentStep = 1;
+          }
+          if (version === 4 && persistedState.onboarding?.currentStep > 1) {
+            persistedState.onboarding.currentStep += 1;
           }
           return persistedState;
         },

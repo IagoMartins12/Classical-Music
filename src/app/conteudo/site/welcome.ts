@@ -3,6 +3,13 @@ import type { StudyHorizon } from '@/app/libs/api/profile';
 
 type UserType = 'MUSIC_STUDENT' | 'PROFESSIONAL' | 'TEACHER' | 'CASUAL_USER';
 type Level = 'BEGINNER' | 'INTERMEDIATE' | 'ADVANCED';
+export type IntroItem =
+  | 'repertoire'
+  | 'scores'
+  | 'favorites'
+  | 'notes'
+  | 'collections'
+  | 'lessons';
 
 /** Minutes per week, as the profile stores them. */
 export const PRACTICE_MINUTES = [0, 60, 120, 300, 600, 900, 1200] as const;
@@ -27,7 +34,38 @@ const pt = {
   greeting: (name: string) =>
     name ? `Boas-vindas ao Opus Atlas, ${name}.` : 'Boas-vindas ao Opus Atlas.',
   close: 'Fechar as boas-vindas',
-  steps: ['Você', 'Instrumentos', 'Estudo', 'Gostos', 'Perfil'],
+  steps: ['Boas-vindas', 'Você', 'Instrumentos', 'Estudo', 'Gostos', 'Perfil'],
+  intro: {
+    text: 'Compositores, obras, partituras e gravações num lugar só, e o seu estudo junto deles. Veja o que a sua conta guarda.',
+    items: {
+      repertoire: [
+        'Seu repertório',
+        'Marque o que quer estudar e o que já toca, com a partitura escolhida, a meta e o progresso.',
+      ],
+      scores: [
+        'Partituras do acervo',
+        'Edições do IMSLP e as enviadas pela comunidade, para abrir e baixar.',
+      ],
+      favorites: [
+        'Seus favoritos',
+        'Guarde compositores, obras, partituras e coleções. A página inicial começa por eles.',
+      ],
+      notes: [
+        'Anotações nas obras',
+        'Dedilhados, ideias de interpretação e avisos para a próxima vez, só seus ou públicos.',
+      ],
+      collections: [
+        'Coleções',
+        'Monte listas de obras ou compositores e compartilhe com quem quiser.',
+      ],
+      lessons: [
+        'Aulas',
+        'Professor e alunos no mesmo lugar: aulas, tarefas e o progresso de cada um.',
+      ],
+    } as Record<IntroItem, [string, string]>,
+    then: 'Agora, algumas perguntas rápidas para deixar tudo do seu jeito. Leva um minuto, e dá para mudar depois no perfil.',
+    start: 'Começar',
+  },
   preview: {
     title: 'Seu Opus Atlas, até agora',
     label: 'Prévia das suas respostas',
@@ -94,8 +132,7 @@ const pt = {
     era: 'Época preferida',
     composer: 'Compositor preferido',
     allComposers: 'Ver de todas as épocas',
-    search: 'Não está aqui? Busque pelo nome',
-    searchPlaceholder: 'Nome do compositor',
+    search: 'Buscar outro compositor pelo nome',
     searchEmpty: 'Nenhum compositor com esse nome',
   },
   profile: {
@@ -144,7 +181,38 @@ const en: typeof pt = {
   greeting: (name: string) =>
     name ? `Welcome to Opus Atlas, ${name}.` : 'Welcome to Opus Atlas.',
   close: 'Close the welcome',
-  steps: ['You', 'Instruments', 'Practice', 'Taste', 'Profile'],
+  steps: ['Welcome', 'You', 'Instruments', 'Practice', 'Taste', 'Profile'],
+  intro: {
+    text: 'Composers, works, scores and recordings in one place, with your practice beside them. Here is what your account keeps.',
+    items: {
+      repertoire: [
+        'Your repertoire',
+        'Mark what you want to learn and what you already play, with the chosen score, a goal and your progress.',
+      ],
+      scores: [
+        'Scores from the archive',
+        'Editions from IMSLP and those sent by the community, to open and download.',
+      ],
+      favorites: [
+        'Your favorites',
+        'Keep composers, works, scores and collections. The home page starts with them.',
+      ],
+      notes: [
+        'Notes on the works',
+        'Fingerings, ideas for interpretation and reminders for next time, private or public.',
+      ],
+      collections: [
+        'Collections',
+        'Build lists of works or composers and share them with anyone.',
+      ],
+      lessons: [
+        'Lessons',
+        'Teacher and students in one place: lessons, assignments and each one’s progress.',
+      ],
+    } as Record<IntroItem, [string, string]>,
+    then: 'Now a few quick questions to make it yours. It takes a minute, and you can change it later in your profile.',
+    start: 'Get started',
+  },
   preview: {
     title: 'Your Opus Atlas so far',
     label: 'Preview of your answers',
@@ -214,8 +282,7 @@ const en: typeof pt = {
     era: 'Favorite era',
     composer: 'Favorite composer',
     allComposers: 'Show every era',
-    search: 'Not here? Search by name',
-    searchPlaceholder: 'Composer’s name',
+    search: 'Search another composer by name',
     searchEmpty: 'No composer by that name',
   },
   profile: {
