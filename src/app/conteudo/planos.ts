@@ -62,12 +62,14 @@ export type ConteudoPlanos = {
   /** Facts under the hero's lead that answer "what if I regret it?". */
   /**
    * What the paid plans unlock, as gold icons and one line under the hero's
-   * lead; the entry price comes from the price table (none without it).
+   * lead. Each group of features says where it starts — Plus for videos and
+   * uploads, Mentor for the portal — with the prices from the table (none
+   * without it).
    */
   pagos: {
     rotulo: string;
     itens: Record<'videos' | 'envios' | 'portal' | 'relatorios', string>;
-    chamada: (aPartirDe: string | null) => string;
+    chamada: (plus: string | null, mentor: string | null) => string;
   };
   /** The hero's two actions, like the other editorial pages. */
   acoesTopo: { planos: string; criarConta: string; seuPlano: string };
@@ -167,10 +169,10 @@ export const PLANOS: Record<Idioma, ConteudoPlanos> = {
         portal: 'Portal do professor',
         relatorios: 'Relatórios de progresso',
       },
-      chamada: (p) =>
-        p
-          ? `Vídeos sem limite, portal da turma e relatórios, a partir de **${p}/mês**`
-          : 'Vídeos sem limite, portal da turma e relatórios de progresso',
+      chamada: (plus, mentor) =>
+        plus && mentor
+          ? `Vídeos e envios sem limite desde **${plus}/mês**. Dá aula? Portal, agenda e relatórios da turma desde **${mentor}**.`
+          : 'Vídeos e envios sem limite no Plus. Dá aula? Portal, agenda e relatórios da turma no Mentor.',
     },
     periodo: {
       rotulo: 'Cobrança',
@@ -452,10 +454,10 @@ export const PLANOS: Record<Idioma, ConteudoPlanos> = {
         portal: 'Teacher portal',
         relatorios: 'Progress reports',
       },
-      chamada: (p) =>
-        p
-          ? `Unlimited videos, a class portal and reports, from **${p}/month**`
-          : 'Unlimited videos, a class portal and progress reports',
+      chamada: (plus, mentor) =>
+        plus && mentor
+          ? `Unlimited videos and uploads from **${plus}/month**. Teaching? Portal, schedule and class reports from **${mentor}**.`
+          : 'Unlimited videos and uploads with Plus. Teaching? Portal, schedule and class reports with Mentor.',
     },
     periodo: {
       rotulo: 'Billing',
