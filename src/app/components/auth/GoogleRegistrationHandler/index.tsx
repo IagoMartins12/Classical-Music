@@ -11,8 +11,9 @@ import { useOnboardingModal, usePromptModal } from '@/app/stores/authStore';
  * A API marca a volta de uma conta criada agora com `?new-user=true` — venha a
  * pessoa do "Criar conta" ou do "Entrar com Google" (antes só o cadastro
  * marcava, por `?google-register=true`, que continua aceito). Com a marca, as
- * boas-vindas abrem na hora; sem ela, quem ainda não terminou o perfil vê o
- * convite curto (`PromptModal`).
+ * boas-vindas abrem na hora; sem ela, o primeiro login de quem ainda não
+ * terminou o perfil também as abre, e os seguintes mostram o convite curto
+ * (`PromptModal`).
  */
 const GoogleRegistrationHandler: React.FC = () => {
   const { data: session, status } = useSession();
@@ -36,17 +37,34 @@ const GoogleRegistrationHandler: React.FC = () => {
       url.searchParams.delete('new-user');
       url.searchParams.delete('google-register');
       window.history.replaceState({}, '', url.toString());
+      try {
+        localStorage.setItem(`boas-vindas-abertas-${userId}`, '1');
+      } catch {
+        // Sem armazenamento: abre assim mesmo.
+      }
       openOnboardingModal();
       return;
     }
 
     if (!session.user.onboardingCompleted) {
       tratado.current = userId;
-      // Uma vez por sessão do navegador: o convite não persegue a pessoa a
-      // cada página.
-      const chave = `convite-perfil-${userId}`;
-      if (sessionStorage.getItem(chave)) return;
-      sessionStorage.setItem(chave, '1');
+      // O primeiro login de quem ainda não respondeu (cadastro pelo site,
+      // depois de confirmar o e-mail, ou pelo Google) abre as boas-vindas
+      // inteiras, uma vez por navegador. Depois disso, quem pulou vê só o
+      // convite curto, uma vez por sessão: nada persegue a pessoa.
+      try {
+        const vistas = `boas-vindas-abertas-${userId}`;
+        if (!localStorage.getItem(vistas)) {
+          localStorage.setItem(vistas, '1');
+          openOnboardingModal();
+          return;
+        }
+        const chave = `convite-perfil-${userId}`;
+        if (sessionStorage.getItem(chave)) return;
+        sessionStorage.setItem(chave, '1');
+      } catch {
+        // Sem armazenamento (modo privado): o convite curto, sem lembrar.
+      }
       openPromptModal();
     }
   }, [session, status, searchParams, openOnboardingModal, openPromptModal]);
