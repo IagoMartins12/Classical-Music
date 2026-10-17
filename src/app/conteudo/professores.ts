@@ -53,7 +53,7 @@ const pt: ConteudoProfessores = {
   migalha: 'Para professores',
   titulo: 'Sua turma inteira num lugar só, da agenda ao relatório',
   abertura:
-    'O portal do professor junta as aulas, as tarefas e o progresso de cada aluno no mesmo lugar onde ele já estuda as partituras. Você ensina; o portal lembra.',
+    'No portal do professor, as aulas, as tarefas com prazo e o progresso de cada aluno ficam onde ele já estuda as partituras. Antes da aula e de cada prazo, o portal manda um aviso.',
   acervo: (n, f) => (n ? `${f(n.obras)} obras para seus alunos` : null),
   instrumentos: 'Instrumentos que se ensinam aqui',
   acoes: {
@@ -176,7 +176,7 @@ const en: ConteudoProfessores = {
   migalha: 'For teachers',
   titulo: 'Your whole class in one place, from schedule to report',
   abertura:
-    'The teacher portal keeps lessons, assignments and each student’s progress in the same place where they already study the scores. You teach; the portal remembers.',
+    'In the teacher portal, lessons, assignments with deadlines and each student’s progress sit where they already study the scores. Before each lesson and deadline, the portal sends a reminder.',
   acervo: (n, f) => (n ? `${f(n.obras)} works for your students` : null),
   instrumentos: 'Instruments taught here',
   acoes: {

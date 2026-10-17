@@ -158,7 +158,7 @@ export const PLANOS: Record<Idioma, ConteudoPlanos> = {
     titulo:
       'Já pensou em ter o universo da música clássica na palma das suas mãos?',
     abertura:
-      'Grave seus vídeos e envie ao acervo sem limite. Se você dá aula, leve a turma inteira para o portal: aulas, tarefas e o progresso de cada aluno.',
+      'Grave quantos vídeos de performance quiser e envie ao acervo sem limite. Se você dá aula, leve a turma para o portal, com agenda, tarefas com prazo e o progresso de cada aluno.',
     pagos: {
       rotulo: 'O que os planos destravam',
       itens: {
@@ -443,7 +443,7 @@ export const PLANOS: Record<Idioma, ConteudoPlanos> = {
     titulo:
       'Ever imagined holding the whole world of classical music in your hands?',
     abertura:
-      'Record your playing and add to the library without limits. If you teach, bring your whole class to the portal: lessons, assignments and each student’s progress.',
+      'Record as many performance videos as you like and add to the library without limits. If you teach, bring your class to the portal, with a schedule, assignments with deadlines and each student’s progress.',
     pagos: {
       rotulo: 'What the plans unlock',
       itens: {
