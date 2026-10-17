@@ -9,7 +9,6 @@ import { Button, classesDeBotao } from '@/app/components/ui/Button';
 import { Icon } from '@/app/components/ui/Icon';
 import { VistoQueSeDesenha } from '@/app/components/ui/VistoQueSeDesenha';
 import { cx } from '@/app/components/ui/cx';
-import { HOME } from '@/app/conteudo/site/home';
 import { WELCOME, type WelcomeCopy } from '@/app/conteudo/site/welcome';
 import { useAuth } from '@/app/hooks/useAuth';
 import { useOverlayLanguage } from '@/app/hooks/useRouteLanguage';
@@ -25,7 +24,6 @@ import {
   getPhoneValidationMessage,
 } from '@/app/utils/phones_and_location/phoneValidation';
 import { BrandSeal } from '../BrandSeal';
-import { CelestialAtlas } from '../home/CelestialAtlas';
 import { Portrait } from '../Portrait';
 import {
   InstrumentsStep,
@@ -278,13 +276,25 @@ export function WelcomeModal() {
 
           <main
             key={step}
-            className="entra flex min-h-0 flex-col gap-8 overflow-y-auto px-5 py-6 lg:px-10 lg:py-10"
+            className={cx(
+              'entra flex min-h-0 flex-col gap-8 overflow-y-auto px-5 py-6 lg:px-10 lg:py-10',
+              step === 'intro' && 'items-center text-center lg:col-span-2'
+            )}
           >
-            <div className="flex max-w-[44rem] flex-col gap-3">
-              {/* On a phone the atlas does not fit beside the text: the seal
-                  stands for it. */}
+            <div
+              className={cx(
+                'flex max-w-[44rem] flex-col gap-3',
+                step === 'intro' && 'items-center'
+              )}
+            >
+              {/* The first page opens on Opus Atlas itself: its seal. */}
               {step === 'intro' && (
-                <BrandSeal className="mb-2 w-14 lg:hidden" />
+                <BrandSeal
+                  reveal
+                  priority
+                  sizes="176px"
+                  className="mb-4 w-28 sm:w-36 lg:w-44"
+                />
               )}
               <h2
                 ref={heading}
@@ -298,20 +308,7 @@ export function WelcomeModal() {
             {body}
           </main>
 
-          {step === 'intro' ? (
-            // The first page shows Opus Atlas itself: the seal, and every
-            // part of the site in orbit around it.
-            <aside
-              aria-hidden="true"
-              className="relative hidden min-h-0 place-items-center overflow-hidden bg-sup-2 p-8 lg:col-start-2 lg:row-span-2 lg:row-start-2 lg:grid"
-            >
-              <CelestialAtlas
-                asPicture
-                copy={HOME[language].hero}
-                className="relative aspect-square w-full max-w-[22rem]"
-              />
-            </aside>
-          ) : (
+          {step !== 'intro' && (
             <Preview
               data={data}
               copy={copy}
@@ -320,7 +317,12 @@ export function WelcomeModal() {
             />
           )}
 
-          <footer className="flex items-center justify-between gap-3 border-t border-[var(--linha)] px-5 py-4 lg:col-start-1 lg:px-10">
+          <footer
+            className={cx(
+              'flex items-center justify-between gap-3 border-t border-[var(--linha)] px-5 py-4 lg:px-10',
+              step === 'intro' ? 'lg:col-span-2' : 'lg:col-start-1'
+            )}
+          >
             <Button
               variante="fantasma"
               onClick={closeAll}

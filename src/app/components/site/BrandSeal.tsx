@@ -6,10 +6,12 @@ export function BrandSeal({
   className,
   reveal = false,
   priority = false,
+  sizes = '(max-width: 768px) 30vw, 140px',
 }: {
   className?: string;
   reveal?: boolean;
   priority?: boolean;
+  sizes?: string;
 }) {
   return (
     <span className={cx('block', reveal && 'seal-reveal', className)}>
@@ -19,7 +21,7 @@ export function BrandSeal({
         width={721}
         height={735}
         priority={priority}
-        sizes="(max-width: 768px) 30vw, 140px"
+        sizes={sizes}
         className="brand-seal h-auto w-full"
       />
     </span>

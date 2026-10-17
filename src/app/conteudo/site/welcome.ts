@@ -131,7 +131,8 @@ const pt = {
     text: 'Uma época e um compositor, de qualquer época. A página inicial começa por eles.',
     era: 'Época preferida',
     composer: 'Compositor preferido',
-    search: 'Buscar outro compositor pelo nome',
+    other: 'Outro compositor',
+    search: 'Buscar compositor pelo nome',
     searchEmpty: 'Nenhum compositor com esse nome',
   },
   profile: {
@@ -280,7 +281,8 @@ const en: typeof pt = {
     text: 'An era and a composer, from any era. The home page starts with them.',
     era: 'Favorite era',
     composer: 'Favorite composer',
-    search: 'Search another composer by name',
+    other: 'Another composer',
+    search: 'Search a composer by name',
     searchEmpty: 'No composer by that name',
   },
   profile: {

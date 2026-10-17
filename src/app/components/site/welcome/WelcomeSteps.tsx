@@ -2,6 +2,7 @@
 
 import Image from 'next/image';
 import { CaixaDeMarcar } from '@/app/components/ui/CaixaDeMarcar';
+import { useQueryClient } from '@tanstack/react-query';
 import { useRef, useState } from 'react';
 import toast from 'react-hot-toast';
 import {
@@ -36,10 +37,8 @@ import {
 } from '@/app/conteudo/site/welcome';
 import { useSessionUpdate } from '@/app/hooks/useSessionUpdate';
 import { uploadAvatarRequest } from '@/app/requests/account-client';
-import {
-  composerOptions,
-  findComposerById,
-} from '@/app/requests/catalog-search';
+import type { OpcaoSelecao } from '@/app/components/ui/Selecao';
+import { composerOptions } from '@/app/requests/catalog-search';
 import type { OnboardingData } from '@/app/stores/authStore';
 import { Portrait } from '../Portrait';
 import { chip } from '../choice';
@@ -157,14 +156,13 @@ const INTRO: [IntroItem, IconType][] = [
 ];
 
 /**
- * The first step: what Opus Atlas keeps for the person, before any question.
- * A reading list, not a grid of cards — the picture of the atlas sits beside
- * it on wide screens.
+ * The first step: what Opus Atlas keeps for the person, before any question,
+ * under the seal. A reading list, not a grid of cards.
  */
 export function IntroStep({ copy }: StepProps) {
   return (
-    <div className="flex flex-col gap-8">
-      <ul className="cascata grid grid-cols-1 gap-x-10 sm:grid-cols-2">
+    <div className="flex w-full max-w-5xl flex-col items-center gap-8">
+      <ul className="cascata grid w-full grid-cols-1 gap-x-10 text-left sm:grid-cols-2 lg:grid-cols-3">
         {INTRO.map(([key, icon]) => {
           const [title, text] = copy.intro.items[key];
           return (
@@ -396,10 +394,12 @@ export function TasteStep({
   language,
   options,
 }: StepProps & { options: WelcomeOptions }) {
+  const queryClient = useQueryClient();
   // A composer found by name, outside the suggested ones.
   const [found, setFound] = useState<
     WelcomeOptions['composers'][number] | null
   >(null);
+  const [searching, setSearching] = useState(false);
   // The seven eras the site tells, each matched to its catalog epoch.
   const eras = ERAS.flatMap((era) => {
     const epoch = options.epochs.find((e) => eraOf(e.name)?.key === era.key);
@@ -413,23 +413,27 @@ export function TasteStep({
       ? [found, ...suggested]
       : suggested;
 
-  const choose = async (id: string, label: string) => {
-    if (!id) return update({ favoriteComposerId: undefined });
-    update({ favoriteComposerId: id });
-    const detail = await findComposerById(id).catch(() => null);
-    setFound({
-      id,
-      name: detail?.name ?? label,
-      fullName: detail?.fullName ?? label,
-      portraitUrl: detail?.portraitUrl ?? null,
-      epochName: detail?.epochName ?? null,
-    });
+  // The picked composer keeps the portrait the list showed; the preview
+  // reads the same entry instead of asking the API again.
+  const choose = (option: OpcaoSelecao | null) => {
+    setSearching(false);
+    if (!option) return;
+    const composer = {
+      id: option.value,
+      name: option.retrato?.nome ?? option.label,
+      fullName: option.label,
+      portraitUrl: option.retrato?.src ?? null,
+      epochName: null,
+    };
+    setFound(composer);
+    queryClient.setQueryData(['composer', composer.id], composer);
+    update({ favoriteComposerId: composer.id });
   };
 
   return (
     <div className="flex flex-col gap-8">
       <Group label={copy.taste.era}>
-        <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
+        <div className="grid grid-cols-3 gap-2.5 sm:grid-cols-4 lg:grid-cols-7">
           {eras.map(({ era, epoch }) => {
             const active = data.favoriteEpochId === epoch.id;
             return (
@@ -441,7 +445,7 @@ export function TasteStep({
                   update({ favoriteEpochId: active ? undefined : epoch.id })
                 }
                 className={cx(
-                  'group relative flex aspect-[4/3] items-end overflow-hidden rounded-card p-3 text-left',
+                  'group relative flex aspect-[4/5] items-end overflow-hidden rounded-card p-2.5 text-left',
                   active &&
                     'ring-2 ring-[var(--ouro)] ring-offset-2 ring-offset-[var(--fundo)]'
                 )}
@@ -450,7 +454,7 @@ export function TasteStep({
                   src={era.image}
                   alt=""
                   fill
-                  sizes="(min-width: 640px) 180px, 45vw"
+                  sizes="(min-width: 1024px) 130px, (min-width: 640px) 160px, 30vw"
                   className="object-cover transition-transform duration-700 ease-[var(--saida)] group-hover:scale-[1.03] motion-reduce:transition-none"
                 />
                 <span
@@ -458,7 +462,7 @@ export function TasteStep({
                   className="absolute inset-0 bg-gradient-to-t from-veu-foto via-veu-foto/45 to-transparent"
                 />
                 <span className="relative flex w-full items-end justify-between gap-2 text-sobre-foto">
-                  <span className="font-display text-[1.125rem] leading-tight">
+                  <span className="min-w-0 truncate font-display text-[0.9375rem] leading-tight">
                     {era.name[language]}
                   </span>
                   {active && <Icon de={PiCheck} tamanho="pp" />}
@@ -469,21 +473,7 @@ export function TasteStep({
         </div>
       </Group>
       <Group label={copy.taste.composer}>
-        {/* Someone not among the suggestions: the same search pill as the
-            catalog's, above the portraits it adds to. */}
-        <SelecaoComBusca
-          buscar={composerOptions}
-          valor={found && data.favoriteComposerId === found.id ? found.id : ''}
-          rotulo={found?.fullName}
-          icone={PiMagnifyingGlass}
-          placeholder={copy.taste.search}
-          vazio={copy.taste.searchEmpty}
-          limpavel
-          aria-label={copy.taste.search}
-          aoMudar={(value, option) => void choose(value, option?.label ?? '')}
-          className="!rounded-full sm:max-w-md"
-        />
-        <div className="grid grid-cols-3 gap-x-3 gap-y-4 pt-2 sm:grid-cols-5">
+        <div className="grid grid-cols-3 gap-x-3 gap-y-4 sm:grid-cols-5 lg:grid-cols-6">
           {composers.map((c) => {
             const active = data.favoriteComposerId === c.id;
             return (
@@ -517,7 +507,36 @@ export function TasteStep({
               </button>
             );
           })}
+          {/* Someone not among them: the last place in the grid opens the
+              search, and the one picked joins the portraits, first. */}
+          <button
+            type="button"
+            aria-expanded={searching}
+            onClick={() => setSearching(true)}
+            className="group flex flex-col items-center gap-2 text-center"
+          >
+            <span className="grid h-[4.5rem] w-[4.5rem] place-items-center rounded-full border border-dashed border-[var(--linha-forte)] text-texto-suave transition-colors duration-[var(--t-toque)] group-hover:border-[var(--ouro)] group-hover:text-ouro-texto">
+              <Icon de={PiMagnifyingGlass} tamanho="m" />
+            </span>
+            <span className="t-rotulo leading-tight text-texto-suave group-hover:text-ouro-texto">
+              {copy.taste.other}
+            </span>
+          </button>
         </div>
+        {searching && (
+          <div className="item-entra sm:max-w-md">
+            <SelecaoComBusca
+              buscar={composerOptions}
+              valor=""
+              icone={PiMagnifyingGlass}
+              placeholder={copy.taste.search}
+              vazio={copy.taste.searchEmpty}
+              aria-label={copy.taste.search}
+              aoMudar={(_value, option) => choose(option)}
+              className="!rounded-full"
+            />
+          </div>
+        )}
       </Group>
     </div>
   );
