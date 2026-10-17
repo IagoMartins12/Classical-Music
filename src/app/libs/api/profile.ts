@@ -46,7 +46,11 @@ export interface ProfileAccount {
   planExpiresAt: string | null;
   isTrialActive: boolean;
   totalXP: number;
+  /** The team's approval of the credentials (badge, catalog editing). */
   teacherVerified: boolean | null;
+  /** The teacher portal is open: an active teacher profile (a Mentor or
+   * Maestro subscriber at once, an invited teacher after accepting). */
+  teacherPortal: boolean | null;
   studentInviteStatus: 'PENDING' | 'ACCEPTED' | 'DECLINED' | 'EXPIRED' | null;
   login: { hasPassword: boolean; providers: string[] };
 }

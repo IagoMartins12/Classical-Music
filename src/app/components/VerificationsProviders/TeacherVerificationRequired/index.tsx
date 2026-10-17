@@ -1,370 +1,149 @@
-// app/components/TeacherVerificationRequired.tsx
 'use client';
 
-import Link from 'next/link';
-import {
-  PiArrowsClockwise,
-  PiCaretRight,
-  PiChatCircle,
-  PiEnvelopeSimple,
-  PiHouse,
-  PiMusicNotes,
-  PiUserCheck,
-  PiWarning,
-} from 'react-icons/pi';
-import {
-  AnimatedContainer,
-  AnimatedCard,
-  AnimatedItem,
-} from '../../animation/AnimatedComponents';
-import AnimatedMusicalNotes from '../../AnimatedMusicalNotes';
-import Button from '../../Common/Button';
-import { useEmailRefreshSimple } from '@/app/hooks/useEmailRefresh';
+import { PiCheck, PiEnvelopeSimple } from 'react-icons/pi';
+import Link from '@/app/components/LocalizedLink';
 import { SiteHeader } from '@/app/components/site/header/SiteHeader';
 import { Avisos } from '@/app/components/ui/Avisos';
-import { Stack, Inline } from '@/app/components/ui/Layout';
-import { Text } from '@/app/components/ui/Text';
-import { Card } from '@/app/components/ui/Card';
+import { Button, classesDeBotao } from '@/app/components/ui/Button';
+import { Icon } from '@/app/components/ui/Icon';
+import { cx } from '@/app/components/ui/cx';
+import { useEmailRefreshSimple } from '@/app/hooks/useEmailRefresh';
 
-interface TeacherVerificationRequiredProps {
-  userEmail?: string | null;
-  userName?: string | null;
-}
+/** The portal is Portuguese only, like the rest of the teacher area. */
+const T = {
+  eyebrow: 'Falta aceitar o convite',
+  title: 'Aceite o convite para abrir o portal',
+  text: (nome?: string | null) =>
+    `${nome ? `${nome}, você` : 'Você'} foi convidado para dar aula no Opus Atlas. Abra o e-mail do convite e toque no link: o portal abre na hora.`,
+  sentTo: 'O convite foi para',
+  accepted: 'Já aceitei',
+  contact: 'Falar com a gente',
+  home: 'Voltar ao início',
+  after: 'Depois de aceitar',
+  afterItems: [
+    'Aulas e agenda da semana',
+    'Tarefas com prazo para cada aluno',
+    'Relatórios de progresso',
+    'Avisos antes da aula e do prazo',
+  ],
+  help: 'O e-mail não chegou?',
+  helpItems: [
+    'Olhe a caixa de spam e a aba de promoções.',
+    'O convite pode ter chegado há alguns dias.',
+    'Se não achar, fale com a gente: enviamos outro.',
+  ],
+};
 
+/**
+ * Someone invited to teach, before accepting. Subscribers of Mentor and
+ * Maestro never see this: their portal opens at once. A task page, like the
+ * email check: the address and the action lead, what opens after and what to
+ * try when the email does not arrive sit beside them.
+ */
 export default function TeacherVerificationRequired({
   userEmail,
   userName,
-}: TeacherVerificationRequiredProps) {
+}: {
+  userEmail?: string | null;
+  userName?: string | null;
+}) {
   const { isRefreshing, refreshEmailStatus } = useEmailRefreshSimple();
 
   return (
     <>
       <SiteHeader />
-      <div className="classical-theme min-h-screen flex items-center justify-center relative overflow-hidden">
-        {/* Background Pattern */}
-        <AnimatedMusicalNotes />
-
-        <div className="section-wrap relative z-10">
-          <AnimatedContainer
-            staggerSpeed="normal"
-            className="max-w-4xl mx-auto text-center"
-          >
-            {/* Main Icon */}
-            <AnimatedItem direction="scale" springType="bouncy">
-              <div className="relative mb-8">
-                <div className="w-32 h-32 mx-auto rounded-full flex items-center justify-center classical-card border-2 shadow-theme-glow">
-                  <PiUserCheck className="w-16 h-16" />
-                </div>
-              </div>
-            </AnimatedItem>
-
-            {/* Title */}
-            <AnimatedItem direction="up" springType="bouncy">
-              <h1 className="text-4xl md:text-5xl font-bold text-gradient-brand classical-title mb-6">
-                Aguardando Aprovação
-              </h1>
-            </AnimatedItem>
-
-            {/* Subtitle */}
-            <AnimatedItem direction="up" springType="smooth">
-              <p className="text-xl md:text-2xl text-theme-secondary mb-8 leading-relaxed medida-texto mx-auto">
-                Seu convite para se tornar professor está sendo processado.
-              </p>
-            </AnimatedItem>
-
-            {/* Main Info Card */}
-            <AnimatedCard
-              hover="lift"
-              className="classical-card p-8 mb-8 max-w-2xl mx-auto"
+      <main className="section-wrap pb-20 pt-10 md:pt-14">
+        <div className="grid gap-12 lg:grid-cols-[minmax(0,7fr)_minmax(0,4fr)] lg:gap-16">
+          <section className="flex flex-col items-start gap-6">
+            <span className="entra t-legenda text-ouro-texto">{T.eyebrow}</span>
+            <h1
+              className="entra max-w-[18ch] font-display text-[clamp(2.25rem,5vw,3.25rem)] leading-[1.1]"
+              style={{ ['--i' as string]: 1 }}
             >
-              <div className="flex items-start space-x-4">
-                <div className="w-12 h-12 rounded-xl flex items-center justify-center flex-shrink-0">
-                  <PiEnvelopeSimple className="w-6 h-6" />
-                </div>
-                <div className="text-left flex-1">
-                  <h3 className="text-lg font-bold text-theme-primary mb-3 classical-title">
-                    {userName ? `Olá, ${userName}!` : 'Aguardando Aprovação'}
-                  </h3>
-                  <Stack gap={3}>
-                    <p className="text-theme-secondary">
-                      <strong className="text-ouro-texto">Seu Email:</strong>{' '}
-                      {userEmail}
-                    </p>
-                    <Text papel="rotulo" tom="suave" as="p">
-                      Você recebeu um convite para se tornar professor na
-                      plataforma Opus Atlas. Para acessar todas as
-                      funcionalidades da área do professor, é necessário aceitar
-                      o convite que foi enviado para seu email.
-                    </Text>
-                  </Stack>
-                </div>
-              </div>
-            </AnimatedCard>
-
-            {/* Action Buttons */}
-            <AnimatedContainer
-              staggerSpeed="fast"
-              className="flex flex-col sm:flex-row gap-4 justify-center mb-8"
+              {T.title}
+            </h1>
+            <p
+              className="entra t-corpo max-w-[var(--largura-texto)] text-lg text-texto-suave"
+              style={{ ['--i' as string]: 2 }}
             >
-              <AnimatedItem hover="scale" springType="bouncy">
-                <Button
-                  onClick={refreshEmailStatus}
-                  variant="primary"
-                  size="lg"
-                  isLoading={isRefreshing}
-                  leftIcon={
-                    <PiArrowsClockwise
-                      className={`w-5 h-5 ${
-                        isRefreshing ? 'animate-spin' : 'group-hover:rotate-180'
-                      } transition-transform duration-500`}
-                    />
-                  }
-                  className="px-8 py-4"
-                >
-                  {isRefreshing ? 'Verificando...' : 'Já Aceitei o Convite'}
-                </Button>
-              </AnimatedItem>
+              {T.text(userName)}
+            </p>
 
-              <AnimatedItem hover="scale" springType="bouncy">
-                <Link href="/contact">
-                  <Button
-                    variant="secondary"
-                    size="lg"
-                    leftIcon={<PiChatCircle className="w-5 h-5" />}
-                    className="px-8 py-4"
-                  >
-                    Entrar em Contato
-                  </Button>
-                </Link>
-              </AnimatedItem>
+            {userEmail && (
+              <div
+                className="entra flex w-full max-w-xl items-center gap-4 rounded-card bg-sup-2 p-5"
+                style={{ ['--i' as string]: 3 }}
+              >
+                <span className="grid h-12 w-12 shrink-0 place-items-center rounded-full tint-ouro text-ouro-na-tinta">
+                  <Icon de={PiEnvelopeSimple} tamanho="m" />
+                </span>
+                <span className="flex min-w-0 flex-col">
+                  <span className="t-rotulo text-texto-suave">{T.sentTo}</span>
+                  <span className="truncate font-medium text-texto">
+                    {userEmail}
+                  </span>
+                </span>
+              </div>
+            )}
 
-              <AnimatedItem hover="scale" springType="bouncy">
-                <Link href="/">
-                  <Button
-                    variant="secondary"
-                    size="lg"
-                    leftIcon={
-                      <PiHouse className="w-5 h-5 group-hover:scale-110 transition-transform duration-300" />
-                    }
-                    className="px-8 py-4"
-                  >
-                    Voltar ao Início
-                  </Button>
-                </Link>
-              </AnimatedItem>
-            </AnimatedContainer>
-
-            {/* Information Cards */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
-              {/* Current Status */}
-              <AnimatedCard hover="lift" className="classical-card p-6">
-                <Inline gap={3} className="mb-4">
-                  <div className="w-10 h-10 rounded-xl flex items-center justify-center">
-                    <PiEnvelopeSimple className="w-5 h-5" />
-                  </div>
-                  <h3 className="text-xl font-bold text-theme-primary classical-title">
-                    Status Atual
-                  </h3>
-                </Inline>
-
-                <Stack gap={3} className="text-left">
-                  <Inline gap={2}>
-                    <div className="w-2 h-2 rounded-full"></div>
-                    <Text papel="rotulo" tom="suave">
-                      Convite enviado para seu email
-                    </Text>
-                  </Inline>
-                  <Inline gap={2}>
-                    <div className="w-2 h-2 rounded-full"></div>
-                    <Text papel="rotulo" tom="suave">
-                      Aguardando sua aceitação
-                    </Text>
-                  </Inline>
-                  <Inline gap={2}>
-                    <div className="w-2 h-2 bg-theme-tertiary rounded-full"></div>
-                    <Text papel="rotulo" tom="suave">
-                      Aprovação do administrador
-                    </Text>
-                  </Inline>
-                  <Inline gap={2}>
-                    <div className="w-2 h-2 bg-theme-tertiary rounded-full"></div>
-                    <Text papel="rotulo" tom="suave">
-                      Acesso completo liberado
-                    </Text>
-                  </Inline>
-                </Stack>
-              </AnimatedCard>
-
-              {/* After approval */}
-              <AnimatedCard hover="lift" className="classical-card p-6">
-                <Inline gap={3} className="mb-4">
-                  <div className="w-10 h-10 rounded-xl flex items-center justify-center">
-                    <PiUserCheck className="w-5 h-5" />
-                  </div>
-                  <h3 className="text-xl font-bold text-theme-primary classical-title">
-                    Após a Aprovação
-                  </h3>
-                </Inline>
-
-                <Stack gap={2} className="text-left">
-                  <Inline gap={2}>
-                    <div className="w-2 h-2 rounded-full"></div>
-                    <Text papel="rotulo" tom="suave">
-                      Gerenciar alunos e aulas
-                    </Text>
-                  </Inline>
-                  <Inline gap={2}>
-                    <div className="w-2 h-2 rounded-full"></div>
-                    <Text papel="rotulo" tom="suave">
-                      Criar cronogramas personalizados
-                    </Text>
-                  </Inline>
-                  <Inline gap={2}>
-                    <div className="w-2 h-2 rounded-full"></div>
-                    <Text papel="rotulo" tom="suave">
-                      Acompanhar progresso dos alunos
-                    </Text>
-                  </Inline>
-                  <Inline gap={2}>
-                    <div className="w-2 h-2 rounded-full"></div>
-                    <Text papel="rotulo" tom="suave">
-                      Sistema completo de avaliação
-                    </Text>
-                  </Inline>
-                </Stack>
-              </AnimatedCard>
+            <div
+              className="entra flex w-full flex-wrap gap-3"
+              style={{ ['--i' as string]: 4 }}
+            >
+              <Button
+                variante="primario"
+                icone={PiCheck}
+                carregando={isRefreshing}
+                onClick={() => void refreshEmailStatus()}
+                className="max-sm:w-full"
+              >
+                {T.accepted}
+              </Button>
+              <Link
+                href="/contact"
+                className={cx(classesDeBotao(), 'max-sm:w-full')}
+              >
+                {T.contact}
+              </Link>
+              <Link
+                href="/"
+                className={cx(classesDeBotao('fantasma'), 'max-sm:w-full')}
+              >
+                {T.home}
+              </Link>
             </div>
+          </section>
 
-            {/* Process Steps */}
-            <AnimatedCard
-              hover="lift"
-              className="classical-card p-6 max-w-3xl mx-auto mb-8"
-            >
-              <Inline gap={3} className="mb-6">
-                <div className="w-10 h-10 rounded-xl flex items-center justify-center">
-                  <PiCaretRight className="w-5 h-5" />
-                </div>
-                <h3 className="text-lg font-bold text-theme-primary classical-title">
-                  Como Funciona o Processo
-                </h3>
-              </Inline>
-
-              <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-                <div className="text-center p-4 rounded-lg bg-sup-2">
-                  <div className="w-8 h-8 rounded-full flex items-center justify-center mx-auto mb-2">
-                    <span className="text-white text-sm font-bold">1</span>
-                  </div>
-                  <h4 className="font-medium text-theme-primary text-sm mb-1">
-                    Convite Enviado
-                  </h4>
-                  <Text papel="legenda" tom="fraco" as="p">
-                    Email com link de aceitação
-                  </Text>
-                </div>
-
-                <div className="text-center p-4 rounded-lg bg-sup-2">
-                  <div className="w-8 h-8 rounded-full flex items-center justify-center mx-auto mb-2">
-                    <span className="text-white text-sm font-bold">2</span>
-                  </div>
-                  <h4 className="font-medium text-theme-primary text-sm mb-1">
-                    Você Aceita
-                  </h4>
-                  <Text papel="legenda" tom="fraco" as="p">
-                    Clique no link do email
-                  </Text>
-                </div>
-
-                <div className="text-center p-4 rounded-lg bg-sup-2">
-                  <div className="w-8 h-8 bg-theme-tertiary rounded-full flex items-center justify-center mx-auto mb-2">
-                    <span className="text-white text-sm font-bold">3</span>
-                  </div>
-                  <h4 className="font-medium text-theme-primary text-sm mb-1">
-                    Aprovação
-                  </h4>
-                  <Text papel="legenda" tom="fraco" as="p">
-                    Admin aprova seu perfil
-                  </Text>
-                </div>
-
-                <div className="text-center p-4 rounded-lg bg-sup-2">
-                  <div className="w-8 h-8 rounded-full flex items-center justify-center mx-auto mb-2">
-                    <span className="text-white text-sm font-bold">4</span>
-                  </div>
-                  <h4 className="font-medium text-theme-primary text-sm mb-1">
-                    Acesso Liberado
-                  </h4>
-                  <Text papel="legenda" tom="fraco" as="p">
-                    Professor ativo!
-                  </Text>
-                </div>
-              </div>
-            </AnimatedCard>
-
-            {/* Help Info */}
-            <AnimatedCard
-              hover="lift"
-              className="classical-card p-6 max-w-3xl mx-auto"
-            >
-              <div className="flex items-start space-x-4">
-                <div className="w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0">
-                  <PiWarning className="w-5 h-5" />
-                </div>
-                <div className="text-left flex-1">
-                  <h3 className="text-lg font-bold text-theme-primary mb-3 classical-title">
-                    Precisa de ajuda?
-                  </h3>
-                  <Text
-                    papel="rotulo"
-                    tom="suave"
-                    as="div"
-                    className="space-y-2"
-                  >
-                    <p>• Verifique sua pasta de spam/lixo eletrônico</p>
-                    <p>
-                      • O email do convite pode ter sido enviado há alguns dias
-                    </p>
-                    <p>• Entre em contato conosco se não encontrar o email</p>
-                    <p>• Nossa equipe estará pronta para ajudar no processo</p>
-                  </Text>
-                  <div className="mt-4">
-                    <Link
-                      href="/contact"
-                      className="inline-flex items-center space-x-2 text-ouro-texto transition-colors font-medium"
-                    >
-                      <PiChatCircle className="w-4 h-4" />
-                      <span>Entrar em contato com suporte</span>
-                      <PiCaretRight className="w-4 h-4" />
-                    </Link>
-                  </div>
-                </div>
-              </div>
-            </AnimatedCard>
-
-            {/* Quote */}
-            <AnimatedItem direction="up" springType="gentle">
-              <Card nivel={2} className="mt-12 max-w-2xl mx-auto">
-                <blockquote className="text-lg text-theme-secondary italic mb-4 leading-relaxed">
-                  &quot;Ensinar é um exercício de imortalidade. De alguma forma
-                  continuamos a viver naqueles cujos olhos aprenderam a ver o
-                  mundo pela magia da nossa palavra.&quot;
-                </blockquote>
-                <cite className="text-ouro-texto font-semibold">
-                  — Rubem Alves
-                </cite>
-              </Card>
-            </AnimatedItem>
-          </AnimatedContainer>
+          <aside
+            className="entra flex flex-col gap-10 lg:pt-10"
+            style={{ ['--i' as string]: 3 }}
+          >
+            <section className="flex flex-col gap-3">
+              <h2 className="font-display text-[1.375rem]">{T.after}</h2>
+              <ul className="flex flex-col divide-y divide-[var(--linha)]">
+                {T.afterItems.map((item) => (
+                  <li key={item} className="flex items-center gap-3 py-2.5">
+                    <Icon
+                      de={PiCheck}
+                      tamanho="p"
+                      className="text-ouro-texto"
+                    />
+                    <span className="t-corpo">{item}</span>
+                  </li>
+                ))}
+              </ul>
+            </section>
+            <section className="flex flex-col gap-3">
+              <h2 className="font-display text-[1.375rem]">{T.help}</h2>
+              <ul className="t-corpo flex flex-col gap-2 text-texto-suave">
+                {T.helpItems.map((item) => (
+                  <li key={item}>{item}</li>
+                ))}
+              </ul>
+            </section>
+          </aside>
         </div>
-
-        {/* Decorative Elements */}
-        <div className="absolute top-4 left-4 w-12 h-12 rounded-2xl flex items-center justify-center opacity-40">
-          <PiMusicNotes className="w-6 h-6" />
-        </div>
-
-        <div className="absolute bottom-4 right-4 w-16 h-16 rounded-3xl flex items-center justify-center opacity-50">
-          <PiUserCheck className="w-8 h-8 text-ouro-texto" />
-        </div>
-      </div>
+      </main>
       <Avisos />
     </>
   );

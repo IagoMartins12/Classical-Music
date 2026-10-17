@@ -92,22 +92,16 @@ export function useEmailRefreshSimple() {
       const updatedSession = await update();
 
       if (updatedSession?.user) {
-        console.log('✅ Sessão atualizada:', {
-          teacherVerified: updatedSession.user.teacherVerified,
-          studentInviteStatus: updatedSession.user.studentInviteStatus,
-          teste: updatedSession.user.isTeacher,
-          teste2: updatedSession.user.isStudent,
-        });
-
-        // Verificar se teacher foi verificado
+        // The invite accepted: the teacher profile is active, the portal open.
         if (
           updatedSession.user.isTeacher &&
-          updatedSession.user.teacherVerified
+          (updatedSession.user.teacherPortal ??
+            updatedSession.user.teacherVerified)
         ) {
           toast.success(
             porIdioma(
-              'Professor verificado. Abrindo o portal…',
-              'Teacher verified. Opening the portal…'
+              'Convite aceito. Abrindo o portal…',
+              'Invite accepted. Opening the portal…'
             )
           );
           setTimeout(() => {
@@ -131,7 +125,6 @@ export function useEmailRefreshSimple() {
         }
 
         if (updatedSession.user.studentInviteStatus === 'PENDING') {
-          console.log('caiu aqui');
           toast.info(
             porIdioma(
               'Aguardando a aprovação do convite.',

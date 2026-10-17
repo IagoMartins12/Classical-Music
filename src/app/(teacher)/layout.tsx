@@ -40,10 +40,10 @@ export default async function TeacherLayout({
     redirect('/access-denied');
   }
 
-  if (
-    session.user.teacherVerified === false ||
-    session.user.teacherVerified === null
-  ) {
+  // The portal opens with an active teacher profile: at once for a Mentor or
+  // Maestro subscriber; only someone invited waits, until they accept. An
+  // API older than `teacherPortal` still answers with the approval.
+  if (!(session.user.teacherPortal ?? session.user.teacherVerified)) {
     return (
       <TeacherVerificationRequired
         userEmail={session.user.email}
