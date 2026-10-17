@@ -44,6 +44,10 @@ export interface OpcaoSelecao {
   value: string;
   label: string;
   disabled?: boolean;
+  /** A small portrait before the label (a composer, a person). */
+  retrato?: { src: string | null; nome: string };
+  /** A second, quieter line under the label (years, era). */
+  detalhe?: string;
 }
 
 export interface SelecaoProps {

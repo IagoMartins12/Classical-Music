@@ -12,6 +12,7 @@ import {
   type SVGProps,
 } from 'react';
 import { PiCaretDown, PiCheck, PiSpinnerGap, PiX } from 'react-icons/pi';
+import Image from '@/app/components/SmartImage';
 import type { OpcaoSelecao } from './Selecao';
 import { cx } from './cx';
 import { useListaFlutuante } from './useListaFlutuante';
@@ -290,7 +291,15 @@ export function SelecaoComBusca({
                   escolher(i);
                 }}
               >
-                <span className="flex-1 truncate">{o.label}</span>
+                {o.retrato && <Retrato {...o.retrato} />}
+                <span className="flex min-w-0 flex-1 flex-col">
+                  <span className="truncate">{o.label}</span>
+                  {o.detalhe && (
+                    <span className="t-dado truncate text-[0.75rem] text-texto-fraco">
+                      {o.detalhe}
+                    </span>
+                  )}
+                </span>
                 {o.value === valor && (
                   <PiCheck className="h-4 w-4 shrink-0 text-ouro-texto" />
                 )}
@@ -303,5 +312,24 @@ export function SelecaoComBusca({
           ))}
       </ul>
     </>
+  );
+}
+
+/** The option's portrait, or its initial in gold when there is no photo. */
+function Retrato({ src, nome }: { src: string | null; nome: string }) {
+  return (
+    <span className="relative grid h-9 w-9 shrink-0 place-items-center overflow-hidden rounded-full bg-sup-2 font-display text-[0.9375rem] text-ouro-texto">
+      {src ? (
+        <Image
+          src={src}
+          alt=""
+          fill
+          sizes="36px"
+          className="object-cover object-top"
+        />
+      ) : (
+        <span aria-hidden="true">{nome.trim().charAt(0)}</span>
+      )}
+    </span>
   );
 }

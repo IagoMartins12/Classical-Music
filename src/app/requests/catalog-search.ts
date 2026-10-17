@@ -6,6 +6,7 @@
  * Aqui são `GET /composers`, `/composers/famous` e `/composers/:id`, e
  * `GET /works` ou as obras do compositor.
  */
+import type { OpcaoSelecao } from '@/app/components/ui/Selecao';
 import { ApiError, apiFetch } from '@/app/libs/api/client';
 import type { ApiSchema } from '@/app/libs/api/types';
 import { withoutNulls } from '@/app/requests/fetch-like';
@@ -167,9 +168,11 @@ export async function composerOptions(texto: string) {
     findComposers(texto, 30),
     q ? findComposers('', 40) : Promise.resolve([]),
   ]);
-  const opcoes = achados.map((c) => ({
+  const opcoes: OpcaoSelecao[] = achados.map((c) => ({
     value: c.id,
     label: c.fullName || c.name,
+    retrato: { src: c.portraitUrl ?? null, nome: c.name },
+    detalhe: [c.birthDate, c.deathDate].filter(Boolean).join('–') || undefined,
   }));
   if (!q) return opcoes.slice(0, 12);
   const conhecido = new Set(famosos.map((c) => c.id));
@@ -177,7 +180,7 @@ export async function composerOptions(texto: string) {
     semAcento(label)
       .split(/[\s,.-]+/)
       .some((w) => w.startsWith(q));
-  const peso = (o: { value: string; label: string }) =>
+  const peso = (o: OpcaoSelecao) =>
     (comeca(o.label) ? 0 : 2) + (conhecido.has(o.value) ? 0 : 1);
   return [...opcoes].sort((a, b) => peso(a) - peso(b)).slice(0, 12);
 }
