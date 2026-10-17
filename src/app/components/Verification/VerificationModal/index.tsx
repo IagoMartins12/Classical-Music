@@ -1,17 +1,14 @@
-// app/components/Verification/VerificationModal.tsx
 'use client';
 
 import { useState } from 'react';
-import { PiCheck, PiShield } from 'react-icons/pi';
-import Button from '@/app/components/Common/Button';
-import { AnimatedItem } from '@/app/components/animation/AnimatedComponents';
-import Modal from '../../Modal';
-import { useToast } from '@/app/hooks/useToast';
-import { useTranslation } from '@/app/hooks/useTranslation';
-import { setVerificationRequest } from '@/app/requests/verification';
-import { Inline } from '@/app/components/ui/Layout';
-import { Text } from '@/app/components/ui/Text';
+import { PiCheck, PiSealCheck } from 'react-icons/pi';
+import { Button } from '@/app/components/ui/Button';
 import { Field } from '@/app/components/ui/Field';
+import { Icon } from '@/app/components/ui/Icon';
+import { Sheet } from '@/app/components/ui/Sheet';
+import { useToast } from '@/app/hooks/useToast';
+import { useTx } from '@/app/hooks/useTx';
+import { setVerificationRequest } from '@/app/requests/verification';
 
 interface VerificationModalProps {
   isOpen: boolean;
@@ -23,6 +20,10 @@ interface VerificationModalProps {
   onVerificationChange: (verified: boolean) => void;
 }
 
+/**
+ * The administrator marks a composer or a work as checked, or takes the
+ * mark off, with an optional note for the history.
+ */
 export default function VerificationModal({
   isOpen,
   currentItem,
@@ -32,15 +33,23 @@ export default function VerificationModal({
   currentVerificationStatus,
   onVerificationChange,
 }: VerificationModalProps) {
-  const { t, ready } = useTranslation({ sections: ['pages/workId'] });
+  const tx = useTx();
+  const toast = useToast();
   const [notes, setNotes] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const failed = tx(
+    'Não foi possível mudar a verificação.',
+    'Could not change the verification.'
+  );
 
-  const toast = useToast();
+  const close = () => {
+    if (isSubmitting) return;
+    setNotes('');
+    onClose();
+  };
 
-  const handleSubmit = async (verified: boolean) => {
+  const submit = async (verified: boolean) => {
     setIsSubmitting(true);
-
     try {
       const response = await setVerificationRequest(
         currentItem,
@@ -48,140 +57,84 @@ export default function VerificationModal({
         verified,
         notes.trim()
       );
-
-      if (response.ok) {
-        const data = await response.json();
-        toast.success(t('verification_modal_sucesso'), data.message);
-        onVerificationChange(verified);
-        onClose();
-        setNotes('');
-      } else {
-        const error = await response.json();
-        toast.error(
-          t('verification_modal_erro'),
-          error.error || t('verification_modal_erro_alterar')
-        );
+      if (!response.ok) {
+        const error = await response.json().catch(() => ({}));
+        toast.error(error.error || failed);
+        return;
       }
-    } catch (error) {
-      console.error('Erro ao alterar verificação:', error);
-      toast.error(
-        t('verification_modal_erro'),
-        t('verification_modal_erro_alterar')
+      toast.success(
+        verified
+          ? tx('Marcado como verificado.', 'Marked as verified.')
+          : tx('Verificação removida.', 'Verification removed.')
       );
+      onVerificationChange(verified);
+      setNotes('');
+      onClose();
+    } catch {
+      toast.error(failed);
     } finally {
       setIsSubmitting(false);
     }
   };
 
-  const handleClose = () => {
-    if (!isSubmitting) {
-      setNotes('');
-      onClose();
-    }
-  };
-
-  if (!isOpen) return null;
-
   return (
-    <Modal
-      carregando={!ready}
-      isOpen={isOpen}
-      onClose={onClose}
-      closeOnOverlayClick
-    >
-      <AnimatedItem direction="scale" springType="bouncy">
-        <div className="">
-          {/* Header */}
-          <div className="flex items-center justify-between mb-6">
-            <Inline gap={3}>
-              <div className="w-10 h-10 rounded-xl flex items-center justify-center">
-                <PiShield className="w-5 h-5" />
-              </div>
-              <div>
-                <h2 className="text-xl font-bold text-theme-primary">
-                  {t('verification_modal_titulo')}
-                </h2>
-                <Text papel="rotulo" tom="suave" as="p">
-                  {composerName}
-                </Text>
-              </div>
-            </Inline>
-          </div>
-
-          {/* Current Status */}
-          <div className="mb-6">
-            <div className="p-3 bg-theme-secondary rounded-lg">
-              <Inline gap={2}>
-                <Text papel="rotulo" tom="fraco" className="font-medium">
-                  {t('verification_modal_status_atual')}
-                </Text>
-                <span
-                  className={`inline-flex items-center space-x-1 px-2 py-1 rounded-full text-xs font-medium ${
-                    currentVerificationStatus
-                      ? ''
-                      : 'bg-theme-tertiary text-theme-secondary'
-                  }`}
-                >
-                  {currentVerificationStatus ? (
-                    <>
-                      <PiCheck className="w-3 h-3" />
-                      <span>{t('verification_modal_verificado')}</span>
-                    </>
-                  ) : (
-                    <span>{t('verification_modal_nao_verificado')}</span>
-                  )}
-                </span>
-              </Inline>
-            </div>
-          </div>
-
-          {/* Notes */}
-          <div className="mb-6">
-            <Field.Area
-              label={t('verification_modal_notas')}
-              classeCampo="resize-none"
-              value={notes}
-              onChange={(e) => setNotes(e.target.value)}
-              placeholder={t('verification_modal_placeholder')}
-              rows={3}
-            />
-          </div>
-
-          {/* Actions */}
-          <div className="flex justify-end space-x-3">
+    <Sheet
+      aberto={isOpen}
+      aoFechar={close}
+      titulo={tx('Verificação', 'Verification')}
+      descricao={composerName}
+      largura="m"
+      rodape={
+        <div className="flex justify-end gap-2">
+          <Button variante="fantasma" onClick={close} disabled={isSubmitting}>
+            {tx('Cancelar', 'Cancel')}
+          </Button>
+          {currentVerificationStatus ? (
             <Button
-              variant="secondary"
-              onClick={handleClose}
-              disabled={isSubmitting}
+              variante="perigo"
+              carregando={isSubmitting}
+              onClick={() => void submit(false)}
             >
-              {t('verification_modal_cancelar')}
+              {tx('Remover a verificação', 'Remove the verification')}
             </Button>
-
-            {currentVerificationStatus ? (
-              <Button
-                variant="delete"
-                onClick={() => handleSubmit(false)}
-                disabled={isSubmitting}
-              >
-                {isSubmitting
-                  ? t('verification_modal_removendo')
-                  : t('verification_modal_remover')}
-              </Button>
-            ) : (
-              <Button
-                variant="primary"
-                onClick={() => handleSubmit(true)}
-                disabled={isSubmitting}
-                leftIcon={<PiCheck />}
-              >
-                {isSubmitting
-                  ? t('verification_modal_verificando')
-                  : t('verification_modal_verificar')}
-              </Button>
-            )}
-          </div>
+          ) : (
+            <Button
+              variante="primario"
+              icone={PiCheck}
+              carregando={isSubmitting}
+              onClick={() => void submit(true)}
+            >
+              {tx('Marcar como verificado', 'Mark as verified')}
+            </Button>
+          )}
         </div>
-      </AnimatedItem>
-    </Modal>
+      }
+    >
+      <div className="flex flex-col gap-5">
+        <p className="flex items-center gap-3 rounded-card bg-sup-2 p-4">
+          <span className="grid h-10 w-10 shrink-0 place-items-center rounded-full tint-ouro text-ouro-na-tinta">
+            <Icon de={PiSealCheck} tamanho="m" />
+          </span>
+          <span className="flex flex-col">
+            <span className="t-legenda">{tx('Agora', 'Now')}</span>
+            <span className="font-medium">
+              {currentVerificationStatus
+                ? tx('Verificado', 'Verified')
+                : tx('Não verificado', 'Not verified')}
+            </span>
+          </span>
+        </p>
+        <Field.Area
+          label={tx('Nota (opcional)', 'Note (optional)')}
+          ajuda={tx(
+            'Fica no histórico, para quem conferir depois.',
+            'Kept in the history, for whoever checks later.'
+          )}
+          rows={3}
+          value={notes}
+          onChange={(e) => setNotes(e.target.value)}
+        />
+      </div>
+    </Sheet>
   );
 }
