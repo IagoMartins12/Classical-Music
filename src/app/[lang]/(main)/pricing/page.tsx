@@ -262,10 +262,7 @@ export default async function Pagina({ params }: LangPageProps) {
                 nome: c.pagos.itens[chave],
               }))}
               legenda={c.pagos.chamada(
-                precos.PLUS ? formatarPreco(precos.PLUS.mensal, idioma) : null,
-                precos.MENTOR
-                  ? formatarPreco(precos.MENTOR.mensal, idioma)
-                  : null
+                precos.PLUS ? formatarPreco(precos.PLUS.mensal, idioma) : null
               )}
             />
           }
