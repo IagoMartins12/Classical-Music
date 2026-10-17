@@ -30,13 +30,19 @@ export function useEmailRefresh(): UseEmailRefreshReturn {
           ? 'Email confirmado com sucesso!'
           : 'Email confirmed successfully!';
       // Método 1: Forçar atualização da sessão NextAuth (principal)
-      const updatedSession = await update();
+      // A check this fast only flashed the spinner: it stays at least a
+      // moment, so the person sees the question was asked.
+      const [updatedSession] = await Promise.all([
+        update(),
+        new Promise((resolve) => setTimeout(resolve, 700)),
+      ]);
 
       if (updatedSession?.user?.emailVerified) {
         // Email foi confirmado via sessão!
         console.log('✅ Email confirmado via sessão');
         toast.success(messageSucessfull);
 
+        // The button keeps loading until the page reloads with access.
         setTimeout(() => {
           window.location.reload();
         }, 1500);
@@ -51,6 +57,7 @@ export function useEmailRefresh(): UseEmailRefreshReturn {
           : 'Email has not been confirmed yet. Please check your inbox and try again.';
       // Email ainda não foi confirmado por nenhum método
       toast.error(errorMensage);
+      setIsRefreshing(false);
       console.log('❌ Email ainda não confirmado por nenhum método');
     } catch {
       const errorMensage =
@@ -58,7 +65,6 @@ export function useEmailRefresh(): UseEmailRefreshReturn {
           ? 'Erro ao verificar confirmação. Tente novamente.'
           : 'Error checking confirmation. Please try again.';
       toast.error(errorMensage);
-    } finally {
       setIsRefreshing(false);
     }
   };
