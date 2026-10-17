@@ -10,6 +10,7 @@ import {
   PiMinus,
   PiFilePdf,
   PiTrash,
+  PiQuestion,
 } from 'react-icons/pi';
 import { Button, classesDeBotao } from '@/app/components/ui/Button';
 import { Icon } from '@/app/components/ui/Icon';
@@ -84,13 +85,24 @@ export function OnDevice() {
               className="entra max-w-[58ch] text-lg leading-relaxed text-texto-suave"
               style={{ ['--i' as string]: 1 }}
             >
-              {a.abertura}
-            </p>
-            <p
-              className="entra max-w-[58ch] t-rotulo text-texto-suave"
-              style={{ ['--i' as string]: 2 }}
-            >
-              {a.tecnologia}
+              {a.abertura}{' '}
+              {/* Nobody needs the technology's name to use it: a quiet sign
+                  for the curious, with the explanation one click away. */}
+              <a
+                href={a.tecnologiaLink}
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label={a.tecnologia}
+                className="group relative inline-grid h-6 w-6 place-items-center rounded-full align-middle text-texto-fraco transition-colors hover:text-ouro-texto focus-visible:text-ouro-texto"
+              >
+                <Icon de={PiQuestion} tamanho="p" />
+                <span
+                  role="tooltip"
+                  className="pointer-events-none absolute bottom-full left-1/2 z-elevado mb-2 w-max max-w-[16rem] -translate-x-1/2 sup-alta !rounded-controle px-3 py-2 text-left text-[0.8125rem] leading-snug text-texto opacity-0 shadow-[var(--sombra-2)] transition-opacity duration-[var(--t-resposta)] group-hover:opacity-100 group-focus-visible:opacity-100"
+                >
+                  {a.tecnologia}
+                </span>
+              </a>
             </p>
             <div
               className="entra flex flex-wrap gap-3 pt-2"

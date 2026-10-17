@@ -78,8 +78,9 @@ const pt = {
       titulo: 'O Opus Atlas no seu celular',
       abertura:
         'Ainda não temos um app nas lojas. Mas o site sabe se instalar como um: fica na tela de início, abre em tela cheia, guarda partituras e continua funcionando sem internet.',
-      tecnologia:
-        'A tecnologia se chama Progressive Web App. É o próprio site, instalado pelo navegador: nada para baixar de loja, e cada melhoria chega sozinha.',
+      tecnologia: 'Quer saber mais sobre a tecnologia? Clique aqui.',
+      tecnologiaLink:
+        'https://developer.mozilla.org/pt-BR/docs/Web/Progressive_web_apps',
       comparar: 'O que você tem com ele instalado',
       itens: [
         {
@@ -209,8 +210,9 @@ const en: typeof pt = {
       titulo: 'Opus Atlas on your phone',
       abertura:
         'We do not have an app in the stores yet. But the site can install itself like one: it sits on your home screen, opens full screen, keeps scores and keeps working without internet.',
-      tecnologia:
-        'The technology is called a Progressive Web App. It is the site itself, installed by the browser: nothing to download from a store, and every improvement arrives on its own.',
+      tecnologia: 'Want to know more about the technology? Click here.',
+      tecnologiaLink:
+        'https://developer.mozilla.org/en-US/docs/Web/Progressive_web_apps',
       comparar: 'What you get with it installed',
       itens: [
         {
