@@ -32,6 +32,8 @@ import {
   type ImportOutcome,
 } from '@/app/requests/external-sources';
 import { useTx } from '@/app/hooks/useTx';
+import { ApiError } from '@/app/libs/api/client';
+import { QuillOnPaper } from '@/app/components/site/QuillOnPaper';
 
 /**
  * Obras por chamada de importação. A API aceita até 100 e limita a 5 chamadas
@@ -108,6 +110,8 @@ const BulkInsertWorksModal = ({
 
   // Estados de loading
   const [isDiscovering, setIsDiscovering] = useState(false);
+  // The search found nothing to import (no works, or no source to read).
+  const [nothingFound, setNothingFound] = useState(false);
 
   // Estados de edição
   const [editingWork, setEditingWork] = useState<DiscoveredWork | null>(null);
@@ -126,8 +130,13 @@ const BulkInsertWorksModal = ({
   // Descobrir obras do compositor
   const handleDiscoverWorks = async () => {
     setIsDiscovering(true);
+    setNothingFound(false);
     try {
       const data = await discoverComposerWorks(composer.id);
+      if (!data.works.length) {
+        setNothingFound(true);
+        return;
+      }
       const works: DiscoveredWork[] = data.works.map((work) => ({
         id: work.imslpId,
         title: work.title,
@@ -141,6 +150,11 @@ const BulkInsertWorksModal = ({
       updateStats(works);
       setCurrentStep('select');
     } catch (error) {
+      // No page to read for this composer: to the person, simply no works.
+      if (error instanceof ApiError && error.status === 404) {
+        setNothingFound(true);
+        return;
+      }
       console.error('❌ Erro ao descobrir obras:', error);
       toast.error(
         t('toast_error'),
@@ -441,14 +455,57 @@ const BulkInsertWorksModal = ({
               composer: composer.fullName,
             })}
           >
-            <Aviso titulo={t('bulk_step_discover_how_title')}>
-              <ul className="flex list-disc flex-col gap-1 pl-4">
-                <li>{t('bulk_step_discover_how_1')}</li>
-                <li>{t('bulk_step_discover_how_2')}</li>
-                <li>{t('bulk_step_discover_how_3')}</li>
-                <li>{t('bulk_step_discover_how_4')}</li>
-              </ul>
-            </Aviso>
+            {isDiscovering ? (
+              // Reading the composer's works takes a few seconds: the same
+              // quill as the scores being fetched on a work page.
+              <div
+                role="status"
+                className="flex flex-col items-center gap-5 rounded-card bg-sup-2 px-6 py-8 text-center"
+              >
+                <QuillOnPaper />
+                <div className="flex max-w-[40ch] flex-col items-center gap-1.5">
+                  <p className="font-display text-[1.375rem] leading-snug">
+                    {tx(
+                      `Procurando as obras de ${composer.name}…`,
+                      `Looking for ${composer.name}'s works…`
+                    )}
+                  </p>
+                  <p className="t-rotulo text-texto-suave">
+                    {tx(
+                      'Leva alguns segundos. A lista aparece sozinha.',
+                      'It takes a few seconds. The list shows up on its own.'
+                    )}
+                  </p>
+                </div>
+              </div>
+            ) : nothingFound ? (
+              <div
+                role="status"
+                className="flex flex-col items-start gap-2 rounded-card bg-sup-2 p-6"
+              >
+                <p className="font-display text-[1.375rem] leading-snug">
+                  {tx(
+                    `Não encontramos obras de ${composer.name} para importar`,
+                    `We found no works by ${composer.name} to import`
+                  )}
+                </p>
+                <p className="t-rotulo text-texto-suave">
+                  {tx(
+                    'Ainda não temos obras deste compositor. Você pode cadastrar uma a uma pelo envio de obra.',
+                    'We have no works by this composer yet. You can add them one by one through the work upload.'
+                  )}
+                </p>
+              </div>
+            ) : (
+              <Aviso titulo={t('bulk_step_discover_how_title')}>
+                <ul className="flex list-disc flex-col gap-1 pl-4">
+                  <li>{t('bulk_step_discover_how_1')}</li>
+                  <li>{t('bulk_step_discover_how_2')}</li>
+                  <li>{t('bulk_step_discover_how_3')}</li>
+                  <li>{t('bulk_step_discover_how_4')}</li>
+                </ul>
+              </Aviso>
+            )}
           </FormBlock>
         )}
 
