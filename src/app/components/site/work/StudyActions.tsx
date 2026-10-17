@@ -50,7 +50,9 @@ export function StudyActions({ context }: { context: StudyContext }) {
 
   const lado = (ativo: boolean) =>
     cx(
-      'relative inline-flex min-h-[var(--alvo)] flex-1 items-center sm:flex-none justify-center gap-2 rounded-lg px-4 text-[0.9375rem] font-medium',
+      // On a phone the two halves share the width: tighter padding, one line,
+      // and the label truncates instead of breaking the button in two.
+      'relative inline-flex min-h-[var(--alvo)] min-w-0 flex-1 items-center justify-center gap-1.5 whitespace-nowrap rounded-lg px-3 text-[0.875rem] font-medium sm:flex-none sm:gap-2 sm:px-4 sm:text-[0.9375rem]',
       'transition-colors duration-[var(--t-toque)] ease-saida',
       ativo
         ? 'tint-ouro text-ouro-na-tinta'
@@ -76,13 +78,15 @@ export function StudyActions({ context }: { context: StudyContext }) {
         >
           <span
             className={cx(
-              'grid text-ouro-texto',
+              'grid shrink-0 text-ouro-texto',
               studying && marked > 0 && 'marcador-cai'
             )}
           >
             <Icon de={PiBookmarkSimple} />
           </span>
-          {studying ? copy.studying : copy.want}
+          <span className="truncate">
+            {studying ? copy.studying : copy.want}
+          </span>
         </button>
         <button
           type="button"
@@ -92,10 +96,10 @@ export function StudyActions({ context }: { context: StudyContext }) {
           {...(learned ? pulso : {})}
         >
           {learned && celebrate > 0 && <NotasSobem key={celebrate} />}
-          <span className="grid text-ouro-texto">
+          <span className="grid shrink-0 text-ouro-texto">
             <Icon de={PiCheckCircle} />
           </span>
-          {learned ? copy.done : copy.learned}
+          <span className="truncate">{learned ? copy.done : copy.learned}</span>
         </button>
       </div>
       <LearningModalHost />
