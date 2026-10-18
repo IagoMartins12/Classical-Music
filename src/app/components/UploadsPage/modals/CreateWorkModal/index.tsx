@@ -1,6 +1,8 @@
 // app/components/modals/CreateWorkModal.tsx - COM INTEGRAÇÃO DE SUGESTÃO DE OBRA PAI
 'use client';
 
+import { ENVIOS } from '@/app/conteudo/textos/envios';
+import { useTextos } from '@/app/hooks/useTextos';
 import {
   useState,
   useEffect,
@@ -31,7 +33,6 @@ import {
   VALID_PORTUGUESE_WORKGENRES,
 } from '@/app/utils/valid-categories-and-genres';
 import { useToast } from '@/app/hooks/useToast';
-import { useTranslation } from '@/app/context/TranslationContext';
 import { useAuth } from '@/app/hooks/useAuth';
 import { useSmartFormChanges } from '@/app/hooks/useFormChanges';
 import SimpleWorkSearchInput from '@/app/components/SimpleWorkSearchInput';
@@ -99,7 +100,7 @@ const CreateWorkModal = ({
   const idCampo = useId();
   const formId = `${idCampo}-form`;
   const router = useRouter();
-  const { t, language } = useTranslation({ sections: ['pages/uploads'] });
+  const { t, language } = useTextos(ENVIOS);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [scrapingUrl, setScrapingUrl] = useState(false);
   const [urlToScrape, setUrlToScrape] = useState('');

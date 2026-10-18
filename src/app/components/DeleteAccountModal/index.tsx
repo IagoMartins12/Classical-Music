@@ -1,5 +1,7 @@
 // app/components/profile/DeleteAccountModal.tsx - Enhanced modal for account deletion
 'use client';
+import { PERFIL } from '@/app/conteudo/textos/perfil';
+import { useTextos } from '@/app/hooks/useTextos';
 import { Button as Botao } from '@/app/components/ui/Button';
 
 import { useState, useEffect } from 'react';
@@ -22,7 +24,6 @@ import {
 import Button from '../Common/Button';
 import Input from '../Common/Inputs';
 import { CascadeInfo } from '@/app/hooks/useAccountManagement';
-import { useTranslation } from '@/app/context/TranslationContext';
 import { Stack, Inline } from '@/app/components/ui/Layout';
 import { Text } from '@/app/components/ui/Text';
 import { NomeAcao } from '@/app/components/ui/NomeAcao';
@@ -54,7 +55,7 @@ const DeleteAccountModal: React.FC<DeleteAccountModalProps> = ({
   userName,
   userEmail,
 }) => {
-  const { t, ready } = useTranslation({ sections: ['pages/profile'] });
+  const { t, ready } = useTextos(PERFIL);
   const [mounted, setMounted] = useState(false);
   const [confirmText, setConfirmText] = useState('');
   const [currentPassword, setCurrentPassword] = useState('');

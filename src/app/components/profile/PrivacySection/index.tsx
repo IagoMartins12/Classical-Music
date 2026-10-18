@@ -1,6 +1,8 @@
 // app/profile/components/PrivacySection.tsx (versão atualizada)
 'use client';
 
+import { PERFIL } from '@/app/conteudo/textos/perfil';
+import { useTextos } from '@/app/hooks/useTextos';
 import React, { useState, useEffect, useCallback } from 'react';
 // Era `User` do NextAuth, aumentado em `types/next-auth.d.ts`. É o mesmo
 // objeto que `useAuth()` entrega, e ele já tem tipo próprio no store.
@@ -11,7 +13,6 @@ import Button from '../../Common/Button';
 import { updatePrivacySettings } from '@/app/actions/profile';
 import { useAuth } from '@/app/hooks/useAuth';
 import { useSessionUpdate } from '@/app/hooks/useSessionUpdate';
-import { useTranslation } from '@/app/context/TranslationContext';
 import { Stack, Inline } from '@/app/components/ui/Layout';
 import { Text } from '@/app/components/ui/Text';
 import { Card } from '@/app/components/ui/Card';
@@ -28,7 +29,7 @@ const PrivacySection: React.FC<PrivacySectionProps> = ({
 }) => {
   const { updateUser: globalUpdateUser } = useAuth();
   const { updateUserSession } = useSessionUpdate();
-  const { t } = useTranslation({ sections: ['pages/profile'] });
+  const { t } = useTextos(PERFIL);
   const [isLoading, setIsLoading] = useState(false);
   const [settings, setSettings] = useState({
     profilePublic: user.profilePublic || true,

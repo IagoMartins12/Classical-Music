@@ -1,6 +1,8 @@
 // app/profile/components/AccountSettingsSection.tsx - VERSÃO COM VERIFICAÇÃO DE LOGIN SOCIAL
 'use client';
 
+import { PERFIL } from '@/app/conteudo/textos/perfil';
+import { useTextos } from '@/app/hooks/useTextos';
 import React, { useState, useEffect } from 'react';
 // Era `User` do NextAuth, aumentado em `types/next-auth.d.ts`. É o mesmo
 // objeto que `useAuth()` entrega, e ele já tem tipo próprio no store.
@@ -33,7 +35,6 @@ import {
 import DeleteAccountModal from '../../DeleteAccountModal';
 import { AssinaturaEDados } from './AssinaturaEDados';
 import EmailVerificationBanner2 from '../../EmailVerification/EmailVerificationBanner2';
-import { useTranslation } from '@/app/context/TranslationContext';
 import { Stack, Inline } from '@/app/components/ui/Layout';
 import { Text } from '@/app/components/ui/Text';
 import { Card } from '@/app/components/ui/Card';
@@ -55,7 +56,7 @@ const AccountSettingsSection: React.FC<AccountSettingsSectionProps> = ({
   user,
 }) => {
   const tx = useTx();
-  const { t, language } = useTranslation({ sections: ['pages/profile'] });
+  const { t, language } = useTextos(PERFIL);
   const {
     isEmailChanging,
     isUserTypeChanging,

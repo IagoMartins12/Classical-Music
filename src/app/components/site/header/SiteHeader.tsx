@@ -69,11 +69,7 @@ export function SiteHeader() {
 
   const signedUser = isAuthenticated && user ? user : null;
   const languageToggle = (
-    <LanguageToggle
-      variant="compact"
-      idioma={language}
-      aoTrocar={switchLanguage ?? undefined}
-    />
+    <LanguageToggle idioma={language} aoTrocar={switchLanguage ?? undefined} />
   );
 
   return (

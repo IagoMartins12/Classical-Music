@@ -7,10 +7,8 @@ export type Language = 'pt' | 'en';
 
 interface LanguageState {
   language: Language;
-  isTranslating: boolean;
   hasUserPreference: boolean; // 🆕 Flag para indicar se usuário fez escolha manual
   setLanguage: (language: Language, isUserChoice?: boolean) => void;
-  setTranslating: (translating: boolean) => void;
   toggleLanguage: () => void;
   initializeFromSystem: () => void; // 🆕 Método para inicializar do sistema
 }
@@ -71,7 +69,6 @@ export const useLanguageStore = create<LanguageState>()(
   persist(
     (set, get) => ({
       language: 'pt', // Padrão temporário
-      isTranslating: false,
       hasUserPreference: false,
 
       setLanguage: (language: Language, isUserChoice = true) => {
@@ -88,10 +85,6 @@ export const useLanguageStore = create<LanguageState>()(
           });
           setCookieLanguage(language, isUserChoice);
         }
-      },
-
-      setTranslating: (translating: boolean) => {
-        set({ isTranslating: translating });
       },
 
       toggleLanguage: () => {
@@ -140,48 +133,34 @@ export const useLanguageStore = create<LanguageState>()(
   )
 );
 
-// ✅ Hook principal com router.refresh() e timing controlado
+/**
+ * The language and how to change it: the cookie is written at once, then the
+ * page refreshes so the server renders in the new language. `pending` is true
+ * until that refresh arrives.
+ */
 export function useLanguageWithRefresh() {
   const router = useRouter();
   const store = useLanguageStore();
+  const [pending, startTransition] = React.useTransition();
 
-  // 🆕 Inicializar do sistema no mount (apenas se não há preferência do usuário)
+  // Inicializar do sistema no mount (só sem preferência do usuário)
   React.useEffect(() => {
     store.initializeFromSystem();
   }, []);
 
   const setLanguageWithRefresh = (language: Language) => {
-    const currentLanguage = store.language;
-
-    if (currentLanguage !== language) {
-      store.setTranslating(true);
-      store.setLanguage(language, true); // Marca como escolha do usuário
-
-      // ✅ Executar refresh em background, mas deixar modal controlar a finalização
-      setTimeout(() => {
-        router.refresh();
-        // ✅ NÃO setar isTranslating como false aqui - deixar o modal controlar
-      }, 500); // Pequeno delay para garantir que cookie foi salvo
-    }
-  };
-
-  const toggleLanguageWithRefresh = () => {
-    const newLanguage = store.language === 'pt' ? 'en' : 'pt';
-    setLanguageWithRefresh(newLanguage);
-  };
-
-  // ✅ Callback para quando modal completar
-  const handleModalComplete = () => {
-    store.setTranslating(false);
+    if (store.language === language) return;
+    store.setLanguage(language, true); // Marca como escolha do usuário
+    startTransition(() => router.refresh());
   };
 
   return {
     language: store.language,
-    isTranslating: store.isTranslating,
-    hasUserPreference: store.hasUserPreference, // 🆕 Exposar flag
+    pending,
+    hasUserPreference: store.hasUserPreference,
     setLanguage: setLanguageWithRefresh,
-    toggleLanguage: toggleLanguageWithRefresh,
+    toggleLanguage: () =>
+      setLanguageWithRefresh(store.language === 'pt' ? 'en' : 'pt'),
     changeLanguage: setLanguageWithRefresh,
-    onModalComplete: handleModalComplete,
   };
 }

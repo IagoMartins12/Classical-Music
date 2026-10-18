@@ -54,7 +54,7 @@ export function FeaturedComposer({
 
   return (
     <Revelar as="section" className="section-wrap flex flex-col gap-10 py-12">
-      <SectionHeading title={copy.title} subtitle={copy.subtitle} />
+      <SectionHeading title={copy.title} />
       <div className="grid grid-cols-1 gap-10 md:grid-cols-[minmax(0,5fr)_minmax(0,7fr)] lg:gap-16">
         <div className="relative md:sticky md:top-24 md:self-start">
           <Link href={href} className="block" tabIndex={-1} aria-hidden="true">

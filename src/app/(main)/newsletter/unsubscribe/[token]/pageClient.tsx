@@ -1,5 +1,7 @@
 'use client';
 
+import { NEWSLETTER } from '@/app/conteudo/textos/newsletter';
+import { useTextos } from '@/app/hooks/useTextos';
 import { useParams } from 'next/navigation';
 import { useState } from 'react';
 import toast from 'react-hot-toast';
@@ -10,7 +12,6 @@ import { TokenFrame } from '@/app/components/site/tokens/TokenFrame';
 import { Button, classesDeBotao } from '@/app/components/ui/Button';
 import { Field } from '@/app/components/ui/Field';
 import { Icon } from '@/app/components/ui/Icon';
-import { useTranslation } from '@/app/context/TranslationContext';
 import { unsubscribeFromNewsletter } from '@/app/requests/newsletter';
 
 const MOTIVOS = [
@@ -28,7 +29,7 @@ const MOTIVOS = [
  */
 export default function UnsubscribePage() {
   const token = String(useParams()?.token ?? '');
-  const { t } = useTranslation({ sections: ['pages/newsletter'] });
+  const { t } = useTextos(NEWSLETTER);
   const [motivo, setMotivo] = useState('');
   const [comentario, setComentario] = useState('');
   const [enviando, setEnviando] = useState(false);

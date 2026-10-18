@@ -1,6 +1,8 @@
 // app/profile/components/PersonalInfoSection.tsx - COM VALIDAÇÃO DE TELEFONE
 'use client';
 
+import { PERFIL } from '@/app/conteudo/textos/perfil';
+import { useTextos } from '@/app/hooks/useTextos';
 import React, { useState } from 'react';
 import { PiFloppyDisk, PiPencilLine, PiX } from 'react-icons/pi';
 import { toast } from 'react-hot-toast';
@@ -30,7 +32,6 @@ import {
   validatePhoneNumber,
   canProceedWithPhone,
 } from '@/app/utils/phones_and_location/phoneValidation';
-import { useTranslation } from '@/app/context/TranslationContext';
 import { Stack } from '@/app/components/ui/Layout';
 import { Text } from '@/app/components/ui/Text';
 import { porIdioma } from '@/app/utils/porIdioma';
@@ -52,7 +53,7 @@ const PersonalInfoSection: React.FC<PersonalInfoSectionProps> = ({
   const { language } = useRouteLanguage();
   const { updateUser: globalUpdateUser } = useAuth();
   const { updateUserSession } = useSessionUpdate();
-  const { t } = useTranslation({ sections: ['pages/profile'] });
+  const { t } = useTextos(PERFIL);
   const [isEditing, setIsEditing] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [isUploadingImage, setIsUploadingImage] = useState(false);

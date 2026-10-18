@@ -1,6 +1,8 @@
 // app/components/UploadsPage/modals/CreateScoreModal/index.tsx - ATUALIZADO PARA IMAGENS
 'use client';
 
+import { ENVIOS } from '@/app/conteudo/textos/envios';
+import { useTextos } from '@/app/hooks/useTextos';
 import { useState, useEffect, useRef, useMemo, useId } from 'react';
 import { useRouter } from 'next/navigation';
 import Image from '@/app/components/SmartImage';
@@ -39,7 +41,6 @@ import {
   generateAndUploadTempThumbnail,
 } from '@/app/utils/pdfUtils';
 import { useToast } from '@/app/hooks/useToast';
-import { useTranslation } from '@/app/context/TranslationContext';
 import GroupingSuggestions from '../../GroupingSuggestions';
 import { useSmartFormChanges } from '@/app/hooks/useFormChanges';
 import {
@@ -88,7 +89,7 @@ const CreateScoreModal = ({
   const formId = `${idCampo}-form`;
   const fileInputId = `${idCampo}-file`;
   const router = useRouter();
-  const { t } = useTranslation({ sections: ['pages/uploads'] });
+  const { t } = useTextos(ENVIOS);
 
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [uploadingFile, setUploadingFile] = useState(false);

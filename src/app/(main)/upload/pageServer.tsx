@@ -1,12 +1,8 @@
 import { PersonalPage } from '@/app/components/site/personal/PersonalPage';
 import { UploadsView } from '@/app/components/site/personal/UploadsView';
 import { PERSONAL } from '@/app/conteudo/site/personal';
-import { TranslationProvider } from '@/app/context/TranslationContext';
 import { getMyUploads } from '@/app/requests/my-uploads';
-import {
-  getServerLanguageStatic,
-  loadPageTranslationsWithCommon,
-} from '@/app/utils/translations/serverTranslations';
+import { getServerLanguageStatic } from '@/app/utils/translations/serverTranslations';
 
 const ITEMS_PER_PAGE = 24;
 const KINDS = ['composer', 'work', 'score'] as const;
@@ -37,19 +33,16 @@ export default async function UploadsPageServer({
     ? (type as (typeof KINDS)[number])
     : 'all';
   const language = await getServerLanguageStatic();
-  const [uploads, { translations }] = await Promise.all([
-    getMyUploads({
-      page,
-      limit: ITEMS_PER_PAGE,
-      search,
-      type: tab,
-      epochId,
-      composerId,
-      workId,
-      limitPerType: tab === 'all',
-    }),
-    loadPageTranslationsWithCommon(language, ['pages/uploads']),
-  ]);
+  const uploads = await getMyUploads({
+    page,
+    limit: ITEMS_PER_PAGE,
+    search,
+    type: tab,
+    epochId,
+    composerId,
+    workId,
+    limitPerType: tab === 'all',
+  });
   const counts = {
     total: uploads.composerCount + uploads.workCount + uploads.scoreCount,
     composer: uploads.composerCount,
@@ -59,22 +52,20 @@ export default async function UploadsPageServer({
   const copy = PERSONAL[language].uploads;
 
   return (
-    <TranslationProvider language={language} translations={translations}>
-      <PersonalPage title={copy.title} description={copy.text}>
-        <UploadsView
-          tab={tab}
-          search={search}
-          data={{
-            items: uploads.items,
-            counts,
-            page,
-            pages:
-              tab === 'all'
-                ? 1
-                : Math.max(1, Math.ceil(counts[tab] / ITEMS_PER_PAGE)),
-          }}
-        />
-      </PersonalPage>
-    </TranslationProvider>
+    <PersonalPage title={copy.title} description={copy.text}>
+      <UploadsView
+        tab={tab}
+        search={search}
+        data={{
+          items: uploads.items,
+          counts,
+          page,
+          pages:
+            tab === 'all'
+              ? 1
+              : Math.max(1, Math.ceil(counts[tab] / ITEMS_PER_PAGE)),
+        }}
+      />
+    </PersonalPage>
   );
 }

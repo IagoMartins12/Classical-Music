@@ -1,12 +1,13 @@
 'use client';
 
+import { NEWSLETTER } from '@/app/conteudo/textos/newsletter';
+import { useTextos } from '@/app/hooks/useTextos';
 import { useSearchParams } from 'next/navigation';
 import { PiArrowRight, PiEnvelopeSimple } from 'react-icons/pi';
 import Link from '@/app/components/LocalizedLink';
 import { TokenFrame } from '@/app/components/site/tokens/TokenFrame';
 import { classesDeBotao } from '@/app/components/ui/Button';
 import { Icon } from '@/app/components/ui/Icon';
-import { useTranslation } from '@/app/context/TranslationContext';
 
 /** Where the person lands after a newsletter link, by what happened. */
 const CASOS = {
@@ -30,7 +31,7 @@ const CASOS = {
  */
 export default function NewsletterSuccessContent() {
   const tipo = useSearchParams()?.get('type') ?? 'confirmed';
-  const { t } = useTranslation({ sections: ['pages/newsletter'] });
+  const { t } = useTextos(NEWSLETTER);
   const caso = CASOS[tipo as keyof typeof CASOS] ?? CASOS.default;
 
   return (

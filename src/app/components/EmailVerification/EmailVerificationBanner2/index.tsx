@@ -1,13 +1,14 @@
 // app/components/EmailVerificationBanner.tsx - Banner to show email verification status
 'use client';
 
+import { PERFIL } from '@/app/conteudo/textos/perfil';
+import { useTextos } from '@/app/hooks/useTextos';
 import { useState } from 'react';
 import { useSession } from '@/app/libs/session';
 import { PiArrowsClockwise, PiX } from 'react-icons/pi';
 import { toast } from 'react-hot-toast';
 import Button from '../../Common/Button';
 import { legacyAuth } from '@/app/libs/api/compat';
-import { useTranslation } from '@/app/context/TranslationContext';
 import { NomeAcao } from '@/app/components/ui/NomeAcao';
 import { porIdioma } from '@/app/utils/porIdioma';
 
@@ -25,7 +26,7 @@ const EmailVerificationBanner2: React.FC<EmailVerificationBannerProps> = ({
   customType,
 }) => {
   const { data: session } = useSession();
-  const { t } = useTranslation({ sections: ['pages/profile'] });
+  const { t } = useTextos(PERFIL);
   const [isResending, setIsResending] = useState(false);
   const [isDismissed, setIsDismissed] = useState(false);
 

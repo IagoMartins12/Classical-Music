@@ -171,7 +171,6 @@ export function MobileMenu({
 
           <div className="flex items-center justify-center gap-3 py-1">
             <LanguageToggle
-              variant="compact"
               idioma={language}
               aoTrocar={
                 onSwitchLanguage

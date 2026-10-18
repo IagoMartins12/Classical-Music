@@ -1,10 +1,6 @@
 // app/profile/page.tsx - Perfil pessoal otimizado
-import {
-  getServerLanguageStatic,
-  loadPageTranslationsWithCommon,
-} from '@/app/utils/translations/serverTranslations';
+import { getServerLanguageStatic } from '@/app/utils/translations/serverTranslations';
 import { redirect } from 'next/navigation';
-import { TranslationProvider } from '@/app/context/TranslationContext';
 import { PersonalPage } from '@/app/components/site/personal/PersonalPage';
 import { ProfileView } from '@/app/components/site/personal/ProfileView';
 import { PERSONAL } from '@/app/conteudo/site/personal';
@@ -69,17 +65,11 @@ export default async function ProfilePage() {
   }
 
   const language = await getServerLanguageStatic();
-  const { translations } = await loadPageTranslationsWithCommon(language, [
-    'pages/profile',
-  ]);
   const copy = PERSONAL[language].profile;
 
-  // The section forms still read the `pages/profile` dictionary.
   return (
-    <TranslationProvider language={language} translations={translations}>
-      <PersonalPage title={copy.title} description={copy.text}>
-        <ProfileView />
-      </PersonalPage>
-    </TranslationProvider>
+    <PersonalPage title={copy.title} description={copy.text}>
+      <ProfileView />
+    </PersonalPage>
   );
 }

@@ -1,6 +1,8 @@
 // app/components/uploads/modals/BulkInsertWorksModal.tsx - TRADUZIDO
 'use client';
 
+import { ENVIOS } from '@/app/conteudo/textos/envios';
+import { useTextos } from '@/app/hooks/useTextos';
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import {
@@ -25,7 +27,6 @@ import {
 import CreateWorkModal from '../CreateWorkModal';
 import { useToast } from '@/app/hooks/useToast';
 import { useProcessChanges } from '@/app/hooks/useFormChanges';
-import { useTranslation } from '@/app/context/TranslationContext';
 import {
   discoverComposerWorks,
   importComposerWorks,
@@ -96,7 +97,7 @@ const BulkInsertWorksModal = ({
   const tx = useTx();
   const router = useRouter();
   const toast = useToast();
-  const { t } = useTranslation({ sections: ['pages/uploads'] });
+  const { t } = useTextos(ENVIOS);
 
   // Estados principais
   const [currentStep, setCurrentStep] = useState<

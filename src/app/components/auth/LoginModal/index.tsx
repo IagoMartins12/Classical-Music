@@ -1,6 +1,8 @@
 // components/authModals/LoginModal.tsx - VERSÃO COM TRATAMENTO DE ERROS MELHORADO E TRADUÇÕES
 'use client';
 
+import { AUTH } from '@/app/conteudo/textos/auth';
+import { useTextos } from '@/app/hooks/useTextos';
 import React, { useState, useEffect } from 'react';
 import Link from '@/app/components/LocalizedLink';
 import {
@@ -18,7 +20,6 @@ import Modal from '../../Modal';
 import Button from '../../Common/Button';
 import Input from '../../Common/Inputs';
 import ForgotPasswordModal from '../ForgotPasswordModal';
-import { useTranslation } from '@/app/hooks/useTranslation';
 import { Language } from '@/app/stores/useLanguageStore';
 import { Text } from '@/app/components/ui/Text';
 import { Stack } from '@/app/components/ui/Layout';
@@ -113,9 +114,7 @@ const LoginModal: React.FC = () => {
   const [isGoogleLoading, setIsGoogleLoading] = useState(false);
   const [forgotPasswordOpen, setForgotPasswordOpen] = useState(false);
   const router = useRouter();
-  const { t, language, ready } = useTranslation({
-    sections: ['components/auth-modals'],
-  });
+  const { t, language, ready } = useTextos(AUTH);
 
   // Estado para erro específico de conflito de email
   const [emailConflictError, setEmailConflictError] = useState<string | null>(

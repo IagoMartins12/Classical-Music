@@ -1,6 +1,8 @@
 // components/authModals/RegisterModal.tsx - VERSÃO COM ACEITAÇÃO DE TERMOS LGPD E TRADUÇÕES
 'use client';
 
+import { AUTH } from '@/app/conteudo/textos/auth';
+import { useTextos } from '@/app/hooks/useTextos';
 import React, { useState, useEffect } from 'react';
 import { registerWithPassword, signInWithGoogle } from '@/app/libs/session';
 import { FcGoogle } from 'react-icons/fc';
@@ -22,7 +24,6 @@ import Modal from '../../Modal';
 import Button from '../../Common/Button';
 import Input from '../../Common/Inputs';
 import TermsAcceptance from '../TermsAcceptance';
-import { useTranslation } from '@/app/hooks/useTranslation';
 import { Language } from '@/app/stores/useLanguageStore';
 import { Text } from '@/app/components/ui/Text';
 import { Stack } from '@/app/components/ui/Layout';
@@ -81,9 +82,7 @@ const getRegisterErrorMessage = (
 const RegisterModal: React.FC = () => {
   const { isOpen, close, switchToLogin } = useRegisterModal();
   const { open: openOnboarding } = useOnboardingModal();
-  const { t, language, ready } = useTranslation({
-    sections: ['components/auth-modals'],
-  });
+  const { t, language, ready } = useTextos(AUTH);
 
   const [registerStep, setRegisterStep] = useState<RegisterStep>({
     step: 'form',

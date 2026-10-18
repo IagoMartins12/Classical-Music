@@ -323,7 +323,6 @@ export function CabecalhoDoBlog({
             className="xl:hidden"
           />
           <LanguageToggle
-            variant="compact"
             idioma={idioma}
             aoTrocar={irParaIdioma}
             className="hidden sm:flex"
@@ -559,11 +558,7 @@ export function CabecalhoDoBlog({
             <hr className="my-4 border-linha" />
 
             <div className="flex items-center justify-center gap-3 py-1">
-              <LanguageToggle
-                variant="compact"
-                idioma={idioma}
-                aoTrocar={irParaIdioma}
-              />
+              <LanguageToggle idioma={idioma} aoTrocar={irParaIdioma} />
               <ThemeToggle variant="navbar" />
             </div>
           </MenuScreen>

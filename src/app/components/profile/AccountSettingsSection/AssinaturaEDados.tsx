@@ -1,9 +1,10 @@
 'use client';
 
+import { PERFIL } from '@/app/conteudo/textos/perfil';
+import { useTextos } from '@/app/hooks/useTextos';
 import { useState } from 'react';
 import { toast } from 'react-hot-toast';
 import { PiDownloadSimple } from 'react-icons/pi';
-import { useTranslation } from '@/app/context/TranslationContext';
 import { Button } from '@/app/components/ui/Button';
 import { Card } from '@/app/components/ui/Card';
 import { Inline, Stack } from '@/app/components/ui/Layout';
@@ -38,7 +39,7 @@ const R = {
 };
 
 export function AssinaturaEDados() {
-  const { language } = useTranslation({ sections: ['pages/profile'] });
+  const { language } = useTextos(PERFIL);
   const idioma = language === 'en' ? 'en' : 'pt';
   const r = R[idioma];
   const [ocupado, setOcupado] = useState<null | 'exportar'>(null);

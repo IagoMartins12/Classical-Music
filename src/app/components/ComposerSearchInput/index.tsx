@@ -1,7 +1,8 @@
 // components/ComposerSearchInput.tsx - Versão Melhorada com Traduções
 'use client';
 
-import { useTranslation } from '@/app/context/TranslationContext';
+import { FILTRO_COMPOSITOR } from '@/app/conteudo/textos/filtroCompositor';
+import { useTextos } from '@/app/hooks/useTextos';
 import { useState, useEffect, useRef, useCallback } from 'react';
 import { PiMagnifyingGlass, PiTrendUp, PiUser, PiX } from 'react-icons/pi';
 import { findComposerById, findComposers } from '@/app/requests/catalog-search';
@@ -32,7 +33,7 @@ export default function ComposerSearchInput({
   popularComposers = [],
   isDisabled = false,
 }: ComposerSearchInputProps) {
-  const { t } = useTranslation({ sections: ['components/composerFilter'] });
+  const { t } = useTextos(FILTRO_COMPOSITOR);
 
   const [isOpen, setIsOpen] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');

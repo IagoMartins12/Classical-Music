@@ -1,8 +1,9 @@
 'use client';
 
+import { AUTH } from '@/app/conteudo/textos/auth';
+import { useTextos } from '@/app/hooks/useTextos';
 import React, { useId, useState } from 'react';
 import { PiArrowSquareOut, PiWarningCircle } from 'react-icons/pi';
-import { useTranslation } from '@/app/context/TranslationContext';
 import Modal from '../../Modal';
 import { Button } from '@/app/components/ui/Button';
 import { Inline } from '@/app/components/ui/Layout';
@@ -112,9 +113,7 @@ const TermsAcceptance: React.FC<TermsAcceptanceProps> = ({
   error,
   disabled = false,
 }) => {
-  const { t, language } = useTranslation({
-    sections: ['components/auth-modals'],
-  });
+  const { t, language } = useTextos(AUTH);
   const idioma = language === 'en' ? 'en' : 'pt';
   const [aberto, setAberto] = useState<'terms' | 'privacy' | null>(null);
   const idCaixa = useId();

@@ -1,5 +1,7 @@
 'use client';
 
+import { ESTUDOS } from '@/app/conteudo/textos/estudos';
+import { useTextos } from '@/app/hooks/useTextos';
 import { usePathname } from 'next/navigation';
 import { CaixaDeMarcar } from '@/app/components/ui/CaixaDeMarcar';
 import {
@@ -36,7 +38,6 @@ import { STUDY } from '@/app/conteudo/site/study';
 import { useAuth } from '@/app/hooks/useAuth';
 import { useLearnedVideo } from '@/app/hooks/useLearnedVideo';
 import { useRouteLanguage } from '@/app/hooks/useRouteLanguage';
-import { useTranslation } from '@/app/hooks/useTranslation';
 import {
   getLearnedRequest,
   toggleLearnedRequest,
@@ -208,7 +209,7 @@ function asSelected(
 export function StudySheet() {
   const { language } = useRouteLanguage();
   const copy = STUDY[language];
-  const { t: tMilestone } = useTranslation({ sections: ['pages/learning'] });
+  const { t: tMilestone } = useTextos(ESTUDOS);
   const { user } = useAuth();
   const pathname = usePathname();
   const store = useLearningModalStore();

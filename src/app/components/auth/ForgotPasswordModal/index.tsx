@@ -1,6 +1,8 @@
 // components/authModals/ForgotPasswordModal.tsx
 'use client';
 
+import { AUTH } from '@/app/conteudo/textos/auth';
+import { useTextos } from '@/app/hooks/useTextos';
 import React, { useState } from 'react';
 import {
   PiArrowLeft,
@@ -13,7 +15,6 @@ import Button from '../../Common/Button';
 import Input from '../../Common/Inputs';
 import Modal from '../../Modal';
 import { legacyAuth } from '@/app/libs/api/compat';
-import { useTranslation } from '@/app/context/TranslationContext';
 import { Text } from '@/app/components/ui/Text';
 import { Stack } from '@/app/components/ui/Layout';
 
@@ -37,7 +38,7 @@ const ForgotPasswordModal: React.FC<ForgotPasswordModalProps> = ({
   onClose,
   onBackToLogin,
 }) => {
-  const { t, ready } = useTranslation({ sections: ['components/auth-modals'] });
+  const { t, ready } = useTextos(AUTH);
   const [state, setState] = useState<ForgotPasswordState>({
     step: 'email',
     email: '',

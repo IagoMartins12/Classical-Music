@@ -1,8 +1,9 @@
 // app/components/uploads/ConfirmDeleteUploadModal.tsx - TRADUZIDO
+import { ENVIOS } from '@/app/conteudo/textos/envios';
+import { useTextos } from '@/app/hooks/useTextos';
 import { useEffect, useState } from 'react';
 import { createPortal } from 'react-dom';
 import { PiSpinnerGap } from 'react-icons/pi';
-import { useTranslation } from '@/app/context/TranslationContext';
 import { getCascadeInfo } from '@/app/requests/uploads-client';
 import { Stack, Inline } from '@/app/components/ui/Layout';
 import { Text } from '@/app/components/ui/Text';
@@ -38,7 +39,7 @@ export default function ConfirmDeleteUploadModal({
   itemType,
   itemId,
 }: ConfirmDeleteUploadModalProps) {
-  const { t } = useTranslation({ sections: ['pages/uploads'] });
+  const { t } = useTextos(ENVIOS);
   const [mounted, setMounted] = useState(false);
   const [cascadeInfo, setCascadeInfo] = useState<CascadeInfo | null>(null);
   const [loadingCascadeInfo, setLoadingCascadeInfo] = useState(false);

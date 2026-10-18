@@ -10,11 +10,6 @@ import { IconContext } from 'react-icons';
 import type { IconContext as IconContextValue } from 'react-icons';
 
 // Mounted after hydration anyway: their code loads off the critical path.
-const TranslationLoadingGate = dynamic(
-  () =>
-    import('../TranslationLoadingGate').then((m) => m.TranslationLoadingGate),
-  { ssr: false }
-);
 const InstallInvite = dynamic(
   () => import('../site/pwa/InstallInvite').then((m) => m.InstallInvite),
   { ssr: false }
@@ -90,7 +85,6 @@ export const ClientThemeWrapper: React.FC<ClientThemeWrapperProps> = ({
     <IconContext.Provider value={ICONES}>
       <div className="classical-theme">
         {children}
-        {isHydrated && <TranslationLoadingGate />}
         {/* The app (PWA): the install invite on phones and the offline
             notice, once for the whole site, blog and portal. */}
         {isHydrated && <InstallInvite />}

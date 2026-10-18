@@ -1,13 +1,9 @@
 import { notFound } from 'next/navigation';
-import { TranslationProvider } from '@/app/context/TranslationContext';
 import { WorkPage } from '@/app/components/site/work/WorkPage';
 import { getComposerWorksWithFilters } from '@/app/requests/composer-details';
 import { getWorkById } from '@/app/requests/work-page-details';
 import { getWorkScoreLibrary } from '@/app/requests/work-score-library';
-import {
-  loadPageTranslationsWithCommon,
-  type Language,
-} from '@/app/utils/translations/serverTranslations';
+import { type Language } from '@/app/utils/translations/serverTranslations';
 
 const MORE_WORKS = 4;
 
@@ -32,25 +28,22 @@ export default async function WorkDetailsServer({
   const work = await getWorkById(workId);
   if (!work) notFound();
 
-  const [scores, siblings, { translations }] = await Promise.all([
+  const [scores, siblings] = await Promise.all([
     getWorkScoreLibrary(workId),
     getComposerWorksWithFilters(work.composer.id, 1, MORE_WORKS + 1).catch(
       () => null
     ),
-    loadPageTranslationsWithCommon(language, ['pages/workId']),
   ]);
   const moreWorks = (siblings?.works ?? [])
     .filter((w) => w.id !== work.id)
     .slice(0, MORE_WORKS);
 
   return (
-    <TranslationProvider language={language} translations={translations}>
-      <WorkPage
-        work={work}
-        scores={scores}
-        moreWorks={moreWorks}
-        language={language}
-      />
-    </TranslationProvider>
+    <WorkPage
+      work={work}
+      scores={scores}
+      moreWorks={moreWorks}
+      language={language}
+    />
   );
 }

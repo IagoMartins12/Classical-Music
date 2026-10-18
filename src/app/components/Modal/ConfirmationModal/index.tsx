@@ -1,10 +1,11 @@
 // components/ui/ConfirmationModal.tsx - MODAL DE CONFIRMAÇÃO CUSTOMIZADO TRADUZIDO
 'use client';
 
+import { CONFIRMACAO } from '@/app/conteudo/textos/confirmacao';
+import { useTextos } from '@/app/hooks/useTextos';
 import React from 'react';
 import ConfirmModal from '@/app/components/ConfirmModal';
 import { ConfirmationConfig } from '@/app/hooks/useModalConfirmation';
-import { useTranslation } from '@/app/hooks/useTranslation';
 import { Stack } from '@/app/components/ui/Layout';
 
 interface ConfirmationModalProps {
@@ -22,9 +23,7 @@ const ConfirmationModal: React.FC<ConfirmationModalProps> = ({
   onCancel,
   isLoading = false,
 }) => {
-  const { t, ready } = useTranslation({
-    sections: ['components/confimationModal'],
-  });
+  const { t, ready } = useTextos(CONFIRMACAO);
 
   // 🎯 CONFIGURAÇÕES PADRÃO BASEADAS NO TIPO - AGORA TRADUZIDAS
   const getDefaultConfig = (type: ConfirmationConfig['type']) => {

@@ -1,5 +1,7 @@
 // app/profile/components/InstrumentsSection.tsx (versão com dados reais)
 'use client';
+import { PERFIL } from '@/app/conteudo/textos/perfil';
+import { useTextos } from '@/app/hooks/useTextos';
 import { Button as Botao } from '@/app/components/ui/Button';
 
 import React, { useState, useEffect, useCallback } from 'react';
@@ -24,7 +26,6 @@ import {
   updateUserInstruments,
 } from '@/app/actions/profile';
 import { useSessionUpdate } from '@/app/hooks/useSessionUpdate';
-import { useTranslation } from '@/app/context/TranslationContext';
 import Checkbox from '../../Common/Checkbox';
 import { Stack, Inline } from '@/app/components/ui/Layout';
 import { Text } from '@/app/components/ui/Text';
@@ -56,7 +57,7 @@ interface InstrumentsSectionProps {
 const InstrumentsSection: React.FC<InstrumentsSectionProps> = ({ user }) => {
   const tx = useTx();
   const { updateUserSession } = useSessionUpdate();
-  const { t } = useTranslation({ sections: ['pages/profile'] });
+  const { t } = useTextos(PERFIL);
   const [isEditing, setIsEditing] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [isLoadingData, setIsLoadingData] = useState(true);
