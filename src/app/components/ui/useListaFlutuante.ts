@@ -9,6 +9,8 @@ import {
 } from 'react';
 
 const MARGEM = 6;
+/** Air between the field and its list: flush, they read as one block. */
+const FOLGA = 8;
 const ALTURA_MAX = 288;
 
 type ComPopover = HTMLElement & {
@@ -47,7 +49,7 @@ export function useListaFlutuante({
     if (!a || !l) return;
     const r = a.getBoundingClientRect();
     const altura = Math.min(l.scrollHeight, ALTURA_MAX);
-    const abaixo = window.innerHeight - r.bottom - MARGEM;
+    const abaixo = window.innerHeight - r.bottom - FOLGA;
     const paraCima = abaixo < altura && r.top > abaixo;
     setAcima(paraCima);
     // At least as wide as the anchor, wider when an option needs it (a
@@ -61,8 +63,8 @@ export function useListaFlutuante({
       Math.max(MARGEM, Math.min(r.left, window.innerWidth - largura - MARGEM))
     )}px`;
     l.style.top = paraCima
-      ? `${Math.round(r.top - Math.min(altura, r.top - MARGEM) - MARGEM)}px`
-      : `${Math.round(r.bottom + MARGEM)}px`;
+      ? `${Math.round(r.top - Math.min(altura, r.top - MARGEM) - FOLGA)}px`
+      : `${Math.round(r.bottom + FOLGA)}px`;
     l.style.maxHeight = `${Math.round(
       Math.min(ALTURA_MAX, paraCima ? r.top - MARGEM * 2 : abaixo - MARGEM)
     )}px`;

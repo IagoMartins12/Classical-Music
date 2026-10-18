@@ -135,7 +135,10 @@
   --fundo: #0c0d12;
   /* Fundo de campo de formulário: um passo acima do chão, perto do card —
      a borda é que marca o campo. O chão puro (#0c0d12) ficava um buraco. */
-  --campo: #15161e;
+  /* Um véu claro, não uma cor: sobre o card (#191a24) um cinza fixo
+     sumia; o véu fica mais claro que qualquer superfície em que cair. */
+  --campo: rgba(243, 241, 236, 0.06);
+  --borda-campo: rgba(243, 241, 236, 0.3);
   --sup-1-a: #191a24;
   --sup-1-b: #13141c;
   --sup-2-a: #21222e;
@@ -326,6 +329,7 @@
   --grafico-4: #c2af7f;
   --grafico-outras: #a6a3ae;
   --campo: #faf7f0;
+  --borda-campo: #cfc5b0;
   --sup-1-a: #ffffff;
   --sup-1-b: #fbf8f2;
   --sup-2-a: #fbf8f2;
@@ -923,7 +927,7 @@ body {
   .input-classical,
   .input-classical-2 {
     background: var(--campo);
-    border: 1px solid var(--linha-forte);
+    border: 1px solid var(--borda-campo);
     color: var(--texto);
     border-radius: var(--r-controle);
     min-height: var(--alvo);
