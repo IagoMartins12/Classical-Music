@@ -22,6 +22,7 @@ import {
   subscribeToNewsletter,
 } from '@/app/requests/newsletter';
 import { CONTATO, mailto } from '@/app/utils/contato';
+import { EMPRESA, cnpjFormatado } from '@/app/utils/empresa';
 
 const COLUMNS = {
   explore: {
@@ -155,6 +156,11 @@ export function SiteFooter() {
                 {CONTATO.contato}
               </a>
             </p>
+            {EMPRESA.razaoSocial && cnpjFormatado() && (
+              <p className="t-legenda">
+                {EMPRESA.razaoSocial} · CNPJ {cnpjFormatado()}
+              </p>
+            )}
             <p className="t-legenda inline-flex items-center gap-1.5">
               {copy.madeWith[0]}
               <Icon

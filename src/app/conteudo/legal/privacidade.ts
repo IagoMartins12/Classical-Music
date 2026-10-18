@@ -1,4 +1,5 @@
 import { CONTATO } from '@/app/utils/contato';
+import { identificacaoDaEmpresa } from '@/app/utils/empresa';
 import type { DocumentoBilingue } from './tipos';
 
 /**
@@ -29,6 +30,7 @@ export const PRIVACIDADE: DocumentoBilingue = {
         titulo: 'Sobre esta política',
         blocos: [
           'Esta política vale para o Opus Atlas — o site em opusatlas.com.br, em qualquer idioma, e os serviços oferecidos por ele — e segue a Lei Geral de Proteção de Dados Pessoais (Lei 13.709/2018, a “LGPD”), o Marco Civil da Internet (Lei 12.965/2014) e o Código de Defesa do Consumidor.',
+          ...identificacaoDaEmpresa('pt'),
           'O Opus Atlas é o controlador dos dados pessoais tratados na plataforma. O canal do encarregado pelo tratamento de dados é ' +
             CONTATO.privacidade +
             '.',
@@ -356,6 +358,7 @@ export const PRIVACIDADE: DocumentoBilingue = {
         titulo: 'About this policy',
         blocos: [
           'This policy applies to Opus Atlas — the website at opusatlas.com.br, in any language, and the services it offers — and follows the Brazilian General Data Protection Law (Law 13.709/2018, “LGPD”), the Brazilian Internet Civil Framework (Law 12.965/2014) and the Consumer Protection Code.',
+          ...identificacaoDaEmpresa('en'),
           'Opus Atlas is the controller of the personal data processed on the platform. The data protection officer can be reached at ' +
             CONTATO.privacidade +
             '.',

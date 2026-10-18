@@ -48,6 +48,8 @@ const T = {
     renova: (d: string) => `Renova em ${d}.`,
     cancelada: (d: string) =>
       `Cancelada. O acesso continua até ${d}; depois, a conta volta ao Free, com o seu histórico.`,
+    atrasada: (d: string) =>
+      `Pagamento recusado. Atualize o cartão em “Pagamento e faturas” até ${d}; sem pagamento, a assinatura é encerrada e a conta volta ao Free.`,
     agendado: (p: string, d: string) => `Muda para o ${p} em ${d}.`,
     gratis: 'O plano gratuito: ler, ouvir e organizar o estudo.',
     seu: 'Seu plano',
@@ -87,6 +89,8 @@ const T = {
     renova: (d: string) => `Renews on ${d}.`,
     cancelada: (d: string) =>
       `Cancelled. Access continues until ${d}; then the account returns to Free, keeping your history.`,
+    atrasada: (d: string) =>
+      `Payment declined. Update your card in “Payment and invoices” by ${d}; without payment, the subscription ends and the account returns to Free.`,
     agendado: (p: string, d: string) => `Moves to ${p} on ${d}.`,
     gratis: 'The free plan: read, listen and organize your practice.',
     seu: 'Your plan',
@@ -199,6 +203,7 @@ export function GerenciarAssinatura({ idioma }: { idioma: Idioma }) {
   const plano = (atual?.plan?.type ?? 'FREE') as Plano;
   const registro = atual?.subscription as Registro | null | undefined;
   const cancelada = registro?.status === 'CANCELLED';
+  const atrasada = registro?.status === 'PAST_DUE';
   const agendado = registro?.metadata?.pendingDowngrade;
   const fim = data(atual?.plan?.expiresAt ?? registro?.endDate);
   const nome = (p: Plano) => c.planos[p].nome;
@@ -212,13 +217,15 @@ export function GerenciarAssinatura({ idioma }: { idioma: Idioma }) {
 
   const situacao = cancelada
     ? t.cancelada(fim)
-    : agendado
-      ? t.agendado(nome(agendado), fim)
-      : atual?.plan?.isTrialActive
-        ? t.teste(atual.plan.trialDaysRemaining)
-        : plano !== 'FREE' && fim
-          ? t.renova(fim)
-          : t.gratis;
+    : atrasada
+      ? t.atrasada(fim)
+      : agendado
+        ? t.agendado(nome(agendado), fim)
+        : atual?.plan?.isTrialActive
+          ? t.teste(atual.plan.trialDaysRemaining)
+          : plano !== 'FREE' && fim
+            ? t.renova(fim)
+            : t.gratis;
 
   const preco = (p: PlanoPago) => {
     const d = precos?.[p];

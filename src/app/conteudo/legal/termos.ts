@@ -1,4 +1,5 @@
 import { CONTATO } from '@/app/utils/contato';
+import { identificacaoDaEmpresa } from '@/app/utils/empresa';
 import type { DocumentoBilingue } from './tipos';
 
 /**
@@ -28,6 +29,7 @@ export const TERMOS: DocumentoBilingue = {
         titulo: 'Aceitação destes termos',
         blocos: [
           'Estes Termos de Uso regem o acesso e o uso do Opus Atlas — o site em opusatlas.com.br, em qualquer idioma, e os serviços oferecidos por ele (a “plataforma”).',
+          ...identificacaoDaEmpresa('pt'),
           'Ao navegar pela plataforma você concorda com estes termos. Ao criar uma conta, você declara tê-los lido e aceito, junto com a [Política de Privacidade](/privacy), que explica como tratamos os seus dados. Se não concordar, não use a plataforma.',
         ],
       },
@@ -294,6 +296,7 @@ export const TERMOS: DocumentoBilingue = {
         titulo: 'Acceptance of these terms',
         blocos: [
           'These Terms of Use govern access to and use of Opus Atlas — the website at opusatlas.com.br, in any language, and the services it offers (the “platform”).',
+          ...identificacaoDaEmpresa('en'),
           'By browsing the platform you agree to these terms. By creating an account, you confirm that you have read and accepted them, together with the [Privacy Policy](/privacy), which explains how we handle your data. If you do not agree, do not use the platform.',
         ],
       },

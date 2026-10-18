@@ -19,9 +19,11 @@ import { updateAdminUser } from '@/app/requests/admin/users';
  * `isTeacher: true`. Agora o papel no sistema é só acesso (usuário, admin,
  * super admin) e "professor" é uma chave à parte, que envia o convite.
  *
- * **O convite pode levar um plano** (Mentor ou Maestro), com vencimento
- * opcional. O plano é concedido quando a pessoa aceita. Quem assina um plano
- * para professores vira professor sozinho, sem convite.
+ * **O convite leva um plano** (Mentor ou Maestro), obrigatório: é ele que dá o
+ * limite de alunos — sem plano, o professor convidado ficava no Free, com 0
+ * alunos. O plano tem vencimento opcional e é concedido quando a pessoa
+ * aceita; o convite vale 30 dias, ou até a data escolhida. Quem assina um
+ * plano para professores vira professor sozinho, sem convite.
  */
 interface UserEditModalProps {
   user: AdminUser;
@@ -47,9 +49,13 @@ const PAPEIS = [
   },
 ] as const;
 
-type PlanoConvite = '' | 'MENTOR' | 'MAESTRO';
+type PlanoConvite = 'MENTOR' | 'MAESTRO';
 
 const hoje = () => new Date().toISOString().slice(0, 10);
+
+/** Fim do dia escolhido, no horário de Brasília. */
+export const fimDoDia = (dia: string) =>
+  new Date(`${dia}T23:59:59-03:00`).toISOString();
 
 export default function UserEditModal({
   user,
@@ -63,8 +69,9 @@ export default function UserEditModal({
   const jaProfessor = Boolean(user.isTeacher);
   const [papel, setPapel] = useState<number>(papelAtual);
   const [professor, setProfessor] = useState(jaProfessor);
-  const [plano, setPlano] = useState<PlanoConvite>('');
+  const [plano, setPlano] = useState<PlanoConvite>('MENTOR');
   const [vencimento, setVencimento] = useState('');
+  const [validade, setValidade] = useState('');
   const [salvando, setSalvando] = useState(false);
   const [erro, setErro] = useState<string | null>(null);
 
@@ -83,16 +90,14 @@ export default function UserEditModal({
       const atualizado = await updateAdminUser(user.id, {
         role: papel !== papelAtual ? papel : undefined,
         isTeacher: professor !== jaProfessor ? professor : undefined,
-        teacherPlanGrant:
-          convidando && plano
-            ? {
-                planType: plano,
-                // Fim do dia escolhido, no horário de Brasília.
-                expiresAt: vencimento
-                  ? new Date(`${vencimento}T23:59:59-03:00`).toISOString()
-                  : null,
-              }
-            : undefined,
+        teacherPlanGrant: convidando
+          ? {
+              planType: plano,
+              expiresAt: vencimento ? fimDoDia(vencimento) : null,
+            }
+          : undefined,
+        teacherInviteExpiresAt:
+          convidando && validade ? fimDoDia(validade) : undefined,
       });
       onSave({ ...user, ...atualizado });
     } catch (e) {
@@ -208,12 +213,11 @@ export default function UserEditModal({
           {convidando && (
             <div className="mt-4 grid grid-cols-1 gap-4 sm:grid-cols-2">
               <Field.Selecao
-                label="Plano de presente"
-                ajuda="Concedido quando o convite for aceito."
+                label="Plano do professor"
+                ajuda="Concedido quando o convite for aceito; define quantos alunos ele pode ter."
                 value={plano}
                 onChange={(e) => setPlano(e.target.value as PlanoConvite)}
               >
-                <option value="">Sem plano</option>
                 <option value="MENTOR">Mentor (até 7 alunos)</option>
                 <option value="MAESTRO">Maestro (alunos ilimitados)</option>
               </Field.Selecao>
@@ -223,8 +227,15 @@ export default function UserEditModal({
                 ajuda="Em branco: sem vencimento."
                 min={hoje()}
                 value={vencimento}
-                disabled={!plano}
                 onChange={(e) => setVencimento(e.target.value)}
+              />
+              <Field
+                type="date"
+                label="Validade do convite"
+                ajuda="Em branco: 30 dias."
+                min={hoje()}
+                value={validade}
+                onChange={(e) => setValidade(e.target.value)}
               />
             </div>
           )}

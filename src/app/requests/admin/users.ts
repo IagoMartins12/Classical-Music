@@ -333,13 +333,16 @@ export async function updateAdminUser(
     isTeacher?: boolean;
     isStudent?: boolean;
     /**
-     * Só com `isTeacher: true`: o plano que vai com o convite de professor,
-     * concedido quando a pessoa aceita. `expiresAt` nulo é sem vencimento.
+     * Obrigatório ao convidar (`isTeacher: true`): o plano que vai com o
+     * convite de professor, concedido quando a pessoa aceita — é ele que dá o
+     * limite de alunos. `expiresAt` nulo é sem vencimento.
      */
     teacherPlanGrant?: {
       planType: 'MENTOR' | 'MAESTRO';
       expiresAt?: string | null;
     };
+    /** Validade do convite; sem ela, 30 dias. */
+    teacherInviteExpiresAt?: string;
   }
 ) {
   const updated = await apiFetch<ApiAdminUser>(`/admin/users/${userId}`, {
@@ -350,6 +353,7 @@ export async function updateAdminUser(
       isTeacher: data.isTeacher,
       isStudent: data.isStudent,
       teacherPlanGrant: data.teacherPlanGrant,
+      teacherInviteExpiresAt: data.teacherInviteExpiresAt,
     },
   });
 

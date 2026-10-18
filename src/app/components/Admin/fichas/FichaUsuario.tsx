@@ -6,6 +6,7 @@ import { useState } from 'react';
 import Link from 'next/link';
 import toast from 'react-hot-toast';
 import { PiPencilSimple } from 'react-icons/pi';
+import ConviteEPlanoModal from '@/app/components/Admin/Modals/ConviteEPlanoModal';
 import UserEditModal from '@/app/components/Admin/Modals/UserEditModal';
 import { Badge } from '@/app/components/ui/Badge';
 import { Button } from '@/app/components/ui/Button';
@@ -67,6 +68,7 @@ export function FichaUsuario({
   const { data: d, loading } = useUsuario(usuarioId);
   const [lista, setLista] = useState<TipoDeItem | null>(null);
   const [editando, setEditando] = useState(false);
+  const [ajustando, setAjustando] = useState<'convite' | 'plano' | null>(null);
   const invalidar = useInvalidateAdmin();
   const nome = d
     ? [d.firstName, d.lastName].filter(Boolean).join(' ') ||
@@ -166,7 +168,17 @@ export function FichaUsuario({
                         : d.assinatura.endDate
                           ? ` · renova em ${data(d.assinatura.endDate)}`
                           : ''}
+                  {d.assinatura.concedida ? ' · concedido pela equipe' : ''}
                 </span>{' '}
+                {d.assinatura.concedida && (
+                  <button
+                    type="button"
+                    onClick={() => setAjustando('plano')}
+                    className="t-rotulo mr-3 text-ouro-texto underline-offset-4 hover:underline"
+                  >
+                    Editar plano concedido
+                  </button>
+                )}
                 <Link
                   href="/admin/plans/subscribers"
                   className="t-rotulo text-ouro-texto hover:underline underline-offset-4"
@@ -175,9 +187,21 @@ export function FichaUsuario({
                 </Link>
               </p>
             ) : (
-              <Text papel="rotulo" tom="suave" as="p">
+              <p className="t-rotulo text-texto-suave">
                 Free — sem assinatura paga.
-              </Text>
+                {d.isTeacher && d.teacherProfile?.status === 'ACTIVE' && (
+                  <>
+                    {' '}
+                    <button
+                      type="button"
+                      onClick={() => setAjustando('plano')}
+                      className="text-ouro-texto underline-offset-4 hover:underline"
+                    >
+                      Conceder plano de professor
+                    </button>
+                  </>
+                )}
+              </p>
             )}
           </Stack>
 
@@ -198,6 +222,28 @@ export function FichaUsuario({
                   {numero(d.teacherProfile.totalStudents)} alunos ·{' '}
                   {numero(d.teacherProfile.totalLessons)} aulas
                 </Text>
+              )}
+              {d.conviteProfessor && (
+                <p className="t-rotulo text-texto-suave">
+                  Convite com o plano{' '}
+                  {d.conviteProfessor.planType
+                    ? PLANOS[d.conviteProfessor.planType]
+                    : '(sem plano)'}
+                  {d.conviteProfessor.planExpiresAt
+                    ? ` até ${data(d.conviteProfessor.planExpiresAt)}`
+                    : ', sem vencimento'}
+                  {' · '}
+                  {d.conviteProfessor.expired
+                    ? `venceu em ${data(d.conviteProfessor.inviteExpiresAt)}`
+                    : `vale até ${data(d.conviteProfessor.inviteExpiresAt)}`}{' '}
+                  <button
+                    type="button"
+                    onClick={() => setAjustando('convite')}
+                    className="text-ouro-texto underline-offset-4 hover:underline"
+                  >
+                    Editar convite
+                  </button>
+                </p>
               )}
               {d.studentProfile && (
                 <Text papel="rotulo" as="p">
@@ -225,6 +271,41 @@ export function FichaUsuario({
         tipo={lista}
         aoFechar={() => setLista(null)}
       />
+      {ajustando === 'convite' && d?.conviteProfessor && (
+        <ConviteEPlanoModal
+          modo="convite"
+          usuarioId={d.id}
+          convite={d.conviteProfessor}
+          aoFechar={() => setAjustando(null)}
+          aoSalvar={() => {
+            setAjustando(null);
+            toast.success('Convite atualizado.');
+            void invalidar('usuarios');
+            void invalidar('auditoria');
+          }}
+        />
+      )}
+      {ajustando === 'plano' && d && (
+        <ConviteEPlanoModal
+          modo="plano"
+          usuarioId={d.id}
+          plano={
+            d.assinatura?.concedida
+              ? {
+                  planType: d.assinatura.planType,
+                  endDate: d.assinatura.endDate,
+                }
+              : null
+          }
+          aoFechar={() => setAjustando(null)}
+          aoSalvar={() => {
+            setAjustando(null);
+            toast.success('Plano atualizado.');
+            void invalidar('usuarios');
+            void invalidar('auditoria');
+          }}
+        />
+      )}
       {editando && d && (
         <UserEditModal
           user={

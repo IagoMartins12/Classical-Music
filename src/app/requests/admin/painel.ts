@@ -654,7 +654,11 @@ export interface DetalheUsuario {
     status: string;
     endDate: string | null;
     trialEndDate: string | null;
+    /** Plano dado pela equipe (editável aqui); o pago muda pelo Stripe. */
+    concedida: boolean;
   } | null;
+  /** Convite de professor ainda sem resposta (vencido também aparece). */
+  conviteProfessor: ConviteProfessor | null;
   historicoNoPainel: {
     id: string;
     action: string;
@@ -665,8 +669,45 @@ export interface DetalheUsuario {
   }[];
 }
 
+export interface ConviteProfessor {
+  sentAt: string;
+  inviteExpiresAt: string;
+  expired: boolean;
+  planType: 'MENTOR' | 'MAESTRO' | null;
+  planExpiresAt: string | null;
+}
+
 export const getUsuario = (id: string) =>
   apiFetch<DetalheUsuario>(`/admin/users/${id}`, noStore);
+
+/**
+ * Muda o convite de professor sem resposta: plano oferecido, vencimento do
+ * plano (nulo: sem vencimento) e validade do convite. `resend` manda outro
+ * e-mail com links novos; sem ele, o link já enviado passa a valer o novo.
+ */
+export const atualizarConviteProfessor = (
+  id: string,
+  body: {
+    planType?: 'MENTOR' | 'MAESTRO';
+    planExpiresAt?: string | null;
+    inviteExpiresAt?: string;
+    resend?: boolean;
+  }
+) =>
+  apiFetch<DetalheUsuario>(`/admin/users/${id}/teacher-invitation`, {
+    method: 'PATCH',
+    body,
+  });
+
+/** Muda (ou concede) o plano dado pela equipe; nunca o pago pelo Stripe. */
+export const atualizarPlanoConcedido = (
+  id: string,
+  body: { planType?: 'MENTOR' | 'MAESTRO'; expiresAt?: string | null }
+) =>
+  apiFetch<DetalheUsuario>(`/admin/users/${id}/granted-plan`, {
+    method: 'PATCH',
+    body,
+  });
 
 export type TipoDeItem =
   | 'favoritos'
