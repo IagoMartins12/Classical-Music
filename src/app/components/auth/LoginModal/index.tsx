@@ -10,19 +10,15 @@ import {
   signInWithPassword,
   useSession,
 } from '@/app/libs/session';
-import { FcGoogle } from 'react-icons/fc';
-import { GiGrandPiano } from 'react-icons/gi';
-import { PiEnvelopeSimple, PiLock, PiWarning } from 'react-icons/pi';
 import { useRouter } from 'next/navigation';
 import { toast } from 'react-hot-toast';
 import { useLoginModal } from '@/app/stores/authStore';
-import Modal from '../../Modal';
-import Button from '../../Common/Button';
-import Input from '../../Common/Inputs';
-import ForgotPasswordModal from '../ForgotPasswordModal';
+import { Button } from '@/app/components/ui/Button';
+import { Field } from '@/app/components/ui/Field';
+import { Sheet } from '@/app/components/ui/Sheet';
 import { Language } from '@/app/stores/useLanguageStore';
-import { Text } from '@/app/components/ui/Text';
-import { Stack } from '@/app/components/ui/Layout';
+import ForgotPasswordModal from '../ForgotPasswordModal';
+import { AvisoDeAuth, BotaoGoogle, Divisor } from '../pecas';
 
 const errorMessages: Record<string, { pt: string; en: string }> = {
   Callback: {
@@ -114,7 +110,7 @@ const LoginModal: React.FC = () => {
   const [isGoogleLoading, setIsGoogleLoading] = useState(false);
   const [forgotPasswordOpen, setForgotPasswordOpen] = useState(false);
   const router = useRouter();
-  const { t, language, ready } = useTextos(AUTH);
+  const { t, language } = useTextos(AUTH);
 
   // Estado para erro específico de conflito de email
   const [emailConflictError, setEmailConflictError] = useState<string | null>(
@@ -274,164 +270,123 @@ const LoginModal: React.FC = () => {
 
   return (
     <>
-      <Modal
-        carregando={!ready}
-        isOpen={isOpen}
-        onClose={handleClose}
-        maxWidth="xl"
-        showCloseButton={true}
-        setPr
+      <Sheet
+        aberto={isOpen}
+        aoFechar={handleClose}
+        titulo={t('login_modal_title')}
+        descricao={t('login_modal_subtitle')}
+        largura="p"
       >
-        <div className="text-center mb-8">
-          <div className="flex justify-center mb-4">
-            <div className="w-16 h-16 rounded-full flex items-center justify-center shadow-theme-glow">
-              <GiGrandPiano className="w-8 h-8 text-theme-primary" />
-            </div>
-          </div>
-          <h2 className="text-2xl font-bold text-theme-primary classical-title mb-2">
-            {t('login_modal_title')}
-          </h2>
-          <p className="text-theme-secondary">{t('login_modal_subtitle')}</p>
-        </div>
-
-        {/* Aviso de conflito de email */}
-        {emailConflictError && (
-          <div className="mb-6 p-4 rounded-lg bg-sup-2">
-            <div className="flex items-start">
-              <PiWarning className="w-5 h-5 mr-3 mt-0.5 flex-shrink-0" />
-              <div>
-                <h4 className="font-medium mb-1">
-                  {t('login_modal_email_conflict_title')}
-                </h4>
-                <p className="text-sm opacity-90">{emailConflictError}</p>
-                <div className="mt-3 flex flex-wrap gap-2">
-                  <button
+        <div className="flex flex-col gap-6">
+          {emailConflictError && (
+            <AvisoDeAuth
+              titulo={t('login_modal_email_conflict_title')}
+              acoes={
+                <>
+                  <Button
+                    variante="texto"
+                    type="button"
                     onClick={() => {
                       setEmailConflictError(null);
                       // Focar no campo de email para facilitar o login
-                      const emailInput = document.querySelector(
-                        'input[name="email"]'
-                      ) as HTMLInputElement;
-                      if (emailInput) emailInput.focus();
+                      document
+                        .querySelector<HTMLInputElement>('input[name="email"]')
+                        ?.focus();
                     }}
-                    className="text-xs opacity-80 hover:opacity-100 underline transition-opacity"
                   >
                     {t('login_modal_email_conflict_action_login')}
-                  </button>
-                  <span className="text-xs opacity-50">•</span>
-                  <button
+                  </Button>
+                  <Button
+                    variante="texto"
+                    type="button"
                     onClick={handleForgotPassword}
-                    className="text-xs opacity-80 hover:opacity-100 underline transition-opacity"
                   >
                     {t('login_modal_email_conflict_action_forgot')}
-                  </button>
-                </div>
-              </div>
-            </div>
-          </div>
-        )}
-
-        {/* Email/Password Form */}
-        <Stack gap={6} as="form" onSubmit={handleSubmit}>
-          {/* Email */}
-          <Input
-            label={t('login_modal_email_label')}
-            type="email"
-            name="email"
-            value={formData.email}
-            onChange={handleInputChange}
-            leftIcon={<PiEnvelopeSimple className="w-4 h-4" />}
-            placeholder={t('login_modal_email_placeholder')}
-            disabled={isLoading || isGoogleLoading}
-            autoComplete="email"
-          />
-
-          {/* Password */}
-          <Input
-            label={t('login_modal_password_label')}
-            name="password"
-            value={formData.password}
-            onChange={handleInputChange}
-            leftIcon={<PiLock className="w-4 h-4" />}
-            placeholder={t('login_modal_password_placeholder')}
-            isPassword
-            disabled={isLoading || isGoogleLoading}
-            autoComplete="current-password"
-          />
-
-          {/* Forgot Password Link */}
-          <div className="text-right">
-            <button
-              type="button"
-              onClick={handleForgotPassword}
-              className="text-sm text-ouro-texto transition-colors"
-              disabled={isLoading || isGoogleLoading}
+                  </Button>
+                </>
+              }
             >
-              {t('login_modal_forgot_password')}
-            </button>
-          </div>
+              {emailConflictError}
+            </AvisoDeAuth>
+          )}
 
-          {/* Submit Button */}
-          <Button
-            type="submit"
-            variant="primary"
-            size="lg"
-            isLoading={isLoading}
-            className="w-full"
-            disabled={isGoogleLoading}
+          <form
+            onSubmit={handleSubmit}
+            noValidate
+            className="flex flex-col gap-5"
           >
-            {t('login_modal_submit_button')}
-          </Button>
-        </Stack>
+            <Field
+              label={t('login_modal_email_label')}
+              type="email"
+              name="email"
+              value={formData.email}
+              onChange={handleInputChange}
+              placeholder={t('login_modal_email_placeholder')}
+              disabled={isLoading || isGoogleLoading}
+              autoComplete="email"
+            />
+            <Field.Senha
+              label={t('login_modal_password_label')}
+              name="password"
+              value={formData.password}
+              onChange={handleInputChange}
+              placeholder={t('login_modal_password_placeholder')}
+              disabled={isLoading || isGoogleLoading}
+              autoComplete="current-password"
+              rotuloMostrar={t('password_show')}
+              rotuloOcultar={t('password_hide')}
+            />
+            <div className="-mt-2 flex justify-end">
+              <Button
+                variante="texto"
+                type="button"
+                onClick={handleForgotPassword}
+                disabled={isLoading || isGoogleLoading}
+              >
+                {t('login_modal_forgot_password')}
+              </Button>
+            </div>
+            <Button
+              type="submit"
+              variante="primario"
+              carregando={isLoading}
+              disabled={isGoogleLoading}
+              className="w-full"
+            >
+              {t('login_modal_submit_button')}
+            </Button>
+          </form>
 
-        {/* Divider */}
-        <div className="relative my-6">
-          <div className="absolute inset-0 flex items-center">
-            <div className="w-full border-t border-theme-secondary" />
-          </div>
-          <div className="relative flex justify-center text-sm">
-            <span className="px-4 bg-theme-elevated text-theme-tertiary">
-              {t('login_modal_divider_text')}
-            </span>
-          </div>
-        </div>
+          <Divisor texto={t('login_modal_divider_text')} />
 
-        {/* Google Sign In */}
-        <Button
-          variant="google"
-          size="lg"
-          onClick={handleGoogleSignIn}
-          isLoading={isGoogleLoading}
-          leftIcon={<FcGoogle />}
-          className="w-full"
-          disabled={isLoading}
-        >
-          {t('login_modal_google_button')}
-        </Button>
+          <BotaoGoogle
+            onClick={handleGoogleSignIn}
+            carregando={isGoogleLoading}
+            disabled={isLoading}
+          >
+            {t('login_modal_google_button')}
+          </BotaoGoogle>
 
-        {/* Register Link */}
-        <div className="mt-8 text-center">
-          <p className="text-theme-secondary">
+          <p className="t-rotulo text-center text-texto-suave">
             {t('login_modal_register_text')}{' '}
-            <button
+            <Button
+              variante="texto"
+              type="button"
               onClick={switchToRegister}
-              className="text-ouro-texto font-medium transition-colors"
               disabled={isLoading || isGoogleLoading}
             >
               {t('login_modal_register_link')}
-            </button>
+            </Button>
           </p>
-        </div>
 
-        {/* Termos e privacidade: ao seguir o link, o modal fecha — a página
-            abre inteira, sem o login por cima. */}
-        <div className="mt-6 text-center">
-          <Text papel="legenda" tom="fraco" as="p">
+          {/* Termos e privacidade: ao seguir o link, o modal fecha — a página
+              abre inteira, sem o login por cima. */}
+          <p className="t-legenda text-center">
             {t('login_modal_terms_text')}{' '}
             <Link
               href="/terms"
               onClick={handleClose}
-              className="text-ouro-texto hover:underline"
+              className="text-ouro-texto underline decoration-transparent underline-offset-4 hover:decoration-[var(--ouro)]"
             >
               {t('login_modal_terms_link')}
             </Link>{' '}
@@ -439,13 +394,13 @@ const LoginModal: React.FC = () => {
             <Link
               href="/privacy"
               onClick={handleClose}
-              className="text-ouro-texto hover:underline"
+              className="text-ouro-texto underline decoration-transparent underline-offset-4 hover:decoration-[var(--ouro)]"
             >
               {t('login_modal_privacy_link')}
             </Link>
-          </Text>
+          </p>
         </div>
-      </Modal>
+      </Sheet>
 
       {/* Forgot Password Modal */}
       <ForgotPasswordModal

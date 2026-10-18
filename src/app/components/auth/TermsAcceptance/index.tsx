@@ -2,11 +2,11 @@
 
 import { AUTH } from '@/app/conteudo/textos/auth';
 import { useTextos } from '@/app/hooks/useTextos';
-import React, { useId, useState } from 'react';
-import { PiArrowSquareOut, PiWarningCircle } from 'react-icons/pi';
-import Modal from '../../Modal';
+import React, { useState } from 'react';
+import { PiArrowSquareOut } from 'react-icons/pi';
 import { Button } from '@/app/components/ui/Button';
-import { Inline } from '@/app/components/ui/Layout';
+import { CaixaDeMarcar } from '@/app/components/ui/CaixaDeMarcar';
+import { Sheet } from '@/app/components/ui/Sheet';
 import { TextoRico } from '@/app/components/ui/TextoRico';
 import { TERMOS } from '@/app/conteudo/legal/termos';
 import { PRIVACIDADE } from '@/app/conteudo/legal/privacidade';
@@ -116,86 +116,66 @@ const TermsAcceptance: React.FC<TermsAcceptanceProps> = ({
   const { t, language } = useTextos(AUTH);
   const idioma = language === 'en' ? 'en' : 'pt';
   const [aberto, setAberto] = useState<'terms' | 'privacy' | null>(null);
-  const idCaixa = useId();
-  const idErro = useId();
+
+  const link =
+    'font-medium text-ouro-texto underline decoration-[var(--ouro)]/40 underline-offset-[3px] hover:decoration-[var(--ouro)]';
 
   return (
     <>
-      <div className="flex flex-col gap-3">
-        <div className="flex items-start gap-3">
-          <input
-            id={idCaixa}
-            type="checkbox"
-            checked={accepted}
-            onChange={(e) => onChange(e.target.checked)}
-            disabled={disabled}
-            aria-invalid={error ? true : undefined}
-            aria-describedby={error ? idErro : undefined}
-            className="mt-0.5 h-5 w-5 shrink-0 cursor-pointer accent-[var(--ouro)] disabled:cursor-not-allowed"
-          />
-          <p className="text-sm leading-relaxed text-texto-suave">
-            <label htmlFor={idCaixa} className="cursor-pointer">
-              {t('terms_acceptance_text')}
-            </label>{' '}
-            <button
-              type="button"
-              onClick={() => setAberto('terms')}
-              disabled={disabled}
-              className="font-medium text-ouro-texto underline decoration-ouro/40 underline-offset-[3px] hover:decoration-ouro"
-            >
-              {t('terms_acceptance_terms_link')}
-            </button>{' '}
-            {t('terms_acceptance_and')}{' '}
-            <button
-              type="button"
-              onClick={() => setAberto('privacy')}
-              disabled={disabled}
-              className="font-medium text-ouro-texto underline decoration-ouro/40 underline-offset-[3px] hover:decoration-ouro"
-            >
-              {t('terms_acceptance_privacy_link')}
-            </button>
-          </p>
-        </div>
-
+      <div className="flex flex-col gap-1">
+        <CaixaDeMarcar
+          marcado={accepted}
+          aoMudar={onChange}
+          disabled={disabled}
+          rotulo={
+            <>
+              {t('terms_acceptance_text')}{' '}
+              <button
+                type="button"
+                onClick={() => setAberto('terms')}
+                disabled={disabled}
+                className={link}
+              >
+                {t('terms_acceptance_terms_link')}
+              </button>{' '}
+              {t('terms_acceptance_and')}{' '}
+              <button
+                type="button"
+                onClick={() => setAberto('privacy')}
+                disabled={disabled}
+                className={link}
+              >
+                {t('terms_acceptance_privacy_link')}
+              </button>
+            </>
+          }
+        />
         {error && (
-          <Inline gap={2} id={idErro} className="text-sm text-erro">
-            <PiWarningCircle aria-hidden="true" className="h-4 w-4 shrink-0" />
-            <span>{error}</span>
-          </Inline>
+          <p role="alert" className="t-legenda text-erro">
+            {error}
+          </p>
         )}
       </div>
 
-      <Modal
-        isOpen={aberto === 'terms'}
-        onClose={() => setAberto(null)}
-        title={TERMOS[idioma].titulo}
-        maxWidth="xl"
-        showCloseButton
-        setPr
-      >
-        <Resumo
-          qual="terms"
-          documento={TERMOS}
-          idioma={idioma}
-          aoFechar={() => setAberto(null)}
-        />
-      </Modal>
-
-      <Modal
-        isOpen={aberto === 'privacy'}
-        onClose={() => setAberto(null)}
-        title={PRIVACIDADE[idioma].titulo}
-        maxWidth="xl"
-        showCloseButton
-        setPr
-      >
-        <Resumo
-          qual="privacy"
-          documento={PRIVACIDADE}
-          idioma={idioma}
-          aoFechar={() => setAberto(null)}
-        />
-      </Modal>
+      {(['terms', 'privacy'] as const).map((qual) => {
+        const documento = qual === 'terms' ? TERMOS : PRIVACIDADE;
+        return (
+          <Sheet
+            key={qual}
+            aberto={aberto === qual}
+            aoFechar={() => setAberto(null)}
+            titulo={documento[idioma].titulo}
+            largura="m"
+          >
+            <Resumo
+              qual={qual}
+              documento={documento}
+              idioma={idioma}
+              aoFechar={() => setAberto(null)}
+            />
+          </Sheet>
+        );
+      })}
     </>
   );
 };

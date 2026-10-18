@@ -4,19 +4,13 @@
 import { AUTH } from '@/app/conteudo/textos/auth';
 import { useTextos } from '@/app/hooks/useTextos';
 import React, { useState } from 'react';
-import {
-  PiArrowLeft,
-  PiCheckCircle,
-  PiClock,
-  PiEnvelopeSimple,
-  PiWarningCircle,
-} from 'react-icons/pi';
-import Button from '../../Common/Button';
-import Input from '../../Common/Inputs';
-import Modal from '../../Modal';
+import { PiArrowLeft, PiEnvelopeSimple } from 'react-icons/pi';
+import { Button } from '@/app/components/ui/Button';
+import { Field } from '@/app/components/ui/Field';
+import { Icon } from '@/app/components/ui/Icon';
+import { Sheet } from '@/app/components/ui/Sheet';
 import { legacyAuth } from '@/app/libs/api/compat';
-import { Text } from '@/app/components/ui/Text';
-import { Stack } from '@/app/components/ui/Layout';
+import { AvisoDeAuth } from '../pecas';
 
 interface ForgotPasswordModalProps {
   isOpen: boolean;
@@ -38,7 +32,7 @@ const ForgotPasswordModal: React.FC<ForgotPasswordModalProps> = ({
   onClose,
   onBackToLogin,
 }) => {
-  const { t, ready } = useTextos(AUTH);
+  const { t } = useTextos(AUTH);
   const [state, setState] = useState<ForgotPasswordState>({
     step: 'email',
     email: '',
@@ -135,260 +129,177 @@ const ForgotPasswordModal: React.FC<ForgotPasswordModalProps> = ({
     onBackToLogin();
   };
 
-  const renderEmailStep = () => (
-    <>
-      <div className="text-center mb-8">
-        <div className="flex justify-center mb-4">
-          <div className="w-16 h-16 rounded-full flex items-center justify-center shadow-theme-glow">
-            <PiEnvelopeSimple className="w-8 h-8 text-white" />
-          </div>
-        </div>
-        <h2 className="text-2xl font-bold text-theme-primary classical-title mb-2">
-          {t('forgot_password_modal_title')}
-        </h2>
-        <p className="text-theme-secondary">
-          {t('forgot_password_modal_subtitle')}
-        </p>
-      </div>
+  const voltar = (
+    <Button
+      type="button"
+      variante="fantasma"
+      icone={PiArrowLeft}
+      onClick={handleBackToLogin}
+      disabled={state.isLoading}
+      className="w-full"
+    >
+      {t('forgot_password_modal_back_button')}
+    </Button>
+  );
 
-      <Stack gap={6} as="form" onSubmit={handleSubmit}>
-        {state.error && (
-          <div className="p-3 rounded-lg text-sm bg-sup-2">
-            <div className="flex items-center">
-              <PiWarningCircle className="w-4 h-4 mr-2 flex-shrink-0" />
-              <span>{state.error}</span>
-            </div>
-          </div>
-        )}
+  const numerados = (itens: string[]) => (
+    <ol className="flex flex-col gap-2">
+      {itens.map((item, n) => (
+        <li key={item} className="flex gap-3 t-rotulo text-texto-suave">
+          <span className="font-display text-ouro-texto">{n + 1}.</span>
+          {item}
+        </li>
+      ))}
+    </ol>
+  );
 
-        <Input
+  const emailStep = (
+    <div className="flex flex-col gap-6">
+      <form onSubmit={handleSubmit} noValidate className="flex flex-col gap-5">
+        {state.error && <AvisoDeAuth>{state.error}</AvisoDeAuth>}
+        <Field
           label={t('forgot_password_modal_email_label')}
           type="email"
           name="email"
           value={state.email}
           onChange={handleInputChange}
-          leftIcon={<PiEnvelopeSimple className="w-4 h-4" />}
           placeholder={t('forgot_password_modal_email_placeholder')}
           disabled={state.isLoading}
           autoComplete="email"
           autoFocus
         />
-
-        <Stack>
-          <Button
-            type="submit"
-            variant="primary"
-            size="lg"
-            isLoading={state.isLoading}
-            className="w-full"
-          >
-            {state.isLoading
-              ? t('forgot_password_modal_submit_loading')
-              : t('forgot_password_modal_submit_button')}
-          </Button>
-
-          <Button
-            type="button"
-            variant="ghost"
-            size="lg"
-            className="w-full items-center justify-center flex"
-            leftIcon={<PiArrowLeft />}
-            onClick={handleBackToLogin}
-            disabled={state.isLoading}
-          >
-            {t('forgot_password_modal_back_button')}
-          </Button>
-        </Stack>
-      </Stack>
-
-      <div className="mt-6 text-center">
-        <Stack gap={2} className="bg-theme-secondary rounded-lg p-4">
-          <h4 className="text-sm font-medium text-theme-primary">
-            {t('forgot_password_modal_security_tip_title')}
-          </h4>
-          <Text papel="legenda" tom="fraco" as="p">
-            {t('forgot_password_modal_security_tip_text')}
-          </Text>
-        </Stack>
+        <Button
+          type="submit"
+          variante="primario"
+          carregando={state.isLoading}
+          className="w-full"
+        >
+          {state.isLoading
+            ? t('forgot_password_modal_submit_loading')
+            : t('forgot_password_modal_submit_button')}
+        </Button>
+        {voltar}
+      </form>
+      <div className="flex flex-col gap-1 rounded-card bg-sup-2 p-4">
+        <span className="font-medium">
+          {t('forgot_password_modal_security_tip_title')}
+        </span>
+        <span className="t-rotulo text-texto-suave">
+          {t('forgot_password_modal_security_tip_text')}
+        </span>
       </div>
-    </>
+    </div>
   );
 
-  const renderSuccessStep = () => (
-    <>
-      <div className="text-center mb-8">
-        <div className="flex justify-center mb-4">
-          <div className="w-16 h-16 rounded-full flex items-center justify-center shadow-theme-glow">
-            <PiCheckCircle className="w-8 h-8 text-white" />
-          </div>
+  const successStep = (
+    <div className="flex flex-col gap-6">
+      <div className="flex gap-4 rounded-card bg-sup-2 p-4">
+        <span className="grid h-10 w-10 shrink-0 place-items-center rounded-full tint-ouro text-ouro-na-tinta">
+          <Icon de={PiEnvelopeSimple} tamanho="m" />
+        </span>
+        <div className="flex min-w-0 flex-col gap-1">
+          <span className="font-medium">
+            {t('forgot_password_success_check_title')}
+          </span>
+          <span className="t-rotulo text-texto-suave">
+            {t('forgot_password_success_check_text')}{' '}
+            <span className="break-all text-texto">{state.email}</span>
+          </span>
         </div>
-        <h2 className="text-2xl font-bold text-theme-primary classical-title mb-2">
-          {t('forgot_password_success_title')}
-        </h2>
-        <p className="text-theme-secondary">
-          {t('forgot_password_success_subtitle')}
-        </p>
       </div>
-
-      <Stack gap={6}>
-        <div className="rounded-lg p-4 bg-sup-2">
-          <div className="flex items-start">
-            <PiEnvelopeSimple className="w-5 h-5 mr-3 mt-0.5 flex-shrink-0" />
-            <Stack gap={1}>
-              <h4 className="font-medium">
-                {t('forgot_password_success_check_title')}
-              </h4>
-              <p className="text-sm opacity-80">
-                {t('forgot_password_success_check_text')}{' '}
-                <strong>{state.email}</strong>
-              </p>
-            </Stack>
-          </div>
-        </div>
-
-        <Stack gap={3} className="bg-theme-secondary rounded-lg p-4">
-          <h4 className="text-sm font-medium text-theme-primary flex items-center">
-            <PiClock className="w-4 h-4 mr-2" />
-            {t('forgot_password_success_steps_title')}
-          </h4>
-          <Stack gap={2} as="ul" className="text-sm text-theme-tertiary">
-            <li className="flex items-start">
-              <span className="text-ouro-texto mr-2">1.</span>
-              {t('forgot_password_success_step_1')}
-            </li>
-            <li className="flex items-start">
-              <span className="text-ouro-texto mr-2">2.</span>
-              {t('forgot_password_success_step_2')}
-            </li>
-            <li className="flex items-start">
-              <span className="text-ouro-texto mr-2">3.</span>
-              {t('forgot_password_success_step_3')}
-            </li>
-          </Stack>
-        </Stack>
-
-        <Stack gap={3}>
-          <Button
-            variant="ghost"
-            size="lg"
-            className="w-full"
-            leftIcon={<PiArrowLeft />}
-            onClick={handleBackToLogin}
-          >
-            {t('forgot_password_modal_back_button')}
-          </Button>
-
-          <button
-            onClick={handleClose}
-            className="w-full text-sm text-theme-tertiary transition-colors"
-          >
-            {t('forgot_password_success_close_button')}
-          </button>
-        </Stack>
-      </Stack>
-    </>
+      <div className="flex flex-col gap-3">
+        <span className="t-legenda">
+          {t('forgot_password_success_steps_title')}
+        </span>
+        {numerados([
+          t('forgot_password_success_step_1'),
+          t('forgot_password_success_step_2'),
+          t('forgot_password_success_step_3'),
+        ])}
+      </div>
+      <div className="flex flex-col gap-2">
+        {voltar}
+        <Button variante="texto" type="button" onClick={handleClose}>
+          {t('forgot_password_success_close_button')}
+        </Button>
+      </div>
+    </div>
   );
 
-  const renderErrorStep = () => (
-    <>
-      <div className="text-center mb-8">
-        <div className="flex justify-center mb-4">
-          <div className="w-16 h-16 rounded-full flex items-center justify-center shadow-theme-glow">
-            <PiWarningCircle className="w-8 h-8 text-white" />
-          </div>
+  const errorStep = (
+    <div className="flex flex-col gap-6">
+      <AvisoDeAuth
+        titulo={
+          state.rateLimited
+            ? t('forgot_password_error_rate_limit_title')
+            : t('forgot_password_error_general_title')
+        }
+      >
+        {state.error}
+      </AvisoDeAuth>
+      {state.rateLimited && (
+        <div className="flex flex-col gap-3">
+          <span className="t-legenda">
+            {t('forgot_password_error_what_to_do')}
+          </span>
+          {numerados([
+            t('forgot_password_error_wait'),
+            t('forgot_password_error_check_email'),
+            t('forgot_password_error_contact'),
+          ])}
         </div>
-        <h2 className="text-2xl font-bold text-theme-primary classical-title mb-2">
-          {state.rateLimited
-            ? t('forgot_password_error_title_rate_limit')
-            : t('forgot_password_error_title_general')}
-        </h2>
-        <p className="text-theme-secondary">
-          {state.rateLimited
-            ? t('forgot_password_error_subtitle_rate_limit')
-            : t('forgot_password_error_subtitle_general')}
-        </p>
-      </div>
-
-      <Stack gap={6}>
-        <div className="rounded-lg p-4 bg-sup-2">
-          <div className="flex items-start">
-            <PiWarningCircle className="w-5 h-5 mr-3 mt-0.5 flex-shrink-0" />
-            <Stack gap={1}>
-              <h4 className="font-medium">
-                {state.rateLimited
-                  ? t('forgot_password_error_rate_limit_title')
-                  : t('forgot_password_error_general_title')}
-              </h4>
-              <p className="text-sm opacity-80">{state.error}</p>
-            </Stack>
-          </div>
-        </div>
-
-        {state.rateLimited && (
-          <Stack gap={2} className="bg-theme-secondary rounded-lg p-4">
-            <h4 className="text-sm font-medium text-theme-primary">
-              {t('forgot_password_error_what_to_do')}
-            </h4>
-            <Stack gap={1} as="ul" className="text-sm text-theme-tertiary">
-              <li>{t('forgot_password_error_wait')}</li>
-              <li>{t('forgot_password_error_check_email')}</li>
-              <li>{t('forgot_password_error_contact')}</li>
-            </Stack>
-          </Stack>
+      )}
+      <div className="flex flex-col gap-2">
+        {!state.rateLimited && (
+          <Button
+            variante="primario"
+            className="w-full"
+            onClick={() =>
+              setState((prev) => ({ ...prev, step: 'email', error: null }))
+            }
+          >
+            {t('forgot_password_error_try_again_button')}
+          </Button>
         )}
-
-        <Stack gap={3}>
-          {!state.rateLimited && (
-            <Button
-              variant="primary"
-              size="lg"
-              className="w-full"
-              onClick={() =>
-                setState((prev) => ({ ...prev, step: 'email', error: null }))
-              }
-            >
-              {t('forgot_password_error_try_again_button')}
-            </Button>
-          )}
-
-          <Button
-            variant="ghost"
-            size="lg"
-            className="w-full"
-            leftIcon={<PiArrowLeft />}
-            onClick={handleBackToLogin}
-          >
-            {t('forgot_password_modal_back_button')}
-          </Button>
-        </Stack>
-      </Stack>
-    </>
+        {voltar}
+      </div>
+    </div>
   );
 
-  const renderContent = () => {
-    switch (state.step) {
-      case 'email':
-        return renderEmailStep();
-      case 'success':
-        return renderSuccessStep();
-      case 'error':
-        return renderErrorStep();
-      default:
-        return renderEmailStep();
-    }
-  };
+  const titulos = {
+    email: [
+      t('forgot_password_modal_title'),
+      t('forgot_password_modal_subtitle'),
+    ],
+    success: [
+      t('forgot_password_success_title'),
+      t('forgot_password_success_subtitle'),
+    ],
+    error: state.rateLimited
+      ? [
+          t('forgot_password_error_title_rate_limit'),
+          t('forgot_password_error_subtitle_rate_limit'),
+        ]
+      : [
+          t('forgot_password_error_title_general'),
+          t('forgot_password_error_subtitle_general'),
+        ],
+  }[state.step];
 
   return (
-    <Modal
-      carregando={!ready}
-      isOpen={isOpen}
-      onClose={handleClose}
-      maxWidth="lg"
-      showCloseButton={true}
-      middlePosition
+    <Sheet
+      aberto={isOpen}
+      aoFechar={handleClose}
+      titulo={titulos[0]}
+      descricao={titulos[1]}
+      largura="p"
     >
-      {renderContent()}
-    </Modal>
+      {state.step === 'success'
+        ? successStep
+        : state.step === 'error'
+          ? errorStep
+          : emailStep}
+    </Sheet>
   );
 };
 

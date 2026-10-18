@@ -5,37 +5,18 @@ import { AUTH } from '@/app/conteudo/textos/auth';
 import { useTextos } from '@/app/hooks/useTextos';
 import React, { useState, useEffect } from 'react';
 import { registerWithPassword, signInWithGoogle } from '@/app/libs/session';
-import { FcGoogle } from 'react-icons/fc';
-import { GiGrandPiano } from 'react-icons/gi';
-import {
-  PiCheckCircle,
-  PiEnvelopeSimple,
-  PiLock,
-  PiUser,
-  PiWarning,
-} from 'react-icons/pi';
 import { toast } from 'react-hot-toast';
 import {
   useOnboardingModal,
   usePromptModal,
   useRegisterModal,
 } from '@/app/stores/authStore';
-import Modal from '../../Modal';
-import Button from '../../Common/Button';
-import Input from '../../Common/Inputs';
-import TermsAcceptance from '../TermsAcceptance';
+import { Button } from '@/app/components/ui/Button';
+import { Field } from '@/app/components/ui/Field';
+import { Sheet } from '@/app/components/ui/Sheet';
 import { Language } from '@/app/stores/useLanguageStore';
-import { Text } from '@/app/components/ui/Text';
-import { Stack } from '@/app/components/ui/Layout';
-interface RegisterStep {
-  step: 'form' | 'success' | 'confirmation-sent';
-  userData?: {
-    firstName?: string;
-    email?: string;
-    isLoggedIn?: boolean;
-    registrationMethod?: 'credentials' | 'google';
-  };
-}
+import TermsAcceptance from '../TermsAcceptance';
+import { AvisoDeAuth, BotaoGoogle, Divisor } from '../pecas';
 const registerErrorMessages: Record<string, { pt: string; en: string }> = {
   Callback: {
     pt: 'Este email já está cadastrado com senha. Use "Fazer login" ou redefina sua senha.',
@@ -82,11 +63,8 @@ const getRegisterErrorMessage = (
 const RegisterModal: React.FC = () => {
   const { isOpen, close, switchToLogin } = useRegisterModal();
   const { open: openOnboarding } = useOnboardingModal();
-  const { t, language, ready } = useTextos(AUTH);
+  const { t, language } = useTextos(AUTH);
 
-  const [registerStep, setRegisterStep] = useState<RegisterStep>({
-    step: 'form',
-  });
   const [isLoading, setIsLoading] = useState(false);
   const [isGoogleLoading, setIsGoogleLoading] = useState(false);
 
@@ -298,13 +276,7 @@ const RegisterModal: React.FC = () => {
     open();
     setErrors({});
     setEmailConflictError(null);
-    setRegisterStep({ step: 'form' });
     close();
-  };
-
-  const handleBackToLogin = () => {
-    handleClose();
-    switchToLogin();
   };
 
   const handleProceedToOnboarding = () => {
@@ -314,333 +286,111 @@ const RegisterModal: React.FC = () => {
     }, 300);
   };
 
-  const renderConfirmationSent = () => (
-    <>
-      <div className="text-center mb-8">
-        <div className="flex justify-center mb-4">
-          <div className="w-16 h-16 rounded-full flex items-center justify-center shadow-theme-glow animate-pulse">
-            <PiCheckCircle className="w-8 h-8 text-white" />
-          </div>
-        </div>
-        <h2 className="text-2xl font-bold text-theme-primary classical-title mb-2">
-          {t('register_success_title')}
-        </h2>
-        <p className="text-theme-secondary">
-          {registerStep.userData?.registrationMethod === 'google'
-            ? t('register_success_subtitle_google')
-            : t('register_success_subtitle_credentials')}
-        </p>
-      </div>
+  return (
+    <Sheet
+      aberto={isOpen}
+      aoFechar={handleClose}
+      titulo={t('register_modal_title')}
+      descricao={t('register_modal_subtitle')}
+      largura="p"
+    >
+      <div className="flex flex-col gap-6">
+        <form
+          onSubmit={handleSubmit}
+          noValidate
+          className="flex flex-col gap-5"
+        >
+          {errors.general && <AvisoDeAuth>{errors.general}</AvisoDeAuth>}
 
-      <Stack gap={6}>
-        {/* Status de login - não mostrar para usuários Google */}
-        {!registerStep.userData?.isLoggedIn &&
-          registerStep.userData?.registrationMethod !== 'google' && (
-            <div className="rounded-lg p-4 bg-sup-2">
-              <div className="flex items-start">
-                <PiWarning className="w-5 h-5 mr-3 mt-0.5 flex-shrink-0" />
-                <Stack gap={1}>
-                  <h4 className="font-medium">
-                    {t('register_success_login_manual_title')}
-                  </h4>
-                  <p className="text-sm opacity-80">
-                    {t('register_success_login_manual_text')}
-                  </p>
-                </Stack>
-              </div>
-            </div>
-          )}
+          <Field
+            label={t('register_modal_username_label')}
+            type="text"
+            name="username"
+            value={formData.username}
+            onChange={handleInputChange}
+            placeholder={t('register_modal_username_placeholder')}
+            ajuda={t('register_modal_username_hint')}
+            erro={errors.username}
+            disabled={isLoading || isGoogleLoading}
+            autoComplete="username"
+          />
+          <Field
+            label={t('register_modal_email_label')}
+            type="email"
+            name="email"
+            value={formData.email}
+            onChange={handleInputChange}
+            placeholder={t('register_modal_email_placeholder')}
+            erro={errors.email || emailConflictError || undefined}
+            disabled={isLoading || isGoogleLoading}
+            autoComplete="email"
+          />
+          <Field.Senha
+            label={t('register_modal_password_label')}
+            name="password"
+            value={formData.password}
+            onChange={handleInputChange}
+            placeholder={t('register_modal_password_placeholder')}
+            erro={errors.password}
+            disabled={isLoading || isGoogleLoading}
+            autoComplete="new-password"
+            rotuloMostrar={t('password_show')}
+            rotuloOcultar={t('password_hide')}
+          />
+          <Field.Senha
+            label={t('register_modal_confirm_password_label')}
+            name="confirmPassword"
+            value={formData.confirmPassword}
+            onChange={handleInputChange}
+            placeholder={t('register_modal_confirm_password_placeholder')}
+            erro={errors.confirmPassword}
+            disabled={isLoading || isGoogleLoading}
+            autoComplete="new-password"
+            rotuloMostrar={t('password_show')}
+            rotuloOcultar={t('password_hide')}
+          />
 
-        {/* Informações específicas para Google vs Email */}
-        {registerStep.userData?.registrationMethod === 'google' ? (
-          <div className="rounded-lg p-4 bg-sup-2">
-            <div className="flex items-start">
-              <div>
-                <h4 className="font-medium mb-1">
-                  {t('register_success_google_verified_title')}
-                </h4>
-                <p className="text-sm opacity-80 mb-2">
-                  {t('register_success_google_verified_text')}{' '}
-                  <strong>{registerStep.userData?.email}</strong>
-                </p>
-                <Stack gap={1} className="text-xs opacity-70">
-                  <p>{t('register_success_google_features')}</p>
-                  <p>{t('register_success_google_immediate')}</p>
-                  <p>{t('register_success_google_quick_login')}</p>
-                </Stack>
-              </div>
-            </div>
-          </div>
-        ) : (
-          <div className="rounded-lg p-4 bg-sup-2">
-            <div className="flex items-start">
-              <div>
-                <h4 className="font-medium mb-1">
-                  {t('register_success_email_sent_title')}
-                </h4>
-                <p className="text-sm opacity-80 mb-2">
-                  {t('register_success_email_sent_text')}{' '}
-                  <strong>{registerStep.userData?.email}</strong>
-                </p>
-                <Stack gap={1} className="text-xs opacity-70">
-                  <p>
-                    • <strong>{t('register_success_email_normal_use')}</strong>
-                  </p>
-                  <p>
-                    • <strong>{t('register_success_email_uploads')}</strong>
-                  </p>
-                  <p>
-                    • <strong>{t('register_success_email_profile')}</strong>
-                  </p>
-                </Stack>
-              </div>
-            </div>
-          </div>
-        )}
-
-        <Stack gap={3} className="bg-theme-secondary rounded-lg p-4">
-          <h4 className="text-sm font-medium text-theme-primary flex items-center">
-            <PiCheckCircle className="w-4 h-4 mr-2" />
-            {t('register_success_next_steps')}
-          </h4>
-          <Stack gap={2} as="ul" className="text-sm text-theme-tertiary">
-            <li className="flex items-start">
-              <span className="text-ouro-texto mr-2 font-medium">1.</span>
-              {t('register_success_step_1')}
-            </li>
-            <li className="flex items-start">
-              <span className="text-ouro-texto mr-2 font-medium">2.</span>
-              {t('register_success_step_2')}
-            </li>
-            {registerStep.userData?.registrationMethod !== 'google' && (
-              <li className="flex items-start">
-                <span className="text-ouro-texto mr-2 font-medium">3.</span>
-                {t('register_success_step_3_credentials')}
-              </li>
-            )}
-            <li className="flex items-start">
-              <span className="text-ouro-texto mr-2 font-medium">
-                {registerStep.userData?.registrationMethod === 'google'
-                  ? '3.'
-                  : '4.'}
-              </span>
-              {registerStep.userData?.registrationMethod === 'google'
-                ? t('register_success_step_3_google')
-                : t('register_success_step_4_credentials')}
-            </li>
-          </Stack>
-        </Stack>
-
-        <Stack gap={3}>
-          {registerStep.userData?.isLoggedIn ? (
-            <Button
-              variant="primary"
-              size="lg"
-              className="w-full"
-              onClick={handleProceedToOnboarding}
-            >
-              {t('register_success_complete_profile_button')}
-            </Button>
-          ) : (
-            <Button
-              variant="primary"
-              size="lg"
-              className="w-full"
-              onClick={handleBackToLogin}
-            >
-              {t('register_success_login_button')}
-            </Button>
-          )}
+          <TermsAcceptance
+            accepted={termsAccepted}
+            onChange={setTermsAccepted}
+            error={errors.terms}
+            disabled={isLoading || isGoogleLoading}
+          />
 
           <Button
-            variant="ghost"
-            size="lg"
+            type="submit"
+            variante="primario"
+            carregando={isLoading}
+            disabled={isGoogleLoading}
             className="w-full"
-            onClick={handleClose}
           >
-            {registerStep.userData?.isLoggedIn
-              ? t('register_success_explore_button')
-              : t('register_success_close_button')}
+            {t('register_modal_submit_button')}
           </Button>
-        </Stack>
+        </form>
 
-        {/* Informação adicional - adaptada para Google */}
-        <div className="text-center pt-4 border-t border-theme-secondary">
-          {registerStep.userData?.registrationMethod === 'google' ? (
-            <Text papel="legenda" tom="fraco" as="p">
-              {t('register_success_google_tip')}
-            </Text>
-          ) : (
-            <Text papel="legenda" tom="fraco" as="p">
-              {t('register_success_email_tip')}
-              <br />
-              {t('register_success_email_tip_2')}
-            </Text>
-          )}
-        </div>
-      </Stack>
-    </>
-  );
+        <Divisor texto={t('register_modal_divider_text')} />
 
-  const renderRegistrationForm = () => (
-    <>
-      <div className="text-center mb-8">
-        <div className="flex justify-center mb-4">
-          <div className="w-16 h-16 rounded-full flex items-center justify-center shadow-theme-glow">
-            <GiGrandPiano className="w-8 h-8 text-theme-primary" />
-          </div>
-        </div>
-        <h2 className="text-2xl font-bold text-theme-primary classical-title mb-2">
-          {t('register_modal_title')}
-        </h2>
-        <p className="text-theme-secondary">{t('register_modal_subtitle')}</p>
-      </div>
-
-      <form onSubmit={handleSubmit} className="space-y-6">
-        {errors.general && (
-          <div className="p-3 rounded-lg text-sm bg-sup-2">
-            {errors.general}
-          </div>
-        )}
-
-        <div className="grid grid-cols-1 gap-4">
-          <div>
-            <Input
-              label={t('register_modal_username_label')}
-              type="text"
-              name="username"
-              value={formData.username}
-              onChange={handleInputChange}
-              leftIcon={<PiUser className="w-4 h-4" />}
-              placeholder={t('register_modal_username_placeholder')}
-              error={errors.username}
-              disabled={isLoading || isGoogleLoading}
-              autoComplete="username"
-            />
-            <Text papel="legenda" tom="fraco" as="p" className="mt-1">
-              {t('register_modal_username_hint')}
-            </Text>
-          </div>
-        </div>
-
-        <Input
-          label={t('register_modal_email_label')}
-          type="email"
-          name="email"
-          value={formData.email}
-          onChange={handleInputChange}
-          leftIcon={<PiEnvelopeSimple className="w-4 h-4" />}
-          placeholder={t('register_modal_email_placeholder')}
-          error={errors.email || emailConflictError}
-          disabled={isLoading || isGoogleLoading}
-          autoComplete="email"
-        />
-
-        <Input
-          label={t('register_modal_password_label')}
-          name="password"
-          value={formData.password}
-          onChange={handleInputChange}
-          leftIcon={<PiLock className="w-4 h-4" />}
-          placeholder={t('register_modal_password_placeholder')}
-          isPassword
-          error={errors.password}
-          disabled={isLoading || isGoogleLoading}
-          autoComplete="new-password"
-        />
-
-        <Input
-          label={t('register_modal_confirm_password_label')}
-          name="confirmPassword"
-          value={formData.confirmPassword}
-          onChange={handleInputChange}
-          leftIcon={<PiLock className="w-4 h-4" />}
-          placeholder={t('register_modal_confirm_password_placeholder')}
-          isPassword
-          error={errors.confirmPassword}
-          disabled={isLoading || isGoogleLoading}
-          autoComplete="new-password"
-        />
-
-        {/* 🆕 NOVO: Componente de Aceitação de Termos */}
-        <TermsAcceptance
-          accepted={termsAccepted}
-          onChange={setTermsAccepted}
-          error={errors.terms}
-          disabled={isLoading || isGoogleLoading}
-        />
-
-        <Button
-          type="submit"
-          variant="primary"
-          size="lg"
-          isLoading={isLoading}
-          className="w-full"
-          disabled={isGoogleLoading}
+        <BotaoGoogle
+          onClick={handleGoogleSignIn}
+          carregando={isGoogleLoading}
+          disabled={isLoading}
         >
-          {t('register_modal_submit_button')}
-        </Button>
-      </form>
+          {t('register_modal_google_button')}
+        </BotaoGoogle>
 
-      <div className="relative my-6">
-        <div className="absolute inset-0 flex items-center">
-          <div className="w-full border-t border-theme-secondary" />
-        </div>
-        <div className="relative flex justify-center text-sm">
-          <span className="px-4 bg-theme-elevated text-theme-tertiary">
-            {t('register_modal_divider_text')}
-          </span>
-        </div>
-      </div>
-
-      <Button
-        variant="google"
-        size="lg"
-        onClick={handleGoogleSignIn}
-        isLoading={isGoogleLoading}
-        leftIcon={<FcGoogle />}
-        className="w-full"
-        disabled={isLoading}
-      >
-        {t('register_modal_google_button')}
-      </Button>
-
-      <div className="mt-8 text-center">
-        <p className="text-theme-secondary">
+        <p className="t-rotulo text-center text-texto-suave">
           {t('register_modal_login_text')}{' '}
-          <button
+          <Button
+            variante="texto"
+            type="button"
             onClick={switchToLogin}
-            className="text-ouro-texto font-medium transition-colors"
             disabled={isLoading || isGoogleLoading}
           >
             {t('register_modal_login_link')}
-          </button>
+          </Button>
         </p>
       </div>
-    </>
-  );
-
-  const renderContent = () => {
-    switch (registerStep.step) {
-      case 'confirmation-sent':
-        return renderConfirmationSent();
-      case 'form':
-      default:
-        return renderRegistrationForm();
-    }
-  };
-
-  return (
-    <Modal
-      carregando={!ready}
-      isOpen={isOpen}
-      onClose={handleClose}
-      maxWidth="xl"
-      showCloseButton={true}
-      setPr
-    >
-      {renderContent()}
-    </Modal>
+    </Sheet>
   );
 };
 

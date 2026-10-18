@@ -1,6 +1,7 @@
 'use client';
 
-import { Children, Fragment, isValidElement, useId } from 'react';
+import { Children, Fragment, isValidElement, useId, useState } from 'react';
+import { PiEye, PiEyeSlash } from 'react-icons/pi';
 import type { ChangeEvent, ReactElement, Ref } from 'react';
 import type {
   InputHTMLAttributes,
@@ -277,6 +278,73 @@ Field.Selecao = function FieldSelecao({
         aria-describedby={erro ? idErro : ajuda ? idAjuda : undefined}
         className={classeCampo}
       />
+    </Moldura>
+  );
+};
+
+type SenhaProps = FieldProps & {
+  /** Rótulos do botão de mostrar/ocultar, no idioma da tela. */
+  rotuloMostrar?: string;
+  rotuloOcultar?: string;
+};
+
+/**
+ * Campo de senha: o mesmo campo, com um botão para ver o que se digitou. O
+ * botão fica dentro da moldura do campo e não entra na ordem de tabulação
+ * antes do próximo campo (é um auxílio, não um passo do formulário).
+ */
+Field.Senha = function FieldSenha({
+  label,
+  ajuda,
+  erro,
+  rotuloOculto,
+  className,
+  classeCampo,
+  rotuloMostrar = 'Mostrar a senha',
+  rotuloOcultar = 'Ocultar a senha',
+  ...resto
+}: SenhaProps) {
+  const id = useId();
+  const [visivel, setVisivel] = useState(false);
+  const idCampo = resto.id ?? `${id}-campo`;
+  const idAjuda = `${id}-ajuda`;
+  const idErro = `${id}-erro`;
+
+  return (
+    <Moldura
+      label={label}
+      ajuda={ajuda}
+      erro={erro}
+      rotuloOculto={rotuloOculto}
+      idCampo={idCampo}
+      idAjuda={idAjuda}
+      idErro={idErro}
+      className={className}
+    >
+      <div className="relative">
+        <input
+          id={idCampo}
+          type={visivel ? 'text' : 'password'}
+          aria-invalid={erro ? true : undefined}
+          aria-describedby={erro ? idErro : ajuda ? idAjuda : undefined}
+          className={cx(BASE_CONTROLE, 'pr-12', classeCampo)}
+          {...resto}
+        />
+        <button
+          type="button"
+          tabIndex={-1}
+          aria-label={visivel ? rotuloOcultar : rotuloMostrar}
+          aria-pressed={visivel}
+          onClick={() => setVisivel((v) => !v)}
+          className="absolute right-1.5 top-1/2 grid h-9 w-9 -translate-y-1/2 place-items-center rounded-full text-texto-suave hover:bg-[var(--interactive-hover)] hover:text-texto"
+        >
+          {visivel ? (
+            <PiEyeSlash aria-hidden="true" className="h-5 w-5" />
+          ) : (
+            <PiEye aria-hidden="true" className="h-5 w-5" />
+          )}
+        </button>
+      </div>
     </Moldura>
   );
 };

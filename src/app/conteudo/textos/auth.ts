@@ -3,6 +3,8 @@ import type { Textos } from './tipos';
 
 export const AUTH: Textos = {
   pt: {
+    password_show: 'Mostrar a senha',
+    password_hide: 'Ocultar a senha',
     login_modal_title: 'Bem-vindo de volta!',
     login_modal_subtitle:
       'Entre na sua conta para continuar sua jornada musical',
@@ -190,6 +192,8 @@ export const AUTH: Textos = {
       'Muitas tentativas. Espere um minuto e tente de novo.',
   },
   en: {
+    password_show: 'Show the password',
+    password_hide: 'Hide the password',
     login_modal_title: 'Welcome back!',
     login_modal_subtitle:
       'Sign in to your account to continue your musical journey',
