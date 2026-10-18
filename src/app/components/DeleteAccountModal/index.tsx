@@ -156,11 +156,6 @@ const DeleteAccountModal: React.FC<DeleteAccountModalProps> = ({
 
   const steps = ['warning', 'cascade', 'confirm'] as const;
   const stepIndex = steps.indexOf(currentStep);
-  const stepNames = [
-    t('delete_modal_sure'),
-    t('delete_modal_data_summary'),
-    t('delete_modal_final_confirmation'),
-  ];
   // The texts carry their old list marks ("• ") and colons; the layout
   // draws its own.
   const plain = (key: string) =>
@@ -236,38 +231,6 @@ const DeleteAccountModal: React.FC<DeleteAccountModalProps> = ({
       rodape={footer}
     >
       <div className="flex flex-col gap-8">
-        {/* Where the person is: three names on a rule, the current one
-            marked. Read as a sentence, not a progress bar. */}
-        <ol className="grid grid-cols-3 gap-3">
-          {stepNames.map((name, index) => (
-            <li
-              key={name}
-              aria-current={index === stepIndex ? 'step' : undefined}
-              className="flex flex-col gap-2"
-            >
-              <span
-                aria-hidden="true"
-                className={cx(
-                  'h-0.5 rounded-full transition-colors duration-[var(--t-resposta)]',
-                  index === stepIndex
-                    ? 'bg-[var(--erro)]'
-                    : index < stepIndex
-                      ? 'bg-[var(--texto-suave)]'
-                      : 'bg-[var(--linha)]'
-                )}
-              />
-              <span
-                className={cx(
-                  't-legenda leading-snug',
-                  index === stepIndex && '!text-texto'
-                )}
-              >
-                {name}
-              </span>
-            </li>
-          ))}
-        </ol>
-
         <div key={currentStep} className="entra flex flex-col gap-8">
           {currentStep === 'warning' && (
             <>
