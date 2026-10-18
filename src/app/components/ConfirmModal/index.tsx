@@ -82,15 +82,10 @@ export default function ConfirmModal({
       largura="p"
       alca={false}
       rodape={
-        // Lado a lado quando cabem; quando o rótulo é longo, cada botão ocupa
-        // a linha inteira. No telefone, a ação fica em cima, perto do polegar.
-        <div className="flex w-full flex-col-reverse gap-3 sm:flex-row sm:flex-wrap sm:justify-end">
-          <Button
-            variante="secundario"
-            onClick={onClose}
-            disabled={ocupado}
-            className="w-full sm:w-auto"
-          >
+        // Straight into the sheet's footer, which lays the buttons out
+        // (side by side, equal halves on the phone); a wrapper here broke it.
+        <>
+          <Button variante="fantasma" onClick={onClose} disabled={ocupado}>
             {cancelText}
           </Button>
           {!semConfirmar && (
@@ -99,12 +94,11 @@ export default function ConfirmModal({
               onClick={confirmar}
               carregando={ocupado}
               disabled={confirmarBloqueado}
-              className="w-full sm:w-auto"
             >
               {confirmText || acao}
             </Button>
           )}
-        </div>
+        </>
       }
     >
       <div className="flex flex-col gap-5">

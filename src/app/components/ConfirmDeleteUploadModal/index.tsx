@@ -1,10 +1,16 @@
 import { ENVIOS } from '@/app/conteudo/textos/envios';
 import { useTextos } from '@/app/hooks/useTextos';
 import { useEffect, useState } from 'react';
-import { PiSpinnerGap } from 'react-icons/pi';
+import {
+  PiFileText,
+  PiMusicNotes,
+  PiSpinnerGap,
+  PiTreeStructure,
+  PiWarning,
+} from 'react-icons/pi';
+import type { ComponentType, ReactNode, SVGProps } from 'react';
+import { Icon } from '@/app/components/ui/Icon';
 import { getCascadeInfo } from '@/app/requests/uploads-client';
-import { Stack, Inline } from '@/app/components/ui/Layout';
-import { Text } from '@/app/components/ui/Text';
 import ConfirmModal from '@/app/components/ConfirmModal';
 
 interface CascadeInfo {
@@ -67,22 +73,30 @@ export default function ConfirmDeleteUploadModal({
     ((cascadeInfo.totalWorks ?? 0) > 0 || (cascadeInfo.totalScores ?? 0) > 0)
   );
 
-  // Helper functions para textos traduzidos
-  const getItemTypeLabel = () => {
-    return t(`item_type_${itemType}`);
-  };
+  const typeLabel = t(`item_type_${itemType}`);
+  const scoreWord = (count: number) =>
+    count === 1 ? t('item_score_singular') : t('item_score_plural');
+  // Old list texts end in ":" and start with "..."; the layout draws its own.
+  const plain = (text: string) =>
+    text.replace(/^\.\.\.\s*/, '').replace(/:\s*$/, '');
 
-  const getItemTypeArticle = () => {
-    return t(`item_type_article_${itemType}`);
-  };
-
-  const getScoreText = (count: number) => {
-    return count === 1 ? t('item_score_singular') : t('item_score_plural');
-  };
-
-  // const getWorkText = (count: number) => {
-  //   return count === 1 ? t('item_work_singular') : t('item_work_plural');
-  // };
+  const works = itemType === 'composer' ? (cascadeInfo?.works ?? []) : [];
+  const scores = itemType === 'work' ? (cascadeInfo?.scores ?? []) : [];
+  const childWorks = cascadeInfo?.childWorks ?? [];
+  const totals =
+    cascadeInfo?.totalScores !== undefined && cascadeInfo.totalScores >= 0
+      ? (cascadeInfo.totalWorks && cascadeInfo.totalWorks > 0
+          ? t('delete_modal_total_summary_with_works', {
+              scores: cascadeInfo.totalScores,
+              works: cascadeInfo.totalWorks,
+            })
+          : t('delete_modal_total_summary', {
+              scores: cascadeInfo.totalScores,
+            })
+        )
+          .replace(/^Total:\s*/, '')
+          .split(/\s*•\s*/)
+      : [];
 
   return (
     <ConfirmModal
@@ -94,185 +108,208 @@ export default function ConfirmDeleteUploadModal({
       type="danger"
       title={t('delete_modal_title')}
       cancelText={t('delete_modal_cancel')}
-      confirmText={`${t('delete_modal_delete_button', { type: getItemTypeLabel() })}${
-        hasCascadeItems ? ` ${t('delete_modal_plus_related')}` : ''
-      }`}
+      confirmText={t('delete_modal_delete_button', { type: typeLabel })}
       message={t('delete_modal_confirm_text', {
-        article: getItemTypeArticle(),
-        type: getItemTypeLabel(),
+        article: t(`item_type_article_${itemType}`),
+        type: typeLabel,
         title: itemTitle,
       })}
     >
-      <Stack gap={3}>
-        {/* Loading cascade info */}
-        {loadingCascadeInfo ? (
-          <Inline gap={2} className="p-3 rounded-lg bg-sup-2">
-            <PiSpinnerGap className="w-4 h-4 animate-spin" />
-            <span className="text-sm">
-              {t('delete_modal_checking_related')}
-            </span>
-          </Inline>
-        ) : null}
+      {loadingCascadeInfo && (
+        <div role="status" className="flex flex-col gap-2">
+          {[0, 1, 2].map((n) => (
+            <span
+              key={n}
+              aria-hidden="true"
+              className="loading-skeleton block h-7 rounded-controle"
+            />
+          ))}
+          <span className="t-legenda inline-flex items-center gap-2">
+            <Icon de={PiSpinnerGap} tamanho="pp" className="animate-spin" />
+            {t('delete_modal_checking_related')}
+          </span>
+        </div>
+      )}
 
-        {/* Cascade information */}
-        {!loadingCascadeInfo && hasCascadeItems ? (
-          <Stack gap={3} className="p-4 rounded-lg bg-sup-2">
-            <div className="flex items-start space-x-2">
-              <div>
-                <div className="text-sm font-medium mb-1">
-                  {t('delete_modal_cascade_warning')}
-                </div>
-                <Text papel="legenda" tom="suave" as="p" className="mb-3">
-                  {t('delete_modal_cascade_description')}
-                </Text>
-              </div>
+      {!loadingCascadeInfo && hasCascadeItems && (
+        <section className="entra flex flex-col gap-4 border-t border-linha pt-5">
+          <div className="flex flex-col gap-1">
+            <h3 className="flex items-center gap-2 font-display text-[1.25rem] leading-tight">
+              <Icon
+                de={PiTreeStructure}
+                tamanho="p"
+                className="text-ouro-texto"
+              />
+              {t('delete_modal_cascade_warning')}
+            </h3>
+            <p className="t-rotulo text-texto-suave">
+              {plain(t('delete_modal_cascade_description'))}
+            </p>
+          </div>
+
+          {/* The cascade, drawn: the item at the top, a rule falling from it
+              to everything that goes with it. */}
+          <div className="flex flex-col">
+            <p className="flex items-center gap-2.5 font-display text-[1.125rem] leading-snug">
+              <span
+                aria-hidden="true"
+                className="h-2 w-2 shrink-0 rounded-full bg-[var(--erro)]"
+              />
+              <span className="min-w-0 truncate">{itemTitle}</span>
+            </p>
+            <div className="ml-[3px] flex flex-col gap-4 border-l border-[var(--linha-forte)] pb-1 pl-5 pt-3">
+              {works.length > 0 && (
+                <Ramo
+                  icone={PiMusicNotes}
+                  titulo={plain(
+                    t('delete_modal_works_count', { count: works.length })
+                  )}
+                  itens={works.slice(0, 4).map((w) => ({
+                    id: w.id,
+                    nome: w.title,
+                    extra:
+                      w.scoresCount > 0
+                        ? `${w.scoresCount} ${scoreWord(w.scoresCount)}`
+                        : undefined,
+                  }))}
+                  mais={
+                    works.length > 4
+                      ? plain(
+                          t('delete_modal_and_more_works', {
+                            count: works.length - 4,
+                          })
+                        )
+                      : undefined
+                  }
+                />
+              )}
+              {scores.length > 0 && (
+                <Ramo
+                  icone={PiFileText}
+                  titulo={plain(
+                    t('delete_modal_scores_count', { count: scores.length })
+                  )}
+                  itens={scores.slice(0, 4).map((sc) => ({
+                    id: sc.id,
+                    nome: sc.title,
+                  }))}
+                  mais={
+                    scores.length > 4
+                      ? plain(
+                          t('delete_modal_and_more_scores', {
+                            count: scores.length - 4,
+                          })
+                        )
+                      : undefined
+                  }
+                />
+              )}
+              {childWorks.length > 0 && (
+                <Ramo
+                  icone={PiTreeStructure}
+                  titulo={plain(
+                    t('delete_modal_child_works_count', {
+                      count: childWorks.length,
+                    })
+                  )}
+                  itens={childWorks.slice(0, 3).map((c) => ({
+                    id: c.id,
+                    nome: c.title,
+                    extra:
+                      c.scoresCount > 0
+                        ? `${c.scoresCount} ${scoreWord(c.scoresCount)}`
+                        : undefined,
+                  }))}
+                />
+              )}
             </div>
+          </div>
 
-            <Stack gap={3} className="text-sm">
-              {/* Para compositor: mostrar obras */}
-              {itemType === 'composer' &&
-              cascadeInfo?.works &&
-              cascadeInfo.works.length > 0 ? (
-                <Stack gap={2}>
-                  <p className="font-medium text-texto flex items-center">
-                    {t('delete_modal_works_count', {
-                      count: cascadeInfo.works.length,
-                    })}
-                  </p>
-                  <Stack gap={1} className="overflow-y-auto rounded p-2">
-                    {cascadeInfo.works.slice(0, 4).map((work) => (
-                      <Text
-                        papel="legenda"
-                        tom="fraco"
-                        as="div"
-                        key={work.id}
-                        className="flex justify-between"
-                      >
-                        <span>• {work.title}</span>
-                        {work.scoresCount > 0 ? (
-                          <span className="">
-                            {work.scoresCount} {getScoreText(work.scoresCount)}
-                          </span>
-                        ) : null}
-                      </Text>
-                    ))}
-                    {cascadeInfo.works.length > 4 ? (
-                      <Text papel="legenda" tom="fraco" as="div">
-                        {t('delete_modal_and_more_works', {
-                          count: cascadeInfo.works.length - 4,
-                        })}
-                      </Text>
-                    ) : null}
-                  </Stack>
-                </Stack>
-              ) : null}
+          {totals.length > 0 && (
+            <ul className="flex flex-col gap-1 border-t-[3px] border-double border-[var(--linha-forte)] pt-3">
+              {totals.map((line) => (
+                <li key={line} className="t-rotulo font-medium tabular-nums">
+                  {line}
+                </li>
+              ))}
+            </ul>
+          )}
+        </section>
+      )}
 
-              {/* Para obra: mostrar partituras */}
-              {itemType === 'work' &&
-              cascadeInfo?.scores &&
-              cascadeInfo.scores.length > 0 ? (
-                <Stack gap={2}>
-                  <p className="font-medium text-texto flex items-center">
-                    {t('delete_modal_scores_count', {
-                      count: cascadeInfo.scores.length,
-                    })}
-                  </p>
-                  <div className="space-y-1 max-h-24 overflow-y-auto rounded p-2">
-                    {cascadeInfo.scores.slice(0, 4).map((score) => (
-                      <Text papel="legenda" tom="fraco" as="div" key={score.id}>
-                        • {score.title}
-                      </Text>
-                    ))}
-                    {cascadeInfo.scores.length > 4 ? (
-                      <Text papel="legenda" tom="fraco" as="div">
-                        {t('delete_modal_and_more_scores', {
-                          count: cascadeInfo.scores.length - 4,
-                        })}
-                      </Text>
-                    ) : null}
-                  </div>
-                </Stack>
-              ) : null}
-
-              {/* Obras filhas */}
-              {cascadeInfo?.childWorks && cascadeInfo.childWorks.length > 0 ? (
-                <Stack gap={2}>
-                  <p className="font-medium text-texto">
-                    {t('delete_modal_child_works_count', {
-                      count: cascadeInfo.childWorks.length,
-                    })}
-                  </p>
-                  <div className="space-y-1 max-h-20 overflow-y-auto rounded p-2">
-                    {cascadeInfo.childWorks.slice(0, 3).map((childWork) => (
-                      <Text
-                        papel="legenda"
-                        tom="fraco"
-                        as="div"
-                        key={childWork.id}
-                        className="flex justify-between"
-                      >
-                        <span>• {childWork.title}</span>
-                        {childWork.scoresCount > 0 ? (
-                          <span className="">
-                            {childWork.scoresCount}{' '}
-                            {getScoreText(childWork.scoresCount)}
-                          </span>
-                        ) : null}
-                      </Text>
-                    ))}
-                  </div>
-                </Stack>
-              ) : null}
-
-              {/* Total geral */}
-              {cascadeInfo?.totalScores !== undefined &&
-              cascadeInfo.totalScores >= 0 ? (
-                <div className="pt-2 border-t border-linha">
-                  <p className="text-xs font-medium">
-                    {cascadeInfo.totalWorks && cascadeInfo.totalWorks > 0
-                      ? t('delete_modal_total_summary_with_works', {
-                          scores: cascadeInfo.totalScores,
-                          works: cascadeInfo.totalWorks,
-                        })
-                      : t('delete_modal_total_summary', {
-                          scores: cascadeInfo.totalScores,
-                        })}
-                  </p>
-                </div>
-              ) : null}
-            </Stack>
-          </Stack>
-        ) : null}
-
-        {/* No cascade items */}
-        {!loadingCascadeInfo &&
+      {!loadingCascadeInfo &&
         !hasCascadeItems &&
-        (itemType === 'composer' || itemType === 'work') ? (
-          <div className="p-3 rounded-lg bg-sup-2">
-            <Inline gap={2}>
-              <span className="text-sm">
-                {t('delete_modal_no_related_items')}
-              </span>
-            </Inline>
-          </div>
-        ) : null}
+        (itemType === 'composer' || itemType === 'work') && (
+          <p className="t-rotulo border-t border-linha pt-4 text-texto-suave">
+            {t('delete_modal_no_related_items')}
+          </p>
+        )}
 
-        {/* Warning for score */}
-        {itemType === 'score' ? (
-          <div className="rounded-lg p-3 bg-sup-2">
-            <div className="flex items-start space-x-2">
-              <div className="text-sm">
-                <p className="font-medium">
-                  {t('delete_modal_score_warning_title')}
-                </p>
-                <p className="mt-1 text-xs">
-                  {t('delete_modal_score_warning_text')}
-                </p>
-              </div>
-            </div>
-          </div>
-        ) : null}
-      </Stack>
+      {itemType === 'score' && (
+        <Aviso>
+          <p className="font-medium">
+            {plain(t('delete_modal_score_warning_title'))}
+          </p>
+          <p className="t-rotulo text-texto-suave">
+            {t('delete_modal_score_warning_text')}
+          </p>
+        </Aviso>
+      )}
     </ConfirmModal>
+  );
+}
+
+/** One branch of the cascade: what it holds, then up to a few names. */
+function Ramo({
+  icone,
+  titulo,
+  itens,
+  mais,
+}: {
+  icone: ComponentType<SVGProps<SVGSVGElement>>;
+  titulo: string;
+  itens: { id: string; nome: string; extra?: string }[];
+  mais?: string;
+}) {
+  return (
+    <div className="flex flex-col gap-1.5">
+      <p className="t-rotulo flex items-center gap-2 font-medium">
+        <Icon de={icone} tamanho="pp" className="text-texto-fraco" />
+        {titulo}
+      </p>
+      <ul className="flex flex-col">
+        {itens.map((item) => (
+          <li
+            key={item.id}
+            className="flex items-baseline gap-3 py-1 text-[0.875rem]"
+          >
+            <span className="min-w-0 truncate text-texto-suave">
+              {item.nome}
+            </span>
+            {item.extra && (
+              <>
+                <span
+                  aria-hidden="true"
+                  className="min-w-4 flex-1 translate-y-[-0.25em] border-b border-dotted border-[var(--linha-forte)]"
+                />
+                <span className="t-legenda shrink-0 tabular-nums">
+                  {item.extra}
+                </span>
+              </>
+            )}
+          </li>
+        ))}
+        {mais && <li className="t-legenda py-1 italic">{mais}</li>}
+      </ul>
+    </div>
+  );
+}
+
+function Aviso({ children }: { children: ReactNode }) {
+  return (
+    <div className="flex items-start gap-3 border-t border-linha pt-4">
+      <Icon de={PiWarning} tamanho="p" className="mt-0.5 text-[var(--erro)]" />
+      <div className="flex flex-col gap-1">{children}</div>
+    </div>
   );
 }
