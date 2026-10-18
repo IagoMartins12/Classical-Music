@@ -53,6 +53,20 @@ const WHAT: Record<ScreenId, string> = {
   profile: 'Como você aparece e como quer ser avisado.',
 };
 
+/**
+ * O mesmo item visto pelo aluno, onde ele faz outra coisa: o aluno não
+ * fecha aula nem bloqueia horário — pede aula num horário livre, entrega a
+ * tarefa e vê o relatório que o professor compartilha.
+ */
+const WHAT_STUDENT: Partial<Record<ScreenId, string>> = {
+  calendar: 'Suas aulas por semana ou mês, e a agenda no celular.',
+  lessons:
+    'As aulas marcadas, o que levar a cada uma e o pedido de aula num horário livre.',
+  assignments:
+    'O que estudar entre as aulas: entregar e ler o retorno do professor.',
+  reports: 'O seu progresso no período, quando o professor compartilha.',
+};
+
 const PILLARS: Array<{ icon: typeof PiUsers; title: string; text: string }> = [
   {
     icon: PiShieldCheck,
@@ -439,7 +453,9 @@ export default function OnboardingSheet({ role, onClose, open }: SheetProps) {
                   />
                   <span className="flex flex-col gap-0.5">
                     <span className="font-medium">{s.label}</span>
-                    <span className="t-legenda">{WHAT[s.id]}</span>
+                    <span className="t-legenda">
+                      {WHAT_STUDENT[s.id] ?? WHAT[s.id]}
+                    </span>
                   </span>
                 </li>
               ))}

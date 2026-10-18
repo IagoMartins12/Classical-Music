@@ -390,7 +390,7 @@ function PlanCard() {
   const plan = useTeacherDashboard().data?.plan;
   if (!plan) return null;
   const name = PLAN_NAME[plan.name] ?? plan.name;
-  const limited = plan.maxStudents !== null;
+  const limited = plan.maxStudents !== null && plan.maxStudents > 0;
   return (
     <button
       type="button"
@@ -398,7 +398,9 @@ function PlanCard() {
       aria-label={
         limited
           ? `Plano ${name}, ${plan.activeStudents} de ${plan.maxStudents} alunos. Ver planos`
-          : `Plano ${name}, ${plan.activeStudents} alunos. Ver planos`
+          : plan.maxStudents === 0
+            ? `Plano ${name}, sem alunos incluídos. Ver planos`
+            : `Plano ${name}, ${plan.activeStudents} alunos. Ver planos`
       }
       className="flex flex-col gap-2 rounded-controle bg-sup-2 p-3 text-left transition-[box-shadow] duration-[var(--t-toque)] hover:shadow-[var(--sombra-2)]"
     >

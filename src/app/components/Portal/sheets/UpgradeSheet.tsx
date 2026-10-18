@@ -50,7 +50,9 @@ export default function UpgradeSheet({ onClose }: SheetProps) {
         plan
           ? limit === null
             ? `${content.planos[current].nome} · ${used} alunos ativos, sem limite.`
-            : `${content.planos[current].nome} · ${used} de ${limit} alunos. ${left === 1 ? 'Sobra 1 vaga' : `Sobram ${left} vagas`}.`
+            : limit === 0
+              ? `${content.planos[current].nome} · não inclui alunos. O Mentor e o Maestro incluem.`
+              : `${content.planos[current].nome} · ${used} de ${limit} alunos. ${left === 1 ? 'Sobra 1 vaga' : `Sobram ${left} vagas`}.`
           : undefined
       }
       largura="g"

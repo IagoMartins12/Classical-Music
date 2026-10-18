@@ -104,10 +104,15 @@ export function StudentsScreen() {
 
   const activeCount = active.data?.pagination.total ?? 0;
   const inviteCount = invites.data?.pagination.total ?? 0;
+  // Plano sem alunos (Free, Plus): os vínculos que já existem continuam, mas
+  // convidar leva aos planos de quem ensina.
+  const semVagas = plan?.maxStudents === 0;
   const planText = plan
-    ? plan.maxStudents !== null
-      ? `${plan.activeStudents} de ${plan.maxStudents} vagas do plano ${PLAN_NAME[plan.name] ?? plan.name}.`
-      : `Plano ${PLAN_NAME[plan.name] ?? plan.name}, sem limite de alunos.`
+    ? semVagas
+      ? `O plano ${PLAN_NAME[plan.name] ?? plan.name} não inclui alunos; para convidar, assine o Mentor ou o Maestro.`
+      : plan.maxStudents !== null
+        ? `${plan.activeStudents} de ${plan.maxStudents} vagas do plano ${PLAN_NAME[plan.name] ?? plan.name}.`
+        : `Plano ${PLAN_NAME[plan.name] ?? plan.name}, sem limite de alunos.`
     : '';
 
   return (
@@ -120,7 +125,7 @@ export function StudentsScreen() {
             <Button
               variante="primario"
               icone={PiUserPlus}
-              onClick={() => open({ type: 'invite' })}
+              onClick={() => open({ type: semVagas ? 'upgrade' : 'invite' })}
             >
               Convidar aluno
             </Button>
@@ -187,7 +192,11 @@ export function StudentsScreen() {
             }
             acao={
               tab === 'active' && !q ? (
-                <Button onClick={() => open({ type: 'invite' })}>
+                <Button
+                  onClick={() =>
+                    open({ type: semVagas ? 'upgrade' : 'invite' })
+                  }
+                >
                   Convidar aluno
                 </Button>
               ) : undefined

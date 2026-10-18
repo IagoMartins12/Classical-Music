@@ -239,6 +239,10 @@ function phrase(data: Dashboard, open: (r: SheetRequest) => void): ReactNode {
   const ahead = data.todayLessons.filter((l) => !hasPassed(l.scheduledAt));
   const next = ahead[0];
   const parts: ReactNode[] = [];
+  // The first part opens a sentence: its first letter goes up. CSS
+  // `::first-letter` does not apply to an inline button, so it is done here.
+  const lead = (text: string) =>
+    parts.length === 0 ? text.replace(/^./, (c) => c.toUpperCase()) : text;
   const pending = data.pendingOutcome;
   const deliveries = data.assignmentsAwaitingFeedback;
   const requests = data.lessonRequests;
@@ -249,9 +253,11 @@ function phrase(data: Dashboard, open: (r: SheetRequest) => void): ReactNode {
         key="d"
         onClick={() => open({ type: 'close', id: pending[0].id })}
       >
-        {pending.length === 1
-          ? 'uma aula espera desfecho'
-          : `${countWord(pending.length)} aulas esperam desfecho`}
+        {lead(
+          pending.length === 1
+            ? 'uma aula espera desfecho'
+            : `${countWord(pending.length)} aulas esperam desfecho`
+        )}
       </PhraseAction>
     );
   if (deliveries.length) {
@@ -261,10 +267,9 @@ function phrase(data: Dashboard, open: (r: SheetRequest) => void): ReactNode {
         key="e"
         onClick={() => open({ type: 'delivery', id: deliveries[0].id })}
       >
-        {who.length > 2
-          ? `${countWord(who.length, false)} alunos`
-          : joinNames(who)}{' '}
-        {deliveries.length > 1 ? 'entregaram tarefas' : 'entregou uma tarefa'}
+        {lead(
+          `${who.length > 2 ? `${countWord(who.length, false)} alunos` : joinNames(who)} ${deliveries.length > 1 ? 'entregaram tarefas' : 'entregou uma tarefa'}`
+        )}
       </PhraseAction>
     );
   }
@@ -274,9 +279,11 @@ function phrase(data: Dashboard, open: (r: SheetRequest) => void): ReactNode {
         key="p"
         onClick={() => open({ type: 'lesson-request', id: requests[0].id })}
       >
-        {requests.length === 1
-          ? `${firstName(requests[0].student?.name ?? '')} pediu uma aula ${when(dayOf(requests[0].scheduledAt))}`
-          : `${countWord(requests.length, false)} pedidos de aula`}
+        {lead(
+          requests.length === 1
+            ? `${firstName(requests[0].student?.name ?? '')} pediu uma aula ${when(dayOf(requests[0].scheduledAt))}`
+            : `${countWord(requests.length, false)} pedidos de aula`
+        )}
       </PhraseAction>
     );
 
@@ -304,12 +311,7 @@ function phrase(data: Dashboard, open: (r: SheetRequest) => void): ReactNode {
       {parts.length === 0
         ? 'Nada mais esperando você.'
         : parts.map((p, i) => (
-            <span
-              key={i}
-              className={
-                i === 0 ? '[&>*:first-child]:first-letter:uppercase' : undefined
-              }
-            >
+            <span key={i}>
               {p}
               {i < parts.length - 2
                 ? ', '
@@ -704,9 +706,11 @@ function Students({ data }: { data: Dashboard }) {
       help="alunos"
       title="Alunos"
       detail={
-        plan.maxStudents !== null
-          ? `${plan.activeStudents} de ${plan.maxStudents} vagas do plano`
-          : `${data.students.length} ativos`
+        plan.maxStudents === 0
+          ? 'o plano não inclui alunos'
+          : plan.maxStudents !== null
+            ? `${plan.activeStudents} de ${plan.maxStudents} vagas do plano`
+            : `${data.students.length} ativos`
       }
       action={add}
     >
