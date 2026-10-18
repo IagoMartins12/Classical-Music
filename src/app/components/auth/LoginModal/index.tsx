@@ -18,7 +18,7 @@ import { Field } from '@/app/components/ui/Field';
 import { Sheet } from '@/app/components/ui/Sheet';
 import { Language } from '@/app/stores/useLanguageStore';
 import ForgotPasswordModal from '../ForgotPasswordModal';
-import { AvisoDeAuth, BotaoGoogle, Divisor } from '../pecas';
+import { AvisoDeAuth, BotaoGoogle, Divisor, SeloPiano } from '../pecas';
 
 const errorMessages: Record<string, { pt: string; en: string }> = {
   Callback: {
@@ -278,6 +278,7 @@ const LoginModal: React.FC = () => {
         largura="p"
       >
         <div className="flex flex-col gap-6">
+          <SeloPiano />
           {emailConflictError && (
             <AvisoDeAuth
               titulo={t('login_modal_email_conflict_title')}

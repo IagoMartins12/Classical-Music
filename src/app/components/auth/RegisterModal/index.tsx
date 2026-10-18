@@ -16,7 +16,7 @@ import { Field } from '@/app/components/ui/Field';
 import { Sheet } from '@/app/components/ui/Sheet';
 import { Language } from '@/app/stores/useLanguageStore';
 import TermsAcceptance from '../TermsAcceptance';
-import { AvisoDeAuth, BotaoGoogle, Divisor } from '../pecas';
+import { AvisoDeAuth, BotaoGoogle, Divisor, SeloPiano } from '../pecas';
 const registerErrorMessages: Record<string, { pt: string; en: string }> = {
   Callback: {
     pt: 'Este email já está cadastrado com senha. Use "Fazer login" ou redefina sua senha.',
@@ -295,6 +295,7 @@ const RegisterModal: React.FC = () => {
       largura="p"
     >
       <div className="flex flex-col gap-6">
+        <SeloPiano />
         <form
           onSubmit={handleSubmit}
           noValidate
