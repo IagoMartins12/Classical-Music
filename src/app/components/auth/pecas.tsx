@@ -79,7 +79,7 @@ export function SeloPiano() {
   return (
     <span
       aria-hidden="true"
-      className="mx-auto grid h-16 w-16 place-items-center rounded-full bg-sup-2 text-ouro-texto"
+      className="grid h-16 w-16 place-items-center rounded-full bg-sup-2 text-ouro-texto"
     >
       <GiGrandPiano className="h-8 w-8" />
     </span>

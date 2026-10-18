@@ -293,9 +293,9 @@ const RegisterModal: React.FC = () => {
       titulo={t('register_modal_title')}
       descricao={t('register_modal_subtitle')}
       largura="p"
+      emblema={<SeloPiano />}
     >
       <div className="flex flex-col gap-6">
-        <SeloPiano />
         <form
           onSubmit={handleSubmit}
           noValidate

@@ -276,9 +276,9 @@ const LoginModal: React.FC = () => {
         titulo={t('login_modal_title')}
         descricao={t('login_modal_subtitle')}
         largura="p"
+        emblema={<SeloPiano />}
       >
         <div className="flex flex-col gap-6">
-          <SeloPiano />
           {emailConflictError && (
             <AvisoDeAuth
               titulo={t('login_modal_email_conflict_title')}

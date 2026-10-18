@@ -40,6 +40,8 @@ interface SheetProps {
   titulo: string;
   /** Texto curto sob o título, lido junto pelo leitor de tela. */
   descricao?: string;
+  /** Emblema centrado acima do título (login, cadastro): o cabeçalho passa a ser centrado. */
+  emblema?: ReactNode;
   /** Botões de ação. Ficam presos ao rodapé. */
   rodape?: ReactNode;
   largura?: 'p' | 'm' | 'g' | 'gg';
@@ -60,6 +62,7 @@ export function Sheet({
   aoFechar,
   titulo,
   descricao,
+  emblema,
   rodape,
   largura = 'm',
   alca = true,
@@ -198,12 +201,18 @@ export function Sheet({
         )}
         <header
           className={cx(
-            'flex items-start gap-3 px-6',
+            'relative flex items-start gap-3 px-6',
             alca ? 'pt-3 sm:pt-6' : 'pt-6',
             'max-sm:px-4'
           )}
         >
-          <div className="flex flex-1 flex-col gap-1">
+          <div
+            className={cx(
+              'flex flex-1 flex-col gap-1',
+              !!emblema && 'items-center gap-2 pt-2 text-center'
+            )}
+          >
+            {emblema}
             <h2 id={idTitulo} className="t-subtitulo">
               {titulo}
             </h2>
@@ -219,7 +228,10 @@ export function Sheet({
             variante="fantasma"
             icone={PiX}
             onClick={aoFechar}
-            className="-mr-2 -mt-2"
+            className={cx(
+              '-mr-2 -mt-2',
+              !!emblema && '!absolute right-4 top-4 m-0 sm:right-6 sm:top-6'
+            )}
           >
             <NomeAcao acao="fechar" />
           </Button>
