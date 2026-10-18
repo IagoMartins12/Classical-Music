@@ -1,6 +1,7 @@
 // app/profile/components/MusicalPreferencesSection.tsx (versão atualizada)
 'use client';
 
+import { Field } from '@/app/components/ui/Field';
 import { PERFIL } from '@/app/conteudo/textos/perfil';
 import { useTextos } from '@/app/hooks/useTextos';
 import React, { useState, useEffect, useCallback } from 'react';
@@ -20,8 +21,7 @@ import { useRouteLanguage } from '@/app/hooks/useRouteLanguage';
 import type { StudyHorizon } from '@/app/libs/api/profile';
 import { updateMusicalPreferences } from '@/app/actions/profile';
 import { toast } from 'react-hot-toast';
-import Button from '../../Common/Button';
-import Select from '../../Common/Select';
+import { Button } from '@/app/components/ui/Button';
 import { legacyCatalog } from '@/app/libs/api/compat';
 import { useAuth } from '@/app/hooks/useAuth';
 import { useSessionUpdate } from '@/app/hooks/useSessionUpdate';
@@ -225,7 +225,7 @@ const MusicalPreferencesSection: React.FC<MusicalPreferencesSectionProps> = ({
       <Stack gap={6}>
         <div className="flex items-center justify-between">
           <div>
-            <h3 className="text-lg font-semibold text-theme-primary">
+            <h3 className="text-lg font-semibold text-texto">
               {t('preferences_title')}
             </h3>
             <Text papel="rotulo" tom="suave" as="p">
@@ -237,8 +237,8 @@ const MusicalPreferencesSection: React.FC<MusicalPreferencesSectionProps> = ({
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           {[...Array(4)].map((_, index) => (
             <Stack gap={2} key={index} className="animate-pulse">
-              <div className="h-4 bg-theme-secondary rounded w-24" />
-              <div className="h-12 bg-theme-secondary rounded" />
+              <div className="h-4 bg-sup-2 rounded w-24" />
+              <div className="h-12 bg-sup-2 rounded" />
             </Stack>
           ))}
         </div>
@@ -251,7 +251,7 @@ const MusicalPreferencesSection: React.FC<MusicalPreferencesSectionProps> = ({
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h3 className="text-lg font-semibold text-theme-primary">
+          <h3 className="text-lg font-semibold text-texto">
             {t('preferences_title')}
           </h3>
           <Text papel="rotulo" tom="suave" as="p">
@@ -261,30 +261,30 @@ const MusicalPreferencesSection: React.FC<MusicalPreferencesSectionProps> = ({
 
         {!isEditing ? (
           <Button
-            variant="outline"
-            size="sm"
+            variante="secundario"
+            tamanho="p"
             onClick={() => setIsEditing(true)}
-            leftIcon={<PiPencilLine />}
+            icone={PiPencilLine}
           >
             {t('preferences_edit')}
           </Button>
         ) : (
           <div className="flex flex-col md-flex-row gap-2 ">
             <Button
-              variant="outline"
-              size="sm"
+              variante="secundario"
+              tamanho="p"
               onClick={handleCancel}
-              leftIcon={<PiX />}
+              icone={PiX}
               disabled={isLoading}
             >
               {t('preferences_cancel')}
             </Button>
             <Button
-              variant="primary"
-              size="sm"
+              variante="primario"
+              tamanho="p"
               onClick={handleSave}
-              isLoading={isLoading}
-              leftIcon={<PiFloppyDisk />}
+              carregando={isLoading}
+              icone={PiFloppyDisk}
             >
               {t('preferences_save')}
             </Button>
@@ -297,110 +297,145 @@ const MusicalPreferencesSection: React.FC<MusicalPreferencesSectionProps> = ({
         <Stack gap={3}>
           <Inline gap={2}>
             <PiClock className="w-4 h-4 text-ouro-texto" />
-            <span className="text-sm font-medium text-theme-secondary">
+            <span className="text-sm font-medium text-texto-suave">
               {t('preferences_experience_level')}
             </span>
           </Inline>
 
-          <Select
+          <Field.Selecao
+            label={t('preferences_experience_level')}
+            rotuloOculto
             value={formData.experienceLevel}
             onChange={handleInputChange}
             name="experienceLevel"
-            options={EXPERIENCE_LEVELS}
             disabled={!isEditing}
-          />
+          >
+            {EXPERIENCE_LEVELS.map((o) => (
+              <option key={o.value} value={o.value}>
+                {o.label}
+              </option>
+            ))}
+          </Field.Selecao>
         </Stack>
 
         <Stack gap={3}>
           <Inline gap={2}>
             <PiClock className="w-4 h-4 text-ouro-texto" />
-            <span className="text-sm font-medium text-theme-secondary">
+            <span className="text-sm font-medium text-texto-suave">
               {t('preferences_practice_time')}
             </span>
           </Inline>
 
-          <Select
+          <Field.Selecao
+            label={t('preferences_practice_time')}
+            rotuloOculto
             value={formData.practiceTimePerWeek.toString()}
             onChange={handleInputChange}
             name="practiceTimePerWeek"
-            options={PRACTICE_TIME_OPTIONS}
             disabled={!isEditing}
-          />
+          >
+            {PRACTICE_TIME_OPTIONS.map((o) => (
+              <option key={o.value} value={o.value}>
+                {o.label}
+              </option>
+            ))}
+          </Field.Selecao>
         </Stack>
 
         {user.userType === 'MUSIC_STUDENT' && (
           <Stack gap={3}>
-            <span className="text-sm font-medium text-theme-secondary">
+            <span className="text-sm font-medium text-texto-suave">
               {horizonCopy.horizon}
             </span>
-            <Select
+            <Field.Selecao
+              label={horizonCopy.horizon}
+              rotuloOculto
               value={formData.studyHorizon}
               onChange={handleInputChange}
               name="studyHorizon"
-              options={HORIZON_OPTIONS}
               disabled={!isEditing}
-            />
+            >
+              {HORIZON_OPTIONS.map((o) => (
+                <option key={o.value} value={o.value}>
+                  {o.label}
+                </option>
+              ))}
+            </Field.Selecao>
           </Stack>
         )}
       </div>
 
       {/* Favorites */}
-      <Stack gap={6} className="pt-6 border-t border-theme-secondary">
+      <Stack gap={6} className="pt-6 border-t border-linha">
         <Inline gap={2}>
           <PiHeart className="w-4 h-4 text-ouro-texto" />
-          <h4 className="font-medium text-theme-primary">
+          <h4 className="font-medium text-texto">
             {t('preferences_favorites')}
           </h4>
         </Inline>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <div>
-            <span className="block text-sm font-medium text-theme-secondary mb-2">
+            <span className="block text-sm font-medium text-texto-suave mb-2">
               {t('preferences_favorite_composer')}
             </span>
             {!isEditing ? (
-              <div className="input-classical bg-theme-secondary">
+              <div className="input-classical bg-sup-2">
                 {getComposerName(formData.favoriteComposerId)}
               </div>
             ) : (
-              <Select
+              <Field.Selecao
+                label={t('preferences_favorite_composer')}
+                rotuloOculto
                 value={formData.favoriteComposerId}
                 onChange={handleInputChange}
                 name="favoriteComposerId"
-                options={[
+                disabled={isLoadingData}
+              >
+                {[
                   { value: '', label: t('preferences_select_composer') },
                   ...composers.map((composer) => ({
                     value: composer.id,
                     label: composer.fullName,
                   })),
-                ]}
-                disabled={isLoadingData}
-              />
+                ].map((o) => (
+                  <option key={o.value} value={o.value}>
+                    {o.label}
+                  </option>
+                ))}
+              </Field.Selecao>
             )}
           </div>
 
           <div>
-            <span className="block text-sm font-medium text-theme-secondary mb-2">
+            <span className="block text-sm font-medium text-texto-suave mb-2">
               {t('preferences_favorite_period')}
             </span>
             {!isEditing ? (
-              <div className="input-classical bg-theme-secondary">
+              <div className="input-classical bg-sup-2">
                 {getEpochName(formData.favoriteEpochId)}
               </div>
             ) : (
-              <Select
+              <Field.Selecao
+                label={t('preferences_favorite_period')}
+                rotuloOculto
                 value={formData.favoriteEpochId}
                 onChange={handleInputChange}
                 name="favoriteEpochId"
-                options={[
+                disabled={isLoadingData}
+              >
+                {[
                   { value: '', label: t('preferences_select_period') },
                   ...epochs.map((epoch) => ({
                     value: epoch.id,
                     label: epoch.name,
                   })),
-                ]}
-                disabled={isLoadingData}
-              />
+                ].map((o) => (
+                  <option key={o.value} value={o.value}>
+                    {o.label}
+                  </option>
+                ))}
+              </Field.Selecao>
             )}
           </div>
         </div>

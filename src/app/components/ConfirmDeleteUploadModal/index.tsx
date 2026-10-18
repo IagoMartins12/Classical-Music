@@ -1,8 +1,6 @@
-// app/components/uploads/ConfirmDeleteUploadModal.tsx - TRADUZIDO
 import { ENVIOS } from '@/app/conteudo/textos/envios';
 import { useTextos } from '@/app/hooks/useTextos';
 import { useEffect, useState } from 'react';
-import { createPortal } from 'react-dom';
 import { PiSpinnerGap } from 'react-icons/pi';
 import { getCascadeInfo } from '@/app/requests/uploads-client';
 import { Stack, Inline } from '@/app/components/ui/Layout';
@@ -40,13 +38,8 @@ export default function ConfirmDeleteUploadModal({
   itemId,
 }: ConfirmDeleteUploadModalProps) {
   const { t } = useTextos(ENVIOS);
-  const [mounted, setMounted] = useState(false);
   const [cascadeInfo, setCascadeInfo] = useState<CascadeInfo | null>(null);
   const [loadingCascadeInfo, setLoadingCascadeInfo] = useState(false);
-
-  useEffect(() => {
-    setMounted(true);
-  }, []);
 
   const loadCascadeInfo = async () => {
     if (!itemId) return;
@@ -67,8 +60,6 @@ export default function ConfirmDeleteUploadModal({
       loadCascadeInfo();
     }
   }, [isOpen, itemId, itemType]);
-
-  if (!mounted || !isOpen) return null;
 
   // Corrigido para garantir que sempre retorna boolean
   const hasCascadeItems = Boolean(
@@ -93,7 +84,7 @@ export default function ConfirmDeleteUploadModal({
   //   return count === 1 ? t('item_work_singular') : t('item_work_plural');
   // };
 
-  const modalContent = (
+  return (
     <ConfirmModal
       isOpen={isOpen}
       onClose={onClose}
@@ -143,7 +134,7 @@ export default function ConfirmDeleteUploadModal({
               cascadeInfo?.works &&
               cascadeInfo.works.length > 0 ? (
                 <Stack gap={2}>
-                  <p className="font-medium text-theme-primary flex items-center">
+                  <p className="font-medium text-texto flex items-center">
                     {t('delete_modal_works_count', {
                       count: cascadeInfo.works.length,
                     })}
@@ -181,7 +172,7 @@ export default function ConfirmDeleteUploadModal({
               cascadeInfo?.scores &&
               cascadeInfo.scores.length > 0 ? (
                 <Stack gap={2}>
-                  <p className="font-medium text-theme-primary flex items-center">
+                  <p className="font-medium text-texto flex items-center">
                     {t('delete_modal_scores_count', {
                       count: cascadeInfo.scores.length,
                     })}
@@ -206,7 +197,7 @@ export default function ConfirmDeleteUploadModal({
               {/* Obras filhas */}
               {cascadeInfo?.childWorks && cascadeInfo.childWorks.length > 0 ? (
                 <Stack gap={2}>
-                  <p className="font-medium text-theme-primary">
+                  <p className="font-medium text-texto">
                     {t('delete_modal_child_works_count', {
                       count: cascadeInfo.childWorks.length,
                     })}
@@ -284,6 +275,4 @@ export default function ConfirmDeleteUploadModal({
       </Stack>
     </ConfirmModal>
   );
-
-  return createPortal(modalContent, document.body);
 }

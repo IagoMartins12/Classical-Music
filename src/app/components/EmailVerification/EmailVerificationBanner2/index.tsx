@@ -7,7 +7,7 @@ import { useState } from 'react';
 import { useSession } from '@/app/libs/session';
 import { PiArrowsClockwise, PiX } from 'react-icons/pi';
 import { toast } from 'react-hot-toast';
-import Button from '../../Common/Button';
+import { Button } from '@/app/components/ui/Button';
 import { legacyAuth } from '@/app/libs/api/compat';
 import { NomeAcao } from '@/app/components/ui/NomeAcao';
 import { porIdioma } from '@/app/utils/porIdioma';
@@ -131,9 +131,7 @@ const EmailVerificationBanner2: React.FC<EmailVerificationBannerProps> = ({
   };
 
   return (
-    <div
-      className={`${bgColor} bg-theme-elevated ${borderColor} rounded-lg p-4 mb-6`}
-    >
+    <div className={`${bgColor} bg-sup-2 ${borderColor} rounded-lg p-4 mb-6`}>
       <div className="flex items-start justify-between">
         <div className="flex items-start space-x-3 flex-1">
           <div className="flex-1">
@@ -145,11 +143,11 @@ const EmailVerificationBanner2: React.FC<EmailVerificationBannerProps> = ({
             {bannerType === 'warning' && !isEmailVerified && (
               <div className="flex flex-col sm:flex-row gap-2">
                 <Button
-                  variant="outline"
-                  size="sm"
+                  variante="secundario"
+                  tamanho="p"
                   onClick={handleResendVerification}
-                  isLoading={isResending}
-                  leftIcon={<PiArrowsClockwise />}
+                  carregando={isResending}
+                  icone={PiArrowsClockwise}
                   className={`hover:text-black`}
                 >
                   {t('email_banner_resend')}
@@ -160,8 +158,8 @@ const EmailVerificationBanner2: React.FC<EmailVerificationBannerProps> = ({
             {bannerType === 'success' && (
               <div className="flex gap-2">
                 <Button
-                  variant="ghost"
-                  size="sm"
+                  variante="fantasma"
+                  tamanho="p"
                   onClick={handleDismiss}
                   className={`${textColor}`}
                 >

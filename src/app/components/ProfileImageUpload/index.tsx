@@ -1,11 +1,12 @@
-// app/Common/ProfileImageUpload.tsx (versão atualizada)
 'use client';
 
 import { useToast } from '@/app/hooks/useToast';
 import { useOnboardingModal } from '@/app/stores/authStore';
 import Image from '@/app/components/SmartImage';
 import React, { useRef, useState, useEffect } from 'react';
-import { PiCamera, PiPencilLine, PiTrash } from 'react-icons/pi';
+import { PiCamera, PiPencilLine, PiSpinnerGap, PiTrash } from 'react-icons/pi';
+import { Icon } from '@/app/components/ui/Icon';
+import { cx } from '@/app/components/ui/cx';
 import { iniciais } from '@/app/components/blog/site/pecas';
 import { porIdioma } from '@/app/utils/porIdioma';
 import { useTx } from '@/app/hooks/useTx';
@@ -129,72 +130,80 @@ const ProfileImageUpload: React.FC<ProfileImageUploadProps> = ({
       return (
         <span
           aria-hidden="true"
-          className={`font-display text-ouro-texto ${initialsSizes[size]}`}
+          className={cx('font-display text-ouro-texto', initialsSizes[size])}
         >
           {iniciais(fallbackText)}
         </span>
       );
     }
 
-    return <PiCamera className={iconSizes[size]} />;
+    return <PiCamera aria-hidden="true" className={iconSizes[size]} />;
   };
 
   return (
-    <div className={`relative inline-block ${className}`}>
-      {/* Main Image Container */}
-      <div
+    <div className={cx('relative inline-block', className)}>
+      <button
+        type="button"
         onClick={triggerImageUpload}
-        className={`
-        ${sizeClasses[size]} 
-        rounded-full overflow-hidden border-4 border-theme-secondary bg-sup-2
-        relative cursor-pointer hover:opacity-90 transition-opacity
-      `}
+        disabled={isUploading}
+        aria-label={tx('Trocar foto do perfil', 'Change profile photo')}
+        className={cx(
+          'group relative block overflow-hidden rounded-full bg-sup-2 shadow-[inset_0_0_0_2px_var(--linha)] transition-shadow hover:shadow-[inset_0_0_0_2px_var(--ouro)]',
+          sizeClasses[size]
+        )}
       >
         {imagePreview ? (
           <Image
             src={imagePreview}
             width={100}
             height={100}
-            alt={tx('Foto do perfil', 'Profile photo')}
-            className="w-full h-full object-cover"
+            alt=""
+            className="h-full w-full object-cover"
           />
         ) : (
-          <div className="w-full h-full flex items-center justify-center text-texto-fraco">
+          <span className="flex h-full w-full items-center justify-center text-texto-fraco">
             {getFallbackContent()}
-          </div>
+          </span>
         )}
 
-        {/* Upload Loading Overlay */}
-        {isUploading && (
-          <div className="absolute inset-0 bg-black/55 flex items-center justify-center">
-            <div className="w-6 h-6 border-2 border-white border-t-transparent rounded-full animate-spin" />
-          </div>
+        {isUploading ? (
+          <span
+            role="status"
+            className="absolute inset-0 flex items-center justify-center bg-[var(--bg-overlay)]"
+          >
+            <Icon
+              de={PiSpinnerGap}
+              tamanho="m"
+              className="animate-spin text-texto"
+            />
+            <span className="sr-only">{tx('Enviando', 'Uploading')}</span>
+          </span>
+        ) : (
+          <span
+            aria-hidden="true"
+            className="absolute inset-0 flex items-center justify-center bg-[var(--bg-overlay)] opacity-0 transition-opacity group-hover:opacity-100 group-focus-visible:opacity-100"
+          >
+            <Icon de={PiPencilLine} tamanho="p" className="text-texto" />
+          </span>
         )}
+      </button>
 
-        {/* Upload Overlay Hint */}
-        <div className="absolute inset-0 bg-black/55 flex items-center justify-center transition-all opacity-0 hover:opacity-100">
-          <PiPencilLine className="text-white text-lg" />
-        </div>
-      </div>
-
-      {/* Remove Button */}
       {imagePreview && showRemove && (
         <button
-          onClick={(e) => {
-            e.stopPropagation();
-            handleRemoveImage();
-          }}
+          type="button"
+          onClick={handleRemoveImage}
           disabled={isUploading}
-          className={`absolute -top-2 -right-2 !text-erro ${removeSizes[size]}
-            rounded-full flex items-center justify-center text-white hover:scale-110 transition-transform shadow-lg disabled:opacity-50 disabled:cursor-not-allowed
-          `}
+          aria-label={tx('Remover foto', 'Remove photo')}
           title={tx('Remover foto', 'Remove photo')}
+          className={cx(
+            'absolute -right-1 -top-1 grid place-items-center rounded-full bg-sup-2 text-erro shadow-[var(--sombra-1)] transition-transform hover:scale-110 disabled:opacity-50',
+            removeSizes[size]
+          )}
         >
-          <PiTrash className="w-3 h-3" />
+          <Icon de={PiTrash} tamanho="pp" />
         </button>
       )}
 
-      {/* Hidden File Input */}
       <input
         ref={fileInputRef}
         type="file"

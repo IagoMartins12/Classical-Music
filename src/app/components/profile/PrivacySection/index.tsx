@@ -9,7 +9,7 @@ import React, { useState, useEffect, useCallback } from 'react';
 import type { User } from '@/app/hooks/userStore';
 import { PiEye, PiEyeSlash, PiFloppyDisk, PiMapPin } from 'react-icons/pi';
 import { toast } from 'react-hot-toast';
-import Button from '../../Common/Button';
+import { Button } from '@/app/components/ui/Button';
 import { updatePrivacySettings } from '@/app/actions/profile';
 import { useAuth } from '@/app/hooks/useAuth';
 import { useSessionUpdate } from '@/app/hooks/useSessionUpdate';
@@ -102,7 +102,7 @@ const PrivacySection: React.FC<PrivacySectionProps> = ({
       disabled={disabled}
       className={`
         relative inline-flex h-6 w-11 items-center rounded-full transition-colors
-        ${checked ? '' : 'bg-theme-secondary'}
+        ${checked ? '' : 'bg-sup-2'}
         ${disabled ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'}
       `}
     >
@@ -120,7 +120,7 @@ const PrivacySection: React.FC<PrivacySectionProps> = ({
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h3 className="text-lg font-semibold text-theme-primary">
+          <h3 className="text-lg font-semibold text-texto">
             {t('privacy_title')}
           </h3>
           <Text papel="rotulo" tom="suave" as="p">
@@ -129,11 +129,11 @@ const PrivacySection: React.FC<PrivacySectionProps> = ({
         </div>
 
         <Button
-          variant="primary"
-          size="sm"
+          variante="primario"
+          tamanho="p"
           onClick={handleSave}
-          isLoading={isLoading}
-          leftIcon={<PiFloppyDisk />}
+          carregando={isLoading}
+          icone={PiFloppyDisk}
         >
           {t('privacy_save')}
         </Button>
@@ -148,10 +148,10 @@ const PrivacySection: React.FC<PrivacySectionProps> = ({
               {settings.profilePublic ? (
                 <PiEye className="w-5 h-5 text-ouro-texto" />
               ) : (
-                <PiEyeSlash className="w-5 h-5 text-theme-tertiary" />
+                <PiEyeSlash className="w-5 h-5 text-texto-fraco" />
               )}
               <div>
-                <h4 className="font-medium text-theme-primary">
+                <h4 className="font-medium text-texto">
                   {t('privacy_public_profile')}
                 </h4>
                 <Text papel="rotulo" tom="suave" as="p">
@@ -173,7 +173,7 @@ const PrivacySection: React.FC<PrivacySectionProps> = ({
             <Inline gap={3}>
               <PiMapPin className="w-5 h-5 text-ouro-texto" />
               <div>
-                <h4 className="font-medium text-theme-primary">
+                <h4 className="font-medium text-texto">
                   {t('privacy_show_location')}
                 </h4>
                 <Text papel="rotulo" tom="suave" as="p">
@@ -202,7 +202,7 @@ const PrivacySection: React.FC<PrivacySectionProps> = ({
             <Inline gap={3}>
               <PiEye className="w-5 h-5 text-ouro-texto" />
               <div>
-                <h4 className="font-medium text-theme-primary">
+                <h4 className="font-medium text-texto">
                   {t('privacy_show_instruments')}
                 </h4>
                 <Text papel="rotulo" tom="suave" as="p">
@@ -231,7 +231,7 @@ const PrivacySection: React.FC<PrivacySectionProps> = ({
             <Inline gap={3}>
               <PiEye className="w-5 h-5 text-ouro-texto" />
               <div>
-                <h4 className="font-medium text-theme-primary">
+                <h4 className="font-medium text-texto">
                   {t('privacy_show_activity')}
                 </h4>
                 <Text papel="rotulo" tom="suave" as="p">
@@ -289,11 +289,11 @@ const PrivacySection: React.FC<PrivacySectionProps> = ({
       </Card>
 
       {/* Info Box */}
-      <Card nivel={2} densidade="compacta" className="bg-theme-secondary">
-        <h4 className="font-medium text-theme-primary mb-2">
+      <Card nivel={2} densidade="compacta" className="bg-sup-2">
+        <h4 className="font-medium text-texto mb-2">
           {t('privacy_security_info')}
         </h4>
-        <Stack gap={1} as="ul" className="text-sm text-theme-secondary">
+        <Stack gap={1} as="ul" className="text-sm text-texto-suave">
           <li>{t('privacy_email_never_shown')}</li>
           <li>{t('privacy_admin_only')}</li>
           <li>{t('privacy_can_change')}</li>

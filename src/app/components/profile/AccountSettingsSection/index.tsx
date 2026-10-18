@@ -1,6 +1,7 @@
 // app/profile/components/AccountSettingsSection.tsx - VERSÃO COM VERIFICAÇÃO DE LOGIN SOCIAL
 'use client';
 
+import { Field } from '@/app/components/ui/Field';
 import { PERFIL } from '@/app/conteudo/textos/perfil';
 import { useTextos } from '@/app/hooks/useTextos';
 import React, { useState, useEffect } from 'react';
@@ -20,9 +21,7 @@ import {
 } from 'react-icons/pi';
 
 import { toast } from 'react-hot-toast';
-import Input from '../../Common/Inputs';
-import Button from '../../Common/Button';
-import Select from '../../Common/Select';
+import { Button } from '@/app/components/ui/Button';
 import { changePassword, checkUserLoginMethod } from '@/app/actions/profile';
 import { useAccountManagement } from '@/app/hooks/useAccountManagement';
 import {
@@ -301,8 +300,8 @@ const AccountSettingsSection: React.FC<AccountSettingsSectionProps> = ({
     if (loginMethod.isLoading) {
       return (
         <Stack gap={2} className="animate-pulse">
-          <div className="h-4 bg-theme-secondary rounded w-32"></div>
-          <div className="h-3 bg-theme-secondary rounded w-48"></div>
+          <div className="h-4 bg-sup-2 rounded w-32"></div>
+          <div className="h-3 bg-sup-2 rounded w-48"></div>
         </Stack>
       );
     }
@@ -334,9 +333,7 @@ const AccountSettingsSection: React.FC<AccountSettingsSectionProps> = ({
     return (
       <Inline gap={4}>
         <div className="flex-1">
-          <p className="font-medium text-theme-primary">
-            {getLoginTypeLabel()}
-          </p>
+          <p className="font-medium text-texto">{getLoginTypeLabel()}</p>
           <Text papel="rotulo" tom="suave" as="p">
             {getLoginDescription()}
           </Text>
@@ -362,7 +359,7 @@ const AccountSettingsSection: React.FC<AccountSettingsSectionProps> = ({
       {/* Login Method Info */}
       {loginMethod.hasSocialLogin && (
         <Stack>
-          <h3 className="text-lg font-semibold text-theme-primary">
+          <h3 className="text-lg font-semibold text-texto">
             {t('account_auth_method')}
           </h3>
 
@@ -373,23 +370,23 @@ const AccountSettingsSection: React.FC<AccountSettingsSectionProps> = ({
       )}
 
       {/* Email Section */}
-      <Stack className="border-t border-theme-secondary pt-8">
-        <h3 className="text-lg font-semibold text-theme-primary">
+      <Stack className="border-t border-linha pt-8">
+        <h3 className="text-lg font-semibold text-texto">
           {t('account_login_info')}
         </h3>
 
         <Stack>
           <div>
             <div className="flex items-center justify-between mb-2">
-              <span className="block text-sm font-medium text-theme-secondary">
+              <span className="block text-sm font-medium text-texto-suave">
                 {t('account_email')}
               </span>
               {!isChangingEmail && canChangeEmail && (
                 <Button
-                  variant="outline"
-                  size="sm"
+                  variante="secundario"
+                  tamanho="p"
                   onClick={() => setIsChangingEmail(true)}
-                  leftIcon={<PiEnvelopeSimple />}
+                  icone={PiEnvelopeSimple}
                 >
                   {t('account_change_email')}
                 </Button>
@@ -399,10 +396,11 @@ const AccountSettingsSection: React.FC<AccountSettingsSectionProps> = ({
             {!isChangingEmail ? (
               <Stack gap={3}>
                 <Inline gap={3}>
-                  <Input
+                  <Field
+                    label={t('account_email')}
+                    rotuloOculto
                     value={user.email || ''}
                     disabled
-                    leftIcon={<PiEnvelopeSimple className="w-4 h-4" />}
                     className="flex-1"
                   />
                   {user.emailVerified && (
@@ -456,7 +454,7 @@ const AccountSettingsSection: React.FC<AccountSettingsSectionProps> = ({
                   </div>
                 </div>
 
-                <Input
+                <Field
                   label={t('account_new_email_required')}
                   type="email"
                   value={emailData.newEmail}
@@ -466,9 +464,8 @@ const AccountSettingsSection: React.FC<AccountSettingsSectionProps> = ({
                       newEmail: e.target.value,
                     }))
                   }
-                  leftIcon={<PiEnvelopeSimple className="w-4 h-4" />}
                   placeholder={t('account_new_email_placeholder')}
-                  error={
+                  erro={
                     emailData.newEmail && !validateEmail(emailData.newEmail)
                       ? language === 'en'
                         ? 'Invalid email'
@@ -477,9 +474,8 @@ const AccountSettingsSection: React.FC<AccountSettingsSectionProps> = ({
                   }
                 />
 
-                <Input
+                <Field.Senha
                   label={t('account_current_password_required')}
-                  type="password"
                   value={emailData.currentPassword}
                   onChange={(e) =>
                     setEmailData((prev) => ({
@@ -487,16 +483,17 @@ const AccountSettingsSection: React.FC<AccountSettingsSectionProps> = ({
                       currentPassword: e.target.value,
                     }))
                   }
-                  leftIcon={<PiLock className="w-4 h-4" />}
                   placeholder={t('account_current_password_placeholder')}
+                  rotuloMostrar={t('password_show')}
+                  rotuloOcultar={t('password_hide')}
                 />
 
                 <div className="flex space-x-3">
                   <Button
-                    variant="primary"
-                    size="sm"
+                    variante="primario"
+                    tamanho="p"
                     onClick={handleEmailChange}
-                    isLoading={isEmailChanging}
+                    carregando={isEmailChanging}
                     disabled={
                       !emailData.newEmail ||
                       !emailData.currentPassword ||
@@ -506,8 +503,8 @@ const AccountSettingsSection: React.FC<AccountSettingsSectionProps> = ({
                     {t('account_request_change')}
                   </Button>
                   <Button
-                    variant="ghost"
-                    size="sm"
+                    variante="fantasma"
+                    tamanho="p"
                     onClick={() => {
                       setIsChangingEmail(false);
                       setEmailData({
@@ -526,9 +523,9 @@ const AccountSettingsSection: React.FC<AccountSettingsSectionProps> = ({
       </Stack>
 
       {/* Password Section */}
-      <div className="border-t border-theme-secondary pt-8">
+      <div className="border-t border-linha pt-8">
         <div className="flex items-center justify-between mb-4">
-          <h3 className="text-lg font-semibold text-theme-primary">
+          <h3 className="text-lg font-semibold text-texto">
             {loginMethod.hasPassword
               ? t('account_change_password')
               : t('account_define_password')}
@@ -536,10 +533,10 @@ const AccountSettingsSection: React.FC<AccountSettingsSectionProps> = ({
 
           {!isChangingPassword && (
             <Button
-              variant="outline"
-              size="sm"
+              variante="secundario"
+              tamanho="p"
               onClick={() => setIsChangingPassword(true)}
-              leftIcon={<PiLock />}
+              icone={PiLock}
               disabled={
                 !loginMethod.hasPassword &&
                 loginMethod.hasSocialLogin &&
@@ -602,9 +599,8 @@ const AccountSettingsSection: React.FC<AccountSettingsSectionProps> = ({
           <Card nivel={2} densidade="compacta" className="gap-4 flex flex-col">
             {/* Mostrar campo de senha atual apenas se o usuário já tem senha */}
             {loginMethod.hasPassword && (
-              <Input
+              <Field.Senha
                 label={t('account_current_password_required')}
-                type="password"
                 value={passwordData.currentPassword}
                 onChange={(e) =>
                   setPasswordData((prev) => ({
@@ -612,22 +608,22 @@ const AccountSettingsSection: React.FC<AccountSettingsSectionProps> = ({
                     currentPassword: e.target.value,
                   }))
                 }
-                leftIcon={<PiLock className="w-4 h-4" />}
                 placeholder={tx(
                   'Digite sua senha atual',
                   'Enter your current password'
                 )}
+                rotuloMostrar={t('password_show')}
+                rotuloOcultar={t('password_hide')}
               />
             )}
 
             <div>
-              <Input
+              <Field.Senha
                 label={
                   loginMethod.hasPassword
                     ? t('account_new_password_required')
                     : t('account_password_required')
                 }
-                type="password"
                 value={passwordData.newPassword}
                 onChange={(e) =>
                   setPasswordData((prev) => ({
@@ -635,13 +631,14 @@ const AccountSettingsSection: React.FC<AccountSettingsSectionProps> = ({
                     newPassword: e.target.value,
                   }))
                 }
-                leftIcon={<PiLock className="w-4 h-4" />}
                 placeholder={
                   loginMethod.hasPassword
                     ? t('account_new_password_placeholder')
                     : t('account_password_placeholder')
                 }
-                error={!isPasswordValid ? passwordValidation.error : undefined}
+                erro={!isPasswordValid ? passwordValidation.error : undefined}
+                rotuloMostrar={t('password_show')}
+                rotuloOcultar={t('password_hide')}
               />
 
               {/* Password strength indicator */}
@@ -678,13 +675,12 @@ const AccountSettingsSection: React.FC<AccountSettingsSectionProps> = ({
               )}
             </div>
 
-            <Input
+            <Field.Senha
               label={
                 loginMethod.hasPassword
                   ? t('account_confirm_new_password_required')
                   : t('account_confirm_password_required')
               }
-              type="password"
               value={passwordData.confirmPassword}
               onChange={(e) =>
                 setPasswordData((prev) => ({
@@ -692,13 +688,12 @@ const AccountSettingsSection: React.FC<AccountSettingsSectionProps> = ({
                   confirmPassword: e.target.value,
                 }))
               }
-              leftIcon={<PiLock className="w-4 h-4" />}
               placeholder={
                 loginMethod.hasPassword
                   ? t('account_confirm_new_password_placeholder')
                   : t('account_confirm_password_placeholder')
               }
-              error={
+              erro={
                 passwordData.confirmPassword &&
                 passwordData.newPassword !== passwordData.confirmPassword
                   ? language === 'en'
@@ -706,14 +701,16 @@ const AccountSettingsSection: React.FC<AccountSettingsSectionProps> = ({
                     : 'As senhas não coincidem'
                   : undefined
               }
+              rotuloMostrar={t('password_show')}
+              rotuloOcultar={t('password_hide')}
             />
 
             <div className="flex space-x-3">
               <Button
-                variant="primary"
-                size="sm"
+                variante="primario"
+                tamanho="p"
                 onClick={handlePasswordChange}
-                isLoading={isPasswordLoading}
+                carregando={isPasswordLoading}
                 disabled={
                   (loginMethod.hasPassword && !passwordData.currentPassword) ||
                   !passwordData.newPassword ||
@@ -727,8 +724,8 @@ const AccountSettingsSection: React.FC<AccountSettingsSectionProps> = ({
                   : t('account_define_password')}
               </Button>
               <Button
-                variant="ghost"
-                size="sm"
+                variante="fantasma"
+                tamanho="p"
                 onClick={() => {
                   setIsChangingPassword(false);
                   setPasswordData({
@@ -746,18 +743,18 @@ const AccountSettingsSection: React.FC<AccountSettingsSectionProps> = ({
       </div>
 
       {/* Account Type Section */}
-      <div className="border-t border-theme-secondary pt-8">
+      <div className="border-t border-linha pt-8">
         <div className="flex items-center justify-between mb-4">
-          <h3 className="text-lg font-semibold text-theme-primary">
+          <h3 className="text-lg font-semibold text-texto">
             {t('account_type')}
           </h3>
 
           {!isChangingUserType && (
             <Button
-              variant="outline"
-              size="sm"
+              variante="secundario"
+              tamanho="p"
               onClick={() => setIsChangingUserType(true)}
-              leftIcon={<PiUser />}
+              icone={PiUser}
             >
               {t('account_change_type')}
             </Button>
@@ -768,7 +765,7 @@ const AccountSettingsSection: React.FC<AccountSettingsSectionProps> = ({
           <Card nivel={2} densidade="compacta">
             <div className="flex items-center justify-between">
               <div>
-                <p className="font-medium text-theme-primary">
+                <p className="font-medium text-texto">
                   {getUserTypeLabel(user.userType)}
                 </p>
                 <Text papel="rotulo" tom="suave" as="p">
@@ -776,7 +773,7 @@ const AccountSettingsSection: React.FC<AccountSettingsSectionProps> = ({
                 </Text>
               </div>
               <div className="w-12 h-12 rounded-xl flex items-center justify-center">
-                <PiUser className="w-6 h-6 text-theme-primary" />
+                <PiUser className="w-6 h-6 text-texto" />
               </div>
             </div>
           </Card>
@@ -798,29 +795,33 @@ const AccountSettingsSection: React.FC<AccountSettingsSectionProps> = ({
               </div>
             </div>
 
-            <Select
+            <Field.Selecao
               label={t('account_new_account_type')}
-              options={USER_TYPE_OPTIONS}
               value={newUserType}
               onChange={(e) => {
                 setNewUserType(e.target.value as UserTypeValueOptions);
               }}
-              className="input-classical-2 w-full"
-            />
+            >
+              {USER_TYPE_OPTIONS.map((o) => (
+                <option key={o.value} value={o.value}>
+                  {o.label}
+                </option>
+              ))}
+            </Field.Selecao>
 
             <div className="flex space-x-3">
               <Button
-                variant="primary"
-                size="sm"
+                variante="primario"
+                tamanho="p"
                 onClick={handleUserTypeChange}
-                isLoading={isUserTypeChanging}
+                carregando={isUserTypeChanging}
                 disabled={newUserType === user.userType}
               >
                 {t('account_change_type')}
               </Button>
               <Button
-                variant="ghost"
-                size="sm"
+                variante="fantasma"
+                tamanho="p"
                 onClick={() => {
                   setIsChangingUserType(false);
                   setNewUserType(user.userType || 'CASUAL_USER');
@@ -834,27 +835,27 @@ const AccountSettingsSection: React.FC<AccountSettingsSectionProps> = ({
       </div>
 
       {/* Account Info */}
-      <Stack className="border-t border-theme-secondary pt-8">
-        <h3 className="text-lg font-semibold text-theme-primary">
+      <Stack className="border-t border-linha pt-8">
+        <h3 className="text-lg font-semibold text-texto">
           {t('account_info')}
         </h3>
 
         <div className="grid grid-cols-1 gap-4">
           <Card nivel={2} densidade="compacta">
-            <h4 className="font-medium text-theme-primary mb-2">
+            <h4 className="font-medium text-texto mb-2">
               {t('account_status')}
             </h4>
             <Inline gap={2} className="flex-wrap">
-              <span className="inline-flex px-2 py-1 text-xs bg-green-100 text-green-800 rounded-full">
+              <span className="inline-flex rounded-full tint-ouro px-3 py-1 text-xs text-ouro-na-tinta">
                 {t('account_active')}
               </span>
               {user.emailVerified && (
-                <span className="inline-flex px-2 py-1 text-xs bg-blue-100 text-blue-800 rounded-full">
+                <span className="inline-flex rounded-full tint-ouro px-3 py-1 text-xs text-ouro-na-tinta">
                   {t('account_email_verified')}
                 </span>
               )}
               {loginMethod.hasSocialLogin && (
-                <span className="inline-flex px-2 py-1 text-xs bg-purple-100 text-purple-800 rounded-full">
+                <span className="inline-flex rounded-full tint-ouro px-3 py-1 text-xs text-ouro-na-tinta">
                   {t('account_social_login')}
                 </span>
               )}
@@ -876,7 +877,7 @@ const AccountSettingsSection: React.FC<AccountSettingsSectionProps> = ({
         <Card nivel={2} densidade="compacta" className="">
           <div className="flex flex-col md:flex-row items-center gap-4 justify-between mb-4">
             <Stack gap={1}>
-              <h4 className="font-medium text-theme-primary">
+              <h4 className="font-medium text-texto">
                 {t('account_delete_permanent')}
               </h4>
               <Text papel="rotulo" tom="suave" as="p">
@@ -885,10 +886,10 @@ const AccountSettingsSection: React.FC<AccountSettingsSectionProps> = ({
             </Stack>
 
             <Button
-              variant="delete"
-              size="sm"
+              variante="perigo"
+              tamanho="p"
               onClick={handleOpenDeleteModal}
-              leftIcon={<PiTrash />}
+              icone={PiTrash}
               className="truncate py-3 px-4"
             >
               {t('account_delete_button')}

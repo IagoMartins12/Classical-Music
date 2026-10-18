@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import { PiArrowRight } from 'react-icons/pi';
 import toast from 'react-hot-toast';
-import Modal from '@/app/components/Modal';
+import { Sheet } from '@/app/components/ui/Sheet';
 import { Button } from '@/app/components/ui/Button';
 import { Field } from '@/app/components/ui/Field';
 import { PLANOS } from '@/app/conteudo/planos';
@@ -100,12 +100,22 @@ export function Confirmar({
   }
 
   return (
-    <Modal
-      isOpen
-      onClose={aoFechar}
-      title={c.titulo(nome)}
-      maxWidth="md"
-      showCloseButton
+    <Sheet
+      aberto
+      aoFechar={aoFechar}
+      titulo={c.titulo(nome)}
+      largura="p"
+      rodape={
+        <div className="flex w-full flex-col-reverse gap-3 sm:flex-row sm:justify-end">
+          <Button variante="fantasma" onClick={aoFechar} disabled={indo}>
+            {c.cancelar}
+          </Button>
+          <Button variante="primario" onClick={pagar} carregando={indo}>
+            {c.pagar}
+            <PiArrowRight aria-hidden="true" className="h-4 w-4" />
+          </Button>
+        </div>
+      }
     >
       <div className="flex flex-col gap-6">
         <dl className="flex flex-col">
@@ -160,17 +170,7 @@ export function Confirmar({
         </form>
 
         <p className="text-sm leading-relaxed text-texto-fraco">{c.nota}</p>
-
-        <div className="flex flex-col-reverse gap-3 sm:flex-row sm:justify-end">
-          <Button variante="fantasma" onClick={aoFechar} disabled={indo}>
-            {c.cancelar}
-          </Button>
-          <Button variante="primario" onClick={pagar} carregando={indo}>
-            {c.pagar}
-            <PiArrowRight aria-hidden="true" className="h-4 w-4" />
-          </Button>
-        </div>
       </div>
-    </Modal>
+    </Sheet>
   );
 }

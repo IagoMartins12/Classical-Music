@@ -1,11 +1,9 @@
-// app/components/profile/DeleteAccountModal.tsx - Enhanced modal for account deletion
 'use client';
 import { PERFIL } from '@/app/conteudo/textos/perfil';
 import { useTextos } from '@/app/hooks/useTextos';
-import { Button as Botao } from '@/app/components/ui/Button';
+import { Button } from '@/app/components/ui/Button';
 
-import { useState, useEffect } from 'react';
-import { createPortal } from 'react-dom';
+import { useState } from 'react';
 import {
   PiBookBookmark,
   PiBookOpen,
@@ -19,15 +17,12 @@ import {
   PiTrash,
   PiUser,
   PiWarning,
-  PiX,
 } from 'react-icons/pi';
-import Button from '../Common/Button';
-import Input from '../Common/Inputs';
 import { CascadeInfo } from '@/app/hooks/useAccountManagement';
-import { Stack, Inline } from '@/app/components/ui/Layout';
-import { Text } from '@/app/components/ui/Text';
-import { NomeAcao } from '@/app/components/ui/NomeAcao';
-import Modal from '@/app/components/Modal';
+import { Field } from '@/app/components/ui/Field';
+import { Icon } from '@/app/components/ui/Icon';
+import { Sheet } from '@/app/components/ui/Sheet';
+import { cx } from '@/app/components/ui/cx';
 
 interface DeleteAccountModalProps {
   isOpen: boolean;
@@ -55,17 +50,12 @@ const DeleteAccountModal: React.FC<DeleteAccountModalProps> = ({
   userName,
   userEmail,
 }) => {
-  const { t, ready } = useTextos(PERFIL);
-  const [mounted, setMounted] = useState(false);
+  const { t } = useTextos(PERFIL);
   const [confirmText, setConfirmText] = useState('');
   const [currentPassword, setCurrentPassword] = useState('');
   const [currentStep, setCurrentStep] = useState<
     'warning' | 'cascade' | 'confirm'
   >('warning');
-
-  useEffect(() => {
-    setMounted(true);
-  }, []);
 
   const handleClose = () => {
     if (isLoading) return;
@@ -105,449 +95,362 @@ const DeleteAccountModal: React.FC<DeleteAccountModalProps> = ({
     }
   };
 
-  if (!mounted || !isOpen) return null;
-
   const dataItems = [
     {
       icon: PiUser,
       label: t('delete_modal_composers'),
       count: cascadeInfo?.composersCount || 0,
-      color: '',
       samples: cascadeInfo?.sampleComposers,
     },
     {
       icon: PiMusicNotes,
       label: t('delete_modal_works'),
       count: cascadeInfo?.worksCount || 0,
-      color: '',
       samples: cascadeInfo?.sampleWorks,
     },
     {
       icon: PiFileText,
       label: t('delete_modal_scores'),
       count: cascadeInfo?.scoresCount || 0,
-      color: '',
     },
     {
       icon: PiPencilLine,
       label: t('delete_modal_annotations'),
       count: cascadeInfo?.annotationsCount || 0,
-      color: '',
       samples: cascadeInfo?.sampleAnnotations,
     },
     {
       icon: PiHeart,
       label: t('delete_modal_favorites'),
       count: cascadeInfo?.favoritesCount || 0,
-      color: '',
     },
 
     {
       icon: PiMusicNotes,
       label: t('delete_modal_instruments'),
       count: cascadeInfo?.instrumentsCount || 0,
-      color: '',
     },
 
     {
       icon: PiBookOpen,
       label: t('delete_modal_learned_works'),
       count: cascadeInfo?.learnedWorksCount || 0,
-      color: '',
     },
     {
       icon: PiBookBookmark,
       label: t('delete_modal_want_to_learn'),
       count: cascadeInfo?.wantToLearnCount || 0,
-      color: '',
     },
   ];
 
-  const modalContent = (
-    <Modal
-      carregando={!ready}
-      isOpen={isOpen}
-      onClose={() => {
-        if (!isLoading) handleClose();
-      }}
-      maxWidth="2xl"
-      showCloseButton={false}
-    >
-      {/* Header */}
-      <div className="flex items-center justify-between p-6 border-b border-theme-secondary">
-        <Inline gap={3}>
-          <div className="w-12 h-12 rounded-xl flex items-center justify-center">
-            <PiWarning className="w-6 h-6" />
-          </div>
-          <div>
-            <h3 className="text-xl font-bold text-theme-primary">
-              {t('delete_modal_title')}
-            </h3>
-            <Text papel="rotulo" tom="suave" as="p">
-              {t('delete_modal_subtitle')}
-            </Text>
-          </div>
-        </Inline>
+  const steps = ['warning', 'cascade', 'confirm'] as const;
+  const stepIndex = steps.indexOf(currentStep);
+  const muted = 'text-texto-suave';
 
-        <Botao
-          variante="fantasma"
-          tamanho="p"
+  const footer = (
+    <div className="flex w-full flex-wrap items-center justify-between gap-3">
+      <div className="flex items-center gap-3" aria-hidden="true">
+        <span className="flex gap-1.5">
+          {steps.map((step, index) => (
+            <span
+              key={step}
+              className={cx(
+                'h-1.5 w-6 rounded-full transition-colors',
+                index <= stepIndex ? 'bg-[var(--erro)]' : 'bg-[var(--linha)]'
+              )}
+            />
+          ))}
+        </span>
+        <span className="t-legenda">
+          {t('delete_modal_step')} {stepIndex + 1} {t('delete_modal_of')} 3
+        </span>
+      </div>
+      <div className="flex flex-wrap items-center gap-2">
+        {currentStep !== 'warning' && (
+          <Button
+            variante="fantasma"
+            onClick={handlePrevStep}
+            disabled={isLoading}
+          >
+            {t('delete_modal_back')}
+          </Button>
+        )}
+        <Button
+          variante="secundario"
           onClick={handleClose}
           disabled={isLoading}
-          icone={PiX}
         >
-          <NomeAcao acao="fechar" />
-        </Botao>
-      </div>
-
-      {/* Content */}
-      <div className="p-6">
-        {/* Step 1: Warning */}
-        {currentStep === 'warning' && (
-          <Stack gap={6}>
-            <div className="text-center">
-              <div className="w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
-                <PiWarning className="w-8 h-8 text-red-500" />
-              </div>
-              <h4 className="text-lg font-semibold text-theme-primary mb-2">
-                {t('delete_modal_sure')}
-              </h4>
-              <p className="text-theme-secondary">
-                {t('delete_modal_warning')}
-              </p>
-            </div>
-
-            <Stack gap={2} className="rounded-lg p-4 bg-sup-2">
-              <h5 className="font-medium flex items-center">
-                <PiInfo className="w-4 h-4 mr-2" />
-                {t('delete_modal_what_happens')}
-              </h5>
-              <Stack gap={1} as="ul" className="text-sm opacity-90">
-                <li>{t('delete_modal_data_removed')}</li>
-                <li>{t('delete_modal_uploads_deleted')}</li>
-                <li>{t('delete_modal_annotations_lost')}</li>
-                <li>{t('delete_modal_history_erased')}</li>
-                <li>{t('delete_modal_goodbye_email')}</li>
-                <li>{t('delete_modal_irreversible')}</li>
-              </Stack>
-            </Stack>
-
-            <Stack gap={2} className="bg-theme-secondary rounded-lg p-4">
-              <h5 className="font-medium text-theme-primary">
-                {t('delete_modal_account_info')}
-              </h5>
-              <Stack gap={2} className="text-sm">
-                <div className="flex justify-between">
-                  <span className="text-theme-secondary">
-                    {t('delete_modal_name')}
-                  </span>
-                  <span className="text-theme-primary font-medium">
-                    {userName}
-                  </span>
-                </div>
-                <div className="flex justify-between">
-                  <span className="text-theme-secondary">
-                    {t('delete_modal_email')}
-                  </span>
-                  <span className="text-theme-primary font-mono">
-                    {userEmail}
-                  </span>
-                </div>
-              </Stack>
-            </Stack>
-          </Stack>
+          {t('delete_modal_cancel')}
+        </Button>
+        {currentStep === 'confirm' ? (
+          <Button
+            variante="perigo"
+            icone={PiTrash}
+            onClick={handleConfirm}
+            carregando={isLoading}
+            disabled={!canProceed}
+          >
+            {isLoading
+              ? t('delete_modal_deleting')
+              : t('delete_modal_delete_permanently')}
+          </Button>
+        ) : (
+          <Button
+            variante="primario"
+            onClick={handleNextStep}
+            disabled={isCascadeLoading}
+          >
+            {currentStep === 'warning'
+              ? t('delete_modal_continue')
+              : t('delete_modal_next')}
+          </Button>
         )}
+      </div>
+    </div>
+  );
 
-        {/* Step 2: Cascade Info */}
-        {currentStep === 'cascade' && (
-          <Stack gap={6}>
-            <Stack gap={2} className="text-center">
-              <h4 className="text-lg font-semibold text-theme-primary">
-                {t('delete_modal_data_summary')}
-              </h4>
-              <p className="text-theme-secondary">
-                {t('delete_modal_data_description')}
-              </p>
-            </Stack>
+  return (
+    <Sheet
+      aberto={isOpen}
+      aoFechar={() => {
+        if (!isLoading) handleClose();
+      }}
+      titulo={t('delete_modal_title')}
+      descricao={t('delete_modal_subtitle')}
+      largura="m"
+      rodape={footer}
+    >
+      {currentStep === 'warning' && (
+        <div className="flex flex-col gap-6">
+          <div className="flex flex-col items-center gap-3 text-center">
+            <span className="grid h-14 w-14 place-items-center rounded-full bg-sup-2 text-[var(--erro)]">
+              <Icon de={PiWarning} tamanho="m" />
+            </span>
+            <h3 className="font-display text-[1.375rem]">
+              {t('delete_modal_sure')}
+            </h3>
+            <p className={cx('t-corpo', muted)}>{t('delete_modal_warning')}</p>
+          </div>
 
-            {isCascadeLoading ? (
-              <div className="flex items-center justify-center py-12">
-                <div className="text-center">
-                  <PiSpinnerGap className="w-8 h-8 text-ouro-texto animate-spin mx-auto mb-4" />
-                  <p className="text-theme-secondary">
-                    {t('delete_modal_analyzing')}
+          <section className="flex flex-col gap-3 rounded-card bg-sup-2 p-5">
+            <h4 className="flex items-center gap-2 font-medium">
+              <Icon de={PiInfo} tamanho="p" />
+              {t('delete_modal_what_happens')}
+            </h4>
+            <ul className={cx('flex flex-col gap-1.5 text-sm', muted)}>
+              <li>{t('delete_modal_data_removed')}</li>
+              <li>{t('delete_modal_uploads_deleted')}</li>
+              <li>{t('delete_modal_annotations_lost')}</li>
+              <li>{t('delete_modal_history_erased')}</li>
+              <li>{t('delete_modal_goodbye_email')}</li>
+              <li>{t('delete_modal_irreversible')}</li>
+            </ul>
+          </section>
+
+          <dl className="grid gap-2 rounded-card bg-sup-2 p-5 text-sm">
+            <h4 className="mb-1 font-medium">
+              {t('delete_modal_account_info')}
+            </h4>
+            <div className="flex justify-between gap-4">
+              <dt className={muted}>{t('delete_modal_name')}</dt>
+              <dd className="font-medium">{userName}</dd>
+            </div>
+            <div className="flex justify-between gap-4">
+              <dt className={muted}>{t('delete_modal_email')}</dt>
+              <dd className="break-all font-mono">{userEmail}</dd>
+            </div>
+          </dl>
+        </div>
+      )}
+
+      {currentStep === 'cascade' && (
+        <div className="flex flex-col gap-6">
+          <div className="flex flex-col gap-2 text-center">
+            <h3 className="font-display text-[1.375rem]">
+              {t('delete_modal_data_summary')}
+            </h3>
+            <p className={cx('t-corpo', muted)}>
+              {t('delete_modal_data_description')}
+            </p>
+          </div>
+
+          {isCascadeLoading ? (
+            <div
+              role="status"
+              className="flex flex-col items-center gap-3 py-12 text-center"
+            >
+              <Icon
+                de={PiSpinnerGap}
+                tamanho="m"
+                className="animate-spin text-ouro-texto"
+              />
+              <p className={muted}>{t('delete_modal_analyzing')}</p>
+            </div>
+          ) : cascadeInfo ? (
+            <div className="flex flex-col gap-4">
+              <div className="flex flex-col items-center gap-1 rounded-card bg-sup-2 p-5 text-center">
+                <span className="t-dado font-display text-[2rem] leading-none">
+                  {cascadeInfo.totalItems}
+                </span>
+                <p className={cx('text-sm', muted)}>
+                  {t('delete_modal_total_items')}
+                </p>
+              </div>
+
+              <ul className="grid grid-cols-2 gap-3 md:grid-cols-4">
+                {dataItems
+                  .filter((item) => item.count > 0)
+                  .map((item) => (
+                    <li
+                      key={item.label}
+                      className="flex flex-col items-center gap-1 rounded-card bg-sup-2 p-3 text-center"
+                    >
+                      <Icon de={item.icon} tamanho="p" className={muted} />
+                      <span className="t-dado font-medium">{item.count}</span>
+                      <span className="t-legenda">{item.label}</span>
+                    </li>
+                  ))}
+              </ul>
+
+              {(cascadeInfo.sampleComposers.length > 0 ||
+                cascadeInfo.sampleWorks.length > 0 ||
+                cascadeInfo.sampleAnnotations.length > 0) && (
+                <section className="flex flex-col gap-3 rounded-card bg-sup-2 p-5">
+                  <h4 className="flex items-center gap-2 font-medium">
+                    <Icon de={PiInfo} tamanho="p" />
+                    {t('delete_modal_examples')}
+                  </h4>
+                  <ul className="flex max-h-36 flex-col gap-2 overflow-y-auto text-sm">
+                    {cascadeInfo.sampleComposers.slice(0, 3).map((composer) => (
+                      <li key={composer.id} className="flex items-start gap-2">
+                        <Icon de={PiUser} tamanho="pp" className="mt-0.5" />
+                        <span>
+                          {composer.name}
+                          {composer.epochName && (
+                            <span className={muted}>
+                              {' '}
+                              ({composer.epochName})
+                            </span>
+                          )}
+                        </span>
+                      </li>
+                    ))}
+                    {cascadeInfo.sampleWorks.slice(0, 3).map((work) => (
+                      <li key={work.id} className="flex items-start gap-2">
+                        <Icon
+                          de={PiMusicNotes}
+                          tamanho="pp"
+                          className="mt-0.5"
+                        />
+                        <span>
+                          {work.title}
+                          <span className={muted}> - {work.composer.name}</span>
+                        </span>
+                      </li>
+                    ))}
+                    {cascadeInfo.sampleAnnotations
+                      .slice(0, 2)
+                      .map((annotation) => (
+                        <li
+                          key={annotation.id}
+                          className="flex items-start gap-2"
+                        >
+                          <Icon
+                            de={PiPencilLine}
+                            tamanho="pp"
+                            className="mt-0.5"
+                          />
+                          <span>
+                            {annotation.title}
+                            <span className={muted}>
+                              {' '}
+                              ({annotation.work.title})
+                            </span>
+                          </span>
+                        </li>
+                      ))}
+                  </ul>
+                </section>
+              )}
+
+              <div className="flex items-start gap-3 rounded-card bg-sup-2 p-5 text-sm">
+                <Icon de={PiEnvelopeSimple} tamanho="p" className="mt-0.5" />
+                <div className="flex flex-col gap-1">
+                  <p className="font-medium">
+                    {t('delete_modal_goodbye_email_info')}
+                  </p>
+                  <p className={muted}>
+                    {t('delete_modal_goodbye_description')}
                   </p>
                 </div>
               </div>
-            ) : cascadeInfo ? (
-              <Stack>
-                {/* Summary */}
-                <Stack gap={1} className="rounded-lg p-4 text-center bg-sup-2">
-                  <h5 className="font-bold text-lg">
-                    {cascadeInfo.totalItems}
-                  </h5>
-                  <p className="text-sm">{t('delete_modal_total_items')}</p>
-                </Stack>
-
-                {/* Data Grid */}
-                <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
-                  {dataItems
-                    .filter((item) => item.count > 0)
-                    .map((item, index) => {
-                      const Icon = item.icon;
-                      return (
-                        <div
-                          key={index}
-                          className="bg-theme-secondary rounded-lg p-3 text-center transition-colors"
-                        >
-                          <div
-                            className={`w-8 h-8 bg-gradient-to-br ${item.color} rounded-lg flex items-center justify-center mx-auto mb-2`}
-                          >
-                            <Icon className="w-4 h-4 text-theme-primary" />
-                          </div>
-                          <div className="font-bold text-theme-primary">
-                            {item.count}
-                          </div>
-                          <Text papel="legenda" tom="suave" as="div">
-                            {item.label}
-                          </Text>
-                        </div>
-                      );
-                    })}
-                </div>
-
-                {/* Sample Data */}
-                {(cascadeInfo.sampleComposers.length > 0 ||
-                  cascadeInfo.sampleWorks.length > 0 ||
-                  cascadeInfo.sampleAnnotations.length > 0) && (
-                  <Stack gap={3} className="bg-theme-secondary rounded-lg p-4">
-                    <h5 className="font-medium text-theme-primary flex items-center">
-                      <PiInfo className="w-4 h-4 mr-2" />
-                      {t('delete_modal_examples')}
-                    </h5>
-                    <div className="space-y-3 max-h-32 overflow-y-auto">
-                      {cascadeInfo.sampleComposers
-                        .slice(0, 3)
-                        .map((composer) => (
-                          <Inline gap={2} key={composer.id} className="text-sm">
-                            <PiUser className="w-3 h-3 flex-shrink-0" />
-                            <span className="text-theme-primary">
-                              {composer.name}
-                              {composer.epochName && (
-                                <span className="text-theme-tertiary">
-                                  {' '}
-                                  ({composer.epochName})
-                                </span>
-                              )}
-                            </span>
-                          </Inline>
-                        ))}
-                      {cascadeInfo.sampleWorks.slice(0, 3).map((work) => (
-                        <Inline gap={2} key={work.id} className="text-sm">
-                          <PiMusicNotes className="w-3 h-3 flex-shrink-0" />
-                          <span className="text-theme-primary">
-                            {work.title}
-                            <span className="text-theme-tertiary">
-                              {' '}
-                              - {work.composer.name}
-                            </span>
-                          </span>
-                        </Inline>
-                      ))}
-                      {cascadeInfo.sampleAnnotations
-                        .slice(0, 2)
-                        .map((annotation) => (
-                          <Inline
-                            gap={2}
-                            key={annotation.id}
-                            className="text-sm"
-                          >
-                            <PiPencilLine className="w-3 h-3 flex-shrink-0" />
-                            <span className="text-theme-primary">
-                              {annotation.title}
-                              <span className="text-theme-tertiary">
-                                {' '}
-                                ({annotation.work.title})
-                              </span>
-                            </span>
-                          </Inline>
-                        ))}
-                    </div>
-                  </Stack>
-                )}
-
-                {/* Additional Info */}
-                <div className="bg-theme-elevated rounded-lg p-4">
-                  <div className="flex items-start space-x-2">
-                    <PiEnvelopeSimple className="w-4 h-4 mt-0.5 flex-shrink-0" />
-                    <Stack gap={1} className="text-sm">
-                      <p className="font-medium">
-                        {t('delete_modal_goodbye_email_info')}
-                      </p>
-                      <p className="opacity-90">
-                        {t('delete_modal_goodbye_description')}
-                      </p>
-                    </Stack>
-                  </div>
-                </div>
-              </Stack>
-            ) : (
-              <div className="text-center py-8">
-                <PiInfo className="w-8 h-8 text-theme-tertiary mx-auto mb-4" />
-                <p className="text-theme-secondary">
-                  {t('delete_modal_error_loading')}
-                </p>
-              </div>
-            )}
-          </Stack>
-        )}
-
-        {/* Step 3: Final Confirmation */}
-        {currentStep === 'confirm' && (
-          <Stack gap={6}>
-            <div className="text-center">
-              <div className="w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
-                <PiTrash className="w-8 h-8" />
-              </div>
-              <h4 className="text-lg font-semibold text-theme-primary mb-2">
-                {t('delete_modal_final_confirmation')}
-              </h4>
-              <p className="text-theme-secondary">
-                {t('delete_modal_last_chance')}
-              </p>
             </div>
-
-            <Stack gap={2} className="rounded-lg p-4 bg-sup-2">
-              <h5 className="font-medium">
-                {t('delete_modal_permanent_warning')}
-              </h5>
-              <p className="text-sm opacity-90">
-                {t('delete_modal_immediate_removal')}
-              </p>
-            </Stack>
-
-            <div>
-              <Input
-                label={t('delete_modal_type_delete')}
-                value={confirmText}
-                onChange={(e) => setConfirmText(e.target.value)}
-                placeholder={t('delete_modal_placeholder_delete')}
-                className="text-center font-mono"
-                autoFocus
-              />
-              {confirmText && !typedConfirmation && (
-                <p className="text-xs mt-1">{t('delete_modal_type_exactly')}</p>
-              )}
-            </div>
-
-            {requirePassword && (
-              <div>
-                <Input
-                  label={t('delete_modal_current_password')}
-                  type="password"
-                  value={currentPassword}
-                  onChange={(e) => setCurrentPassword(e.target.value)}
-                  autoComplete="current-password"
-                />
-              </div>
-            )}
-
-            {cascadeInfo && (
-              <div className="text-center p-3 bg-theme-secondary rounded-lg">
-                <Text papel="rotulo" tom="suave" as="p">
-                  <strong>{cascadeInfo.totalItems}</strong>{' '}
-                  {t('delete_modal_items_removed')}
-                </Text>
-              </div>
-            )}
-          </Stack>
-        )}
-      </div>
-
-      {/* Footer */}
-      <div className="flex flex-col-reverse md:flex-row gap-4 items-center justify-between p-6 border-t border-theme-secondary">
-        <Inline gap={2}>
-          {/* Step indicator */}
-          <div className="flex space-x-2">
-            {['warning', 'cascade', 'confirm'].map((step, index) => (
-              <div
-                key={step}
-                className={`w-2 h-2 rounded-full transition-colors ${
-                  step === currentStep
-                    ? 'bg-red-400'
-                    : index <
-                        ['warning', 'cascade', 'confirm'].indexOf(currentStep)
-                      ? 'bg-green-400'
-                      : 'bg-theme-tertiary'
-                }`}
-              />
-            ))}
-          </div>
-          <Text papel="legenda" tom="forte" className="ml-2">
-            {t('delete_modal_step')}{' '}
-            {['warning', 'cascade', 'confirm'].indexOf(currentStep) + 1}{' '}
-            {t('delete_modal_of')} 3
-          </Text>
-        </Inline>
-
-        <Inline gap={3}>
-          {/* Back button */}
-          {currentStep !== 'warning' && (
-            <Button
-              className="!text-erro"
-              variant="ghost"
-              size="sm"
-              onClick={handlePrevStep}
-              disabled={isLoading}
-            >
-              {t('delete_modal_back')}
-            </Button>
-          )}
-
-          {/* Cancel button */}
-          <Button
-            className="!text-erro"
-            variant="secondary"
-            size="sm"
-            onClick={handleClose}
-            disabled={isLoading}
-          >
-            {t('delete_modal_cancel')}
-          </Button>
-
-          {/* Action button */}
-          {currentStep === 'confirm' ? (
-            <Button
-              variant="delete"
-              size="sm"
-              onClick={handleConfirm}
-              isLoading={isLoading}
-              disabled={!canProceed}
-              leftIcon={<PiTrash />}
-            >
-              {isLoading
-                ? t('delete_modal_deleting')
-                : t('delete_modal_delete_permanently')}
-            </Button>
           ) : (
-            <Button
-              variant="secondary"
-              size="sm"
-              onClick={handleNextStep}
-              disabled={isCascadeLoading}
-              className="hover:bg-red-600 !text-erro"
-            >
-              {currentStep === 'warning'
-                ? t('delete_modal_continue')
-                : t('delete_modal_next')}
-            </Button>
+            <div className="flex flex-col items-center gap-3 py-8 text-center">
+              <Icon de={PiInfo} tamanho="m" className="text-texto-fraco" />
+              <p className={muted}>{t('delete_modal_error_loading')}</p>
+            </div>
           )}
-        </Inline>
-      </div>
-    </Modal>
-  );
+        </div>
+      )}
 
-  return createPortal(modalContent, document.body);
+      {currentStep === 'confirm' && (
+        <div className="flex flex-col gap-6">
+          <div className="flex flex-col items-center gap-3 text-center">
+            <span className="grid h-14 w-14 place-items-center rounded-full bg-sup-2 text-[var(--erro)]">
+              <Icon de={PiTrash} tamanho="m" />
+            </span>
+            <h3 className="font-display text-[1.375rem]">
+              {t('delete_modal_final_confirmation')}
+            </h3>
+            <p className={cx('t-corpo', muted)}>
+              {t('delete_modal_last_chance')}
+            </p>
+          </div>
+
+          <section className="flex flex-col gap-1.5 rounded-card bg-sup-2 p-5">
+            <h4 className="font-medium">
+              {t('delete_modal_permanent_warning')}
+            </h4>
+            <p className={cx('text-sm', muted)}>
+              {t('delete_modal_immediate_removal')}
+            </p>
+          </section>
+
+          <Field
+            label={t('delete_modal_type_delete')}
+            value={confirmText}
+            onChange={(e) => setConfirmText(e.target.value)}
+            placeholder={t('delete_modal_placeholder_delete')}
+            className="text-center font-mono"
+            autoComplete="off"
+            autoFocus
+            erro={
+              confirmText && !typedConfirmation
+                ? t('delete_modal_type_exactly')
+                : undefined
+            }
+          />
+
+          {requirePassword && (
+            <Field.Senha
+              label={t('delete_modal_current_password')}
+              value={currentPassword}
+              onChange={(e) => setCurrentPassword(e.target.value)}
+              autoComplete="current-password"
+            />
+          )}
+
+          {cascadeInfo && (
+            <p className={cx('t-rotulo text-center', muted)}>
+              <strong className="text-texto">{cascadeInfo.totalItems}</strong>{' '}
+              {t('delete_modal_items_removed')}
+            </p>
+          )}
+        </div>
+      )}
+    </Sheet>
+  );
 };
 
 export default DeleteAccountModal;

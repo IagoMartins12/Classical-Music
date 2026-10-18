@@ -4,9 +4,9 @@
 import { useState } from 'react';
 import type { ReactNode } from 'react';
 import { PiInfo, PiQuestion, PiTrash, PiWarning } from 'react-icons/pi';
-import Modal from '@/app/components/Modal';
 import { Button } from '@/app/components/ui/Button';
-import { Inline, Stack } from '@/app/components/ui/Layout';
+import { Icon } from '@/app/components/ui/Icon';
+import { Sheet } from '@/app/components/ui/Sheet';
 
 /**
  * A confirmação do sistema — o único formato de "tem certeza?".
@@ -73,40 +73,23 @@ export default function ConfirmModal({
   };
 
   return (
-    <Modal
-      isOpen={isOpen}
-      onClose={() => {
+    <Sheet
+      aberto={isOpen}
+      aoFechar={() => {
         if (!ocupado) onClose();
       }}
-      closeOnOverlayClick={!ocupado}
-      maxWidth="md"
-      showCloseButton={false}
-    >
-      <Stack gap={6}>
-        <Inline gap={4} alinhar="inicio">
-          <span
-            aria-hidden="true"
-            className={`fundo-sup-2 grid h-12 w-12 shrink-0 place-items-center rounded-full ${tom}`}
-          >
-            <Icone className="h-6 w-6" />
-          </span>
-          <Stack gap={2} className="min-w-0 pt-1">
-            <h2 className="t-subtitulo">{title}</h2>
-            <div className="t-corpo text-texto-suave">{message}</div>
-          </Stack>
-        </Inline>
-
-        {children}
-
-        {/* Lado a lado quando cabem; quando o rótulo é longo, cada botão
-            ocupa a linha inteira, um embaixo do outro — nunca um quebrado e
-            o outro não. No telefone, a ação fica em cima, perto do polegar. */}
-        <div className="flex flex-col-reverse gap-3 sm:flex-row sm:flex-wrap">
+      titulo={title}
+      largura="p"
+      alca={false}
+      rodape={
+        // Lado a lado quando cabem; quando o rótulo é longo, cada botão ocupa
+        // a linha inteira. No telefone, a ação fica em cima, perto do polegar.
+        <div className="flex w-full flex-col-reverse gap-3 sm:flex-row sm:flex-wrap sm:justify-end">
           <Button
             variante="secundario"
             onClick={onClose}
             disabled={ocupado}
-            className="w-full text-sm sm:w-auto sm:flex-1 sm:whitespace-nowrap"
+            className="w-full sm:w-auto"
           >
             {cancelText}
           </Button>
@@ -116,14 +99,27 @@ export default function ConfirmModal({
               onClick={confirmar}
               carregando={ocupado}
               disabled={confirmarBloqueado}
-              className="w-full text-sm sm:w-auto sm:flex-1 sm:whitespace-nowrap"
+              className="w-full sm:w-auto"
             >
               {confirmText || acao}
             </Button>
           )}
         </div>
-      </Stack>
-    </Modal>
+      }
+    >
+      <div className="flex flex-col gap-5">
+        <div className="flex items-start gap-4">
+          <span
+            aria-hidden="true"
+            className={`grid h-12 w-12 shrink-0 place-items-center rounded-full bg-sup-2 ${tom}`}
+          >
+            <Icon de={Icone} tamanho="m" />
+          </span>
+          <div className="t-corpo min-w-0 pt-2 text-texto-suave">{message}</div>
+        </div>
+        {children}
+      </div>
+    </Sheet>
   );
 }
 

@@ -1,8 +1,9 @@
 // app/profile/components/InstrumentsSection.tsx (versão com dados reais)
 'use client';
+import { CaixaDeMarcar } from '@/app/components/ui/CaixaDeMarcar';
+import { Field } from '@/app/components/ui/Field';
 import { PERFIL } from '@/app/conteudo/textos/perfil';
 import { useTextos } from '@/app/hooks/useTextos';
-import { Button as Botao } from '@/app/components/ui/Button';
 
 import React, { useState, useEffect, useCallback } from 'react';
 // Era `User` do NextAuth, aumentado em `types/next-auth.d.ts`. É o mesmo
@@ -18,15 +19,13 @@ import {
 } from 'react-icons/pi';
 
 import { toast } from 'react-hot-toast';
-import Button from '../../Common/Button';
-import Select from '../../Common/Select';
+import { Button } from '@/app/components/ui/Button';
 import {
   getAvailableInstruments,
   getUserInstruments,
   updateUserInstruments,
 } from '@/app/actions/profile';
 import { useSessionUpdate } from '@/app/hooks/useSessionUpdate';
-import Checkbox from '../../Common/Checkbox';
 import { Stack, Inline } from '@/app/components/ui/Layout';
 import { Text } from '@/app/components/ui/Text';
 import { Card } from '@/app/components/ui/Card';
@@ -292,7 +291,7 @@ const InstrumentsSection: React.FC<InstrumentsSectionProps> = ({ user }) => {
       <Stack gap={6}>
         <div className="flex items-center justify-between">
           <div>
-            <h3 className="text-lg font-semibold text-theme-primary">
+            <h3 className="text-lg font-semibold text-texto">
               {t('instruments_title')}
             </h3>
             <Text papel="rotulo" tom="suave" as="p">
@@ -310,10 +309,10 @@ const InstrumentsSection: React.FC<InstrumentsSectionProps> = ({ user }) => {
               className="animate-pulse"
             >
               <Inline gap={4}>
-                <div className="w-10 h-10 bg-theme-secondary rounded-full" />
+                <div className="w-10 h-10 bg-sup-2 rounded-full" />
                 <div className="flex-1">
-                  <div className="h-4 bg-theme-secondary rounded w-24 mb-2" />
-                  <div className="h-3 bg-theme-secondary rounded w-16" />
+                  <div className="h-4 bg-sup-2 rounded w-24 mb-2" />
+                  <div className="h-3 bg-sup-2 rounded w-16" />
                 </div>
               </Inline>
             </Card>
@@ -330,7 +329,7 @@ const InstrumentsSection: React.FC<InstrumentsSectionProps> = ({ user }) => {
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h3 className="text-lg font-semibold text-theme-primary">
+          <h3 className="text-lg font-semibold text-texto">
             {t('instruments_title')}
           </h3>
           <Text papel="rotulo" tom="suave" as="p">
@@ -340,30 +339,30 @@ const InstrumentsSection: React.FC<InstrumentsSectionProps> = ({ user }) => {
 
         {!isEditing ? (
           <Button
-            variant="outline"
-            size="sm"
+            variante="secundario"
+            tamanho="p"
             onClick={() => setIsEditing(true)}
-            leftIcon={<PiPencilLine />}
+            icone={PiPencilLine}
           >
             {t('instruments_edit')}
           </Button>
         ) : (
           <div className="flex flex-col md:flex-row gap-2">
             <Button
-              variant="outline"
-              size="sm"
+              variante="secundario"
+              tamanho="p"
               onClick={handleCancel}
-              leftIcon={<PiX />}
+              icone={PiX}
               disabled={isLoading}
             >
               {t('instruments_cancel')}
             </Button>
             <Button
-              variant="primary"
-              size="sm"
+              variante="primario"
+              tamanho="p"
               onClick={handleSave}
-              isLoading={isLoading}
-              leftIcon={<PiFloppyDisk />}
+              carregando={isLoading}
+              icone={PiFloppyDisk}
             >
               {t('instruments_save')}
             </Button>
@@ -375,12 +374,12 @@ const InstrumentsSection: React.FC<InstrumentsSectionProps> = ({ user }) => {
       <Stack>
         {userInstruments.length === 0 ? (
           <div className="text-center py-8">
-            <PiMusicNotes className="w-12 h-12 text-theme-tertiary mx-auto mb-3" />
-            <p className="text-theme-secondary">{t('instruments_none')}</p>
+            <PiMusicNotes className="w-12 h-12 text-texto-fraco mx-auto mb-3" />
+            <p className="text-texto-suave">{t('instruments_none')}</p>
             {!isEditing && (
               <Button
-                variant="outline"
-                size="sm"
+                variante="secundario"
+                tamanho="p"
                 onClick={() => setIsEditing(true)}
                 className="mt-4"
               >
@@ -394,19 +393,19 @@ const InstrumentsSection: React.FC<InstrumentsSectionProps> = ({ user }) => {
               <div className="flex items-center justify-between">
                 <Inline gap={4}>
                   <div className="w-10 h-10 rounded-full flex items-center justify-center">
-                    <PiMusicNotes className="w-5 h-5 text-theme-primary" />
+                    <PiMusicNotes className="w-5 h-5 text-texto" />
                   </div>
 
                   <div>
                     <Inline gap={3}>
-                      <h4 className="font-medium text-theme-primary">
+                      <h4 className="font-medium text-texto">
                         {instrument.name}
                       </h4>
                       {instrument.category && (
                         <Text
                           papel="legenda"
                           tom="suave"
-                          className="px-2 py-1 bg-theme-secondary rounded-full"
+                          className="px-2 py-1 bg-sup-2 rounded-full"
                         >
                           {instrument.category}
                         </Text>
@@ -416,7 +415,7 @@ const InstrumentsSection: React.FC<InstrumentsSectionProps> = ({ user }) => {
                           papel="legenda"
                           tom="forte"
                           as="div"
-                          className="!px-3 !py-1 classical-card rounded-full"
+                          className="!px-3 !py-1 tint-ouro text-ouro-na-tinta rounded-full"
                         >
                           {t('instruments_primary')}
                         </Text>
@@ -425,42 +424,43 @@ const InstrumentsSection: React.FC<InstrumentsSectionProps> = ({ user }) => {
 
                     {isEditing ? (
                       <div className="flex flex-col md:flex-row items-start gap-4 md:items-center mt-4 md:mt-2">
-                        <Select
+                        <Field.Selecao
+                          label={t('instruments_level')}
+                          rotuloOculto
                           value={instrument.level}
                           onChange={(e) =>
                             handleUpdateInstrument(instrument.id, {
                               level: e.target.value as any,
                             })
                           }
-                          options={LEVELS}
                           className="w-32"
+                        >
+                          {LEVELS.map((o) => (
+                            <option key={o.value} value={o.value}>
+                              {o.label}
+                            </option>
+                          ))}
+                        </Field.Selecao>
+
+                        <CaixaDeMarcar
+                          rotulo={t('instruments_primary')}
+                          marcado={instrument.isPrimary}
+                          aoMudar={(marcado: boolean) =>
+                            handleUpdateInstrument(instrument.id, {
+                              isPrimary: marcado,
+                            })
+                          }
                         />
 
-                        <Inline as="label" gap={2} className="text-sm">
-                          <Checkbox
-                            label={t('instruments_primary')}
-                            checked={instrument.isPrimary}
-                            onChange={(e) =>
-                              handleUpdateInstrument(instrument.id, {
-                                isPrimary: e.target.checked,
-                              })
-                            }
-                            className="rounded"
-                          />
-                        </Inline>
-
-                        <Inline as="label" gap={2} className="text-sm">
-                          <Checkbox
-                            checked={instrument.isLearning}
-                            onChange={(e) =>
-                              handleUpdateInstrument(instrument.id, {
-                                isLearning: e.target.checked,
-                              })
-                            }
-                            className="rounded"
-                            label={t('instruments_learning')}
-                          />
-                        </Inline>
+                        <CaixaDeMarcar
+                          marcado={instrument.isLearning}
+                          aoMudar={(marcado: boolean) =>
+                            handleUpdateInstrument(instrument.id, {
+                              isLearning: marcado,
+                            })
+                          }
+                          rotulo={t('instruments_learning')}
+                        />
                       </div>
                     ) : (
                       <Text papel="rotulo" tom="suave" as="p">
@@ -469,7 +469,7 @@ const InstrumentsSection: React.FC<InstrumentsSectionProps> = ({ user }) => {
                             ?.label
                         }
                         {instrument.startedAt && (
-                          <span className="ml-2 text-theme-tertiary">
+                          <span className="ml-2 text-texto-fraco">
                             • {t('instruments_since')}{' '}
                             {new Date(instrument.startedAt).getFullYear()}
                           </span>
@@ -480,7 +480,7 @@ const InstrumentsSection: React.FC<InstrumentsSectionProps> = ({ user }) => {
                 </Inline>
 
                 {isEditing && (
-                  <Botao
+                  <Button
                     variante="fantasma"
                     tamanho="p"
                     onClick={() => handleRemoveInstrument(instrument.id)}
@@ -498,12 +498,12 @@ const InstrumentsSection: React.FC<InstrumentsSectionProps> = ({ user }) => {
 
       {/* Add Instrument Form */}
       {isEditing && (
-        <div className="border-t border-theme-secondary pt-6">
+        <div className="border-t border-linha pt-6">
           {!showAddForm ? (
             <Button
-              variant="outline"
+              variante="secundario"
               onClick={() => setShowAddForm(true)}
-              leftIcon={<PiPlus />}
+              icone={PiPlus}
               className="w-full"
               disabled={filteredInstruments.length === 0}
             >
@@ -517,12 +517,12 @@ const InstrumentsSection: React.FC<InstrumentsSectionProps> = ({ user }) => {
               densidade="compacta"
               className="gap-4 flex flex-col"
             >
-              <h4 className="font-medium text-theme-primary">
+              <h4 className="font-medium text-texto">
                 {t('instruments_add_title')}
               </h4>
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <Select
+                <Field.Selecao
                   label={tx('Instrumento', 'Instrument')}
                   value={newInstrument.instrumentId}
                   onChange={(e) =>
@@ -531,7 +531,8 @@ const InstrumentsSection: React.FC<InstrumentsSectionProps> = ({ user }) => {
                       instrumentId: e.target.value,
                     }))
                   }
-                  options={[
+                >
+                  {[
                     { value: '', label: t('instruments_select_instrument') },
                     ...filteredInstruments.map((inst) => ({
                       value: inst.id,
@@ -539,10 +540,14 @@ const InstrumentsSection: React.FC<InstrumentsSectionProps> = ({ user }) => {
                         inst.category ? ` (${inst.category})` : ''
                       }`,
                     })),
-                  ]}
-                />
+                  ].map((o) => (
+                    <option key={o.value} value={o.value}>
+                      {o.label}
+                    </option>
+                  ))}
+                </Field.Selecao>
 
-                <Select
+                <Field.Selecao
                   label={t('instruments_level')}
                   value={newInstrument.level}
                   onChange={(e) =>
@@ -551,52 +556,51 @@ const InstrumentsSection: React.FC<InstrumentsSectionProps> = ({ user }) => {
                       level: e.target.value as any,
                     }))
                   }
-                  options={LEVELS}
-                />
+                >
+                  {LEVELS.map((o) => (
+                    <option key={o.value} value={o.value}>
+                      {o.label}
+                    </option>
+                  ))}
+                </Field.Selecao>
               </div>
 
               <Inline gap={6}>
-                <Inline as="label" gap={2} className="text-sm">
-                  <Checkbox
-                    label={t('instruments_primary_checkbox')}
-                    checked={newInstrument.isPrimary}
-                    onChange={(e) =>
-                      setNewInstrument((prev) => ({
-                        ...prev,
-                        isPrimary: e.target.checked,
-                      }))
-                    }
-                    className="rounded"
-                  />
-                </Inline>
+                <CaixaDeMarcar
+                  rotulo={t('instruments_primary_checkbox')}
+                  marcado={newInstrument.isPrimary}
+                  aoMudar={(marcado: boolean) =>
+                    setNewInstrument((prev) => ({
+                      ...prev,
+                      isPrimary: marcado,
+                    }))
+                  }
+                />
 
-                <Inline as="label" gap={2} className="text-sm">
-                  <Checkbox
-                    label={t('instruments_learning_checkbox')}
-                    checked={newInstrument.isLearning}
-                    onChange={(e) =>
-                      setNewInstrument((prev) => ({
-                        ...prev,
-                        isLearning: e.target.checked,
-                      }))
-                    }
-                    className="rounded"
-                  />
-                </Inline>
+                <CaixaDeMarcar
+                  rotulo={t('instruments_learning_checkbox')}
+                  marcado={newInstrument.isLearning}
+                  aoMudar={(marcado: boolean) =>
+                    setNewInstrument((prev) => ({
+                      ...prev,
+                      isLearning: marcado,
+                    }))
+                  }
+                />
               </Inline>
 
               <div className="flex space-x-3">
                 <Button
-                  variant="primary"
-                  size="sm"
+                  variante="primario"
+                  tamanho="p"
                   onClick={handleAddInstrument}
                   disabled={!newInstrument.instrumentId}
                 >
                   {t('instruments_add_button')}
                 </Button>
                 <Button
-                  variant="ghost"
-                  size="sm"
+                  variante="fantasma"
+                  tamanho="p"
                   onClick={() => setShowAddForm(false)}
                 >
                   {t('instruments_cancel')}
