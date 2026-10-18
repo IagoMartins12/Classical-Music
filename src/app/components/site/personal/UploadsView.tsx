@@ -4,7 +4,7 @@ import { useSaidas } from '@/app/components/ui/useSaida';
 import { useQuery } from '@tanstack/react-query';
 import dynamic from 'next/dynamic';
 import { useRouter } from 'next/navigation';
-import { useState, useTransition } from 'react';
+import { useEffect, useState, useTransition } from 'react';
 import {
   PiCloudArrowDown,
   PiDownloadSimple,
@@ -124,6 +124,14 @@ export function UploadsView({
       )
     );
   const refresh = () => startTransition(() => router.refresh());
+
+  // Typed but not searched: the search runs by itself after a pause.
+  useEffect(() => {
+    const next = query.trim();
+    if (next === search) return;
+    const timer = setTimeout(() => go({ search: next || undefined }), 3000);
+    return () => clearTimeout(timer);
+  }, [query, search]);
 
   const openForm = async (kind: Kind) => {
     setCreating(kind);
@@ -294,7 +302,7 @@ export function UploadsView({
           e.preventDefault();
           go({ search: query.trim() || undefined });
         }}
-        className="search-field flex min-h-12 items-center gap-3 rounded-full bg-sup-2 px-5"
+        className="search-field flex min-h-12 items-center gap-3 rounded-full bg-sup-2 pl-5 pr-1.5"
       >
         <Icon de={PiMagnifyingGlass} className="text-texto-fraco" />
         <label className="sr-only" htmlFor="uploads-search">
@@ -308,6 +316,15 @@ export function UploadsView({
           placeholder={copy.search}
           className="min-w-0 flex-1 bg-transparent outline-none placeholder:text-texto-fraco"
         />
+        <Button
+          type="submit"
+          variante="primario"
+          tamanho="p"
+          carregando={pending && query.trim() !== search}
+          className="rounded-full"
+        >
+          {copy.searchAction}
+        </Button>
       </form>
 
       <div
@@ -452,7 +469,7 @@ function UploadRow({
   return (
     <li
       ref={itemRef}
-      className="flex flex-col gap-3 rounded-card bg-sup-2 p-4 row:flex-row row:items-center row:gap-4 row:rounded-none row:bg-transparent! row:bg-none! row:px-0 row:py-3"
+      className="flex items-start gap-3 rounded-card bg-sup-2 p-4 row:items-center row:gap-4 row:rounded-none row:bg-transparent! row:bg-none! row:px-0 row:py-3"
     >
       <div className="flex min-w-0 flex-1 items-center gap-4">
         {item.type === 'composer' ? (
@@ -509,7 +526,8 @@ function UploadRow({
           </span>
         </span>
       </div>
-      <div className="flex flex-wrap gap-1 row:shrink-0">
+      {/* On a card, the actions sit in its top-right corner. */}
+      <div className="-mr-2 -mt-2 flex shrink-0 gap-0.5 row:m-0 row:gap-1">
         {item.type === 'composer' && item.imslpPermlink && (
           <Button
             tamanho="p"
