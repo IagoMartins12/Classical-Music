@@ -1,4 +1,3 @@
-// app/profile/components/MusicalPreferencesSection.tsx (versão atualizada)
 'use client';
 
 import { Field } from '@/app/components/ui/Field';
@@ -8,13 +7,7 @@ import React, { useState, useEffect, useCallback } from 'react';
 // Era `User` do NextAuth, aumentado em `types/next-auth.d.ts`. É o mesmo
 // objeto que `useAuth()` entrega, e ele já tem tipo próprio no store.
 import type { User } from '@/app/hooks/userStore';
-import {
-  PiClock,
-  PiFloppyDisk,
-  PiHeart,
-  PiPencilLine,
-  PiX,
-} from 'react-icons/pi';
+import { PiClock, PiFloppyDisk, PiPencilLine, PiX } from 'react-icons/pi';
 
 import { STUDY_HORIZONS, WELCOME } from '@/app/conteudo/site/welcome';
 import { useRouteLanguage } from '@/app/hooks/useRouteLanguage';
@@ -22,7 +15,6 @@ import type { StudyHorizon } from '@/app/libs/api/profile';
 import { updateMusicalPreferences } from '@/app/actions/profile';
 import { toast } from 'react-hot-toast';
 import { Button } from '@/app/components/ui/Button';
-import { legacyCatalog } from '@/app/libs/api/compat';
 import { useAuth } from '@/app/hooks/useAuth';
 import { useSessionUpdate } from '@/app/hooks/useSessionUpdate';
 import { Stack, Inline } from '@/app/components/ui/Layout';
@@ -44,9 +36,6 @@ const MusicalPreferencesSection: React.FC<MusicalPreferencesSectionProps> = ({
   const { t } = useTextos(PERFIL);
   const [isEditing, setIsEditing] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
-  const [isLoadingData, setIsLoadingData] = useState(true);
-  const [composers, setComposers] = useState<any[]>([]);
-  const [epochs, setEpochs] = useState<any[]>([]);
   const [formData, setFormData] = useState({
     favoriteComposerId: user.favoriteComposerId || '',
     favoriteEpochId: user.favoriteEpochId || '',
@@ -76,10 +65,6 @@ const MusicalPreferencesSection: React.FC<MusicalPreferencesSectionProps> = ({
     { value: '1200', label: t('preferences_20_plus_hours') },
   ];
 
-  useEffect(() => {
-    loadOptions();
-  }, []);
-
   // Atualizar formData quando user mudar
   useEffect(() => {
     setFormData({
@@ -94,27 +79,6 @@ const MusicalPreferencesSection: React.FC<MusicalPreferencesSectionProps> = ({
       studyHorizon: (user.studyHorizon || '') as StudyHorizon | '',
     });
   }, [user]);
-
-  const loadOptions = async () => {
-    setIsLoadingData(true);
-    try {
-      const { composers: composersData, epochs: epochsData } =
-        await legacyCatalog.musicalOptions();
-
-      setComposers(composersData);
-      setEpochs(epochsData);
-    } catch (error) {
-      console.error('Erro ao carregar opções:', error);
-      toast.error(
-        porIdioma(
-          'Não foi possível carregar as opções',
-          'Could not load the options'
-        )
-      );
-    } finally {
-      setIsLoadingData(false);
-    }
-  };
 
   const horizonCopy = WELCOME[useRouteLanguage().language].study;
   const HORIZON_OPTIONS = [
@@ -207,51 +171,12 @@ const MusicalPreferencesSection: React.FC<MusicalPreferencesSectionProps> = ({
     setIsEditing(false);
   };
 
-  const getComposerName = (id: string) => {
-    if (!id) return t('preferences_not_selected');
-    const composer = composers.find((c) => c.id === id);
-    return composer ? composer.fullName : t('preferences_composer_not_found');
-  };
-
-  const getEpochName = (id: string) => {
-    if (!id) return t('preferences_not_selected');
-    const epoch = epochs.find((e) => e.id === id);
-    return epoch ? epoch.name : t('preferences_period_not_found');
-  };
-
-  // Loading inicial
-  if (isLoadingData) {
-    return (
-      <Stack gap={6}>
-        <div className="flex items-center justify-between">
-          <div>
-            <h3 className="text-lg font-semibold text-texto">
-              {t('preferences_title')}
-            </h3>
-            <Text papel="rotulo" tom="suave" as="p">
-              {t('preferences_loading')}
-            </Text>
-          </div>
-        </div>
-
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          {[...Array(4)].map((_, index) => (
-            <Stack gap={2} key={index} className="animate-pulse">
-              <div className="h-4 bg-sup-2 rounded w-24" />
-              <div className="h-12 bg-sup-2 rounded" />
-            </Stack>
-          ))}
-        </div>
-      </Stack>
-    );
-  }
-
   return (
     <Stack gap={6}>
       {/* Header */}
-      <div className="flex items-center justify-between">
+      <div className="flex flex-wrap items-start justify-between gap-4">
         <div>
-          <h3 className="text-lg font-semibold text-texto">
+          <h3 className="font-display text-[1.5rem] leading-tight text-texto">
             {t('preferences_title')}
           </h3>
           <Text papel="rotulo" tom="suave" as="p">
@@ -261,30 +186,29 @@ const MusicalPreferencesSection: React.FC<MusicalPreferencesSectionProps> = ({
 
         {!isEditing ? (
           <Button
-            variante="secundario"
             tamanho="p"
-            onClick={() => setIsEditing(true)}
             icone={PiPencilLine}
+            onClick={() => setIsEditing(true)}
           >
             {t('preferences_edit')}
           </Button>
         ) : (
-          <div className="flex flex-col md-flex-row gap-2 ">
+          <div className="flex gap-2">
             <Button
-              variante="secundario"
               tamanho="p"
-              onClick={handleCancel}
+              variante="fantasma"
               icone={PiX}
+              onClick={handleCancel}
               disabled={isLoading}
             >
               {t('preferences_cancel')}
             </Button>
             <Button
-              variante="primario"
               tamanho="p"
+              variante="primario"
+              icone={PiFloppyDisk}
               onClick={handleSave}
               carregando={isLoading}
-              icone={PiFloppyDisk}
             >
               {t('preferences_save')}
             </Button>
@@ -365,82 +289,6 @@ const MusicalPreferencesSection: React.FC<MusicalPreferencesSectionProps> = ({
         )}
       </div>
 
-      {/* Favorites */}
-      <Stack gap={6} className="pt-6 border-t border-linha">
-        <Inline gap={2}>
-          <PiHeart className="w-4 h-4 text-ouro-texto" />
-          <h4 className="font-medium text-texto">
-            {t('preferences_favorites')}
-          </h4>
-        </Inline>
-
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <div>
-            <span className="block text-sm font-medium text-texto-suave mb-2">
-              {t('preferences_favorite_composer')}
-            </span>
-            {!isEditing ? (
-              <div className="input-classical bg-sup-2">
-                {getComposerName(formData.favoriteComposerId)}
-              </div>
-            ) : (
-              <Field.Selecao
-                label={t('preferences_favorite_composer')}
-                rotuloOculto
-                value={formData.favoriteComposerId}
-                onChange={handleInputChange}
-                name="favoriteComposerId"
-                disabled={isLoadingData}
-              >
-                {[
-                  { value: '', label: t('preferences_select_composer') },
-                  ...composers.map((composer) => ({
-                    value: composer.id,
-                    label: composer.fullName,
-                  })),
-                ].map((o) => (
-                  <option key={o.value} value={o.value}>
-                    {o.label}
-                  </option>
-                ))}
-              </Field.Selecao>
-            )}
-          </div>
-
-          <div>
-            <span className="block text-sm font-medium text-texto-suave mb-2">
-              {t('preferences_favorite_period')}
-            </span>
-            {!isEditing ? (
-              <div className="input-classical bg-sup-2">
-                {getEpochName(formData.favoriteEpochId)}
-              </div>
-            ) : (
-              <Field.Selecao
-                label={t('preferences_favorite_period')}
-                rotuloOculto
-                value={formData.favoriteEpochId}
-                onChange={handleInputChange}
-                name="favoriteEpochId"
-                disabled={isLoadingData}
-              >
-                {[
-                  { value: '', label: t('preferences_select_period') },
-                  ...epochs.map((epoch) => ({
-                    value: epoch.id,
-                    label: epoch.name,
-                  })),
-                ].map((o) => (
-                  <option key={o.value} value={o.value}>
-                    {o.label}
-                  </option>
-                ))}
-              </Field.Selecao>
-            )}
-          </div>
-        </div>
-      </Stack>
-
       {/* Summary Card */}
       {formData.experienceLevel && formData.practiceTimePerWeek > 0 && (
         <Card nivel={2} densidade="compacta" className="">
@@ -464,18 +312,6 @@ const MusicalPreferencesSection: React.FC<MusicalPreferencesSectionProps> = ({
                 )?.label
               }
             </p>
-            {formData.favoriteComposerId && (
-              <p>
-                • <strong>{t('preferences_favorite_composer_summary')}</strong>{' '}
-                {getComposerName(formData.favoriteComposerId)}
-              </p>
-            )}
-            {formData.favoriteEpochId && (
-              <p>
-                • <strong>{t('preferences_favorite_period_summary')}</strong>{' '}
-                {getEpochName(formData.favoriteEpochId)}
-              </p>
-            )}
           </Text>
         </Card>
       )}

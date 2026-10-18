@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState, type ComponentType } from 'react';
 import AccountSettingsSection from '@/app/components/profile/AccountSettingsSection';
+import FavoritesSection from '@/app/components/profile/FavoritesSection';
 import InstrumentsSection from '@/app/components/profile/InstrumentsSection';
 import MusicalPreferencesSection from '@/app/components/profile/MusicalPreferencesSection';
 import PersonalInfoSection from '@/app/components/profile/PersonalInfoSection';
@@ -25,6 +26,7 @@ const SECTIONS: [
   ['personal', PersonalInfoSection],
   ['instruments', InstrumentsSection],
   ['preferences', MusicalPreferencesSection],
+  ['favorites', FavoritesSection],
   ['privacy', PrivacySection],
   ['subscription', SubscriptionSection],
   ['account', AccountSettingsSection],

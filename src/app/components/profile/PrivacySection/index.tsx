@@ -118,9 +118,9 @@ const PrivacySection: React.FC<PrivacySectionProps> = ({
   return (
     <Stack gap={6}>
       {/* Header */}
-      <div className="flex items-center justify-between">
+      <div className="flex flex-wrap items-start justify-between gap-4">
         <div>
-          <h3 className="text-lg font-semibold text-texto">
+          <h3 className="font-display text-[1.5rem] leading-tight text-texto">
             {t('privacy_title')}
           </h3>
           <Text papel="rotulo" tom="suave" as="p">

@@ -11,13 +11,13 @@ import type { User } from '@/app/hooks/userStore';
 import { FcGoogle } from 'react-icons/fc';
 import {
   PiCheck,
-  PiEnvelopeSimple,
+  PiFloppyDisk,
   PiInfo,
   PiLock,
   PiShield,
   PiTrash,
   PiUser,
-  PiWarning,
+  PiX,
 } from 'react-icons/pi';
 
 import { toast } from 'react-hot-toast';
@@ -57,18 +57,15 @@ const AccountSettingsSection: React.FC<AccountSettingsSectionProps> = ({
   const tx = useTx();
   const { t, language } = useTextos(PERFIL);
   const {
-    isEmailChanging,
     isUserTypeChanging,
     isDeleting,
     isCascadeLoading,
     cascadeInfo,
-    changeEmail,
     changeAccountType,
     loadCascadeInfo,
     deleteAccount,
     clearCascadeInfo,
     getUserTypeLabel,
-    validateEmail,
   } = useAccountManagement();
 
   // 🆕 NOVO: Estado para informações do método de login
@@ -86,13 +83,6 @@ const AccountSettingsSection: React.FC<AccountSettingsSectionProps> = ({
     currentPassword: '',
     newPassword: '',
     confirmPassword: '',
-  });
-
-  // States for email change
-  const [isChangingEmail, setIsChangingEmail] = useState(false);
-  const [emailData, setEmailData] = useState({
-    newEmail: '',
-    currentPassword: '',
   });
 
   // States for user type change
@@ -158,13 +148,6 @@ const AccountSettingsSection: React.FC<AccountSettingsSectionProps> = ({
   const isPasswordValid =
     passwordData.newPassword.length > 0 ? passwordValidation.isValid : true;
 
-  // 🆕 NOVO: Verificar se pode alterar email (não pode se for só login social)
-  const canChangeEmail =
-    loginMethod.hasPassword ||
-    (!loginMethod.isLoading && !loginMethod.hasSocialLogin);
-
-  console.log('cascade, ', cascadeInfo);
-
   const handlePasswordChange = async () => {
     // Validações básicas
     if (!passwordData.currentPassword || !passwordData.newPassword) {
@@ -225,38 +208,6 @@ const AccountSettingsSection: React.FC<AccountSettingsSectionProps> = ({
       );
     } finally {
       setIsPasswordLoading(false);
-    }
-  };
-
-  const handleEmailChange = async () => {
-    if (!emailData.newEmail || !emailData.currentPassword) {
-      toast.error(tx('Preencha todos os campos', 'Fill in every field'));
-      return;
-    }
-
-    if (emailData.newEmail === user.email) {
-      toast.error(
-        porIdioma('Este já é o seu e-mail', 'This is already your email')
-      );
-      return;
-    }
-
-    if (!validateEmail(emailData.newEmail)) {
-      toast.error(porIdioma('E-mail inválido', 'Invalid email'));
-      return;
-    }
-
-    const result = await changeEmail({
-      newEmail: emailData.newEmail,
-      currentPassword: emailData.currentPassword,
-    });
-
-    if (result.success) {
-      setIsChangingEmail(false);
-      setEmailData({
-        newEmail: '',
-        currentPassword: '',
-      });
     }
   };
 
@@ -359,7 +310,7 @@ const AccountSettingsSection: React.FC<AccountSettingsSectionProps> = ({
       {/* Login Method Info */}
       {loginMethod.hasSocialLogin && (
         <Stack>
-          <h3 className="text-lg font-semibold text-texto">
+          <h3 className="font-display text-[1.5rem] leading-tight text-texto">
             {t('account_auth_method')}
           </h3>
 
@@ -371,161 +322,30 @@ const AccountSettingsSection: React.FC<AccountSettingsSectionProps> = ({
 
       {/* Email Section */}
       <Stack className="border-t border-linha pt-8">
-        <h3 className="text-lg font-semibold text-texto">
+        <h3 className="font-display text-[1.5rem] leading-tight text-texto">
           {t('account_login_info')}
         </h3>
 
-        <Stack>
-          <div>
-            <div className="flex items-center justify-between mb-2">
-              <span className="block text-sm font-medium text-texto-suave">
-                {t('account_email')}
-              </span>
-              {!isChangingEmail && canChangeEmail && (
-                <Button
-                  variante="secundario"
-                  tamanho="p"
-                  onClick={() => setIsChangingEmail(true)}
-                  icone={PiEnvelopeSimple}
-                >
-                  {t('account_change_email')}
-                </Button>
-              )}
-            </div>
-
-            {!isChangingEmail ? (
-              <Stack gap={3}>
-                <Inline gap={3}>
-                  <Field
-                    label={t('account_email')}
-                    rotuloOculto
-                    value={user.email || ''}
-                    disabled
-                    className="flex-1"
-                  />
-                  {user.emailVerified && (
-                    <Inline gap={1} className="text-sm">
-                      <PiCheck className="w-4 h-4" />
-                      <span>{t('account_verified')}</span>
-                    </Inline>
-                  )}
-                </Inline>
-
-                {/* 🆕 NOVO: Aviso para usuários com login social */}
-                {!canChangeEmail && !loginMethod.isLoading && (
-                  <div className="rounded-lg p-4 bg-sup-2">
-                    <div className="flex items-start">
-                      <PiShield className="w-5 h-5 mr-3 mt-0.5 flex-shrink-0" />
-                      <Stack gap={1}>
-                        <h4 className="font-medium">
-                          {t('account_social_protected')}
-                        </h4>
-                        <p className="text-sm opacity-90">
-                          {t('account_social_protected_description', {
-                            providers: loginMethod.socialProviders.join(' e '),
-                          })}
-                        </p>
-                      </Stack>
-                    </div>
-                  </div>
-                )}
-              </Stack>
-            ) : (
-              <Card
-                nivel={2}
-                densidade="compacta"
-                className="gap-4 flex flex-col"
-              >
-                <div className="rounded-lg p-4 bg-sup-2">
-                  <div className="flex items-start">
-                    <PiWarning className="w-5 h-5 mr-3 mt-0.5 flex-shrink-0" />
-                    <Stack gap={1}>
-                      <h4 className="font-medium">
-                        {t('account_email_change_warning')}
-                      </h4>
-                      <Stack gap={1} as="ul" className="text-sm opacity-90">
-                        <li>{t('account_email_verify_new')}</li>
-                        <li>{t('account_upload_disabled')}</li>
-                        <li>{t('account_limited_features')}</li>
-                        <li>{t('account_confirmation_email')}</li>
-                        <li>{t('account_session_update')}</li>
-                      </Stack>
-                    </Stack>
-                  </div>
-                </div>
-
-                <Field
-                  label={t('account_new_email_required')}
-                  type="email"
-                  value={emailData.newEmail}
-                  onChange={(e) =>
-                    setEmailData((prev) => ({
-                      ...prev,
-                      newEmail: e.target.value,
-                    }))
-                  }
-                  placeholder={t('account_new_email_placeholder')}
-                  erro={
-                    emailData.newEmail && !validateEmail(emailData.newEmail)
-                      ? language === 'en'
-                        ? 'Invalid email'
-                        : 'E-mail inválido'
-                      : undefined
-                  }
-                />
-
-                <Field.Senha
-                  label={t('account_current_password_required')}
-                  value={emailData.currentPassword}
-                  onChange={(e) =>
-                    setEmailData((prev) => ({
-                      ...prev,
-                      currentPassword: e.target.value,
-                    }))
-                  }
-                  placeholder={t('account_current_password_placeholder')}
-                  rotuloMostrar={t('password_show')}
-                  rotuloOcultar={t('password_hide')}
-                />
-
-                <div className="flex space-x-3">
-                  <Button
-                    variante="primario"
-                    tamanho="p"
-                    onClick={handleEmailChange}
-                    carregando={isEmailChanging}
-                    disabled={
-                      !emailData.newEmail ||
-                      !emailData.currentPassword ||
-                      !validateEmail(emailData.newEmail)
-                    }
-                  >
-                    {t('account_request_change')}
-                  </Button>
-                  <Button
-                    variante="fantasma"
-                    tamanho="p"
-                    onClick={() => {
-                      setIsChangingEmail(false);
-                      setEmailData({
-                        newEmail: '',
-                        currentPassword: '',
-                      });
-                    }}
-                  >
-                    {t('personal_info_cancel')}
-                  </Button>
-                </div>
-              </Card>
-            )}
-          </div>
-        </Stack>
+        <div className="flex flex-wrap items-center gap-3">
+          <Field
+            label={t('account_email')}
+            value={user.email || ''}
+            disabled
+            className="min-w-0 flex-1"
+          />
+          {user.emailVerified && (
+            <span className="inline-flex items-center gap-1.5 self-end pb-3 text-sm text-ouro-texto">
+              <PiCheck aria-hidden="true" className="h-4 w-4" />
+              {t('account_verified')}
+            </span>
+          )}
+        </div>
       </Stack>
 
       {/* Password Section */}
       <div className="border-t border-linha pt-8">
         <div className="flex items-center justify-between mb-4">
-          <h3 className="text-lg font-semibold text-texto">
+          <h3 className="font-display text-[1.5rem] leading-tight text-texto">
             {loginMethod.hasPassword
               ? t('account_change_password')
               : t('account_define_password')}
@@ -705,10 +525,26 @@ const AccountSettingsSection: React.FC<AccountSettingsSectionProps> = ({
               rotuloOcultar={t('password_hide')}
             />
 
-            <div className="flex space-x-3">
+            <div className="flex justify-end gap-2">
+              <Button
+                variante="fantasma"
+                tamanho="p"
+                icone={PiX}
+                onClick={() => {
+                  setIsChangingPassword(false);
+                  setPasswordData({
+                    currentPassword: '',
+                    newPassword: '',
+                    confirmPassword: '',
+                  });
+                }}
+              >
+                {t('personal_info_cancel')}
+              </Button>
               <Button
                 variante="primario"
                 tamanho="p"
+                icone={PiFloppyDisk}
                 onClick={handlePasswordChange}
                 carregando={isPasswordLoading}
                 disabled={
@@ -723,20 +559,6 @@ const AccountSettingsSection: React.FC<AccountSettingsSectionProps> = ({
                   ? t('account_change_password')
                   : t('account_define_password')}
               </Button>
-              <Button
-                variante="fantasma"
-                tamanho="p"
-                onClick={() => {
-                  setIsChangingPassword(false);
-                  setPasswordData({
-                    currentPassword: '',
-                    newPassword: '',
-                    confirmPassword: '',
-                  });
-                }}
-              >
-                {t('personal_info_cancel')}
-              </Button>
             </div>
           </Card>
         )}
@@ -745,7 +567,7 @@ const AccountSettingsSection: React.FC<AccountSettingsSectionProps> = ({
       {/* Account Type Section */}
       <div className="border-t border-linha pt-8">
         <div className="flex items-center justify-between mb-4">
-          <h3 className="text-lg font-semibold text-texto">
+          <h3 className="font-display text-[1.5rem] leading-tight text-texto">
             {t('account_type')}
           </h3>
 
@@ -809,25 +631,27 @@ const AccountSettingsSection: React.FC<AccountSettingsSectionProps> = ({
               ))}
             </Field.Selecao>
 
-            <div className="flex space-x-3">
-              <Button
-                variante="primario"
-                tamanho="p"
-                onClick={handleUserTypeChange}
-                carregando={isUserTypeChanging}
-                disabled={newUserType === user.userType}
-              >
-                {t('account_change_type')}
-              </Button>
+            <div className="flex justify-end gap-2">
               <Button
                 variante="fantasma"
                 tamanho="p"
+                icone={PiX}
                 onClick={() => {
                   setIsChangingUserType(false);
                   setNewUserType(user.userType || 'CASUAL_USER');
                 }}
               >
                 {t('personal_info_cancel')}
+              </Button>
+              <Button
+                variante="primario"
+                tamanho="p"
+                icone={PiFloppyDisk}
+                onClick={handleUserTypeChange}
+                carregando={isUserTypeChanging}
+                disabled={newUserType === user.userType}
+              >
+                {t('account_change_type')}
               </Button>
             </div>
           </Card>
@@ -836,7 +660,7 @@ const AccountSettingsSection: React.FC<AccountSettingsSectionProps> = ({
 
       {/* Account Info */}
       <Stack className="border-t border-linha pt-8">
-        <h3 className="text-lg font-semibold text-texto">
+        <h3 className="font-display text-[1.5rem] leading-tight text-texto">
           {t('account_info')}
         </h3>
 
@@ -867,36 +691,31 @@ const AccountSettingsSection: React.FC<AccountSettingsSectionProps> = ({
       {/* Assinatura (cancelar, portal da Stripe) e exportação dos dados. */}
       <AssinaturaEDados />
 
-      {/* Danger Zone */}
-      <Stack className="border-t pt-8 border-linha">
-        <Inline gap={3}>
-          <PiWarning className="w-5 h-5" />
-          <h3 className="text-lg font-semibold">{t('account_danger_zone')}</h3>
-        </Inline>
-
-        <Card nivel={2} densidade="compacta" className="">
-          <div className="flex flex-col md:flex-row items-center gap-4 justify-between mb-4">
-            <Stack gap={1}>
-              <h4 className="font-medium text-texto">
-                {t('account_delete_permanent')}
-              </h4>
-              <Text papel="rotulo" tom="suave" as="p">
-                {t('account_delete_warning')}
-              </Text>
-            </Stack>
-
-            <Button
-              variante="perigo"
-              tamanho="p"
-              onClick={handleOpenDeleteModal}
-              icone={PiTrash}
-              className="truncate py-3 px-4"
-            >
-              {t('account_delete_button')}
-            </Button>
+      {/* Danger Zone: a quiet row, the red kept for the button. */}
+      <section className="flex flex-col gap-4 border-t border-linha pt-8">
+        <h3 className="font-display text-[1.5rem] leading-tight text-texto">
+          {t('account_danger_zone')}
+        </h3>
+        <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+          <div className="flex max-w-[52ch] flex-col gap-1">
+            <h4 className="font-medium text-texto">
+              {t('account_delete_permanent')}
+            </h4>
+            <Text papel="rotulo" tom="suave" as="p">
+              {t('account_delete_warning')}
+            </Text>
           </div>
-        </Card>
-      </Stack>
+          <Button
+            variante="perigo"
+            tamanho="p"
+            onClick={handleOpenDeleteModal}
+            icone={PiTrash}
+            className="shrink-0 self-start sm:self-auto"
+          >
+            {t('account_delete_button')}
+          </Button>
+        </div>
+      </section>
 
       {/* Delete Account Modal */}
       <DeleteAccountModal

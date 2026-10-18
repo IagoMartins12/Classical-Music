@@ -381,6 +381,28 @@ export async function updateMusicalPreferences(
   }
 }
 
+/** Only the favourites: the rest of the musical preferences stays as is. */
+export async function updateFavorites(data: {
+  favoriteComposerId: string | null;
+  favoriteEpochId: string | null;
+}): Promise<ProfileResult> {
+  try {
+    const { account } = await patchProfile({ account: data });
+    revalidatePath('/profile');
+    return {
+      success: true,
+      message: 'Favoritos atualizados.',
+      data: {
+        id: account.id,
+        favoriteComposerId: account.favoriteComposerId,
+        favoriteEpochId: account.favoriteEpochId,
+      },
+    };
+  } catch (error) {
+    return failure(error, 'Erro ao atualizar favoritos. Tente novamente.');
+  }
+}
+
 export async function updateUserInstruments(
   _userId: string,
   instruments: Array<{

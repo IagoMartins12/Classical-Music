@@ -291,7 +291,7 @@ const InstrumentsSection: React.FC<InstrumentsSectionProps> = ({ user }) => {
       <Stack gap={6}>
         <div className="flex items-center justify-between">
           <div>
-            <h3 className="text-lg font-semibold text-texto">
+            <h3 className="font-display text-[1.5rem] leading-tight text-texto">
               {t('instruments_title')}
             </h3>
             <Text papel="rotulo" tom="suave" as="p">
@@ -327,9 +327,9 @@ const InstrumentsSection: React.FC<InstrumentsSectionProps> = ({ user }) => {
   return (
     <Stack gap={6}>
       {/* Header */}
-      <div className="flex items-center justify-between">
+      <div className="flex flex-wrap items-start justify-between gap-4">
         <div>
-          <h3 className="text-lg font-semibold text-texto">
+          <h3 className="font-display text-[1.5rem] leading-tight text-texto">
             {t('instruments_title')}
           </h3>
           <Text papel="rotulo" tom="suave" as="p">
@@ -347,9 +347,9 @@ const InstrumentsSection: React.FC<InstrumentsSectionProps> = ({ user }) => {
             {t('instruments_edit')}
           </Button>
         ) : (
-          <div className="flex flex-col md:flex-row gap-2">
+          <div className="flex gap-2">
             <Button
-              variante="secundario"
+              variante="fantasma"
               tamanho="p"
               onClick={handleCancel}
               icone={PiX}
@@ -433,7 +433,7 @@ const InstrumentsSection: React.FC<InstrumentsSectionProps> = ({ user }) => {
                               level: e.target.value as any,
                             })
                           }
-                          className="w-32"
+                          className="w-full md:w-48"
                         >
                           {LEVELS.map((o) => (
                             <option key={o.value} value={o.value}>
@@ -589,21 +589,23 @@ const InstrumentsSection: React.FC<InstrumentsSectionProps> = ({ user }) => {
                 />
               </Inline>
 
-              <div className="flex space-x-3">
+              <div className="flex justify-end gap-2">
+                <Button
+                  variante="fantasma"
+                  tamanho="p"
+                  icone={PiX}
+                  onClick={() => setShowAddForm(false)}
+                >
+                  {t('instruments_cancel')}
+                </Button>
                 <Button
                   variante="primario"
                   tamanho="p"
+                  icone={PiPlus}
                   onClick={handleAddInstrument}
                   disabled={!newInstrument.instrumentId}
                 >
                   {t('instruments_add_button')}
-                </Button>
-                <Button
-                  variante="fantasma"
-                  tamanho="p"
-                  onClick={() => setShowAddForm(false)}
-                >
-                  {t('instruments_cancel')}
                 </Button>
               </div>
             </Card>
