@@ -122,6 +122,16 @@ export const NAVEGACAO: GrupoNav[] = [
         resumo: 'Textos escritos por IA e traduções, para revisar',
       },
       {
+        rotulo: 'Qualidade do acervo',
+        href: '/admin/qualidade',
+        resumo: 'O quanto do cadastro está preenchido e confere',
+      },
+      {
+        rotulo: 'Contribuições',
+        href: '/admin/contribuicoes',
+        resumo: 'O que a comunidade escreveu: ver e reprovar',
+      },
+      {
         rotulo: 'Obras',
         href: '/admin/works',
         resumo: 'Edição, verificação e remoção',
@@ -234,6 +244,11 @@ export const NAVEGACAO: GrupoNav[] = [
         rotulo: 'Assinaturas',
         href: '/admin/plans/subscribers',
         resumo: 'Receita, assinantes por plano e quem não renovou',
+      },
+      {
+        rotulo: 'Financeiro',
+        href: '/admin/financeiro',
+        resumo: 'Custos, entradas, metas e ponto de equilíbrio',
       },
       {
         rotulo: 'Planos e preços',
