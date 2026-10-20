@@ -13,6 +13,7 @@ type State =
   | { kind: 'writing' }
   | { kind: 'done'; text: string; ai: boolean }
   | { kind: 'unavailable' }
+  | { kind: 'quota' }
   | { kind: 'error' };
 
 /** How long to wait before asking again when the API is still writing. */
@@ -46,6 +47,9 @@ export function BiographyWriter({
               text: result.biography,
               ai: result.source === 'generated',
             });
+          } else if (result.status === 'quota') {
+            // O teto de hoje acabou: sem biografia, sem erro e sem insistir.
+            setState({ kind: 'quota' });
           } else if (result.status === 'generating') {
             setTimeout(
               () => setAttempt((n) => (n < MAX_ATTEMPTS ? n + 1 : n)),
@@ -90,14 +94,18 @@ export function BiographyWriter({
             ? copy.writing(name)
             : state.kind === 'unavailable'
               ? copy.unavailable(name)
-              : copy.error}
+              : state.kind === 'quota'
+                ? copy.quota(name)
+                : copy.error}
         </p>
         <p className="t-rotulo text-texto-suave">
           {writing
             ? copy.writingText
             : state.kind === 'unavailable'
               ? copy.unavailableText
-              : copy.errorText}
+              : state.kind === 'quota'
+                ? copy.quotaText
+                : copy.errorText}
         </p>
         {state.kind === 'error' && (
           <TentarDeNovo tamanho="p" icone={PiArrowClockwise} className="mt-1">

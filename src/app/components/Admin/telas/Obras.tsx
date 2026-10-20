@@ -108,12 +108,23 @@ export default function Obras() {
   const [origem, setOrigem] = useState('');
   const [desde, setDesde] = useState('');
   const [ate, setAte] = useState('');
+  // Preenchimento do cadastro: o quadro de Qualidade chega aqui já filtrado.
+  const [tom, setTom] = useState('');
+  const [ano, setAno] = useState('');
+  const [instrumentacao, setInstrumentacao] = useState('');
+  const [midia, setMidia] = useState('');
   // Um número de outra tela chega aqui já filtrado (`?recorte=com-partitura`,
   // `?compositor=<id>&nome=<nome>`).
   useEffect(() => {
     const q = new URLSearchParams(window.location.search);
     const c = q.get('compositor');
     if (c) setCompositor({ id: c, rotulo: q.get('nome') ?? 'Compositor' });
+    const sn = (k: string) =>
+      q.get(k) === 'true' ? 'sim' : q.get(k) === 'false' ? 'nao' : '';
+    setTom(sn('hasTone'));
+    setAno(sn('hasYear'));
+    setInstrumentacao(sn('hasInstrumentation'));
+    setMidia(sn('hasMedia'));
     const r = q.get('recorte');
     if (
       r &&
@@ -128,6 +139,10 @@ export default function Obras() {
     }
   }, []);
   const textos = [
+    tom,
+    ano,
+    instrumentacao,
+    midia,
     instrumento,
     minFav,
     maxFav,
@@ -145,6 +160,10 @@ export default function Obras() {
   const limparAvancados = () => {
     setCompositor(null);
     [
+      setTom,
+      setAno,
+      setInstrumentacao,
+      setMidia,
       setInstrumento,
       setMinFav,
       setMaxFav,
@@ -186,6 +205,10 @@ export default function Obras() {
     maxLearned: numeroOuNada(maxAprenderam),
     minScores: numeroOuNada(minPartituras),
     hasVideo: simNao(video),
+    hasTone: simNao(tom),
+    hasYear: simNao(ano),
+    hasInstrumentation: simNao(instrumentacao),
+    hasMedia: simNao(midia),
     isCustom:
       origem === 'comunidade'
         ? true
@@ -465,6 +488,30 @@ export default function Obras() {
             aoMudarMin={setMinPartituras}
             aoMudarMax={() => undefined}
           />
+          {(
+            [
+              ['Tonalidade', tom, setTom, 'tonalidade'],
+              ['Ano de composição', ano, setAno, 'ano'],
+              [
+                'Instrumentação',
+                instrumentacao,
+                setInstrumentacao,
+                'instrumentação',
+              ],
+              ['Gravação ou vídeo', midia, setMidia, 'gravação ou vídeo'],
+            ] as const
+          ).map(([rotulo, valor, mudar, nome]) => (
+            <FiltroSelecao
+              key={rotulo}
+              rotulo={rotulo}
+              valor={valor}
+              aoMudar={mudar}
+              opcoes={[
+                { value: 'sim', label: `Com ${nome}` },
+                { value: 'nao', label: `Sem ${nome}` },
+              ]}
+            />
+          ))}
           <FiltroSelecao
             rotulo="Vídeo"
             valor={video}

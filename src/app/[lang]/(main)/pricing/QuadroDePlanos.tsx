@@ -599,6 +599,7 @@ function Preco({
           {c.preco.gratis}
         </p>
         <p className="mt-2.5 text-sm text-texto-fraco md:min-h-[2.6em]" />
+        <TesteGratis dias={0} idioma={idioma} />
       </div>
     );
   }
@@ -611,6 +612,7 @@ function Preco({
           —
         </p>
         <p className="mt-2.5 text-sm text-texto-fraco md:min-h-[2.6em]" />
+        <TesteGratis dias={0} idioma={idioma} />
       </div>
     );
   }
@@ -650,6 +652,29 @@ function Preco({
       >
         {nota}
       </p>
+      <TesteGratis dias={p.teste} idioma={idioma} />
+    </div>
+  );
+}
+
+/**
+ * O teste grátis do plano, com os dias da tabela de preços. Sem dias, deixa o
+ * mesmo espaço vazio: os botões dos três cards seguem na mesma altura.
+ */
+function TesteGratis({ dias, idioma }: { dias: number; idioma: Idioma }) {
+  const c = PLANOS[idioma].teste;
+  return (
+    <div className="mt-3 flex flex-col gap-0.5 md:min-h-[3.4em]">
+      {dias > 0 && (
+        <>
+          <p className="text-sm font-semibold text-ouro-texto">
+            {c.selo(dias)}
+          </p>
+          <p className="text-[0.8125rem] leading-snug text-texto-fraco">
+            {c.detalhe}
+          </p>
+        </>
+      )}
     </div>
   );
 }

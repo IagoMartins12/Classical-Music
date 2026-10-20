@@ -18,8 +18,12 @@ export type BiographyResult =
   | {
       biography: null;
       language: BioLanguage;
-      /** `unavailable`: a IA não conhece o compositor. `generating`: pergunte de novo em `retryAfter` s. */
-      status: 'unavailable' | 'generating';
+      /**
+       * `unavailable`: a IA não conhece o compositor. `generating`: pergunte de
+       * novo em `retryAfter` s. `quota`: o teto de hoje acabou; nada foi
+       * gravado, e amanhã a biografia é escrita.
+       */
+      status: 'unavailable' | 'generating' | 'quota';
       retryAfter?: number;
     };
 
@@ -66,11 +70,14 @@ export function draftComposerBiography(
   });
 }
 
-/** Traduz do português para o inglês (a única direção que a API faz). */
-export async function translateBiographyText(portuguese: string) {
+/** Traduz o texto para o idioma `to`: inglês (o padrão, a partir do português) ou português (a partir do inglês). */
+export async function translateBiographyText(
+  text: string,
+  to: BioLanguage = 'en'
+) {
   const result = await apiFetch<{ translatedText: string }>(
     '/composers/biography/translate',
-    { method: 'POST', body: { text: portuguese } }
+    { method: 'POST', body: { text, to } }
   );
 
   return result.translatedText;

@@ -101,6 +101,54 @@ export default function Qualidade() {
                     { rotulo: 'Verificados', valor: c.verified },
                   ]}
                 />
+                <VerNaLista
+                  itens={[
+                    {
+                      nome: 'Nacionalidade',
+                      tem: c.withNationality,
+                      total: c.total,
+                      href: '/admin/composers?hasNationality=',
+                    },
+                    {
+                      nome: 'Ano de nascimento',
+                      tem: c.withBirthYear,
+                      total: c.total,
+                      href: '/admin/composers?hasBirthYear=',
+                    },
+                    {
+                      nome: 'Biografia',
+                      tem: c.withBio,
+                      total: c.total,
+                      href: '/admin/composers?hasBio=',
+                    },
+                    {
+                      nome: 'Retrato',
+                      tem: c.withPortrait,
+                      total: c.total,
+                      href: '/admin/composers?hasPortrait=',
+                    },
+                    {
+                      nome: 'Obras no catálogo',
+                      tem: c.withWorks,
+                      total: c.total,
+                      href: '/admin/composers?hasWorks=',
+                    },
+                  ]}
+                />
+                <Atencao
+                  itens={[
+                    {
+                      nome: 'Época que não confere com as datas',
+                      n: c.epochChecked - c.epochInAgreement,
+                      href: '/admin/composers?epochMismatch=true',
+                    },
+                    {
+                      nome: 'Suspeitos de não serem compositores',
+                      n: c.suspects,
+                      href: '/admin/composers?suspect=true',
+                    },
+                  ]}
+                />
                 <Text papel="legenda" as="p">
                   Biografias esperando uma pessoa estão em{' '}
                   <Link
@@ -130,6 +178,34 @@ export default function Qualidade() {
                     { rotulo: 'Com gravação ou vídeo', valor: w.withMedia },
                   ]}
                 />
+                <VerNaLista
+                  itens={[
+                    {
+                      nome: 'Tonalidade',
+                      tem: w.withTone,
+                      total: w.total,
+                      href: '/admin/works?hasTone=',
+                    },
+                    {
+                      nome: 'Ano de composição',
+                      tem: w.withYear,
+                      total: w.total,
+                      href: '/admin/works?hasYear=',
+                    },
+                    {
+                      nome: 'Instrumentação',
+                      tem: w.withInstrumentation,
+                      total: w.total,
+                      href: '/admin/works?hasInstrumentation=',
+                    },
+                    {
+                      nome: 'Gravação ou vídeo',
+                      tem: w.withMedia,
+                      total: w.total,
+                      href: '/admin/works?hasMedia=',
+                    },
+                  ]}
+                />
               </Stack>
             </div>
           )}
@@ -142,5 +218,65 @@ export default function Qualidade() {
         </>
       )}
     </Stack>
+  );
+}
+
+const ligacao = 'text-ouro-texto underline underline-offset-4';
+
+/**
+ * Cada campo com os dois caminhos: a lista dos que têm e a dos que faltam,
+ * já filtrada na tela de compositores ou de obras.
+ */
+function VerNaLista({
+  itens,
+}: {
+  itens: { nome: string; tem: number; total: number; href: string }[];
+}) {
+  return (
+    <ul className="flex flex-col divide-y divide-[var(--linha)]">
+      {itens.map((i) => (
+        <li
+          key={i.nome}
+          className="flex flex-wrap items-center justify-between gap-x-4 gap-y-1 py-2.5"
+        >
+          <Text papel="rotulo" as="span">
+            {i.nome}
+          </Text>
+          <span className="flex gap-4 text-[0.9375rem]">
+            <Link href={`${i.href}true`} className={ligacao}>
+              Ver os {numero(i.tem)} que têm
+            </Link>
+            <Link href={`${i.href}false`} className={ligacao}>
+              Ver os {numero(Math.max(i.total - i.tem, 0))} que faltam
+            </Link>
+          </span>
+        </li>
+      ))}
+    </ul>
+  );
+}
+
+/** Números que pedem olho humano: um só caminho, para a lista do problema. */
+function Atencao({
+  itens,
+}: {
+  itens: { nome: string; n: number; href: string }[];
+}) {
+  return (
+    <ul className="flex flex-col divide-y divide-[var(--linha)]">
+      {itens.map((i) => (
+        <li
+          key={i.nome}
+          className="flex flex-wrap items-center justify-between gap-x-4 gap-y-1 py-2.5"
+        >
+          <Text papel="rotulo" as="span">
+            {i.nome}
+          </Text>
+          <Link href={i.href} className={`${ligacao} text-[0.9375rem]`}>
+            Ver os {numero(i.n)}
+          </Link>
+        </li>
+      ))}
+    </ul>
   );
 }

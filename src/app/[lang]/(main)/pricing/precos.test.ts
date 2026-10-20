@@ -49,6 +49,29 @@ describe('normalizarPrecos', () => {
   });
 });
 
+describe('teste grátis', () => {
+  // A página anuncia os dias que a tabela de preços tem — e só esses.
+  it('lê os dias da tabela; sem o campo, não há teste para anunciar', () => {
+    const p = normalizarPrecos({
+      PLUS: { monthly: 29, trialDays: 7 },
+      MENTOR: { monthly: 79, trialDays: 7 },
+      MAESTRO: { monthly: 149 },
+    });
+    expect(p.PLUS?.teste).toBe(7);
+    expect(p.MENTOR?.teste).toBe(7);
+    expect(p.MAESTRO?.teste).toBe(0);
+  });
+
+  it('número quebrado ou negativo não vira anúncio', () => {
+    const p = normalizarPrecos({
+      PLUS: { monthly: 29, trialDays: -3 },
+      MENTOR: { monthly: 79, trialDays: 7.9 },
+    });
+    expect(p.PLUS?.teste).toBe(0);
+    expect(p.MENTOR?.teste).toBe(7);
+  });
+});
+
 describe('formatarPreco', () => {
   it('mostra centavos só quando existem', () => {
     expect(formatarPreco(29, 'pt').replace(/\s/g, ' ')).toBe('R$ 29');

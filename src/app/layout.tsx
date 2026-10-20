@@ -185,6 +185,14 @@ const themeScript = `(function(){
     root.setAttribute('data-language',lang);
     root.lang=lang==='pt'?'pt-BR':'en-US';
   }
+  // App instalado (tela de início): marca a página antes da primeira pintura.
+  // O iPhone diz isso por navigator.standalone; a media query sozinha já
+  // falhou em versões dele, e a barra do topo ficava sob o entalhe.
+  try{
+    if(navigator.standalone===true||matchMedia('(display-mode: standalone)').matches){
+      document.documentElement.classList.add('app-instalado');
+    }
+  }catch{}
   try{
     const system=getSystem();
     const themeData=getStored('classical-music-theme');
