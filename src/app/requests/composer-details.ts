@@ -22,8 +22,10 @@ export interface ComposerDetails {
   portraitUrl?: string;
   bio?: string;
   bioEn?: string;
-  /** The Portuguese bio was written by AI and nobody reviewed it yet. */
+  /** The Portuguese bio was written by AI (the origin; true after the review too). */
   bioGeneratedByAi: boolean;
+  /** A person on the team read and approved it (and the translation). */
+  bioReviewed: boolean;
   /** The other language is a machine translation of this one, not reviewed. */
   bioTranslatedFrom: 'pt' | 'en' | null;
   permLinkImslp?: string;
@@ -151,6 +153,7 @@ export async function getComposerById(
       bio: composer.bio || undefined,
       bioEn: composer.bioEn || undefined,
       bioGeneratedByAi: composer.bioGeneratedByAi,
+      bioReviewed: composer.bioReviewed ?? false,
       bioTranslatedFrom: composer.bioTranslatedFrom ?? null,
       permLinkImslp: composer.permLinkImslp || undefined,
       wikipediaLink: composer.wikipediaLink || undefined,

@@ -18,6 +18,8 @@ const pt = {
     heading: 'Biografia',
     aiNote:
       'Texto escrito por inteligência artificial e ainda não revisado por uma pessoa.',
+    aiReviewedNote:
+      'Texto escrito com ajuda de inteligência artificial e revisado pela equipe do Opus Atlas.',
     translatedNote:
       'Tradução automática do texto escrito em inglês, ainda não revisada por uma pessoa.',
     writing: (name: string) => `Escrevendo a história de ${name}…`,
@@ -88,6 +90,8 @@ const en: typeof pt = {
     heading: 'Biography',
     aiNote:
       'Written by artificial intelligence and not yet reviewed by a person.',
+    aiReviewedNote:
+      'Written with the help of artificial intelligence and reviewed by the Opus Atlas team.',
     translatedNote:
       'Machine translation of the Portuguese text, not yet reviewed by a person.',
     writing: (name: string) => `Writing the story of ${name}…`,

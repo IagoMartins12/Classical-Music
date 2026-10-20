@@ -35,6 +35,9 @@ const pt = {
     min: 'Conte numa frase completa (pelo menos 20 caracteres).',
     source: 'Fonte',
     sourcePlaceholder: 'Onde você leu isso?',
+    showName: 'Mostrar meu nome',
+    showNameHint:
+      'Aparece como “Contada por você”. Sem marcar, a curiosidade entra sem assinatura.',
   },
   video: {
     label: 'Link do YouTube',
@@ -67,7 +70,7 @@ const pt = {
   verify: {
     title: 'Confirme seu e-mail para contribuir',
     intro:
-      'Biografias, curiosidades e vídeos aparecem para todo mundo com o seu nome, por isso pedimos o e-mail confirmado.',
+      'Biografias e vídeos aparecem para todo mundo com o seu nome (a curiosidade, só se você quiser), por isso pedimos o e-mail confirmado.',
     body: (email: string) =>
       `O link chegou em ${email}. Não achou? Olhe o spam, ou reenvie.`,
     later: 'Agora não',
@@ -104,6 +107,7 @@ const pt = {
     add: 'Acrescentar',
     by: (name: string) => `Contada por ${name}`,
     you: 'Contada por você',
+    youUnsigned: 'Sua curiosidade, sem assinatura',
     held: 'Fora do ar enquanto a equipe analisa uma denúncia',
     report: 'Denunciar esta curiosidade',
     remove: 'Apagar sua curiosidade',
@@ -143,6 +147,9 @@ const en: typeof pt = {
     min: 'Tell it in a full sentence (at least 20 characters).',
     source: 'Source',
     sourcePlaceholder: 'Where did you read it?',
+    showName: 'Show my name',
+    showNameHint:
+      'It reads “Shared by you”. Unchecked, the curiosity goes in unsigned.',
   },
   video: {
     label: 'YouTube link',
@@ -175,7 +182,7 @@ const en: typeof pt = {
   verify: {
     title: 'Confirm your email to contribute',
     intro:
-      'Biographies, curiosities and videos show to everyone with your name, so we ask for a confirmed email.',
+      'Biographies and videos show to everyone with your name (a curiosity only if you want), so we ask for a confirmed email.',
     body: (email) =>
       `The link went to ${email}. Can’t find it? Check spam, or resend it.`,
     later: 'Not now',
@@ -212,6 +219,7 @@ const en: typeof pt = {
     add: 'Add',
     by: (name) => `Shared by ${name}`,
     you: 'Shared by you',
+    youUnsigned: 'Your curiosity, unsigned',
     held: 'Out of sight while the team reviews a report',
     report: 'Report this curiosity',
     remove: 'Delete your curiosity',

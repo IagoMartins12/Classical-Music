@@ -101,9 +101,13 @@ export function ComposerCuriosities({
               />
               <div className="flex min-w-0 flex-1 flex-col gap-1">
                 <span className="t-rotulo">{c.text}</span>
-                {c.source === 'USER' && c.author && (
+                {c.source === 'USER' && (c.author || c.mine) && (
                   <span className="t-legenda flex flex-wrap items-center gap-x-2">
-                    {c.mine ? copy.you : copy.by(c.author.name)}
+                    {c.mine
+                      ? c.author
+                        ? copy.you
+                        : copy.youUnsigned
+                      : copy.by(c.author?.name ?? '')}
                     {c.held && (
                       <Icon
                         de={PiLockSimple}

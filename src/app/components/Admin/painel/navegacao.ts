@@ -117,6 +117,11 @@ export const NAVEGACAO: GrupoNav[] = [
         resumo: 'Verificação, qualidade e remoção sem obras',
       },
       {
+        rotulo: 'Biografias',
+        href: '/admin/biografias',
+        resumo: 'Textos escritos por IA e traduções, para revisar',
+      },
+      {
         rotulo: 'Obras',
         href: '/admin/works',
         resumo: 'Edição, verificação e remoção',

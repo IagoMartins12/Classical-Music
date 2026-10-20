@@ -5561,6 +5561,46 @@ export interface paths {
     patch?: never;
     trace?: never;
   };
+  '/api/admin/users/{id}/teacher-invitation': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    /**
+     * Muda o convite de professor ainda sem resposta
+     * @description Plano oferecido (Mentor ou Maestro), vencimento do plano e validade do convite. Sem `resend`, o link do e-mail continua o mesmo; com ele, saem links novos e outro e-mail.
+     */
+    patch: operations['AdminUsersController_updateTeacherInvitation'];
+    trace?: never;
+  };
+  '/api/admin/users/{id}/granted-plan': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    /**
+     * Muda ou concede o plano dado pela equipe
+     * @description Troca Mentor ↔ Maestro e o vencimento (nulo: sem vencimento). Sem plano concedido em vigor, concede um. Assinatura paga pelo Stripe é recusada: ela muda pela própria assinatura.
+     */
+    patch: operations['AdminUsersController_updateGrantedPlan'];
+    trace?: never;
+  };
   '/api/invites/teacher/accept/{token}': {
     parameters: {
       query?: never;
@@ -5953,6 +5993,46 @@ export interface paths {
     get: operations['AdminCatalogController_byEpoch'];
     put?: never;
     post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/api/admin/bio-review': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /**
+     * Biografias à espera de revisão (ou já revisadas)
+     * @description Pendente: escrita por IA ou traduzida por máquina e ainda não lida por uma pessoa. Paginação por cursor, em ordem alfabética.
+     */
+    get: operations['BioReviewController_list'];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/api/admin/bio-review/{id}': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    /**
+     * Aprova a biografia, reescrevendo se for preciso
+     * @description Sem corpo, aprova o texto atual (português e tradução). Com `bio` e/ou `bioEn`, grava o texto reescrito, que passa a ser de uma pessoa, e aprova.
+     */
+    post: operations['BioReviewController_review'];
     delete?: never;
     options?: never;
     head?: never;
@@ -8498,8 +8578,10 @@ export interface components {
       bio?: string | null;
       /** @description Biografia em inglês (antes num JSON em disco do front) */
       bioEn?: string | null;
-      /** @description A biografia em português foi gerada por IA e ninguém a revisou — o front pode avisar */
+      /** @description A biografia em português foi gerada por IA (a origem; segue verdadeiro depois da revisão) — o front avisa */
       bioGeneratedByAi: boolean;
+      /** @description Uma pessoa da equipe leu e aprovou a biografia (e a tradução). Com `bioGeneratedByAi`, o aviso passa a "revisada pela equipe" */
+      bioReviewed: boolean;
       /**
        * @description Idioma original da biografia quando a do outro idioma é tradução automática ainda não revisada
        * @enum {string|null}
@@ -9091,8 +9173,10 @@ export interface components {
       planExpiresAt?: string | null;
       isTrialActive: boolean;
       totalXP: number;
-      /** @description Professor aprovado pelo admin. `null` para quem não é professor. */
+      /** @description Professor aprovado pelo admin (selo; libera editar o catálogo). `null` para quem não é professor. */
       teacherVerified?: boolean | null;
+      /** @description Portal do professor liberado: perfil de professor ativo (assinante Mentor/Maestro na hora; convidado depois de aceitar). Não depende da aprovação. `null` para quem não é professor. */
+      teacherPortal?: boolean | null;
       /**
        * @description Aceito se algum vínculo ativo foi aceito; senão, o do vínculo mais recente. `null` para quem não é aluno.
        * @enum {string|null}
@@ -10948,6 +11032,11 @@ export interface components {
       language: 'pt' | 'en';
       /** @description Onde a pessoa leu isso. */
       source?: string;
+      /**
+       * @description Mostrar o nome da pessoa na curiosidade ("Contada por …"). Sem isso, ela aparece sem assinatura.
+       * @default false
+       */
+      showAuthor: boolean;
     };
     CollectionOwnerDto: {
       id: string;
@@ -13685,9 +13774,27 @@ export interface components {
       userType?: 'MUSIC_STUDENT' | 'CASUAL_USER' | 'PROFESSIONAL' | 'TEACHER';
       /** @description Marca a conta como de professor e envia o convite por e-mail (o perfil fica pendente até o aceite). Independe de `role`: 1 é admin. */
       isTeacher?: boolean;
-      /** @description Só com `isTeacher: true`: plano concedido quando o convite for aceito. */
+      /** @description **Obrigatório ao convidar** (`isTeacher: true` numa conta que não é professor): o plano, Mentor ou Maestro, concedido quando o convite for aceito. É ele que dá o limite de alunos. */
       teacherPlanGrant?: components['schemas']['TeacherPlanGrantDto'];
+      /** @description Validade do convite (ISO 8601). Ausente: 30 dias a partir do envio. */
+      teacherInviteExpiresAt?: string;
       isStudent?: boolean;
+    };
+    UpdateTeacherInvitationDto: {
+      /** @enum {string} */
+      planType?: 'MENTOR' | 'MAESTRO';
+      /** @description Vencimento do plano (ISO 8601). Nulo: sem vencimento. */
+      planExpiresAt?: string | null;
+      /** @description Nova validade do convite (ISO 8601). */
+      inviteExpiresAt?: string;
+      /** @description Emite links novos e manda outro e-mail com o convite. */
+      resend?: boolean;
+    };
+    UpdateGrantedPlanDto: {
+      /** @enum {string} */
+      planType?: 'MENTOR' | 'MAESTRO';
+      /** @description Vencimento (ISO 8601). Nulo: sem vencimento. */
+      expiresAt?: string | null;
     };
     StartingWorksDto: {
       workIds?: string[];
@@ -13734,6 +13841,12 @@ export interface components {
       title?: string;
       /** @description Desativa sem apagar. */
       isActive?: boolean;
+    };
+    ReviewBioDto: {
+      /** @description Biografia em português reescrita na revisão. Ausente: o texto atual é aprovado como está. */
+      bio?: string;
+      /** @description Biografia em inglês reescrita na revisão. Ausente: o texto atual é aprovado como está. */
+      bioEn?: string;
     };
     AdminUploadUserDto: {
       /** @example 685d591c1e3db0c5aaa893e4 */
@@ -15403,8 +15516,10 @@ export interface operations {
         workGenresArr?: string;
         /** @description Filtra por nível de dificuldade */
         difficultyLevel?: string;
-        /** @description Ordem. Sem ela: as recém-chegadas sem filtro, A–Z com filtro (como antes). */
-        sort?: 'recent' | 'title' | 'title-desc';
+        /** @description Só obras conferidas pela equipe (selo de verificado) */
+        verified?: boolean;
+        /** @description Ordem. Sem ela: as mais recentes sem filtro, A–Z com filtro (como antes). */
+        sort?: 'featured' | 'title' | 'title-desc' | 'oldest' | 'newest';
       };
       header?: never;
       path?: never;
@@ -15777,12 +15892,13 @@ export interface operations {
         instrumentId?: string;
         /** @description Só com retrato válido */
         withPortrait?: boolean;
+        /** @description Só compositores conferidos pela equipe (selo de verificado) */
+        verified?: boolean;
         /** @description Nasceu a partir deste ano */
         bornFrom?: number;
         /** @description Nasceu até este ano */
         bornTo?: number;
-        /** @description Na contagem, só importa se é por nascimento (conta quem tem o ano) */
-        sort?: 'featured' | 'name' | 'name-desc' | 'born' | 'born-desc';
+        sort?: 'featured' | 'name' | 'name-desc' | 'oldest' | 'newest';
         /** @description Página da listagem */
         page?: number;
         /** @description Itens por página */
@@ -15836,12 +15952,13 @@ export interface operations {
         instrumentId?: string;
         /** @description Só com retrato válido */
         withPortrait?: boolean;
+        /** @description Só compositores conferidos pela equipe (selo de verificado) */
+        verified?: boolean;
         /** @description Nasceu a partir deste ano */
         bornFrom?: number;
         /** @description Nasceu até este ano */
         bornTo?: number;
-        /** @description Na contagem, só importa se é por nascimento (conta quem tem o ano) */
-        sort?: 'featured' | 'name' | 'name-desc' | 'born' | 'born-desc';
+        sort?: 'featured' | 'name' | 'name-desc' | 'oldest' | 'newest';
       };
       header?: never;
       path?: never;
@@ -26316,6 +26433,89 @@ export interface operations {
       };
     };
   };
+  AdminUsersController_updateTeacherInvitation: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        id: string;
+      };
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['UpdateTeacherInvitationDto'];
+      };
+    };
+    responses: {
+      /** @description Usuário, com o convite atualizado */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+      /** @description Data no passado ou plano ausente */
+      400: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description Nenhum convite pendente */
+      404: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+    };
+  };
+  AdminUsersController_updateGrantedPlan: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        id: string;
+      };
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['UpdateGrantedPlanDto'];
+      };
+    };
+    responses: {
+      /** @description Usuário, com a assinatura atualizada */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+      /** @description Vencimento no passado, plano ausente, ou conta paga pelo Stripe */
+      400: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      404: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+    };
+  };
   TeacherInvitationsController_accept: {
     parameters: {
       query?: never;
@@ -27062,6 +27262,79 @@ export interface operations {
           [name: string]: unknown;
         };
         content?: never;
+      };
+    };
+  };
+  BioReviewController_list: {
+    parameters: {
+      query?: {
+        /** @description `pending`: escrita por IA ou traduzida por máquina, ainda sem revisão. `reviewed`: já lida por uma pessoa da equipe. */
+        status?: 'pending' | 'reviewed';
+        /** @description Nome do compositor */
+        search?: string;
+        /** @description Continua depois deste compositor */
+        cursor?: string;
+        limit?: number;
+      };
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description Itens, contagens e o próximo cursor */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
+  BioReviewController_review: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        id: string;
+      };
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['ReviewBioDto'];
+      };
+    };
+    responses: {
+      /** @description O item, já revisado */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+      201: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+      /** @description Texto fora de 300–12.000 caracteres ou sem biografia */
+      400: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      404: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
       };
     };
   };

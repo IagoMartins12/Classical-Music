@@ -22,6 +22,8 @@ import {
 } from 'react-icons/pi';
 import ConfirmModal from '@/app/components/ConfirmModal';
 import { Button } from '@/app/components/ui/Button';
+import { CaixaDeMarcar } from '@/app/components/ui/CaixaDeMarcar';
+import { tonalityOptions } from '@/app/utils/tonalities';
 import { Field } from '@/app/components/ui/Field';
 import { Icon } from '@/app/components/ui/Icon';
 import { Sheet } from '@/app/components/ui/Sheet';
@@ -225,6 +227,7 @@ function ContributeSheet({
   const [bio, setBio] = useState(target.current[bioField] ?? '');
   const [curiosity, setCuriosity] = useState('');
   const [source, setSource] = useState('');
+  const [showAuthor, setShowAuthor] = useState(false);
   const videoField = VIDEO_FIELD[target.type];
   const currentVideo = target.current[videoField];
   const [video, setVideo] = useState(
@@ -271,6 +274,7 @@ function ContributeSheet({
         text: curiosity.trim(),
         language,
         source: extra,
+        showAuthor,
       });
       if (!result.ok) return result.error;
       client.setQueryData<Curiosity[]>(
@@ -414,6 +418,12 @@ function ContributeSheet({
                 value={source}
                 onChange={(e) => touch(setSource)(e.target.value)}
               />
+              <CaixaDeMarcar
+                rotulo={copy.curiosity.showName}
+                ajuda={copy.curiosity.showNameHint}
+                marcado={showAuthor}
+                aoMudar={touch(setShowAuthor)}
+              />
             </>
           )}
 
@@ -432,17 +442,38 @@ function ContributeSheet({
           {kind === 'data' && (
             <div className="flex flex-col gap-2">
               <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-                {fields.map((f) => (
-                  <Field
-                    key={f}
-                    label={copy.fields[f]}
-                    maxLength={f === 'instrumentation' ? 300 : 200}
-                    value={data[f]}
-                    onChange={(e) =>
-                      touch(setData)({ ...data, [f]: e.target.value })
-                    }
-                  />
-                ))}
+                {fields.map((f) =>
+                  f === 'tone' ? (
+                    <Field.Selecao
+                      key={f}
+                      label={copy.fields[f]}
+                      value={data[f]}
+                      onChange={(e) =>
+                        touch(setData)({ ...data, [f]: e.target.value })
+                      }
+                    >
+                      <option value="">{'—'}</option>
+                      {tonalityOptions(
+                        language,
+                        target.current[f] ?? undefined
+                      ).map((o) => (
+                        <option key={o.value} value={o.value}>
+                          {o.label}
+                        </option>
+                      ))}
+                    </Field.Selecao>
+                  ) : (
+                    <Field
+                      key={f}
+                      label={copy.fields[f]}
+                      maxLength={f === 'instrumentation' ? 300 : 200}
+                      value={data[f]}
+                      onChange={(e) =>
+                        touch(setData)({ ...data, [f]: e.target.value })
+                      }
+                    />
+                  )
+                )}
               </div>
               {shownError && (
                 <p role="alert" className="t-legenda text-erro">

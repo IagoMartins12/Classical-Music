@@ -71,7 +71,13 @@ export function fetchCuriosities(composerId: string, language: 'pt' | 'en') {
 
 export function addCuriosity(
   composerId: string,
-  input: { text: string; language: 'pt' | 'en'; source?: string }
+  input: {
+    text: string;
+    language: 'pt' | 'en';
+    source?: string;
+    /** Sign it with the person's name; unsigned when absent. */
+    showAuthor?: boolean;
+  }
 ) {
   return toResult(
     apiFetch<Curiosity>(`/composers/${composerId}/curiosities`, {

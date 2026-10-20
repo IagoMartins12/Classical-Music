@@ -245,7 +245,9 @@ export function ComposerPage({
                       composer.bioTranslatedFrom !== language
                         ? copy.bio.translatedNote
                         : composer.bioGeneratedByAi
-                          ? copy.bio.aiNote
+                          ? composer.bioReviewed
+                            ? copy.bio.aiReviewedNote
+                            : copy.bio.aiNote
                           : null
                     }
                   />
