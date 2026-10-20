@@ -127,6 +127,11 @@ export const NAVEGACAO: GrupoNav[] = [
         resumo: 'O quanto do cadastro está preenchido e confere',
       },
       {
+        rotulo: 'Rotinas do acervo',
+        href: '/admin/rotinas',
+        resumo: 'Correções em lote: rodar, acompanhar e parar',
+      },
+      {
         rotulo: 'Contribuições',
         href: '/admin/contribuicoes',
         resumo: 'O que a comunidade escreveu: ver e reprovar',
