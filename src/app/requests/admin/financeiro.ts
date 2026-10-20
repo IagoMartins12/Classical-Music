@@ -98,7 +98,18 @@ export interface ResumoFinanceiro {
     subscriptionCashCents: number;
     manualCents: number;
     grossCents: number;
-    netCents: number | null;
+    /** O que o Stripe cobrou nos pagamentos do mês (só a taxa já lida). */
+    stripeFeeCents: number;
+    /** Reembolsos feitos no mês (saem da receita). */
+    refundsCents: number;
+    /** Contestações: o valor retirado, menos o devolvido, mais a tarifa. */
+    disputesCents: number;
+    /** Valores em moeda sem cotação, deixados de fora da soma. */
+    unconverted: number;
+    /** Pagamentos do mês com valor e sem a taxa lida: o líquido ainda não os desconta. */
+    feesPending: number;
+    /** Receita menos a taxa do Stripe. */
+    netCents: number;
   };
   resultCents: number;
   accrual: { mrrCents: number; isCurrentMonth: boolean };
@@ -107,6 +118,8 @@ export interface ResumoFinanceiro {
     byPlan: Record<string, number>;
     trial: number;
     pastDue: number;
+    /** O que as atrasadas valem por mês: fora do MRR, em risco. */
+    pastDueMrrCents: number;
     teachers: number;
   };
   breakEven: {
@@ -178,4 +191,38 @@ export const exportarFinanceiro = (from: string, to: string) =>
     '/admin/finance/export',
     { from, to },
     `financeiro-${from}-a-${to}.csv`
+  );
+
+export interface MesDeMrr {
+  month: string;
+  /** O MRR no fim do mês; `null` quando não há retrato dele. */
+  mrrCents: number | null;
+  active: number | null;
+  /** O que as assinaturas atrasadas valem por mês: fora do MRR, mas em risco. */
+  atRiskCents: number | null;
+  newCents: number;
+  expansionCents: number;
+  contractionCents: number;
+  churnCents: number;
+  netNewCents: number;
+  churnRate: number | null;
+}
+
+export interface SerieDeMrr {
+  /** O dia do primeiro retrato; antes dele não há número. */
+  since: string | null;
+  months: MesDeMrr[];
+}
+
+export const getMrr = (months = 12) =>
+  apiFetch<SerieDeMrr>('/admin/finance/mrr', {
+    query: { months },
+    cache: 'no-store',
+  });
+
+/** Lê no Stripe a taxa dos pagamentos que ainda não a têm (em lotes). */
+export const sincronizarTaxas = () =>
+  apiFetch<{ checked: number; updated: number; pending: number }>(
+    '/admin/finance/stripe-fees/sync',
+    { method: 'POST' }
   );

@@ -21,7 +21,7 @@ import { Text } from '@/app/components/ui/Text';
 import { cx } from '@/app/components/ui/cx';
 import { Cabecalho } from '@/app/components/Admin/painel/Cabecalho';
 import { Segmentos } from '@/app/components/Admin/painel/Controles';
-import { Proporcoes } from '@/app/components/Admin/painel/Graficos';
+import { Colunas, Proporcoes } from '@/app/components/Admin/painel/Graficos';
 import {
   dataCurta,
   moeda,
@@ -37,8 +37,10 @@ import {
   useCriarMeta,
   useLancamentos,
   useMetas,
+  useMrr,
   usePausarLancamento,
   useResumoFinanceiro,
+  useSincronizarTaxas,
 } from '@/app/hooks/admin/useFinanceiro';
 import {
   CATEGORIAS_DE_CUSTO,
@@ -47,6 +49,7 @@ import {
   type Direcao,
   type Forma,
   type Lancamento,
+  type MesDeMrr,
   type MetricaDeMeta,
   type Meta,
   type Moeda,
@@ -130,6 +133,7 @@ export default function Financeiro() {
   const apagar = useApagarLancamento();
   const pausar = usePausarLancamento();
   const [exportando, setExportando] = useState(false);
+  const sincronizar = useSincronizarTaxas();
 
   const r = resumo.data;
   const ehMesAtual = mes === chaveDoMes(new Date());
@@ -145,6 +149,23 @@ export default function Financeiro() {
       );
     } finally {
       setExportando(false);
+    }
+  };
+
+  const lerTaxas = async () => {
+    try {
+      const [feito] = await Promise.all([sincronizar.mutateAsync([])]);
+      toast.success(
+        feito.updated > 0
+          ? `${feito.updated} taxa(s) lida(s) no Stripe${feito.pending > 0 ? `; faltam ${feito.pending}` : ''}.`
+          : feito.pending > 0
+            ? `O Stripe ainda não registrou a taxa de ${feito.pending} pagamento(s). Tente de novo daqui a pouco.`
+            : 'Nenhuma taxa a ler.'
+      );
+    } catch (e) {
+      toast.error(
+        e instanceof Error ? e.message : 'Não foi possível ler as taxas.'
+      );
     }
   };
 
@@ -240,9 +261,9 @@ export default function Financeiro() {
             itens={[
               {
                 id: 'receita',
-                rotulo: 'Receita no mês (caixa)',
-                valor: reais(r?.income.grossCents),
-                nota: `${reais(r?.income.subscriptionCashCents)} de assinaturas · ${reais(r?.income.manualCents)} manuais. Bruta: a taxa do Stripe ainda não é descontada.`,
+                rotulo: 'Receita líquida no mês',
+                valor: reais(r?.income.netCents),
+                nota: notaDaReceita(r?.income),
               },
               {
                 id: 'custos',
@@ -265,9 +286,39 @@ export default function Financeiro() {
             ]}
           />
 
+          {r && r.income.unconverted > 0 && (
+            <Text papel="rotulo" as="p" className="rounded-card bg-sup-2 p-4">
+              {r.income.unconverted === 1
+                ? '1 valor em moeda estrangeira ficou fora da soma'
+                : `${r.income.unconverted} valores em moeda estrangeira ficaram fora da soma`}
+              : o Banco Central não devolveu a cotação do dia. Atualize a tela
+              daqui a pouco.
+            </Text>
+          )}
+
+          {r && r.income.feesPending > 0 && (
+            <div className="flex flex-wrap items-center justify-between gap-3 rounded-card bg-sup-2 p-4">
+              <Text papel="rotulo" as="p" className="min-w-0 flex-1">
+                {r.income.feesPending === 1
+                  ? '1 pagamento do mês está sem a taxa do Stripe lida'
+                  : `${r.income.feesPending} pagamentos do mês estão sem a taxa do Stripe lida`}
+                : a receita líquida ainda não os desconta.
+              </Text>
+              <Button
+                tamanho="p"
+                carregando={sincronizar.isPending}
+                onClick={() => void lerTaxas()}
+              >
+                Ler as taxas no Stripe
+              </Button>
+            </div>
+          )}
+
           {r && <Equilibrio resumo={r} />}
         </>
       )}
+
+      <Mrr />
 
       <Metas
         carregando={metas.loading}
@@ -401,6 +452,26 @@ export default function Financeiro() {
   );
 }
 
+/** De onde vem a receita líquida: o bruto e o que saiu dele. */
+function notaDaReceita(
+  income:
+    | {
+        grossCents: number;
+        stripeFeeCents: number;
+        refundsCents: number;
+        disputesCents: number;
+      }
+    | undefined
+) {
+  if (!income) return undefined;
+  const saidas = [`${reais(income.stripeFeeCents)} de taxa do Stripe`];
+  if (income.refundsCents > 0)
+    saidas.push(`${reais(income.refundsCents)} de reembolsos`);
+  if (income.disputesCents !== 0)
+    saidas.push(`${reais(income.disputesCents)} de contestações`);
+  return `${reais(income.grossCents)} bruta, menos ${saidas.join(', ')}`;
+}
+
 function descreve(item: Lancamento) {
   const partes: string[] = [nomeDaCategoria(item.category)];
   if (item.counterparty) partes.push(item.counterparty);
@@ -479,6 +550,143 @@ function Equilibrio({
         </>
       )}
     </div>
+  );
+}
+
+function Mrr() {
+  const mrr = useMrr();
+  const meses = mrr.data?.months ?? [];
+  const atual = meses.at(-1);
+  const comNumero = meses.filter((m) => m.mrrCents !== null);
+
+  return (
+    <Stack gap={4}>
+      <Text papel="titulo" as="h2">
+        Receita mensal recorrente (MRR)
+      </Text>
+      <Text papel="legenda" as="p">
+        Só assinatura ativa e paga: a anual vale 1/12 por mês, quem está em
+        teste ou atrasado não entra. Um retrato por dia guarda o valor de cada
+        assinatura, e o que entrou, cresceu, encolheu e saiu em cada mês é a
+        diferença entre dois retratos.
+        {mrr.data?.since
+          ? ` O primeiro retrato é de ${dataCurta(mrr.data.since)}; antes dele não há número.`
+          : ''}
+      </Text>
+
+      {mrr.error ? (
+        <Erro titulo="Não foi possível carregar o MRR" descricao={mrr.error} />
+      ) : mrr.loading ? (
+        <Skeleton className="h-40 w-full" />
+      ) : comNumero.length === 0 ? (
+        <Text papel="rotulo" as="p">
+          Ainda não há retrato do MRR. O primeiro é tirado ao abrir esta tela e
+          depois todo dia, pelo job das assinaturas.
+        </Text>
+      ) : (
+        <>
+          <Numeros
+            itens={[
+              {
+                id: 'mrr',
+                rotulo: 'MRR no fim do mês',
+                valor: reais(atual?.mrrCents),
+                nota: `${numero(atual?.active)} assinantes pagantes`,
+              },
+              {
+                id: 'novo',
+                rotulo: 'Novo no mês',
+                valor: reais(atual?.newCents),
+                nota: `Expansão: ${reais(atual?.expansionCents)}`,
+              },
+              {
+                id: 'saiu',
+                rotulo: 'Cancelamento no mês',
+                valor: reais(atual?.churnCents),
+                nota:
+                  atual?.churnRate != null
+                    ? `${porcento(atual.churnRate * 100, 1)} do MRR do começo do mês · contração: ${reais(atual.contractionCents)}`
+                    : `Contração: ${reais(atual?.contractionCents)}`,
+                tom: atual?.churnCents ? 'atencao' : undefined,
+              },
+              {
+                id: 'risco',
+                rotulo: 'MRR em risco',
+                valor: reais(atual?.atRiskCents),
+                nota: 'Assinaturas atrasadas: fora do MRR até pagarem',
+                tom: atual?.atRiskCents ? 'atencao' : undefined,
+              },
+              {
+                id: 'liquido',
+                rotulo: 'Crescimento líquido',
+                valor: reais(atual?.netNewCents),
+                tom: atual && atual.netNewCents < 0 ? 'atencao' : undefined,
+              },
+            ]}
+          />
+
+          <Colunas
+            titulo="MRR no fim de cada mês"
+            formatar={(n) => reais(n)}
+            dados={meses.map((m: MesDeMrr) => ({
+              rotulo: NOME_DO_MES.format(dataDoMes(m.month)),
+              eixo: MES_CURTO.format(dataDoMes(m.month)),
+              valor: m.mrrCents ?? 0,
+            }))}
+          />
+
+          <div className="overflow-x-auto rounded-card border border-linha">
+            <table className="w-full min-w-[38rem] text-left text-sm">
+              <thead className="t-legenda">
+                <tr>
+                  <th className="px-4 py-2 font-medium">Mês</th>
+                  <th className="px-4 py-2 text-right font-medium">MRR</th>
+                  <th className="px-4 py-2 text-right font-medium">Novo</th>
+                  <th className="px-4 py-2 text-right font-medium">Expansão</th>
+                  <th className="px-4 py-2 text-right font-medium">
+                    Contração
+                  </th>
+                  <th className="px-4 py-2 text-right font-medium">Cancelou</th>
+                  <th className="px-4 py-2 text-right font-medium">Líquido</th>
+                </tr>
+              </thead>
+              <tbody>
+                {[...comNumero].reverse().map((m) => (
+                  <tr key={m.month} className="border-t border-linha">
+                    <td className="px-4 py-2 capitalize">
+                      {MES_CURTO.format(dataDoMes(m.month))}
+                    </td>
+                    <td className="t-dado px-4 py-2 text-right">
+                      {reais(m.mrrCents)}
+                    </td>
+                    <td className="t-dado px-4 py-2 text-right">
+                      {reais(m.newCents)}
+                    </td>
+                    <td className="t-dado px-4 py-2 text-right">
+                      {reais(m.expansionCents)}
+                    </td>
+                    <td className="t-dado px-4 py-2 text-right">
+                      {reais(m.contractionCents)}
+                    </td>
+                    <td className="t-dado px-4 py-2 text-right">
+                      {reais(m.churnCents)}
+                    </td>
+                    <td
+                      className={cx(
+                        't-dado px-4 py-2 text-right',
+                        m.netNewCents < 0 && 'text-erro'
+                      )}
+                    >
+                      {reais(m.netNewCents)}
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </>
+      )}
+    </Stack>
   );
 }
 
