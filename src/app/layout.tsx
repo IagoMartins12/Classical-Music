@@ -222,9 +222,8 @@ export default function RootLayout({
         {/* 🚀 Script anti-flash otimizado */}
         <script dangerouslySetInnerHTML={{ __html: themeScript }} />
 
-        {/* 🚀 Preconnect para analytics - acelerar carregamento */}
+        {/* Preconnect só para o que existe: o Google Analytics. */}
         <link rel="preconnect" href="https://www.googletagmanager.com" />
-        <link rel="preconnect" href="https://analytics.opusatlas.com.br" />
 
         {/* Meta tags essenciais */}
         <meta name="color-scheme" content="dark light" />
@@ -288,11 +287,6 @@ export default function RootLayout({
             <Script id="ga" strategy="lazyOnload">
               {`window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-W2993PXTWQ');`}
             </Script>
-            <Script
-              src="https://analytics.opusatlas.com.br/analytics"
-              data-website-id="f3475284-e507-4e7e-af4a-3a1ecd932652"
-              strategy="lazyOnload"
-            />
           </>
         )}
       </body>
