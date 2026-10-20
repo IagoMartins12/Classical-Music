@@ -69,7 +69,7 @@ export const PRIVACIDADE: DocumentoBilingue = {
                   '**Sessão:** cookies que mantêm você conectado (veja [Cookies](#cookies)) e a data da sua última atividade.',
                   '**Endereço IP:** registrado quando você pede a troca de e-mail (ele aparece no aviso de segurança que enviamos), quando envia uma mensagem pelo fale-conosco e nas ações da equipe administrativa. Também é usado de forma passageira para limitar tentativas repetidas.',
                   '**Audiência:** visitas a artigos e impressões e cliques de anúncios são contados por pessoa, sem guardar o endereço IP.',
-                  '**Métricas de navegação:** páginas visitadas, tipo de dispositivo, navegador e região aproximada, pelo Google Analytics e pelo Umami, no site em produção.',
+                  '**Métricas de navegação:** páginas visitadas, tipo de dispositivo, navegador e região aproximada, pelo Google Analytics, no site em produção.',
                   '**Erros técnicos:** quando algo falha, o registro do erro pode incluir o identificador interno da sua conta — nunca o seu nome ou e-mail.',
                 ],
               },
@@ -195,11 +195,6 @@ export const PRIVACIDADE: DocumentoBilingue = {
                   'Estados Unidos e outros',
                 ],
                 [
-                  'Umami',
-                  'Métricas de navegação, em servidor do próprio Opus Atlas, sem cookies',
-                  'Infraestrutura do Opus Atlas',
-                ],
-                [
                   'Sentry',
                   'Registro de erros técnicos (sem nome ou e-mail)',
                   'Estados Unidos e outros',
@@ -256,7 +251,7 @@ export const PRIVACIDADE: DocumentoBilingue = {
               ],
             },
           },
-          'Você pode apagar ou bloquear cookies nas configurações do navegador; sem os essenciais, porém, não é possível entrar na conta. Para não ser medido pelo Google Analytics, use o complemento de desativação oferecido pelo Google. O Umami não usa cookies.',
+          'Você pode apagar ou bloquear cookies nas configurações do navegador; sem os essenciais, porém, não é possível entrar na conta. Para não ser medido pelo Google Analytics, use o complemento de desativação oferecido pelo Google.',
         ],
       },
       {
@@ -397,7 +392,7 @@ export const PRIVACIDADE: DocumentoBilingue = {
                   '**Session:** cookies that keep you signed in (see [Cookies](#cookies)) and the date of your last activity.',
                   '**IP address:** recorded when you request an e-mail change (it appears in the security notice we send), when you send a message through the contact form and on actions by the administrative team. It is also used briefly to limit repeated attempts.',
                   '**Audience:** article visits and ad impressions and clicks are counted per person, without storing the IP address.',
-                  '**Browsing metrics:** pages visited, device type, browser and approximate region, through Google Analytics and Umami, on the production site.',
+                  '**Browsing metrics:** pages visited, device type, browser and approximate region, through Google Analytics, on the production site.',
                   '**Technical errors:** when something fails, the error record may include your account’s internal identifier — never your name or e-mail.',
                 ],
               },
@@ -520,11 +515,6 @@ export const PRIVACIDADE: DocumentoBilingue = {
                   'United States and others',
                 ],
                 [
-                  'Umami',
-                  'Browsing metrics, on Opus Atlas’s own server, without cookies',
-                  'Opus Atlas infrastructure',
-                ],
-                [
                   'Sentry',
                   'Technical error logging (no name or e-mail)',
                   'United States and others',
@@ -581,7 +571,7 @@ export const PRIVACIDADE: DocumentoBilingue = {
               ],
             },
           },
-          'You can delete or block cookies in your browser settings; without the essential ones, however, you cannot sign in. To opt out of Google Analytics, use the opt-out add-on provided by Google. Umami does not use cookies.',
+          'You can delete or block cookies in your browser settings; without the essential ones, however, you cannot sign in. To opt out of Google Analytics, use the opt-out add-on provided by Google.',
         ],
       },
       {

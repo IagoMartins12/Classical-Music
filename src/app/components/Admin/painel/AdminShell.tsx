@@ -168,7 +168,7 @@ export function AdminShell({ children }: { children: ReactNode }) {
       </aside>
 
       <div className="flex min-w-0 flex-1 flex-col">
-        <header className="sticky top-0 z-barra flex min-h-14 items-center gap-3 border-b border-linha bg-fundo px-4 sm:px-6 lg:px-10">
+        <header className="barra-do-topo sticky top-0 z-barra flex min-h-14 items-center gap-3 border-b border-linha bg-fundo px-4 sm:px-6 lg:px-10">
           <Button
             variante="fantasma"
             tamanho="p"

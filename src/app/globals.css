@@ -911,6 +911,20 @@ body {
   transition: var(--transition-theme);
 }
 
+/* O app instalado (PWA) no iPhone: a barra de status é translúcida e a página
+   vai por baixo do entalhe (`viewport-fit=cover`). Sem isto a barra fixa do
+   topo ficava cortada. Só no modo instalado: no navegador a própria barra do
+   Safari ocupa esse lugar e o espaço seria de sobra. A caixa passa a ser
+   `content-box` para a altura mínima da barra (`min-h-*`) continuar valendo
+   para o conteúdo, com o espaço do entalhe somado por cima. */
+@media (display-mode: standalone) {
+  .navbar-classical,
+  .barra-do-topo {
+    box-sizing: content-box;
+    padding-top: env(safe-area-inset-top);
+  }
+}
+
 /* Inputs e forms */
 /* Campo de formulário: uma aparência só, para os 377 `input-classical` e o
    `Field`. Mais escuro que o card — é onde se escreve, não onde se lê —,

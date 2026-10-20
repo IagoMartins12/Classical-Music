@@ -38,7 +38,7 @@ export function StudentGate() {
   return (
     <PortalProvider role="student">
       <div className="min-h-dvh bg-fundo text-texto">
-        <header className="sticky top-0 z-barra border-b border-linha bg-fundo">
+        <header className="barra-do-topo sticky top-0 z-barra border-b border-linha bg-fundo">
           <div className="mx-auto flex h-16 w-full max-w-[var(--largura-conteudo)] items-center gap-3 px-4 sm:px-6">
             <Brand role="student" />
             <span className="ml-auto flex items-center gap-1">
