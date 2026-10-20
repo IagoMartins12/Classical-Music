@@ -5,6 +5,7 @@
  * leem.
  */
 import { ApiError, apiFetch } from '@/app/libs/api/client';
+import { useLanguageStore } from '@/app/stores/useLanguageStore';
 import type { ApiSchema } from '@/app/libs/api/types';
 import { porIdioma } from '@/app/utils/porIdioma';
 
@@ -60,6 +61,8 @@ export async function subscribeToNewsletter(
     frequency: input.frequency,
     sourceUrl: input.sourceUrl,
     utmSource: input.utmSource,
+    // Os e-mails de confirmação e de boas-vindas seguem o idioma do site.
+    language: useLanguageStore.getState().language,
   };
 
   try {

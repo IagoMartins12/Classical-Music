@@ -283,10 +283,14 @@ function SessionEffects() {
     return () => window.clearInterval(timer);
   }, [account]);
 
-  // The language picked on the site goes to the account, so emails follow
-  // it. Covers a switch while signed in and a choice made before signing in.
+  // The language of the site goes to the account, so emails follow it. A
+  // choice (a switch while signed in, or one made before signing in) always
+  // goes; an account with no language yet gets the one the site is showing,
+  // which is the browser's when nobody chose — Google sign-ups and older
+  // accounts would otherwise get every email in Portuguese.
   useEffect(() => {
-    if (!account || !chosen || account.language === language) return;
+    if (!account || account.language === language) return;
+    if (!chosen && account.language) return;
     profileApi
       .setLanguage(language)
       .then(() =>

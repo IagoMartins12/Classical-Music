@@ -13538,6 +13538,11 @@ export interface components {
       contactPreferences: components['schemas']['TeacherContactPreferencesDto'];
     };
     SubscribeNewsletterDto: {
+      /**
+       * O idioma do site de quem se inscreve; os e-mails seguem ele. Sem isso, vale o do navegador.
+       * @enum {string}
+       */
+      language?: 'pt' | 'en';
       /** @example visitante@example.com */
       email: string;
       /** @example Maria */
@@ -13592,6 +13597,11 @@ export interface components {
       email: string;
     };
     SubmitContactDto: {
+      /**
+       * O idioma do site de quem escreve; a confirmação segue ele. Sem isso, vale o do navegador.
+       * @enum {string}
+       */
+      language?: 'pt' | 'en';
       /** @example Maria Silva */
       name: string;
       /** @example maria@example.com */
