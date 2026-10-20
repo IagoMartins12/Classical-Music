@@ -5,6 +5,7 @@
  * contato (`ContactView`) lê.
  */
 import { ApiError, apiFetch } from '@/app/libs/api/client';
+import { useLanguageStore } from '@/app/stores/useLanguageStore';
 import type { ApiSchema } from '@/app/libs/api/types';
 import { porIdioma } from '@/app/utils/porIdioma';
 
@@ -50,6 +51,8 @@ export async function submitContact(
     priority: input.priority as SubmitContactBody['priority'],
     subscribeNewsletter: input.subscribeNewsletter,
     sourceUrl: input.sourceUrl,
+    // A confirmação segue o idioma em que a pessoa vê o site.
+    language: useLanguageStore.getState().language,
   };
 
   try {
