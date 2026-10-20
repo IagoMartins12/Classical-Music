@@ -100,6 +100,12 @@ export interface ResumoFinanceiro {
     grossCents: number;
     /** O que o Stripe cobrou nos pagamentos do mês (só a taxa já lida). */
     stripeFeeCents: number;
+    /** Reembolsos feitos no mês (saem da receita). */
+    refundsCents: number;
+    /** Contestações: o valor retirado, menos o devolvido, mais a tarifa. */
+    disputesCents: number;
+    /** Valores em moeda sem cotação, deixados de fora da soma. */
+    unconverted: number;
     /** Pagamentos do mês com valor e sem a taxa lida: o líquido ainda não os desconta. */
     feesPending: number;
     /** Receita menos a taxa do Stripe. */
@@ -112,6 +118,8 @@ export interface ResumoFinanceiro {
     byPlan: Record<string, number>;
     trial: number;
     pastDue: number;
+    /** O que as atrasadas valem por mês: fora do MRR, em risco. */
+    pastDueMrrCents: number;
     teachers: number;
   };
   breakEven: {
@@ -190,6 +198,8 @@ export interface MesDeMrr {
   /** O MRR no fim do mês; `null` quando não há retrato dele. */
   mrrCents: number | null;
   active: number | null;
+  /** O que as assinaturas atrasadas valem por mês: fora do MRR, mas em risco. */
+  atRiskCents: number | null;
   newCents: number;
   expansionCents: number;
   contractionCents: number;

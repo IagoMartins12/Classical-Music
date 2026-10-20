@@ -263,7 +263,7 @@ export default function Financeiro() {
                 id: 'receita',
                 rotulo: 'Receita líquida no mês',
                 valor: reais(r?.income.netCents),
-                nota: `${reais(r?.income.grossCents)} bruta, menos ${reais(r?.income.stripeFeeCents)} de taxa do Stripe`,
+                nota: notaDaReceita(r?.income),
               },
               {
                 id: 'custos',
@@ -285,6 +285,16 @@ export default function Financeiro() {
               },
             ]}
           />
+
+          {r && r.income.unconverted > 0 && (
+            <Text papel="rotulo" as="p" className="rounded-card bg-sup-2 p-4">
+              {r.income.unconverted === 1
+                ? '1 valor em moeda estrangeira ficou fora da soma'
+                : `${r.income.unconverted} valores em moeda estrangeira ficaram fora da soma`}
+              : o Banco Central não devolveu a cotação do dia. Atualize a tela
+              daqui a pouco.
+            </Text>
+          )}
 
           {r && r.income.feesPending > 0 && (
             <div className="flex flex-wrap items-center justify-between gap-3 rounded-card bg-sup-2 p-4">
@@ -442,6 +452,26 @@ export default function Financeiro() {
   );
 }
 
+/** De onde vem a receita líquida: o bruto e o que saiu dele. */
+function notaDaReceita(
+  income:
+    | {
+        grossCents: number;
+        stripeFeeCents: number;
+        refundsCents: number;
+        disputesCents: number;
+      }
+    | undefined
+) {
+  if (!income) return undefined;
+  const saidas = [`${reais(income.stripeFeeCents)} de taxa do Stripe`];
+  if (income.refundsCents > 0)
+    saidas.push(`${reais(income.refundsCents)} de reembolsos`);
+  if (income.disputesCents !== 0)
+    saidas.push(`${reais(income.disputesCents)} de contestações`);
+  return `${reais(income.grossCents)} bruta, menos ${saidas.join(', ')}`;
+}
+
 function descreve(item: Lancamento) {
   const partes: string[] = [nomeDaCategoria(item.category)];
   if (item.counterparty) partes.push(item.counterparty);
@@ -578,6 +608,13 @@ function Mrr() {
                     ? `${porcento(atual.churnRate * 100, 1)} do MRR do começo do mês · contração: ${reais(atual.contractionCents)}`
                     : `Contração: ${reais(atual?.contractionCents)}`,
                 tom: atual?.churnCents ? 'atencao' : undefined,
+              },
+              {
+                id: 'risco',
+                rotulo: 'MRR em risco',
+                valor: reais(atual?.atRiskCents),
+                nota: 'Assinaturas atrasadas: fora do MRR até pagarem',
+                tom: atual?.atRiskCents ? 'atencao' : undefined,
               },
               {
                 id: 'liquido',
