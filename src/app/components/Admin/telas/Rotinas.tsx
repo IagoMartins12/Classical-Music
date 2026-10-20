@@ -51,6 +51,7 @@ const GRUPOS: Record<Rotina['group'], string> = {
   obras: 'Obras',
   partituras: 'Partituras',
   colecoes: 'Coleções',
+  blog: 'Blog',
 };
 
 const NOME_DO_ESTADO: Record<EstadoDaExecucao, string> = {

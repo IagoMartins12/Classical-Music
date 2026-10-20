@@ -47,7 +47,7 @@ export interface Rotina {
   id: string;
   name: string;
   description: string;
-  group: 'compositores' | 'obras' | 'partituras' | 'colecoes';
+  group: 'compositores' | 'obras' | 'partituras' | 'colecoes' | 'blog';
   destructive: boolean;
   slow: boolean;
   external: boolean;
