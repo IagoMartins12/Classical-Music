@@ -28,6 +28,9 @@ const pt = {
     unavailable: (name: string) => `Ainda não temos a história de ${name}.`,
     unavailableText:
       'Não encontramos fontes confiáveis para escrever sobre esta pessoa por enquanto.',
+    quota: (name: string) => `A história de ${name} ainda não foi escrita.`,
+    quotaText:
+      'Escrevemos algumas biografias por dia. Volte amanhã: ela estará aqui.',
     error: 'Não conseguimos escrever a biografia agora.',
     errorText: 'Pode ser uma instabilidade passageira.',
     retry: 'Tentar de novo',
@@ -100,6 +103,9 @@ const en: typeof pt = {
     unavailable: (name: string) => `We don't have the story of ${name} yet.`,
     unavailableText:
       'We could not find reliable sources to write about this person for now.',
+    quota: (name: string) => `The story of ${name} has not been written yet.`,
+    quotaText:
+      'We write a few biographies a day. Come back tomorrow: it will be here.',
     error: 'We could not write the biography right now.',
     errorText: 'It may be a passing hiccup.',
     retry: 'Try again',

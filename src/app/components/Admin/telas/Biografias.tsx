@@ -3,7 +3,8 @@
 import { useState } from 'react';
 import Link from 'next/link';
 import toast from 'react-hot-toast';
-import { PiArrowSquareOut, PiBookOpenText } from 'react-icons/pi';
+import { PiArrowSquareOut, PiBookOpenText, PiTranslate } from 'react-icons/pi';
+import ConfirmModal from '@/app/components/ConfirmModal';
 import { Abas, Aba } from '@/app/components/ui/Abas';
 import { Badge } from '@/app/components/ui/Badge';
 import { Button, classesDeBotao } from '@/app/components/ui/Button';
@@ -22,6 +23,7 @@ import {
   useBiografias,
   useRevisarBiografia,
 } from '@/app/hooks/admin/useBiografias';
+import { translateBiographyText } from '@/app/requests/composer-biography';
 import {
   BIO_MAX,
   BIO_MIN,
@@ -180,8 +182,10 @@ export default function Biografias() {
       <Sheet
         aberto={atual !== null}
         aoFechar={() => setAberta(null)}
-        titulo="Revisar a biografia"
-        descricao={atual ? atual.name : undefined}
+        // O nome na frente: quem revisa precisa ver de quem é o texto.
+        titulo={
+          atual ? `Revisar a biografia de ${atual.name}` : 'Revisar a biografia'
+        }
         largura="gg"
         rodape={undefined}
       >
@@ -227,6 +231,37 @@ function Editor({
 }) {
   const [bio, setBio] = useState(item.bio ?? '');
   const [bioEn, setBioEn] = useState(item.bioEn ?? '');
+  // A tradução automática, nos dois sentidos: a IA que já traduz no cadastro.
+  const [traduzindo, setTraduzindo] = useState<'en' | 'pt' | null>(null);
+  const [substituir, setSubstituir] = useState<'en' | 'pt' | null>(null);
+
+  const traduzir = async (para: 'en' | 'pt') => {
+    setSubstituir(null);
+    const origem = para === 'en' ? bio : bioEn;
+    setTraduzindo(para);
+    try {
+      const texto = await translateBiographyText(origem.trim(), para);
+      (para === 'en' ? setBioEn : setBio)(texto);
+      toast.success(
+        para === 'en'
+          ? 'Traduzido para o inglês. Leia antes de aprovar.'
+          : 'Traduzido para o português. Leia antes de aprovar.'
+      );
+    } catch (e) {
+      toast.error(
+        e instanceof Error ? e.message : 'Não foi possível traduzir agora.'
+      );
+    } finally {
+      setTraduzindo(null);
+    }
+  };
+  // Traduzir por cima de um texto que já existe pede confirmação.
+  const pedirTraducao = (para: 'en' | 'pt') => {
+    const destino = para === 'en' ? bioEn : bio;
+    if (destino.trim()) setSubstituir(para);
+    else void traduzir(para);
+  };
+  const podeTraduzir = (de: string) => contar(de) >= 20 && !ocupado;
 
   const mudouPt = contar(bio) > 0 && bio.trim() !== (item.bio ?? '').trim();
   const mudouEn =
@@ -264,24 +299,50 @@ function Editor({
       </div>
 
       <div className="grid grid-cols-1 gap-5 lg:grid-cols-2">
-        <Field.Area
-          label="Português"
-          rows={14}
-          value={bio}
-          onChange={(e) => setBio(e.target.value)}
-          ajuda={`${numero(contar(bio))} caracteres`}
-          erro={erroPt}
-          disabled={ocupado}
-        />
-        <Field.Area
-          label="English"
-          rows={14}
-          value={bioEn}
-          onChange={(e) => setBioEn(e.target.value)}
-          ajuda={`${numero(contar(bioEn))} caracteres`}
-          erro={erroEn}
-          disabled={ocupado}
-        />
+        <div className="flex flex-col gap-3">
+          <Field.Area
+            label="Português"
+            rows={14}
+            value={bio}
+            onChange={(e) => setBio(e.target.value)}
+            ajuda={`${numero(contar(bio))} caracteres`}
+            erro={erroPt}
+            disabled={ocupado || traduzindo === 'pt'}
+          />
+          <Button
+            tamanho="p"
+            variante="fantasma"
+            icone={PiTranslate}
+            className="self-start"
+            carregando={traduzindo === 'en'}
+            disabled={!podeTraduzir(bio) || traduzindo !== null}
+            onClick={() => pedirTraducao('en')}
+          >
+            Traduzir para o inglês
+          </Button>
+        </div>
+        <div className="flex flex-col gap-3">
+          <Field.Area
+            label="English"
+            rows={14}
+            value={bioEn}
+            onChange={(e) => setBioEn(e.target.value)}
+            ajuda={`${numero(contar(bioEn))} caracteres`}
+            erro={erroEn}
+            disabled={ocupado || traduzindo === 'en'}
+          />
+          <Button
+            tamanho="p"
+            variante="fantasma"
+            icone={PiTranslate}
+            className="self-start"
+            carregando={traduzindo === 'pt'}
+            disabled={!podeTraduzir(bioEn) || traduzindo !== null}
+            onClick={() => pedirTraducao('pt')}
+          >
+            Traduzir para o português
+          </Button>
+        </div>
       </div>
 
       <div className="flex flex-wrap items-center gap-3 border-t border-[var(--linha)] pt-5">
@@ -304,6 +365,26 @@ function Editor({
             Pular
           </Button>
         )}
+        <ConfirmModal
+          isOpen={substituir !== null}
+          onClose={() => setSubstituir(null)}
+          onConfirm={() => {
+            if (substituir) void traduzir(substituir);
+          }}
+          type="warning"
+          title={
+            substituir === 'en'
+              ? 'Substituir o texto em inglês?'
+              : 'Substituir o texto em português?'
+          }
+          message={
+            substituir === 'en'
+              ? 'O texto em inglês será trocado pela tradução do português. O que está lá agora se perde, a menos que você ainda não tenha salvo nada.'
+              : 'O texto em português será trocado pela tradução do inglês. O que está lá agora se perde, a menos que você ainda não tenha salvo nada.'
+          }
+          confirmText="Traduzir e substituir"
+          cancelText="Voltar"
+        />
         <Link
           href={`/composer/${item.id}`}
           target="_blank"

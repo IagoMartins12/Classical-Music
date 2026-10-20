@@ -925,6 +925,14 @@ body {
   }
 }
 
+/* A mesma regra pela classe que o script do `<head>` põe quando o iPhone diz
+   `navigator.standalone`: cobre a versão do iOS em que a media query não vale. */
+html.app-instalado .navbar-classical,
+html.app-instalado .barra-do-topo {
+  box-sizing: content-box;
+  padding-top: env(safe-area-inset-top);
+}
+
 /* Inputs e forms */
 /* Campo de formulário: uma aparência só, para os 377 `input-classical` e o
    `Field`. Mais escuro que o card — é onde se escreve, não onde se lê —,

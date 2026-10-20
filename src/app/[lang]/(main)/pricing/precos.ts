@@ -11,6 +11,8 @@ import type { Idioma } from '@/app/conteudo/legal/tipos';
 export type PlanoPago = 'PLUS' | 'MENTOR' | 'MAESTRO';
 
 export type PrecoPlano = {
+  /** Dias de teste grátis (0: sem teste), como a tabela de preços diz. */
+  teste: number;
   mensal: number;
   anual: {
     total: number;
@@ -24,7 +26,8 @@ export type Precos = Record<PlanoPago, PrecoPlano | null>;
 
 type DaApi = Record<
   string,
-  { monthly: number; yearly?: { price: number } | null } | undefined
+  | { monthly: number; yearly?: { price: number } | null; trialDays?: number }
+  | undefined
 >;
 
 export const PLANOS_PAGOS: PlanoPago[] = ['PLUS', 'MENTOR', 'MAESTRO'];
@@ -36,6 +39,7 @@ export function normalizarPrecos(dados: DaApi): Precos {
     const total = d.yearly?.price ?? 0;
     const cheio = d.monthly * 12;
     return {
+      teste: Math.max(0, Math.floor(d.trialDays ?? 0)),
       mensal: d.monthly,
       anual:
         total > 0 && total < cheio

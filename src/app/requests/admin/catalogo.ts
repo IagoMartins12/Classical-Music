@@ -64,6 +64,10 @@ export interface FiltrosObras {
   hasScore?: boolean;
   hasVideo?: boolean;
   isCustom?: boolean;
+  hasTone?: boolean;
+  hasYear?: boolean;
+  hasInstrumentation?: boolean;
+  hasMedia?: boolean;
   createdFrom?: string;
   createdTo?: string;
   sortBy?: 'title' | 'createdAt';
@@ -96,6 +100,10 @@ export const getObras = (f: FiltrosObras, page: number) =>
       hasScore: f.hasScore,
       hasVideo: f.hasVideo,
       isCustom: f.isCustom,
+      hasTone: f.hasTone,
+      hasYear: f.hasYear,
+      hasInstrumentation: f.hasInstrumentation,
+      hasMedia: f.hasMedia,
       createdFrom: f.createdFrom,
       createdTo: f.createdTo,
       sortBy: f.sortBy,
@@ -228,6 +236,10 @@ export interface FiltrosCompositores {
   hasDates?: boolean;
   isCustom?: boolean;
   nationality?: string;
+  hasNationality?: boolean;
+  hasBirthYear?: boolean;
+  epochMismatch?: boolean;
+  suspect?: boolean;
   createdFrom?: string;
   createdTo?: string;
   sortBy?: 'name' | 'createdAt' | 'birthYear';
@@ -253,6 +265,10 @@ export const getCompositores = (f: FiltrosCompositores, page: number) =>
         hasDates: f.hasDates,
         isCustom: f.isCustom,
         nationality: f.nationality?.trim() || undefined,
+        hasNationality: f.hasNationality,
+        hasBirthYear: f.hasBirthYear,
+        epochMismatch: f.epochMismatch,
+        suspect: f.suspect,
         createdFrom: f.createdFrom,
         createdTo: f.createdTo,
         sortBy: f.sortBy,

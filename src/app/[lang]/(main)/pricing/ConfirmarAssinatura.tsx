@@ -129,12 +129,20 @@ export function Confirmar({
             </div>
           ))}
           <div className="flex items-baseline justify-between gap-4 pt-4">
-            <dt className="font-semibold text-texto">{c.total}</dt>
+            <dt className="font-semibold text-texto">
+              {p.teste > 0 ? c.totalDepois : c.total}
+            </dt>
             <dd className="classical-title text-3xl tabular-nums text-texto">
               {formatarPreco(cupom ? cupom.finalPrice : cheio, idioma)}
             </dd>
           </div>
         </dl>
+
+        {p.teste > 0 && (
+          <p className="rounded-card bg-sup-2 p-4 text-sm leading-relaxed text-texto">
+            {c.teste(p.teste)}
+          </p>
+        )}
 
         {/* Campo e botão empilhados: lado a lado, a ajuda e o erro embaixo
             do campo desalinham o botão. */}

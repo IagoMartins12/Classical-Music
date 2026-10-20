@@ -8,6 +8,8 @@ export interface QualidadeDoAcervo {
     verified: number;
     withBirthYear: number;
     withNationality: number;
+    withWorks: number;
+    suspects: number;
     withBio: number;
     bioWaitingReview: number;
     withPortrait: number;

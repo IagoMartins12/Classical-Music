@@ -2,7 +2,7 @@
 
 import { useNavegar } from '@/app/components/Admin/painel/Navegador';
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import toast from 'react-hot-toast';
 import {
   PiEye,
@@ -106,7 +106,31 @@ export default function Compositores() {
   const [nacionalidade, setNacionalidade] = useState('');
   const [desde, setDesde] = useState('');
   const [ate, setAte] = useState('');
+  // Preenchimento do cadastro: o quadro de Qualidade chega aqui já filtrado.
+  const [temNacionalidade, setTemNacionalidade] = useState('');
+  const [temNascimento, setTemNascimento] = useState('');
+  const [epocaConfere, setEpocaConfere] = useState('');
+  const [suspeito, setSuspeito] = useState('');
+  useEffect(() => {
+    const q = new URLSearchParams(window.location.search);
+    const sn = (k: string) =>
+      q.get(k) === 'true' ? 'sim' : q.get(k) === 'false' ? 'nao' : '';
+    setTemNacionalidade(sn('hasNationality'));
+    setTemNascimento(sn('hasBirthYear'));
+    setEpocaConfere(q.get('epochMismatch') === 'true' ? 'nao' : '');
+    setSuspeito(sn('suspect'));
+    setBio(sn('hasBio'));
+    setBioEn(sn('hasBioEn'));
+    setRetrato(sn('hasPortrait'));
+    setDatas(sn('hasDates'));
+    if (q.get('hasWorks') === 'true') setMinObras('1');
+    if (q.get('hasWorks') === 'false') setMaxObras('0');
+  }, []);
   const avancados = [
+    temNacionalidade,
+    temNascimento,
+    epocaConfere,
+    suspeito,
     minObras,
     maxObras,
     bio,
@@ -130,6 +154,10 @@ export default function Compositores() {
       setNacionalidade,
       setDesde,
       setAte,
+      setTemNacionalidade,
+      setTemNascimento,
+      setEpocaConfere,
+      setSuspeito,
     ].forEach((f) => f(''));
   };
 
@@ -162,6 +190,10 @@ export default function Compositores() {
           ? false
           : undefined,
     nationality: nacionalidade || undefined,
+    hasNationality: simNao(temNacionalidade),
+    hasBirthYear: simNao(temNascimento),
+    epochMismatch: epocaConfere === 'nao' ? true : undefined,
+    suspect: simNao(suspeito),
     createdFrom: inicioDoDia(desde),
     createdTo: fimDoDia(ate),
     sortBy: ordem,
@@ -446,6 +478,41 @@ export default function Compositores() {
             opcoes={[
               { value: 'comunidade', label: 'Cadastrado pela comunidade' },
               { value: 'importado', label: 'Importado (IMSLP)' },
+            ]}
+          />
+          <FiltroSelecao
+            rotulo="Nacionalidade preenchida"
+            valor={temNacionalidade}
+            aoMudar={setTemNacionalidade}
+            opcoes={[
+              { value: 'sim', label: 'Com nacionalidade' },
+              { value: 'nao', label: 'Sem nacionalidade' },
+            ]}
+          />
+          <FiltroSelecao
+            rotulo="Ano de nascimento"
+            valor={temNascimento}
+            aoMudar={setTemNascimento}
+            opcoes={[
+              { value: 'sim', label: 'Com o ano' },
+              { value: 'nao', label: 'Sem o ano' },
+            ]}
+          />
+          <FiltroSelecao
+            rotulo="Época e datas"
+            valor={epocaConfere}
+            aoMudar={setEpocaConfere}
+            todos="Qualquer"
+            opcoes={[{ value: 'nao', label: 'Época não confere com as datas' }]}
+          />
+          <FiltroSelecao
+            rotulo="Suspeito de não ser compositor"
+            valor={suspeito}
+            aoMudar={setSuspeito}
+            todos="Qualquer"
+            opcoes={[
+              { value: 'sim', label: 'Só os suspeitos' },
+              { value: 'nao', label: 'Sem os suspeitos' },
             ]}
           />
           <FiltroTexto

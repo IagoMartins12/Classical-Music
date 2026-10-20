@@ -26,8 +26,10 @@ import type { Idioma } from './legal/tipos';
  * pelo *price ID* configurado na API, não por essa tabela, e o cupom não
  * chega ao Stripe — por isso esta página não fala de cupom.
  *
- * **Sem "teste grátis".** O checkout do Stripe não aplica período de teste
- * hoje; anunciar um seria prometer o que a cobrança não faz.
+ * **Teste grátis: 7 dias em todos os planos pagos** (`TRIAL_PERIOD_DAYS`, na
+ * API; decisão do dono, 20/10/2026), com cartão e só na primeira assinatura
+ * (quem já teve plano pago não ganha de novo). O número anunciado é o de
+ * `trialDays` da tabela de preços, nunca um valor escrito aqui.
  */
 export const LIMITES = {
   FREE: {
@@ -82,6 +84,8 @@ export type ConteudoPlanos = {
     ensinar: { titulo: string; texto: string };
   };
   carrossel: { rotulo: string; plano: (nome: string) => string };
+  /** O teste grátis, como o card o anuncia (os dias vêm da tabela de preços). */
+  teste: { selo: (dias: number) => string; detalhe: string };
   /** O link do pé dos cards para a tabela completa. */
   comparar: string;
   emBreve: string;
@@ -137,6 +141,10 @@ export type ConteudoPlanos = {
     pagar: string;
     cancelar: string;
     nota: string;
+    /** O que o teste grátis significa na hora de assinar. */
+    teste: (dias: number) => string;
+    /** O rótulo do total quando há teste: ele só é cobrado no fim. */
+    totalDepois: string;
     entrar: string;
     erroCupom: string;
     erroPagamento: string;
@@ -194,6 +202,10 @@ export const PLANOS: Record<Idioma, ConteudoPlanos> = {
       plano: (n) => `Ver o plano ${n}`,
     },
     emBreve: 'Em breve',
+    teste: {
+      selo: (dias) => (dias === 1 ? '1 dia grátis' : `${dias} dias grátis`),
+      detalhe: 'Na primeira assinatura. Cancele antes do fim e nada é cobrado.',
+    },
     comparar: 'Comparar todos os recursos',
     acoesTopo: {
       planos: 'Ver os planos',
@@ -426,6 +438,9 @@ export const PLANOS: Record<Idioma, ConteudoPlanos> = {
       pagar: 'Ir para o pagamento',
       cancelar: 'Cancelar',
       nota: 'O pagamento é feito no Stripe, com cartão de crédito. O Opus Atlas não recebe o número do cartão.',
+      teste: (dias) =>
+        `Teste grátis de ${dias} dias, na sua primeira assinatura. O cartão é pedido agora e a primeira cobrança só acontece quando o teste acaba: cancele antes e nada é cobrado.`,
+      totalDepois: 'Cobrado depois do teste',
       entrar: 'Entre na sua conta para assinar.',
       erroCupom: 'Não foi possível conferir o cupom.',
       erroPagamento: 'Não foi possível abrir o pagamento. Tente de novo.',
@@ -479,6 +494,12 @@ export const PLANOS: Record<Idioma, ConteudoPlanos> = {
       plano: (n) => `See the ${n} plan`,
     },
     emBreve: 'Coming soon',
+    teste: {
+      selo: (dias) =>
+        dias === 1 ? '1-day free trial' : `${dias}-day free trial`,
+      detalhe:
+        'On your first subscription. Cancel before it ends and you pay nothing.',
+    },
     comparar: 'Compare all features',
     acoesTopo: {
       planos: 'See the plans',
@@ -712,6 +733,9 @@ export const PLANOS: Record<Idioma, ConteudoPlanos> = {
       pagar: 'Go to payment',
       cancelar: 'Cancel',
       nota: 'Payment is made on Stripe, by credit card. Opus Atlas never receives the card number.',
+      teste: (dias) =>
+        `Free ${dias}-day trial, on your first subscription. We ask for the card now and the first charge only happens when the trial ends: cancel before and you are not charged.`,
+      totalDepois: 'Charged after the trial',
       entrar: 'Sign in to subscribe.',
       erroCupom: 'We could not check the coupon.',
       erroPagamento: 'We could not open the payment page. Please try again.',

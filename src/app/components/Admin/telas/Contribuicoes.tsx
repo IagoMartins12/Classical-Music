@@ -137,6 +137,7 @@ export default function Contribuicoes() {
         <div className="flex w-full flex-wrap items-center gap-3 sm:w-auto">
           <Field.Selecao
             label="Tipo"
+            rotuloOculto
             value={tipo ?? ''}
             onChange={(e) =>
               setTipo((e.target.value || undefined) as TipoDeContribuicao)

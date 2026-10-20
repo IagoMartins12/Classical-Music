@@ -150,7 +150,7 @@ export const FAQ: CentralBilingue = {
             id: 'teste',
             titulo: 'Como funciona o teste grátis?',
             blocos: [
-              'Os planos pagos têm um período de teste, com a duração indicada em Preços. Terminado o teste, a assinatura passa a ser cobrada, a menos que você cancele antes. Avisamos por e-mail quando o teste está acabando.',
+              'Todos os planos pagos (Plus, Mentor e Maestro) têm 7 dias de teste grátis na primeira assinatura. O cartão é pedido na hora de assinar, e a primeira cobrança só acontece quando o teste acaba: se você cancelar antes, nada é cobrado. Quem já teve um plano pago não ganha um novo teste. Avisamos por e-mail quando o teste está acabando.',
             ],
           },
           {
@@ -383,7 +383,7 @@ export const FAQ: CentralBilingue = {
             id: 'teste',
             titulo: 'How does the free trial work?',
             blocos: [
-              'Paid plans have a trial period, with the length shown on Pricing. When the trial ends the subscription is charged, unless you cancel before. We send an e-mail when the trial is about to end.',
+              'All paid plans (Plus, Mentor and Maestro) have a 7-day free trial on your first subscription. A card is asked for when you subscribe, and the first charge only happens when the trial ends: if you cancel before, nothing is charged. Anyone who already had a paid plan does not get a new trial. We send an e-mail when the trial is about to end.',
             ],
           },
           {
