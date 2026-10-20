@@ -24,6 +24,9 @@ import { PWA } from '@/app/conteudo/site/pwa';
 import { useOnline } from '@/app/hooks/useOnline';
 import { SEARCH_HREF } from './navigation';
 
+/** The least the results page takes, and the suggestions wait for too. */
+const MIN_TERM = 2;
+
 interface ResultItem {
   id: string;
   group: 'composers' | 'works' | 'articles';
@@ -36,7 +39,10 @@ interface ResultItem {
 /**
  * The site's live search: the search sheet the header opens, and the home hero.
  * Results arrive as you type, grouped by kind; arrow keys move through them,
- * Enter opens the highlighted one or, with none, the full results page.
+ * Enter opens the highlighted one or, with none, the full results page. The
+ * sheet also has a "Search" button, on only once something is typed, that goes
+ * to the results page. Both wait for two letters, the least the results page
+ * takes.
  */
 export function HeaderSearch({
   copy,
@@ -124,7 +130,8 @@ export function HeaderSearch({
     }
   };
 
-  const showPanel = (variant === 'sheet' || open) && term.trim().length >= 2;
+  const showPanel =
+    (variant === 'sheet' || open) && term.trim().length >= MIN_TERM;
   const groups: { key: ResultItem['group']; label: string }[] = [
     { key: 'composers', label: copy.composers },
     { key: 'works', label: copy.works },
@@ -137,7 +144,7 @@ export function HeaderSearch({
       role="search"
       onSubmit={(event) => {
         event.preventDefault();
-        if (term.trim().length < 2) return;
+        if (term.trim().length < MIN_TERM) return;
         go(active >= 0 ? items[active].href : resultsHref);
       }}
       className="relative w-full"
@@ -150,7 +157,7 @@ export function HeaderSearch({
           'search-field sup-1 flex items-center gap-3 !rounded-full',
           {
             hero: 'min-h-14 py-2 pl-6 pr-2 shadow-[var(--sombra-1)]',
-            sheet: 'min-h-14 px-5',
+            sheet: 'min-h-14 py-2 pl-5 pr-2',
           }[variant]
         )}
       >
@@ -192,9 +199,19 @@ export function HeaderSearch({
             {copy.title}
           </Button>
         )}
+        {variant === 'sheet' && (
+          <Button
+            variante="primario"
+            type="submit"
+            className="shrink-0"
+            disabled={term.trim().length < MIN_TERM}
+          >
+            {copy.submit}
+          </Button>
+        )}
       </div>
 
-      {variant === 'sheet' && term.trim().length < 2 && (
+      {variant === 'sheet' && term.trim().length < MIN_TERM && (
         <SearchHighlights copy={copy} onNavigate={onNavigate} />
       )}
 

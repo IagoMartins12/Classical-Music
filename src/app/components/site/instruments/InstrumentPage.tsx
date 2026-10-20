@@ -166,31 +166,51 @@ export async function InstrumentPage({
       <section className="flex flex-col gap-6">
         <h2 className="t-titulo max-sm:!text-[1.75rem]">{t.listen}</h2>
         <ol className="grid grid-cols-1 gap-3 md:grid-cols-2">
-          {chapter.listenFirst.map((item, i) => (
-            <li key={item.work}>
-              <Link
-                href={`/search?q=${encodeURIComponent(`${item.work} ${item.composer}`)}`}
-                className="group flex h-full gap-4 rounded-card bg-sup-2 p-5"
-              >
-                <span className="font-display text-[1.75rem] leading-none text-texto-fraco">
-                  {i + 1}
-                </span>
-                <span className="flex min-w-0 flex-col gap-1">
-                  <span className="font-display text-[1.25rem] leading-snug group-hover:text-ouro-texto">
-                    {item.work}
+          {chapter.listenFirst.map((item, i) => {
+            // The work itself; else its composer; else the search (a piece
+            // not in the catalog yet).
+            const href = item.workId
+              ? `/works/${item.workId}`
+              : item.composerId
+                ? `/composer/${item.composerId}`
+                : `/search?q=${encodeURIComponent(`${item.work} ${item.composer}`)}`;
+            return (
+              <li key={item.work}>
+                <Link
+                  href={href}
+                  className="group flex h-full gap-4 rounded-card bg-sup-2 p-5"
+                >
+                  <span className="font-display text-[1.75rem] leading-none text-texto-fraco">
+                    {i + 1}
                   </span>
-                  <span className="t-rotulo text-texto-suave">
-                    {item.composer}
+                  <span className="flex min-w-0 flex-col gap-1">
+                    <span className="font-display text-[1.25rem] leading-snug group-hover:text-ouro-texto">
+                      {item.work}
+                    </span>
+                    <span className="t-rotulo text-texto-suave">
+                      {item.composer}
+                    </span>
+                    <span className="t-rotulo mt-1">{item.note}</span>
+                    <span className="mt-1 inline-flex items-center gap-1.5 t-legenda text-ouro-texto">
+                      <Icon
+                        de={
+                          item.workId || item.composerId
+                            ? PiArrowRight
+                            : PiMagnifyingGlass
+                        }
+                        tamanho="pp"
+                      />{' '}
+                      {item.workId
+                        ? copy.openWork
+                        : item.composerId
+                          ? copy.openComposer
+                          : copy.searchListen}
+                    </span>
                   </span>
-                  <span className="t-rotulo mt-1">{item.note}</span>
-                  <span className="mt-1 inline-flex items-center gap-1.5 t-legenda text-ouro-texto">
-                    <Icon de={PiMagnifyingGlass} tamanho="pp" />{' '}
-                    {copy.searchListen}
-                  </span>
-                </span>
-              </Link>
-            </li>
-          ))}
+                </Link>
+              </li>
+            );
+          })}
         </ol>
       </section>
 

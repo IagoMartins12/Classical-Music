@@ -38,21 +38,25 @@ export const INSTRUMENTS_PT: InstrumentChapter[] = [
       {
         composer: 'Wolfgang Amadeus Mozart',
         work: 'Sonata em dó maior, K. 545',
+        workId: '686c90a13d4f77ce841eb4d8',
         note: 'Escrita “para iniciantes”, clara e alegre. Muita gente aprende a tocar com ela.',
       },
       {
         composer: 'Frédéric Chopin',
         work: 'Balada nº 1, op. 23',
+        workId: '686345f5204a67621b0bfbc5',
         note: 'Dez minutos de drama: começa sussurrando e termina numa tempestade.',
       },
       {
         composer: 'Claude Debussy',
         work: 'Clair de lune',
+        workId: '68711dbfd4375027987dac04',
         note: 'O pedal deixa as notas se misturarem como luz na água.',
       },
       {
         composer: 'Sergei Rachmaninoff',
         work: 'Concerto para piano nº 2',
+        workId: '686c75f43d4f77ce841eaf10',
         note: 'Começa com acordes que imitam sinos e cresce até melodias enormes.',
       },
     ],
@@ -88,21 +92,25 @@ export const INSTRUMENTS_PT: InstrumentChapter[] = [
       {
         composer: 'Johann Sebastian Bach',
         work: 'Variações Goldberg: Ária',
+        workId: '6866f533e541852612e01658',
         note: 'Uma sarabanda tranquila que gera trinta variações.',
       },
       {
         composer: 'Domenico Scarlatti',
         work: 'Sonata em ré menor, K. 141',
+        workId: '6868eeea4d7d232942159a80',
         note: 'Notas repetidas em velocidade, com sabor de violão espanhol.',
       },
       {
         composer: 'Jean-Philippe Rameau',
         work: 'La Poule',
+        workId: '686b55114206d8332943ef35',
         note: 'O cacarejo de uma galinha transformado em música.',
       },
       {
         composer: 'François Couperin',
         work: 'Les Barricades mystérieuses',
+        workId: '6869c6fdc93ef3be836d5e91',
         note: 'Notas que se sobrepõem e criam uma trama hipnótica.',
       },
     ],
@@ -147,21 +155,25 @@ export const INSTRUMENTS_PT: InstrumentChapter[] = [
       {
         composer: 'Johann Sebastian Bach',
         work: 'Tocata e Fuga em ré menor, BWV 565',
+        workId: '6875fd05abb1ea4be867ea61',
         note: 'A abertura mais famosa do órgão. Há discussão se é mesmo de Bach.',
       },
       {
         composer: 'Charles-Marie Widor',
         work: 'Sinfonia nº 5: Tocata',
+        workId: '686bd79be24dbc674e7f0412',
         note: 'Mãos rapidíssimas sobre uma melodia grave nos pés. Muito tocada em casamentos.',
       },
       {
         composer: 'Camille Saint-Saëns',
         work: 'Sinfonia nº 3, “com órgão”: final',
+        workId: '6875007bfed73ac7cb1c0179',
         note: 'O órgão entra com um acorde enorme que enche a sala.',
       },
       {
         composer: 'Olivier Messiaen',
         work: 'La Nativité du Seigneur: Dieu parmi nous',
+        composerId: '685ee607c6bd886c5b497da5',
         note: 'Cores e acordes que só o órgão consegue sustentar.',
       },
     ],
@@ -200,21 +212,25 @@ export const INSTRUMENTS_PT: InstrumentChapter[] = [
       {
         composer: 'Antonio Vivaldi',
         work: 'As Quatro Estações: O Verão, presto',
+        workId: '68787c2d30e79c884ed67bb3',
         note: 'O violino solo faz a tempestade de granizo.',
       },
       {
         composer: 'Johann Sebastian Bach',
         work: 'Partita nº 2: Chaconne',
+        workId: '6861a1fb0b6936a3c6cf8f23',
         note: 'Quinze minutos de um violino sozinho, como se fosse uma orquestra.',
       },
       {
         composer: 'Felix Mendelssohn',
         work: 'Concerto para violino em mi menor',
+        workId: '68787e7930e79c884ed67c4d',
         note: 'O solista entra logo no segundo compasso com uma melodia inesquecível.',
       },
       {
         composer: 'Niccolò Paganini',
         work: 'Capricho nº 24',
+        workId: '68609a3a0b6936a3c6cf5c62',
         note: 'Um tema com variações que testam todas as técnicas do instrumento.',
       },
     ],
@@ -256,21 +272,25 @@ export const INSTRUMENTS_PT: InstrumentChapter[] = [
       {
         composer: 'Wolfgang Amadeus Mozart',
         work: 'Sinfonia Concertante, K. 364: Andante',
+        workId: '687034782b5a360ec93afb6c',
         note: 'Violino e viola conversam como dois cantores de ópera.',
       },
       {
         composer: 'Hector Berlioz',
         work: 'Harold en Italie',
+        workId: '68672d85e541852612e0220f',
         note: 'A viola é o personagem que caminha pelas montanhas italianas.',
       },
       {
         composer: 'Johannes Brahms',
         work: 'Sonata para viola op. 120 nº 2',
+        workId: '686448268f28004160328d53',
         note: 'Calorosa e outonal, escrita no fim da vida de Brahms.',
       },
       {
         composer: 'Béla Bartók',
         work: 'Concerto para viola',
+        workId: '6878009723ddc84386c1c24c',
         note: 'A última obra do compositor, completada depois da morte dele por Tibor Serly, seu amigo.',
       },
     ],
@@ -309,21 +329,25 @@ export const INSTRUMENTS_PT: InstrumentChapter[] = [
       {
         composer: 'Johann Sebastian Bach',
         work: 'Suíte nº 1: Prelúdio',
+        workId: '686406a2204a67621b0c21a9',
         note: 'Acordes desdobrados num violoncelo sozinho. Talvez a peça mais conhecida do instrumento.',
       },
       {
         composer: 'Camille Saint-Saëns',
         work: 'O Carnaval dos Animais: O Cisne',
+        workId: '68699a7cc93ef3be836d550c',
         note: 'Uma melodia longa sobre ondas do piano.',
       },
       {
         composer: 'Antonín Dvořák',
         work: 'Concerto para violoncelo',
+        workId: '6863fbbe204a67621b0c1f68',
         note: 'O concerto mais tocado do repertório, cheio de melodias boêmias.',
       },
       {
         composer: 'Edward Elgar',
         work: 'Concerto para violoncelo',
+        workId: '6863fca8204a67621b0c1f96',
         note: 'Começa com acordes do solista que soam como uma lembrança dolorosa.',
       },
     ],
@@ -362,21 +386,25 @@ export const INSTRUMENTS_PT: InstrumentChapter[] = [
       {
         composer: 'Camille Saint-Saëns',
         work: 'O Carnaval dos Animais: O Elefante',
+        workId: '68699a7cc93ef3be836d550c',
         note: 'O contrabaixo dança uma valsa pesada e engraçada.',
       },
       {
         composer: 'Gustav Mahler',
         work: 'Sinfonia nº 1: terceiro movimento',
+        workId: '68714339d4375027987db4ed',
         note: 'Começa com um solo de contrabaixo tocando Frère Jacques em tom menor, como uma marcha fúnebre.',
       },
       {
         composer: 'Franz Schubert',
         work: 'Quinteto “A Truta”: tema e variações',
+        workId: '686c87c63d4f77ce841eb2fa',
         note: 'O contrabaixo dá peso a um conjunto que tinha só um violino.',
       },
       {
         composer: 'Giovanni Bottesini',
         work: 'Concerto para contrabaixo nº 2',
+        workId: '6865599ac4eec286b4aafe98',
         note: 'Mostra como o instrumento pode ser lírico e ágil.',
       },
     ],
@@ -421,21 +449,25 @@ export const INSTRUMENTS_PT: InstrumentChapter[] = [
       {
         composer: 'Wolfgang Amadeus Mozart',
         work: 'Concerto para flauta e harpa, K. 299',
+        workId: '6866910ae541852612e00297',
         note: 'Escrito para um duque flautista e sua filha harpista, em Paris.',
       },
       {
         composer: 'Maurice Ravel',
         work: 'Introdução e Allegro',
+        workId: '68689a464d7d23294215890a',
         note: 'Harpa, quarteto de cordas, flauta e clarinete numa peça luminosa.',
       },
       {
         composer: 'Claude Debussy',
         work: 'Danses sacrée et profane',
+        workId: '6864bc2f8f2800416032a441',
         note: 'Duas danças, uma solene e outra leve, para harpa e cordas.',
       },
       {
         composer: 'Piotr Tchaikovsky',
         work: 'O Quebra-Nozes: Valsa das Flores',
+        workId: '6875b54dabb1ea4be867daf4',
         note: 'Começa com uma cadência longa da harpa sozinha.',
       },
     ],
@@ -471,21 +503,25 @@ export const INSTRUMENTS_PT: InstrumentChapter[] = [
       {
         composer: 'Francisco Tárrega',
         work: 'Recuerdos de la Alhambra',
+        workId: '686debc1c3a93a29566ccbef',
         note: 'O trêmulo, uma nota repetida rapidíssimo, imita uma fonte de água.',
       },
       {
         composer: 'Joaquín Rodrigo',
         work: 'Concierto de Aranjuez: Adagio',
+        composerId: '685f3042c6bd886c5b4988f3',
         note: 'O corne inglês e o violão dividem uma das melodias mais famosas do século.',
       },
       {
         composer: 'Heitor Villa-Lobos',
         work: 'Prelúdio nº 1',
+        workId: '686d92dbe3de9a37f27c539c',
         note: 'Uma melodia nos baixos, com o sabor das serestas cariocas.',
       },
       {
         composer: 'Agustín Barrios',
         work: 'La Catedral',
+        workId: '68694b9c4d7d23294215ad65',
         note: 'Três movimentos inspirados numa catedral de Montevidéu.',
       },
     ],
@@ -527,16 +563,19 @@ export const INSTRUMENTS_PT: InstrumentChapter[] = [
       {
         composer: 'Claude Debussy',
         work: 'Prélude à l’après-midi d’un faune',
+        workId: '686dad4ac3a93a29566cbe15',
         note: 'Abre com a flauta sozinha numa melodia que não se decide.',
       },
       {
         composer: 'Claude Debussy',
         work: 'Syrinx',
+        workId: '687512ecfed73ac7cb1c05f3',
         note: 'Três minutos para flauta solo, sobre o deus Pã.',
       },
       {
         composer: 'Wolfgang Amadeus Mozart',
         work: 'Concerto para flauta nº 1, K. 313',
+        workId: '686686c8e541852612e00068',
         note: 'Leve e elegante, um retrato do estilo clássico.',
       },
       {
@@ -580,21 +619,25 @@ export const INSTRUMENTS_PT: InstrumentChapter[] = [
       {
         composer: 'Alessandro Marcello',
         work: 'Concerto para oboé em ré menor: Adagio',
+        workId: '686b891c4206d8332943fa26',
         note: 'Uma melodia tão bonita que Bach a transcreveu para cravo.',
       },
       {
         composer: 'Wolfgang Amadeus Mozart',
         work: 'Concerto para oboé em dó maior, K. 314',
+        workId: '686b88844206d8332943fa07',
         note: 'Alegre e virtuosístico, cheio de ornamentos.',
       },
       {
         composer: 'Piotr Tchaikovsky',
         work: 'O Lago dos Cisnes: tema dos cisnes',
+        workId: '68713852d4375027987db272',
         note: 'O oboé canta o tema principal do balé.',
       },
       {
         composer: 'Richard Strauss',
         work: 'Concerto para oboé',
+        workId: '686b8a6d4206d8332943fa72',
         note: 'Escrito no fim da Segunda Guerra, quase sem pausas para respirar.',
       },
     ],
@@ -630,21 +673,25 @@ export const INSTRUMENTS_PT: InstrumentChapter[] = [
       {
         composer: 'Wolfgang Amadeus Mozart',
         work: 'Concerto para clarinete, K. 622: Adagio',
+        workId: '6864459e8f28004160328ccd',
         note: 'Uma das melodias mais serenas de Mozart.',
       },
       {
         composer: 'Johannes Brahms',
         work: 'Quinteto para clarinete, op. 115',
+        workId: '686447458f28004160328d23',
         note: 'Outonal e nostálgico, escrito para Mühlfeld.',
       },
       {
         composer: 'George Gershwin',
         work: 'Rhapsody in Blue',
+        workId: '686e0394c3a93a29566cd0f9',
         note: 'O clarinete sobe deslizando por duas oitavas logo no começo.',
       },
       {
         composer: 'Olivier Messiaen',
         work: 'Quarteto para o fim do tempo: Abîme des oiseaux',
+        composerId: '685ee607c6bd886c5b497da5',
         note: 'Clarinete sozinho, entre silêncios e cantos de pássaros.',
       },
     ],
@@ -677,6 +724,7 @@ export const INSTRUMENTS_PT: InstrumentChapter[] = [
       {
         composer: 'Igor Stravinsky',
         work: 'A Sagração da Primavera: introdução',
+        workId: '6875c17fabb1ea4be867dd7b',
         note: 'O fagote sozinho, tão agudo que parece outro instrumento.',
       },
       {
@@ -687,11 +735,13 @@ export const INSTRUMENTS_PT: InstrumentChapter[] = [
       {
         composer: 'Wolfgang Amadeus Mozart',
         work: 'Concerto para fagote, K. 191',
+        workId: '6863591e204a67621b0bffd8',
         note: 'Mozart aos dezoito anos, brincando com saltos e graves.',
       },
       {
         composer: 'Camille Saint-Saëns',
         work: 'Sonata para fagote e piano',
+        workId: '68635b84204a67621b0c005b',
         note: 'Uma das últimas obras do compositor, lírica e leve.',
       },
     ],
@@ -727,21 +777,25 @@ export const INSTRUMENTS_PT: InstrumentChapter[] = [
       {
         composer: 'Wolfgang Amadeus Mozart',
         work: 'Concerto para trompa nº 4, K. 495: rondó',
+        workId: '6867e16beb4bea6e4b755def',
         note: 'O final que imita uma caçada a cavalo.',
       },
       {
         composer: 'Piotr Tchaikovsky',
         work: 'Sinfonia nº 5: segundo movimento',
+        workId: '687504acfed73ac7cb1c026b',
         note: 'Um solo de trompa longo e terno sobre as cordas.',
       },
       {
         composer: 'Richard Strauss',
         work: 'Till Eulenspiegel',
+        workId: '6875f39fabb1ea4be867e841',
         note: 'A trompa apresenta o malandro Till logo no começo.',
       },
       {
         composer: 'Johannes Brahms',
         work: 'Trio para trompa, violino e piano, op. 40',
+        workId: '6867e2a1eb4bea6e4b755e33',
         note: 'Escrito para a trompa natural, que Brahms preferia.',
       },
     ],
@@ -780,21 +834,25 @@ export const INSTRUMENTS_PT: InstrumentChapter[] = [
       {
         composer: 'Joseph Haydn',
         work: 'Concerto para trompete: final',
+        workId: '68764cd1abb1ea4be867fdda',
         note: 'Alegre e virtuosístico, para o primeiro trompete que tocava todas as notas.',
       },
       {
         composer: 'Jeremiah Clarke',
         work: 'Prince of Denmark’s March',
+        workId: '686d9ff0c3a93a29566cbb40',
         note: 'A conhecida “Trumpet Voluntary”, por muito tempo atribuída a Purcell.',
       },
       {
         composer: 'Modest Mussorgsky / Maurice Ravel',
         work: 'Quadros de uma Exposição: Promenade',
+        workId: '686d30c8e3de9a37f27c419c',
         note: 'O trompete sozinho abre a obra.',
       },
       {
         composer: 'Gustav Mahler',
         work: 'Sinfonia nº 5: Marcha fúnebre',
+        workId: '68750437fed73ac7cb1c0252',
         note: 'Começa com um chamado solitário de trompete.',
       },
     ],
@@ -830,21 +888,25 @@ export const INSTRUMENTS_PT: InstrumentChapter[] = [
       {
         composer: 'Joseph Haydn',
         work: 'Sinfonia nº 103, “Rufo de tímpano”',
+        workId: '68714598d4375027987db58b',
         note: 'A sinfonia começa com um rufo de tímpano sozinho.',
       },
       {
         composer: 'Ludwig van Beethoven',
         work: 'Concerto para violino: início',
+        workId: '687877ed30e79c884ed67a8b',
         note: 'Cinco batidas suaves de tímpano abrem o concerto.',
       },
       {
         composer: 'Richard Strauss',
         work: 'Assim falou Zaratustra: introdução',
+        workId: '686240352d0344907e76e1a3',
         note: 'Os tímpanos respondem aos metais no nascer do sol mais famoso da música.',
       },
       {
         composer: 'Hector Berlioz',
         work: 'Sinfonia Fantástica: Cena no campo',
+        workId: '68713f88d4375027987db40f',
         note: 'No fim, quatro timpanistas imitam um trovão distante.',
       },
     ],
@@ -877,21 +939,25 @@ export const INSTRUMENTS_PT: InstrumentChapter[] = [
       {
         composer: 'Wolfgang Amadeus Mozart',
         work: 'A Flauta Mágica: Der Hölle Rache',
+        workId: '686530ebc4eec286b4aaf569',
         note: 'A ária da Rainha da Noite sobe até um fá agudíssimo.',
       },
       {
         composer: 'Giacomo Puccini',
         work: 'Turandot: Nessun dorma',
+        workId: '68765344abb1ea4be867ff49',
         note: 'A ária de tenor mais famosa do mundo.',
       },
       {
         composer: 'Georges Bizet',
         work: 'Carmen: Habanera',
+        workId: '6863e9be204a67621b0c1be0',
         note: 'Uma mezzo-soprano sedutora sobre um ritmo de dança cubana.',
       },
       {
         composer: 'Heitor Villa-Lobos',
         work: 'Bachianas Brasileiras nº 5: Ária',
+        workId: '68633e1a204a67621b0bfa15',
         note: 'A soprano canta sem palavras sobre oito violoncelos.',
       },
     ],

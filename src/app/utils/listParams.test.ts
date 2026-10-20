@@ -16,8 +16,9 @@ describe('parseComposerParams', () => {
         epoch: ERA,
         instrument: 'nope',
         page: '3',
-        sort: 'born',
+        sort: 'oldest',
         portrait: '1',
+        verified: '1',
         from: '1700',
         to: '99999',
         country: 'German',
@@ -26,12 +27,13 @@ describe('parseComposerParams', () => {
     );
     expect(params).toEqual({
       page: 3,
-      sort: 'born',
+      sort: 'oldest',
       search: undefined,
       epochId: ERA,
       nationality: ['German', 'Alemão'],
       instrumentId: undefined,
       withPortrait: true,
+      verified: true,
       bornFrom: 1700,
       bornTo: undefined,
     });
@@ -49,11 +51,20 @@ describe('parseComposerParams', () => {
 
 describe('parseWorkParams', () => {
   it('orders by arrival without filters and A–Z with them', () => {
-    expect(parseWorkParams({}).sort).toBe('recent');
+    expect(parseWorkParams({}).sort).toBe('newest');
     expect(parseWorkParams({ genre: 'noturnos' }).sort).toBe('title');
-    expect(parseWorkParams({ genre: 'noturnos', sort: 'recent' }).sort).toBe(
-      'recent'
+    expect(parseWorkParams({ genre: 'noturnos', sort: 'newest' }).sort).toBe(
+      'newest'
     );
+  });
+
+  it('knows the featured and oldest orders, and the verified filter', () => {
+    expect(parseWorkParams({ sort: 'featured' }).sort).toBe('featured');
+    expect(parseWorkParams({ sort: 'oldest' }).sort).toBe('oldest');
+    expect(parseWorkParams({ verified: '1' }).verified).toBe(true);
+    expect(parseWorkParams({ verified: '0' }).verified).toBeUndefined();
+    // A verified-only list is a filtered one: A–Z, like any other filter.
+    expect(parseWorkParams({ verified: '1' }).sort).toBe('title');
   });
 
   it('accepts only known levels', () => {

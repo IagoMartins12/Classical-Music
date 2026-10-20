@@ -68,6 +68,7 @@ export async function WorksList({
             label: t.sorts[value],
           })),
         }}
+        toggles={[{ key: 'verified', label: t.verified, chip: t.onlyVerified }]}
         composer={{
           key: 'composer',
           label: t.composer,

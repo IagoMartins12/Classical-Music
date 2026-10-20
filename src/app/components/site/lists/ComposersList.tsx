@@ -113,7 +113,7 @@ export async function ComposersList({
             })),
           },
         ]}
-        // toggles={[{ key: 'portrait', label: t.portrait, chip: t.withPortrait }]}
+        toggles={[{ key: 'verified', label: t.verified, chip: t.onlyVerified }]}
         range={{
           fromKey: 'from',
           toKey: 'to',

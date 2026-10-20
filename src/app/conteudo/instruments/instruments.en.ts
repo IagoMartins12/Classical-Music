@@ -38,21 +38,25 @@ export const INSTRUMENTS_EN: InstrumentChapter[] = [
       {
         composer: 'Wolfgang Amadeus Mozart',
         work: 'Sonata in C major, K. 545',
+        workId: '686c90a13d4f77ce841eb4d8',
         note: 'Written “for beginners,” clear and cheerful. Many people learn to play with it.',
       },
       {
         composer: 'Frédéric Chopin',
         work: 'Ballade No. 1, Op. 23',
+        workId: '686345f5204a67621b0bfbc5',
         note: 'Ten minutes of drama: it begins in a whisper and ends in a storm.',
       },
       {
         composer: 'Claude Debussy',
         work: 'Clair de lune',
+        workId: '68711dbfd4375027987dac04',
         note: 'The pedal lets the notes blend like light on water.',
       },
       {
         composer: 'Sergei Rachmaninoff',
         work: 'Piano Concerto No. 2',
+        workId: '686c75f43d4f77ce841eaf10',
         note: 'It opens with chords like tolling bells and grows into huge melodies.',
       },
     ],
@@ -91,21 +95,25 @@ export const INSTRUMENTS_EN: InstrumentChapter[] = [
       {
         composer: 'Johann Sebastian Bach',
         work: 'Goldberg Variations: Aria',
+        workId: '6866f533e541852612e01658',
         note: 'A calm sarabande that gives rise to thirty variations.',
       },
       {
         composer: 'Domenico Scarlatti',
         work: 'Sonata in D minor, K. 141',
+        workId: '6868eeea4d7d232942159a80',
         note: 'Rapid repeated notes with the flavour of a Spanish guitar.',
       },
       {
         composer: 'Jean-Philippe Rameau',
         work: 'La Poule',
+        workId: '686b55114206d8332943ef35',
         note: 'A hen’s clucking turned into music.',
       },
       {
         composer: 'François Couperin',
         work: 'Les Barricades mystérieuses',
+        workId: '6869c6fdc93ef3be836d5e91',
         note: 'Overlapping notes that weave a hypnotic texture.',
       },
     ],
@@ -147,21 +155,25 @@ export const INSTRUMENTS_EN: InstrumentChapter[] = [
       {
         composer: 'Johann Sebastian Bach',
         work: 'Toccata and Fugue in D minor, BWV 565',
+        workId: '6875fd05abb1ea4be867ea61',
         note: 'The most famous opening for organ. Whether it is really by Bach is still debated.',
       },
       {
         composer: 'Charles-Marie Widor',
         work: 'Symphony No. 5: Toccata',
+        workId: '686bd79be24dbc674e7f0412',
         note: 'Racing hands over a deep melody in the feet. A wedding favourite.',
       },
       {
         composer: 'Camille Saint-Saëns',
         work: 'Symphony No. 3, “Organ”: finale',
+        workId: '6875007bfed73ac7cb1c0179',
         note: 'The organ enters with a huge chord that fills the hall.',
       },
       {
         composer: 'Olivier Messiaen',
         work: 'La Nativité du Seigneur: Dieu parmi nous',
+        composerId: '685ee607c6bd886c5b497da5',
         note: 'Colours and chords only an organ can sustain.',
       },
     ],
@@ -197,21 +209,25 @@ export const INSTRUMENTS_EN: InstrumentChapter[] = [
       {
         composer: 'Antonio Vivaldi',
         work: 'The Four Seasons: Summer, presto',
+        workId: '68787c2d30e79c884ed67bb3',
         note: 'The solo violin is the hailstorm.',
       },
       {
         composer: 'Johann Sebastian Bach',
         work: 'Partita No. 2: Chaconne',
+        workId: '6861a1fb0b6936a3c6cf8f23',
         note: 'Fifteen minutes of one violin sounding like an orchestra.',
       },
       {
         composer: 'Felix Mendelssohn',
         work: 'Violin Concerto in E minor',
+        workId: '68787e7930e79c884ed67c4d',
         note: 'The soloist enters in the second bar with an unforgettable tune.',
       },
       {
         composer: 'Niccolò Paganini',
         work: 'Caprice No. 24',
+        workId: '68609a3a0b6936a3c6cf5c62',
         note: 'A theme and variations that tests every technique on the instrument.',
       },
     ],
@@ -250,21 +266,25 @@ export const INSTRUMENTS_EN: InstrumentChapter[] = [
       {
         composer: 'Wolfgang Amadeus Mozart',
         work: 'Sinfonia Concertante, K. 364: Andante',
+        workId: '687034782b5a360ec93afb6c',
         note: 'Violin and viola converse like two opera singers.',
       },
       {
         composer: 'Hector Berlioz',
         work: 'Harold en Italie',
+        workId: '68672d85e541852612e0220f',
         note: 'The viola is the character wandering the Italian mountains.',
       },
       {
         composer: 'Johannes Brahms',
         work: 'Viola Sonata Op. 120 No. 2',
+        workId: '686448268f28004160328d53',
         note: 'Warm and autumnal, written late in Brahms’s life.',
       },
       {
         composer: 'Béla Bartók',
         work: 'Viola Concerto',
+        workId: '6878009723ddc84386c1c24c',
         note: 'The composer’s last work, completed after his death by his friend Tibor Serly.',
       },
     ],
@@ -297,21 +317,25 @@ export const INSTRUMENTS_EN: InstrumentChapter[] = [
       {
         composer: 'Johann Sebastian Bach',
         work: 'Suite No. 1: Prelude',
+        workId: '686406a2204a67621b0c21a9',
         note: 'Broken chords on a single cello. Perhaps the best-known piece for the instrument.',
       },
       {
         composer: 'Camille Saint-Saëns',
         work: 'The Carnival of the Animals: The Swan',
+        workId: '68699a7cc93ef3be836d550c',
         note: 'A long melody over rippling piano.',
       },
       {
         composer: 'Antonín Dvořák',
         work: 'Cello Concerto',
+        workId: '6863fbbe204a67621b0c1f68',
         note: 'The most played concerto in the repertoire, full of Bohemian tunes.',
       },
       {
         composer: 'Edward Elgar',
         work: 'Cello Concerto',
+        workId: '6863fca8204a67621b0c1f96',
         note: 'It opens with solo chords that sound like a painful memory.',
       },
     ],
@@ -350,21 +374,25 @@ export const INSTRUMENTS_EN: InstrumentChapter[] = [
       {
         composer: 'Camille Saint-Saëns',
         work: 'The Carnival of the Animals: The Elephant',
+        workId: '68699a7cc93ef3be836d550c',
         note: 'The double bass dances a heavy, comic waltz.',
       },
       {
         composer: 'Gustav Mahler',
         work: 'Symphony No. 1: third movement',
+        workId: '68714339d4375027987db4ed',
         note: 'It begins with a solo double bass playing Frère Jacques in a minor key, like a funeral march.',
       },
       {
         composer: 'Franz Schubert',
         work: '“Trout” Quintet: theme and variations',
+        workId: '686c87c63d4f77ce841eb2fa',
         note: 'The double bass gives weight to a group with only one violin.',
       },
       {
         composer: 'Giovanni Bottesini',
         work: 'Double Bass Concerto No. 2',
+        workId: '6865599ac4eec286b4aafe98',
         note: 'Shows how lyrical and agile the instrument can be.',
       },
     ],
@@ -406,21 +434,25 @@ export const INSTRUMENTS_EN: InstrumentChapter[] = [
       {
         composer: 'Wolfgang Amadeus Mozart',
         work: 'Concerto for Flute and Harp, K. 299',
+        workId: '6866910ae541852612e00297',
         note: 'Written in Paris for a duke who played the flute and his daughter, a harpist.',
       },
       {
         composer: 'Maurice Ravel',
         work: 'Introduction and Allegro',
+        workId: '68689a464d7d23294215890a',
         note: 'Harp, string quartet, flute and clarinet in a luminous piece.',
       },
       {
         composer: 'Claude Debussy',
         work: 'Danses sacrée et profane',
+        workId: '6864bc2f8f2800416032a441',
         note: 'Two dances, one solemn and one light, for harp and strings.',
       },
       {
         composer: 'Pyotr Tchaikovsky',
         work: 'The Nutcracker: Waltz of the Flowers',
+        workId: '6875b54dabb1ea4be867daf4',
         note: 'It opens with a long cadenza for harp alone.',
       },
     ],
@@ -456,21 +488,25 @@ export const INSTRUMENTS_EN: InstrumentChapter[] = [
       {
         composer: 'Francisco Tárrega',
         work: 'Recuerdos de la Alhambra',
+        workId: '686debc1c3a93a29566ccbef',
         note: 'The tremolo, one note repeated very fast, imitates a fountain.',
       },
       {
         composer: 'Joaquín Rodrigo',
         work: 'Concierto de Aranjuez: Adagio',
+        composerId: '685f3042c6bd886c5b4988f3',
         note: 'Cor anglais and guitar share one of the century’s most famous melodies.',
       },
       {
         composer: 'Heitor Villa-Lobos',
         work: 'Prelude No. 1',
+        workId: '686d92dbe3de9a37f27c539c',
         note: 'A melody in the bass, with the flavour of Rio’s serenades.',
       },
       {
         composer: 'Agustín Barrios',
         work: 'La Catedral',
+        workId: '68694b9c4d7d23294215ad65',
         note: 'Three movements inspired by a cathedral in Montevideo.',
       },
     ],
@@ -509,16 +545,19 @@ export const INSTRUMENTS_EN: InstrumentChapter[] = [
       {
         composer: 'Claude Debussy',
         work: 'Prélude à l’après-midi d’un faune',
+        workId: '686dad4ac3a93a29566cbe15',
         note: 'It opens with the flute alone in a melody that will not settle.',
       },
       {
         composer: 'Claude Debussy',
         work: 'Syrinx',
+        workId: '687512ecfed73ac7cb1c05f3',
         note: 'Three minutes for solo flute, about the god Pan.',
       },
       {
         composer: 'Wolfgang Amadeus Mozart',
         work: 'Flute Concerto No. 1, K. 313',
+        workId: '686686c8e541852612e00068',
         note: 'Light and elegant, a portrait of the Classical style.',
       },
       {
@@ -556,21 +595,25 @@ export const INSTRUMENTS_EN: InstrumentChapter[] = [
       {
         composer: 'Alessandro Marcello',
         work: 'Oboe Concerto in D minor: Adagio',
+        workId: '686b891c4206d8332943fa26',
         note: 'A melody so beautiful that Bach arranged it for harpsichord.',
       },
       {
         composer: 'Wolfgang Amadeus Mozart',
         work: 'Oboe Concerto in C major, K. 314',
+        workId: '686b88844206d8332943fa07',
         note: 'Cheerful and virtuosic, full of ornaments.',
       },
       {
         composer: 'Pyotr Tchaikovsky',
         work: 'Swan Lake: the swan theme',
+        workId: '68713852d4375027987db272',
         note: 'The oboe sings the ballet’s main theme.',
       },
       {
         composer: 'Richard Strauss',
         work: 'Oboe Concerto',
+        workId: '686b8a6d4206d8332943fa72',
         note: 'Written at the end of the Second World War, with barely a pause to breathe.',
       },
     ],
@@ -606,21 +649,25 @@ export const INSTRUMENTS_EN: InstrumentChapter[] = [
       {
         composer: 'Wolfgang Amadeus Mozart',
         work: 'Clarinet Concerto, K. 622: Adagio',
+        workId: '6864459e8f28004160328ccd',
         note: 'One of Mozart’s most serene melodies.',
       },
       {
         composer: 'Johannes Brahms',
         work: 'Clarinet Quintet, Op. 115',
+        workId: '686447458f28004160328d23',
         note: 'Autumnal and nostalgic, written for Mühlfeld.',
       },
       {
         composer: 'George Gershwin',
         work: 'Rhapsody in Blue',
+        workId: '686e0394c3a93a29566cd0f9',
         note: 'The clarinet slides up two octaves right at the start.',
       },
       {
         composer: 'Olivier Messiaen',
         work: 'Quartet for the End of Time: Abîme des oiseaux',
+        composerId: '685ee607c6bd886c5b497da5',
         note: 'Clarinet alone, between silences and birdsong.',
       },
     ],
@@ -653,6 +700,7 @@ export const INSTRUMENTS_EN: InstrumentChapter[] = [
       {
         composer: 'Igor Stravinsky',
         work: 'The Rite of Spring: introduction',
+        workId: '6875c17fabb1ea4be867dd7b',
         note: 'The bassoon alone, so high it sounds like another instrument.',
       },
       {
@@ -663,11 +711,13 @@ export const INSTRUMENTS_EN: InstrumentChapter[] = [
       {
         composer: 'Wolfgang Amadeus Mozart',
         work: 'Bassoon Concerto, K. 191',
+        workId: '6863591e204a67621b0bffd8',
         note: 'Mozart at eighteen, playing with leaps and low notes.',
       },
       {
         composer: 'Camille Saint-Saëns',
         work: 'Sonata for Bassoon and Piano',
+        workId: '68635b84204a67621b0c005b',
         note: 'One of the composer’s last works, lyrical and light.',
       },
     ],
@@ -700,21 +750,25 @@ export const INSTRUMENTS_EN: InstrumentChapter[] = [
       {
         composer: 'Wolfgang Amadeus Mozart',
         work: 'Horn Concerto No. 4, K. 495: rondo',
+        workId: '6867e16beb4bea6e4b755def',
         note: 'A finale that imitates a hunt on horseback.',
       },
       {
         composer: 'Pyotr Tchaikovsky',
         work: 'Symphony No. 5: second movement',
+        workId: '687504acfed73ac7cb1c026b',
         note: 'A long, tender horn solo over the strings.',
       },
       {
         composer: 'Richard Strauss',
         work: 'Till Eulenspiegel',
+        workId: '6875f39fabb1ea4be867e841',
         note: 'The horn introduces the rascal Till right at the start.',
       },
       {
         composer: 'Johannes Brahms',
         work: 'Horn Trio, Op. 40',
+        workId: '6867e2a1eb4bea6e4b755e33',
         note: 'Written for the natural horn, which Brahms preferred.',
       },
     ],
@@ -750,21 +804,25 @@ export const INSTRUMENTS_EN: InstrumentChapter[] = [
       {
         composer: 'Joseph Haydn',
         work: 'Trumpet Concerto: finale',
+        workId: '68764cd1abb1ea4be867fdda',
         note: 'Bright and virtuosic, for the first trumpet that could play every note.',
       },
       {
         composer: 'Jeremiah Clarke',
         work: 'Prince of Denmark’s March',
+        workId: '686d9ff0c3a93a29566cbb40',
         note: 'The well-known “Trumpet Voluntary,” long attributed to Purcell.',
       },
       {
         composer: 'Modest Mussorgsky / Maurice Ravel',
         work: 'Pictures at an Exhibition: Promenade',
+        workId: '686d30c8e3de9a37f27c419c',
         note: 'The trumpet alone opens the work.',
       },
       {
         composer: 'Gustav Mahler',
         work: 'Symphony No. 5: Funeral March',
+        workId: '68750437fed73ac7cb1c0252',
         note: 'It begins with a lonely trumpet call.',
       },
     ],
@@ -803,21 +861,25 @@ export const INSTRUMENTS_EN: InstrumentChapter[] = [
       {
         composer: 'Joseph Haydn',
         work: 'Symphony No. 103, “Drumroll”',
+        workId: '68714598d4375027987db58b',
         note: 'The symphony opens with a timpani roll on its own.',
       },
       {
         composer: 'Ludwig van Beethoven',
         work: 'Violin Concerto: opening',
+        workId: '687877ed30e79c884ed67a8b',
         note: 'Five soft timpani strokes open the concerto.',
       },
       {
         composer: 'Richard Strauss',
         work: 'Also sprach Zarathustra: introduction',
+        workId: '686240352d0344907e76e1a3',
         note: 'The timpani answer the brass in music’s most famous sunrise.',
       },
       {
         composer: 'Hector Berlioz',
         work: 'Symphonie fantastique: Scene in the Country',
+        workId: '68713f88d4375027987db40f',
         note: 'At the end, four timpanists imitate distant thunder.',
       },
     ],
@@ -850,21 +912,25 @@ export const INSTRUMENTS_EN: InstrumentChapter[] = [
       {
         composer: 'Wolfgang Amadeus Mozart',
         work: 'The Magic Flute: Der Hölle Rache',
+        workId: '686530ebc4eec286b4aaf569',
         note: 'The Queen of the Night’s aria climbs to a stratospheric high F.',
       },
       {
         composer: 'Giacomo Puccini',
         work: 'Turandot: Nessun dorma',
+        workId: '68765344abb1ea4be867ff49',
         note: 'The most famous tenor aria in the world.',
       },
       {
         composer: 'Georges Bizet',
         work: 'Carmen: Habanera',
+        workId: '6863e9be204a67621b0c1be0',
         note: 'A seductive mezzo-soprano over a Cuban dance rhythm.',
       },
       {
         composer: 'Heitor Villa-Lobos',
         work: 'Bachianas Brasileiras No. 5: Aria',
+        workId: '68633e1a204a67621b0bfa15',
         note: 'The soprano sings without words over eight cellos.',
       },
     ],

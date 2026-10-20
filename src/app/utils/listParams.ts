@@ -75,6 +75,7 @@ export const COMPOSER_KEYS = [
   'instrument',
   'formation',
   'portrait',
+  'verified',
   'from',
   'to',
   'sort',
@@ -88,6 +89,7 @@ export const WORK_KEYS = [
   'genre',
   'composer',
   'level',
+  'verified',
   'sort',
   'page',
 ] as const;
@@ -109,6 +111,7 @@ export function parseComposerParams(
     // instrument wins when both are set.
     instrumentId: id(params.instrument) ?? id(params.formation),
     withPortrait: text(params.portrait) === '1' || undefined,
+    verified: text(params.verified) === '1' || undefined,
     bornFrom: int(params.from, 400, 2100),
     bornTo: int(params.to, 400, 2100),
   };
@@ -119,7 +122,7 @@ export function defaultWorkSort(params: UrlParams): WorkSort {
   const filtered = WORK_KEYS.some(
     (key) => key !== 'page' && key !== 'sort' && text(params[key])
   );
-  return filtered ? 'title' : 'recent';
+  return filtered ? 'title' : 'newest';
 }
 
 const LEVELS = ['BEGINNER', 'INTERMEDIATE', 'ADVANCED'] as const;
@@ -136,5 +139,6 @@ export function parseWorkParams(params: UrlParams): WorkListParams {
     genre: text(params.genre),
     composerId: id(params.composer),
     level: LEVELS.find((level) => level === text(params.level)),
+    verified: text(params.verified) === '1' || undefined,
   };
 }

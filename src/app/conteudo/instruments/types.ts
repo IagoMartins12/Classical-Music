@@ -52,7 +52,18 @@ export interface InstrumentChapter {
   story: string[];
   timeline: { year: string; text: string }[];
   repertoire: string;
-  listenFirst: { composer: string; work: string; note: string }[];
+  /**
+   * Where to start listening. `workId` opens the work itself; a work not in
+   * the catalog falls back to its composer (`composerId`), and one with
+   * neither, to the search.
+   */
+  listenFirst: {
+    composer: string;
+    work: string;
+    workId?: string;
+    composerId?: string;
+    note: string;
+  }[];
   didYouKnow: string[];
 }
 

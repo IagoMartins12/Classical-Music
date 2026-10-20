@@ -52,9 +52,11 @@ const pt = {
       featured: 'Em destaque',
       name: 'A–Z',
       'name-desc': 'Z–A',
-      born: 'Mais antigos',
-      'born-desc': 'Mais recentes',
+      oldest: 'Mais antigos',
+      newest: 'Mais recentes',
     },
+    verified: 'Só verificados',
+    onlyVerified: 'Verificados',
   },
   works: {
     title: 'Obras',
@@ -76,7 +78,15 @@ const pt = {
     level: 'Nível',
     anyLevel: 'Qualquer nível',
     apply: 'Ver as obras',
-    sorts: { recent: 'Chegaram agora', title: 'A–Z', 'title-desc': 'Z–A' },
+    sorts: {
+      featured: 'Em destaque',
+      title: 'A–Z',
+      'title-desc': 'Z–A',
+      oldest: 'Mais antigas',
+      newest: 'Mais recentes',
+    },
+    verified: 'Só verificadas',
+    onlyVerified: 'Verificadas',
   },
 };
 
@@ -131,9 +141,11 @@ const en: typeof pt = {
       featured: 'Featured',
       name: 'A–Z',
       'name-desc': 'Z–A',
-      born: 'Oldest',
-      'born-desc': 'Most recent',
+      oldest: 'Oldest',
+      newest: 'Most recent',
     },
+    verified: 'Verified only',
+    onlyVerified: 'Verified',
   },
   works: {
     title: 'Works',
@@ -154,7 +166,15 @@ const en: typeof pt = {
     level: 'Level',
     anyLevel: 'Any level',
     apply: 'See the works',
-    sorts: { recent: 'Just arrived', title: 'A–Z', 'title-desc': 'Z–A' },
+    sorts: {
+      featured: 'Featured',
+      title: 'A–Z',
+      'title-desc': 'Z–A',
+      oldest: 'Oldest',
+      newest: 'Most recent',
+    },
+    verified: 'Verified only',
+    onlyVerified: 'Verified',
   },
 };
 

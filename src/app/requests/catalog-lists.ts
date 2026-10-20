@@ -14,11 +14,17 @@ export const COMPOSER_SORTS = [
   'featured',
   'name',
   'name-desc',
-  'born',
-  'born-desc',
+  'oldest',
+  'newest',
 ] as const;
 export type ComposerSort = (typeof COMPOSER_SORTS)[number];
-export const WORK_SORTS = ['recent', 'title', 'title-desc'] as const;
+export const WORK_SORTS = [
+  'featured',
+  'title',
+  'title-desc',
+  'oldest',
+  'newest',
+] as const;
 export type WorkSort = (typeof WORK_SORTS)[number];
 
 export const COMPOSERS_PER_PAGE = 30;
@@ -35,6 +41,8 @@ export interface ComposerListParams {
   nationality?: string[];
   instrumentId?: string;
   withPortrait?: boolean;
+  /** Only what the team has checked (the verified badge). */
+  verified?: boolean;
   bornFrom?: number;
   bornTo?: number;
 }
@@ -48,6 +56,8 @@ export interface WorkListParams {
   genre?: string;
   composerId?: string;
   level?: string;
+  /** Only what the team has checked (the verified badge). */
+  verified?: boolean;
 }
 
 export async function getCatalogFilterOptions(): Promise<CatalogFilterOptions> {
@@ -71,6 +81,7 @@ export async function listComposers(params: ComposerListParams) {
     nationality: params.nationality?.join(','),
     instrumentId: params.instrumentId,
     withPortrait: params.withPortrait || undefined,
+    verified: params.verified || undefined,
     bornFrom: params.bornFrom,
     bornTo: params.bornTo,
   };
@@ -113,6 +124,7 @@ export async function listWorks(params: WorkListParams) {
         workGenresArr: params.genre,
         composerId: params.composerId,
         difficultyLevel: params.level,
+        verified: params.verified || undefined,
       },
       next: { ...LIST_CACHE, tags: ['works'] },
       buildFallback: { works: [], totalCount: 0, hasMore: false },

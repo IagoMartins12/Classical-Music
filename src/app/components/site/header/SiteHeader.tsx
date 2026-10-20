@@ -37,9 +37,9 @@ import {
  * - **Desktop (lg+)** — Explorar, Blog, Ensino, Sobre; the live search in
  *   the middle (hidden where the page has its own); Planos as the only gold
  *   chip; language, theme and the account.
- * - **Tablet (md–lg)** — brand, search, language, theme, account and the
- *   menu sheet.
- * - **Phone** — brand, search and the menu sheet, like the blog's.
+ * - **Below lg (tablet and phone)** — brand, search, the bell and the menu
+ *   sheet, like the blog's. Language, theme and the account (or sign in /
+ *   sign up) live only in the sheet.
  */
 export function SiteHeader() {
   const { language, path, switchLanguage } = useRouteLanguage();
@@ -100,7 +100,7 @@ export function SiteHeader() {
               onClick={() => setSearchOpen(true)}
               aria-haspopup="dialog"
               aria-keyshortcuts="Control+K Meta+K"
-              className="search-field sup-1 flex min-h-11 w-full max-w-sm items-center gap-3 !rounded-full px-4 text-[0.9375rem] text-texto-fraco transition-colors duration-[var(--t-toque)] hover:text-texto-suave max-lg:hidden"
+              className="search-field sup-1 flex min-h-11 w-full max-w-sm items-center gap-3 !rounded-full px-4 text-[0.9375rem] text-texto-fraco transition-colors duration-[var(--t-toque)] hover:text-texto-suave max-xl:hidden"
             >
               <Icon de={PiMagnifyingGlass} />
               <span className="flex-1 truncate text-left">
@@ -114,7 +114,9 @@ export function SiteHeader() {
             icone={PiMagnifyingGlass}
             rotulo={copy.search.open}
             onClick={() => setSearchOpen(true)}
-            className="lg:hidden"
+            // O campo largo só cabe a partir de 1280 px; abaixo disso (e nas
+            // páginas que já têm busca) fica o ícone.
+            className={pageHasSearch(path) ? 'lg:hidden' : 'xl:hidden'}
           />
           <Link
             href={PLANS_HREF}
@@ -122,13 +124,13 @@ export function SiteHeader() {
           >
             {copy.plans}
           </Link>
-          <span className="max-md:hidden">{languageToggle}</span>
-          <ThemeToggle variant="navbar" className="max-md:hidden" />
+          <span className="max-lg:hidden">{languageToggle}</span>
+          <ThemeToggle variant="navbar" className="max-lg:hidden" />
           {signedUser && (
             <NotificationsBell copy={copy.notifications} language={language} />
           )}
           {signedUser ? (
-            <span className="max-md:hidden">
+            <span className="max-lg:hidden">
               <AccountMenu
                 copy={copy}
                 user={signedUser}
@@ -137,7 +139,7 @@ export function SiteHeader() {
               />
             </span>
           ) : (
-            <span className="flex items-center gap-1 max-md:hidden">
+            <span className="flex items-center gap-1 max-lg:hidden">
               <Button variante="fantasma" tamanho="p" onClick={openLogin}>
                 {copy.signIn}
               </Button>
