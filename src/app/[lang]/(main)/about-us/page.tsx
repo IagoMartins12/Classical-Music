@@ -202,7 +202,7 @@ export default async function Pagina({ params }: LangPageProps) {
         }}
       />
 
-      <div className="pb-24 md:pb-32">
+      <div className="pb-8 md:pb-16">
         {/* Topo: a frase de um lado, rostos do acervo do outro. */}
         <PageHero
           idioma={idioma}
@@ -355,7 +355,7 @@ export default async function Pagina({ params }: LangPageProps) {
           aria-labelledby="acervo"
           className="section-wrap mt-24 md:mt-36"
         >
-          <div className="rounded-card bg-sup-2 px-6 py-10 md:px-12 md:py-16 lg:px-16">
+          <div className="rounded-card bg-sup-2 px-6 py-10 md:px-8 md:py-12 lg:px-16 lg:py-16">
             <h2
               id="acervo"
               className="classical-title text-3xl leading-tight text-texto md:text-[2.5rem]"

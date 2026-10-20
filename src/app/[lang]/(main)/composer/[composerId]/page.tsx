@@ -195,29 +195,6 @@ export async function generateMetadata({ params }: ComposerDetailsPageProps) {
         'max-snippet': -1,
       },
     },
-    // Schema.org para compositor
-    other: {
-      'application/ld+json': JSON.stringify({
-        '@context': 'https://schema.org',
-        '@type': 'Person',
-        '@id': `https://opusatlas.com.br/composer/${composer.id}`,
-        name: composer.fullName,
-        alternateName: composer.name,
-        description: composer.bio || t.description,
-        birthDate: composer.birthDate,
-        deathDate: composer.deathDate,
-        nationality: composer.nationality,
-        jobTitle: 'Composer',
-        genre: composer.epochName,
-        url: `https://opusatlas.com.br/composer/${composer.id}`,
-        image: composer.portraitUrl,
-        sameAs: composer.wikipediaLink ? [composer.wikipediaLink] : undefined,
-        mainEntityOfPage: {
-          '@type': 'WebPage',
-          '@id': `https://opusatlas.com.br/composer/${composer.id}`,
-        },
-      }),
-    },
   };
 }
 

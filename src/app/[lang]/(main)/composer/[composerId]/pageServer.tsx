@@ -1,4 +1,6 @@
 import { notFound } from 'next/navigation';
+import { JsonLd } from '@/app/components/site/JsonLd';
+import { composerJsonLd } from './jsonLd';
 import { ComposerPage } from '@/app/components/site/composer/ComposerPage';
 import { getComposerArticles } from '@/app/requests/blog/composer-articles';
 import {
@@ -54,15 +56,18 @@ export default async function ComposerDetailsServer({
   ]);
 
   return (
-    <ComposerPage
-      composer={composer}
-      overview={overview}
-      works={works}
-      filterOptions={filterOptions}
-      articles={articles}
-      curiosities={curiosities}
-      contributions={contributions}
-      language={language}
-    />
+    <>
+      <JsonLd data={composerJsonLd(composer)} />
+      <ComposerPage
+        composer={composer}
+        overview={overview}
+        works={works}
+        filterOptions={filterOptions}
+        articles={articles}
+        curiosities={curiosities}
+        contributions={contributions}
+        language={language}
+      />
+    </>
   );
 }

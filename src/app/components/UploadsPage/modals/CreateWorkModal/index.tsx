@@ -23,7 +23,7 @@ import {
   FormBlock,
   FormSheet,
 } from '@/app/components/site/edit/FormSheet';
-import MultiSelect from '@/app/components/Common/MultiSelect';
+import { SelecaoMultipla } from '@/app/components/ui/SelecaoMultipla';
 import ComposerSearchInput from '@/app/components/ComposerSearchInput';
 import { useFormValidation, workModalValidations } from '@/app/utils/formUtils';
 import {
@@ -38,6 +38,7 @@ import { useSmartFormChanges } from '@/app/hooks/useFormChanges';
 import SimpleWorkSearchInput from '@/app/components/SimpleWorkSearchInput';
 import { translateEpochName } from '@/app/utils/translations/epochTranslations';
 import { translateInstrument } from '@/app/utils/translations/instrumentsGenresTranslation';
+import { TONALITIES } from '@/app/utils/tonalities';
 import { translateToneStatic } from '@/app/utils/translations/toneTranslation';
 import ParentWorkSuggestionModal from '../ParentWorkSuggestionModal';
 import {
@@ -181,53 +182,8 @@ const CreateWorkModal = ({
     const selectLabel =
       language === 'en' ? 'Select a tonality' : 'Selecione uma tonalidade';
 
-    const baseTonalities = [
-      'Do maior',
-      'Do# maior',
-      'Reb maior',
-      'Re maior',
-      'Re# maior',
-      'Mib maior',
-      'Mi maior',
-      'Fa maior',
-      'Fa# maior',
-      'Solb maior',
-      'Sol maior',
-      'Sol# maior',
-      'Lab maior',
-      'La maior',
-      'La# maior',
-      'Sib maior',
-      'Si maior',
-      'Do menor',
-      'Do# menor',
-      'Reb menor',
-      'Re menor',
-      'Re# menor',
-      'Mib menor',
-      'Mi menor',
-      'Fa menor',
-      'Fa# menor',
-      'Solb menor',
-      'Sol menor',
-      'Sol# menor',
-      'Lab menor',
-      'La menor',
-      'La# menor',
-      'Sib menor',
-      'Si menor',
-      'Dórico',
-      'Frígio',
-      'Lídio',
-      'Mixolídio',
-      'Eólio',
-      'Lócrio',
-      'Atonal',
-      'Politonal',
-      'Modal',
-      'Cromática',
-      'Dodecafônica',
-      'Pentatônica',
+    const baseTonalities: string[] = [
+      ...TONALITIES,
       tx('Não especificada', 'Not specified'),
     ];
 
@@ -1432,27 +1388,23 @@ const CreateWorkModal = ({
 
           <FormBlock titulo={t('modal_work_categories_title')}>
             <div className="sm:col-span-2">
-              <MultiSelect
-                label={t('modal_work_categories_label')}
-                options={validCategoryOptions}
-                selectedValues={formData.categoryNames}
-                onChange={(values) =>
-                  handleInputChange('categoryNames', values)
-                }
+              <SelecaoMultipla
+                rotulo={t('modal_work_categories_label')}
+                opcoes={validCategoryOptions}
+                valores={formData.categoryNames}
+                aoMudar={(values) => handleInputChange('categoryNames', values)}
                 placeholder={t('modal_work_categories_placeholder')}
-                excludeValues={categoryExcludeValues}
+                excluir={categoryExcludeValues}
               />
             </div>
             <div className="sm:col-span-2">
-              <MultiSelect
-                label={t('modal_work_genres_label')}
-                options={validWorkGenreOptions}
-                selectedValues={formData.workGenresArr}
-                onChange={(values) =>
-                  handleInputChange('workGenresArr', values)
-                }
+              <SelecaoMultipla
+                rotulo={t('modal_work_genres_label')}
+                opcoes={validWorkGenreOptions}
+                valores={formData.workGenresArr}
+                aoMudar={(values) => handleInputChange('workGenresArr', values)}
                 placeholder={t('modal_work_genres_placeholder')}
-                excludeValues={workGenresExcludeValues}
+                excluir={workGenresExcludeValues}
               />
             </div>
           </FormBlock>

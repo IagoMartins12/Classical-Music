@@ -34,3 +34,11 @@ export const mailto = (
   assunto?: string
 ) =>
   `mailto:${CONTATO[canal]}${assunto ? `?subject=${encodeURIComponent(assunto)}` : ''}`;
+
+/** As redes do Opus Atlas — rodapé e dados estruturados leem daqui. */
+export const REDES = {
+  instagram: 'https://www.instagram.com/opusatlas/',
+  x: 'https://x.com/Opus_Atlas',
+  linkedin: 'https://www.linkedin.com/company/opus-atlas/about/',
+  tiktok: 'https://www.tiktok.com/@opusatlas5',
+} as const;

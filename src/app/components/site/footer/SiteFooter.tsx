@@ -21,7 +21,7 @@ import {
   resendNewsletterConfirmation,
   subscribeToNewsletter,
 } from '@/app/requests/newsletter';
-import { CONTATO, mailto } from '@/app/utils/contato';
+import { CONTATO, REDES, mailto } from '@/app/utils/contato';
 import { EMPRESA, cnpjFormatado } from '@/app/utils/empresa';
 
 const COLUMNS = {
@@ -50,18 +50,18 @@ const COLUMNS = {
 const SOCIAL = [
   {
     icon: PiInstagramLogo,
-    href: 'https://www.instagram.com/opusatlas/',
+    href: REDES.instagram,
     label: 'Instagram',
   },
-  { icon: PiXLogo, href: 'https://x.com/Opus_Atlas', label: 'X' },
+  { icon: PiXLogo, href: REDES.x, label: 'X' },
   {
     icon: PiLinkedinLogo,
-    href: 'https://www.linkedin.com/company/opus-atlas/about/',
+    href: REDES.linkedin,
     label: 'LinkedIn',
   },
   {
     icon: PiTiktokLogo,
-    href: 'https://www.tiktok.com/@opusatlas5',
+    href: REDES.tiktok,
     label: 'TikTok',
   },
 ];

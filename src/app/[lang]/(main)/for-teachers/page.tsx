@@ -61,7 +61,7 @@ export default async function ParaProfessores({
   ]);
 
   return (
-    <div className="pb-24 md:pb-32">
+    <div className="pb-8 md:pb-16">
       <PageHero
         idioma={idioma}
         migalha={c.migalha}
@@ -104,7 +104,7 @@ export default async function ParaProfessores({
         aria-labelledby="recursos"
         className="section-wrap mt-20 md:mt-32"
       >
-        <div className="rounded-card bg-sup-2 px-6 py-10 md:px-12 md:py-16 lg:px-16">
+        <div className="rounded-card bg-sup-2 px-6 py-10 md:px-8 md:py-12 lg:px-16 lg:py-16">
           <h2
             id="recursos"
             className="classical-title text-3xl leading-tight text-texto md:text-[2.5rem]"

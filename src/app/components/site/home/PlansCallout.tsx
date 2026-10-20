@@ -10,7 +10,7 @@ import type { HomeCopy } from '@/app/conteudo/site/home';
 export function PlansCallout({ copy }: { copy: HomeCopy['plans'] }) {
   return (
     <Revelar as="section" className="section-wrap py-16">
-      <div className="grid grid-cols-1 gap-10 rounded-card bg-sup-2 p-6 md:p-10 lg:grid-cols-[minmax(0,5fr)_minmax(0,7fr)] lg:items-center">
+      <div className="grid grid-cols-1 gap-8 rounded-card bg-sup-2 p-6 lg:grid-cols-[minmax(0,5fr)_minmax(0,7fr)] lg:items-center lg:gap-10 lg:p-10">
         <div className="flex flex-col gap-4">
           <h2 className="t-titulo max-w-[16ch]">{copy.title}</h2>
           <p className="t-corpo text-texto-suave">{copy.text}</p>

@@ -325,9 +325,9 @@ export function CabecalhoDoBlog({
           <LanguageToggle
             idioma={idioma}
             aoTrocar={irParaIdioma}
-            className="hidden sm:flex"
+            className="hidden lg:flex"
           />
-          <ThemeToggle variant="navbar" className="hidden sm:block" />
+          <ThemeToggle variant="navbar" className="hidden lg:block" />
 
           {isAuthenticated ? (
             <div ref={contaRef} className="relative hidden lg:block">
@@ -527,32 +527,25 @@ export function CabecalhoDoBlog({
                 </li>
               </ul>
             ) : (
-              <ul className="flex flex-col gap-1">
-                <li>
-                  <button
-                    type="button"
-                    onClick={() => {
-                      setMenu(false);
-                      abrirLogin();
-                    }}
-                    className="flex min-h-[var(--alvo)] w-full items-center rounded-controle px-4 text-left font-medium text-texto-suave hover:bg-sup-2"
-                  >
-                    {t.nav.entrar}
-                  </button>
-                </li>
-                <li>
-                  <button
-                    type="button"
-                    onClick={() => {
-                      setMenu(false);
-                      abrirCadastro();
-                    }}
-                    className="flex min-h-[var(--alvo)] w-full items-center rounded-controle px-4 text-left font-medium text-ouro-texto hover:bg-sup-2"
-                  >
-                    {t.nav.criarConta}
-                  </button>
-                </li>
-              </ul>
+              <div className="flex flex-col gap-2 px-1">
+                <Button
+                  variante="primario"
+                  onClick={() => {
+                    setMenu(false);
+                    abrirCadastro();
+                  }}
+                >
+                  {t.nav.criarConta}
+                </Button>
+                <Button
+                  onClick={() => {
+                    setMenu(false);
+                    abrirLogin();
+                  }}
+                >
+                  {t.nav.entrar}
+                </Button>
+              </div>
             )}
 
             <hr className="my-4 border-linha" />

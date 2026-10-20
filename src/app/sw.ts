@@ -18,6 +18,7 @@ import {
   ROTA_PARTITURA_OFFLINE,
   ehRotaPessoal,
   ehApiPessoal,
+  ehApiFresca,
 } from './libs/pwa/caches';
 
 declare global {
@@ -109,6 +110,15 @@ const serwist = new Serwist({
         cacheName: CACHE_API_PESSOAL,
         networkTimeoutSeconds: 5,
         plugins: [new ExpirationPlugin({ maxEntries: 200 })],
+      }),
+    },
+    {
+      matcher: ({ url, request }) =>
+        request.method === 'GET' && ehApi(url) && ehApiFresca(url.pathname),
+      handler: new NetworkFirst({
+        cacheName: CACHE_API_PUBLICA,
+        networkTimeoutSeconds: 4,
+        plugins: [new ExpirationPlugin({ maxEntries: 100 })],
       }),
     },
     {

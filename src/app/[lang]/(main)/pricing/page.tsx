@@ -247,7 +247,7 @@ export default async function Pagina({ params }: LangPageProps) {
         }}
       />
 
-      <div className="pb-24 md:pb-32">
+      <div className="pb-8 md:pb-16">
         <PageHero
           idioma={idioma}
           migalha={c.migalha}

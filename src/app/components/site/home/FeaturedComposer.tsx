@@ -160,14 +160,6 @@ export function FeaturedComposer({
             <Link href={href} className={classesDeBotao('primario', 'm')}>
               {copy.exploreWorks}
             </Link>
-            {composer.bio && (
-              <Link
-                href={`${href}#bio`}
-                className={classesDeBotao('fantasma', 'm')}
-              >
-                {copy.readBio}
-              </Link>
-            )}
           </div>
         </div>
       </div>

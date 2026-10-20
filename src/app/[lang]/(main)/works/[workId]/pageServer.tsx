@@ -1,4 +1,6 @@
 import { notFound } from 'next/navigation';
+import { JsonLd } from '@/app/components/site/JsonLd';
+import { workJsonLd } from './jsonLd';
 import { WorkPage } from '@/app/components/site/work/WorkPage';
 import { getComposerWorksWithFilters } from '@/app/requests/composer-details';
 import { getWorkById } from '@/app/requests/work-page-details';
@@ -39,11 +41,14 @@ export default async function WorkDetailsServer({
     .slice(0, MORE_WORKS);
 
   return (
-    <WorkPage
-      work={work}
-      scores={scores}
-      moreWorks={moreWorks}
-      language={language}
-    />
+    <>
+      <JsonLd data={workJsonLd(work, language)} />
+      <WorkPage
+        work={work}
+        scores={scores}
+        moreWorks={moreWorks}
+        language={language}
+      />
+    </>
   );
 }

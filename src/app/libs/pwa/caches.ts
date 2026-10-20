@@ -60,3 +60,18 @@ const API_PESSOAL = [
 export const ehApiPessoal = (path: string) =>
   API_PESSOAL.some((r) => path === r || path.startsWith(`${r}/`)) ||
   path.startsWith('/api/admin');
+
+/**
+ * Public reads that people change (a work's scores and the IMSLP status the
+ * page polls, a composer's curiosities, contributions): the network answers
+ * first, so a reload shows what was just added instead of the last copy.
+ * Everything else public stays stale-while-revalidate.
+ */
+const API_SEMPRE_FRESCA = [
+  /^\/api\/works\/[^/]+\/scores(\/|$)/,
+  /^\/api\/composers\/[^/]+\/curiosities$/,
+  /^\/api\/contributions(\/|$)/,
+];
+
+export const ehApiFresca = (path: string) =>
+  API_SEMPRE_FRESCA.some((r) => r.test(path));

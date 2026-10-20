@@ -1798,7 +1798,29 @@ img[data-retrato][data-falhou] {
   /* Largura de catálogo: 1.280px de conteúdo, mais o recuo dos lados. */
   max-width: calc(var(--largura-catalogo) + 5rem);
   margin: 0 auto;
-  padding: 1rem 2.5rem;
+  /* Recuo lateral igual ao da barra do blog: 16 px no telefone, 24 no
+     tablet e 40 no computador. */
+  padding: 1rem 1rem;
+}
+
+/* No telefone a barra tem a altura da do blog (4rem): o recuo vertical sai e
+   a altura vem do conteúdo. */
+@media (max-width: 639px) {
+  .section-wrap-nav {
+    padding-block: 0;
+  }
+}
+
+@media (min-width: 640px) {
+  .section-wrap-nav {
+    padding-inline: 1.5rem;
+  }
+}
+
+@media (min-width: 1024px) {
+  .section-wrap-nav {
+    padding-inline: 2.5rem;
+  }
 }
 
 .container-classical {
