@@ -1,16 +1,8 @@
-// app/admin/ads/page.tsx
-import { Metadata } from 'next';
-import AdsManagementClient from '@/app/components/Admin/Ads/AdsManagementClient';
+import type { Metadata } from 'next';
+import Anuncios from '@/app/components/Admin/telas/Anuncios';
 
-// Painel em CSR: o dado vem da API pelo navegador.
-export const dynamic = 'force-dynamic';
+export const metadata: Metadata = { title: 'Anúncios' };
 
-export const metadata: Metadata = {
-  title: 'Gerenciamento de Publicidades | Admin Panel',
-  description: 'Gerenciar publicidades e campanhas da plataforma',
-  robots: 'noindex, nofollow',
-};
-
-export default function AdsManagementPage() {
-  return <AdsManagementClient />;
+export default function AnunciosPage() {
+  return <Anuncios />;
 }

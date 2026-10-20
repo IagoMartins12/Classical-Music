@@ -88,7 +88,6 @@ export const useToast = () => {
     return toast(toastMessage, {
       duration: options?.duration || 5000,
       position: options?.position || 'top-right',
-      icon: '⚠️',
       style: {
         //background: 'var(--bg-elevated)',
         color: 'var(--text-primary)',
@@ -115,7 +114,6 @@ export const useToast = () => {
     return toast(toastMessage, {
       duration: options?.duration || 4000,
       position: options?.position || 'top-right',
-      icon: 'ℹ️',
       style: {
         //background: 'var(--bg-elevated)',
         color: 'var(--text-primary)',
@@ -171,7 +169,6 @@ export const useToast = () => {
     return toast(toastMessage, {
       duration: options?.duration || 4000,
       position: options?.position || 'top-right',
-      icon: '📤',
       style: {
         //background: 'var(--bg-elevated)',
         color: 'var(--text-primary)',

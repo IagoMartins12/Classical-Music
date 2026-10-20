@@ -1,12 +1,10 @@
 // app/favorites/page.tsx - Favoritos pessoais otimizado
-import {
-  getServerLanguageStatic,
-  loadPageTranslationsWithCommon,
-} from '@/app/utils/translations/serverTranslations';
+import { getServerLanguageStatic } from '@/app/utils/translations/serverTranslations';
 import { redirect } from 'next/navigation';
-import { TranslationProvider } from '@/app/context/TranslationContext';
-import FavoritesClient from './pageClient';
 import { AchievementProvider } from '@/app/components/achievement/AchievementToast';
+import { PersonalPage } from '@/app/components/site/personal/PersonalPage';
+import { FavoritesView } from '@/app/components/site/personal/FavoritesView';
+import { PERSONAL } from '@/app/conteudo/site/personal';
 import { getServerSession } from '@/app/libs/api/server-session';
 
 // Página por pessoa: renderizada a cada pedido, sem cache de página.
@@ -73,16 +71,16 @@ export default async function FavoritesPage() {
     return redirect('/not-authenticated');
   }
 
-  const language = await getServerLanguageStatic();
-  const { translations } = await loadPageTranslationsWithCommon(language, [
-    'pages/favorites',
-  ]);
-
+  const copy = PERSONAL[await getServerLanguageStatic()].favorites;
   return (
-    <TranslationProvider language={language} translations={translations}>
-      <AchievementProvider>
-        <FavoritesClient />
-      </AchievementProvider>
-    </TranslationProvider>
+    <AchievementProvider>
+      <PersonalPage
+        title={copy.title}
+        description={copy.text}
+        category="FAVORITES"
+      >
+        <FavoritesView />
+      </PersonalPage>
+    </AchievementProvider>
   );
 }

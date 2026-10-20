@@ -1,188 +1,221 @@
-// ============================================
-// ScoreModal - COM BUSCA INTEGRADA
-// ============================================
 'use client';
 
-import { useState, useEffect } from 'react';
-import { Editor } from '@tiptap/react';
-import Modal from '@/app/components/Modal';
-import Button from '@/app/components/Common/Button';
-import Checkbox from '@/app/components/Common/Checkbox';
-import Input from '@/app/components/Common/Inputs';
-import SimpleWorkSearchInput from '@/app/components/SimpleWorkSearchInput';
-import ComposerSearchInputSimple from '@/app/components/ComposerSearchInputSimple';
+import { useEffect, useId, useState } from 'react';
+import type { Editor } from '@tiptap/react';
+import { PiCheck } from 'react-icons/pi';
+import {
+  EscolhaDeObra,
+  type ItemDoAcervo,
+} from '@/app/components/blog/escrita/BuscaNoAcervo';
 import Image from '@/app/components/SmartImage';
+import { Interruptor } from '@/app/components/Admin/painel/Campos';
+import { Field } from '@/app/components/ui/Field';
+import { Icon } from '@/app/components/ui/Icon';
+import { Skeleton } from '@/app/components/ui/Skeleton';
+import { cx } from '@/app/components/ui/cx';
 import { workScoresRequest } from '@/app/requests/work-scores';
+import { FolhaDoEditor } from '../FolhaDoEditor';
 
 interface ScoreModalProps {
   editor: Editor;
   onClose: () => void;
 }
 
+interface Obra {
+  id: string;
+  title: string;
+  composer?: { name?: string };
+}
+
+interface PartituraDaObra {
+  id: string;
+  title: string;
+  type?: string;
+  pageCount?: number;
+  downloadUrl: string;
+  thumbnailUrl?: string;
+}
+
+/** Partitura no texto: escolhe-se a obra e, dela, uma das partituras. */
 export function ScoreModal({ editor, onClose }: ScoreModalProps) {
-  const [composerFilter, setComposerFilter] = useState('');
-  const [selectedWork, setSelectedWork] = useState('');
-  const [workData, setWorkData] = useState<any>(null);
-  const [scores, setScores] = useState([]);
-  const [selectedScore, setSelectedScore] = useState<any>(null);
-  const [loading, setLoading] = useState(false);
-  const [pageNumber, setPageNumber] = useState(1);
-  const [allowDownload, setAllowDownload] = useState(true);
+  const id = useId();
+  const [obraEscolhida, setObraEscolhida] = useState<ItemDoAcervo | null>(null);
+  const obraId = obraEscolhida?.id ?? '';
+  const obra: Obra | null = obraEscolhida
+    ? {
+        id: obraEscolhida.id,
+        title: obraEscolhida.nome,
+        composer: { name: obraEscolhida.compositor?.nome },
+      }
+    : null;
+  const [partituras, setPartituras] = useState<PartituraDaObra[]>([]);
+  const [escolhida, setEscolhida] = useState<PartituraDaObra | null>(null);
+  const [carregando, setCarregando] = useState(false);
+  const [erro, setErro] = useState('');
+  const [pagina, setPagina] = useState(1);
+  const [baixar, setBaixar] = useState(true);
 
   useEffect(() => {
-    if (selectedWork) {
-      loadScores();
-    }
-  }, [selectedWork]);
+    if (!obraId) return;
+    let vivo = true;
+    setCarregando(true);
+    setErro('');
+    setEscolhida(null);
+    workScoresRequest(new URLSearchParams({ workId: obraId }))
+      .then((dados) => {
+        if (vivo) setPartituras(dados?.workScores ?? []);
+      })
+      .catch(() => {
+        if (vivo)
+          setErro('Não deu para carregar as partituras. Tente de novo.');
+      })
+      .finally(() => {
+        if (vivo) setCarregando(false);
+      });
+    return () => {
+      vivo = false;
+    };
+  }, [obraId]);
 
-  const loadScores = async () => {
-    setLoading(true);
-    try {
-      const data = await workScoresRequest(
-        new URLSearchParams({ workId: selectedWork })
-      );
-
-      setScores(data.workScores || []);
-    } catch (error) {
-      console.error('Erro ao buscar partituras:', error);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    e.stopPropagation();
-    if (selectedScore && workData) {
-      editor.commands.insertContent({
+  function inserir() {
+    if (!escolhida || !obra) return;
+    editor
+      .chain()
+      .focus()
+      .insertContent({
         type: 'scoreViewer',
         attrs: {
-          workId: workData.id,
-          scoreId: selectedScore.id,
-          scoreUrl: selectedScore.downloadUrl,
-          scoreTitle: selectedScore.title,
-          workTitle: workData.title,
-          composerName: workData.composer?.name,
-          pageNumber,
-          allowDownload,
+          workId: obra.id,
+          scoreId: escolhida.id,
+          scoreUrl: escolhida.downloadUrl,
+          scoreTitle: escolhida.title,
+          workTitle: obra.title,
+          composerName: obra.composer?.name,
+          pageNumber: Math.max(1, pagina || 1),
+          allowDownload: baixar,
         },
-      });
-      onClose();
-    }
-  };
+      })
+      .run();
+    onClose();
+  }
 
   return (
-    <Modal
-      isOpen={true}
-      onClose={onClose}
-      title="Inserir Visualizador de Partitura"
-      maxWidth="3xl"
-      minHeight
+    <FolhaDoEditor
+      titulo="Partitura"
+      descricao="O leitor folheia a partitura sem sair do artigo."
+      aoFechar={onClose}
+      aoEnviar={inserir}
+      podeEnviar={Boolean(escolhida && obra)}
     >
-      <form onSubmit={handleSubmit} className="space-y-4">
-        <div>
-          <label className="block text-sm font-medium text-theme-primary mb-2">
-            1. Filtrar por Compositor (opcional)
-          </label>
-          <ComposerSearchInputSimple
-            selectedComposer={composerFilter}
-            onComposerSelect={setComposerFilter}
-          />
-        </div>
+      <EscolhaDeObra
+        obra={obraEscolhida}
+        aoEscolher={(o) => {
+          setObraEscolhida(o);
+          if (!o) setPartituras([]);
+        }}
+      />
 
-        <div>
-          <label className="block text-sm font-medium text-theme-primary mb-2">
-            2. Selecionar Obra
-          </label>
-          <SimpleWorkSearchInput
-            selectedWork={selectedWork}
-            onWorkSelect={(id, data) => {
-              setSelectedWork(id);
-              console.log({ id, data });
-              if (data) setWorkData(data);
-            }}
-            filterByComposer={composerFilter}
-          />
-        </div>
-
-        {selectedWork && (
-          <div>
-            <label className="block text-sm font-medium text-theme-primary mb-2">
-              3. Selecionar Partitura
-            </label>
-
-            {loading ? (
-              <p className="text-sm text-theme-tertiary">
-                Carregando partituras...
-              </p>
-            ) : scores.length > 0 ? (
-              <div className="space-y-2 max-h-60 overflow-y-auto">
-                {scores.map((score: any) => (
-                  <button
-                    key={score.id}
-                    type="button"
-                    onClick={() => setSelectedScore(score)}
-                    className={`w-full p-3 rounded-lg border-2 transition-colors flex justify-between px-8 mx-auto text-left ${
-                      selectedScore?.id === score.id
-                        ? 'border-accent-green bg-interactive-active'
-                        : 'border-theme-secondary hover:border-accent-green'
-                    }`}
-                  >
-                    <div className="flex flex-col justify-center ">
-                      <div className="font-medium text-theme-primary">
-                        {score.title}
-                      </div>
-                      <div className="text-sm text-theme-secondary">
-                        {score.type} • {score.pageCount} páginas
-                      </div>
-                    </div>
-                    <div>
-                      <Image
-                        src={score.thumbnailUrl}
-                        alt="Capa da partitura"
-                        width={80}
-                        height={80}
+      {obraId && (
+        <fieldset className="flex flex-col gap-2">
+          <legend className="mb-2 text-sm font-medium text-texto">
+            Partitura
+          </legend>
+          {carregando ? (
+            <div className="flex flex-col gap-2" aria-busy="true">
+              <Skeleton className="h-16 w-full rounded-controle" />
+              <Skeleton className="h-16 w-full rounded-controle" />
+            </div>
+          ) : erro ? (
+            <p role="alert" className="t-legenda text-erro">
+              {erro}
+            </p>
+          ) : partituras.length === 0 ? (
+            <p className="t-legenda">
+              Esta obra ainda não tem partitura no acervo.
+            </p>
+          ) : (
+            <ul className="classical-scrollbar flex max-h-72 flex-col gap-1 overflow-y-auto pr-1">
+              {partituras.map((p) => {
+                const marcada = escolhida?.id === p.id;
+                return (
+                  <li key={p.id}>
+                    <label
+                      className={cx(
+                        'flex cursor-pointer items-center gap-4 rounded-controle p-2 pr-4 transition-colors',
+                        'has-focus-visible:outline-2 has-focus-visible:outline-ouro',
+                        marcada ? 'bg-sup-2' : 'hover:bg-(--interactive-hover)'
+                      )}
+                    >
+                      <input
+                        type="radio"
+                        name={`${id}-partitura`}
+                        checked={marcada}
+                        onChange={() => setEscolhida(p)}
+                        className="sr-only"
                       />
-                    </div>
-                  </button>
-                ))}
-              </div>
-            ) : (
-              <p className="text-sm text-theme-secondary">
-                Nenhuma partitura encontrada
-              </p>
-            )}
-          </div>
-        )}
+                      {p.thumbnailUrl ? (
+                        <Image
+                          src={p.thumbnailUrl}
+                          alt=""
+                          width={48}
+                          height={64}
+                          className="h-16 w-12 shrink-0 rounded-sm bg-sup-2 object-cover"
+                        />
+                      ) : (
+                        <span
+                          aria-hidden="true"
+                          className="h-16 w-12 shrink-0 rounded-sm bg-sup-2"
+                        />
+                      )}
+                      <span className="flex min-w-0 flex-1 flex-col">
+                        <span className="truncate font-medium text-texto">
+                          {p.title}
+                        </span>
+                        <span className="t-legenda">
+                          {[
+                            p.type,
+                            p.pageCount ? `${p.pageCount} páginas` : null,
+                          ]
+                            .filter(Boolean)
+                            .join(' · ')}
+                        </span>
+                      </span>
+                      {marcada && (
+                        <Icon
+                          de={PiCheck}
+                          tamanho="p"
+                          className="text-ouro-texto"
+                        />
+                      )}
+                    </label>
+                  </li>
+                );
+              })}
+            </ul>
+          )}
+        </fieldset>
+      )}
 
-        {selectedScore && (
-          <div className="space-y-3 pt-4 border-t border-theme-secondary">
-            <Input
-              label="Página inicial"
-              type="number"
-              value={pageNumber}
-              onChange={(e) => setPageNumber(parseInt(e.target.value))}
-              min={1}
-              widhtFull
-            />
-
-            <Checkbox
-              label="Permitir download da partitura"
-              checked={allowDownload}
-              onChange={(e) => setAllowDownload(e.target.checked)}
-            />
-          </div>
-        )}
-
-        <div className="flex justify-end space-x-2 pt-4">
-          <Button type="button" variant="secondary" onClick={onClose}>
-            Cancelar
-          </Button>
-          <Button type="submit" variant="primary" disabled={!selectedScore}>
-            Inserir Visualizador
-          </Button>
+      {escolhida && (
+        <div className="flex flex-col gap-4">
+          <Field
+            label="Abrir na página"
+            type="number"
+            inputMode="numeric"
+            min={1}
+            max={escolhida.pageCount || undefined}
+            value={pagina}
+            onChange={(e) => setPagina(Number(e.target.value))}
+            classeCampo="max-w-32"
+          />
+          <Interruptor
+            rotulo="Deixar baixar"
+            ajuda="Mostra o link para baixar o PDF sob a partitura."
+            ligado={baixar}
+            aoMudar={setBaixar}
+          />
         </div>
-      </form>
-    </Modal>
+      )}
+    </FolhaDoEditor>
   );
 }

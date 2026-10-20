@@ -1,66 +1,48 @@
-// app/components/Common/ConfirmModal.tsx
+// components/ConfirmModal/index.tsx
 'use client';
 
-import { useEffect, useState } from 'react';
-import { createPortal } from 'react-dom';
-import { AnimatedCard, AnimatedItem } from '../animation/AnimatedComponents';
-import {
-  FiAlertTriangle,
-  FiTrash2,
-  FiCheck,
-  FiInfo,
-  FiHelpCircle,
-  FiLoader,
-} from 'react-icons/fi';
-import Button from '../Common/Button';
+import { useState } from 'react';
+import type { ReactNode } from 'react';
+import { PiInfo, PiQuestion, PiTrash, PiWarning } from 'react-icons/pi';
+import { Button } from '@/app/components/ui/Button';
+import { Icon } from '@/app/components/ui/Icon';
+import { Sheet } from '@/app/components/ui/Sheet';
+
+/**
+ * A confirmação do sistema — o único formato de "tem certeza?".
+ *
+ * Um ícone grande, o título, a mensagem, e as ações à direita. Sem ícone
+ * dentro do botão (era um segundo ícone, pequeno, repetindo o grande) e sem a
+ * linha de subtítulo que repetia a mensagem. Cor só onde ela diz algo:
+ * apagar pinta de vermelho o ícone e o botão; o resto fica no ouro.
+ */
 
 export interface ConfirmModalProps {
   isOpen: boolean;
   onClose: () => void;
   onConfirm: () => void | Promise<void>;
   title: string;
-  message: string;
+  message: ReactNode;
   type?: 'danger' | 'warning' | 'info' | 'question';
   confirmText?: string;
   cancelText?: string;
   isLoading?: boolean;
-  children?: React.ReactNode; // Para conteúdo adicional
+  /** Conteúdo a mais entre a mensagem e as ações (lista, aviso). */
+  children?: ReactNode;
+  /** Só avisa: sem botão de confirmar (ex.: local com eventos não se apaga). */
+  semConfirmar?: boolean;
+  /** Bloqueia só o confirmar (ex.: enquanto confere o que vai junto). */
+  confirmarBloqueado?: boolean;
+  /** Botão vermelho mesmo sem ser `danger` (descartar alterações). */
+  acaoPerigosa?: boolean;
 }
 
-const TYPE_CONFIG = {
-  danger: {
-    icon: FiTrash2,
-    color: 'text-accent-red',
-    bgColor: 'bg-accent-red/10',
-    borderColor: 'border-accent-red/30',
-    buttonVariant: 'delete' as const,
-    defaultConfirmText: 'Deletar',
-  },
-  warning: {
-    icon: FiAlertTriangle,
-    color: 'text-accent-amber',
-    bgColor: 'bg-accent-amber/10',
-    borderColor: 'border-accent-amber/30',
-    buttonVariant: 'primary' as const,
-    defaultConfirmText: 'Continuar',
-  },
-  info: {
-    icon: FiInfo,
-    color: 'text-accent-blue',
-    bgColor: 'bg-accent-blue/10',
-    borderColor: 'border-accent-blue/30',
-    buttonVariant: 'primary' as const,
-    defaultConfirmText: 'OK',
-  },
-  question: {
-    icon: FiHelpCircle,
-    color: 'text-brand-primary',
-    bgColor: 'bg-brand-primary/10',
-    borderColor: 'border-brand-primary/30',
-    buttonVariant: 'primary' as const,
-    defaultConfirmText: 'Sim',
-  },
-};
+const TIPO = {
+  danger: { icone: PiTrash, tom: 'text-erro', acao: 'Deletar' },
+  warning: { icone: PiWarning, tom: 'text-ouro-texto', acao: 'Continuar' },
+  info: { icone: PiInfo, tom: 'text-ouro-texto', acao: 'OK' },
+  question: { icone: PiQuestion, tom: 'text-ouro-texto', acao: 'Sim' },
+} as const;
 
 export default function ConfirmModal({
   isOpen,
@@ -73,115 +55,66 @@ export default function ConfirmModal({
   cancelText = 'Cancelar',
   isLoading = false,
   children,
+  semConfirmar = false,
+  confirmarBloqueado = false,
+  acaoPerigosa = type === 'danger',
 }: ConfirmModalProps) {
-  const [mounted, setMounted] = useState(false);
-  const [processing, setProcessing] = useState(false);
+  const [processando, setProcessando] = useState(false);
+  const ocupado = isLoading || processando;
+  const { icone: Icone, tom, acao } = TIPO[type];
 
-  useEffect(() => {
-    setMounted(true);
-  }, []);
-
-  useEffect(() => {
-    if (isOpen) {
-      const originalOverflow = document.body.style.overflow;
-      document.body.style.overflow = 'hidden';
-
-      return () => {
-        document.body.style.overflow = originalOverflow;
-      };
-    }
-  }, [isOpen]);
-
-  const handleConfirm = async () => {
-    setProcessing(true);
+  const confirmar = async () => {
+    setProcessando(true);
     try {
       await onConfirm();
     } finally {
-      setProcessing(false);
+      setProcessando(false);
     }
   };
 
-  if (!mounted || !isOpen) return null;
-
-  const config = TYPE_CONFIG[type];
-  const Icon = config.icon;
-  const finalConfirmText = confirmText || config.defaultConfirmText;
-  const isLoadingState = isLoading || processing;
-
-  const modalContent = (
-    <div className="fixed inset-0 z-[9999] flex items-center justify-center p-4">
-      <div
-        className="absolute inset-0 bg-black/50 backdrop-blur-sm transition-opacity duration-300"
-        onClick={!isLoadingState ? onClose : undefined}
-      />
-
-      <AnimatedItem direction="scale" springType="bouncy" className="relative">
-        <AnimatedCard
-          hover="none"
-          className="relative bg-theme-primary rounded-xl shadow-xl max-w-md w-full p-6 border border-theme-secondary"
-        >
-          {/* Header */}
-          <div className="flex items-center space-x-3 mb-4">
-            <div
-              className={`
-                w-12 h-12 rounded-xl flex items-center justify-center
-                ${config?.bgColor} ${config?.borderColor} border
-              `}
-            >
-              <Icon className={`w-6 h-6 ${config?.color}`} />
-            </div>
-            <div>
-              <h3 className="text-lg font-bold text-theme-primary">{title}</h3>
-              <p className="text-sm text-theme-secondary">
-                {type === 'danger' && 'Esta ação não pode ser desfeita'}
-                {type === 'warning' && 'Verifique antes de continuar'}
-                {type === 'info' && 'Informação importante'}
-                {type === 'question' && 'Confirme sua escolha'}
-              </p>
-            </div>
-          </div>
-
-          {/* Message */}
-          <div className="mb-6">
-            <p className="text-theme-secondary leading-relaxed">{message}</p>
-          </div>
-
-          {/* Additional content */}
-          {children && <div className="mb-6">{children}</div>}
-
-          {/* Actions */}
-          <div className="flex items-center justify-end space-x-3">
+  return (
+    <Sheet
+      aberto={isOpen}
+      aoFechar={() => {
+        if (!ocupado) onClose();
+      }}
+      titulo={title}
+      largura="p"
+      alca={false}
+      rodape={
+        // Straight into the sheet's footer, which lays the buttons out
+        // (side by side, equal halves on the phone); a wrapper here broke it.
+        <>
+          <Button variante="fantasma" onClick={onClose} disabled={ocupado}>
+            {cancelText}
+          </Button>
+          {!semConfirmar && (
             <Button
-              variant="secondary"
-              onClick={onClose}
-              disabled={isLoadingState}
+              variante={acaoPerigosa ? 'perigo' : 'primario'}
+              onClick={confirmar}
+              carregando={ocupado}
+              disabled={confirmarBloqueado}
             >
-              {cancelText}
+              {confirmText || acao}
             </Button>
-
-            <Button
-              variant={config?.buttonVariant}
-              onClick={handleConfirm}
-              disabled={isLoadingState}
-              leftIcon={
-                isLoadingState ? (
-                  <FiLoader className="animate-spin" />
-                ) : type === 'danger' ? (
-                  <FiTrash2 />
-                ) : type === 'question' ? (
-                  <FiCheck />
-                ) : undefined
-              }
-            >
-              {isLoadingState ? 'Processando...' : finalConfirmText}
-            </Button>
-          </div>
-        </AnimatedCard>
-      </AnimatedItem>
-    </div>
+          )}
+        </>
+      }
+    >
+      <div className="flex flex-col gap-5">
+        <div className="flex items-start gap-4">
+          <span
+            aria-hidden="true"
+            className={`grid h-12 w-12 shrink-0 place-items-center rounded-full bg-sup-2 ${tom}`}
+          >
+            <Icon de={Icone} tamanho="m" />
+          </span>
+          <div className="t-corpo min-w-0 pt-2 text-texto-suave">{message}</div>
+        </div>
+        {children}
+      </div>
+    </Sheet>
   );
-
-  return createPortal(modalContent, document.body);
 }
 
 // Hook para usar o modal de confirmação de forma mais simples

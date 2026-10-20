@@ -36,7 +36,7 @@ export async function getComposerArticles(
     );
 
     return {
-      articles: response.articles.map(toPreview),
+      articles: response.articles.map(toArticlePreview),
       totalCount: response.pagination.total,
     };
   } catch (error) {
@@ -45,7 +45,7 @@ export async function getComposerArticles(
   }
 }
 
-function toPreview(article: ArticleSummary): BlogArticlePreview {
+export function toArticlePreview(article: ArticleSummary): BlogArticlePreview {
   const { firstName, lastName, username, image } = article.author;
   const authorName =
     [firstName, lastName].filter(Boolean).join(' ') || username || undefined;

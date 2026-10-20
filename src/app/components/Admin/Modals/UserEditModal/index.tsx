@@ -1,23 +1,30 @@
 'use client';
 
 import { useState } from 'react';
-import {
-  FiSave,
-  FiUser,
-  FiAward,
-  FiShield,
-  FiSettings,
-  FiAlertTriangle,
-} from 'react-icons/fi';
-import {
-  AnimatedCard,
-  LoadingSpinner,
-} from '@/app/components/animation/AnimatedComponents';
-import Button from '@/app/components/Common/Button';
-import { AdminUser } from '@/app/hooks/admin/useAdminUsers';
-import Modal from '@/app/components/Modal';
+import { PiChalkboardTeacher, PiShield, PiWarning } from 'react-icons/pi';
+import { Button } from '@/app/components/ui/Button';
+import { Field } from '@/app/components/ui/Field';
+import { Inline, Stack } from '@/app/components/ui/Layout';
+import { Sheet } from '@/app/components/ui/Sheet';
+import type { AdminUser } from '@/app/requests/admin/users';
 import { updateAdminUser } from '@/app/requests/admin/users';
 
+/**
+ * Editar um usuário no painel: o papel no sistema e o papel de professor —
+ * duas coisas diferentes.
+ *
+ * **O defeito que havia aqui.** A lista de papéis tinha "Professor" com valor
+ * 1, e 1 é o nível de **administrador**: escolher "Professor" dava acesso ao
+ * painel e nunca enviava o convite, porque a API convida quando recebe
+ * `isTeacher: true`. Agora o papel no sistema é só acesso (usuário, admin,
+ * super admin) e "professor" é uma chave à parte, que envia o convite.
+ *
+ * **O convite leva um plano** (Mentor ou Maestro), obrigatório: é ele que dá o
+ * limite de alunos — sem plano, o professor convidado ficava no Free, com 0
+ * alunos. O plano tem vencimento opcional e é concedido quando a pessoa
+ * aceita; o convite vale 30 dias, ou até a data escolhida. Quem assina um
+ * plano para professores vira professor sozinho, sem convite.
+ */
 interface UserEditModalProps {
   user: AdminUser;
   isOpen: boolean;
@@ -25,38 +32,30 @@ interface UserEditModalProps {
   onSave: (updatedUser: AdminUser) => void;
 }
 
-interface UserEditData {
-  role: number;
-  userType: string;
-  experienceLevel: string;
-}
-
-const ROLE_OPTIONS = [
+/**
+ * Os papéis que a API reconhece (`common/auth/roles.ts`): 0 é pessoa comum,
+ * 2 é administrador. **O 1 não abre o painel** — é o professor do legado, e
+ * ser professor hoje é a chave de baixo (`isTeacher`). Esta lista oferecia
+ * "Administrador (1): acesso ao painel" e "Super admin (2)" até 29/09/2026:
+ * quem escolhia o primeiro achava que tinha dado acesso, e não tinha; e não
+ * existe nível acima de 2.
+ */
+const PAPEIS = [
+  { value: 0, label: 'Pessoa', ajuda: 'Usa o site; não abre o painel.' },
   {
-    value: 0,
-    label: 'Usuário Comum',
-    description: 'Acesso básico à plataforma',
+    value: 2,
+    label: 'Administrador',
+    ajuda: 'Abre o painel inteiro: catálogo, pessoas, cobrança e sistema.',
   },
-  {
-    value: 1,
-    label: 'Professor',
-    description: 'Acesso a ferramentas educacionais',
-  },
-  { value: 2, label: 'Super Admin', description: 'Acesso total ao sistema' },
-];
+] as const;
 
-const USER_TYPE_OPTIONS = [
-  { value: 'MUSIC_STUDENT', label: 'Estudante de Música' },
-  { value: 'CASUAL_USER', label: 'Usuário Casual' },
-  { value: 'PROFESSIONAL', label: 'Profissional' },
-  { value: 'TEACHER', label: 'Professor' },
-];
+type PlanoConvite = 'MENTOR' | 'MAESTRO';
 
-const EXPERIENCE_OPTIONS = [
-  { value: 'BEGINNER', label: 'Iniciante' },
-  { value: 'INTERMEDIATE', label: 'Intermediário' },
-  { value: 'ADVANCED', label: 'Avançado' },
-];
+const hoje = () => new Date().toISOString().slice(0, 10);
+
+/** Fim do dia escolhido, no horário de Brasília. */
+export const fimDoDia = (dia: string) =>
+  new Date(`${dia}T23:59:59-03:00`).toISOString();
 
 export default function UserEditModal({
   user,
@@ -64,270 +63,190 @@ export default function UserEditModal({
   onClose,
   onSave,
 }: UserEditModalProps) {
-  const [editData, setEditData] = useState<UserEditData>({
-    role: user.role || 0,
-    userType: user.userType || 'CASUAL_USER',
-    experienceLevel: user.experienceLevel || 'BEGINNER',
-  });
+  // Conta ainda com o nível 1 do legado aparece como "Pessoa": ele não dá
+  // acesso a nada.
+  const papelAtual = user.role === 2 ? 2 : 0;
+  const jaProfessor = Boolean(user.isTeacher);
+  const [papel, setPapel] = useState<number>(papelAtual);
+  const [professor, setProfessor] = useState(jaProfessor);
+  const [plano, setPlano] = useState<PlanoConvite>('MENTOR');
+  const [vencimento, setVencimento] = useState('');
+  const [validade, setValidade] = useState('');
+  const [salvando, setSalvando] = useState(false);
+  const [erro, setErro] = useState<string | null>(null);
 
-  const [loading, setSaving] = useState(false);
-  const [error, setError] = useState<string | null>(null);
-  const [hasChanges, setHasChanges] = useState(false);
+  const convidando = professor && !jaProfessor;
+  const removendoProfessor = !professor && jaProfessor;
+  const mudou = papel !== papelAtual || professor !== jaProfessor;
 
-  const handleInputChange = (field: keyof UserEditData, value: any) => {
-    setEditData((prev) => {
-      const newData = { ...prev, [field]: value };
-
-      // Verificar se há mudanças
-      const originalData = {
-        role: user.role || 0,
-        userType: user.userType || 'CASUAL_USER',
-        experienceLevel: user.experienceLevel || 'BEGINNER',
-      };
-
-      const hasChanged = Object.keys(newData).some(
-        (key) =>
-          newData[key as keyof UserEditData] !==
-          originalData[key as keyof UserEditData]
-      );
-
-      setHasChanges(hasChanged);
-      return newData;
-    });
-  };
-
-  const handleSave = async () => {
-    if (!hasChanges) {
+  async function salvar() {
+    if (!mudou) {
       onClose();
       return;
     }
-
-    setSaving(true);
-    setError(null);
-
+    setSalvando(true);
+    setErro(null);
     try {
-      // O nível de experiência é da própria pessoa: a API não o edita pelo
-      // painel. A tela recebe o usuário como ficou na API.
-      const updated = await updateAdminUser(user.id, {
-        role: editData.role,
-        userType: editData.userType,
+      const atualizado = await updateAdminUser(user.id, {
+        role: papel !== papelAtual ? papel : undefined,
+        isTeacher: professor !== jaProfessor ? professor : undefined,
+        teacherPlanGrant: convidando
+          ? {
+              planType: plano,
+              expiresAt: vencimento ? fimDoDia(vencimento) : null,
+            }
+          : undefined,
+        teacherInviteExpiresAt:
+          convidando && validade ? fimDoDia(validade) : undefined,
       });
-
-      onSave({ ...user, ...updated });
-    } catch (err) {
-      setError(err instanceof Error ? err.message : 'Erro desconhecido');
+      onSave({ ...user, ...atualizado });
+    } catch (e) {
+      setErro(e instanceof Error ? e.message : 'Não foi possível salvar.');
     } finally {
-      setSaving(false);
+      setSalvando(false);
     }
-  };
-
-  const getRoleColor = (role: number) => {
-    switch (role) {
-      case 0:
-        return 'text-theme-tertiary border-theme-primary';
-      case 1:
-        return 'text-accent-blue border-accent-blue';
-      case 2:
-        return 'text-accent-red border-accent-red';
-      default:
-        return 'text-theme-tertiary border-theme-primary';
-    }
-  };
-
-  const getRoleIcon = (role: number) => {
-    switch (role) {
-      case 0:
-        return FiUser;
-      case 1:
-        return FiAward;
-      case 2:
-        return FiShield;
-      default:
-        return FiUser;
-    }
-  };
-
-  if (!isOpen) return null;
+  }
 
   return (
-    <Modal
-      isOpen={isOpen}
-      maxWidth="4xl"
-      onClose={onClose}
-      className="bg-theme-background border border-theme-primary rounded-2xl w-full  overflow-hidden"
+    <Sheet
+      aberto={isOpen}
+      aoFechar={onClose}
+      titulo="Papel e professor"
+      descricao={`${user.name || user.email}${user.name && user.email ? ` · ${user.email}` : ''}`}
+      largura="m"
+      rodape={
+        <>
+          <Button
+            tamanho="p"
+            variante="fantasma"
+            onClick={onClose}
+            disabled={salvando}
+          >
+            Cancelar
+          </Button>
+          <Button
+            tamanho="p"
+            variante="primario"
+            onClick={salvar}
+            carregando={salvando}
+            disabled={!mudou}
+          >
+            {convidando ? 'Salvar e enviar convite' : 'Salvar'}
+          </Button>
+        </>
+      }
     >
-      {/* Header */}
-      <div className="flex items-center justify-between p-6 border-b border-theme-primary">
-        <div className="flex items-center gap-4">
-          <div className="w-10 h-10 bg-gradient-to-br from-accent-blue to-accent-purple rounded-full flex items-center justify-center">
-            <FiSettings className="w-5 h-5 text-theme-primary" />
-          </div>
-          <div>
-            <h2 className="text-xl font-bold text-theme-primary">
-              Editar Usuário
-            </h2>
-            <p className="text-theme-tertiary">{user.name || user.email}</p>
-          </div>
-        </div>
-      </div>
-
-      {/* Content */}
-      <div className="p-6 overflow-y-auto ">
-        {error && (
-          <div className="mb-6 p-4 bg-accent-red/10 border border-accent-red/20 rounded-lg">
-            <div className="flex items-center gap-2 text-accent-red">
-              <FiAlertTriangle className="w-5 h-5" />
-              <span className="font-medium">Erro</span>
-            </div>
-            <p className="text-accent-red mt-1">{error}</p>
-          </div>
+      <Stack gap={8}>
+        {erro && (
+          <Inline
+            gap={2}
+            alinhar="inicio"
+            className="rounded-controle bg-sup-2 p-4 text-erro"
+          >
+            <PiWarning aria-hidden="true" className="mt-0.5 h-5 w-5 shrink-0" />
+            <span>{erro}</span>
+          </Inline>
         )}
 
-        <div className="space-y-6">
-          {/* Role do Usuário */}
-          <AnimatedCard className="classical-card p-4">
-            <h3 className="text-lg font-bold text-theme-primary mb-4 flex items-center gap-2">
-              <FiShield className="w-5 h-5 text-accent-blue" />
-              Role do Sistema
-            </h3>
+        {/* Papel no sistema: nível de acesso, nada a ver com dar aulas. */}
+        <fieldset>
+          <legend className="mb-3 flex items-center gap-2 font-semibold text-texto">
+            <PiShield aria-hidden="true" className="h-5 w-5 text-ouro-texto" />
+            Papel no sistema
+          </legend>
+          <div className="flex flex-col gap-2">
+            {PAPEIS.map((p) => (
+              <label
+                key={p.value}
+                className="flex cursor-pointer items-start gap-3 rounded-controle bg-sup-2 px-4 py-3 has-[:checked]:text-ouro-texto"
+              >
+                <input
+                  type="radio"
+                  name="papel"
+                  value={p.value}
+                  checked={papel === p.value}
+                  onChange={() => setPapel(p.value)}
+                  className="mt-1 h-4 w-4 accent-[var(--ouro)]"
+                />
+                <span>
+                  <span className="block font-medium">{p.label}</span>
+                  <span className="block text-sm text-texto-suave">
+                    {p.ajuda}
+                  </span>
+                </span>
+              </label>
+            ))}
+          </div>
+        </fieldset>
 
-            <div className="space-y-3">
-              {ROLE_OPTIONS.map((option) => {
-                const IconComponent = getRoleIcon(option.value);
-                return (
-                  <label
-                    key={option.value}
-                    className={`flex items-center gap-3 p-3 border-2 rounded-lg cursor-pointer transition-all ${
-                      editData.role === option.value
-                        ? `${getRoleColor(option.value)} bg-theme-secondary`
-                        : 'border-theme-primary hover:border-theme-secondary'
-                    }`}
-                  >
-                    <input
-                      type="radio"
-                      name="role"
-                      value={option.value}
-                      checked={editData.role === option.value}
-                      onChange={(e) =>
-                        handleInputChange('role', parseInt(e.target.value))
-                      }
-                      className="sr-only"
-                    />
+        {/* Professor: chave à parte, que envia o convite. */}
+        <fieldset>
+          <legend className="mb-3 flex items-center gap-2 font-semibold text-texto">
+            <PiChalkboardTeacher
+              aria-hidden="true"
+              className="h-5 w-5 text-ouro-texto"
+            />
+            Professor
+          </legend>
 
-                    <div
-                      className={`w-10 h-10 rounded-full flex items-center justify-center ${
-                        editData.role === option.value
-                          ? getRoleColor(option.value).includes('accent-red')
-                            ? 'bg-accent-red/20'
-                            : getRoleColor(option.value).includes('accent-blue')
-                              ? 'bg-accent-blue/20'
-                              : 'bg-theme-secondary'
-                          : 'bg-theme-secondary'
-                      }`}
-                    >
-                      <IconComponent
-                        className={`w-5 h-5 ${
-                          editData.role === option.value
-                            ? getRoleColor(option.value).split(' ')[0]
-                            : 'text-theme-tertiary'
-                        }`}
-                      />
-                    </div>
+          <label className="flex cursor-pointer items-start gap-3 rounded-controle bg-sup-2 px-4 py-3">
+            <input
+              type="checkbox"
+              checked={professor}
+              onChange={(e) => setProfessor(e.target.checked)}
+              className="mt-1 h-4 w-4 accent-[var(--ouro)]"
+            />
+            <span>
+              <span className="block font-medium text-texto">
+                {jaProfessor ? 'É professor' : 'Convidar para ser professor'}
+              </span>
+              <span className="block text-sm text-texto-suave">
+                {jaProfessor
+                  ? user.teacherProfile?.status === 'PENDING'
+                    ? 'Convite enviado, aguardando o aceite.'
+                    : 'Desmarque para remover o papel: o perfil é desativado, e aulas e histórico continuam.'
+                  : 'A pessoa recebe um convite por e-mail e vira professor ao aceitar.'}
+              </span>
+            </span>
+          </label>
 
-                    <div className="flex-1">
-                      <div className="font-medium text-theme-primary">
-                        {option.label}
-                      </div>
-                      <div className="text-sm text-theme-tertiary">
-                        {option.description}
-                      </div>
-                    </div>
-                  </label>
-                );
-              })}
+          {convidando && (
+            <div className="mt-4 grid grid-cols-1 gap-4 sm:grid-cols-2">
+              <Field.Selecao
+                label="Plano do professor"
+                ajuda="Concedido quando o convite for aceito; define quantos alunos ele pode ter."
+                value={plano}
+                onChange={(e) => setPlano(e.target.value as PlanoConvite)}
+              >
+                <option value="MENTOR">Mentor (até 7 alunos)</option>
+                <option value="MAESTRO">Maestro (alunos ilimitados)</option>
+              </Field.Selecao>
+              <Field
+                type="date"
+                label="Vencimento do plano"
+                ajuda="Em branco: sem vencimento."
+                min={hoje()}
+                value={vencimento}
+                onChange={(e) => setVencimento(e.target.value)}
+              />
+              <Field
+                type="date"
+                label="Validade do convite"
+                ajuda="Em branco: 30 dias."
+                min={hoje()}
+                value={validade}
+                onChange={(e) => setValidade(e.target.value)}
+              />
             </div>
-          </AnimatedCard>
-
-          {/* Resumo das Alterações */}
-          {hasChanges && (
-            <AnimatedCard className="classical-card p-4 border-accent-blue">
-              <h3 className="text-lg font-bold text-accent-blue mb-3 flex items-center gap-2">
-                <FiSettings className="w-5 h-5" />
-                Alterações Pendentes
-              </h3>
-
-              <div className="space-y-2 text-sm">
-                {editData.role !== (user.role || 0) && (
-                  <div className="flex justify-between">
-                    <span className="text-theme-tertiary">Role:</span>
-                    <span className="text-accent-blue font-medium">
-                      {ROLE_OPTIONS.find((r) => r.value === user.role)?.label} →{' '}
-                      {
-                        ROLE_OPTIONS.find((r) => r.value === editData.role)
-                          ?.label
-                      }
-                    </span>
-                  </div>
-                )}
-
-                {editData.userType !== (user.userType || 'CASUAL_USER') && (
-                  <div className="flex justify-between">
-                    <span className="text-theme-tertiary">Tipo:</span>
-                    <span className="text-accent-blue font-medium">
-                      {
-                        USER_TYPE_OPTIONS.find((t) => t.value === user.userType)
-                          ?.label
-                      }{' '}
-                      →{' '}
-                      {
-                        USER_TYPE_OPTIONS.find(
-                          (t) => t.value === editData.userType
-                        )?.label
-                      }
-                    </span>
-                  </div>
-                )}
-
-                {editData.experienceLevel !==
-                  (user.experienceLevel || 'BEGINNER') && (
-                  <div className="flex justify-between">
-                    <span className="text-theme-tertiary">Experiência:</span>
-                    <span className="text-accent-blue font-medium">
-                      {
-                        EXPERIENCE_OPTIONS.find(
-                          (e) => e.value === user.experienceLevel
-                        )?.label
-                      }{' '}
-                      →{' '}
-                      {
-                        EXPERIENCE_OPTIONS.find(
-                          (e) => e.value === editData.experienceLevel
-                        )?.label
-                      }
-                    </span>
-                  </div>
-                )}
-              </div>
-            </AnimatedCard>
           )}
-        </div>
-      </div>
 
-      {/* Footer */}
-      <div className="flex items-center justify-end gap-3 p-6 border-t border-theme-primary bg-theme-secondary">
-        <Button variant="ghost" onClick={onClose} disabled={loading}>
-          Cancelar
-        </Button>
-
-        <Button
-          variant="primary"
-          leftIcon={loading ? <LoadingSpinner size="sm" /> : <FiSave />}
-          onClick={handleSave}
-          disabled={loading || !hasChanges}
-        >
-          {loading ? 'Salvando...' : 'Salvar Alterações'}
-        </Button>
-      </div>
-    </Modal>
+          {removendoProfessor && (
+            <p className="mt-3 text-sm text-texto-suave">
+              O plano atual da conta não muda.
+            </p>
+          )}
+        </fieldset>
+      </Stack>
+    </Sheet>
   );
 }

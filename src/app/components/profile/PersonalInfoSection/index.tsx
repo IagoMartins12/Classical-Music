@@ -1,21 +1,20 @@
 // app/profile/components/PersonalInfoSection.tsx - COM VALIDAÇÃO DE TELEFONE
 'use client';
 
+import { PERFIL } from '@/app/conteudo/textos/perfil';
+import { useTextos } from '@/app/hooks/useTextos';
 import React, { useState } from 'react';
-import {
-  FiEdit3,
-  FiSave,
-  FiX,
-  FiMapPin,
-  FiUser,
-  FiAlertCircle,
-} from 'react-icons/fi';
+import { PiFloppyDisk, PiPencilLine, PiX } from 'react-icons/pi';
 import { toast } from 'react-hot-toast';
-import Button from '../../Common/Button';
-import Input from '../../Common/Inputs';
 import ProfileImageUpload from '../../ProfileImageUpload';
-import LocationSelector, { LocationData } from '../../Common/LocationSelector';
-import InternationalPhoneInput from '../../Common/InternationalPhoneInput';
+import { Button } from '@/app/components/ui/Button';
+import { Field } from '@/app/components/ui/Field';
+import {
+  LocationField,
+  type LocationData,
+} from '@/app/components/site/profile/LocationField';
+import { PhoneField } from '@/app/components/site/profile/PhoneField';
+import { useRouteLanguage } from '@/app/hooks/useRouteLanguage';
 import { updatePersonalInfo } from '@/app/actions/profile';
 import { ApiError, apiFetch } from '@/app/libs/api/client';
 import { useAuth } from '@/app/hooks/useAuth';
@@ -26,16 +25,20 @@ import type { User } from '@/app/hooks/userStore';
 import {
   convertDatabaseToLocationData,
   convertLocationDataToDatabase,
-  isLocationDataComplete,
 } from '@/app/utils/locationUtils';
 
 // 🆕 IMPORTAR VALIDAÇÃO DE TELEFONE
 import {
   validatePhoneNumber,
   canProceedWithPhone,
-  usePhoneValidation,
 } from '@/app/utils/phones_and_location/phoneValidation';
-import { useTranslation } from '@/app/context/TranslationContext';
+import { Stack } from '@/app/components/ui/Layout';
+import { Text } from '@/app/components/ui/Text';
+import { porIdioma } from '@/app/utils/porIdioma';
+import { useTx } from '@/app/hooks/useTx';
+
+/** The API's limit for `bio` (`UpdateAccountDto`). */
+const BIO_MAX = 2000;
 
 interface PersonalInfoSectionProps {
   user: User;
@@ -46,9 +49,11 @@ const PersonalInfoSection: React.FC<PersonalInfoSectionProps> = ({
   user,
   updateUser: localUpdateUser,
 }) => {
+  const tx = useTx();
+  const { language } = useRouteLanguage();
   const { updateUser: globalUpdateUser } = useAuth();
   const { updateUserSession } = useSessionUpdate();
-  const { t } = useTranslation({ sections: ['pages/profile'] });
+  const { t } = useTextos(PERFIL);
   const [isEditing, setIsEditing] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [isUploadingImage, setIsUploadingImage] = useState(false);
@@ -69,7 +74,6 @@ const PersonalInfoSection: React.FC<PersonalInfoSectionProps> = ({
   const [errors, setErrors] = useState<{ [key: string]: string }>({});
 
   // 🆕 VALIDAÇÃO DE TELEFONE EM TEMPO REAL
-  const phoneValidation = usePhoneValidation(formData.phone);
 
   const handleInputChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
@@ -83,17 +87,10 @@ const PersonalInfoSection: React.FC<PersonalInfoSectionProps> = ({
   };
 
   const handleLocationChange = (location: LocationData) => {
-    console.log(
-      '🔄 PersonalInfoSection - Recebendo localização completa:',
-      location
-    );
-
     setFormData((prev) => ({
       ...prev,
       location,
     }));
-
-    console.log('✅ PersonalInfoSection - Localização salva no formData');
 
     if (errors.location) {
       setErrors((prev) => ({ ...prev, location: '' }));
@@ -120,10 +117,11 @@ const PersonalInfoSection: React.FC<PersonalInfoSectionProps> = ({
     }
 
     // Validação de bio
-    if (formData.bio.length > 500) {
-      newErrors.bio = `Bio não pode ter mais de 500 ${t(
-        'personal_info_bio_characters'
-      )}`;
+    if (formData.bio.length > BIO_MAX) {
+      newErrors.bio =
+        language === 'pt'
+          ? `Use até ${BIO_MAX} caracteres.`
+          : `Use up to ${BIO_MAX} characters.`;
     }
 
     // 🆕 VALIDAÇÃO DE TELEFONE
@@ -133,18 +131,9 @@ const PersonalInfoSection: React.FC<PersonalInfoSectionProps> = ({
       if (!phoneValidationResult.isValid && !phoneValidationResult.isEmpty) {
         newErrors.phone =
           phoneValidationResult.error || t('personal_info_phone_invalid');
-        console.log('❌ Telefone inválido:', newErrors.phone);
-      } else {
-        console.log('✅ Telefone válido ou vazio');
       }
     }
 
-    // Validar localização (opcional)
-    if (formData.location && !isLocationDataComplete(formData.location)) {
-      console.warn('⚠️ Localização incompleta detectada:', formData.location);
-    }
-
-    console.log('🔍 Erros de validação encontrados:', newErrors);
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
@@ -157,11 +146,7 @@ const PersonalInfoSection: React.FC<PersonalInfoSectionProps> = ({
   };
 
   const handleSave = async () => {
-    console.log('💾 Tentando salvar dados do perfil');
-
     if (!validateForm()) {
-      console.log('❌ Validação falhou, não salvando');
-
       // Se houver erro de telefone, mostrar toast específico
       if (errors.phone) {
         toast.error(`${t('personal_info_phone_invalid')}: ${errors.phone}`);
@@ -206,7 +191,7 @@ const PersonalInfoSection: React.FC<PersonalInfoSectionProps> = ({
         toast.error(result.message);
       }
     } catch (error: any) {
-      toast.error('Erro ao atualizar informações.');
+      toast.error(porIdioma('Não foi possível salvar.', 'Could not save.'));
       console.error('Update error:', error);
     } finally {
       setIsLoading(false);
@@ -245,12 +230,12 @@ const PersonalInfoSection: React.FC<PersonalInfoSectionProps> = ({
       const imageUpdate = { image: imageUrl };
       await syncUserData(imageUpdate);
       setFormData((prev) => ({ ...prev, image: imageUrl }));
-      toast.success('Foto atualizada com sucesso!');
+      toast.success(tx('Foto atualizada com sucesso!', 'Photo updated.'));
     } catch (error: any) {
       toast.error(
         error instanceof ApiError && error.message
           ? error.message
-          : 'Erro ao fazer upload da imagem'
+          : tx('Erro ao fazer upload da imagem', 'Could not upload the image')
       );
       console.error('Upload error:', error);
     } finally {
@@ -272,50 +257,43 @@ const PersonalInfoSection: React.FC<PersonalInfoSectionProps> = ({
   };
 
   return (
-    <div className="space-y-6">
-      {/* Header */}
-      <div className="flex items-center justify-between">
-        <div>
-          <h3 className="text-lg font-semibold text-theme-primary">
+    <Stack gap={6}>
+      <div className="flex flex-wrap items-start justify-between gap-4 sm:flex-nowrap sm:[&>*:not(:first-child)]:shrink-0">
+        <div className="sm:min-w-0 sm:flex-1">
+          <h3 className="font-display text-[1.5rem] leading-tight text-texto">
             {t('personal_info_title')}
           </h3>
-          <p className="text-sm text-theme-secondary">
+          <Text papel="rotulo" tom="suave" as="p">
             {t('personal_info_description')}
-          </p>
+          </Text>
         </div>
 
         {!isEditing ? (
           <Button
-            variant="outline"
-            size="sm"
+            tamanho="p"
+            icone={PiPencilLine}
             onClick={() => setIsEditing(true)}
-            leftIcon={<FiEdit3 />}
           >
             {t('personal_info_edit')}
           </Button>
         ) : (
-          <div className="flex flex-col md:flex-row gap-2">
+          <div className="flex gap-2">
             <Button
-              variant="outline"
-              size="sm"
+              tamanho="p"
+              variante="fantasma"
+              icone={PiX}
               onClick={handleCancel}
-              leftIcon={<FiX />}
               disabled={isLoading}
             >
               {t('personal_info_cancel')}
             </Button>
             <Button
-              variant="primary"
-              size="sm"
+              tamanho="p"
+              variante="primario"
+              icone={PiFloppyDisk}
               onClick={handleSave}
-              isLoading={isLoading}
-              leftIcon={<FiSave />}
+              carregando={isLoading}
               disabled={!canProceedWithPhone(formData.phone)}
-              title={
-                errors.phone
-                  ? `Não é possível salvar: ${errors.phone}`
-                  : undefined
-              }
             >
               {t('personal_info_save')}
             </Button>
@@ -323,8 +301,7 @@ const PersonalInfoSection: React.FC<PersonalInfoSectionProps> = ({
         )}
       </div>
 
-      {/* Profile Image */}
-      <div className="flex items-center space-x-6 pb-6 border-b border-theme-secondary">
+      <div className="flex items-center gap-6 border-b border-linha pb-6">
         <ProfileImageUpload
           currentImage={user.image}
           onImageUpload={handleImageUpload}
@@ -334,132 +311,83 @@ const PersonalInfoSection: React.FC<PersonalInfoSectionProps> = ({
           fallbackText={getUserDisplayName()}
           showRemove={!!user.image}
         />
-
-        <div>
-          <h4 className="font-medium text-theme-primary">
+        <div className="flex flex-col gap-1">
+          <Text papel="subtitulo" as="h4">
             {t('personal_info_profile_photo')}
-          </h4>
-          <p className="text-sm text-theme-secondary mb-2">
+          </Text>
+          <Text papel="rotulo" tom="suave" as="p">
             {t('personal_info_photo_description')}
-          </p>
-          <p className="text-xs text-theme-tertiary">
+          </Text>
+          <Text papel="legenda" tom="fraco" as="p">
             {user.image
               ? t('personal_info_photo_instruction_change')
               : t('personal_info_photo_instruction_add')}
-          </p>
+          </Text>
         </div>
       </div>
 
-      {/* Basic Info Form */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        <Input
+      <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
+        <Field
           label={t('personal_info_first_name_required')}
           name="firstName"
           value={formData.firstName}
           onChange={handleInputChange}
           disabled={!isEditing}
           placeholder={t('personal_info_first_name_placeholder')}
-          error={errors.firstName}
-          leftIcon={<FiUser className="w-4 h-4" />}
+          erro={errors.firstName}
+          autoComplete="given-name"
         />
-
-        <Input
+        <Field
           label={t('personal_info_last_name')}
           name="lastName"
           value={formData.lastName}
           onChange={handleInputChange}
           disabled={!isEditing}
           placeholder={t('personal_info_last_name_placeholder')}
-          leftIcon={<FiUser className="w-4 h-4" />}
-          error={errors.lastName}
+          erro={errors.lastName}
+          autoComplete="family-name"
         />
       </div>
 
-      {/* Bio */}
-      <div>
-        <label className="block text-sm font-medium text-theme-secondary mb-2">
-          {t('personal_info_about')}
-        </label>
-        <div className="relative">
-          <textarea
-            name="bio"
-            value={formData.bio}
-            onChange={handleInputChange}
-            disabled={!isEditing}
-            placeholder={t('personal_info_bio_placeholder')}
-            className={`input-classical !px-8 w-full h-24 resize-none ${
-              !isEditing
-                ? 'bg-theme-secondary bg-opacity-50 cursor-not-allowed'
-                : ''
-            }`}
-            maxLength={500}
-          />
-        </div>
-        <p className="text-xs text-theme-tertiary mt-1">
-          {formData.bio.length}/500 {t('personal_info_bio_characters')}
-        </p>
-        {errors.bio && (
-          <p className="text-xs text-accent-red mt-1">{errors.bio}</p>
-        )}
-      </div>
+      <Field.Area
+        label={t('personal_info_about')}
+        name="bio"
+        rows={5}
+        value={formData.bio}
+        onChange={handleInputChange}
+        disabled={!isEditing}
+        placeholder={t('personal_info_bio_placeholder')}
+        maxLength={BIO_MAX}
+        ajuda={`${formData.bio.length}/${BIO_MAX} ${t('personal_info_bio_characters')}`}
+        erro={errors.bio}
+      />
 
-      {/* 🔧 TELEFONE COM VALIDAÇÃO APRIMORADA */}
-      <div>
-        <InternationalPhoneInput
-          value={formData.phone}
-          onChange={handlePhoneChange}
-          disabled={!isEditing}
-          label={t('personal_info_phone')}
-          placeholder={t('personal_info_phone_placeholder')}
-          showLabel={true}
-          error={errors.phone}
-        />
+      <PhoneField
+        label={t('personal_info_phone')}
+        countryLabel={language === 'pt' ? 'País do telefone' : 'Phone country'}
+        value={formData.phone}
+        onChange={handlePhoneChange}
+        disabled={!isEditing}
+        error={errors.phone}
+      />
 
-        {/* 🆕 AVISO DE VALIDAÇÃO DE TELEFONE (se editando e houver erro) */}
-        {errors.phone && phoneValidation.showError && phoneValidation.error && (
-          <div className="p-4 bg-red-50 border border-red-200 rounded-lg flex items-start space-x-3">
-            <FiAlertCircle className="w-5 h-5 text-red-600 flex-shrink-0 mt-0.5" />
-            <div>
-              <h4 className="text-sm font-medium text-red-800">
-                {t('personal_info_phone_invalid')}
-              </h4>
-              <p className="text-sm text-red-700 mt-1">
-                {phoneValidation.error}
-              </p>
-              {phoneValidation.progressMessage && (
-                <p className="text-xs text-red-600 mt-1">
-                  {phoneValidation.progressMessage}
-                </p>
-              )}
-            </div>
-          </div>
-        )}
-      </div>
-
-      {/* Localização */}
-      <div>
-        <div className="flex items-center space-x-2 mb-4">
-          <FiMapPin className="w-4 h-4 text-brand-primary" />
-          <h4 className="font-medium text-theme-primary">
-            {t('personal_info_location')}
-          </h4>
-        </div>
-
-        <LocationSelector
+      <fieldset className="flex flex-col gap-3">
+        <legend className="mb-3 font-display text-[1.25rem] text-texto">
+          {t('personal_info_location')}
+        </legend>
+        <LocationField
           value={formData.location}
           onChange={handleLocationChange}
           disabled={!isEditing}
-          showLabels={false}
-          className="space-y-3"
+          language={language}
         />
-
         {!isEditing && !user.city && !user.state && !user.country && (
-          <p className="text-sm text-theme-tertiary mt-2 italic">
+          <Text papel="rotulo" tom="fraco" as="p">
             {t('personal_info_location_not_set')}
-          </p>
+          </Text>
         )}
-      </div>
-    </div>
+      </fieldset>
+    </Stack>
   );
 };
 

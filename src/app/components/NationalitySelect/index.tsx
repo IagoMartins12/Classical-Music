@@ -2,15 +2,21 @@
 'use client';
 
 import { useState, useEffect, useRef } from 'react';
-import { FiGlobe, FiSearch, FiX, FiChevronDown } from 'react-icons/fi';
+import { PiCaretDown, PiGlobe, PiMagnifyingGlass, PiX } from 'react-icons/pi';
 import {
   NATIONALITIES,
   filterNationalities,
   type Nationality,
 } from '@/app/data/nationalities';
 import { useLanguageStore } from '@/app/stores/useLanguageStore';
+import { Inline } from '@/app/components/ui/Layout';
+import { Text } from '@/app/components/ui/Text';
+import { NomeAcao } from '@/app/components/ui/NomeAcao';
+import { useTx } from '@/app/hooks/useTx';
 
 interface NationalitySelectProps {
+  /** Id do campo, para o `<label htmlFor>` de quem usa. */
+  id?: string;
   value: string;
   onChange: (value: string) => void;
   error?: string;
@@ -20,13 +26,15 @@ interface NationalitySelectProps {
 }
 
 export default function NationalitySelect({
+  id,
   value,
   onChange,
   error,
-  placeholder = 'Selecione a nacionalidade...',
+  placeholder,
   disabled = false,
   className = '',
 }: NationalitySelectProps) {
+  const tx = useTx();
   const [isOpen, setIsOpen] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
   const [filteredNationalities, setFilteredNationalities] =
@@ -107,60 +115,68 @@ export default function NationalitySelect({
     <div ref={containerRef} className={`relative ${className}`}>
       {/* Input */}
       <div className="relative">
-        <FiGlobe className="absolute left-4 top-1/2 transform -translate-y-1/2 w-4 h-4 text-theme-tertiary z-10" />
+        <PiGlobe className="absolute left-4 top-1/2 transform -translate-y-1/2 w-4 h-4 text-texto-fraco z-10" />
 
         <input
+          id={id}
           ref={inputRef}
           type="text"
           value={displayValue}
           onChange={handleInputChange}
           onFocus={handleInputFocus}
-          placeholder={placeholder}
+          placeholder={
+            placeholder ??
+            tx('Escolha a nacionalidade…', 'Choose a nationality…')
+          }
           disabled={disabled}
           className={`
             input-classical-2 !pl-11 pr-20 w-full
             ${disabled ? 'cursor-not-allowed opacity-50' : 'cursor-text'}
-            ${error ? 'border-red-500' : ''}
-            ${value ? 'text-theme-primary font-medium' : ''}
+            ${error ? 'border-[var(--erro)]' : ''}
+            ${value ? 'text-texto font-medium' : ''}
           `}
         />
 
-        <div className="absolute right-2 top-1/2 transform -translate-y-1/2 flex items-center space-x-1">
+        <Inline
+          gap={1}
+          className="absolute right-2 top-1/2 transform -translate-y-1/2"
+        >
           {value && !disabled && (
             <button
               type="button"
               onClick={handleClear}
-              className="p-1 text-theme-tertiary hover:text-theme-primary transition-colors"
+              className="p-1 text-texto-fraco transition-colors"
             >
-              <FiX className="w-4 h-4" />
+              <PiX className="w-4 h-4" />
+              <NomeAcao acao="fechar" />
             </button>
           )}
 
-          <div className="p-1 text-theme-tertiary">
-            <FiChevronDown
+          <div className="p-1 text-texto-fraco">
+            <PiCaretDown
               className={`w-4 h-4 transition-transform duration-200 ${
                 isOpen ? 'rotate-180' : ''
               }`}
             />
           </div>
-        </div>
+        </Inline>
       </div>
 
       {/* Error message */}
-      {error && <p className="text-red-500 text-xs mt-1">{error}</p>}
+      {error && <p className="text-erro text-xs mt-1">{error}</p>}
 
       {/* Dropdown */}
       {isOpen && !disabled && (
         <div
           ref={dropdownRef}
-          className="absolute top-full left-0 right-0 mt-2 bg-theme-elevated border border-theme-secondary rounded-xl shadow-xl z-[200] max-h-80 overflow-hidden"
+          className="absolute top-full left-0 right-0 mt-2 rounded-controle border border-[var(--linha-forte)] bg-[var(--sup-alta)] shadow-[var(--sombra-alta)] z-menu max-h-80 overflow-hidden"
         >
           {/* Search header */}
-          <div className="flex items-center gap-2 px-4 py-3 bg-theme-secondary/10 border-b border-theme-secondary">
-            <FiSearch className="w-4 h-4 text-brand-primary" />
-            <span className="text-sm font-medium text-theme-secondary">
+          <div className="flex items-center gap-2 px-4 py-3 border-b border-[var(--linha)]">
+            <PiMagnifyingGlass className="w-4 h-4 text-ouro-texto" />
+            <Text papel="rotulo" tom="suave" className="font-medium">
               {searchTerm ? getMessage(searchTerm) : getMessage()}
-            </span>
+            </Text>
           </div>
 
           {/* Nationalities list */}
@@ -171,12 +187,11 @@ export default function NationalitySelect({
                   key={nationality.id}
                   onClick={() => handleNationalitySelect(nationality)}
                   className={`
-                    w-full text-left px-4 py-3 hover:bg-interactive-hover transition-colors duration-200 
-                    border-b border-color-primary last:border-b-0 border-theme-secondary/50
+                    w-full text-left px-4 py-3 transition-colors duration-200 border-b border-color-primary last:border-b-0
                     ${
                       value === nationality.name
-                        ? 'bg-brand-primary/10 text-brand-primary font-medium'
-                        : 'text-theme-primary'
+                        ? 'text-ouro-texto font-medium'
+                        : 'text-texto'
                     }
                   `}
                 >
@@ -185,15 +200,20 @@ export default function NationalitySelect({
                       <div className="text-sm font-medium truncate">
                         {nationality.name}
                       </div>
-                      <div className="text-xs text-theme-secondary truncate mt-0.5">
+                      <Text
+                        papel="legenda"
+                        tom="suave"
+                        as="div"
+                        className="truncate mt-0.5"
+                      >
                         {nationality.countries.slice(0, 2).join(', ')}
                         {nationality.countries.length > 2 && '...'}
-                      </div>
+                      </Text>
                     </div>
 
                     {value === nationality.name && (
                       <div className="ml-3 flex-shrink-0">
-                        <div className="w-2 h-2 bg-brand-primary rounded-full"></div>
+                        <div className="w-2 h-2 rounded-full"></div>
                       </div>
                     )}
                   </div>
@@ -201,16 +221,19 @@ export default function NationalitySelect({
               ))
             ) : (
               <div className="px-4 py-8 text-center">
-                <FiGlobe className="w-8 h-8 text-theme-tertiary mx-auto mb-2" />
-                <p className="text-sm text-theme-secondary">
+                <PiGlobe className="w-8 h-8 text-texto-fraco mx-auto mb-2" />
+                <Text papel="rotulo" tom="suave" as="p">
                   {searchTerm
                     ? `Nenhuma nacionalidade encontrada para "${searchTerm}"`
-                    : 'Nenhuma nacionalidade disponível'}
-                </p>
+                    : tx(
+                        'Nenhuma nacionalidade disponível',
+                        'No nationality available'
+                      )}
+                </Text>
                 {searchTerm && (
-                  <p className="text-xs text-theme-tertiary mt-1">
-                    Tente uma busca mais geral
-                  </p>
+                  <Text papel="legenda" tom="fraco" as="p" className="mt-1">
+                    {tx('Tente uma busca mais geral', 'Try a broader search')}
+                  </Text>
                 )}
               </div>
             )}

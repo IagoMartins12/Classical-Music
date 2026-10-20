@@ -1,315 +1,95 @@
 'use client';
 
-import { useLanguageWithRefresh } from '@/app/stores/useLanguageStore';
-import React from 'react';
-import { FiGlobe } from 'react-icons/fi';
+import { useEffect, useState } from 'react';
+import { PiSpinnerGap } from 'react-icons/pi';
+import { cx } from '@/app/components/ui/cx';
+import {
+  useLanguageStore,
+  useLanguageWithRefresh,
+} from '@/app/stores/useLanguageStore';
 
 interface LanguageToggleProps {
-  variant?: 'default' | 'compact' | 'navbar' | 'globe';
-  showLabel?: boolean;
-  showSystemIndicator?: boolean; // 🆕 Mostrar se está seguindo o sistema
   className?: string;
+  /**
+   * Troca de idioma por rota (o blog vai de `/blog` a `/en/blog`). Sem ela,
+   * a troca grava o cookie e recarrega a página no mesmo endereço.
+   */
+  aoTrocar?: (idioma: 'pt' | 'en') => void;
+  /** O idioma da página, quando ele vem do endereço (ver `aoTrocar`). */
+  idioma?: 'pt' | 'en';
 }
 
-export const LanguageToggle: React.FC<LanguageToggleProps> = ({
-  variant = 'default',
-  showLabel = false,
-  showSystemIndicator = false, // 🆕 Padrão false para não quebrar componentes existentes
-  className = '',
-}) => {
+/** How long the button keeps loading if the route never answers. */
+const ESPERA_MAXIMA_MS = 5000;
+
+/**
+ * The language button of the header: the flag of the language you are in,
+ * one tap for the other. While the page changes, the button itself loads —
+ * no veil over the page.
+ */
+export function LanguageToggle({
+  className,
+  aoTrocar,
+  idioma: idiomaDaRota,
+}: LanguageToggleProps) {
   const {
-    language,
+    language: idiomaDoStore,
     toggleLanguage,
-    isTranslating,
-    hasUserPreference, // 🆕 Nova propriedade
+    pending,
   } = useLanguageWithRefresh();
+  const setStoreLanguage = useLanguageStore((s) => s.setLanguage);
+  const [trocando, setTrocando] = useState(false);
+  // With a route change, the address decides: `/en/blog` is English even if
+  // the cookie says otherwise.
+  const language = idiomaDaRota ?? idiomaDoStore;
+  const ocupado = pending || trocando;
 
-  const getVariantClasses = () => {
-    switch (variant) {
-      case 'compact':
-        return 'w-10 h-10 p-2';
-      case 'navbar':
-        return 'w-9 h-9 p-1.5';
-      case 'globe':
-        return 'w-10 h-10 p-2';
-      default:
-        return 'w-12 h-12 p-2.5';
-    }
+  // The route answered (the page language changed): the button is free again.
+  useEffect(() => setTrocando(false), [language]);
+  useEffect(() => {
+    if (!trocando) return;
+    const id = setTimeout(() => setTrocando(false), ESPERA_MAXIMA_MS);
+    return () => clearTimeout(id);
+  }, [trocando]);
+
+  const trocar = () => {
+    if (!aoTrocar) return toggleLanguage();
+    const novo = language === 'pt' ? 'en' : 'pt';
+    setTrocando(true);
+    setStoreLanguage(novo, true);
+    aoTrocar(novo);
   };
 
-  const getFlagSize = () => {
-    switch (variant) {
-      case 'compact':
-      case 'navbar':
-        return 'text-sm'; // ~14px
-      case 'globe':
-        return 'text-base'; // ~16px
-      default:
-        return 'text-lg'; // ~18px
-    }
-  };
-
-  const getGlobeIconSize = () => {
-    switch (variant) {
-      case 'compact':
-      case 'navbar':
-        return 'w-5 h-5';
-      case 'globe':
-        return 'w-6 h-6';
-      default:
-        return 'w-6 h-6';
-    }
-  };
-
-  const getCurrentFlag = () => {
-    if (variant === 'globe') {
-      return (
-        <div className="relative flex items-center justify-center">
-          <FiGlobe
-            className={`${getGlobeIconSize()} text-brand-primary transition-all duration-300`}
-          />
-          <div className="absolute -bottom-0.5 -right-0.5 flex items-center justify-center w-3 h-3 bg-theme-elevated rounded-full border border-theme-secondary">
-            <span className="text-xs leading-none">
-              {language === 'pt' ? '🇧🇷' : '🇺🇸'}
-            </span>
-          </div>
-        </div>
-      );
-    }
-
-    // Usar a mesma estrutura do ThemeToggle com container centralizado
-    return (
-      <div className="relative flex items-center justify-center">
-        {/* Bandeira PT */}
-        <span
-          className={`
-            ${getFlagSize()}
-            absolute
-            transition-all duration-500
-            ${
-              language === 'pt'
-                ? 'opacity-100 rotate-0 scale-100'
-                : 'opacity-0 rotate-180 scale-50'
-            }
-          `}
-          style={{
-            lineHeight: '1',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-          }}
-        >
-          🇧🇷
-        </span>
-
-        {/* Bandeira US */}
-        <span
-          className={`
-            ${getFlagSize()}
-            absolute
-            transition-all duration-500
-            ${
-              language === 'en'
-                ? 'opacity-100 rotate-0 scale-100'
-                : 'opacity-0 -rotate-180 scale-50'
-            }
-          `}
-          style={{
-            lineHeight: '1',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-          }}
-        >
-          🇺🇸
-        </span>
-      </div>
-    );
-  };
-
-  const getLanguageLabel = () => {
-    const baseLabel = language === 'pt' ? 'Português' : 'English';
-
-    // 🆕 Adicionar indicador se está seguindo o sistema
-    if (showSystemIndicator && !hasUserPreference) {
-      return `${baseLabel} (Sistema)`;
-    }
-
-    return baseLabel;
-  };
-
+  const rotulo =
+    language === 'pt' ? 'Mudar para inglês' : 'Switch to Portuguese';
   return (
-    <>
-      {/* O aviso de "traduzindo" é desenhado uma vez só, na raiz
-          (`TranslationLoadingGate`): este componente aparece duas vezes no
-          Navbar e cada cópia abria o seu. */}
-
-      {/* Toggle button */}
-      <div className={`flex items-center gap-2 ${className}`}>
-        {showLabel && (
-          <span className="text-theme-secondary text-sm font-medium">
-            {getLanguageLabel()}
-          </span>
-        )}
-
-        <button
-          onClick={toggleLanguage}
-          disabled={isTranslating}
-          className={`
-            ${getVariantClasses()}
-            relative
-            bg-theme-elevated
-            border border-theme-primary
-            rounded-xl
-            hover:border-theme-accent
-            hover:bg-interactive-hover
-            active:scale-95
-            transition-all duration-300
-            group
-            disabled:opacity-50
-            disabled:cursor-not-allowed
-            focus:outline-none
-            focus:ring-2
-            focus:ring-brand-primary/50
-            focus:ring-offset-2
-            focus:ring-offset-bg-primary
-            ${isTranslating ? 'animate-pulse cursor-wait' : ''}
-          `}
-          aria-label={`Alterar para ${
-            language === 'pt' ? 'inglês' : 'português'
-          }`}
-          title={`Trocar para ${language === 'pt' ? 'English' : 'Português'}`}
-        >
-          {/* Background gradient effect */}
-          <div className="absolute inset-0 bg-brand-gradient opacity-0 group-hover:opacity-10 rounded-xl transition-opacity duration-300" />
-
-          {/* Flag container - mesma estrutura do ThemeToggle */}
-          {getCurrentFlag()}
-
-          {/* Loading indicator */}
-          {isTranslating && (
-            <div className="absolute inset-0 flex items-center justify-center">
-              <div className="w-4 h-4 border-2 border-brand-primary border-t-transparent rounded-full animate-spin" />
-            </div>
-          )}
-
-          {/* 🆕 Indicador de sistema (apenas se showSystemIndicator = true) */}
-          {showSystemIndicator && !hasUserPreference && (
-            <div className="absolute -top-1 -left-1 w-2 h-2 bg-accent-blue rounded-full opacity-75 animate-pulse" />
-          )}
-
-          {/* Subtle animation indicator */}
-          <div className="absolute -top-1 -right-1 w-2 h-2 bg-accent-green rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-300 animate-pulse" />
-        </button>
-      </div>
-    </>
-  );
-};
-
-// Versão alternativa com ícone de globo e dropdown
-export const LanguageDropdown: React.FC<{
-  className?: string;
-  showSystemIndicator?: boolean; // 🆕
-}> = ({ className = '', showSystemIndicator = false }) => {
-  const { language, changeLanguage, hasUserPreference } =
-    useLanguageWithRefresh();
-  const [isOpen, setIsOpen] = React.useState(false);
-
-  const languages = [
-    {
-      code: 'pt' as const,
-      name: 'Português',
-      flag: '🇧🇷',
-    },
-    {
-      code: 'en' as const,
-      name: 'English',
-      flag: '🇺🇸',
-    },
-  ];
-
-  const currentLanguage = languages.find((lang) => lang.code === language);
-
-  return (
-    <div className={`relative ${className}`}>
-      <button
-        onClick={() => setIsOpen(!isOpen)}
-        className="flex items-center space-x-2 px-3 py-2 bg-theme-elevated border border-theme-primary rounded-lg hover:bg-interactive-hover transition-colors duration-200 disabled:opacity-50"
-      >
-        <div className="relative">
-          <FiGlobe className="w-4 h-4 text-brand-primary" />
-          {/* 🆕 Indicador de sistema */}
-          {showSystemIndicator && !hasUserPreference && (
-            <div className="absolute -top-1 -right-1 w-1.5 h-1.5 bg-accent-blue rounded-full opacity-75" />
-          )}
-        </div>
-        {currentLanguage && (
-          <>
-            {currentLanguage.flag}
-            <span className="text-sm font-medium text-theme-primary hidden sm:block">
-              {currentLanguage.name}
-              {/* 🆕 Mostrar (Sistema) se aplicável */}
-              {showSystemIndicator && !hasUserPreference && (
-                <span className="text-xs text-theme-tertiary ml-1">
-                  (Sistema)
-                </span>
-              )}
-            </span>
-          </>
-        )}
-        <svg
-          className={`w-3 h-3 text-theme-tertiary transition-transform duration-200 ${
-            isOpen ? 'rotate-180' : ''
-          }`}
-          fill="none"
-          stroke="currentColor"
-          viewBox="0 0 24 24"
-        >
-          <path
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            strokeWidth={2}
-            d="M19 9l-7 7-7-7"
-          />
-        </svg>
-      </button>
-
-      {isOpen && (
-        <>
-          {/* Backdrop */}
-          <div
-            className="fixed inset-0 z-10"
-            onClick={() => setIsOpen(false)}
-          />
-
-          {/* Dropdown */}
-          <div className="absolute top-full right-0 mt-2 bg-theme-tertiary border border-theme-secondary rounded-lg shadow-xl z-20 overflow-hidden min-w-[140px]">
-            {languages.map((lang) => (
-              <button
-                key={lang.code}
-                onClick={() => {
-                  changeLanguage(lang.code);
-                  setIsOpen(false);
-                }}
-                className={`
-                  flex items-center space-x-3 w-full px-4 py-3 text-left hover:bg-interactive-hover transition-colors duration-200
-                  ${
-                    lang.code === language
-                      ? 'bg-brand-primary/10 text-brand-primary'
-                      : 'text-theme-primary'
-                  }
-                `}
-              >
-                {lang.flag}
-                <span className="font-medium">{lang.name}</span>
-                {lang.code === language && (
-                  <div className="ml-auto w-2 h-2 bg-brand-primary rounded-full" />
-                )}
-              </button>
-            ))}
-          </div>
-        </>
+    <button
+      type="button"
+      onClick={trocar}
+      disabled={ocupado}
+      aria-busy={ocupado || undefined}
+      aria-label={rotulo}
+      title={language === 'pt' ? 'English' : 'Português'}
+      className={cx(
+        'relative grid h-10 w-10 shrink-0 place-items-center rounded-xl border border-[var(--linha-forte)] bg-sup-2 transition-colors duration-[var(--t-toque)] hover:bg-[var(--interactive-hover)] disabled:cursor-wait',
+        className
       )}
-    </div>
+    >
+      <span
+        aria-hidden="true"
+        className={cx(
+          'text-[0.9375rem] leading-none transition-opacity duration-[var(--t-resposta)]',
+          ocupado && 'opacity-0'
+        )}
+      >
+        {language === 'pt' ? '🇧🇷' : '🇺🇸'}
+      </span>
+      {ocupado && (
+        <PiSpinnerGap
+          aria-hidden="true"
+          className="absolute h-5 w-5 animate-spin text-ouro-texto motion-reduce:animate-none"
+        />
+      )}
+    </button>
   );
-};
+}

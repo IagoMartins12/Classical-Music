@@ -1,0 +1,349 @@
+/* As classes próprias da main enquanto ela é esboço. Na refação sobem para o
+   `globals.css`. Em `@layer components`, como as do sistema. */
+@layer components {
+  /* A medalha começa desenhada; com movimento, o traço se faz (abaixo). */
+  .medalha-desenha path,
+  .medalha-desenha circle {
+    stroke-dasharray: 1;
+    stroke-dashoffset: 0;
+  }
+
+  /* A barra de XP do menu: cresce ao ganhar. Por `transform` (escala a
+     partir da esquerda), não por largura — sem recalcular layout. */
+  .barra-xp {
+    width: 100%;
+    transform-origin: left;
+    transform: scaleX(var(--xp, 0));
+    transition: transform 900ms var(--saida);
+  }
+
+  /* B: a linha do tempo. A régua por baixo e os anos marcados a cada 50. */
+  .b-regua {
+    background-image: repeating-linear-gradient(
+      90deg,
+      var(--linha) 0 1px,
+      transparent 1px calc(100% / 8.5)
+    );
+  }
+
+  /* C: o campo de busca grande, com o anel dourado no foco. */
+  .c-busca:focus-within {
+    box-shadow:
+      0 0 0 1px var(--ouro),
+      var(--sombra-2);
+  }
+
+  /* A: a capitular da biografia, em Garamond, três linhas. */
+  .a-capitular::first-letter {
+    float: left;
+    font-family: var(--fonte-display);
+    font-size: 4.2em;
+    line-height: 0.82;
+    padding: 0.06em 0.12em 0 0;
+    color: var(--ouro-texto);
+  }
+
+  /* Rolagem lateral sem barra (faixas de retratos, fichas). */
+  .faixa-rola {
+    scrollbar-width: none;
+    scroll-snap-type: x mandatory;
+    /* O snap respeita o recuo: o primeiro cartão não encosta na borda. */
+    scroll-padding-inline: 1rem;
+  }
+  .faixa-rola::-webkit-scrollbar {
+    display: none;
+  }
+  .faixa-rola > * {
+    scroll-snap-align: start;
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .medalha-desenha .medalha-disco {
+    stroke-dashoffset: 1;
+    animation: traco 800ms var(--saida) 200ms forwards;
+  }
+  .medalha-desenha .medalha-fita {
+    stroke-dashoffset: 1;
+    animation: traco 420ms var(--saida) 700ms forwards;
+  }
+  .medalha-desenha .medalha-visto {
+    stroke-dashoffset: 1;
+    animation: traco 420ms var(--saida) 1000ms forwards;
+  }
+
+  .conquista-chega {
+    animation: conquista-chega 520ms var(--saida) both;
+  }
+
+  .boas-vindas-passo {
+    animation: passo-entra 320ms var(--saida) both;
+  }
+
+  /* A: o retrato do dia se descobre de baixo para cima, uma vez. */
+  .a-descobre {
+    animation: descobre 1100ms cubic-bezier(0.65, 0, 0.35, 1) 120ms both;
+  }
+
+  /* B: os rostos chegam ao seu ano em cascata (`--i`), da esquerda. */
+  .b-chega {
+    animation: b-chega 700ms var(--saida) both;
+    animation-delay: calc(var(--i, 0) * 45ms + 200ms);
+  }
+  .b-sobe {
+    transform-origin: bottom;
+    animation: sobe 620ms var(--saida) both;
+  }
+  .b-vida {
+    transform-origin: left;
+    animation: cresce 900ms var(--saida) 300ms both;
+  }
+
+  /* C: a lista de resultados abre logo abaixo do campo. */
+  .c-resultados {
+    transform-origin: top;
+    animation: resultados 220ms var(--saida) both;
+  }
+
+  /* As barras de progresso das conquistas crescem da origem. */
+  .cresce {
+    transform-origin: left;
+    animation: cresce 760ms var(--saida) both;
+  }
+}
+
+@keyframes traco {
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+
+@keyframes conquista-chega {
+  from {
+    opacity: 0;
+    transform: translateY(-24px);
+    filter: blur(6px);
+  }
+}
+
+@keyframes passo-entra {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+}
+
+@keyframes descobre {
+  from {
+    clip-path: inset(100% 0 0 0);
+  }
+  to {
+    clip-path: inset(0 0 0 0);
+  }
+}
+
+@keyframes b-chega {
+  from {
+    opacity: 0;
+    transform: translateY(10px) scale(0.92);
+  }
+}
+
+@keyframes cresce {
+  from {
+    transform: scaleX(0);
+  }
+}
+
+@keyframes resultados {
+  from {
+    opacity: 0;
+    transform: translateY(-4px) scaleY(0.98);
+  }
+}
+
+@keyframes sobe {
+  from {
+    transform: scaleY(0);
+  }
+}
+
+/* ---- Versão consolidada (06/10) ---------------------------------------- */
+@layer components {
+  /* Herói B: a faixa some nas bordas; sem movimento, rola com o dedo. */
+  .faixa-mascara {
+    mask-image: linear-gradient(
+      to right,
+      transparent,
+      #000 8%,
+      #000 92%,
+      transparent
+    );
+    overflow-x: auto;
+    scrollbar-width: none;
+  }
+  /* Herói C: a página em pé, levemente inclinada; o selo carimbado nela. */
+  .partitura-frente {
+    transform: rotate(2deg);
+  }
+  .selo-carimbo {
+    transform: rotate(-8deg);
+  }
+  /* O selo é ouro sobre preto: no creme, o ouro escurece para ter contraste. */
+  [data-theme='light'] .selo-marca {
+    filter: brightness(0.58) saturate(1.35) contrast(1.15);
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  /* Herói C: as constelações se traçam depois do globo; as estrelas maiores cintilam. */
+  .constelacao-linha {
+    stroke-dasharray: 1;
+    stroke-dashoffset: 1;
+    animation: traco 900ms var(--saida) both;
+    animation-delay: calc(var(--i, 0) * 70ms + 1100ms);
+  }
+  .cintila {
+    animation: cintila 4.5s ease-in-out infinite;
+    animation-delay: var(--atraso, 0ms);
+  }
+
+  /* Herói B: a faixa passa devagar; para ao passar o mouse. */
+  .faixa-passa {
+    animation: passa 70s linear infinite;
+  }
+  .faixa-mascara:hover .faixa-passa {
+    animation-play-state: paused;
+  }
+
+  /* Herói-âncora: as órbitas se traçam; o anel graduado gira devagar. */
+  .atlas-orbitas > circle[pathLength],
+  .atlas-orbitas > ellipse,
+  .atlas-orbitas > path {
+    stroke-dasharray: 1;
+    stroke-dashoffset: 1;
+    animation: traco 1800ms var(--saida) both;
+    animation-delay: calc(var(--i, 0) * 140ms + 100ms);
+  }
+  .atlas-anel {
+    transform-origin: 300px 300px;
+    animation: gira 240s linear infinite;
+  }
+
+  /* Heróis (4ª rodada): o que chega depois, em cascata (--atraso). */
+  .surge {
+    animation: surge 620ms var(--saida) both;
+    animation-delay: var(--atraso, 0ms);
+  }
+  /* B: o trecho do dia se marca da esquerda para a direita. */
+  .trecho-marca {
+    animation: marca 900ms var(--saida) 700ms both;
+  }
+  /* A: o cursor da busca que se digita. */
+  .cursor-pisca {
+    animation: pisca 1s steps(1) infinite;
+  }
+  /* C: o caminho desce até a peça de agora. */
+  .caminho-desce {
+    transform-origin: top;
+    animation: sobe 1100ms var(--saida) 300ms both;
+  }
+
+  /* Herói: o selo se imprime de baixo para cima, como uma gravura saindo da prensa. */
+  .selo-revela {
+    animation: imprime 1500ms var(--saida) 100ms both;
+  }
+  /* Herói C: o selo é carimbado na página, depois que ela assenta. */
+  .selo-carimbo {
+    animation: carimba 650ms var(--saida) 1100ms both;
+  }
+
+  /* Herói C: a página da frente se assenta ao chegar. */
+  .partitura-frente {
+    animation: assenta 1100ms var(--saida) 200ms both;
+  }
+
+  /* Coração: um batimento ao favoritar, sem rebote. */
+  .coracao-bate {
+    animation: bate 420ms var(--saida);
+  }
+
+  /* 404 e acesso negado (C): a pauta se traça. */
+  .erro-traco > path {
+    stroke-dasharray: 1;
+    stroke-dashoffset: 1;
+    animation: traco 1100ms var(--saida) both;
+    animation-delay: calc(var(--i, 0) * 110ms + 100ms);
+  }
+}
+
+@keyframes cintila {
+  50% {
+    opacity: 0.45;
+  }
+}
+
+@keyframes passa {
+  to {
+    transform: translateX(-50%);
+  }
+}
+
+@keyframes gira {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes surge {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+}
+
+@keyframes marca {
+  from {
+    clip-path: inset(0 100% 0 0);
+  }
+}
+
+@keyframes pisca {
+  50% {
+    opacity: 0;
+  }
+}
+
+@keyframes imprime {
+  from {
+    clip-path: inset(100% 0 0 0);
+    filter: blur(6px);
+    opacity: 0.4;
+  }
+}
+
+@keyframes carimba {
+  from {
+    opacity: 0;
+    transform: rotate(-8deg) scale(1.25);
+  }
+}
+
+@keyframes esmaece {
+  from {
+    opacity: 0;
+  }
+}
+
+@keyframes assenta {
+  from {
+    transform: rotate(9deg) translateY(12px);
+    opacity: 0;
+  }
+}
+
+@keyframes bate {
+  40% {
+    transform: scale(1.22);
+  }
+}

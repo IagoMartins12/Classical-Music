@@ -9,6 +9,7 @@
 import { ApiError, apiFetch, type ApiRequest } from '@/app/libs/api/client';
 import type { ApiSchema } from '@/app/libs/api/types';
 import type { BillingPeriod, PlanType } from '@/app/libs/subscriptionConstants';
+import { porIdioma } from '@/app/utils/porIdioma';
 
 type SubscriptionAction = ApiSchema<'SubscriptionActionResponseDto'>;
 type CurrentSubscription = ApiSchema<'CurrentSubscriptionResponseDto'>;
@@ -74,6 +75,15 @@ export function cancelSubscriptionRequest(reason?: string, feedback?: string) {
   );
 }
 
+/** Abre o Portal do Cliente da Stripe: cartão, faturas e cancelamento. */
+export function openBillingPortalRequest() {
+  return call<{ success: true; url: string }>(
+    '/stripe/portal',
+    { method: 'POST' },
+    'Erro ao abrir o portal de pagamento'
+  );
+}
+
 export function reactivateSubscriptionRequest() {
   return call<SubscriptionAction>(
     '/subscription/reactivate',
@@ -91,7 +101,7 @@ export async function validateCouponRequest(
   const result = await call<CouponValidation>(
     '/coupon/validate',
     { method: 'POST', body: { code, planType, billingPeriod } },
-    'Cupom inválido'
+    porIdioma('Cupom inválido', 'Invalid coupon')
   );
 
   // O legado sempre mandava `message` (válido) ou `error` (inválido).

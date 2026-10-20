@@ -1,16 +1,8 @@
-// app/uploads/moderation/page.tsx
-import { Metadata } from 'next';
-import ReportsDashboard from '@/app/components/Admin/Reports/ReportsDashboard';
+import type { Metadata } from 'next';
+import Denuncias from '@/app/components/Admin/telas/Denuncias';
 
-// Painel em CSR: o dado vem da API pelo navegador.
-export const dynamic = 'force-dynamic';
+export const metadata: Metadata = { title: 'Denúncias' };
 
-export const metadata: Metadata = {
-  title: 'Centro de Moderação | Admin Panel',
-  description: 'Controle de qualidade e moderação de conteúdo',
-  robots: 'noindex, nofollow',
-};
-
-export default function ModerationPage() {
-  return <ReportsDashboard />;
+export default function DenunciasPage() {
+  return <Denuncias />;
 }

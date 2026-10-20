@@ -1,7 +1,5 @@
 // app/music-history/page.tsx - História da música SUPER otimizada
-import { Suspense } from 'react';
-import { MusicHistoryPageServer } from './pageServer';
-import LoadingSkeleton from './loading';
+import { HistoryIndex } from '@/app/components/site/history/HistoryIndex';
 import {
   routeLanguage,
   type LangParams,
@@ -21,7 +19,7 @@ export async function generateMetadata({ params }: LangPageProps) {
       title:
         'História da Música Clássica - Opus Atlas | Medieval ao Contemporâneo',
       description:
-        'Conheça a fascinante evolução da música clássica desde o período medieval até os tempos modernos. Bach no barroco, Mozart no clássico, Chopin no romântico, Debussy no impressionismo. Explore compositores famosos, características de cada época e marcos históricos.',
+        'A história da música erudita em sete épocas, do canto gregoriano a quem compõe hoje: o que mudou em cada uma, como a música soa e por onde começar a ouvir.',
       keywords: [
         'história música clássica',
         'períodos musicais',
@@ -56,7 +54,7 @@ export async function generateMetadata({ params }: LangPageProps) {
     en: {
       title: 'Classical Music History - Opus Atlas | Medieval to Contemporary',
       description:
-        'Discover the fascinating evolution of classical music from medieval period to modern times. Bach in baroque, Mozart in classical, Chopin in romantic, Debussy in impressionism. Explore famous composers, characteristics of each era and historical landmarks.',
+        'The history of classical music in seven eras, from Gregorian chant to the composers of today: what changed in each, how the music sounds and where to start listening.',
       keywords: [
         'classical music history',
         'musical periods',
@@ -146,10 +144,5 @@ export default async function MusicClassicHistoryPage({
   params,
 }: LangPageProps) {
   const language = await routeLanguage(params);
-
-  return (
-    <Suspense fallback={<LoadingSkeleton />}>
-      <MusicHistoryPageServer language={language} />
-    </Suspense>
-  );
+  return <HistoryIndex language={language} />;
 }

@@ -1,5 +1,5 @@
 /**
- * Estúdio de banco pela API (`/admin/database/*`, só SUPER_ADMIN).
+ * Database Studio pela API (`/admin/database/*`, só SUPER_ADMIN).
  *
  * Diferenças do legado que o estúdio sente:
  * - os models vêm do schema, com o nome do Prisma (`User`, `WorkScore`); a
@@ -32,6 +32,7 @@ interface ApiField {
   isId: boolean;
   isProtected: boolean;
   isWritable: boolean;
+  enumValues?: string[];
 }
 
 // Categoria da tela pelo nome do model.
@@ -91,6 +92,7 @@ function toModelField(field: ApiField): ModelField {
     isSensitive: field.isProtected,
     isEditableByConfig: field.isWritable,
     requiresConfirmation: false,
+    enumValues: field.enumValues,
   };
 }
 
@@ -263,4 +265,50 @@ export function exportDatabaseRecords(
     { ...recordQuery(query), format },
     `${query.model}_${new Date().toISOString()}.${format}`
   );
+}
+
+/**
+ * O documento inteiro (todos os campos legíveis), para o editor. A linha da
+ * tabela traz só as colunas visíveis — editar a partir dela abria o
+ * documento pela metade.
+ */
+export async function getDatabaseRecord(
+  model: string,
+  idField: string,
+  id: string
+) {
+  const { records } = await listDatabaseRecords(
+    { model, filters: { [idField]: id } },
+    1,
+    1
+  );
+  return records[0] ?? null;
+}
+
+/** Cria com a frase que a pessoa digitou (a API confere). */
+export function criarDocumento(
+  model: string,
+  data: Record<string, unknown>,
+  confirmation: string
+) {
+  return apiFetch<{ record: Record<string, unknown> }>(
+    '/admin/database/records',
+    { method: 'POST', body: { model, data, confirmation } }
+  );
+}
+
+/** Altera só os campos mudados, com a frase que a pessoa digitou. */
+export function alterarDocumento(
+  model: string,
+  id: string,
+  data: Record<string, unknown>,
+  confirmation: string
+) {
+  return apiFetch<{
+    record: Record<string, unknown>;
+    changes: { field: string; from: unknown; to: unknown }[];
+  }>(`/admin/database/records/${model}/${id}`, {
+    method: 'PATCH',
+    body: { data, confirmation },
+  });
 }

@@ -3,28 +3,24 @@
 
 import { useState, useMemo, useEffect } from 'react';
 import {
-  FiCheck,
-  FiCopy,
-  FiInfo,
-  FiCalendar,
-  FiMusic,
-  FiTag,
-  FiUser,
-  FiClock,
-  FiVolume2,
-  FiBookOpen,
-  FiStar,
-  FiGlobe,
-  FiLayers,
-  FiX,
-} from 'react-icons/fi';
-import {
-  AnimatedCard,
-  AnimatedItem,
-} from '@/app/components/animation/AnimatedComponents';
-import Button from '@/app/components/Common/Button';
-import Modal from '@/app/components/Modal';
-import Checkbox from '@/app/components/Common/Checkbox';
+  PiBookOpen,
+  PiCalendarBlank,
+  PiCheck,
+  PiClock,
+  PiGlobe,
+  PiInfo,
+  PiMusicNotes,
+  PiSpeakerHigh,
+  PiStar,
+  PiTag,
+  PiUser,
+} from 'react-icons/pi';
+import ConfirmModal from '@/app/components/ConfirmModal';
+import { Button } from '@/app/components/ui/Button';
+import { CaixaDeMarcar } from '@/app/components/ui/CaixaDeMarcar';
+import { cx } from '@/app/components/ui/cx';
+import { FormBlock, FormSheet } from '@/app/components/site/edit/FormSheet';
+import { useTx } from '@/app/hooks/useTx';
 
 interface ParentWorkData {
   id: string;
@@ -100,83 +96,31 @@ interface FieldSuggestion {
   category: 'catalog' | 'musical' | 'metadata' | 'classification';
 }
 
-// 🆕 MODAL PEQUENO DE CONFIRMAÇÃO
+/** The first question: whether to look at what the parent work offers. */
 const ParentWorkConfirmationModal: React.FC<{
   isOpen: boolean;
   onClose: () => void;
   onConfirm: () => void;
   parentWorkTitle: string;
 }> = ({ isOpen, onClose, onConfirm, parentWorkTitle }) => {
+  const tx = useTx();
   return (
-    <Modal
+    <ConfirmModal
       isOpen={isOpen}
       onClose={onClose}
-      maxWidth="lg"
-      showCloseButton={true}
-    >
-      <AnimatedItem direction="scale" springType="bouncy" className="w-full">
-        <div className="p-6">
-          {/* Header */}
-          <div className="flex items-center space-x-3 mb-6">
-            <div className="w-10 h-10 rounded-xl bg-blue-100 flex items-center justify-center">
-              <FiLayers className="w-5 h-5 text-blue-600" />
-            </div>
-            <div>
-              <h2 className="text-xl font-bold text-theme-primary">
-                Informações disponíveis
-              </h2>
-              <p className="text-theme-secondary text-sm">
-                Dados úteis encontrados na obra pai
-              </p>
-            </div>
-          </div>
-
-          {/* Content */}
-          <div className="space-y-4">
-            <div className="p-4 classical-card-simple  rounded-lg">
-              <div className="flex items-start space-x-3">
-                <FiInfo className="w-5 h-5 text-theme-primary mt-0.5" />
-                <div className="text-sm text-theme-primary">
-                  <p className="font-medium mb-2">
-                    Deseja aproveitar informações da obra da coleção?
-                  </p>
-                  <p className="mb-2">
-                    A obra <strong>&quot;{parentWorkTitle}&quot;</strong> possui
-                    dados que podem ser úteis para preencher campos vazios desta
-                    peça.
-                  </p>
-                  <p className="text-xs text-theme-primary">
-                    💡 Apenas campos vazios serão preenchidos. Suas informações
-                    já digitadas não serão sobrescritas.
-                  </p>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          {/* Actions */}
-          <div className="flex items-center justify-between space-x-3 mt-6">
-            <Button
-              type="button"
-              variant="secondary"
-              onClick={onClose}
-              leftIcon={<FiX />}
-            >
-              Não, obrigado
-            </Button>
-
-            <Button
-              type="button"
-              variant="primary"
-              onClick={onConfirm}
-              leftIcon={<FiCheck />}
-            >
-              Sim, ver opções
-            </Button>
-          </div>
-        </div>
-      </AnimatedItem>
-    </Modal>
+      onConfirm={onConfirm}
+      type="question"
+      title={tx(
+        'Aproveitar dados da obra da coleção?',
+        'Use details from the collection work?'
+      )}
+      message={tx(
+        `“${parentWorkTitle}” tem dados que podem preencher campos vazios desta peça. O que você já digitou não muda.`,
+        `“${parentWorkTitle}” has details that can fill this piece’s empty fields. What you typed stays.`
+      )}
+      confirmText={tx('Ver opções', 'See options')}
+      cancelText={tx('Não, obrigado', 'No, thanks')}
+    />
   );
 };
 
@@ -187,6 +131,7 @@ const ParentWorkSuggestionModal: React.FC<ParentWorkSuggestionModalProps> = ({
   currentFormData,
   onApplyData,
 }) => {
+  const tx = useTx();
   const [selectedFields, setSelectedFields] = useState<Set<string>>(new Set());
   const [isApplying, setIsApplying] = useState(false);
 
@@ -202,8 +147,8 @@ const ParentWorkSuggestionModal: React.FC<ParentWorkSuggestionModalProps> = ({
       // Catálogo
       {
         key: 'opOrCatalog',
-        label: 'Op./Catálogo',
-        icon: FiBookOpen,
+        label: tx('Op./Catálogo', 'Op./Catalog'),
+        icon: PiBookOpen,
         parentValue: parentWorkData.opOrCatalog,
         currentValue: currentFormData.opOrCatalog,
         canCopy:
@@ -212,8 +157,8 @@ const ParentWorkSuggestionModal: React.FC<ParentWorkSuggestionModalProps> = ({
       },
       {
         key: 'compositionYear',
-        label: 'Ano de Composição',
-        icon: FiCalendar,
+        label: tx('Ano de Composição', 'Year of composition'),
+        icon: PiCalendarBlank,
         parentValue: parentWorkData.compositionYear,
         currentValue: currentFormData.compositionYear,
         canCopy:
@@ -223,8 +168,8 @@ const ParentWorkSuggestionModal: React.FC<ParentWorkSuggestionModalProps> = ({
       },
       {
         key: 'firstPublishDate',
-        label: 'Primeira Publicação',
-        icon: FiCalendar,
+        label: tx('Primeira Publicação', 'First publication'),
+        icon: PiCalendarBlank,
         parentValue: parentWorkData.firstPublishDate,
         currentValue: currentFormData.firstPublishDate,
         canCopy:
@@ -234,8 +179,8 @@ const ParentWorkSuggestionModal: React.FC<ParentWorkSuggestionModalProps> = ({
       },
       {
         key: 'tone',
-        label: 'Tonalidade',
-        icon: FiMusic,
+        label: tx('Tonalidade', 'Key'),
+        icon: PiMusicNotes,
         parentValue: parentWorkData.tone,
         currentValue: currentFormData.tone,
         canCopy: !!parentWorkData.tone && !currentFormData.tone.trim(),
@@ -243,8 +188,8 @@ const ParentWorkSuggestionModal: React.FC<ParentWorkSuggestionModalProps> = ({
       },
       {
         key: 'mediaDuration',
-        label: 'Duração',
-        icon: FiClock,
+        label: tx('Duração', 'Duration'),
+        icon: PiClock,
         parentValue: parentWorkData.mediaDuration,
         currentValue: currentFormData.mediaDuration,
         canCopy:
@@ -256,8 +201,8 @@ const ParentWorkSuggestionModal: React.FC<ParentWorkSuggestionModalProps> = ({
       // Musical
       {
         key: 'workStyle',
-        label: 'Estilo Musical',
-        icon: FiVolume2,
+        label: tx('Estilo Musical', 'Musical style'),
+        icon: PiSpeakerHigh,
         parentValue: parentWorkData.workStyle,
         currentValue: currentFormData.workStyle,
         canCopy:
@@ -266,8 +211,8 @@ const ParentWorkSuggestionModal: React.FC<ParentWorkSuggestionModalProps> = ({
       },
       {
         key: 'moviment',
-        label: 'Movimento',
-        icon: FiMusic,
+        label: tx('Movimento', 'Movement'),
+        icon: PiMusicNotes,
         parentValue: parentWorkData.moviment,
         currentValue: currentFormData.moviment,
         canCopy: !!parentWorkData.moviment && !currentFormData.moviment.trim(),
@@ -275,8 +220,8 @@ const ParentWorkSuggestionModal: React.FC<ParentWorkSuggestionModalProps> = ({
       },
       {
         key: 'instrumentation',
-        label: 'Instrumentação',
-        icon: FiUser,
+        label: tx('Instrumentação', 'Instrumentation'),
+        icon: PiUser,
         parentValue: parentWorkData.instrumentation,
         currentValue: currentFormData.instrumentation,
         canCopy:
@@ -286,8 +231,8 @@ const ParentWorkSuggestionModal: React.FC<ParentWorkSuggestionModalProps> = ({
       },
       {
         key: 'dedicateTo',
-        label: 'Dedicado a',
-        icon: FiStar,
+        label: tx('Dedicado a', 'Dedicated to'),
+        icon: PiStar,
         parentValue: parentWorkData.dedicateTo,
         currentValue: currentFormData.dedicateTo,
         canCopy:
@@ -298,8 +243,8 @@ const ParentWorkSuggestionModal: React.FC<ParentWorkSuggestionModalProps> = ({
       // Arrays
       {
         key: 'categoryNames',
-        label: 'Categorias',
-        icon: FiTag,
+        label: tx('Categorias', 'Categories'),
+        icon: PiTag,
         parentValue: parentWorkData.categoryNames,
         currentValue: currentFormData.categoryNames,
         isArray: true,
@@ -311,8 +256,8 @@ const ParentWorkSuggestionModal: React.FC<ParentWorkSuggestionModalProps> = ({
       },
       {
         key: 'workGenresArr',
-        label: 'Gêneros',
-        icon: FiTag,
+        label: tx('Gêneros', 'Genres'),
+        icon: PiTag,
         parentValue: parentWorkData.workGenresArr,
         currentValue: currentFormData.workGenresArr,
         isArray: true,
@@ -326,8 +271,8 @@ const ParentWorkSuggestionModal: React.FC<ParentWorkSuggestionModalProps> = ({
       // Special fields
       {
         key: 'workType',
-        label: 'Tipo de Obra',
-        icon: FiGlobe,
+        label: tx('Tipo de Obra', 'Work type'),
+        icon: PiGlobe,
         parentValue: parentWorkData.workType,
         currentValue: currentFormData.workType,
         canCopy:
@@ -337,8 +282,8 @@ const ParentWorkSuggestionModal: React.FC<ParentWorkSuggestionModalProps> = ({
       },
       {
         key: 'difficultyLevel',
-        label: 'Nível de Dificuldade',
-        icon: FiStar,
+        label: tx('Nível de Dificuldade', 'Difficulty level'),
+        icon: PiStar,
         parentValue: parentWorkData.difficultyLevel,
         currentValue: currentFormData.difficultyLevel,
         canCopy:
@@ -350,8 +295,8 @@ const ParentWorkSuggestionModal: React.FC<ParentWorkSuggestionModalProps> = ({
       // IMSLP Tags
       {
         key: 'imslpTags',
-        label: 'Tags IMSLP',
-        icon: FiTag,
+        label: tx('Tags IMSLP', 'IMSLP tags'),
+        icon: PiTag,
         parentValue: parentWorkData.imslpTags,
         currentValue: currentFormData.imslpTags
           .split(',')
@@ -368,8 +313,8 @@ const ParentWorkSuggestionModal: React.FC<ParentWorkSuggestionModalProps> = ({
       // IDs (special handling)
       {
         key: 'epochId',
-        label: 'Época',
-        icon: FiCalendar,
+        label: tx('Época', 'Era'),
+        icon: PiCalendarBlank,
         parentValue: parentWorkData.epoch?.name,
         currentValue: currentFormData.epochId,
         displayValue: parentWorkData.epoch?.name,
@@ -378,8 +323,8 @@ const ParentWorkSuggestionModal: React.FC<ParentWorkSuggestionModalProps> = ({
       },
       {
         key: 'instrumentId',
-        label: 'Instrumento',
-        icon: FiMusic,
+        label: tx('Instrumento', 'Instrument'),
+        icon: PiMusicNotes,
         parentValue: parentWorkData.instrument?.name,
         currentValue: currentFormData.instrumentId,
         displayValue: parentWorkData.instrument?.name,
@@ -407,12 +352,20 @@ const ParentWorkSuggestionModal: React.FC<ParentWorkSuggestionModalProps> = ({
   }, [fieldSuggestions]);
 
   const categoryLabels = {
-    catalog: { title: 'Catálogo', icon: FiBookOpen, color: 'text-blue-600' },
-    musical: { title: 'Musical', icon: FiMusic, color: 'text-purple-600' },
-    metadata: { title: 'Metadados', icon: FiInfo, color: 'text-green-600' },
+    catalog: {
+      title: tx('Catálogo', 'Catalog'),
+      icon: PiBookOpen,
+      color: 'text-blue-600',
+    },
+    musical: { title: 'Musical', icon: PiMusicNotes, color: 'text-purple-600' },
+    metadata: {
+      title: tx('Metadados', 'Metadata'),
+      icon: PiInfo,
+      color: 'text-green-600',
+    },
     classification: {
-      title: 'Classificação',
-      icon: FiTag,
+      title: tx('Classificação', 'Classification'),
+      icon: PiTag,
       color: 'text-orange-600',
     },
   };
@@ -530,199 +483,98 @@ const ParentWorkSuggestionModal: React.FC<ParentWorkSuggestionModalProps> = ({
         parentWorkTitle={parentWorkData.title}
       />
 
-      {/* MODAL PRINCIPAL (já existente) */}
-      <Modal
-        isOpen={showMainModal}
-        onClose={handleCloseMainModal}
-        maxWidth="3xl"
-        showCloseButton={true}
-      >
-        <AnimatedItem direction="scale" springType="bouncy" className="w-full">
-          <div>
-            {/* Header */}
-            <div className="flex items-center justify-between p-6 border-b border-theme-secondary">
-              <div className="flex items-center space-x-3">
-                <div className="w-10 h-10 rounded-xl flex items-center justify-center">
-                  <FiCopy className="w-5 h-5 text-theme-primary" />
-                </div>
-                <div>
-                  <h2 className="text-xl font-bold text-theme-primary">
-                    Copiar informações da obra pai
-                  </h2>
-                  <p className="text-theme-secondary text-sm">
-                    <strong>{parentWorkData.title}</strong> tem informações que
-                    podem ser úteis
-                  </p>
-                </div>
-              </div>
-            </div>
-
-            {/* Content */}
-            <div className="p-6  overflow-y-auto">
-              <div className="space-y-6">
-                {/* Info */}
-                <AnimatedCard
-                  className="bg-blue-50 border-blue-200 p-4"
-                  hover="none"
-                >
-                  <div className="flex items-start space-x-3">
-                    <FiInfo className="w-5 h-5 text-black mt-0.5" />
-                    <div className="text-sm text-blue-800">
-                      <p className="font-medium mb-1">
-                        Campos que podem ser copiados
-                      </p>
-                      <p>
-                        Apenas campos vazios serão preenchidos. Suas informações
-                        já digitadas não serão sobrescritas.
-                      </p>
-                    </div>
-                  </div>
-                </AnimatedCard>
-
-                {/* Controls */}
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center space-x-3">
-                    <Button
-                      type="button"
-                      variant="secondary"
-                      size="sm"
-                      onClick={handleSelectAll}
-                    >
-                      Selecionar Todos
-                    </Button>
-                    <Button
-                      type="button"
-                      variant="secondary"
-                      size="sm"
-                      onClick={handleClearAll}
-                    >
-                      Limpar Seleção
-                    </Button>
-                  </div>
-                  <div className="text-sm text-theme-tertiary">
-                    {selectedFields.size} de {fieldSuggestions.length}{' '}
-                    selecionados
-                  </div>
-                </div>
-
-                {/* Fields by Category */}
-                {Object.entries(groupedSuggestions).map(
-                  ([category, suggestions]) => {
-                    const categoryInfo =
-                      categoryLabels[category as keyof typeof categoryLabels];
-                    const CategoryIcon = categoryInfo.icon;
-
-                    return (
-                      <AnimatedCard
-                        key={category}
-                        className="classical-card-simple p-4"
-                        hover="none"
-                      >
-                        <div className="flex items-center space-x-2 mb-4">
-                          <CategoryIcon
-                            className={`w-5 h-5 text-theme-primary`}
-                          />
-                          <h3 className="text-lg font-semibold text-theme-primary">
-                            {categoryInfo.title}
-                          </h3>
-                          <span className="text-sm text-theme-tertiary">
-                            ({suggestions.length}{' '}
-                            {suggestions.length !== 1
-                              ? 'disponíveis'
-                              : 'disponível'}
-                            )
-                          </span>
-                        </div>
-
-                        <div className="space-y-3">
-                          {suggestions.map((suggestion) => {
-                            const Icon = suggestion.icon;
-                            const isSelected = selectedFields.has(
-                              suggestion.key
-                            );
-                            const displayValue =
-                              suggestion.displayValue || suggestion.parentValue;
-
-                            return (
-                              <div
-                                key={suggestion.key}
-                                className={`p-3 rounded-lg  transition-all cursor-pointer ${
-                                  isSelected
-                                    ? 'bg-theme-tertiary'
-                                    : 'border-theme-secondary border-2 bg-theme-elevated hover:border-theme-primary'
-                                }`}
-                                onClick={() =>
-                                  handleFieldToggle(suggestion.key)
-                                }
-                              >
-                                <div className="flex items-start space-x-3">
-                                  <Checkbox
-                                    type="checkbox"
-                                    checked={isSelected}
-                                    onChange={() =>
-                                      handleFieldToggle(suggestion.key)
-                                    }
-                                    className="mt-1"
-                                  />
-                                  <Icon
-                                    className={`w-4 h-4 mt-1 text-theme-tertiary`}
-                                  />
-                                  <div className="flex-1 min-w-0">
-                                    <p
-                                      className={`font-medium text-sm text-theme-primary`}
-                                    >
-                                      {suggestion.label}
-                                    </p>
-                                    <p
-                                      className={`text-xs mt-1 truncate text-theme-secondary`}
-                                    >
-                                      {displayValue || 'Valor não disponível'}
-                                    </p>
-                                  </div>
-                                </div>
-                              </div>
-                            );
-                          })}
-                        </div>
-                      </AnimatedCard>
-                    );
-                  }
-                )}
-              </div>
-            </div>
-
-            {/* Actions */}
-            <div className="flex items-center justify-end space-x-3 p-6 border-t border-theme-secondary">
+      <FormSheet
+        aberto={showMainModal}
+        aoFechar={handleCloseMainModal}
+        titulo={tx(
+          'Copiar dados da obra da coleção',
+          'Copy details from the collection work'
+        )}
+        descricao={tx(
+          `“${parentWorkData.title}” tem dados que podem ser úteis. Só campos vazios são preenchidos.`,
+          `“${parentWorkData.title}” has details that may help. Only empty fields are filled.`
+        )}
+        ocupado={isApplying}
+        rodape={
+          <div className="flex flex-wrap items-center justify-between gap-2">
+            <span className="t-legenda">
+              {selectedFields.size} {tx('de', 'of')} {fieldSuggestions.length}{' '}
+              {tx('selecionados', 'selected')}
+            </span>
+            <div className="flex gap-2">
               <Button
-                type="button"
-                variant="secondary"
+                variante="fantasma"
                 onClick={handleCloseMainModal}
                 disabled={isApplying}
               >
-                Cancelar
+                {tx('Cancelar', 'Cancel')}
               </Button>
-
               <Button
-                type="button"
-                variant="primary"
+                variante="primario"
+                icone={PiCheck}
+                carregando={isApplying}
+                disabled={selectedFields.size === 0}
                 onClick={handleApply}
-                disabled={selectedFields.size === 0 || isApplying}
-                leftIcon={
-                  isApplying ? (
-                    <FiCopy className="animate-pulse" />
-                  ) : (
-                    <FiCheck />
-                  )
-                }
               >
                 {isApplying
-                  ? 'Aplicando...'
+                  ? 'Aplicando…'
                   : `Aplicar ${selectedFields.size} campo${selectedFields.size !== 1 ? 's' : ''}`}
               </Button>
             </div>
           </div>
-        </AnimatedItem>
-      </Modal>
+        }
+      >
+        <div className="mb-6 flex gap-2">
+          <Button tamanho="p" onClick={handleSelectAll}>
+            {tx('Selecionar todos', 'Select all')}
+          </Button>
+          <Button tamanho="p" variante="fantasma" onClick={handleClearAll}>
+            {tx('Limpar seleção', 'Clear selection')}
+          </Button>
+        </div>
+        {Object.entries(groupedSuggestions).map(([category, suggestions]) => {
+          const categoryInfo =
+            categoryLabels[category as keyof typeof categoryLabels];
+          return (
+            <FormBlock
+              key={category}
+              titulo={categoryInfo.title}
+              nota={tx(
+                `${suggestions.length} ${suggestions.length !== 1 ? 'disponíveis' : 'disponível'}`,
+                `${suggestions.length} available`
+              )}
+            >
+              {suggestions.map((suggestion) => {
+                const displayValue =
+                  suggestion.displayValue || suggestion.parentValue;
+                return (
+                  <div
+                    key={suggestion.key}
+                    className={cx(
+                      'rounded-controle px-4 py-3 sm:col-span-2',
+                      selectedFields.has(suggestion.key)
+                        ? 'tint-ouro'
+                        : 'bg-sup-2'
+                    )}
+                  >
+                    <CaixaDeMarcar
+                      rotulo={suggestion.label}
+                      ajuda={
+                        <span className="block truncate">
+                          {displayValue ||
+                            tx('Valor não disponível', 'Value not available')}
+                        </span>
+                      }
+                      marcado={selectedFields.has(suggestion.key)}
+                      aoMudar={() => handleFieldToggle(suggestion.key)}
+                    />
+                  </div>
+                );
+              })}
+            </FormBlock>
+          );
+        })}
+      </FormSheet>
     </>
   );
 };

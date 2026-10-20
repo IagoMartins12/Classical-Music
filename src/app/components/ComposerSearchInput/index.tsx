@@ -1,10 +1,14 @@
 // components/ComposerSearchInput.tsx - Versão Melhorada com Traduções
 'use client';
 
-import { useTranslation } from '@/app/context/TranslationContext';
+import { FILTRO_COMPOSITOR } from '@/app/conteudo/textos/filtroCompositor';
+import { useTextos } from '@/app/hooks/useTextos';
 import { useState, useEffect, useRef, useCallback } from 'react';
-import { FiSearch, FiUser, FiX, FiTrendingUp } from 'react-icons/fi';
+import { PiMagnifyingGlass, PiTrendUp, PiUser, PiX } from 'react-icons/pi';
 import { findComposerById, findComposers } from '@/app/requests/catalog-search';
+import { Inline } from '@/app/components/ui/Layout';
+import { Text } from '@/app/components/ui/Text';
+import { NomeAcao } from '@/app/components/ui/NomeAcao';
 
 interface Composer {
   id: string;
@@ -14,6 +18,8 @@ interface Composer {
 }
 
 interface ComposerSearchInputProps {
+  /** Id do campo, para o `<label htmlFor>` de quem usa. */
+  id?: string;
   selectedComposer: string;
   onComposerSelect: (composerId: string) => void;
   popularComposers?: Composer[];
@@ -21,12 +27,13 @@ interface ComposerSearchInputProps {
 }
 
 export default function ComposerSearchInput({
+  id,
   selectedComposer,
   onComposerSelect,
   popularComposers = [],
   isDisabled = false,
 }: ComposerSearchInputProps) {
-  const { t } = useTranslation({ sections: ['components/composerFilter'] });
+  const { t } = useTextos(FILTRO_COMPOSITOR);
 
   const [isOpen, setIsOpen] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
@@ -43,11 +50,9 @@ export default function ComposerSearchInput({
     try {
       const composer = await findComposerById(composerId);
       if (composer && composer.name) {
-        console.log('✅ Compositor encontrado:', composer.name);
         return composer;
       }
 
-      console.log('⚠️ Compositor não encontrado para ID:', composerId);
       return null;
     } catch (error) {
       console.error('❌ Erro ao buscar compositor por ID:', error);
@@ -66,15 +71,8 @@ export default function ComposerSearchInput({
 
         if (composer) {
           setSelectedComposerName(composer.fullName || composer.name);
-          console.log(
-            '✅ Compositor encontrado na lista local:',
-            composer.name
-          );
         } else {
           // Se não encontrou nas listas locais, busca na API
-          console.log(
-            '🔍 Compositor não encontrado localmente, buscando na API...'
-          );
           const fetchedComposer = await fetchComposerById(selectedComposer);
 
           if (fetchedComposer) {
@@ -120,14 +118,7 @@ export default function ComposerSearchInput({
       debounceRef.current = setTimeout(async () => {
         setIsLoading(true);
         try {
-          console.log('🔍 Fazendo busca para:', term);
-
           const results = await findComposers(term, 20);
-          console.log(
-            '📊 Resultados recebidos:',
-            results.length,
-            'compositores'
-          );
           setComposers(results);
         } catch (error) {
           console.error('❌ Erro ao buscar compositores:', error);
@@ -187,7 +178,6 @@ export default function ComposerSearchInput({
       try {
         const results = await findComposers('', 20);
         setComposers(results);
-        console.log('📊 Compositores populares carregados:', results.length);
       } catch (error) {
         console.error('❌ Erro ao carregar compositores populares:', error);
       } finally {
@@ -197,7 +187,6 @@ export default function ComposerSearchInput({
   };
 
   const handleComposerSelect = (composer: Composer) => {
-    console.log('🎯 Compositor selecionado:', composer.name);
     onComposerSelect(composer.id);
     setSelectedComposerName(composer.fullName || composer.name);
     setIsOpen(false);
@@ -206,7 +195,6 @@ export default function ComposerSearchInput({
   };
 
   const handleClear = () => {
-    console.log('🗑️ Limpando seleção de compositor');
     onComposerSelect('');
     setSelectedComposerName('');
     setSearchTerm('');
@@ -226,11 +214,12 @@ export default function ComposerSearchInput({
     !searchTerm && popularComposers && popularComposers.length > 0;
 
   return (
-    <div className={`relative ${isOpen ? 'z-[9999]' : 'z-[200]'}`}>
+    <div className={`relative ${isOpen ? 'z-menu' : 'z-elevado'}`}>
       <div className="relative">
-        <FiUser className="absolute left-4 top-1/2 transform -translate-y-1/2 w-4 h-4 text-theme-tertiary z-10" />
+        <PiUser className="absolute left-4 top-1/2 transform -translate-y-1/2 w-4 h-4 text-texto-fraco z-10" />
 
         <input
+          id={id}
           ref={inputRef}
           type="text"
           placeholder={
@@ -241,22 +230,23 @@ export default function ComposerSearchInput({
           onFocus={handleInputFocus}
           className={`input-classical pl-11 pr-12 w-full ${
             isDisabled ? 'cursor-not-allowed opacity-50' : ''
-          } ${selectedComposer ? 'text-theme-primary font-medium' : ''}`}
+          } ${selectedComposer ? 'text-texto font-medium' : ''}`}
           disabled={isDisabled}
         />
 
         {(selectedComposer || searchTerm) && (
           <button
             onClick={handleClear}
-            className="absolute right-4 top-1/2 transform -translate-y-1/2 text-theme-tertiary hover:text-theme-primary transition-colors z-10"
+            className="absolute right-4 top-1/2 transform -translate-y-1/2 text-texto-fraco transition-colors z-10"
             disabled={isDisabled}
           >
-            <FiX className="w-4 h-4" />
+            <PiX className="w-4 h-4" />
+            <NomeAcao acao="fechar" />
           </button>
         )}
 
         {!searchTerm && !selectedComposer && (
-          <FiSearch className="absolute right-4 top-1/2 transform -translate-y-1/2 w-4 h-4 text-theme-tertiary" />
+          <PiMagnifyingGlass className="absolute right-4 top-1/2 transform -translate-y-1/2 w-4 h-4 text-texto-fraco" />
         )}
       </div>
 
@@ -264,7 +254,7 @@ export default function ComposerSearchInput({
       {isOpen && (
         <div
           ref={dropdownRef}
-          className="absolute top-full left-0 right-0 mt-2 bg-theme-elevated border border-theme-secondary rounded-xl shadow-xl z-[9999] max-h-80 overflow-hidden"
+          className="absolute top-full left-0 right-0 mt-2 rounded-controle border border-[var(--linha-forte)] bg-[var(--sup-alta)] shadow-[var(--sombra-alta)] z-menu max-h-80 overflow-hidden"
           style={{
             boxShadow:
               '0 25px 50px -12px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(212, 175, 55, 0.3)',
@@ -272,23 +262,23 @@ export default function ComposerSearchInput({
         >
           {/* Header com label */}
           {showPopularLabel && (
-            <div className="flex items-center gap-2 px-4 py-3 bg-theme-secondary/10 border-b border-theme-secondary">
-              <FiTrendingUp className="w-4 h-4 text-brand-primary" />
-              <span className="text-sm font-medium text-theme-secondary">
+            <div className="flex items-center gap-2 px-4 py-3 border-b border-[var(--linha)]">
+              <PiTrendUp className="w-4 h-4 text-ouro-texto" />
+              <Text papel="rotulo" tom="suave" className="font-medium">
                 {t('composer_search_jsx_popular_label')}
-              </span>
+              </Text>
             </div>
           )}
 
           {/* Loading */}
           {isLoading && (
             <div className="flex items-center justify-center py-8">
-              <div className="flex items-center space-x-2 text-theme-secondary">
-                <div className="w-4 h-4 border-2 border-brand-primary border-t-transparent rounded-full animate-spin"></div>
+              <Inline gap={2} className="text-texto-suave">
+                <div className="w-4 h-4 border-2 border-t-transparent rounded-full animate-spin"></div>
                 <span className="text-sm">
                   {t('composer_search_jsx_loading')}
                 </span>
-              </div>
+              </Inline>
             </div>
           )}
 
@@ -300,10 +290,10 @@ export default function ComposerSearchInput({
                   key={composer.id}
                   onClick={() => handleComposerSelect(composer)}
                   className={`
-                    w-full text-left px-4 py-3 hover:bg-interactive-hover transition-colors duration-200 border-b last:border-b-0 border-theme-secondary
+                    w-full text-left px-4 py-3 transition-colors duration-200 border-b last:border-b-0 border-[var(--linha)]
                     ${
                       selectedComposer === composer.id
-                        ? 'bg-brand-primary/10 text-brand-primary font-medium'
+                        ? 'text-ouro-texto font-medium'
                         : ''
                     }
                     ${index === 0 && !showPopularLabel ? 'border-t-0' : ''}
@@ -311,25 +301,39 @@ export default function ComposerSearchInput({
                 >
                   <div className="flex items-center justify-between">
                     <div className="min-w-0 flex-1">
-                      <div className="text-sm font-medium text-theme-primary truncate">
+                      <Text
+                        papel="rotulo"
+                        tom="forte"
+                        as="div"
+                        className="font-medium truncate"
+                      >
                         {composer.name}
-                      </div>
+                      </Text>
                       {composer.fullName &&
                         composer.fullName !== composer.name && (
-                          <div className="text-xs text-theme-secondary truncate mt-0.5">
+                          <Text
+                            papel="legenda"
+                            tom="suave"
+                            as="div"
+                            className="truncate mt-0.5"
+                          >
                             {composer.fullName}
-                          </div>
+                          </Text>
                         )}
                     </div>
 
                     {composer.worksCount && Number(composer.worksCount) > 1 && (
                       <div className="ml-3 flex-shrink-0">
-                        <span className="inline-flex items-center px-2 py-1 rounded-full text-xs bg-theme-secondary/20 text-theme-secondary">
+                        <Text
+                          papel="legenda"
+                          tom="suave"
+                          className="inline-flex items-center px-2 py-1 rounded-full"
+                        >
                           {composer.worksCount}{' '}
                           {composer.worksCount === 1
                             ? t('composer_search_jsx_work_singular')
                             : t('composer_search_jsx_work_plural')}
-                        </span>
+                        </Text>
                       </div>
                     )}
                   </div>
@@ -342,18 +346,18 @@ export default function ComposerSearchInput({
           {!isLoading &&
             (!displayComposers || displayComposers.length === 0) && (
               <div className="px-4 py-8 text-center">
-                <FiUser className="w-8 h-8 text-theme-tertiary mx-auto mb-2" />
-                <p className="text-sm text-theme-secondary">
+                <PiUser className="w-8 h-8 text-texto-fraco mx-auto mb-2" />
+                <Text papel="rotulo" tom="suave" as="p">
                   {searchTerm
                     ? `${t(
                         'composer_search_jsx_no_results_for'
                       )} "${searchTerm}"`
                     : t('composer_search_jsx_no_composers')}
-                </p>
+                </Text>
                 {searchTerm && (
-                  <p className="text-xs text-theme-tertiary mt-1">
+                  <Text papel="legenda" tom="fraco" as="p" className="mt-1">
                     {t('composer_search_jsx_try_broader')}
-                  </p>
+                  </Text>
                 )}
               </div>
             )}

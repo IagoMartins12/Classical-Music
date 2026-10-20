@@ -45,6 +45,11 @@ export interface OnboardingData {
   favoriteEpochId?: string;
   experienceLevel?: 'BEGINNER' | 'INTERMEDIATE' | 'ADVANCED';
   practiceTimePerWeek?: number;
+  studyHorizon?: 'MONTHS' | 'YEAR' | 'YEARS' | 'LIFE';
+  firstName?: string;
+  lastName?: string;
+  profilePublic?: boolean;
+  showLocation?: boolean;
   image?: string;
   bio?: string;
 }
@@ -446,7 +451,9 @@ export const useAuthStore = create<AuthState>()(
             lastSavedAt: state.onboarding.lastSavedAt,
           },
         }),
-        version: 3, // 🆕 Incrementar versão devido aos novos campos com objetos completos
+        // 4: the welcome questions were regrouped into five steps.
+        // 5: a presentation step opens them; a draft keeps its question.
+        version: 5,
         migrate: (persistedState: any, version: number) => {
           // Migração para versão 3 (objetos completos de localização)
           if (version < 3) {
@@ -469,6 +476,7 @@ export const useAuthStore = create<AuthState>()(
               ...persistedState,
               onboarding: {
                 ...persistedState.onboarding,
+                currentStep: 1,
                 data: {
                   ...persistedState.onboarding?.data,
                   location: newLocationData,
@@ -476,6 +484,12 @@ export const useAuthStore = create<AuthState>()(
                 },
               },
             };
+          }
+          if (version < 4 && persistedState.onboarding) {
+            persistedState.onboarding.currentStep = 1;
+          }
+          if (version === 4 && persistedState.onboarding?.currentStep > 1) {
+            persistedState.onboarding.currentStep += 1;
           }
           return persistedState;
         },

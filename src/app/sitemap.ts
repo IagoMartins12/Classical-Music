@@ -51,21 +51,9 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       priority: 0.8,
     },
     {
-      url: `${baseUrl}/genres`,
-      lastModified: new Date(),
-      changeFrequency: 'weekly',
-      priority: 0.8,
-    },
-    {
       url: `${baseUrl}/music-history`,
       lastModified: new Date(),
       changeFrequency: 'monthly',
-      priority: 0.7,
-    },
-    {
-      url: `${baseUrl}/teachers`,
-      lastModified: new Date(),
-      changeFrequency: 'weekly',
       priority: 0.7,
     },
     {
@@ -87,6 +75,30 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       priority: 0.6,
     },
     {
+      url: `${baseUrl}/blog`,
+      lastModified: new Date(),
+      changeFrequency: 'daily',
+      priority: 0.8,
+    },
+    {
+      url: `${baseUrl}/blog/articles`,
+      lastModified: new Date(),
+      changeFrequency: 'daily',
+      priority: 0.6,
+    },
+    {
+      url: `${baseUrl}/blog/category`,
+      lastModified: new Date(),
+      changeFrequency: 'weekly',
+      priority: 0.5,
+    },
+    {
+      url: `${baseUrl}/blog/calendar`,
+      lastModified: new Date(),
+      changeFrequency: 'daily',
+      priority: 0.6,
+    },
+    {
       url: `${baseUrl}/faq`,
       lastModified: new Date(),
       changeFrequency: 'monthly',
@@ -94,12 +106,21 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     },
   ];
   let dynamicUrls: MetadataRoute.Sitemap = [];
+  let semIngles = new Set<string>();
 
   try {
-    const { composers, works, articles, teachers } =
-      await apiFetch<SitemapEntries>('/seo/sitemap', {
-        next: { revalidate, tags: ['composers', 'works', 'blog:articles'] },
-      });
+    // Sem o diretório de professores (`/teachers`): fora de uso por ora
+    // (28/09/2026) — não se indexa página que não vai ser usada.
+    const {
+      composers,
+      works,
+      articles,
+      blogCategories,
+      blogTags,
+      blogAuthors,
+    } = await apiFetch<SitemapEntries>('/seo/sitemap', {
+      next: { revalidate, tags: ['composers', 'works', 'blog:articles'] },
+    });
 
     dynamicUrls = [
       ...composers.map((composer) => ({
@@ -114,19 +135,34 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
         changeFrequency: 'monthly' as const,
         priority: 0.7,
       })),
+      // O artigo só existe em português (o texto não tem tradução): entra
+      // sem versão em inglês — ver `semIngles` abaixo.
       ...articles.map((article) => ({
         url: `${baseUrl}/blog/${article.slug}`,
         lastModified: new Date(article.lastModified),
         changeFrequency: 'weekly' as const,
         priority: 0.7,
       })),
-      ...teachers.map((teacher) => ({
-        url: `${baseUrl}/teachers/${teacher.id}`,
-        lastModified: new Date(teacher.lastModified),
+      ...(blogCategories ?? []).map((categoria) => ({
+        url: `${baseUrl}/blog/category/${categoria.slug}`,
+        lastModified: new Date(categoria.lastModified),
         changeFrequency: 'weekly' as const,
-        priority: 0.6,
+        priority: 0.5,
+      })),
+      ...(blogTags ?? []).map((tag) => ({
+        url: `${baseUrl}/blog/tag/${tag.slug}`,
+        lastModified: new Date(tag.lastModified),
+        changeFrequency: 'weekly' as const,
+        priority: 0.3,
+      })),
+      ...(blogAuthors ?? []).map((autor) => ({
+        url: `${baseUrl}/blog/autor/${encodeURIComponent(autor.id)}`,
+        lastModified: new Date(autor.lastModified),
+        changeFrequency: 'monthly' as const,
+        priority: 0.4,
       })),
     ];
+    semIngles = new Set(articles.map((a) => `/blog/${a.slug}`));
   } catch (error) {
     // O sitemap sem as URLs dinâmicas ainda é um sitemap válido, e melhor que
     // um 500: o buscador reencontra o resto pelos links das páginas.
@@ -136,7 +172,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     );
   }
 
-  return comIdiomas([...staticUrls, ...dynamicUrls], baseUrl);
+  return comIdiomas([...staticUrls, ...dynamicUrls], baseUrl, semIngles);
 }
 
 /**
@@ -147,17 +183,19 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
  * uma com a outra pelo mesmo assunto. Com `xhtml:link`, elas são a mesma
  * página em dois idiomas.
  *
- * Endereço que não vive sob `app/[lang]/` (o blog, por enquanto) passa
- * intocado.
+ * Endereço que não vive sob `app/[lang]/` passa intocado; o artigo do blog
+ * também (o texto só existe em português e o `canonical` dele aponta para
+ * o português nos dois idiomas).
  */
 function comIdiomas(
   entradas: MetadataRoute.Sitemap,
-  baseUrl: string
+  baseUrl: string,
+  semIngles: Set<string> = new Set()
 ): MetadataRoute.Sitemap {
   return entradas.map((entrada) => {
     const caminho = entrada.url.slice(baseUrl.length) || '/';
 
-    if (!isLocalizedRoute(caminho)) return entrada;
+    if (!isLocalizedRoute(caminho) || semIngles.has(caminho)) return entrada;
 
     return {
       ...entrada,

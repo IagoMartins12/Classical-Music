@@ -3,16 +3,18 @@
 
 import { useEffect, useState } from 'react';
 import {
-  FiX,
-  FiExternalLink,
-  FiMessageCircle,
-  FiStar,
-  FiMusic,
-  FiPlay,
-  FiPause,
-} from 'react-icons/fi';
+  PiArrowSquareOut,
+  PiChatCircle,
+  PiMusicNotes,
+  PiPause,
+  PiPlay,
+  PiStar,
+  PiX,
+} from 'react-icons/pi';
 import { getResponsiveImageUrl } from '@/app/libs/ads/mediaUtils';
 import Image from '@/app/components/SmartImage';
+import { Inline } from '@/app/components/ui/Layout';
+import { Text } from '@/app/components/ui/Text';
 
 interface AdModalProps {
   ad: any;
@@ -163,7 +165,7 @@ export default function AdModal({ ad, onClose, onTrackEvent }: AdModalProps) {
           title="Fechar"
           aria-label="Fechar anúncio"
         >
-          <FiX className="w-4 h-4 text-white" />
+          <PiX className="w-4 h-4 text-white" />
         </button>
 
         {/* Media Section */}
@@ -214,9 +216,9 @@ export default function AdModal({ ad, onClose, onTrackEvent }: AdModalProps) {
                     className="w-16 h-16 bg-white/20 backdrop-blur rounded-full flex items-center justify-center hover:bg-white/30 transition-colors"
                   >
                     {videoPlaying ? (
-                      <FiPause className="w-6 h-6 text-white" />
+                      <PiPause className="w-6 h-6 text-white" />
                     ) : (
-                      <FiPlay className="w-6 h-6 text-white ml-1" />
+                      <PiPlay className="w-6 h-6 text-white ml-1" />
                     )}
                   </button>
                 </div>
@@ -228,10 +230,10 @@ export default function AdModal({ ad, onClose, onTrackEvent }: AdModalProps) {
 
             {/* Ornamentos flutuantes */}
             <div className="absolute top-4 right-4 opacity-20">
-              <FiMusic className="w-6 h-6 text-white animate-pulse" />
+              <PiMusicNotes className="w-6 h-6 text-white animate-pulse" />
             </div>
             <div className="absolute top-8 right-12 opacity-10">
-              <FiStar
+              <PiStar
                 className="w-4 h-4 text-white animate-pulse"
                 style={{ animationDelay: '1s' }}
               />
@@ -243,9 +245,7 @@ export default function AdModal({ ad, onClose, onTrackEvent }: AdModalProps) {
         <div className="ad-content">
           {/* Premium badge */}
           <div className="absolute -top-2 left-1/2 transform -translate-x-1/2">
-            <div className="bg-gradient-to-r from-yellow-400 to-yellow-600 text-black text-xs font-bold px-3 py-1 rounded-full shadow-lg">
-              ✨
-            </div>
+            <div className="bg-gradient-to-r from-yellow-400 to-yellow-600 text-black text-xs font-bold px-3 py-1 rounded-full shadow-lg"></div>
           </div>
 
           {/* Title */}
@@ -260,30 +260,36 @@ export default function AdModal({ ad, onClose, onTrackEvent }: AdModalProps) {
 
           {/* Extended content if available */}
           {ad.content && (
-            <div className="text-center text-theme-secondary mb-6 text-sm leading-relaxed max-w-lg mx-auto">
-              <div dangerouslySetInnerHTML={{ __html: ad.content }} />
-            </div>
+            <Text
+              papel="rotulo"
+              tom="suave"
+              as="div"
+              className="text-center mb-6 leading-relaxed max-w-lg mx-auto"
+            >
+              {/* Text, not markup (the API says so): never injected as HTML. */}
+              <span className="whitespace-pre-line">{ad.content}</span>
+            </Text>
           )}
 
           {/* Advertiser info */}
           <div className="text-center mb-8">
-            <div className="inline-flex items-center space-x-2 px-4 py-2 bg-theme-secondary/50 rounded-full backdrop-blur">
-              <FiMusic className="w-4 h-4 text-brand-primary" />
-              <span className="text-sm font-medium text-theme-primary">
+            <div className="inline-flex items-center space-x-2 px-4 py-2 rounded-full backdrop-blur">
+              <PiMusicNotes className="w-4 h-4 text-ouro-texto" />
+              <Text papel="rotulo" tom="forte" className="font-medium">
                 {ad.advertiserName}
-              </span>
+              </Text>
               {ad.advertiserWebsite && (
                 <a
                   href={ad.advertiserWebsite}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="text-brand-primary hover:text-brand-secondary transition-colors"
+                  className="text-ouro-texto transition-colors"
                   onClick={(e) => {
                     e.stopPropagation();
                     onTrackEvent('modal_website_click');
                   }}
                 >
-                  <FiExternalLink className="w-3 h-3" />
+                  <PiArrowSquareOut className="w-3 h-3" />
                 </a>
               )}
             </div>
@@ -293,22 +299,22 @@ export default function AdModal({ ad, onClose, onTrackEvent }: AdModalProps) {
           {ad.ctaText && (
             <div className="text-center">
               <button onClick={handleCtaClick} className="ad-cta-button group">
-                <span className="flex items-center justify-center space-x-2">
+                <Inline as="span" gap={2} className="justify-center">
                   {ad.linkType === 'whatsapp' ? (
                     <>
-                      <FiMessageCircle className="w-5 h-5 group-hover:scale-110 transition-transform" />
+                      <PiChatCircle className="w-5 h-5 group-hover:scale-110 transition-transform" />
                       <span>{ad.ctaText}</span>
                     </>
                   ) : (
                     <>
-                      <FiStar className="w-5 h-5 group-hover:scale-110 transition-transform" />
+                      <PiStar className="w-5 h-5 group-hover:scale-110 transition-transform" />
                       <span>{ad.ctaText}</span>
                       {ad.isExternal && (
-                        <FiExternalLink className="w-4 h-4 ml-1 opacity-80" />
+                        <PiArrowSquareOut className="w-4 h-4 ml-1 opacity-80" />
                       )}
                     </>
                   )}
-                </span>
+                </Inline>
               </button>
             </div>
           )}
@@ -317,50 +323,57 @@ export default function AdModal({ ad, onClose, onTrackEvent }: AdModalProps) {
           <div className="flex justify-center space-x-4 mt-6 text-sm">
             <button
               onClick={handleClose}
-              className="text-theme-tertiary hover:text-theme-primary transition-colors"
+              className="text-theme-tertiary transition-colors"
             >
               Fechar
             </button>
 
             {ad.advertiserWebsite && (
-              <a
+              <Inline
+                as="a"
+                gap={1}
                 href={ad.advertiserWebsite}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="text-theme-tertiary hover:text-brand-primary transition-colors flex items-center space-x-1"
+                className="text-theme-tertiary transition-colors"
                 onClick={(e) => {
                   e.stopPropagation();
                   onTrackEvent('modal_learn_more_click');
                 }}
               >
                 <span>Saiba mais</span>
-                <FiExternalLink className="w-3 h-3" />
-              </a>
+                <PiArrowSquareOut className="w-3 h-3" />
+              </Inline>
             )}
           </div>
 
           {/* Progress bar (tempo restante) */}
           <div className="mt-8 px-4">
-            <div className="w-full bg-theme-secondary/30 h-1 rounded-full overflow-hidden">
+            <div className="w-full h-1 rounded-full overflow-hidden">
               <div
-                className="h-full bg-gradient-to-r from-brand-primary to-brand-secondary rounded-full transition-all duration-300 ease-out"
+                className="h-full rounded-full transition-all duration-300 ease-out"
                 style={{
                   animation: 'progressBar 15s linear forwards',
                   transformOrigin: 'left',
                 }}
               />
             </div>
-            <p className="text-center text-xs text-theme-tertiary mt-2 opacity-60">
+            <Text
+              papel="legenda"
+              tom="fraco"
+              as="p"
+              className="text-center mt-2 opacity-60"
+            >
               Fechará automaticamente
-            </p>
+            </Text>
           </div>
         </div>
 
         {/* Decorative elements */}
-        <div className="absolute -top-2 -left-2 w-6 h-6 border-l-4 border-t-4 border-brand-primary opacity-30 transform -rotate-45" />
-        <div className="absolute -top-2 -right-2 w-6 h-6 border-r-4 border-t-4 border-brand-primary opacity-30 transform rotate-45" />
-        <div className="absolute -bottom-2 -left-2 w-6 h-6 border-l-4 border-b-4 border-brand-primary opacity-30 transform rotate-45" />
-        <div className="absolute -bottom-2 -right-2 w-6 h-6 border-r-4 border-b-4 border-brand-primary opacity-30 transform -rotate-45" />
+        <div className="absolute -top-2 -left-2 w-6 h-6 border-l-4 border-t-4 opacity-30 transform -rotate-45" />
+        <div className="absolute -top-2 -right-2 w-6 h-6 border-r-4 border-t-4 opacity-30 transform rotate-45" />
+        <div className="absolute -bottom-2 -left-2 w-6 h-6 border-l-4 border-b-4 opacity-30 transform rotate-45" />
+        <div className="absolute -bottom-2 -right-2 w-6 h-6 border-r-4 border-b-4 opacity-30 transform -rotate-45" />
       </div>
 
       <style jsx>{`

@@ -1,16 +1,8 @@
-// app/admin/scores/page.tsx
-import { Metadata } from 'next';
-import ScoresManagement from '@/app/components/Admin/Managements/ScoresManagement';
+import type { Metadata } from 'next';
+import Partituras from '@/app/components/Admin/telas/Partituras';
 
-// Painel em CSR: o dado vem da API pelo navegador.
-export const dynamic = 'force-dynamic';
+export const metadata: Metadata = { title: 'Partituras' };
 
-export const metadata: Metadata = {
-  title: 'Gerenciar Partituras | Admin Panel',
-  description: 'Administre o catálogo de partituras da plataforma',
-  robots: 'noindex, nofollow',
-};
-
-export default function AdminScoresPage() {
-  return <ScoresManagement />;
+export default function PartiturasPage() {
+  return <Partituras />;
 }

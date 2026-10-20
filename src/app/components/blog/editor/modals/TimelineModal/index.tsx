@@ -1,280 +1,242 @@
-// components/blog/editor/modals/TimelineModal.tsx - COM UPLOAD TEMPORÁRIO
 'use client';
 
-import { useState } from 'react';
-import { Editor } from '@tiptap/react';
-import { FiTrash2 } from 'react-icons/fi';
+import { useId, useState } from 'react';
+import type { Editor } from '@tiptap/react';
+import { PiPlus, PiTrash, PiUploadSimple } from 'react-icons/pi';
 import Image from '@/app/components/SmartImage';
-import { BiPlus, BiUpload } from 'react-icons/bi';
-import Modal from '@/app/components/Modal';
-import Input from '@/app/components/Common/Inputs';
-import Button from '@/app/components/Common/Button';
-import ComposerSearchInputSimple from '@/app/components/ComposerSearchInputSimple';
-import { findComposerById } from '@/app/requests/catalog-search';
+import {
+  BuscaNoAcervo,
+  ItemEscolhido,
+  type ItemDoAcervo,
+} from '@/app/components/blog/escrita/BuscaNoAcervo';
 import { uploadBlogMedia } from '@/app/requests/blog/interactions';
+import { Button, classesDeBotao } from '@/app/components/ui/Button';
+import { Field } from '@/app/components/ui/Field';
+import { Icon } from '@/app/components/ui/Icon';
+import { cx } from '@/app/components/ui/cx';
+import { FolhaDoEditor } from '../FolhaDoEditor';
 
 interface TimelineModalProps {
   editor: Editor;
   onClose: () => void;
   articleId?: string;
-  sessionId?: string; // ✅ NOVO
+  sessionId?: string;
 }
 
-interface TimelineEvent {
+interface Evento {
   date: string;
   title: string;
   description: string;
   image?: string;
 }
 
+const VAZIO: Evento = { date: '', title: '', description: '', image: '' };
+
+/**
+ * Linha do tempo: uma lista de momentos (data, título, texto e imagem
+ * opcional). Só entram os que têm data e título; o botão de inserir espera
+ * pelo primeiro completo, em vez de um `alert` depois do clique.
+ */
 export function TimelineModal({
   editor,
   onClose,
   articleId,
-  sessionId, // ✅ NOVO
+  sessionId,
 }: TimelineModalProps) {
-  const [events, setEvents] = useState<TimelineEvent[]>([
-    { date: '', title: '', description: '', image: '' },
-  ]);
-  const [uploadingIndex, setUploadingIndex] = useState<number | null>(null);
+  const id = useId();
+  const [eventos, setEventos] = useState<Evento[]>([{ ...VAZIO }]);
+  const [enviandoEm, setEnviandoEm] = useState<number | null>(null);
+  const [erro, setErro] = useState('');
+  const [compositor, setCompositor] = useState<ItemDoAcervo | null>(null);
 
-  const [composerId, setComposerId] = useState('');
-  const [composerName, setComposerName] = useState('');
+  const completos = eventos.filter((e) => e.date.trim() && e.title.trim());
 
-  const addEvent = () => {
-    setEvents([...events, { date: '', title: '', description: '', image: '' }]);
-  };
+  function mudar(i: number, campo: keyof Evento, valor: string) {
+    setEventos((atual) =>
+      atual.map((e, j) => (j === i ? { ...e, [campo]: valor } : e))
+    );
+  }
 
-  const removeEvent = (index: number) => {
-    if (events.length > 1) {
-      setEvents(events.filter((_, i) => i !== index));
-    }
-  };
-
-  const updateEvent = (
-    index: number,
-    field: keyof TimelineEvent,
-    value: string
-  ) => {
-    const newEvents = [...events];
-    newEvents[index] = { ...newEvents[index], [field]: value };
-    setEvents(newEvents);
-  };
-
-  // ✅ CORRIGIDO: Upload com ou sem articleId
-  const handleImageUpload = async (index: number, file: File) => {
-    setUploadingIndex(index);
+  async function enviarImagem(i: number, arquivo: File) {
+    setEnviandoEm(i);
+    setErro('');
     try {
-      // Se tem articleId, usa. Se não, usa sessionId
-      const url = await uploadBlogMedia(file, {
-        folder: 'timeline',
-        articleId,
-        sessionId,
-      });
-      updateEvent(index, 'image', url);
-    } catch (error) {
-      console.error('Erro ao fazer upload:', error);
-      alert(
-        error instanceof Error
-          ? `Erro ao fazer upload: ${error.message}`
-          : 'Erro ao fazer upload da imagem'
+      mudar(
+        i,
+        'image',
+        await uploadBlogMedia(arquivo, {
+          folder: 'timeline',
+          articleId,
+          sessionId,
+        })
+      );
+    } catch (falha) {
+      setErro(
+        falha instanceof Error
+          ? `Não deu para enviar: ${falha.message}`
+          : 'Não deu para enviar a imagem.'
       );
     } finally {
-      setUploadingIndex(null);
+      setEnviandoEm(null);
     }
-  };
+  }
 
-  const handleComposerSelect = async (id: string) => {
-    setComposerId(id);
-
-    if (id) {
-      try {
-        const composer = await findComposerById(id);
-        if (composer) setComposerName(composer.fullName || composer.name);
-      } catch (error) {
-        console.error('Erro ao buscar compositor:', error);
-      }
-    }
-  };
-
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    e.stopPropagation();
-    const validEvents = events.filter((event) => event.date && event.title);
-
-    if (validEvents.length === 0) {
-      alert('Adicione pelo menos um evento com data e título');
-      return;
-    }
-
-    editor.commands.insertContent({
-      type: 'timeline',
-      attrs: {
-        events: validEvents,
-        composerId,
-        composerName,
-      },
-    });
+  function inserir() {
+    editor
+      .chain()
+      .focus()
+      .insertContent({
+        type: 'timeline',
+        attrs: {
+          events: completos.map((e) => ({
+            ...e,
+            date: e.date.trim(),
+            title: e.title.trim(),
+          })),
+          composerId: compositor?.id ?? '',
+          composerName: compositor?.nome ?? '',
+        },
+      })
+      .run();
     onClose();
-  };
+  }
 
   return (
-    <Modal
-      isOpen={true}
-      onClose={onClose}
-      title="Inserir Timeline"
-      maxWidth="4xl"
+    <FolhaDoEditor
+      titulo="Linha do tempo"
+      descricao="Só entram os momentos com data e título."
+      aoFechar={onClose}
+      aoEnviar={inserir}
+      podeEnviar={completos.length > 0}
+      enviando={enviandoEm !== null}
+      largura="g"
     >
-      <form onSubmit={handleSubmit} className="space-y-6">
-        {/* Compositor vinculado */}
-        <div className="classical-card-simple p-4 bg-blue-50 dark:bg-blue-900/20">
-          <h4 className="text-sm font-semibold text-theme-primary mb-3">
-            Vincular Compositor (opcional)
-          </h4>
-          <ComposerSearchInputSimple
-            selectedComposer={composerId}
-            onComposerSelect={handleComposerSelect}
-          />
-          {composerName && (
-            <p className="text-xs text-theme-tertiary mt-2">
-              ✅ Timeline vinculada a: <strong>{composerName}</strong>
-            </p>
+      <details
+        className="rounded-card bg-sup-2 px-4"
+        open={Boolean(compositor)}
+      >
+        <summary className="flex min-h-[var(--alvo)] cursor-pointer items-center justify-between text-sm font-medium text-texto">
+          De qual compositor
+          <span className="font-normal text-texto-fraco">
+            {compositor ? compositor.nome : 'opcional'}
+          </span>
+        </summary>
+        <div className="pb-4">
+          {compositor ? (
+            <ItemEscolhido
+              rotulo="Compositor"
+              item={compositor}
+              aoTrocar={() => setCompositor(null)}
+            />
+          ) : (
+            <BuscaNoAcervo
+              tipo="compositor"
+              rotulo="Compositor"
+              aoEscolher={setCompositor}
+            />
           )}
         </div>
+      </details>
 
-        {/* Eventos */}
-        <div className="space-y-4">
-          <h4 className="text-sm font-semibold text-theme-primary">
-            Eventos da Timeline
-          </h4>
-
-          {events.map((event, index) => (
-            <div key={index} className="classical-card-simple p-4">
-              <div className="flex items-center justify-between mb-3">
-                <h4 className="font-medium text-theme-primary">
-                  Evento {index + 1}
-                </h4>
-                {events.length > 1 && (
-                  <Button
-                    type="button"
-                    variant="ghost"
-                    size="sm"
-                    onClick={() => removeEvent(index)}
-                    leftIcon={<FiTrash2 />}
-                  >
-                    Remover
-                  </Button>
-                )}
-              </div>
-
-              <div className="grid grid-cols-2 gap-4 mb-3">
-                <Input
-                  label="Data *"
-                  type="text"
-                  value={event.date}
-                  onChange={(e) => updateEvent(index, 'date', e.target.value)}
-                  placeholder="Ex: 1770, Dezembro 1770, 16/12/1770"
-                  required
-                  widhtFull
-                />
-
-                <Input
-                  label="Título *"
-                  type="text"
-                  value={event.title}
-                  onChange={(e) => updateEvent(index, 'title', e.target.value)}
-                  placeholder="Ex: Nascimento"
-                  required
-                  widhtFull
-                />
-              </div>
-
-              <div className="mb-3">
-                <label className="block text-sm font-medium text-theme-primary mb-1">
-                  Descrição
-                </label>
-                <textarea
-                  value={event.description}
-                  onChange={(e) =>
-                    updateEvent(index, 'description', e.target.value)
+      <ol className="flex flex-col gap-3">
+        {eventos.map((evento, i) => (
+          <li key={i} className="flex flex-col gap-4 rounded-card bg-sup-2 p-4">
+            <div className="flex items-center justify-between gap-3">
+              <span className="t-rotulo text-texto-fraco">Momento {i + 1}</span>
+              {eventos.length > 1 && (
+                <Button
+                  variante="fantasma"
+                  tamanho="p"
+                  icone={PiTrash}
+                  rotulo={`Tirar o momento ${i + 1}`}
+                  onClick={() =>
+                    setEventos((atual) => atual.filter((_, j) => j !== i))
                   }
-                  rows={2}
-                  placeholder="Descreva o evento..."
-                  className="input-classical-2 w-full resize-none"
                 />
-              </div>
-
-              <div>
-                <label className="block text-sm font-medium text-theme-primary mb-1">
-                  Imagem (opcional)
-                </label>
-                {event.image ? (
-                  <div className="relative rounded-lg overflow-hidden">
-                    <Image
-                      src={event.image}
-                      alt={event.title}
-                      width={800}
-                      height={160}
-                      className="w-full h-40 object-cover"
-                    />
-                    <button
-                      type="button"
-                      onClick={() => updateEvent(index, 'image', '')}
-                      className="absolute top-2 right-2 p-2 bg-red-600 text-white rounded-full hover:bg-red-700 transition-colors shadow-theme-medium"
-                    >
-                      <FiTrash2 className="w-4 h-4" />
-                    </button>
-                  </div>
-                ) : (
-                  <div className="border-2 border-dashed border-theme-secondary rounded-lg p-6 text-center hover:border-brand-primary transition-colors">
-                    <input
-                      type="file"
-                      id={`event-image-${index}`}
-                      accept="image/*"
-                      onChange={(e) => {
-                        const file = e.target.files?.[0];
-                        if (file) handleImageUpload(index, file);
-                      }}
-                      className="hidden"
-                      disabled={uploadingIndex === index}
-                    />
-                    <label
-                      htmlFor={`event-image-${index}`}
-                      className="cursor-pointer"
-                    >
-                      <BiUpload className="w-8 h-8 text-theme-tertiary mx-auto mb-2" />
-                      <span className="text-sm text-theme-secondary">
-                        {uploadingIndex === index
-                          ? 'Enviando...'
-                          : 'Clique para fazer upload'}
-                      </span>
-                    </label>
-                  </div>
-                )}
-              </div>
+              )}
             </div>
-          ))}
-        </div>
+            <div className="grid gap-4 sm:grid-cols-[10rem_minmax(0,1fr)]">
+              <Field
+                label="Data"
+                value={evento.date}
+                onChange={(e) => mudar(i, 'date', e.target.value)}
+                placeholder="1770"
+              />
+              <Field
+                label="Título"
+                value={evento.title}
+                onChange={(e) => mudar(i, 'title', e.target.value)}
+                placeholder="Nasce em Bonn"
+              />
+            </div>
+            <Field.Area
+              label="Texto (opcional)"
+              rows={2}
+              value={evento.description}
+              onChange={(e) => mudar(i, 'description', e.target.value)}
+              classeCampo="resize-y"
+            />
+            {evento.image ? (
+              <div className="flex items-end gap-3">
+                <Image
+                  src={evento.image}
+                  alt=""
+                  width={240}
+                  height={160}
+                  className="h-24 w-36 rounded-controle object-cover"
+                />
+                <Button
+                  variante="fantasma"
+                  tamanho="p"
+                  onClick={() => mudar(i, 'image', '')}
+                >
+                  Tirar imagem
+                </Button>
+              </div>
+            ) : (
+              <div>
+                <input
+                  id={`${id}-imagem-${i}`}
+                  type="file"
+                  accept="image/jpeg,image/png,image/webp,image/avif"
+                  onChange={(e) => {
+                    const arquivo = e.target.files?.[0];
+                    e.target.value = '';
+                    if (arquivo) enviarImagem(i, arquivo);
+                  }}
+                  disabled={enviandoEm === i}
+                  className="sr-only"
+                />
+                <label
+                  htmlFor={`${id}-imagem-${i}`}
+                  className={cx(
+                    classesDeBotao('fantasma', 'p'),
+                    'cursor-pointer'
+                  )}
+                >
+                  <Icon de={PiUploadSimple} tamanho="pp" />
+                  {enviandoEm === i ? 'Enviando…' : 'Imagem (opcional)'}
+                </label>
+              </div>
+            )}
+          </li>
+        ))}
+      </ol>
 
-        <Button
-          type="button"
-          variant="outline"
-          onClick={addEvent}
-          leftIcon={<BiPlus className="w-5 h-5" />}
-          className="w-full"
-        >
-          Adicionar Evento
-        </Button>
+      {erro && (
+        <p role="alert" className="t-legenda text-erro">
+          {erro}
+        </p>
+      )}
 
-        <div className="flex justify-end space-x-2 pt-4 border-t border-theme-secondary">
-          <Button type="button" variant="secondary" onClick={onClose}>
-            Cancelar
-          </Button>
-          <Button type="submit" variant="primary">
-            Inserir Timeline
-          </Button>
-        </div>
-      </form>
-    </Modal>
+      <Button
+        variante="secundario"
+        icone={PiPlus}
+        onClick={() => setEventos((atual) => [...atual, { ...VAZIO }])}
+        className="self-start"
+      >
+        Outro momento
+      </Button>
+    </FolhaDoEditor>
   );
 }

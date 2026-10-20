@@ -1,20 +1,26 @@
-// app/profile/components/MusicalPreferencesSection.tsx (versão atualizada)
 'use client';
 
+import { Field } from '@/app/components/ui/Field';
+import { PERFIL } from '@/app/conteudo/textos/perfil';
+import { useTextos } from '@/app/hooks/useTextos';
 import React, { useState, useEffect, useCallback } from 'react';
 // Era `User` do NextAuth, aumentado em `types/next-auth.d.ts`. É o mesmo
 // objeto que `useAuth()` entrega, e ele já tem tipo próprio no store.
 import type { User } from '@/app/hooks/userStore';
-import { FiEdit3, FiSave, FiX, FiClock, FiHeart } from 'react-icons/fi';
+import { PiClock, PiFloppyDisk, PiPencilLine, PiX } from 'react-icons/pi';
 
+import { STUDY_HORIZONS, WELCOME } from '@/app/conteudo/site/welcome';
+import { useRouteLanguage } from '@/app/hooks/useRouteLanguage';
+import type { StudyHorizon } from '@/app/libs/api/profile';
 import { updateMusicalPreferences } from '@/app/actions/profile';
 import { toast } from 'react-hot-toast';
-import Button from '../../Common/Button';
-import Select from '../../Common/Select';
-import { legacyCatalog } from '@/app/libs/api/compat';
+import { Button } from '@/app/components/ui/Button';
 import { useAuth } from '@/app/hooks/useAuth';
 import { useSessionUpdate } from '@/app/hooks/useSessionUpdate';
-import { useTranslation } from '@/app/context/TranslationContext';
+import { Stack, Inline } from '@/app/components/ui/Layout';
+import { Text } from '@/app/components/ui/Text';
+import { Card } from '@/app/components/ui/Card';
+import { porIdioma } from '@/app/utils/porIdioma';
 
 interface MusicalPreferencesSectionProps {
   user: User;
@@ -27,12 +33,9 @@ const MusicalPreferencesSection: React.FC<MusicalPreferencesSectionProps> = ({
 }) => {
   const { updateUser: globalUpdateUser } = useAuth();
   const { updateUserSession } = useSessionUpdate();
-  const { t } = useTranslation({ sections: ['pages/profile'] });
+  const { t } = useTextos(PERFIL);
   const [isEditing, setIsEditing] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
-  const [isLoadingData, setIsLoadingData] = useState(true);
-  const [composers, setComposers] = useState<any[]>([]);
-  const [epochs, setEpochs] = useState<any[]>([]);
   const [formData, setFormData] = useState({
     favoriteComposerId: user.favoriteComposerId || '',
     favoriteEpochId: user.favoriteEpochId || '',
@@ -42,6 +45,7 @@ const MusicalPreferencesSection: React.FC<MusicalPreferencesSectionProps> = ({
       | 'ADVANCED'
       | '',
     practiceTimePerWeek: user.practiceTimePerWeek || 0,
+    studyHorizon: (user.studyHorizon || '') as StudyHorizon | '',
   });
 
   const EXPERIENCE_LEVELS = [
@@ -61,10 +65,6 @@ const MusicalPreferencesSection: React.FC<MusicalPreferencesSectionProps> = ({
     { value: '1200', label: t('preferences_20_plus_hours') },
   ];
 
-  useEffect(() => {
-    loadOptions();
-  }, []);
-
   // Atualizar formData quando user mudar
   useEffect(() => {
     setFormData({
@@ -76,24 +76,18 @@ const MusicalPreferencesSection: React.FC<MusicalPreferencesSectionProps> = ({
         | 'ADVANCED'
         | '',
       practiceTimePerWeek: user.practiceTimePerWeek || 0,
+      studyHorizon: (user.studyHorizon || '') as StudyHorizon | '',
     });
   }, [user]);
 
-  const loadOptions = async () => {
-    setIsLoadingData(true);
-    try {
-      const { composers: composersData, epochs: epochsData } =
-        await legacyCatalog.musicalOptions();
-
-      setComposers(composersData);
-      setEpochs(epochsData);
-    } catch (error) {
-      console.error('Erro ao carregar opções:', error);
-      toast.error('Erro ao carregar opções');
-    } finally {
-      setIsLoadingData(false);
-    }
-  };
+  const horizonCopy = WELCOME[useRouteLanguage().language].study;
+  const HORIZON_OPTIONS = [
+    { value: '', label: t('preferences_not_selected') },
+    ...STUDY_HORIZONS.map((h) => ({
+      value: h,
+      label: horizonCopy.horizons[h],
+    })),
+  ];
 
   const handleInputChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     const { name, value } = e.target;
@@ -129,6 +123,7 @@ const MusicalPreferencesSection: React.FC<MusicalPreferencesSectionProps> = ({
           | 'ADVANCED'
           | undefined,
         practiceTimePerWeek: formData.practiceTimePerWeek,
+        studyHorizon: formData.studyHorizon || null,
       };
 
       const result = await updateMusicalPreferences(user.id, dataToSave);
@@ -144,6 +139,7 @@ const MusicalPreferencesSection: React.FC<MusicalPreferencesSectionProps> = ({
             | 'ADVANCED'
             | null,
           practiceTimePerWeek: formData.practiceTimePerWeek,
+          studyHorizon: formData.studyHorizon || null,
         };
 
         await syncUserData(syncData);
@@ -154,7 +150,7 @@ const MusicalPreferencesSection: React.FC<MusicalPreferencesSectionProps> = ({
       }
     } catch (error) {
       console.error('Erro ao salvar preferências:', error);
-      toast.error('Erro ao atualizar preferências.');
+      toast.error(porIdioma('Não foi possível salvar.', 'Could not save.'));
     } finally {
       setIsLoading(false);
     }
@@ -170,88 +166,49 @@ const MusicalPreferencesSection: React.FC<MusicalPreferencesSectionProps> = ({
         | 'ADVANCED'
         | '',
       practiceTimePerWeek: user.practiceTimePerWeek || 0,
+      studyHorizon: (user.studyHorizon || '') as StudyHorizon | '',
     });
     setIsEditing(false);
   };
 
-  const getComposerName = (id: string) => {
-    if (!id) return t('preferences_not_selected');
-    const composer = composers.find((c) => c.id === id);
-    return composer ? composer.fullName : t('preferences_composer_not_found');
-  };
-
-  const getEpochName = (id: string) => {
-    if (!id) return t('preferences_not_selected');
-    const epoch = epochs.find((e) => e.id === id);
-    return epoch ? epoch.name : t('preferences_period_not_found');
-  };
-
-  // Loading inicial
-  if (isLoadingData) {
-    return (
-      <div className="space-y-6">
-        <div className="flex items-center justify-between">
-          <div>
-            <h3 className="text-lg font-semibold text-theme-primary">
-              {t('preferences_title')}
-            </h3>
-            <p className="text-sm text-theme-secondary">
-              {t('preferences_loading')}
-            </p>
-          </div>
-        </div>
-
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          {[...Array(4)].map((_, index) => (
-            <div key={index} className="animate-pulse">
-              <div className="h-4 bg-theme-secondary rounded w-24 mb-2" />
-              <div className="h-12 bg-theme-secondary rounded" />
-            </div>
-          ))}
-        </div>
-      </div>
-    );
-  }
-
   return (
-    <div className="space-y-6">
+    <Stack gap={6}>
       {/* Header */}
-      <div className="flex items-center justify-between">
-        <div>
-          <h3 className="text-lg font-semibold text-theme-primary">
+      <div className="flex flex-wrap items-start justify-between gap-4 sm:flex-nowrap sm:[&>*:not(:first-child)]:shrink-0">
+        <div className="sm:min-w-0 sm:flex-1">
+          <h3 className="font-display text-[1.5rem] leading-tight text-texto">
             {t('preferences_title')}
           </h3>
-          <p className="text-sm text-theme-secondary">
+          <Text papel="rotulo" tom="suave" as="p">
             {t('preferences_description')}
-          </p>
+          </Text>
         </div>
 
         {!isEditing ? (
           <Button
-            variant="outline"
-            size="sm"
+            tamanho="p"
+            icone={PiPencilLine}
             onClick={() => setIsEditing(true)}
-            leftIcon={<FiEdit3 />}
           >
             {t('preferences_edit')}
           </Button>
         ) : (
-          <div className="flex flex-col md-flex-row gap-2 ">
+          <div className="flex gap-2">
             <Button
-              variant="outline"
-              size="sm"
+              tamanho="p"
+              variante="fantasma"
+              icone={PiX}
               onClick={handleCancel}
-              leftIcon={<FiX />}
               disabled={isLoading}
             >
               {t('preferences_cancel')}
             </Button>
             <Button
-              variant="primary"
-              size="sm"
+              tamanho="p"
+              variante="primario"
+              icone={PiFloppyDisk}
               onClick={handleSave}
-              isLoading={isLoading}
-              leftIcon={<FiSave />}
+              carregando={isLoading}
             >
               {t('preferences_save')}
             </Button>
@@ -261,110 +218,84 @@ const MusicalPreferencesSection: React.FC<MusicalPreferencesSectionProps> = ({
 
       {/* Experience Level */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        <div>
-          <div className="flex items-center space-x-2 mb-3">
-            <FiClock className="w-4 h-4 text-brand-primary" />
-            <label className="text-sm font-medium text-theme-secondary">
+        <Stack gap={3}>
+          <Inline gap={2}>
+            <PiClock className="w-4 h-4 text-ouro-texto" />
+            <span className="text-sm font-medium text-texto-suave">
               {t('preferences_experience_level')}
-            </label>
-          </div>
+            </span>
+          </Inline>
 
-          <Select
+          <Field.Selecao
+            label={t('preferences_experience_level')}
+            rotuloOculto
             value={formData.experienceLevel}
             onChange={handleInputChange}
             name="experienceLevel"
-            options={EXPERIENCE_LEVELS}
             disabled={!isEditing}
-          />
-        </div>
+          >
+            {EXPERIENCE_LEVELS.map((o) => (
+              <option key={o.value} value={o.value}>
+                {o.label}
+              </option>
+            ))}
+          </Field.Selecao>
+        </Stack>
 
-        <div>
-          <div className="flex items-center space-x-2 mb-3">
-            <FiClock className="w-4 h-4 text-brand-primary" />
-            <label className="text-sm font-medium text-theme-secondary">
+        <Stack gap={3}>
+          <Inline gap={2}>
+            <PiClock className="w-4 h-4 text-ouro-texto" />
+            <span className="text-sm font-medium text-texto-suave">
               {t('preferences_practice_time')}
-            </label>
-          </div>
+            </span>
+          </Inline>
 
-          <Select
+          <Field.Selecao
+            label={t('preferences_practice_time')}
+            rotuloOculto
             value={formData.practiceTimePerWeek.toString()}
             onChange={handleInputChange}
             name="practiceTimePerWeek"
-            options={PRACTICE_TIME_OPTIONS}
             disabled={!isEditing}
-          />
-        </div>
-      </div>
+          >
+            {PRACTICE_TIME_OPTIONS.map((o) => (
+              <option key={o.value} value={o.value}>
+                {o.label}
+              </option>
+            ))}
+          </Field.Selecao>
+        </Stack>
 
-      {/* Favorites */}
-      <div className="pt-6 border-t border-theme-secondary">
-        <div className="flex items-center space-x-2 mb-6">
-          <FiHeart className="w-4 h-4 text-brand-primary" />
-          <h4 className="font-medium text-theme-primary">
-            {t('preferences_favorites')}
-          </h4>
-        </div>
-
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <div>
-            <label className="block text-sm font-medium text-theme-secondary mb-2">
-              {t('preferences_favorite_composer')}
-            </label>
-            {!isEditing ? (
-              <div className="input-classical bg-theme-secondary bg-opacity-50">
-                {getComposerName(formData.favoriteComposerId)}
-              </div>
-            ) : (
-              <Select
-                value={formData.favoriteComposerId}
-                onChange={handleInputChange}
-                name="favoriteComposerId"
-                options={[
-                  { value: '', label: t('preferences_select_composer') },
-                  ...composers.map((composer) => ({
-                    value: composer.id,
-                    label: composer.fullName,
-                  })),
-                ]}
-                disabled={isLoadingData}
-              />
-            )}
-          </div>
-
-          <div>
-            <label className="block text-sm font-medium text-theme-secondary mb-2">
-              {t('preferences_favorite_period')}
-            </label>
-            {!isEditing ? (
-              <div className="input-classical bg-theme-secondary bg-opacity-50">
-                {getEpochName(formData.favoriteEpochId)}
-              </div>
-            ) : (
-              <Select
-                value={formData.favoriteEpochId}
-                onChange={handleInputChange}
-                name="favoriteEpochId"
-                options={[
-                  { value: '', label: t('preferences_select_period') },
-                  ...epochs.map((epoch) => ({
-                    value: epoch.id,
-                    label: epoch.name,
-                  })),
-                ]}
-                disabled={isLoadingData}
-              />
-            )}
-          </div>
-        </div>
+        {user.userType === 'MUSIC_STUDENT' && (
+          <Stack gap={3}>
+            <span className="text-sm font-medium text-texto-suave">
+              {horizonCopy.horizon}
+            </span>
+            <Field.Selecao
+              label={horizonCopy.horizon}
+              rotuloOculto
+              value={formData.studyHorizon}
+              onChange={handleInputChange}
+              name="studyHorizon"
+              disabled={!isEditing}
+            >
+              {HORIZON_OPTIONS.map((o) => (
+                <option key={o.value} value={o.value}>
+                  {o.label}
+                </option>
+              ))}
+            </Field.Selecao>
+          </Stack>
+        )}
       </div>
 
       {/* Summary Card */}
       {formData.experienceLevel && formData.practiceTimePerWeek > 0 && (
-        <div className="classical-card-2 p-4 bg-brand-primary bg-opacity-5 border border-brand-primary border-opacity-30">
-          <h4 className="font-medium text-brand-primary mb-2">
+        <Card nivel={2} densidade="compacta" className="">
+          <h4 className="font-medium text-ouro-texto mb-2">
             {t('preferences_profile_summary')}
           </h4>
-          <div className="text-sm text-theme-secondary space-y-1">
+          <Text papel="rotulo" tom="suave" as="div" className="space-y-1">
             <p>
               • <strong>{t('preferences_level')}</strong>{' '}
               {
@@ -381,22 +312,10 @@ const MusicalPreferencesSection: React.FC<MusicalPreferencesSectionProps> = ({
                 )?.label
               }
             </p>
-            {formData.favoriteComposerId && (
-              <p>
-                • <strong>{t('preferences_favorite_composer_summary')}</strong>{' '}
-                {getComposerName(formData.favoriteComposerId)}
-              </p>
-            )}
-            {formData.favoriteEpochId && (
-              <p>
-                • <strong>{t('preferences_favorite_period_summary')}</strong>{' '}
-                {getEpochName(formData.favoriteEpochId)}
-              </p>
-            )}
-          </div>
-        </div>
+          </Text>
+        </Card>
       )}
-    </div>
+    </Stack>
   );
 };
 

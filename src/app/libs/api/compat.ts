@@ -6,9 +6,10 @@ import { getQueryClient } from '../query-client';
 import type { OnboardingData } from '@/app/stores/authStore';
 import { authApi } from './auth';
 import { catalogApi } from './catalog';
-import { ApiError } from './client';
+import { ApiError, connectionError } from './client';
 import { invitesApi } from './invites';
 import { ProfileAccount, profileApi } from './profile';
+import { porIdioma } from '@/app/utils/porIdioma';
 
 /**
  * Adaptadores de formato da Etapa 2.
@@ -36,7 +37,7 @@ export function tokenErrorCode(error: unknown): TokenErrorCode {
   if (!(error instanceof ApiError)) return 'CONNECTION_ERROR';
   if (error.status === 429) return 'RATE_LIMITED';
 
-  const message = error.message.toLowerCase();
+  const message = error.key.toLowerCase();
 
   if (message.includes('expirado') || message.includes('não vale mais')) {
     return 'EXPIRED_TOKEN';
@@ -52,10 +53,7 @@ export function tokenErrorCode(error: unknown): TokenErrorCode {
 }
 
 function failed(error: unknown): LegacyJson {
-  const message =
-    error instanceof ApiError
-      ? error.message
-      : 'Erro de conexão. Tente novamente.';
+  const message = error instanceof ApiError ? error.message : connectionError();
 
   return {
     success: false,
@@ -133,8 +131,10 @@ export const legacyAuth = {
 
   /** A API não reenvia troca de e-mail pelo link: a troca se pede de novo. */
   resendEmailChange: async (): Promise<LegacyJson> => {
-    const message =
-      'Este link não pode ser reenviado. Peça a troca de e-mail de novo no seu perfil.';
+    const message = porIdioma(
+      'Este link não pode ser reenviado. Peça a troca de e-mail de novo no seu perfil.',
+      'This link cannot be resent. Ask for the email change again in your profile.'
+    );
     return { success: false, message, error: message };
   },
 
@@ -184,7 +184,10 @@ export const legacyAuth = {
       afterAccountChange();
       return {
         success: true,
-        message: `Você agora é aluno de ${result.teacherName}.`,
+        message: porIdioma(
+          `Você agora é aluno de ${result.teacherName}.`,
+          `You are now ${result.teacherName}’s student.`
+        ),
         user: sessionUser(),
         teacher: { name: result.teacherName },
       };
@@ -204,7 +207,10 @@ export const legacyAuth = {
 
   /** O aluno não reenvia o próprio convite pela API: quem reenvia é o professor. */
   resendStudentInvite: async (): Promise<LegacyJson> => {
-    const message = 'Peça ao seu professor para reenviar o convite.';
+    const message = porIdioma(
+      'Peça ao seu professor para reenviar o convite.',
+      'Ask your teacher to resend the invite.'
+    );
     return { success: false, message, error: message };
   },
 };
@@ -300,6 +306,13 @@ export const legacyOnboarding = {
           userType: data.userType,
           experienceLevel: data.experienceLevel,
           practiceTimePerWeek: data.practiceTimePerWeek,
+          studyHorizon:
+            data.userType === 'MUSIC_STUDENT' ? data.studyHorizon : undefined,
+          // A blank name field leaves the account's name alone.
+          firstName: data.firstName?.trim() || undefined,
+          lastName: data.lastName?.trim() || undefined,
+          profilePublic: data.profilePublic,
+          showLocation: data.showLocation,
           favoriteComposerId: data.favoriteComposerId,
           favoriteEpochId: data.favoriteEpochId,
           bio: data.bio,

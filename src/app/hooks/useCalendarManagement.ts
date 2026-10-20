@@ -54,7 +54,7 @@ export function useCalendarManagement(onDataChange?: () => void) {
       // O legado chamava `/api/events/:id`, rota que não existia.
       await apiFetch(`/blog/events/${deletingEvent.id}`, { method: 'DELETE' });
 
-      toast.success('Evento deletado com sucesso!', { icon: '🗑️' });
+      toast.success('Evento deletado com sucesso!');
       closeDeleteEventModal();
       onDataChange?.();
     } catch (error) {
@@ -105,7 +105,7 @@ export function useCalendarManagement(onDataChange?: () => void) {
       // O legado chamava `/api/venues/:id`, rota que não existia.
       await apiFetch(`/blog/venues/${deletingVenue.id}`, { method: 'DELETE' });
 
-      toast.success('Local deletado com sucesso!', { icon: '🗑️' });
+      toast.success('Local deletado com sucesso!');
       closeDeleteVenueModal();
       onDataChange?.();
     } catch (error) {

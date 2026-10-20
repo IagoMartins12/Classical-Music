@@ -1,8 +1,7 @@
 // app/[lang]/(main)/composers/view.tsx
 import { Metadata } from 'next';
-import { Suspense } from 'react';
-import ComposersServer from './pageServer';
-import { ListPageLoading } from '@/app/wrappers/SuspenseWrapper';
+import { ComposersList } from '@/app/components/site/lists/ComposersList';
+import type { UrlParams } from '@/app/utils/listParams';
 import type { Language } from '@/app/utils/translations/serverTranslations';
 import { alternatesFor } from '@/app/utils/seoAlternates';
 
@@ -22,47 +21,31 @@ import { alternatesFor } from '@/app/utils/seoAlternates';
  * sem mudar a URL que o visitante vê.
  */
 
-export interface ComposersSearchParams {
-  page?: string;
-  search?: string;
-  epoch?: string;
-}
-
+/** Same render for both routes; only where the parameters come from differs. */
 export function ComposersView({
-  page,
-  search,
-  epochId,
   language,
+  params = {},
 }: {
-  page: number;
-  search: string;
-  epochId: string;
   language: Language;
+  params?: UrlParams;
 }) {
-  return (
-    <Suspense fallback={<ListPageLoading />}>
-      <ComposersServer
-        page={page}
-        search={search}
-        epochId={epochId}
-        language={language}
-      />
-    </Suspense>
-  );
+  return <ComposersList language={language} params={params} />;
 }
 
 export function composersMetadata(
   language: Language,
-  searchParams: ComposersSearchParams = {}
+  searchParams: UrlParams = {}
 ): Metadata {
-  const page = Number(searchParams.page) || 1;
-  const search = searchParams.search || '';
+  const first = (v: string | string[] | undefined) =>
+    Array.isArray(v) ? v[0] : v;
+  const page = Number(first(searchParams.page)) || 1;
+  const search = first(searchParams.search) || '';
 
   const content = {
     pt: {
       baseTitle: 'Compositores Clássicos - Lista Completa',
       baseDescription:
-        'Explore nossa coleção completa de compositores clássicos. Bach, Chopin, Beethoven, Mozart e centenas de mestres da música erudita. Partituras gratuitas, biografias e análises musicais organizadas por época.',
+        'Explore nossa coleção completa de compositores clássicos. Bach, Chopin, Beethoven, Mozart e os mestres da música erudita. Partituras gratuitas, biografias e análises musicais organizadas por época.',
       searchTitle: `Buscar Compositores: "${search}"`,
       searchDescription: `Resultados da busca por "${search}" em nossa enciclopédia de compositores clássicos.`,
       keywords: [
@@ -91,7 +74,7 @@ export function composersMetadata(
     en: {
       baseTitle: 'Classical Composers - Complete List',
       baseDescription:
-        'Explore our complete collection of classical composers. Bach, Chopin, Beethoven, Mozart and hundreds of classical music masters. Free sheet music, biographies and musical analyses organized by era.',
+        'Explore our complete collection of classical composers. Bach, Chopin, Beethoven, Mozart and the masters of classical music. Free sheet music, biographies and musical analyses organized by era.',
       searchTitle: `Search Composers: "${search}"`,
       searchDescription: `Search results for "${search}" in our encyclopedia of classical composers.`,
       keywords: [

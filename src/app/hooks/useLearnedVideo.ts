@@ -5,6 +5,8 @@ import {
   updateLearnedRequest,
   uploadPerformanceVideo,
 } from '@/app/requests/library';
+import { porIdioma } from '@/app/utils/porIdioma';
+import { connectionError } from '@/app/libs/api/client';
 
 export interface UseLearnedVideoResult {
   // Estados
@@ -41,11 +43,17 @@ export function useLearnedVideo(): UseLearnedVideoResult {
     ];
 
     if (!allowedTypes.includes(file.type)) {
-      return `Tipo de arquivo não suportado. Use: ${allowedTypes.join(', ')}`;
+      return porIdioma(
+        `Tipo de arquivo não aceito. Use: ${allowedTypes.join(', ')}`,
+        `File type not accepted. Use: ${allowedTypes.join(', ')}`
+      );
     }
 
     if (file.size > maxSize) {
-      return `Arquivo muito grande. Tamanho máximo: 500MB`;
+      return porIdioma(
+        'Arquivo grande demais. O máximo é 500 MB.',
+        'File too large. The maximum is 500 MB.'
+      );
     }
 
     return null;
@@ -78,7 +86,12 @@ export function useLearnedVideo(): UseLearnedVideoResult {
         setVideoPreviewUrl(previewUrl);
       } catch (error) {
         console.error('❌ [LEARNED-VIDEO] Erro ao criar preview:', error);
-        setUploadError('Erro ao carregar preview do vídeo');
+        setUploadError(
+          porIdioma(
+            'Não foi possível mostrar a prévia do vídeo',
+            'Could not show the video preview'
+          )
+        );
       }
     },
     [validateVideoFile]
@@ -129,14 +142,20 @@ export function useLearnedVideo(): UseLearnedVideoResult {
 
           return true;
         } else {
-          const errorMsg = result.error || 'Erro desconhecido na atualização';
+          const errorMsg =
+            result.error || porIdioma('Erro desconhecido', 'Unknown error');
           setUploadError(errorMsg);
-          toast.error(`Erro na atualização: ${errorMsg}`);
+          toast.error(
+            porIdioma(
+              `Não foi possível atualizar: ${errorMsg}`,
+              `Could not update: ${errorMsg}`
+            )
+          );
           return false;
         }
       } catch (error) {
         console.error('❌ [LEARNED-VIDEO] Erro na atualização:', error);
-        const errorMsg = 'Erro de conexão durante atualização';
+        const errorMsg = connectionError();
         setUploadError(errorMsg);
         toast.error(errorMsg);
         return false;
@@ -157,21 +176,27 @@ export function useLearnedVideo(): UseLearnedVideoResult {
       const result = await updateLearnedRequest(workId, { removeVideo: true });
 
       if (result.ok) {
-        toast.success('Vídeo removido com sucesso!', {
+        toast.success(porIdioma('Vídeo removido.', 'Video removed.'), {
           icon: '🗑️',
           duration: 3000,
         });
 
         return true;
       } else {
-        const errorMsg = result.error || 'Erro desconhecido ao deletar vídeo';
+        const errorMsg =
+          result.error || porIdioma('Erro desconhecido', 'Unknown error');
         setUploadError(errorMsg);
-        toast.error(`Erro ao deletar: ${errorMsg}`);
+        toast.error(
+          porIdioma(
+            `Não foi possível apagar: ${errorMsg}`,
+            `Could not delete: ${errorMsg}`
+          )
+        );
         return false;
       }
     } catch (error) {
       console.error('❌ [LEARNED-VIDEO] Erro ao deletar vídeo:', error);
-      const errorMsg = 'Erro de conexão ao deletar vídeo';
+      const errorMsg = connectionError();
       setUploadError(errorMsg);
       toast.error(errorMsg);
       return false;

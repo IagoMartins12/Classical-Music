@@ -1,16 +1,8 @@
-// app/admin/insights/page.tsx
-import { Metadata } from 'next';
-import InsightsAnalytics from '@/app/components/Admin/Analytics/InsightsAnalytics';
+import type { Metadata } from 'next';
+import Insights from '@/app/components/Admin/telas/Insights';
 
-// Painel em CSR: o dado vem da API pelo navegador.
-export const dynamic = 'force-dynamic';
+export const metadata: Metadata = { title: 'Insights' };
 
-export const metadata: Metadata = {
-  title: 'Insights & Analytics | Admin Panel',
-  description: 'Análises avançadas e previsões inteligentes',
-  robots: 'noindex, nofollow',
-};
-
-export default function AdminInsightsPage() {
-  return <InsightsAnalytics />;
+export default function InsightsPage() {
+  return <Insights />;
 }

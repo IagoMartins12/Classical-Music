@@ -1,0 +1,110 @@
+{
+  "piano": {
+    "title": "File:Grand Piano MET DP300941.jpg",
+    "source": "https://commons.wikimedia.org/wiki/File:Grand_Piano_MET_DP300941.jpg",
+    "artist": "Bartolomeo Cristofori",
+    "license": "CC0"
+  },
+  "harpsichord": {
+    "title": "File:Harpsichord MET DT684a.jpg",
+    "source": "https://commons.wikimedia.org/wiki/File:Harpsichord_MET_DT684a.jpg",
+    "artist": "Jan Couchet the Elder",
+    "license": "CC0"
+  },
+  "organ": {
+    "title": "File:Pipe Organ MET DP302644.jpg",
+    "source": "https://commons.wikimedia.org/wiki/File:Pipe_Organ_MET_DP302644.jpg",
+    "artist": "Thomas Appleton",
+    "license": "CC0"
+  },
+  "violin": {
+    "title": "File:\"The Gould\" Violin MET DT669a.jpg",
+    "source": "https://commons.wikimedia.org/wiki/File:%22The_Gould%22_Violin_MET_DT669a.jpg",
+    "artist": "Antonio Stradivari",
+    "license": "CC0"
+  },
+  "viola": {
+    "title": "File:Viola MET DP158082.jpg",
+    "source": "https://commons.wikimedia.org/wiki/File:Viola_MET_DP158082.jpg",
+    "artist": "Robert Horne",
+    "license": "CC0"
+  },
+  "cello": {
+    "title": "File:Violoncello MET DT7705.jpg",
+    "source": "https://commons.wikimedia.org/wiki/File:Violoncello_MET_DT7705.jpg",
+    "artist": "Jean-Baptiste Vuillaume",
+    "license": "CC0"
+  },
+  "double-bass": {
+    "title": "File:Double Bass MET DP217153.jpg",
+    "source": "https://commons.wikimedia.org/wiki/File:Double_Bass_MET_DP217153.jpg",
+    "artist": "Bartolomeo Cristofori",
+    "license": "CC0"
+  },
+  "harp": {
+    "title": "File:Pedal Harp MET DT267617.jpg",
+    "source": "https://commons.wikimedia.org/wiki/File:Pedal_Harp_MET_DT267617.jpg",
+    "artist": "Erard Freres et Co",
+    "license": "CC0"
+  },
+  "guitar": {
+    "title": "File:Guitar MET DP217185.jpg",
+    "source": "https://commons.wikimedia.org/wiki/File:Guitar_MET_DP217185.jpg",
+    "artist": "The Metropolitan Museum of Art",
+    "license": "CC0"
+  },
+  "flute": {
+    "title": "File:Alto Flute MET DP158085.jpg",
+    "source": "https://commons.wikimedia.org/wiki/File:Alto_Flute_MET_DP158085.jpg",
+    "artist": "Boehm & Mendler",
+    "license": "CC0"
+  },
+  "oboe": {
+    "title": "File:Oboe MET DP220278.jpg",
+    "source": "https://commons.wikimedia.org/wiki/File:Oboe_MET_DP220278.jpg",
+    "artist": "Triebert",
+    "license": "CC0"
+  },
+  "clarinet": {
+    "title": "File:Clarinet in A MET 270028.jpg",
+    "source": "https://commons.wikimedia.org/wiki/File:Clarinet_in_A_MET_270028.jpg",
+    "artist": "Oskar Oehler",
+    "license": "CC0"
+  },
+  "bassoon": {
+    "title": "File:Bassoon MET DP218094.jpg",
+    "source": "https://commons.wikimedia.org/wiki/File:Bassoon_MET_DP218094.jpg",
+    "artist": "Giosue Esposito",
+    "license": "CC0"
+  },
+  "horn": {
+    "title": "File:Trompe de Chasse in C MET DP-12679-047.jpg",
+    "source": "https://commons.wikimedia.org/wiki/File:Trompe_de_Chasse_in_C_MET_DP-12679-047.jpg",
+    "artist": "Joseph Raoux",
+    "license": "CC0"
+  },
+  "trumpet": {
+    "title": "File:Natural Trumpet in D MET DP-12679-107.jpg",
+    "source": "https://commons.wikimedia.org/wiki/File:Natural_Trumpet_in_D_MET_DP-12679-107.jpg",
+    "artist": "The Metropolitan Museum of Art",
+    "license": "CC0"
+  },
+  "timpani": {
+    "title": "File:Kettle Drums MET DP229625.jpg",
+    "source": "https://commons.wikimedia.org/wiki/File:Kettle_Drums_MET_DP229625.jpg",
+    "artist": "The Metropolitan Museum of Art",
+    "license": "CC0"
+  },
+  "voice": {
+    "title": "File:Ghent Altarpiece - Singing Angels (left).jpg",
+    "source": "https://commons.wikimedia.org/wiki/File:Ghent_Altarpiece_-_Singing_Angels_(left).jpg",
+    "artist": "Jan van Eyck, Hubert van Eyck",
+    "license": "Public domain",
+    "drawing": {
+      "title": "File:Portret van de operazanger Giovanni David, RP-P-1949-401.jpg",
+      "source": "https://commons.wikimedia.org/wiki/File:Portret_van_de_operazanger_Giovanni_David,_RP-P-1949-401.jpg",
+      "artist": "Rijksmuseum",
+      "license": "Public domain"
+    }
+  }
+}

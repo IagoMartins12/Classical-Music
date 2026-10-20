@@ -1,294 +1,149 @@
-// app/components/VerificationsProviders/EmailVerificationRequired.tsx
 'use client';
 
-import Link from 'next/link';
-import {
-  FiMail,
-  FiShield,
-  FiHome,
-  FiRefreshCw,
-  FiCheckCircle,
-  FiAlertTriangle,
-} from 'react-icons/fi';
-import { GiMusicalNotes } from 'react-icons/gi';
-import {
-  PageContainer,
-  AnimatedContainer,
-  AnimatedItem,
-  AnimatedCard,
-} from '../../animation/AnimatedComponents';
-import AnimatedMusicalNotes from '../../AnimatedMusicalNotes';
-import Button from '../../Common/Button';
-import { useEmailVerification } from '@/app/hooks/useEmailVerification';
+import { PiArrowsClockwise, PiCheck, PiEnvelopeSimple } from 'react-icons/pi';
+import Link from '@/app/components/LocalizedLink';
+import { Button, classesDeBotao } from '@/app/components/ui/Button';
+import { Icon } from '@/app/components/ui/Icon';
+import { cx } from '@/app/components/ui/cx';
+import { VistoQueSeDesenha } from '@/app/components/ui/VistoQueSeDesenha';
+import { EMAIL_VERIFICATION } from '@/app/conteudo/site/email-verification';
+import type { Idioma } from '@/app/conteudo/legal/tipos';
 import { useEmailRefresh } from '@/app/hooks/useEmailRefresh';
-import { useTranslation } from '@/app/context/TranslationContext';
+import { useEmailVerification } from '@/app/hooks/useEmailVerification';
+import { PersonalNav } from '@/app/components/site/personal/PersonalNav';
 
-interface EmailVerificationRequiredProps {
-  userEmail: string;
-  userName?: string;
-}
-
+/**
+ * Contributing asks for a confirmed email. A personal page (the tabs stay,
+ * to move to the others) and a task page, like contact: the
+ * address and the two actions lead; what is open now, what opens after and
+ * what to try when the email does not arrive sit beside them.
+ */
 export default function EmailVerificationRequired({
   userEmail,
-  userName,
-}: EmailVerificationRequiredProps) {
+  idioma,
+}: {
+  userEmail: string;
+  idioma: Idioma;
+}) {
+  const t = EMAIL_VERIFICATION[idioma];
   const { isSending, emailSent, resendEmail } = useEmailVerification({
     userEmail,
   });
   const { isRefreshing, refreshEmailStatus } = useEmailRefresh();
 
-  const { t } = useTranslation({
-    sections: ['components/email-verification'],
-  });
-
   return (
-    <PageContainer showBackground={true}>
-      {/* Background Pattern */}
-      <AnimatedMusicalNotes />
-
-      <AnimatedContainer delay={0.1} staggerSpeed="normal">
-        {/* Header */}
-        <AnimatedItem direction="up" springType="gentle">
-          <div className="text-center mb-8 py-16">
-            <div className="flex items-center justify-center mb-6">
-              <div className="w-16 h-16 bg-gradient-to-br from-brand-primary to-brand-secondary rounded-3xl flex items-center justify-center shadow-theme-glow">
-                <FiShield className="w-8 h-8 text-theme-primary" />
-              </div>
-            </div>
-            <h1 className="text-4xl md:text-5xl font-bold text-gradient-brand classical-title mb-4">
-              {t('page_title')}
+    <div className="flex flex-col">
+      <PersonalNav />
+      <div className="section-wrap pb-20 pt-8 md:pt-12">
+        <div className="grid gap-12 lg:grid-cols-[minmax(0,7fr)_minmax(0,4fr)] lg:gap-16">
+          <section className="flex flex-col items-start gap-6">
+            <span className="entra t-legenda text-ouro-texto">{t.eyebrow}</span>
+            <h1
+              className="entra max-w-[18ch] font-display text-[clamp(2.25rem,5vw,3.25rem)] leading-[1.1]"
+              style={{ ['--i' as string]: 1 }}
+            >
+              {t.title}
             </h1>
-            <p className="text-xl text-theme-secondary classical-subtitle">
-              {t('page_subtitle')}
+            <p
+              className="entra t-corpo max-w-[var(--largura-texto)] text-lg text-texto-suave"
+              style={{ ['--i' as string]: 2 }}
+            >
+              {t.text}
             </p>
-          </div>
-        </AnimatedItem>
 
-        {/* Main Info Card */}
-        <AnimatedItem direction="up" springType="gentle">
-          <AnimatedCard
-            hover="lift"
-            className="classical-card p-8 mb-8 max-w-2xl mx-auto"
-          >
-            <div className="flex items-start space-x-4">
-              <div className="w-12 h-12 bg-gradient-to-br from-accent-blue/20 to-accent-green/20 rounded-xl flex items-center justify-center flex-shrink-0">
-                <FiMail className="w-6 h-6 text-accent-blue" />
-              </div>
-              <div className="text-left flex-1">
-                <h3 className="text-lg font-bold text-theme-primary mb-3 classical-title">
-                  {userName
-                    ? t('greeting_with_name', { userName })
-                    : t('greeting_without_name')}
-                </h3>
-                <div className="space-y-3">
-                  <p className="text-theme-secondary">
-                    <strong className="text-brand-primary">
-                      {t('user_email_label')}
-                    </strong>{' '}
-                    {userEmail}
-                  </p>
-                  <p className="text-theme-secondary text-sm">
-                    {t('security_message')}
-                  </p>
-                </div>
-              </div>
-            </div>
-          </AnimatedCard>
-        </AnimatedItem>
-
-        {/* Email Status */}
-        {emailSent && (
-          <AnimatedItem direction="up" springType="bouncy">
-            <div className="bg-theme-elevated border-accent-green rounded-lg p-4 mb-6 max-w-2xl mx-auto">
-              <div className="flex items-center justify-center space-x-3">
-                <FiCheckCircle className="w-5 h-5 text-accent-green" />
-                <p className="text-accent-green font-medium">
-                  {t('email_sent_success')}
-                </p>
-              </div>
-              <p className="text-accent-green text-sm text-center mt-2 opacity-80">
-                {t('email_sent_instructions')}
-              </p>
-            </div>
-          </AnimatedItem>
-        )}
-
-        {/* Action Buttons */}
-        <AnimatedItem direction="up" springType="gentle">
-          <div className="flex flex-col sm:flex-row gap-4 justify-center mb-8">
-            <Button
-              onClick={resendEmail}
-              variant="primary"
-              size="lg"
-              isLoading={isSending}
-              leftIcon={
-                <FiRefreshCw
-                  className={`w-5 h-5 ${
-                    isSending ? 'animate-spin' : 'group-hover:rotate-180'
-                  } transition-transform duration-500`}
-                />
-              }
-              className="px-8 py-4"
+            <div
+              className="entra flex w-full max-w-xl items-center gap-4 rounded-card bg-sup-2 p-5"
+              style={{ ['--i' as string]: 3 }}
             >
-              {emailSent ? t('button_resend_email') : t('button_send_email')}
-            </Button>
-            <Button
-              onClick={refreshEmailStatus}
-              variant="secondary"
-              size="lg"
-              isLoading={isRefreshing}
-              leftIcon={<FiCheckCircle />}
+              <span className="grid h-12 w-12 shrink-0 place-items-center rounded-full tint-ouro text-ouro-na-tinta">
+                {emailSent ? (
+                  <VistoQueSeDesenha className="h-6 w-6" />
+                ) : (
+                  <Icon de={PiEnvelopeSimple} tamanho="m" />
+                )}
+              </span>
+              <span className="flex min-w-0 flex-col">
+                <span className="t-rotulo text-texto-suave">{t.sentTo}</span>
+                <span className="truncate font-medium text-texto">
+                  {userEmail}
+                </span>
+                {emailSent && (
+                  <span role="status" className="t-rotulo text-ouro-texto">
+                    {t.sent}
+                  </span>
+                )}
+              </span>
+            </div>
+
+            <div
+              className="entra flex w-full flex-wrap gap-3"
+              style={{ ['--i' as string]: 4 }}
             >
-              {isRefreshing
-                ? t('button_verifying')
-                : t('button_already_confirmed')}
-            </Button>
-            <Link href="/" className="w-full md:w-auto">
               <Button
-                variant="secondary"
-                className="w-full"
-                size="lg"
-                leftIcon={
-                  <FiHome className="w-5 h-5 group-hover:scale-110 self-center transition-transform duration-300" />
-                }
+                variante="primario"
+                icone={emailSent ? PiArrowsClockwise : PiEnvelopeSimple}
+                carregando={isSending}
+                onClick={resendEmail}
+                className="max-sm:w-full"
               >
-                {t('button_back_home')}
+                {emailSent ? t.resend : t.send}
               </Button>
-            </Link>
-          </div>
-        </AnimatedItem>
-
-        {/* Information Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
-          {/* What you can do */}
-          <AnimatedItem direction="up" springType="gentle">
-            <AnimatedCard hover="lift" className="classical-card p-6">
-              <div className="flex items-center space-x-3 mb-4">
-                <div className="w-10 h-10 bg-gradient-to-br from-accent-green/20 to-accent-blue/20 rounded-xl flex items-center justify-center">
-                  <FiCheckCircle className="w-5 h-5 text-accent-green" />
-                </div>
-                <h3 className="text-xl font-bold text-theme-primary classical-title">
-                  {t('current_permissions_title')}
-                </h3>
-              </div>
-
-              <div className="text-left space-y-2">
-                <div className="flex items-center space-x-2">
-                  <div className="w-2 h-2 bg-brand-primary rounded-full"></div>
-                  <span className="text-theme-secondary text-sm">
-                    {t('current_permission_explore')}
-                  </span>
-                </div>
-                <div className="flex items-center space-x-2">
-                  <div className="w-2 h-2 bg-brand-primary rounded-full"></div>
-                  <span className="text-theme-secondary text-sm">
-                    {t('current_permission_discover')}
-                  </span>
-                </div>
-                <div className="flex items-center space-x-2">
-                  <div className="w-2 h-2 bg-brand-primary rounded-full"></div>
-                  <span className="text-theme-secondary text-sm">
-                    {t('current_permission_favorites')}
-                  </span>
-                </div>
-                <div className="flex items-center space-x-2">
-                  <div className="w-2 h-2 bg-brand-primary rounded-full"></div>
-                  <span className="text-theme-secondary text-sm">
-                    {t('current_permission_profile')}
-                  </span>
-                </div>
-              </div>
-            </AnimatedCard>
-          </AnimatedItem>
-
-          {/* After verification */}
-          <AnimatedItem direction="up" springType="gentle">
-            <AnimatedCard hover="lift" className="classical-card p-6">
-              <div className="flex items-center space-x-3 mb-4">
-                <div className="w-10 h-10 bg-gradient-to-br from-accent-amber/20 to-accent-purple/20 rounded-xl flex items-center justify-center">
-                  <FiShield className="w-5 h-5 text-accent-amber" />
-                </div>
-                <h3 className="text-xl font-bold text-theme-primary classical-title">
-                  {t('after_verification_title')}
-                </h3>
-              </div>
-
-              <div className="text-left space-y-2">
-                <div className="flex items-center space-x-2">
-                  <div className="w-2 h-2 bg-accent-amber rounded-full"></div>
-                  <span className="text-theme-secondary text-sm">
-                    {t('after_verification_composers')}
-                  </span>
-                </div>
-                <div className="flex items-center space-x-2">
-                  <div className="w-2 h-2 bg-accent-amber rounded-full"></div>
-                  <span className="text-theme-secondary text-sm">
-                    {t('after_verification_scores')}
-                  </span>
-                </div>
-                <div className="flex items-center space-x-2">
-                  <div className="w-2 h-2 bg-accent-amber rounded-full"></div>
-                  <span className="text-theme-secondary text-sm">
-                    {t('after_verification_works')}
-                  </span>
-                </div>
-                <div className="flex items-center space-x-2">
-                  <div className="w-2 h-2 bg-accent-amber rounded-full"></div>
-                  <span className="text-theme-secondary text-sm">
-                    {t('after_verification_full_access')}
-                  </span>
-                </div>
-              </div>
-            </AnimatedCard>
-          </AnimatedItem>
-        </div>
-
-        {/* Help Info */}
-        <AnimatedItem direction="up" springType="gentle">
-          <AnimatedCard
-            hover="lift"
-            className="classical-card p-6 max-w-3xl mx-auto"
-          >
-            <div className="flex items-start space-x-4">
-              <div className="w-10 h-10 bg-gradient-to-br from-accent-blue/20 to-accent-purple/20 rounded-xl flex items-center justify-center flex-shrink-0">
-                <FiAlertTriangle className="w-5 h-5 text-accent-blue" />
-              </div>
-              <div className="text-left flex-1">
-                <h3 className="text-lg font-bold text-theme-primary mb-3 classical-title">
-                  {t('help_title')}
-                </h3>
-                <div className="space-y-2 text-sm text-theme-secondary">
-                  <p>• {t('help_check_spam')}</p>
-                  <p>• {t('help_wait_minutes')}</p>
-                  <p>• {t('help_same_browser')}</p>
-                  <p>• {t('help_contact_support')}</p>
-                </div>
-              </div>
+              <Button
+                icone={PiCheck}
+                carregando={isRefreshing}
+                onClick={refreshEmailStatus}
+                className="max-sm:w-full"
+              >
+                {t.confirmed}
+              </Button>
+              <Link
+                href="/"
+                className={cx(classesDeBotao('fantasma'), 'max-sm:w-full')}
+              >
+                {t.home}
+              </Link>
             </div>
-          </AnimatedCard>
-        </AnimatedItem>
+          </section>
 
-        {/* Quote */}
-        <AnimatedItem direction="up" springType="gentle">
-          <div className="mt-12 p-6 classical-card-simple max-w-2xl mx-auto">
-            <blockquote className="text-lg text-theme-secondary italic mb-4 leading-relaxed">
-              &quot;{t('quote_text')}&quot;
-            </blockquote>
-            <cite className="text-brand-primary font-semibold">
-              — {t('quote_author')}
-            </cite>
-          </div>
-        </AnimatedItem>
-      </AnimatedContainer>
-
-      {/* Decorative Elements */}
-      <div className="absolute top-4 left-4 w-12 h-12 bg-accent-amber/10 rounded-2xl flex items-center justify-center opacity-40">
-        <GiMusicalNotes className="w-6 h-6 text-accent-amber" />
+          <aside
+            className="entra flex flex-col gap-10 lg:pt-10"
+            style={{ ['--i' as string]: 3 }}
+          >
+            <Lista titulo={t.now} itens={t.nowItems} />
+            <Lista titulo={t.after} itens={t.afterItems} />
+            <section className="flex flex-col gap-3">
+              <h2 className="font-display text-[1.375rem]">{t.help}</h2>
+              <ul className="t-corpo flex flex-col gap-2 text-texto-suave">
+                {t.helpItems.map((item) => (
+                  <li key={item}>{item}</li>
+                ))}
+              </ul>
+              <Link
+                href="/contact"
+                className="t-corpo text-texto underline decoration-[var(--linha-forte)] underline-offset-4 hover:decoration-[var(--ouro)]"
+              >
+                {t.contact}
+              </Link>
+            </section>
+          </aside>
+        </div>
       </div>
+    </div>
+  );
+}
 
-      <div className="absolute bottom-4 right-4 w-16 h-16 bg-brand-gradient/10 rounded-3xl flex items-center justify-center opacity-50">
-        <FiMail className="w-8 h-8 text-brand-primary" />
-      </div>
-    </PageContainer>
+function Lista({ titulo, itens }: { titulo: string; itens: string[] }) {
+  return (
+    <section className="flex flex-col gap-3">
+      <h2 className="font-display text-[1.375rem]">{titulo}</h2>
+      <ul className="flex flex-col divide-y divide-[var(--linha)]">
+        {itens.map((item) => (
+          <li key={item} className="flex items-center gap-3 py-2.5">
+            <Icon de={PiCheck} tamanho="p" className="text-ouro-texto" />
+            <span className="t-corpo">{item}</span>
+          </li>
+        ))}
+      </ul>
+    </section>
   );
 }

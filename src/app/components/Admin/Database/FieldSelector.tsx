@@ -2,12 +2,16 @@
 'use client';
 
 import { useState, useMemo } from 'react';
-import { FiCheck, FiLock, FiAlertTriangle, FiSearch } from 'react-icons/fi';
-import Modal from '@/app/components/Modal';
-import Button from '@/app/components/Common/Button';
-import Input from '@/app/components/Common/Inputs';
-import Checkbox from '@/app/components/Common/Checkbox';
+import { PiLock } from 'react-icons/pi';
+import { Sheet } from '@/app/components/ui/Sheet';
+import { Segmentos } from '@/app/components/Admin/painel/Controles';
+import { Button } from '@/app/components/ui/Button';
+import { Field } from '@/app/components/ui/Field';
 import { ModelSchema, ModelField } from '@/app/hooks/admin/useDatabaseStudio';
+import { Stack, Inline } from '@/app/components/ui/Layout';
+import { Text } from '@/app/components/ui/Text';
+import { Badge } from '@/app/components/ui/Badge';
+import { Icon } from '@/app/components/ui/Icon';
 
 interface FieldSelectorProps {
   isOpen: boolean;
@@ -34,7 +38,9 @@ export default function FieldSelector({
 }: FieldSelectorProps) {
   const [searchQuery, setSearchQuery] = useState('');
   const [showSensitive, setShowSensitive] = useState(false);
-  const [filterType, setFilterType] = useState<string>('all');
+  const [filterType, setFilterType] = useState<
+    'all' | 'editable' | 'readonly' | 'relations'
+  >('all');
 
   // Agrupar campos por tipo
   const fieldsByCategory = useMemo(() => {
@@ -123,36 +129,22 @@ export default function FieldSelector({
 
     if ((field as any).isSensitive) {
       return (
-        <span className="px-2 py-0.5 bg-red-500/20 text-red-500 text-xs rounded-full flex items-center space-x-1">
-          <FiLock className="w-3 h-3" />
-          <span>Sensível</span>
-        </span>
+        <Badge>
+          <Icon de={PiLock} tamanho="pp" /> Sensível
+        </Badge>
       );
     }
 
     if (field.isRequired && !(field as any).isEditableByConfig) {
-      return (
-        <span className="px-2 py-0.5 bg-amber-500/20 text-amber-500 text-xs rounded-full flex items-center space-x-1">
-          <FiAlertTriangle className="w-3 h-3" />
-          <span>Somente leitura</span>
-        </span>
-      );
+      return <Badge>Somente leitura</Badge>;
     }
 
     if ((field as any).requiresConfirmation) {
-      return (
-        <span className="px-2 py-0.5 bg-orange-500/20 text-orange-500 text-xs rounded-full">
-          Exige confirmação
-        </span>
-      );
+      return <Badge>Exige confirmação</Badge>;
     }
 
     if (field.kind === 'object') {
-      return (
-        <span className="px-2 py-0.5 bg-purple-500/20 text-purple-500 text-xs rounded-full">
-          Relação
-        </span>
-      );
+      return <Badge>Relação</Badge>;
     }
 
     return null;
@@ -168,193 +160,116 @@ export default function FieldSelector({
   };
 
   return (
-    <Modal
-      isOpen={isOpen}
-      onClose={onClose}
-      title="Selecionar Campos"
-      maxWidth="3xl"
+    <Sheet
+      aberto={isOpen}
+      aoFechar={onClose}
+      titulo="Campos da tabela"
+      descricao="Quais colunas aparecem. O documento inteiro abre no editor."
+      largura="g"
+      rodape={
+        <>
+          <Button variante="fantasma" tamanho="p" onClick={onClose}>
+            Cancelar
+          </Button>
+          <Button variante="primario" tamanho="p" onClick={handleApply}>
+            Mostrar {selectedFields.length} campos
+          </Button>
+        </>
+      }
     >
-      <div className="space-y-6">
-        {/* Header com estatísticas */}
-        <div className="grid grid-cols-4 gap-4">
-          <div className="classical-card p-4">
-            <div className="text-2xl font-bold text-brand-primary">
-              {stats.total}
-            </div>
-            <div className="text-sm text-theme-tertiary">Total</div>
-          </div>
-          <div className="classical-card p-4">
-            <div className="text-2xl font-bold text-green-500">
-              {stats.selected}
-            </div>
-            <div className="text-sm text-theme-tertiary">Selecionados</div>
-          </div>
-          <div className="classical-card p-4">
-            <div className="text-2xl font-bold text-red-500">
-              {stats.sensitive}
-            </div>
-            <div className="text-sm text-theme-tertiary">Sensíveis</div>
-          </div>
-          <div className="classical-card p-4">
-            <div className="text-2xl font-bold text-amber-500">
-              {stats.readonly}
-            </div>
-            <div className="text-sm text-theme-tertiary">Somente leitura</div>
-          </div>
-        </div>
+      <Stack gap={6}>
+        <Text papel="rotulo" tom="suave" as="p" className="t-dado">
+          {stats.selected} de {stats.total} campos selecionados ·{' '}
+          {stats.sensitive} sensíveis · {stats.readonly} somente leitura
+        </Text>
 
-        {/* Controles */}
-        <div className="space-y-4">
-          {/* Busca */}
-          <div className="relative">
-            <FiSearch className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-theme-tertiary" />
-            <Input
-              type="text"
-              placeholder="Buscar campos..."
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              className="pl-10"
+        <Stack gap={3}>
+          <Field
+            label="Buscar campo"
+            rotuloOculto
+            type="search"
+            placeholder="Buscar campo"
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+          />
+          <div className="flex flex-wrap items-center justify-between gap-3">
+            <Segmentos
+              rotulo="Quais campos"
+              valor={filterType}
+              aoMudar={setFilterType}
+              opcoes={[
+                { valor: 'all', rotulo: 'Todos' },
+                { valor: 'editable', rotulo: 'Editáveis' },
+                { valor: 'readonly', rotulo: 'Somente leitura' },
+                { valor: 'relations', rotulo: 'Relações' },
+              ]}
             />
+            <label className="flex min-h-11 cursor-pointer items-center gap-2">
+              <input
+                type="checkbox"
+                checked={showSensitive}
+                onChange={(e) => setShowSensitive(e.target.checked)}
+                className="h-4 w-4 accent-[var(--ouro)]"
+              />
+              <Text papel="rotulo" tom="suave">
+                Mostrar sensíveis
+              </Text>
+            </label>
           </div>
+        </Stack>
 
-          {/* Filtros */}
-          <div className="flex items-center justify-between">
-            <div className="flex items-center space-x-2">
-              <button
-                onClick={() => setFilterType('all')}
-                className={`px-3 py-1.5 rounded-lg text-sm transition-colors ${
-                  filterType === 'all'
-                    ? 'bg-brand-primary text-white'
-                    : 'bg-theme-secondary text-theme-tertiary hover:text-theme-primary'
-                }`}
-              >
-                Todos
-              </button>
-              <button
-                onClick={() => setFilterType('editable')}
-                className={`px-3 py-1.5 rounded-lg text-sm transition-colors ${
-                  filterType === 'editable'
-                    ? 'bg-brand-primary text-white'
-                    : 'bg-theme-secondary text-theme-tertiary hover:text-theme-primary'
-                }`}
-              >
-                Editáveis
-              </button>
-              <button
-                onClick={() => setFilterType('readonly')}
-                className={`px-3 py-1.5 rounded-lg text-sm transition-colors ${
-                  filterType === 'readonly'
-                    ? 'bg-brand-primary text-white'
-                    : 'bg-theme-secondary text-theme-tertiary hover:text-theme-primary'
-                }`}
-              >
-                Somente leitura
-              </button>
-              <button
-                onClick={() => setFilterType('relations')}
-                className={`px-3 py-1.5 rounded-lg text-sm transition-colors ${
-                  filterType === 'relations'
-                    ? 'bg-brand-primary text-white'
-                    : 'bg-theme-secondary text-theme-tertiary hover:text-theme-primary'
-                }`}
-              >
-                Relações
-              </button>
-            </div>
-
-            <div className="flex items-center space-x-4">
-              <label className="flex items-center space-x-2 cursor-pointer">
-                <Checkbox
-                  checked={showSensitive}
-                  onChange={(e) => setShowSensitive(e.target.checked)}
-                />
-                <span className="text-sm text-theme-secondary">
-                  Mostrar sensíveis
-                </span>
-              </label>
-            </div>
-          </div>
-        </div>
-
-        {/* Lista de campos */}
-        <div className="classical-card p-4 max-h-96 overflow-y-auto classical-scrollbar">
-          <div className="space-y-2">
-            {filteredFields.length === 0 ? (
-              <div className="text-center py-8 text-theme-tertiary">
-                Nenhum campo encontrado
-              </div>
-            ) : (
-              filteredFields.map((field) => {
-                const isSelected = selectedFields.includes(field);
-                const fieldInfo = getFieldInfo(field);
-                const badge = getFieldBadge(field);
-
-                return (
-                  <div
-                    key={field}
-                    className={`p-3 rounded-lg border transition-all cursor-pointer ${
-                      isSelected
-                        ? 'border-brand-primary bg-brand-primary/5'
-                        : 'border-theme-primary hover:border-brand-primary/50'
-                    }`}
-                    onClick={() => onToggleField(field)}
-                  >
-                    <div className="flex items-center justify-between">
-                      <div className="flex items-center space-x-3 flex-1 min-w-0">
-                        <Checkbox
-                          checked={isSelected}
-                          onChange={() => {}}
-                          onClick={(e) => e.stopPropagation()}
-                        />
-                        <div className="flex-1 min-w-0">
-                          <div className="flex items-center space-x-2">
-                            <span className="font-medium text-theme-primary">
-                              {field}
-                            </span>
-                            {badge}
-                          </div>
-                          {fieldInfo && (
-                            <div className="text-xs text-theme-tertiary mt-1">
-                              {fieldInfo.type}
-                              {fieldInfo.isList && '[]'}
-                              {fieldInfo.isRequired && ' • Obrigatório'}
-                              {fieldInfo.isUnique && ' • Único'}
-                            </div>
-                          )}
-                        </div>
-                      </div>
-                      {isSelected && (
-                        <FiCheck className="w-5 h-5 text-brand-primary" />
+        {filteredFields.length === 0 ? (
+          <Text papel="rotulo" tom="suave" as="p" className="py-6 text-center">
+            Nenhum campo com esse nome.
+          </Text>
+        ) : (
+          <ul className="sup-2 max-h-96 overflow-y-auto rolagem-discreta !p-0">
+            {filteredFields.map((field) => {
+              const fieldInfo = getFieldInfo(field);
+              return (
+                <li
+                  key={field}
+                  className="border-t border-linha first:border-0"
+                >
+                  <label className="flex min-h-11 cursor-pointer items-center gap-3 px-4 py-2.5 transition-colors hover:bg-[var(--interactive-hover)]">
+                    <input
+                      type="checkbox"
+                      checked={selectedFields.includes(field)}
+                      onChange={() => onToggleField(field)}
+                      className="h-4 w-4 shrink-0 accent-[var(--ouro)]"
+                    />
+                    <span className="flex min-w-0 flex-1 flex-col">
+                      <span className="flex flex-wrap items-center gap-2">
+                        <span className="t-dado text-sm text-texto">
+                          {field}
+                        </span>
+                        {getFieldBadge(field)}
+                      </span>
+                      {fieldInfo && (
+                        <span className="t-legenda">
+                          {fieldInfo.type}
+                          {fieldInfo.isList && '[]'}
+                          {fieldInfo.isRequired && ' · obrigatório'}
+                          {fieldInfo.isUnique && ' · único'}
+                        </span>
                       )}
-                    </div>
-                  </div>
-                );
-              })
-            )}
-          </div>
-        </div>
+                    </span>
+                  </label>
+                </li>
+              );
+            })}
+          </ul>
+        )}
 
-        {/* Ações rápidas */}
-        <div className="flex items-center justify-between">
-          <div className="flex items-center space-x-2">
-            <Button variant="ghost" size="sm" onClick={onSelectAll}>
-              Selecionar Todos
-            </Button>
-            <Button variant="ghost" size="sm" onClick={onClearSelection}>
-              Limpar Seleção
-            </Button>
-          </div>
-
-          <div className="flex items-center space-x-3">
-            <Button variant="ghost" onClick={onClose}>
-              Cancelar
-            </Button>
-            <Button variant="primary" onClick={handleApply}>
-              Aplicar ({selectedFields.length} campos)
-            </Button>
-          </div>
-        </div>
-      </div>
-    </Modal>
+        <Inline gap={2}>
+          <Button variante="texto" tamanho="p" onClick={onSelectAll}>
+            Marcar todos
+          </Button>
+          <Button variante="texto" tamanho="p" onClick={onClearSelection}>
+            Desmarcar todos
+          </Button>
+        </Inline>
+      </Stack>
+    </Sheet>
   );
 }

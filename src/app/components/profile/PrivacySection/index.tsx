@@ -1,17 +1,22 @@
 // app/profile/components/PrivacySection.tsx (versão atualizada)
 'use client';
 
+import { PERFIL } from '@/app/conteudo/textos/perfil';
+import { useTextos } from '@/app/hooks/useTextos';
 import React, { useState, useEffect, useCallback } from 'react';
 // Era `User` do NextAuth, aumentado em `types/next-auth.d.ts`. É o mesmo
 // objeto que `useAuth()` entrega, e ele já tem tipo próprio no store.
 import type { User } from '@/app/hooks/userStore';
-import { FiEye, FiEyeOff, FiMapPin, FiSave } from 'react-icons/fi';
+import { PiEye, PiEyeSlash, PiFloppyDisk, PiMapPin } from 'react-icons/pi';
 import { toast } from 'react-hot-toast';
-import Button from '../../Common/Button';
+import { Button } from '@/app/components/ui/Button';
 import { updatePrivacySettings } from '@/app/actions/profile';
 import { useAuth } from '@/app/hooks/useAuth';
 import { useSessionUpdate } from '@/app/hooks/useSessionUpdate';
-import { useTranslation } from '@/app/context/TranslationContext';
+import { Stack, Inline } from '@/app/components/ui/Layout';
+import { Text } from '@/app/components/ui/Text';
+import { Card } from '@/app/components/ui/Card';
+import { porIdioma } from '@/app/utils/porIdioma';
 
 interface PrivacySectionProps {
   user: User;
@@ -24,7 +29,7 @@ const PrivacySection: React.FC<PrivacySectionProps> = ({
 }) => {
   const { updateUser: globalUpdateUser } = useAuth();
   const { updateUserSession } = useSessionUpdate();
-  const { t } = useTranslation({ sections: ['pages/profile'] });
+  const { t } = useTextos(PERFIL);
   const [isLoading, setIsLoading] = useState(false);
   const [settings, setSettings] = useState({
     profilePublic: user.profilePublic || true,
@@ -81,7 +86,7 @@ const PrivacySection: React.FC<PrivacySectionProps> = ({
       }
     } catch (error) {
       console.error('Erro ao salvar configurações de privacidade:', error);
-      toast.error('Erro ao atualizar configurações.');
+      toast.error(porIdioma('Não foi possível salvar.', 'Could not save.'));
     } finally {
       setIsLoading(false);
     }
@@ -97,7 +102,7 @@ const PrivacySection: React.FC<PrivacySectionProps> = ({
       disabled={disabled}
       className={`
         relative inline-flex h-6 w-11 items-center rounded-full transition-colors
-        ${checked ? 'bg-brand-primary' : 'bg-theme-secondary'}
+        ${checked ? '' : 'bg-sup-2'}
         ${disabled ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'}
       `}
     >
@@ -111,71 +116,71 @@ const PrivacySection: React.FC<PrivacySectionProps> = ({
   );
 
   return (
-    <div className="space-y-6">
+    <Stack gap={6}>
       {/* Header */}
-      <div className="flex items-center justify-between">
-        <div>
-          <h3 className="text-lg font-semibold text-theme-primary">
+      <div className="flex flex-wrap items-start justify-between gap-4 sm:flex-nowrap sm:[&>*:not(:first-child)]:shrink-0">
+        <div className="sm:min-w-0 sm:flex-1">
+          <h3 className="font-display text-[1.5rem] leading-tight text-texto">
             {t('privacy_title')}
           </h3>
-          <p className="text-sm text-theme-secondary">
+          <Text papel="rotulo" tom="suave" as="p">
             {t('privacy_description')}
-          </p>
+          </Text>
         </div>
 
         <Button
-          variant="primary"
-          size="sm"
+          variante="primario"
+          tamanho="p"
           onClick={handleSave}
-          isLoading={isLoading}
-          leftIcon={<FiSave />}
+          carregando={isLoading}
+          icone={PiFloppyDisk}
         >
           {t('privacy_save')}
         </Button>
       </div>
 
       {/* Privacy Settings */}
-      <div className="space-y-6">
+      <Stack gap={6}>
         {/* Profile Visibility */}
-        <div className="classical-card-2 p-4">
+        <Card nivel={2} densidade="compacta">
           <div className="flex items-center justify-between">
-            <div className="flex items-center space-x-3">
+            <Inline gap={3}>
               {settings.profilePublic ? (
-                <FiEye className="w-5 h-5 text-brand-primary" />
+                <PiEye className="w-5 h-5 text-ouro-texto" />
               ) : (
-                <FiEyeOff className="w-5 h-5 text-theme-tertiary" />
+                <PiEyeSlash className="w-5 h-5 text-texto-fraco" />
               )}
               <div>
-                <h4 className="font-medium text-theme-primary">
+                <h4 className="font-medium text-texto">
                   {t('privacy_public_profile')}
                 </h4>
-                <p className="text-sm text-theme-secondary">
+                <Text papel="rotulo" tom="suave" as="p">
                   {t('privacy_public_profile_description')}
-                </p>
+                </Text>
               </div>
-            </div>
+            </Inline>
 
             <ToggleSwitch
               checked={settings.profilePublic}
               onChange={() => handleToggle('profilePublic')}
             />
           </div>
-        </div>
+        </Card>
 
         {/* Location Visibility */}
-        <div className="classical-card-2 p-4">
+        <Card nivel={2} densidade="compacta">
           <div className="flex items-center justify-between">
-            <div className="flex items-center space-x-3">
-              <FiMapPin className="w-5 h-5 text-brand-primary" />
+            <Inline gap={3}>
+              <PiMapPin className="w-5 h-5 text-ouro-texto" />
               <div>
-                <h4 className="font-medium text-theme-primary">
+                <h4 className="font-medium text-texto">
                   {t('privacy_show_location')}
                 </h4>
-                <p className="text-sm text-theme-secondary">
+                <Text papel="rotulo" tom="suave" as="p">
                   {t('privacy_show_location_description')}
-                </p>
+                </Text>
               </div>
-            </div>
+            </Inline>
 
             <ToggleSwitch
               checked={settings.showLocation}
@@ -185,26 +190,26 @@ const PrivacySection: React.FC<PrivacySectionProps> = ({
           </div>
 
           {!settings.profilePublic && (
-            <p className="text-xs text-theme-tertiary mt-2 ml-8">
+            <Text papel="legenda" tom="fraco" as="p" className="mt-2 ml-8">
               {t('privacy_public_only')}
-            </p>
+            </Text>
           )}
-        </div>
+        </Card>
 
         {/* Instruments Visibility */}
-        <div className="classical-card-2 p-4">
+        <Card nivel={2} densidade="compacta">
           <div className="flex items-center justify-between">
-            <div className="flex items-center space-x-3">
-              <FiEye className="w-5 h-5 text-brand-primary" />
+            <Inline gap={3}>
+              <PiEye className="w-5 h-5 text-ouro-texto" />
               <div>
-                <h4 className="font-medium text-theme-primary">
+                <h4 className="font-medium text-texto">
                   {t('privacy_show_instruments')}
                 </h4>
-                <p className="text-sm text-theme-secondary">
+                <Text papel="rotulo" tom="suave" as="p">
                   {t('privacy_show_instruments_description')}
-                </p>
+                </Text>
               </div>
-            </div>
+            </Inline>
 
             <ToggleSwitch
               checked={settings.showInstruments}
@@ -214,26 +219,26 @@ const PrivacySection: React.FC<PrivacySectionProps> = ({
           </div>
 
           {!settings.profilePublic && (
-            <p className="text-xs text-theme-tertiary mt-2 ml-8">
+            <Text papel="legenda" tom="fraco" as="p" className="mt-2 ml-8">
               {t('privacy_public_only')}
-            </p>
+            </Text>
           )}
-        </div>
+        </Card>
 
         {/* Activity Visibility */}
-        <div className="classical-card-2 p-4">
+        <Card nivel={2} densidade="compacta">
           <div className="flex items-center justify-between">
-            <div className="flex items-center space-x-3">
-              <FiEye className="w-5 h-5 text-brand-primary" />
+            <Inline gap={3}>
+              <PiEye className="w-5 h-5 text-ouro-texto" />
               <div>
-                <h4 className="font-medium text-theme-primary">
+                <h4 className="font-medium text-texto">
                   {t('privacy_show_activity')}
                 </h4>
-                <p className="text-sm text-theme-secondary">
+                <Text papel="rotulo" tom="suave" as="p">
                   {t('privacy_show_activity_description')}
-                </p>
+                </Text>
               </div>
-            </div>
+            </Inline>
 
             <ToggleSwitch
               checked={settings.showActivity}
@@ -243,19 +248,19 @@ const PrivacySection: React.FC<PrivacySectionProps> = ({
           </div>
 
           {!settings.profilePublic && (
-            <p className="text-xs text-theme-tertiary mt-2 ml-8">
+            <Text papel="legenda" tom="fraco" as="p" className="mt-2 ml-8">
               {t('privacy_public_only')}
-            </p>
+            </Text>
           )}
-        </div>
-      </div>
+        </Card>
+      </Stack>
 
       {/* Privacy Summary */}
-      <div className="classical-card-2 p-4 bg-brand-primary bg-opacity-5 border border-brand-primary border-opacity-30">
-        <h4 className="font-medium text-brand-primary mb-2">
+      <Card nivel={2} densidade="compacta" className="">
+        <h4 className="font-medium text-ouro-texto mb-2">
           {t('privacy_summary')}
         </h4>
-        <div className="text-sm text-theme-secondary space-y-1">
+        <Text papel="rotulo" tom="suave" as="div" className="space-y-1">
           <p>
             • <strong>{t('privacy_profile')}</strong>{' '}
             {settings.profilePublic
@@ -280,23 +285,22 @@ const PrivacySection: React.FC<PrivacySectionProps> = ({
               ? t('privacy_visible')
               : t('privacy_hidden')}
           </p>
-        </div>
-      </div>
+        </Text>
+      </Card>
 
       {/* Info Box */}
-      <div className="classical-card-2 p-4 bg-theme-secondary bg-opacity-20">
-        <h4 className="font-medium text-theme-primary mb-2">
+      <Card nivel={2} densidade="compacta" className="bg-sup-2">
+        <h4 className="font-medium text-texto mb-2">
           {t('privacy_security_info')}
         </h4>
-        <ul className="text-sm text-theme-secondary space-y-1">
+        <Stack gap={1} as="ul" className="text-sm text-texto-suave">
           <li>{t('privacy_email_never_shown')}</li>
-          <li>{t('privacy_admin_only')}</li>
           <li>{t('privacy_can_change')}</li>
           <li>{t('privacy_study_data_private')}</li>
           <li>{t('privacy_auto_save')}</li>
-        </ul>
-      </div>
-    </div>
+        </Stack>
+      </Card>
+    </Stack>
   );
 };
 

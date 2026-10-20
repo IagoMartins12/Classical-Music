@@ -1,0 +1,69 @@
+{
+  "medieval": {
+    "composer": "Hildegard von Bingen",
+    "title": "File:Hildegard von Bingen.jpg",
+    "source": "https://commons.wikimedia.org/wiki/File:Hildegard_von_Bingen.jpg",
+    "artist": "Unknown authorUnknown author",
+    "license": "Public domain",
+    "file": "medieval-hildegard.webp"
+  },
+  "renaissance": {
+    "composer": "Orlande de Lassus",
+    "title": "File:Orlande de Lassus bavar.jpg",
+    "source": "https://commons.wikimedia.org/wiki/File:Orlande_de_Lassus_bavar.jpg",
+    "artist": "Sine nomine",
+    "license": "Public domain",
+    "note": "Cropped to the engraving from a photographed book page.",
+    "file": "renaissance-lassus.webp"
+  },
+  "baroque": {
+    "composer": "Johann Sebastian Bach",
+    "title": "File:Johann Sebastian Bach - Google Arts Project.jpg",
+    "source": "https://commons.wikimedia.org/wiki/File:Johann_Sebastian_Bach_-_Google_Arts_Project.jpg",
+    "artist": "Elias Gottlob Haussmann",
+    "license": "Public domain",
+    "file": "baroque-bach.webp"
+  },
+  "classical": {
+    "composer": "Wolfgang Amadeus Mozart",
+    "title": "File:Wolfgang-amadeus-mozart 1.jpg",
+    "source": "https://commons.wikimedia.org/wiki/File:Wolfgang-amadeus-mozart_1.jpg",
+    "artist": "Barbara Krafft",
+    "license": "Public domain",
+    "file": "classical-mozart.webp"
+  },
+  "romantic": {
+    "composer": "Frédéric Chopin",
+    "title": "File:Frédéric Chopin - Eugène Delacroix - Musée du Louvre Peintures RF 1717.jpg",
+    "source": "https://commons.wikimedia.org/wiki/File:Fr%C3%A9d%C3%A9ric_Chopin_-_Eug%C3%A8ne_Delacroix_-_Mus%C3%A9e_du_Louvre_Peintures_RF_1717.jpg",
+    "artist": "Eugène Delacroix",
+    "license": "Public domain",
+    "file": "romantic-chopin.webp"
+  },
+  "modern": {
+    "composer": "Claude Debussy",
+    "title": "File:M. Claude Debussy. Compositeur de musique - btv1b532322417.jpg",
+    "source": "https://commons.wikimedia.org/wiki/File:M._Claude_Debussy._Compositeur_de_musique_-_btv1b532322417.jpg",
+    "artist": "Atelier Nadar. Photographe",
+    "license": "Public domain",
+    "note": "Cropped to the photograph, without the archive mount.",
+    "file": "modern-debussy.webp"
+  },
+  "contemporary": {
+    "composer": "Steve Reich",
+    "title": "File:Steve Reich, composer 02.jpg",
+    "source": "https://commons.wikimedia.org/wiki/File:Steve_Reich,_composer_02.jpg",
+    "artist": "Gotfryd, Bernard, photographer",
+    "license": "Public domain",
+    "file": "contemporary-reich.webp"
+  },
+  "all": {
+    "composer": "Pyotr Ilyich Tchaikovsky",
+    "title": "File:Tchaikovsky by Reutlinger (cropped).jpg",
+    "source": "https://commons.wikimedia.org/wiki/File:Tchaikovsky_by_Reutlinger_(cropped).jpg",
+    "artist": "Émile Reutlinger",
+    "license": "Public domain",
+    "note": "The \"All eras\" card on the home page.",
+    "file": "all-tchaikovsky.webp"
+  }
+}

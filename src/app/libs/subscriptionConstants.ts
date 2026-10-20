@@ -1,4 +1,5 @@
 // app/libs/subscriptionConstants.ts
+import { LIMITES } from '@/app/conteudo/planos';
 
 export enum PlanType {
   FREE = 'FREE',
@@ -58,8 +59,9 @@ export const PLAN_FEATURES = {
     gamificationXP: true,
 
     // Limites
-    uploadLimit: 3,
-    maxPerformanceVideos: 3,
+    // The same numbers the API enforces (`conteudo/planos.ts`).
+    uploadLimit: LIMITES.FREE.acervo,
+    maxPerformanceVideos: LIMITES.FREE.performances,
 
     // Features desabilitadas
     smartRecommendations: false,

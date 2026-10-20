@@ -25,5 +25,5 @@ export async function generateMetadata({
 export default async function ComposersPage({ params }: ComposersPageProps) {
   const language = await routeLanguage(params);
 
-  return <ComposersView page={1} search="" epochId="" language={language} />;
+  return <ComposersView language={language} />;
 }

@@ -27,6 +27,8 @@ export interface RegisterInput {
   password: string;
   firstName?: string;
   lastName?: string;
+  /** The site language at sign-up; the welcome emails follow it. */
+  language?: 'pt' | 'en';
 }
 
 const token = (value: string) => encodeURIComponent(value);

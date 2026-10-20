@@ -2,17 +2,16 @@
 'use client';
 
 import React, { useState, useRef } from 'react';
-import {
-  FiCamera,
-  FiLoader,
-  FiX,
-  FiLink,
-  FiUpload,
-  FiImage,
-} from 'react-icons/fi';
+import { PiSpinnerGap, PiUploadSimple, PiX } from 'react-icons/pi';
 import { toast } from 'react-hot-toast';
 import Image from '@/app/components/SmartImage';
 import { uploadComposerImage } from '@/app/requests/uploads-client';
+import { Aba, Abas } from '@/app/components/ui/Abas';
+import { Button } from '@/app/components/ui/Button';
+import { Field } from '@/app/components/ui/Field';
+import { cx } from '@/app/components/ui/cx';
+import { iniciais } from '@/app/components/blog/site/pecas';
+import { useTx } from '@/app/hooks/useTx';
 
 interface ComposerImageUploadProps {
   currentImage?: string | null;
@@ -41,6 +40,7 @@ const ComposerImageUpload: React.FC<ComposerImageUploadProps> = ({
   composerName,
   className = '',
 }) => {
+  const tx = useTx();
   const [inputMode, setInputMode] = useState<'upload' | 'url'>('upload');
   const [urlInput, setUrlInput] = useState('');
   const [uploading, setUploading] = useState(false);
@@ -51,13 +51,6 @@ const ComposerImageUpload: React.FC<ComposerImageUploadProps> = ({
     md: 'w-24 h-24',
     lg: 'w-32 h-32',
     xl: 'w-48 h-48',
-  };
-
-  const iconSizeClasses = {
-    sm: 'w-4 h-4',
-    md: 'w-5 h-5',
-    lg: 'w-6 h-6',
-    xl: 'w-8 h-8',
   };
 
   const handleFileSelect = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -73,13 +66,23 @@ const ComposerImageUpload: React.FC<ComposerImageUploadProps> = ({
     // Validações básicas
     const allowedTypes = ['image/jpeg', 'image/png', 'image/gif', 'image/webp'];
     if (!allowedTypes.includes(file.type)) {
-      toast.error('Tipo de arquivo não permitido. Use JPG, PNG, GIF ou WebP.');
+      toast.error(
+        tx(
+          'Tipo de arquivo não permitido. Use JPG, PNG, GIF ou WebP.',
+          'File type not allowed. Use JPG, PNG, GIF or WebP.'
+        )
+      );
       return;
     }
 
     if (file.size > 5 * 1024 * 1024) {
       // 5MB
-      toast.error('Arquivo muito grande. Máximo 5MB.');
+      toast.error(
+        tx(
+          'Arquivo muito grande. Máximo 5MB.',
+          'File too large. The maximum is 5 MB.'
+        )
+      );
       return;
     }
 
@@ -95,9 +98,11 @@ const ComposerImageUpload: React.FC<ComposerImageUploadProps> = ({
         if (result.success) {
           onImageChange?.(result.imageUrl);
           onImageUrlChange?.(result.imageUrl);
-          toast.success('Imagem carregada com sucesso!');
+          toast.success(tx('Imagem carregada com sucesso!', 'Image uploaded.'));
         } else {
-          throw new Error(result.message || 'Erro ao fazer upload');
+          throw new Error(
+            result.message || tx('Erro ao fazer upload', 'Upload failed')
+          );
         }
       }
     } catch (error) {
@@ -105,7 +110,7 @@ const ComposerImageUpload: React.FC<ComposerImageUploadProps> = ({
       toast.error(
         error instanceof Error
           ? error.message
-          : 'Erro ao fazer upload da imagem'
+          : tx('Erro ao fazer upload da imagem', 'Could not upload the image')
       );
     } finally {
       setUploading(false);
@@ -114,7 +119,7 @@ const ComposerImageUpload: React.FC<ComposerImageUploadProps> = ({
 
   const handleUrlSubmit = () => {
     if (!urlInput.trim()) {
-      toast.error('Digite uma URL válida');
+      toast.error(tx('Digite uma URL válida', 'Enter a valid URL'));
       return;
     }
 
@@ -131,14 +136,16 @@ const ComposerImageUpload: React.FC<ComposerImageUploadProps> = ({
 
     onImageChange?.(urlInput);
     onImageUrlChange?.(urlInput);
-    toast.success('URL da imagem adicionada com sucesso!');
+    toast.success(
+      tx('URL da imagem adicionada com sucesso!', 'Image link added.')
+    );
   };
 
   const handleRemove = () => {
     onImageChange?.(null);
     onImageUrlChange?.('');
     setUrlInput('');
-    toast.success('Imagem removida');
+    toast.success(tx('Imagem removida', 'Image removed'));
   };
 
   const handleModeChange = (mode: 'upload' | 'url') => {
@@ -150,160 +157,121 @@ const ComposerImageUpload: React.FC<ComposerImageUploadProps> = ({
 
   const currentUploading = uploading || isUploading;
 
+  const nome = composerName || fallbackText;
+
   return (
-    <div className={`flex flex-col items-center space-y-4 ${className}`}>
-      {/* Mode Selection */}
-      <div className="flex items-center space-x-2 bg-theme-secondary rounded-lg p-1">
-        <button
-          onClick={(e) => {
-            e.preventDefault();
-            if (inputMode === 'upload') {
-              fileInputRef.current?.click();
-            }
-            handleModeChange('upload');
-          }}
-          className={`flex items-center space-x-2 px-4 py-2 rounded-md transition-colors ${
-            inputMode === 'upload'
-              ? 'bg-brand-primary text-white shadow-sm'
-              : 'text-theme-primary hover:bg-theme-primary hover:text-theme-secondary'
-          }`}
+    <div className={cx('flex flex-col items-center gap-4', className)}>
+      <Abas rotulo={tx('Como enviar o retrato', 'How to send the portrait')}>
+        <Aba
+          ativa={inputMode === 'upload'}
+          onClick={() => handleModeChange('upload')}
         >
-          <FiUpload className="w-4 h-4" />
-          <span className="text-sm font-medium">Upload</span>
-        </button>
-        <button
-          onClick={(e) => {
-            e.preventDefault();
-            handleModeChange('url');
-          }}
-          className={`flex items-center space-x-2 px-4 py-2 rounded-md transition-colors ${
-            inputMode === 'url'
-              ? 'bg-brand-primary text-white shadow-sm'
-              : 'text-theme-primary hover:bg-theme-primary hover:text-theme-secondary'
-          }`}
+          {tx('Do aparelho', 'From the device')}
+        </Aba>
+        <Aba
+          ativa={inputMode === 'url'}
+          onClick={() => handleModeChange('url')}
         >
-          <FiLink className="w-4 h-4" />
-          <span className="text-sm font-medium">URL</span>
-        </button>
-      </div>
+          {tx('Por link', 'By link')}
+        </Aba>
+      </Abas>
 
-      {/* Image Container */}
-      <div className="relative">
-        <div
-          className={`
-            ${sizeClasses[size]} 
-            relative rounded-2xl overflow-hidden border-2 border-theme-secondary
-            bg-gradient-to-br from-theme-secondary to-theme-tertiary
-            flex items-center justify-center
-            transition-all duration-300
-            ${currentUploading ? 'opacity-50' : 'hover:border-brand-primary'}
-          `}
-        >
-          {currentImage ? (
-            <Image
-              src={currentImage}
-              alt={`Retrato de ${composerName || fallbackText}`}
-              fill
-              className="object-cover"
-              sizes={`(max-width: 768px) ${sizeClasses[size]}, ${sizeClasses[size]}`}
-              onError={(e) => {
-                console.error('Erro ao carregar imagem:', e);
-                onImageChange?.(null);
-              }}
-            />
-          ) : (
-            <div className="text-center">
-              <FiImage
-                className={`${iconSizeClasses[size]} text-theme-tertiary mx-auto mb-2`}
-              />
-            </div>
-          )}
-
-          {/* Loading Overlay */}
-          {currentUploading && (
-            <div className="absolute inset-0 bg-black bg-opacity-50 flex items-center justify-center">
-              <FiLoader className="w-8 h-8 text-white animate-spin" />
-            </div>
-          )}
-
-          {/* Remove Button */}
-          {currentImage && showRemove && !currentUploading && (
-            <button
-              onClick={handleRemove}
-              className="absolute -top-2 -right-2 w-6 h-6 bg-accent-red text-white rounded-full flex items-center justify-center hover:bg-red-600 transition-colors"
-              title="Remover imagem"
-            >
-              <FiX className="w-3 h-3" />
-            </button>
-          )}
-        </div>
-
-        {/* Upload Button - Only show for upload mode */}
-        {inputMode === 'upload' && !currentUploading && (
-          <button
-            onClick={() => fileInputRef.current?.click()}
-            className="absolute -bottom-2 -right-2 w-10 h-10 bg-brand-primary text-white rounded-full flex items-center justify-center hover:bg-brand-secondary transition-colors shadow-lg"
-            title="Fazer upload de imagem"
+      <div
+        className={cx(
+          sizeClasses[size],
+          'relative grid place-items-center overflow-hidden rounded-card bg-sup-2',
+          currentUploading && 'opacity-60'
+        )}
+      >
+        {currentImage ? (
+          <Image
+            src={currentImage}
+            alt={`Retrato de ${nome}`}
+            fill
+            className="object-cover"
+            sizes="192px"
+            onError={() => onImageChange?.(null)}
+          />
+        ) : (
+          <span
+            aria-hidden="true"
+            className="font-display text-[2.5rem] text-ouro-texto"
           >
-            <FiCamera className="w-5 h-5" />
-          </button>
+            {iniciais(nome)}
+          </span>
+        )}
+        {currentUploading && (
+          <span className="absolute inset-0 grid place-items-center bg-black/55">
+            <PiSpinnerGap
+              aria-hidden="true"
+              className="h-7 w-7 animate-spin text-white"
+            />
+          </span>
         )}
       </div>
 
-      {/* Input based on mode */}
       {inputMode === 'upload' ? (
-        /* Upload Mode */
-        <div className="text-center">
-          <button
-            onClick={(e) => {
-              e.preventDefault();
-              fileInputRef.current?.click();
-            }}
-            disabled={currentUploading}
-            className="flex items-center space-x-2 px-6 py-3 bg-brand-primary text-white rounded-lg hover:bg-brand-secondary transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-          >
-            <FiUpload className="w-4 h-4" />
-            <span>Selecionar Arquivo</span>
-          </button>
-          <p className="text-xs text-theme-tertiary mt-2">
-            JPG, PNG, GIF ou WebP. Máximo 5MB.
-          </p>
+        <div className="flex flex-col items-center gap-2">
+          <div className="flex gap-2">
+            <Button
+              tamanho="p"
+              icone={PiUploadSimple}
+              carregando={currentUploading}
+              onClick={() => fileInputRef.current?.click()}
+            >
+              {currentImage
+                ? tx('Trocar retrato', 'Change portrait')
+                : tx('Escolher arquivo', 'Choose file')}
+            </Button>
+          </div>
+          <span className="t-legenda">
+            {tx(
+              'JPG, PNG, GIF ou WebP, até 5 MB.',
+              'JPG, PNG, GIF or WebP, up to 5 MB.'
+            )}
+          </span>
         </div>
       ) : (
-        /* URL Mode */
-        <div className="w-full max-w-md space-y-3">
-          <div className="flex space-x-2">
-            <input
-              type="url"
-              value={urlInput}
-              onChange={(e) => setUrlInput(e.target.value)}
-              placeholder="https://exemplo.com/imagem.jpg"
-              className="flex-1 px-3 py-2 border border-theme-secondary rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-primary focus:border-transparent"
-              onKeyPress={(e) => e.key === 'Enter' && handleUrlSubmit()}
-            />
-            <button
-              onClick={(e) => {
+        <div className="flex w-full max-w-md items-end gap-2">
+          <Field
+            className="flex-1"
+            label={tx('Link da imagem', 'Image link')}
+            type="url"
+            inputMode="url"
+            value={urlInput}
+            onChange={(e) => setUrlInput(e.target.value)}
+            placeholder="https://exemplo.com/imagem.jpg"
+            onKeyDown={(e) => {
+              if (e.key === 'Enter') {
                 e.preventDefault();
                 handleUrlSubmit();
-              }}
-              className="px-4 py-2 bg-brand-primary text-white rounded-lg hover:bg-brand-secondary transition-colors"
-            >
-              Aplicar
-            </button>
-          </div>
-          <p className="text-xs text-theme-tertiary text-center">
-            Insira a URL completa da imagem
-          </p>
+              }
+            }}
+          />
+          <Button onClick={() => handleUrlSubmit()}>
+            {tx('Aplicar', 'Apply')}
+          </Button>
         </div>
       )}
 
-      {/* Hidden File Input */}
+      {currentImage && showRemove && !currentUploading && (
+        <Button
+          tamanho="p"
+          variante="fantasma"
+          icone={PiX}
+          onClick={handleRemove}
+        >
+          {tx('Remover retrato', 'Remove portrait')}
+        </Button>
+      )}
+
       <input
         ref={fileInputRef}
         type="file"
-        accept="image/*"
+        accept="image/jpeg,image/png,image/gif,image/webp"
         onChange={handleFileSelect}
-        className="hidden"
+        className="sr-only"
+        tabIndex={-1}
       />
     </div>
   );

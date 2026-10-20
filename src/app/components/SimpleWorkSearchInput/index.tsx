@@ -1,15 +1,19 @@
 // app/components/SimpleWorkSearchInput.tsx - VERSÃO ATUALIZADA COM USER SUGGESTIONS
 import React, { useState, useRef, useCallback, useEffect } from 'react';
 import {
-  FiSearch,
-  FiMusic,
-  FiLoader,
-  FiCheck,
-  FiX,
-  FiAlertCircle,
-  FiStar,
-} from 'react-icons/fi';
+  PiCheck,
+  PiMagnifyingGlass,
+  PiMusicNotes,
+  PiSpinnerGap,
+  PiStar,
+  PiWarningCircle,
+  PiX,
+} from 'react-icons/pi';
 import { getWorkById, searchWorks } from '@/app/requests/catalog-search';
+import { Inline } from '@/app/components/ui/Layout';
+import { Text } from '@/app/components/ui/Text';
+import { NomeAcao } from '@/app/components/ui/NomeAcao';
+import { useTx } from '@/app/hooks/useTx';
 
 interface Work {
   id: string;
@@ -22,6 +26,8 @@ interface Work {
 }
 
 interface SimpleWorkSearchInputProps {
+  /** Id do campo, para o `<label htmlFor>` de quem usa. */
+  id?: string;
   selectedWork: string;
   onWorkSelect: (workId: string, data?: any) => void;
   placeholder?: string;
@@ -34,9 +40,10 @@ interface SimpleWorkSearchInputProps {
 }
 
 const SimpleWorkSearchInput: React.FC<SimpleWorkSearchInputProps> = ({
+  id,
   selectedWork,
   onWorkSelect,
-  placeholder = 'Digite para buscar uma obra...',
+  placeholder,
   error,
   disabled = false,
   filterByComposer = '',
@@ -44,6 +51,7 @@ const SimpleWorkSearchInput: React.FC<SimpleWorkSearchInputProps> = ({
   userSuggestions = [],
   loadingUserSuggestions = false,
 }) => {
+  const tx = useTx();
   const [query, setQuery] = useState('');
   const [works, setWorks] = useState<Work[]>([]);
   const [isLoading, setIsLoading] = useState(false);
@@ -64,7 +72,6 @@ const SimpleWorkSearchInput: React.FC<SimpleWorkSearchInputProps> = ({
         return;
       }
 
-      console.log('🔍 [SIMPLE-WORK-SEARCH] Buscando para:', searchQuery);
       setIsLoading(true);
 
       try {
@@ -81,14 +88,6 @@ const SimpleWorkSearchInput: React.FC<SimpleWorkSearchInputProps> = ({
           searchQuery
         );
         setWorks(combinedWorks);
-
-        console.log(
-          '✅ [SIMPLE-WORK-SEARCH] Obras combinadas:',
-          combinedWorks.length,
-          '(API:',
-          apiWorks.length,
-          '+ Sugestões)'
-        );
       } catch (error) {
         console.error('❌ [SIMPLE-WORK-SEARCH] Erro:', error);
         setWorks([]);
@@ -188,10 +187,6 @@ const SimpleWorkSearchInput: React.FC<SimpleWorkSearchInputProps> = ({
       const userWork = userSuggestions.find((work) => work.id === workId);
       if (userWork) {
         setSelectedWorkData(userWork);
-        console.log(
-          '✅ [SIMPLE-WORK-SEARCH] Obra encontrada nas sugestões:',
-          userWork.title
-        );
         return;
       }
 
@@ -200,10 +195,6 @@ const SimpleWorkSearchInput: React.FC<SimpleWorkSearchInputProps> = ({
         const workData = await getWorkById(workId);
         if (workData) {
           setSelectedWorkData(workData);
-          console.log(
-            '✅ [SIMPLE-WORK-SEARCH] Obra carregada da API:',
-            workData.title
-          );
         }
       } catch (error) {
         console.error('❌ [SIMPLE-WORK-SEARCH] Erro ao carregar obra:', error);
@@ -253,7 +244,6 @@ const SimpleWorkSearchInput: React.FC<SimpleWorkSearchInputProps> = ({
   // 🔥 HANDLERS
   const handleWorkSelect = useCallback(
     (work: Work) => {
-      console.log('🎯 [SIMPLE-WORK-SEARCH] Obra selecionada:', work.title);
       onWorkSelect(work.id, work);
       setSelectedWorkData(work);
       setQuery('');
@@ -264,7 +254,6 @@ const SimpleWorkSearchInput: React.FC<SimpleWorkSearchInputProps> = ({
   );
 
   const handleClearSelection = useCallback(() => {
-    console.log('🗑️ [SIMPLE-WORK-SEARCH] Limpando seleção');
     onWorkSelect('', null);
     setSelectedWorkData(null);
     setQuery('');
@@ -284,17 +273,20 @@ const SimpleWorkSearchInput: React.FC<SimpleWorkSearchInputProps> = ({
   const getHeaderLabel = () => {
     if (query.length >= 2) {
       return filterByComposer
-        ? 'Resultados filtrados por compositor'
-        : 'Resultados da busca';
+        ? tx(
+            'Resultados filtrados por compositor',
+            'Results filtered by composer'
+          )
+        : tx('Resultados da busca', 'Search results');
     }
 
     if (userSuggestions.length > 0) {
       return filterByComposer
-        ? 'Obras do compositor selecionado'
-        : 'Sugestões para você';
+        ? tx('Obras do compositor selecionado', 'Works by the chosen composer')
+        : tx('Sugestões para você', 'Suggestions for you');
     }
 
-    return 'Obras populares';
+    return tx('Obras populares', 'Popular works');
   };
 
   return (
@@ -302,32 +294,33 @@ const SimpleWorkSearchInput: React.FC<SimpleWorkSearchInputProps> = ({
       {/* Campo selecionado */}
       {selectedWorkData ? (
         <div
-          className={`w-full p-3 border rounded-lg bg-theme-elevated ${
-            error ? 'border-red-500' : 'border-theme-secondary'
+          className={`w-full p-3 border rounded-lg bg-sup-2 ${
+            error ? 'border-[var(--erro)]' : 'border-[var(--linha)]'
           } ${disabled ? 'opacity-50 cursor-not-allowed' : ''}`}
         >
           <div className="flex items-center justify-between">
-            <div className="flex items-center space-x-3">
-              <div className="w-8 h-8 bg-accent-blue/20 rounded-lg flex items-center justify-center">
-                <FiCheck className="w-4 h-4 text-accent-blue" />
+            <Inline gap={3}>
+              <div className="w-8 h-8 rounded-lg flex items-center justify-center">
+                <PiCheck className="w-4 h-4" />
               </div>
               <div>
-                <p className="font-medium text-theme-primary text-sm">
+                <Text papel="rotulo" tom="forte" as="p" className="font-medium">
                   {selectedWorkData.title}
-                </p>
-                <p className="text-theme-tertiary text-xs">
+                </Text>
+                <Text papel="legenda" tom="fraco" as="p">
                   {selectedWorkData.composer.fullName ||
                     selectedWorkData.composer.name}
-                </p>
+                </Text>
               </div>
-            </div>
+            </Inline>
             {!disabled && (
               <button
                 type="button"
                 onClick={handleClearSelection}
-                className="text-theme-tertiary hover:text-accent-red transition-colors p-1"
+                className="text-texto-fraco transition-colors p-1"
               >
-                <FiX className="w-4 h-4" />
+                <PiX className="w-4 h-4" />
+                <NomeAcao acao="fechar" />
               </button>
             )}
           </div>
@@ -336,8 +329,9 @@ const SimpleWorkSearchInput: React.FC<SimpleWorkSearchInputProps> = ({
         <div className="relative">
           {/* Campo de busca */}
           <div className="relative">
-            <FiSearch className="absolute left-3 top-1/2 transform -translate-y-1/2 text-theme-tertiary w-4 h-4 z-10" />
+            <PiMagnifyingGlass className="absolute left-3 top-1/2 transform -translate-y-1/2 text-texto-fraco w-4 h-4 z-10" />
             <input
+              id={id}
               ref={inputRef}
               type="text"
               value={query}
@@ -349,14 +343,17 @@ const SimpleWorkSearchInput: React.FC<SimpleWorkSearchInputProps> = ({
                   setWorks(userSuggestions.slice(0, 8));
                 }
               }}
-              placeholder={placeholder}
+              placeholder={
+                placeholder ??
+                tx('Digite para buscar uma obra…', 'Type to search a work…')
+              }
               disabled={disabled}
               className={`input-classical-2 w-full !pl-10 pr-10 ${
-                error ? 'border-red-500' : ''
+                error ? 'border-[var(--erro)]' : ''
               } ${disabled ? 'opacity-50 cursor-not-allowed' : ''}`}
             />
             {(isLoading || loadingUserSuggestions) && (
-              <FiLoader className="absolute right-3 top-1/2 transform -translate-y-1/2 text-brand-primary w-4 h-4 animate-spin" />
+              <PiSpinnerGap className="absolute right-3 top-1/2 transform -translate-y-1/2 text-ouro-texto w-4 h-4 animate-spin" />
             )}
           </div>
 
@@ -364,17 +361,17 @@ const SimpleWorkSearchInput: React.FC<SimpleWorkSearchInputProps> = ({
           {isOpen && !disabled && (
             <div
               ref={dropdownRef}
-              className="absolute top-full left-0 right-0 mt-2 bg-theme-elevated border border-theme-secondary rounded-lg shadow-theme-large max-h-80 overflow-y-auto z-50"
+              className="absolute top-full left-0 right-0 mt-2 rounded-controle border border-[var(--linha-forte)] bg-[var(--sup-alta)] shadow-[var(--sombra-alta)] max-h-80 overflow-y-auto z-menu"
             >
               {/* Loading */}
               {(isLoading || loadingUserSuggestions) && (
                 <div className="p-4 text-center">
-                  <FiLoader className="w-5 h-5 mx-auto animate-spin text-brand-primary mb-2" />
-                  <p className="text-sm text-theme-tertiary">
+                  <PiSpinnerGap className="w-5 h-5 mx-auto animate-spin text-ouro-texto mb-2" />
+                  <Text papel="rotulo" tom="fraco" as="p">
                     {loadingUserSuggestions
-                      ? 'Carregando sugestões...'
-                      : 'Buscando obras...'}
-                  </p>
+                      ? tx('Carregando sugestões...', 'Loading suggestions…')
+                      : tx('Buscando obras...', 'Searching works…')}
+                  </Text>
                 </div>
               )}
 
@@ -382,18 +379,23 @@ const SimpleWorkSearchInput: React.FC<SimpleWorkSearchInputProps> = ({
               {!isLoading && !loadingUserSuggestions && works.length > 0 && (
                 <div className="p-2">
                   {/* 🆕 Header inteligente */}
-                  <div className="px-3 py-2 text-xs font-medium text-theme-tertiary uppercase tracking-wide border-b border-theme-secondary mb-2">
+                  <Text
+                    papel="legenda"
+                    tom="fraco"
+                    as="div"
+                    className="px-3 py-2 font-medium uppercase tracking-wide border-b border-[var(--linha)] mb-2"
+                  >
                     <div className="flex items-center gap-2">
                       {query.length >= 2 ? (
-                        <FiSearch className="w-4 h-4" />
+                        <PiMagnifyingGlass className="w-4 h-4" />
                       ) : userSuggestions.length > 0 ? (
-                        <FiStar className="w-4 h-4 text-accent-purple" />
+                        <PiStar className="w-4 h-4" />
                       ) : (
-                        <FiMusic className="w-4 h-4" />
+                        <PiMusicNotes className="w-4 h-4" />
                       )}
                       {getHeaderLabel()}
                     </div>
-                  </div>
+                  </Text>
 
                   {works.map((work, i) => {
                     const isUserWork = isUserSuggestion(work);
@@ -403,38 +405,46 @@ const SimpleWorkSearchInput: React.FC<SimpleWorkSearchInputProps> = ({
                         key={`${work.id}-${i}`}
                         type="button"
                         onClick={() => handleWorkSelect(work)}
-                        className="w-full text-left p-3 rounded-lg hover:bg-theme-secondary transition-colors group"
+                        className="w-full text-left p-3 rounded-lg transition-colors group"
                       >
-                        <div className="flex items-center space-x-3">
+                        <Inline gap={3}>
                           <div
                             className={`w-8 h-8 rounded-lg flex items-center justify-center group-hover:scale-105 transition-transform ${
-                              isUserWork
-                                ? 'bg-accent-purple/20 group-hover:bg-accent-purple/30'
-                                : 'bg-accent-blue/20 group-hover:bg-accent-blue/30'
+                              isUserWork ? '' : ''
                             }`}
                           >
                             {isUserWork ? (
-                              <FiStar className="w-4 h-4 text-accent-purple" />
+                              <PiStar className="w-4 h-4" />
                             ) : (
-                              <FiMusic className="w-4 h-4 text-accent-blue" />
+                              <PiMusicNotes className="w-4 h-4" />
                             )}
                           </div>
                           <div className="flex-1 min-w-0">
-                            <div className="flex items-center space-x-2">
-                              <p className="font-medium text-theme-primary text-sm truncate">
+                            <Inline gap={2}>
+                              <Text
+                                papel="rotulo"
+                                tom="forte"
+                                as="p"
+                                className="font-medium truncate"
+                              >
                                 {work.title}
-                              </p>
+                              </Text>
                               {isUserWork && (
-                                <span className="text-xs bg-accent-purple/20 text-accent-purple px-1.5 py-0.5 rounded">
-                                  Sugerida
+                                <span className="text-xs px-1.5 py-0.5 rounded">
+                                  {tx('Sugerida', 'Suggested')}
                                 </span>
                               )}
-                            </div>
-                            <p className="text-theme-tertiary text-xs truncate">
+                            </Inline>
+                            <Text
+                              papel="legenda"
+                              tom="fraco"
+                              as="p"
+                              className="truncate"
+                            >
                               {work.composer.fullName || work.composer.name}
-                            </p>
+                            </Text>
                           </div>
-                        </div>
+                        </Inline>
                       </button>
                     );
                   })}
@@ -443,17 +453,25 @@ const SimpleWorkSearchInput: React.FC<SimpleWorkSearchInputProps> = ({
 
               {/* Empty state */}
               {!isLoading && !loadingUserSuggestions && works.length === 0 && (
-                <div className="p-4 text-center text-theme-tertiary">
-                  <FiSearch className="w-8 h-8 mx-auto mb-2 opacity-50" />
+                <div className="p-4 text-center text-texto-fraco">
+                  <PiMagnifyingGlass className="w-8 h-8 mx-auto mb-2 opacity-50" />
                   <p className="text-sm">
                     {query.length >= 2
                       ? `Nenhuma obra encontrada para "${query}"`
                       : userSuggestions.length === 0
-                        ? 'Nenhuma sugestão disponível'
-                        : 'Digite pelo menos 2 caracteres para buscar'}
+                        ? tx(
+                            'Nenhuma sugestão disponível',
+                            'No suggestions available'
+                          )
+                        : tx(
+                            'Digite pelo menos 2 caracteres para buscar',
+                            'Type at least 2 characters to search'
+                          )}
                   </p>
                   {query.length >= 2 && (
-                    <p className="text-xs mt-1">Tente termos diferentes</p>
+                    <p className="text-xs mt-1">
+                      {tx('Tente termos diferentes', 'Try different terms')}
+                    </p>
                   )}
                 </div>
               )}
@@ -462,11 +480,14 @@ const SimpleWorkSearchInput: React.FC<SimpleWorkSearchInputProps> = ({
 
           {/* 🆕 Dica dinâmica */}
           {!isOpen && query.length === 0 && !selectedWorkData && (
-            <div className="mt-2 text-xs text-theme-tertiary">
+            <Text papel="legenda" tom="fraco" as="div" className="mt-2">
               {userSuggestions.length > 0
                 ? ``
-                : '💡 Digite pelo menos 2 caracteres para buscar obras'}
-            </div>
+                : tx(
+                    'Digite pelo menos 2 caracteres para buscar obras',
+                    'Type at least 2 characters to search works'
+                  )}
+            </Text>
           )}
         </div>
       )}
@@ -474,10 +495,10 @@ const SimpleWorkSearchInput: React.FC<SimpleWorkSearchInputProps> = ({
       {/* Mensagem de erro */}
       {error && (
         <div>
-          <p className="text-red-500 text-sm font-medium flex items-center space-x-1 mt-1">
-            <FiAlertCircle className="w-4 h-4" />
+          <Inline as="p" gap={1} className="text-erro text-sm font-medium mt-1">
+            <PiWarningCircle className="w-4 h-4" />
             <span>{error}</span>
-          </p>
+          </Inline>
         </div>
       )}
     </div>

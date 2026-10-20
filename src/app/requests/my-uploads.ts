@@ -7,6 +7,7 @@ import { ApiError, apiFetch } from '@/app/libs/api/client';
 import type { ProfileAccount } from '@/app/libs/api/profile';
 import { getServerAccessToken } from '@/app/libs/api/server-session';
 import type { ApiSchema } from '@/app/libs/api/types';
+import { porIdioma } from '@/app/utils/porIdioma';
 
 export interface UserUpload {
   id: string;
@@ -54,7 +55,14 @@ async function callApi<T>(path: string, query?: Query): Promise<T> {
   const token = await getServerAccessToken();
 
   if (!token) {
-    throw new ApiError(401, 'Sua sessão expirou. Entre de novo.', null);
+    throw new ApiError(
+      401,
+      porIdioma(
+        'Sua sessão expirou. Entre de novo.',
+        'Your session expired. Sign in again.'
+      ),
+      null
+    );
   }
 
   return apiFetch<T>(path, { token, cache: 'no-store', query });

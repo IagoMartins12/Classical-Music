@@ -1,17 +1,18 @@
-// ============================================
-// QuoteMusicalModal.tsx - COM UPLOAD/YOUTUBE
-// ============================================
 'use client';
 
+import { useId, useState, type ChangeEvent } from 'react';
+import type { Editor } from '@tiptap/react';
+import { PiUploadSimple } from 'react-icons/pi';
 import { uploadBlogMedia } from '@/app/requests/blog/interactions';
-
-import { useState } from 'react';
-import { Editor } from '@tiptap/react';
-import { FiUpload } from 'react-icons/fi';
-import Modal from '@/app/components/Modal';
-import Input from '@/app/components/Common/Inputs';
-import Button from '@/app/components/Common/Button';
-import Checkbox from '@/app/components/Common/Checkbox';
+import { BlocoDoArtigo } from '@/app/components/blog/site/CorpoDoArtigo';
+import { idDoYoutube } from '@/app/components/blog/site/useFonteDeAudio';
+import { Interruptor } from '@/app/components/Admin/painel/Campos';
+import { Chip } from '@/app/components/ui/Badge';
+import { classesDeBotao } from '@/app/components/ui/Button';
+import { Field } from '@/app/components/ui/Field';
+import { Icon } from '@/app/components/ui/Icon';
+import { cx } from '@/app/components/ui/cx';
+import { FolhaDoEditor } from '../FolhaDoEditor';
 
 interface QuoteMusicalModalProps {
   editor: Editor;
@@ -20,306 +21,199 @@ interface QuoteMusicalModalProps {
   sessionId?: string;
 }
 
+const FORMATOS = ['audio/mpeg', 'audio/mp3', 'audio/wav', 'audio/ogg'];
+
+/**
+ * Citação com música opcional.
+ *
+ * **A música não toca sozinha.** O diálogo antigo prometia "tocará
+ * automaticamente em loop quando o leitor visualizar a citação" e pedia um
+ * volume; som que começa sem pedido reprova o WCAG (1.4.2) e assusta quem lê
+ * em público. No artigo a citação ganha um botão de ouvir, e o volume é o do
+ * leitor. Por isso o diálogo não pergunta mais o volume.
+ */
 export function QuoteMusicalModal({
   editor,
   onClose,
   articleId,
   sessionId,
 }: QuoteMusicalModalProps) {
-  const [quote, setQuote] = useState('');
-  const [author, setAuthor] = useState('');
+  const id = useId();
+  const [citacao, setCitacao] = useState('');
+  const [autor, setAutor] = useState('');
+  const [comMusica, setComMusica] = useState(false);
+  const [origem, setOrigem] = useState<'arquivo' | 'youtube'>('arquivo');
+  const [arquivoUrl, setArquivoUrl] = useState('');
+  const [youtube, setYoutube] = useState('');
+  const [enviando, setEnviando] = useState(false);
+  const [erro, setErro] = useState('');
 
-  // Áudio de fundo
-  const [enableAudio, setEnableAudio] = useState(false);
-  const [activeTab, setActiveTab] = useState<'upload' | 'youtube'>('upload');
-  const [audioUrl, setAudioUrl] = useState('');
-  const [uploading, setUploading] = useState(false);
-  const [youtubeUrl, setYoutubeUrl] = useState('');
-  const [audioVolume, setAudioVolume] = useState(30); // 0-100
+  const idYoutube = idDoYoutube(youtube);
+  const audio = !comMusica
+    ? null
+    : origem === 'arquivo'
+      ? arquivoUrl || null
+      : idYoutube
+        ? `https://www.youtube.com/embed/${idYoutube}`
+        : null;
 
-  // Upload de arquivo
-  const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    e.stopPropagation();
-    const file = e.target.files?.[0];
-    if (!file) return;
+  const pronta = Boolean(
+    citacao.trim() && autor.trim() && (!comMusica || audio)
+  );
 
-    // Validar tipo de arquivo
-    const validTypes = ['audio/mpeg', 'audio/mp3', 'audio/wav', 'audio/ogg'];
-    if (!validTypes.includes(file.type)) {
-      alert('Formato inválido. Use MP3, WAV ou OGG.');
+  async function enviar(e: ChangeEvent<HTMLInputElement>) {
+    const arquivo = e.target.files?.[0];
+    e.target.value = '';
+    if (!arquivo) return;
+    if (!FORMATOS.includes(arquivo.type)) {
+      setErro('Formato não aceito. Use MP3, WAV ou OGG.');
       return;
     }
-
-    setUploading(true);
+    setEnviando(true);
+    setErro('');
     try {
-      setAudioUrl(
-        await uploadBlogMedia(file, { folder: 'audio', articleId, sessionId })
+      setArquivoUrl(
+        await uploadBlogMedia(arquivo, {
+          folder: 'audio',
+          articleId,
+          sessionId,
+        })
       );
-    } catch (error) {
-      console.error('Erro ao fazer upload:', error);
-      alert(
-        error instanceof Error
-          ? `Erro ao fazer upload: ${error.message}`
-          : 'Erro ao fazer upload do áudio'
+    } catch (falha) {
+      setErro(
+        falha instanceof Error
+          ? `Não deu para enviar: ${falha.message}`
+          : 'Não deu para enviar o áudio.'
       );
     } finally {
-      setUploading(false);
+      setEnviando(false);
     }
+  }
+
+  const attrs = {
+    quote: citacao.trim(),
+    author: autor.trim(),
+    backgroundAudioUrl: audio,
+    backgroundAudioType: audio
+      ? origem === 'arquivo'
+        ? 'upload'
+        : 'youtube'
+      : null,
+    backgroundAudioVolume: 30,
   };
 
-  // Extrair ID do YouTube
-  const extractYouTubeId = (url: string) => {
-    const regExp =
-      /^.*((youtu.be\/)|(v\/)|(\/u\/\w\/)|(embed\/)|(watch\?))\??v?=?([^#&?]*).*/;
-    const match = url.match(regExp);
-    return match && match[7].length === 11 ? match[7] : null;
-  };
-
-  // Trocar de aba
-  const handleTabChange = (tab: 'upload' | 'youtube') => {
-    setActiveTab(tab);
-    setAudioUrl('');
-    setYoutubeUrl('');
-  };
-
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    e.stopPropagation();
-    if (!quote || !author) {
-      alert('Preencha a citação e o autor');
-      return;
-    }
-
-    let finalAudioUrl = null;
-    let audioType = null;
-
-    if (enableAudio) {
-      if (activeTab === 'upload') {
-        if (!audioUrl) {
-          alert(
-            'Faça upload de um áudio ou desmarque "Adicionar música de fundo"'
-          );
-          return;
-        }
-        finalAudioUrl = audioUrl;
-        audioType = 'upload';
-      } else {
-        if (!youtubeUrl) {
-          alert(
-            'Insira o link do YouTube ou desmarque "Adicionar música de fundo"'
-          );
-          return;
-        }
-        const youtubeId = extractYouTubeId(youtubeUrl);
-        if (!youtubeId) {
-          alert('Link do YouTube inválido');
-          return;
-        }
-        finalAudioUrl = `https://www.youtube.com/embed/${youtubeId}`;
-        audioType = 'youtube';
-      }
-    }
-
-    editor.commands.insertContent({
-      type: 'quoteMusical',
-      attrs: {
-        quote,
-        author,
-        backgroundAudioUrl: finalAudioUrl,
-        backgroundAudioType: audioType,
-        backgroundAudioVolume: audioVolume,
-      },
-    });
+  function inserir() {
+    editor.chain().focus().insertContent({ type: 'quoteMusical', attrs }).run();
     onClose();
-  };
+  }
 
   return (
-    <Modal
-      isOpen={true}
-      onClose={onClose}
-      title="Inserir Citação Musical"
-      maxWidth="2xl"
+    <FolhaDoEditor
+      titulo="Citação musical"
+      aoFechar={onClose}
+      aoEnviar={inserir}
+      podeEnviar={pronta}
+      enviando={enviando}
     >
-      <form onSubmit={handleSubmit} className="space-y-4">
-        <div>
-          <label className="block text-sm font-medium text-theme-primary mb-2">
-            Citação *
-          </label>
-          <textarea
-            value={quote}
-            onChange={(e) => setQuote(e.target.value)}
-            rows={4}
-            placeholder="Digite a citação aqui..."
-            className="input-classical-2 w-full resize-none"
-            required
-          />
-        </div>
+      <Field.Area
+        label="Citação"
+        rows={4}
+        value={citacao}
+        onChange={(e) => setCitacao(e.target.value)}
+        classeCampo="resize-y"
+        autoFocus
+      />
+      <Field
+        label="De quem é"
+        value={autor}
+        onChange={(e) => setAutor(e.target.value)}
+        placeholder="Ex.: Ludwig van Beethoven"
+      />
 
-        <Input
-          label="Autor *"
-          type="text"
-          value={author}
-          onChange={(e) => setAuthor(e.target.value)}
-          placeholder="Ex: Ludwig van Beethoven"
-          required
-          widhtFull
-        />
-        <div className="border-t border-theme-secondary pt-4">
-          <Checkbox
-            label="Adicionar música de fundo"
-            checked={enableAudio}
-            onChange={(e) => setEnableAudio(e.target.checked)}
-          />
-        </div>
+      <Interruptor
+        rotulo="Com música"
+        ajuda="A citação ganha um botão para ouvir. Nada toca sem o leitor pedir."
+        ligado={comMusica}
+        aoMudar={setComMusica}
+      />
 
-        {enableAudio && (
-          <div className="space-y-4 pl-6 border-l-2 border-accent-purple">
-            {/* TABS */}
-            <div className="flex ">
-              <button
-                type="button"
-                onClick={() => handleTabChange('upload')}
-                className={`flex-1 px-4 py-2 text-sm font-medium transition-colors ${
-                  activeTab === 'upload'
-                    ? 'border-b-2 border-brand-primary text-brand-primary'
-                    : 'text-theme-tertiary hover:text-theme-primary'
-                }`}
-              >
-                📤 Fazer Upload
-              </button>
-              <button
-                type="button"
-                onClick={() => handleTabChange('youtube')}
-                className={`flex-1 px-4 py-2 text-sm font-medium transition-colors ${
-                  activeTab === 'youtube'
-                    ? 'border-b-2 border-brand-primary text-brand-primary'
-                    : 'text-theme-tertiary hover:text-theme-primary'
-                }`}
-              >
-                🎥 Link do YouTube
-              </button>
-            </div>
-
-            {/* ABA UPLOAD */}
-            {activeTab === 'upload' && (
-              <div>
-                <label className="block text-sm font-medium text-theme-primary mb-2">
-                  Selecionar Arquivo de Áudio
-                </label>
-                <div className="border-2 border-dashed border-theme-secondary rounded-lg p-4 text-center hover:border-brand-primary transition-colors">
-                  <input
-                    type="file"
-                    id="audio-upload-quote"
-                    accept="audio/mpeg,audio/mp3,audio/wav,audio/ogg"
-                    onChange={handleFileUpload}
-                    className="hidden"
-                    disabled={uploading}
-                  />
-
-                  {audioUrl && !uploading ? (
-                    <div className="space-y-2">
-                      <p className="text-sm text-green-700 font-medium">
-                        ✓ Áudio carregado com sucesso
-                      </p>
-                      <label
-                        htmlFor="audio-upload-quote"
-                        className="inline-block cursor-pointer text-sm text-brand-primary hover:text-brand-secondary underline"
-                      >
-                        Alterar áudio
-                      </label>
-                    </div>
-                  ) : (
-                    <label
-                      htmlFor="audio-upload-quote"
-                      className="cursor-pointer"
-                    >
-                      <FiUpload className="w-8 h-8 text-theme-tertiary mx-auto mb-2" />
-                      <span className="text-sm text-theme-secondary">
-                        {uploading ? 'Enviando...' : 'Clique para fazer upload'}
-                      </span>
-                      <p className="text-xs text-theme-tertiary mt-2">
-                        MP3, WAV ou OGG (máx 10MB)
-                      </p>
-                    </label>
-                  )}
-                </div>
-              </div>
-            )}
-
-            {/* ABA YOUTUBE */}
-            {activeTab === 'youtube' && (
-              <>
-                <Input
-                  label="Link do YouTube"
-                  type="url"
-                  value={youtubeUrl}
-                  onChange={(e) => setYoutubeUrl(e.target.value)}
-                  placeholder="https://www.youtube.com/watch?v=..."
-                  widhtFull
-                />
-
-                {youtubeUrl && extractYouTubeId(youtubeUrl) && (
-                  <div className="p-3 bg-green-50 border border-green-200 rounded-lg">
-                    <p className="text-sm text-green-800">
-                      ✓ Link válido do YouTube
-                    </p>
-                  </div>
-                )}
-              </>
-            )}
-
-            {/* Volume */}
-            <div>
-              <label className="block text-sm font-medium text-theme-primary mb-2">
-                Volume: {audioVolume}%
-              </label>
-              <input
-                type="range"
-                min="0"
-                max="100"
-                step="5"
-                value={audioVolume}
-                onChange={(e) => setAudioVolume(parseInt(e.target.value))}
-                className="w-full h-2 rounded-lg appearance-none cursor-pointer"
-                style={{
-                  background: `linear-gradient(to right, var(--accent-purple) 0%, var(--accent-purple) ${audioVolume}%, #e5e7eb ${audioVolume}%, #e5e7eb 100%)`,
-                }}
-              />
-              <div className="flex justify-between text-xs text-theme-tertiary mt-1">
-                <span>Silencioso</span>
-                <span>Alto</span>
-              </div>
-            </div>
-
-            <div className="p-3 bg-blue-50 border border-blue-200 rounded-lg">
-              <p className="text-xs text-blue-800">
-                💡 <strong>Dica:</strong> A música tocará automaticamente em
-                loop quando o leitor visualizar a citação. Apenas o áudio será
-                reproduzido.
-              </p>
-            </div>
-          </div>
-        )}
-
-        <div className="flex justify-end space-x-2 pt-4 border-t border-theme-secondary">
-          <Button type="button" variant="secondary" onClick={onClose}>
-            Cancelar
-          </Button>
-          <Button
-            type="submit"
-            variant="primary"
-            disabled={
-              !quote ||
-              !author ||
-              (enableAudio &&
-                ((activeTab === 'upload' && !audioUrl) ||
-                  (activeTab === 'youtube' && !youtubeUrl)))
-            }
+      {comMusica && (
+        <div className="flex flex-col gap-4">
+          <div
+            role="group"
+            aria-label="De onde vem a música"
+            className="flex gap-1.5"
           >
-            Inserir Citação
-          </Button>
+            <Chip
+              selecionado={origem === 'arquivo'}
+              onClick={() => setOrigem('arquivo')}
+            >
+              Enviar arquivo
+            </Chip>
+            <Chip
+              selecionado={origem === 'youtube'}
+              onClick={() => setOrigem('youtube')}
+            >
+              Vídeo do YouTube
+            </Chip>
+          </div>
+          {origem === 'arquivo' ? (
+            <div className="flex flex-col gap-2">
+              <input
+                id={`${id}-arquivo`}
+                type="file"
+                accept={FORMATOS.join(',')}
+                onChange={enviar}
+                disabled={enviando}
+                className="sr-only"
+              />
+              <label
+                htmlFor={`${id}-arquivo`}
+                className={cx(
+                  classesDeBotao('secundario'),
+                  'cursor-pointer self-start'
+                )}
+              >
+                <Icon de={PiUploadSimple} tamanho="p" />
+                {enviando
+                  ? 'Enviando…'
+                  : arquivoUrl
+                    ? 'Trocar arquivo'
+                    : 'Escolher arquivo'}
+              </label>
+              <p className="t-legenda">MP3, WAV ou OGG, até 10 MB.</p>
+            </div>
+          ) : (
+            <Field
+              label="Endereço do vídeo"
+              type="url"
+              inputMode="url"
+              value={youtube}
+              onChange={(e) => setYoutube(e.target.value)}
+              placeholder="https://www.youtube.com/watch?v=…"
+              erro={
+                youtube.trim() && !idYoutube
+                  ? 'Não é um endereço de vídeo do YouTube.'
+                  : undefined
+              }
+            />
+          )}
+          {erro && (
+            <p role="alert" className="t-legenda text-erro">
+              {erro}
+            </p>
+          )}
         </div>
-      </form>
-    </Modal>
+      )}
+
+      {attrs.quote && (
+        <div className="flex flex-col gap-2">
+          <span className="t-rotulo text-texto-fraco">Como fica no artigo</span>
+          <div className="blog-corpo text-[1.0625rem]">
+            <BlocoDoArtigo no={{ type: 'quoteMusical', attrs }} />
+          </div>
+        </div>
+      )}
+    </FolhaDoEditor>
   );
 }

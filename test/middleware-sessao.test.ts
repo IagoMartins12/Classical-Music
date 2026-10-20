@@ -119,11 +119,25 @@ describe('renovação de sessão', () => {
     expect(r.headers.get('location')).toBeNull();
   });
 
-  it('o painel sem sessão nenhuma vai para o login, com o destino guardado', () => {
+  // Não existe página `/login` — o login é um modal. Até 26/09 este teste
+  // conferia o redirecionamento para `/login`, que respondia 404.
+  it('o painel sem sessão nenhuma vai para a home com o login aberto e o destino guardado', () => {
     const r = middleware(visita('/admin/users', {})) as Response;
-    const destino = r.headers.get('location') ?? '';
+    const destino = new URL(r.headers.get('location') ?? '');
 
-    expect(destino).toContain('/login');
-    expect(destino).toContain('callbackUrl=%2Fadmin%2Fusers');
+    expect(destino.pathname).toBe('/');
+    expect(destino.searchParams.get('login')).toBe('1');
+    expect(destino.searchParams.get('callbackUrl')).toBe('/admin/users');
+  });
+
+  it('/login leva à home com o modal aberto, mantendo o destino', () => {
+    const r = middleware(
+      visita('/login?callbackUrl=%2Fprofile', {})
+    ) as Response;
+    const destino = new URL(r.headers.get('location') ?? '');
+
+    expect(destino.pathname).toBe('/');
+    expect(destino.searchParams.get('login')).toBe('1');
+    expect(destino.searchParams.get('callbackUrl')).toBe('/profile');
   });
 });

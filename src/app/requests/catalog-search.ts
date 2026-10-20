@@ -6,6 +6,7 @@
  * Aqui são `GET /composers`, `/composers/famous` e `/composers/:id`, e
  * `GET /works` ou as obras do compositor.
  */
+import type { OpcaoSelecao } from '@/app/components/ui/Selecao';
 import { ApiError, apiFetch } from '@/app/libs/api/client';
 import type { ApiSchema } from '@/app/libs/api/types';
 import { withoutNulls } from '@/app/requests/fetch-like';
@@ -150,4 +151,35 @@ export async function getWorkById(id: string) {
 
     throw error;
   }
+}
+
+const semAcento = (t: string) =>
+  t.normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase();
+
+/**
+ * Composers as select options (`SelecaoComBusca`): by name, or the best
+ * known before anything is typed. The API also matches alternative names; a
+ * name with a word starting with what was typed comes first, the best known
+ * among them first ("cho" → Chopin).
+ */
+export async function composerOptions(texto: string) {
+  const q = semAcento(texto.trim());
+  const [achados, famosos] = await Promise.all([
+    findComposers(texto, 30),
+    q ? findComposers('', 40) : Promise.resolve([]),
+  ]);
+  const opcoes: OpcaoSelecao[] = achados.map((c) => ({
+    value: c.id,
+    label: c.fullName || c.name,
+    retrato: { src: c.portraitUrl ?? null, nome: c.name },
+  }));
+  if (!q) return opcoes.slice(0, 12);
+  const conhecido = new Set(famosos.map((c) => c.id));
+  const comeca = (label: string) =>
+    semAcento(label)
+      .split(/[\s,.-]+/)
+      .some((w) => w.startsWith(q));
+  const peso = (o: OpcaoSelecao) =>
+    (comeca(o.label) ? 0 : 2) + (conhecido.has(o.value) ? 0 : 1);
+  return [...opcoes].sort((a, b) => peso(a) - peso(b)).slice(0, 12);
 }

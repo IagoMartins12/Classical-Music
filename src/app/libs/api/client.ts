@@ -11,7 +11,43 @@
  * usa com cache e revalidação por tag.
  */
 
+import {
+  isLocalizedRoute,
+  LANGUAGE_COOKIE,
+  languageOfPathname,
+  stripLanguagePrefix,
+  type RouteLanguage,
+} from '@/app/utils/localizedRoutes';
+
 const IS_SERVER = typeof window === 'undefined';
+
+/** Areas that are Portuguese only for now: the API answers them in it. */
+const PORTUGUESE_ONLY = [
+  '/student',
+  '/teacher',
+  '/portal',
+  '/admin',
+  '/blog/admin',
+  '/blog/my-articles',
+  '/blog/preview',
+];
+
+/**
+ * The language the API answers in (`Accept-Language`): the page's — the URL
+ * on pages that have both languages, the chosen one (cookie) elsewhere.
+ */
+export function pageLanguage(): RouteLanguage {
+  if (IS_SERVER) return 'pt';
+  const path = window.location.pathname;
+  const bare = stripLanguagePrefix(path);
+  if (PORTUGUESE_ONLY.some((p) => bare === p || bare.startsWith(`${p}/`)))
+    return 'pt';
+  if (isLocalizedRoute(bare)) return languageOfPathname(path);
+  const cookie = document.cookie.match(
+    new RegExp(`(?:^|; )${LANGUAGE_COOKIE}=(pt|en)`)
+  );
+  return (cookie?.[1] as RouteLanguage | undefined) ?? 'pt';
+}
 
 /**
  * No servidor do Next vale `NEST_API_URL` primeiro (endereço interno, quando
@@ -66,7 +102,19 @@ export interface BuildFallback<T> {
   buildFallback?: T;
 }
 
+/** The message for a call that never reached the API. */
+export const connectionError = () =>
+  pageLanguage() === 'en'
+    ? 'No connection to the server. Try again.'
+    : 'Sem conexão com o servidor. Tente de novo.';
+
 export class ApiError extends Error {
+  /**
+   * The message as the API wrote it (Portuguese), whatever language
+   * `message` came in: what code matches on, never what the screen shows.
+   */
+  readonly key: string;
+
   constructor(
     readonly status: number,
     message: string,
@@ -74,6 +122,7 @@ export class ApiError extends Error {
   ) {
     super(message);
     this.name = 'ApiError';
+    this.key = messageOf(body, 'messageKey') ?? message;
   }
 }
 
@@ -162,6 +211,7 @@ function send(
     credentials: 'include',
     headers: {
       Accept: 'application/json',
+      'Accept-Language': pageLanguage(),
       ...(token ? { Authorization: `Bearer ${token}` } : {}),
       ...(body === undefined || isForm
         ? {}
@@ -182,7 +232,10 @@ async function parse<T>(response: Response): Promise<T> {
   if (!response.ok) {
     throw new ApiError(
       response.status,
-      messageOf(data) ?? `Erro ${response.status}`,
+      messageOf(data) ??
+        (pageLanguage() === 'en'
+          ? `Error ${response.status}`
+          : `Erro ${response.status}`),
       data
     );
   }
@@ -198,13 +251,16 @@ function safeJson(text: string): unknown {
   }
 }
 
-/** A API responde erro como `{ statusCode, error, message }`. */
-function messageOf(data: unknown): string | undefined {
-  if (!data || typeof data !== 'object' || !('message' in data)) {
+/** A API responde erro como `{ statusCode, error, message, messageKey }`. */
+function messageOf(
+  data: unknown,
+  field: 'message' | 'messageKey' = 'message'
+): string | undefined {
+  if (!data || typeof data !== 'object' || !(field in data)) {
     return undefined;
   }
 
-  const { message } = data as { message: unknown };
+  const message = (data as Record<string, unknown>)[field];
 
   if (Array.isArray(message)) {
     return message.join(' ');

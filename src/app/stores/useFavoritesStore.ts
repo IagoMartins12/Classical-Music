@@ -670,6 +670,15 @@ export const useFavoritesStore = create<FavoritesStore>()(
     {
       name: 'favorites-storage',
       storage: createJSONStorage(() => localStorage),
+      // v2 also loads score favorites: older copies start over and reload.
+      version: 2,
+      migrate: () => ({
+        favoriteComposers: [],
+        favoriteWorks: [],
+        favoriteScores: [],
+        scoreStats: {},
+        initialized: false,
+      }),
       partialize: (state) => ({
         favoriteComposers: state.favoriteComposers,
         favoriteWorks: state.favoriteWorks,

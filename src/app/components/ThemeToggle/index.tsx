@@ -1,9 +1,11 @@
 // components/ThemeToggle.tsx
 'use client';
 
+import { useRouteLanguage } from '@/app/hooks/useRouteLanguage';
 import { useTheme } from '@/app/stores/themeStore';
 import React from 'react';
-import { FiSun, FiMoon } from 'react-icons/fi';
+import { PiMoon, PiSun } from 'react-icons/pi';
+import { Text } from '@/app/components/ui/Text';
 
 interface ThemeToggleProps {
   variant?: 'default' | 'compact' | 'navbar';
@@ -24,6 +26,11 @@ export const ThemeToggle: React.FC<ThemeToggleProps> = ({
     isTransitioning,
     isSystemControlled, // 🆕
   } = useTheme();
+  const { language } = useRouteLanguage();
+  const label =
+    language === 'en'
+      ? `Switch to ${mode === 'dark' ? 'light' : 'dark'} theme`
+      : `Mudar para o tema ${mode === 'dark' ? 'claro' : 'escuro'}`;
 
   const getVariantClasses = () => {
     switch (variant) {
@@ -60,49 +67,40 @@ export const ThemeToggle: React.FC<ThemeToggleProps> = ({
   return (
     <div className={`flex items-center gap-2 ${className}`}>
       {showLabel && (
-        <span className="text-theme-secondary text-sm font-medium">
+        <Text papel="rotulo" tom="suave" className="font-medium">
           {getThemeLabel()}
-        </span>
+        </Text>
       )}
 
       <button
-        onClick={toggleTheme}
+        onClick={(evento) => {
+          // O círculo parte do centro do botão. Pelo teclado não há ponteiro
+          // (`clientX` = 0), então a posição vem do próprio botão.
+          const caixa = evento.currentTarget.getBoundingClientRect();
+          toggleTheme({
+            x: caixa.left + caixa.width / 2,
+            y: caixa.top + caixa.height / 2,
+          });
+        }}
         disabled={isTransitioning}
         className={`
           ${getVariantClasses()}
-          relative
-          bg-theme-elevated
-          border border-theme-primary
-          rounded-xl
-          hover:border-theme-accent
-          hover:bg-interactive-hover
-          active:scale-95
-          transition-all duration-300
-          group
-          disabled:opacity-50
-          disabled:cursor-not-allowed
-          focus:outline-none
-          focus:ring-2
-          focus:ring-brand-primary/50
-          focus:ring-offset-2
-          focus:ring-offset-bg-primary
+          relative fundo-sup-2 border border-linha-forte rounded-xl active:scale-95 transition-all duration-300 group disabled:opacity-50 disabled:cursor-not-allowed
         `}
-        aria-label={`Alternar para tema ${
-          mode === 'dark' ? 'claro' : 'escuro'
-        }`}
-        title={`Trocar para tema ${mode === 'dark' ? 'claro' : 'escuro'}`}
+        aria-label={label}
+        title={label}
       >
         {/* Background gradient effect */}
-        <div className="absolute inset-0 bg-brand-gradient opacity-0 group-hover:opacity-10 rounded-xl transition-opacity duration-300" />
+        <div className="absolute inset-0 opacity-0 group-hover:opacity-10 rounded-xl transition-opacity duration-300" />
 
         {/* Icon container */}
         <div className="relative flex items-center justify-center">
           {/* Sun icon */}
-          <FiSun
+          <PiSun
             className={`
               ${getIconSize()}
               absolute
-              text-brand-secondary
+              text-ouro-texto
               transition-all duration-500
               ${
                 mode === 'light'
@@ -113,11 +111,11 @@ export const ThemeToggle: React.FC<ThemeToggleProps> = ({
           />
 
           {/* Moon icon */}
-          <FiMoon
+          <PiMoon
             className={`
               ${getIconSize()}
               absolute
-              text-brand-primary
+              text-ouro-texto
               transition-all duration-500
               ${
                 mode === 'dark'
@@ -131,75 +129,10 @@ export const ThemeToggle: React.FC<ThemeToggleProps> = ({
         {/* Loading indicator */}
         {isTransitioning && (
           <div className="absolute inset-0 flex items-center justify-center">
-            <div className="w-4 h-4 border-2 border-brand-primary border-t-transparent rounded-full animate-spin" />
+            <div className="w-4 h-4 border-2 border-t-transparent rounded-full animate-spin" />
           </div>
         )}
-
-        {/* 🆕 Indicador de sistema (apenas se showSystemIndicator = true) */}
-        {showSystemIndicator && isSystemControlled && (
-          <div className="absolute -top-1 -left-1 w-2 h-2 bg-accent-blue rounded-full opacity-75 animate-pulse" />
-        )}
-
-        {/* Subtle animation indicator */}
-        <div className="absolute -top-1 -right-1 w-2 h-2 bg-accent-green rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-300 animate-pulse" />
       </button>
     </div>
   );
-};
-
-// 🆕 Componente adicional para mostrar status do sistema
-export const ThemeSystemStatus: React.FC<{
-  className?: string;
-}> = ({ className = '' }) => {
-  const { mode, hasUserPreference } = useTheme();
-
-  if (hasUserPreference) {
-    return (
-      <div
-        className={`flex items-center gap-2 text-xs text-theme-tertiary ${className}`}
-      >
-        <div className="w-2 h-2 bg-accent-green rounded-full" />
-        <span>Tema personalizado: {mode === 'dark' ? 'Escuro' : 'Claro'}</span>
-      </div>
-    );
-  }
-
-  return (
-    <div
-      className={`flex items-center gap-2 text-xs text-theme-tertiary ${className}`}
-    >
-      <div className="w-2 h-2 bg-accent-blue rounded-full animate-pulse" />
-      <span>Seguindo sistema: {mode === 'dark' ? 'Escuro' : 'Claro'}</span>
-    </div>
-  );
-};
-
-// 🆕 Hook avançado com mais informações
-export const useThemeAdvanced = () => {
-  const themeData = useTheme();
-  const [systemTheme, setSystemTheme] = React.useState<'dark' | 'light'>(
-    'dark'
-  );
-
-  // Detectar mudanças no tema do sistema
-  React.useEffect(() => {
-    const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
-
-    const updateSystemTheme = () => {
-      setSystemTheme(mediaQuery.matches ? 'dark' : 'light');
-    };
-
-    updateSystemTheme(); // Atualizar inicialmente
-    mediaQuery.addEventListener('change', updateSystemTheme);
-
-    return () => mediaQuery.removeEventListener('change', updateSystemTheme);
-  }, []);
-
-  return {
-    ...themeData,
-    systemTheme,
-    isFollowingSystem: themeData.isSystemControlled,
-    isDifferentFromSystem:
-      themeData.hasUserPreference && themeData.mode !== systemTheme,
-  };
 };

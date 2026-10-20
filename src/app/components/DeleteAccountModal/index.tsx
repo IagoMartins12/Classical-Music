@@ -1,29 +1,29 @@
-// app/components/profile/DeleteAccountModal.tsx - Enhanced modal for account deletion
 'use client';
+import { PERFIL } from '@/app/conteudo/textos/perfil';
+import { useTextos } from '@/app/hooks/useTextos';
+import { Button } from '@/app/components/ui/Button';
 
-import { useState, useEffect } from 'react';
-import { createPortal } from 'react-dom';
+import { useState } from 'react';
 import {
-  FiAlertTriangle,
-  FiTrash2,
-  FiX,
-  FiInfo,
-  FiLoader,
-  FiMail,
-  FiUser,
-  FiMusic,
-  FiFileText,
-  FiHeart,
-  FiEdit3,
-} from 'react-icons/fi';
-import { GiMusicalNotes } from 'react-icons/gi';
-import Button from '../Common/Button';
-import Input from '../Common/Inputs';
-import { AnimatedCard } from '../animation/AnimatedComponents';
-import { BiBookContent, BiBookOpen } from 'react-icons/bi';
+  PiBookBookmark,
+  PiBookOpen,
+  PiEnvelopeSimple,
+  PiFileText,
+  PiHeart,
+  PiInfo,
+  PiMusicNotes,
+  PiPencilLine,
+  PiSpinnerGap,
+  PiTrash,
+  PiUser,
+  PiWarning,
+} from 'react-icons/pi';
 import { CascadeInfo } from '@/app/hooks/useAccountManagement';
-import { useTranslation } from '@/app/context/TranslationContext';
-import { useIsMobile } from '@/app/hooks/useMobile';
+import { Field } from '@/app/components/ui/Field';
+import { iniciais } from '@/app/components/blog/site/pecas';
+import { Icon } from '@/app/components/ui/Icon';
+import { Sheet } from '@/app/components/ui/Sheet';
+import { cx } from '@/app/components/ui/cx';
 
 interface DeleteAccountModalProps {
   isOpen: boolean;
@@ -51,27 +51,12 @@ const DeleteAccountModal: React.FC<DeleteAccountModalProps> = ({
   userName,
   userEmail,
 }) => {
-  const { t } = useTranslation({ sections: ['pages/profile'] });
-  const [mounted, setMounted] = useState(false);
+  const { t } = useTextos(PERFIL);
   const [confirmText, setConfirmText] = useState('');
   const [currentPassword, setCurrentPassword] = useState('');
   const [currentStep, setCurrentStep] = useState<
     'warning' | 'cascade' | 'confirm'
   >('warning');
-  const isMobile = useIsMobile();
-
-  useEffect(() => {
-    setMounted(true);
-  }, []);
-
-  useEffect(() => {
-    if (isOpen) {
-      document.body.style.overflow = 'hidden';
-      return () => {
-        document.body.style.overflow = 'unset';
-      };
-    }
-  }, [isOpen]);
 
   const handleClose = () => {
     if (isLoading) return;
@@ -111,469 +96,392 @@ const DeleteAccountModal: React.FC<DeleteAccountModalProps> = ({
     }
   };
 
-  if (!mounted || !isOpen) return null;
-
   const dataItems = [
     {
-      icon: FiUser,
+      icon: PiUser,
       label: t('delete_modal_composers'),
       count: cascadeInfo?.composersCount || 0,
-      color: 'from-accent-purple to-accent-blue',
-      samples: cascadeInfo?.sampleComposers,
+      samples: cascadeInfo?.sampleComposers.slice(0, 3).map((c) => ({
+        id: c.id,
+        title: c.name,
+        detail: c.epochName,
+      })),
     },
     {
-      icon: FiMusic,
+      icon: PiMusicNotes,
       label: t('delete_modal_works'),
       count: cascadeInfo?.worksCount || 0,
-      color: 'from-accent-blue to-accent-green',
-      samples: cascadeInfo?.sampleWorks,
+      samples: cascadeInfo?.sampleWorks.slice(0, 3).map((w) => ({
+        id: w.id,
+        title: w.title,
+        detail: w.composer.name,
+      })),
     },
     {
-      icon: FiFileText,
+      icon: PiFileText,
       label: t('delete_modal_scores'),
       count: cascadeInfo?.scoresCount || 0,
-      color: 'from-accent-green to-accent-amber',
     },
     {
-      icon: FiEdit3,
+      icon: PiPencilLine,
       label: t('delete_modal_annotations'),
       count: cascadeInfo?.annotationsCount || 0,
-      color: 'from-accent-amber to-accent-red',
-      samples: cascadeInfo?.sampleAnnotations,
+      samples: cascadeInfo?.sampleAnnotations.slice(0, 2).map((n) => ({
+        id: n.id,
+        title: n.title,
+        detail: n.work.title,
+      })),
     },
     {
-      icon: FiHeart,
+      icon: PiHeart,
       label: t('delete_modal_favorites'),
       count: cascadeInfo?.favoritesCount || 0,
-      color: 'from-accent-red to-accent-purple',
     },
-
     {
-      icon: GiMusicalNotes,
+      icon: PiMusicNotes,
       label: t('delete_modal_instruments'),
       count: cascadeInfo?.instrumentsCount || 0,
-      color: 'from-accent-blue to-accent-green',
     },
-
     {
-      icon: BiBookOpen,
+      icon: PiBookOpen,
       label: t('delete_modal_learned_works'),
       count: cascadeInfo?.learnedWorksCount || 0,
-      color: 'from-accent-green to-accent-amber',
     },
     {
-      icon: BiBookContent,
+      icon: PiBookBookmark,
       label: t('delete_modal_want_to_learn'),
       count: cascadeInfo?.wantToLearnCount || 0,
-      color: 'from-accent-green to-accent-amber',
     },
   ];
 
-  const modalContent = (
-    <div
-      className={`fixed inset-0 z-[9999] flex items-center justify-center ${
-        isMobile ? 'p-0' : 'p-4'
-      }`}
-    >
-      {!isMobile && (
-        <div
-          className="absolute inset-0 bg-black/60 backdrop-blur-sm transition-opacity duration-300"
-          onClick={!isLoading ? handleClose : undefined}
-        />
-      )}
+  const steps = ['warning', 'cascade', 'confirm'] as const;
+  const stepIndex = steps.indexOf(currentStep);
+  // The texts carry their old list marks ("• ") and colons; the layout
+  // draws its own.
+  const plain = (key: string) =>
+    t(key).replace(/^•\s*/, '').replace(/:\s*$/, '');
+  const consequences = [
+    'delete_modal_data_removed',
+    'delete_modal_uploads_deleted',
+    'delete_modal_annotations_lost',
+    'delete_modal_history_erased',
+    'delete_modal_goodbye_email',
+    'delete_modal_irreversible',
+  ];
 
-      <AnimatedCard
-        hover="none"
-        className={`relative bg-theme-primary rounded-xl shadow-2xl 
-          ${
-            isMobile ? 'w-full h-full' : 'max-w-2xl w-full max-h-[90vh]'
-          } overflow-y-auto border border-theme-secondary`}
-      >
-        {/* Header */}
-        <div className="flex items-center justify-between p-6 border-b border-theme-secondary bg-accent-red/5">
-          <div className="flex items-center space-x-3">
-            <div className="w-12 h-12 bg-accent-red/10 rounded-xl flex items-center justify-center">
-              <FiAlertTriangle className="w-6 h-6 text-accent-red" />
-            </div>
-            <div>
-              <h3 className="text-xl font-bold text-theme-primary">
-                {t('delete_modal_title')}
-              </h3>
-              <p className="text-sm text-theme-secondary">
-                {t('delete_modal_subtitle')}
-              </p>
-            </div>
-          </div>
-
-          <button
+  const footer = (
+    <div className="flex w-full flex-wrap items-center justify-between gap-3">
+      <span className="t-legenda tabular-nums">
+        {t('delete_modal_step')} {stepIndex + 1} {t('delete_modal_of')} 3
+      </span>
+      <div className="flex flex-wrap items-center gap-2">
+        {currentStep === 'warning' ? (
+          <Button
+            variante="fantasma"
             onClick={handleClose}
             disabled={isLoading}
-            className="w-8 h-8 rounded-lg bg-theme-secondary hover:bg-theme-tertiary text-theme-tertiary hover:text-theme-primary transition-colors flex items-center justify-center disabled:opacity-50"
           >
-            <FiX className="w-4 h-4" />
-          </button>
-        </div>
+            {t('delete_modal_cancel')}
+          </Button>
+        ) : (
+          <Button
+            variante="fantasma"
+            onClick={handlePrevStep}
+            disabled={isLoading}
+          >
+            {t('delete_modal_back')}
+          </Button>
+        )}
+        {currentStep === 'confirm' ? (
+          <Button
+            variante="perigo"
+            icone={PiTrash}
+            onClick={handleConfirm}
+            carregando={isLoading}
+            disabled={!canProceed}
+          >
+            {isLoading
+              ? t('delete_modal_deleting')
+              : t('delete_modal_delete_permanently')}
+          </Button>
+        ) : (
+          <Button
+            variante="secundario"
+            onClick={handleNextStep}
+            disabled={isCascadeLoading}
+          >
+            {currentStep === 'warning'
+              ? t('delete_modal_continue')
+              : t('delete_modal_next')}
+          </Button>
+        )}
+      </div>
+    </div>
+  );
 
-        {/* Content */}
-        <div className="p-6">
-          {/* Step 1: Warning */}
+  return (
+    <Sheet
+      aberto={isOpen}
+      aoFechar={() => {
+        if (!isLoading) handleClose();
+      }}
+      titulo={t('delete_modal_title')}
+      descricao={t('delete_modal_subtitle')}
+      largura="m"
+      rodape={footer}
+    >
+      <div className="flex flex-col gap-8">
+        <div key={currentStep} className="entra flex flex-col gap-8">
           {currentStep === 'warning' && (
-            <div className="space-y-6">
-              <div className="text-center">
-                <div className="w-16 h-16 bg-accent-red/10 rounded-full flex items-center justify-center mx-auto mb-4">
-                  <FiAlertTriangle className="w-8 h-8 text-red-500" />
-                </div>
-                <h4 className="text-lg font-semibold text-theme-primary mb-2">
+            <>
+              <div className="flex flex-col gap-3">
+                <h3 className="font-display text-[clamp(1.75rem,4vw,2.25rem)] leading-tight">
                   {t('delete_modal_sure')}
-                </h4>
-                <p className="text-theme-secondary">
+                </h3>
+                <p className="t-corpo max-w-[60ch] text-texto-suave">
                   {t('delete_modal_warning')}
                 </p>
               </div>
 
-              <div className="bg-accent-red/10 border border-red-400 rounded-lg p-4">
-                <h5 className="font-medium text-accent-red mb-2 flex items-center">
-                  <FiInfo className="w-4 h-4 mr-2" />
-                  {t('delete_modal_what_happens')}
-                </h5>
-                <ul className="text-sm text-accent-red opacity-90 space-y-1">
-                  <li>{t('delete_modal_data_removed')}</li>
-                  <li>{t('delete_modal_uploads_deleted')}</li>
-                  <li>{t('delete_modal_annotations_lost')}</li>
-                  <li>{t('delete_modal_history_erased')}</li>
-                  <li>{t('delete_modal_goodbye_email')}</li>
-                  <li>{t('delete_modal_irreversible')}</li>
-                </ul>
-              </div>
+              {/* The account being closed, as it signs: initials, name, e-mail. */}
+              <section
+                aria-label={plain('delete_modal_account_info')}
+                className="flex items-center gap-4 border-y border-linha py-4"
+              >
+                <span
+                  aria-hidden="true"
+                  className="grid h-12 w-12 shrink-0 place-items-center rounded-full bg-sup-2 font-display text-[1.25rem] text-ouro-texto"
+                >
+                  {iniciais(userName)}
+                </span>
+                <dl className="grid min-w-0 gap-0.5">
+                  <dt className="sr-only">{plain('delete_modal_name')}</dt>
+                  <dd className="truncate font-medium">{userName}</dd>
+                  <dt className="sr-only">{plain('delete_modal_email')}</dt>
+                  <dd className="t-rotulo break-all text-texto-suave">
+                    {userEmail}
+                  </dd>
+                </dl>
+              </section>
 
-              <div className="bg-theme-secondary rounded-lg p-4">
-                <h5 className="font-medium text-theme-primary mb-2">
-                  {t('delete_modal_account_info')}
-                </h5>
-                <div className="space-y-2 text-sm">
-                  <div className="flex justify-between">
-                    <span className="text-theme-secondary">
-                      {t('delete_modal_name')}
-                    </span>
-                    <span className="text-theme-primary font-medium">
-                      {userName}
-                    </span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span className="text-theme-secondary">
-                      {t('delete_modal_email')}
-                    </span>
-                    <span className="text-theme-primary font-mono">
-                      {userEmail}
-                    </span>
-                  </div>
-                </div>
-              </div>
-            </div>
+              <section className="flex flex-col gap-3">
+                <h4 className="t-rotulo font-medium">
+                  {plain('delete_modal_what_happens')}
+                </h4>
+                <ul className="flex flex-col">
+                  {consequences.map((key, i) => (
+                    <li
+                      key={key}
+                      className={cx(
+                        'flex items-baseline gap-3 border-b border-linha py-2.5 text-[0.9375rem]',
+                        i === consequences.length - 1 && 'border-b-0 text-texto'
+                      )}
+                    >
+                      <span
+                        aria-hidden="true"
+                        className={cx(
+                          'h-1.5 w-1.5 shrink-0 translate-y-[-0.15em] rounded-full',
+                          i === consequences.length - 1
+                            ? 'bg-[var(--erro)]'
+                            : 'bg-[var(--texto-fraco)]'
+                        )}
+                      />
+                      <span
+                        className={
+                          i === consequences.length - 1
+                            ? 'font-medium'
+                            : 'text-texto-suave'
+                        }
+                      >
+                        {plain(key)}
+                      </span>
+                    </li>
+                  ))}
+                </ul>
+              </section>
+            </>
           )}
 
-          {/* Step 2: Cascade Info */}
           {currentStep === 'cascade' && (
-            <div className="space-y-6">
-              <div className="text-center">
-                <h4 className="text-lg font-semibold text-theme-primary mb-2">
+            <>
+              <div className="flex flex-col gap-3">
+                <h3 className="font-display text-[clamp(1.75rem,4vw,2.25rem)] leading-tight">
                   {t('delete_modal_data_summary')}
-                </h4>
-                <p className="text-theme-secondary">
+                </h3>
+                <p className="t-corpo max-w-[60ch] text-texto-suave">
                   {t('delete_modal_data_description')}
                 </p>
               </div>
 
               {isCascadeLoading ? (
-                <div className="flex items-center justify-center py-12">
-                  <div className="text-center">
-                    <FiLoader className="w-8 h-8 text-brand-primary animate-spin mx-auto mb-4" />
-                    <p className="text-theme-secondary">
-                      {t('delete_modal_analyzing')}
-                    </p>
-                  </div>
+                <div role="status" className="flex flex-col gap-3">
+                  {[0, 1, 2, 3].map((n) => (
+                    <span
+                      key={n}
+                      aria-hidden="true"
+                      className="loading-skeleton block h-8 rounded-controle"
+                    />
+                  ))}
+                  <span className="t-legenda inline-flex items-center gap-2">
+                    <Icon
+                      de={PiSpinnerGap}
+                      tamanho="pp"
+                      className="animate-spin"
+                    />
+                    {t('delete_modal_analyzing')}
+                  </span>
                 </div>
               ) : cascadeInfo ? (
-                <div className="space-y-4">
-                  {/* Summary */}
-                  <div className="bg-accent-amber/10 border border-red-400 rounded-lg p-4 text-center">
-                    <h5 className="font-bold text-accent-amber text-lg mb-1">
-                      {cascadeInfo.totalItems}
-                    </h5>
-                    <p className="text-accent-amber text-sm">
-                      {t('delete_modal_total_items')}
-                    </p>
-                  </div>
-
-                  {/* Data Grid */}
-                  <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
-                    {dataItems
-                      .filter((item) => item.count > 0)
-                      .map((item, index) => {
-                        const Icon = item.icon;
-                        return (
-                          <div
-                            key={index}
-                            className="bg-theme-secondary rounded-lg p-3 text-center hover:bg-theme-tertiary transition-colors"
+                <>
+                  {/* The inventory, set like a concert programme: name,
+                      dotted leader, count; examples in italics beneath. */}
+                  <section aria-label={plain('delete_modal_examples')}>
+                    <ul className="flex flex-col">
+                      {dataItems
+                        .filter((item) => item.count > 0)
+                        .map((item) => (
+                          <li
+                            key={item.label}
+                            className="flex flex-col gap-1 py-2.5"
                           >
-                            <div
-                              className={`w-8 h-8 bg-gradient-to-br ${item.color} rounded-lg flex items-center justify-center mx-auto mb-2`}
-                            >
-                              <Icon className="w-4 h-4 text-theme-primary" />
+                            <div className="flex items-baseline gap-3">
+                              <Icon
+                                de={item.icon}
+                                tamanho="pp"
+                                className="translate-y-[0.1em] text-texto-fraco"
+                              />
+                              <span className="text-[0.9375rem]">
+                                {item.label}
+                              </span>
+                              <span
+                                aria-hidden="true"
+                                className="min-w-6 flex-1 translate-y-[-0.25em] border-b border-dotted border-[var(--linha-forte)]"
+                              />
+                              <span className="t-dado tabular-nums">
+                                {item.count}
+                              </span>
                             </div>
-                            <div className="font-bold text-theme-primary">
-                              {item.count}
-                            </div>
-                            <div className="text-xs text-theme-secondary">
-                              {item.label}
-                            </div>
-                          </div>
-                        );
-                      })}
-                  </div>
-
-                  {/* Sample Data */}
-                  {(cascadeInfo.sampleComposers.length > 0 ||
-                    cascadeInfo.sampleWorks.length > 0 ||
-                    cascadeInfo.sampleAnnotations.length > 0) && (
-                    <div className="bg-theme-secondary rounded-lg p-4">
-                      <h5 className="font-medium text-theme-primary mb-3 flex items-center">
-                        <FiInfo className="w-4 h-4 mr-2" />
-                        {t('delete_modal_examples')}
-                      </h5>
-                      <div className="space-y-3 max-h-32 overflow-y-auto">
-                        {cascadeInfo.sampleComposers
-                          .slice(0, 3)
-                          .map((composer) => (
-                            <div
-                              key={composer.id}
-                              className="flex items-center space-x-2 text-sm"
-                            >
-                              <FiUser className="w-3 h-3 text-accent-purple flex-shrink-0" />
-                              <span className="text-theme-primary">
-                                {composer.name}
-                                {composer.epochName && (
-                                  <span className="text-theme-tertiary">
-                                    {' '}
-                                    ({composer.epochName})
+                            {!!item.samples?.length && (
+                              <p className="t-legenda pl-7 italic">
+                                {item.samples.map((sample, i) => (
+                                  <span key={sample.id}>
+                                    {i > 0 && ' · '}
+                                    {sample.title}
+                                    {sample.detail && (
+                                      <span className="text-texto-fraco">
+                                        {' '}
+                                        ({sample.detail})
+                                      </span>
+                                    )}
                                   </span>
-                                )}
-                              </span>
-                            </div>
-                          ))}
-                        {cascadeInfo.sampleWorks.slice(0, 3).map((work) => (
-                          <div
-                            key={work.id}
-                            className="flex items-center space-x-2 text-sm"
-                          >
-                            <FiMusic className="w-3 h-3 text-accent-blue flex-shrink-0" />
-                            <span className="text-theme-primary">
-                              {work.title}
-                              <span className="text-theme-tertiary">
-                                {' '}
-                                - {work.composer.name}
-                              </span>
-                            </span>
-                          </div>
+                                ))}
+                              </p>
+                            )}
+                          </li>
                         ))}
-                        {cascadeInfo.sampleAnnotations
-                          .slice(0, 2)
-                          .map((annotation) => (
-                            <div
-                              key={annotation.id}
-                              className="flex items-center space-x-2 text-sm"
-                            >
-                              <FiEdit3 className="w-3 h-3 text-accent-green flex-shrink-0" />
-                              <span className="text-theme-primary">
-                                {annotation.title}
-                                <span className="text-theme-tertiary">
-                                  {' '}
-                                  ({annotation.work.title})
-                                </span>
-                              </span>
-                            </div>
-                          ))}
-                      </div>
+                    </ul>
+                    <div className="mt-2 flex items-baseline justify-between gap-4 border-t-[3px] border-double border-[var(--linha-forte)] pt-3">
+                      <span className="t-rotulo text-texto-suave">
+                        {t('delete_modal_total_items')}
+                      </span>
+                      <span className="font-display text-[2rem] leading-none tabular-nums">
+                        {cascadeInfo.totalItems}
+                      </span>
                     </div>
-                  )}
+                  </section>
 
-                  {/* Additional Info */}
-                  <div className="bg-theme-elevated rounded-lg p-4">
-                    <div className="flex items-start space-x-2">
-                      <FiMail className="w-4 h-4 text-accent-blue mt-0.5 flex-shrink-0" />
-                      <div className="text-sm text-accent-blue">
-                        <p className="font-medium mb-1">
-                          {t('delete_modal_goodbye_email_info')}
-                        </p>
-                        <p className="opacity-90">
-                          {t('delete_modal_goodbye_description')}
-                        </p>
-                      </div>
+                  <aside className="flex items-start gap-3 border-t border-linha pt-5">
+                    <Icon
+                      de={PiEnvelopeSimple}
+                      tamanho="p"
+                      className="mt-0.5 text-ouro-texto"
+                    />
+                    <div className="flex flex-col gap-1">
+                      <p className="font-medium">
+                        {t('delete_modal_goodbye_email_info')}
+                      </p>
+                      <p className="t-rotulo text-texto-suave">
+                        {t('delete_modal_goodbye_description')}
+                      </p>
                     </div>
-                  </div>
-                </div>
+                  </aside>
+                </>
               ) : (
-                <div className="text-center py-8">
-                  <FiInfo className="w-8 h-8 text-theme-tertiary mx-auto mb-4" />
-                  <p className="text-theme-secondary">
-                    {t('delete_modal_error_loading')}
-                  </p>
-                </div>
+                <p className="t-rotulo flex items-center gap-2 text-texto-suave">
+                  <Icon de={PiInfo} tamanho="p" />
+                  {t('delete_modal_error_loading')}
+                </p>
               )}
-            </div>
+            </>
           )}
 
-          {/* Step 3: Final Confirmation */}
           {currentStep === 'confirm' && (
-            <div className="space-y-6">
-              <div className="text-center">
-                <div className="w-16 h-16 bg-accent-red/10 rounded-full flex items-center justify-center mx-auto mb-4">
-                  <FiTrash2 className="w-8 h-8 text-accent-red" />
-                </div>
-                <h4 className="text-lg font-semibold text-theme-primary mb-2">
+            <>
+              <div className="flex flex-col gap-3">
+                <h3 className="font-display text-[clamp(1.75rem,4vw,2.25rem)] leading-tight">
                   {t('delete_modal_final_confirmation')}
-                </h4>
-                <p className="text-theme-secondary">
+                </h3>
+                <p className="t-corpo max-w-[60ch] text-texto-suave">
                   {t('delete_modal_last_chance')}
                 </p>
               </div>
 
-              <div className="border border-red-400 rounded-lg p-4">
-                <h5 className="font-medium text-accent-red mb-2">
-                  {t('delete_modal_permanent_warning')}
-                </h5>
-                <p className="text-sm text-accent-red opacity-90">
-                  {t('delete_modal_immediate_removal')}
-                </p>
-              </div>
+              <section className="flex items-start gap-3 border-y border-linha py-4">
+                <Icon
+                  de={PiWarning}
+                  tamanho="p"
+                  className="mt-0.5 text-[var(--erro)]"
+                />
+                <div className="flex flex-col gap-1">
+                  <p className="font-medium">
+                    {t('delete_modal_permanent_warning')}
+                  </p>
+                  <p className="t-rotulo text-texto-suave">
+                    {t('delete_modal_immediate_removal')}
+                  </p>
+                  {cascadeInfo && (
+                    <p className="t-rotulo text-texto-suave">
+                      <strong className="font-medium tabular-nums text-texto">
+                        {cascadeInfo.totalItems}
+                      </strong>{' '}
+                      {t('delete_modal_items_removed')}
+                    </p>
+                  )}
+                </div>
+              </section>
 
-              <div>
-                <label className="block text-sm font-medium text-theme-secondary mb-2">
-                  {t('delete_modal_type_delete')}
-                </label>
-                <Input
+              <div className="flex flex-col gap-5">
+                <Field
+                  label={t('delete_modal_type_delete')}
                   value={confirmText}
                   onChange={(e) => setConfirmText(e.target.value)}
                   placeholder={t('delete_modal_placeholder_delete')}
-                  className="text-center font-mono"
+                  autoComplete="off"
+                  spellCheck={false}
                   autoFocus
+                  erro={
+                    confirmText && !typedConfirmation
+                      ? t('delete_modal_type_exactly')
+                      : undefined
+                  }
                 />
-                {confirmText && !typedConfirmation && (
-                  <p className="text-xs text-accent-red mt-1">
-                    {t('delete_modal_type_exactly')}
-                  </p>
-                )}
-              </div>
-
-              {requirePassword && (
-                <div>
-                  <label className="block text-sm font-medium text-theme-secondary mb-2">
-                    {t('delete_modal_current_password')}
-                  </label>
-                  <Input
-                    type="password"
+                {requirePassword && (
+                  <Field.Senha
+                    label={t('delete_modal_current_password')}
                     value={currentPassword}
                     onChange={(e) => setCurrentPassword(e.target.value)}
                     autoComplete="current-password"
+                    rotuloMostrar={t('password_show')}
+                    rotuloOcultar={t('password_hide')}
                   />
-                </div>
-              )}
-
-              {cascadeInfo && (
-                <div className="text-center p-3 bg-theme-secondary rounded-lg">
-                  <p className="text-sm text-theme-secondary">
-                    <strong>{cascadeInfo.totalItems}</strong>{' '}
-                    {t('delete_modal_items_removed')}
-                  </p>
-                </div>
-              )}
-            </div>
+                )}
+              </div>
+            </>
           )}
         </div>
-
-        {/* Footer */}
-        <div className="flex flex-col-reverse md:flex-row gap-4 items-center justify-between p-6 border-t border-theme-secondary bg-theme-secondary/30">
-          <div className="flex items-center space-x-2">
-            {/* Step indicator */}
-            <div className="flex space-x-2">
-              {['warning', 'cascade', 'confirm'].map((step, index) => (
-                <div
-                  key={step}
-                  className={`w-2 h-2 rounded-full transition-colors ${
-                    step === currentStep
-                      ? 'bg-red-400'
-                      : index <
-                          ['warning', 'cascade', 'confirm'].indexOf(currentStep)
-                        ? 'bg-green-400'
-                        : 'bg-theme-tertiary'
-                  }`}
-                />
-              ))}
-            </div>
-            <span className="text-xs text-theme-primary ml-2">
-              {t('delete_modal_step')}{' '}
-              {['warning', 'cascade', 'confirm'].indexOf(currentStep) + 1}{' '}
-              {t('delete_modal_of')} 3
-            </span>
-          </div>
-
-          <div className="flex items-center space-x-3">
-            {/* Back button */}
-            {currentStep !== 'warning' && (
-              <Button
-                variant="ghost"
-                size="sm"
-                onClick={handlePrevStep}
-                disabled={isLoading}
-              >
-                {t('delete_modal_back')}
-              </Button>
-            )}
-
-            {/* Cancel button */}
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={handleClose}
-              disabled={isLoading}
-            >
-              {t('delete_modal_cancel')}
-            </Button>
-
-            {/* Action button */}
-            {currentStep === 'confirm' ? (
-              <Button
-                variant="delete"
-                size="sm"
-                onClick={handleConfirm}
-                isLoading={isLoading}
-                disabled={!canProceed}
-                leftIcon={<FiTrash2 />}
-              >
-                {isLoading
-                  ? t('delete_modal_deleting')
-                  : t('delete_modal_delete_permanently')}
-              </Button>
-            ) : (
-              <Button
-                variant="primary"
-                size="sm"
-                onClick={handleNextStep}
-                disabled={isCascadeLoading}
-                className="bg-accent-red hover:bg-red-600 border-accent-red"
-              >
-                {currentStep === 'warning'
-                  ? t('delete_modal_continue')
-                  : t('delete_modal_next')}
-              </Button>
-            )}
-          </div>
-        </div>
-      </AnimatedCard>
-    </div>
+      </div>
+    </Sheet>
   );
-
-  return createPortal(modalContent, document.body);
 };
 
 export default DeleteAccountModal;

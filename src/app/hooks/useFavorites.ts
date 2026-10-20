@@ -6,6 +6,7 @@ import { useFavoritesStore } from '../stores/useFavoritesStore';
 import { useAuth } from './useAuth';
 import {
   listComposerFavorites,
+  listScoreFavorites,
   listWorkFavorites,
 } from '@/app/requests/library';
 
@@ -33,15 +34,18 @@ export const useFavorites = () => {
 
       try {
         // Carregar favoritos do servidor
-        const [composersResponse, worksResponse] = await Promise.all([
-          listComposerFavorites(),
-          listWorkFavorites(),
-        ]);
+        const [composersResponse, worksResponse, scoresResponse] =
+          await Promise.all([
+            listComposerFavorites(),
+            listWorkFavorites(),
+            listScoreFavorites(),
+          ]);
 
         if (composersResponse.ok && worksResponse.ok) {
           initializeFavorites(
             composersResponse.data.favorites || [],
-            worksResponse.data.favorites || []
+            worksResponse.data.favorites || [],
+            scoresResponse.ok ? scoresResponse.data.favorites || [] : []
           );
         }
       } catch (error) {

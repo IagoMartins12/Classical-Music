@@ -1,96 +1,34 @@
-// app/uploads/history/page.tsx - Histórico de uploads
+import type { Metadata } from 'next';
 import { redirect } from 'next/navigation';
-import {
-  getServerLanguageStatic,
-  loadPageTranslationsWithCommon,
-} from '@/app/utils/translations/serverTranslations';
-import HistoryClient from './pageClient';
-import { TranslationProvider } from '@/app/context/TranslationContext';
+import { Suspense } from 'react';
+import { HistoryView } from '@/app/components/site/personal/HistoryView';
+import { PersonalPage } from '@/app/components/site/personal/PersonalPage';
+import { PERSONAL } from '@/app/conteudo/site/personal';
 import { getServerSession } from '@/app/libs/api/server-session';
+import { getServerLanguageStatic } from '@/app/utils/translations/serverTranslations';
 
-/**
- * Nunca cacheada: o conteúdo é de quem está logado.
- */
+// Per person: rendered on every request, never cached.
 export const dynamic = 'force-dynamic';
 
-export async function generateMetadata() {
-  const language = await getServerLanguageStatic();
-
-  const content = {
-    pt: {
-      title: 'Histórico de Uploads - Opus Atlas | Registro de Atividades',
-      description:
-        'Visualize o histórico completo de alterações nos seus uploads. Acompanhe criações, edições e atualizações das suas contribuições musicais.',
-      ogTitle: 'Meu Histórico de Contribuições - Opus Atlas',
-      ogDescription:
-        'Registro completo das minhas atividades na plataforma musical',
-    },
-    en: {
-      title: 'Upload History - Opus Atlas | Activity Log',
-      description:
-        'View the complete history of changes in your uploads. Track creations, edits and updates of your musical contributions.',
-      ogTitle: 'My Contribution History - Opus Atlas',
-      ogDescription: 'Complete record of my activities on the musical platform',
-    },
-  };
-
-  const t = content[language];
-
+export async function generateMetadata(): Promise<Metadata> {
+  const copy = PERSONAL[await getServerLanguageStatic()].history;
   return {
-    title: t.title,
-    description: t.description,
-    robots: {
-      index: false,
-      follow: false,
-      googleBot: {
-        index: false,
-        follow: false,
-      },
-    },
-    openGraph: {
-      title: t.ogTitle,
-      description: t.ogDescription,
-      type: 'website',
-      locale: language === 'pt' ? 'pt_BR' : 'en_US',
-      siteName: 'Opus Atlas',
-    },
+    title: `${copy.title} · Opus Atlas`,
+    description: copy.text,
+    robots: { index: false, follow: false },
   };
 }
 
-export default async function HistoryPage({
-  searchParams,
-}: {
-  searchParams: Promise<{
-    page?: string;
-    type?: string;
-    action?: string;
-  }>;
-}) {
+/** "Histórico de envios", in the frame of the personal pages. */
+export default async function UploadHistoryPage() {
   const session = await getServerSession();
-
-  if (!session?.user?.id) {
-    redirect('/not-authenticated');
-  }
-
-  const resolvedSearchParams = await searchParams;
-  const page = Number(resolvedSearchParams.page) || 1;
-  const type = resolvedSearchParams.type || 'all';
-  const action = resolvedSearchParams.action || 'all';
-
-  const language = await getServerLanguageStatic();
-  const { translations } = await loadPageTranslationsWithCommon(language, [
-    'pages/uploads',
-  ]);
-
+  if (!session?.user?.id) redirect('/not-authenticated');
+  const copy = PERSONAL[await getServerLanguageStatic()].history;
   return (
-    <TranslationProvider language={language} translations={translations}>
-      <HistoryClient
-        page={page}
-        type={type}
-        action={action}
-        userId={session.user.id}
-        isAdmin={session.user.role === 2}
-      />
-    </TranslationProvider>
+    <PersonalPage title={copy.title} description={copy.text}>
+      <Suspense>
+        <HistoryView />
+      </Suspense>
+    </PersonalPage>
   );
 }

@@ -1,48 +1,25 @@
-// app/(teacher)/layout.tsx - ATUALIZADO COM VERIFICAÇÃO DE TEACHER
+// app/(teacher)/layout.tsx — o portal do professor (04/10/2026)
+//
+// A casca é a do portal (`PortalShell`, esboço A). Saíram do layout o
+// `AdsProvider` (anúncio dentro da área de trabalho), o `NotificationManager`
+// do legado (o sino da casca lê os avisos da API) e o toaster próprio — os
+// avisos rápidos são os do painel (`Avisos`), por cima das folhas.
 import type { Metadata } from 'next';
-import { FavoritesProvider } from '../providers/FavoritesProvider';
-import { Toaster } from 'react-hot-toast';
-import AdsProvider from '../components/Ads/AdsProvider';
 import { redirect } from 'next/navigation';
-import TeacherNavigation from '../components/TeacherSystem/TeacherNavigation';
-import NotificationManager from '../components/Notification/NotificationManager';
+import { Avisos } from '../components/ui/Avisos';
+import { LearningHost } from '../components/Portal/LearningHost';
+import { PortalShell } from '../components/Portal/PortalShell';
 import TeacherVerificationRequired from '../components/VerificationsProviders/TeacherVerificationRequired';
 import { getServerSession } from '@/app/libs/api/server-session';
+import '../components/Portal/portal.css';
 
 export const metadata: Metadata = {
   title: {
-    template: '%s | Professor - Opus Atlas',
-    default: 'Área do Professor - Opus Atlas',
+    template: '%s · Portal do professor · Opus Atlas',
+    default: 'Portal do professor · Opus Atlas',
   },
-  description:
-    'Plataforma completa para professores de música gerenciarem alunos, aulas e cronograma musical.',
-  keywords: [
-    'professor de música',
-    'gestão de alunos',
-    'aulas de música',
-    'cronograma musical',
-    'ensino musical',
-    'Opus Atlas',
-  ],
-  authors: [{ name: 'Opus Atlas Team' }],
-  creator: 'Opus Atlas',
-  openGraph: {
-    title: 'Área do Professor - Opus Atlas',
-    description:
-      'Gerencie seus alunos, aulas e cronograma de ensino musical de forma profissional.',
-    type: 'website',
-    locale: 'pt_BR',
-  },
-  twitter: {
-    card: 'summary_large_image',
-    title: 'Área do Professor - Opus Atlas',
-    description:
-      'Plataforma completa para professores de música gerenciarem seu ensino.',
-  },
-  robots: {
-    index: true,
-    follow: true,
-  },
+  // Área logada: o legado tinha `index: true` aqui.
+  robots: { index: false, follow: false },
 };
 
 export default async function TeacherLayout({
@@ -52,23 +29,21 @@ export default async function TeacherLayout({
 }) {
   const session = await getServerSession();
 
-  // Verificar se está logado
   if (!session?.user?.id) {
     redirect('/not-authenticated');
   }
 
-  // Quem dá aula é `isTeacher`, não o papel. Exigir `role === 1` barrava
-  // duas pessoas de uma vez: o professor promovido pelo painel novo, que fica
-  // com `role: 0`, e o administrador que também dá aula, que tem `role: 2`.
+  // Quem dá aula é `isTeacher`, não o papel: o professor promovido pelo
+  // painel fica com `role: 0`, e o administrador que também dá aula tem
+  // `role: 2`.
   if (!session.user.isTeacher) {
     redirect('/access-denied');
   }
 
-  // Se teacherVerified for false ou null, mostrar tela de verificação
-  if (
-    session.user.teacherVerified === false ||
-    session.user.teacherVerified === null
-  ) {
+  // The portal opens with an active teacher profile: at once for a Mentor or
+  // Maestro subscriber; only someone invited waits, until they accept. An
+  // API older than `teacherPortal` still answers with the approval.
+  if (!(session.user.teacherPortal ?? session.user.teacherVerified)) {
     return (
       <TeacherVerificationRequired
         userEmail={session.user.email}
@@ -78,74 +53,10 @@ export default async function TeacherLayout({
   }
 
   return (
-    <AdsProvider>
-      <FavoritesProvider>
-        {/* 🆕 NOTIFICATION MANAGER - Gerencia notificações em background */}
-        <NotificationManager userRole="teacher" userId={session.user.id}>
-          <div className="min-h-screen bg-gradient-primary">
-            {/* Navigation */}
-            <TeacherNavigation user={session.user} />
-
-            {/* Main Content */}
-            <main className="transition-all duration-300">{children}</main>
-          </div>
-
-          {/* Toast Notifications */}
-          <Toaster
-            position="top-center"
-            containerClassName="toast-container"
-            toastOptions={{
-              duration: 4000,
-              className: 'toast-item',
-              style: {
-                background: 'var(--bg-elevated)',
-                color: 'var(--text-primary)',
-                border: '1px solid var(--border-primary)',
-                borderRadius: '0.75rem',
-                fontSize: '0.875rem',
-                fontWeight: '500',
-                boxShadow:
-                  '0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04)',
-                backdropFilter: 'blur(8px)',
-                maxWidth: '400px',
-              },
-              success: {
-                iconTheme: {
-                  primary: 'var(--accent-green)',
-                  secondary: 'white',
-                },
-                style: {
-                  border: '1px solid var(--accent-green)',
-                  background:
-                    'linear-gradient(135deg, var(--bg-elevated) 0%, rgba(34, 197, 94, 0.05) 100%)',
-                },
-              },
-              error: {
-                iconTheme: {
-                  primary: 'var(--accent-red)',
-                  secondary: 'white',
-                },
-                style: {
-                  border: '1px solid var(--accent-red)',
-                  background:
-                    'linear-gradient(135deg, var(--bg-elevated) 0%, rgba(239, 68, 68, 0.05) 100%)',
-                },
-              },
-              loading: {
-                iconTheme: {
-                  primary: 'var(--brand-primary)',
-                  secondary: 'white',
-                },
-                style: {
-                  border: '1px solid var(--brand-primary)',
-                  background:
-                    'linear-gradient(135deg, var(--bg-elevated) 0%, rgba(99, 102, 241, 0.05) 100%)',
-                },
-              },
-            }}
-          />
-        </NotificationManager>
-      </FavoritesProvider>
-    </AdsProvider>
+    <>
+      <PortalShell role="teacher">{children}</PortalShell>
+      <LearningHost />
+      <Avisos />
+    </>
   );
 }

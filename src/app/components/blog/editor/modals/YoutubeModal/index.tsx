@@ -1,73 +1,61 @@
-// ============================================
-// 2. components/blog/editor/modals/YoutubeModal.tsx
-// ============================================
 'use client';
 
 import { useState } from 'react';
-import { Editor } from '@tiptap/react';
-import Modal from '@/app/components/Modal';
-import Input from '@/app/components/Common/Inputs';
-import Button from '@/app/components/Common/Button';
+import type { Editor } from '@tiptap/react';
+import { Field } from '@/app/components/ui/Field';
+import { idDoYoutube } from '@/app/components/blog/site/useFonteDeAudio';
+import { FolhaDoEditor } from '../FolhaDoEditor';
 
 interface YoutubeModalProps {
   editor: Editor;
   onClose: () => void;
 }
 
+/**
+ * Vídeo do YouTube no texto. O endereço é lido pelo mesmo `idDoYoutube` do
+ * leitor (aceita `watch?v=`, `youtu.be/`, `embed/`, `shorts/`); o erro
+ * aparece no campo, não num `alert`.
+ */
 export function YoutubeModal({ editor, onClose }: YoutubeModalProps) {
   const [url, setUrl] = useState('');
+  const [erro, setErro] = useState('');
 
-  const extractVideoId = (url: string): string | null => {
-    const regExp =
-      /^.*((youtu.be\/)|(v\/)|(\/u\/\w\/)|(embed\/)|(watch\?))\??v?=?([^#&?]*).*/;
-    const match = url.match(regExp);
-    return match && match[7].length === 11 ? match[7] : null;
-  };
-
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    e.stopPropagation(); // ✅ ADICIONAR ESTA LINHA
-
-    const videoId = extractVideoId(url);
-    if (videoId) {
-      editor.commands.setYoutubeVideo({
-        src: `https://www.youtube.com/watch?v=${videoId}`,
-      });
-      onClose();
-    } else {
-      alert('URL do YouTube inválida');
+  function inserir() {
+    const id = idDoYoutube(url);
+    if (!id) {
+      setErro('Não é um endereço de vídeo do YouTube.');
+      return;
     }
-  };
+    editor
+      .chain()
+      .focus()
+      .setYoutubeVideo({ src: `https://www.youtube.com/watch?v=${id}` })
+      .run();
+    onClose();
+  }
 
   return (
-    <Modal
-      isOpen={true}
-      onClose={onClose}
-      title="Inserir Vídeo do YouTube"
-      maxWidth="md"
+    <FolhaDoEditor
+      titulo="Vídeo do YouTube"
+      aoFechar={onClose}
+      aoEnviar={inserir}
+      podeEnviar={Boolean(url.trim())}
+      largura="p"
     >
-      <form onSubmit={handleSubmit} className="space-y-4">
-        <Input
-          label="URL do YouTube"
-          type="url"
-          value={url}
-          onChange={(e) => setUrl(e.target.value)}
-          placeholder="https://www.youtube.com/watch?v=..."
-          helperText="Cole o link do vídeo do YouTube"
-          required
-          autoFocus
-          widhtFull
-        />
-
-        <div className="flex justify-end space-x-2 pt-4">
-          <Button type="button" variant="secondary" onClick={onClose}>
-            Cancelar
-          </Button>
-          <Button type="submit" variant="primary">
-            Inserir
-          </Button>
-        </div>
-      </form>
-    </Modal>
+      <Field
+        label="Endereço do vídeo"
+        type="url"
+        inputMode="url"
+        value={url}
+        onChange={(e) => {
+          setUrl(e.target.value);
+          setErro('');
+        }}
+        placeholder="https://www.youtube.com/watch?v=…"
+        ajuda="No artigo, o vídeo só carrega quando o leitor aperta o play."
+        erro={erro || undefined}
+        autoFocus
+      />
+    </FolhaDoEditor>
   );
 }

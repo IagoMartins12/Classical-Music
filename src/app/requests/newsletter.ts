@@ -1,11 +1,12 @@
 /**
  * Newsletter pela API (`/newsletter/*`), chamada do navegador.
  *
- * Devolve o formato que o `useNewsletterSubscription` e a página de
- * descadastro já liam do legado.
+ * Devolve o formato que o rodapé (`SiteFooter`) e a página de descadastro
+ * leem.
  */
 import { ApiError, apiFetch } from '@/app/libs/api/client';
 import type { ApiSchema } from '@/app/libs/api/types';
+import { porIdioma } from '@/app/utils/porIdioma';
 
 type NewsletterAction = ApiSchema<'NewsletterActionResponseDto'>;
 // O gerador marca como obrigatório o campo que tem `default` no Swagger; a API
@@ -88,7 +89,7 @@ export async function subscribeToNewsletter(
       message: '',
       error: apiErrorMessage(
         error,
-        'Email inválido',
+        porIdioma('E-mail inválido', 'Invalid email'),
         'Erro interno. Tente novamente.'
       ),
     };
@@ -114,7 +115,14 @@ export async function resendNewsletterConfirmation(
     return {
       success: false,
       message: '',
-      error: apiErrorMessage(error, 'Email inválido', 'Erro ao reenviar email'),
+      error: apiErrorMessage(
+        error,
+        porIdioma('E-mail inválido', 'Invalid email'),
+        porIdioma(
+          'Não foi possível reenviar o e-mail',
+          'Could not resend the email'
+        )
+      ),
     };
   }
 }
@@ -148,7 +156,7 @@ export async function unsubscribeFromNewsletter(input: {
       ok: false,
       error: apiErrorMessage(
         error,
-        'Dados inválidos',
+        porIdioma('Dados inválidos', 'Invalid data'),
         'Erro interno do servidor'
       ),
     };

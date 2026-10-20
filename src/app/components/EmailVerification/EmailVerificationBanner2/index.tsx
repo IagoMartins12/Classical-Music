@@ -1,13 +1,16 @@
 // app/components/EmailVerificationBanner.tsx - Banner to show email verification status
 'use client';
 
+import { PERFIL } from '@/app/conteudo/textos/perfil';
+import { useTextos } from '@/app/hooks/useTextos';
 import { useState } from 'react';
 import { useSession } from '@/app/libs/session';
-import { FiX, FiRefreshCw } from 'react-icons/fi';
+import { PiArrowsClockwise, PiX } from 'react-icons/pi';
 import { toast } from 'react-hot-toast';
-import Button from '../../Common/Button';
+import { Button } from '@/app/components/ui/Button';
 import { legacyAuth } from '@/app/libs/api/compat';
-import { useTranslation } from '@/app/context/TranslationContext';
+import { NomeAcao } from '@/app/components/ui/NomeAcao';
+import { porIdioma } from '@/app/utils/porIdioma';
 
 interface EmailVerificationBannerProps {
   onDismiss?: () => void;
@@ -23,7 +26,7 @@ const EmailVerificationBanner2: React.FC<EmailVerificationBannerProps> = ({
   customType,
 }) => {
   const { data: session } = useSession();
-  const { t } = useTranslation({ sections: ['pages/profile'] });
+  const { t } = useTextos(PERFIL);
   const [isResending, setIsResending] = useState(false);
   const [isDismissed, setIsDismissed] = useState(false);
 
@@ -49,13 +52,29 @@ const EmailVerificationBanner2: React.FC<EmailVerificationBannerProps> = ({
       );
 
       if (result.success) {
-        toast.success('Email de verificação enviado!');
+        toast.success(
+          porIdioma(
+            'E-mail de confirmação enviado.',
+            'Confirmation email sent.'
+          )
+        );
       } else {
-        toast.error(result.message || 'Erro ao enviar email');
+        toast.error(
+          result.message ||
+            porIdioma(
+              'Não foi possível enviar o e-mail',
+              'Could not send the email'
+            )
+        );
       }
     } catch (error) {
       console.error('Erro ao reenviar verificação:', error);
-      toast.error('Erro ao enviar email de verificação');
+      toast.error(
+        porIdioma(
+          'Não foi possível enviar o e-mail',
+          'Could not send the email'
+        )
+      );
     } finally {
       setIsResending(false);
     }
@@ -86,20 +105,20 @@ const EmailVerificationBanner2: React.FC<EmailVerificationBannerProps> = ({
   // Set colors based on type
   switch (bannerType) {
     case 'warning':
-      bgColor = 'bg-accent-amber/10';
-      textColor = 'text-accent-amber';
-      borderColor = 'border-accent-amber/20';
+      bgColor = '';
+      textColor = '';
+      borderColor = '';
       break;
     case 'success':
-      bgColor = 'bg-accent-green/10';
-      textColor = 'text-accent-green';
-      borderColor = 'border-accent-green/20';
+      bgColor = '';
+      textColor = '';
+      borderColor = '';
       break;
     case 'info':
     default:
-      bgColor = 'bg-accent-blue/10';
-      textColor = 'text-accent-blue';
-      borderColor = 'border-accent-blue/20';
+      bgColor = '';
+      textColor = '';
+      borderColor = '';
       break;
   }
 
@@ -112,9 +131,7 @@ const EmailVerificationBanner2: React.FC<EmailVerificationBannerProps> = ({
   };
 
   return (
-    <div
-      className={`${bgColor} bg-theme-elevated ${borderColor} rounded-lg p-4 mb-6`}
-    >
+    <div className={`${bgColor} bg-sup-2 ${borderColor} rounded-lg p-4 mb-6`}>
       <div className="flex items-start justify-between">
         <div className="flex items-start space-x-3 flex-1">
           <div className="flex-1">
@@ -126,12 +143,12 @@ const EmailVerificationBanner2: React.FC<EmailVerificationBannerProps> = ({
             {bannerType === 'warning' && !isEmailVerified && (
               <div className="flex flex-col sm:flex-row gap-2">
                 <Button
-                  variant="outline"
-                  size="sm"
+                  variante="secundario"
+                  tamanho="p"
                   onClick={handleResendVerification}
-                  isLoading={isResending}
-                  leftIcon={<FiRefreshCw />}
-                  className={`border-accent-amber text-accent-amber hover:bg-accent-amber hover:text-black`}
+                  carregando={isResending}
+                  icone={PiArrowsClockwise}
+                  className={`hover:text-black`}
                 >
                   {t('email_banner_resend')}
                 </Button>
@@ -141,10 +158,10 @@ const EmailVerificationBanner2: React.FC<EmailVerificationBannerProps> = ({
             {bannerType === 'success' && (
               <div className="flex gap-2">
                 <Button
-                  variant="ghost"
-                  size="sm"
+                  variante="fantasma"
+                  tamanho="p"
                   onClick={handleDismiss}
-                  className={`${textColor} hover:bg-accent-green/20`}
+                  className={`${textColor}`}
                 >
                   {t('email_banner_understood')}
                 </Button>
@@ -157,13 +174,14 @@ const EmailVerificationBanner2: React.FC<EmailVerificationBannerProps> = ({
           onClick={handleDismiss}
           className={`${textColor} hover:opacity-60 transition-opacity p-1`}
         >
-          <FiX className="w-4 h-4" />
+          <PiX className="w-4 h-4" />
+          <NomeAcao acao="fechar" />
         </button>
       </div>
 
       {/* Progress indicator for unverified email */}
       {bannerType === 'warning' && !isEmailVerified && (
-        <div className="mt-4 pt-3 border-t border-accent-amber/20">
+        <div className="mt-4 pt-3 border-t border-linha">
           <div className="flex items-center text-xs">
             <span className={`${textColor} opacity-75`}>
               {t('email_banner_email')} <strong>{user.email}</strong>

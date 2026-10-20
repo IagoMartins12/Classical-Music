@@ -1,13 +1,10 @@
 // app/uploads/composer/[id]/edit/page.tsx - Editar compositor específico
 import { notFound, redirect } from 'next/navigation';
-import EditComposerClient from '@/app/(main)/upload/composer/[id]/edit/pageClient';
+import { ComposerEditForm } from '@/app/components/site/edit/ComposerEditForm';
+import type { ApiSchema } from '@/app/libs/api/types';
 import { getComposerById } from '@/app/requests/composer-details';
 import { getUploadForEdit, getUploadFormData } from '@/app/requests/my-uploads';
-import {
-  getServerLanguageStatic,
-  loadPageTranslationsWithCommon,
-} from '@/app/utils/translations/serverTranslations';
-import { TranslationProvider } from '@/app/context/TranslationContext';
+import { getServerLanguageStatic } from '@/app/utils/translations/serverTranslations';
 import { getServerSession } from '@/app/libs/api/server-session';
 
 /**
@@ -122,23 +119,13 @@ export default async function EditComposerPage({
     redirect('/upload?error=unauthorized');
   }
 
-  const isAdmin = session.user.role === 2;
   const formData = await getUploadFormData();
 
-  const language = await getServerLanguageStatic();
-  const { translations } = await loadPageTranslationsWithCommon(language, [
-    'pages/uploads',
-  ]);
-
   return (
-    <TranslationProvider language={language} translations={translations}>
-      <EditComposerClient
-        composer={composer.data}
-        epochs={formData.epochs}
-        roles={formData.roles}
-        isAdmin={isAdmin}
-        userId={session.user.id}
-      />
-    </TranslationProvider>
+    <ComposerEditForm
+      composer={composer.data as ApiSchema<'ComposerUploadResponseDto'>}
+      epochs={formData.epochs}
+      roles={formData.roles}
+    />
   );
 }

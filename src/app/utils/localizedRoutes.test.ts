@@ -30,7 +30,22 @@ describe('localizeHref', () => {
     expect(localizeHref('/profile', 'en')).toBe('/profile');
     expect(localizeHref('/favorites', 'en')).toBe('/favorites');
     expect(localizeHref('/upload', 'en')).toBe('/upload');
-    expect(localizeHref('/blog', 'en')).toBe('/blog');
+  });
+
+  // O blog público tem inglês desde 30/09/2026; o que é por pessoa, busca,
+  // prévia e painel continua só no caminho limpo.
+  it('prefixa o blog público, e só ele', () => {
+    expect(localizeHref('/blog', 'en')).toBe('/en/blog');
+    expect(localizeHref('/blog/um-artigo', 'en')).toBe('/en/blog/um-artigo');
+    expect(localizeHref('/blog/calendar', 'en')).toBe('/en/blog/calendar');
+    expect(localizeHref('/blog/bookmarks', 'en')).toBe('/blog/bookmarks');
+    expect(localizeHref('/blog/search?q=bach', 'en')).toBe(
+      '/blog/search?q=bach'
+    );
+    expect(localizeHref('/blog/admin/articles', 'en')).toBe(
+      '/blog/admin/articles'
+    );
+    expect(localizeHref('/blog/preview/x', 'en')).toBe('/blog/preview/x');
   });
 
   it('preserva query e âncora', () => {

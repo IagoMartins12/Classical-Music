@@ -1,14 +1,17 @@
-// app/uploads/pageServer.tsx - OTIMIZADO PARA PERFORMANCE
-import { TranslationProvider } from '@/app/context/TranslationContext';
-import { getMyUploads, getUploadEpochs } from '@/app/requests/my-uploads';
-import {
-  getServerLanguageStatic,
-  loadPageTranslationsWithCommon,
-} from '@/app/utils/translations/serverTranslations';
-import UploadsClient from './pageClient';
+import { PersonalPage } from '@/app/components/site/personal/PersonalPage';
+import { UploadsView } from '@/app/components/site/personal/UploadsView';
+import { PERSONAL } from '@/app/conteudo/site/personal';
+import { getMyUploads } from '@/app/requests/my-uploads';
+import { getServerLanguageStatic } from '@/app/utils/translations/serverTranslations';
 
 const ITEMS_PER_PAGE = 24;
+const KINDS = ['composer', 'work', 'score'] as const;
 
+/**
+ * "Your uploads". The list is read on the server for the tab, search and
+ * page in the URL; "All" brings a few of each kind. The upload forms still
+ * read the `pages/uploads` dictionary, hence the provider.
+ */
 export default async function UploadsPageServer({
   page,
   search,
@@ -16,8 +19,6 @@ export default async function UploadsPageServer({
   epochId,
   composerId,
   workId,
-  userId,
-  userRole,
 }: {
   page: number;
   search: string;
@@ -28,81 +29,43 @@ export default async function UploadsPageServer({
   userId: string;
   userRole: number;
 }) {
-  const isAdmin = userRole === 2;
-  const limitPerType = type === 'all';
-
+  const tab = (KINDS as readonly string[]).includes(type)
+    ? (type as (typeof KINDS)[number])
+    : 'all';
   const language = await getServerLanguageStatic();
-
-  // O que a pessoa criou vem da API (`GET /uploads/mine`), em nome dela.
-  const [uploadsData, epochsData, { translations }] = await Promise.all([
-    getMyUploads({
-      page,
-      limit: ITEMS_PER_PAGE,
-      search,
-      type,
-      epochId,
-      composerId,
-      workId,
-      limitPerType,
-    }),
-    getUploadEpochs(),
-    loadPageTranslationsWithCommon(language, ['pages/uploads']),
-  ]);
-
-  let totalPages = 1;
-  if (type === 'all') {
-    totalPages = Math.ceil(uploadsData.totalCount / ITEMS_PER_PAGE);
-  } else if (type === 'composer') {
-    totalPages = Math.ceil(uploadsData.composerCount / ITEMS_PER_PAGE);
-  } else if (type === 'work') {
-    totalPages = Math.ceil(uploadsData.workCount / ITEMS_PER_PAGE);
-  } else if (type === 'score') {
-    totalPages = Math.ceil(uploadsData.scoreCount / ITEMS_PER_PAGE);
-  }
-
-  // Form data vazio - será carregado via lazy loading
-  const formData = {
-    epochs: [],
-    instruments: [],
-    roles: [],
-    composers: [],
-    works: [],
+  const uploads = await getMyUploads({
+    page,
+    limit: ITEMS_PER_PAGE,
+    search,
+    type: tab,
+    epochId,
+    composerId,
+    workId,
+    limitPerType: tab === 'all',
+  });
+  const counts = {
+    total: uploads.composerCount + uploads.workCount + uploads.scoreCount,
+    composer: uploads.composerCount,
+    work: uploads.workCount,
+    score: uploads.scoreCount,
   };
-
-  // Filter data vazio - será carregado via lazy loading
-  const filterData = {
-    composers: [],
-    works: [],
-  };
+  const copy = PERSONAL[language].uploads;
 
   return (
-    <TranslationProvider language={language} translations={translations}>
-      <UploadsClient
-        uploads={uploadsData.items}
-        composers={uploadsData.composers}
-        works={uploadsData.works}
-        scores={uploadsData.scores}
-        epochs={epochsData}
-        filterComposers={filterData.composers} // Vazio inicialmente
-        filterWorks={filterData.works} // Vazio inicialmente
-        currentPage={page}
-        totalPages={totalPages}
-        totalCount={uploadsData.totalCount}
-        composerCount={uploadsData.composerCount}
-        workCount={uploadsData.workCount}
-        scoreCount={uploadsData.scoreCount}
-        hasMoreComposers={uploadsData.hasMoreComposers}
-        hasMoreWorks={uploadsData.hasMoreWorks}
-        hasMoreScores={uploadsData.hasMoreScores}
-        searchTerm={search}
-        selectedType={type}
-        selectedEpoch={epochId}
-        selectedComposer={composerId || ''}
-        selectedWork={workId || ''}
-        isAdmin={isAdmin}
-        userId={userId}
-        formData={formData} // Vazio inicialmente
+    <PersonalPage title={copy.title} description={copy.text}>
+      <UploadsView
+        tab={tab}
+        search={search}
+        data={{
+          items: uploads.items,
+          counts,
+          page,
+          pages:
+            tab === 'all'
+              ? 1
+              : Math.max(1, Math.ceil(counts[tab] / ITEMS_PER_PAGE)),
+        }}
       />
-    </TranslationProvider>
+    </PersonalPage>
   );
 }

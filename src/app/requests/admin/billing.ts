@@ -70,7 +70,51 @@ export function deleteCouponRequest(couponId: string) {
   );
 }
 
+/** Cria ou refaz o espelho do cupom no Stripe; o motivo de uma falha volta em `stripeSyncError`. */
+export function syncCouponRequest(couponId: string) {
+  return apiFetch<{
+    stripeCouponId: string | null;
+    stripeSyncError: string | null;
+  }>(`/admin/coupons/${couponId}/sync`, { method: 'POST' });
+}
+
 // ---- Preços de plano
+
+export interface LadoDoStripe {
+  id: string;
+  valor: number;
+}
+
+/** Um plano pago, no painel e no Stripe. */
+export interface PrecoNoStripe {
+  planType: string;
+  painel: { monthly: number; yearly: number } | null;
+  stripe: { monthly: LadoDoStripe | null; yearly: LadoDoStripe | null };
+  productId: string | null;
+  /** De onde o checkout tira o Price: da versão no banco ou do `.env`. */
+  fonte: 'banco' | 'ambiente' | null;
+  emDia: boolean;
+  problema: string | null;
+  sincronizadoEm: string | null;
+  origem: 'painel' | 'stripe' | null;
+}
+
+export const getPrecosNoStripe = () =>
+  apiFetch<{ configurado: boolean; planos: PrecoNoStripe[] }>(
+    '/admin/plan-pricing/stripe',
+    { cache: 'no-store' }
+  );
+
+/** Painel → Stripe: cria o Price que falta e arquiva o anterior. */
+export const enviarPrecoAoStripe = (plano: string) =>
+  apiFetch(`/admin/plan-pricing/${plano}/push`, { method: 'POST' });
+
+/** Stripe → painel: versão nova com o que vale lá. */
+export const trazerPrecoDoStripe = (plano: string) =>
+  apiFetch<{ adotado: boolean; motivo: string }>(
+    `/admin/plan-pricing/${plano}/pull`,
+    { method: 'POST' }
+  );
 
 export function listPlanPricingRequest() {
   return apiFetch<unknown[]>('/admin/plan-pricing', { cache: 'no-store' });
@@ -84,8 +128,6 @@ export function setPlanPricingRequest(data: Record<string, unknown>) {
       [
         'planType',
         'monthlyPrice',
-        'quarterlyDiscount',
-        'biannualDiscount',
         'yearlyDiscount',
         'trialDays',
         'description',
@@ -103,8 +145,8 @@ export function setPlanPricingRequest(data: Record<string, unknown>) {
  * (29 / 79 / 149) não valem mais.
  *
  * **Por aqui o preço não é digitado, é derivado:** a rota só aceita o mensal e
- * os descontos, e a API calcula os demais períodos (`monthly × meses ×
- * (1 - desconto)`). Valores terminados em `,90` não saem exatos — 19,90 com
+ * o desconto anual, e a API calcula o anual (`monthly × 12 × (1 - desconto)`).
+ * Só existem mensal e anual: são os períodos que o Stripe vende. Valores terminados em `,90` não saem exatos — 19,90 com
  * 16,3% dá 199,85, não 199,90. Para bater com o Stripe no centavo, use
  * `npm run seed:pricing:hml` na API, que grava cada período diretamente.
  */
@@ -112,8 +154,6 @@ const DEFAULT_PLAN_PRICES = [
   {
     planType: 'PLUS',
     monthlyPrice: 19.9,
-    quarterlyDiscount: 9.7,
-    biannualDiscount: 14.7,
     yearlyDiscount: 16.3,
     trialDays: 7,
     displayOrder: 1,
@@ -122,8 +162,6 @@ const DEFAULT_PLAN_PRICES = [
   {
     planType: 'MENTOR',
     monthlyPrice: 39.9,
-    quarterlyDiscount: 9.9,
-    biannualDiscount: 14.8,
     yearlyDiscount: 16.5,
     trialDays: 14,
     displayOrder: 2,
@@ -132,8 +170,6 @@ const DEFAULT_PLAN_PRICES = [
   {
     planType: 'MAESTRO',
     monthlyPrice: 79.9,
-    quarterlyDiscount: 9.9,
-    biannualDiscount: 14.9,
     yearlyDiscount: 16.6,
     trialDays: 30,
     displayOrder: 3,

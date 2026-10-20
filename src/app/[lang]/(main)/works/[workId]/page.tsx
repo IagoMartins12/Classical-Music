@@ -200,40 +200,6 @@ export async function generateMetadata({ params }: WorkDetailsPageProps) {
         'max-snippet': -1,
       },
     },
-    // Schema.org estruturado
-    other: {
-      'application/ld+json': JSON.stringify({
-        '@context': 'https://schema.org',
-        '@type': 'MusicComposition',
-        name: work.title,
-        composer: {
-          '@type': 'Person',
-          name: work.composer.fullName,
-        },
-        dateCreated: work.compositionYear,
-        genre: work.epoch?.name,
-        instrument: work.instrument?.name,
-        description: description,
-        url: `https://opusatlas.com.br/works/${work.id}`,
-        mainEntityOfPage: {
-          '@type': 'WebPage',
-          '@id': `https://opusatlas.com.br/works/${work.id}`,
-        },
-        isPartOf: {
-          '@type': 'WebSite',
-          name: 'Opus Atlas',
-          url: 'https://opusatlas.com.br',
-        },
-        musicArrangement: work.opOrCatalog,
-        associatedMedia: {
-          '@type': 'MediaObject',
-          name: `${work.title} - Partitura Gratuita`,
-          description: 'Partitura gratuita disponível via IMSLP',
-          url: work.imslpPermlink,
-          encodingFormat: 'application/pdf',
-        },
-      }),
-    },
   };
 }
 

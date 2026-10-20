@@ -1,5 +1,5 @@
 // utils/completePhoneCountries.ts - Base completa de países para telefone
-import { Country } from 'country-state-city';
+import Country from 'country-state-city/lib/country';
 import { translateCountryName } from './countryTranslations';
 
 export interface PhoneCountry {

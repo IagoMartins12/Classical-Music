@@ -28,7 +28,16 @@ const ROBOS_DE_IA = [
   'meta-externalagent',
 ];
 
-const PRIVADO = ['/admin/', '/api/', '/dashboard/'];
+// O portal do aluno e do professor é área logada; o calendário assinado é um
+// link secreto (04/10/2026).
+const PRIVADO = [
+  '/admin/',
+  '/api/',
+  '/dashboard/',
+  '/teacher/',
+  '/student/',
+  '/calendar-feed/',
+];
 
 export default function robots(): MetadataRoute.Robots {
   if (SITE_NOINDEX) {

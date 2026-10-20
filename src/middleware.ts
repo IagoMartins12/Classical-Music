@@ -288,7 +288,27 @@ function reescrever(
   return response;
 }
 
+/**
+ * Não existe página `/login`: o login é um modal. `/login` leva à home com o
+ * modal aberto (`?login=1`), levando junto o `callbackUrl` — é o que o
+ * `LoginModal` lê para abrir sozinho e, depois de entrar, voltar.
+ *
+ * Até 26/09 o painel redirecionava para `/login` e seis telas linkavam para
+ * lá, e tudo caía em 404 desde a Etapa 7.
+ */
+function paraLogin(request: NextRequest, callbackUrl?: string | null) {
+  const destino = new URL('/', request.url);
+  destino.searchParams.set('login', '1');
+  if (callbackUrl) destino.searchParams.set('callbackUrl', callbackUrl);
+  return NextResponse.redirect(destino);
+}
+
 export function middleware(request: NextRequest) {
+  // Antes de tudo: vale para o link do roteador (RSC) e para a visita direta.
+  if (request.nextUrl.pathname === '/login') {
+    return paraLogin(request, request.nextUrl.searchParams.get('callbackUrl'));
+  }
+
   // A reescrita de idioma vale também para os pedidos do roteador do cliente
   // (RSC): sem ela, um `<Link href="/composers">` buscaria uma rota que não
   // existe mais fora de `[lang]`.
@@ -306,9 +326,7 @@ export function middleware(request: NextRequest) {
       LEGACY_SESSION_COOKIES.some((name) => request.cookies.has(name));
 
     if (!signedIn) {
-      const login = new URL('/login', request.url);
-      login.searchParams.set('callbackUrl', request.nextUrl.pathname);
-      return NextResponse.redirect(login);
+      return paraLogin(request, request.nextUrl.pathname);
     }
   }
 

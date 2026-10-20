@@ -1,34 +1,30 @@
 // app/components/UploadsPage/modals/CreateScoreModal/index.tsx - ATUALIZADO PARA IMAGENS
 'use client';
 
-import { useState, useEffect, useRef, useMemo } from 'react';
+import { ENVIOS } from '@/app/conteudo/textos/envios';
+import { useTextos } from '@/app/hooks/useTextos';
+import { useState, useEffect, useRef, useMemo, useId } from 'react';
 import { useRouter } from 'next/navigation';
 import Image from '@/app/components/SmartImage';
 import {
-  FiFile,
-  FiUpload,
-  FiSave,
-  FiLoader,
-  FiInfo,
-  FiImage,
-  FiFileText,
-  FiTag,
-  FiCheck,
-  FiAlertCircle,
-  FiLink,
-  FiX,
-  FiFilter,
-  FiTarget,
-  FiSettings,
-} from 'react-icons/fi';
+  PiCheck,
+  PiFile,
+  PiFloppyDisk,
+  PiImage,
+  PiLink,
+  PiSpinnerGap,
+  PiUploadSimple,
+  PiX,
+} from 'react-icons/pi';
+import { Button } from '@/app/components/ui/Button';
+import { Icon } from '@/app/components/ui/Icon';
+import { Selecao } from '@/app/components/ui/Selecao';
+import { cx } from '@/app/components/ui/cx';
 import {
-  AnimatedCard,
-  AnimatedItem,
-} from '@/app/components/animation/AnimatedComponents';
-import Button from '@/app/components/Common/Button';
-import Input from '@/app/components/Common/Inputs';
-import Select from '@/app/components/Common/Select';
-import Modal from '@/app/components/Modal';
+  Aviso,
+  FormBlock,
+  FormSheet,
+} from '@/app/components/site/edit/FormSheet';
 import WorkSearchInput, {
   WorkSearchInputWorkProp,
 } from '@/app/components/WorkSearchInput';
@@ -45,7 +41,6 @@ import {
   generateAndUploadTempThumbnail,
 } from '@/app/utils/pdfUtils';
 import { useToast } from '@/app/hooks/useToast';
-import { useTranslation } from '@/app/context/TranslationContext';
 import GroupingSuggestions from '../../GroupingSuggestions';
 import { useSmartFormChanges } from '@/app/hooks/useFormChanges';
 import {
@@ -54,6 +49,8 @@ import {
   searchComposers,
   uploadScoreFile,
 } from '@/app/requests/uploads-client';
+import { Field } from '@/app/components/ui/Field';
+import { useTx } from '@/app/hooks/useTx';
 
 interface CreateScoreModalProps {
   isOpen: boolean;
@@ -87,8 +84,12 @@ const CreateScoreModal = ({
   works,
   editingScore,
 }: CreateScoreModalProps) => {
+  const tx = useTx();
+  const idCampo = useId();
+  const formId = `${idCampo}-form`;
+  const fileInputId = `${idCampo}-file`;
   const router = useRouter();
-  const { t } = useTranslation({ sections: ['pages/uploads'] });
+  const { t } = useTextos(ENVIOS);
 
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [uploadingFile, setUploadingFile] = useState(false);
@@ -466,7 +467,7 @@ const CreateScoreModal = ({
         setFileValidation({
           isValidating: false,
           isValid: false,
-          error: 'Erro ao validar arquivo',
+          error: tx('Erro ao validar arquivo', 'Could not validate the file'),
         });
       } finally {
         setValidatingFile(false);
@@ -528,11 +529,15 @@ const CreateScoreModal = ({
               t('modal_score_file_preview_success')
             );
           } else {
-            setThumbnailError(thumbnailResult.error || 'Erro desconhecido');
+            setThumbnailError(
+              thumbnailResult.error || tx('Erro desconhecido', 'Unknown error')
+            );
             toast.info(t('toast_info'), t('toast_score_preview_not_available'));
           }
         } catch {
-          setThumbnailError('Erro ao gerar preview');
+          setThumbnailError(
+            tx('Erro ao gerar preview', 'Could not make the preview')
+          );
           toast.error(t('toast_error'), t('toast_score_preview_error'));
         } finally {
           setGeneratingThumbnail(false);
@@ -564,7 +569,7 @@ const CreateScoreModal = ({
       setFileValidation({
         isValidating: false,
         isValid: false,
-        error: 'Erro no upload',
+        error: tx('Erro no upload', 'Upload failed'),
       });
     } finally {
       setUploadingFile(false);
@@ -649,694 +654,495 @@ const CreateScoreModal = ({
 
   if (!isOpen) return null;
 
+  const titulo = editingScore
+    ? t('modal_score_title_edit')
+    : t('modal_score_title_create');
+  const fechar = () => {
+    if (editingScore && originalData) setFormData(originalData);
+    onClose();
+  };
+  const selecao = (
+    label: string,
+    opcoes: { value: string; label: string }[],
+    valor: string,
+    aoMudar: (v: string) => void
+  ) => (
+    <label className="flex flex-col gap-2">
+      <span className="t-rotulo font-medium text-texto">{label}</span>
+      <Selecao
+        aria-label={label}
+        opcoes={opcoes}
+        valor={valor}
+        aoMudar={aoMudar}
+      />
+    </label>
+  );
+  const modos = [
+    {
+      id: 'url' as const,
+      icone: PiLink,
+      titulo: t('modal_score_upload_url'),
+      texto: tx(
+        'PDF, PNG, JPG ou outras imagens por um link',
+        'PDF, PNG, JPG or other images by link'
+      ),
+    },
+    {
+      id: 'file' as const,
+      icone: PiUploadSimple,
+      titulo: t('modal_score_upload_file'),
+      texto: tx(
+        'PDF ou imagens do seu aparelho',
+        'PDF or images from your device'
+      ),
+    },
+  ];
+
   return (
-    <Modal
-      isOpen={isOpen}
-      onClose={() => {
-        if (editingScore && originalData) {
-          setFormData(originalData);
-        }
-        onClose();
-      }}
-      maxWidth="4xl"
-      showCloseButton={true}
-      confirmOnClose={true}
-      hasChanges={hasChanges}
-      isProcessing={isSubmitting}
-      processName="criação de partitura"
-    >
-      <AnimatedItem direction="scale" springType="bouncy" className="w-full">
-        <div>
-          {/* Header */}
-          <div className="flex items-center justify-between p-0 pt-4 pb-6 md:p-6 border-b border-theme-secondary">
-            <div className="flex items-center space-x-3">
-              <div className="w-10 h-10 bg-gradient-to-br from-accent-purple to-accent-blue rounded-xl flex items-center justify-center">
-                <FiFile className="w-5 h-5 text-theme-primary" />
-              </div>
-              <div>
-                <h2 className="text-xl font-bold text-theme-primary classical-title">
-                  {editingScore
-                    ? t('modal_score_title_edit')
-                    : t('modal_score_title_create')}
-                </h2>
-                <p className="text-theme-secondary text-sm">
-                  {editingScore
-                    ? t('modal_score_subtitle_edit')
-                    : t('modal_score_subtitle_create')}
-                </p>
-              </div>
-            </div>
-          </div>
-
-          {/* Content */}
-          <div className="px-0 py-4 md:p-6">
-            <form onSubmit={handleSubmit} className="space-y-6" noValidate>
-              {/* Upload Mode Selection */}
-              {!editingScore && (
-                <AnimatedCard className="classical-card-2 p-4">
-                  <h3 className="text-lg font-semibold text-theme-primary mb-4 flex items-center space-x-2">
-                    <FiUpload className="w-5 h-5" />
-                    <span>{t('modal_score_upload_mode_title')}</span>
-                  </h3>
-
-                  <div className="space-y-4" ref={fieldRefs.uploadMode}>
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                      {/* URL Option */}
-                      <button
-                        type="button"
-                        onClick={() => selectUploadMode('url')}
-                        className={`p-4 rounded-xl border-2 transition-all duration-200 ${
-                          uploadMode === 'url'
-                            ? 'border-brand-primary bg-brand-primary/10 text-brand-primary'
-                            : 'border-theme-secondary bg-theme-elevated hover:border-theme-primary text-theme-secondary'
-                        }`}
-                      >
-                        <div className="flex items-center space-x-3">
-                          <div
-                            className={`w-8 h-8 rounded-lg flex items-center justify-center ${
-                              uploadMode === 'url'
-                                ? 'bg-brand-primary text-theme-primary'
-                                : 'bg-theme-secondary text-theme-tertiary'
-                            }`}
-                          >
-                            <FiLink className="w-4 h-4" />
-                          </div>
-                          <div className="text-left">
-                            <h4 className="font-medium">
-                              {t('modal_score_upload_url')}
-                            </h4>
-                            <p className="text-xs opacity-75">
-                              PDF, PNG, JPG ou outras imagens via URL
-                            </p>
-                          </div>
-                        </div>
-                      </button>
-
-                      {/* File Upload Option */}
-                      <button
-                        type="button"
-                        onClick={() => selectUploadMode('file')}
-                        className={`p-4 rounded-xl border-2 transition-all duration-200 ${
-                          uploadMode === 'file'
-                            ? 'border-brand-primary bg-brand-primary/10 text-brand-primary'
-                            : 'border-theme-secondary bg-theme-elevated hover:border-theme-primary text-theme-secondary'
-                        }`}
-                      >
-                        <div className="flex items-center space-x-3">
-                          <div
-                            className={`w-8 h-8 rounded-lg flex items-center justify-center ${
-                              uploadMode === 'file'
-                                ? 'bg-brand-primary text-theme-primary'
-                                : 'bg-theme-secondary text-theme-tertiary'
-                            }`}
-                          >
-                            <FiUpload className="w-4 h-4" />
-                          </div>
-                          <div className="text-left">
-                            <h4 className="font-medium">
-                              {t('modal_score_upload_file')}
-                            </h4>
-                            <p className="text-xs opacity-75">
-                              Envie PDF ou imagens do seu dispositivo
-                            </p>
-                          </div>
-                        </div>
-                      </button>
-                    </div>
-
-                    {errors.uploadMode && (
-                      <div className="mt-2 p-3 bg-red-50 border border-red-200 rounded-lg">
-                        <div className="flex items-center space-x-2">
-                          <FiAlertCircle className="w-4 h-4 text-red-600" />
-                          <span className="text-sm font-medium text-red-800">
-                            {errors.uploadMode}
-                          </span>
-                        </div>
-                      </div>
-                    )}
-                  </div>
-                </AnimatedCard>
-              )}
-
-              {/* File Upload */}
-              {uploadMode === 'file' && !editingScore && (
-                <AnimatedCard className="classical-card-2 p-4">
-                  <h3 className="text-lg font-semibold text-theme-primary mb-4 flex items-center space-x-2">
-                    <FiUpload className="w-5 h-5" />
-                    <span>Enviar Arquivo</span>
-                  </h3>
-
-                  <div className="space-y-4">
-                    <div
-                      className={`border-2 border-dashed rounded-lg p-8 text-center hover:border-brand-primary transition-colors cursor-pointer ${
-                        errors.downloadUrl
-                          ? 'border-red-500'
-                          : 'border-theme-secondary'
-                      }`}
-                      onClick={() =>
-                        document.getElementById('file-upload')?.click()
-                      }
-                    >
-                      <input
-                        id="file-upload"
-                        type="file"
-                        accept=".pdf,.png,.jpg,.jpeg,.gif,.bmp,.webp"
-                        className="hidden"
-                        onChange={(e) => {
-                          const file = e.target.files?.[0];
-                          if (file) {
-                            handleFileUpload(file);
-                          }
-                        }}
-                      />
-
-                      {uploadingFile ? (
-                        <div className="flex items-center justify-center space-x-2">
-                          <FiLoader className="w-6 h-6 animate-spin text-brand-primary" />
-                          <span className="text-theme-secondary">
-                            Enviando arquivo...
-                          </span>
-                        </div>
-                      ) : selectedFile ? (
-                        <div className="space-y-4">
-                          <div className="flex items-center justify-center space-x-2">
-                            {selectedFile.type.startsWith('image/') ? (
-                              <FiImage className="w-6 h-6 text-accent-green" />
-                            ) : (
-                              <FiFile className="w-6 h-6 text-accent-green" />
-                            )}
-                            <span className="text-theme-primary font-medium">
-                              {selectedFile.name}
-                            </span>
-                            <span className="text-theme-tertiary">
-                              ({formData.fileSize})
-                            </span>
-                          </div>
-
-                          {generatingThumbnail && (
-                            <div className="mt-4 text-center">
-                              <div className="flex items-center justify-center space-x-2 text-sm text-brand-primary">
-                                <FiLoader className="w-4 h-4 animate-spin" />
-                                <span>
-                                  {isLargeFile
-                                    ? 'Processando arquivo grande...'
-                                    : 'Gerando preview...'}
-                                </span>
-                              </div>
-                              {isLargeFile && (
-                                <div className="mt-2 text-xs text-theme-tertiary">
-                                  📄 Arquivos grandes podem levar mais tempo
-                                </div>
-                              )}
-                            </div>
-                          )}
-
-                          {generatedThumbnail && thumbnailGenerated && (
-                            <div className="mt-4 text-center">
-                              <div className="w-24 h-32 mx-auto rounded border border-theme-primary/30 overflow-hidden shadow-theme-small">
-                                <Image
-                                  src={generatedThumbnail}
-                                  alt="Preview do arquivo"
-                                  width={96}
-                                  height={128}
-                                  className="w-full h-full object-cover"
-                                />
-                              </div>
-                            </div>
-                          )}
-
-                          {thumbnailError && !generatingThumbnail && (
-                            <div className="mt-4 text-center">
-                              <div className="flex items-center justify-center space-x-2 text-sm text-amber-600 mb-2">
-                                <FiAlertCircle className="w-4 h-4" />
-                                <span>Preview não disponível</span>
-                              </div>
-                              <div className="text-xs text-theme-tertiary">
-                                {thumbnailError}
-                              </div>
-                            </div>
-                          )}
-                        </div>
-                      ) : (
-                        <div>
-                          <FiUpload className="w-12 h-12 text-theme-tertiary mx-auto mb-4" />
-                          <p className="text-theme-secondary">
-                            Clique aqui ou arraste arquivos para enviar
-                          </p>
-                          <p className="text-theme-tertiary text-sm mt-2">
-                            PDF, PNG, JPG, GIF, BMP, WEBP (máx. 50MB)
-                          </p>
-                          <p className="text-theme-tertiary text-xs mt-1">
-                            🖼️ Preview automático para PDFs e imagens
-                          </p>
-                        </div>
-                      )}
-                    </div>
-
-                    {errors.downloadUrl && uploadMode === 'file' && (
-                      <div className="mt-2 p-3 bg-red-50 border border-red-200 rounded-lg">
-                        <div className="flex items-center space-x-2">
-                          <FiAlertCircle className="w-4 h-4 text-red-600" />
-                          <span className="text-sm font-medium text-red-800">
-                            {errors.downloadUrl}
-                          </span>
-                        </div>
-                      </div>
-                    )}
-
-                    {selectedFile && (
-                      <button
-                        type="button"
-                        onClick={() => {
-                          setSelectedFile(null);
-                          resetUploadMode();
-                        }}
-                        className="flex items-center space-x-2 mx-auto text-sm text-theme-tertiary hover:text-accent-red transition-colors"
-                      >
-                        <FiX className="w-4 h-4" />
-                        <span>Remover arquivo</span>
-                      </button>
-                    )}
-                  </div>
-                </AnimatedCard>
-              )}
-
-              {/* URL Input */}
-              {uploadMode === 'url' && !editingScore && (
-                <AnimatedCard className="classical-card-2 p-4">
-                  <h3 className="text-lg font-semibold text-theme-primary mb-4 flex items-center space-x-2">
-                    <FiLink className="w-5 h-5" />
-                    <span>URL do Arquivo</span>
-                  </h3>
-
-                  <Input
-                    label="URL do Arquivo *"
-                    ref={fieldRefs.downloadUrl}
-                    value={formData.downloadUrl}
-                    onChange={(e) => handleUrlChange(e.target.value)}
-                    error={errors.downloadUrl}
-                    placeholder="https://exemplo.com/partitura.pdf"
-                    leftIcon={<FiLink />}
-                  />
-
-                  {validatingFile && (
-                    <div className="mt-2 flex items-center space-x-2 text-sm text-brand-primary">
-                      <FiLoader className="w-4 h-4 animate-spin" />
-                      <span>Validando arquivo...</span>
-                    </div>
-                  )}
-
-                  {fileValidation.isValid && (
-                    <div className="mt-2 flex items-center space-x-2 text-sm text-accent-green">
-                      <FiCheck className="w-4 h-4" />
-                      <span>Arquivo válido encontrado</span>
-                    </div>
-                  )}
-
-                  {fileValidation.error && (
-                    <div className="mt-2 p-3 bg-red-50 border border-red-200 rounded-lg">
-                      <div className="flex items-center space-x-2">
-                        <FiAlertCircle className="w-4 h-4 text-red-600" />
-                        <span className="text-sm font-medium text-red-800">
-                          {fileValidation.error}
-                        </span>
-                      </div>
-                    </div>
-                  )}
-                </AnimatedCard>
-              )}
-
-              {/* Work Selection */}
-              <AnimatedCard className="classical-card-2 p-4 relative z-50">
-                <h3 className="text-lg font-semibold text-theme-primary mb-4 flex items-center space-x-2">
-                  <FiInfo className="w-5 h-5" />
-                  <span>{t('modal_score_work_selection_title')}</span>
-                </h3>
-
-                <div className="space-y-4">
-                  <div ref={fieldRefs.composerFilter}>
-                    <label className="block text-sm font-medium text-theme-tertiary mb-2">
-                      <div className="flex items-center space-x-2">
-                        <FiFilter className="w-4 h-4" />
-                        <span>{t('modal_score_work_filter_composer')}</span>
-                        {shouldDisableComposerFilter && (
-                          <span className="text-xs text-accent-blue">
-                            {t('modal_score_work_filter_auto_selected')}
-                          </span>
-                        )}
-                      </div>
-                    </label>
-
-                    <ComposerSearchInput
-                      selectedComposer={composerFilter}
-                      onComposerSelect={handleComposerFilterChange}
-                      popularComposers={popularComposers}
-                      isDisabled={shouldDisableComposerFilter || editingScore}
-                    />
-
-                    {shouldDisableComposerFilter && (
-                      <p className="text-xs text-theme-tertiary mt-2">
-                        💡 {t('modal_score_work_filter_tip')}
-                      </p>
-                    )}
-
-                    {editingScore && (
-                      <p className="text-xs text-theme-tertiary mt-2">
-                        💡 {t('modal_score_work_edit_tip')}
-                      </p>
-                    )}
-                  </div>
-
-                  <div ref={fieldRefs.workId}>
-                    <label className="block text-sm font-medium text-theme-tertiary mb-2">
-                      {t('modal_score_work_label')} *
-                    </label>
-
-                    {editingScore && workData ? (
-                      <div className="w-full p-3 border rounded-lg bg-theme-elevated border-theme-secondary opacity-50 cursor-not-allowed">
-                        <div className="flex items-center justify-between">
-                          <div className="flex items-center space-x-3">
-                            <div className="w-8 h-8 bg-accent-blue/20 rounded-lg flex items-center justify-center">
-                              <FiCheck className="w-4 h-4 text-accent-blue" />
-                            </div>
-                            <div>
-                              <p className="font-medium text-theme-primary text-sm">
-                                {workData.title}
-                              </p>
-                              <p className="text-theme-tertiary text-xs">
-                                {workData.composer.fullName ||
-                                  workData.composer.name}
-                              </p>
-                            </div>
-                          </div>
-                          <div className="text-theme-tertiary">
-                            <FiInfo className="w-4 h-4" />
-                          </div>
-                        </div>
-                      </div>
-                    ) : (
-                      <WorkSearchInput
-                        selectedWork={formData.workId}
-                        onWorkSelect={handleWorkSelect}
-                        popularWorks={works.map((work) => ({
-                          id: work.id,
-                          title: work.title,
-                          composer: work.composer,
-                        }))}
-                        filterByComposer={composerFilter}
-                        userSuggestions={userWorks}
-                        loadingUserSuggestions={loadingUserWorks}
-                        error={errors.workId}
-                      />
-                    )}
-                    {editingScore && workData && (
-                      <p className="text-xs text-theme-tertiary mt-2">
-                        {t('modal_score_work_edit_locked')}
-                      </p>
-                    )}
-                  </div>
-
-                  {!editingScore && !loadingUserWorks && (
-                    <div className="bg-theme-secondary/10 rounded-lg p-3">
-                      <div className="flex items-start space-x-2">
-                        <FiInfo className="w-4 h-4 text-theme-tertiary mt-0.5" />
-                        <div className="text-xs text-theme-tertiary">
-                          <p className="font-medium mb-1">
-                            💡 {t('modal_score_work_suggestions_title')}
-                          </p>
-                          {userWorks.length > 0 ? (
-                            <p>
-                              {t('modal_score_work_suggestions_with_works', {
-                                count: userWorks.length,
-                              })}
-                            </p>
-                          ) : (
-                            <p>{t('modal_score_work_suggestions_no_works')}</p>
-                          )}
-                        </div>
-                      </div>
-                    </div>
-                  )}
-                </div>
-              </AnimatedCard>
-
-              {/* Basic Information */}
-              <AnimatedCard className="classical-card-2 p-4">
-                <h3 className="text-lg font-semibold text-theme-primary mb-4 flex items-center space-x-2">
-                  <FiInfo className="w-5 h-5" />
-                  <span>{t('modal_score_basic_info_title')}</span>
-                </h3>
-
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <Input
-                    label={`${t('modal_score_basic_title')} *`}
-                    ref={fieldRefs.title}
-                    value={formData.title}
-                    onChange={(e) => handleInputChange('title', e.target.value)}
-                    error={errors.title}
-                    placeholder="Título da partitura"
-                  />
-
-                  <div>
-                    <label className="block text-sm font-medium text-theme-tertiary mb-2">
-                      {t('modal_score_basic_type')}
-                    </label>
-                    <Select
-                      options={scoreTypeOptions}
-                      value={formData.type}
-                      onChange={(e) =>
-                        handleInputChange('type', e.target.value)
-                      }
-                    />
-                  </div>
-
-                  <div>
-                    <label className="block text-sm font-medium text-theme-tertiary mb-2">
-                      {t('modal_score_basic_format')}
-                    </label>
-                    <Select
-                      options={fileFormatOptions}
-                      value={formData.fileFormat}
-                      onChange={(e) =>
-                        handleInputChange('fileFormat', e.target.value)
-                      }
-                    />
-                  </div>
-
-                  <Input
-                    label={t('modal_score_basic_file_size')}
-                    value={formData.fileSize}
-                    onChange={(e) =>
-                      handleInputChange('fileSize', e.target.value)
-                    }
-                    placeholder="Ex: 2.5 MB"
-                    disabled
-                  />
-
-                  <Input
-                    label="Páginas/Imagens"
-                    value={formData.pageCount}
-                    onChange={(e) =>
-                      handleInputChange('pageCount', e.target.value)
-                    }
-                    placeholder="Ex: 12"
-                    type="number"
-                  />
-                </div>
-              </AnimatedCard>
-
-              {/* Publication Information */}
-              <AnimatedCard className="classical-card-2 p-4">
-                <h3 className="text-lg font-semibold text-theme-primary mb-4 flex items-center space-x-2">
-                  <FiFileText className="w-5 h-5" />
-                  <span>{t('modal_score_publication_title')}</span>
-                </h3>
-
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <Input
-                    label={t('modal_score_publication_editor')}
-                    value={formData.editor}
-                    onChange={(e) =>
-                      handleInputChange('editor', e.target.value)
-                    }
-                    placeholder="Nome do editor"
-                  />
-
-                  <Input
-                    label={t('modal_score_publication_publisher')}
-                    value={formData.publisher}
-                    onChange={(e) =>
-                      handleInputChange('publisher', e.target.value)
-                    }
-                    placeholder="Nome da editora"
-                  />
-
-                  <Input
-                    label={t('modal_score_publication_copyright')}
-                    value={formData.copyright}
-                    onChange={(e) =>
-                      handleInputChange('copyright', e.target.value)
-                    }
-                    placeholder="Informações de copyright"
-                  />
-
-                  {!generatedThumbnail && (
-                    <Input
-                      label={t('modal_score_publication_thumbnail')}
-                      value={formData.thumbnailUrl}
-                      onChange={(e) =>
-                        handleInputChange('thumbnailUrl', e.target.value)
-                      }
-                      placeholder="https://exemplo.com/thumb.jpg"
-                      leftIcon={<FiImage />}
-                    />
-                  )}
-                </div>
-              </AnimatedCard>
-
-              {/* Score Grouping */}
-              <AnimatedCard className="classical-card-2 p-4">
-                <h3 className="text-lg font-semibold text-theme-primary mb-4 flex items-center space-x-2">
-                  <FiTag className="w-5 h-5" />
-                  <span>{t('modal_score_grouping_title')}</span>
-                </h3>
-
-                <div className="space-y-6">
-                  {formData.workId && (
-                    <div>
-                      <h4 className="text-sm font-semibold text-theme-primary mb-3 flex items-center space-x-2">
-                        <FiTarget className="w-4 h-4 text-accent-green" />
-                        <span>
-                          {t('modal_score_grouping_suggestions_title')}
-                        </span>
-                      </h4>
-
-                      <GroupingSuggestions
-                        workId={formData.workId}
-                        onGroupSelect={handleGroupSelect}
-                        currentGroupIndex={formData.groupIndex}
-                        currentGroupTitle={formData.groupTitle}
-                        visible={!!formData.workId}
-                      />
-                    </div>
-                  )}
-
-                  <div>
-                    <h4 className="text-sm font-semibold text-theme-primary mb-3 flex items-center space-x-2">
-                      <FiSettings className="w-4 h-4 text-theme-tertiary" />
-                      <span>{t('modal_score_grouping_manual_title')}</span>
-                    </h4>
-
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                      <Input
-                        label={t('modal_score_grouping_index')}
-                        value={formData.groupIndex}
-                        onChange={(e) =>
-                          handleInputChange('groupIndex', e.target.value)
-                        }
-                        placeholder="0"
-                        type="number"
-                        min="0"
-                      />
-
-                      <Input
-                        label={t('modal_score_grouping_title_field')}
-                        value={formData.groupTitle}
-                        onChange={(e) =>
-                          handleInputChange('groupTitle', e.target.value)
-                        }
-                        placeholder="Ex: Partitura Completa, Versão Simplificada"
-                      />
-                    </div>
-                  </div>
-
-                  <div className="p-4 bg-theme-secondary/10 rounded-lg">
-                    <h4 className="font-medium text-theme-primary mb-2 flex items-center space-x-2">
-                      <FiInfo className="w-4 h-4" />
-                      <span>{t('modal_score_grouping_how_title')}</span>
-                    </h4>
-                    <p className="text-sm text-theme-secondary">
-                      {t('modal_score_grouping_how_description')}
-                    </p>
-                    <div className="mt-3 text-xs text-theme-tertiary">
-                      <p>
-                        💡{' '}
-                        <strong>
-                          {t('modal_score_grouping_example_title')}
-                        </strong>
-                      </p>
-                      <p>• {t('modal_score_grouping_example_group0')}</p>
-                      <p className="">
-                        • {t('modal_score_grouping_example_group1')}.
-                      </p>
-                      <p className="">
-                        • {t('modal_score_grouping_example_tip')}
-                      </p>
-                    </div>
-                  </div>
-                </div>
-              </AnimatedCard>
-
-              {/* Notes and Custom Data */}
-              <AnimatedCard className="classical-card-2 p-4">
-                <h3 className="text-lg font-semibold text-theme-primary mb-4 flex items-center space-x-2">
-                  <FiInfo className="w-5 h-5" />
-                  <span>{t('modal_score_notes_title')}</span>
-                </h3>
-
-                <div className="space-y-4">
-                  <div>
-                    <label className="block text-sm font-medium text-theme-tertiary mb-2">
-                      {t('modal_score_notes_label')}
-                    </label>
-                    <textarea
-                      value={formData.notes}
-                      onChange={(e) =>
-                        handleInputChange('notes', e.target.value)
-                      }
-                      rows={3}
-                      className="input-classical-2 w-full resize-none"
-                      placeholder={t('modal_score_notes_placeholder')}
-                    />
-                  </div>
-                </div>
-              </AnimatedCard>
-
-              {/* Actions */}
-              <div className="flex items-center justify-end space-x-3 pt-6 border-t border-theme-secondary">
-                <Button
-                  type="button"
-                  variant="secondary"
-                  onClick={onClose}
-                  disabled={isSubmitting}
-                >
-                  {t('form_cancel')}
-                </Button>
-
-                <Button
-                  type="submit"
-                  variant="primary"
-                  leftIcon={
-                    isSubmitting ? (
-                      <FiLoader className="animate-spin" />
-                    ) : (
-                      <FiSave />
-                    )
-                  }
-                  disabled={isSubmitting || (!editingScore && !uploadMode)}
-                >
-                  {isSubmitting
-                    ? t('form_saving')
-                    : editingScore
-                      ? t('form_update') + ' Partitura'
-                      : t('form_create') + ' Partitura'}
-                </Button>
-              </div>
-            </form>
-          </div>
+    <FormSheet
+      aberto={isOpen}
+      aoFechar={fechar}
+      titulo={titulo}
+      descricao={
+        editingScore
+          ? t('modal_score_subtitle_edit')
+          : t('modal_score_subtitle_create')
+      }
+      sujo={hasChanges}
+      ocupado={isSubmitting}
+      rodape={
+        <div className="flex justify-end gap-2">
+          <Button variante="fantasma" onClick={fechar} disabled={isSubmitting}>
+            {t('form_cancel')}
+          </Button>
+          <Button
+            type="submit"
+            form={formId}
+            variante="primario"
+            icone={PiFloppyDisk}
+            carregando={isSubmitting}
+            disabled={!editingScore && !uploadMode}
+          >
+            {isSubmitting
+              ? t('form_saving')
+              : editingScore
+                ? `${t('form_update')} Partitura`
+                : `${t('form_create')} Partitura`}
+          </Button>
         </div>
-      </AnimatedItem>
-    </Modal>
+      }
+    >
+      <form id={formId} onSubmit={handleSubmit} noValidate>
+        {!editingScore && (
+          <FormBlock titulo={t('modal_score_upload_mode_title')}>
+            <div
+              ref={fieldRefs.uploadMode}
+              role="radiogroup"
+              aria-label={t('modal_score_upload_mode_title')}
+              className="grid grid-cols-1 gap-3 sm:col-span-2 sm:grid-cols-2"
+            >
+              {modos.map((modo) => {
+                const ativo = uploadMode === modo.id;
+                return (
+                  <button
+                    key={modo.id}
+                    type="button"
+                    role="radio"
+                    aria-checked={ativo}
+                    onClick={() => selectUploadMode(modo.id)}
+                    className={cx(
+                      'flex items-start gap-3 rounded-card p-4 text-left transition-colors duration-[var(--t-toque)]',
+                      ativo
+                        ? 'tint-ouro text-ouro-na-tinta'
+                        : 'bg-sup-2 text-texto hover:bg-[var(--interactive-hover)]'
+                    )}
+                  >
+                    <Icon de={modo.icone} tamanho="m" className="mt-0.5" />
+                    <span className="flex flex-col gap-0.5">
+                      <span className="font-medium">{modo.titulo}</span>
+                      <span className="t-legenda">{modo.texto}</span>
+                    </span>
+                  </button>
+                );
+              })}
+            </div>
+            {errors.uploadMode && <Aviso tom="erro">{errors.uploadMode}</Aviso>}
+          </FormBlock>
+        )}
+
+        {uploadMode === 'file' && !editingScore && (
+          <FormBlock titulo={tx('Enviar arquivo', 'Upload file')}>
+            <div
+              role="button"
+              tabIndex={0}
+              onClick={() => document.getElementById(fileInputId)?.click()}
+              onKeyDown={(e) => {
+                if (e.key === 'Enter' || e.key === ' ') {
+                  e.preventDefault();
+                  document.getElementById(fileInputId)?.click();
+                }
+              }}
+              onDragOver={(e) => e.preventDefault()}
+              onDrop={(e) => {
+                e.preventDefault();
+                const file = e.dataTransfer.files?.[0];
+                if (file) handleFileUpload(file);
+              }}
+              className={cx(
+                'flex cursor-pointer flex-col items-center gap-3 rounded-card border border-dashed bg-sup-2 px-6 py-10 text-center sm:col-span-2',
+                errors.downloadUrl
+                  ? 'border-[var(--erro)]'
+                  : 'border-[var(--linha-forte)]'
+              )}
+            >
+              <input
+                id={fileInputId}
+                type="file"
+                accept=".pdf,.png,.jpg,.jpeg,.gif,.bmp,.webp"
+                className="sr-only"
+                tabIndex={-1}
+                onChange={(e) => {
+                  const file = e.target.files?.[0];
+                  if (file) handleFileUpload(file);
+                }}
+              />
+              {uploadingFile ? (
+                <span className="flex items-center gap-2 text-texto-suave">
+                  <PiSpinnerGap
+                    aria-hidden="true"
+                    className="h-5 w-5 animate-spin text-ouro-texto"
+                  />
+
+                  {tx('Enviando arquivo…', 'Uploading file…')}
+                </span>
+              ) : selectedFile ? (
+                <>
+                  <span className="flex items-center gap-2 text-texto">
+                    <Icon
+                      de={
+                        selectedFile.type.startsWith('image/')
+                          ? PiImage
+                          : PiFile
+                      }
+                      tamanho="m"
+                    />
+                    <span className="font-medium">{selectedFile.name}</span>
+                    <span className="text-texto-fraco">
+                      ({formData.fileSize})
+                    </span>
+                  </span>
+                  {generatingThumbnail && (
+                    <span className="t-legenda">
+                      {isLargeFile
+                        ? tx(
+                            'Processando arquivo grande; pode levar um pouco mais.',
+                            'Processing a large file; it may take a bit longer.'
+                          )
+                        : tx('Gerando a prévia…', 'Making the preview…')}
+                    </span>
+                  )}
+                  {generatedThumbnail && thumbnailGenerated && (
+                    <span className="block h-32 w-24 overflow-hidden rounded-controle shadow-[var(--sombra-alta)]">
+                      <Image
+                        src={generatedThumbnail}
+                        alt={tx('Prévia do arquivo', 'File preview')}
+                        width={96}
+                        height={128}
+                        className="h-full w-full object-cover"
+                      />
+                    </span>
+                  )}
+                  {thumbnailError && !generatingThumbnail && (
+                    <span className="t-legenda">
+                      {tx('Prévia indisponível:', 'Preview unavailable:')}{' '}
+                      {thumbnailError}
+                    </span>
+                  )}
+                </>
+              ) : (
+                <>
+                  <PiUploadSimple
+                    aria-hidden="true"
+                    className="h-10 w-10 text-texto-fraco"
+                  />
+                  <span className="text-texto">
+                    {tx(
+                      'Toque para escolher ou arraste o arquivo para cá',
+                      'Tap to choose or drag the file here'
+                    )}
+                  </span>
+                  <span className="t-legenda">
+                    {tx(
+                      'PDF, PNG, JPG, GIF, BMP ou WEBP, até 50 MB. A prévia sai sozinha.',
+                      'PDF, PNG, JPG, GIF, BMP or WEBP, up to 50 MB. The preview makes itself.'
+                    )}
+                  </span>
+                </>
+              )}
+            </div>
+            {errors.downloadUrl && (
+              <Aviso tom="erro">{errors.downloadUrl}</Aviso>
+            )}
+            {selectedFile && (
+              <div className="sm:col-span-2">
+                <Button
+                  tamanho="p"
+                  variante="fantasma"
+                  icone={PiX}
+                  onClick={() => {
+                    setSelectedFile(null);
+                    resetUploadMode();
+                  }}
+                >
+                  {tx('Remover arquivo', 'Remove file')}
+                </Button>
+              </div>
+            )}
+          </FormBlock>
+        )}
+
+        {uploadMode === 'url' && !editingScore && (
+          <FormBlock titulo={tx('Link do arquivo', 'File link')}>
+            <Field
+              className="sm:col-span-2"
+              ref={fieldRefs.downloadUrl}
+              label={tx('Link do arquivo *', 'File link *')}
+              type="url"
+              inputMode="url"
+              value={formData.downloadUrl}
+              onChange={(e) => handleUrlChange(e.target.value)}
+              erro={errors.downloadUrl}
+              placeholder="https://exemplo.com/partitura.pdf"
+            />
+            {validatingFile && (
+              <Aviso tom="carregando">
+                {tx('Validando o arquivo…', 'Validating the file…')}
+              </Aviso>
+            )}
+            {fileValidation.isValid && (
+              <Aviso tom="ok">
+                {tx('Arquivo válido encontrado.', 'Valid file found.')}
+              </Aviso>
+            )}
+            {fileValidation.error && (
+              <Aviso tom="erro">{fileValidation.error}</Aviso>
+            )}
+          </FormBlock>
+        )}
+
+        <FormBlock titulo={t('modal_score_work_selection_title')}>
+          <div
+            ref={fieldRefs.composerFilter}
+            className="flex flex-col gap-2 sm:col-span-2"
+          >
+            <label
+              htmlFor={`${idCampo}-1`}
+              className="t-rotulo font-medium text-texto"
+            >
+              {t('modal_score_work_filter_composer')}
+              {shouldDisableComposerFilter && (
+                <span className="ml-2 text-texto-fraco">
+                  {t('modal_score_work_filter_auto_selected')}
+                </span>
+              )}
+            </label>
+            <ComposerSearchInput
+              id={`${idCampo}-1`}
+              selectedComposer={composerFilter}
+              onComposerSelect={handleComposerFilterChange}
+              popularComposers={popularComposers}
+              isDisabled={shouldDisableComposerFilter || editingScore}
+            />
+            {(shouldDisableComposerFilter || editingScore) && (
+              <span className="t-legenda">
+                {editingScore
+                  ? t('modal_score_work_edit_tip')
+                  : t('modal_score_work_filter_tip')}
+              </span>
+            )}
+          </div>
+
+          <div
+            ref={fieldRefs.workId}
+            className="flex flex-col gap-2 sm:col-span-2"
+          >
+            <span className="t-rotulo font-medium text-texto">
+              {t('modal_score_work_label')} *
+            </span>
+            {editingScore && workData ? (
+              <div className="flex items-center gap-3 rounded-controle bg-sup-2 px-4 py-3 opacity-70">
+                <Icon de={PiCheck} tamanho="p" className="text-ouro-texto" />
+                <span className="flex flex-col">
+                  <span className="font-medium text-texto">
+                    {workData.title}
+                  </span>
+                  <span className="t-legenda">
+                    {workData.composer.fullName || workData.composer.name}
+                  </span>
+                </span>
+              </div>
+            ) : (
+              <WorkSearchInput
+                selectedWork={formData.workId}
+                onWorkSelect={handleWorkSelect}
+                popularWorks={works.map((work) => ({
+                  id: work.id,
+                  title: work.title,
+                  composer: work.composer,
+                }))}
+                filterByComposer={composerFilter}
+                userSuggestions={userWorks}
+                loadingUserSuggestions={loadingUserWorks}
+                error={errors.workId}
+              />
+            )}
+            {editingScore && workData && (
+              <span className="t-legenda">
+                {t('modal_score_work_edit_locked')}
+              </span>
+            )}
+          </div>
+
+          {!editingScore && !loadingUserWorks && (
+            <Aviso titulo={t('modal_score_work_suggestions_title')}>
+              {userWorks.length > 0
+                ? t('modal_score_work_suggestions_with_works', {
+                    count: userWorks.length,
+                  })
+                : t('modal_score_work_suggestions_no_works')}
+            </Aviso>
+          )}
+        </FormBlock>
+
+        <FormBlock titulo={t('modal_score_basic_info_title')}>
+          <Field
+            ref={fieldRefs.title}
+            label={`${t('modal_score_basic_title')} *`}
+            value={formData.title}
+            onChange={(e) => handleInputChange('title', e.target.value)}
+            erro={errors.title}
+            placeholder={tx('Título da partitura', 'Score title')}
+          />
+          {selecao(
+            t('modal_score_basic_type'),
+            scoreTypeOptions,
+            formData.type,
+            (v) => handleInputChange('type', v)
+          )}
+          {selecao(
+            t('modal_score_basic_format'),
+            fileFormatOptions,
+            formData.fileFormat,
+            (v) => handleInputChange('fileFormat', v)
+          )}
+          <Field
+            label={t('modal_score_basic_file_size')}
+            value={formData.fileSize}
+            onChange={(e) => handleInputChange('fileSize', e.target.value)}
+            placeholder="Ex.: 2,5 MB"
+            disabled
+          />
+          <Field
+            label={tx('Páginas ou imagens', 'Pages or images')}
+            type="number"
+            inputMode="numeric"
+            value={formData.pageCount}
+            onChange={(e) => handleInputChange('pageCount', e.target.value)}
+            placeholder="Ex.: 12"
+          />
+        </FormBlock>
+
+        <FormBlock titulo={t('modal_score_publication_title')}>
+          <Field
+            label={t('modal_score_publication_editor')}
+            value={formData.editor}
+            onChange={(e) => handleInputChange('editor', e.target.value)}
+            placeholder={tx('Nome do editor', 'Editor’s name')}
+          />
+          <Field
+            label={t('modal_score_publication_publisher')}
+            value={formData.publisher}
+            onChange={(e) => handleInputChange('publisher', e.target.value)}
+            placeholder={tx('Nome da editora', 'Publisher’s name')}
+          />
+          <Field
+            label={t('modal_score_publication_copyright')}
+            value={formData.copyright}
+            onChange={(e) => handleInputChange('copyright', e.target.value)}
+            placeholder={tx('Informações de copyright', 'Copyright details')}
+          />
+          {!generatedThumbnail && (
+            <Field
+              label={t('modal_score_publication_thumbnail')}
+              type="url"
+              inputMode="url"
+              value={formData.thumbnailUrl}
+              onChange={(e) =>
+                handleInputChange('thumbnailUrl', e.target.value)
+              }
+              placeholder="https://exemplo.com/thumb.jpg"
+            />
+          )}
+        </FormBlock>
+
+        <FormBlock
+          titulo={t('modal_score_grouping_title')}
+          nota={t('modal_score_grouping_how_description')}
+        >
+          {formData.workId && (
+            <div className="flex flex-col gap-3 sm:col-span-2">
+              <span className="t-rotulo font-medium text-texto">
+                {t('modal_score_grouping_suggestions_title')}
+              </span>
+              <GroupingSuggestions
+                workId={formData.workId}
+                onGroupSelect={handleGroupSelect}
+                currentGroupIndex={formData.groupIndex}
+                currentGroupTitle={formData.groupTitle}
+                visible={!!formData.workId}
+              />
+            </div>
+          )}
+          <Field
+            label={t('modal_score_grouping_index')}
+            type="number"
+            inputMode="numeric"
+            min="0"
+            value={formData.groupIndex}
+            onChange={(e) => handleInputChange('groupIndex', e.target.value)}
+            placeholder="0"
+          />
+          <Field
+            label={t('modal_score_grouping_title_field')}
+            value={formData.groupTitle}
+            onChange={(e) => handleInputChange('groupTitle', e.target.value)}
+            placeholder={tx(
+              'Ex.: Partitura completa, Versão simplificada',
+              'E.g. Full score, Simplified version'
+            )}
+          />
+          <Aviso titulo={t('modal_score_grouping_example_title')}>
+            <ul className="flex flex-col gap-1">
+              <li>{t('modal_score_grouping_example_group0')}</li>
+              <li>{t('modal_score_grouping_example_group1')}</li>
+              <li>{t('modal_score_grouping_example_tip')}</li>
+            </ul>
+          </Aviso>
+        </FormBlock>
+
+        <FormBlock titulo={t('modal_score_notes_title')}>
+          <Field.Area
+            className="sm:col-span-2"
+            label={t('modal_score_notes_label')}
+            classeCampo="resize-none"
+            value={formData.notes}
+            onChange={(e) => handleInputChange('notes', e.target.value)}
+            rows={3}
+            placeholder={t('modal_score_notes_placeholder')}
+          />
+        </FormBlock>
+      </form>
+    </FormSheet>
   );
 };
 

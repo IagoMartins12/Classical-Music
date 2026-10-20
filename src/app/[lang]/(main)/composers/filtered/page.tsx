@@ -11,15 +11,12 @@ import {
   routeLanguage,
   type LangParams,
 } from '@/app/utils/translations/routeLanguage';
-import {
-  ComposersView,
-  composersMetadata,
-  type ComposersSearchParams,
-} from '../view';
+import { ComposersView, composersMetadata } from '../view';
+import type { UrlParams } from '@/app/utils/listParams';
 
 interface FilteredComposersPageProps {
   params: LangParams;
-  searchParams: Promise<ComposersSearchParams>;
+  searchParams: Promise<UrlParams>;
 }
 
 // Com parâmetro não há o que guardar: cada combinação é uma resposta.
@@ -37,14 +34,6 @@ export default async function FilteredComposersPage({
   searchParams,
 }: FilteredComposersPageProps) {
   const language = await routeLanguage(params);
-  const resolved = await searchParams;
 
-  return (
-    <ComposersView
-      page={Number(resolved.page) || 1}
-      search={resolved.search || ''}
-      epochId={resolved.epoch || ''}
-      language={language}
-    />
-  );
+  return <ComposersView language={language} params={await searchParams} />;
 }

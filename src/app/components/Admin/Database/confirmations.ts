@@ -10,8 +10,6 @@
  * `requests/admin/database.ts` (`deleteConfirmationPhrase`): esta é só a
  * palavra que a tela pede para digitar antes de uma alteração crítica.
  */
-export const CONFIRMATION_KEYWORD = 'CONFIRMAR';
-
 export const CONFIRMATION_MESSAGES = {
   delete: {
     title: 'Confirmar exclusão',

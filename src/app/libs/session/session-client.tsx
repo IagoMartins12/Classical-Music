@@ -9,9 +9,16 @@ import { ReactNode, useCallback, useEffect, useMemo } from 'react';
 import { toast } from 'react-hot-toast';
 import { useLanguageStore } from '@/app/stores/useLanguageStore';
 import { authApi, RegisterInput } from '../api/auth';
-import { ApiError, refreshSession, SESSION_EXPIRED_EVENT } from '../api/client';
+import {
+  ApiError,
+  connectionError,
+  refreshSession,
+  SESSION_EXPIRED_EVENT,
+} from '../api/client';
 import { ProfileAccount, profileApi } from '../api/profile';
 import { getQueryClient } from '../query-client';
+import { lembrarConta, limparCachesPessoais } from '../pwa/limpar';
+import { SESSION_HINT_COOKIE } from '@/app/utils/authCookies';
 
 /**
  * Sessão do front, vinda da API (Etapa 2).
@@ -42,9 +49,28 @@ export type SessionStatus = 'loading' | 'authenticated' | 'unauthenticated';
 
 export type AuthResult =
   | { ok: true }
-  | { ok: false; status: number; message: string };
+  | { ok: false; status: number; message: string; key: string };
+
+/**
+ * Há sessão para perguntar? O marcador (`<prefixo>_session`) é gravado pela
+ * API junto com o refresh token e apagado no logout; não é `httpOnly`
+ * justamente para o front poder ler.
+ *
+ * Sem ele, todo visitante anônimo fazia `GET /profile` (401) e, em seguida, a
+ * tentativa de renovar (`/auth/refresh`, 401 de novo): duas chamadas inúteis
+ * por visita e dois erros no console, que o Lighthouse cobra em "boas
+ * práticas".
+ */
+function temMarcadorDeSessao(): boolean {
+  if (typeof document === 'undefined') return true;
+  return document.cookie
+    .split(';')
+    .some((par) => par.trim().startsWith(`${SESSION_HINT_COOKIE}=`));
+}
 
 async function fetchAccount(): Promise<ProfileAccount | null> {
+  if (!temMarcadorDeSessao()) return null;
+
   try {
     const { account } = await profileApi.me();
     return account;
@@ -115,8 +141,13 @@ export function useSession(): {
 
 function failure(error: unknown): AuthResult {
   return error instanceof ApiError
-    ? { ok: false, status: error.status, message: error.message }
-    : { ok: false, status: 0, message: 'Sem conexão com o servidor.' };
+    ? {
+        ok: false,
+        status: error.status,
+        message: error.message,
+        key: error.key,
+      }
+    : { ok: false, status: 0, message: connectionError(), key: '' };
 }
 
 /** Relê a sessão da API. */
@@ -148,7 +179,11 @@ export async function registerWithPassword(
   input: RegisterInput
 ): Promise<AuthResult> {
   try {
-    await authApi.register({ ...input, email: input.email.trim() });
+    await authApi.register({
+      language: useLanguageStore.getState().language,
+      ...input,
+      email: input.email.trim(),
+    });
   } catch (error) {
     return failure(error);
   }
@@ -173,6 +208,9 @@ export async function signOut(
   options: { redirect?: boolean; callbackUrl?: string } = {}
 ): Promise<void> {
   await authApi.logout().catch(() => undefined);
+  // What the app kept offline for this account goes with the session.
+  await lembrarConta(null);
+  await limparCachesPessoais();
 
   const client = getQueryClient();
   client.clear();
@@ -222,6 +260,7 @@ export function ApiSessionProvider({ children }: { children: ReactNode }) {
 function SessionEffects() {
   const queryClient = useQueryClient();
   const language = useLanguageStore((state) => state.language);
+  const chosen = useLanguageStore((state) => state.hasUserPreference);
   const { data: account } = useQuery({
     queryKey: SESSION_QUERY_KEY,
     queryFn: fetchAccount,
@@ -242,6 +281,26 @@ function SessionEffects() {
     }, REFRESH_EVERY_MS);
 
     return () => window.clearInterval(timer);
+  }, [account]);
+
+  // The language picked on the site goes to the account, so emails follow
+  // it. Covers a switch while signed in and a choice made before signing in.
+  useEffect(() => {
+    if (!account || !chosen || account.language === language) return;
+    profileApi
+      .setLanguage(language)
+      .then(() =>
+        queryClient.setQueryData<ProfileAccount | null>(
+          SESSION_QUERY_KEY,
+          (current) => (current ? { ...current, language } : current)
+        )
+      )
+      .catch(() => undefined);
+  }, [account, chosen, language, queryClient]);
+
+  // Another account on this device: its offline copies are not this one's.
+  useEffect(() => {
+    if (account) void lembrarConta(account.id);
   }, [account]);
 
   // A renovação falhou numa chamada qualquer: a sessão acabou.

@@ -1,24 +1,36 @@
 // app/profile/components/InstrumentsSection.tsx (versão com dados reais)
 'use client';
+import { CaixaDeMarcar } from '@/app/components/ui/CaixaDeMarcar';
+import { Field } from '@/app/components/ui/Field';
+import { PERFIL } from '@/app/conteudo/textos/perfil';
+import { useTextos } from '@/app/hooks/useTextos';
 
 import React, { useState, useEffect, useCallback } from 'react';
 // Era `User` do NextAuth, aumentado em `types/next-auth.d.ts`. É o mesmo
 // objeto que `useAuth()` entrega, e ele já tem tipo próprio no store.
 import type { User } from '@/app/hooks/userStore';
-import { FiPlus, FiX, FiEdit3, FiSave, FiTrash2 } from 'react-icons/fi';
+import {
+  PiFloppyDisk,
+  PiMusicNotes,
+  PiPencilLine,
+  PiPlus,
+  PiTrash,
+  PiX,
+} from 'react-icons/pi';
 
 import { toast } from 'react-hot-toast';
-import Button from '../../Common/Button';
-import { GiMusicalNotes } from 'react-icons/gi';
-import Select from '../../Common/Select';
+import { Button } from '@/app/components/ui/Button';
 import {
   getAvailableInstruments,
   getUserInstruments,
   updateUserInstruments,
 } from '@/app/actions/profile';
 import { useSessionUpdate } from '@/app/hooks/useSessionUpdate';
-import { useTranslation } from '@/app/context/TranslationContext';
-import Checkbox from '../../Common/Checkbox';
+import { Stack, Inline } from '@/app/components/ui/Layout';
+import { Text } from '@/app/components/ui/Text';
+import { Card } from '@/app/components/ui/Card';
+import { porIdioma } from '@/app/utils/porIdioma';
+import { useTx } from '@/app/hooks/useTx';
 
 interface Instrument {
   id: string;
@@ -42,8 +54,9 @@ interface InstrumentsSectionProps {
 }
 
 const InstrumentsSection: React.FC<InstrumentsSectionProps> = ({ user }) => {
+  const tx = useTx();
   const { updateUserSession } = useSessionUpdate();
-  const { t } = useTranslation({ sections: ['pages/profile'] });
+  const { t } = useTextos(PERFIL);
   const [isEditing, setIsEditing] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [isLoadingData, setIsLoadingData] = useState(true);
@@ -83,7 +96,9 @@ const InstrumentsSection: React.FC<InstrumentsSectionProps> = ({ user }) => {
       await loadUserInstruments();
     } catch (error) {
       console.error('Erro ao carregar dados iniciais:', error);
-      toast.error('Erro ao carregar instrumentos');
+      toast.error(
+        tx('Erro ao carregar instrumentos', 'Could not load the instruments')
+      );
     } finally {
       setIsLoadingData(false);
     }
@@ -115,11 +130,21 @@ const InstrumentsSection: React.FC<InstrumentsSectionProps> = ({ user }) => {
       if (result.success && result.data) {
         setAvailableInstruments(result.data);
       } else {
-        toast.error('Erro ao carregar instrumentos disponíveis');
+        toast.error(
+          porIdioma(
+            'Não foi possível carregar os instrumentos',
+            'Could not load the instruments'
+          )
+        );
       }
     } catch (error) {
       console.error('Erro ao carregar instrumentos disponíveis:', error);
-      toast.error('Erro ao carregar instrumentos disponíveis');
+      toast.error(
+        porIdioma(
+          'Não foi possível carregar os instrumentos',
+          'Could not load the instruments'
+        )
+      );
     }
   };
 
@@ -133,7 +158,7 @@ const InstrumentsSection: React.FC<InstrumentsSectionProps> = ({ user }) => {
 
   const handleAddInstrument = () => {
     if (!newInstrument.instrumentId) {
-      toast.error('Selecione um instrumento');
+      toast.error(tx('Selecione um instrumento', 'Choose an instrument'));
       return;
     }
 
@@ -167,12 +192,16 @@ const InstrumentsSection: React.FC<InstrumentsSectionProps> = ({ user }) => {
       isLearning: true,
     });
     setShowAddForm(false);
-    toast.success('Instrumento adicionado à lista!');
+    toast.success(
+      tx('Instrumento adicionado à lista!', 'Instrument added to the list.')
+    );
   };
 
   const handleRemoveInstrument = (id: string) => {
     setUserInstruments((prev) => prev.filter((inst) => inst.id !== id));
-    toast.success('Instrumento removido da lista!');
+    toast.success(
+      tx('Instrumento removido da lista!', 'Instrument removed from the list.')
+    );
   };
 
   const handleUpdateInstrument = (
@@ -241,7 +270,9 @@ const InstrumentsSection: React.FC<InstrumentsSectionProps> = ({ user }) => {
       }
     } catch (error) {
       console.error('Erro ao salvar instrumentos:', error);
-      toast.error('Erro ao salvar instrumentos.');
+      toast.error(
+        tx('Erro ao salvar instrumentos.', 'Could not save the instruments.')
+      );
     } finally {
       setIsLoading(false);
     }
@@ -257,76 +288,81 @@ const InstrumentsSection: React.FC<InstrumentsSectionProps> = ({ user }) => {
   // Loading inicial
   if (isLoadingData) {
     return (
-      <div className="space-y-6">
+      <Stack gap={6}>
         <div className="flex items-center justify-between">
           <div>
-            <h3 className="text-lg font-semibold text-theme-primary">
+            <h3 className="font-display text-[1.5rem] leading-tight text-texto">
               {t('instruments_title')}
             </h3>
-            <p className="text-sm text-theme-secondary">
+            <Text papel="rotulo" tom="suave" as="p">
               {t('instruments_loading')}
-            </p>
+            </Text>
           </div>
         </div>
 
-        <div className="space-y-4">
+        <Stack>
           {[...Array(2)].map((_, index) => (
-            <div key={index} className="classical-card-2 p-4 animate-pulse">
-              <div className="flex items-center space-x-4">
-                <div className="w-10 h-10 bg-theme-secondary rounded-full" />
+            <Card
+              nivel={2}
+              densidade="compacta"
+              key={index}
+              className="animate-pulse"
+            >
+              <Inline gap={4}>
+                <div className="w-10 h-10 bg-sup-2 rounded-full" />
                 <div className="flex-1">
-                  <div className="h-4 bg-theme-secondary rounded w-24 mb-2" />
-                  <div className="h-3 bg-theme-secondary rounded w-16" />
+                  <div className="h-4 bg-sup-2 rounded w-24 mb-2" />
+                  <div className="h-3 bg-sup-2 rounded w-16" />
                 </div>
-              </div>
-            </div>
+              </Inline>
+            </Card>
           ))}
-        </div>
-      </div>
+        </Stack>
+      </Stack>
     );
   }
 
   const filteredInstruments = getFilteredAvailableInstruments();
 
   return (
-    <div className="space-y-6">
+    <Stack gap={6}>
       {/* Header */}
-      <div className="flex items-center justify-between">
-        <div>
-          <h3 className="text-lg font-semibold text-theme-primary">
+      <div className="flex flex-wrap items-start justify-between gap-4 sm:flex-nowrap sm:[&>*:not(:first-child)]:shrink-0">
+        <div className="sm:min-w-0 sm:flex-1">
+          <h3 className="font-display text-[1.5rem] leading-tight text-texto">
             {t('instruments_title')}
           </h3>
-          <p className="text-sm text-theme-secondary">
+          <Text papel="rotulo" tom="suave" as="p">
             {t('instruments_description')}
-          </p>
+          </Text>
         </div>
 
         {!isEditing ? (
           <Button
-            variant="outline"
-            size="sm"
+            variante="secundario"
+            tamanho="p"
             onClick={() => setIsEditing(true)}
-            leftIcon={<FiEdit3 />}
+            icone={PiPencilLine}
           >
             {t('instruments_edit')}
           </Button>
         ) : (
-          <div className="flex flex-col md:flex-row gap-2">
+          <div className="flex gap-2">
             <Button
-              variant="outline"
-              size="sm"
+              variante="fantasma"
+              tamanho="p"
               onClick={handleCancel}
-              leftIcon={<FiX />}
+              icone={PiX}
               disabled={isLoading}
             >
               {t('instruments_cancel')}
             </Button>
             <Button
-              variant="primary"
-              size="sm"
+              variante="primario"
+              tamanho="p"
               onClick={handleSave}
-              isLoading={isLoading}
-              leftIcon={<FiSave />}
+              carregando={isLoading}
+              icone={PiFloppyDisk}
             >
               {t('instruments_save')}
             </Button>
@@ -335,15 +371,15 @@ const InstrumentsSection: React.FC<InstrumentsSectionProps> = ({ user }) => {
       </div>
 
       {/* Instruments List */}
-      <div className="space-y-4">
+      <Stack>
         {userInstruments.length === 0 ? (
           <div className="text-center py-8">
-            <GiMusicalNotes className="w-12 h-12 text-theme-tertiary mx-auto mb-3" />
-            <p className="text-theme-secondary">{t('instruments_none')}</p>
+            <PiMusicNotes className="w-12 h-12 text-texto-fraco mx-auto mb-3" />
+            <p className="text-texto-suave">{t('instruments_none')}</p>
             {!isEditing && (
               <Button
-                variant="outline"
-                size="sm"
+                variante="secundario"
+                tamanho="p"
                 onClick={() => setIsEditing(true)}
                 className="mt-4"
               >
@@ -353,109 +389,121 @@ const InstrumentsSection: React.FC<InstrumentsSectionProps> = ({ user }) => {
           </div>
         ) : (
           userInstruments.map((instrument) => (
-            <div key={instrument.id} className="classical-card-2 p-4">
+            <Card nivel={2} densidade="compacta" key={instrument.id}>
               <div className="flex items-center justify-between">
-                <div className="flex items-center space-x-4">
-                  <div className="w-10 h-10 bg-brand-gradient rounded-full flex items-center justify-center">
-                    <GiMusicalNotes className="w-5 h-5 text-theme-primary" />
+                <Inline gap={4}>
+                  <div className="w-10 h-10 rounded-full flex items-center justify-center">
+                    <PiMusicNotes className="w-5 h-5 text-texto" />
                   </div>
 
                   <div>
-                    <div className="flex items-center space-x-3">
-                      <h4 className="font-medium text-theme-primary">
+                    <Inline gap={3}>
+                      <h4 className="font-medium text-texto">
                         {instrument.name}
                       </h4>
                       {instrument.category && (
-                        <span className="px-2 py-1 text-xs bg-theme-secondary bg-opacity-50 text-theme-secondary rounded-full">
+                        <Text
+                          papel="legenda"
+                          tom="suave"
+                          className="px-2 py-1 bg-sup-2 rounded-full"
+                        >
                           {instrument.category}
-                        </span>
+                        </Text>
                       )}
                       {instrument.isPrimary && (
-                        <div className="!px-3 !py-1 text-xs  classical-card text-theme-primary rounded-full">
+                        <Text
+                          papel="legenda"
+                          tom="forte"
+                          as="div"
+                          className="!px-3 !py-1 tint-ouro text-ouro-na-tinta rounded-full"
+                        >
                           {t('instruments_primary')}
-                        </div>
+                        </Text>
                       )}
-                    </div>
+                    </Inline>
 
                     {isEditing ? (
                       <div className="flex flex-col md:flex-row items-start gap-4 md:items-center mt-4 md:mt-2">
-                        <Select
+                        <Field.Selecao
+                          label={t('instruments_level')}
+                          rotuloOculto
                           value={instrument.level}
                           onChange={(e) =>
                             handleUpdateInstrument(instrument.id, {
                               level: e.target.value as any,
                             })
                           }
-                          options={LEVELS}
-                          className="w-32"
+                          className="w-full md:w-48"
+                        >
+                          {LEVELS.map((o) => (
+                            <option key={o.value} value={o.value}>
+                              {o.label}
+                            </option>
+                          ))}
+                        </Field.Selecao>
+
+                        <CaixaDeMarcar
+                          rotulo={t('instruments_primary')}
+                          marcado={instrument.isPrimary}
+                          aoMudar={(marcado: boolean) =>
+                            handleUpdateInstrument(instrument.id, {
+                              isPrimary: marcado,
+                            })
+                          }
                         />
 
-                        <label className="flex items-center space-x-2 text-sm">
-                          <Checkbox
-                            label={t('instruments_primary')}
-                            checked={instrument.isPrimary}
-                            onChange={(e) =>
-                              handleUpdateInstrument(instrument.id, {
-                                isPrimary: e.target.checked,
-                              })
-                            }
-                            className="rounded"
-                          />
-                        </label>
-
-                        <label className="flex items-center space-x-2 text-sm">
-                          <Checkbox
-                            checked={instrument.isLearning}
-                            onChange={(e) =>
-                              handleUpdateInstrument(instrument.id, {
-                                isLearning: e.target.checked,
-                              })
-                            }
-                            className="rounded"
-                            label={t('instruments_learning')}
-                          />
-                        </label>
+                        <CaixaDeMarcar
+                          marcado={instrument.isLearning}
+                          aoMudar={(marcado: boolean) =>
+                            handleUpdateInstrument(instrument.id, {
+                              isLearning: marcado,
+                            })
+                          }
+                          rotulo={t('instruments_learning')}
+                        />
                       </div>
                     ) : (
-                      <p className="text-sm text-theme-secondary">
+                      <Text papel="rotulo" tom="suave" as="p">
                         {
                           LEVELS.find((l) => l.value === instrument.level)
                             ?.label
                         }
                         {instrument.startedAt && (
-                          <span className="ml-2 text-theme-tertiary">
+                          <span className="ml-2 text-texto-fraco">
                             • {t('instruments_since')}{' '}
                             {new Date(instrument.startedAt).getFullYear()}
                           </span>
                         )}
-                      </p>
+                      </Text>
                     )}
                   </div>
-                </div>
+                </Inline>
 
                 {isEditing && (
-                  <button
+                  <Button
+                    variante="fantasma"
+                    tamanho="p"
                     onClick={() => handleRemoveInstrument(instrument.id)}
-                    className="p-2 text-theme-tertiary hover:text-accent-red transition-colors"
-                    title="Remover instrumento"
-                  >
-                    <FiTrash2 className="w-4 h-4" />
-                  </button>
+                    title={tx('Remover instrumento', 'Remove instrument')}
+                    icone={PiTrash}
+                    rotulo={tx('Remover instrumento', 'Remove instrument')}
+                    className="text-erro"
+                  />
                 )}
               </div>
-            </div>
+            </Card>
           ))
         )}
-      </div>
+      </Stack>
 
       {/* Add Instrument Form */}
       {isEditing && (
-        <div className="border-t border-theme-secondary pt-6">
+        <div className="border-t border-linha pt-6">
           {!showAddForm ? (
             <Button
-              variant="outline"
+              variante="secundario"
               onClick={() => setShowAddForm(true)}
-              leftIcon={<FiPlus />}
+              icone={PiPlus}
               className="w-full"
               disabled={filteredInstruments.length === 0}
             >
@@ -464,14 +512,18 @@ const InstrumentsSection: React.FC<InstrumentsSectionProps> = ({ user }) => {
                 : t('instruments_add_instrument')}
             </Button>
           ) : (
-            <div className="classical-card-2 p-4 space-y-4">
-              <h4 className="font-medium text-theme-primary">
+            <Card
+              nivel={2}
+              densidade="compacta"
+              className="gap-4 flex flex-col"
+            >
+              <h4 className="font-medium text-texto">
                 {t('instruments_add_title')}
               </h4>
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <Select
-                  label="Instrumento"
+                <Field.Selecao
+                  label={tx('Instrumento', 'Instrument')}
                   value={newInstrument.instrumentId}
                   onChange={(e) =>
                     setNewInstrument((prev) => ({
@@ -479,7 +531,8 @@ const InstrumentsSection: React.FC<InstrumentsSectionProps> = ({ user }) => {
                       instrumentId: e.target.value,
                     }))
                   }
-                  options={[
+                >
+                  {[
                     { value: '', label: t('instruments_select_instrument') },
                     ...filteredInstruments.map((inst) => ({
                       value: inst.id,
@@ -487,10 +540,14 @@ const InstrumentsSection: React.FC<InstrumentsSectionProps> = ({ user }) => {
                         inst.category ? ` (${inst.category})` : ''
                       }`,
                     })),
-                  ]}
-                />
+                  ].map((o) => (
+                    <option key={o.value} value={o.value}>
+                      {o.label}
+                    </option>
+                  ))}
+                </Field.Selecao>
 
-                <Select
+                <Field.Selecao
                   label={t('instruments_level')}
                   value={newInstrument.level}
                   onChange={(e) =>
@@ -499,71 +556,72 @@ const InstrumentsSection: React.FC<InstrumentsSectionProps> = ({ user }) => {
                       level: e.target.value as any,
                     }))
                   }
-                  options={LEVELS}
+                >
+                  {LEVELS.map((o) => (
+                    <option key={o.value} value={o.value}>
+                      {o.label}
+                    </option>
+                  ))}
+                </Field.Selecao>
+              </div>
+
+              <Inline gap={6}>
+                <CaixaDeMarcar
+                  rotulo={t('instruments_primary_checkbox')}
+                  marcado={newInstrument.isPrimary}
+                  aoMudar={(marcado: boolean) =>
+                    setNewInstrument((prev) => ({
+                      ...prev,
+                      isPrimary: marcado,
+                    }))
+                  }
                 />
-              </div>
 
-              <div className="flex items-center space-x-6">
-                <label className="flex items-center space-x-2 text-sm">
-                  <Checkbox
-                    label={t('instruments_primary_checkbox')}
-                    checked={newInstrument.isPrimary}
-                    onChange={(e) =>
-                      setNewInstrument((prev) => ({
-                        ...prev,
-                        isPrimary: e.target.checked,
-                      }))
-                    }
-                    className="rounded"
-                  />
-                </label>
+                <CaixaDeMarcar
+                  rotulo={t('instruments_learning_checkbox')}
+                  marcado={newInstrument.isLearning}
+                  aoMudar={(marcado: boolean) =>
+                    setNewInstrument((prev) => ({
+                      ...prev,
+                      isLearning: marcado,
+                    }))
+                  }
+                />
+              </Inline>
 
-                <label className="flex items-center space-x-2 text-sm">
-                  <Checkbox
-                    label={t('instruments_learning_checkbox')}
-                    checked={newInstrument.isLearning}
-                    onChange={(e) =>
-                      setNewInstrument((prev) => ({
-                        ...prev,
-                        isLearning: e.target.checked,
-                      }))
-                    }
-                    className="rounded"
-                  />
-                </label>
-              </div>
-
-              <div className="flex space-x-3">
+              <div className="flex justify-end gap-2">
                 <Button
-                  variant="primary"
-                  size="sm"
+                  variante="fantasma"
+                  tamanho="p"
+                  icone={PiX}
+                  onClick={() => setShowAddForm(false)}
+                >
+                  {t('instruments_cancel')}
+                </Button>
+                <Button
+                  variante="primario"
+                  tamanho="p"
+                  icone={PiPlus}
                   onClick={handleAddInstrument}
                   disabled={!newInstrument.instrumentId}
                 >
                   {t('instruments_add_button')}
                 </Button>
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  onClick={() => setShowAddForm(false)}
-                >
-                  {t('instruments_cancel')}
-                </Button>
               </div>
-            </div>
+            </Card>
           )}
 
           {/* Informações adicionais */}
           {isEditing && (
             <div className="mt-4 text-center">
-              <p className="text-xs text-theme-tertiary">
+              <Text papel="legenda" tom="fraco" as="p">
                 {t('instruments_tip')}
-              </p>
+              </Text>
             </div>
           )}
         </div>
       )}
-    </div>
+    </Stack>
   );
 };
 

@@ -1,85 +1,14 @@
-// app/decline-teacher-invite/[token]/page.tsx - Recusar convite de professor
-import {
-  getServerLanguageStatic,
-  loadPageTranslationsWithCommon,
-} from '@/app/utils/translations/serverTranslations';
-import DeclineTeacherInvitePageClient from './pageClient';
-import { TranslationProvider } from '@/app/context/TranslationContext';
+import { DeclineTeacherInviteView } from '@/app/components/site/tokens/TokenPages';
+import { tokenMetadata } from '@/app/components/site/tokens/tokenMetadata';
 
 /**
- * Nunca cacheada: o token vale uma vez e a página age sobre ele (confirma,
- * recusa, cancela). Sem esta linha, o Next guardaria o resultado por token e
- * uma segunda visita veria a resposta da primeira.
+ * Never cached: the token works once and the page acts on it. Cached, a
+ * second visit would see the first one's answer.
  */
 export const dynamic = 'force-dynamic';
 
-interface DeclineTeacherInviteParams {
-  token: string;
-}
+export const generateMetadata = () => tokenMetadata('teacherDecline');
 
-interface DeclineTeacherInvitePageProps {
-  params: Promise<DeclineTeacherInviteParams>;
-}
-
-export async function generateMetadata({
-  params,
-}: DeclineTeacherInvitePageProps) {
-  const resolvedParams = await params;
-  const language = await getServerLanguageStatic();
-
-  const content = {
-    pt: {
-      title: 'Recusar Convite de Professor - Opus Atlas | Gerenciar Convites',
-      description:
-        'Recuse o convite para professor no Opus Atlas. Você pode continuar usando a plataforma como usuário regular e aceitar convites futuros de administradores.',
-    },
-    en: {
-      title: 'Decline Teacher Invite - Opus Atlas | Manage Invites',
-      description:
-        'Decline the teacher invitation on Opus Atlas. You can continue using the platform as a regular user and accept future invitations from administrators.',
-    },
-  };
-
-  const t = content[language];
-
-  return {
-    title: t.title,
-    description: t.description,
-    robots: {
-      index: false,
-      follow: false,
-      googleBot: {
-        index: false,
-        follow: false,
-      },
-    },
-    openGraph: {
-      title: t.title,
-      description: t.description,
-      type: 'website',
-      locale: language === 'pt' ? 'pt_BR' : 'en_US',
-      siteName: 'Opus Atlas',
-    },
-    twitter: {
-      card: 'summary',
-      title: t.title,
-      description: t.description,
-    },
-    alternates: {
-      canonical: `https://opusatlas.com.br/decline-teacher-invite/${resolvedParams.token}`,
-    },
-  };
-}
-
-export default async function DeclineTeacherInvitePage() {
-  const language = await getServerLanguageStatic();
-  const { translations } = await loadPageTranslationsWithCommon(language, [
-    'pagesToken',
-  ]);
-
-  return (
-    <TranslationProvider language={language} translations={translations}>
-      <DeclineTeacherInvitePageClient />
-    </TranslationProvider>
-  );
+export default function Page() {
+  return <DeclineTeacherInviteView />;
 }

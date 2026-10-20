@@ -12,6 +12,7 @@ import {
   getAccountCascadeInfo,
 } from '@/app/actions/profile';
 import { useAuth } from './useAuth';
+import { porIdioma } from '@/app/utils/porIdioma';
 
 export interface CascadeInfo {
   totalItems: number;
@@ -58,7 +59,7 @@ export const useAccountManagement = () => {
   const changeEmail = useCallback(
     async (data: EmailChangeData) => {
       if (!user?.id) {
-        toast.error('Usuário não encontrado');
+        toast.error(porIdioma('Usuário não encontrado', 'User not found'));
         return { success: false };
       }
 
@@ -80,7 +81,12 @@ export const useAccountManagement = () => {
         }
       } catch (error) {
         console.error('Error changing email:', error);
-        toast.error('Erro ao solicitar mudança de email');
+        toast.error(
+          porIdioma(
+            'Não foi possível pedir a troca de e-mail',
+            'Could not request the email change'
+          )
+        );
         return { success: false, error: 'Erro interno' };
       } finally {
         setIsEmailChanging(false);
@@ -93,7 +99,7 @@ export const useAccountManagement = () => {
   const changeAccountType = useCallback(
     async (data: UserTypeChangeData) => {
       if (!user?.id) {
-        toast.error('Usuário não encontrado');
+        toast.error(porIdioma('Usuário não encontrado', 'User not found'));
         return { success: false };
       }
 
@@ -122,7 +128,12 @@ export const useAccountManagement = () => {
         }
       } catch (error) {
         console.error('Error changing user type:', error);
-        toast.error('Erro ao alterar tipo de conta');
+        toast.error(
+          porIdioma(
+            'Não foi possível mudar o tipo de conta',
+            'Could not change the account type'
+          )
+        );
         return { success: false, error: 'Erro interno' };
       } finally {
         setIsUserTypeChanging(false);
@@ -134,7 +145,7 @@ export const useAccountManagement = () => {
   // Load cascade info for account deletion
   const loadCascadeInfo = useCallback(async () => {
     if (!user?.id) {
-      toast.error('Usuário não encontrado');
+      toast.error(porIdioma('Usuário não encontrado', 'User not found'));
       return { success: false };
     }
 
@@ -151,7 +162,12 @@ export const useAccountManagement = () => {
       }
     } catch (error) {
       console.error('Error loading cascade info:', error);
-      toast.error('Erro ao carregar informações da conta');
+      toast.error(
+        porIdioma(
+          'Não foi possível carregar a conta',
+          'Could not load the account'
+        )
+      );
       return { success: false, error: 'Erro interno' };
     } finally {
       setIsCascadeLoading(false);
@@ -162,7 +178,7 @@ export const useAccountManagement = () => {
   const deleteAccount = useCallback(
     async (currentPassword?: string) => {
       if (!user?.id) {
-        toast.error('Usuário não encontrado');
+        toast.error(porIdioma('Usuário não encontrado', 'User not found'));
         return { success: false };
       }
 
@@ -178,7 +194,10 @@ export const useAccountManagement = () => {
         if (result.success) {
           await signOut({ redirect: false });
           toast.success(
-            'Sua conta foi excluída com sucesso. Sentiremos sua falta!'
+            porIdioma(
+              'Sua conta foi excluída. Sentiremos sua falta.',
+              'Your account was deleted. We will miss you.'
+            )
           );
           router.push('/');
           logout();
@@ -190,7 +209,12 @@ export const useAccountManagement = () => {
         }
       } catch (error) {
         console.error('Error deleting account:', error);
-        toast.error('Erro ao deletar conta');
+        toast.error(
+          porIdioma(
+            'Não foi possível excluir a conta',
+            'Could not delete the account'
+          )
+        );
         return { success: false, error: 'Erro interno' };
       } finally {
         setIsDeleting(false);
@@ -204,15 +228,15 @@ export const useAccountManagement = () => {
     (userType: string | null | undefined) => {
       switch (userType) {
         case 'MUSIC_STUDENT':
-          return 'Estudante de Música';
+          return porIdioma('Estudante de música', 'Music student');
         case 'CASUAL_USER':
-          return 'Entusiasta';
+          return porIdioma('Entusiasta', 'Enthusiast');
         case 'PROFESSIONAL':
-          return 'Profissional';
+          return porIdioma('Profissional', 'Professional');
         case 'TEACHER':
-          return 'Professor';
+          return porIdioma('Professor', 'Teacher');
         default:
-          return 'Não definido';
+          return porIdioma('Não definido', 'Not set');
       }
     },
     []

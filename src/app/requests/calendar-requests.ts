@@ -30,6 +30,23 @@ export interface CalendarEventData {
   description?: string;
   ticketUrl?: string;
   isFree: boolean;
+  /** Endereço legível do evento, quando a API manda. */
+  slug?: string;
+  /** Evento sem horário (exposição, festival de vários dias). */
+  allDay?: boolean;
+  /** O fuso da casa (`America/Sao_Paulo`, `America/Manaus`…). */
+  timeZone?: string;
+  subtitle?: string;
+  room?: string;
+  conductor?: string;
+  ensemble?: string;
+  ticketInfo?: string;
+  /** Destaque do mês: posição (1 a 3) e tamanho no mosaico da agenda. */
+  isFeatured?: boolean;
+  featuredOrder?: number;
+  featuredSize?: 'large' | 'normal';
+  /** Picked by an admin for the main site's home. */
+  showOnMainHome?: boolean;
 }
 
 export interface CalendarFilterOptions {
@@ -63,6 +80,18 @@ interface ApiCalendarEvent {
   ticketUrl?: string | null;
   isFree: boolean;
   externalUrl?: string | null;
+  slug?: string | null;
+  allDay?: boolean;
+  timeZone?: string | null;
+  subtitle?: string | null;
+  room?: string | null;
+  conductor?: string | null;
+  ensemble?: string | null;
+  ticketInfo?: string | null;
+  isFeatured?: boolean;
+  featuredOrder?: number | null;
+  featuredSize?: string | null;
+  showOnMainHome?: boolean;
 }
 
 interface ApiCalendar {
@@ -97,6 +126,23 @@ function toEvent(event: ApiCalendarEvent): CalendarEventData {
     description: event.description || undefined,
     ticketUrl: event.ticketUrl || undefined,
     isFree: event.isFree,
+    slug: event.slug || undefined,
+    allDay: !!event.allDay,
+    timeZone: event.timeZone || undefined,
+    subtitle: event.subtitle || undefined,
+    room: event.room || undefined,
+    conductor: event.conductor || undefined,
+    ensemble: event.ensemble || undefined,
+    ticketInfo: event.ticketInfo || undefined,
+    isFeatured: !!event.isFeatured,
+    featuredOrder: event.featuredOrder ?? undefined,
+    featuredSize:
+      event.featuredSize === 'large'
+        ? 'large'
+        : event.isFeatured
+          ? 'normal'
+          : undefined,
+    showOnMainHome: !!event.showOnMainHome,
   };
 }
 
@@ -174,6 +220,10 @@ export interface EventFormValues {
   imageUrl: string;
   venueDetails: string;
   ticketInfo: string;
+  isFeatured: boolean;
+  featuredOrder: string;
+  featuredSize: 'large' | 'normal';
+  showOnMainHome: boolean;
 }
 
 /**
@@ -208,11 +258,76 @@ export function saveEvent(values: EventFormValues, id?: string) {
     imageUrl: blankToNull(values.imageUrl),
     venueDetails: blankToNull(values.venueDetails),
     ticketInfo: blankToNull(values.ticketInfo),
+    isFeatured: values.isFeatured,
+    showOnMainHome: values.showOnMainHome,
+    ...(values.isFeatured
+      ? {
+          featuredOrder: values.featuredOrder
+            ? parseInt(values.featuredOrder)
+            : undefined,
+          featuredSize: values.featuredSize,
+        }
+      : {}),
   };
 
   return id
     ? apiFetch(`/blog/events/${id}`, { method: 'PATCH', body })
     : apiFetch('/blog/events', { method: 'POST', body });
+}
+
+/** O dia (`AAAA-MM-DD`) de um instante no fuso de Brasília, para `<input type="date">`. */
+function diaDoInstante(valor: string | null | undefined) {
+  if (!valor) return '';
+  const data = new Date(valor);
+  if (Number.isNaN(data.getTime())) return '';
+  return new Intl.DateTimeFormat('en-CA', {
+    timeZone: 'America/Sao_Paulo',
+    year: 'numeric',
+    month: '2-digit',
+    day: '2-digit',
+  }).format(data);
+}
+
+/**
+ * O evento inteiro, para editar. O calendário só traz o resumo (título,
+ * início, local); editar a partir dele abria o formulário com data e local
+ * vazios e, ao salvar, gravava `null` no que o resumo não tinha (regente,
+ * sala, subtítulo). Lê com a sessão: evento fora do ar só aparece para
+ * administrador.
+ */
+export async function loadEventForEdit(id: string): Promise<EventFormValues> {
+  const { event: e } = await apiFetch<{ event: Record<string, unknown> }>(
+    `/blog/events/${id}`,
+    { cache: 'no-store' }
+  );
+  const texto = (v: unknown) => (typeof v === 'string' ? v : '');
+  return {
+    title: texto(e.title),
+    subtitle: texto(e.subtitle),
+    description: texto(e.description),
+    type: texto(e.type) || 'CONCERT',
+    status: texto(e.status) || 'PUBLISHED',
+    venueId: texto(e.venueId),
+    room: texto(e.room),
+    startDate: diaDoInstante(texto(e.startDate)),
+    endDate: diaDoInstante(texto(e.endDate)),
+    startTime: texto(e.startTime),
+    endTime: texto(e.endTime),
+    duration: typeof e.duration === 'number' ? String(e.duration) : '',
+    doors: texto(e.doors),
+    conductor: texto(e.conductor),
+    ensemble: texto(e.ensemble),
+    ticketUrl: texto(e.ticketUrl),
+    isFree: e.isFree === true,
+    imageUrl: texto(e.imageUrl),
+    venueDetails: texto(e.venueDetails),
+    ticketInfo: texto(e.ticketInfo),
+    isFeatured: e.isFeatured === true,
+    featuredOrder:
+      typeof e.featuredOrder === 'number' ? String(e.featuredOrder) : '',
+    featuredSize: e.featuredSize === 'large' ? 'large' : 'normal',
+    showOnMainHome: e.showOnMainHome === true,
+  };
 }
 
 export interface VenueFormValues {

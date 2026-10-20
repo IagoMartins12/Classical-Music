@@ -1,18 +1,22 @@
-// ============================================
-// AudioPlayerModal - COM UPLOAD/YOUTUBE
-// ============================================
 'use client';
 
-import { useState } from 'react';
-import { Editor } from '@tiptap/react';
-import { FiUpload, FiMusic } from 'react-icons/fi';
-import Modal from '@/app/components/Modal';
-import Input from '@/app/components/Common/Inputs';
-import Button from '@/app/components/Common/Button';
-import ComposerSearchInputSimple from '@/app/components/ComposerSearchInputSimple';
-import SimpleWorkSearchInput from '@/app/components/SimpleWorkSearchInput';
-import { findComposerById, getWorkById } from '@/app/requests/catalog-search';
+import { useId, useState, type ChangeEvent } from 'react';
+import type { Editor } from '@tiptap/react';
+import { PiUploadSimple } from 'react-icons/pi';
+import {
+  BuscaNoAcervo,
+  ItemEscolhido,
+  type ItemDoAcervo,
+} from '@/app/components/blog/escrita/BuscaNoAcervo';
 import { uploadBlogMedia } from '@/app/requests/blog/interactions';
+import { BlocoDoArtigo } from '@/app/components/blog/site/CorpoDoArtigo';
+import { idDoYoutube } from '@/app/components/blog/site/useFonteDeAudio';
+import { Chip } from '@/app/components/ui/Badge';
+import { classesDeBotao } from '@/app/components/ui/Button';
+import { Field } from '@/app/components/ui/Field';
+import { Icon } from '@/app/components/ui/Icon';
+import { cx } from '@/app/components/ui/cx';
+import { FolhaDoEditor } from '../FolhaDoEditor';
 
 interface AudioPlayerModalProps {
   editor: Editor;
@@ -21,334 +25,220 @@ interface AudioPlayerModalProps {
   sessionId?: string;
 }
 
+const FORMATOS = ['audio/mpeg', 'audio/mp3', 'audio/wav', 'audio/ogg'];
+
+/**
+ * Áudio no texto: um arquivo enviado ou o som de um vídeo do YouTube, com
+ * compositor e obra opcionais (viram links no bloco). A prévia é o próprio
+ * bloco do artigo, já tocável.
+ */
 export function AudioPlayerModal({
   editor,
   onClose,
   articleId,
   sessionId,
 }: AudioPlayerModalProps) {
-  // Tabs
-  const [activeTab, setActiveTab] = useState<'upload' | 'youtube'>('upload');
+  const id = useId();
+  const [origem, setOrigem] = useState<'arquivo' | 'youtube'>('arquivo');
+  const [arquivoUrl, setArquivoUrl] = useState('');
+  const [youtube, setYoutube] = useState('');
+  const [titulo, setTitulo] = useState('');
+  const [enviando, setEnviando] = useState(false);
+  const [erro, setErro] = useState('');
+  const [compositor, setCompositor] = useState<ItemDoAcervo | null>(null);
+  const [obra, setObra] = useState<ItemDoAcervo | null>(null);
 
-  // Dados do áudio
-  const [audioUrl, setAudioUrl] = useState('');
-  const [audioTitle, setAudioTitle] = useState('');
-  const [uploading, setUploading] = useState(false);
+  const idYoutube = idDoYoutube(youtube);
+  const url =
+    origem === 'arquivo'
+      ? arquivoUrl
+      : idYoutube
+        ? `https://www.youtube.com/embed/${idYoutube}`
+        : '';
 
-  // YouTube
-  const [youtubeUrl, setYoutubeUrl] = useState('');
-
-  // Vinculações opcionais
-  const [selectedComposer, setSelectedComposer] = useState('');
-  const [composerData, setComposerData] = useState<any>(null);
-  const [selectedWork, setSelectedWork] = useState('');
-  const [workData, setWorkData] = useState<any>(null);
-
-  // Upload de arquivo
-  const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (!file) return;
-
-    // Validar tipo de arquivo
-    const validTypes = ['audio/mpeg', 'audio/mp3', 'audio/wav', 'audio/ogg'];
-    if (!validTypes.includes(file.type)) {
-      alert('Formato inválido. Use MP3, WAV ou OGG.');
+  async function enviar(e: ChangeEvent<HTMLInputElement>) {
+    const arquivo = e.target.files?.[0];
+    e.target.value = '';
+    if (!arquivo) return;
+    if (!FORMATOS.includes(arquivo.type)) {
+      setErro('Formato não aceito. Use MP3, WAV ou OGG.');
       return;
     }
-
-    setUploading(true);
+    setEnviando(true);
+    setErro('');
     try {
-      setAudioUrl(
-        await uploadBlogMedia(file, { folder: 'audio', articleId, sessionId })
+      setArquivoUrl(
+        await uploadBlogMedia(arquivo, {
+          folder: 'audio',
+          articleId,
+          sessionId,
+        })
       );
-      setAudioTitle(file.name.replace(/\.[^/.]+$/, '')); // Remove extensão
-    } catch (error) {
-      console.error('Erro ao fazer upload:', error);
-      alert(
-        error instanceof Error
-          ? `Erro ao fazer upload: ${error.message}`
-          : 'Erro ao fazer upload do áudio'
+      if (!titulo) setTitulo(arquivo.name.replace(/\.[^/.]+$/, ''));
+    } catch (falha) {
+      setErro(
+        falha instanceof Error
+          ? `Não deu para enviar: ${falha.message}`
+          : 'Não deu para enviar o áudio.'
       );
     } finally {
-      setUploading(false);
+      setEnviando(false);
     }
-  };
+  }
 
-  // Extrair ID do YouTube
-  const extractYouTubeId = (url: string) => {
-    const regExp =
-      /^.*((youtu.be\/)|(v\/)|(\/u\/\w\/)|(embed\/)|(watch\?))\??v?=?([^#&?]*).*/;
-    const match = url.match(regExp);
-    return match && match[7].length === 11 ? match[7] : null;
-  };
-
-  // Buscar compositor
-  const handleComposerSelect = async (composerId: string) => {
-    setSelectedComposer(composerId);
-
-    if (composerId) {
-      try {
-        const composer = await findComposerById(composerId);
-        if (composer) setComposerData(composer);
-      } catch (error) {
-        console.error('Erro ao buscar compositor:', error);
+  const attrs = url
+    ? {
+        audioUrl: url,
+        audioType: origem === 'arquivo' ? 'upload' : 'youtube',
+        title: titulo.trim() || null,
+        composerId: compositor?.id ?? null,
+        composerName: compositor?.nome ?? null,
+        workId: obra?.id ?? null,
+        workTitle: obra?.nome ?? null,
       }
-    }
-  };
+    : null;
 
-  // Buscar obra
-  const handleWorkSelect = async (workId: string, data?: any) => {
-    setSelectedWork(workId);
-
-    if (data) {
-      setWorkData(data);
-    } else if (workId) {
-      try {
-        const work = await getWorkById(workId);
-        if (work) setWorkData(work);
-      } catch (error) {
-        console.error('Erro ao buscar obra:', error);
-      }
-    }
-  };
-
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    e.stopPropagation();
-    let finalAudioUrl = '';
-    let audioType = '';
-
-    if (activeTab === 'upload') {
-      if (!audioUrl) {
-        alert('Faça upload de um áudio primeiro');
-        return;
-      }
-      finalAudioUrl = audioUrl;
-      audioType = 'upload';
-    } else {
-      if (!youtubeUrl) {
-        alert('Insira o link do YouTube');
-        return;
-      }
-      const youtubeId = extractYouTubeId(youtubeUrl);
-      if (!youtubeId) {
-        alert('Link do YouTube inválido');
-        return;
-      }
-      finalAudioUrl = `https://www.youtube.com/embed/${youtubeId}`;
-      audioType = 'youtube';
-    }
-
-    editor.commands.insertContent({
-      type: 'audioPlayer',
-      attrs: {
-        audioUrl: finalAudioUrl,
-        audioType,
-        title: audioTitle || 'Áudio sem título',
-        composerId: composerData?.id || null,
-        composerName: composerData?.name || null,
-        workId: workData?.id || null,
-        workTitle: workData?.title || null,
-      },
-    });
+  function inserir() {
+    if (!attrs) return;
+    editor.chain().focus().insertContent({ type: 'audioPlayer', attrs }).run();
     onClose();
-  };
-
-  // Trocar de aba limpa campos
-  const handleTabChange = (tab: 'upload' | 'youtube') => {
-    setActiveTab(tab);
-    setAudioUrl('');
-    setAudioTitle('');
-    setYoutubeUrl('');
-  };
+  }
 
   return (
-    <Modal
-      isOpen={true}
-      onClose={onClose}
-      title="Inserir Player de Áudio"
-      maxWidth="2xl"
+    <FolhaDoEditor
+      titulo="Áudio"
+      aoFechar={onClose}
+      aoEnviar={inserir}
+      podeEnviar={Boolean(attrs)}
+      enviando={enviando}
     >
-      <form onSubmit={handleSubmit} className="space-y-4">
-        {/* TABS */}
-        <div className="flex">
-          <button
-            type="button"
-            onClick={() => handleTabChange('upload')}
-            className={`flex-1 px-4 py-2 text-sm font-medium transition-colors ${
-              activeTab === 'upload'
-                ? 'border-b-2 border-brand-primary text-brand-primary'
-                : 'text-theme-tertiary hover:text-theme-primary'
-            }`}
-          >
-            📤 Fazer Upload
-          </button>
-          <button
-            type="button"
-            onClick={() => handleTabChange('youtube')}
-            className={`flex-1 px-4 py-2 text-sm font-medium transition-colors ${
-              activeTab === 'youtube'
-                ? 'border-b-2 border-brand-primary text-brand-primary'
-                : 'text-theme-tertiary hover:text-theme-primary'
-            }`}
-          >
-            🎥 Link do YouTube
-          </button>
-        </div>
+      <div
+        role="group"
+        aria-label="De onde vem o áudio"
+        className="flex gap-1.5"
+      >
+        <Chip
+          selecionado={origem === 'arquivo'}
+          onClick={() => setOrigem('arquivo')}
+        >
+          Enviar arquivo
+        </Chip>
+        <Chip
+          selecionado={origem === 'youtube'}
+          onClick={() => setOrigem('youtube')}
+        >
+          Vídeo do YouTube
+        </Chip>
+      </div>
 
-        {/* ABA UPLOAD */}
-        {activeTab === 'upload' && (
-          <>
-            <div>
-              <label className="block text-sm font-medium text-theme-primary mb-2">
-                Selecionar Arquivo de Áudio
-              </label>
-              <div className="border-2 border-dashed border-theme-secondary rounded-lg p-6 text-center hover:border-brand-primary transition-colors">
-                <input
-                  type="file"
-                  id="audio-upload"
-                  accept="audio/mpeg,audio/mp3,audio/wav,audio/ogg"
-                  onChange={handleFileUpload}
-                  className="hidden"
-                  disabled={uploading}
-                />
-
-                {audioUrl && !uploading ? (
-                  <div className="space-y-3">
-                    <FiMusic className="w-12 h-12 text-green-600 mx-auto" />
-                    <p className="text-sm text-green-700 font-medium">
-                      ✓ Áudio carregado com sucesso
-                    </p>
-                    <p className="text-xs text-theme-tertiary">{audioTitle}</p>
-                    <label
-                      htmlFor="audio-upload"
-                      className="inline-block cursor-pointer text-sm text-brand-primary hover:text-brand-secondary underline"
-                    >
-                      Alterar áudio
-                    </label>
-                  </div>
-                ) : (
-                  <label htmlFor="audio-upload" className="cursor-pointer">
-                    <FiUpload className="w-12 h-12 text-theme-tertiary mx-auto mb-2" />
-                    <span className="text-sm text-theme-secondary">
-                      {uploading ? 'Enviando...' : 'Clique para fazer upload'}
-                    </span>
-                    <p className="text-xs text-theme-tertiary mt-2">
-                      MP3, WAV ou OGG (máx 10MB)
-                    </p>
-                  </label>
-                )}
-              </div>
-            </div>
-
-            {audioUrl && (
-              <Input
-                label="Título do Áudio"
-                type="text"
-                value={audioTitle}
-                onChange={(e) => setAudioTitle(e.target.value)}
-                placeholder="Ex: Moonlight Sonata - 1º Movimento"
-                widhtFull
-              />
+      {origem === 'arquivo' ? (
+        <div className="flex flex-col gap-2">
+          <input
+            id={`${id}-arquivo`}
+            type="file"
+            accept={FORMATOS.join(',')}
+            onChange={enviar}
+            disabled={enviando}
+            className="sr-only"
+          />
+          <label
+            htmlFor={`${id}-arquivo`}
+            className={cx(
+              classesDeBotao('secundario'),
+              'cursor-pointer self-start'
             )}
-          </>
-        )}
-
-        {/* ABA YOUTUBE */}
-        {activeTab === 'youtube' && (
-          <>
-            <Input
-              label="Link do YouTube"
-              type="url"
-              value={youtubeUrl}
-              onChange={(e) => setYoutubeUrl(e.target.value)}
-              placeholder="https://www.youtube.com/watch?v=..."
-              required
-              widhtFull
-            />
-
-            <Input
-              label="Título do Áudio"
-              type="text"
-              value={audioTitle}
-              onChange={(e) => setAudioTitle(e.target.value)}
-              placeholder="Ex: Moonlight Sonata - 1º Movimento"
-              widhtFull
-            />
-
-            {youtubeUrl && extractYouTubeId(youtubeUrl) && (
-              <div className="p-4 bg-green-50 border border-green-200 rounded-lg">
-                <p className="text-sm text-green-800 mb-2">
-                  ✓ Link válido do YouTube
-                </p>
-                <iframe
-                  width="100%"
-                  height="200"
-                  src={`https://www.youtube.com/embed/${extractYouTubeId(
-                    youtubeUrl
-                  )}`}
-                  className="rounded-lg"
-                  title="Preview"
-                />
-              </div>
-            )}
-          </>
-        )}
-
-        {/* VINCULAÇÕES OPCIONAIS */}
-        {(audioUrl || youtubeUrl) && (
-          <div className="border-t pt-4 space-y-4">
-            <h4 className="font-semibold text-theme-primary">
-              📎 Vinculações Opcionais
-            </h4>
-
-            <div>
-              <label className="block text-sm font-medium text-theme-primary mb-2">
-                Compositor (opcional)
-              </label>
-              <ComposerSearchInputSimple
-                selectedComposer={selectedComposer}
-                onComposerSelect={handleComposerSelect}
-              />
-              {composerData && (
-                <p className="text-sm text-green-600 mt-1">✓ Vinculado</p>
-              )}
-            </div>
-
-            <div>
-              <label className="block text-sm font-medium text-theme-primary mb-2">
-                Obra (opcional)
-              </label>
-              <SimpleWorkSearchInput
-                selectedWork={selectedWork}
-                onWorkSelect={handleWorkSelect}
-                filterByComposer={selectedComposer}
-              />
-              {workData && (
-                <p className="text-sm text-green-600 mt-1">✓ Vinculado</p>
-              )}
-            </div>
-          </div>
-        )}
-
-        {/* Botões de Ação */}
-        <div className="flex justify-end space-x-2 pt-4">
-          <Button type="button" variant="secondary" onClick={onClose}>
-            Cancelar
-          </Button>
-          <Button
-            type="submit"
-            variant="primary"
-            disabled={
-              uploading ||
-              (activeTab === 'upload' && !audioUrl) ||
-              (activeTab === 'youtube' && !youtubeUrl)
-            }
           >
-            Inserir Player
-          </Button>
+            <Icon de={PiUploadSimple} tamanho="p" />
+            {enviando
+              ? 'Enviando…'
+              : arquivoUrl
+                ? 'Trocar arquivo'
+                : 'Escolher arquivo'}
+          </label>
+          <p className="t-legenda">MP3, WAV ou OGG, até 10 MB.</p>
         </div>
-      </form>
-    </Modal>
+      ) : (
+        <Field
+          label="Endereço do vídeo"
+          type="url"
+          inputMode="url"
+          value={youtube}
+          onChange={(e) => setYoutube(e.target.value)}
+          placeholder="https://www.youtube.com/watch?v=…"
+          ajuda="O leitor ouve o som; o vídeo não aparece."
+          erro={
+            youtube.trim() && !idYoutube
+              ? 'Não é um endereço de vídeo do YouTube.'
+              : undefined
+          }
+          autoFocus
+        />
+      )}
+
+      {erro && (
+        <p role="alert" className="t-legenda text-erro">
+          {erro}
+        </p>
+      )}
+
+      <Field
+        label="Título"
+        value={titulo}
+        onChange={(e) => setTitulo(e.target.value)}
+        placeholder="Ex.: Sonata ao Luar, 1º movimento"
+      />
+
+      <details
+        className="group rounded-card bg-sup-2 px-4"
+        open={Boolean(compositor || obra)}
+      >
+        <summary className="flex min-h-[var(--alvo)] cursor-pointer items-center justify-between text-sm font-medium text-texto">
+          Ligar ao acervo
+          <span className="font-normal text-texto-fraco">
+            {compositor ? compositor.nome : 'opcional'}
+          </span>
+        </summary>
+        <div className="flex flex-col gap-5 pb-4">
+          {compositor ? (
+            <ItemEscolhido
+              rotulo="Compositor"
+              item={compositor}
+              aoTrocar={() => {
+                setCompositor(null);
+                setObra(null);
+              }}
+            />
+          ) : (
+            <BuscaNoAcervo
+              tipo="compositor"
+              rotulo="Compositor"
+              aoEscolher={setCompositor}
+            />
+          )}
+          {compositor &&
+            (obra ? (
+              <ItemEscolhido
+                rotulo="Obra"
+                item={obra}
+                aoTrocar={() => setObra(null)}
+              />
+            ) : (
+              <BuscaNoAcervo
+                tipo="obra"
+                rotulo={`Obra de ${compositor.nome} (opcional)`}
+                compositorId={compositor.id}
+                aoEscolher={setObra}
+              />
+            ))}
+        </div>
+      </details>
+
+      {attrs && (
+        <div className="flex flex-col gap-2">
+          <span className="t-rotulo text-texto-fraco">Como fica no artigo</span>
+          <BlocoDoArtigo no={{ type: 'audioPlayer', attrs }} />
+        </div>
+      )}
+    </FolhaDoEditor>
   );
 }

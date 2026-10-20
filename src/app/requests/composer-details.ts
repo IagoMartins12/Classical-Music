@@ -15,9 +15,19 @@ export interface ComposerDetails {
 
   birthDate?: string;
   deathDate?: string;
+  /** The same dates as numbers, as far as the record goes. */
+  birth?: ApiSchema<'DatePartsDto'>;
+  death?: ApiSchema<'DatePartsDto'>;
 
   portraitUrl?: string;
   bio?: string;
+  bioEn?: string;
+  /** The Portuguese bio was written by AI (the origin; true after the review too). */
+  bioGeneratedByAi: boolean;
+  /** A person on the team read and approved it (and the translation). */
+  bioReviewed: boolean;
+  /** The other language is a machine translation of this one, not reviewed. */
+  bioTranslatedFrom: 'pt' | 'en' | null;
   permLinkImslp?: string;
   wikipediaLink?: string;
   epochId: string;
@@ -89,7 +99,10 @@ export type ComposerWorksFilters = {
   search?: string;
   workType?: string;
   difficultyLevel?: string;
+  sort?: ComposerWorkSort;
 };
+
+export type ComposerWorkSort = 'famous' | 'title' | 'title-desc' | 'recent';
 
 type ComposerWorksPage = ApiSchema<'ComposerWorksResponseDto'>;
 
@@ -133,9 +146,15 @@ export async function getComposerById(
       alternativeNames: composer.alternativeNames || undefined,
       birthDate: composer.birthDate || undefined,
       deathDate: composer.deathDate || undefined,
+      birth: composer.birth,
+      death: composer.death,
       videoUrl: composer.videoUrl || undefined,
       portraitUrl: composer.portraitUrl || undefined,
       bio: composer.bio || undefined,
+      bioEn: composer.bioEn || undefined,
+      bioGeneratedByAi: composer.bioGeneratedByAi,
+      bioReviewed: composer.bioReviewed ?? false,
+      bioTranslatedFrom: composer.bioTranslatedFrom ?? null,
       permLinkImslp: composer.permLinkImslp || undefined,
       wikipediaLink: composer.wikipediaLink || undefined,
       epochId: composer.epochId,
@@ -292,4 +311,33 @@ function composerPath(composerId: string): string {
 
 function toDate(value?: string | null): Date | undefined {
   return value ? new Date(value) : undefined;
+}
+
+export type ComposerOverview = ApiSchema<'ComposerOverviewDto'>;
+
+const EMPTY_OVERVIEW: ComposerOverview = {
+  writtenFor: [],
+  startingPoints: [],
+  contemporaries: [],
+};
+
+/**
+ * What the composer wrote for, where to start and contemporaries, in one
+ * request (`GET /composers/:id/overview`). Secondary content: on failure the
+ * page renders without those sections.
+ */
+export async function getComposerOverview(
+  composerId: string
+): Promise<ComposerOverview> {
+  try {
+    return await apiFetch<ComposerOverview>(
+      `${composerPath(composerId)}/overview`,
+      {
+        next: { revalidate: 3600, tags: ['composers'] },
+        buildFallback: EMPTY_OVERVIEW,
+      }
+    );
+  } catch {
+    return EMPTY_OVERVIEW;
+  }
 }

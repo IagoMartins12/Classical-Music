@@ -1,11 +1,9 @@
 // app/profile/page.tsx - Perfil pessoal otimizado
-import ProfilePageClient from './pageClient';
-import {
-  getServerLanguageStatic,
-  loadPageTranslationsWithCommon,
-} from '@/app/utils/translations/serverTranslations';
+import { getServerLanguageStatic } from '@/app/utils/translations/serverTranslations';
 import { redirect } from 'next/navigation';
-import { TranslationProvider } from '@/app/context/TranslationContext';
+import { PersonalPage } from '@/app/components/site/personal/PersonalPage';
+import { ProfileView } from '@/app/components/site/personal/ProfileView';
+import { PERSONAL } from '@/app/conteudo/site/personal';
 import { getServerSession } from '@/app/libs/api/server-session';
 
 // Página por pessoa: renderizada a cada pedido, sem cache de página.
@@ -67,15 +65,11 @@ export default async function ProfilePage() {
   }
 
   const language = await getServerLanguageStatic();
-  const { translations } = await loadPageTranslationsWithCommon(language, [
-    'pages/profile',
-  ]);
+  const copy = PERSONAL[language].profile;
 
   return (
-    <div className="section-wrap">
-      <TranslationProvider language={language} translations={translations}>
-        <ProfilePageClient />
-      </TranslationProvider>
-    </div>
+    <PersonalPage title={copy.title} description={copy.text}>
+      <ProfileView />
+    </PersonalPage>
   );
 }

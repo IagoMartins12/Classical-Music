@@ -1,35 +1,27 @@
 // CreateComposerModal.tsx - TRADUZIDO - Versão Atualizada
 'use client';
 
-import { useState, useEffect, useRef, useMemo } from 'react';
+import { ENVIOS } from '@/app/conteudo/textos/envios';
+import { useTextos } from '@/app/hooks/useTextos';
+import { useState, useEffect, useRef, useMemo, useId } from 'react';
 import { useRouter } from 'next/navigation';
 import {
-  FiUser,
-  FiSearch,
-  FiExternalLink,
-  FiSave,
-  FiLoader,
-  FiImage,
-  FiCalendar,
-  FiGlobe,
-  FiTag,
-  FiInfo,
-  FiLink,
-  FiCheck,
-  FiAlertCircle,
-  FiDatabase,
-  FiLock,
-  FiPlay,
-  FiBookOpen,
-} from 'react-icons/fi';
+  PiFloppyDisk,
+  PiLock,
+  PiMagnifyingGlass,
+  PiSparkle,
+  PiTranslate,
+} from 'react-icons/pi';
+import { Aba, Abas } from '@/app/components/ui/Abas';
+import { Button } from '@/app/components/ui/Button';
+import { CaixaDeMarcar } from '@/app/components/ui/CaixaDeMarcar';
+import { Field } from '@/app/components/ui/Field';
+import { Selecao } from '@/app/components/ui/Selecao';
 import {
-  AnimatedCard,
-  AnimatedItem,
-} from '@/app/components/animation/AnimatedComponents';
-import Button from '@/app/components/Common/Button';
-import Input from '@/app/components/Common/Inputs';
-import Select from '@/app/components/Common/Select';
-import Modal from '@/app/components/Modal';
+  Aviso,
+  FormBlock,
+  FormSheet,
+} from '@/app/components/site/edit/FormSheet';
 import ComposerImageUpload from '../ComposerImageUpload';
 import NationalitySelect from '@/app/components/NationalitySelect';
 import {
@@ -38,12 +30,8 @@ import {
 } from '@/app/utils/formUtils';
 
 import { useToast } from '@/app/hooks/useToast';
-import { useTranslation } from '@/app/context/TranslationContext';
 import { useSmartFormChanges } from '@/app/hooks/useFormChanges';
-import Checkbox from '@/app/components/Common/Checkbox';
 import { translateEpochWithHook } from '@/app/utils/translations/epochTranslationComposer';
-import { MdTranslate } from 'react-icons/md';
-import { GiSparkles } from 'react-icons/gi';
 import {
   checkComposerDuplicateRequest,
   saveComposerRequest,
@@ -55,6 +43,7 @@ import {
   loadComposerBiographies,
   translateBiographyText,
 } from '@/app/requests/composer-biography';
+import { useTx } from '@/app/hooks/useTx';
 
 interface DuplicateCheckState {
   loading: boolean;
@@ -222,8 +211,11 @@ const CreateComposerModal = ({
   roles,
   editingComposer,
 }: CreateComposerModalProps) => {
+  const tx = useTx();
+  const idCampo = useId();
+  const formId = `${idCampo}-form`;
   const router = useRouter();
-  const { t, language } = useTranslation({ sections: ['pages/uploads'] });
+  const { t, language } = useTextos(ENVIOS);
   const toast = useToast();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [scrapingUrl, setScrapingUrl] = useState(false);
@@ -248,8 +240,8 @@ const CreateComposerModal = ({
   const fieldRefs = {
     name: useRef<HTMLInputElement>(null),
     fullName: useRef<HTMLInputElement>(null),
-    epochId: useRef<HTMLSelectElement>(null),
-    primaryRoleId: useRef<HTMLSelectElement>(null),
+    epochId: useRef<HTMLDivElement>(null),
+    primaryRoleId: useRef<HTMLDivElement>(null),
     birthDate: useRef<HTMLInputElement>(null),
     deathDate: useRef<HTMLInputElement>(null),
     nationality: useRef<HTMLDivElement>(null),
@@ -286,8 +278,11 @@ const CreateComposerModal = ({
   const handleGenerateBiography = async (lang: 'pt' | 'en') => {
     if (!formData.name || !formData.fullName) {
       toast.warning(
-        'Campos obrigatórios',
-        'Preencha pelo menos o nome e nome completo antes de gerar biografia'
+        tx('Campos obrigatórios', 'Required fields'),
+        tx(
+          'Preencha pelo menos o nome e nome completo antes de gerar biografia',
+          'Fill in at least the name and full name before generating a biography'
+        )
       );
       return;
     }
@@ -314,7 +309,10 @@ const CreateComposerModal = ({
 
       if (data.biography === null) {
         throw new Error(
-          'A IA não tem informação confiável sobre este compositor'
+          tx(
+            'A IA não tem informação confiável sobre este compositor',
+            'The AI has no reliable information about this composer'
+          )
         );
       }
 
@@ -324,14 +322,19 @@ const CreateComposerModal = ({
       }));
       setBioMessage({
         type: 'success',
-        text: `Biografia em ${lang === 'pt' ? 'português' : 'inglês'} gerada com sucesso!`,
+        text: tx(
+          `Biografia em ${lang === 'pt' ? 'português' : 'inglês'} gerada.`,
+          `${lang === 'pt' ? 'Portuguese' : 'English'} biography generated.`
+        ),
       });
     } catch (error) {
       console.error('Erro ao gerar biografia:', error);
       setBioMessage({
         type: 'error',
         text:
-          error instanceof Error ? error.message : 'Erro ao gerar biografia',
+          error instanceof Error
+            ? error.message
+            : tx('Erro ao gerar biografia', 'Could not generate the biography'),
       });
     } finally {
       setIsGeneratingBio(false);
@@ -346,7 +349,10 @@ const CreateComposerModal = ({
     if (!biographies[from]) {
       setBioMessage({
         type: 'error',
-        text: `Não há biografia em ${from === 'pt' ? 'português' : 'inglês'} para traduzir`,
+        text: tx(
+          `Não há biografia em ${from === 'pt' ? 'português' : 'inglês'} para traduzir`,
+          `There is no ${from === 'pt' ? 'Portuguese' : 'English'} biography to translate`
+        ),
       });
       return;
     }
@@ -356,7 +362,10 @@ const CreateComposerModal = ({
     if (from !== 'pt' || to !== 'en') {
       setBioMessage({
         type: 'error',
-        text: 'A tradução automática é só do português para o inglês',
+        text: tx(
+          'A tradução automática é só do português para o inglês',
+          'Automatic translation only goes from Portuguese to English'
+        ),
       });
       return;
     }
@@ -373,14 +382,22 @@ const CreateComposerModal = ({
       }));
       setBioMessage({
         type: 'success',
-        text: 'Biografia traduzida para inglês!',
+        text: tx(
+          'Biografia traduzida para inglês!',
+          'Biography translated to English.'
+        ),
       });
     } catch (error) {
       console.error('Erro ao traduzir biografia:', error);
       setBioMessage({
         type: 'error',
         text:
-          error instanceof Error ? error.message : 'Erro ao traduzir biografia',
+          error instanceof Error
+            ? error.message
+            : tx(
+                'Erro ao traduzir biografia',
+                'Could not translate the biography'
+              ),
       });
     } finally {
       setIsTranslatingBio(false);
@@ -779,7 +796,7 @@ const CreateComposerModal = ({
           ? t('toast_composer_duplicate_reason_name', {
               name: `${duplicateCheck.composer?.fullName}`,
             })
-          : duplicateCheck.reason === 'link do IMSLP'
+          : duplicateCheck.reason === tx('link do IMSLP', 'IMSLP link')
             ? t('toast_composer_duplicate_reason_imslp', {
                 name: `${duplicateCheck.composer?.fullName}`,
               })
@@ -891,846 +908,476 @@ const CreateComposerModal = ({
 
   if (!isOpen) return null;
 
+  const titulo = editingComposer
+    ? t('modal_composer_title_edit')
+    : t('modal_composer_title_create');
+  const fonte = dataSource === 'imslp' ? 'IMSLP' : 'Wikipedia';
+  const motivo =
+    duplicateCheck.reason === 'nome'
+      ? t('modal_composer_scraping_duplicate_reason_name')
+      : duplicateCheck.reason === tx('link do IMSLP', 'IMSLP link')
+        ? t('modal_composer_scraping_duplicate_reason_imslp')
+        : t('modal_composer_scraping_duplicate_reason_wikipedia');
+  const fechar = () => {
+    if (editingComposer && originalData) setFormData(originalData);
+    onClose();
+  };
+
   return (
-    <Modal
-      isOpen={isOpen}
-      onClose={() => {
-        if (editingComposer && originalData) {
-          setFormData(originalData);
-        }
-        onClose();
-      }}
-      maxWidth="4xl"
-      showCloseButton={true}
-      confirmOnClose={true}
-      hasChanges={hasChanges}
-      isProcessing={isSubmitting}
-      processName="criação do compositor"
-      setPr
-    >
-      <AnimatedItem direction="scale" springType="bouncy" className="w-full">
-        <div>
-          {/* Header */}
-          <div className="flex items-center justify-between p-0 pt-4 pb-6 md:p-6 border-b border-theme-secondary">
-            <div className="flex items-center space-x-3">
-              <div className="w-10 h-10 bg-gradient-to-br from-accent-purple to-accent-blue rounded-xl flex items-center justify-center">
-                <FiUser className="w-5 h-5 text-theme-primary" />
-              </div>
-              <div>
-                <h2 className="text-xl font-bold text-theme-primary classical-title">
-                  {editingComposer
-                    ? t('modal_composer_title_edit')
-                    : t('modal_composer_title_create')}
-                </h2>
-                <p className="text-theme-secondary text-sm">
-                  {editingComposer
-                    ? t('modal_composer_subtitle_edit')
-                    : t('modal_composer_subtitle_create')}
-                </p>
-              </div>
-            </div>
-          </div>
-
-          {/* Content */}
-          <div className="mt-4 ">
-            <form onSubmit={handleSubmit} className="space-y-6">
-              {/* URL Scraping */}
-              <AnimatedCard className="classical-card-simple p-4" hover="none">
-                <div className="flex items-center justify-between mb-4">
-                  <div className="flex items-center space-x-2">
-                    <FiDatabase className="w-4 h-4 text-theme-tertiary" />
-                    <span className="text-sm font-medium text-theme-primary">
-                      {t('modal_composer_scraping_title')}
-                    </span>
-                    {isEditingExternalSource && (
-                      <div className="flex items-center space-x-1 text-xs text-theme-primary font-bold">
-                        <FiLock className="w-3 h-3" />
-                        <span>{t('modal_composer_scraping_detected')}</span>
-                      </div>
-                    )}
-                  </div>
-                </div>
-
-                <div className="space-y-4">
-                  <div>
-                    <label className="block text-sm font-medium text-theme-tertiary mb-2">
-                      {t('modal_composer_scraping_source_type')}
-                    </label>
-                    <Select
-                      options={dataSourceOptions}
-                      value={dataSource}
-                      onChange={(e) =>
-                        setDataSource(e.target.value as DataSource)
-                      }
-                      className="w-full"
-                      disabled={isEditingExternalSource}
-                    />
-                  </div>
-
-                  {dataSource !== 'none' && (
-                    <div>
-                      <Input
-                        label={
-                          dataSource === 'imslp'
-                            ? t('modal_composer_scraping_url_imslp')
-                            : t('modal_composer_scraping_url_wikipedia')
-                        }
-                        value={urlToScrape}
-                        onChange={(e) => setUrlToScrape(e.target.value)}
-                        placeholder={
-                          dataSource === 'imslp'
-                            ? 'https://imslp.org/wiki/Category:Mozart,_Wolfgang_Amadeus'
-                            : 'https://en.wikipedia.org/wiki/Wolfgang_Amadeus_Mozart'
-                        }
-                        leftIcon={<FiLink />}
-                        disabled={isEditingExternalSource}
-                      />
-
-                      {duplicateCheck.loading && (
-                        <div className="mt-2 p-2 bg-blue-50 border border-blue-200 rounded-lg">
-                          <div className="flex items-center space-x-2">
-                            <FiLoader className="w-4 h-4 animate-spin text-theme-primary font-bold" />
-                            <span className="text-sm text-blue-800">
-                              {t('modal_composer_scraping_checking_duplicates')}
-                            </span>
-                          </div>
-                        </div>
-                      )}
-
-                      {duplicateCheck.found && (
-                        <div className="mt-2 p-3 bg-red-50 border border-red-200 rounded-lg">
-                          <div className="flex items-center space-x-2 mb-2">
-                            <FiAlertCircle className="w-4 h-4 text-red-600" />
-                            <span className="text-sm font-medium text-red-800">
-                              {t('modal_composer_scraping_duplicate_found')}
-                            </span>
-                          </div>
-                          <div className="text-sm text-red-700">
-                            <p className="mb-1">
-                              <strong>
-                                {t('modal_composer_scraping_duplicate_reason', {
-                                  reason:
-                                    duplicateCheck.reason === 'nome'
-                                      ? t(
-                                          'modal_composer_scraping_duplicate_reason_name'
-                                        )
-                                      : duplicateCheck.reason ===
-                                          'link do IMSLP'
-                                        ? t(
-                                            'modal_composer_scraping_duplicate_reason_imslp'
-                                          )
-                                        : t(
-                                            'modal_composer_scraping_duplicate_reason_wikipedia'
-                                          ),
-                                })}
-                              </strong>
-                            </p>
-                            <p className="mb-1">
-                              {duplicateCheck.composer?.fullName} && (
-                              <strong>
-                                {t(
-                                  'modal_composer_scraping_duplicate_composer',
-                                  {
-                                    composer: `${duplicateCheck.composer?.fullName}`,
-                                  }
-                                )}
-                              </strong>
-                              )
-                            </p>
-                            {duplicateCheck.composer?.nationality && (
-                              <p className="mb-1">
-                                <strong>
-                                  {t(
-                                    'modal_composer_scraping_duplicate_nationality',
-                                    {
-                                      nationality:
-                                        duplicateCheck.composer.nationality,
-                                    }
-                                  )}
-                                </strong>
-                              </p>
-                            )}
-                            {(duplicateCheck.composer?.birthDate ||
-                              duplicateCheck.composer?.deathDate) && (
-                              <p>
-                                <strong>
-                                  {t(
-                                    'modal_composer_scraping_duplicate_period',
-                                    {
-                                      birthDate:
-                                        duplicateCheck.composer.birthDate ||
-                                        '?',
-                                      deathDate:
-                                        duplicateCheck.composer.deathDate ||
-                                        '?',
-                                    }
-                                  )}
-                                </strong>
-                              </p>
-                            )}
-                          </div>
-                        </div>
-                      )}
-
-                      {!isEditingExternalSource && (
-                        <div className="mt-3">
-                          <Button
-                            type="button"
-                            variant="secondary"
-                            size="sm"
-                            leftIcon={
-                              scrapingUrl ? (
-                                <FiLoader className="animate-spin" />
-                              ) : (
-                                <FiSearch />
-                              )
-                            }
-                            onClick={handleScrapeUrl}
-                            disabled={scrapingUrl}
-                          >
-                            {scrapingUrl
-                              ? t('modal_composer_scraping_extracting')
-                              : t('modal_composer_scraping_extract_button')}
-                          </Button>
-                        </div>
-                      )}
-
-                      {scrapingResult && (
-                        <div className="mt-4 p-3 bg-green-50 border border-green-200 rounded-lg">
-                          <div className="flex items-center space-x-2 mb-2">
-                            <FiCheck className="w-4 h-4 text-green-600" />
-                            <span className="text-sm font-medium text-green-800">
-                              {t('modal_composer_scraping_success')}
-                            </span>
-                          </div>
-                          <div className="text-xs text-green-700">
-                            {t('modal_composer_scraping_quality', {
-                              source: scrapingResult.source,
-                              quality: scrapingResult.data.pageQuality,
-                              completeness:
-                                scrapingResult.data.dataCompleteness,
-                            })}
-                          </div>
-                        </div>
-                      )}
-
-                      {isEditingExternalSource && (
-                        <div className="mt-3 p-3 bg-blue-50 border border-blue-200 rounded-lg">
-                          <div className="flex items-center space-x-2">
-                            <FiInfo className="w-4 h-4 text-blue-600" />
-                            <span className="text-sm text-blue-800">
-                              {t('modal_composer_scraping_external_edit', {
-                                source:
-                                  dataSource === 'imslp'
-                                    ? 'IMSLP'
-                                    : 'Wikipedia',
-                              })}
-                            </span>
-                          </div>
-                        </div>
-                      )}
-                    </div>
-                  )}
-                </div>
-              </AnimatedCard>
-
-              {/* Basic Information */}
-              <AnimatedCard className="classical-card-simple p-4" hover="none">
-                <h3 className="text-lg font-semibold text-theme-primary mb-4 flex items-center space-x-2">
-                  <FiInfo className="w-5 h-5" />
-                  <span>{t('modal_composer_basic_title')}</span>
-                </h3>
-
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <Input
-                    label={`${t('modal_composer_basic_name')} *`}
-                    ref={fieldRefs.name}
-                    value={formData.name}
-                    onChange={(e) => handleInputChange('name', e.target.value)}
-                    error={errors.name}
-                    placeholder="Mozart"
-                  />
-
-                  <Input
-                    label={`${t('modal_composer_basic_full_name')} *`}
-                    ref={fieldRefs.fullName}
-                    value={formData.fullName}
-                    onChange={(e) =>
-                      handleInputChange('fullName', e.target.value)
-                    }
-                    error={errors.fullName}
-                    placeholder="Wolfgang Amadeus Mozart"
-                  />
-                  <Input
-                    label={t('modal_composer_basic_alt_names')}
-                    value={formData.alternativeNames}
-                    onChange={(e) =>
-                      handleInputChange('alternativeNames', e.target.value)
-                    }
-                    placeholder={t(
-                      'modal_composer_basic_alt_names_placeholder'
-                    )}
-                  />
-
-                  <div ref={fieldRefs.nationality}>
-                    <label className="block text-sm font-medium text-theme-tertiary mb-2">
-                      {t('modal_composer_basic_nationality')}
-                    </label>
-                    <NationalitySelect
-                      value={formData.nationality}
-                      onChange={handleNationalityChange}
-                      error={errors.nationality}
-                      placeholder={t(
-                        'modal_composer_basic_nationality_placeholder'
-                      )}
-                    />
-                  </div>
-                </div>
-              </AnimatedCard>
-
-              {/* Dates */}
-              <AnimatedCard className="classical-card-simple p-4" hover="none">
-                <h3 className="text-lg font-semibold text-theme-primary mb-4 flex items-center space-x-2">
-                  <FiCalendar className="w-5 h-5" />
-                  <span>{t('modal_composer_dates_title')}</span>
-                </h3>
-
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <div>
-                    <label className="block text-sm font-medium text-theme-tertiary mb-2">
-                      {t('modal_composer_dates_birth')}
-                    </label>
-                    <Input
-                      ref={fieldRefs.birthDate}
-                      type="date"
-                      value={formData.birthDate}
-                      onChange={(e) =>
-                        handleInputChange('birthDate', e.target.value)
-                      }
-                      className={`input-classical-2 w-full ${
-                        errors.birthDate ? 'border-red-500' : ''
-                      }`}
-                    />
-                  </div>
-
-                  <div>
-                    <label className="block text-sm font-medium text-theme-tertiary mb-2">
-                      {t('modal_composer_dates_death')}
-                    </label>
-                    <Input
-                      ref={fieldRefs.deathDate}
-                      type="date"
-                      value={formData.deathDate}
-                      onChange={(e) =>
-                        handleInputChange('deathDate', e.target.value)
-                      }
-                      className={`input-classical-2 w-full ${
-                        errors.deathDate ? 'border-red-500' : ''
-                      }`}
-                    />
-
-                    <p className="text-xs text-theme-tertiary mt-1">
-                      {t('modal_composer_dates_death_note')}
-                    </p>
-                  </div>
-                </div>
-              </AnimatedCard>
-
-              {/* Image */}
-              <AnimatedCard className="classical-card-simple p-6" hover="none">
-                <h3 className="text-lg font-semibold text-theme-primary mb-6 flex items-center space-x-2">
-                  <FiImage className="w-5 h-5" />
-                  <span>{t('modal_composer_image_title')}</span>
-                </h3>
-
-                <div className="flex justify-center">
-                  <ComposerImageUpload
-                    currentImage={formData.portraitUrl}
-                    onImageUpload={handleImageUpload}
-                    onImageChange={handleImageChange}
-                    onImageUrlChange={(url) =>
-                      setFormData((prev) => ({ ...prev, portraitUrl: url }))
-                    }
-                    size="xl"
-                    isUploading={isUploadingImage}
-                    fallbackText={
-                      formData.fullName || formData.name || 'Compositor'
-                    }
-                    showRemove={!!formData.portraitUrl}
-                    composerName={formData.fullName || formData.name}
-                  />
-                </div>
-              </AnimatedCard>
-
-              {/* Classification */}
-              <AnimatedCard className="classical-card-simple p-4 " hover="none">
-                <h3 className="text-lg font-semibold text-theme-primary mb-4 flex items-center space-x-2">
-                  <FiTag className="w-5 h-5" />
-                  <span>{t('modal_composer_classification_title')}</span>
-                </h3>
-
-                <div className=" space-y-6 gap-4">
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div>
-                      <label className="block text-sm font-medium text-theme-tertiary mb-2">
-                        {t('modal_composer_classification_epoch')} *
-                      </label>
-                      <Select
-                        ref={fieldRefs.epochId}
-                        options={[
-                          {
-                            value: '',
-                            label: t(
-                              'modal_composer_classification_epoch_placeholder'
-                            ),
-                          },
-                          ...epochs.map((epoch) => ({
-                            value: epoch.id,
-                            label: translateEpochWithHook(epoch.name, t),
-                          })),
-                        ]}
-                        value={formData.epochId}
-                        onChange={(e) => {
-                          const selectedValue = e.target.value;
-                          const selectedOption = [
-                            {
-                              value: '',
-                              label: t(
-                                'modal_composer_classification_epoch_placeholder'
-                              ),
-                            },
-                            ...epochs.map((epoch) => ({
-                              value: epoch.id,
-                              label: epoch.name,
-                            })),
-                          ].find((opt) => opt.value === selectedValue);
-
-                          const selectedLabel = selectedOption?.label;
-
-                          handleInputChange('epochId', selectedValue);
-                          handleInputChange(
-                            'epochName',
-                            selectedLabel ?? 'Desconhecido'
-                          );
-                        }}
-                        error={errors.epochId}
-                      />
-                    </div>
-
-                    <div>
-                      <label className="block text-sm font-medium text-theme-tertiary mb-2">
-                        {t('modal_composer_classification_primary_role')} *
-                      </label>
-                      <Select
-                        ref={fieldRefs.primaryRoleId}
-                        options={[
-                          {
-                            value: '',
-                            label: t(
-                              'modal_composer_classification_primary_role_placeholder'
-                            ),
-                          },
-                          ...roles.map((role) => ({
-                            value: role.id,
-                            label: translateRole(role.name, language || 'pt'),
-                          })),
-                        ]}
-                        value={formData.primaryRoleId}
-                        onChange={(e) =>
-                          handleInputChange('primaryRoleId', e.target.value)
-                        }
-                        defaultValue={'Compositor'}
-                        error={errors.primaryRoleId}
-                      />
-                    </div>
-                  </div>
-
-                  <div className="md:col-span-2 s">
-                    <label className="block text-sm font-medium text-theme-tertiary mb-4">
-                      {t('modal_composer_classification_secondary_roles')}
-                    </label>
-                    <div className="flex flex-wrap gap-6">
-                      {filteredSecondaryRoles.map((role) => (
-                        <div
-                          key={role.id}
-                          className="flex items-center space-x-2"
-                        >
-                          <Checkbox
-                            type="checkbox"
-                            id={`role-${role.id}`}
-                            checked={formData.roles.includes(role.id)}
-                            onChange={(e) =>
-                              handleSecondaryRolesChange(
-                                role.id,
-                                e.target.checked
-                              )
-                            }
-                            className="w-4 h-4 text-brand-primary bg-theme-secondary border-theme-tertiary rounded focus:ring-brand-primary"
-                          />
-                          <label
-                            htmlFor={`role-${role.id}`}
-                            className="text-sm text-theme-primary"
-                          >
-                            {translateRole(role.name, language || 'pt')}
-                          </label>
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-
-                  <div className="col-span-2">
-                    <Input
-                      label={t('modal_composer_classification_instruments')}
-                      value={formData.instruments}
-                      onChange={(e) =>
-                        handleInputChange('instruments', e.target.value)
-                      }
-                      placeholder={t(
-                        'modal_composer_classification_instruments_placeholder'
-                      )}
-                    />
-
-                    <Input
-                      value={formData.imslpCategories}
-                      onChange={(e) =>
-                        handleInputChange('imslpCategories', e.target.value)
-                      }
-                      placeholder="Romantic composers, German composers"
-                      className="hidden"
-                    />
-                  </div>
-                </div>
-              </AnimatedCard>
-
-              {/* External Links */}
-              <AnimatedCard className="classical-card-simple p-4" hover="none">
-                <h3 className="text-lg font-semibold text-theme-primary mb-4 flex items-center space-x-2">
-                  <FiGlobe className="w-5 h-5" />
-                  <span>{t('modal_composer_external_title')}</span>
-                </h3>
-
-                <div className="grid grid-cols-1 gap-4">
-                  {/* Wikipedia Link */}
-                  <div className="relative">
-                    <Input
-                      label={t('modal_composer_external_wikipedia')}
-                      value={formData.wikipediaLink}
-                      onChange={(e) =>
-                        handleInputChange('wikipediaLink', e.target.value)
-                      }
-                      placeholder="https://en.wikipedia.org/wiki/..."
-                      leftIcon={<FiExternalLink />}
-                      disabled={isFieldLocked('wikipediaLink')}
-                      className={
-                        isFieldLocked('wikipediaLink')
-                          ? 'bg-gray-50 cursor-not-allowed'
-                          : ''
-                      }
-                    />
-                    {isFieldLocked('wikipediaLink') && (
-                      <div className="mt-1 flex items-center space-x-1 text-xs text-theme-primary font-bold">
-                        <FiLock className="w-3 h-3" />
-                        <span>
-                          {t('modal_composer_external_field_locked', {
-                            source: 'Wikipedia',
-                          })}
-                        </span>
-                      </div>
-                    )}
-                  </div>
-
-                  {/* IMSLP Link */}
-                  <div className="relative">
-                    <Input
-                      label={t('modal_composer_external_imslp')}
-                      value={formData.permLinkImslp}
-                      onChange={(e) =>
-                        handleInputChange('permLinkImslp', e.target.value)
-                      }
-                      placeholder="https://imslp.org/wiki/Category:Mozart,_Wolfgang_Amadeus"
-                      leftIcon={<FiExternalLink />}
-                      disabled={isFieldLocked('permLinkImslp')}
-                      className={
-                        isFieldLocked('permLinkImslp')
-                          ? 'bg-gray-50 cursor-not-allowed'
-                          : ''
-                      }
-                    />
-                    {isFieldLocked('permLinkImslp') && (
-                      <div className="mt-1 flex items-center space-x-1 text-xs text-theme-primary font-bold">
-                        <FiLock className="w-3 h-3" />
-                        <span>
-                          {t('modal_composer_external_field_locked', {
-                            source: 'IMSLP',
-                          })}
-                        </span>
-                      </div>
-                    )}
-                  </div>
-
-                  {/* Video URL */}
-                  <div>
-                    <Input
-                      label={t('modal_composer_external_video')}
-                      value={formData.videoUrl}
-                      onChange={(e) =>
-                        handleInputChange('videoUrl', e.target.value)
-                      }
-                      placeholder="https://www.youtube.com/watch?v=... ou outro vídeo"
-                      leftIcon={<FiPlay />}
-                    />
-                    <p className="text-xs text-theme-tertiary mt-1">
-                      {t('modal_composer_external_video_description')}
-                    </p>
-                  </div>
-                </div>
-              </AnimatedCard>
-
-              {/* Biography */}
-              {/* <AnimatedCard className="classical-card-simple p-4" hover="none">
-                <h3 className="text-lg font-semibold text-theme-primary mb-4 flex items-center space-x-2">
-                  <FiUser className="w-5 h-5" />
-                  <span>{t('modal_composer_bio_title')}</span>
-                </h3>
-
-                <div className="space-y-4">
-                  <div>
-                    <label className="block text-sm font-medium text-theme-tertiary mb-2">
-                      {t('modal_composer_bio_title')}
-                    </label>
-                    <textarea
-                      value={formData.bio}
-                      onChange={(e) => handleInputChange('bio', e.target.value)}
-                      rows={7}
-                      className="input-classical-2 w-full resize-none"
-                      placeholder={t('modal_composer_bio_placeholder')}
-                    />
-                  </div>
-                </div>
-              </AnimatedCard> */}
-
-              {/* 🆕 NOVO CARD: Biography Management */}
-              <AnimatedCard className="classical-card-simple p-4" hover="none">
-                <h3 className="text-lg font-semibold text-theme-primary mb-4 flex items-center space-x-2">
-                  <FiBookOpen className="w-5 h-5" />
-                  <span>{t('modal_composer_bio_title')}</span>
-                </h3>
-
-                {/* Tabs PT/EN */}
-                <div className="flex border-b border-theme-secondary mb-4">
-                  <button
-                    type="button"
-                    onClick={() => setBiographyTab('pt')}
-                    className={`flex-1 px-4 py-3 font-semibold transition-all ${
-                      biographyTab === 'pt'
-                        ? 'border-b-2 border-brand-primary text-brand-primary'
-                        : 'text-theme-tertiary hover:text-theme-primary'
-                    }`}
-                  >
-                    🇧🇷 Português
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => setBiographyTab('en')}
-                    className={`flex-1 px-4 py-3 font-semibold transition-all ${
-                      biographyTab === 'en'
-                        ? 'border-b-2 border-brand-primary text-brand-primary'
-                        : 'text-theme-tertiary hover:text-theme-primary'
-                    }`}
-                  >
-                    🇺🇸 English
-                  </button>
-                </div>
-
-                {/* Message Alert */}
-                {bioMessage.text && (
-                  <div
-                    className={`mb-4 p-3 rounded-xl flex items-center space-x-2 ${
-                      bioMessage.type === 'success'
-                        ? 'bg-accent-green/10 border border-accent-green/30 text-accent-green'
-                        : 'bg-accent-red/10 border border-accent-red/30 text-accent-red'
-                    }`}
-                  >
-                    {bioMessage.type === 'success' ? (
-                      <FiCheck className="w-4 h-4 flex-shrink-0" />
-                    ) : (
-                      <FiAlertCircle className="w-4 h-4 flex-shrink-0" />
-                    )}
-                    <span className="text-sm font-medium">
-                      {bioMessage.text}
-                    </span>
-                  </div>
-                )}
-
-                {/* Action Buttons */}
-                <div className="flex flex-wrap gap-3 mb-4">
-                  <button
-                    type="button"
-                    onClick={() => handleGenerateBiography(biographyTab)}
-                    disabled={isGeneratingBio}
-                    className="btn-classical-primary flex items-center space-x-2"
-                  >
-                    {isGeneratingBio ? (
-                      <FiLoader className="w-4 h-4 animate-spin" />
-                    ) : (
-                      <GiSparkles className="w-4 h-4" />
-                    )}
-                    <span>Gerar com IA</span>
-                  </button>
-
-                  {biographyTab === 'pt' ? (
-                    <button
-                      type="button"
-                      onClick={() => handleTranslateBiography('pt', 'en')}
-                      disabled={isTranslatingBio || !biographies.pt}
-                      className="btn-classical-secondary flex items-center space-x-2"
-                    >
-                      {isTranslatingBio ? (
-                        <FiLoader className="w-4 h-4 animate-spin" />
-                      ) : (
-                        <MdTranslate className="w-4 h-4" />
-                      )}
-                      <span>Traduzir para Inglês</span>
-                    </button>
-                  ) : (
-                    <button
-                      type="button"
-                      onClick={() => handleTranslateBiography('en', 'pt')}
-                      disabled={isTranslatingBio || !biographies.en}
-                      className="btn-classical-secondary flex items-center space-x-2"
-                    >
-                      {isTranslatingBio ? (
-                        <FiLoader className="w-4 h-4 animate-spin" />
-                      ) : (
-                        <MdTranslate className="w-4 h-4" />
-                      )}
-                      <span>Traduzir para Português</span>
-                    </button>
-                  )}
-
-                  <button
-                    type="button"
-                    onClick={() => {
-                      setBiographies((prev) => ({
-                        ...prev,
-                        [biographyTab]: '',
-                      }));
-                      setBioMessage({ type: '', text: '' });
-                    }}
-                    disabled={!biographies[biographyTab]}
-                    className="px-4 py-2 bg-theme-elevated text-theme-tertiary rounded-lg font-medium hover:bg-interactive-hover transition-all disabled:opacity-50 disabled:cursor-not-allowed"
-                  >
-                    Limpar
-                  </button>
-                </div>
-
-                {/* Text Editor */}
-                <div className="space-y-2">
-                  <div className="flex items-center justify-between">
-                    <label className="block text-sm font-medium text-theme-tertiary">
-                      {biographyTab === 'pt'
-                        ? 'Biografia em Português'
-                        : 'Biography in English'}
-                    </label>
-                    <span className="text-xs text-theme-tertiary">
-                      {biographies[biographyTab]?.length || 0} caracteres
-                    </span>
-                  </div>
-
-                  <textarea
-                    value={biographies[biographyTab]}
-                    onChange={(e) => {
-                      setBiographies((prev) => ({
-                        ...prev,
-                        [biographyTab]: e.target.value,
-                      }));
-                      setBioMessage({ type: '', text: '' });
-                    }}
-                    rows={10}
-                    className="input-classical-2 w-full resize-none font-mono text-sm"
-                    placeholder={
-                      biographyTab === 'pt'
-                        ? 'Digite a biografia em português ou clique em "Gerar com IA"...'
-                        : 'Type the biography in English or click "Generate with AI"...'
-                    }
-                  />
-                </div>
-
-                {/* Status Cards */}
-                <div className="grid grid-cols-2 gap-4 mt-4">
-                  <div className="p-3 bg-theme-elevated rounded-lg border border-theme-secondary">
-                    <div className="flex items-center justify-between">
-                      <div className="flex items-center space-x-2">
-                        <span className="text-xl">🇧🇷</span>
-                        <div>
-                          <p className="text-xs text-theme-tertiary">
-                            Português
-                          </p>
-                          <p className="text-sm font-semibold text-theme-primary">
-                            {biographies.pt ? 'Preenchida' : 'Vazia'}
-                          </p>
-                        </div>
-                      </div>
-                      {biographies.pt && (
-                        <FiCheck className="w-5 h-5 text-accent-green" />
-                      )}
-                    </div>
-                  </div>
-
-                  <div className="p-3 bg-theme-elevated rounded-lg border border-theme-secondary">
-                    <div className="flex items-center justify-between">
-                      <div className="flex items-center space-x-2">
-                        <span className="text-xl">🇺🇸</span>
-                        <div>
-                          <p className="text-xs text-theme-tertiary">English</p>
-                          <p className="text-sm font-semibold text-theme-primary">
-                            {biographies.en ? 'Filled' : 'Empty'}
-                          </p>
-                        </div>
-                      </div>
-                      {biographies.en && (
-                        <FiCheck className="w-5 h-5 text-accent-green" />
-                      )}
-                    </div>
-                  </div>
-                </div>
-              </AnimatedCard>
-
-              {/* Actions */}
-              <div className="flex items-center justify-end space-x-3 pt-6 border-t border-theme-secondary">
-                <Button
-                  type="button"
-                  variant="secondary"
-                  onClick={onClose}
-                  disabled={isSubmitting}
-                >
-                  {t('form_cancel')}
-                </Button>
-
-                <Button
-                  type="submit"
-                  variant="primary"
-                  leftIcon={
-                    isSubmitting ? (
-                      <FiLoader className="animate-spin" />
-                    ) : (
-                      <FiSave />
-                    )
-                  }
-                  disabled={isSubmitting}
-                >
-                  {isSubmitting
-                    ? t('form_saving')
-                    : editingComposer
-                      ? t('form_update') + ' Compositor'
-                      : t('form_create') + ' Compositor'}
-                </Button>
-              </div>
-            </form>
-          </div>
+    <FormSheet
+      aberto={isOpen}
+      aoFechar={fechar}
+      titulo={titulo}
+      descricao={
+        editingComposer
+          ? t('modal_composer_subtitle_edit')
+          : t('modal_composer_subtitle_create')
+      }
+      sujo={hasChanges}
+      ocupado={isSubmitting}
+      rodape={
+        <div className="flex justify-end gap-2">
+          <Button variante="fantasma" onClick={fechar} disabled={isSubmitting}>
+            {t('form_cancel')}
+          </Button>
+          <Button
+            type="submit"
+            form={formId}
+            variante="primario"
+            icone={PiFloppyDisk}
+            carregando={isSubmitting}
+          >
+            {isSubmitting
+              ? t('form_saving')
+              : editingComposer
+                ? `${t('form_update')} Compositor`
+                : `${t('form_create')} Compositor`}
+          </Button>
         </div>
-      </AnimatedItem>
-    </Modal>
+      }
+    >
+      <form id={formId} onSubmit={handleSubmit} noValidate>
+        <FormBlock
+          titulo={t('modal_composer_scraping_title')}
+          nota={
+            isEditingExternalSource ? (
+              <span className="inline-flex items-center gap-1">
+                <PiLock aria-hidden="true" className="h-3 w-3" />
+                {t('modal_composer_scraping_detected')}
+              </span>
+            ) : undefined
+          }
+        >
+          <label className="flex flex-col gap-2">
+            <span className="t-rotulo font-medium text-texto">
+              {t('modal_composer_scraping_source_type')}
+            </span>
+            <Selecao
+              aria-label={t('modal_composer_scraping_source_type')}
+              opcoes={dataSourceOptions}
+              valor={dataSource}
+              aoMudar={(v) => setDataSource(v as DataSource)}
+              disabled={isEditingExternalSource}
+            />
+          </label>
+
+          {dataSource !== 'none' && (
+            <>
+              <Field
+                className="sm:col-span-2"
+                label={
+                  dataSource === 'imslp'
+                    ? t('modal_composer_scraping_url_imslp')
+                    : t('modal_composer_scraping_url_wikipedia')
+                }
+                type="url"
+                inputMode="url"
+                value={urlToScrape}
+                onChange={(e) => setUrlToScrape(e.target.value)}
+                placeholder={
+                  dataSource === 'imslp'
+                    ? 'https://imslp.org/wiki/Category:Mozart,_Wolfgang_Amadeus'
+                    : 'https://en.wikipedia.org/wiki/Wolfgang_Amadeus_Mozart'
+                }
+                disabled={isEditingExternalSource}
+              />
+
+              {duplicateCheck.loading && (
+                <Aviso tom="carregando">
+                  {t('modal_composer_scraping_checking_duplicates')}
+                </Aviso>
+              )}
+
+              {duplicateCheck.found && (
+                <Aviso
+                  tom="erro"
+                  titulo={t('modal_composer_scraping_duplicate_found')}
+                >
+                  <p>
+                    {t('modal_composer_scraping_duplicate_reason', {
+                      reason: motivo,
+                    })}
+                  </p>
+                  {duplicateCheck.composer?.fullName && (
+                    <p>
+                      {t('modal_composer_scraping_duplicate_composer', {
+                        composer: duplicateCheck.composer.fullName,
+                      })}
+                    </p>
+                  )}
+                  {duplicateCheck.composer?.nationality && (
+                    <p>
+                      {t('modal_composer_scraping_duplicate_nationality', {
+                        nationality: duplicateCheck.composer.nationality,
+                      })}
+                    </p>
+                  )}
+                  {(duplicateCheck.composer?.birthDate ||
+                    duplicateCheck.composer?.deathDate) && (
+                    <p>
+                      {t('modal_composer_scraping_duplicate_period', {
+                        birthDate: duplicateCheck.composer.birthDate || '?',
+                        deathDate: duplicateCheck.composer.deathDate || '?',
+                      })}
+                    </p>
+                  )}
+                </Aviso>
+              )}
+
+              {!isEditingExternalSource && (
+                <div className="sm:col-span-2">
+                  <Button
+                    tamanho="p"
+                    icone={PiMagnifyingGlass}
+                    carregando={scrapingUrl}
+                    onClick={handleScrapeUrl}
+                  >
+                    {scrapingUrl
+                      ? t('modal_composer_scraping_extracting')
+                      : t('modal_composer_scraping_extract_button')}
+                  </Button>
+                </div>
+              )}
+
+              {scrapingResult && (
+                <Aviso tom="ok" titulo={t('modal_composer_scraping_success')}>
+                  {t('modal_composer_scraping_quality', {
+                    source: scrapingResult.source,
+                    quality: scrapingResult.data.pageQuality,
+                    completeness: scrapingResult.data.dataCompleteness,
+                  })}
+                </Aviso>
+              )}
+
+              {isEditingExternalSource && (
+                <Aviso>
+                  {t('modal_composer_scraping_external_edit', {
+                    source: fonte,
+                  })}
+                </Aviso>
+              )}
+            </>
+          )}
+        </FormBlock>
+
+        <FormBlock titulo={t('modal_composer_basic_title')}>
+          <Field
+            ref={fieldRefs.name}
+            label={`${t('modal_composer_basic_name')} *`}
+            value={formData.name}
+            onChange={(e) => handleInputChange('name', e.target.value)}
+            erro={errors.name}
+            placeholder="Mozart"
+          />
+          <Field
+            ref={fieldRefs.fullName}
+            label={`${t('modal_composer_basic_full_name')} *`}
+            value={formData.fullName}
+            onChange={(e) => handleInputChange('fullName', e.target.value)}
+            erro={errors.fullName}
+            placeholder="Wolfgang Amadeus Mozart"
+          />
+          <Field
+            label={t('modal_composer_basic_alt_names')}
+            value={formData.alternativeNames}
+            onChange={(e) =>
+              handleInputChange('alternativeNames', e.target.value)
+            }
+            placeholder={t('modal_composer_basic_alt_names_placeholder')}
+          />
+          <div ref={fieldRefs.nationality} className="flex flex-col gap-2">
+            <label
+              htmlFor={`${idCampo}-1`}
+              className="t-rotulo font-medium text-texto"
+            >
+              {t('modal_composer_basic_nationality')}
+            </label>
+            <NationalitySelect
+              id={`${idCampo}-1`}
+              value={formData.nationality}
+              onChange={handleNationalityChange}
+              error={errors.nationality}
+              placeholder={t('modal_composer_basic_nationality_placeholder')}
+            />
+          </div>
+        </FormBlock>
+
+        <FormBlock titulo={t('modal_composer_dates_title')}>
+          <Field
+            ref={fieldRefs.birthDate}
+            label={t('modal_composer_dates_birth')}
+            type="date"
+            value={formData.birthDate}
+            onChange={(e) => handleInputChange('birthDate', e.target.value)}
+            erro={errors.birthDate}
+          />
+          <Field
+            ref={fieldRefs.deathDate}
+            label={t('modal_composer_dates_death')}
+            type="date"
+            value={formData.deathDate}
+            onChange={(e) => handleInputChange('deathDate', e.target.value)}
+            erro={errors.deathDate}
+            ajuda={t('modal_composer_dates_death_note')}
+          />
+        </FormBlock>
+
+        <FormBlock titulo={t('modal_composer_image_title')}>
+          <div className="flex justify-center sm:col-span-2">
+            <ComposerImageUpload
+              currentImage={formData.portraitUrl}
+              onImageUpload={handleImageUpload}
+              onImageChange={handleImageChange}
+              onImageUrlChange={(url) =>
+                setFormData((prev) => ({ ...prev, portraitUrl: url }))
+              }
+              size="xl"
+              isUploading={isUploadingImage}
+              fallbackText={
+                formData.fullName ||
+                formData.name ||
+                tx('Compositor', 'Composer')
+              }
+              showRemove={!!formData.portraitUrl}
+              composerName={formData.fullName || formData.name}
+            />
+          </div>
+        </FormBlock>
+
+        <FormBlock titulo={t('modal_composer_classification_title')}>
+          <div ref={fieldRefs.epochId} className="flex flex-col gap-2">
+            <span className="t-rotulo font-medium text-texto">
+              {t('modal_composer_classification_epoch')} *
+            </span>
+            <Selecao
+              aria-label={t('modal_composer_classification_epoch')}
+              placeholder={t('modal_composer_classification_epoch_placeholder')}
+              opcoes={epochs.map((epoch) => ({
+                value: epoch.id,
+                label: translateEpochWithHook(epoch.name, t),
+              }))}
+              valor={formData.epochId}
+              invalido={!!errors.epochId}
+              aoMudar={(value) => {
+                handleInputChange('epochId', value);
+                handleInputChange(
+                  'epochName',
+                  epochs.find((epoch) => epoch.id === value)?.name ??
+                    tx('Desconhecido', 'Unknown')
+                );
+              }}
+            />
+            {errors.epochId && (
+              <span className="t-legenda text-erro">{errors.epochId}</span>
+            )}
+          </div>
+          <div ref={fieldRefs.primaryRoleId} className="flex flex-col gap-2">
+            <span className="t-rotulo font-medium text-texto">
+              {t('modal_composer_classification_primary_role')} *
+            </span>
+            <Selecao
+              aria-label={t('modal_composer_classification_primary_role')}
+              placeholder={t(
+                'modal_composer_classification_primary_role_placeholder'
+              )}
+              opcoes={roles.map((role) => ({
+                value: role.id,
+                label: translateRole(role.name, language || 'pt'),
+              }))}
+              valor={formData.primaryRoleId}
+              invalido={!!errors.primaryRoleId}
+              aoMudar={(value) => handleInputChange('primaryRoleId', value)}
+            />
+            {errors.primaryRoleId && (
+              <span className="t-legenda text-erro">
+                {errors.primaryRoleId}
+              </span>
+            )}
+          </div>
+          <fieldset className="flex flex-col gap-3 sm:col-span-2">
+            <legend className="t-rotulo mb-1 font-medium text-texto">
+              {t('modal_composer_classification_secondary_roles')}
+            </legend>
+            <div className="flex flex-wrap gap-x-6 gap-y-3">
+              {filteredSecondaryRoles.map((role) => (
+                <CaixaDeMarcar
+                  key={role.id}
+                  rotulo={translateRole(role.name, language || 'pt')}
+                  marcado={formData.roles.includes(role.id)}
+                  aoMudar={(on) => handleSecondaryRolesChange(role.id, on)}
+                />
+              ))}
+            </div>
+          </fieldset>
+          <Field
+            className="sm:col-span-2"
+            label={t('modal_composer_classification_instruments')}
+            value={formData.instruments}
+            onChange={(e) => handleInputChange('instruments', e.target.value)}
+            placeholder={t(
+              'modal_composer_classification_instruments_placeholder'
+            )}
+          />
+        </FormBlock>
+
+        <FormBlock titulo={t('modal_composer_external_title')}>
+          {(['wikipediaLink', 'permLinkImslp'] as const).map((key) => (
+            <Field
+              key={key}
+              className="sm:col-span-2"
+              label={
+                key === 'wikipediaLink'
+                  ? t('modal_composer_external_wikipedia')
+                  : t('modal_composer_external_imslp')
+              }
+              type="url"
+              inputMode="url"
+              value={formData[key]}
+              onChange={(e) => handleInputChange(key, e.target.value)}
+              placeholder={
+                key === 'wikipediaLink'
+                  ? 'https://en.wikipedia.org/wiki/...'
+                  : 'https://imslp.org/wiki/Category:Mozart,_Wolfgang_Amadeus'
+              }
+              disabled={isFieldLocked(key)}
+              ajuda={
+                isFieldLocked(key)
+                  ? t('modal_composer_external_field_locked', {
+                      source: key === 'wikipediaLink' ? 'Wikipedia' : 'IMSLP',
+                    })
+                  : undefined
+              }
+            />
+          ))}
+          <Field
+            className="sm:col-span-2"
+            label={t('modal_composer_external_video')}
+            type="url"
+            inputMode="url"
+            value={formData.videoUrl}
+            onChange={(e) => handleInputChange('videoUrl', e.target.value)}
+            placeholder="https://www.youtube.com/watch?v=..."
+            ajuda={t('modal_composer_external_video_description')}
+          />
+        </FormBlock>
+
+        <FormBlock
+          titulo={t('modal_composer_bio_title')}
+          acoes={
+            <>
+              <Button
+                tamanho="p"
+                icone={PiSparkle}
+                carregando={isGeneratingBio}
+                onClick={() => handleGenerateBiography(biographyTab)}
+              >
+                {tx('Gerar com IA', 'Generate with AI')}
+              </Button>
+              <Button
+                tamanho="p"
+                icone={PiTranslate}
+                carregando={isTranslatingBio}
+                disabled={!biographies[biographyTab]}
+                onClick={() =>
+                  biographyTab === 'pt'
+                    ? handleTranslateBiography('pt', 'en')
+                    : handleTranslateBiography('en', 'pt')
+                }
+              >
+                {biographyTab === 'pt'
+                  ? tx('Traduzir para inglês', 'Translate to English')
+                  : tx('Traduzir para português', 'Translate to Portuguese')}
+              </Button>
+              <Button
+                tamanho="p"
+                variante="fantasma"
+                disabled={!biographies[biographyTab]}
+                onClick={() => {
+                  setBiographies((prev) => ({ ...prev, [biographyTab]: '' }));
+                  setBioMessage({ type: '', text: '' });
+                }}
+              >
+                {tx('Limpar', 'Clear')}
+              </Button>
+            </>
+          }
+        >
+          <Abas
+            rotulo={tx('Idioma da biografia', 'Biography language')}
+            className="sm:col-span-2"
+          >
+            {(['pt', 'en'] as const).map((lang) => (
+              <Aba
+                key={lang}
+                ativa={biographyTab === lang}
+                onClick={() => setBiographyTab(lang)}
+              >
+                {lang === 'pt' ? 'Português' : 'English'}
+                <span className="ml-2 text-texto-fraco">
+                  {biographies[lang]
+                    ? lang === 'pt'
+                      ? 'preenchida'
+                      : 'filled'
+                    : lang === 'pt'
+                      ? 'vazia'
+                      : 'empty'}
+                </span>
+              </Aba>
+            ))}
+          </Abas>
+
+          {bioMessage.text && (
+            <Aviso tom={bioMessage.type === 'success' ? 'ok' : 'erro'}>
+              {bioMessage.text}
+            </Aviso>
+          )}
+
+          <Field.Area
+            className="sm:col-span-2"
+            label={
+              biographyTab === 'pt'
+                ? 'Biografia em português'
+                : 'Biography in English'
+            }
+            ajuda={`${biographies[biographyTab]?.length || 0} caracteres`}
+            rows={10}
+            value={biographies[biographyTab]}
+            onChange={(e) => {
+              setBiographies((prev) => ({
+                ...prev,
+                [biographyTab]: e.target.value,
+              }));
+              setBioMessage({ type: '', text: '' });
+            }}
+            placeholder={
+              biographyTab === 'pt'
+                ? 'Escreva a biografia ou use "Gerar com IA".'
+                : 'Write the biography or use "Generate with AI".'
+            }
+          />
+        </FormBlock>
+      </form>
+    </FormSheet>
   );
 };
 

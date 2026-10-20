@@ -1,166 +1,60 @@
 @import 'tailwindcss';
 
-/* CSS Custom Properties - Tema escuro (padrão) e claro aprimorado */
-:root {
-  /* ===== TEMA ESCURO (PADRÃO) ===== */
-  /* Background colors */
-  --bg-primary: #0a0a0a;
-  --bg-secondary: #1a1a2e;
-  --bg-tertiary: #16213e;
-  --bg-elevated: #2d3748;
-  --bg-overlay: rgba(0, 0, 0, 0.8);
-
-  /* Text colors */
-  --text-primary: #ffffff;
-  --text-secondary: #e5e7eb;
-  --text-tertiary: #9ca3af;
-  --text-inverse: #0a0a0a;
-
-  /* Brand colors */
-  --brand-primary: #d4af37;
-  --brand-secondary: #fbbf24;
-  --brand-gradient: linear-gradient(135deg, #d4af37 0%, #fbbf24 100%);
-
-  /* Accent colors */
-  --accent-gold: #d4af37;
-  --accent-amber: #fbbf24;
-  --accent-purple: #6366f1;
-  --accent-blue: #3b82f6;
-  --accent-green: #10b981;
-  --accent-red: #ef4444;
-
-  /* Border colors */
-  --border-primary: rgba(212, 175, 55, 0.2);
-  --border-secondary: rgba(229, 231, 235, 0.1);
-  --border-accent: #d4af37;
-
-  /* Interactive states */
-  --interactive-hover: rgba(212, 175, 55, 0.1);
-  --interactive-active: rgba(212, 175, 55, 0.2);
-  --interactive-focus: rgba(212, 175, 55, 0.3);
-  --interactive-disabled: rgba(156, 163, 175, 0.3);
-
-  /* Shadows */
-  --shadow-small: 0 4px 6px rgba(0, 0, 0, 0.3);
-  --shadow-medium: 0 8px 32px rgba(0, 0, 0, 0.3);
-  --shadow-large: 0 20px 40px rgba(0, 0, 0, 0.4);
-  --shadow-glow: 0 8px 32px rgba(212, 175, 55, 0.2);
-
-  /* Gradients */
-  --gradient-primary: linear-gradient(
-    135deg,
-    #0a0a0a 0%,
-    #1a1a2e 50%,
-    #16213e 100%
-  );
-  --gradient-card: linear-gradient(
-    135deg,
-    rgba(45, 55, 72, 0.6) 0%,
-    rgba(26, 26, 46, 0.6) 100%
-  );
-  --gradient-card-2: linear-gradient(
-    90deg,
-    rgba(51, 65, 85, 0.3) 0%,
-    rgba(30, 41, 59, 0.3) 50%,
-    rgba(51, 65, 85, 0.3) 100%
-  );
-  --gradient-hero: linear-gradient(135deg, #0a0a0a 0%, #1a1a2e 100%);
-  --gradient-overlay: linear-gradient(
-    to bottom,
-    transparent 0%,
-    rgba(0, 0, 0, 0.7) 100%
-  );
+/* Lists render one markup in two layouts. `row:` styles an item as a row:
+   always on phones, and from sm up when its list says `data-view="list"`. */
+@custom-variant row {
+  @media (width < 40rem) {
+    @slot;
+  }
+  &:where([data-view='list'] *) {
+    @slot;
+  }
 }
 
-/* ===== TEMA CLARO APRIMORADO ===== */
-[data-theme='light'] {
-  /* Background colors - Tons cremosos e elegantes */
-  --bg-primary: #faf9f6; /* Cream muito suave em vez de branco puro */
-  --bg-secondary: #f4f1eb; /* Tom de papel antigo */
-  --bg-tertiary: #ede8df; /* Pergaminho suave */
-  --bg-elevated: #ffffff; /* Branco para elementos elevados */
-  --bg-overlay: rgba(45, 42, 35, 0.75); /* Overlay mais escuro e elegante */
+/* =========================================================================
+   Os tokens do sistema como utilitário do Tailwind.
+   Sem este bloco, `bg-fundo` e `text-ouro-texto` não existem: o Tailwind v4
+   ignora o `tailwind.config.js` (que por isso foi apagado), e os ~60 tokens
+   do projeto nunca chegaram a virar classe.
+   ========================================================================= */
+@theme inline {
+  --color-fundo: var(--fundo);
+  --color-linha: var(--linha);
+  --color-linha-forte: var(--linha-forte);
 
-  /* Text colors - Contraste suave mas legível */
-  --text-primary: #2d2a23; /* Marrom escuro elegante em vez de preto */
-  --text-secondary: #4a453c; /* Tom intermediário aquecido */
-  --text-tertiary: #6b6358; /* Cinza aquecido */
-  --text-inverse: #faf9f6; /* Cream para texto em backgrounds escuros */
+  --color-texto: var(--texto);
+  --color-texto-suave: var(--texto-suave);
+  --color-texto-fraco: var(--texto-fraco);
+  --color-sobre-ouro: var(--sobre-ouro);
 
-  /* Brand colors - Dourado mais refinado no tema claro */
-  --brand-primary: #b8941f; /* Dourado mais profundo e elegante */
-  --brand-secondary: #d4af37; /* Dourado clássico */
-  --brand-gradient: linear-gradient(
-    135deg,
-    #b8941f 0%,
-    #d4af37 50%,
-    #e6c554 100%
-  );
+  --color-ouro: var(--ouro);
+  --color-ouro-texto: var(--ouro-texto);
+  --color-ouro-na-tinta: var(--ouro-na-tinta);
 
-  /* Accent colors ajustados para o tema claro */
-  --accent-gold: #b8941f;
-  --accent-amber: #d4af37;
-  --accent-purple: #5b21b6; /* Roxo mais profundo */
-  --accent-blue: #1e40af; /* Azul mais elegante */
-  --accent-green: #059669; /* Verde mais sofisticado */
-  --accent-red: #dc2626; /* Vermelho mais refinado */
+  --color-erro: var(--erro);
+  --color-sobre-erro: var(--sobre-erro);
+  --color-sobre-foto: var(--sobre-foto);
+  --color-veu-foto: var(--veu-foto);
+  --color-ok: var(--ok);
+  --color-atencao: var(--atencao);
+  --color-aviso: var(--aviso);
+  --color-verificado: var(--verificado);
 
-  /* Border colors - Bordas sutis mas visíveis */
-  --border-primary: rgba(184, 148, 31, 0.25); /* Dourado suave */
-  --border-secondary: rgba(107, 99, 88, 0.15); /* Cinza aquecido muito suave */
-  --border-accent: #b8941f; /* Dourado para acentos */
+  --radius-controle: var(--r-controle);
+  --radius-card: var(--r-card);
+  --radius-folha: var(--r-folha);
 
-  /* Interactive states - Estados interativos elegantes */
-  --interactive-hover: rgba(184, 148, 31, 0.08); /* Hover dourado muito suave */
-  --interactive-active: rgba(
-    184,
-    148,
-    31,
-    0.15
-  ); /* Active um pouco mais visível */
-  --interactive-focus: rgba(184, 148, 31, 0.25); /* Focus bem visível */
-  --interactive-disabled: rgba(107, 99, 88, 0.25); /* Disabled cinza aquecido */
+  --font-display: var(--fonte-display);
+  --font-sans: var(--fonte-sans);
+  --font-mono: var(--fonte-mono);
 
-  /* Shadows - Sombras suaves e elegantes */
-  --shadow-small: 0 2px 8px rgba(45, 42, 35, 0.08);
-  --shadow-medium: 0 8px 24px rgba(45, 42, 35, 0.12);
-  --shadow-large: 0 16px 40px rgba(45, 42, 35, 0.15);
-  --shadow-glow: 0 8px 32px rgba(184, 148, 31, 0.15);
-
-  /* Gradients elegantes para o tema claro */
-  --gradient-primary: linear-gradient(
-    135deg,
-    #faf9f6 0%,
-    #f4f1eb 50%,
-    #ede8df 100%
-  );
-  --gradient-card: linear-gradient(
-    135deg,
-    rgba(255, 255, 255, 0.8) 0%,
-    rgba(244, 241, 235, 0.6) 100%
-  );
-  --gradient-card-2: linear-gradient(
-    90deg,
-    rgba(255, 255, 255, 0.4) 0%,
-    rgba(244, 241, 235, 0.4) 50%,
-    rgba(255, 255, 255, 0.4) 100%
-  );
-  --gradient-hero: linear-gradient(135deg, #faf9f6 0%, #f4f1eb 100%);
-  --gradient-overlay: linear-gradient(
-    to bottom,
-    transparent 0%,
-    rgba(45, 42, 35, 0.4) 100%
-  );
+  --ease-saida: var(--saida);
 }
 
-/* ===== TRANSIÇÕES E ANIMAÇÕES TEMÁTICAS ===== */
+/* ===== PUBLICIDADE =====
+   A paleta antiga (--bg-*, --text-*, --accent-*...) que morava aqui saiu: ela
+   é redefinida inteira pelo sistema abaixo, que agora é a única fonte. */
 :root {
-  /* Transitions */
-  --transition-theme: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  --transition-fast: all 0.15s ease-out;
-  --transition-smooth: all 0.3s ease-out;
-  --transition-slow: all 0.5s ease-out;
-
   /* Cores premium para publicidades */
   --ad-gold-primary: #d4af37;
   --ad-gold-secondary: #b8941f;
@@ -174,9 +68,9 @@
   --ad-glow-shadow: 0 0 30px rgba(212, 175, 55, 0.2);
 
   /* Tipografia clássica */
-  --ad-font-serif: 'Playfair Display', 'Georgia', serif;
+  --ad-font-serif: var(--fonte-display);
   --ad-font-elegant: 'Cormorant Garamond', 'Times New Roman', serif;
-  --ad-font-modern: 'Inter', 'Segoe UI', sans-serif;
+  --ad-font-modern: var(--fonte-sans);
 
   /* Bordas e elementos decorativos */
   --ad-border-elegant: 1px solid rgba(212, 175, 55, 0.3);
@@ -215,10 +109,584 @@
   );
 }
 
-/* Base styles */
-* {
-  transition: var(--transition-theme);
+/* =========================================================================
+   SISTEMA DE DESIGN — Etapa 7.8, fase 1 (fundação)
+   =========================================================================
+   Direção "Pergaminho e ouro": a identidade que o Opus Atlas já tinha,
+   calibrada. Tudo abaixo é token; nenhuma tela escreve hex.
+
+   A camada antiga (--bg-*, --text-*, --border-*, --shadow-*) continua
+   existindo e passa a apontar para estes valores. É o que faz os 12.111 usos
+   de `bg-theme-*` e `text-theme-*` mudarem de paleta sem tocar em componente
+   nenhum.
+
+   Contrastes conferidos (WCAG 2.1):
+     ouro de texto sobre fundo escuro ......... 10,65:1
+     texto suave sobre fundo escuro ............ 9,26:1
+     ouro de texto sobre pergaminho ............ 4,58:1  (antes: 2,00:1)
+     texto suave sobre pergaminho .............. 6,54:1
+     texto escuro sobre botão de ouro .......... 9,23:1
+   ========================================================================= */
+
+:root {
+  /* --- Superfícies. O degradê é do produto; o ângulo é sempre o mesmo. --- */
+  --angulo: 135deg;
+
+  --fundo: #0c0d12;
+  /* Fundo de campo de formulário: um passo acima do chão, perto do card —
+     a borda é que marca o campo. O chão puro (#0c0d12) ficava um buraco. */
+  /* Um véu claro, não uma cor: sobre o card (#191a24) um cinza fixo
+     sumia; o véu fica mais claro que qualquer superfície em que cair. */
+  --campo: rgba(243, 241, 236, 0.06);
+  --borda-campo: rgba(243, 241, 236, 0.3);
+  --sup-1-a: #191a24;
+  --sup-1-b: #13141c;
+  --sup-2-a: #21222e;
+  --sup-2-b: #1a1b25;
+  --sup-alta-a: #2a2b39;
+  --sup-alta-b: #202130;
+  /* Esqueleto: um passo acima do card, para o bloco se ler sobre ele. */
+  --esqueleto: #23242f;
+  --esqueleto-brilho: #2f303e;
+
+  --sup-1: linear-gradient(var(--angulo), var(--sup-1-a), var(--sup-1-b));
+  --sup-2: linear-gradient(var(--angulo), var(--sup-2-a), var(--sup-2-b));
+  --sup-alta: linear-gradient(
+    var(--angulo),
+    var(--sup-alta-a),
+    var(--sup-alta-b)
+  );
+
+  /* --- Linhas e sombras. Uma espessura só: 1px. --- */
+  --linha: rgba(243, 241, 236, 0.1);
+  --linha-forte: rgba(243, 241, 236, 0.2);
+  --sombra-1: 0 10px 24px rgba(0, 0, 0, 0.32);
+  --sombra-2: 0 16px 36px rgba(0, 0, 0, 0.46);
+  --sombra-alta: 0 24px 60px rgba(0, 0, 0, 0.6);
+
+  /* --- Texto --- */
+  --texto: #f3f1ec;
+  --texto-suave: #b5b1c0;
+  --texto-fraco: #8f8b9c;
+  --sobre-ouro: #0c0d12;
+
+  /* --- Ouro: marca, hierarquia, e nada além. --- */
+  --ouro: #d4af37;
+  /* Fatias da pizza do painel: o ouro em quatro degraus, da maior fatia
+     para a menor, e um cinza para "Outras". Uma cor só, como o resto do
+     painel — validados (skill de dataviz, modo ordinal) contra a superfície
+     escura: degraus monótonos, ΔL >= 0,06, a mais clara >= 2:1. */
+  --grafico-1: #d4af37;
+  --grafico-2: #a38832;
+  --grafico-3: #806c2e;
+  --grafico-4: #64562c;
+  --grafico-outras: #605e6c;
+  --ouro-texto: #e0bc5c;
+  --ouro-fill: linear-gradient(var(--angulo), #debc4c, #c9a32d);
+  --ouro-fill-hover: linear-gradient(var(--angulo), #e8c863, #d4af37);
+  --ouro-tint: linear-gradient(
+    var(--angulo),
+    rgba(212, 175, 55, 0.2),
+    rgba(212, 175, 55, 0.1)
+  );
+  /* Degradê para letra, não para fundo: as duas pontas passam no contraste.
+     Escuro: 11,90 e 10,60:1 sobre o fundo. */
+  --ouro-texto-grad: linear-gradient(var(--angulo), #e8c863, #d4af37);
+  /* Ouro de texto sobre a tinta dourada (selo, ficha ativa). No escuro é o
+     próprio ouro de texto: 6,3:1 sobre a tinta. */
+  --ouro-na-tinta: var(--ouro-texto);
+
+  /* --- Estados: quatro, não onze. --- */
+  --erro: #e8735a;
+  /* Texto sobre o vermelho: o erro do escuro é claro, e branco nele dá 2,9:1. */
+  --sobre-erro: #0c0d12;
+  /* Texto sobre fotografia (legenda de retrato): a foto é a mesma nos dois
+     temas, então a legenda e o véu por baixo também são. */
+  --sobre-foto: #f3f1ec;
+  --veu-foto: rgba(12, 13, 18, 0.78);
+  --ok: #6a9b6e;
+  --atencao: #d9a441;
+  --aviso: #6f8fbf;
+  /* O selo de verificada é azul, por decisão do dono (28/09): a única cor
+     fora do ouro que não é de estado, e só nele. 6,7:1 sobre o fundo e 5,8:1
+     sobre o card. */
+  --verificado: #4c9bf0;
+
+  /* --- Espaço: os seis degraus que o projeto já usava (94,9% dos usos). --- */
+  --e-1: 4px;
+  --e-2: 8px;
+  --e-3: 12px;
+  --e-4: 16px;
+  --e-6: 24px;
+  --e-8: 32px;
+  --e-12: 48px;
+  --e-16: 64px;
+
+  /* --- Forma. Raio interno sempre menor que o externo. --- */
+  --r-controle: 10px;
+  --r-card: 16px;
+  --r-folha: 20px;
+  --r-pilula: 9999px;
+  --alvo: 44px; /* altura mínima de toque, no site também */
+
+  /* --- Tempo. Decoração é lenta e por trás; interface é rápida e à frente. */
+  --saida: cubic-bezier(0.23, 1, 0.32, 1);
+  --t-toque: 120ms;
+  --t-resposta: 180ms;
+  --t-entrada: 240ms;
+  /* A folha anda uma distância maior que um menu: com 240ms, abrir o
+     cadastro por cima do login parecia um corte seco. */
+  --t-folha: 320ms;
+
+  /* --- Camadas: ver o bloco "Camadas" abaixo do `@theme` (10 a 400). --- */
+
+  /* --- Contêineres --- */
+  --largura-texto: 720px;
+  --largura-conteudo: 1120px;
+  --largura-catalogo: 1280px;
+
+  /* --- Foco: um anel só, em tudo que recebe teclado. --- */
+  --foco-anel: 0 0 0 3px rgba(212, 175, 55, 0.3);
+
+  /* =======================================================================
+     A camada anterior, agora apontando para os tokens acima.
+     ======================================================================= */
+  --bg-primary: var(--fundo);
+  --bg-secondary: var(--sup-1-b);
+  --bg-tertiary: var(--sup-2-b);
+  --bg-elevated: var(--sup-2-a);
+  --bg-overlay: rgba(6, 7, 10, 0.72);
+
+  --text-primary: var(--texto);
+  --text-secondary: var(--texto-suave);
+  --text-tertiary: var(--texto-fraco);
+  --text-inverse: var(--sobre-ouro);
+
+  --brand-primary: var(--ouro);
+  --brand-secondary: var(--ouro-texto);
+  --brand-gradient: var(--ouro-fill);
+
+  --accent-gold: var(--ouro);
+  --accent-amber: var(--ouro-texto);
+  /* Roxo e azul decorativos saem da paleta: viram os estados semânticos. */
+  --accent-purple: var(--aviso);
+  --accent-blue: var(--aviso);
+  --accent-green: var(--ok);
+  --accent-red: var(--erro);
+
+  --border-primary: var(--linha);
+  --border-secondary: var(--linha);
+  --border-accent: var(--ouro);
+
+  --interactive-hover: rgba(212, 175, 55, 0.1);
+  --interactive-active: rgba(212, 175, 55, 0.18);
+  --interactive-focus: rgba(212, 175, 55, 0.3);
+  --interactive-disabled: rgba(143, 139, 156, 0.3);
+
+  --shadow-small: var(--sombra-1);
+  --shadow-medium: var(--sombra-1);
+  --shadow-large: var(--sombra-2);
+  --shadow-glow: var(--sombra-2);
+
+  --gradient-primary: linear-gradient(
+    var(--angulo),
+    var(--fundo) 0%,
+    var(--sup-1-b) 100%
+  );
+  --gradient-card: var(--sup-1);
+  --gradient-card-2: var(--sup-2);
+  --gradient-hero: linear-gradient(
+    var(--angulo),
+    var(--fundo) 0%,
+    var(--sup-2-b) 100%
+  );
+  --gradient-overlay: linear-gradient(
+    to bottom,
+    transparent 0%,
+    rgba(6, 7, 10, 0.78) 100%
+  );
+
+  /* As transições nomeadas continuam, sem o `all`. */
+  --transition-theme:
+    background-color var(--t-entrada) var(--saida),
+    color var(--t-entrada) var(--saida),
+    border-color var(--t-entrada) var(--saida);
+  --transition-fast: var(--t-toque) var(--saida);
+  --transition-smooth: var(--t-resposta) var(--saida);
+  --transition-slow: var(--t-entrada) var(--saida);
 }
+
+/* =========================================================================
+   Tema claro. Não é o escuro invertido: o ouro que funciona no escuro
+   reprova no pergaminho, então cada tema tem o seu.
+   ========================================================================= */
+[data-theme='light'] {
+  --fundo: #faf7f0;
+  /* Os mesmos degraus, validados contra o papel claro. */
+  --grafico-1: #8a6508;
+  --grafico-2: #9f8134;
+  --grafico-3: #b2995c;
+  --grafico-4: #c2af7f;
+  --grafico-outras: #a6a3ae;
+  --campo: #faf7f0;
+  --borda-campo: #cfc5b0;
+  --sup-1-a: #ffffff;
+  --sup-1-b: #fbf8f2;
+  --sup-2-a: #fbf8f2;
+  --sup-2-b: #f4ede0;
+  --sup-alta-a: #ffffff;
+  --sup-alta-b: #f7f1e6;
+  --esqueleto: #f1e9da;
+  --esqueleto-brilho: #fbf8f2;
+
+  --linha: #e4dccb;
+  --linha-forte: #d6cbb4;
+  /* Sombra tingida do fundo. Preto sobre creme suja o papel. */
+  --sombra-1: 0 8px 20px rgba(70, 58, 32, 0.06);
+  --sombra-2: 0 10px 24px rgba(70, 58, 32, 0.07);
+  --sombra-alta: 0 22px 52px rgba(70, 58, 32, 0.14);
+
+  --texto: #1c1b22;
+  --texto-suave: #5b5766;
+  --texto-fraco: #6b6678;
+
+  /* Ouro vivo, por decisão de 26/09: o `#916800` (4,69:1) passava no
+     contraste mas lia quase como preto no creme. Este dá 3,01:1 — no limite
+     do mínimo para ícone e texto grande ou em negrito (3:1), ABAIXO do AA
+     para texto pequeno (4,5:1). Para voltar ao seguro: `#916800`. */
+  --ouro-texto: #bb860a;
+  /* Título em degradê metálico: 1,85 a 3,05:1. O degradê do botão, que era
+     usado aqui, dava 1,72 a 2,24:1. Versão segura: #b37f05 → #916800. */
+  --ouro-texto-grad: linear-gradient(var(--angulo), #ddb33e, #b58710);
+  /* O `#bb860a` sobre a tinta dourada caía a 2,6:1 — abaixo até dos 3:1
+     aceitos para o ouro de texto. Um degrau mais escuro, o mesmo matiz:
+     4,7:1 sobre a tinta. Só no selo e na ficha ativa (`Badge`). */
+  --ouro-na-tinta: #855f00;
+  /* Botão dourado no creme: mais claro e menos saturado. O ouro cheio do tema
+     escuro, sobre o papel, pesava demais. O texto escuro continua em 11 a
+     13,6:1. */
+  --ouro-fill: linear-gradient(var(--angulo), #efd68f, #e2c06a);
+  --ouro-fill-hover: linear-gradient(var(--angulo), #f2dc9c, #e6c674);
+  --ouro-tint: linear-gradient(
+    var(--angulo),
+    rgba(212, 175, 55, 0.22),
+    rgba(212, 175, 55, 0.1)
+  );
+
+  /* Vermelho vivo: o #a8331f passava no contraste mas puxava para tijolo, e o
+     erro não se destacava no creme. 5,36:1. */
+  --erro: #c81e1e;
+  --sobre-erro: #ffffff;
+  --ok: #41693f;
+  --atencao: #8a6416;
+  --aviso: #355789;
+  /* 4,7:1 sobre o creme (acima dos 3:1 que um ícone pede). */
+  --verificado: #1f6fd1;
+
+  --bg-overlay: rgba(45, 38, 24, 0.5);
+  --interactive-disabled: rgba(107, 102, 120, 0.25);
+
+  --gradient-overlay: linear-gradient(
+    to bottom,
+    transparent 0%,
+    rgba(45, 38, 24, 0.55) 100%
+  );
+}
+
+/* =========================================================================
+   Tipografia. Três famílias, sete degraus.
+   A Inter era baixada e nunca aplicada: o CSS pedia a família pelo nome
+   literal, e o next/font a registra sob uma variável.
+   ========================================================================= */
+:root {
+  --fonte-display: var(--fonte-display-next), 'EB Garamond', Georgia, serif;
+  --fonte-sans: var(--fonte-sans-next), system-ui, -apple-system, sans-serif;
+  --fonte-mono: var(--fonte-mono-next), ui-monospace, monospace;
+}
+
+/* =========================================================================
+   Camadas: cinco níveis com nome, no lugar de `z-[9999]` (14 lugares),
+   `z-[500]`, `z-[200]` e afins — número grande é sempre alguém que precisou
+   passar por cima de algo sem saber o quê.
+
+   conteúdo elevado · barra fixa · menu suspenso · diálogo e folha · aviso
+
+   Os valores pulam de cem em cem, e não de dez em dez: dentro das páginas o
+   conteúdo já usa `z-10` a `z-50` (card com menu aberto, botão sobre a capa),
+   e com a barra em 20 esse conteúdo passaria por cima dela ao rolar. Com a
+   barra em 100, todo `z-*` de conteúdo fica abaixo sem ser tocado.
+   ========================================================================= */
+:root {
+  --z-elevado: 10;
+  --z-barra: 100;
+  --z-menu: 200;
+  --z-dialogo: 300;
+  --z-aviso: 400;
+}
+@utility z-elevado {
+  z-index: var(--z-elevado);
+}
+@utility z-barra {
+  z-index: var(--z-barra);
+}
+@utility z-menu {
+  z-index: var(--z-menu);
+}
+@utility z-dialogo {
+  z-index: var(--z-dialogo);
+}
+@utility z-aviso {
+  z-index: var(--z-aviso);
+}
+
+/* Medida de leitura: a linha de texto corrido em ~75 caracteres. A linha
+   longa (90+) cansa na volta para a linha de baixo. Em `ch`, e não em px:
+   a medida acompanha o tamanho da letra — ~640px no corpo, mais no subtítulo
+   grande (em 720px fixos, um subtítulo de 24px caía para 55 caracteres).
+   `medida-texto` vai no parágrafo ou título; `coluna-leitura` na coluna de
+   cards de texto, somando o recuo do card. */
+/* A superfície rebaixada como utilitário: a caixa agrupada sem borda
+   (Etapa 7.8). Era usada em 384 lugares sem existir — não gerava CSS e a
+   caixa saía transparente. Degradê não é cor, por isso não vem do @theme. */
+@utility bg-sup-2 {
+  background: var(--sup-2);
+}
+
+@utility medida-texto {
+  /* 60ch ≈ 75 letras: o `ch` é a largura do "0", mais largo que a letra
+     média da Geist — 75ch davam ~105 letras por linha. */
+  max-width: 60ch;
+}
+@utility coluna-leitura {
+  max-width: calc(var(--largura-texto) + 4rem);
+}
+
+/* As classes do sistema moram em `@layer components`, abaixo dos utilitários.
+   Fora de camada, no Tailwind v4 elas venceriam qualquer utilitário escrito
+   ao lado: `t-legenda text-erro` mostrava o erro do campo em cinza, e o
+   `rounded-b-none` da folha no telefone era ignorado. */
+@layer components {
+  .t-display {
+    font-family: var(--fonte-display);
+    font-size: 3.75rem;
+    line-height: 1.05;
+    letter-spacing: -0.015em;
+    font-weight: 400;
+  }
+  .t-titulo {
+    font-family: var(--fonte-display);
+    font-size: 2.25rem;
+    line-height: 1.15;
+    letter-spacing: -0.01em;
+    font-weight: 400;
+  }
+  .t-subtitulo {
+    font-family: var(--fonte-display);
+    font-size: 1.5rem;
+    line-height: 1.25;
+    font-weight: 500;
+  }
+  .t-secao {
+    font-size: 1.25rem;
+    line-height: 1.3;
+    font-weight: 500;
+  }
+  .t-corpo {
+    font-size: 1.0625rem; /* 17px: o padrão de leitura */
+    line-height: 1.6;
+  }
+  .t-rotulo {
+    font-size: 0.875rem;
+    line-height: 1.45;
+  }
+  .t-legenda {
+    font-size: 0.8125rem;
+    line-height: 1.5;
+    color: var(--texto-fraco);
+  }
+  .t-dado {
+    font-family: var(--fonte-mono);
+    font-variant-numeric: tabular-nums;
+  }
+
+  /* =========================================================================
+     Superfícies como utilitário. Degradê não é cor, então não entra no @theme.
+     ========================================================================= */
+  .sup-1 {
+    background: var(--sup-1);
+    border: 1px solid var(--linha);
+    border-radius: var(--r-card);
+    box-shadow: var(--sombra-1);
+  }
+  .sup-2 {
+    background: var(--sup-2);
+    border: 1px solid var(--linha);
+    border-radius: var(--r-card);
+    box-shadow: none;
+  }
+  .sup-alta {
+    background: var(--sup-alta);
+    border: 1px solid var(--linha-forte);
+    border-radius: var(--r-folha);
+    box-shadow: var(--sombra-alta);
+  }
+
+  /* Fundos sem moldura, para quando o componente já traz borda e raio.
+     `bg-[var(--sup-2)]` não serve: o utilitário do Tailwind gera
+     `background-color`, e degradê não é cor. */
+  .fundo-sup-1 {
+    background: var(--sup-1);
+  }
+  .fundo-sup-2 {
+    background: var(--sup-2);
+  }
+  .fill-ouro {
+    background: var(--ouro-fill);
+  }
+  .fill-ouro:hover:not(:disabled) {
+    background: var(--ouro-fill-hover);
+  }
+  .tint-ouro {
+    background: var(--ouro-tint);
+  }
+}
+
+/* =========================================================================
+   Foco. 976 botões no produto e 42 arquivos com anel próprio: o resto
+   dependia do contorno do navegador, que não é do sistema de ninguém.
+   ========================================================================= */
+/* Em `@layer base`: é o padrão de todo elemento, e um componente com foco
+   próprio (utilitário `focus-visible:*`) consegue sobrescrever. */
+@layer base {
+  :where(
+    a,
+    button,
+    input,
+    select,
+    textarea,
+    summary,
+    [tabindex]
+  ):focus-visible {
+    /* Contorno transparente em vez de `none`: no modo de alto contraste do
+       Windows a sombra some, e o contorno é o que sobra para mostrar o foco. */
+    outline: 2px solid transparent;
+    border-color: var(--ouro);
+    box-shadow: var(--foco-anel);
+  }
+}
+
+/* =========================================================================
+   Seleção, cursor e barra de rolagem: as partes que o navegador desenha
+   sozinho e que pertencem ao sistema do mesmo jeito.
+   ========================================================================= */
+::selection {
+  background: rgba(212, 175, 55, 0.28);
+  color: var(--texto);
+}
+
+:root {
+  accent-color: var(--ouro);
+  caret-color: var(--ouro);
+  color-scheme: dark;
+}
+
+[data-theme='light'] {
+  color-scheme: light;
+}
+
+/* Troca de tema: o tema novo se abre num círculo a partir do botão
+   (`themeStore`, `trocarComRevelacao`). A foto do tema antigo fica parada
+   embaixo; só a máscara do novo anda. Sem movimento pedido, o store nem
+   inicia a transição. */
+/* Durante a troca, nenhum componente anima a própria cor: a revelação já é
+   o movimento. Ligada e desligada pelo `themeStore`. */
+.trocando-tema,
+.trocando-tema *,
+.trocando-tema *::before,
+.trocando-tema *::after {
+  transition: none !important;
+}
+
+/* O círculo é só da troca de tema: sem o `.trocando-tema`, toda navegação
+   com View Transition abriria revelando a página num círculo. */
+:root.trocando-tema::view-transition-old(root),
+:root.trocando-tema::view-transition-new(root) {
+  animation: none;
+  mix-blend-mode: normal;
+}
+
+:root.trocando-tema::view-transition-new(root) {
+  animation: tema-revela 450ms var(--saida);
+}
+
+/* Card de compositor ou de obra: inteiro clicável (`ui/CartoesQueViram`). */
+[data-vira] {
+  cursor: pointer;
+}
+
+/* Navegação e lista (`ui/transicao`). O card vira a página em 560ms — mais
+   que os 320ms do resto do sistema, por pedido do dono: é um movimento
+   grande, de um card a um cabeçalho, e em 320ms não dava para acompanhar.
+   A curva acelera e freia (ida e chegada), e a foto antiga do card cruza
+   com a nova no mesmo tempo; o resto da página cruza junto. Ao filtrar,
+   cada card desliza até o novo lugar em 380ms (`useReordenacao`). */
+::view-transition-group(*.cartao),
+::view-transition-old(*.cartao),
+::view-transition-new(*.cartao) {
+  animation-duration: 560ms;
+  animation-timing-function: cubic-bezier(0.65, 0, 0.35, 1);
+}
+:root:not(.trocando-tema)::view-transition-old(root),
+:root:not(.trocando-tema)::view-transition-new(root) {
+  animation-duration: 400ms;
+}
+/* Troca de vista (cards ↔ lista): cada card vira a sua linha. */
+::view-transition-group(*.vista),
+::view-transition-old(*.vista),
+::view-transition-new(*.vista) {
+  animation-duration: 420ms;
+  animation-timing-function: cubic-bezier(0.65, 0, 0.35, 1);
+}
+::view-transition-group(*.item-lista) {
+  animation-duration: 380ms;
+  animation-timing-function: var(--saida);
+}
+@media (prefers-reduced-motion: reduce) {
+  ::view-transition-group(*),
+  ::view-transition-old(*),
+  ::view-transition-new(*) {
+    animation: none !important;
+  }
+}
+
+/* Variação `INVERSE_THEME_CIRCLE` (`themeStore`): voltando ao escuro, a foto
+   do claro fica por cima e se fecha no botão. `reverse` toca a mesma
+   animação de trás para frente, curva inclusive: o fechamento é o espelho
+   exato da abertura, e as duas juntas formam o pulso. */
+:root.tema-encolhe::view-transition-old(root) {
+  z-index: 1;
+  animation: tema-revela 450ms var(--saida) reverse both;
+}
+
+:root.tema-encolhe::view-transition-new(root) {
+  animation: none;
+}
+
+@keyframes tema-revela {
+  from {
+    clip-path: circle(0 at var(--tema-x, 50%) var(--tema-y, 0));
+  }
+  to {
+    clip-path: circle(
+      var(--tema-raio, 150vmax) at var(--tema-x, 50%) var(--tema-y, 0)
+    );
+  }
+}
+
+/* Base styles */
+/* O `* { transition }` saiu daqui: aplicava transição a todo elemento da
+   página, inclusive ao que nunca muda. A troca de tema agora é animada por
+   quem precisa (ver a troca de tema logo acima). */
 
 html {
   scroll-behavior: smooth;
@@ -227,7 +695,8 @@ html {
 body {
   background: var(--bg-primary);
   color: var(--text-primary);
-  font-family: 'Inter', 'Segoe UI', sans-serif;
+  font-family: var(--fonte-sans);
+  font-size: 1.0625rem;
   line-height: 1.6;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
@@ -240,122 +709,184 @@ body {
   transition: var(--transition-theme);
 }
 
-/* Cards com tema adaptável */
-.classical-card {
-  background: var(--gradient-card);
-  border: 1px solid var(--border-primary);
-  backdrop-filter: blur(12px);
-  border-radius: 1.5rem;
-  /* transition: var(--transition-smooth); */
-}
+/* Cards de classe: os mesmos valores do primitivo `ui/Card`, para os ~800 usos
+   que ainda escrevem a classe (muitos via `AnimatedCard`). `.classical-card` é
+   o nível 1; `-2` e `-simple` são o nível 2, que fica e não flutua: sem
+   sombra, para o card de dentro não empilhar sombra sobre a do de fora.
 
-.classical-card-2 {
-  background: var(--gradient-card-2);
-  border: 1px solid var(--border-secondary);
-  backdrop-filter: blur(8px);
-  border-radius: 1rem;
-  /* transition: var(--transition-smooth); */
-}
+   Opacos e sem `backdrop-filter`: translúcido, o mesmo card mudava de cor
+   conforme o fundo, e o desfoque custava GPU em toda a grade sem ter nada
+   atrás para desfocar.
 
-.classical-card:hover,
-.classical-card-2:hover {
-  border-color: var(--border-accent);
-  box-shadow: var(--shadow-glow);
-  /* transform: translateY(-2px); */
-}
+   Em camada, para o `rounded-lg` ou o `shadow-*` ao lado valerem: fora dela,
+   a classe vencia qualquer utilitário.
 
-.classical-card-simple {
-  background: var(--bg-elevated);
-  border: 1px solid var(--border-secondary);
-  border-radius: 1rem;
-  transition: var(--transition-smooth);
-}
-
-.classical-card-simple:hover {
-  border-color: var(--border-primary);
-  box-shadow: var(--shadow-medium);
+   Realce sob o cursor só em card que leva a algum lugar ou faz algo. Antes
+   todo card acendia a borda, e card parado parecia clicável. */
+@layer components {
+  .classical-card,
+  .classical-card-2,
+  .classical-card-simple {
+    border: 1px solid var(--linha);
+    border-radius: var(--r-card);
+  }
+  .classical-card {
+    background: var(--sup-1);
+    box-shadow: var(--sombra-1);
+  }
+  .classical-card-2,
+  .classical-card-simple {
+    background: var(--sup-2);
+  }
+  :is(.classical-card, .classical-card-2, .classical-card-simple):is(
+    a,
+    button,
+    [role='button'],
+    .cursor-pointer
+  ) {
+    transition:
+      border-color var(--t-resposta) var(--saida),
+      box-shadow var(--t-resposta) var(--saida);
+  }
+  :is(.classical-card, .classical-card-2, .classical-card-simple):is(
+      a,
+      button,
+      [role='button'],
+      .cursor-pointer
+    ):hover {
+    border-color: color-mix(in srgb, var(--ouro) 40%, transparent);
+    box-shadow: var(--sombra-2);
+  }
 }
 
 /* Botões temáticos */
-.btn-classical-primary {
-  background: var(--brand-gradient);
-  color: var(--text-inverse);
-  font-weight: 600;
-  border: none;
-  border-radius: 0.75rem;
-  padding: 0.75rem 1.5rem;
-  transition: var(--transition-smooth);
-  box-shadow: var(--shadow-medium);
-  cursor: pointer;
-}
+/* Botões de classe: os mesmos valores do primitivo `ui/Button`, para os ~430
+   usos que ainda escrevem a classe (inclusive em links). Ficam fora de camada
+   de propósito: quem decide o botão é o sistema, não o `py-2` ao lado.
 
-.btn-classical-primary:hover {
-  transform: translateY(-1px);
-  box-shadow: var(--shadow-large);
-}
-
-.btn-classical-primary:active {
-  transform: translateY(0);
-}
-
+   Sem `box-shadow` no principal: fora de camada, a sombra dele vencia o anel
+   de foco (que é `box-shadow` em `@layer base`), e quem navega por teclado não
+   via em qual botão dourado estava. O "sobe 1px" virou o aperto de 120ms. */
+.btn-classical-primary,
+.btn-classical-accent,
+.btn-classical-secondary,
+.btn-classical-secondary-sm,
+.btn-classical-outline-sm,
 .btn-classical-delete {
-  background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
-  color: white;
-  font-weight: 600;
-  border: 1px solid #ef4444;
-  border-radius: 0.75rem;
-  padding: 0.75rem 1.5rem;
-  transition: var(--transition-smooth);
-  box-shadow: var(--shadow-medium);
-  cursor: pointer;
-}
-
-.btn-classical-delete:hover {
-  background: linear-gradient(135deg, #dc2626 0%, #b91c1c 100%);
-  border-color: #dc2626;
-  transform: translateY(-1px);
-  box-shadow: var(--shadow-large);
-}
-
-.btn-classical-delete:active {
-  transform: translateY(0);
-}
-
-.btn-classical-secondary {
-  background: var(--bg-elevated);
-  color: var(--text-primary);
-  border: 1px solid var(--border-primary);
+  border-radius: var(--r-controle);
+  min-height: var(--alvo);
+  padding: 0.625rem 1.25rem;
+  font-size: 0.9375rem;
+  line-height: 1.6;
   font-weight: 500;
-  border-radius: 0.75rem;
-  padding: 0.75rem 1.5rem;
-  transition: var(--transition-smooth);
+  border: 1px solid transparent;
   cursor: pointer;
+  transition:
+    transform var(--t-toque) var(--saida),
+    background var(--t-toque) var(--saida),
+    border-color var(--t-toque) var(--saida),
+    color var(--t-toque) var(--saida);
 }
 
-.btn-classical-secondary:hover {
-  background: var(--interactive-hover);
-  border-color: var(--border-accent);
+.btn-classical-primary:active:not(:disabled),
+.btn-classical-accent:active:not(:disabled),
+.btn-classical-secondary:active:not(:disabled),
+.btn-classical-secondary-sm:active:not(:disabled),
+.btn-classical-outline-sm:active:not(:disabled),
+.btn-classical-delete:active:not(:disabled) {
+  transform: scale(0.98);
+}
+
+/* Principal: ouro com texto escuro (9,23:1; branco sobre ouro reprova). */
+.btn-classical-primary,
+.btn-classical-accent {
+  background: var(--ouro-fill);
+  color: var(--sobre-ouro);
+  font-weight: 600;
+}
+.btn-classical-primary:hover:not(:disabled),
+.btn-classical-accent:hover:not(:disabled) {
+  background: var(--ouro-fill-hover);
+}
+
+/* Secundário: superfície 2, a borda doura sob o cursor. */
+.btn-classical-secondary,
+.btn-classical-secondary-sm,
+.btn-classical-outline-sm {
+  background: var(--sup-2);
+  color: var(--texto);
+  border-color: var(--linha-forte);
+}
+.btn-classical-secondary:hover:not(:disabled),
+.btn-classical-secondary-sm:hover:not(:disabled),
+.btn-classical-outline-sm:hover:not(:disabled) {
+  border-color: color-mix(in srgb, var(--ouro) 50%, transparent);
+  color: var(--ouro-texto);
+}
+
+/* Os pequenos, para barras e cards densos: 36px, e 44px no toque. */
+.btn-classical-secondary-sm,
+.btn-classical-outline-sm {
+  min-height: 2.25rem;
+  padding: 0.375rem 0.875rem;
+  font-size: 0.875rem;
+}
+@media (pointer: coarse) {
+  .btn-classical-secondary-sm,
+  .btn-classical-outline-sm {
+    min-height: var(--alvo);
+  }
+}
+
+/* Excluir: contorno vermelho, como a variante `perigo`. Vermelho cheio fica
+   para a confirmação, não para o botão que a abre. */
+.btn-classical-delete {
+  /* Apagar é um dos poucos momentos em que o vermelho aparece: chapado, com o
+     texto que passa no contraste em cada tema (6,5:1 no escuro, 5,9:1 no
+     claro). */
+  background: var(--erro);
+  color: var(--sobre-erro);
+  border-color: transparent;
+  font-weight: 600;
+}
+.btn-classical-delete:hover:not(:disabled) {
+  background: color-mix(in srgb, var(--erro) 86%, var(--texto));
+}
+
+.btn-classical-primary:disabled,
+.btn-classical-accent:disabled,
+.btn-classical-secondary:disabled,
+.btn-classical-secondary-sm:disabled,
+.btn-classical-outline-sm:disabled,
+.btn-classical-delete:disabled {
+  cursor: not-allowed;
+  opacity: 0.4;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .btn-classical-primary,
+  .btn-classical-accent,
+  .btn-classical-secondary,
+  .btn-classical-secondary-sm,
+  .btn-classical-outline-sm,
+  .btn-classical-delete {
+    transition: none;
+  }
 }
 
 /* Texto com gradiente */
 .text-gradient-brand {
-  background: var(--brand-gradient);
+  /* Era `--brand-gradient`, o preenchimento do botão: bom sob texto escuro,
+     ilegível como letra no tema claro. */
+  background: var(--ouro-texto-grad);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
   display: inline-block;
 }
 
-.text-brand-primary {
-  color: var(--brand-primary);
-}
-
 .border-color-primary {
   border-color: var(--brand-primary);
-}
-
-.text-brand-secondary {
-  color: var(--brand-secondary);
 }
 
 /* Ícones com efeito de brilho */
@@ -381,43 +912,402 @@ body {
 }
 
 /* Inputs e forms */
-.input-classical {
-  background: var(--bg-elevated);
-  border: 1px solid var(--border-secondary);
-  color: var(--text-primary);
+/* Campo de formulário: uma aparência só, para os 377 `input-classical` e o
+   `Field`. Mais escuro que o card — é onde se escreve, não onde se lê —,
+   borda de 1px, raio de controle e 44px de alvo.
+
+   Em `@layer components` porque, fora de camada, este bloco vencia qualquer
+   utilitário: o `padding-left: 3rem` (pensado para campo com ícone) valia até
+   onde o componente pedia `pl-4`, e todo campo sem ícone começava o texto 48px
+   para dentro — era por isso que o `Select` precisava de `!pl-6`.
+
+   16px de letra, nunca menos: abaixo disso o Safari do iPhone dá zoom na
+   página ao focar o campo. */
+@layer components {
+  .input-classical,
+  .input-classical-2 {
+    background: var(--campo);
+    border: 1px solid var(--borda-campo);
+    color: var(--texto);
+    border-radius: var(--r-controle);
+    min-height: var(--alvo);
+    padding: 0.625rem 1rem;
+    font-size: 1rem;
+    transition:
+      border-color var(--t-resposta) var(--saida),
+      box-shadow var(--t-resposta) var(--saida);
+  }
+
+  /* O padrão antigo, para campo com ícone à esquerda sem `pl-*` próprio. */
+  .input-classical {
+    padding-left: 3rem;
+  }
+
+  .input-classical-2 {
+    padding-inline: 1.5rem;
+  }
+
+  .input-classical:focus,
+  .input-classical-2:focus {
+    outline: 2px solid transparent;
+    border-color: var(--ouro);
+    box-shadow: var(--foco-anel);
+  }
+
+  .input-classical::placeholder,
+  .input-classical-2::placeholder {
+    color: var(--texto-fraco);
+  }
+
+  /* Erro: a borda e um halo da mesma cor. Só a borda de 1px sumia no creme. */
+  .input-classical[aria-invalid='true'],
+  .input-classical-2[aria-invalid='true'] {
+    border-color: var(--erro);
+    box-shadow: 0 0 0 3px color-mix(in srgb, var(--erro) 16%, transparent);
+  }
+
+  .input-classical:disabled,
+  .input-classical-2:disabled {
+    cursor: not-allowed;
+    opacity: 0.5;
+  }
+
+  /* O select do sistema (`ui/Selecao`). O botão já é um `.input-classical`;
+     aberto, fica com a borda de foco enquanto a lista está à mostra. */
+  .input-classical.selecao-aberta {
+    border-color: var(--ouro);
+  }
+  /* The searchable select: its field, not the input inside, shows focus. */
+  .input-classical:has(input:focus-visible) {
+    border-color: var(--ouro);
+    box-shadow: var(--foco-anel);
+  }
+
+  /* A lista abre na camada de topo (popover): nada a corta, nada a cobre. O
+     navegador põe margem, borda e `inset` de popover; tudo zerado aqui. */
+  .selecao-lista {
+    position: fixed;
+    inset: auto;
+    margin: 0;
+    padding: 0.375rem;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    background: var(--sup-alta);
+    color: var(--texto);
+    border: 1px solid var(--linha-forte);
+    border-radius: 0.75rem;
+    box-shadow: var(--sombra-alta);
+  }
+
+  .selecao-lista:popover-open {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    animation: selecao-entra var(--t-toque) var(--saida);
+  }
+
+  .selecao-lista.selecao-acima:popover-open {
+    animation-name: selecao-entra-acima;
+  }
+
+  .selecao-opcao {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    min-height: 2.5rem;
+    padding: 0.5rem 0.75rem;
+    border-radius: 0.5rem;
+    font-size: 0.9375rem;
+    color: var(--texto-suave);
+    cursor: pointer;
+    user-select: none;
+  }
+
+  .selecao-opcao[aria-selected='true'] {
+    color: var(--texto);
+    font-weight: 500;
+  }
+
+  .selecao-opcao[data-ativa] {
+    background: var(--ouro-tint);
+    color: var(--texto);
+  }
+
+  .selecao-opcao[aria-disabled='true'] {
+    cursor: not-allowed;
+    opacity: 0.45;
+  }
+
+  @media (pointer: coarse) {
+    .selecao-opcao {
+      min-height: var(--alvo);
+    }
+  }
+}
+
+/* Entrada ao chegar à vista (`Revelar`), ligada à rolagem e só em CSS
+   (`animation-timeline: view()`): nada é escondido depois de pintado, nada
+   depende de script, e o que já está na tela ao carregar está com a
+   animação concluída. Sem suporte (ou com movimento reduzido), tudo aparece
+   de uma vez. Cada filho de `.revela-filhos` tem a própria linha do tempo,
+   então a cascata sai da posição de cada um. */
+@media (prefers-reduced-motion: no-preference) {
+  @supports (animation-timeline: view()) {
+    .revela,
+    .revela-filhos {
+      view-timeline: --bloco block;
+    }
+    .revela,
+    .revela-filhos > * {
+      animation: revela-entra linear both;
+      animation-timeline: view();
+      /* A fixed distance, not a share of the block: a tall section already
+         on screen at load stayed half transparent (the pricing page looked
+         dark until scrolled). */
+      animation-range: entry 0px entry 180px;
+    }
+    /* O visto se traça enquanto o bloco em volta entra. */
+    :is(.revela, .revela-filhos) .visto-desenha path {
+      stroke-dasharray: 1;
+      stroke-dashoffset: 1;
+      animation: visto-traca linear both;
+      animation-timeline: --bloco;
+      animation-range: entry 40% cover 35%;
+    }
+  }
+}
+
+@keyframes revela-entra {
+  from {
+    opacity: 0;
+    transform: translateY(22px);
+  }
+}
+
+/* Abas: once measured, one pill draws the active tab's surface and slides
+   to the chosen tab; the tab itself goes transparent. */
+.abas[data-pilula]::before {
+  content: '';
+  position: absolute;
+  z-index: -1;
+  top: 0.25rem;
+  bottom: 0.25rem;
+  left: 0;
+  width: var(--aba-w);
+  transform: translateX(var(--aba-x));
   border-radius: 0.5rem;
-  padding: 0.75rem 1rem;
-  transition: var(--transition-smooth);
-  padding-left: 3rem;
+  /* Same surface and shadow as the tab's `bg-theme-tertiary shadow-md`. */
+  background: var(--bg-tertiary);
+  box-shadow:
+    0 4px 6px -1px rgb(0 0 0 / 0.1),
+    0 2px 4px -2px rgb(0 0 0 / 0.1);
+}
+.abas[data-pilula] .aba[aria-selected='true'] {
+  background: transparent;
+  box-shadow: none;
+}
+@media (prefers-reduced-motion: no-preference) {
+  .abas[data-pilula='pronta']::before {
+    transition:
+      transform 340ms var(--saida),
+      width 340ms var(--saida);
+  }
 }
 
-.input-classical:focus {
-  outline: none;
-  border-color: var(--border-accent);
-  box-shadow: 0 0 0 3px var(--interactive-focus);
+/* The veil over a full reload (`recarregarTudo`), until the new page paints. */
+#recarregando-veu {
+  position: fixed;
+  inset: 0;
+  z-index: 2147483000;
+  display: grid;
+  place-content: center;
+  justify-items: center;
+  gap: 0.75rem;
+  color: var(--ouro);
+  font-size: 0.9375rem;
+  color-scheme: inherit;
+  animation: veu-surge 220ms var(--saida) both;
+}
+#recarregando-veu svg {
+  width: 2.75rem;
+  height: 2.75rem;
+}
+#recarregando-veu span {
+  color: var(--texto-suave);
+}
+@keyframes veu-surge {
+  from {
+    opacity: 0;
+  }
 }
 
-.input-classical::placeholder {
-  color: var(--text-tertiary);
+/* A portrait (`Portrait`) shows its initial only without a photo or when
+   the photo failed (`RetratosQueFalham` marks it) — never while it loads. */
+img[data-retrato]:not([data-falhou]) ~ .retrato-inicial {
+  display: none;
+}
+img[data-retrato][data-falhou] {
+  display: none;
 }
 
-.input-classical-2 {
-  background: var(--bg-elevated);
-  border: 1px solid var(--border-secondary);
-  color: var(--text-primary);
-  border-radius: 0.5rem;
-  padding: 0.75rem 1.5rem;
-  transition: var(--transition-smooth);
+/* O sinal dos avisos (`Avisos`): o anel e o traço se desenham ao chegar, e
+   o astro do "carregando" gira na órbita. */
+@media (prefers-reduced-motion: no-preference) {
+  .aviso-traca > * {
+    stroke-dasharray: 1;
+    stroke-dashoffset: 1;
+    animation: visto-traca 520ms var(--saida) forwards;
+  }
+  .aviso-traca > :nth-child(2) {
+    animation-delay: 260ms;
+  }
+  .aviso-astro {
+    transform-origin: 14px 14px;
+    animation: aviso-orbita 1.1s linear infinite;
+  }
 }
 
-.input-classical-2:focus {
-  outline: none;
-  border-color: var(--border-accent);
-  box-shadow: 0 0 0 3px var(--interactive-focus);
+@keyframes aviso-orbita {
+  to {
+    transform: rotate(360deg);
+  }
 }
 
-.input-classical-2::placeholder {
-  color: var(--text-tertiary);
+@keyframes visto-traca {
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+
+/* Entrada do topo da página (`.entra`, em cascata por `--i`). Só CSS: roda na
+   primeira pintura, sem esperar o JavaScript — o título não fica invisível
+   até a hidratação, como ficaria com o `Revelar`. */
+@media (prefers-reduced-motion: no-preference) {
+  .entra {
+    animation: entra 820ms var(--saida) both;
+    animation-delay: calc(var(--i, 0) * 110ms);
+  }
+}
+
+/* Entrances never start at opacity 0: Chrome does not count an element first
+   painted invisible as Largest Contentful Paint, and the page's title then
+   lost LCP to whatever painted after the scripts. 0.08 reads the same to
+   the eye. No blur either: a filter repaints the text every frame, where
+   opacity and transform stay on the compositor. */
+@keyframes entra {
+  from {
+    opacity: 0.08;
+    transform: translateY(16px);
+  }
+}
+@keyframes globo-surge {
+  from {
+    opacity: 0;
+  }
+}
+
+/* As cenas do quadro da página Sobre (`about-us/QuadroDoSite`): cada peça
+   entra uma vez, em cascata por `--i`, quando a aba abre. Com movimento
+   reduzido, tudo aparece pronto. */
+@media (prefers-reduced-motion: no-preference) {
+  .cena-surge,
+  .cena-cai,
+  .cena-desliza {
+    animation-duration: 620ms;
+    animation-timing-function: var(--saida);
+    animation-fill-mode: both;
+    animation-delay: calc(120ms + var(--i, 0) * 110ms);
+  }
+  .cena-surge {
+    animation-name: cena-surge;
+  }
+  .cena-cai {
+    animation-name: cena-cai;
+  }
+  .cena-desliza {
+    animation-name: cena-desliza;
+    animation-duration: 760ms;
+  }
+  .quadro-tempo {
+    animation: quadro-tempo linear forwards;
+  }
+}
+@keyframes cena-surge {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+    filter: blur(4px);
+  }
+}
+@keyframes cena-cai {
+  from {
+    opacity: 0;
+    transform: translateY(-18px) scaleY(0.6);
+  }
+}
+@keyframes cena-desliza {
+  from {
+    opacity: 0;
+    transform: translateY(-24px);
+  }
+}
+@keyframes quadro-tempo {
+  from {
+    transform: scaleX(0);
+  }
+  to {
+    transform: scaleX(1);
+  }
+}
+
+/* Odômetro (`NumeroRolante`): cada dígito é uma coluna de 0 a 9 que desliza
+   até o seu valor. A coluna tem a altura de uma linha e esconde o resto. */
+.odometro-coluna {
+  display: inline-block;
+  height: 1em;
+  line-height: 1;
+  overflow: hidden;
+}
+.odometro-faixa {
+  display: flex;
+  flex-direction: column;
+  transition: transform 760ms cubic-bezier(0.2, 0.9, 0.1, 1);
+}
+.odometro-faixa > span {
+  height: 1em;
+  line-height: 1;
+}
+@media (prefers-reduced-motion: reduce) {
+  .odometro-faixa {
+    transition: none;
+  }
+}
+
+@keyframes selecao-entra {
+  from {
+    opacity: 0;
+    transform: translateY(-4px) scale(0.98);
+  }
+}
+
+@keyframes selecao-entra-acima {
+  from {
+    opacity: 0;
+    transform: translateY(4px) scale(0.98);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .selecao-lista:popover-open {
+    animation: none;
+  }
+}
+
+/* Rolagem do painel: fina e neutra. A dourada é do site; num painel denso
+   ela vira uma faixa de cor em cada lista. */
+.rolagem-discreta {
+  scrollbar-width: thin;
+  scrollbar-color: var(--linha-forte) transparent;
 }
 
 /* Scrollbar personalizada */
@@ -550,16 +1440,236 @@ body {
 }
 
 /* Loading skeleton */
+/* Esqueleto: tom próprio da superfície (`--esqueleto`) com um brilho um passo
+   acima — sem ouro, sem cinza. 1,6s, curva suave; liso com movimento reduzido. */
 .loading-skeleton {
   background: linear-gradient(
     90deg,
-    var(--bg-secondary) 25%,
-    var(--interactive-hover) 50%,
-    var(--bg-secondary) 75%
+    var(--esqueleto) 30%,
+    var(--esqueleto-brilho) 50%,
+    var(--esqueleto) 70%
   );
-  background-size: 200% 100%;
-  animation: shimmer 1.5s infinite;
-  border-radius: 0.5rem;
+  background-size: 220% 100%;
+  animation: shimmer 1.6s ease-in-out infinite;
+}
+/* O raio padrão fica numa camada: fora dela ele vencia todo `rounded-*` — o
+   esqueleto de retrato (`rounded-full`) saía quadrado. */
+@layer components {
+  .loading-skeleton {
+    border-radius: 0.5rem;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .loading-skeleton {
+    animation: none;
+    background: var(--esqueleto);
+  }
+}
+
+/* Notas ao fundo (`ui/NotasAoFundo`): sobem em 14s, aparecem até 28% e
+   somem antes do topo, com uma deriva lateral pequena. Sem pulso, sem
+   desfoque; com movimento reduzido, não aparecem. */
+.nota-ao-fundo {
+  --nota-opacidade: 0.28;
+  opacity: 0;
+  animation: nota-sobe 14s linear infinite;
+}
+/* No creme, o ouro claro a 28% sumia no fundo: o ouro de texto, mais
+   escuro, e um pouco mais presente. */
+:root[data-theme='light'] .nota-ao-fundo {
+  --nota-opacidade: 0.42;
+  color: var(--ouro-texto);
+}
+/* Sobe a altura do contêiner (e não da janela): num bloco baixo, a nota
+   atravessaria em segundos e passaria o resto do ciclo escondida. */
+@keyframes nota-sobe {
+  0% {
+    bottom: -5%;
+    transform: translateX(0) rotate(-6deg);
+    opacity: 0;
+  }
+  15% {
+    opacity: var(--nota-opacidade);
+  }
+  70% {
+    opacity: var(--nota-opacidade);
+  }
+  100% {
+    bottom: 105%;
+    transform: translateX(14px) rotate(8deg);
+    opacity: 0;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .notas-ao-fundo {
+    display: none;
+  }
+}
+
+/* Selo de verificada (`ui/SeloVerificada`): com `.selo-desenha`, o contorno
+   se traça e o visto entra depois — 1,3s, uma vez. Ao abrir a página da obra
+   ou do compositor (`.selo-entrada`), ele espera o card virar a página
+   (560ms) para começar. */
+.selo-desenha .selo-contorno,
+.selo-desenha .selo-visto {
+  stroke-dasharray: 1;
+  stroke-dashoffset: 1;
+}
+.selo-desenha .selo-contorno {
+  animation: selo-traca 0.8s var(--saida) forwards;
+}
+.selo-desenha .selo-visto {
+  animation: selo-traca 0.5s var(--saida) 0.8s forwards;
+}
+.selo-entrada.selo-desenha .selo-contorno {
+  animation-delay: 0.5s;
+}
+.selo-entrada.selo-desenha .selo-visto {
+  animation-delay: 1.3s;
+}
+@keyframes selo-traca {
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .selo-desenha .selo-contorno,
+  .selo-desenha .selo-visto {
+    animation: none;
+    stroke-dashoffset: 0;
+  }
+}
+
+/* Tabela de leitura (documentos: termos, privacidade). Frases longas não
+   cabem em "rótulo: valor" lado a lado; abaixo de 768px cada linha vira um
+   bloco, com o rótulo da coluna em cima do texto (`data-rotulo`). */
+@media (max-width: 767px) {
+  .tabela-leitura thead {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+  }
+  .tabela-leitura,
+  .tabela-leitura tbody,
+  .tabela-leitura tr,
+  .tabela-leitura td {
+    display: block;
+    width: 100%;
+  }
+  .tabela-leitura tr {
+    padding-block: 1rem;
+  }
+  .tabela-leitura tr + tr {
+    border-top: 1px solid var(--linha);
+  }
+  .tabela-leitura td {
+    padding: 0.25rem 0 !important;
+  }
+  .tabela-leitura td:first-child {
+    font-weight: 600;
+    color: var(--texto);
+  }
+  .tabela-leitura td:not(:first-child)::before {
+    content: attr(data-rotulo);
+    display: block;
+    font-size: 0.75rem;
+    letter-spacing: 0.02em;
+    color: var(--texto-fraco);
+  }
+}
+
+/* Tabela que empilha no telefone (`tabela-empilha` no <table>). Rolagem
+   lateral é o pior jeito de ler registro em tela estreita: abaixo de 768px,
+   cada linha vira um bloco — o dado principal em cima, e cada coluna em
+   rótulo e valor (o rótulo vem do `data-rotulo` da célula). O cabeçalho sai
+   da tela mas continua para o leitor de tela. No desktop nada muda. */
+@media (max-width: 767px) {
+  .tabela-empilha thead {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+  }
+  .tabela-empilha,
+  .tabela-empilha tbody,
+  .tabela-empilha tr,
+  .tabela-empilha td {
+    display: block;
+    width: 100%;
+  }
+  .tabela-empilha tr {
+    padding-block: 0.75rem;
+    border-bottom: 1px solid var(--linha);
+  }
+  .tabela-empilha td {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    padding: 0.375rem 0 !important;
+    text-align: right;
+  }
+  .tabela-empilha td::before {
+    content: attr(data-rotulo);
+    flex-shrink: 0;
+    font-size: 0.8125rem;
+    color: var(--texto-fraco);
+    text-align: left;
+  }
+  .tabela-empilha td:first-child {
+    display: block;
+    text-align: left;
+  }
+  .tabela-empilha td:first-child::before {
+    content: none;
+  }
+}
+
+/* Diálogo e folha (`components/Modal`). No telefone a folha sobe de baixo,
+   presa à borda — é onde o polegar está; a partir de 640px aparece no centro.
+   320ms (`--t-folha`) na curva do sistema; nada disso com movimento reduzido. O véu não
+   desfoca o fundo: escurecer já separa, e o desfoque custava GPU a cada
+   abertura. */
+.folha-veu {
+  background: var(--bg-overlay);
+  animation: folha-veu var(--t-folha) var(--saida) both;
+}
+.folha {
+  /* `backwards`, não `both`: terminada a entrada, a animação solta o
+     `transform`, e o arraste da alça pode mover a folha. */
+  animation: folha-sobe var(--t-folha) var(--saida) backwards;
+}
+@media (min-width: 640px) {
+  .folha {
+    animation-name: folha-aparece;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .folha,
+  .folha-veu {
+    animation: none;
+  }
+}
+@keyframes folha-veu {
+  from {
+    opacity: 0;
+  }
+}
+@keyframes folha-sobe {
+  from {
+    transform: translateY(100%);
+  }
+}
+@keyframes folha-aparece {
+  from {
+    opacity: 0;
+    transform: translateY(8px) scale(0.98);
+  }
 }
 
 /* Modal/Overlay */
@@ -596,9 +1706,12 @@ body {
 
 /* Typography */
 .classical-title {
-  font-family: 'Georgia', 'Times New Roman', serif;
-  font-weight: 700;
-  letter-spacing: -0.02em;
+  font-family: var(--fonte-display);
+  font-weight: 600;
+  /* Sem o -0,02em da Georgia: a Garamond já é compacta, e em 18–20px (nome de
+     obra no card, cabeçalho de painel) as letras chegavam a se tocar. O
+     aperto fica só nos degraus grandes (.t-display e .t-titulo). */
+  letter-spacing: normal;
   color: var(--text-primary);
 }
 
@@ -674,16 +1787,40 @@ body {
 /* Container/Layout */
 .section-wrap {
   width: 100%;
-  max-width: 1440px;
+  /* Largura de catálogo: 1.280px de conteúdo, mais o recuo dos lados. */
+  max-width: calc(var(--largura-catalogo) + 5rem);
   margin: 0 auto;
   padding: 2rem 2.5rem;
 }
 
 .section-wrap-nav {
   width: 100%;
-  max-width: 1440px;
+  /* Largura de catálogo: 1.280px de conteúdo, mais o recuo dos lados. */
+  max-width: calc(var(--largura-catalogo) + 5rem);
   margin: 0 auto;
-  padding: 1rem 2.5rem;
+  /* Recuo lateral igual ao da barra do blog: 16 px no telefone, 24 no
+     tablet e 40 no computador. */
+  padding: 1rem 1rem;
+}
+
+/* No telefone a barra tem a altura da do blog (4rem): o recuo vertical sai e
+   a altura vem do conteúdo. */
+@media (max-width: 639px) {
+  .section-wrap-nav {
+    padding-block: 0;
+  }
+}
+
+@media (min-width: 640px) {
+  .section-wrap-nav {
+    padding-inline: 1.5rem;
+  }
+}
+
+@media (min-width: 1024px) {
+  .section-wrap-nav {
+    padding-inline: 2.5rem;
+  }
 }
 
 .container-classical {
@@ -703,11 +1840,8 @@ body {
     padding: 1rem;
   }
 
-  .btn-classical-primary,
-  .btn-classical-secondary {
-    padding: 0.625rem 1.25rem;
-    font-size: 0.875rem;
-  }
+  /* Botão não encolhe no telefone: alvo de toque e tamanho de texto não são
+     responsivos (7.8.2). O padding que esta regra dava já é o padrão. */
 }
 
 @media (max-width: 640px) {
@@ -798,59 +1932,8 @@ html {
   scroll-behavior: smooth;
 }
 
-/* Loading skeleton animation */
-@keyframes skeleton-loading {
-  0% {
-    background-position: -200% 0;
-  }
-  100% {
-    background-position: 200% 0;
-  }
-}
-
-.loading-skeleton {
-  background: linear-gradient(
-    90deg,
-    var(--bg-secondary) 25%,
-    var(--interactive-hover) 50%,
-    var(--bg-secondary) 75%
-  );
-  background-size: 200% 100%;
-  animation: skeleton-loading 1.5s infinite;
-}
-
-.ProseMirror img {
-  position: relative;
-  cursor: pointer;
-  transition: all 0.2s;
-}
-
-.ProseMirror img:hover {
-  opacity: 0.9;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-}
-
-.ProseMirror .image-wrapper {
-  position: relative;
-  display: inline-block;
-}
-
-.ProseMirror .image-controls {
-  position: absolute;
-  top: 8px;
-  right: 8px;
-  display: none;
-  background: white;
-  border-radius: 8px;
-  padding: 4px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
-  z-index: 10;
-}
-
-.ProseMirror .image-wrapper:hover .image-controls {
-  display: flex;
-  gap: 4px;
-}
+/* A segunda definição de `.loading-skeleton` saiu daqui: era idêntica à do
+   começo do arquivo, com outro nome de animação, e a apagava. */
 
 /* Smooth scrolling no carrossel */
 .scroll-smooth {
@@ -876,51 +1959,6 @@ html {
   display: none;
 }
 
-/* app/globals.css - Adicionar isso */
-
-@keyframes gradient-move {
-  0% {
-    background-position: 0% 50%;
-  }
-  50% {
-    background-position: 100% 50%;
-  }
-  100% {
-    background-position: 0% 50%;
-  }
-}
-
-.opus-atlas-gradient {
-  background: linear-gradient(
-    90deg,
-    #ffffff 0%,
-    #d4af37 25%,
-    #ffd700 50%,
-    #d4af37 75%,
-    #ffffff 100%
-  );
-  background-size: 200% 200%;
-  animation: gradient-move 3s ease infinite;
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
-  display: inline-block;
-}
-
-/* Dark mode: inverter cores */
-[data-theme='dark'] .opus-atlas-gradient {
-  background: linear-gradient(
-    90deg,
-    #d4af37 0%,
-    #ffd700 25%,
-    #ffffff 50%,
-    #ffd700 75%,
-    #d4af37 100%
-  );
-  background-size: 200% 200%;
-  animation: gradient-move 3s ease infinite;
-}
-
 .gold-shine {
   background: linear-gradient(
     90deg,
@@ -936,6 +1974,9 @@ html {
   animation: shine 3s linear infinite;
 }
 
+/* O brilho do logo é o mesmo nos dois temas, com o clarão `#f7e9a4` que
+   passa pela palavra: é o pulso dourado da marca, e por decisão de 26/09 ele
+   fica como era, inclusive no creme (onde o clarão, sozinho, dá 1,14:1). */
 @keyframes shine {
   0% {
     background-position: 200% center;
@@ -960,10 +2001,12 @@ html {
   -webkit-text-fill-color: transparent;
   animation:
     shine 4s linear infinite,
-    glow 2s ease-in-out infinite alternate;
+    glow-texto 2s ease-in-out infinite alternate;
 }
 
-@keyframes glow {
+/* Renomeado: convivia com outro `glow` (box-shadow, acima) e o apagava em
+   silêncio, porque o último bloco de mesmo nome vence. */
+@keyframes glow-texto {
   from {
     text-shadow:
       0 0 6px rgba(212, 175, 55, 0.4),
@@ -974,4 +2017,1001 @@ html {
       0 0 14px rgba(212, 175, 55, 0.7),
       0 0 20px rgba(212, 175, 55, 0.4);
   }
+}
+
+/* =========================================================================
+   Blog (30/09/2026). O corpo do artigo é a única leitura longa em serifada
+   do produto (7.8.2: "Blog: serifada no corpo"). Ficam em `@layer
+   components`, como as do sistema: um utilitário ao lado sobrescreve.
+   ========================================================================= */
+@layer components {
+  /* A Garamond tem o olho pequeno: em 17px ela lê como 15. O corpo do
+     artigo é de 19px no telefone e 21px a partir do `sm`. */
+  .blog-corpo {
+    font-family: var(--fonte-display);
+    font-size: 1.1875rem;
+    line-height: 1.62;
+    color: var(--texto);
+    font-variant-numeric: oldstyle-nums;
+    hanging-punctuation: first;
+    overflow-wrap: break-word;
+  }
+  @media (min-width: 640px) {
+    .blog-corpo {
+      font-size: 1.3125rem;
+    }
+  }
+  .blog-corpo > * + * {
+    margin-top: 1.25em;
+  }
+  .blog-corpo h2,
+  .blog-corpo h3,
+  .blog-corpo h4 {
+    line-height: 1.18;
+    font-weight: 500;
+    letter-spacing: -0.01em;
+    text-wrap: balance;
+    /* O cabeçalho é fixo: a âncora do sumário para abaixo dele. */
+    scroll-margin-top: 6.5rem;
+  }
+  .blog-corpo h2 {
+    font-size: 1.5em;
+    margin-top: 2em;
+  }
+  .blog-corpo h3 {
+    font-size: 1.25em;
+    margin-top: 1.75em;
+  }
+  .blog-corpo h4 {
+    font-size: 1.0625em;
+    font-style: italic;
+    margin-top: 1.5em;
+  }
+  .blog-corpo :is(h2, h3, h4) + * {
+    margin-top: 0.6em;
+  }
+  .blog-corpo a {
+    text-decoration: underline;
+    text-decoration-color: color-mix(in srgb, var(--ouro) 60%, transparent);
+    text-decoration-thickness: 1px;
+    text-underline-offset: 0.2em;
+    transition: text-decoration-color var(--t-resposta) var(--saida);
+  }
+  .blog-corpo a:hover {
+    text-decoration-color: var(--ouro);
+  }
+  .blog-corpo strong {
+    font-weight: 600;
+  }
+  .blog-corpo code {
+    font-family: var(--fonte-mono);
+    font-size: 0.82em;
+    padding: 0.08em 0.35em;
+    border-radius: 6px;
+    background: var(--sup-2);
+  }
+  .blog-corpo pre {
+    font-family: var(--fonte-mono);
+    font-size: 0.8125rem;
+    line-height: 1.6;
+    padding: 1rem 1.25rem;
+    border-radius: var(--r-controle);
+    background: var(--sup-2);
+    overflow-x: auto;
+  }
+  .blog-corpo pre code {
+    padding: 0;
+    background: none;
+    font-size: inherit;
+  }
+  .blog-corpo ul,
+  .blog-corpo ol {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5em;
+  }
+  .blog-corpo ul > li {
+    position: relative;
+    padding-left: 1.5em;
+  }
+  /* O marcador da lista é um traço de ouro, não a bolinha do navegador. */
+  .blog-corpo ul > li::before {
+    content: '';
+    position: absolute;
+    left: 0.15em;
+    top: 0.8em;
+    width: 0.6em;
+    height: 1px;
+    background: var(--ouro);
+  }
+  .blog-corpo ol {
+    padding-left: 1.6em;
+    list-style: decimal;
+  }
+  .blog-corpo ol > li::marker {
+    color: var(--ouro-texto);
+    font-variant-numeric: lining-nums;
+  }
+  .blog-corpo li > p + p {
+    margin-top: 0.5em;
+  }
+  .blog-corpo blockquote {
+    margin-block: 2em;
+  }
+  .blog-corpo blockquote > p {
+    font-size: 1.3em;
+    line-height: 1.32;
+    font-style: italic;
+    text-wrap: balance;
+  }
+  .blog-corpo blockquote > p + p {
+    margin-top: 0.5em;
+  }
+  .blog-corpo :is(blockquote footer, figcaption) {
+    margin-top: 0.75rem;
+    font-family: var(--fonte-sans);
+    font-size: 0.8125rem;
+    line-height: 1.5;
+    font-style: normal;
+    color: var(--texto-fraco);
+    font-variant-numeric: normal;
+  }
+  .blog-corpo figure,
+  .blog-corpo .blog-bloco {
+    margin-block: 2em;
+  }
+  .blog-corpo hr {
+    margin-block: 2.5em;
+    border: 0;
+    height: 1px;
+    background: var(--linha-forte);
+  }
+  /* Os blocos próprios do editor (cartão, player, linha do tempo) falam a
+     língua da interface, não a do texto. */
+  .blog-corpo .blog-bloco {
+    font-family: var(--fonte-sans);
+    font-size: 1rem;
+    line-height: 1.55;
+    font-variant-numeric: normal;
+  }
+  /* As listas dos blocos são estrutura, não texto: sem marcador nem recuo. */
+  .blog-corpo .blog-bloco :is(ul, ol) {
+    padding-left: 0;
+    list-style: none;
+    gap: 0;
+  }
+  .blog-corpo .blog-bloco li {
+    padding-left: 0;
+  }
+  .blog-corpo .blog-bloco li::before {
+    content: none;
+  }
+
+  /* -----------------------------------------------------------------------
+     O editor do artigo escreve no `.blog-corpo` (ver `BlogEditor`). O que
+     só existe nele: o texto de espera, o `h1` dos artigos antigos (o leitor
+     o nivela para `h2`; aqui ele se parece com o `h2` que vai virar) e a
+     imagem selecionada.
+     ----------------------------------------------------------------------- */
+  .blog-corpo.ProseMirror h1 {
+    font-size: 1.5em;
+    line-height: 1.18;
+    font-weight: 500;
+    margin-top: 2em;
+  }
+  .blog-corpo.ProseMirror p.is-editor-empty:first-child::before {
+    content: attr(data-placeholder);
+    float: left;
+    height: 0;
+    pointer-events: none;
+    color: var(--texto-fraco);
+  }
+  /* A vista do bloco (`VistaDoBloco`) já separa o nome do bloco; a margem
+     que o leitor põe em volta do bloco, aqui dentro, só abria um buraco. */
+  .blog-corpo .vista-do-bloco > :last-child {
+    margin-block: 0;
+  }
+  .blog-corpo.ProseMirror img.ProseMirror-selectednode {
+    outline: 2px solid var(--ouro);
+    outline-offset: 4px;
+  }
+
+  /* O player do artigo (`PlayerDoArtigo`): o painel sobe do pé da tela ao
+     abrir e desce ao minimizar; a pílula entra crescendo do canto. Só
+     `transform` e `opacity` (a posição do painel no computador usa a
+     propriedade `translate`, que não briga com estas). */
+  .player-sobe {
+    animation: player-sobe var(--t-folha) var(--saida) backwards;
+  }
+  .player-desce {
+    animation: player-desce 200ms var(--saida) forwards;
+  }
+  .player-pilula {
+    transform-origin: bottom right;
+    animation: player-pilula 260ms var(--saida) backwards;
+  }
+  @keyframes player-sobe {
+    from {
+      transform: translateY(100%);
+      opacity: 0;
+    }
+  }
+  @keyframes player-desce {
+    to {
+      transform: translateY(110%);
+      opacity: 0;
+    }
+  }
+  @keyframes player-pilula {
+    from {
+      transform: scale(0.6);
+      opacity: 0;
+    }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .player-sobe,
+    .player-desce,
+    .player-pilula {
+      animation: none;
+    }
+  }
+
+  /* -----------------------------------------------------------------------
+     A capa de reserva: a pauta. Entra quando o artigo não tem capa ou a
+     imagem falha. Cinco linhas e a inicial do título sentada nela como uma
+     clave. Nenhuma cor nova, nenhum ícone. O tamanho segue a largura da
+     própria capa (`cqw`).
+     ----------------------------------------------------------------------- */
+  .blog-pauta {
+    container-type: inline-size;
+    background: var(--sup-2);
+  }
+  .blog-pauta-linhas {
+    position: absolute;
+    inset-inline: 0;
+    top: 50%;
+    height: calc(18cqw + 1px);
+    transform: translateY(-50%);
+    background: repeating-linear-gradient(
+      to bottom,
+      var(--linha-forte) 0 1px,
+      transparent 1px 4.5cqw
+    );
+  }
+  .blog-pauta-letra {
+    position: absolute;
+    left: 11cqw;
+    top: 50%;
+    transform: translateY(-54%);
+    font-family: var(--fonte-display);
+    font-style: italic;
+    font-size: 34cqw;
+    line-height: 1;
+    color: var(--ouro-texto);
+  }
+
+  /* -----------------------------------------------------------------------
+     Progresso da leitura: a largura da barra é a rolagem da página, direto
+     no CSS, sem script. Sem a API (Firefox, por ora) a barra não aparece.
+     ----------------------------------------------------------------------- */
+  .blog-progresso {
+    display: none;
+  }
+  @supports (animation-timeline: scroll()) {
+    .blog-progresso {
+      display: block;
+      position: fixed;
+      inset: 0 0 auto 0;
+      height: 2px;
+      background: var(--ouro);
+      transform-origin: 0 50%;
+      animation: blog-progresso linear both;
+      animation-timeline: scroll(root block);
+      z-index: calc(var(--z-barra) + 1);
+      pointer-events: none;
+    }
+  }
+
+  /* O título do card sublinha em ouro quando o card inteiro está sob o
+     cursor: o card é um link só (o `::after` do título cobre a caixa). */
+  .blog-titulo-link {
+    text-decoration: underline;
+    text-decoration-color: transparent;
+    text-decoration-thickness: 1px;
+    text-underline-offset: 0.18em;
+    transition: text-decoration-color var(--t-resposta) var(--saida);
+  }
+  .blog-titulo-link:hover,
+  .blog-titulo-link:focus-visible {
+    text-decoration-color: currentColor;
+  }
+  .blog-titulo-link::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+  }
+
+  /* Prateleira: rola para o lado, de card em card. */
+  .blog-prateleira {
+    display: grid;
+    grid-auto-flow: column;
+    overflow-x: auto;
+    overscroll-behavior-x: contain;
+    scroll-snap-type: x proximity;
+    scrollbar-width: none;
+  }
+  .blog-prateleira::-webkit-scrollbar {
+    display: none;
+  }
+  .blog-prateleira > * {
+    scroll-snap-align: start;
+  }
+
+  /* A faixa do player: barra de posição e de volume no ouro do sistema. */
+  .blog-faixa {
+    appearance: none;
+    height: 1.5rem;
+    background: transparent;
+    cursor: pointer;
+    --cheio: 0%;
+  }
+  .blog-faixa::-webkit-slider-runnable-track {
+    height: 4px;
+    border-radius: 999px;
+    background: linear-gradient(
+      to right,
+      var(--ouro) var(--cheio),
+      var(--linha-forte) var(--cheio)
+    );
+  }
+  .blog-faixa::-moz-range-track {
+    height: 4px;
+    border-radius: 999px;
+    background: var(--linha-forte);
+  }
+  .blog-faixa::-moz-range-progress {
+    height: 4px;
+    border-radius: 999px;
+    background: var(--ouro);
+  }
+  .blog-faixa::-webkit-slider-thumb {
+    appearance: none;
+    width: 14px;
+    height: 14px;
+    margin-top: -5px;
+    border-radius: 999px;
+    background: var(--ouro);
+    border: 2px solid var(--fundo);
+  }
+  .blog-faixa::-moz-range-thumb {
+    width: 12px;
+    height: 12px;
+    border-radius: 999px;
+    background: var(--ouro);
+    border: 2px solid var(--fundo);
+  }
+  .blog-faixa:focus-visible {
+    outline: none;
+  }
+  .blog-faixa:focus-visible::-webkit-slider-thumb {
+    box-shadow: var(--foco-anel);
+  }
+  .blog-faixa:focus-visible::-moz-range-thumb {
+    box-shadow: var(--foco-anel);
+  }
+}
+
+@keyframes blog-progresso {
+  from {
+    transform: scaleX(0);
+  }
+  to {
+    transform: scaleX(1);
+  }
+}
+
+/* ==========================================================================
+   Public site (main redesign, Oct 2026)
+   ========================================================================== */
+@layer components {
+  /* The Opus Atlas seal is gold on black; on cream the gold darkens for contrast. */
+  [data-theme='light'] .brand-seal {
+    filter: brightness(0.58) saturate(1.35) contrast(1.15);
+  }
+  /* Engraved orbits and lines start drawn (no motion by default). */
+  .engraving > :is(circle, ellipse, path)[pathLength] {
+    stroke-dasharray: 1;
+    stroke-dashoffset: 0;
+  }
+  /* The biography quill rests beside the written sheet without motion. */
+  .bio-pen {
+    transform: translate(150px, 40px);
+  }
+  /* The celestial globe behind the mobile hero: brighter on cream, where
+     thin gold lines would otherwise vanish. */
+  .hero-globe {
+    --globe-ink: var(--ouro);
+    opacity: 0.6;
+  }
+  [data-theme='light'] .hero-globe {
+    --globe-ink: var(--ouro-texto);
+    opacity: 0.9;
+  }
+  [data-theme='light'] .hero-globe :is(circle, ellipse, path, line) {
+    stroke-width: 1.6;
+  }
+  /* Search fields: a gold ring while focused. */
+  .search-field:focus-within {
+    box-shadow:
+      0 0 0 1px var(--ouro),
+      var(--sombra-2);
+  }
+  /* A biography opens with a three-line Garamond drop cap. */
+  .drop-cap::first-letter {
+    float: left;
+    font-family: var(--fonte-display);
+    font-size: 4.2em;
+    line-height: 0.82;
+    padding: 0.06em 0.12em 0 0;
+    color: var(--ouro-texto);
+  }
+  /* Horizontal strips without a scrollbar. */
+  .scroll-strip {
+    scrollbar-width: none;
+  }
+  .scroll-strip::-webkit-scrollbar {
+    display: none;
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  /* The progress panel of the personal pages slides in from its side. */
+  .lateral-entra {
+    animation: lateral-entra 360ms var(--saida) both;
+  }
+  /* The checkbox tick (ui/CaixaDeMarcar): quick, it answers a click. */
+  .caixa-visto path {
+    stroke-dasharray: 1;
+    animation: engrave 260ms var(--saida) both;
+  }
+  .engraving > :is(circle, ellipse, path)[pathLength] {
+    stroke-dashoffset: 1;
+    animation: engrave 1800ms var(--saida) both;
+    animation-delay: calc(var(--i, 0) * 140ms + 100ms);
+  }
+  .coroa-gira {
+    animation: spin 240s linear infinite;
+    will-change: transform;
+  }
+  /* On phones the globe behind the hero appears whole, fading in as one
+     layer: drawing its dozen ellipses stroke by stroke repainted the whole
+     drawing every frame, right while the page loads. The desktop atlas
+     keeps the engraving. */
+  .hero-globe {
+    animation: globo-surge 1400ms var(--saida) both;
+  }
+  .hero-globe .engraving > :is(circle, ellipse, path)[pathLength] {
+    animation: none;
+    stroke-dashoffset: 0;
+  }
+  /* The orbits of the editorial pages (site/orbits): each ring turns at its
+     own pace, and its bodies stay upright while it turns. */
+  .orbita-camada {
+    animation: spin var(--orbita, 120s) linear infinite;
+    will-change: transform;
+  }
+  .orbita-camada-reversa {
+    animation-direction: reverse;
+  }
+  .orbita-camada .orbita-de-pe {
+    animation: spin var(--orbita, 120s) linear infinite reverse;
+  }
+  .orbita-camada-reversa .orbita-de-pe {
+    animation-direction: normal;
+  }
+  .rise {
+    animation: rise 620ms var(--saida) both;
+    animation-delay: var(--delay, 0ms);
+  }
+  .seal-reveal {
+    animation: seal-print 1500ms var(--saida) 100ms both;
+  }
+  .heart-beat {
+    animation: heart-beat 420ms var(--saida);
+  }
+  /* The footer's "Feito com ♥": a calm heartbeat, two beats then rest. */
+  .heart-pulsa {
+    animation: heart-pulsa 2.4s ease-in-out infinite;
+  }
+  /* Unfavoriting: the heart lets go, a small drop and a tilt. */
+  .heart-solta {
+    animation: heart-solta 380ms var(--saida);
+  }
+  /* Favoriting: six gold sparks leave the heart. */
+  .faiscas {
+    position: absolute;
+    inset: 50% auto auto 50%;
+    pointer-events: none;
+  }
+  .faiscas i {
+    position: absolute;
+    width: 4px;
+    height: 4px;
+    margin: -2px 0 0 -2px;
+    border-radius: 9999px;
+    background: var(--ouro);
+    transform: rotate(calc(var(--k) * 60deg)) translateY(-6px) scale(1);
+    animation: faisca 560ms var(--saida) forwards;
+  }
+  /* Something achieved ("Já aprendi"): gold notes rise and fade. */
+  .notas-sobem {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+  }
+  .notas-sobem svg {
+    position: absolute;
+    left: 50%;
+    top: 30%;
+    width: 1rem;
+    height: 1rem;
+    color: var(--ouro);
+    opacity: 0;
+    animation: nota-celebra 1100ms var(--saida) both;
+  }
+  /* "Quero aprender": the bookmark drops in like a ribbon placed between
+     pages, swings and settles; a gold light crosses the badge once. */
+  .marcador-cai {
+    transform-origin: 50% 0;
+    /* Linear overall: each beat has its own curve below. */
+    animation: marcador-cai 820ms linear both;
+  }
+  .marcado-agora {
+    position: relative;
+    overflow: hidden;
+  }
+  .marcado-agora::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(
+      100deg,
+      transparent 30%,
+      color-mix(in srgb, var(--ouro) 40%, transparent) 50%,
+      transparent 70%
+    );
+    transform: translateX(-120%);
+    animation: brilho-passa 900ms 180ms var(--saida) both;
+    pointer-events: none;
+  }
+  /* A count that changed (`NumeroVivo`). */
+  .numero-sobe,
+  .numero-desce {
+    display: inline-block;
+    animation: numero-sobe 320ms var(--saida);
+  }
+  .numero-desce {
+    animation-name: numero-desce;
+  }
+  /* Lists arriving: each item rises a little, one after the other.
+     `.cascata` on the list (first ten in turn), `.item-entra` with `--i`
+     on items whose order is known (live search results). */
+  .cascata > *,
+  .item-entra {
+    animation: item-entra 420ms var(--saida) both;
+  }
+  .item-entra {
+    animation-duration: 300ms;
+    animation-delay: calc(var(--i, 0) * 28ms);
+  }
+  .cascata > :nth-child(2) {
+    animation-delay: 40ms;
+  }
+  .cascata > :nth-child(3) {
+    animation-delay: 80ms;
+  }
+  .cascata > :nth-child(4) {
+    animation-delay: 120ms;
+  }
+  .cascata > :nth-child(5) {
+    animation-delay: 160ms;
+  }
+  .cascata > :nth-child(6) {
+    animation-delay: 200ms;
+  }
+  .cascata > :nth-child(7) {
+    animation-delay: 240ms;
+  }
+  .cascata > :nth-child(8) {
+    animation-delay: 280ms;
+  }
+  .cascata > :nth-child(9) {
+    animation-delay: 320ms;
+  }
+  .cascata > :nth-child(n + 10) {
+    animation-delay: 360ms;
+  }
+  /* "Embaralhar": the cards gather into a pile at the middle of the list
+     (`--x`, `--y`, `--r`, measured per card) and are dealt back, one after
+     the other, with the new facts. */
+  .fato-recolhe {
+    animation: fato-recolhe 300ms cubic-bezier(0.55, 0, 0.75, 0.2) forwards;
+    animation-delay: calc(var(--i, 0) * 30ms);
+  }
+  .fato-distribui {
+    animation: fato-distribui 520ms var(--saida) both;
+    animation-delay: calc(var(--i, 0) * 90ms);
+  }
+  /* "Tentar de novo": the page fades while it reloads everything. */
+  .recarregando body > :not(#recarregando-veu) {
+    opacity: 0.25;
+    transition: opacity 260ms var(--saida);
+  }
+  /* Every <details> (FAQ, legal pages, help) opens and closes smoothly
+     where the browser can size to `auto`; elsewhere it just opens. */
+  :root {
+    interpolate-size: allow-keywords;
+  }
+  details::details-content {
+    block-size: 0;
+    overflow: hidden;
+    transition:
+      block-size 320ms var(--saida),
+      content-visibility 320ms allow-discrete;
+  }
+  details[open]::details-content {
+    block-size: auto;
+  }
+  /* A small mark appearing (the bell's unread dot). */
+  .ponto-surge {
+    animation: ponto-surge 360ms var(--saida);
+  }
+  /* The bell rings when something new arrives. */
+  .sino-toca {
+    transform-origin: 50% 10%;
+    animation: sino-toca 720ms var(--saida);
+  }
+  /* An action that landed (copied, saved, marked): `usePulso`. */
+  [data-pulso='a'] {
+    animation: pulso-a 360ms var(--saida);
+  }
+  [data-pulso='b'] {
+    animation: pulso-b 360ms var(--saida);
+  }
+  /* Popovers (menus, live results) open from their edge. */
+  .popover-open {
+    transform-origin: top;
+    animation: popover-open 220ms var(--saida) both;
+  }
+  /* A biography being written: lines appear one by one, the quill bobs. */
+  .bio-l0,
+  .bio-l1,
+  .bio-l2,
+  .bio-l3 {
+    stroke-dasharray: 1;
+    animation: 6s linear infinite both;
+  }
+  .bio-l0 {
+    animation-name: bio-l0;
+  }
+  .bio-l1 {
+    animation-name: bio-l1;
+  }
+  .bio-l2 {
+    animation-name: bio-l2;
+  }
+  .bio-l3 {
+    animation-name: bio-l3;
+  }
+  .bio-pen {
+    animation: bio-pen 6s ease-in-out infinite both;
+  }
+  .bio-blot {
+    transform-box: fill-box;
+    transform-origin: center;
+    animation: bio-blot 900ms var(--saida) both;
+  }
+}
+
+@keyframes lateral-entra {
+  from {
+    opacity: 0;
+    transform: translateX(24px);
+  }
+}
+@keyframes engrave {
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+@keyframes rise {
+  from {
+    opacity: 0.08;
+    transform: translateY(10px);
+  }
+}
+@keyframes seal-print {
+  from {
+    clip-path: inset(100% 0 0 0);
+    filter: blur(6px);
+    opacity: 0.4;
+  }
+}
+@keyframes popover-open {
+  from {
+    opacity: 0;
+    transform: translateY(-4px) scaleY(0.98);
+  }
+}
+@keyframes bio-l0 {
+  0% {
+    stroke-dashoffset: 1;
+    opacity: 0;
+  }
+  1% {
+    opacity: 1;
+  }
+  18%,
+  90% {
+    stroke-dashoffset: 0;
+    opacity: 1;
+  }
+  100% {
+    stroke-dashoffset: 0;
+    opacity: 0;
+  }
+}
+@keyframes bio-l1 {
+  0%,
+  20% {
+    stroke-dashoffset: 1;
+    opacity: 0;
+  }
+  21% {
+    opacity: 1;
+  }
+  38%,
+  90% {
+    stroke-dashoffset: 0;
+    opacity: 1;
+  }
+  100% {
+    stroke-dashoffset: 0;
+    opacity: 0;
+  }
+}
+@keyframes bio-l2 {
+  0%,
+  40% {
+    stroke-dashoffset: 1;
+    opacity: 0;
+  }
+  41% {
+    opacity: 1;
+  }
+  58%,
+  90% {
+    stroke-dashoffset: 0;
+    opacity: 1;
+  }
+  100% {
+    stroke-dashoffset: 0;
+    opacity: 0;
+  }
+}
+@keyframes bio-l3 {
+  0%,
+  60% {
+    stroke-dashoffset: 1;
+    opacity: 0;
+  }
+  61% {
+    opacity: 1;
+  }
+  78%,
+  90% {
+    stroke-dashoffset: 0;
+    opacity: 1;
+  }
+  100% {
+    stroke-dashoffset: 0;
+    opacity: 0;
+  }
+}
+@keyframes bio-pen {
+  0% {
+    transform: translate(64px, 52px);
+  }
+  0% {
+    transform: translate(64px, 52px);
+  }
+  18% {
+    transform: translate(136px, 52px);
+  }
+  20% {
+    transform: translate(64px, 70px);
+  }
+  38% {
+    transform: translate(136px, 70px);
+  }
+  40% {
+    transform: translate(64px, 88px);
+  }
+  58% {
+    transform: translate(136px, 88px);
+  }
+  60% {
+    transform: translate(64px, 106px);
+  }
+  78% {
+    transform: translate(112px, 106px);
+  }
+  86%,
+  94% {
+    transform: translate(150px, 40px);
+  }
+  100% {
+    transform: translate(64px, 52px);
+  }
+}
+@keyframes bio-blot {
+  from {
+    transform: scale(0.2);
+    opacity: 0;
+  }
+}
+@keyframes heart-beat {
+  40% {
+    transform: scale(1.22);
+  }
+}
+
+@keyframes heart-pulsa {
+  0%,
+  28%,
+  100% {
+    transform: scale(1);
+  }
+  8%,
+  20% {
+    transform: scale(1.2);
+  }
+}
+@keyframes heart-solta {
+  35% {
+    transform: translateY(2px) scale(0.78) rotate(-14deg);
+  }
+  70% {
+    transform: translateY(-1px) scale(1.05) rotate(4deg);
+  }
+}
+@keyframes nota-celebra {
+  0% {
+    opacity: 0;
+    transform: translate(calc(-50% + var(--x) * 0.2), 0) rotate(-8deg)
+      scale(0.6);
+  }
+  25% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+    transform: translate(calc(-50% + var(--x)), -2.75rem) rotate(10deg) scale(1);
+  }
+}
+@keyframes marcador-cai {
+  /* Falls, speeding up like something dropped… */
+  0% {
+    opacity: 0;
+    transform: translateY(-140%) scaleY(1.25);
+    animation-timing-function: cubic-bezier(0.55, 0, 1, 0.45);
+  }
+  /* …lands and gives a little… */
+  32% {
+    opacity: 1;
+    transform: translateY(8%) scaleY(0.88);
+    animation-timing-function: cubic-bezier(0.22, 1, 0.36, 1);
+  }
+  /* …then swings like a ribbon and settles. */
+  50% {
+    transform: translateY(0) rotate(-10deg);
+    animation-timing-function: cubic-bezier(0.45, 0, 0.55, 1);
+  }
+  72% {
+    transform: rotate(6deg);
+    animation-timing-function: cubic-bezier(0.45, 0, 0.55, 1);
+  }
+  88% {
+    transform: rotate(-2deg);
+    animation-timing-function: cubic-bezier(0.45, 0, 0.55, 1);
+  }
+  100% {
+    transform: none;
+  }
+}
+@keyframes brilho-passa {
+  to {
+    transform: translateX(120%);
+  }
+}
+@keyframes numero-sobe {
+  from {
+    opacity: 0;
+    transform: translateY(0.45em);
+  }
+}
+@keyframes numero-desce {
+  from {
+    opacity: 0;
+    transform: translateY(-0.45em);
+  }
+}
+@keyframes fato-recolhe {
+  to {
+    transform: translate(var(--x), var(--y)) rotate(var(--r)) scale(0.86);
+  }
+}
+@keyframes fato-distribui {
+  from {
+    transform: translate(var(--x), var(--y)) rotate(var(--r)) scale(0.86);
+  }
+}
+@keyframes item-entra {
+  from {
+    opacity: 0;
+    transform: translateY(0.5rem);
+  }
+}
+@keyframes ponto-surge {
+  from {
+    transform: scale(0);
+  }
+  60% {
+    transform: scale(1.4);
+  }
+}
+@keyframes sino-toca {
+  15% {
+    transform: rotate(14deg);
+  }
+  35% {
+    transform: rotate(-11deg);
+  }
+  55% {
+    transform: rotate(7deg);
+  }
+  75% {
+    transform: rotate(-3deg);
+  }
+}
+@keyframes faisca {
+  to {
+    transform: rotate(calc(var(--k) * 60deg)) translateY(-20px) scale(0);
+    opacity: 0;
+  }
+}
+
+@keyframes pulso-a {
+  40% {
+    transform: scale(1.06);
+  }
+}
+@keyframes pulso-b {
+  40% {
+    transform: scale(1.06);
+  }
+}
+
+/* Orbits of the editorial pages (site/orbits): gold on the dark page, the
+   deeper gold on cream, where thin gold lines would otherwise vanish. */
+.orbitas {
+  color: var(--ouro);
+}
+[data-theme='light'] .orbitas {
+  color: var(--ouro-texto);
 }

@@ -1,16 +1,8 @@
-// app/admin/system/page.tsx
-import { Metadata } from 'next';
-import SystemPerformance from '@/app/components/Admin/System/SystemPerformance';
+import type { Metadata } from 'next';
+import Saude from '@/app/components/Admin/telas/Saude';
 
-// Painel em CSR: o dado vem da API pelo navegador.
-export const dynamic = 'force-dynamic';
+export const metadata: Metadata = { title: 'Saúde' };
 
-export const metadata: Metadata = {
-  title: 'Sistema & Performance | Admin Panel',
-  description: 'Monitoramento em tempo real da infraestrutura',
-  robots: 'noindex, nofollow',
-};
-
-export default function AdminSystemPage() {
-  return <SystemPerformance />;
+export default function SaudePage() {
+  return <Saude />;
 }

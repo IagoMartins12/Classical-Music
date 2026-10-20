@@ -1,11 +1,12 @@
 /**
  * Formulário de contato pela API (`POST /contact`), chamado do navegador.
  *
- * Devolve o formato que o `useContactForm` já lia do legado
- * (`{ success, message, error?, ticketId? }`).
+ * Devolve `{ success, message, error?, ticketId? }`, o que a página de
+ * contato (`ContactView`) lê.
  */
 import { ApiError, apiFetch } from '@/app/libs/api/client';
 import type { ApiSchema } from '@/app/libs/api/types';
+import { porIdioma } from '@/app/utils/porIdioma';
 
 // O gerador marca como obrigatório o campo que tem `default` no Swagger; a API
 // aceita o `subscribeNewsletter` ausente.
@@ -68,7 +69,7 @@ export async function submitContact(
 
 function contactErrorMessage(error: ApiError): string {
   if (error.status === 400) {
-    return 'Dados inválidos';
+    return porIdioma('Dados inválidos', 'Invalid data');
   }
 
   // A API limita a 3 mensagens por minuto; o legado não tinha limite.

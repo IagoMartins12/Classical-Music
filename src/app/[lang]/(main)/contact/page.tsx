@@ -1,8 +1,5 @@
-// app/contact/page.tsx - Melhorado para SEO Musical
-import { loadPageTranslationsWithCommon } from '@/app/utils/translations/serverTranslations';
 import { Metadata } from 'next';
-import { TranslationProvider } from '@/app/context/TranslationContext';
-import ContactPageClient from './pageClient';
+import { ContactView } from '@/app/components/site/contact/ContactView';
 import {
   routeLanguage,
   type LangParams,
@@ -132,14 +129,5 @@ export async function generateMetadata({
 export const revalidate = 3600;
 
 export default async function ContactPage({ params }: LangPageProps) {
-  const language = await routeLanguage(params);
-  const { translations } = await loadPageTranslationsWithCommon(language, [
-    'pages/contact',
-  ]);
-
-  return (
-    <TranslationProvider language={language} translations={translations}>
-      <ContactPageClient />
-    </TranslationProvider>
-  );
+  return <ContactView idioma={await routeLanguage(params)} />;
 }

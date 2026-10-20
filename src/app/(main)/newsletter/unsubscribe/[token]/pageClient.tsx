@@ -1,261 +1,151 @@
-// app/newsletter/unsubscribe/[token]/pageclient.tsx
 'use client';
 
-import React, { useState } from 'react';
+import { NEWSLETTER } from '@/app/conteudo/textos/newsletter';
+import { useTextos } from '@/app/hooks/useTextos';
 import { useParams } from 'next/navigation';
-import { useRouter } from 'next/navigation';
-import { FiX, FiCheck, FiArrowRight } from 'react-icons/fi';
-import {
-  PageContainer,
-  AnimatedContainer,
-  AnimatedItem,
-  AnimatedCard,
-} from '../../../../components/animation/AnimatedComponents';
-import Input from '@/app/components/Common/Inputs';
-import { useTranslation } from '@/app/context/TranslationContext';
+import { useState } from 'react';
+import toast from 'react-hot-toast';
+import { PiArrowRight, PiEnvelopeSimple } from 'react-icons/pi';
+import Link from '@/app/components/LocalizedLink';
+import { chip } from '@/app/components/site/choice';
+import { TokenFrame } from '@/app/components/site/tokens/TokenFrame';
+import { Button, classesDeBotao } from '@/app/components/ui/Button';
+import { Field } from '@/app/components/ui/Field';
+import { Icon } from '@/app/components/ui/Icon';
 import { unsubscribeFromNewsletter } from '@/app/requests/newsletter';
 
-export default function UnsubscribePage() {
-  const router = useRouter();
-  const params = useParams();
-  const token = params.token as string;
-  const { t } = useTranslation({ sections: ['pages/newsletter'] });
+const MOTIVOS = [
+  'too_frequent',
+  'not_relevant',
+  'never_signed',
+  'technical_issues',
+  'changed_email',
+  'other',
+] as const;
 
-  const [reason, setReason] = useState('');
-  const [feedback, setFeedback] = useState('');
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  const [step, setStep] = useState<'confirm' | 'feedback' | 'completed'>(
-    'confirm'
+/**
+ * Leaving the newsletter from the e-mail link: leave at once, or say why
+ * first. Either way one call, and the reason goes with it.
+ */
+export default function UnsubscribePage() {
+  const token = String(useParams()?.token ?? '');
+  const { t } = useTextos(NEWSLETTER);
+  const [motivo, setMotivo] = useState('');
+  const [comentario, setComentario] = useState('');
+  const [enviando, setEnviando] = useState(false);
+  const [passo, setPasso] = useState<'confirmar' | 'motivo' | 'feito'>(
+    'confirmar'
   );
 
-  const unsubscribeReasons = [
-    { id: 'too_frequent', label: t('unsubscribe_reason_too_frequent') },
-    { id: 'not_relevant', label: t('unsubscribe_reason_not_relevant') },
-    { id: 'never_signed', label: t('unsubscribe_reason_never_signed') },
-    { id: 'technical_issues', label: t('unsubscribe_reason_technical_issues') },
-    { id: 'changed_email', label: t('unsubscribe_reason_changed_email') },
-    { id: 'other', label: t('unsubscribe_reason_other') },
-  ];
-
-  const handleUnsubscribe = async () => {
-    setIsSubmitting(true);
-
+  const sair = async (comMotivo: string) => {
+    setEnviando(true);
     try {
       const result = await unsubscribeFromNewsletter({
         token,
-        reason,
-        feedback,
+        reason: comMotivo,
+        feedback: comentario,
       });
-
-      if (result.ok) {
-        setStep('completed');
-      } else {
-        alert(result.error || t('error_unsubscribe_default'));
-      }
-    } catch (error) {
-      console.error('Erro:', error);
-      alert(t('error_general'));
+      if (result.ok) setPasso('feito');
+      else toast.error(result.error || t('error_unsubscribe_default'));
+    } catch {
+      toast.error(t('error_general'));
     } finally {
-      setIsSubmitting(false);
+      setEnviando(false);
     }
   };
 
-  const handleProceedWithFeedback = () => {
-    setStep('feedback');
-  };
-
-  const handleQuickUnsubscribe = () => {
-    setReason('not_specified');
-    handleUnsubscribe();
-  };
-
-  if (step === 'completed') {
+  if (passo === 'feito') {
     return (
-      <PageContainer showBackground={true}>
-        <section className="py-20">
-          <AnimatedContainer delay={0.1}>
-            <div className="section-wrap">
-              <div className="max-w-2xl mx-auto text-center">
-                <AnimatedItem direction="scale" springType="bouncy">
-                  <div className="inline-flex items-center justify-center w-20 h-20 bg-accent-green/10 rounded-full mb-8">
-                    <FiCheck className="w-10 h-10 text-accent-green" />
-                  </div>
-                </AnimatedItem>
+      <TokenFrame
+        icon={PiEnvelopeSimple}
+        done
+        title={t('unsubscribe_completed_title')}
+        text={t('unsubscribe_completed_message')}
+      >
+        <Link href="/" className={classesDeBotao('primario')}>
+          {t('unsubscribe_completed_button')}{' '}
+          <Icon de={PiArrowRight} tamanho="p" />
+        </Link>
+      </TokenFrame>
+    );
+  }
 
-                <h1 className="text-4xl font-bold classical-title text-theme-primary mb-4">
-                  {t('unsubscribe_completed_title')}
-                </h1>
-
-                <p className="text-xl text-theme-secondary mb-8">
-                  {t('unsubscribe_completed_message')}
-                </p>
-
+  if (passo === 'motivo') {
+    return (
+      <TokenFrame
+        icon={PiEnvelopeSimple}
+        title={t('unsubscribe_feedback_title')}
+        text={t('unsubscribe_feedback_subtitle')}
+      >
+        <div className="flex w-full max-w-lg flex-col gap-6 text-left">
+          <fieldset className="flex flex-col gap-3">
+            <legend className="t-rotulo mb-3 text-texto-suave">
+              {t('unsubscribe_reason_label')}
+            </legend>
+            <div className="flex flex-wrap gap-2">
+              {MOTIVOS.map((id) => (
                 <button
-                  onClick={() => router.push('/')}
-                  className="btn-classical-primary inline-flex items-center space-x-3"
+                  key={id}
+                  type="button"
+                  aria-pressed={motivo === id}
+                  onClick={() => setMotivo(id)}
+                  className={chip(motivo === id)}
                 >
-                  <span>{t('unsubscribe_completed_button')}</span>
-                  <FiArrowRight className="w-5 h-5" />
+                  {t(`unsubscribe_reason_${id}`)}
                 </button>
-              </div>
+              ))}
             </div>
-          </AnimatedContainer>
-        </section>
-      </PageContainer>
+          </fieldset>
+          <Field.Area
+            label={t('unsubscribe_feedback_label')}
+            placeholder={t('unsubscribe_feedback_placeholder')}
+            rows={4}
+            value={comentario}
+            onChange={(e) => setComentario(e.target.value)}
+          />
+          <div className="flex flex-wrap gap-3">
+            <Button
+              variante="primario"
+              carregando={enviando}
+              onClick={() => void sair(motivo || 'not_specified')}
+            >
+              {t('unsubscribe_confirm_button')}
+            </Button>
+            <Button variante="fantasma" onClick={() => setPasso('confirmar')}>
+              {t('unsubscribe_back_button')}
+            </Button>
+          </div>
+        </div>
+      </TokenFrame>
     );
   }
 
   return (
-    <PageContainer showBackground={true} className="classical-theme">
-      <section className="py-20">
-        <AnimatedContainer delay={0.1} staggerSpeed="normal">
-          <div className="section-wrap">
-            <div className="max-w-2xl mx-auto">
-              {/* Header */}
-              <div className="text-center mb-12">
-                <AnimatedItem direction="scale" springType="bouncy">
-                  <div className="inline-flex items-center justify-center w-20 h-20 bg-gradient-to-br from-accent-red/10 to-accent-amber/10 rounded-full mb-6">
-                    <FiX className="w-10 h-10 text-accent-red" />
-                  </div>
-                </AnimatedItem>
-
-                <AnimatedItem direction="up" springType="gentle">
-                  <h1 className="text-4xl lg:text-5xl font-bold classical-title text-theme-primary mb-4">
-                    {t('unsubscribe_page_title')}
-                  </h1>
-                </AnimatedItem>
-
-                <AnimatedItem direction="up" springType="gentle">
-                  <p className="text-lg text-theme-secondary">
-                    {t('unsubscribe_page_subtitle')}
-                  </p>
-                </AnimatedItem>
-              </div>
-
-              {/* Content based on step */}
-              {step === 'confirm' && (
-                <AnimatedCard
-                  hover="lift"
-                  className="classical-card p-8 text-center"
-                >
-                  <div className="space-y-6">
-                    <div>
-                      <h3 className="text-xl font-semibold text-theme-primary mb-4">
-                        {t('unsubscribe_before_title')}
-                      </h3>
-                      <p className="text-theme-secondary">
-                        {t('unsubscribe_before_message')}
-                      </p>
-                    </div>
-
-                    <div className="space-y-4">
-                      <button
-                        onClick={handleProceedWithFeedback}
-                        className="btn-classical-primary w-full"
-                      >
-                        {t('unsubscribe_with_feedback_button')}
-                      </button>
-
-                      <button
-                        onClick={handleQuickUnsubscribe}
-                        disabled={isSubmitting}
-                        className="btn-classical-secondary w-full"
-                      >
-                        {isSubmitting
-                          ? t('unsubscribe_quick_button_loading')
-                          : t('unsubscribe_quick_button')}
-                      </button>
-
-                      <button
-                        onClick={() => router.push('/')}
-                        className="w-full text-theme-secondary hover:text-brand-primary transition-colors"
-                      >
-                        {t('unsubscribe_keep_button')}
-                      </button>
-                    </div>
-                  </div>
-                </AnimatedCard>
-              )}
-
-              {step === 'feedback' && (
-                <AnimatedCard hover="lift" className="classical-card p-8">
-                  <div className="space-y-6">
-                    <div className="text-center">
-                      <h3 className="text-xl font-semibold text-theme-primary mb-2">
-                        {t('unsubscribe_feedback_title')}
-                      </h3>
-                      <p className="text-theme-secondary">
-                        {t('unsubscribe_feedback_subtitle')}
-                      </p>
-                    </div>
-
-                    {/* Reason Selection */}
-                    <div className="space-y-3">
-                      <label className="block text-sm font-medium text-theme-secondary">
-                        {t('unsubscribe_reason_label')}
-                      </label>
-                      <div className="space-y-2">
-                        {unsubscribeReasons.map((reasonOption) => (
-                          <label
-                            key={reasonOption.id}
-                            className="flex items-center space-x-3 p-3 rounded-lg border border-theme-secondary cursor-pointer hover:bg-theme-secondary transition-colors"
-                          >
-                            <Input
-                              type="radio"
-                              name="reason"
-                              value={reasonOption.id}
-                              checked={reason === reasonOption.id}
-                              onChange={(e) => setReason(e.target.value)}
-                              className="text-brand-primary focus:ring-brand-primary"
-                            />
-                            <span className="text-theme-primary">
-                              {reasonOption.label}
-                            </span>
-                          </label>
-                        ))}
-                      </div>
-                    </div>
-
-                    {/* Feedback */}
-                    <div>
-                      <label className="block text-sm font-medium text-theme-secondary mb-2">
-                        {t('unsubscribe_feedback_label')}
-                      </label>
-                      <textarea
-                        value={feedback}
-                        onChange={(e) => setFeedback(e.target.value)}
-                        rows={4}
-                        className="input-classical-2 w-full resize-none"
-                        placeholder={t('unsubscribe_feedback_placeholder')}
-                      />
-                    </div>
-
-                    {/* Actions */}
-                    <div className="space-y-3">
-                      <button
-                        onClick={handleUnsubscribe}
-                        disabled={isSubmitting}
-                        className="btn-classical-primary w-full"
-                      >
-                        {isSubmitting
-                          ? t('unsubscribe_quick_button_loading')
-                          : t('unsubscribe_confirm_button')}
-                      </button>
-
-                      <button
-                        onClick={() => setStep('confirm')}
-                        className="w-full text-theme-secondary hover:text-brand-primary transition-colors"
-                      >
-                        {t('unsubscribe_back_button')}
-                      </button>
-                    </div>
-                  </div>
-                </AnimatedCard>
-              )}
-            </div>
-          </div>
-        </AnimatedContainer>
-      </section>
-    </PageContainer>
+    <TokenFrame
+      icon={PiEnvelopeSimple}
+      title={t('unsubscribe_page_title')}
+      text={
+        <>
+          <span className="block text-texto">
+            {t('unsubscribe_before_title')}
+          </span>
+          {t('unsubscribe_before_message')}
+        </>
+      }
+    >
+      <Button
+        variante="primario"
+        carregando={enviando}
+        onClick={() => void sair('not_specified')}
+      >
+        {t('unsubscribe_quick_button')}
+      </Button>
+      <Button onClick={() => setPasso('motivo')}>
+        {t('unsubscribe_with_feedback_button')}
+      </Button>
+      <Link href="/" className={classesDeBotao('fantasma')}>
+        {t('unsubscribe_keep_button')}
+      </Link>
+    </TokenFrame>
   );
 }

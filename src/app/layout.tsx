@@ -1,17 +1,50 @@
 // app/layout.tsx - Versão otimizada para performance
+import { SITE_URL } from '@/app/utils/seoAlternates';
 import type { Metadata, Viewport } from 'next';
-import { Inter } from 'next/font/google';
+import { EB_Garamond, Geist, Geist_Mono } from 'next/font/google';
 import './globals.css';
 import { ClientThemeWrapper } from './components/ClientThemeWrapper';
 import AuthProvider from './providers/AuthProvider';
 import { getBuildLanguage } from './utils/translations/serverTranslations';
 import Script from 'next/script';
+import { CartoesQueViram } from '@/app/components/ui/CartoesQueViram';
 
-const inter = Inter({
+/**
+ * As três famílias do sistema, e por que são três.
+ *
+ * **A Inter era baixada e nunca aplicada.** Ela expunha `--font-inter`, que
+ * nada consumia, enquanto o `globals.css` pedia `font-family: 'Inter'` pelo
+ * nome literal — e o `next/font` registra a família sob um nome gerado. O
+ * site inteiro caía na fonte do sistema.
+ *
+ * **Garamond** carrega o que é o acervo: nome de obra, de compositor, título.
+ * Não por ser bonita: é a letra das primeiras edições impressas de música.
+ * **Geist** carrega a interface. **Geist Mono** carrega dado que se compara na
+ * vertical (BWV 1007, op. 27 n.º 2, 18 min), onde largura fixa alinha a coluna
+ * sozinha.
+ *
+ * Só a sans é pré-carregada: é a que pinta o primeiro texto de qualquer tela.
+ */
+const sans = Geist({
   subsets: ['latin'],
-  variable: '--font-inter',
+  variable: '--fonte-sans-next',
   display: 'swap',
-  preload: true, // 🚀 Precarregar fonte
+  preload: true,
+});
+
+const display = EB_Garamond({
+  subsets: ['latin'],
+  style: ['normal', 'italic'],
+  variable: '--fonte-display-next',
+  display: 'swap',
+  preload: false,
+});
+
+const mono = Geist_Mono({
+  subsets: ['latin'],
+  variable: '--fonte-mono-next',
+  display: 'swap',
+  preload: false,
 });
 
 /**
@@ -73,6 +106,9 @@ export async function generateMetadata(): Promise<Metadata> {
   const t = content[language] || content.pt;
 
   return {
+    // Relative Open Graph and Twitter images resolve against the real site,
+    // not the host that rendered the page.
+    metadataBase: new URL(SITE_URL),
     title: {
       template: `%s | Opus Atlas`,
       default: t.title,
@@ -148,18 +184,6 @@ const themeScript = `(function(){
     root.setAttribute('data-theme',mode);
     root.setAttribute('data-language',lang);
     root.lang=lang==='pt'?'pt-BR':'en-US';
-    
-    if(mode==='dark'){
-      root.style.setProperty('--bg-primary','#0a0a0a');
-      root.style.setProperty('--text-primary','#FFFFFF');
-      root.style.setProperty('--bg-secondary','#1a1a2e');
-      root.style.setProperty('--bg-elevated','#2d3748');
-    }else{
-      root.style.setProperty('--bg-primary','#faf9f6');
-      root.style.setProperty('--text-primary','#2d2a23');
-      root.style.setProperty('--bg-secondary','#f4f1eb');
-      root.style.setProperty('--bg-elevated','#FFFFFF');
-    }
   }
   try{
     const system=getSystem();
@@ -185,7 +209,15 @@ export default function RootLayout({
   const htmlLang = getBuildLanguage() === 'pt' ? 'pt-BR' : 'en-US';
 
   return (
-    <html lang={htmlLang} suppressHydrationWarning>
+    // As variáveis das fontes ficam no `<html>`, não no `<body>`: o
+    // `globals.css` monta `--fonte-sans` no `:root`, e uma variável só enxerga
+    // o que existe no próprio elemento ou acima dele. No `<body>`, as três
+    // famílias chegavam vazias e o site caía na fonte do sistema.
+    <html
+      lang={htmlLang}
+      className={`${sans.variable} ${display.variable} ${mono.variable}`}
+      suppressHydrationWarning
+    >
       <head>
         {/* 🚀 Script anti-flash otimizado */}
         <script dangerouslySetInnerHTML={{ __html: themeScript }} />
@@ -199,12 +231,12 @@ export default function RootLayout({
         <meta
           name="theme-color"
           media="(prefers-color-scheme: light)"
-          content="#ffffff"
+          content="#faf7f0"
         />
         <meta
           name="theme-color"
           media="(prefers-color-scheme: dark)"
-          content="#0a0a0b"
+          content="#0c0d12"
         />
 
         {/* SEO */}
@@ -226,30 +258,40 @@ export default function RootLayout({
           sizes="16x16"
           href="/favicon-16x16.png"
         />
-        <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
-        <link rel="manifest" href="/manifest.json" />
+        <link rel="apple-touch-icon" href="/icons/apple-touch-icon.png" />
+        {/* The app (PWA): the manifest link comes from `app/manifest.ts`;
+            these are what iOS reads when the site is added to the home
+            screen. */}
+        <meta name="apple-mobile-web-app-capable" content="yes" />
+        <meta name="apple-mobile-web-app-title" content="Opus Atlas" />
+        <meta
+          name="apple-mobile-web-app-status-bar-style"
+          content="black-translucent"
+        />
 
-        <meta name="msapplication-TileColor" content="#da532c" />
+        <meta name="msapplication-TileColor" content="#0c0d12" />
       </head>
-      <body className={`${inter.variable} font-sans antialiased`}>
+      <body className="antialiased">
         <ClientThemeWrapper>
           <AuthProvider>{children}</AuthProvider>
+          <CartoesQueViram />
         </ClientThemeWrapper>
 
-        {/* 🚀 Analytics otimizados - carregamento assíncrono */}
+        {/* Analytics wait for the page to finish loading (`lazyOnload`):
+            176 kB of gtag no longer compete with the first paint. */}
         {process.env.NODE_ENV === 'production' && (
           <>
             <Script
               src="https://www.googletagmanager.com/gtag/js?id=G-W2993PXTWQ"
-              strategy="afterInteractive"
+              strategy="lazyOnload"
             />
-            <Script id="ga" strategy="afterInteractive">
+            <Script id="ga" strategy="lazyOnload">
               {`window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-W2993PXTWQ');`}
             </Script>
             <Script
               src="https://analytics.opusatlas.com.br/analytics"
               data-website-id="f3475284-e507-4e7e-af4a-3a1ecd932652"
-              strategy="afterInteractive"
+              strategy="lazyOnload"
             />
           </>
         )}

@@ -5,10 +5,29 @@ import React, { useEffect, useState, useCallback, Suspense } from 'react';
 import { ApiSessionProvider } from '../libs/session';
 import dynamic from 'next/dynamic';
 
-// Import modals
-import LoginModal from '@/app/components/auth/LoginModal';
-import RegisterModal from '@/app/components/auth/RegisterModal';
-import OnboardingModal from '@/app/components/auth/OnboardingModal';
+// The modals load after the page is up: every page used to hydrate the
+// sign-in, sign-up and welcome code before anyone opened them.
+const LoginModal = dynamic(() => import('@/app/components/auth/LoginModal'), {
+  ssr: false,
+});
+const RegisterModal = dynamic(
+  () => import('@/app/components/auth/RegisterModal'),
+  { ssr: false }
+);
+const WelcomeModal = dynamic(
+  () =>
+    import('@/app/components/site/welcome/WelcomeModal').then(
+      (m) => m.WelcomeModal
+    ),
+  { ssr: false }
+);
+const WelcomePrompt = dynamic(
+  () =>
+    import('../components/site/welcome/WelcomePrompt').then(
+      (m) => m.WelcomePrompt
+    ),
+  { ssr: false }
+);
 
 // Import hooks and stores
 import { useAuth } from '@/app/hooks/useAuth';
@@ -17,7 +36,7 @@ import { useHydration } from '../hooks/useHydration';
 import { useUserStore } from '../hooks/userStore';
 import { useOnboardingPersistence } from '../hooks/useOnboardingPersistence';
 import { useOnlineStatus } from '../hooks/useOnlineStatus'; // 🆕
-import OnboardingPrompt from '../components/auth/onboarding/OnboardingPrompt';
+import { useTx } from '@/app/hooks/useTx';
 
 // Dynamic import do GoogleRegistrationHandler sem SSR
 const GoogleRegistrationHandler = dynamic(
@@ -172,6 +191,7 @@ const StoreManager: React.FC = () => {
 const PersistenceErrorBoundary: React.FC<{ children: React.ReactNode }> = ({
   children,
 }) => {
+  const tx = useTx();
   const [hasError, setHasError] = useState(false);
 
   useEffect(() => {
@@ -192,9 +212,12 @@ const PersistenceErrorBoundary: React.FC<{ children: React.ReactNode }> = ({
 
   if (hasError) {
     return (
-      <div className="fixed top-4 right-4 z-50 bg-accent-amber bg-opacity-20 border border-accent-amber rounded-lg p-3 max-w-sm">
-        <p className="text-sm text-accent-amber">
-          ⚠️ Armazenamento limitado. Dados serão salvos temporariamente.
+      <div className="fixed top-4 right-4 z-aviso rounded-lg p-3 max-w-sm bg-sup-2">
+        <p className="text-sm">
+          {tx(
+            'Armazenamento limitado. Dados serão salvos temporariamente.',
+            'Limited storage. Data will be kept only for now.'
+          )}
         </p>
       </div>
     );
@@ -247,10 +270,11 @@ const HydratedContent: React.FC<{ children: React.ReactNode }> = ({
       )}
 
       {/* 🚀 OTIMIZAÇÃO: Modais de onboarding só se logado e sem onboarding */}
+      {/* Stays mounted once the answers are saved, to show the closing step. */}
+      {isAuthenticated && <WelcomeModal />}
       {shouldRenderOnboardingModals && (
         <>
-          <OnboardingModal />
-          <OnboardingPrompt />
+          <WelcomePrompt />
           <OnboardingManager shouldRender={true} />
         </>
       )}

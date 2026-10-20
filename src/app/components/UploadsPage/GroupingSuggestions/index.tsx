@@ -3,17 +3,18 @@
 
 import { useState, useEffect } from 'react';
 import {
-  FiMusic,
-  FiUsers,
-  FiStar,
-  FiRefreshCw,
-  FiCheck,
-  FiPlus,
-  FiInfo,
-  FiLock,
-} from 'react-icons/fi';
-import { GiMusicalNotes } from 'react-icons/gi';
+  PiCheck,
+  PiLock,
+  PiMusicNotes,
+  PiPlus,
+  PiStar,
+  PiUsers,
+} from 'react-icons/pi';
 import { getScoreGroups } from '@/app/requests/uploads-client';
+import { Icon } from '@/app/components/ui/Icon';
+import { Aviso } from '@/app/components/site/edit/FormSheet';
+import { cx } from '@/app/components/ui/cx';
+import { useTx } from '@/app/hooks/useTx';
 
 interface ScoreGroup {
   groupIndex: number;
@@ -55,6 +56,7 @@ export default function GroupingSuggestions({
   currentGroupTitle,
   visible,
 }: GroupingSuggestionsProps) {
+  const tx = useTx();
   const [imslpGroups, setImslpGroups] = useState<ScoreGroup[]>([]);
   const [userGroups, setUserGroups] = useState<ScoreGroup[]>([]);
   const [suggestions, setSuggestions] = useState<GroupSuggestion[]>([]);
@@ -111,7 +113,12 @@ export default function GroupingSuggestions({
       }
     } catch (error) {
       console.error('❌ [GROUPING] Erro ao carregar grupos:', error);
-      setError('Erro ao carregar grupos existentes');
+      setError(
+        tx(
+          'Erro ao carregar grupos existentes',
+          'Could not load the existing groups'
+        )
+      );
     } finally {
       setLoading(false);
     }
@@ -128,13 +135,13 @@ export default function GroupingSuggestions({
   const getSourceIcon = (source: string) => {
     switch (source) {
       case 'UPLOAD':
-        return FiUsers;
+        return PiUsers;
       case 'CUSTOM':
-        return FiStar;
+        return PiStar;
       case 'IMSLP':
-        return GiMusicalNotes;
+        return PiMusicNotes;
       default:
-        return FiMusic;
+        return PiMusicNotes;
     }
   };
 
@@ -142,227 +149,146 @@ export default function GroupingSuggestions({
 
   if (loading) {
     return (
-      <div className="bg-theme-secondary/10 rounded-xl p-4 border border-theme-primary/20">
-        <div className="flex items-center justify-center space-x-3 py-4">
-          <div className="w-5 h-5 border-2 border-brand-primary/30 border-t-brand-primary rounded-full animate-spin"></div>
-          <span className="text-theme-secondary text-sm">
-            Analisando grupos existentes...
-          </span>
-        </div>
-      </div>
+      <Aviso tom="carregando">
+        {tx(
+          'Analisando os grupos existentes…',
+          'Looking at the existing groups…'
+        )}
+      </Aviso>
     );
   }
 
   if (error) {
-    return (
-      <div className="bg-red-50 border border-red-200 rounded-xl p-4">
-        <div className="flex items-center space-x-2 text-red-800">
-          <FiRefreshCw className="w-4 h-4" />
-          <span className="text-sm">{error}</span>
-        </div>
-      </div>
-    );
+    return <Aviso tom="erro">{error}</Aviso>;
   }
 
+  const opcao = (ativo: boolean, travado = false) =>
+    cx(
+      'flex w-full items-center gap-3 rounded-controle px-4 py-3 text-left transition-colors duration-[var(--t-toque)]',
+      travado
+        ? 'cursor-not-allowed bg-sup-2 opacity-70'
+        : ativo
+          ? 'tint-ouro text-ouro-na-tinta'
+          : 'bg-sup-2 text-texto hover:bg-[var(--interactive-hover)]'
+    );
+  const partituras = (n: number) => `${n} partitura${n !== 1 ? 's' : ''}`;
+
   return (
-    <div className="space-y-4">
-      {hasExistingScores && (
-        <>
-          {/* Grupos do Usuário (EDITÁVEIS) */}
-          {userGroups.length > 0 && (
-            <div>
-              <h4 className="text-sm font-semibold text-theme-primary mb-3 flex items-center space-x-2">
-                <FiUsers className="w-4 h-4 text-accent-green" />
-                <span>Seus Grupos Existentes</span>
-                <span className="px-2 py-0.5 bg-accent-green/20 text-accent-green rounded-full text-xs">
-                  {userGroups.length}
+    <div className="flex flex-col gap-5">
+      {hasExistingScores && userGroups.length > 0 && (
+        <div className="flex flex-col gap-2">
+          <span className="t-rotulo font-medium text-texto">
+            Seus grupos ({userGroups.length})
+          </span>
+          {userGroups.map((group) => {
+            const isSelected =
+              parseInt(currentGroupIndex) === group.groupIndex &&
+              currentGroupTitle === group.groupTitle;
+            return (
+              <button
+                key={`${group.groupIndex}-${group.groupTitle}`}
+                type="button"
+                aria-pressed={isSelected}
+                onClick={() => handleUserGroupSelect(group)}
+                className={opcao(isSelected)}
+              >
+                <Icon de={getSourceIcon(group.source)} tamanho="p" />
+                <span className="flex min-w-0 flex-1 flex-col">
+                  <span className="truncate font-medium">
+                    {group.groupTitle}
+                  </span>
+                  <span className="t-legenda">
+                    {partituras(group.scoresCount)} {tx('· índice', '· index')}{' '}
+                    {group.groupIndex}
+                  </span>
                 </span>
-              </h4>
-
-              <div className="grid grid-cols-1 gap-2 mb-4">
-                {userGroups.map((group) => {
-                  const Icon = getSourceIcon(group.source);
-                  const isSelected =
-                    parseInt(currentGroupIndex) === group.groupIndex &&
-                    currentGroupTitle === group.groupTitle;
-
-                  return (
-                    <button
-                      key={`${group.groupIndex}-${group.groupTitle}`}
-                      onClick={() => handleUserGroupSelect(group)}
-                      className={`
-                        p-3 rounded-lg border-2 transition-all duration-200 text-left
-                        ${
-                          isSelected
-                            ? 'border-accent-green bg-accent-green/10 text-accent-green'
-                            : 'border-theme-secondary bg-theme-elevated hover:border-accent-green hover:bg-accent-green/5'
-                        }
-                      `}
-                    >
-                      <div className="flex items-center justify-between">
-                        <div className="flex items-center space-x-3">
-                          <div
-                            className={`
-                            w-8 h-8 rounded-lg flex items-center justify-center
-                            ${
-                              isSelected
-                                ? 'bg-accent-green text-theme-primary'
-                                : 'bg-theme-secondary text-theme-tertiary'
-                            }
-                          `}
-                          >
-                            <Icon className="w-4 h-4" />
-                          </div>
-                          <div>
-                            <h5 className="font-medium text-sm">
-                              {group.groupTitle}
-                            </h5>
-                            <p className="text-xs text-theme-tertiary">
-                              {group.scoresCount} partitura
-                              {group.scoresCount !== 1 ? 's' : ''} • Índice{' '}
-                              {group.groupIndex} • Editável
-                            </p>
-                          </div>
-                        </div>
-
-                        {isSelected && (
-                          <FiCheck className="w-5 h-5 text-accent-green" />
-                        )}
-                      </div>
-                    </button>
-                  );
-                })}
-              </div>
-            </div>
-          )}
-
-          {/* Grupos IMSLP (APENAS REFERÊNCIA) */}
-          {imslpGroups.length > 0 && (
-            <div>
-              <h4 className="text-sm font-semibold text-theme-primary mb-3 flex items-center space-x-2">
-                <GiMusicalNotes className="w-4 h-4 text-accent-blue" />
-                <span>Grupos Existentes (IMSLP)</span>
-                <span className="px-2 py-0.5 bg-theme-tertiary/20 text-theme-tertiary rounded-full text-xs">
-                  Apenas referência
-                </span>
-              </h4>
-
-              <div className="grid grid-cols-1 gap-2 mb-4">
-                {imslpGroups.slice(0, 3).map((group) => {
-                  const Icon = getSourceIcon(group.source);
-
-                  return (
-                    <div
-                      key={`${group.groupIndex}-${group.groupTitle}`}
-                      className="p-3 rounded-lg border-2 border-theme-secondary bg-theme-elevated opacity-75 cursor-not-allowed"
-                    >
-                      <div className="flex items-center justify-between">
-                        <div className="flex items-center space-x-3">
-                          <div className="w-8 h-8 rounded-lg flex items-center justify-center bg-theme-secondary text-theme-tertiary">
-                            <Icon className="w-4 h-4" />
-                          </div>
-                          <div>
-                            <h5 className="font-medium text-sm text-theme-tertiary">
-                              {group.groupTitle}
-                            </h5>
-                            <p className="text-xs text-theme-tertiary">
-                              {group.scoresCount} partitura
-                              {group.scoresCount !== 1 ? 's' : ''} • Índice{' '}
-                              {group.groupIndex}
-                            </p>
-                          </div>
-                        </div>
-
-                        <FiLock className="w-4 h-4 text-theme-tertiary" />
-                      </div>
-                    </div>
-                  );
-                })}
-              </div>
-
-              <div className="bg-blue-50 border border-blue-200 rounded-lg p-3 mb-4">
-                <div className="flex items-start space-x-2">
-                  <FiInfo className="w-4 h-4 text-blue-600 mt-0.5 flex-shrink-0" />
-                  <div className="text-xs text-blue-800">
-                    <p className="font-medium mb-1">
-                      💡 Grupos IMSLP são apenas referência
-                    </p>
-                    <p>
-                      Você não pode adicionar suas partituras aos grupos do
-                      IMSLP. Suas partituras ficam organizadas em grupos
-                      separados.
-                    </p>
-                  </div>
-                </div>
-              </div>
-            </div>
-          )}
-        </>
+                {isSelected && <Icon de={PiCheck} tamanho="p" />}
+              </button>
+            );
+          })}
+        </div>
       )}
 
-      {/* Opção para Novo Grupo */}
-      <div>
-        <h4 className="text-sm font-semibold text-theme-primary mb-3 flex items-center space-x-2">
-          <FiPlus className="w-4 h-4 text-brand-primary" />
-          <span>Criar Novo Grupo</span>
-        </h4>
-
-        <button
-          onClick={(e) => {
-            e.preventDefault();
-            const nextIndex =
-              Math.max(
-                0,
-                ...userGroups.map((g) => g.groupIndex),
-                ...suggestions
-                  .filter((s) => s.source === 'USER_UPLOADED')
-                  .map((s) => s.suggestedIndex)
-              ) + 1;
-            onGroupSelect(nextIndex, '');
-          }}
-          className="w-full p-3 rounded-lg border-2 border-dashed border-brand-primary text-brand-primary hover:bg-brand-primary/5 transition-all duration-200 text-left"
-        >
-          <div className="flex items-center space-x-3">
-            <div className="w-8 h-8 bg-brand-primary/20 rounded-lg flex items-center justify-center">
-              <FiPlus className="w-4 h-4 text-brand-primary" />
+      {hasExistingScores && imslpGroups.length > 0 && (
+        <div className="flex flex-col gap-2">
+          <span className="t-rotulo font-medium text-texto">
+            {tx('Grupos do IMSLP', 'IMSLP groups')}{' '}
+            <span className="font-normal text-texto-fraco">
+              {tx('· só referência', '· reference only')}
+            </span>
+          </span>
+          {imslpGroups.slice(0, 3).map((group) => (
+            <div
+              key={`${group.groupIndex}-${group.groupTitle}`}
+              className={opcao(false, true)}
+            >
+              <Icon de={getSourceIcon(group.source)} tamanho="p" />
+              <span className="flex min-w-0 flex-1 flex-col">
+                <span className="truncate font-medium">{group.groupTitle}</span>
+                <span className="t-legenda">
+                  {partituras(group.scoresCount)} {tx('· índice', '· index')}{' '}
+                  {group.groupIndex}
+                </span>
+              </span>
+              <Icon de={PiLock} tamanho="p" className="text-texto-fraco" />
             </div>
-            <div>
-              <h5 className="font-medium text-sm">
-                Definir Título Personalizado
-              </h5>
-              <p className="text-xs text-theme-tertiary">
-                Criar um novo grupo com título próprio
-              </p>
-            </div>
-          </div>
-        </button>
-      </div>
-
-      {/* Info Helper Atualizado */}
-      <div className="bg-theme-secondary/10 rounded-lg p-3 border border-theme-primary/20">
-        <div className="flex items-start space-x-2">
-          <FiInfo className="w-4 h-4 text-theme-tertiary mt-0.5 flex-shrink-0" />
-          <div className="text-xs text-theme-tertiary">
-            <p className="font-medium mb-1">
-              💡 Como funciona o novo agrupamento:
-            </p>
-            <div className="space-y-1">
-              <p>
-                • <strong>Grupos IMSLP:</strong> Apenas referência, você não
-                pode editá-los
-              </p>
-              <p>
-                • <strong>Seus grupos:</strong> Apenas você pode adicionar
-                partituras aos seus grupos
-              </p>
-              <p>
-                • <strong>Outros usuários:</strong> Cada usuário tem seus
-                próprios grupos
-              </p>
-            </div>
-          </div>
+          ))}
+          <span className="t-legenda">
+            {tx(
+              'Suas partituras não entram nos grupos do IMSLP: ficam em grupos seus, separados.',
+              'Your scores do not join the IMSLP groups: they go into groups of your own.'
+            )}
+          </span>
         </div>
-      </div>
+      )}
+
+      <button
+        type="button"
+        onClick={(e) => {
+          e.preventDefault();
+          const nextIndex =
+            Math.max(
+              0,
+              ...userGroups.map((g) => g.groupIndex),
+              ...suggestions
+                .filter((s) => s.source === 'USER_UPLOADED')
+                .map((s) => s.suggestedIndex)
+            ) + 1;
+          onGroupSelect(nextIndex, '');
+        }}
+        className="flex w-full items-center gap-3 rounded-controle border border-dashed border-[var(--linha-forte)] px-4 py-3 text-left hover:bg-[var(--interactive-hover)]"
+      >
+        <Icon de={PiPlus} tamanho="p" className="text-ouro-texto" />
+        <span className="flex flex-col">
+          <span className="font-medium text-texto">
+            {tx('Criar um grupo novo', 'Create a new group')}
+          </span>
+          <span className="t-legenda">
+            {tx('Com um título seu', 'With a title of your own')}
+          </span>
+        </span>
+      </button>
+
+      <ul className="t-legenda flex list-disc flex-col gap-1 pl-4">
+        <li>
+          {tx(
+            'Grupos do IMSLP são só referência; não dá para editá-los.',
+            'IMSLP groups are reference only; they cannot be edited.'
+          )}
+        </li>
+        <li>
+          {tx(
+            'Só você acrescenta partituras aos seus grupos.',
+            'Only you add scores to your groups.'
+          )}
+        </li>
+        <li>
+          {tx(
+            'Cada pessoa tem os próprios grupos.',
+            'Each person has their own groups.'
+          )}
+        </li>
+      </ul>
     </div>
   );
 }

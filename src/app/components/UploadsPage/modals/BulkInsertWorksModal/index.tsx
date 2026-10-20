@@ -1,36 +1,40 @@
 // app/components/uploads/modals/BulkInsertWorksModal.tsx - TRADUZIDO
 'use client';
 
+import { ENVIOS } from '@/app/conteudo/textos/envios';
+import { useTextos } from '@/app/hooks/useTextos';
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import {
-  FiMusic,
-  FiSearch,
-  FiPlay,
-  FiCheck,
-  FiX,
-  FiAlertCircle,
-  FiExternalLink,
-  FiInfo,
-  FiLoader,
-  FiTrash2,
-} from 'react-icons/fi';
+  PiArrowSquareOut,
+  PiCheck,
+  PiMagnifyingGlass,
+  PiPlay,
+  PiSpinnerGap,
+  PiTrash,
+  PiWarningCircle,
+  PiX,
+} from 'react-icons/pi';
+import { Button } from '@/app/components/ui/Button';
+import { CaixaDeMarcar } from '@/app/components/ui/CaixaDeMarcar';
+import { Icon } from '@/app/components/ui/Icon';
+import { cx } from '@/app/components/ui/cx';
 import {
-  AnimatedCard,
-  AnimatedItem,
-} from '@/app/components/animation/AnimatedComponents';
-import Button from '@/app/components/Common/Button';
-import Modal from '@/app/components/Modal';
+  Aviso,
+  FormBlock,
+  FormSheet,
+} from '@/app/components/site/edit/FormSheet';
 import CreateWorkModal from '../CreateWorkModal';
 import { useToast } from '@/app/hooks/useToast';
 import { useProcessChanges } from '@/app/hooks/useFormChanges';
-import { useTranslation } from '@/app/context/TranslationContext';
-import Checkbox from '@/app/components/Common/Checkbox';
 import {
   discoverComposerWorks,
   importComposerWorks,
   type ImportOutcome,
 } from '@/app/requests/external-sources';
+import { useTx } from '@/app/hooks/useTx';
+import { ApiError } from '@/app/libs/api/client';
+import { QuillOnPaper } from '@/app/components/site/QuillOnPaper';
 
 /**
  * Obras por chamada de importação. A API aceita até 100 e limita a 5 chamadas
@@ -90,9 +94,10 @@ const BulkInsertWorksModal = ({
   instruments,
   epochs,
 }: BulkInsertWorksModalProps) => {
+  const tx = useTx();
   const router = useRouter();
   const toast = useToast();
-  const { t } = useTranslation({ sections: ['pages/uploads'] });
+  const { t } = useTextos(ENVIOS);
 
   // Estados principais
   const [currentStep, setCurrentStep] = useState<
@@ -106,6 +111,8 @@ const BulkInsertWorksModal = ({
 
   // Estados de loading
   const [isDiscovering, setIsDiscovering] = useState(false);
+  // The search found nothing to import (no works, or no source to read).
+  const [nothingFound, setNothingFound] = useState(false);
 
   // Estados de edição
   const [editingWork, setEditingWork] = useState<DiscoveredWork | null>(null);
@@ -124,8 +131,13 @@ const BulkInsertWorksModal = ({
   // Descobrir obras do compositor
   const handleDiscoverWorks = async () => {
     setIsDiscovering(true);
+    setNothingFound(false);
     try {
       const data = await discoverComposerWorks(composer.id);
+      if (!data.works.length) {
+        setNothingFound(true);
+        return;
+      }
       const works: DiscoveredWork[] = data.works.map((work) => ({
         id: work.imslpId,
         title: work.title,
@@ -139,6 +151,11 @@ const BulkInsertWorksModal = ({
       updateStats(works);
       setCurrentStep('select');
     } catch (error) {
+      // No page to read for this composer: to the person, simply no works.
+      if (error instanceof ApiError && error.status === 404) {
+        setNothingFound(true);
+        return;
+      }
       console.error('❌ Erro ao descobrir obras:', error);
       toast.error(
         t('toast_error'),
@@ -320,522 +337,333 @@ const BulkInsertWorksModal = ({
 
   if (!isOpen) return null;
 
+  const etapas = ['discover', 'select', 'process', 'results'] as const;
+  const etapaAtual = etapas.indexOf(currentStep as (typeof etapas)[number]);
+  const feitas = workProgress.filter(
+    (w) => w.status === 'success' || w.status === 'error'
+  ).length;
+  const contagem = (rotulo: string, valor: number) => (
+    <div className="flex flex-col gap-1">
+      <span className="font-display text-[1.75rem] leading-none text-texto tabular-nums">
+        {valor}
+      </span>
+      <span className="t-legenda">{rotulo}</span>
+    </div>
+  );
+  const iconeDoEstado = (status: string) =>
+    status === 'processing' ? (
+      <PiSpinnerGap
+        aria-hidden="true"
+        className="h-5 w-5 shrink-0 animate-spin text-ouro-texto"
+      />
+    ) : status === 'success' ? (
+      <PiCheck
+        aria-hidden="true"
+        className="h-5 w-5 shrink-0 text-ouro-texto"
+      />
+    ) : status === 'error' ? (
+      <PiX aria-hidden="true" className="h-5 w-5 shrink-0 text-erro" />
+    ) : status === 'duplicate' ? (
+      <PiWarningCircle
+        aria-hidden="true"
+        className="h-5 w-5 shrink-0 text-texto-suave"
+      />
+    ) : (
+      <span
+        aria-hidden="true"
+        className="grid h-5 w-5 shrink-0 place-items-center"
+      >
+        <span className="h-1.5 w-1.5 rounded-full bg-[var(--linha-forte)]" />
+      </span>
+    );
+
+  const rodape =
+    currentStep === 'discover' ? (
+      <Button
+        variante="primario"
+        icone={PiMagnifyingGlass}
+        carregando={isDiscovering}
+        onClick={handleDiscoverWorks}
+        className="w-full"
+      >
+        {isDiscovering ? t('bulk_discovering') : t('bulk_discover_button')}
+      </Button>
+    ) : currentStep === 'select' ? (
+      <div className="flex flex-wrap items-center justify-between gap-2">
+        <div className="flex gap-2">
+          <Button tamanho="p" onClick={() => toggleSelectAll(true)}>
+            {t('bulk_select_all_new')}
+          </Button>
+          <Button
+            tamanho="p"
+            variante="fantasma"
+            onClick={() => toggleSelectAll(false)}
+          >
+            {t('bulk_unselect_all')}
+          </Button>
+        </div>
+        <Button
+          variante="primario"
+          icone={PiPlay}
+          onClick={handleProcessWorks}
+          disabled={stats.selected === 0}
+        >
+          {t('bulk_import_button', {
+            count: stats.selected,
+            plural: stats.selected !== 1 ? 's' : '',
+          })}
+        </Button>
+      </div>
+    ) : currentStep === 'results' ? (
+      <div className="flex justify-end">
+        <Button variante="primario" onClick={handleClose}>
+          {t('bulk_results_complete_button')}
+        </Button>
+      </div>
+    ) : null;
+
   return (
     <>
-      <Modal
-        isOpen={isOpen}
-        onClose={handleClose}
-        maxWidth="4xl"
-        showCloseButton={true}
-        confirmOnClose={true}
-        isProcessing={
-          hasProcess || currentStep === 'process' || currentStep === 'select'
-        }
-        processName={
-          isDiscovering
-            ? 'Descoberta de obras'
-            : currentStep === 'process'
-              ? 'Processamento de obra'
-              : currentStep === 'results'
-                ? 'Resultados de obras'
-                : currentStep === 'select'
-                  ? 'Seleção de obras'
-                  : 'process'
-        }
+      <FormSheet
+        aberto={isOpen}
+        aoFechar={handleClose}
+        titulo={t('bulk_modal_title')}
+        descricao={composer.fullName || composer.name}
+        sujo={hasProcess || currentStep === 'select'}
+        ocupado={currentStep === 'process' || isDiscovering}
+        rodape={rodape}
       >
-        <AnimatedItem direction="scale" springType="bouncy" className="w-full">
-          <div className="max-h-[90vh] overflow-hidden flex flex-col">
-            {/* Header */}
-            <div className="flex items-center justify-between p-6 border-b border-theme-secondary">
-              <div className="flex items-center space-x-3">
-                <div className="w-10 h-10 bg-gradient-to-br from-accent-blue to-accent-green rounded-xl flex items-center justify-center">
-                  <FiMusic className="w-5 h-5 text-theme-primary" />
-                </div>
-                <div>
-                  <h2 className="text-xl font-bold text-theme-primary classical-title">
-                    {t('bulk_modal_title')}
-                  </h2>
-                  <p className="text-theme-secondary text-sm">
-                    {composer.fullName || composer.name}
+        <ol
+          aria-label={tx('Etapas', 'Steps')}
+          className="mb-6 flex items-center gap-2"
+        >
+          {etapas.map((etapa, i) => (
+            <li
+              key={etapa}
+              aria-current={i === etapaAtual ? 'step' : undefined}
+              className={cx(
+                'h-1 flex-1 rounded-full',
+                i <= etapaAtual ? 'bg-[var(--ouro)]' : 'bg-[var(--linha)]'
+              )}
+            />
+          ))}
+        </ol>
+
+        {currentStep === 'discover' && (
+          <FormBlock
+            titulo={t('bulk_step_discover')}
+            nota={t('bulk_step_discover_description', {
+              composer: composer.fullName,
+            })}
+          >
+            {isDiscovering ? (
+              // Reading the composer's works takes a few seconds: the same
+              // quill as the scores being fetched on a work page.
+              <div
+                role="status"
+                className="flex flex-col items-center gap-5 rounded-card bg-sup-2 px-6 py-8 text-center"
+              >
+                <QuillOnPaper />
+                <div className="flex max-w-[40ch] flex-col items-center gap-1.5">
+                  <p className="font-display text-[1.375rem] leading-snug">
+                    {tx(
+                      `Procurando as obras de ${composer.name}…`,
+                      `Looking for ${composer.name}'s works…`
+                    )}
+                  </p>
+                  <p className="t-rotulo text-texto-suave">
+                    {tx(
+                      'Leva alguns segundos. A lista aparece sozinha.',
+                      'It takes a few seconds. The list shows up on its own.'
+                    )}
                   </p>
                 </div>
               </div>
-
-              {/* Step indicator */}
-              <div className="flex items-center space-x-2">
-                {['discover', 'select', 'process', 'results'].map(
-                  (step, index) => (
-                    <div
-                      key={step}
-                      className={`w-3 h-3 rounded-full transition-colors ${
-                        currentStep === step
-                          ? 'bg-gray-400'
-                          : index <
-                              [
-                                'discover',
-                                'select',
-                                'process',
-                                'results',
-                              ].indexOf(currentStep)
-                            ? 'bg-green-400'
-                            : 'bg-theme-secondary'
-                      }`}
-                    />
-                  )
-                )}
+            ) : nothingFound ? (
+              <div
+                role="status"
+                className="flex flex-col items-start gap-2 rounded-card bg-sup-2 p-6"
+              >
+                <p className="font-display text-[1.375rem] leading-snug">
+                  {tx(
+                    `Não encontramos obras de ${composer.name} para importar`,
+                    `We found no works by ${composer.name} to import`
+                  )}
+                </p>
+                <p className="t-rotulo text-texto-suave">
+                  {tx(
+                    'Ainda não temos obras deste compositor. Você pode cadastrar uma a uma pelo envio de obra.',
+                    'We have no works by this composer yet. You can add them one by one through the work upload.'
+                  )}
+                </p>
               </div>
+            ) : (
+              <Aviso titulo={t('bulk_step_discover_how_title')}>
+                <ul className="flex list-disc flex-col gap-1 pl-4">
+                  <li>{t('bulk_step_discover_how_1')}</li>
+                  <li>{t('bulk_step_discover_how_2')}</li>
+                  <li>{t('bulk_step_discover_how_3')}</li>
+                  <li>{t('bulk_step_discover_how_4')}</li>
+                </ul>
+              </Aviso>
+            )}
+          </FormBlock>
+        )}
+
+        {currentStep === 'select' && (
+          <div className="flex flex-col gap-6">
+            <div className="grid grid-cols-2 gap-4 sm:grid-cols-4">
+              {contagem(t('bulk_stats_total'), stats.total)}
+              {contagem(t('bulk_stats_new'), stats.new)}
+              {contagem(t('bulk_stats_existing'), stats.existing)}
+              {contagem(t('bulk_stats_selected'), stats.selected)}
             </div>
-
-            {/* Content */}
-            <div className="flex-1 overflow-hidden">
-              {/* Step 1: Discover */}
-              {currentStep === 'discover' && (
-                <div className="p-6 text-center">
-                  <AnimatedCard className="classical-card-2 p-8 max-w-md mx-auto">
-                    <div className="w-16 h-16 bg-gradient-to-br from-accent-blue to-accent-green rounded-full flex items-center justify-center mx-auto mb-6">
-                      <FiSearch className="w-8 h-8 text-theme-primary" />
-                    </div>
-
-                    <h3 className="text-lg font-bold text-theme-primary mb-4">
-                      {t('bulk_step_discover')}
-                    </h3>
-
-                    <p className="text-theme-secondary mb-6">
-                      {t('bulk_step_discover_description', {
-                        composer: composer.fullName,
-                      })}
-                    </p>
-
-                    <div className="space-y-3">
-                      <div className="text-xs text-theme-tertiary p-3 bg-theme-secondary/10 rounded-lg">
-                        <div className="flex items-center space-x-2 mb-1">
-                          <FiInfo className="w-3 h-3" />
-                          <span className="font-medium">
-                            {t('bulk_step_discover_how_title')}
-                          </span>
-                        </div>
-                        <ul className="text-left space-y-1 ml-5">
-                          <li>• {t('bulk_step_discover_how_1')}</li>
-                          <li>• {t('bulk_step_discover_how_2')}</li>
-                          <li>• {t('bulk_step_discover_how_3')}</li>
-                          <li>• {t('bulk_step_discover_how_4')}</li>
-                        </ul>
-                      </div>
-
-                      <Button
-                        variant="primary"
-                        size="lg"
-                        leftIcon={
-                          isDiscovering ? (
-                            <FiLoader className="animate-spin" />
-                          ) : (
-                            <FiSearch />
-                          )
-                        }
-                        onClick={handleDiscoverWorks}
-                        disabled={isDiscovering}
-                        className="w-full"
-                      >
-                        {isDiscovering
-                          ? t('bulk_discovering')
-                          : t('bulk_discover_button')}
-                      </Button>
-                    </div>
-                  </AnimatedCard>
-                </div>
-              )}
-
-              {/* Step 2: Select */}
-              {currentStep === 'select' && (
-                <div className="p-6">
-                  {/* Stats and controls */}
-                  <div className="mb-6">
-                    <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-4">
-                      <div className="text-center">
-                        <div className="text-2xl font-bold text-theme-primary">
-                          {stats.total}
-                        </div>
-                        <div className="text-xs text-theme-tertiary">
-                          {t('bulk_stats_total')}
-                        </div>
-                      </div>
-                      <div className="text-center">
-                        <div className="text-2xl font-bold text-accent-green">
-                          {stats.new}
-                        </div>
-                        <div className="text-xs text-theme-tertiary">
-                          {t('bulk_stats_new')}
-                        </div>
-                      </div>
-                      <div className="text-center">
-                        <div className="text-2xl font-bold text-accent-amber">
-                          {stats.existing}
-                        </div>
-                        <div className="text-xs text-theme-tertiary">
-                          {t('bulk_stats_existing')}
-                        </div>
-                      </div>
-                      <div className="text-center">
-                        <div className="text-2xl font-bold text-brand-primary">
-                          {stats.selected}
-                        </div>
-                        <div className="text-xs text-theme-tertiary">
-                          {t('bulk_stats_selected')}
-                        </div>
-                      </div>
-                    </div>
-
-                    <div className="flex items-center justify-between">
-                      <div className="flex items-center space-x-2">
-                        <Button
-                          variant="outline"
-                          size="md"
-                          onClick={() => toggleSelectAll(true)}
-                        >
-                          {t('bulk_select_all_new')}
-                        </Button>
-                        <Button
-                          variant="secondary"
-                          size="md"
-                          onClick={() => toggleSelectAll(false)}
-                        >
-                          {t('bulk_unselect_all')}
-                        </Button>
-                      </div>
-
-                      <Button
-                        variant="primary"
-                        leftIcon={<FiPlay />}
-                        onClick={handleProcessWorks}
-                        disabled={stats.selected === 0}
-                      >
-                        {t('bulk_import_button', {
-                          count: stats.selected,
-                          plural: stats.selected !== 1 ? 's' : '',
-                        })}
-                      </Button>
-                    </div>
-                  </div>
-
-                  {/* Works list */}
-                  <div className="max-h-96 overflow-y-auto space-y-2">
-                    {discoveredWorks.map((work, index) => (
-                      <AnimatedItem
-                        key={work.id}
-                        direction="left"
-                        style={{
-                          animationDelay: `${index * 0.05}s`,
-                          animationFillMode: 'backwards',
-                        }}
-                      >
-                        <div
-                          className={`classical-card-simple mr-4 rounded-lg p-4 transition-all ${
-                            work.alreadyExists
-                              ? 'bg-accent-amber/5 border-accent-amber/20'
-                              : work.selected
-                                ? 'bg-brand-primary/5 border-brand-primary/30'
-                                : 'bg-theme-elevated border-theme-secondary hover:border-theme-primary'
-                          }`}
-                        >
-                          <div className="flex items-center justify-between">
-                            <div className="flex items-center space-x-3 flex-1 min-w-0">
-                              {/* Checkbox */}
-                              <Checkbox
-                                type={work.alreadyExists ? 'text' : 'checkbox'}
-                                checked={work.selected}
-                                disabled={work.alreadyExists}
-                                onChange={() => toggleWorkSelection(work.id)}
-                                className="w-4 h-4 text-brand-primary bg-theme-elevated border-theme-secondary rounded focus:ring-brand-primary"
-                              />
-
-                              {/* Work info */}
-                              <div className="flex-1 min-w-0">
-                                <h4 className="font-medium text-theme-primary truncate">
-                                  {work.title}
-                                </h4>
-                                <div className="flex items-center space-x-4 text-xs text-theme-tertiary">
-                                  {work.opOrCatalog && (
-                                    <span>{work.opOrCatalog}</span>
-                                  )}
-                                  {work.instrument && (
-                                    <span>{work.instrument}</span>
-                                  )}
-                                </div>
-                              </div>
-
-                              {/* Status badges */}
-                              <div className="flex items-center space-x-2">
-                                {work.alreadyExists && (
-                                  <span className="text-xs bg-accent-amber/20 text-accent-amber px-2 py-1 rounded-full">
-                                    {t('bulk_work_exists')}
-                                  </span>
-                                )}
-
-                                <a
-                                  href={work.imslpUrl}
-                                  target="_blank"
-                                  rel="noopener noreferrer"
-                                  className="text-theme-tertiary hover:text-accent-blue"
-                                >
-                                  <FiExternalLink className="w-4 h-4" />
-                                </a>
-
-                                <button
-                                  onClick={() => removeWork(work.id)}
-                                  className="text-theme-tertiary hover:text-accent-red"
-                                  title={t('bulk_remove_work')}
-                                >
-                                  <FiTrash2 className="w-4 h-4" />
-                                </button>
-                              </div>
-                            </div>
-                          </div>
-                        </div>
-                      </AnimatedItem>
-                    ))}
-                  </div>
-                </div>
-              )}
-
-              {/* Step 3: Process - Com progresso individual */}
-              {currentStep === 'process' && (
-                <div className="p-6">
-                  <div className="mb-6 text-center">
-                    <h3 className="text-lg font-bold text-theme-primary mb-2">
-                      {t('bulk_processing_title')}
-                    </h3>
-                    <p className="text-theme-secondary mb-4">
-                      {t('bulk_processing_description', {
-                        count: stats.selected,
-                      })}
-                    </p>
-
-                    {/* Barra de progresso geral */}
-                    <div className="w-full bg-theme-secondary rounded-full h-2 mb-2">
-                      <div
-                        className="progress-bar h-2 rounded-full transition-all duration-300"
-                        style={{
-                          width: `${
-                            (workProgress.filter(
-                              (w) =>
-                                w.status === 'success' || w.status === 'error'
-                            ).length /
-                              workProgress.length) *
-                            100
-                          }%`,
-                        }}
-                      />
-                    </div>
-                    <div className="text-xs text-theme-tertiary">
-                      {t('bulk_processing_progress', {
-                        completed: workProgress.filter(
-                          (w) => w.status === 'success' || w.status === 'error'
-                        ).length,
-                        total: workProgress.length,
-                      })}
-                    </div>
-                  </div>
-
-                  {/* Lista de obras com progresso individual */}
-                  <div className="max-h-96 overflow-y-auto overflow-x-hidden space-y-3">
-                    {workProgress.map((work) => (
-                      <div
-                        key={work.tempId}
-                        className={`classical-card-simple rounded-lg p-4 transition-all ${
-                          work.status === 'success'
-                            ? 'bg-accent-green/5 border-accent-green/20'
-                            : work.status === 'error'
-                              ? 'bg-accent-red/5 border-accent-red/20'
-                              : work.status === 'processing'
-                                ? 'bg-brand-primary/5 border-brand-primary/30'
-                                : 'bg-theme-elevated border-theme-secondary'
-                        }`}
-                      >
-                        <div className="flex items-center space-x-3">
-                          {/* Status icon */}
-                          <div className="flex-shrink-0">
-                            {work.status === 'waiting' && (
-                              <div className="w-5 h-5 rounded-full bg-theme-secondary flex items-center justify-center">
-                                <div className="w-2 h-2 rounded-full bg-theme-tertiary"></div>
-                              </div>
-                            )}
-                            {work.status === 'processing' && (
-                              <FiLoader className="w-5 h-5 text-brand-primary animate-spin" />
-                            )}
-                            {work.status === 'success' && (
-                              <div className="w-5 h-5 rounded-full bg-accent-green flex items-center justify-center">
-                                <FiCheck className="w-3 h-3 text-white" />
-                              </div>
-                            )}
-                            {work.status === 'error' && (
-                              <div className="w-5 h-5 rounded-full bg-accent-red flex items-center justify-center">
-                                <FiX className="w-3 h-3 text-white" />
-                              </div>
-                            )}
-                          </div>
-
-                          {/* Work info */}
-                          <div className="flex-1 min-w-0">
-                            <h4 className="font-medium text-theme-primary truncate">
-                              {work.title}
-                            </h4>
-                            <p
-                              className={`text-xs ${
-                                work.status === 'success'
-                                  ? 'text-accent-green'
-                                  : work.status === 'error'
-                                    ? 'text-accent-red'
-                                    : work.status === 'processing'
-                                      ? 'text-brand-primary'
-                                      : 'text-theme-tertiary'
-                              }`}
-                            >
-                              {work.message}
-                            </p>
-                            {work.details?.finalTitle &&
-                              work.details.finalTitle !== work.title && (
-                                <p className="text-xs text-theme-secondary">
-                                  {t('bulk_processing_final_title', {
-                                    title: work.details.finalTitle,
-                                  })}
-                                </p>
-                              )}
-                          </div>
-
-                          {/* Progress indicator para a obra atual */}
-                          {work.status === 'processing' && (
-                            <div className="flex-shrink-0">
-                              <div className="w-16 bg-theme-secondary rounded-full h-1">
-                                <div className="bg-brand-primary h-1 rounded-full animate-pulse w-8"></div>
-                              </div>
-                            </div>
-                          )}
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              )}
-
-              {/* Step 4: Results */}
-              {currentStep === 'results' && (
-                <div className="p-6">
-                  <div className="mb-6 text-center">
-                    <h3 className="text-lg font-bold text-theme-primary mb-2">
-                      {t('bulk_results_title')}
-                    </h3>
-
-                    <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-4">
-                      <div className="text-center">
-                        <div className="text-2xl font-bold text-accent-green">
-                          {
-                            processResults.filter((r) => r.status === 'success')
-                              .length
-                          }
-                        </div>
-                        <div className="text-xs text-theme-tertiary">
-                          {t('bulk_results_success')}
-                        </div>
-                      </div>
-                      <div className="text-center">
-                        <div className="text-2xl font-bold text-accent-red">
-                          {
-                            processResults.filter((r) => r.status === 'error')
-                              .length
-                          }
-                        </div>
-                        <div className="text-xs text-theme-tertiary">
-                          {t('bulk_results_errors')}
-                        </div>
-                      </div>
-                      <div className="text-center">
-                        <div className="text-2xl font-bold text-accent-amber">
-                          {
-                            processResults.filter(
-                              (r) => r.status === 'duplicate'
-                            ).length
-                          }
-                        </div>
-                        <div className="text-xs text-theme-tertiary">
-                          {t('bulk_results_duplicates')}
-                        </div>
-                      </div>
-                      <div className="text-center">
-                        <div className="text-2xl font-bold text-theme-tertiary">
-                          {
-                            processResults.filter((r) => r.status === 'skipped')
-                              .length
-                          }
-                        </div>
-                        <div className="text-xs text-theme-tertiary">
-                          {t('bulk_results_skipped')}
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-
-                  {/* Results list */}
-                  <div className="max-h-80 flex flex-col gap-2 px-4 py-2 overflow-y-auto overflow-x-hidden space-y-2">
-                    {processResults.map((result) => (
-                      <div
-                        key={result.tempId}
-                        className={`rounded-lg border p-3 ${
-                          result.status === 'success'
-                            ? 'bg-accent-green/5 border border-green-300'
-                            : result.status === 'error'
-                              ? 'bg-accent-red/5 border border-red-300'
-                              : result.status === 'duplicate'
-                                ? 'bg-accent-amber/5 border-amber-300'
-                                : 'bg-theme-elevated border-theme-secondary'
-                        }`}
-                      >
-                        <div className="flex items-center space-x-3">
-                          <div className="flex-shrink-0 mt-0.5">
-                            {result.status === 'success' && (
-                              <FiCheck className="w-4 h-4 text-accent-green" />
-                            )}
-                            {result.status === 'error' && (
-                              <FiX className="w-4 h-4 text-accent-red" />
-                            )}
-                            {result.status === 'duplicate' && (
-                              <FiAlertCircle className="w-4 h-4 text-accent-amber" />
-                            )}
-                          </div>
-
-                          <div className="flex-1 min-w-0">
-                            <h4 className="font-medium text-theme-primary truncate">
-                              {result.title}
-                            </h4>
-                            <p className="text-xs text-theme-secondary">
-                              {result.message.includes('__TURBOPACK')
-                                ? t('bulk_results_error_processing')
-                                : result.message}
-                            </p>
-                            {result.details?.finalTitle &&
-                              result.details.finalTitle !== result.title && (
-                                <p className="text-xs text-brand-primary">
-                                  {t('bulk_processing_final_title', {
-                                    title: result.details.finalTitle,
-                                  })}
-                                </p>
-                              )}
-                          </div>
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-
-                  <div className="mt-6 text-center">
-                    <Button variant="primary" onClick={handleClose}>
-                      {t('bulk_results_complete_button')}
-                    </Button>
-                  </div>
-                </div>
-              )}
-            </div>
+            <ul className="flex flex-col divide-y divide-[var(--linha)]">
+              {discoveredWorks.map((work) => (
+                <li key={work.id} className="flex items-center gap-3 py-3">
+                  {work.alreadyExists ? (
+                    <span className="t-legenda w-28 shrink-0">
+                      {t('bulk_work_exists')}
+                    </span>
+                  ) : (
+                    <CaixaDeMarcar
+                      rotulo={<span className="sr-only">{work.title}</span>}
+                      marcado={work.selected}
+                      aoMudar={() => toggleWorkSelection(work.id)}
+                    />
+                  )}
+                  <span className="flex min-w-0 flex-1 flex-col">
+                    <span className="truncate font-medium text-texto">
+                      {work.title}
+                    </span>
+                    <span className="t-legenda truncate">
+                      {[work.opOrCatalog, work.instrument]
+                        .filter(Boolean)
+                        .join(' · ')}
+                    </span>
+                  </span>
+                  <a
+                    href={work.imslpUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="grid h-9 w-9 shrink-0 place-items-center rounded-full text-texto-suave hover:bg-[var(--interactive-hover)] hover:text-texto"
+                  >
+                    <Icon de={PiArrowSquareOut} tamanho="p" rotulo="IMSLP" />
+                  </a>
+                  <Button
+                    tamanho="p"
+                    variante="fantasma"
+                    icone={PiTrash}
+                    rotulo={t('bulk_remove_work')}
+                    onClick={() => removeWork(work.id)}
+                  />
+                </li>
+              ))}
+            </ul>
           </div>
-        </AnimatedItem>
-      </Modal>
+        )}
+
+        {currentStep === 'process' && (
+          <div className="flex flex-col gap-6">
+            <div className="flex flex-col gap-2">
+              <h3 className="t-subtitulo">{t('bulk_processing_title')}</h3>
+              <p className="t-rotulo text-texto-suave">
+                {t('bulk_processing_description', { count: stats.selected })}
+              </p>
+              <div
+                role="progressbar"
+                aria-valuemin={0}
+                aria-valuemax={workProgress.length}
+                aria-valuenow={feitas}
+                className="h-1.5 w-full overflow-hidden rounded-full bg-[var(--linha)]"
+              >
+                <div
+                  className="h-full rounded-full bg-[var(--ouro)] transition-[width] duration-300"
+                  style={{
+                    width: `${workProgress.length ? (feitas / workProgress.length) * 100 : 0}%`,
+                  }}
+                />
+              </div>
+              <span className="t-legenda">
+                {t('bulk_processing_progress', {
+                  completed: feitas,
+                  total: workProgress.length,
+                })}
+              </span>
+            </div>
+            <ul className="flex flex-col divide-y divide-[var(--linha)]">
+              {workProgress.map((work) => (
+                <li key={work.tempId} className="flex items-start gap-3 py-3">
+                  {iconeDoEstado(work.status)}
+                  <span className="flex min-w-0 flex-1 flex-col gap-0.5">
+                    <span className="truncate font-medium text-texto">
+                      {work.title}
+                    </span>
+                    <span className="t-legenda">{work.message}</span>
+                    {work.details?.finalTitle &&
+                      work.details.finalTitle !== work.title && (
+                        <span className="t-legenda">
+                          {t('bulk_processing_final_title', {
+                            title: work.details.finalTitle,
+                          })}
+                        </span>
+                      )}
+                  </span>
+                </li>
+              ))}
+            </ul>
+          </div>
+        )}
+
+        {currentStep === 'results' && (
+          <div className="flex flex-col gap-6">
+            <h3 className="t-subtitulo">{t('bulk_results_title')}</h3>
+            <div className="grid grid-cols-2 gap-4 sm:grid-cols-4">
+              {contagem(
+                t('bulk_results_success'),
+                processResults.filter((r) => r.status === 'success').length
+              )}
+              {contagem(
+                t('bulk_results_errors'),
+                processResults.filter((r) => r.status === 'error').length
+              )}
+              {contagem(
+                t('bulk_results_duplicates'),
+                processResults.filter((r) => r.status === 'duplicate').length
+              )}
+              {contagem(
+                t('bulk_results_skipped'),
+                processResults.filter((r) => r.status === 'skipped').length
+              )}
+            </div>
+            <ul className="flex flex-col divide-y divide-[var(--linha)]">
+              {processResults.map((result) => (
+                <li key={result.tempId} className="flex items-start gap-3 py-3">
+                  {iconeDoEstado(result.status)}
+                  <span className="flex min-w-0 flex-1 flex-col gap-0.5">
+                    <span className="truncate font-medium text-texto">
+                      {result.title}
+                    </span>
+                    <span className="t-legenda">
+                      {result.message.includes('__TURBOPACK')
+                        ? t('bulk_results_error_processing')
+                        : result.message}
+                    </span>
+                    {result.details?.finalTitle &&
+                      result.details.finalTitle !== result.title && (
+                        <span className="t-legenda text-ouro-texto">
+                          {t('bulk_processing_final_title', {
+                            title: result.details.finalTitle,
+                          })}
+                        </span>
+                      )}
+                  </span>
+                </li>
+              ))}
+            </ul>
+          </div>
+        )}
+      </FormSheet>
 
       {/* Edit Work Modal */}
       {showEditModal && editingWork && (

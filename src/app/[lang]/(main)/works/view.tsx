@@ -1,9 +1,9 @@
 // app/[lang]/(main)/works/view.tsx
 import { Metadata } from 'next';
-import { Suspense } from 'react';
 import { unstable_cache } from 'next/cache';
-import WorksServer from './pageServer';
-import WorksLoading from './WorksLoading';
+import { WorksList } from '@/app/components/site/lists/WorksList';
+import { getCatalogFilterOptions } from '@/app/requests/catalog-lists';
+import { parseWorkParams, type UrlParams } from '@/app/utils/listParams';
 import type { Language } from '@/app/utils/translations/serverTranslations';
 import { alternatesFor } from '@/app/utils/seoAlternates';
 
@@ -23,19 +23,9 @@ import { alternatesFor } from '@/app/utils/seoAlternates';
  * sem mudar a URL que o visitante vê.
  */
 
-export interface WorksSearchParams {
-  // Índice aberto porque `getCachedMetadata` recebe o objeto cru da URL.
-  [key: string]: string | undefined;
-  page?: string;
-  composer?: string;
-  genre?: string;
-  instrument?: string;
-  epoch?: string;
-  search?: string;
-  workGenresArr?: string;
-  categoryNames?: string;
-}
+export type WorksSearchParams = UrlParams;
 
+/** Same render for both routes; only where the parameters come from differs. */
 export function WorksView({
   searchParams,
   language,
@@ -43,11 +33,7 @@ export function WorksView({
   searchParams: WorksSearchParams;
   language: Language;
 }) {
-  return (
-    <Suspense fallback={<WorksLoading />}>
-      <WorksServer searchParams={searchParams} language={language} />
-    </Suspense>
-  );
+  return <WorksList language={language} params={searchParams} />;
 }
 
 // Cache inteligente para metadata - 2 horas
@@ -65,7 +51,7 @@ const getCachedMetadata = unstable_cache(
       pt: {
         baseTitle: 'Obras de Música Clássica - Partituras Gratuitas',
         baseDescription:
-          'Explore milhares de obras de música clássica organizadas por compositor, instrumento e época. Partituras gratuitas de Bach, Chopin, Beethoven, Mozart. Sonata ao Luar, Valsa das Flores, estudos, sonatas e sinfonias completas.',
+          'Explore obras de música clássica organizadas por compositor, instrumento e época. Partituras gratuitas de Bach, Chopin, Beethoven, Mozart. Sonata ao Luar, Valsa das Flores, estudos, sonatas e sinfonias completas.',
         searchTitle: `Buscar Obras: "${search}" - Partituras Clássicas`,
         searchDescription: `Resultados da busca por "${search}" em nossa coleção de obras clássicas e partituras gratuitas.`,
         instrumentTitle: `Obras para ${instrument} - Partituras Clássicas`,
@@ -100,7 +86,7 @@ const getCachedMetadata = unstable_cache(
       en: {
         baseTitle: 'Classical Music Works - Free Sheet Music',
         baseDescription:
-          'Explore thousands of classical music works organized by composer, instrument and era. Free sheet music from Bach, Chopin, Beethoven, Mozart. Moonlight Sonata, Waltz of the Flowers, studies, sonatas and complete symphonies.',
+          'Explore classical music works organized by composer, instrument and era. Free sheet music from Bach, Chopin, Beethoven, Mozart. Moonlight Sonata, Waltz of the Flowers, studies, sonatas and complete symphonies.',
         searchTitle: `Search Works: "${search}" - Classical Scores`,
         searchDescription: `Search results for "${search}" in our collection of classical works and free sheet music.`,
         instrumentTitle: `Works for ${instrument} - Classical Scores`,
@@ -166,8 +152,22 @@ export async function worksMetadata(
   language: Language,
   searchParams: WorksSearchParams = {}
 ): Promise<Metadata> {
+  // The URL carries ids; the title needs names.
+  const parsed = parseWorkParams(searchParams);
+  const options =
+    parsed.instrumentId || parsed.composerId
+      ? await getCatalogFilterOptions()
+      : null;
   const { title, description, keywords } = await getCachedMetadata(
-    searchParams,
+    {
+      page: String(parsed.page),
+      search: parsed.search,
+      instrument: options?.instruments.find((i) => i.id === parsed.instrumentId)
+        ?.name,
+      composer: options?.popularComposers.find(
+        (c) => c.id === parsed.composerId
+      )?.name,
+    },
     language
   );
 

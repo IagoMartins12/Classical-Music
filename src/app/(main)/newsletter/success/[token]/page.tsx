@@ -2,11 +2,7 @@
 // app/newsletter/success/page.tsx - CORRIGIDO
 // ================================
 import React from 'react';
-import {
-  getServerLanguageStatic,
-  loadPageTranslationsWithCommon,
-} from '@/app/utils/translations/serverTranslations';
-import { TranslationProvider } from '@/app/context/TranslationContext';
+import { getServerLanguageStatic } from '@/app/utils/translations/serverTranslations';
 import NewsletterSuccessContent from './pageClient';
 
 /**
@@ -58,15 +54,6 @@ export async function generateMetadata() {
   };
 }
 
-export default async function NewsletterSuccessPage() {
-  const language = await getServerLanguageStatic();
-  const { translations } = await loadPageTranslationsWithCommon(language, [
-    'pages/newsletter',
-  ]);
-
-  return (
-    <TranslationProvider language={language} translations={translations}>
-      <NewsletterSuccessContent />
-    </TranslationProvider>
-  );
+export default function NewsletterSuccessPage() {
+  return <NewsletterSuccessContent />;
 }

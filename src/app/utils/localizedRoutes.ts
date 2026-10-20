@@ -30,22 +30,45 @@ export const LANGUAGE_COOKIE = 'opus-atlas-language';
  */
 export const LOCALIZED_ROUTES = [
   '/about-us',
+  '/blog',
+  '/collections',
   '/composer',
   '/composers',
   '/contact',
   '/copyright',
   '/difficulty',
   '/faq',
-  '/genres',
+  '/for-teachers',
   '/help',
   '/instruments',
   '/music-history',
+  '/on-this-day',
   '/pricing',
   '/privacy',
+  '/search',
   '/support',
-  '/teachers',
   '/terms',
   '/works',
+];
+
+/**
+ * Endereços **dentro** de uma rota traduzida que não são traduzidos.
+ *
+ * O blog é público e vive em `[lang]`, mas parte dele é por pessoa (salvos,
+ * curtidos), lê parâmetros a cada visita (busca), é de quem administra
+ * (prévia, painel) ou é arquivo (`rss.xml`). Esses seguem em `app/blog/`,
+ * dinâmicos e sem versão em `/en`.
+ */
+export const UNLOCALIZED_SUBROUTES = [
+  '/blog/admin',
+  '/blog/bookmarks',
+  '/blog/liked',
+  '/blog/search',
+  '/blog/preview',
+  '/blog/rss.xml',
+  '/blog/my-articles',
+  '/blog/articles/create',
+  '/blog/articles/edit',
 ];
 
 /**
@@ -57,12 +80,20 @@ export const LOCALIZED_ROUTES = [
  * declara não vale nada. Mas a visita que importa nestas páginas, a que vem do
  * buscador e do menu, chega sem parâmetro nenhum.
  */
-export const SPLIT_ROUTES = ['/composers', '/works', '/teachers'];
+export const SPLIT_ROUTES = ['/composers', '/works'];
 
 /** O sufixo interno; ver `SPLIT_ROUTES`. */
 export const FILTERED_SEGMENT = '/filtered';
 
 export function isLocalizedRoute(pathname: string): boolean {
+  if (
+    UNLOCALIZED_SUBROUTES.some(
+      (route) => pathname === route || pathname.startsWith(`${route}/`)
+    )
+  ) {
+    return false;
+  }
+
   return (
     pathname === '/' ||
     LOCALIZED_ROUTES.some(
@@ -105,4 +136,11 @@ export function languageOfPathname(pathname: string): RouteLanguage {
   }
 
   return DEFAULT_ROUTE_LANGUAGE;
+}
+
+/** The path without its language prefix: `/en/works` → `/works`, `/en` → `/`. */
+export function stripLanguagePrefix(pathname: string): string {
+  const language = languageOfPathname(pathname);
+  if (language === DEFAULT_ROUTE_LANGUAGE) return pathname || '/';
+  return pathname.slice(language.length + 1) || '/';
 }

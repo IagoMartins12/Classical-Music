@@ -7,6 +7,7 @@ import { toast } from 'react-hot-toast';
 import { useRouter } from 'next/navigation';
 import { useToast } from './useToast';
 import { useLanguageStore } from '../stores/useLanguageStore';
+import { porIdioma } from '@/app/utils/porIdioma';
 
 interface UseEmailRefreshReturn {
   isRefreshing: boolean;
@@ -29,13 +30,19 @@ export function useEmailRefresh(): UseEmailRefreshReturn {
           ? 'Email confirmado com sucesso!'
           : 'Email confirmed successfully!';
       // Método 1: Forçar atualização da sessão NextAuth (principal)
-      const updatedSession = await update();
+      // A check this fast only flashed the spinner: it stays at least a
+      // moment, so the person sees the question was asked.
+      const [updatedSession] = await Promise.all([
+        update(),
+        new Promise((resolve) => setTimeout(resolve, 700)),
+      ]);
 
       if (updatedSession?.user?.emailVerified) {
         // Email foi confirmado via sessão!
         console.log('✅ Email confirmado via sessão');
         toast.success(messageSucessfull);
 
+        // The button keeps loading until the page reloads with access.
         setTimeout(() => {
           window.location.reload();
         }, 1500);
@@ -50,6 +57,7 @@ export function useEmailRefresh(): UseEmailRefreshReturn {
           : 'Email has not been confirmed yet. Please check your inbox and try again.';
       // Email ainda não foi confirmado por nenhum método
       toast.error(errorMensage);
+      setIsRefreshing(false);
       console.log('❌ Email ainda não confirmado por nenhum método');
     } catch {
       const errorMensage =
@@ -57,7 +65,6 @@ export function useEmailRefresh(): UseEmailRefreshReturn {
           ? 'Erro ao verificar confirmação. Tente novamente.'
           : 'Error checking confirmation. Please try again.';
       toast.error(errorMensage);
-    } finally {
       setIsRefreshing(false);
     }
   };
@@ -85,19 +92,18 @@ export function useEmailRefreshSimple() {
       const updatedSession = await update();
 
       if (updatedSession?.user) {
-        console.log('✅ Sessão atualizada:', {
-          teacherVerified: updatedSession.user.teacherVerified,
-          studentInviteStatus: updatedSession.user.studentInviteStatus,
-          teste: updatedSession.user.isTeacher,
-          teste2: updatedSession.user.isStudent,
-        });
-
-        // Verificar se teacher foi verificado
+        // The invite accepted: the teacher profile is active, the portal open.
         if (
           updatedSession.user.isTeacher &&
-          updatedSession.user.teacherVerified
+          (updatedSession.user.teacherPortal ??
+            updatedSession.user.teacherVerified)
         ) {
-          toast.success('Professor verificado! Redirecionando...');
+          toast.success(
+            porIdioma(
+              'Convite aceito. Abrindo o portal…',
+              'Invite accepted. Opening the portal…'
+            )
+          );
           setTimeout(() => {
             router.refresh(); // Força reload da página para aplicar as verificações do layout
           }, 1000);
@@ -106,7 +112,12 @@ export function useEmailRefreshSimple() {
 
         // Verificar se student foi aceito
         if (updatedSession.user.studentInviteStatus === 'ACCEPTED') {
-          toast.success('Convite aceito! Redirecionando...');
+          toast.success(
+            porIdioma(
+              'Convite aceito. Abrindo o portal…',
+              'Invite accepted. Opening the portal…'
+            )
+          );
           setTimeout(() => {
             router.refresh(); // Força reload da página para aplicar as verificações do layout
           }, 1000);
@@ -114,19 +125,33 @@ export function useEmailRefreshSimple() {
         }
 
         if (updatedSession.user.studentInviteStatus === 'PENDING') {
-          console.log('caiu aqui');
-          toast.info('Aguardando aprovação do convite.');
+          toast.info(
+            porIdioma(
+              'Aguardando a aprovação do convite.',
+              'Waiting for the invite to be approved.'
+            )
+          );
         } else if (updatedSession.user.studentInviteStatus === 'DECLINED') {
-          toast.error('Seu convite foi recusado.');
+          toast.error(
+            porIdioma('Seu convite foi recusado.', 'Your invite was declined.')
+          );
         } else if (updatedSession.user.studentInviteStatus === 'EXPIRED') {
-          toast.error('Seu convite expirou. Entre em contato com o professor.');
+          toast.error(
+            porIdioma(
+              'Seu convite expirou. Fale com o professor.',
+              'Your invite expired. Talk to your teacher.'
+            )
+          );
         } else if (
           !updatedSession.user.isStudent &&
           !updatedSession.user.isTeacher &&
           updatedSession.user.teacherVerified
         ) {
           toast.error(
-            'Seu convite foi declinado. Entre em contato com o nosso suporte.'
+            porIdioma(
+              'Seu convite foi recusado. Fale com o suporte.',
+              'Your invite was declined. Contact support.'
+            )
           );
 
           setTimeout(() => {
@@ -134,11 +159,21 @@ export function useEmailRefreshSimple() {
           }, 2000);
         }
       } else {
-        toast.error('Erro ao verificar status. Tente fazer login novamente.');
+        toast.error(
+          porIdioma(
+            'Não foi possível verificar. Entre de novo.',
+            'Could not check. Sign in again.'
+          )
+        );
       }
     } catch (error) {
       console.error('❌ Erro ao verificar status:', error);
-      toast.error('Erro ao verificar status. Tente novamente.');
+      toast.error(
+        porIdioma(
+          'Não foi possível verificar. Tente de novo.',
+          'Could not check. Try again.'
+        )
+      );
     } finally {
       setIsRefreshing(false);
     }

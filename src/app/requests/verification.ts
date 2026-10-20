@@ -5,6 +5,7 @@
  */
 import { apiFetch } from '@/app/libs/api/client';
 import { asFetchResponse } from '@/app/requests/fetch-like';
+import { porIdioma } from '@/app/utils/porIdioma';
 
 export function setVerificationRequest(
   item: 'composer' | 'work',
@@ -26,6 +27,8 @@ export function setVerificationRequest(
 
   return asFetchResponse(request, () => ({
     success: true,
-    message: verified ? 'Marcado como verificado.' : 'Verificação removida.',
+    message: verified
+      ? porIdioma('Marcado como verificado.', 'Marked as verified.')
+      : porIdioma('Verificação removida.', 'Verification removed.'),
   }));
 }

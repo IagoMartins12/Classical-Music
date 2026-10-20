@@ -1,0 +1,381 @@
+/** Login, sign-up, password reset and terms. Bundled with the code, so no text arrives late and no key shows. */
+import type { Textos } from './tipos';
+
+export const AUTH: Textos = {
+  pt: {
+    password_show: 'Mostrar a senha',
+    password_hide: 'Ocultar a senha',
+    login_modal_title: 'Bem-vindo de volta!',
+    login_modal_subtitle:
+      'Entre na sua conta para continuar sua jornada musical',
+    login_modal_email_label: 'Email',
+    login_modal_email_placeholder: 'seu@email.com',
+    login_modal_password_label: 'Senha',
+    login_modal_password_placeholder: 'Digite sua senha',
+    login_modal_forgot_password: 'Esqueceu sua senha?',
+    login_modal_submit_button: 'Entrar',
+    login_modal_google_button: 'Continuar com Google',
+    login_modal_register_text: 'Ainda não tem uma conta?',
+    login_modal_register_link: 'Criar conta',
+    login_modal_terms_text: 'Ao continuar, você concorda com nossos',
+    login_modal_terms_link: 'Termos de Uso',
+    login_modal_terms_and: 'e',
+    login_modal_privacy_link: 'Política de Privacidade',
+    login_modal_email_required: 'Email é obrigatório',
+    login_modal_email_invalid: 'Email inválido',
+    login_modal_password_required: 'Senha é obrigatória',
+    login_modal_credentials_error: 'Email ou senha incorretos',
+    login_modal_internal_error: 'Erro interno. Tente novamente.',
+    login_modal_success: 'Login realizado com sucesso!',
+    login_modal_google_error: 'Erro ao fazer login com Google',
+    login_modal_google_access_denied:
+      'Acesso negado pelo Google. Tente novamente.',
+    login_modal_google_oauth_error:
+      'Erro na autenticação com Google. Tente novamente.',
+    login_modal_google_signin_error:
+      'Erro ao conectar com Google. Verifique suas permissões.',
+    login_modal_session_expired: 'Sessão expirada. Faça login novamente.',
+    login_modal_verification_error:
+      'Erro na verificação. Tente fazer login novamente.',
+    login_modal_email_conflict_title: 'Email já cadastrado',
+    login_modal_email_conflict_credentials:
+      'Este email já está cadastrado com senha. Use "Entrar com Email" ou redefina sua senha.',
+    login_modal_email_conflict_google:
+      'Este email já está em uso. Tente fazer login com email e senha.',
+    login_modal_email_conflict_action_login: 'Fazer login com email',
+    login_modal_email_conflict_action_forgot: 'Esqueci minha senha',
+    login_modal_divider_text: 'ou continue com',
+    forgot_password_modal_title: 'Esqueceu sua senha?',
+    forgot_password_modal_subtitle:
+      'Digite seu email e enviaremos um link para redefinir sua senha',
+    forgot_password_modal_email_label: 'Email',
+    forgot_password_modal_email_placeholder: 'seu@email.com',
+    forgot_password_modal_submit_button: 'Enviar Link de Reset',
+    forgot_password_modal_submit_loading: 'Enviando...',
+    forgot_password_modal_back_button: 'Voltar ao Login',
+    forgot_password_modal_email_required: 'Email é obrigatório',
+    forgot_password_modal_email_invalid: 'Email inválido',
+    forgot_password_modal_connection_error: 'Erro de conexão. Tente novamente.',
+    forgot_password_modal_security_tip_title: 'Dica de Segurança',
+    forgot_password_modal_security_tip_text:
+      'O link de reset será válido por apenas 1 hora. Verifique também sua caixa de spam.',
+    forgot_password_success_title: 'Email Enviado!',
+    forgot_password_success_subtitle:
+      'Se este email estiver cadastrado, você receberá um link para redefinir sua senha',
+    forgot_password_success_check_title: 'Verifique seu email',
+    forgot_password_success_check_text: 'Enviamos um link de reset para',
+    forgot_password_success_steps_title: 'O que fazer agora:',
+    forgot_password_success_step_1: 'Verifique sua caixa de entrada',
+    forgot_password_success_step_2: 'Clique no link "Redefinir Senha"',
+    forgot_password_success_step_3: 'Crie uma nova senha segura',
+    forgot_password_success_attempts_warning: 'Restam',
+    forgot_password_success_attempts_text: 'tentativa(s) nesta hora',
+    forgot_password_success_close_button: 'Fechar',
+    forgot_password_error_title_rate_limit: 'Muitas Tentativas',
+    forgot_password_error_title_general: 'Ops! Algo deu errado',
+    forgot_password_error_subtitle_rate_limit:
+      'Você excedeu o limite de tentativas de reset',
+    forgot_password_error_subtitle_general:
+      'Não foi possível processar sua solicitação',
+    forgot_password_error_rate_limit_title: 'Limite Excedido',
+    forgot_password_error_general_title: 'Erro na Solicitação',
+    forgot_password_error_what_to_do: 'O que você pode fazer:',
+    forgot_password_error_wait: '• Aguarde 1 hora antes de tentar novamente',
+    forgot_password_error_check_email: '• Verifique se digitou o email correto',
+    forgot_password_error_contact:
+      '• Entre em contato conosco se o problema persistir',
+    forgot_password_error_try_again_button: 'Tentar Novamente',
+    register_modal_title: 'Junte-se à Opus Atlas',
+    register_modal_subtitle:
+      'Crie sua conta e comece sua jornada na música clássica',
+    register_modal_username_label: 'Nome de usuário',
+    register_modal_username_placeholder: 'Seu nome de usuário',
+    register_modal_username_hint: 'Apenas letras, números, _ e - (sem espaços)',
+    register_modal_email_label: 'Email',
+    register_modal_email_placeholder: 'seu@email.com',
+    register_modal_password_label: 'Senha',
+    register_modal_password_placeholder: 'Crie uma senha segura',
+    register_modal_confirm_password_label: 'Confirmar Senha',
+    register_modal_confirm_password_placeholder: 'Confirme sua senha',
+    register_modal_submit_button: 'Criar Conta',
+    register_modal_google_button: 'Continuar com Google',
+    register_modal_login_text: 'Já tem uma conta?',
+    register_modal_login_link: 'Fazer login',
+    register_modal_divider_text: 'ou registre-se com',
+    register_modal_username_required: 'Nome de usuário é obrigatório',
+    register_modal_username_min_length:
+      'Nome de usuário deve ter pelo menos 2 caracteres',
+    register_modal_username_no_spaces:
+      'Nome de usuário não pode conter espaços',
+    register_modal_username_invalid_chars:
+      'Nome de usuário só pode conter letras, números, _ e -',
+    register_modal_email_required: 'Email é obrigatório',
+    register_modal_email_invalid: 'Email inválido',
+    register_modal_password_required: 'Senha é obrigatória',
+    register_modal_password_min_length:
+      'Senha deve ter pelo menos 8 caracteres',
+    register_modal_confirm_password_required:
+      'Confirmação de senha é obrigatória',
+    register_modal_passwords_no_match: 'Senhas não coincidem',
+    register_modal_terms_required:
+      'Você deve aceitar os Termos de Uso e a Política de Privacidade para continuar',
+    register_modal_terms_google_required:
+      'Você deve aceitar os Termos de Uso e a Política de Privacidade antes de continuar com o Google',
+    register_modal_terms_accept_error: 'Aceite os termos para continuar',
+    register_modal_internal_error: 'Erro interno. Tente novamente.',
+    register_modal_auto_login_error:
+      'Conta criada, mas erro no login automático. Faça login manualmente.',
+    register_modal_auto_login_success:
+      'Conta criada e login realizado com sucesso!',
+    register_modal_google_tip_registered:
+      'Conta criada com Google! Bem-vindo à Opus Atlas!',
+    register_modal_error_processing: 'Erro ao processar solicitação',
+    register_modal_google_verification_error:
+      'Erro na verificação com Google. Tente novamente.',
+    register_modal_google_access_denied:
+      'Acesso negado pelo Google. Tente novamente.',
+    register_modal_google_oauth_error:
+      'Erro na autenticação com Google. Tente novamente.',
+    register_modal_google_signin_error:
+      'Erro ao conectar com Google. Verifique suas permissões.',
+    register_modal_email_exists: 'Este email já está em uso',
+    register_modal_email_conflict_credentials:
+      'Este email já está cadastrado com senha. Use "Fazer Login" para acessar sua conta.',
+    register_modal_email_conflict_google:
+      'Este email já está em uso. Tente fazer login com esse email.',
+    register_success_title: 'Bem-vindo à Opus Atlas!',
+    register_success_subtitle_google: 'Conta criada com Google',
+    register_success_subtitle_credentials: 'Conta criada com sucesso',
+    register_success_login_manual_title: 'Login manual necessário',
+    register_success_login_manual_text:
+      'Houve um problema no login automático. Faça login manualmente para continuar.',
+    register_success_google_verified_title: 'Conta Google Verificada',
+    register_success_google_verified_text:
+      'Sua conta foi criada e verificada automaticamente com',
+    register_success_google_features:
+      '• Conta já verificada - nenhuma confirmação adicional necessária',
+    register_success_google_immediate:
+      '• Você pode usar todos os recursos da plataforma imediatamente',
+    register_success_google_quick_login:
+      '• Login rápido com Google nas próximas vezes',
+    register_success_email_sent_title: 'Email de Confirmação Enviado',
+    register_success_email_sent_text: 'Enviamos um link de confirmação para',
+    register_success_email_normal_use:
+      '• Para usar normalmente: Não é necessário confirmar agora',
+    register_success_email_uploads:
+      '• Para uploads: Confirme seu email para fazer uploads de arquivos',
+    register_success_email_profile:
+      '• Para alterar seu perfil: Confirme seu email para fazer alterações no seu perfil',
+    register_success_next_steps: 'Próximos passos:',
+    register_success_step_1: 'Complete seu perfil musical (recomendado)',
+    register_success_step_2: 'Comece a explorar compositores e obras',
+    register_success_step_3_credentials:
+      'Confirme seu email quando puder (para uploads)',
+    register_success_step_4_credentials: 'Aproveite sua jornada musical!',
+    register_success_step_3_google: 'Aproveite sua jornada musical!',
+    register_success_complete_profile_button: 'Completar Perfil Musical',
+    register_success_login_button: 'Ir para Login',
+    register_success_explore_button: 'Explorar Agora',
+    register_success_close_button: 'Fechar',
+    register_success_google_tip:
+      'Dica: Use "Continuar com Google" para entrar rapidamente nas próximas vezes!',
+    register_success_email_tip:
+      'Dica: Você pode usar o site normalmente sem confirmar o email.',
+    register_success_email_tip_2:
+      'A confirmação é necessária apenas para fazer uploads de partituras e compositores.',
+    terms_acceptance_text: 'Li e aceito os',
+    terms_acceptance_terms_link: 'Termos de Uso',
+    terms_acceptance_and: 'e a',
+    terms_acceptance_privacy_link: 'Política de Privacidade',
+    login_modal_fill_fields: 'Informe e-mail e senha',
+    login_modal_too_many_attempts:
+      'Muitas tentativas. Espere um minuto e tente de novo.',
+  },
+  en: {
+    password_show: 'Show the password',
+    password_hide: 'Hide the password',
+    login_modal_title: 'Welcome back!',
+    login_modal_subtitle:
+      'Sign in to your account to continue your musical journey',
+    login_modal_email_label: 'Email',
+    login_modal_email_placeholder: 'your@email.com',
+    login_modal_password_label: 'Password',
+    login_modal_password_placeholder: 'Enter your password',
+    login_modal_forgot_password: 'Forgot your password?',
+    login_modal_submit_button: 'Sign In',
+    login_modal_google_button: 'Continue with Google',
+    login_modal_register_text: "Don't have an account yet?",
+    login_modal_register_link: 'Create account',
+    login_modal_terms_text: 'By continuing, you agree to our',
+    login_modal_terms_link: 'Terms of Service',
+    login_modal_terms_and: 'and',
+    login_modal_privacy_link: 'Privacy Policy',
+    login_modal_email_required: 'Email is required',
+    login_modal_email_invalid: 'Invalid email',
+    login_modal_password_required: 'Password is required',
+    login_modal_credentials_error: 'Incorrect email or password',
+    login_modal_internal_error: 'Internal error. Please try again.',
+    login_modal_success: 'Login successful!',
+    login_modal_google_error: 'Error signing in with Google',
+    login_modal_google_access_denied:
+      'Access denied by Google. Please try again.',
+    login_modal_google_oauth_error:
+      'Google authentication error. Please try again.',
+    login_modal_google_signin_error:
+      'Error connecting to Google. Check your permissions.',
+    login_modal_session_expired: 'Session expired. Please sign in again.',
+    login_modal_verification_error:
+      'Verification error. Please try signing in again.',
+    login_modal_email_conflict_title: 'Email already registered',
+    login_modal_email_conflict_credentials:
+      'This email is already registered with a password. Use "Sign in with Email" or reset your password.',
+    login_modal_email_conflict_google:
+      'This email is already in use. Try signing in with email and password.',
+    login_modal_email_conflict_action_login: 'Sign in with email',
+    login_modal_email_conflict_action_forgot: 'I forgot my password',
+    login_modal_divider_text: 'or continue with',
+    forgot_password_modal_title: 'Forgot your password?',
+    forgot_password_modal_subtitle:
+      "Enter your email and we'll send you a link to reset your password",
+    forgot_password_modal_email_label: 'Email',
+    forgot_password_modal_email_placeholder: 'your@email.com',
+    forgot_password_modal_submit_button: 'Send Reset Link',
+    forgot_password_modal_submit_loading: 'Sending...',
+    forgot_password_modal_back_button: 'Back to Login',
+    forgot_password_modal_email_required: 'Email is required',
+    forgot_password_modal_email_invalid: 'Invalid email',
+    forgot_password_modal_connection_error:
+      'Connection error. Please try again.',
+    forgot_password_modal_security_tip_title: 'Security Tip',
+    forgot_password_modal_security_tip_text:
+      'The reset link will be valid for only 1 hour. Also check your spam folder.',
+    forgot_password_success_title: 'Email Sent!',
+    forgot_password_success_subtitle:
+      'If this email is registered, you will receive a link to reset your password',
+    forgot_password_success_check_title: 'Check your email',
+    forgot_password_success_check_text: 'We sent a reset link to',
+    forgot_password_success_steps_title: 'What to do now:',
+    forgot_password_success_step_1: 'Check your inbox',
+    forgot_password_success_step_2: 'Click the "Reset Password" link',
+    forgot_password_success_step_3: 'Create a new secure password',
+    forgot_password_success_attempts_warning: 'Remaining',
+    forgot_password_success_attempts_text: 'attempt(s) this hour',
+    forgot_password_success_close_button: 'Close',
+    forgot_password_error_title_rate_limit: 'Too Many Attempts',
+    forgot_password_error_title_general: 'Oops! Something went wrong',
+    forgot_password_error_subtitle_rate_limit:
+      'You have exceeded the reset attempt limit',
+    forgot_password_error_subtitle_general: 'Unable to process your request',
+    forgot_password_error_rate_limit_title: 'Limit Exceeded',
+    forgot_password_error_general_title: 'Request Error',
+    forgot_password_error_what_to_do: 'What you can do:',
+    forgot_password_error_wait: '• Wait 1 hour before trying again',
+    forgot_password_error_check_email:
+      '• Check if you typed the email correctly',
+    forgot_password_error_contact: '• Contact us if the problem persists',
+    forgot_password_error_try_again_button: 'Try Again',
+    register_modal_title: 'Join Opus Atlas',
+    register_modal_subtitle:
+      'Create your account and start your classical music journey',
+    register_modal_username_label: 'Username',
+    register_modal_username_placeholder: 'Your username',
+    register_modal_username_hint: 'Only letters, numbers, _ and - (no spaces)',
+    register_modal_email_label: 'Email',
+    register_modal_email_placeholder: 'your@email.com',
+    register_modal_password_label: 'Password',
+    register_modal_password_placeholder: 'Create a secure password',
+    register_modal_confirm_password_label: 'Confirm Password',
+    register_modal_confirm_password_placeholder: 'Confirm your password',
+    register_modal_submit_button: 'Create Account',
+    register_modal_google_button: 'Continue with Google',
+    register_modal_login_text: 'Already have an account?',
+    register_modal_login_link: 'Sign in',
+    register_modal_divider_text: 'or sign up with',
+    register_modal_username_required: 'Username is required',
+    register_modal_username_min_length:
+      'Username must be at least 2 characters',
+    register_modal_username_no_spaces: 'Username cannot contain spaces',
+    register_modal_username_invalid_chars:
+      'Username can only contain letters, numbers, _ and -',
+    register_modal_email_required: 'Email is required',
+    register_modal_email_invalid: 'Invalid email',
+    register_modal_password_required: 'Password is required',
+    register_modal_password_min_length:
+      'Password must be at least 8 characters',
+    register_modal_confirm_password_required:
+      'Password confirmation is required',
+    register_modal_passwords_no_match: 'Passwords do not match',
+    register_modal_terms_required:
+      'You must accept the Terms of Service and Privacy Policy to continue',
+    register_modal_terms_google_required:
+      'You must accept the Terms of Service and Privacy Policy before continuing with Google',
+    register_modal_terms_accept_error: 'Accept the terms to continue',
+    register_modal_internal_error: 'Internal error. Please try again.',
+    register_modal_auto_login_error:
+      'Account created, but automatic login failed. Please sign in manually.',
+    register_modal_auto_login_success: 'Account created and login successful!',
+    register_modal_google_error: 'Error registering with Google',
+    register_modal_google_tip_registered:
+      'Account created with Google! Welcome to Opus Atlas!',
+    register_modal_error_processing: 'Error processing request',
+    register_modal_google_verification_error:
+      'Google verification error. Please try again.',
+    register_modal_google_access_denied:
+      'Access denied by Google. Please try again.',
+    register_modal_google_oauth_error:
+      'Google authentication error. Please try again.',
+    register_modal_google_signin_error:
+      'Error connecting to Google. Check your permissions.',
+    register_modal_email_exists: 'This email is already in use',
+    register_modal_email_conflict_credentials:
+      'This email is already registered with a password. Use "Sign In" to access your account.',
+    register_modal_email_conflict_google:
+      'This email is already in use. Try signing in with that email.',
+    register_success_title: 'Welcome to Opus Atlas!',
+    register_success_subtitle_google: 'Account created with Google',
+    register_success_subtitle_credentials: 'Account created successfully',
+    register_success_login_manual_title: 'Manual login required',
+    register_success_login_manual_text:
+      'There was a problem with automatic login. Please sign in manually to continue.',
+    register_success_google_verified_title: 'Google Account Verified',
+    register_success_google_verified_text:
+      'Your account was created and automatically verified with',
+    register_success_google_features:
+      '• Account already verified - no additional confirmation needed',
+    register_success_google_immediate:
+      '• You can use all platform features immediately',
+    register_success_google_quick_login: '• Quick login with Google next time',
+    register_success_email_sent_title: 'Confirmation Email Sent',
+    register_success_email_sent_text: 'We sent a confirmation link to',
+    register_success_email_normal_use:
+      '• For normal use: No need to confirm now',
+    register_success_email_uploads:
+      '• For uploads: Confirm your email to upload files',
+    register_success_email_profile:
+      '• To edit your profile: Confirm your email to make profile changes',
+    register_success_next_steps: 'Next steps:',
+    register_success_step_1: 'Complete your musical profile (recommended)',
+    register_success_step_2: 'Start exploring composers and works',
+    register_success_step_3_credentials:
+      'Confirm your email when you can (for uploads)',
+    register_success_step_4_credentials: 'Enjoy your musical journey!',
+    register_success_step_3_google: 'Enjoy your musical journey!',
+    register_success_complete_profile_button: 'Complete Musical Profile',
+    register_success_login_button: 'Go to Login',
+    register_success_explore_button: 'Explore Now',
+    register_success_close_button: 'Close',
+    register_success_google_tip:
+      'Tip: Use "Continue with Google" to sign in quickly next time!',
+    register_success_email_tip:
+      'Tip: You can use the website normally without confirming your email.',
+    register_success_email_tip_2:
+      'Confirmation is only needed to upload scores and composers.',
+    terms_acceptance_text: 'I have read and accept the',
+    terms_acceptance_terms_link: 'Terms of Service',
+    terms_acceptance_and: 'and the',
+    terms_acceptance_privacy_link: 'Privacy Policy',
+    login_modal_fill_fields: 'Enter your email and password',
+    login_modal_too_many_attempts:
+      'Too many attempts. Wait a minute and try again.',
+  },
+};

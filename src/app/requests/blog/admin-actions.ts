@@ -45,6 +45,19 @@ export interface ArticleFormValues {
   keywords: string[];
   scheduledFor?: string | null;
   readTime?: number;
+  /** Idioma em que o artigo foi escrito. */
+  language?: 'pt' | 'en';
+  /** O artigo no outro idioma (aba da escrita). */
+  translation?: ArticleTranslationValues;
+}
+
+export interface ArticleTranslationValues {
+  title: string;
+  description: string;
+  content: unknown;
+  metaTitle: string;
+  metaDescription: string;
+  coverImageAlt: string;
 }
 
 const blank = (value?: string | null) =>
@@ -96,7 +109,40 @@ export function articleBody(values: ArticleFormValues) {
       ? new Date(values.scheduledFor).toISOString()
       : null,
     ...(values.readTime ? { readTime: values.readTime } : {}),
+    ...(values.language ? { language: values.language } : {}),
+    ...(values.translation !== undefined
+      ? { translation: translationBody(values.translation) }
+      : {}),
   };
+}
+
+/** A tradução sem os campos vazios; nada preenchido apaga a tradução. */
+function translationBody(t: ArticleTranslationValues) {
+  const body = {
+    title: blank(t.title),
+    description: blank(t.description),
+    content: t.content ?? null,
+    metaTitle: blank(t.metaTitle),
+    metaDescription: blank(t.metaDescription),
+    coverImageAlt: blank(t.coverImageAlt),
+  };
+  return body.title ? body : null;
+}
+
+/**
+ * Tradução automática de textos do blog (português ↔ inglês). Volta na
+ * mesma ordem; nada é gravado (ver `BlogTranslationService` na API).
+ */
+export async function translateTexts(
+  texts: string[],
+  from: 'pt' | 'en',
+  to: 'pt' | 'en'
+): Promise<string[]> {
+  const data = await apiFetch<{ texts: string[] }>('/blog/admin/translate', {
+    method: 'POST',
+    body: { texts, from, to },
+  });
+  return data.texts;
 }
 
 interface SavedArticle {
@@ -108,6 +154,36 @@ export const createArticle = (values: ArticleFormValues) =>
 
 export const updateArticle = (id: string, values: ArticleFormValues) =>
   call<SavedArticle>(`/blog/articles/${id}`, 'PATCH', articleBody(values));
+
+/**
+ * Artigos do próprio autor (professor ou admin), pela rota que não exige
+ * administrador: sem destaque e sem publicar (ver `AuthorArticlesService`).
+ */
+export const createMyArticle = (values: ArticleFormValues) =>
+  call<SavedArticle>('/blog/my-articles', 'POST', articleBody(values));
+
+export const updateMyArticle = (id: string, values: ArticleFormValues) =>
+  call<SavedArticle>(`/blog/my-articles/${id}`, 'PATCH', articleBody(values));
+
+export interface MeuArtigo {
+  id: string;
+  title: string;
+  slug: string;
+  description: string | null;
+  coverImage: string | null;
+  status: string;
+  publishedAt: string | null;
+  updatedAt: string;
+  viewCount: number;
+  categories: Array<{ id: string; name: string; slug: string }>;
+}
+
+export async function loadMyArticles(): Promise<MeuArtigo[]> {
+  const data = await apiFetch<{ articles: MeuArtigo[] }>('/blog/my-articles', {
+    cache: 'no-store',
+  });
+  return data.articles;
+}
 
 /** O artigo como a API manda (categorias e tags planas), para a edição. */
 export async function loadArticleForEdit(id: string) {
@@ -165,20 +241,58 @@ export interface CategoryInput {
   name: string;
   slug: string;
   description: string;
-  icon: string;
-  color: string;
   isActive: boolean;
+  showInMenu?: boolean;
+  /** No chevron do menu "Categorias" (sublista no telefone). */
+  inMoreMenu?: boolean;
+  /** Ganha seção no início do blog, com os últimos artigos. */
+  showOnHome?: boolean;
+  metaTitle?: string;
+  metaDescription?: string;
+  /** Em inglês. Campos vazios caem no português. */
+  translation?: {
+    name: string;
+    description: string;
+    metaTitle: string;
+    metaDescription: string;
+  };
 }
 
-/** A imagem não vai no corpo: sobe pela rota própria, com o id da categoria. */
+/**
+ * A imagem não vai no corpo: sobe pela rota própria, com o id da categoria.
+ *
+ * **Sem cor e sem ícone** (decisão de 30/09: "tem cara de IA"). Os campos
+ * continuam no banco; o corpo não os manda, e a edição não apaga o que já
+ * estava gravado.
+ */
 const categoryBody = (input: CategoryInput) => ({
   name: input.name.trim(),
   slug: input.slug.trim(),
   description: input.description.trim() || null,
-  icon: input.icon.trim() || null,
-  color: input.color || null,
   isActive: input.isActive,
+  ...(input.showInMenu !== undefined ? { showInMenu: input.showInMenu } : {}),
+  ...(input.metaTitle !== undefined
+    ? { metaTitle: input.metaTitle.trim() || null }
+    : {}),
+  ...(input.metaDescription !== undefined
+    ? { metaDescription: input.metaDescription.trim() || null }
+    : {}),
+  ...(input.inMoreMenu !== undefined ? { inMoreMenu: input.inMoreMenu } : {}),
+  ...(input.showOnHome !== undefined ? { showOnHome: input.showOnHome } : {}),
+  ...(input.translation !== undefined
+    ? { translation: semVazios(input.translation) }
+    : {}),
 });
+
+/** A tradução sem campos vazios; nada preenchido apaga. */
+function semVazios(t: Record<string, string>) {
+  const saida = Object.fromEntries(
+    Object.entries(t)
+      .map(([k, v]) => [k, v.trim()])
+      .filter(([, v]) => v)
+  );
+  return Object.keys(saida).length ? saida : null;
+}
 
 export async function createCategory(
   input: CategoryInput
@@ -236,14 +350,17 @@ export interface TagInput {
   name: string;
   slug: string;
   description: string;
-  color: string;
+  translation?: { name: string; description: string };
 }
 
+/** Sem cor (decisão de 30/09); a edição não apaga a que estava gravada. */
 const tagBody = (input: TagInput) => ({
   name: input.name.trim(),
   slug: input.slug.trim(),
   description: input.description.trim() || null,
-  color: input.color || null,
+  ...(input.translation !== undefined
+    ? { translation: semVazios(input.translation) }
+    : {}),
 });
 
 export const createTag = (input: TagInput) =>

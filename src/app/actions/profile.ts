@@ -3,7 +3,11 @@
 
 import { revalidatePath } from 'next/cache';
 import { ApiError, apiFetch, type ApiRequest } from '@/app/libs/api/client';
-import type { ProfileAccount, ProfileWriteBody } from '@/app/libs/api/profile';
+import type {
+  ProfileAccount,
+  ProfileWriteBody,
+  StudyHorizon,
+} from '@/app/libs/api/profile';
 import { getServerAccessToken } from '@/app/libs/api/server-session';
 import type { ApiSchema } from '@/app/libs/api/types';
 
@@ -341,6 +345,7 @@ export async function updateMusicalPreferences(
     favoriteEpochId?: string;
     experienceLevel?: Level;
     practiceTimePerWeek?: number;
+    studyHorizon?: StudyHorizon | null;
   }
 ): Promise<ProfileResult> {
   try {
@@ -352,6 +357,9 @@ export async function updateMusicalPreferences(
           ? { experienceLevel: data.experienceLevel }
           : {}),
         practiceTimePerWeek: data.practiceTimePerWeek || null,
+        ...(data.studyHorizon !== undefined
+          ? { studyHorizon: data.studyHorizon }
+          : {}),
       },
     });
     revalidatePath('/profile');
@@ -365,10 +373,33 @@ export async function updateMusicalPreferences(
         favoriteEpochId: account.favoriteEpochId,
         experienceLevel: account.experienceLevel,
         practiceTimePerWeek: account.practiceTimePerWeek,
+        studyHorizon: account.studyHorizon,
       },
     };
   } catch (error) {
     return failure(error, 'Erro ao atualizar preferências. Tente novamente.');
+  }
+}
+
+/** Only the favourites: the rest of the musical preferences stays as is. */
+export async function updateFavorites(data: {
+  favoriteComposerId: string | null;
+  favoriteEpochId: string | null;
+}): Promise<ProfileResult> {
+  try {
+    const { account } = await patchProfile({ account: data });
+    revalidatePath('/profile');
+    return {
+      success: true,
+      message: 'Favoritos atualizados.',
+      data: {
+        id: account.id,
+        favoriteComposerId: account.favoriteComposerId,
+        favoriteEpochId: account.favoriteEpochId,
+      },
+    };
+  } catch (error) {
+    return failure(error, 'Erro ao atualizar favoritos. Tente novamente.');
   }
 }
 

@@ -1,47 +1,8 @@
-import { Metadata } from 'next';
-import { redirect } from 'next/navigation';
-import Link from 'next/link';
-import { TagForm } from '@/app/components/blog/admin/TagForm';
-import { FaArrowLeft } from 'react-icons/fa';
-import { getServerSession } from '@/app/libs/api/server-session';
+import type { Metadata } from 'next';
+import { FormularioDeTag } from '@/app/components/blog/escrita/FormularioDeTaxonomia';
 
-export const metadata: Metadata = {
-  title: 'Nova Tag - Blog Admin',
-  description: 'Criar nova tag para o blog',
-  robots: 'noindex, nofollow',
-};
+export const metadata: Metadata = { title: 'Nova tag' };
 
-export default async function CreateTagPage() {
-  const session = await getServerSession();
-
-  if (!session?.user || (session.user.role !== 1 && session.user.role !== 2)) {
-    redirect('/blog');
-  }
-
-  return (
-    <div className="min-h-screen py-8">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        {/* Header */}
-        <div className="mb-8">
-          <Link
-            href="/blog/admin/tags"
-            className="inline-flex items-center text-sm text-theme-secondary hover:text-brand-primary mb-4 transition-colors"
-          >
-            <FaArrowLeft className="w-4 h-4 mr-2" />
-            Voltar para tags
-          </Link>
-          <h1 className="text-3xl font-bold text-theme-primary classical-title">
-            Criar Nova Tag
-          </h1>
-          <p className="mt-2 text-sm text-theme-secondary">
-            Preencha as informações abaixo para criar uma nova tag para o blog.
-          </p>
-        </div>
-
-        <div className="">
-          <TagForm mode="create" />
-        </div>
-      </div>
-    </div>
-  );
+export default function NovaTag() {
+  return <FormularioDeTag />;
 }

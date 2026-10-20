@@ -16,7 +16,7 @@ interface AdminOnlyProps {
 
 export function useIsBlogAdmin(): boolean {
   const { data: session } = useSession();
-  return (session?.user?.role ?? 0) >= 1;
+  return (session?.user?.role ?? 0) >= 2; // 2 é administrador; 1 é professor (sem painel).
 }
 
 export function AdminOnly({ children, show }: AdminOnlyProps) {

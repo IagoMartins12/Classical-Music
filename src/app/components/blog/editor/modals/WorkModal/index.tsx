@@ -1,95 +1,79 @@
-// ============================================
-// WorkModal - COM BUSCA INTEGRADA E FILTRO
-// ============================================
 'use client';
 
 import { useState } from 'react';
-import { Editor } from '@tiptap/react';
-import Modal from '@/app/components/Modal';
-import Button from '@/app/components/Common/Button';
-import ComposerSearchInputSimple from '@/app/components/ComposerSearchInputSimple';
-import SimpleWorkSearchInput from '@/app/components/SimpleWorkSearchInput';
+import type { Editor } from '@tiptap/react';
+import {
+  EscolhaDeObra,
+  type ItemDoAcervo,
+} from '@/app/components/blog/escrita/BuscaNoAcervo';
 import { getWorkById } from '@/app/requests/catalog-search';
+import { BlocoDoArtigo } from '@/app/components/blog/site/CorpoDoArtigo';
+import { FolhaDoEditor } from '../FolhaDoEditor';
 
 interface WorkModalProps {
   editor: Editor;
   onClose: () => void;
 }
 
+interface Obra {
+  id: string;
+  title: string;
+  composer?: { name?: string };
+  instrument?: { name?: string };
+}
+
+/** Cartão de obra: busca no catálogo, com filtro opcional por compositor. */
 export function WorkModal({ editor, onClose }: WorkModalProps) {
-  const [composerFilter, setComposerFilter] = useState('');
-  const [selectedWork, setSelectedWork] = useState('');
-  const [workData, setWorkData] = useState<any>(null);
+  const [escolhida, setEscolhida] = useState<ItemDoAcervo | null>(null);
+  const [obra, setObra] = useState<Obra | null>(null);
+  const [erro, setErro] = useState('');
 
-  const handleWorkSelect = async (workId: string) => {
-    setSelectedWork(workId);
-
-    if (workId) {
-      try {
-        const work = await getWorkById(workId);
-        if (work) setWorkData(work);
-      } catch (error) {
-        console.error('Erro ao buscar obra:', error);
-      }
+  async function escolher(item: ItemDoAcervo | null) {
+    setEscolhida(item);
+    setObra(null);
+    setErro('');
+    if (!item) return;
+    try {
+      const achada = (await getWorkById(item.id)) as Obra | null;
+      if (achada) setObra(achada);
+    } catch {
+      setErro('Não deu para carregar a obra. Tente de novo.');
     }
+  }
+
+  const attrs = obra && {
+    workId: obra.id,
+    workTitle: obra.title,
+    composerName: obra.composer?.name,
+    instrumentName: obra.instrument?.name,
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    e.stopPropagation();
-    if (workData) {
-      editor.commands.insertContent({
-        type: 'workCard',
-        attrs: {
-          workId: workData.id,
-          workTitle: workData.title,
-          composerName: workData.composer?.name,
-          instrumentName: workData.instrument?.name,
-        },
-      });
-      onClose();
-    }
-  };
+  function inserir() {
+    if (!attrs) return;
+    editor.chain().focus().insertContent({ type: 'workCard', attrs }).run();
+    onClose();
+  }
 
   return (
-    <Modal
-      isOpen={true}
-      onClose={onClose}
-      title="Inserir Card de Obra"
-      maxWidth="2xl"
-      minHeight
+    <FolhaDoEditor
+      titulo="Cartão de obra"
+      descricao="Liga o texto à página da obra no catálogo."
+      aoFechar={onClose}
+      aoEnviar={inserir}
+      podeEnviar={Boolean(attrs)}
     >
-      <form onSubmit={handleSubmit} className="space-y-4">
-        <div>
-          <label className="block text-sm font-medium text-theme-primary mb-2">
-            1. Filtrar por Compositor (opcional)
-          </label>
-          <ComposerSearchInputSimple
-            selectedComposer={composerFilter}
-            onComposerSelect={setComposerFilter}
-          />
+      <EscolhaDeObra obra={escolhida} aoEscolher={escolher} />
+      {erro && (
+        <p role="alert" className="t-legenda text-erro">
+          {erro}
+        </p>
+      )}
+      {attrs && (
+        <div className="flex flex-col gap-2">
+          <span className="t-rotulo text-texto-fraco">Como fica no artigo</span>
+          <BlocoDoArtigo no={{ type: 'workCard', attrs }} />
         </div>
-
-        <div>
-          <label className="block text-sm font-medium text-theme-primary mb-2">
-            2. Buscar Obra
-          </label>
-          <SimpleWorkSearchInput
-            selectedWork={selectedWork}
-            onWorkSelect={handleWorkSelect}
-            filterByComposer={composerFilter}
-          />
-        </div>
-
-        <div className="flex justify-end space-x-2 pt-4">
-          <Button type="button" variant="secondary" onClick={onClose}>
-            Cancelar
-          </Button>
-          <Button type="submit" variant="primary" disabled={!workData}>
-            Inserir Card
-          </Button>
-        </div>
-      </form>
-    </Modal>
+      )}
+    </FolhaDoEditor>
   );
 }

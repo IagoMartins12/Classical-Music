@@ -1,16 +1,8 @@
-// app/admin/newsletter/subscribers/page.tsx
-import { Metadata } from 'next';
-import NewsletterSubscribersClient from '@/app/components/Admin/Newsletter/NewsletterSubscribersClient';
+import type { Metadata } from 'next';
+import AssinantesNewsletter from '@/app/components/Admin/telas/AssinantesNewsletter';
 
-// Painel em CSR: o dado vem da API pelo navegador.
-export const dynamic = 'force-dynamic';
+export const metadata: Metadata = { title: 'Assinantes da newsletter' };
 
-export const metadata: Metadata = {
-  title: 'Subscribers | Newsletter Admin',
-  description: 'Gerenciar subscribers da newsletter',
-  robots: 'noindex, nofollow',
-};
-
-export default function NewsletterSubscribersPage() {
-  return <NewsletterSubscribersClient />;
+export default function AssinantesPage() {
+  return <AssinantesNewsletter />;
 }
