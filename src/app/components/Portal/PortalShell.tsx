@@ -163,7 +163,7 @@ function Shell({ role, children }: { role: Role; children: ReactNode }) {
       </aside>
 
       <div className="flex min-w-0 flex-1 flex-col">
-        <header className="sticky top-0 z-barra flex min-h-14 items-center gap-2 border-b border-linha bg-fundo px-4 py-2 max-sm:min-h-16 sm:px-6 lg:px-10">
+        <header className="barra-do-topo sticky top-0 z-barra flex min-h-14 items-center gap-2 border-b border-linha bg-fundo px-4 py-2 max-sm:min-h-16 sm:px-6 lg:px-10">
           <Button
             variante="fantasma"
             icone={PiList}
