@@ -118,8 +118,8 @@ const PrivacySection: React.FC<PrivacySectionProps> = ({
   return (
     <Stack gap={6}>
       {/* Header */}
-      <div className="flex flex-wrap items-start justify-between gap-4">
-        <div>
+      <div className="flex flex-wrap items-start justify-between gap-4 sm:flex-nowrap sm:[&>*:not(:first-child)]:shrink-0">
+        <div className="sm:min-w-0 sm:flex-1">
           <h3 className="font-display text-[1.5rem] leading-tight text-texto">
             {t('privacy_title')}
           </h3>
@@ -295,7 +295,6 @@ const PrivacySection: React.FC<PrivacySectionProps> = ({
         </h4>
         <Stack gap={1} as="ul" className="text-sm text-texto-suave">
           <li>{t('privacy_email_never_shown')}</li>
-          <li>{t('privacy_admin_only')}</li>
           <li>{t('privacy_can_change')}</li>
           <li>{t('privacy_study_data_private')}</li>
           <li>{t('privacy_auto_save')}</li>

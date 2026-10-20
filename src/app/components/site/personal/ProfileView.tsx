@@ -1,6 +1,12 @@
 'use client';
 
-import { useEffect, useRef, useState, type ComponentType } from 'react';
+import {
+  useCallback,
+  useEffect,
+  useRef,
+  useState,
+  type ComponentType,
+} from 'react';
 import AccountSettingsSection from '@/app/components/profile/AccountSettingsSection';
 import FavoritesSection from '@/app/components/profile/FavoritesSection';
 import InstrumentsSection from '@/app/components/profile/InstrumentsSection';
@@ -35,27 +41,63 @@ const SECTIONS: [
 type Key = (typeof SECTIONS)[number][0];
 
 /**
- * The section in the reading band of the window (a third from the top):
- * the jump list marks it in gold as the person scrolls.
+ * The section the page is on, for the jump list.
+ *
+ * It is a rule of position, not an observed band: the current section is the
+ * last one whose top has passed a line just under the sticky bar (the
+ * `scroll-mt-24` of each section sits above it), or the last one at the end of
+ * the page. A band in the middle of the window picked the wrong one for short
+ * sections: scrolled to the top, "Favorites" is shorter than the band, so the
+ * section *after* it sat in the band and the list marked "Privacy".
+ *
+ * A click on the list locks the choice for a moment: the smooth scroll passes
+ * through every section on its way, and none of them should flash in gold.
  */
+const LINHA = 140;
+const TRAVA_MS = 900;
+
 function useSecaoAtual(ativo: boolean) {
   const [atual, setAtual] = useState<Key>(SECTIONS[0][0]);
+  const travadoAte = useRef(0);
+
   useEffect(() => {
     if (!ativo) return;
-    const obs = new IntersectionObserver(
-      (entradas) => {
-        const vista = entradas.find((e) => e.isIntersecting);
-        if (vista) setAtual(vista.target.id.replace('profile-', '') as Key);
-      },
-      { rootMargin: '-30% 0px -60% 0px' }
-    );
-    for (const [key] of SECTIONS) {
-      const el = document.getElementById(`profile-${key}`);
-      if (el) obs.observe(el);
-    }
-    return () => obs.disconnect();
+    let quadro = 0;
+
+    const medir = () => {
+      quadro = 0;
+      if (Date.now() < travadoAte.current) return;
+      const noFim =
+        window.innerHeight + window.scrollY >=
+        document.documentElement.scrollHeight - 2;
+      let escolhida = SECTIONS[0][0];
+      if (noFim) {
+        escolhida = SECTIONS[SECTIONS.length - 1][0];
+      } else {
+        for (const [key] of SECTIONS) {
+          const el = document.getElementById(`profile-${key}`);
+          if (el && el.getBoundingClientRect().top <= LINHA) escolhida = key;
+        }
+      }
+      setAtual(escolhida);
+    };
+    const aoRolar = () => {
+      if (!quadro) quadro = requestAnimationFrame(medir);
+    };
+
+    window.addEventListener('scroll', aoRolar, { passive: true });
+    medir();
+    return () => {
+      window.removeEventListener('scroll', aoRolar);
+      if (quadro) cancelAnimationFrame(quadro);
+    };
   }, [ativo]);
-  return [atual, setAtual] as const;
+
+  const escolher = useCallback((key: Key) => {
+    travadoAte.current = Date.now() + TRAVA_MS;
+    setAtual(key);
+  }, []);
+  return [atual, escolher] as const;
 }
 
 /** The profile's sections on one page, with a jump list beside them. */
@@ -64,7 +106,7 @@ export function ProfileView() {
   const { user, isAuthenticated, updateUser } = useAuth();
   const openOnboarding = useAuthStore((s) => s.openOnboardingModal);
   const pronto = !!(isAuthenticated && user?.onboardingCompleted);
-  const [atual, setAtual] = useSecaoAtual(pronto);
+  const [atual, escolher] = useSecaoAtual(pronto);
   const lista = useRef<HTMLElement>(null);
 
   // On phones the list is a strip: keep the current one in sight.
@@ -83,8 +125,8 @@ export function ProfileView() {
     document
       .getElementById(`profile-${alvo}`)
       ?.scrollIntoView({ behavior: 'smooth', block: 'start' });
-    setAtual(alvo);
-  }, [pronto, setAtual]);
+    escolher(alvo);
+  }, [pronto, escolher]);
 
   if (!isAuthenticated || !user) return <EsqueletoPerfil />;
 
@@ -112,7 +154,7 @@ export function ProfileView() {
             key={key}
             href={`#profile-${key}`}
             aria-current={atual === key || undefined}
-            onClick={() => setAtual(key)}
+            onClick={() => escolher(key)}
             className={cx(
               'relative inline-flex min-h-10 shrink-0 items-center rounded-controle px-3 text-[0.9375rem] transition-colors duration-[var(--t-toque)]',
               atual === key

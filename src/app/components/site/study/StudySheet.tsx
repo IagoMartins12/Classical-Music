@@ -6,6 +6,7 @@ import { usePathname } from 'next/navigation';
 import { CaixaDeMarcar } from '@/app/components/ui/CaixaDeMarcar';
 import {
   useCallback,
+  useRef,
   useEffect,
   useState,
   type ComponentType,
@@ -240,6 +241,7 @@ export function StudySheet() {
   const [marking, setMarking] = useState(false);
   const [milestoneList, setMilestoneList] = useState<ProgressMilestone[]>([]);
   const [milestones, setMilestones] = useState<ProgressMilestones>({});
+  const returningFromScore = useRef(false);
 
   const onWorkPage = /\/works?\//.test(pathname ?? '');
   const isWant = type === 'want-to-learn';
@@ -267,7 +269,16 @@ export function StudySheet() {
 
   // A fresh opening starts untouched, with the item's milestones, score and video setting.
   useEffect(() => {
-    if (!isOpen) return;
+    if (!isOpen) {
+      // Closed for good (not just to pick a score): forget the pending return.
+      if (!store.isInSelectionMode) returningFromScore.current = false;
+      return;
+    }
+    // Coming back from picking a score: keep what the person already filled in.
+    if (returningFromScore.current) {
+      returningFromScore.current = false;
+      return;
+    }
     setTouched(false);
     if (isWant && instrumentName) {
       const list = getMilestonesByInstrument(instrumentName);
@@ -312,7 +323,10 @@ export function StudySheet() {
     if (!user?.id) return;
     setSaving(true);
     try {
-      const scoreId = selectedWorkScore?.id;
+      // Editing: null clears the score; the API ignores an absent field.
+      const scoreId = isCurrentlyActive
+        ? (selectedWorkScore?.id ?? null)
+        : selectedWorkScore?.id;
       if (isWant) {
         const data = {
           ...want,
@@ -470,8 +484,11 @@ export function StudySheet() {
       ? copy.titles.learnedEdit
       : copy.titles.learned;
 
-  const chooseScore = () =>
-    onWorkPage ? startScoreSelection() : setPickingScore(true);
+  const chooseScore = () => {
+    if (!onWorkPage) return setPickingScore(true);
+    returningFromScore.current = true;
+    startScoreSelection();
+  };
   const suggested =
     !isCurrentlyActive &&
     !!selectedWorkScore &&
@@ -484,53 +501,57 @@ export function StudySheet() {
     >
       {selectedWorkScore ? (
         <div className="flex flex-col gap-2 rounded-card bg-sup-2 p-4">
-          <div className="flex items-center gap-3">
-            <span className="relative block aspect-[1/1.3] w-10 shrink-0 overflow-hidden rounded-[4px] bg-sobre-foto shadow-[var(--sombra-1)]">
-              <ScorePage file={selectedWorkScore} sizes="40px" small />
-            </span>
-            <span className="flex min-w-0 flex-1 flex-col">
-              <span className="truncate font-medium">
-                {selectedWorkScore.title}
+          <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
+            <div className="flex min-w-0 flex-1 items-center gap-3">
+              <span className="relative block aspect-[1/1.3] w-10 shrink-0 overflow-hidden rounded-[4px] bg-sobre-foto shadow-[var(--sombra-1)]">
+                <ScorePage file={selectedWorkScore} sizes="40px" small />
               </span>
-              <span className="t-legenda truncate">
-                {[
-                  copy.score.from(selectedWorkScore.source),
-                  selectedWorkScore.fileSize,
-                  selectedWorkScore.pageCount &&
-                    copy.score.pages(selectedWorkScore.pageCount),
-                ]
-                  .filter(Boolean)
-                  .join(' · ')}
+              <span className="flex min-w-0 flex-1 flex-col">
+                <span className="truncate font-medium">
+                  {selectedWorkScore.title}
+                </span>
+                <span className="t-legenda truncate">
+                  {[
+                    copy.score.from(selectedWorkScore.source),
+                    selectedWorkScore.fileSize,
+                    selectedWorkScore.pageCount &&
+                      copy.score.pages(selectedWorkScore.pageCount),
+                  ]
+                    .filter(Boolean)
+                    .join(' · ')}
+                </span>
               </span>
-            </span>
-            {selectedWorkScore.downloadUrl && (
-              <a
-                href={selectedWorkScore.downloadUrl}
-                target="_blank"
-                rel="noopener noreferrer"
-                aria-label={copy.score.open}
-                title={copy.score.open}
-                className={classesDeBotao('secundario', 'p', true)}
-              >
-                <Icon de={PiDownloadSimple} tamanho="pp" />
-              </a>
-            )}
-            <Button
-              tamanho="p"
-              icone={PiPencilLine}
-              rotulo={copy.score.change}
-              onClick={chooseScore}
-            />
-            <Button
-              tamanho="p"
-              variante="fantasma"
-              icone={PiX}
-              rotulo={copy.score.remove}
-              onClick={() => {
-                setTouched(true);
-                setSelectedWorkScore(null);
-              }}
-            />
+            </div>
+            <div className="flex items-center gap-1 sm:shrink-0">
+              {selectedWorkScore.downloadUrl && (
+                <a
+                  href={selectedWorkScore.downloadUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label={copy.score.open}
+                  title={copy.score.open}
+                  className={classesDeBotao('secundario', 'p', true)}
+                >
+                  <Icon de={PiDownloadSimple} tamanho="pp" />
+                </a>
+              )}
+              <Button
+                tamanho="p"
+                icone={PiPencilLine}
+                rotulo={copy.score.change}
+                onClick={chooseScore}
+              />
+              <Button
+                tamanho="p"
+                variante="fantasma"
+                icone={PiX}
+                rotulo={copy.score.remove}
+                onClick={() => {
+                  setTouched(true);
+                  setSelectedWorkScore(null);
+                }}
+              />
+            </div>
           </div>
           {suggested && (
             <span className="t-legenda text-ouro-texto">
@@ -836,55 +857,59 @@ export function StudySheet() {
         descricao={`${workTitle} · ${composerName}`}
         largura="g"
         rodape={
-          <div className="flex w-full flex-wrap items-center gap-2">
-            {isCurrentlyActive && (
+          <div className="flex w-full flex-col gap-3 sm:flex-row sm:flex-wrap sm:items-center sm:gap-2">
+            <div className="order-2 grid grid-cols-2 gap-2 sm:order-1 sm:flex sm:flex-wrap">
+              {isCurrentlyActive && (
+                <Button
+                  variante="fantasma"
+                  icone={PiTrash}
+                  onClick={() => void remove()}
+                  disabled={saving}
+                >
+                  {copy.remove}
+                </Button>
+              )}
+              {isWant ? (
+                <Button
+                  variante="fantasma"
+                  icone={PiCheckCircle}
+                  onClick={() =>
+                    isCurrentlyActive
+                      ? setConfirmTransfer(true)
+                      : switchTo('learned')
+                  }
+                  disabled={saving}
+                >
+                  {copy.toLearned}
+                </Button>
+              ) : (
+                <Button
+                  variante="fantasma"
+                  icone={PiBookmarkSimple}
+                  onClick={() => switchTo('want-to-learn')}
+                  disabled={saving}
+                >
+                  {isCurrentlyActive ? copy.studyAgain : copy.toWant}
+                </Button>
+              )}
+            </div>
+            <span className="order-2 hidden sm:block sm:flex-1" />
+            <div className="order-1 grid grid-cols-2 gap-2 sm:order-3 sm:flex">
               <Button
                 variante="fantasma"
-                icone={PiTrash}
-                onClick={() => void remove()}
+                onClick={requestClose}
                 disabled={saving}
               >
-                {copy.remove}
+                {copy.cancel}
               </Button>
-            )}
-            {isWant ? (
               <Button
-                variante="fantasma"
-                icone={PiCheckCircle}
-                onClick={() =>
-                  isCurrentlyActive
-                    ? setConfirmTransfer(true)
-                    : switchTo('learned')
-                }
-                disabled={saving}
+                variante="primario"
+                carregando={saving || video.isUploading}
+                onClick={() => void submit()}
               >
-                {copy.toLearned}
+                {isCurrentlyActive ? copy.update : copy.save}
               </Button>
-            ) : (
-              <Button
-                variante="fantasma"
-                icone={PiBookmarkSimple}
-                onClick={() => switchTo('want-to-learn')}
-                disabled={saving}
-              >
-                {isCurrentlyActive ? copy.studyAgain : copy.toWant}
-              </Button>
-            )}
-            <span className="flex-1" />
-            <Button
-              variante="fantasma"
-              onClick={requestClose}
-              disabled={saving}
-            >
-              {copy.cancel}
-            </Button>
-            <Button
-              variante="primario"
-              carregando={saving || video.isUploading}
-              onClick={() => void submit()}
-            >
-              {isCurrentlyActive ? copy.update : copy.save}
-            </Button>
+            </div>
           </div>
         }
       >

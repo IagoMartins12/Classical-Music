@@ -9,6 +9,7 @@ import {
   PiCaretDown,
   PiDownloadSimple,
   PiFiles,
+  PiInfo,
   PiUploadSimple,
 } from 'react-icons/pi';
 import Link from '@/app/components/LocalizedLink';
@@ -65,11 +66,13 @@ export function WorkScores({
   const [library, setLibrary] = useState(initial);
   const [kind, setKind] = useState(initial.shelves[0]?.kind);
   const [side, setSide] = useState<PreviewTarget | null>(null);
+  const [showInfo, setShowInfo] = useState(false);
   const [sheet, setSheet] = useState<PreviewTarget | null>(null);
   const study = useStudy(context);
   const selecting = useLearningModalStore((s) => s.isInSelectionMode);
   const finishSelection = useLearningModalStore((s) => s.finishScoreSelection);
   const cancelSelection = useLearningModalStore((s) => s.cancelScoreSelection);
+  const hasScore = useLearningModalStore((s) => s.selectedWorkScore !== null);
   const sectionRef = useRef<HTMLElement>(null);
 
   useEffect(() => {
@@ -103,15 +106,21 @@ export function WorkScores({
 
   const onStudy = (file: ScoreFile) => {
     setSheet(null);
-    if (selecting) finishSelection(toSelectedScore(file));
-    else study('want-to-learn', file);
+    if (selecting) {
+      setSide(null);
+      finishSelection(toSelectedScore(file));
+    } else study('want-to-learn', file);
   };
   const open = (target: PreviewTarget) => {
-    if (selecting) return onStudy(target.edition.files[target.file]);
+    // Choosing a score also goes through the preview: look first, then confirm.
     if (isWide()) setSide(target);
     else setSheet(target);
   };
-  const studyLabel = selecting ? copy.choose : copy.studyThis;
+  const studyLabel = selecting
+    ? hasScore
+      ? copy.swap
+      : copy.choose
+    : copy.studyThis;
 
   return (
     <div className="mt-16 grid grid-cols-1 gap-14 lg:grid-cols-[minmax(0,4fr)_minmax(0,8fr)]">
@@ -185,8 +194,23 @@ export function WorkScores({
                   {copy.kinds[shelf.kind]} · {copy.editions(shelf.editions)}
                 </span>
               )}
-              <span className="t-legenda">{copy.note}</span>
+              <span className="flex items-center gap-1">
+                <span className="t-legenda">{copy.note}</span>
+                <Button
+                  tamanho="p"
+                  variante="fantasma"
+                  icone={PiInfo}
+                  rotulo={copy.groupingLabel}
+                  aria-expanded={showInfo}
+                  onClick={() => setShowInfo(!showInfo)}
+                />
+              </span>
             </div>
+            {showInfo && (
+              <p className="t-rotulo rounded-card bg-sup-2 p-4 text-texto-suave">
+                {copy.grouping}
+              </p>
+            )}
             <div key={shelf.kind} className="flex flex-col gap-8">
               {shelf.sections.map((section, i) => (
                 <Section

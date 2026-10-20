@@ -24,12 +24,16 @@ export function useAchievements() {
   const stats = useQuery({
     queryKey: ['achievements', 'stats'],
     queryFn: () => apiFetch<Stats>('/achievements/stats'),
-    staleTime: 60_000,
+    // XP and level change with every action: each time a page that shows them
+    // opens, it asks again instead of trusting the last minute.
+    staleTime: 0,
+    refetchOnMount: 'always',
   });
   const list = useQuery({
     queryKey: ['achievements', 'list'],
     queryFn: () => apiFetch<List>('/achievements'),
-    staleTime: 60_000,
+    staleTime: 0,
+    refetchOnMount: 'always',
   });
   return { stats, list };
 }

@@ -267,13 +267,21 @@ function StudyCard({
             href={score.downloadUrl}
             target="_blank"
             rel="noopener noreferrer"
-            className={classesDeBotao('primario', 'p')}
+            className={cx(
+              classesDeBotao('primario', 'p'),
+              'row:aspect-square row:!px-0'
+            )}
           >
             <Icon de={PiFilePdf} tamanho="pp" />{' '}
             <span className="row:sr-only">{copy.openScore}</span>
           </a>
         )}
-        <Button tamanho="p" icone={PiPencilSimple} onClick={onEdit}>
+        <Button
+          tamanho="p"
+          icone={PiPencilSimple}
+          onClick={onEdit}
+          className="row:aspect-square row:!px-0"
+        >
           <span className="row:sr-only">
             {score || entry.kind === 'learned' ? copy.edit : copy.chooseScore}
           </span>

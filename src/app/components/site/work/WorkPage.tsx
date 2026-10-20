@@ -194,16 +194,16 @@ export function WorkPage({
           <WorkAnnotations workId={work.id} />
         </div>
 
+        <section className="mt-20">
+          <WorkLesson work={work} />
+        </section>
+
         <MoreFromComposer
           composer={{ id: work.composer.id, name: work.composer.name }}
           works={moreWorks}
           language={language}
           copy={copy}
         />
-
-        <section className="mt-20">
-          <WorkLesson work={work} />
-        </section>
       </article>
     </ContributeProvider>
   );

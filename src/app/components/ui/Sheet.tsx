@@ -155,7 +155,17 @@ export function Sheet({
       // (outro Sheet, um Modal, uma confirmação) sobe pela árvore do React
       // e fechava este junto.
       onClose={(evento) => {
-        if (evento.target === ref.current && abertoRef.current) aoFechar();
+        const dialogo = ref.current;
+        if (evento.target !== dialogo || !abertoRef.current) return;
+        aoFechar();
+        // O navegador fechou sozinho (um gesto de voltar ao dispensar o seletor
+        // de arquivos, por exemplo) e o app ainda o quer aberto — pede
+        // confirmação ou segue editando: a folha não pode sumir calada.
+        // Depois do render: se `aoFechar` fechou de verdade, `aberto` já é falso.
+        setTimeout(() => {
+          if (abertoRef.current && dialogo && !dialogo.open)
+            dialogo.showModal();
+        }, 100);
       }}
       onClick={(evento) => {
         // Clique fora fecha. O alvo é o próprio <dialog> só quando o clique

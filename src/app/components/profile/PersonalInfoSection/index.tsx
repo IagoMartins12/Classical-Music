@@ -258,8 +258,8 @@ const PersonalInfoSection: React.FC<PersonalInfoSectionProps> = ({
 
   return (
     <Stack gap={6}>
-      <div className="flex flex-wrap items-start justify-between gap-4">
-        <div>
+      <div className="flex flex-wrap items-start justify-between gap-4 sm:flex-nowrap sm:[&>*:not(:first-child)]:shrink-0">
+        <div className="sm:min-w-0 sm:flex-1">
           <h3 className="font-display text-[1.5rem] leading-tight text-texto">
             {t('personal_info_title')}
           </h3>

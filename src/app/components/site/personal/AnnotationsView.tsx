@@ -305,7 +305,12 @@ function AnnotationCard({
         </span>
       </div>
       <div className="flex gap-2 row:shrink-0">
-        <Button tamanho="p" icone={PiPencilSimple} onClick={onEdit}>
+        <Button
+          tamanho="p"
+          icone={PiPencilSimple}
+          onClick={onEdit}
+          className="row:aspect-square row:!px-0"
+        >
           <span className="row:sr-only">{copy.edit}</span>
         </Button>
         <Button
@@ -313,6 +318,7 @@ function AnnotationCard({
           variante="fantasma"
           icone={PiTrash}
           onClick={onRemove}
+          className="row:aspect-square row:!px-0"
         >
           <span className="row:sr-only">{copy.remove}</span>
         </Button>

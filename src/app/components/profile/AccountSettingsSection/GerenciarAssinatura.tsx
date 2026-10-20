@@ -61,8 +61,8 @@ const T = {
     semPreco: 'Preço indisponível',
     upgradeTitulo: (p: string) => `Ir para o ${p}?`,
     upgradeTexto:
-      'Você vai para o pagamento seguro da Stripe. O plano novo começa assim que o pagamento for confirmado.',
-    upgradeOk: 'Ir para o pagamento',
+      'O plano muda agora. Cobramos no cartão já cadastrado só a diferença, proporcional ao que falta do ciclo atual, e o valor cheio do plano novo vale a partir da próxima renovação.',
+    upgradeOk: 'Mudar agora',
     downgradeTitulo: (p: string) => `Mudar para o ${p}?`,
     downgradeTexto: (atual: string, d: string) =>
       `Nada muda até ${d || 'o fim do ciclo atual'}: você continua no ${atual} até lá. Depois, a conta passa para o plano escolhido.`,
@@ -102,8 +102,8 @@ const T = {
     semPreco: 'Price unavailable',
     upgradeTitulo: (p: string) => `Move to ${p}?`,
     upgradeTexto:
-      'You will go to Stripe’s secure checkout. The new plan starts as soon as the payment is confirmed.',
-    upgradeOk: 'Go to payment',
+      'Your plan changes now. We charge the card on file only the difference, prorated to what is left of the current cycle, and the new plan’s full price applies from the next renewal.',
+    upgradeOk: 'Change now',
     downgradeTitulo: (p: string) => `Switch to ${p}?`,
     downgradeTexto: (atual: string, d: string) =>
       `Nothing changes until ${d || 'the end of the current cycle'}: you keep ${atual} until then. After that, the account moves to the plan you chose.`,
@@ -252,16 +252,21 @@ export function GerenciarAssinatura({ idioma }: { idioma: Idioma }) {
   async function confirmarPedido() {
     if (!pedido) return;
     setOcupado(pedido.tipo);
+    let saindo = false;
     try {
       if (pedido.tipo === 'subir') {
         const r = await upgradeSubscriptionRequest(
           pedido.plano as PlanType,
           periodo
         );
-        await irParaPagamento(r.payment?.checkoutUrl);
-        return;
-      }
-      if (pedido.tipo === 'descer') {
+        // Plano concedido pela equipe (sem Stripe) ainda passa pelo checkout.
+        if (r.payment?.checkoutUrl) {
+          saindo = true;
+          await irParaPagamento(r.payment.checkoutUrl);
+          return;
+        }
+        toast.success(r.message);
+      } else if (pedido.tipo === 'descer') {
         const r = await upgradeSubscriptionRequest(
           pedido.plano as PlanType,
           periodo
@@ -276,7 +281,8 @@ export function GerenciarAssinatura({ idioma }: { idioma: Idioma }) {
     } catch (e) {
       toast.error((e as Error).message || t.erro);
     } finally {
-      setOcupado((o) => (o === 'subir' ? o : null));
+      // Indo ao checkout a tela segue ocupada até a página trocar.
+      if (!saindo) setOcupado(null);
     }
   }
 
