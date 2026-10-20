@@ -3,6 +3,7 @@ import {
   isLocalizedRoute,
   languageOfPathname,
   localizeHref,
+  stripLanguagePrefix,
 } from './localizedRoutes';
 
 /**
@@ -89,5 +90,24 @@ describe('isLocalizedRoute', () => {
     expect(isLocalizedRoute('/')).toBe(true);
     expect(isLocalizedRoute('/profile')).toBe(false);
     expect(isLocalizedRoute('/admin/users')).toBe(false);
+  });
+});
+
+/**
+ * O servidor do ISR vê o caminho interno (`/pt/works`), o navegador o público
+ * (`/works`). Se o prefixo do padrão não sair, o cabeçalho decide diferente nos
+ * dois lados e a hidratação falha (erro #418, só na build de produção).
+ */
+describe('stripLanguagePrefix', () => {
+  it.each([
+    ['/en/works', '/works'],
+    ['/en', '/'],
+    ['/pt/works', '/works'],
+    ['/pt', '/'],
+    ['/works', '/works'],
+    ['/', '/'],
+    ['/portal/x', '/portal/x'],
+  ])('%s → %s', (entrada, saida) => {
+    expect(stripLanguagePrefix(entrada)).toBe(saida);
   });
 });

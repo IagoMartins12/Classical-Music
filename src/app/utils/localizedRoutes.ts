@@ -140,7 +140,15 @@ export function languageOfPathname(pathname: string): RouteLanguage {
 
 /** The path without its language prefix: `/en/works` → `/works`, `/en` → `/`. */
 export function stripLanguagePrefix(pathname: string): string {
-  const language = languageOfPathname(pathname);
-  if (language === DEFAULT_ROUTE_LANGUAGE) return pathname || '/';
-  return pathname.slice(language.length + 1) || '/';
+  // O padrão também tem prefixo, mas só por dentro: o proxy reescreve `/works`
+  // para `/pt/works`, e a página do ISR é gerada com esse caminho interno
+  // (`usePathname` no servidor), enquanto o navegador vê `/works`. Sem tirar o
+  // prefixo aqui, servidor e navegador discordavam de qual página é esta e o
+  // cabeçalho hidratava com HTML diferente (erro #418 só na build de produção).
+  for (const language of SUPPORTED_LANGUAGES) {
+    if (pathname === `/${language}`) return '/';
+    if (pathname.startsWith(`/${language}/`))
+      return pathname.slice(language.length + 1);
+  }
+  return pathname || '/';
 }

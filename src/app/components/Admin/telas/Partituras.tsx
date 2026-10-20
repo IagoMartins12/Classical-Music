@@ -77,7 +77,7 @@ import {
  * remover.
  */
 
-type Recorte = 'todas' | 'ativas' | 'desativadas';
+type Recorte = 'todas' | 'ativas' | 'desativadas' | 'baixadas';
 
 export default function Partituras() {
   const [busca, setBusca] = useState('');
@@ -120,6 +120,9 @@ export default function Partituras() {
         : recorte === 'desativadas'
           ? false
           : undefined,
+    // "Mais baixadas" é o ranking: só as que alguém baixou, da maior à menor.
+    downloaded: recorte === 'baixadas' ? true : undefined,
+    sortBy: recorte === 'baixadas' ? 'siteDownloads' : undefined,
     workId: obra?.id,
     composerId: compositor?.id,
     type: tipo || undefined,
@@ -201,6 +204,14 @@ export default function Partituras() {
       ),
     },
     {
+      id: 'baixadas',
+      titulo: 'Baixadas',
+      alinhar: 'fim',
+      celula: (p) => (
+        <span className="t-dado text-sm">{numero(p.siteDownloads ?? 0)}</span>
+      ),
+    },
+    {
       id: 'estado',
       titulo: 'No ar',
       celula: (p) =>
@@ -277,6 +288,12 @@ export default function Partituras() {
             onClick={() => setRecorte('desativadas')}
           >
             Desativadas
+          </Chip>
+          <Chip
+            selecionado={recorte === 'baixadas'}
+            onClick={() => setRecorte('baixadas')}
+          >
+            Mais baixadas
           </Chip>
         </div>
         <MaisFiltros ativos={ativos} aoLimpar={limparAvancados}>

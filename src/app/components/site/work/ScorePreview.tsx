@@ -17,6 +17,7 @@ import type {
   ScoreEdition,
   ScoreFile,
 } from '@/app/requests/work-score-library';
+import { countScoreDownload } from '@/app/requests/score-download';
 import { FavoriteHeart } from '../FavoriteHeart';
 import { SaveScoreButton } from '../pwa/SaveScoreButton';
 import { editionCard, scoreFavorite } from './scoreLabels';
@@ -264,6 +265,8 @@ function PrimaryActions({
           href={file.downloadUrl}
           target="_blank"
           rel="noopener noreferrer"
+          onClick={() => countScoreDownload(file.id)}
+          onAuxClick={() => countScoreDownload(file.id)}
           className={classesDeBotao('primario')}
         >
           <Icon de={PiDownloadSimple} /> {copy.downloadPdf}

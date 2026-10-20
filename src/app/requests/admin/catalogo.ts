@@ -386,6 +386,9 @@ export interface Partitura {
   isActive: boolean;
   downloadUrl: string | null;
   createdAt: string;
+  /** Downloads feitos pelo botão do site. */
+  siteDownloads?: number;
+  lastDownloadedAt?: string | null;
   work: {
     id: string;
     title: string;
@@ -394,6 +397,8 @@ export interface Partitura {
 }
 
 export interface FiltrosPartituras {
+  sortBy?: 'createdAt' | 'siteDownloads';
+  downloaded?: boolean;
   search?: string;
   isActive?: boolean;
   workId?: string;
@@ -418,6 +423,8 @@ export const getPartituras = (f: FiltrosPartituras, page: number) =>
       type: f.type || undefined,
       source: f.source || undefined,
       hasFile: f.hasFile,
+      downloaded: f.downloaded,
+      sortBy: f.sortBy,
       createdFrom: f.createdFrom,
       createdTo: f.createdTo,
     },
