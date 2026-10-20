@@ -28,6 +28,7 @@ import {
   type ScoreLibrary,
   type ScoreSection,
 } from '@/app/requests/work-score-library';
+import { countScoreDownload } from '@/app/requests/score-download';
 import { useLearningModalStore } from '@/app/stores/useLearningModalStore';
 import { FavoriteHeart } from '../FavoriteHeart';
 import {
@@ -68,6 +69,8 @@ export function WorkScores({
   const [side, setSide] = useState<PreviewTarget | null>(null);
   const [showInfo, setShowInfo] = useState(false);
   const [sheet, setSheet] = useState<PreviewTarget | null>(null);
+  // O arquivo escolhido fica marcado na lista, com o painel aberto ou não.
+  const [picked, setPicked] = useState<PreviewTarget | null>(null);
   const study = useStudy(context);
   const selecting = useLearningModalStore((s) => s.isInSelectionMode);
   const finishSelection = useLearningModalStore((s) => s.finishScoreSelection);
@@ -112,6 +115,7 @@ export function WorkScores({
     } else study('want-to-learn', file);
   };
   const open = (target: PreviewTarget) => {
+    setPicked(target);
     // Choosing a score also goes through the preview: look first, then confirm.
     if (isWide()) setSide(target);
     else setSheet(target);
@@ -128,7 +132,10 @@ export function WorkScores({
         <aside className="flex min-w-0 flex-col gap-4 max-lg:hidden lg:sticky lg:top-28 lg:self-start">
           <button
             type="button"
-            onClick={() => setSide(null)}
+            onClick={() => {
+              setSide(null);
+              setPicked(null);
+            }}
             className={cx(
               'inline-flex min-h-10 items-center gap-2 self-start t-rotulo text-texto-suave',
               textLink
@@ -218,7 +225,7 @@ export function WorkScores({
                   section={section}
                   initiallyOpen={i < OPEN_SECTIONS}
                   workId={context.workId}
-                  chosen={side}
+                  chosen={picked}
                   onOpen={open}
                   onStudy={onStudy}
                   studyLabel={studyLabel}
@@ -371,7 +378,7 @@ function EditionBox({
     <li
       className={cx(
         'flex gap-4 rounded-card bg-sup-2 p-3 sm:gap-5 sm:p-4',
-        chosenFile !== null && 'lg:ring-1 lg:ring-[var(--ouro)]'
+        chosenFile !== null && 'ring-1 ring-[var(--ouro)]'
       )}
     >
       <button
@@ -408,7 +415,13 @@ function EditionBox({
         </div>
         <ul className="flex flex-col divide-y divide-[var(--linha)]">
           {edition.files.map((file, k) => (
-            <li key={file.id} className="flex items-center gap-1">
+            <li
+              key={file.id}
+              className={cx(
+                'flex items-center gap-1',
+                chosenFile === k && 'rounded-controle tint-ouro px-2'
+              )}
+            >
               <button
                 type="button"
                 onClick={() => onOpen(k)}
@@ -418,7 +431,7 @@ function EditionBox({
                 <span
                   className={cx(
                     'truncate text-[0.9375rem] group-hover:text-ouro-texto',
-                    chosenFile === k && 'lg:text-ouro-texto'
+                    chosenFile === k && 'text-ouro-na-tinta'
                   )}
                 >
                   {file.title}
@@ -438,6 +451,8 @@ function EditionBox({
                   href={file.downloadUrl}
                   target="_blank"
                   rel="noopener noreferrer"
+                  onClick={() => countScoreDownload(file.id)}
+                  onAuxClick={() => countScoreDownload(file.id)}
                   aria-label={copy.download(file.title)}
                   className={classesDeBotao('fantasma', 'p', true)}
                 >
