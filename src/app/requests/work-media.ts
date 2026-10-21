@@ -6,8 +6,9 @@
  * Os componentes liam as rotas do legado como `fetch` (`ok` e `json()`);
  * `asFetchResponse` mantém esse formato.
  */
-import { ApiError, apiFetch } from '@/app/libs/api/client';
+import { apiFetch } from '@/app/libs/api/client';
 import type { ApiSchema } from '@/app/libs/api/types';
+import { sendSignedFile } from '@/app/requests/signed-upload';
 import { asFetchResponse } from '@/app/requests/fetch-like';
 import { porIdioma } from '@/app/utils/porIdioma';
 
@@ -111,27 +112,7 @@ export function uploadWorkMediaFileRequest(
         { method: 'POST', body: { kind, scopeId: workId } }
       );
 
-      const form = new FormData();
-      for (const [key, value] of Object.entries(signed.fields)) {
-        form.append(key, String(value));
-      }
-      form.append('file', file);
-
-      const upload = await fetch(signed.uploadUrl, {
-        method: 'POST',
-        body: form,
-      });
-
-      if (!upload.ok) {
-        throw new ApiError(
-          upload.status,
-          porIdioma(
-            'Não foi possível enviar o arquivo',
-            'Could not send the file'
-          ),
-          null
-        );
-      }
+      await sendSignedFile(signed, file);
 
       const asset = await apiFetch<{ url: string | null }>(
         `/uploads/${signed.assetId}/confirm`,

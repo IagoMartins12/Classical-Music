@@ -112,7 +112,7 @@ export function Carrossel({
           role="group"
           aria-label={rotulo}
           className={cx(
-            'mt-5 justify-center gap-1',
+            'mt-1 justify-center',
             sempre ? 'flex' : 'hidden lg:flex'
           )}
         >
@@ -123,8 +123,8 @@ export function Carrossel({
               aria-label={BLOG[idioma].inicio.parte(i + 1, partes)}
               aria-current={i === atual ? 'true' : undefined}
               onClick={() => irPara(i)}
-              // O alvo é a faixa de 24px; o ponto desenhado é menor.
-              className="group grid h-6 place-items-center px-1"
+              // O alvo de toque tem 44 × 32 px; o ponto desenhado é menor.
+              className="group grid h-11 min-w-8 place-items-center px-1"
             >
               <span
                 aria-hidden="true"

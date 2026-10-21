@@ -61,7 +61,7 @@ export function MoreActions({
   const canVerify = canVerifyCatalog(session?.user);
 
   return (
-    <div ref={ref} className="relative">
+    <div ref={ref} className="relative shrink-0">
       <Button
         icone={PiDotsThreeOutline}
         rotulo={common.more}

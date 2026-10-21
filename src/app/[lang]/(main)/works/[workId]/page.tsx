@@ -161,32 +161,11 @@ export async function generateMetadata({ params }: WorkDetailsPageProps) {
       siteName: 'Opus Atlas',
       locale: language === 'pt' ? 'pt_BR' : 'en_US',
       url: `https://opusatlas.com.br/works/${work.id}`,
-      images: work.composer.portraitUrl
-        ? [
-            {
-              url: work.composer.portraitUrl,
-              width: 1200,
-              height: 630,
-              alt: `${work.title} - ${work.composer.name}`,
-            },
-          ]
-        : [
-            {
-              url: 'https://opusatlas.com.br/logo-opus-atlas.jpeg',
-              width: 1200,
-              height: 630,
-              alt: 'Opus Atlas - Logo',
-            },
-          ],
     },
     twitter: {
       card: 'summary_large_image',
       title: t.titleTemplate,
       description: description.substring(0, 200),
-      images: [
-        work.composer.portraitUrl ||
-          'https://opusatlas.com.br/logo-opus-atlas.jpeg',
-      ],
     },
     alternates: alternatesFor(`/works/${work.id}`, language),
     robots: {

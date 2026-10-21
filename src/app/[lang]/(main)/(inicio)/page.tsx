@@ -387,18 +387,6 @@ export async function generateMetadata({
       description: t.ogDescription,
       locale: language === 'pt' ? 'pt_BR' : 'en_US',
       url: baseUrl,
-      images: [
-        {
-          url: 'https://opusatlas.com.br/logo-opus-atlas-mini.jpeg',
-          width: 400,
-          height: 400,
-          alt:
-            language === 'pt'
-              ? 'Opus Atlas - Enciclopédia de Música Clássica'
-              : 'Opus Atlas - Classical Music Encyclopedia',
-          type: 'image/jpeg',
-        },
-      ],
     },
 
     // Twitter Cards otimizado

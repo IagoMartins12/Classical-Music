@@ -27,7 +27,7 @@ import type {
   LearnedItem,
   WantToLearnItem,
 } from '@/app/stores/useLearningStore';
-import { porIdioma } from '@/app/utils/porIdioma';
+import { sendSignedFile, type SignedUpload } from './signed-upload';
 
 type AddOrRemove = 'add' | 'remove';
 
@@ -366,28 +366,12 @@ export function updateLearnedRequest(workId: string, data: object) {
  * multipart para o Next, que o gravava no disco do servidor.
  */
 export async function uploadPerformanceVideo(workId: string, file: File) {
-  const signed = await apiFetch<{
-    assetId: string;
-    uploadUrl: string;
-    fields: Record<string, string | number>;
-  }>('/uploads/signed', {
+  const signed = await apiFetch<SignedUpload>('/uploads/signed', {
     method: 'POST',
     body: { kind: 'PERFORMANCE_VIDEO', scopeId: workId },
   });
 
-  const form = new FormData();
-  for (const [key, value] of Object.entries(signed.fields)) {
-    form.append(key, String(value));
-  }
-  form.append('file', file);
-
-  const upload = await fetch(signed.uploadUrl, { method: 'POST', body: form });
-
-  if (!upload.ok) {
-    throw new Error(
-      porIdioma('Não foi possível enviar o vídeo', 'Could not send the video')
-    );
-  }
+  await sendSignedFile(signed, file);
 
   await apiFetch(`/uploads/${signed.assetId}/confirm`, { method: 'POST' });
 

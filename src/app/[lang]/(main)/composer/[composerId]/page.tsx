@@ -160,23 +160,6 @@ export async function generateMetadata({ params }: ComposerDetailsPageProps) {
       locale: language === 'pt' ? 'pt_BR' : 'en_US',
       url: `https://opusatlas.com.br/composer/${composer.id}`,
       siteName: 'Opus Atlas',
-      images: composer.portraitUrl
-        ? [
-            {
-              url: composer.portraitUrl,
-              width: 400,
-              height: 400,
-              alt: `${composer.fullName} - Retrato`,
-            },
-          ]
-        : [
-            {
-              url: 'https://opusatlas.com.br/logo-opus-atlas.jpeg',
-              width: 1200,
-              height: 630,
-              alt: 'Opus Atlas - Classical Music Encyclopedia',
-            },
-          ],
     },
     twitter: {
       card: 'summary_large_image',
