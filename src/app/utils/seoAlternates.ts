@@ -6,7 +6,13 @@ import {
 } from './localizedRoutes';
 
 /** O domínio, um só para os dois idiomas. */
-export const SITE_URL = 'https://opusatlas.com.br';
+// O endereço público do site. Em homologação, `NEXT_PUBLIC_SITE_URL` aponta para o
+// host dela: os links canônicos e as imagens de compartilhamento ficam no host
+// que está de fato no ar (antes apontavam sempre para a produção, que ainda
+// não existia).
+export const SITE_URL = (
+  process.env.NEXT_PUBLIC_SITE_URL || 'https://opusatlas.com.br'
+).replace(/\/$/, '');
 
 /**
  * O `canonical` e o `hreflang` de uma página pública.

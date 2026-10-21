@@ -6,7 +6,7 @@ import {
   routeLanguage,
   type LangParams,
 } from '@/app/utils/translations/routeLanguage';
-import { alternatesFor } from '@/app/utils/seoAlternates';
+import { SITE_URL, alternatesFor } from '@/app/utils/seoAlternates';
 
 interface WorkParams {
   workId: string;
@@ -160,7 +160,15 @@ export async function generateMetadata({ params }: WorkDetailsPageProps) {
       type: 'music.song',
       siteName: 'Opus Atlas',
       locale: language === 'pt' ? 'pt_BR' : 'en_US',
-      url: `https://opusatlas.com.br/works/${work.id}`,
+      url: `${SITE_URL}/works/${work.id}`,
+      images: [
+        {
+          url: `${SITE_URL}/og/work/${work.id}?l=${language}`,
+          width: 1200,
+          height: 630,
+          alt: `${work.title} — ${work.composer.name}`,
+        },
+      ],
     },
     twitter: {
       card: 'summary_large_image',
