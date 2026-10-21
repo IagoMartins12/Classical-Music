@@ -125,20 +125,11 @@ export async function generateMetadata(): Promise<Metadata> {
       // Um domínio para os dois idiomas — ver `defaultMetadata.ts`.
       url: 'https://opusatlas.com.br',
       siteName: 'Opus Atlas',
-      images: [
-        {
-          url: 'https://opusatlas.com.br/logo-opus-atlas.jpeg',
-          width: 1200,
-          height: 630,
-          alt: 'Opus Atlas - Classical Music Encyclopedia',
-        },
-      ],
     },
     twitter: {
       card: 'summary_large_image',
       title: t.ogTitle,
       description: t.ogDescription,
-      images: ['https://opusatlas.com.br/logo-opus-atlas.jpeg'],
     },
     robots: {
       index: true,

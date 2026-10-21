@@ -212,7 +212,8 @@ export function ComposerPage({
                   composer.name,
                 ])}
               />
-              <div className="flex flex-wrap gap-2">
+              {/* Uma linha só: os três pontos não descem para a linha de baixo no celular. */}
+              <div className="flex flex-nowrap items-center gap-2 max-sm:gap-1.5">
                 <FavoriteHeart
                   type="composer"
                   id={composer.id}

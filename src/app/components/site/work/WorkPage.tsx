@@ -101,6 +101,7 @@ export function WorkPage({
               name={composerName}
               src={work.composer.portraitUrl}
               sizes="32px"
+              decorative
               className="h-7 w-7 rounded-full text-[0.75rem]"
             />
             {composerName}
@@ -149,7 +150,7 @@ export function WorkPage({
           </div>
           <div className="flex flex-col gap-3">
             <StudyActions context={context} />
-            <div className="flex flex-wrap items-center gap-2">
+            <div className="flex flex-nowrap items-center gap-2 max-sm:gap-1.5">
               <FavoriteHeart
                 type="work"
                 id={work.id}

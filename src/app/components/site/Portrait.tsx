@@ -36,6 +36,7 @@ export function Portrait({
   sizes = '160px',
   priority = false,
   fromCard = false,
+  decorative = false,
   className,
 }: {
   name: string;
@@ -44,6 +45,8 @@ export function Portrait({
   priority?: boolean;
   /** Arrived from a composer card (`ComposerCard`): start from its photo. */
   fromCard?: boolean;
+  /** O nome já está escrito ao lado (link, legenda): a imagem não repete. */
+  decorative?: boolean;
   className?: string;
 }) {
   const photo = src && !PLACEHOLDER.test(src) ? src : null;
@@ -66,7 +69,7 @@ export function Portrait({
       {photo && (
         <Image
           src={photo}
-          alt={name}
+          alt={decorative ? '' : name}
           fill
           sizes={sizes}
           priority={priority}

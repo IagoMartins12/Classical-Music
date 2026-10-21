@@ -47,7 +47,13 @@ export interface Rotina {
   id: string;
   name: string;
   description: string;
-  group: 'compositores' | 'obras' | 'partituras' | 'colecoes' | 'blog';
+  group:
+    | 'compositores'
+    | 'obras'
+    | 'partituras'
+    | 'colecoes'
+    | 'blog'
+    | 'auditoria';
   destructive: boolean;
   slow: boolean;
   external: boolean;

@@ -244,9 +244,6 @@ export default function AdModal({ ad, onClose, onTrackEvent }: AdModalProps) {
         {/* Content Section */}
         <div className="ad-content">
           {/* Premium badge */}
-          <div className="absolute -top-2 left-1/2 transform -translate-x-1/2">
-            <div className="bg-gradient-to-r from-yellow-400 to-yellow-600 text-black text-xs font-bold px-3 py-1 rounded-full shadow-lg"></div>
-          </div>
 
           {/* Title */}
           <h2 className="ad-title text-center mb-4">{ad.title}</h2>
@@ -323,7 +320,7 @@ export default function AdModal({ ad, onClose, onTrackEvent }: AdModalProps) {
           <div className="flex justify-center space-x-4 mt-6 text-sm">
             <button
               onClick={handleClose}
-              className="text-theme-tertiary transition-colors"
+              className="text-texto-fraco transition-colors"
             >
               Fechar
             </button>
@@ -335,7 +332,7 @@ export default function AdModal({ ad, onClose, onTrackEvent }: AdModalProps) {
                 href={ad.advertiserWebsite}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="text-theme-tertiary transition-colors"
+                className="text-texto-fraco transition-colors"
                 onClick={(e) => {
                   e.stopPropagation();
                   onTrackEvent('modal_learn_more_click');

@@ -222,28 +222,24 @@ export function WorkListen({ work }: { work: WorkDetails }) {
     youtube: PiYoutubeLogo,
   };
   return (
-    <div className="flex flex-col gap-4">
-      {(available.length > 1 || canEdit) && (
-        <div className="flex flex-wrap items-center justify-between gap-3">
-          {available.length > 1 ? (
-            <Abas rotulo={copy.tabs.audio}>
-              {available.map((k) => (
-                <Aba
-                  key={k}
-                  ativa={current === k}
-                  onClick={() => setKind(k)}
-                  className="inline-flex items-center gap-2"
-                >
-                  <Icon de={icons[k]} tamanho="p" /> {copy.tabs[k]}
-                </Aba>
-              ))}
-            </Abas>
-          ) : (
-            <span />
-          )}
-          {editButton}
-        </div>
-      )}
+    // Largura contida: um vídeo sozinho ocupava a coluna inteira e ficava imenso.
+    <div className="flex max-w-3xl flex-col gap-4">
+      <div className="flex flex-wrap items-center justify-between gap-3">
+        {/* A aba aparece mesmo com uma fonte só: diz de onde vem o som. */}
+        <Abas rotulo={copy.tabs.audio}>
+          {available.map((k) => (
+            <Aba
+              key={k}
+              ativa={current === k}
+              onClick={() => setKind(k)}
+              className="inline-flex items-center gap-2"
+            >
+              <Icon de={icons[k]} tamanho="p" /> {copy.tabs[k]}
+            </Aba>
+          ))}
+        </Abas>
+        {editButton}
+      </div>
       {current === 'audio' && media.audio && <AudioCard audio={media.audio} />}
       {current === 'spotify' && media.spotify && (
         <div className="flex items-center gap-4 rounded-card bg-sup-2 p-3 pr-5">

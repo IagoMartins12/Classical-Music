@@ -7,7 +7,7 @@ import {
   routeLanguage,
   type LangParams,
 } from '@/app/utils/translations/routeLanguage';
-import { alternatesFor } from '@/app/utils/seoAlternates';
+import { SITE_URL, alternatesFor } from '@/app/utils/seoAlternates';
 
 interface ComposerParams {
   composerId: string;
@@ -158,25 +158,16 @@ export async function generateMetadata({ params }: ComposerDetailsPageProps) {
       description: t.ogDescription,
       type: 'profile',
       locale: language === 'pt' ? 'pt_BR' : 'en_US',
-      url: `https://opusatlas.com.br/composer/${composer.id}`,
+      url: `${SITE_URL}/composer/${composer.id}`,
       siteName: 'Opus Atlas',
-      images: composer.portraitUrl
-        ? [
-            {
-              url: composer.portraitUrl,
-              width: 400,
-              height: 400,
-              alt: `${composer.fullName} - Retrato`,
-            },
-          ]
-        : [
-            {
-              url: 'https://opusatlas.com.br/logo-opus-atlas.jpeg',
-              width: 1200,
-              height: 630,
-              alt: 'Opus Atlas - Classical Music Encyclopedia',
-            },
-          ],
+      images: [
+        {
+          url: `${SITE_URL}/og/composer/${composer.id}?l=${language}`,
+          width: 1200,
+          height: 630,
+          alt: composer.fullName,
+        },
+      ],
     },
     twitter: {
       card: 'summary_large_image',
