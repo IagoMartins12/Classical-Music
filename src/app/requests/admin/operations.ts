@@ -228,14 +228,13 @@ export function deleteReportRequest(id: string) {
   return apiFetch(`/admin/reports/${id}`, { method: 'DELETE' });
 }
 
-export function downloadReportRequest(report: {
-  id: string;
-  name: string;
-  period: string;
-}) {
+export function downloadReportRequest(
+  report: { id: string; name: string; period: string },
+  format: 'csv' | 'xlsx' = 'xlsx'
+) {
   return downloadFromApi(
     `/admin/reports/${report.id}/download`,
-    {},
-    `${report.name}_${report.period}.csv`
+    { format },
+    `${report.name}_${report.period}.${format}`
   );
 }

@@ -2,7 +2,12 @@
 
 import { useState } from 'react';
 import toast from 'react-hot-toast';
-import { PiDownloadSimple, PiFileCsv, PiTrash } from 'react-icons/pi';
+import {
+  PiDownloadSimple,
+  PiFileCsv,
+  PiFileXls,
+  PiTrash,
+} from 'react-icons/pi';
 import ConfirmModal from '@/app/components/ConfirmModal';
 import { Badge } from '@/app/components/ui/Badge';
 import { Button } from '@/app/components/ui/Button';
@@ -30,7 +35,8 @@ import {
 /**
  * Relatórios: planilhas para levar a quem não abre o painel.
  *
- * Sempre CSV (decisão do dono), com a acentuação que o Excel abre direito.
+ * Nove relatórios, cada um em Excel (uma aba de resumo e uma por tabela) ou
+ * CSV, com a acentuação que o Excel abre direito.
  * Nada vai para disco: o registro guarda os números do momento e a
  * planilha é montada no download. A tela antiga tinha "Ctrl+P → Salvar como
  * PDF" e oito cards de números repetidos do painel; ficou a escolha do que
@@ -56,13 +62,51 @@ const TIPOS: { valor: string; rotulo: string; conteudo: string }[] = [
     conteudo:
       'Anotações públicas, por categoria, e usuários ativos no período.',
   },
+  {
+    valor: 'revenue-subscriptions',
+    rotulo: 'Receita e assinaturas',
+    conteudo:
+      'MRR, receita bruta e líquida, taxa do Stripe, reembolsos, testes, cancelamentos, atrasos e cupons.',
+  },
+  {
+    valor: 'acquisition-retention',
+    rotulo: 'Aquisição e retenção',
+    conteudo:
+      'Cadastros por dia, ativos em 1, 7 e 30 dias, perfis, planos e retenção por semana de cadastro.',
+  },
+  {
+    valor: 'catalog-usage',
+    rotulo: 'Qualidade e uso do acervo',
+    conteudo:
+      'Preenchimento do cadastro, épocas, nacionalidades, partituras sem edição e as mais baixadas.',
+  },
+  {
+    valor: 'teaching-portal',
+    rotulo: 'Professores e alunos',
+    conteudo:
+      'Professores por plano e limite de alunos, aulas, comparecimento e conclusão das tarefas.',
+  },
+  {
+    valor: 'learning-community',
+    rotulo: 'Aprendizado e comunidade',
+    conteudo:
+      'Quero aprender e já aprendi, obras mais desejadas, conquistas e contribuições.',
+  },
+  {
+    valor: 'newsletter-email',
+    rotulo: 'Newsletter e e-mail',
+    conteudo:
+      'Inscritos, descadastros, campanhas com abertura e clique, e eventos de e-mail.',
+  },
 ];
 
 const PERIODOS = [
   { valor: '7d', rotulo: '7 dias' },
   { valor: '30d', rotulo: '30 dias' },
   { valor: '90d', rotulo: '90 dias' },
+  { valor: '180d', rotulo: '6 meses' },
   { valor: '1y', rotulo: '1 ano' },
+  { valor: 'all', rotulo: 'Tudo' },
 ];
 
 const TOCA = ['relatorios', 'auditoria'];
@@ -88,10 +132,10 @@ export default function Relatorios() {
 
   const relatorios = lista.data?.results ?? [];
 
-  const baixar = async (r: ApiReportResult) => {
-    setBaixando(r.id);
+  const baixar = async (r: ApiReportResult, formato: 'csv' | 'xlsx') => {
+    setBaixando(`${r.id}:${formato}`);
     try {
-      await downloadReportRequest(r);
+      await downloadReportRequest(r, formato);
     } catch (e) {
       toast.error(e instanceof Error ? e.message : 'Não foi possível baixar.');
     } finally {
@@ -103,7 +147,7 @@ export default function Relatorios() {
     <Stack gap={8}>
       <Cabecalho
         titulo="Relatórios"
-        descricao="Planilhas em CSV para levar a quem não abre o painel"
+        descricao="Planilhas (Excel ou CSV) para levar a quem não abre o painel"
       />
 
       <section
@@ -116,7 +160,7 @@ export default function Relatorios() {
         <div
           role="radiogroup"
           aria-label="Tipo de relatório"
-          className="grid grid-cols-1 gap-2 md:grid-cols-3"
+          className="grid grid-cols-1 gap-2 md:grid-cols-2 xl:grid-cols-3"
         >
           {TIPOS.map((t) => (
             <button
@@ -154,7 +198,7 @@ export default function Relatorios() {
           <Button
             tamanho="p"
             variante="primario"
-            icone={PiFileCsv}
+            icone={PiFileXls}
             carregando={gerar.isPending}
             onClick={async () => {
               try {
@@ -168,7 +212,7 @@ export default function Relatorios() {
             }}
             className="ml-auto"
           >
-            Gerar CSV
+            Gerar relatório
           </Button>
         </div>
       </section>
@@ -215,14 +259,25 @@ export default function Relatorios() {
                 depois={
                   <span className="flex gap-1">
                     {r.status === 'ready' && (
-                      <Button
-                        tamanho="p"
-                        icone={PiDownloadSimple}
-                        carregando={baixando === r.id}
-                        onClick={() => baixar(r)}
-                      >
-                        Baixar
-                      </Button>
+                      <>
+                        <Button
+                          tamanho="p"
+                          icone={PiDownloadSimple}
+                          carregando={baixando === `${r.id}:xlsx`}
+                          onClick={() => baixar(r, 'xlsx')}
+                        >
+                          Excel
+                        </Button>
+                        <Button
+                          tamanho="p"
+                          variante="fantasma"
+                          icone={PiFileCsv}
+                          carregando={baixando === `${r.id}:csv`}
+                          onClick={() => baixar(r, 'csv')}
+                        >
+                          CSV
+                        </Button>
+                      </>
                     )}
                     <Button
                       tamanho="p"
