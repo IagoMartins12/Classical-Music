@@ -115,6 +115,16 @@ export function WorkScores({
     } else study('want-to-learn', file);
   };
   const open = (target: PreviewTarget) => {
+    // Tocar de novo no que já está escolhido desfaz a escolha.
+    if (
+      picked?.edition.key === target.edition.key &&
+      picked.file === target.file
+    ) {
+      setPicked(null);
+      setSide(null);
+      setSheet(null);
+      return;
+    }
     setPicked(target);
     // Choosing a score also goes through the preview: look first, then confirm.
     if (isWide()) setSide(target);
@@ -202,7 +212,6 @@ export function WorkScores({
                 </span>
               )}
               <span className="flex items-center gap-1">
-                <span className="t-legenda">{copy.note}</span>
                 <Button
                   tamanho="p"
                   variante="fantasma"
@@ -397,9 +406,14 @@ function EditionBox({
       <div className="flex min-w-0 flex-1 flex-col gap-2">
         <div className="flex min-w-0 flex-col gap-1">
           <span className="flex flex-wrap items-center gap-2">
-            <span className="font-display text-[1.125rem] leading-snug">
+            <button
+              type="button"
+              onClick={() => onOpen(0)}
+              aria-pressed={chosenFile === 0}
+              className="text-left font-display text-[1.125rem] leading-snug hover:text-ouro-texto"
+            >
               {card.title}
-            </span>
+            </button>
             <span
               className={cx(
                 'rounded-full px-2 py-0.5 text-[0.6875rem] font-medium',
