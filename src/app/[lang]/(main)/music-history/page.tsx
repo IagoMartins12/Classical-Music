@@ -1,4 +1,5 @@
 // app/music-history/page.tsx - História da música SUPER otimizada
+import { imagemPadrao } from '@/app/utils/ogImagem';
 import { HistoryIndex } from '@/app/components/site/history/HistoryIndex';
 import {
   routeLanguage,
@@ -106,17 +107,7 @@ export async function generateMetadata({ params }: LangPageProps) {
           ? 'https://opusatlas.com.br/music-history'
           : 'https://opusatlas.com.br/music-history',
       siteName: 'Opus Atlas',
-      images: [
-        {
-          url: 'https://opusatlas.com.br/logo-opus-atlas.jpeg',
-          width: 1200,
-          height: 630,
-          alt:
-            language === 'pt'
-              ? 'História da Música Clássica'
-              : 'Classical Music History',
-        },
-      ],
+      images: imagemPadrao(language),
     },
     twitter: {
       card: 'summary_large_image',

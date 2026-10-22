@@ -933,6 +933,17 @@ html.app-instalado .barra-do-topo {
   padding-top: env(safe-area-inset-top);
 }
 
+/* O que é posicionado pelo topo fora das barras (os avisos) soma este respiro:
+   o tamanho do entalhe no app instalado, zero no navegador. */
+@media (display-mode: standalone) {
+  :root {
+    --respiro-topo: env(safe-area-inset-top);
+  }
+}
+html.app-instalado {
+  --respiro-topo: env(safe-area-inset-top);
+}
+
 /* Inputs e forms */
 /* Campo de formulário: uma aparência só, para os 377 `input-classical` e o
    `Field`. Mais escuro que o card — é onde se escreve, não onde se lê —,
@@ -2453,7 +2464,27 @@ html {
      thin gold lines would otherwise vanish. */
   .hero-globe {
     --globe-ink: var(--ouro);
-    opacity: 0.6;
+    opacity: 0.9;
+  }
+  /* No escuro, as linhas finas sumiam no fundo: mais traço e mais tinta. */
+  .hero-globe :is(circle, ellipse, path, line) {
+    stroke-width: 1.5;
+  }
+  /* E o centro menos apagado: o miolo continua mais suave que a borda, para o
+     texto ler, mas o globo aparece inteiro. No claro, a máscara de sempre. */
+  :root:not([data-theme='light']) .hero-globe {
+    -webkit-mask-image: radial-gradient(
+      circle at 50% 50%,
+      rgb(0 0 0 / 0.55) 0%,
+      rgb(0 0 0 / 0.7) 38%,
+      rgb(0 0 0) 62%
+    );
+    mask-image: radial-gradient(
+      circle at 50% 50%,
+      rgb(0 0 0 / 0.55) 0%,
+      rgb(0 0 0 / 0.7) 38%,
+      rgb(0 0 0) 62%
+    );
   }
   [data-theme='light'] .hero-globe {
     --globe-ink: var(--ouro-texto);

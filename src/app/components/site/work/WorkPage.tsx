@@ -133,7 +133,7 @@ export function WorkPage({
               {work.isVerified && (
                 <SeloVerificada
                   desenhar
-                  className="ml-2 inline-block h-[0.42em] w-[0.42em] align-[0.35em] text-verificado"
+                  className="ml-2 inline-block h-[0.42em] w-[0.42em] align-[0.12em] text-verificado"
                 />
               )}
             </h1>

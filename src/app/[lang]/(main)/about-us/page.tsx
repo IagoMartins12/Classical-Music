@@ -1,3 +1,4 @@
+import { imagemPadrao } from '@/app/utils/ogImagem';
 import type { Metadata } from 'next';
 import { PiArrowRight } from 'react-icons/pi';
 import LocalizedLink from '@/app/components/LocalizedLink';
@@ -64,14 +65,7 @@ export async function generateMetadata({
       locale: idioma === 'pt' ? 'pt_BR' : 'en_US',
       url: endereco(idioma),
       siteName: 'Opus Atlas',
-      images: [
-        {
-          url: `${SITE_URL}/logo-opus-atlas.jpeg`,
-          width: 1200,
-          height: 630,
-          alt: 'Opus Atlas',
-        },
-      ],
+      images: imagemPadrao(idioma),
     },
     twitter: {
       card: 'summary_large_image',

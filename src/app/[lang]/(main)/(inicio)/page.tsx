@@ -1,3 +1,4 @@
+import { imagemPadrao } from '@/app/utils/ogImagem';
 import { CONTATO, REDES } from '@/app/utils/contato';
 // app/page.tsx - Homepage com metadata SEO DEFINITIVO
 import { Metadata } from 'next';
@@ -387,6 +388,7 @@ export async function generateMetadata({
       description: t.ogDescription,
       locale: language === 'pt' ? 'pt_BR' : 'en_US',
       url: baseUrl,
+      images: imagemPadrao(language),
     },
 
     // Twitter Cards otimizado
@@ -396,15 +398,7 @@ export async function generateMetadata({
       creator: '@OpusAtlas',
       title: t.ogTitle,
       description: t.twitterDescription,
-      images: [
-        {
-          url: 'https://opusatlas.com.br/logo-opus-atlas-mini.jpeg',
-          alt:
-            language === 'pt'
-              ? 'Opus Atlas - Partituras Gratuitas de Música Clássica'
-              : 'Opus Atlas - Free Classical Music Sheet Music',
-        },
-      ],
+      images: imagemPadrao(language),
     },
 
     // Robots ultra otimizado
