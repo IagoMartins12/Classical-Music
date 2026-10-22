@@ -86,6 +86,72 @@ function Ranked({
   );
 }
 
+/**
+ * Evolução por habilidade (Maestro): uma linha por habilidade, uma barra por
+ * mês com a nota média do fechamento das aulas. Mês sem nota fica vazio —
+ * nunca estimado.
+ */
+function Skills({ data }: { data: NonNullable<ReportData['skills']> }) {
+  const months = [
+    ...new Set(data.skills.flatMap((s) => s.months.map((m) => m.month))),
+  ].sort();
+  return (
+    <Block title="Evolução por habilidade">
+      <ul className="flex flex-col gap-3">
+        {data.skills.map((s) => {
+          const byMonth = new Map(s.months.map((m) => [m.month, m]));
+          return (
+            <li
+              key={s.skill}
+              className="grid grid-cols-[minmax(0,7rem)_minmax(0,1fr)_auto] items-end gap-4"
+            >
+              <span className="pb-0.5 text-[0.9375rem] text-texto">
+                {s.label}
+              </span>
+              <span className="flex h-8 items-end gap-1" aria-hidden="true">
+                {months.map((key) => {
+                  const m = byMonth.get(key);
+                  return (
+                    <span
+                      key={key}
+                      title={`${month(key)}: ${score(m?.rating)}`}
+                      className="flex h-full max-w-6 flex-1 items-end"
+                    >
+                      {m?.rating != null ? (
+                        <span
+                          className="portal-cresce block w-full rounded-sm bg-ouro"
+                          style={{ height: `${(m.rating / 5) * 100}%` }}
+                        />
+                      ) : (
+                        <span className="block h-px w-full bg-linha-forte" />
+                      )}
+                    </span>
+                  );
+                })}
+              </span>
+              <span className="t-dado pb-0.5 text-right text-texto-suave">
+                {s.current === null ? 'Sem nota' : score(s.current)}
+                {s.change !== null && s.change !== 0 && (
+                  <span className="text-texto-fraco">
+                    {' '}
+                    ({s.change > 0 ? '+' : '−'}
+                    {Math.abs(s.change).toLocaleString('pt-BR')})
+                  </span>
+                )}
+              </span>
+            </li>
+          );
+        })}
+      </ul>
+      <p className="t-legenda">
+        {data.rated
+          ? `Nota média do fechamento das aulas, mês a mês (${months.map(month).join(', ')}). Tarefas e prática contam como volume.`
+          : 'Ainda sem notas: marque as habilidades ao fechar as aulas e a curva aparece aqui.'}
+      </p>
+    </Block>
+  );
+}
+
 /** As seções, do formato atual (direto) ou do embrulhado em `report`. */
 function sectionsOf(raw: ReportDetail['reportData']): ReportData {
   if (!raw || typeof raw !== 'object') return {};
@@ -99,9 +165,12 @@ const list = <T,>(v: T[] | null | undefined): T[] =>
 export function ReportView({
   data,
   period,
+  approvedPieces = false,
 }: {
   data: ReportDetail['reportData'];
   period: string;
+  /** O professor aprovou as próximas peças: a sugestão automática sai. */
+  approvedPieces?: boolean;
 }) {
   const r = sectionsOf(data);
   const o = r.overview;
@@ -110,7 +179,8 @@ export function ReportView({
   const byType = list(r.assignments?.byType);
   const learned = list(r.repertoire?.recentlyLearned);
   const composers = list(r.repertoire?.topComposers);
-  const pieces = list(r.recommendations?.pieces);
+  const pieces = approvedPieces ? [] : list(r.recommendations?.pieces);
+  const skills = r.skills?.skills.length ? r.skills : null;
   const empty =
     !o &&
     !months.length &&
@@ -118,7 +188,8 @@ export function ReportView({
     !r.insights &&
     !byType.length &&
     !learned.length &&
-    !pieces.length;
+    !pieces.length &&
+    !skills;
   if (empty)
     return (
       <p className="text-[0.9375rem] text-texto-suave">
@@ -181,6 +252,8 @@ export function ReportView({
           )}
         </div>
       )}
+
+      {skills && <Skills data={skills} />}
 
       {r.insights && (
         <div className="grid gap-10 sm:grid-cols-3">

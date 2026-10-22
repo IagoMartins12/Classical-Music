@@ -13,8 +13,8 @@ import type { Idioma } from './legal/tipos';
  * **Card curto.** O card diz o essencial de cada plano; a lista inteira mora
  * na tabela "lado a lado", para onde o link do pé dos cards leva. Em 21/10/2026
  * o suporte prioritário (do Plus em diante) e o Plus dos alunos do Maestro
- * passaram a incluídos, e com eles a retrospectiva e as recomendações
- * de peças; os avisos por WhatsApp e e-mail seguem "em breve".
+ * passaram a incluídos, e com eles a retrospectiva, as recomendações
+ * de peças e o relatório pedagógico do Maestro; os avisos por WhatsApp e e-mail seguem "em breve".
  *
  * **Os números moram em `LIMITES`.** A API aplica os mesmos em
  * `billing/constants/plan-features.constants.ts` (`uploadLimit`,
@@ -261,8 +261,9 @@ export const PLANOS: Record<Idioma, ConteudoPlanos> = {
           'Alunos ativos ilimitados',
           'Envio de vídeos nas tarefas',
           'Seus alunos ganham o Plus',
+          'Relatório pedagógico com evolução por habilidade',
         ],
-        emBreve: ['relatórios pedagógicos', 'avisos por WhatsApp e e-mail'],
+        emBreve: ['avisos por WhatsApp e e-mail'],
         acao: 'Assinar o Maestro',
       },
     },
@@ -350,7 +351,7 @@ export const PLANOS: Record<Idioma, ConteudoPlanos> = {
         },
         {
           recurso: 'Relatórios pedagógicos avançados',
-          valores: [false, false, false, BREVE],
+          valores: [false, false, false, true],
         },
         {
           recurso: 'Avisos por WhatsApp e e-mail',
@@ -554,8 +555,9 @@ export const PLANOS: Record<Idioma, ConteudoPlanos> = {
           'Unlimited active students',
           'Video submissions in assignments',
           'Your students get Plus',
+          'Teaching reports with skill progress',
         ],
-        emBreve: ['teaching reports', 'WhatsApp and e-mail reminders'],
+        emBreve: ['WhatsApp and e-mail reminders'],
         acao: 'Subscribe to Maestro',
       },
     },
@@ -644,7 +646,7 @@ export const PLANOS: Record<Idioma, ConteudoPlanos> = {
         },
         {
           recurso: 'Advanced teaching reports',
-          valores: [false, false, false, BREVE],
+          valores: [false, false, false, true],
         },
         {
           recurso: 'WhatsApp and e-mail reminders',

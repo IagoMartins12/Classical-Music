@@ -18,7 +18,13 @@ import {
 import * as api from '@/app/requests/portal/api';
 import { addDays, firstName, today, toInstant } from '../format';
 import { counterpartOf, lessonTitle } from '../lesson/lessonText';
-import { Options, Rating, ScreenError, ScreenLoading } from '../pieces';
+import {
+  Options,
+  Rating,
+  ScreenError,
+  ScreenLoading,
+  SkillRatings,
+} from '../pieces';
 import type { SheetProps } from '../PortalProvider';
 
 type Outcome = 'present' | 'absent' | 'cancelled';
@@ -64,6 +70,7 @@ function CloseForm({
   const [engagement, setEngagement] = useState(4);
   const [preparation, setPreparation] = useState(3);
   const [worked, setWorked] = useState<Set<string>>(() => new Set(topics));
+  const [skills, setSkills] = useState<Partial<Record<api.Skill, number>>>({});
   const [summary, setSummary] = useState('');
   const [nextPrep, setNextPrep] = useState('');
   const [privateNote, setPrivateNote] = useState('');
@@ -95,6 +102,7 @@ function CloseForm({
               engagement,
               preparation,
               skillsWorked: [...worked],
+              skillRatings: Object.keys(skills).length ? skills : undefined,
               lessonSummary: summary.trim() || undefined,
               nextLessonPrep: nextPrep.trim() || undefined,
             }
@@ -219,6 +227,7 @@ function CloseForm({
                 </div>
               </fieldset>
             )}
+            <SkillRatings value={skills} onChange={setSkills} />
             <Field.Area
               label="Resumo para o aluno"
               ajuda={`${student} lê isto no painel.`}
