@@ -1,5 +1,6 @@
 'use client';
 
+import { Recommendations } from '../Recommendations';
 import { useEffect, useMemo, useState } from 'react';
 import {
   PiCheckCircle,
@@ -168,6 +169,9 @@ export function StudiesView({
             </>
           )}
         </div>
+      )}
+      {total > 0 && (
+        <Recommendations source={{ kind: 'me' }} className="mt-10" />
       )}
       <LearningModalHost />
     </div>
