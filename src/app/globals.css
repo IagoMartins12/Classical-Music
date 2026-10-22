@@ -3068,3 +3068,41 @@ html {
 [data-theme='light'] .orbitas {
   color: var(--ouro-texto);
 }
+
+/* A retrospectiva de estudo (Plus): a barra do cartão enche no tempo dele, o
+   cartão entra subindo, e a bolinha de "gerando" pulsa. Com movimento
+   reduzido, nada se move: a barra aparece cheia. */
+@keyframes retro-barra {
+  from {
+    width: 0;
+  }
+  to {
+    width: 100%;
+  }
+}
+@keyframes retro-entra {
+  from {
+    opacity: 0;
+    transform: translateY(18px);
+  }
+}
+@keyframes retro-pulso {
+  50% {
+    transform: scale(0.82);
+    opacity: 0.6;
+  }
+}
+.retro-barra {
+  width: 100%;
+}
+@media (prefers-reduced-motion: no-preference) {
+  .retro-barra {
+    animation: retro-barra linear both;
+  }
+  .retro-entra {
+    animation: retro-entra 520ms var(--saida) both;
+  }
+  .retro-pulso {
+    animation: retro-pulso 1400ms ease-in-out infinite;
+  }
+}

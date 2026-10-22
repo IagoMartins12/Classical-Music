@@ -13,7 +13,8 @@ import type { Idioma } from './legal/tipos';
  * **Card curto.** O card diz o essencial de cada plano; a lista inteira mora
  * na tabela "lado a lado", para onde o link do pé dos cards leva. Em 21/10/2026
  * o suporte prioritário (do Plus em diante) e o Plus dos alunos do Maestro
- * passaram a incluídos; os avisos por WhatsApp e e-mail seguem "em breve".
+ * passaram a incluídos, e com eles a retrospectiva e as recomendações
+ * de peças; os avisos por WhatsApp e e-mail seguem "em breve".
  *
  * **Os números moram em `LIMITES`.** A API aplica os mesmos em
  * `billing/constants/plan-features.constants.ts` (`uploadLimit`,
@@ -232,9 +233,11 @@ export const PLANOS: Record<Idioma, ConteudoPlanos> = {
         recursos: [
           'Envios ilimitados ao acervo',
           'Vídeos de performance ilimitados',
+          'Sua retrospectiva de estudo',
+          'Recomendações de peças para estudar',
           'Suporte prioritário',
         ],
-        emBreve: ['histórico visual', 'recomendações de peças'],
+        emBreve: [],
         acao: 'Assinar o Plus',
       },
       MENTOR: {
@@ -319,11 +322,11 @@ export const PLANOS: Record<Idioma, ConteudoPlanos> = {
         },
         {
           recurso: 'Histórico visual (sua retrospectiva)',
-          valores: [false, BREVE, BREVE, BREVE],
+          valores: [false, true, true, true],
         },
         {
           recurso: 'Recomendações de peças',
-          valores: [false, BREVE, BREVE, BREVE],
+          valores: [false, true, true, true],
         },
         {
           recurso: 'Portal do professor: aulas, tarefas, calendário e agenda',
@@ -523,9 +526,11 @@ export const PLANOS: Record<Idioma, ConteudoPlanos> = {
         recursos: [
           'Unlimited uploads to the collection',
           'Unlimited performance videos',
+          'Your study year in review',
+          'Piece recommendations to study next',
           'Priority support',
         ],
-        emBreve: ['visual history', 'piece recommendations'],
+        emBreve: [],
         acao: 'Subscribe to Plus',
       },
       MENTOR: {
@@ -610,11 +615,11 @@ export const PLANOS: Record<Idioma, ConteudoPlanos> = {
         },
         {
           recurso: 'Visual history (your year in review)',
-          valores: [false, BREVE, BREVE, BREVE],
+          valores: [false, true, true, true],
         },
         {
           recurso: 'Piece recommendations',
-          valores: [false, BREVE, BREVE, BREVE],
+          valores: [false, true, true, true],
         },
         {
           recurso:

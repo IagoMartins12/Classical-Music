@@ -1,5 +1,6 @@
 'use client';
 
+import { RetrospectiveButton } from './Retrospective';
 import { Recommendations } from '../Recommendations';
 import { useEffect, useMemo, useState } from 'react';
 import {
@@ -112,7 +113,10 @@ export function StudiesView({
             </Aba>
           ))}
         </Abas>
-        <ViewToggle />
+        <div className="flex flex-wrap items-center gap-2">
+          <RetrospectiveButton />
+          <ViewToggle />
+        </div>
       </div>
 
       {total > 0 && (
