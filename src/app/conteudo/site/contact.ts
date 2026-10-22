@@ -2,11 +2,15 @@ import type { Idioma } from '../legal/tipos';
 
 export type Assunto = 'suporte' | 'bug' | 'moderacao' | 'parceria';
 
-/** The contact page. Only channels that exist; no promised response times. */
+/**
+ * The contact page. Only channels that exist. Response time (owner, 21/10):
+ * up to 1 business day on paid plans (priority support, from Plus on), up to
+ * 3 on Free.
+ */
 const pt = {
   titulo: 'Fale com a gente',
   abertura:
-    'Uma dúvida, um erro que você encontrou, algo no acervo que precisa de atenção ou uma ideia de parceria. Escreva, e a resposta chega no seu e-mail.',
+    'Uma dúvida, um erro que você encontrou, algo no acervo que precisa de atenção ou uma ideia de parceria. Escreva, e a resposta chega no seu e-mail: em até 1 dia útil para quem assina (suporte prioritário, do Plus em diante) e em até 3 dias úteis no plano grátis.',
   sobre: 'Sobre o quê?',
   assuntos: {
     suporte: {
@@ -62,7 +66,7 @@ const pt = {
 const en: typeof pt = {
   titulo: 'Get in touch',
   abertura:
-    'A question, a bug you found, something in the catalog that needs attention or a partnership idea. Write to us, and the answer arrives in your inbox.',
+    'A question, a bug you found, something in the catalog that needs attention or a partnership idea. Write to us, and the answer arrives in your inbox: within 1 business day for subscribers (priority support, from Plus on) and within 3 business days on the free plan.',
   sobre: 'What is it about?',
   assuntos: {
     suporte: {

@@ -11,10 +11,9 @@ import type { Idioma } from './legal/tipos';
  * troque o `'breve'` da linha da tabela por `true`).
  *
  * **Card curto.** O card diz o essencial de cada plano; a lista inteira mora
- * na tabela "lado a lado", para onde o link do pé dos cards leva. Em 28/09/2026 estavam em construção: histórico visual,
- * relatórios pessoais mensais, recomendações de peças, alunos com Plus,
- * relatórios pedagógicos avançados, avisos por SMS e e-mail e suporte
- * prioritário.
+ * na tabela "lado a lado", para onde o link do pé dos cards leva. Em 21/10/2026
+ * o suporte prioritário (do Plus em diante) e o Plus dos alunos do Maestro
+ * passaram a incluídos; os avisos por WhatsApp e e-mail seguem "em breve".
  *
  * **Os números moram em `LIMITES`.** A API aplica os mesmos em
  * `billing/constants/plan-features.constants.ts` (`uploadLimit`,
@@ -233,12 +232,9 @@ export const PLANOS: Record<Idioma, ConteudoPlanos> = {
         recursos: [
           'Envios ilimitados ao acervo',
           'Vídeos de performance ilimitados',
+          'Suporte prioritário',
         ],
-        emBreve: [
-          'histórico visual',
-          'relatórios mensais',
-          'recomendações de peças',
-        ],
+        emBreve: ['histórico visual', 'recomendações de peças'],
         acao: 'Assinar o Plus',
       },
       MENTOR: {
@@ -258,13 +254,12 @@ export const PLANOS: Record<Idioma, ConteudoPlanos> = {
         nome: 'Maestro',
         paraQuem: 'Para quem dá aula a muitos alunos.',
         inclui: 'Tudo do Mentor, e:',
-        recursos: ['Alunos ativos ilimitados', 'Envio de vídeos nas tarefas'],
-        emBreve: [
-          'alunos com Plus',
-          'relatórios pedagógicos',
-          'avisos por SMS e e-mail',
-          'suporte prioritário 24/7',
+        recursos: [
+          'Alunos ativos ilimitados',
+          'Envio de vídeos nas tarefas',
+          'Seus alunos ganham o Plus',
         ],
+        emBreve: ['relatórios pedagógicos', 'avisos por WhatsApp e e-mail'],
         acao: 'Assinar o Maestro',
       },
     },
@@ -323,7 +318,7 @@ export const PLANOS: Record<Idioma, ConteudoPlanos> = {
           ],
         },
         {
-          recurso: 'Histórico visual e relatórios pessoais',
+          recurso: 'Histórico visual (sua retrospectiva)',
           valores: [false, BREVE, BREVE, BREVE],
         },
         {
@@ -347,20 +342,20 @@ export const PLANOS: Record<Idioma, ConteudoPlanos> = {
           valores: [false, false, false, true],
         },
         {
-          recurso: 'Alunos com o plano Plus',
-          valores: [false, false, false, BREVE],
+          recurso: 'Seus alunos ganham o Plus',
+          valores: [false, false, false, true],
         },
         {
           recurso: 'Relatórios pedagógicos avançados',
           valores: [false, false, false, BREVE],
         },
         {
-          recurso: 'Avisos por SMS e e-mail',
+          recurso: 'Avisos por WhatsApp e e-mail',
           valores: [false, false, false, BREVE],
         },
         {
-          recurso: 'Suporte prioritário 24/7',
-          valores: [false, false, false, BREVE],
+          recurso: 'Suporte prioritário',
+          valores: [false, true, true, true],
         },
       ],
     },
@@ -528,8 +523,9 @@ export const PLANOS: Record<Idioma, ConteudoPlanos> = {
         recursos: [
           'Unlimited uploads to the collection',
           'Unlimited performance videos',
+          'Priority support',
         ],
-        emBreve: ['visual history', 'monthly reports', 'piece recommendations'],
+        emBreve: ['visual history', 'piece recommendations'],
         acao: 'Subscribe to Plus',
       },
       MENTOR: {
@@ -552,13 +548,9 @@ export const PLANOS: Record<Idioma, ConteudoPlanos> = {
         recursos: [
           'Unlimited active students',
           'Video submissions in assignments',
+          'Your students get Plus',
         ],
-        emBreve: [
-          'students on Plus',
-          'teaching reports',
-          'SMS and e-mail reminders',
-          '24/7 priority support',
-        ],
+        emBreve: ['teaching reports', 'WhatsApp and e-mail reminders'],
         acao: 'Subscribe to Maestro',
       },
     },
@@ -617,7 +609,7 @@ export const PLANOS: Record<Idioma, ConteudoPlanos> = {
           ],
         },
         {
-          recurso: 'Visual history and personal reports',
+          recurso: 'Visual history (your year in review)',
           valores: [false, BREVE, BREVE, BREVE],
         },
         {
@@ -642,20 +634,20 @@ export const PLANOS: Record<Idioma, ConteudoPlanos> = {
           valores: [false, false, false, true],
         },
         {
-          recurso: 'Students on the Plus plan',
-          valores: [false, false, false, BREVE],
+          recurso: 'Your students get Plus',
+          valores: [false, false, false, true],
         },
         {
           recurso: 'Advanced teaching reports',
           valores: [false, false, false, BREVE],
         },
         {
-          recurso: 'SMS and e-mail reminders',
+          recurso: 'WhatsApp and e-mail reminders',
           valores: [false, false, false, BREVE],
         },
         {
-          recurso: '24/7 priority support',
-          valores: [false, false, false, BREVE],
+          recurso: 'Priority support',
+          valores: [false, true, true, true],
         },
       ],
     },

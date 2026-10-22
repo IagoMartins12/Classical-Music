@@ -166,6 +166,11 @@ export const NAVEGACAO: GrupoNav[] = [
         pendencia: 'denuncias',
       },
       {
+        rotulo: 'Atendimento',
+        href: '/admin/atendimento',
+        resumo: 'Mensagens do contato; quem assina vem primeiro',
+      },
+      {
         rotulo: 'Comentários do blog',
         href: '/blog/admin/moderation',
         resumo: 'Aprovar, recusar e comentários sinalizados',
