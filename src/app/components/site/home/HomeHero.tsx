@@ -19,10 +19,11 @@ export function HomeHero({
   language: Idioma;
 }) {
   return (
-    // Celular: o globo cabe inteiro na largura, com 1rem de cada lado. Tablet:
-    // a seção tem pelo menos a altura do globo e mais um respiro, para o topo
-    // dele não encostar no cabeçalho.
-    <section className="relative isolate overflow-x-clip sm:max-lg:flex sm:max-lg:min-h-[calc(min(36rem,100vw-6rem)+6rem)] sm:max-lg:flex-col sm:max-lg:justify-center">
+    // O globo mantém o tamanho; só ganha respiro. Celular: a esfera (440 dos
+    // 600 do desenho) cabe na largura com 1rem de cada lado — só o anel de
+    // fora passa da tela. Tablet: a seção tem a altura da esfera (46rem × 440
+    // / 600 ≈ 34rem) e mais um respiro, para o topo não encostar no cabeçalho.
+    <section className="relative isolate overflow-x-clip sm:max-lg:flex sm:max-lg:min-h-[40rem] sm:max-lg:flex-col sm:max-lg:justify-center">
       <CelestialGlobe className="lg:hidden" />
       <div className="section-wrap grid grid-cols-1 items-center gap-10 py-16 lg:grid-cols-[minmax(0,6fr)_minmax(0,5fr)] lg:gap-12 lg:py-12">
         <div className="flex flex-col gap-6 max-lg:items-center max-lg:text-center">
