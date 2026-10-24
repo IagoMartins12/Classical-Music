@@ -312,7 +312,8 @@ export function CabecalhoDoBlog({
           <LanguageToggle
             idioma={idioma}
             aoTrocar={irParaIdioma}
-            className="hidden lg:flex"
+            // `grid`, não `flex`: é o grid do botão que centraliza a bandeira.
+            className="hidden lg:grid"
           />
           <ThemeToggle variant="navbar" className="hidden lg:block" />
 
