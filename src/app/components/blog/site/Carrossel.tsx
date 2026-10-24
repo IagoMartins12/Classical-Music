@@ -11,6 +11,8 @@ import { cx } from '@/app/components/ui/cx';
 import { BLOG, type Idioma } from '@/app/conteudo/blog';
 import { useArrastarParaRolar } from './useArrastarParaRolar';
 
+const MAX_PONTOS_TELEFONE = 5;
+
 /**
  * A prateleira horizontal do blog (últimos artigos, categorias).
  *
@@ -50,13 +52,19 @@ export function Carrossel({
     const el = trilho.current;
     if (!el || !el.clientWidth) return;
     const sobra = el.scrollWidth - el.clientWidth;
-    const total = sobra > 4 ? Math.ceil(sobra / el.clientWidth) + 1 : 1;
+    // No telefone uma "página" é um cartão e meio: os pontos viravam uma
+    // fileira enorme. Lá, no máximo `MAX_PONTOS_TELEFONE`, cada um uma fração
+    // igual da faixa.
+    const maximo =
+      el.clientWidth < 640 ? MAX_PONTOS_TELEFONE : Number.POSITIVE_INFINITY;
+    const total =
+      sobra > 4 ? Math.min(Math.ceil(sobra / el.clientWidth) + 1, maximo) : 1;
     setPartes(total);
     // Na ponta direita, o último ponto (a última parte pode ser mais curta).
     setAtual(
       el.scrollLeft >= sobra - 4
         ? total - 1
-        : Math.round(el.scrollLeft / el.clientWidth)
+        : Math.round((el.scrollLeft / Math.max(sobra, 1)) * (total - 1))
     );
   }, []);
 
@@ -80,7 +88,10 @@ export function Carrossel({
       '(prefers-reduced-motion: reduce)'
     ).matches;
     el.scrollTo({
-      left: Math.min(parte * el.clientWidth, el.scrollWidth - el.clientWidth),
+      left:
+        partes > 1
+          ? ((el.scrollWidth - el.clientWidth) * parte) / (partes - 1)
+          : 0,
       behavior: reduzido ? 'auto' : 'smooth',
     });
   };

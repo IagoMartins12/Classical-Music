@@ -1,4 +1,5 @@
 // app/[lang]/(main)/composers/view.tsx
+import { imagemPadrao } from '@/app/utils/ogImagem';
 import { Metadata } from 'next';
 import { ComposersList } from '@/app/components/site/lists/ComposersList';
 import type { UrlParams } from '@/app/utils/listParams';
@@ -118,6 +119,7 @@ export function composersMetadata(
     authors: [{ name: 'Opus Atlas' }],
     creator: 'Opus Atlas',
     openGraph: {
+      images: imagemPadrao(language),
       title,
       description,
       type: 'website',

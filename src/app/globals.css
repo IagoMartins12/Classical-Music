@@ -933,6 +933,17 @@ html.app-instalado .barra-do-topo {
   padding-top: env(safe-area-inset-top);
 }
 
+/* O que é posicionado pelo topo fora das barras (os avisos) soma este respiro:
+   o tamanho do entalhe no app instalado, zero no navegador. */
+@media (display-mode: standalone) {
+  :root {
+    --respiro-topo: env(safe-area-inset-top);
+  }
+}
+html.app-instalado {
+  --respiro-topo: env(safe-area-inset-top);
+}
+
 /* Inputs e forms */
 /* Campo de formulário: uma aparência só, para os 377 `input-classical` e o
    `Field`. Mais escuro que o card — é onde se escreve, não onde se lê —,
@@ -2453,7 +2464,27 @@ html {
      thin gold lines would otherwise vanish. */
   .hero-globe {
     --globe-ink: var(--ouro);
-    opacity: 0.6;
+    opacity: 0.9;
+  }
+  /* No escuro, as linhas finas sumiam no fundo: mais traço e mais tinta. */
+  .hero-globe :is(circle, ellipse, path, line) {
+    stroke-width: 1.5;
+  }
+  /* E o centro menos apagado: o miolo continua mais suave que a borda, para o
+     texto ler, mas o globo aparece inteiro. No claro, a máscara de sempre. */
+  :root:not([data-theme='light']) .hero-globe {
+    -webkit-mask-image: radial-gradient(
+      circle at 50% 50%,
+      rgb(0 0 0 / 0.55) 0%,
+      rgb(0 0 0 / 0.7) 38%,
+      rgb(0 0 0) 62%
+    );
+    mask-image: radial-gradient(
+      circle at 50% 50%,
+      rgb(0 0 0 / 0.55) 0%,
+      rgb(0 0 0 / 0.7) 38%,
+      rgb(0 0 0) 62%
+    );
   }
   [data-theme='light'] .hero-globe {
     --globe-ink: var(--ouro-texto);
@@ -3036,4 +3067,42 @@ html {
 }
 [data-theme='light'] .orbitas {
   color: var(--ouro-texto);
+}
+
+/* A retrospectiva de estudo (Plus): a barra do cartão enche no tempo dele, o
+   cartão entra subindo, e a bolinha de "gerando" pulsa. Com movimento
+   reduzido, nada se move: a barra aparece cheia. */
+@keyframes retro-barra {
+  from {
+    width: 0;
+  }
+  to {
+    width: 100%;
+  }
+}
+@keyframes retro-entra {
+  from {
+    opacity: 0;
+    transform: translateY(18px);
+  }
+}
+@keyframes retro-pulso {
+  50% {
+    transform: scale(0.82);
+    opacity: 0.6;
+  }
+}
+.retro-barra {
+  width: 100%;
+}
+@media (prefers-reduced-motion: no-preference) {
+  .retro-barra {
+    animation: retro-barra linear both;
+  }
+  .retro-entra {
+    animation: retro-entra 520ms var(--saida) both;
+  }
+  .retro-pulso {
+    animation: retro-pulso 1400ms ease-in-out infinite;
+  }
 }

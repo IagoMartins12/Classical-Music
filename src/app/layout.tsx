@@ -1,4 +1,5 @@
 // app/layout.tsx - Versão otimizada para performance
+import { imagemPadrao } from '@/app/utils/ogImagem';
 import { SITE_URL } from '@/app/utils/seoAlternates';
 import type { Metadata, Viewport } from 'next';
 import { EB_Garamond, Geist, Geist_Mono } from 'next/font/google';
@@ -118,6 +119,7 @@ export async function generateMetadata(): Promise<Metadata> {
     authors: [{ name: 'Opus Atlas Team' }],
     creator: 'Opus Atlas',
     openGraph: {
+      images: imagemPadrao(language),
       title: t.ogTitle,
       description: t.ogDescription,
       type: 'website',

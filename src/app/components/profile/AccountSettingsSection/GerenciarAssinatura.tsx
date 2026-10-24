@@ -46,6 +46,8 @@ const T = {
     teste: (d: number) =>
       `Período de teste: ${d} ${d === 1 ? 'dia restante' : 'dias restantes'}.`,
     renova: (d: string) => `Renova em ${d}.`,
+    viaProfessor: (n: string) =>
+      `Plus · pelo seu professor (${n}). Vale enquanto você for aluno de um professor Maestro, sem cobrança.`,
     cancelada: (d: string) =>
       `Cancelada. O acesso continua até ${d}; depois, a conta volta ao Free, com o seu histórico.`,
     atrasada: (d: string) =>
@@ -87,6 +89,8 @@ const T = {
     teste: (d: number) =>
       `Free trial: ${d} ${d === 1 ? 'day left' : 'days left'}.`,
     renova: (d: string) => `Renews on ${d}.`,
+    viaProfessor: (n: string) =>
+      `Plus · from your teacher (${n}). It lasts while you are a student of a Maestro teacher, free of charge.`,
     cancelada: (d: string) =>
       `Cancelled. Access continues until ${d}; then the account returns to Free, keeping your history.`,
     atrasada: (d: string) =>
@@ -201,6 +205,12 @@ export function GerenciarAssinatura({ idioma }: { idioma: Idioma }) {
     );
 
   const plano = (atual?.plan?.type ?? 'FREE') as Plano;
+  // Aluno de professor Maestro sem assinatura: tem o Plus, mas não há o que
+  // cancelar nem cobrança; assinar outro plano vai pelo checkout, como no Free.
+  const viaProfessor = (
+    atual?.plan as { viaTeacher?: string | null } | undefined
+  )?.viaTeacher;
+  const semAssinatura = plano === 'FREE' || !!viaProfessor;
   const registro = atual?.subscription as Registro | null | undefined;
   const cancelada = registro?.status === 'CANCELLED';
   const atrasada = registro?.status === 'PAST_DUE';
@@ -215,17 +225,19 @@ export function GerenciarAssinatura({ idioma }: { idioma: Idioma }) {
     )
   );
 
-  const situacao = cancelada
-    ? t.cancelada(fim)
-    : atrasada
-      ? t.atrasada(fim)
-      : agendado
-        ? t.agendado(nome(agendado), fim)
-        : atual?.plan?.isTrialActive
-          ? t.teste(atual.plan.trialDaysRemaining)
-          : plano !== 'FREE' && fim
-            ? t.renova(fim)
-            : t.gratis;
+  const situacao = viaProfessor
+    ? t.viaProfessor(viaProfessor)
+    : cancelada
+      ? t.cancelada(fim)
+      : atrasada
+        ? t.atrasada(fim)
+        : agendado
+          ? t.agendado(nome(agendado), fim)
+          : atual?.plan?.isTrialActive
+            ? t.teste(atual.plan.trialDaysRemaining)
+            : plano !== 'FREE' && fim
+              ? t.renova(fim)
+              : t.gratis;
 
   const preco = (p: PlanoPago) => {
     const d = precos?.[p];
@@ -323,7 +335,7 @@ export function GerenciarAssinatura({ idioma }: { idioma: Idioma }) {
       );
     const acima = ORDEM.indexOf(p) > ORDEM.indexOf(plano);
     if (p === 'FREE') {
-      if (cancelada) return null;
+      if (cancelada || viaProfessor) return null;
       return (
         <Button
           tamanho="p"
@@ -344,7 +356,7 @@ export function GerenciarAssinatura({ idioma }: { idioma: Idioma }) {
         icone={acima ? PiArrowUp : PiArrowDown}
         onClick={() =>
           setPedido(
-            plano === 'FREE'
+            semAssinatura
               ? { tipo: 'confirmar', plano: p }
               : { tipo: acima ? 'subir' : 'descer', plano: p }
           )
@@ -413,7 +425,7 @@ export function GerenciarAssinatura({ idioma }: { idioma: Idioma }) {
           </ul>
 
           <div className="flex flex-col gap-3 border-t border-[var(--linha)] pt-5 sm:flex-row sm:flex-wrap sm:items-center">
-            {plano !== 'FREE' && (
+            {!semAssinatura && (
               <Button
                 icone={PiCreditCard}
                 onClick={() => void abrirPortal()}
@@ -423,7 +435,7 @@ export function GerenciarAssinatura({ idioma }: { idioma: Idioma }) {
                 {t.gerenciar}
               </Button>
             )}
-            {plano !== 'FREE' &&
+            {!semAssinatura &&
               (cancelada ? (
                 <Button
                   variante="primario"

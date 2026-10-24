@@ -30,6 +30,7 @@ import type {
   Role,
   Severity,
 } from '@/app/requests/portal/api';
+import { SKILL_LABEL, SKILLS, type Skill } from '@/app/requests/portal/api';
 import {
   addDays,
   dayOf,
@@ -770,6 +771,73 @@ export function Rating({
           <span className="t-legenda">{ends[1]}</span>
         </div>
       </div>
+    </fieldset>
+  );
+}
+
+/**
+ * Nota por habilidade (relatório pedagógico): uma linha por habilidade da
+ * lista fixa, cinco pontos cada. Tudo opcional — tocar no ponto marcado limpa.
+ */
+export function SkillRatings({
+  value,
+  onChange,
+}: {
+  value: Partial<Record<Skill, number>>;
+  onChange: (next: Partial<Record<Skill, number>>) => void;
+}) {
+  return (
+    <fieldset className="flex flex-col gap-2">
+      <legend className="t-rotulo mb-1 font-medium text-texto">
+        Como foi cada habilidade
+      </legend>
+      <p className="t-legenda mb-2">
+        Opcional. Marque só o que vocês trabalharam: vira a curva de evolução do
+        relatório.
+      </p>
+      <ul className="grid gap-x-8 gap-y-1 sm:grid-cols-2">
+        {SKILLS.map((skill) => {
+          const current = value[skill] ?? 0;
+          return (
+            <li key={skill} className="flex items-center justify-between gap-3">
+              <span
+                className={cx(
+                  'text-[0.9375rem]',
+                  current ? 'text-texto' : 'text-texto-suave'
+                )}
+              >
+                {SKILL_LABEL[skill]}
+              </span>
+              <span className="flex">
+                {[1, 2, 3, 4, 5].map((n) => (
+                  <button
+                    key={n}
+                    type="button"
+                    aria-label={`${SKILL_LABEL[skill]}: ${n} de 5`}
+                    aria-pressed={n === current}
+                    onClick={() => {
+                      const next = { ...value };
+                      if (n === current) delete next[skill];
+                      else next[skill] = n;
+                      onChange(next);
+                    }}
+                    className="grid h-9 w-8 place-items-center rounded-full [@media(pointer:coarse)]:h-[var(--alvo)]"
+                  >
+                    <span
+                      className={cx(
+                        'h-3 w-3 rounded-full border transition-[background-color,border-color] duration-[var(--t-toque)] ease-saida',
+                        n <= current
+                          ? 'border-ouro bg-ouro'
+                          : 'border-linha-forte'
+                      )}
+                    />
+                  </button>
+                ))}
+              </span>
+            </li>
+          );
+        })}
+      </ul>
     </fieldset>
   );
 }

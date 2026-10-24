@@ -1,4 +1,5 @@
 // app/[lang]/(main)/works/view.tsx
+import { imagemPadrao } from '@/app/utils/ogImagem';
 import { Metadata } from 'next';
 import { unstable_cache } from 'next/cache';
 import { WorksList } from '@/app/components/site/lists/WorksList';
@@ -178,6 +179,7 @@ export async function worksMetadata(
     authors: [{ name: 'Opus Atlas' }],
     creator: 'Opus Atlas',
     openGraph: {
+      images: imagemPadrao(language),
       title,
       description,
       type: 'website',

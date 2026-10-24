@@ -15,6 +15,7 @@ import {
 } from 'react';
 import toast from 'react-hot-toast';
 import {
+  PiBookmarkSimple,
   PiCheckCircle,
   PiDownloadSimple,
   PiFileText,
@@ -32,7 +33,6 @@ import { Button, classesDeBotao } from '@/app/components/ui/Button';
 import { Field } from '@/app/components/ui/Field';
 import { Icon } from '@/app/components/ui/Icon';
 import { Selecao } from '@/app/components/ui/Selecao';
-import { Aba, Abas } from '@/app/components/ui/Abas';
 import { Sheet } from '@/app/components/ui/Sheet';
 import { cx } from '@/app/components/ui/cx';
 import { STUDY } from '@/app/conteudo/site/study';
@@ -857,21 +857,48 @@ export function StudySheet() {
         descricao={`${workTitle} · ${composerName}`}
         largura="g"
         rodape={
-          // Só o que fecha a folha mora aqui: salvar, cancelar e remover. Trocar
-          // de lista fica no topo, em abas; quatro botões de texto longo não
-          // cabiam em duas colunas no celular.
+          // No celular, um botão por linha onde o texto é longo: salvar em cima,
+          // trocar de lista embaixo, e cancelar com remover lado a lado. No
+          // computador, a linha de sempre (remover e trocar à esquerda,
+          // cancelar e salvar à direita).
           <div className="flex w-full flex-col gap-2 sm:flex-row sm:items-center">
             <Button
               variante="primario"
-              className="sm:order-3"
+              className="w-full whitespace-nowrap sm:order-5 sm:w-auto"
               carregando={saving || video.isUploading}
               onClick={() => void submit()}
             >
               {isCurrentlyActive ? copy.update : copy.save}
             </Button>
+            {isWant ? (
+              <Button
+                variante="secundario"
+                icone={PiCheckCircle}
+                className="w-full whitespace-nowrap sm:order-2 sm:w-auto"
+                onClick={() =>
+                  isCurrentlyActive
+                    ? setConfirmTransfer(true)
+                    : switchTo('learned')
+                }
+                disabled={saving}
+              >
+                {copy.toLearned}
+              </Button>
+            ) : (
+              <Button
+                variante="secundario"
+                icone={PiBookmarkSimple}
+                className="w-full whitespace-nowrap sm:order-2 sm:w-auto"
+                onClick={() => switchTo('want-to-learn')}
+                disabled={saving}
+              >
+                {isCurrentlyActive ? copy.studyAgain : copy.toWant}
+              </Button>
+            )}
+            <span className="hidden sm:order-3 sm:block sm:flex-1" />
             <div
               className={cx(
-                'grid gap-2 sm:order-1 sm:flex sm:flex-1',
+                'grid gap-2 sm:contents',
                 isCurrentlyActive ? 'grid-cols-2' : 'grid-cols-1'
               )}
             >
@@ -879,18 +906,18 @@ export function StudySheet() {
                 <Button
                   variante="fantasma"
                   icone={PiTrash}
+                  className="whitespace-nowrap sm:order-1"
                   onClick={() => void remove()}
                   disabled={saving}
-                  className="sm:mr-auto"
                 >
                   {copy.remove}
                 </Button>
               )}
               <Button
                 variante="fantasma"
+                className="whitespace-nowrap sm:order-4"
                 onClick={requestClose}
                 disabled={saving}
-                className="sm:order-2"
               >
                 {copy.cancel}
               </Button>
@@ -899,29 +926,6 @@ export function StudySheet() {
         }
       >
         <div className={cx('flex flex-col gap-6')}>
-          {/* Quero estudar / Já aprendi: a obra muda de lista, a folha se refaz. */}
-          <Abas rotulo={copy.titles.want}>
-            <Aba
-              ativa={isWant}
-              onClick={() => {
-                if (!isWant) switchTo('want-to-learn');
-              }}
-              disabled={saving}
-            >
-              {copy.toWant}
-            </Aba>
-            <Aba
-              ativa={!isWant}
-              onClick={() => {
-                if (!isWant) return;
-                if (isCurrentlyActive) setConfirmTransfer(true);
-                else switchTo('learned');
-              }}
-              disabled={saving}
-            >
-              {copy.toLearned}
-            </Aba>
-          </Abas>
           {isWant ? (
             <>
               {wantFields}

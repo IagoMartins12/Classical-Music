@@ -121,6 +121,8 @@ export interface ResumoFinanceiro {
     /** O que as atrasadas valem por mês: fora do MRR, em risco. */
     pastDueMrrCents: number;
     teachers: number;
+    /** Alunos com o Plus pelo professor do Maestro: não pagam, fora do MRR. */
+    plusViaTeacher?: number;
   };
   breakEven: {
     mrrNeededCents: number;

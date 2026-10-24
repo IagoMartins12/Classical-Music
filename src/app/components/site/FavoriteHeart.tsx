@@ -142,7 +142,7 @@ export function FavoriteHeart({
         onClick={onClick}
         className={cx(
           classesDeBotao(favorited ? 'primario' : 'secundario', 'm'),
-          'gap-2',
+          'gap-2 whitespace-nowrap',
           className
         )}
       >

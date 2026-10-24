@@ -8,6 +8,8 @@ import ConfirmModal from '@/app/components/ConfirmModal';
 import { Badge } from '@/app/components/ui/Badge';
 import { Button } from '@/app/components/ui/Button';
 import { Field } from '@/app/components/ui/Field';
+import { Icon } from '@/app/components/ui/Icon';
+import { PiFilePdf } from 'react-icons/pi';
 import { Sheet } from '@/app/components/ui/Sheet';
 import {
   errorText,
@@ -19,7 +21,13 @@ import {
 import * as api from '@/app/requests/portal/api';
 import { ago, dayOf, firstName, shortDateYear } from '../format';
 import { ReportView } from '../report/ReportView';
-import { Avatar, Block, ScreenError, ScreenLoading } from '../pieces';
+import {
+  Avatar,
+  Block,
+  ScreenError,
+  ScreenLoading,
+  WorkCited,
+} from '../pieces';
 import type { SheetProps } from '../PortalProvider';
 
 export default function ReportSheet({
@@ -44,6 +52,10 @@ export default function ReportSheet({
     success: 'Compartilhamento desfeito. O relatório continua com você.',
     onSuccess: closeAll,
   });
+  const pdf = usePortalMutation(
+    () => api.downloadReportPdf(request.id, r?.title ?? 'relatorio'),
+    { invalidate: [] }
+  );
   const comment = usePortalMutation(
     () => api.addReportComment(request.id, { content: text.trim() }),
     {
@@ -117,11 +129,63 @@ export default function ReportSheet({
           )}
           <ReportView
             data={r.reportData}
+            approvedPieces={Boolean(r.nextPieces?.length)}
             period={
               r.periodLabel ||
               `${shortDateYear(dayOf(r.periodStart))} a ${shortDateYear(dayOf(r.periodEnd))}`
             }
           />
+
+          {r.nextPieces && r.nextPieces.length > 0 && (
+            <Block title="Para estudar a seguir">
+              <ul className="flex flex-col gap-4">
+                {r.nextPieces.map((p) => (
+                  <li key={p.workId} className="flex flex-col gap-1">
+                    <WorkCited
+                      work={{
+                        id: p.workId,
+                        title: p.title,
+                        composer: { name: p.composer },
+                      }}
+                      compact
+                    />
+                    {p.note && (
+                      <span className="text-[0.9375rem] text-texto-suave">
+                        {p.note}
+                      </span>
+                    )}
+                  </li>
+                ))}
+              </ul>
+            </Block>
+          )}
+
+          {r.tips.length > 0 && (
+            <Block title={`Dicas de ${firstName(api.nameOf(r.teacher))}`}>
+              <ol className="flex flex-col gap-3">
+                {r.tips.map((tip, i) => (
+                  <li key={i} className="flex gap-3 text-[0.9375rem]">
+                    <span className="t-dado text-ouro-texto">{i + 1}</span>
+                    <span className="text-texto-suave">{tip}</span>
+                  </li>
+                ))}
+              </ol>
+            </Block>
+          )}
+
+          {(r.nextPieces?.length || r.tips.length || hasSkills(r)) && (
+            <div>
+              <Button
+                variante="secundario"
+                tamanho="p"
+                carregando={pdf.isPending}
+                onClick={() => pdf.mutate(undefined)}
+              >
+                <Icon de={PiFilePdf} />
+                Baixar em PDF
+              </Button>
+            </div>
+          )}
 
           {shared && (
             <Block
@@ -204,4 +268,16 @@ export default function ReportSheet({
       />
     </Sheet>
   );
+}
+
+/**
+ * O PDF é do Maestro: aparece quando o relatório tem o que só ele gera
+ * (habilidades, peças aprovadas ou dicas).
+ */
+function hasSkills(r: api.ReportDetail) {
+  const data = r.reportData as {
+    skills?: unknown;
+    report?: { skills?: unknown };
+  } | null;
+  return Boolean(data?.skills ?? data?.report?.skills);
 }

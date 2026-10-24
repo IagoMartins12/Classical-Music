@@ -281,7 +281,7 @@ export default function Financeiro() {
                 id: 'mrr',
                 rotulo: 'Receita mensal (MRR)',
                 valor: reais(r?.accrual.mrrCents),
-                nota: `${numero(r?.subscribers.active)} assinantes pagantes · a anual vale 1/12 por mês${r?.accrual.isCurrentMonth ? '' : ' (o MRR de hoje)'}`,
+                nota: `${numero(r?.subscribers.active)} assinantes pagantes · a anual vale 1/12 por mês${r?.accrual.isCurrentMonth ? '' : ' (o MRR de hoje)'}${r?.subscribers.plusViaTeacher ? ` · fora dele, ${numero(r.subscribers.plusViaTeacher)} ${r.subscribers.plusViaTeacher === 1 ? 'aluno' : 'alunos'} com o Plus pelo professor` : ''}`,
               },
             ]}
           />

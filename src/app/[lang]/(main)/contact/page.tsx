@@ -1,3 +1,4 @@
+import { imagemPadrao } from '@/app/utils/ogImagem';
 import { Metadata } from 'next';
 import { ContactView } from '@/app/components/site/contact/ContactView';
 import {
@@ -92,24 +93,14 @@ export async function generateMetadata({
           ? 'https://opusatlas.com.br/contact'
           : 'https://opusatlas.com.br/contact',
       siteName: 'Opus Atlas',
-      images: [
-        {
-          url: 'https://opusatlas.com.br/logo-opus-atlas.jpeg',
-          width: 1200,
-          height: 630,
-          alt:
-            language === 'pt'
-              ? 'Sobre o Opus Atlas - Enciclopédia Musical'
-              : 'About Opus Atlas - Musical Encyclopedia',
-        },
-      ],
+      images: imagemPadrao(language),
     },
 
     twitter: {
       card: 'summary_large_image',
       title: t.ogTitle,
       description: t.ogDescription,
-      images: ['https://opusatlas.com.br/logo-opus-atlas.jpeg'],
+      images: imagemPadrao(language),
     },
     robots: {
       index: true,

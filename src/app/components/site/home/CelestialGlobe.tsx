@@ -29,7 +29,7 @@ export function CelestialGlobe({ className }: { className?: string }) {
   return (
     <div
       aria-hidden="true"
-      className={`hero-globe pointer-events-none absolute left-1/2 top-1/2 -z-10 aspect-square w-[min(46rem,150vw)] -translate-x-1/2 -translate-y-1/2 [mask-image:radial-gradient(circle_at_50%_50%,rgb(0_0_0/0.3)_0%,rgb(0_0_0/0.45)_38%,rgb(0_0_0)_62%)] ${className ?? ''}`}
+      className={`hero-globe pointer-events-none absolute left-1/2 top-1/2 -z-10 aspect-square w-[calc(136vw-2.75rem)] -translate-x-1/2 sm:w-[min(46rem,150vw)] -translate-y-1/2 [mask-image:radial-gradient(circle_at_50%_50%,rgb(0_0_0/0.3)_0%,rgb(0_0_0/0.45)_38%,rgb(0_0_0)_62%)] ${className ?? ''}`}
     >
       <svg
         viewBox="0 0 600 600"

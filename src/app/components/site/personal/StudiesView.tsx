@@ -1,5 +1,7 @@
 'use client';
 
+import { RetrospectiveButton } from './Retrospective';
+import { Recommendations } from '../Recommendations';
 import { useEffect, useMemo, useState } from 'react';
 import {
   PiCheckCircle,
@@ -111,7 +113,10 @@ export function StudiesView({
             </Aba>
           ))}
         </Abas>
-        <ViewToggle />
+        <div className="flex flex-wrap items-center gap-2">
+          <RetrospectiveButton />
+          <ViewToggle />
+        </div>
       </div>
 
       {total > 0 && (
@@ -168,6 +173,9 @@ export function StudiesView({
             </>
           )}
         </div>
+      )}
+      {total > 0 && (
+        <Recommendations source={{ kind: 'me' }} className="mt-10" />
       )}
       <LearningModalHost />
     </div>

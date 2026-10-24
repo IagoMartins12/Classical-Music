@@ -1,5 +1,8 @@
 import { getWorkById } from '@/app/requests/work-page-details';
-import { cartaoDeCompartilhamento } from '@/app/utils/ogCard';
+import {
+  cartaoDeCompartilhamento,
+  retratoDeCompartilhamento,
+} from '@/app/utils/ogCard';
 
 export const revalidate = 3600;
 
@@ -12,21 +15,24 @@ export async function GET(
   const english = new URL(request.url).searchParams.get('l') === 'en';
   const work = await getWorkById(id);
 
-  const image = work
-    ? cartaoDeCompartilhamento({
-        rotulo: english ? 'Work' : 'Obra',
-        titulo: [work.title, work.opOrCatalog].filter(Boolean).join(', '),
-        linhas: [work.composer.fullName || work.composer.name],
-      })
-    : cartaoDeCompartilhamento({
-        rotulo: english ? 'Work' : 'Obra',
-        titulo: 'Opus Atlas',
-        linhas: [
-          english
-            ? 'The classical music encyclopedia'
-            : 'Enciclopédia de música clássica',
-        ],
-      });
+  // A foto do compositor; sem foto, o cartão desenhado.
+  const image =
+    (await retratoDeCompartilhamento(work?.composer.portraitUrl)) ??
+    (work
+      ? cartaoDeCompartilhamento({
+          rotulo: english ? 'Work' : 'Obra',
+          titulo: [work.title, work.opOrCatalog].filter(Boolean).join(', '),
+          linhas: [work.composer.fullName || work.composer.name],
+        })
+      : cartaoDeCompartilhamento({
+          rotulo: english ? 'Work' : 'Obra',
+          titulo: 'Opus Atlas',
+          linhas: [
+            english
+              ? 'The classical music encyclopedia'
+              : 'Enciclopédia de música clássica',
+          ],
+        }));
 
   image.headers.set(
     'Cache-Control',

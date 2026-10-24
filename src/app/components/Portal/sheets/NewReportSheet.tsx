@@ -21,6 +21,11 @@ import type {
 } from '@/app/requests/portal/api';
 import { firstName, monthName, today } from '../format';
 import { Options, ScreenLoading } from '../pieces';
+import {
+  NextPiecesPicker,
+  TipsEditor,
+  type PieceChoice,
+} from '../report/PedagogicalFields';
 import type { SheetProps } from '../PortalProvider';
 
 export const SECTION_LABEL: Record<ReportSection, string> = {
@@ -33,6 +38,7 @@ export const SECTION_LABEL: Record<ReportSection, string> = {
   engagement: 'Engajamento',
   recommendations: 'Sugestões de obra',
   comparison: 'Comparação com o período anterior',
+  skills: 'Evolução por habilidade',
 };
 const DEFAULT_SECTIONS: ReportSection[] = [
   'overview',
@@ -59,6 +65,20 @@ export default function NewReportSheet({
   const [message, setMessage] = useState('');
   const [visibility, setVisibility] = useState<ReportVisibility>('SHARED');
   const [comments, setComments] = useState(true);
+  const maestro = dashboard.data?.plan?.name === 'MAESTRO';
+  const [pieces, setPieces] = useState<PieceChoice[]>([]);
+  const [tips, setTips] = useState<string[]>([]);
+
+  // Maestro: a evolução por habilidade entra por padrão.
+  useEffect(() => {
+    if (maestro) setSections((set) => new Set(set).add('skills'));
+  }, [maestro]);
+
+  // Trocar de aluno descarta o que foi escolhido para o anterior.
+  useEffect(() => {
+    setPieces([]);
+    setTips([]);
+  }, [studentId]);
 
   useEffect(() => {
     if (!studentId && students.length === 1)
@@ -87,6 +107,15 @@ export default function NewReportSheet({
         sections: [...sections],
         allowComments: comments,
         visibility,
+        ...(maestro
+          ? {
+              nextPieces: pieces.map((p) => ({
+                workId: p.workId,
+                note: p.note.trim() || undefined,
+              })),
+              tips: tips.map((t) => t.trim()).filter(Boolean),
+            }
+          : {}),
       }),
     {
       success:
@@ -152,24 +181,56 @@ export default function NewReportSheet({
               O que entra
             </legend>
             <div className="flex flex-wrap gap-2">
-              {(Object.keys(SECTION_LABEL) as ReportSection[]).map((s) => (
-                <Chip
-                  key={s}
-                  selecionado={sections.has(s)}
-                  onClick={() =>
-                    setSections((set) => {
-                      const next = new Set(set);
-                      if (next.has(s)) next.delete(s);
-                      else next.add(s);
-                      return next;
-                    })
-                  }
-                >
-                  {SECTION_LABEL[s]}
-                </Chip>
-              ))}
+              {(Object.keys(SECTION_LABEL) as ReportSection[])
+                .filter((s) => s !== 'skills' || maestro)
+                .map((s) => (
+                  <Chip
+                    key={s}
+                    selecionado={sections.has(s)}
+                    onClick={() =>
+                      setSections((set) => {
+                        const next = new Set(set);
+                        if (next.has(s)) next.delete(s);
+                        else next.add(s);
+                        return next;
+                      })
+                    }
+                  >
+                    {SECTION_LABEL[s]}
+                  </Chip>
+                ))}
             </div>
+            {!maestro && (
+              <p className="t-legenda mt-2">
+                No Maestro o relatório também traz a evolução por habilidade, as
+                próximas peças, as suas dicas e o PDF.{' '}
+                <button
+                  type="button"
+                  onClick={() => open({ type: 'upgrade' })}
+                  className="underline underline-offset-2 hover:text-texto"
+                >
+                  Ver o Maestro
+                </button>
+              </p>
+            )}
           </fieldset>
+          {maestro && studentId && (
+            <>
+              <NextPiecesPicker
+                studentId={studentId}
+                name={name}
+                value={pieces}
+                onChange={setPieces}
+              />
+              <TipsEditor
+                studentId={studentId}
+                period={period}
+                name={name}
+                value={tips}
+                onChange={setTips}
+              />
+            </>
+          )}
           <Options
             label="Quem vê"
             value={visibility}

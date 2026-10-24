@@ -188,14 +188,16 @@ export function ComposerPage({
 
           <div className="flex min-w-0 flex-col gap-10">
             <header className="flex flex-col gap-5">
-              <h1 className="font-display text-[clamp(3rem,7vw,5.5rem)] leading-[0.95] tracking-[-0.02em]">
+              {/* Um degrau abaixo do que era (5,5rem): a maioria dos nomes ia
+                  para duas linhas. O selo fica na altura das letras. */}
+              <h1 className="font-display text-[clamp(2.5rem,5.4vw,4.5rem)] leading-[0.98] tracking-[-0.02em]">
                 {first && `${first} `}
                 <span className="whitespace-nowrap">
                   {last}
                   {composer.isVerified && (
                     <SeloVerificada
                       desenhar
-                      className="ml-2 inline-block h-[0.42em] w-[0.42em] align-[0.35em] text-verificado"
+                      className="ml-2 inline-block h-[0.42em] w-[0.42em] align-[0.12em] text-verificado"
                     />
                   )}
                 </span>

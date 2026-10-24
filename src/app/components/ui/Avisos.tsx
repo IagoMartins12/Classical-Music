@@ -72,7 +72,13 @@ export function Avisos() {
       <Toaster
         position="top-right"
         gutter={10}
-        containerStyle={{ pointerEvents: 'none', inset: 20 }}
+        containerStyle={{
+          pointerEvents: 'none',
+          inset: 20,
+          // No app instalado (PWA), os avisos descem o tamanho do entalhe, como
+          // a barra do topo; no navegador `--respiro-topo` é zero.
+          top: 'calc(20px + var(--respiro-topo, 0px))',
+        }}
         toastOptions={{ duration: 4000 }}
       >
         {(t) => (

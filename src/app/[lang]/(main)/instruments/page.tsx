@@ -1,4 +1,5 @@
 // app/instruments/page.tsx - Instrumentos históricos ULTRA otimizado
+import { imagemPadrao } from '@/app/utils/ogImagem';
 import { Metadata } from 'next';
 import { InstrumentsIndex } from '@/app/components/site/instruments/InstrumentsIndex';
 import {
@@ -110,24 +111,14 @@ export async function generateMetadata({
           ? 'https://opusatlas.com.br/instruments'
           : 'https://opusatlas.com.br/instruments',
       siteName: 'Opus Atlas',
-      images: [
-        {
-          url: 'https://opusatlas.com.br/logo-opus-atlas.jpeg',
-          width: 400,
-          height: 400,
-          alt:
-            language === 'pt'
-              ? 'Instrumentos Clássicos Históricos'
-              : 'Historical Classical Instruments',
-        },
-      ],
+      images: imagemPadrao(language),
     },
     twitter: {
       card: 'summary_large_image',
       title: t.ogTitle,
       description: t.ogDescription,
 
-      images: ['https://opusatlas.com.br/logo-opus-atlas.jpeg'],
+      images: imagemPadrao(language),
     },
     robots: {
       index: true,

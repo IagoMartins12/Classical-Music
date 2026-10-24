@@ -21,6 +21,7 @@ import { Portrait } from '../Portrait';
 import { ShareAction } from '../ShareAction';
 import { workTitle } from '../workTitle';
 import { MoreFromComposer } from './MoreFromComposer';
+import { Recommendations } from '../Recommendations';
 import { StudyActions } from './StudyActions';
 import { WorkLesson } from './WorkLesson';
 import { WorkAnnotations } from '../annotations/WorkAnnotations';
@@ -133,7 +134,7 @@ export function WorkPage({
               {work.isVerified && (
                 <SeloVerificada
                   desenhar
-                  className="ml-2 inline-block h-[0.42em] w-[0.42em] align-[0.35em] text-verificado"
+                  className="ml-2 inline-block h-[0.42em] w-[0.42em] align-[0.12em] text-verificado"
                 />
               )}
             </h1>
@@ -182,6 +183,12 @@ export function WorkPage({
               <CompleteInvite missing={missing} />
             </div>
           }
+        />
+
+        {/* Right after the scores: what to study next (Plus). */}
+        <Recommendations
+          source={{ kind: 'work', workId: work.id }}
+          className="mt-20"
         />
 
         {/* Below the scores, above the notes: first the score, then how it

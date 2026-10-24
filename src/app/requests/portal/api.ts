@@ -5,6 +5,7 @@
 // professor jogava fora a semana, os alunos e as entregas esperando retorno).
 // Aqui os tipos espelham a resposta da API e as telas leem direto.
 import { apiFetch, apiUrl, refreshSession } from '@/app/libs/api/client';
+import type { RecommendedWork } from '@/app/requests/recommendations';
 
 type Query = Record<string, string | number | boolean | null | undefined>;
 
@@ -454,6 +455,8 @@ export const completeLesson = (
     engagement?: number;
     preparation?: number;
     skillsWorked?: string[];
+    /** Nota 1–5 por habilidade da lista fixa (`SKILLS`). */
+    skillRatings?: Partial<Record<Skill, number>>;
     lessonSummary?: string;
     nextLessonPrep?: string;
     teacherNotes?: string;
@@ -1126,8 +1129,43 @@ export type ReportSection =
   | 'engagement'
   | 'insights'
   | 'comparison'
-  | 'recommendations';
+  | 'recommendations'
+  | 'skills';
 export type ReportVisibility = 'TEACHER_ONLY' | 'SHARED';
+
+/**
+ * As habilidades do relatório pedagógico (Maestro) — a mesma lista fixa da
+ * API (`portal/reports/skills.ts`). A nota vem do fechamento da aula.
+ */
+export const SKILLS = [
+  'technique',
+  'reading',
+  'rhythm',
+  'interpretation',
+  'memory',
+  'theory',
+  'ear',
+  'sound',
+] as const;
+export type Skill = (typeof SKILLS)[number];
+export const SKILL_LABEL: Record<Skill, string> = {
+  technique: 'Técnica',
+  reading: 'Leitura',
+  rhythm: 'Ritmo',
+  interpretation: 'Interpretação',
+  memory: 'Memória',
+  theory: 'Teoria',
+  ear: 'Percepção',
+  sound: 'Sonoridade',
+};
+
+/** Uma próxima peça aprovada pelo professor. */
+export interface ApprovedPiece {
+  workId: string;
+  title: string;
+  composer: string;
+  note: string | null;
+}
 
 export interface ReportSummary {
   id: string;
@@ -1145,6 +1183,9 @@ export interface ReportSummary {
   lastViewedAt: string | null;
   expiresAt: string | null;
   createdAt: string;
+  /** Maestro: peças e dicas que o professor aprovou. */
+  nextPieces: ApprovedPiece[] | null;
+  tips: string[];
   teacher: ApiPerson;
   student: ApiPerson;
 }
@@ -1227,6 +1268,26 @@ export interface ReportData {
     skillsWorked: Ranked;
     signals: Array<{ kind: string; detail: string; value: number }>;
   };
+  skills?: {
+    rated: boolean;
+    skills: Array<{
+      skill: Skill;
+      label: string;
+      current: Num;
+      change: Num;
+      lessons: number;
+      assignments: number;
+      practiceMinutes: number;
+      months: Array<{
+        month: string;
+        rating: Num;
+        ratings: number;
+        lessons: number;
+        assignments: number;
+        practiceMinutes: number;
+      }>;
+    }>;
+  };
   recommendations?: {
     inProgress: number;
     pieces: Array<{
@@ -1287,7 +1348,36 @@ export const createReport = (body: {
   sections?: ReportSection[];
   allowComments?: boolean;
   visibility?: ReportVisibility;
+  nextPieces?: Array<{ workId: string; note?: string }>;
+  tips?: string[];
 }) => send<ReportSummary>('POST', '/reports/shared', body);
+
+/** Maestro: sugestões do motor para o professor escolher. */
+export const nextPiecesFor = (studentId: string) =>
+  get<{ items: RecommendedWork[] }>(
+    `/reports/progress/${studentId}/next-pieces`
+  );
+/** Maestro: rascunho de dicas (IA, ou regras sem IA). Nada é gravado. */
+export const draftTips = (studentId: string, body: { period?: ReportPeriod }) =>
+  send<{ tips: string[]; generatedBy: string }>(
+    'POST',
+    `/reports/progress/${studentId}/tips-draft`,
+    body
+  );
+/** Maestro: o relatório compartilhado em PDF. */
+export const downloadReportPdf = (id: string, title: string) =>
+  downloadFile(
+    `/reports/shared/${id}/pdf`,
+    {},
+    `${
+      title
+        .normalize('NFD')
+        .replace(/[\u0300-\u036f]/g, '')
+        .replace(/[^a-zA-Z0-9]+/g, '-')
+        .replace(/^-|-$/g, '')
+        .toLowerCase() || 'relatorio'
+    }.pdf`
+  );
 export const publishReport = (id: string) =>
   send<ReportSummary>('PATCH', `/reports/shared/${id}/publish`);
 export const updateReport = (
@@ -1297,6 +1387,8 @@ export const updateReport = (
     teacherMessage?: string;
     allowComments?: boolean;
     isActive?: boolean;
+    nextPieces?: Array<{ workId: string; note?: string }>;
+    tips?: string[];
   }
 ) => send<ReportSummary>('PATCH', `/reports/shared/${id}`, body);
 export const revokeReport = (id: string) =>
