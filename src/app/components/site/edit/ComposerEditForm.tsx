@@ -1,6 +1,7 @@
 'use client';
 
 import { useRef, useState } from 'react';
+import { useRouter } from 'next/navigation';
 import toast from 'react-hot-toast';
 import { PiCamera } from 'react-icons/pi';
 import { Button } from '@/app/components/ui/Button';
@@ -34,6 +35,7 @@ export function ComposerEditForm({
   roles: Named[];
 }) {
   const { language } = useRouteLanguage();
+  const router = useRouter();
   const copy = EDIT[language];
   const t = copy.composer;
   const { form, set, dirty, discard, commit } = useEditForm({
@@ -79,6 +81,8 @@ export function ComposerEditForm({
     }
     commit();
     toast.success(copy.saved);
+    // A página pública (e o cache do roteador) já vê o que foi gravado.
+    router.refresh();
   };
 
   const upload = async (file: File) => {
@@ -91,6 +95,8 @@ export function ComposerEditForm({
     }
     set({ portraitUrl: result.imageUrl });
     toast.success(t.portraitSaved);
+    // A página pública (e o cache do roteador) já vê o que foi gravado.
+    router.refresh();
   };
 
   const field = (

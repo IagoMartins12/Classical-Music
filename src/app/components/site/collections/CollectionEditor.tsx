@@ -198,7 +198,7 @@ export function CollectionEditor({
             ) : (
               <span />
             )}
-            <div className="flex gap-2">
+            <div className="ml-auto flex gap-2">
               <Button
                 variante="fantasma"
                 onClick={requestClose}

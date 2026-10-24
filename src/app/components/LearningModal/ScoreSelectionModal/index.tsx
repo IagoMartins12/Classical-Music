@@ -148,17 +148,19 @@ const ScoreSelectionModal = ({
               ? copy.current(currentSelectedScore.title)
               : copy.noCurrent}
           </span>
-          <Button variante="fantasma" onClick={onClose}>
-            {isEditing ? copy.keep : copy.cancel}
-          </Button>
-          <Button
-            variante="primario"
-            onClick={confirm}
-            disabled={unchanged}
-            icone={selected ? PiCheck : undefined}
-          >
-            {selected ? copy.confirm : isEditing ? copy.remove : copy.skip}
-          </Button>
+          <div className="ml-auto flex gap-2">
+            <Button variante="fantasma" onClick={onClose}>
+              {isEditing ? copy.keep : copy.cancel}
+            </Button>
+            <Button
+              variante="primario"
+              onClick={confirm}
+              disabled={unchanged}
+              icone={selected ? PiCheck : undefined}
+            >
+              {selected ? copy.confirm : isEditing ? copy.remove : copy.skip}
+            </Button>
+          </div>
         </div>
       }
     >

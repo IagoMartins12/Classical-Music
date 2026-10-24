@@ -311,7 +311,9 @@ function ContributeSheet({
     if (failure) return toast.error(failure || copy.failed);
     toast.success(copy.published);
     close();
-    if (kind !== 'curiosity') router.refresh();
+    // Também a curiosidade: a lista local já mostra a nova, e o refresh limpa
+    // o cache do roteador das outras páginas que a mostram.
+    router.refresh();
   };
 
   const kinds = KINDS[target.type];
@@ -328,7 +330,7 @@ function ContributeSheet({
         rodape={
           <div className="flex w-full flex-wrap items-center justify-between gap-3">
             <span className="t-legenda">{copy.xpLater(XP[kind])}</span>
-            <div className="flex gap-2">
+            <div className="ml-auto flex gap-2">
               <Button
                 variante="fantasma"
                 onClick={requestClose}

@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import { useRouter } from 'next/navigation';
 import toast from 'react-hot-toast';
 import { PiArrowSquareOut, PiFilePdf } from 'react-icons/pi';
 import Link from '@/app/components/LocalizedLink';
@@ -27,6 +28,7 @@ const s = (v: string | number | null | undefined) =>
 /** Editing a score upload: its details; the file itself stays. */
 export function ScoreEditForm({ score }: { score: Score }) {
   const { language } = useRouteLanguage();
+  const router = useRouter();
   const copy = EDIT[language];
   const t = copy.score;
   const { form, set, dirty, discard, commit } = useEditForm({
@@ -58,6 +60,8 @@ export function ScoreEditForm({ score }: { score: Score }) {
     }
     commit();
     toast.success(copy.saved);
+    // A página pública (e o cache do roteador) já vê o que foi gravado.
+    router.refresh();
   };
 
   const field = (

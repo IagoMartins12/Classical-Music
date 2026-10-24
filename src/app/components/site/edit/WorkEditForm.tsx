@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import { useRouter } from 'next/navigation';
 import toast from 'react-hot-toast';
 import { asList } from './asList';
 import { CampoDeFichas } from '@/app/components/ui/CampoDeFichas';
@@ -30,6 +31,7 @@ export function WorkEditForm({
   epochs: Named[];
 }) {
   const { language } = useRouteLanguage();
+  const router = useRouter();
   const copy = EDIT[language];
   const t = copy.work;
   const [composer, setComposer] = useState<{
@@ -93,6 +95,8 @@ export function WorkEditForm({
     }
     commit();
     toast.success(copy.saved);
+    // A página pública (e o cache do roteador) já vê o que foi gravado.
+    router.refresh();
   };
 
   const field = (

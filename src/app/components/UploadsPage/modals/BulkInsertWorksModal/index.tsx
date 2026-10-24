@@ -405,6 +405,7 @@ const BulkInsertWorksModal = ({
         <Button
           variante="primario"
           icone={PiPlay}
+          className="ml-auto"
           onClick={handleProcessWorks}
           disabled={stats.selected === 0}
         >

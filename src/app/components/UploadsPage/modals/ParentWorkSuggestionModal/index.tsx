@@ -501,7 +501,7 @@ const ParentWorkSuggestionModal: React.FC<ParentWorkSuggestionModalProps> = ({
               {selectedFields.size} {tx('de', 'of')} {fieldSuggestions.length}{' '}
               {tx('selecionados', 'selected')}
             </span>
-            <div className="flex gap-2">
+            <div className="ml-auto flex gap-2">
               <Button
                 variante="fantasma"
                 onClick={handleCloseMainModal}

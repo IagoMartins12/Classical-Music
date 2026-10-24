@@ -1,7 +1,8 @@
 'use client';
 
 import { useQuery, useQueryClient } from '@tanstack/react-query';
-import { useState } from 'react';
+import { useRouter } from 'next/navigation';
+import { useEffect, useRef, useState, type ReactNode } from 'react';
 import toast from 'react-hot-toast';
 import {
   PiFlag,
@@ -50,6 +51,7 @@ export function ComposerCuriosities({
   const { isAuthenticated } = useAuth();
   const allowed = useSignInGate();
   const client = useQueryClient();
+  const router = useRouter();
   const key = ['curiosities', composerId, language];
   const { data: list = initial } = useQuery({
     queryKey: key,
@@ -70,6 +72,7 @@ export function ComposerCuriosities({
     if (!result?.ok) return toast.error(CONTRIBUTE[language].failed);
     update((current) => current.filter((c) => c.id !== curiosity.id));
     toast.success(copy.removed);
+    router.refresh();
   };
 
   return (
@@ -88,8 +91,17 @@ export function ComposerCuriosities({
         )}
       </div>
       {list.length ? (
-        <ul className={cx('grid grid-cols-1 gap-3', wide && 'md:grid-cols-2')}>
-          {list.map((c) => (
+        <Paginas
+          itens={list}
+          rotulo={heading}
+          rotuloDaPagina={(i, n) =>
+            language === 'en' ? `Page ${i} of ${n}` : `Página ${i} de ${n}`
+          }
+          classeDaPagina={cx(
+            'grid grid-cols-1 gap-3',
+            wide && 'md:grid-cols-2'
+          )}
+          render={(c) => (
             <li
               key={c.id}
               className="flex items-start gap-3 rounded-card bg-sup-2 p-4"
@@ -138,8 +150,8 @@ export function ComposerCuriosities({
                   />
                 ))}
             </li>
-          ))}
-        </ul>
+          )}
+        />
       ) : (
         <div className="flex flex-col items-start gap-4 rounded-card bg-sup-2 p-6">
           <p className="t-corpo text-texto-suave">{copy.first(name)}</p>
@@ -160,5 +172,98 @@ export function ComposerCuriosities({
         onClose={() => setReporting(null)}
       />
     </section>
+  );
+}
+
+/** Curiosidades por página: até quatro, sem carrossel; mais que isso, de 4 em 4. */
+const POR_PAGINA = 4;
+
+function Paginas({
+  itens,
+  render,
+  rotulo,
+  rotuloDaPagina,
+  classeDaPagina,
+}: {
+  itens: Curiosity[];
+  render: (c: Curiosity) => ReactNode;
+  rotulo: string;
+  rotuloDaPagina: (i: number, total: number) => string;
+  classeDaPagina: string;
+}) {
+  const trilho = useRef<HTMLDivElement>(null);
+  const [atual, setAtual] = useState(0);
+  const paginas: Curiosity[][] = [];
+  for (let i = 0; i < itens.length; i += POR_PAGINA)
+    paginas.push(itens.slice(i, i + POR_PAGINA));
+
+  useEffect(() => {
+    const el = trilho.current;
+    if (!el || paginas.length < 2) return;
+    const medir = () =>
+      setAtual(Math.round(el.scrollLeft / Math.max(el.clientWidth, 1)));
+    el.addEventListener('scroll', medir, { passive: true });
+    return () => el.removeEventListener('scroll', medir);
+  }, [paginas.length]);
+
+  if (paginas.length < 2)
+    return <ul className={classeDaPagina}>{itens.map(render)}</ul>;
+
+  const irPara = (i: number) => {
+    const el = trilho.current;
+    if (!el) return;
+    const reduzido = window.matchMedia(
+      '(prefers-reduced-motion: reduce)'
+    ).matches;
+    el.scrollTo({
+      left: i * el.clientWidth,
+      behavior: reduzido ? 'auto' : 'smooth',
+    });
+  };
+
+  return (
+    <div className="flex flex-col gap-1">
+      <div
+        ref={trilho}
+        aria-label={rotulo}
+        className="flex snap-x snap-mandatory overflow-x-auto overscroll-x-contain [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
+      >
+        {paginas.map((pagina, i) => (
+          <ul
+            key={i}
+            aria-label={rotuloDaPagina(i + 1, paginas.length)}
+            className={cx(
+              'w-full shrink-0 snap-start content-start',
+              classeDaPagina
+            )}
+          >
+            {pagina.map(render)}
+          </ul>
+        ))}
+      </div>
+      {/* Os pontos, como no carrossel do site: um por página. */}
+      <div role="group" aria-label={rotulo} className="flex justify-center">
+        {paginas.map((_, i) => (
+          <button
+            key={i}
+            type="button"
+            aria-label={rotuloDaPagina(i + 1, paginas.length)}
+            aria-current={i === atual ? 'true' : undefined}
+            onClick={() => irPara(i)}
+            className="group grid h-11 min-w-8 place-items-center px-1"
+          >
+            <span
+              aria-hidden="true"
+              className={cx(
+                'block h-2 rounded-full transition-[width,background-color] duration-[var(--t-resposta)] ease-saida motion-reduce:transition-none',
+                i === atual
+                  ? 'w-6 bg-ouro'
+                  : 'w-2 bg-linha-forte group-hover:bg-texto-fraco'
+              )}
+            />
+          </button>
+        ))}
+      </div>
+    </div>
   );
 }
