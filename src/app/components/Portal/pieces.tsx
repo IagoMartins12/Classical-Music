@@ -44,7 +44,7 @@ import {
 // ---------------------------------------------------------------------------
 // A marca — a família da marca do blog: "Portal do OPUS ATLAS" desenhado como
 // uma peça só (AssinaturaDeArea), com o lema do papel; na barra lateral, a
-// versão curta, sem o lema.
+// versão com o lema maior, que ainda se lê em 190 px.
 // ---------------------------------------------------------------------------
 
 const MOTTO: Record<Role, string> = {
@@ -71,10 +71,9 @@ export function Brand({
       )}
     >
       <AssinaturaDeArea
-        area="portal"
+        area={small ? 'portal-lateral' : 'portal'}
         variante={role}
-        curta={small}
-        className={small ? 'h-7' : 'h-10 sm:h-[46px]'}
+        className={small ? 'w-full max-w-[190px]' : 'h-10 sm:h-[46px]'}
       />
     </Link>
   );

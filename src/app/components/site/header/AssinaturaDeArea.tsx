@@ -2,27 +2,30 @@ import type { CSSProperties } from 'react';
 import { cx } from '@/app/components/ui/cx';
 
 /**
- * The width of each area signature for a height of 92 (public/brand/marca/areas).
+ * The box of each area signature (public/brand/marca/areas), width × height.
  * The full and the short version of an area share it.
  */
-const LARGURA = {
-  'blog-pt': 572.22,
-  'blog-en': 522.77,
-  portal: 607.62,
-  admin: 429.2,
+const CAIXA = {
+  'blog-pt': [572.22, 92],
+  'blog-en': [522.77, 92],
+  portal: [607.62, 92],
+  /** The portal's sidebar: the same line, a larger motto, so it still reads at 190 px. */
+  'portal-lateral': [607.62, 104],
+  admin: [429.2, 92],
 } as const;
 
-export type Area = keyof typeof LARGURA;
+export type Area = keyof typeof CAIXA;
 
 const camada = (arquivo: string): CSSProperties =>
   ({ '--marca': `url('/brand/marca/areas/${arquivo}.svg')` }) as CSSProperties;
 
 /**
  * "Blog do OPUS ATLAS", "Portal do OPUS ATLAS", the admin's "OPUS ATLAS":
- * drawn as one piece, like the main signature, in three stacked layers, all
- * in the theme's gold — the symbol and the name with the shine, the italic
- * plain, the motto a little softer. `curta` drops the motto and centres the
- * name (phones, sidebars). Size it by height; the width follows.
+ * drawn as one piece, like the main signature, in three stacked layers — the
+ * symbol and the name in the theme's gold with the shine, the italic in plain
+ * gold, the motto in the text colour so it steps back. `curta` drops the
+ * motto and centres the name (phones). Size it by height or by width; the
+ * other side follows.
  */
 export function AssinaturaDeArea({
   area,
@@ -41,11 +44,12 @@ export function AssinaturaDeArea({
     : variante
       ? `${area}-${variante}`
       : area;
+  const [largura, altura] = CAIXA[area];
   return (
     <span
       aria-hidden="true"
       className={cx('relative block shrink-0', className)}
-      style={{ aspectRatio: `${LARGURA[area]} / 92` }}
+      style={{ aspectRatio: `${largura} / ${altura}` }}
     >
       <span
         className="marca marca-brilho absolute inset-0"
@@ -59,7 +63,7 @@ export function AssinaturaDeArea({
       )}
       {!curta && (
         <span
-          className="marca absolute inset-0 opacity-75"
+          className="marca marca-lema absolute inset-0"
           style={camada(`${base}-lema`)}
         />
       )}

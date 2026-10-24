@@ -2467,6 +2467,11 @@ html {
     --marca: url('/brand/marca/assinatura-horizontal.svg');
     aspect-ratio: 667.75 / 88.75;
   }
+  /* The motto of an area signature (AssinaturaDeArea) steps back from the gold
+     in the text colour. */
+  .marca.marca-lema {
+    background-color: var(--texto-suave);
+  }
   /* Below 48 px the piano blurs: collapsed rails use the atlas O instead. */
   .marca-icone {
     --marca: url('/brand/marca/icone-pequeno.svg');
