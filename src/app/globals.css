@@ -2467,6 +2467,11 @@ html {
     --marca: url('/brand/marca/assinatura-horizontal.svg');
     aspect-ratio: 667.75 / 88.75;
   }
+  /* Below 48 px the piano blurs: collapsed rails use the atlas O instead. */
+  .marca-icone {
+    --marca: url('/brand/marca/icone-pequeno.svg');
+    aspect-ratio: 1;
+  }
   /* The gold pulse of the brand (`.gold-shine`, kept by the 26/09 decision)
      running through the signature instead of through live text. */
   .marca-brilho {

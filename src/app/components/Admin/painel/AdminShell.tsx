@@ -10,8 +10,8 @@ import {
   type ReactNode,
 } from 'react';
 import Link from 'next/link';
+import { MarcaDeArea } from '@/app/components/site/header/MarcaDeArea';
 import { usePathname, useRouter } from 'next/navigation';
-import { GiGrandPiano } from 'react-icons/gi';
 import {
   PiArrowSquareOut,
   PiCaretDown,
@@ -292,19 +292,13 @@ function Lateral({
     <div className="flex h-full min-h-0 flex-col">
       {!naFolha && (
         <div className="flex items-center gap-2.5 py-4 pl-5 pr-3">
-          <Link
+          <MarcaDeArea
             href="/admin"
-            className="flex min-w-0 flex-1 items-center gap-2.5"
-          >
-            <GiGrandPiano
-              className="h-7 w-7 shrink-0 text-ouro-texto"
-              aria-hidden="true"
-            />
-            <span className="flex min-w-0 flex-col leading-tight">
-              <span className="font-display text-lg">Opus Atlas</span>
-              <span className="t-legenda truncate">Painel administrativo</span>
-            </span>
-          </Link>
+            label="Opus Atlas — Painel administrativo"
+            area="Painel administrativo"
+            empilhada
+            className="flex-1"
+          />
           {aoRecolher && (
             <Button
               variante="fantasma"
@@ -542,7 +536,7 @@ function LateralRecolhida({
         className="mb-1 grid h-10 w-10 place-items-center"
         title="Painel"
       >
-        <GiGrandPiano className="h-7 w-7 text-ouro-texto" aria-hidden="true" />
+        <span aria-hidden="true" className="marca marca-icone h-7 w-7" />
         <span className="sr-only">Painel</span>
       </Link>
       <Button
