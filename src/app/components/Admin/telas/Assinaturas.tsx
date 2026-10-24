@@ -168,12 +168,18 @@ export default function Assinaturas() {
       principal: true,
       celula: (l) => (
         <span className="flex min-w-0 flex-col">
-          <Elo
-            onClick={() => navegar.usuario(l.usuario.id)}
-            className="truncate text-[0.9375rem]"
-          >
-            {l.usuario.nome}
-          </Elo>
+          {l.usuario.id ? (
+            <Elo
+              onClick={() => navegar.usuario(l.usuario.id!)}
+              className="truncate text-[0.9375rem]"
+            >
+              {l.usuario.nome}
+            </Elo>
+          ) : (
+            <span className="truncate text-[0.9375rem] text-texto-suave">
+              {l.usuario.nome}
+            </span>
+          )}
           <span className="t-legenda truncate">{l.usuario.email}</span>
         </span>
       ),
@@ -579,8 +585,8 @@ function DetalheAssinatura({
       aberto={!!id}
       aoFechar={aoFechar}
       rodape={
-        d ? (
-          <Button tamanho="p" onClick={() => navegar.usuario(d.usuario.id)}>
+        d?.usuario.id ? (
+          <Button tamanho="p" onClick={() => navegar.usuario(d.usuario.id!)}>
             Abrir a conta
           </Button>
         ) : undefined
@@ -588,7 +594,9 @@ function DetalheAssinatura({
       titulo={d ? d.usuario.nome : 'Assinatura'}
       descricao={
         d
-          ? `${d.usuario.email ?? ''} · conta desde ${data(d.usuario.desde)}`
+          ? d.usuario.desde
+            ? `${d.usuario.email ?? ''} · conta desde ${data(d.usuario.desde)}`
+            : 'O registro financeiro fica, sem a pessoa (RN-6).'
           : undefined
       }
       largura="g"

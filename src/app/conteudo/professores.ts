@@ -6,9 +6,10 @@ import type { Numeros } from './sobre';
  * O texto da página para professores (`/for-teachers`).
  *
  * **Só o que o portal faz hoje** (conferido em 11/10/2026): o convite é pela
- * conta que o aluno já tem; o relatório é compartilhado com o aluno, não sai
- * em PDF; o lembrete chega antes da aula e do prazo, no próprio site (aviso
- * por e-mail e SMS ainda está "em breve" no Maestro); vídeo nas tarefas só
+ * conta que o aluno já tem; o relatório é compartilhado com o aluno (em PDF
+ * no Maestro, desde 22/10); o lembrete chega antes da aula e do prazo, no
+ * próprio site e por e-mail (o WhatsApp do Maestro segue "em breve" até a
+ * conta da Meta estar no ar); vídeo nas tarefas só
  * no Maestro. Preços não moram aqui: os cartões são os mesmos da `/pricing`.
  */
 export type ConteudoProfessores = {

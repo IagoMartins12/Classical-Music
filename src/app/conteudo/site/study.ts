@@ -116,6 +116,11 @@ const pt = {
   videoAdd: 'Enviar um vídeo',
   videoAdded: 'Vídeo enviado.',
   videoNone: 'Nenhum vídeo ainda.',
+  videoQuota: (used: number, limit: number) =>
+    `${used} de ${limit} vídeos do plano Free.`,
+  videoFull: (limit: number) =>
+    `Você já tem os ${limit} vídeos do plano Free. Para enviar outro, apague um vídeo ou assine o Plus.`,
+  videoUpgrade: 'No Plus, sem limite',
   videoReplace: 'Substituir o vídeo',
   videoIsPublic: 'Público',
   videoIsPrivate: 'Privado',
@@ -252,6 +257,11 @@ const en: typeof pt = {
   videoAdd: 'Upload a video',
   videoAdded: 'Video uploaded.',
   videoNone: 'No video yet.',
+  videoQuota: (used: number, limit: number) =>
+    `${used} of ${limit} videos on the Free plan.`,
+  videoFull: (limit: number) =>
+    `You already have the ${limit} videos of the Free plan. To upload another, delete a video or subscribe to Plus.`,
+  videoUpgrade: 'Plus has no limit',
   videoReplace: 'Replace the video',
   videoIsPublic: 'Public',
   videoIsPrivate: 'Private',

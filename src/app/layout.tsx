@@ -24,7 +24,10 @@ import { CartoesQueViram } from '@/app/components/ui/CartoesQueViram';
  * vertical (BWV 1007, op. 27 n.º 2, 18 min), onde largura fixa alinha a coluna
  * sozinha.
  *
- * Só a sans é pré-carregada: é a que pinta o primeiro texto de qualquer tela.
+ * A sans e a Garamond são pré-carregadas: a sans pinta o primeiro texto de
+ * qualquer tela, e a Garamond é o título de obra e de compositor — o maior
+ * texto da página, o LCP. Medido em 24/10 (Lighthouse, celular, build local):
+ * a obra foi de LCP 7,1 s para 4,5 s (nota 70 → 82) ao pré-carregá-la.
  */
 const sans = Geist({
   subsets: ['latin'],
@@ -38,7 +41,7 @@ const display = EB_Garamond({
   style: ['normal', 'italic'],
   variable: '--fonte-display-next',
   display: 'swap',
-  preload: false,
+  preload: true,
 });
 
 const mono = Geist_Mono({

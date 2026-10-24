@@ -160,9 +160,18 @@ export function UploadsView({
   };
   const leaving = useSaidas();
 
-  const plan = session?.user.currentPlan ?? 'FREE';
+  // O teto vem da API (o plano que vale, inclusive o Plus pelo professor);
+  // enquanto ela não responde, vale o plano da sessão.
+  const sessionPlan = session?.user.currentPlan ?? 'FREE';
   const used = totals.data?.total ?? 0;
-  const limit = LIMITES.FREE.acervo;
+  const limit = totals.data
+    ? totals.data.limit
+    : sessionPlan === 'FREE'
+      ? LIMITES.FREE.acervo
+      : null;
+  const plan = limit === null ? 'PAID' : 'FREE';
+  // No teto: os botões param e a tela diz por quê, antes do formulário.
+  const full = limit !== null && used >= limit;
   const tabs: [Tab, string, number][] = [
     ['all', copy.tabs.all, data.counts.total],
     ['composer', copy.tabs.composer, data.counts.composer],
@@ -215,26 +224,46 @@ export function UploadsView({
           variante="primario"
           icone={PiUploadSimple}
           onClick={() => openForm('score')}
+          disabled={full}
         >
           {copy.newScore}
         </Button>
-        <Button icone={PiMusicNotes} onClick={() => openForm('work')}>
+        <Button
+          icone={PiMusicNotes}
+          onClick={() => openForm('work')}
+          disabled={full}
+        >
           {copy.newWork}
         </Button>
-        <Button icone={PiUser} onClick={() => openForm('composer')}>
+        <Button
+          icone={PiUser}
+          onClick={() => openForm('composer')}
+          disabled={full}
+        >
           {copy.newComposer}
         </Button>
       </div>
+      {full && limit !== null && (
+        <p className="t-rotulo -mt-4 text-texto-suave">
+          {copy.full(limit)}{' '}
+          <Link
+            href="/pricing"
+            className="text-ouro-texto underline decoration-transparent underline-offset-4 hover:decoration-[var(--ouro)]"
+          >
+            {copy.upgrade}
+          </Link>
+        </p>
+      )}
 
       <dl className="grid grid-cols-1 gap-3 sm:grid-cols-3">
         <div className="flex flex-col gap-2 rounded-card bg-sup-2 p-4">
           <dt className="t-legenda">
-            {plan === 'FREE' ? copy.plan(used, limit) : copy.unlimited}
+            {limit !== null ? copy.plan(used, limit) : copy.unlimited}
           </dt>
           <dd className="font-display text-[1.75rem] leading-none">
-            {plan === 'FREE' ? `${used} / ${limit}` : used}
+            {limit !== null ? `${used} / ${limit}` : used}
           </dd>
-          {plan === 'FREE' && (
+          {limit !== null && (
             <span className="block h-1.5 overflow-hidden rounded-full bg-[var(--linha)]">
               <span
                 className="block h-full rounded-full fill-ouro"
@@ -262,7 +291,7 @@ export function UploadsView({
           </dd>
         </div>
       </dl>
-      {plan === 'FREE' && (
+      {plan === 'FREE' && !full && (
         <p className="t-rotulo -mt-4 text-texto-suave">
           <Link
             href="/pricing"

@@ -696,26 +696,34 @@ export interface NotificationPreferences {
     label: string;
     audience: 'teacher' | 'student' | 'both';
     email: boolean;
-    sms: boolean;
+    whatsapp: boolean;
+    /** Só os temas com modelo aprovado na Meta saem por WhatsApp. */
+    whatsappCapable: boolean;
   }>;
   quietHoursStart: string | null;
   quietHoursEnd: string | null;
   hasEmail: boolean;
   hasPhone: boolean;
-  smsAvailable: boolean;
+  phone: string | null;
+  /** Maestro (o professor e os alunos dele) e o canal ligado no servidor. */
+  whatsappAvailable: boolean;
+  whatsappEligible: boolean;
+  whatsappOptIn: boolean;
 }
 export const getNotificationPreferences = () =>
   get<NotificationPreferences>('/notifications/preferences');
 export const updateNotificationPreferences = (body: {
-  channels?: Record<string, { email?: boolean; sms?: boolean }>;
+  channels?: Record<string, { email?: boolean; whatsapp?: boolean }>;
   quietHoursStart?: string | null;
   quietHoursEnd?: string | null;
+  phone?: string | null;
+  whatsappOptIn?: boolean;
 }) => send<NotificationPreferences>('PUT', '/notifications/preferences', body);
 export const sendAnnouncement = (body: {
   studentIds: string[];
   title: string;
   message: string;
-  channels?: { email?: boolean; sms?: boolean };
+  channels?: { email?: boolean; whatsapp?: boolean };
   sendAt?: string;
 }) =>
   send<{ delivered: number; skipped: number; scheduledFor: string | null }>(

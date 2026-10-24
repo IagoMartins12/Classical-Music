@@ -36,7 +36,10 @@ type Registro = {
   status?: string;
   billingPeriod?: 'MONTHLY' | 'YEARLY';
   endDate?: string | null;
-  metadata?: { pendingDowngrade?: Plano } | null;
+  metadata?: {
+    pendingDowngrade?: Plano;
+    pendingBillingPeriod?: 'MONTHLY' | 'YEARLY';
+  } | null;
 };
 
 const T = {
@@ -53,6 +56,11 @@ const T = {
     atrasada: (d: string) =>
       `Pagamento recusado. Atualize o cartão em “Pagamento e faturas” até ${d}; sem pagamento, a assinatura é encerrada e a conta volta ao Free.`,
     agendado: (p: string, d: string) => `Muda para o ${p} em ${d}.`,
+    agendadoPeriodo: (p: string, anual: boolean, d: string) =>
+      `Passa para o ${p} ${anual ? 'anual' : 'mensal'} em ${d}.`,
+    paraAnual: 'Mudar para o anual',
+    manterPlano: (p: string) => `Manter o ${p}`,
+    paraMensal: 'Mudar para o mensal',
     gratis: 'O plano gratuito: ler, ouvir e organizar o estudo.',
     seu: 'Seu plano',
     agendadoRotulo: 'Agendado',
@@ -96,6 +104,11 @@ const T = {
     atrasada: (d: string) =>
       `Payment declined. Update your card in “Payment and invoices” by ${d}; without payment, the subscription ends and the account returns to Free.`,
     agendado: (p: string, d: string) => `Moves to ${p} on ${d}.`,
+    agendadoPeriodo: (p: string, anual: boolean, d: string) =>
+      `Moves to ${p} ${anual ? 'yearly' : 'monthly'} on ${d}.`,
+    paraAnual: 'Switch to yearly',
+    manterPlano: (p: string) => `Keep ${p}`,
+    paraMensal: 'Switch to monthly',
     gratis: 'The free plan: read, listen and organize your practice.',
     seu: 'Your plan',
     agendadoRotulo: 'Scheduled',
@@ -232,7 +245,14 @@ export function GerenciarAssinatura({ idioma }: { idioma: Idioma }) {
       : atrasada
         ? t.atrasada(fim)
         : agendado
-          ? t.agendado(nome(agendado), fim)
+          ? registro?.metadata?.pendingBillingPeriod &&
+            registro.metadata.pendingBillingPeriod !== registro.billingPeriod
+            ? t.agendadoPeriodo(
+                nome(agendado),
+                registro.metadata.pendingBillingPeriod === 'YEARLY',
+                fim
+              )
+            : t.agendado(nome(agendado), fim)
           : atual?.plan?.isTrialActive
             ? t.teste(atual.plan.trialDaysRemaining)
             : plano !== 'FREE' && fim
@@ -322,13 +342,72 @@ export function GerenciarAssinatura({ idioma }: { idioma: Idioma }) {
     }
   }
 
+  // Atrasada ou cancelada não muda de plano: primeiro o cartão ou reativar.
+  const travada = cancelada || atrasada;
+  const periodoAtual = registro?.billingPeriod ?? 'MONTHLY';
+
+  // Desistir da descida agendada: a renovação volta ao plano de hoje.
+  async function manter(p: PlanoPago) {
+    setOcupado('manter');
+    try {
+      const r = await upgradeSubscriptionRequest(
+        p as PlanType,
+        periodoAtual === 'YEARLY' ? BillingPeriod.YEARLY : BillingPeriod.MONTHLY
+      );
+      toast.success(r.message);
+      await carregar();
+    } catch (e) {
+      toast.error((e as Error).message || t.erro);
+    } finally {
+      setOcupado(null);
+    }
+  }
+
   const acao = (p: Plano) => {
-    if (p === plano)
+    if (p === plano) {
+      if (agendado && p !== 'FREE' && !travada) {
+        return (
+          <Button
+            tamanho="p"
+            variante="secundario"
+            onClick={() => void manter(p)}
+            carregando={ocupado === 'manter'}
+            disabled={ocupado !== null}
+          >
+            {t.manterPlano(nome(p))}
+          </Button>
+        );
+      }
+      // O mesmo plano no outro período: mensal → anual vale agora (cobra a
+      // diferença), anual → mensal na renovação.
+      if (
+        p !== 'FREE' &&
+        !semAssinatura &&
+        !travada &&
+        periodo !== periodoAtual &&
+        (anual ? precos?.[p]?.anual : precos?.[p])
+      ) {
+        const paraAnual = periodo === BillingPeriod.YEARLY;
+        return (
+          <Button
+            tamanho="p"
+            variante={paraAnual ? 'secundario' : 'fantasma'}
+            icone={paraAnual ? PiArrowUp : PiArrowDown}
+            onClick={() =>
+              setPedido({ tipo: paraAnual ? 'subir' : 'descer', plano: p })
+            }
+            disabled={ocupado !== null}
+          >
+            {paraAnual ? t.paraAnual : t.paraMensal}
+          </Button>
+        );
+      }
       return (
         <span className="inline-flex min-h-9 items-center rounded-lg tint-ouro px-3 text-sm font-medium text-ouro-na-tinta">
           {t.seu}
         </span>
       );
+    }
     if (p === agendado)
       return (
         <span className="t-rotulo text-texto-suave">{t.agendadoRotulo}</span>
@@ -361,7 +440,7 @@ export function GerenciarAssinatura({ idioma }: { idioma: Idioma }) {
               : { tipo: acima ? 'subir' : 'descer', plano: p }
           )
         }
-        disabled={ocupado !== null || cancelada}
+        disabled={ocupado !== null || travada}
       >
         {acima ? t.subir(nome(p)) : t.descer(nome(p))}
       </Button>

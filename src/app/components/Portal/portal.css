@@ -28,7 +28,6 @@
     opacity: 0;
   }
 
-  
   .portal-cartao {
     transition:
       opacity 200ms var(--saida),

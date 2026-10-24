@@ -145,8 +145,9 @@ export interface PanoramaAssinaturas {
 
 export interface LinhaAssinatura {
   id: string;
+  /** `id` nulo: a conta foi apagada e a assinatura ficou como registro (RN-6). */
   usuario: {
-    id: string;
+    id: string | null;
     nome: string;
     email: string | null;
     imagem: string | null;
@@ -172,7 +173,7 @@ export interface DetalheAssinatura extends Omit<
   LinhaAssinatura,
   'cupom' | 'pagamentos' | 'criadaEm'
 > {
-  usuario: LinhaAssinatura['usuario'] & { desde: string };
+  usuario: LinhaAssinatura['usuario'] & { desde: string | null };
   cupom: { code: string; type: string; discountValue: number } | null;
   stripe: { assinatura: string | null; cliente: string | null };
   pagamentos: {
