@@ -156,10 +156,34 @@ export default async function InicioDoBlog({ params }: Props) {
       <JsonLd dados={jsonLdDoBlog(idioma, [...topo, ...ultimos])} />
       <h1 className="sr-only">{t.inicio.h1}</h1>
 
+      {principal && (
+        // Celular e tablet: as principais num carrossel, como as outras
+        // prateleiras do blog (24/10; antes eram uma embaixo da outra).
+        <section
+          aria-label={t.inicio.destaques}
+          className="entra pt-6 lg:hidden"
+        >
+          <Carrossel
+            sempre
+            largura="min(86vw,26rem)"
+            rotulo={t.inicio.destaques}
+            idioma={idioma}
+            cabecalho={null}
+            className="[&>div:nth-child(2)]:mt-0"
+          >
+            {topo.map((artigo, i) => (
+              <div role="listitem" key={artigo.id} className="snap-start">
+                <Peca artigo={artigo} idioma={idioma} prioridade={i === 0} />
+              </div>
+            ))}
+          </Carrossel>
+        </section>
+      )}
+
       {principal ? (
         <section
           aria-label={t.inicio.destaques}
-          className={cx(PAGINA, 'pt-6 lg:pt-6')}
+          className={cx(PAGINA, 'pt-6 max-lg:hidden lg:pt-6')}
         >
           <div
             className={cx(

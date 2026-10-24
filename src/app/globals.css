@@ -2491,6 +2491,19 @@ html {
     background-size: 200% auto;
     animation: shine 3s linear infinite;
   }
+  /* No claro, o brilho de sempre (feito para o fundo escuro) passava por um
+     dourado quase branco e a marca sumia no creme (24/10). O mesmo movimento,
+     num ouro mais fundo; o escuro não muda. */
+  [data-theme='light'] .marca-brilho {
+    background-image: linear-gradient(
+      90deg,
+      #6e5108 0%,
+      #b8860b 25%,
+      #8a6a0e 50%,
+      #b8860b 75%,
+      #6e5108 100%
+    );
+  }
   /* Engraved orbits and lines start drawn (no motion by default). */
   .engraving > :is(circle, ellipse, path)[pathLength] {
     stroke-dasharray: 1;
