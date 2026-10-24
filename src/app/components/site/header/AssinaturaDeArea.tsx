@@ -3,16 +3,25 @@ import { cx } from '@/app/components/ui/cx';
 
 /**
  * The box of each area signature (public/brand/marca/areas), width × height.
- * The full and the short version of an area share it.
+ * The blog's are built on the main signature's geometry (its ink band is
+ * 88.75 tall): at the main's CSS scale the piano and the name match it pixel
+ * for pixel. The short version (no motto) has its own box.
  */
 const CAIXA = {
-  'blog-pt': [572.22, 92],
-  'blog-en': [522.77, 92],
+  'blog-pt': [885.48, 143.27],
+  'blog-en': [805.04, 143.27],
   portal: [607.62, 92],
   /** The portal's sidebar: the same line, a larger motto, so it still reads at 190 px. */
   'portal-lateral': [607.62, 104],
   admin: [429.2, 92],
 } as const;
+
+const CAIXA_CURTA: Partial<
+  Record<keyof typeof CAIXA, readonly [number, number]>
+> = {
+  'blog-pt': [885.48, 88.75],
+  'blog-en': [805.04, 88.75],
+};
 
 export type Area = keyof typeof CAIXA;
 
@@ -44,7 +53,7 @@ export function AssinaturaDeArea({
     : variante
       ? `${area}-${variante}`
       : area;
-  const [largura, altura] = CAIXA[area];
+  const [largura, altura] = (curta && CAIXA_CURTA[area]) || CAIXA[area];
   return (
     <span
       aria-hidden="true"

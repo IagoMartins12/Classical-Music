@@ -199,11 +199,13 @@ export function CabecalhoDoBlog({
           <AssinaturaDeArea
             area={idioma === 'pt' ? 'blog-pt' : 'blog-en'}
             curta
-            className="h-9 sm:hidden"
+            className="h-[22px] sm:hidden"
           />
           <AssinaturaDeArea
             area={idioma === 'pt' ? 'blog-pt' : 'blog-en'}
-            className="hidden h-[46px] sm:block"
+            // The main header's signature is 22 px tall (24 px from xl): at these
+            // heights the blog's piano and name come out the same size as it.
+            className="hidden h-[35.51px] sm:block xl:h-[38.74px]"
           />
         </Link>
 
