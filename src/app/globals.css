@@ -2463,6 +2463,10 @@ html {
     --marca: url('/brand/marca/simbolo.svg');
     aspect-ratio: 1;
   }
+  .marca-simbolo-simples {
+    --marca: url('/brand/marca/simbolo-simples.svg');
+    aspect-ratio: 1;
+  }
   .marca-assinatura {
     --marca: url('/brand/marca/assinatura-horizontal.svg');
     aspect-ratio: 667.75 / 88.75;

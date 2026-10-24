@@ -21,7 +21,6 @@ import { ThemeToggle } from '@/app/components/ThemeToggle';
 import { Button } from '@/app/components/ui/Button';
 import { Icon } from '@/app/components/ui/Icon';
 import { MenuScreen, MenuScreenHeader } from '@/app/components/ui/MenuScreen';
-import { MarcaDeArea } from '@/app/components/site/header/MarcaDeArea';
 import { Sheet } from '@/app/components/ui/Sheet';
 import { cx } from '@/app/components/ui/cx';
 import { useAuth } from '@/app/hooks/useAuth';
@@ -191,12 +190,36 @@ export function CabecalhoDoBlog({
   return (
     <header className="navbar-classical sticky top-0 z-barra">
       <div className="mx-auto flex h-16 w-full max-w-[1360px] items-center gap-4 px-4 sm:h-[4.5rem] sm:px-6 lg:px-10">
-        <MarcaDeArea
+        <Link
           href={rotasDoBlog.inicio(idioma)}
-          label={t.nav.marca}
-          area={t.nav.blog}
-          lema={t.nav.lema}
-        />
+          aria-label={t.nav.marca}
+          className="group flex min-h-[var(--alvo)] shrink-0 items-center gap-2.5 rounded-controle"
+        >
+          <span
+            aria-hidden="true"
+            className="marca marca-simbolo-simples h-9 w-9 shrink-0 transition-transform duration-300 group-hover:scale-110 motion-reduce:transition-none sm:h-10 sm:w-10"
+          />
+          <span className="flex flex-col">
+            <span className="font-display text-[1.3125rem] leading-none sm:text-[1.5rem]">
+              {idioma === 'pt' ? (
+                <>
+                  <span className="italic text-texto-suave">
+                    {t.nav.marcaDo}{' '}
+                  </span>
+                  <span className="gold-shine font-semibold">Opus Atlas</span>
+                </>
+              ) : (
+                <>
+                  <span className="gold-shine font-semibold">Opus Atlas</span>
+                  <span className="italic text-texto-suave"> Blog</span>
+                </>
+              )}
+            </span>
+            <span className="mt-1 hidden text-[0.75rem] leading-none text-texto-fraco sm:block">
+              {t.nav.lema}
+            </span>
+          </span>
+        </Link>
 
         <nav
           aria-label={t.nav.rotulo}

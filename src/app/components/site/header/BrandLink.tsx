@@ -24,7 +24,7 @@ export function BrandLink({
     >
       <span
         aria-hidden="true"
-        className="marca marca-assinatura marca-brilho h-7 xl:h-8"
+        className="marca marca-assinatura marca-brilho h-[22px] xl:h-6"
       />
     </Link>
   );

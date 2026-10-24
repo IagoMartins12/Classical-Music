@@ -10,7 +10,6 @@ import {
   type ReactNode,
 } from 'react';
 import Link from 'next/link';
-import { MarcaDeArea } from '@/app/components/site/header/MarcaDeArea';
 import { usePathname, useRouter } from 'next/navigation';
 import {
   PiArrowSquareOut,
@@ -292,13 +291,19 @@ function Lateral({
     <div className="flex h-full min-h-0 flex-col">
       {!naFolha && (
         <div className="flex items-center gap-2.5 py-4 pl-5 pr-3">
-          <MarcaDeArea
+          <Link
             href="/admin"
-            label="Opus Atlas — Painel administrativo"
-            area="Painel administrativo"
-            empilhada
-            className="flex-1"
-          />
+            className="flex min-w-0 flex-1 items-center gap-2.5"
+          >
+            <span
+              aria-hidden="true"
+              className="marca marca-simbolo-simples h-9 w-9 shrink-0"
+            />
+            <span className="flex min-w-0 flex-col leading-tight">
+              <span className="font-display text-lg">Opus Atlas</span>
+              <span className="t-legenda truncate">Painel administrativo</span>
+            </span>
+          </Link>
           {aoRecolher && (
             <Button
               variante="fantasma"
