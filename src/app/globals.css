@@ -2467,14 +2467,6 @@ html {
     --marca: url('/brand/marca/assinatura-horizontal.svg');
     aspect-ratio: 667.75 / 88.75;
   }
-  /* The area signatures' grey layers (AssinaturaDeArea): the italic in the
-     soft text colour, the motto in the faint one, as the written header was. */
-  .marca.marca-texto {
-    background-color: var(--texto-suave);
-  }
-  .marca.marca-texto-fraco {
-    background-color: var(--texto-fraco);
-  }
   /* Below 48 px the piano blurs: collapsed rails use the atlas O instead. */
   .marca-icone {
     --marca: url('/brand/marca/icone-pequeno.svg');

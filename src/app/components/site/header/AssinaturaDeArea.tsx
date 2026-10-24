@@ -19,9 +19,9 @@ const camada = (arquivo: string): CSSProperties =>
 
 /**
  * "Blog do OPUS ATLAS", "Portal do OPUS ATLAS", the admin's "OPUS ATLAS":
- * drawn as one piece, like the main signature, in three stacked layers — the
- * symbol and the name in gold with the shine, the italic in the soft text
- * colour, the motto in the faint one. `curta` drops the motto and centres the
+ * drawn as one piece, like the main signature, in three stacked layers, all
+ * in the theme's gold — the symbol and the name with the shine, the italic
+ * plain, the motto a little softer. `curta` drops the motto and centres the
  * name (phones, sidebars). Size it by height; the width follows.
  */
 export function AssinaturaDeArea({
@@ -53,13 +53,13 @@ export function AssinaturaDeArea({
       />
       {area !== 'admin' && (
         <span
-          className="marca marca-texto absolute inset-0"
+          className="marca absolute inset-0"
           style={camada(`${base}-prefixo`)}
         />
       )}
       {!curta && (
         <span
-          className="marca marca-texto-fraco absolute inset-0"
+          className="marca absolute inset-0 opacity-75"
           style={camada(`${base}-lema`)}
         />
       )}
