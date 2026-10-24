@@ -483,6 +483,26 @@ export interface paths {
     patch?: never;
     trace?: never;
   };
+  '/api/works/scores/{scoreId}/download': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    /**
+     * Conta um download de partitura pelo botão do site
+     * @description Chamada pelo site ao clicar em "Baixar PDF". Robô não conta. Não devolve corpo: o arquivo abre de qualquer jeito. O ranking está em `GET /admin/scores?sortBy=siteDownloads`.
+     */
+    post: operations['WorksController_registerScoreDownload'];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
   '/api/works/{id}/scores': {
     parameters: {
       query?: never;
@@ -834,7 +854,7 @@ export interface paths {
     get?: never;
     put?: never;
     /**
-     * Traduz uma biografia do português para o inglês, sem gravar
+     * Traduz uma biografia entre português e inglês, sem gravar
      * @description O texto do formulário, como está (pode não estar salvo). Substitui `POST /api/composer/[id]/biography/translate`, que traduzia pelo Google Tradutor; aqui é a mesma IA da biografia.
      */
     post: operations['ComposersController_translateBiography'];
@@ -1018,6 +1038,282 @@ export interface paths {
     get: operations['DiscoveryController_getRecentAdditions'];
     put?: never;
     post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/api/works/{id}/recommendations': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /**
+     * Peças para estudar depois desta (Plus)
+     * @description Do Plus em diante (inclusive o Plus pelo professor): a lista com o motivo de cada uma. Sem o plano, `locked: true` e só a prévia (títulos), para a tela convidar.
+     */
+    get: operations['RecommendationsController_forWork'];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/api/learning/recommendations': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /**
+     * Recomendadas para você (Plus)
+     * @description A partir do que a pessoa já aprendeu, quer aprender e favoritou. Sem o plano, `locked: true`.
+     */
+    get: operations['RecommendationsController_forMe'];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/api/pricing': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /** Preços públicos dos planos pagos */
+    get: operations['BillingController_getPricing'];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/api/coupon/validate': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    /** Valida um cupom de desconto para um plano/período */
+    post: operations['BillingController_validateCoupon'];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/api/subscription/create': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    /**
+     * Cria uma nova assinatura (FREE imediato, ou checkout Stripe para planos pagos)
+     * @description Consolida os antigos `subscription/create` e `stripe/checkout` do legado — duas implementações que faziam essencialmente a mesma coisa (uma criando Product/Price novos no Stripe a cada chamada, a outra usando Price IDs fixos). Aqui só existe um caminho, usando Price IDs pré-cadastrados.
+     */
+    post: operations['BillingController_createSubscription'];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/api/stripe/success': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /**
+     * Confirma o pagamento após o retorno do Checkout do Stripe
+     * @description Idempotente — se o webhook já confirmou a mesma sessão primeiro, não duplica o pagamento.
+     */
+    get: operations['BillingController_confirmStripeSuccess'];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/api/stripe/portal': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    /** Abre o Portal do Cliente do Stripe para o usuário logado */
+    post: operations['BillingController_openBillingPortal'];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/api/subscription/current': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /** Assinatura atual do usuário logado, com histórico e pagamentos recentes */
+    get: operations['BillingController_getCurrentSubscription'];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/api/subscription/cancel': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    /** Cancela a assinatura (acesso continua até o fim do período pago) */
+    post: operations['BillingController_cancelSubscription'];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/api/subscription/reactivate': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    /** Reativa uma assinatura cancelada, antes do fim do período */
+    post: operations['BillingController_reactivateSubscription'];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/api/subscription/upgrade': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    /**
+     * Faz upgrade (checkout imediato) ou downgrade (agendado) de plano
+     * @description Downgrade só agenda a troca para o fim do ciclo atual. Upgrade cria um novo checkout Stripe — a assinatura anterior só é cancelada depois que o pagamento é confirmado (o legado cancelava no mesmo instante do checkout, arriscando deixar o usuário sem nenhum plano pago caso o pagamento fosse abandonado).
+     */
+    post: operations['BillingController_upgradeSubscription'];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/api/payment/history': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /** Histórico de pagamentos do usuário logado */
+    get: operations['BillingController_getPaymentHistory'];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/api/invoice/{invoiceId}': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /** Dados de uma nota fiscal (JSON) — só o dono ou um admin */
+    get: operations['BillingController_getInvoice'];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/api/invoice/{invoiceId}/html': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /**
+     * Renderiza a nota fiscal como HTML para visualização/impressão
+     * @description Rota nova (o legado só tinha `GET`, que já retornava HTML direto em vez de JSON); separada aqui para deixar `GET /invoice/:id` consistente com o resto da API (sempre JSON).
+     */
+    get: operations['BillingController_getInvoiceHtml'];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/api/cron/check-subscriptions': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    /**
+     * Verifica trials/renovações expirando e assinaturas vencidas
+     * @description Envia notificações (trial expirando, lembrete de renovação) e expira trials/assinaturas vencidas. Recomendado rodar 1x por dia.
+     */
+    post: operations['CronController_checkSubscriptions'];
     delete?: never;
     options?: never;
     head?: never;
@@ -2401,6 +2697,66 @@ export interface paths {
     patch?: never;
     trace?: never;
   };
+  '/api/reports/progress/{studentId}/next-pieces': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /**
+     * Sugestões de próximas peças para o aluno (Maestro)
+     * @description Do motor de recomendações, a partir do que o aluno estudou e quer estudar. Voltam para o professor escolher; o aluno só vê as aprovadas.
+     */
+    get: operations['ReportsController_nextPieces'];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/api/reports/progress/{studentId}/tips-draft': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    /**
+     * Rascunho de dicas para o aluno (Maestro)
+     * @description A IA lê os números do período e escreve; sem IA, as regras escrevem. Nada é gravado: o professor revisa e manda no compartilhamento.
+     */
+    post: operations['ReportsController_tipsDraft'];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/api/reports/shared/{id}/pdf': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /**
+     * Baixa o relatório compartilhado em PDF (Maestro)
+     * @description O retrato gravado, não uma geração nova.
+     */
+    get: operations['ReportsController_pdf'];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
   '/api/reports/shared': {
     parameters: {
       query?: never;
@@ -2718,242 +3074,6 @@ export interface paths {
     patch?: never;
     trace?: never;
   };
-  '/api/pricing': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    /** Preços públicos dos planos pagos */
-    get: operations['BillingController_getPricing'];
-    put?: never;
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  '/api/coupon/validate': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    get?: never;
-    put?: never;
-    /** Valida um cupom de desconto para um plano/período */
-    post: operations['BillingController_validateCoupon'];
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  '/api/subscription/create': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    get?: never;
-    put?: never;
-    /**
-     * Cria uma nova assinatura (FREE imediato, ou checkout Stripe para planos pagos)
-     * @description Consolida os antigos `subscription/create` e `stripe/checkout` do legado — duas implementações que faziam essencialmente a mesma coisa (uma criando Product/Price novos no Stripe a cada chamada, a outra usando Price IDs fixos). Aqui só existe um caminho, usando Price IDs pré-cadastrados.
-     */
-    post: operations['BillingController_createSubscription'];
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  '/api/stripe/success': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    /**
-     * Confirma o pagamento após o retorno do Checkout do Stripe
-     * @description Idempotente — se o webhook já confirmou a mesma sessão primeiro, não duplica o pagamento.
-     */
-    get: operations['BillingController_confirmStripeSuccess'];
-    put?: never;
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  '/api/stripe/portal': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    get?: never;
-    put?: never;
-    /** Abre o Portal do Cliente do Stripe para o usuário logado */
-    post: operations['BillingController_openBillingPortal'];
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  '/api/subscription/current': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    /** Assinatura atual do usuário logado, com histórico e pagamentos recentes */
-    get: operations['BillingController_getCurrentSubscription'];
-    put?: never;
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  '/api/subscription/cancel': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    get?: never;
-    put?: never;
-    /** Cancela a assinatura (acesso continua até o fim do período pago) */
-    post: operations['BillingController_cancelSubscription'];
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  '/api/subscription/reactivate': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    get?: never;
-    put?: never;
-    /** Reativa uma assinatura cancelada, antes do fim do período */
-    post: operations['BillingController_reactivateSubscription'];
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  '/api/subscription/upgrade': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    get?: never;
-    put?: never;
-    /**
-     * Faz upgrade (checkout imediato) ou downgrade (agendado) de plano
-     * @description Downgrade só agenda a troca para o fim do ciclo atual. Upgrade cria um novo checkout Stripe — a assinatura anterior só é cancelada depois que o pagamento é confirmado (o legado cancelava no mesmo instante do checkout, arriscando deixar o usuário sem nenhum plano pago caso o pagamento fosse abandonado).
-     */
-    post: operations['BillingController_upgradeSubscription'];
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  '/api/payment/history': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    /** Histórico de pagamentos do usuário logado */
-    get: operations['BillingController_getPaymentHistory'];
-    put?: never;
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  '/api/invoice/{invoiceId}': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    /** Dados de uma nota fiscal (JSON) — só o dono ou um admin */
-    get: operations['BillingController_getInvoice'];
-    put?: never;
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  '/api/invoice/{invoiceId}/html': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    /**
-     * Renderiza a nota fiscal como HTML para visualização/impressão
-     * @description Rota nova (o legado só tinha `GET`, que já retornava HTML direto em vez de JSON); separada aqui para deixar `GET /invoice/:id` consistente com o resto da API (sempre JSON).
-     */
-    get: operations['BillingController_getInvoiceHtml'];
-    put?: never;
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  '/api/cron/check-subscriptions': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    get?: never;
-    put?: never;
-    /**
-     * Verifica trials/renovações expirando e assinaturas vencidas
-     * @description Envia notificações (trial expirando, lembrete de renovação) e expira trials/assinaturas vencidas. Recomendado rodar 1x por dia.
-     */
-    post: operations['CronController_checkSubscriptions'];
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
   '/api/favorites/composers': {
     parameters: {
       query?: never;
@@ -3062,6 +3182,58 @@ export interface paths {
     head?: never;
     /** Atualiza os dados de um item já aprendido */
     patch: operations['LearnedController_update'];
+    trace?: never;
+  };
+  '/api/learning/retrospective': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /** Situação da retrospectiva: plano, se já dá, o que foi gerado */
+    get: operations['RetrospectiveController_status'];
+    put?: never;
+    /** Gera (ou refaz) a retrospectiva do ano ou de tudo (Plus) */
+    post: operations['RetrospectiveController_generate'];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/api/learning/retrospective/{period}': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /** A retrospectiva já gerada */
+    get: operations['RetrospectiveController_mine'];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/api/retrospectives/{shareId}': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /** A retrospectiva compartilhada (cartões e primeiro nome) */
+    get: operations['RetrospectiveController_shared'];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
     trace?: never;
   };
   '/api/annotations': {
@@ -5224,6 +5396,26 @@ export interface paths {
     patch?: never;
     trace?: never;
   };
+  '/api/achievements/new': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /**
+     * Conquistas ainda não vistas
+     * @description Leve, para o aviso em tempo real. Sem cache: o ponto é saber agora.
+     */
+    get: operations['AchievementsController_listNew'];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
   '/api/achievements/check': {
     parameters: {
       query?: never;
@@ -6033,6 +6225,382 @@ export interface paths {
      * @description Sem corpo, aprova o texto atual (português e tradução). Com `bio` e/ou `bioEn`, grava o texto reescrito, que passa a ser de uma pessoa, e aprova.
      */
     post: operations['BioReviewController_review'];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/api/admin/finance/summary': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /**
+     * O mês: custos, receita, resultado, assinantes, equilíbrio e projeção
+     * @description Caixa: pagamentos aprovados no mês. Competência: o MRR de hoje (anual vale 1/12). A projeção são os próximos 12 meses com os recorrentes, as parcelas que faltam e o MRR atual. Dinheiro em centavos de real.
+     */
+    get: operations['FinanceController_summary'];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/api/admin/finance/mrr': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /**
+     * O MRR mês a mês: o fim de cada mês e a ponte entre eles
+     * @description Do retrato diário do MRR: novo, expansão, contração e cancelamento (a diferença entre dois retratos, assinatura por assinatura). `since` é o dia do primeiro retrato; antes dele não há número.
+     */
+    get: operations['FinanceController_mrr'];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/api/admin/finance/stripe-fees/sync': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    /**
+     * Lê no Stripe a taxa dos pagamentos que ainda não a têm
+     * @description Em lotes de 25. `pending` é o que ainda falta; chame de novo até zerar.
+     */
+    post: operations['FinanceController_syncStripeFees'];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/api/admin/finance/entries': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /** Lançamentos de custo ou de entrada manual */
+    get: operations['FinanceController_entries'];
+    put?: never;
+    /**
+     * Lança um custo ou uma entrada
+     * @description Em dólar ou euro, sem `fxRate`, usa a PTAX do dia; a cotação fica guardada no lançamento.
+     */
+    post: operations['FinanceController_createEntry'];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/api/admin/finance/entries/{id}': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    post?: never;
+    /** Apaga um lançamento */
+    delete: operations['FinanceController_removeEntry'];
+    options?: never;
+    head?: never;
+    /** Corrige um lançamento */
+    patch: operations['FinanceController_updateEntry'];
+    trace?: never;
+  };
+  '/api/admin/finance/entries/{id}/pause': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    /** Pausa ou encerra um recorrente, sem apagar o histórico */
+    post: operations['FinanceController_pause'];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/api/admin/finance/entries/{id}/resume': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    /** Retoma um recorrente pausado */
+    post: operations['FinanceController_resume'];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/api/admin/finance/goals': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /**
+     * Metas com o progresso de hoje
+     * @description MRR, assinantes e professores ativos, com prazo.
+     */
+    get: operations['FinanceController_goals'];
+    put?: never;
+    /** Cria uma meta */
+    post: operations['FinanceController_createGoal'];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/api/admin/finance/goals/{id}': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    post?: never;
+    /** Apaga uma meta */
+    delete: operations['FinanceController_removeGoal'];
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/api/admin/finance/export': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /** Exporta as cobranças e entradas manuais de um período em CSV */
+    get: operations['FinanceController_export'];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/api/admin/catalog-quality': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /**
+     * Quanto do acervo está preenchido e confere
+     * @description Compositores (datas, nacionalidade, biografia, retrato, época de acordo com as datas) e obras (tonalidade, ano, instrumentação, mídia). Cache de 10 minutos.
+     */
+    get: operations['CatalogQualityController_get'];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/api/admin/catalog-jobs': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /** As rotinas do acervo, com a última execução de cada */
+    get: operations['CatalogJobsController_list'];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/api/admin/catalog-jobs/runs/{runId}': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /**
+     * Uma execução: progresso, resultado e log
+     * @description É o que a tela pergunta enquanto a rotina roda.
+     */
+    get: operations['CatalogJobsController_run'];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/api/admin/catalog-jobs/runs/{runId}/stop': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    /** Pede para parar uma execução em andamento */
+    post: operations['CatalogJobsController_stop'];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/api/admin/catalog-jobs/{job}/runs': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /** Histórico de execuções de uma rotina */
+    get: operations['CatalogJobsController_history'];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/api/admin/catalog-jobs/{job}/run': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    /**
+     * Dispara uma rotina (simula, ou grava com `apply`)
+     * @description Enfileira para o worker e responde na hora com a execução. Uma por vez. Rotina que junta ou apaga registros exige `confirm: true` para gravar.
+     */
+    post: operations['CatalogJobsController_start'];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/api/admin/support-tickets': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /**
+     * Chamados do formulário de contato
+     * @description Abertos: prioritários (planos pagos) primeiro e, dentro de cada grupo, o mais antigo primeiro.
+     */
+    get: operations['SupportTicketsController_list'];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/api/admin/support-tickets/{id}': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    /** Muda a situação do chamado ou a nota interna */
+    patch: operations['SupportTicketsController_update'];
+    trace?: never;
+  };
+  '/api/admin/contributions': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /**
+     * Contribuições em vigor ou reprovadas
+     * @description Paginação por cursor, da mais recente para a mais antiga. As contagens respeitam o tipo e o autor filtrados.
+     */
+    get: operations['AdminContributionsController_list'];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/api/admin/contributions/{id}/reject': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    /**
+     * Reprova uma contribuição e devolve o XP
+     * @description Desfaz o efeito (o valor antigo volta, se nada o substituiu), cancela o XP ou o devolve se já tinha sido pago, e avisa o autor com o motivo.
+     */
+    post: operations['AdminContributionsController_reject'];
     delete?: never;
     options?: never;
     head?: never;
@@ -6968,8 +7536,8 @@ export interface paths {
       cookie?: never;
     };
     /**
-     * Baixa o relatório em CSV
-     * @description UTF-8 com BOM, para o Excel reconhecer os acentos. Relatório gerado pelo sistema antigo não tem retrato neste formato: responde 404.
+     * Baixa o relatório em CSV ou planilha (xlsx)
+     * @description CSV em UTF-8 com BOM, para o Excel reconhecer os acentos; `format=xlsx` traz uma aba de resumo e uma por tabela. Relatório gerado pelo sistema antigo não tem retrato neste formato: responde 404.
      */
     get: operations['AdminReportsController_download'];
     put?: never;
@@ -8675,6 +9243,12 @@ export interface components {
     TranslateBiographyDto: {
       /** @description Biografia em português, como está no formulário. */
       text: string;
+      /**
+       * @description Para qual idioma traduzir: `en` (o texto é português, o padrão) ou `pt` (o texto é inglês).
+       * @default en
+       * @enum {string}
+       */
+      to: 'pt' | 'en';
     };
     TranslatedBiographyDto: {
       translatedText: string;
@@ -8879,6 +9453,201 @@ export interface components {
     RecentAdditionsResponseDto: {
       composers: components['schemas']['RecentComposerDto'][];
       works: components['schemas']['RecentWorkDto'][];
+    };
+    PeriodPricingDto: {
+      /** @example 191.04 */
+      price: number;
+      /** @example 20 */
+      discount: number;
+      /** @example 15.92 */
+      monthlyEquivalent: number;
+      /** @example 47.76 */
+      savings: number;
+    };
+    PlanPricingDto: {
+      /** @example 19.9 */
+      monthly: number;
+      yearly: components['schemas']['PeriodPricingDto'];
+      /** @example 7 */
+      trialDays: number;
+      description?: string | null;
+    };
+    PricingResponseDto: {
+      /** @example true */
+      success: boolean;
+      /** @description Preços por tipo de plano (chaves: PLUS, MENTOR, MAESTRO — FREE não aparece) */
+      data: {
+        [key: string]: components['schemas']['PlanPricingDto'];
+      };
+    };
+    ValidateCouponDto: {
+      /** @example BEMVINDO20 */
+      code: string;
+      /** @enum {string} */
+      planType: 'FREE' | 'PLUS' | 'MENTOR' | 'MAESTRO';
+      /** @enum {string} */
+      billingPeriod?: 'MONTHLY' | 'YEARLY';
+    };
+    CouponSummaryDto: {
+      /** @example 685d591c1e3db0c5aaa893e4 */
+      id: string;
+      /** @example BEMVINDO20 */
+      code: string;
+      /** @example PERCENTAGE */
+      type: string;
+      /** @example 20 */
+      discountValue: number;
+      description?: string | null;
+      extraTrialDays?: number | null;
+    };
+    CouponPricingDto: {
+      /** @example 191.04 */
+      originalPrice: number;
+      /** @example 38.21 */
+      discount: number;
+      /** @example 152.83 */
+      finalPrice: number;
+      /** @example 38.21 */
+      savings: number;
+      /** @example 20.00 */
+      savingsPercentage: string;
+    };
+    CouponValidationResponseDto: {
+      /** @example true */
+      valid: boolean;
+      error?: string;
+      coupon?: components['schemas']['CouponSummaryDto'];
+      pricing?: components['schemas']['CouponPricingDto'];
+      message?: string;
+    };
+    CreateSubscriptionDto: {
+      /** @enum {string} */
+      planType: 'FREE' | 'PLUS' | 'MENTOR' | 'MAESTRO';
+      /**
+       * @description Obrigatório para todo plano que não seja FREE
+       * @enum {string}
+       */
+      billingPeriod?: 'MONTHLY' | 'YEARLY';
+      /** @example BEMVINDO20 */
+      couponCode?: string;
+    };
+    CheckoutInfoDto: {
+      /** @example cs_test_a1b2c3 */
+      sessionId: string;
+      /** @example https://checkout.stripe.com/c/pay/cs_test_a1b2c3 */
+      checkoutUrl: string;
+    };
+    SubscriptionActionResponseDto: {
+      /** @example true */
+      success: boolean;
+      /** @example Assinatura criada com sucesso */
+      message: string;
+      /** @description Registro da assinatura (`Subscription`), passado adiante como veio do Prisma */
+      subscription?: Record<string, unknown>;
+      payment?: components['schemas']['CheckoutInfoDto'];
+      /**
+       * Format: date-time
+       * @example 2026-09-20T00:00:00.000Z
+       */
+      accessUntil?: string | null;
+    };
+    CurrentPlanDto: {
+      /** @enum {string} */
+      type: 'FREE' | 'PLUS' | 'MENTOR' | 'MAESTRO';
+      /** @example true */
+      isValid: boolean;
+      /** @example false */
+      isTrialActive: boolean;
+      /** @example 0 */
+      trialDaysRemaining: number;
+      /** Format: date-time */
+      expiresAt?: string | null;
+      /** @description Quando o Plus vem do professor Maestro (aluno sem assinatura): o nome dele. */
+      viaTeacher?: string | null;
+      /** @description Matriz de features habilitadas/limites do plano atual */
+      features: Record<string, unknown>;
+    };
+    CurrentSubscriptionResponseDto: {
+      /** @example true */
+      success: boolean;
+      plan: components['schemas']['CurrentPlanDto'];
+      /** @description Registro completo de `Subscription`, ou `null` se o usuário está no FREE sem registro */
+      subscription?: Record<string, unknown> | null;
+      history: Record<string, unknown>[];
+      recentPayments: Record<string, unknown>[];
+    };
+    CancelSubscriptionDto: {
+      /** @example too_expensive */
+      reason?: string;
+      feedback?: string;
+    };
+    UpgradeSubscriptionDto: {
+      /** @enum {string} */
+      newPlanType: 'FREE' | 'PLUS' | 'MENTOR' | 'MAESTRO';
+      /** @enum {string} */
+      billingPeriod?: 'MONTHLY' | 'YEARLY';
+    };
+    PaymentStatsDto: {
+      /** @example 239.7 */
+      totalPaid: number;
+      /** @example 6 */
+      totalPayments: number;
+      /** @example 5 */
+      approvedCount: number;
+      /** @example 0 */
+      pendingCount: number;
+      /** @example 1 */
+      rejectedCount: number;
+      /** @example 0 */
+      refundedCount: number;
+    };
+    PaymentHistoryResponseDto: {
+      /** @example true */
+      success: boolean;
+      payments: Record<string, unknown>[];
+      /** @description Pagamentos agrupados por status: approved/pending/rejected/refunded */
+      grouped: Record<string, unknown>;
+      stats: components['schemas']['PaymentStatsDto'];
+    };
+    InvoiceSummaryDto: {
+      /** @example 685d591c1e3db0c5aaa893e4 */
+      id: string;
+      /** @example NF-2026-001234 */
+      invoiceNumber: string;
+      /** @example PAID */
+      status: string;
+      /** @example 19.9 */
+      amount: number;
+      /** @example 0 */
+      taxAmount: number;
+      /** @example 19.9 */
+      totalAmount: number;
+      /**
+       * Format: date-time
+       * @example 2026-09-06T12:00:00.000Z
+       */
+      issueDate: string;
+      /**
+       * Format: date-time
+       * @example 2026-09-06T12:00:00.000Z
+       */
+      dueDate: string;
+      /** Format: date-time */
+      paidAt?: string | null;
+      /** @example Maria Silva */
+      customerName: string;
+      /** @example maria@example.com */
+      customerEmail: string;
+      /** @example Assinatura Plus - Mensal */
+      description: string;
+      pdfUrl?: string | null;
+    };
+    InvoiceDetailResponseDto: {
+      /** @example true */
+      success: boolean;
+      invoice: components['schemas']['InvoiceSummaryDto'];
+      subscription: Record<string, unknown>;
+      payment: Record<string, unknown>;
     };
     MediaSearchRequestDto: {
       /**
@@ -9169,6 +9938,8 @@ export interface components {
       language?: 'pt' | 'en' | null;
       /** @enum {string} */
       currentPlan: 'FREE' | 'PLUS' | 'MENTOR' | 'MAESTRO';
+      /** @description Professor Maestro que dá o Plus (aluno sem assinatura). */
+      planViaTeacher?: string | null;
       /** Format: date-time */
       planExpiresAt?: string | null;
       isTrialActive: boolean;
@@ -9619,6 +10390,7 @@ export interface components {
         | 'PROGRESS_REPORT_SHARED'
         | 'STUDENT_ADDED_BY_TEACHER'
         | 'WORK_SUGGESTED'
+        | 'ACHIEVEMENT_UNLOCKED'
         | 'LESSON_NO_SHOW'
         | 'ASSIGNMENT_FEEDBACK_NEEDED'
         | 'ASSIGNMENT_COMPLETED'
@@ -9665,15 +10437,22 @@ export interface components {
     };
     UpdatePreferencesDto: {
       /**
-       * @description Por tema: `{ "lesson-reminder": { "email": true, "sms": false } }`. Temas desconhecidos são ignorados.
+       * @description Por tema: `{ "lesson-reminder": { "email": true, "whatsapp": false } }`. Temas desconhecidos são ignorados.
        * @example {
        *       "lesson-reminder": {
        *         "email": true,
-       *         "sms": false
+       *         "whatsapp": false
        *       }
        *     }
        */
       channels?: Record<string, unknown>;
+      /**
+       * @description Telefone para o WhatsApp (DDD e número; sem DDI vale o Brasil). `null` apaga. Trocar o telefone pede o aceite de novo.
+       * @example (11) 91234-5678
+       */
+      phone?: string | null;
+      /** @description Aceite explícito para receber avisos por WhatsApp (a Meta exige). Precisa de telefone. */
+      whatsappOptIn?: boolean;
       /**
        * @description Início do silêncio. `null` tira o silêncio.
        * @example 22:00
@@ -9684,7 +10463,7 @@ export interface components {
     };
     ChannelChoiceDto: {
       email?: boolean;
-      sms?: boolean;
+      whatsapp?: boolean;
     };
     AnnouncementDto: {
       /** @description Alunos (Student.id) que recebem. */
@@ -9981,6 +10760,14 @@ export interface components {
       punctuality?: 'on_time' | 'late' | 'early';
       /** @description O que foi trabalhado (objetivos, obras, técnicas). */
       skillsWorked?: string[];
+      /**
+       * @description Nota de 1 a 5 por habilidade (technique, reading, rhythm, interpretation, memory, theory, ear, sound). O que não for da lista é descartado.
+       * @example {
+       *       "technique": 4,
+       *       "reading": 3
+       *     }
+       */
+      skillRatings?: Record<string, unknown>;
       /** @description O que o aluno deve trazer na próxima aula. */
       nextLessonPrep?: string;
       /**
@@ -10201,7 +10988,43 @@ export interface components {
       /** @enum {string} */
       role?: 'teacher' | 'student';
     };
+    ProgressReportQueryDto: {
+      /**
+       * @default 6months
+       * @enum {string}
+       */
+      period: '1month' | '3months' | '6months' | '1year' | 'all';
+      /** @example 2026-01-01T00:00:00.000Z */
+      from?: string;
+      /** @example 2026-06-30T23:59:59.000Z */
+      to?: string;
+      /**
+       * @description Seções a gerar. Sem valor, gera todas. Aceita lista separada por vírgula.
+       * @enum {array}
+       */
+      sections?:
+        | 'overview'
+        | 'attendance'
+        | 'evolution'
+        | 'assignments'
+        | 'repertoire'
+        | 'engagement'
+        | 'insights'
+        | 'comparison'
+        | 'recommendations'
+        | 'skills';
+    };
+    ApprovedPieceDto: {
+      /** @example 685d591c1e3db0c5aaa893e4 */
+      workId: string;
+      /** @description Por que esta peça, nas palavras do professor. */
+      note?: string;
+    };
     ShareReportDto: {
+      /** @description Próximas peças aprovadas (Maestro). O aluno vê só estas. */
+      nextPieces?: components['schemas']['ApprovedPieceDto'][];
+      /** @description Dicas revisadas pelo professor (Maestro). */
+      tips?: string[];
       /** @example 685d591c1e3db0c5aaa893e4 */
       studentId: string;
       /** @example Relatório do primeiro semestre */
@@ -10231,7 +11054,8 @@ export interface components {
         | 'engagement'
         | 'insights'
         | 'comparison'
-        | 'recommendations';
+        | 'recommendations'
+        | 'skills';
       /** @default false */
       allowComments: boolean;
       /**
@@ -10244,6 +11068,10 @@ export interface components {
       expiresInDays?: number;
     };
     UpdateSharedReportDto: {
+      /** @description Próximas peças aprovadas (Maestro). O aluno vê só estas. */
+      nextPieces?: components['schemas']['ApprovedPieceDto'][];
+      /** @description Dicas revisadas pelo professor (Maestro). */
+      tips?: string[];
       title?: string;
       description?: string;
       teacherMessage?: string;
@@ -10267,7 +11095,8 @@ export interface components {
         | 'engagement'
         | 'insights'
         | 'comparison'
-        | 'recommendations';
+        | 'recommendations'
+        | 'skills';
     };
     CreateLessonRequestDto: {
       /** @description O professor (Teacher.id). */
@@ -10326,199 +11155,6 @@ export interface components {
       workScoreId?: string;
       /** @example Boa para trabalhar o rubato depois do Noturno. */
       note?: string;
-    };
-    PeriodPricingDto: {
-      /** @example 191.04 */
-      price: number;
-      /** @example 20 */
-      discount: number;
-      /** @example 15.92 */
-      monthlyEquivalent: number;
-      /** @example 47.76 */
-      savings: number;
-    };
-    PlanPricingDto: {
-      /** @example 19.9 */
-      monthly: number;
-      yearly: components['schemas']['PeriodPricingDto'];
-      /** @example 7 */
-      trialDays: number;
-      description?: string | null;
-    };
-    PricingResponseDto: {
-      /** @example true */
-      success: boolean;
-      /** @description Preços por tipo de plano (chaves: PLUS, MENTOR, MAESTRO — FREE não aparece) */
-      data: {
-        [key: string]: components['schemas']['PlanPricingDto'];
-      };
-    };
-    ValidateCouponDto: {
-      /** @example BEMVINDO20 */
-      code: string;
-      /** @enum {string} */
-      planType: 'FREE' | 'PLUS' | 'MENTOR' | 'MAESTRO';
-      /** @enum {string} */
-      billingPeriod?: 'MONTHLY' | 'YEARLY';
-    };
-    CouponSummaryDto: {
-      /** @example 685d591c1e3db0c5aaa893e4 */
-      id: string;
-      /** @example BEMVINDO20 */
-      code: string;
-      /** @example PERCENTAGE */
-      type: string;
-      /** @example 20 */
-      discountValue: number;
-      description?: string | null;
-      extraTrialDays?: number | null;
-    };
-    CouponPricingDto: {
-      /** @example 191.04 */
-      originalPrice: number;
-      /** @example 38.21 */
-      discount: number;
-      /** @example 152.83 */
-      finalPrice: number;
-      /** @example 38.21 */
-      savings: number;
-      /** @example 20.00 */
-      savingsPercentage: string;
-    };
-    CouponValidationResponseDto: {
-      /** @example true */
-      valid: boolean;
-      error?: string;
-      coupon?: components['schemas']['CouponSummaryDto'];
-      pricing?: components['schemas']['CouponPricingDto'];
-      message?: string;
-    };
-    CreateSubscriptionDto: {
-      /** @enum {string} */
-      planType: 'FREE' | 'PLUS' | 'MENTOR' | 'MAESTRO';
-      /**
-       * @description Obrigatório para todo plano que não seja FREE
-       * @enum {string}
-       */
-      billingPeriod?: 'MONTHLY' | 'YEARLY';
-      /** @example BEMVINDO20 */
-      couponCode?: string;
-    };
-    CheckoutInfoDto: {
-      /** @example cs_test_a1b2c3 */
-      sessionId: string;
-      /** @example https://checkout.stripe.com/c/pay/cs_test_a1b2c3 */
-      checkoutUrl: string;
-    };
-    SubscriptionActionResponseDto: {
-      /** @example true */
-      success: boolean;
-      /** @example Assinatura criada com sucesso */
-      message: string;
-      /** @description Registro da assinatura (`Subscription`), passado adiante como veio do Prisma */
-      subscription?: Record<string, unknown>;
-      payment?: components['schemas']['CheckoutInfoDto'];
-      /**
-       * Format: date-time
-       * @example 2026-09-20T00:00:00.000Z
-       */
-      accessUntil?: string | null;
-    };
-    CurrentPlanDto: {
-      /** @enum {string} */
-      type: 'FREE' | 'PLUS' | 'MENTOR' | 'MAESTRO';
-      /** @example true */
-      isValid: boolean;
-      /** @example false */
-      isTrialActive: boolean;
-      /** @example 0 */
-      trialDaysRemaining: number;
-      /** Format: date-time */
-      expiresAt?: string | null;
-      /** @description Matriz de features habilitadas/limites do plano atual */
-      features: Record<string, unknown>;
-    };
-    CurrentSubscriptionResponseDto: {
-      /** @example true */
-      success: boolean;
-      plan: components['schemas']['CurrentPlanDto'];
-      /** @description Registro completo de `Subscription`, ou `null` se o usuário está no FREE sem registro */
-      subscription?: Record<string, unknown> | null;
-      history: Record<string, unknown>[];
-      recentPayments: Record<string, unknown>[];
-    };
-    CancelSubscriptionDto: {
-      /** @example too_expensive */
-      reason?: string;
-      feedback?: string;
-    };
-    UpgradeSubscriptionDto: {
-      /** @enum {string} */
-      newPlanType: 'FREE' | 'PLUS' | 'MENTOR' | 'MAESTRO';
-      /** @enum {string} */
-      billingPeriod?: 'MONTHLY' | 'YEARLY';
-    };
-    PaymentStatsDto: {
-      /** @example 239.7 */
-      totalPaid: number;
-      /** @example 6 */
-      totalPayments: number;
-      /** @example 5 */
-      approvedCount: number;
-      /** @example 0 */
-      pendingCount: number;
-      /** @example 1 */
-      rejectedCount: number;
-      /** @example 0 */
-      refundedCount: number;
-    };
-    PaymentHistoryResponseDto: {
-      /** @example true */
-      success: boolean;
-      payments: Record<string, unknown>[];
-      /** @description Pagamentos agrupados por status: approved/pending/rejected/refunded */
-      grouped: Record<string, unknown>;
-      stats: components['schemas']['PaymentStatsDto'];
-    };
-    InvoiceSummaryDto: {
-      /** @example 685d591c1e3db0c5aaa893e4 */
-      id: string;
-      /** @example NF-2026-001234 */
-      invoiceNumber: string;
-      /** @example PAID */
-      status: string;
-      /** @example 19.9 */
-      amount: number;
-      /** @example 0 */
-      taxAmount: number;
-      /** @example 19.9 */
-      totalAmount: number;
-      /**
-       * Format: date-time
-       * @example 2026-09-06T12:00:00.000Z
-       */
-      issueDate: string;
-      /**
-       * Format: date-time
-       * @example 2026-09-06T12:00:00.000Z
-       */
-      dueDate: string;
-      /** Format: date-time */
-      paidAt?: string | null;
-      /** @example Maria Silva */
-      customerName: string;
-      /** @example maria@example.com */
-      customerEmail: string;
-      /** @example Assinatura Plus - Mensal */
-      description: string;
-      pdfUrl?: string | null;
-    };
-    InvoiceDetailResponseDto: {
-      /** @example true */
-      success: boolean;
-      invoice: components['schemas']['InvoiceSummaryDto'];
-      subscription: Record<string, unknown>;
-      payment: Record<string, unknown>;
     };
     ComposerRefDto: {
       id: string;
@@ -10743,7 +11379,7 @@ export interface components {
       difficulty?: 'BEGINNER' | 'INTERMEDIATE' | 'ADVANCED';
       motivation?: string;
       context?: string;
-      selectedWorkScoreId?: string;
+      selectedWorkScoreId?: string | null;
       progressMilestones?: Record<string, unknown>;
     };
     LearnedItemDto: {
@@ -10824,7 +11460,7 @@ export interface components {
       enjoyment?: number;
       technicalChallenges?: string;
       musicalInsights?: string;
-      selectedWorkScoreId?: string;
+      selectedWorkScoreId?: string | null;
       /** @description Vídeo de performance: o `assetId` de `POST /uploads/signed` (`kind=PERFORMANCE_VIDEO`, `scopeId` = a obra), já confirmado. Substitui o envio multipart do legado, que gravava o vídeo no disco do servidor. */
       videoAssetId?: string;
       /** @description Nome original do vídeo, para exibir. */
@@ -10833,6 +11469,7 @@ export interface components {
       /** @description Tira o vídeo do item e apaga o arquivo do armazenamento. */
       removeVideo?: boolean;
     };
+    GenerateRetrospectiveDto: Record<string, unknown>;
     AnnotationAuthorDto: {
       id: string;
       firstName?: string | null;
@@ -12103,6 +12740,15 @@ export interface components {
         [key: string]: number;
       };
     };
+    PerformanceVideosUsageDto: {
+      /** @example 2 */
+      used: number;
+      /**
+       * @description Teto do plano; nulo é ilimitado.
+       * @example 4
+       */
+      limit: number | null;
+    };
     ContributionTotalsDto: {
       composers: number;
       works: number;
@@ -12114,14 +12760,8 @@ export interface components {
       plan: 'FREE' | 'PLUS' | 'MENTOR' | 'MAESTRO';
       /** @description Teto de envios do plano; nulo é ilimitado. */
       limit: number | null;
-      /**
-       * @description Vídeos de performance ativos e o teto do plano (nulo é ilimitado).
-       * @example { "used": 2, "limit": 4 }
-       */
-      performanceVideos: {
-        used: number;
-        limit: number | null;
-      };
+      /** @description Vídeos de performance ativos e o teto do plano. */
+      performanceVideos: components['schemas']['PerformanceVideosUsageDto'];
     };
     ReportUploadDto: {
       /**
@@ -13551,7 +14191,7 @@ export interface components {
     };
     SubscribeNewsletterDto: {
       /**
-       * O idioma do site de quem se inscreve; os e-mails seguem ele. Sem isso, vale o do navegador.
+       * @description O idioma do site de quem se inscreve; os e-mails seguem ele. Sem isso, vale o do navegador.
        * @enum {string}
        */
       language?: 'pt' | 'en';
@@ -13610,7 +14250,7 @@ export interface components {
     };
     SubmitContactDto: {
       /**
-       * O idioma do site de quem escreve; a confirmação segue ele. Sem isso, vale o do navegador.
+       * @description O idioma do site de quem escreve; a confirmação segue ele. Sem isso, vale o do navegador.
        * @enum {string}
        */
       language?: 'pt' | 'en';
@@ -13709,6 +14349,9 @@ export interface components {
       unlocked: components['schemas']['UnlockedAchievementDto'][];
       locked: components['schemas']['LockedAchievementDto'][];
       summary: components['schemas']['AchievementSummaryDto'];
+    };
+    AchievementNewResponseDto: {
+      unlocked: components['schemas']['UnlockedAchievementDto'][];
     };
     CheckAchievementsResponseDto: {
       /** @description Conquistas desbloqueadas nesta verificação. */
@@ -13869,6 +14512,94 @@ export interface components {
       bio?: string;
       /** @description Biografia em inglês reescrita na revisão. Ausente: o texto atual é aprovado como está. */
       bioEn?: string;
+    };
+    CreateFinanceEntryDto: {
+      /** @enum {string} */
+      direction: 'COST' | 'INCOME';
+      name: string;
+      /** @description Fornecedor (custo) ou quem paga (entrada) */
+      counterparty?: string;
+      /** @description Custo: infraestrutura, banco, ia, email, armazenamento, dominio, software, marketing, taxas, impostos, outros. Entrada: patrocinio, edital, doacao, premio, outros. */
+      category: string;
+      /** @description Em centavos, inteiro. Único: o valor. Parcelado: o TOTAL. Recorrente: o valor de cada cobrança. */
+      amountCents: number;
+      /**
+       * @default BRL
+       * @enum {string}
+       */
+      currency: 'BRL' | 'USD' | 'EUR';
+      /** @description BRL por unidade da moeda. Sem ela, a API usa a PTAX do dia do lançamento; informe para corrigir pela fatura do cartão. */
+      fxRate?: number;
+      /** @enum {string} */
+      kind: 'ONCE' | 'INSTALLMENTS' | 'RECURRING';
+      /** @description Data (único), primeira parcela ou primeira cobrança. */
+      startDate: string;
+      /** @description Obrigatório no parcelado (2 a 120). */
+      installments?: number;
+      /** @description Obrigatório no recorrente: a cada N meses (1 a 24). */
+      intervalMonths?: number;
+      /** @description Recorrente: a última cobrança, se acaba. */
+      endDate?: string;
+      note?: string;
+      /** @description Comprovante, no armazenamento do site. */
+      receiptUrl?: string;
+    };
+    UpdateFinanceEntryDto: {
+      name?: string;
+      /** @description Fornecedor (custo) ou quem paga (entrada) */
+      counterparty?: string;
+      /** @description Custo: infraestrutura, banco, ia, email, armazenamento, dominio, software, marketing, taxas, impostos, outros. Entrada: patrocinio, edital, doacao, premio, outros. */
+      category?: string;
+      /** @description Em centavos, inteiro. Único: o valor. Parcelado: o TOTAL. Recorrente: o valor de cada cobrança. */
+      amountCents?: number;
+      /**
+       * @default BRL
+       * @enum {string}
+       */
+      currency: 'BRL' | 'USD' | 'EUR';
+      /** @description BRL por unidade da moeda. Sem ela, a API usa a PTAX do dia do lançamento; informe para corrigir pela fatura do cartão. */
+      fxRate?: number;
+      /** @enum {string} */
+      kind?: 'ONCE' | 'INSTALLMENTS' | 'RECURRING';
+      /** @description Data (único), primeira parcela ou primeira cobrança. */
+      startDate?: string;
+      /** @description Obrigatório no parcelado (2 a 120). */
+      installments?: number;
+      /** @description Obrigatório no recorrente: a cada N meses (1 a 24). */
+      intervalMonths?: number;
+      /** @description Recorrente: a última cobrança, se acaba. */
+      endDate?: string;
+      note?: string;
+      /** @description Comprovante, no armazenamento do site. */
+      receiptUrl?: string;
+    };
+    CreateFinanceGoalDto: {
+      /** @enum {string} */
+      metric: 'MRR' | 'SUBSCRIBERS' | 'TEACHERS';
+      /** @description Centavos no MRR; contagem nos outros. */
+      target: number;
+      deadline: string;
+      note?: string;
+    };
+    StartCatalogJobDto: {
+      /** @description Grava de verdade. Sem isto, só simula. */
+      apply?: boolean;
+      /** @description Obrigatório para gravar nas rotinas que juntam ou apagam. */
+      confirm?: boolean;
+      /** @description Quantos itens ler nesta rodada. */
+      limit?: number;
+      /** @description Pausa entre leituras externas, em ms. */
+      pause?: number;
+    };
+    UpdateSupportTicketDto: {
+      /** @enum {string} */
+      status?: 'open' | 'answered' | 'closed';
+      /** @description Nota interna do atendimento. */
+      note?: string;
+    };
+    RejectContributionDto: {
+      /** @description O motivo, que vai para o autor na notificação. */
+      reason: string;
     };
     AdminUploadUserDto: {
       /** @example 685d591c1e3db0c5aaa893e4 */
@@ -14415,12 +15146,21 @@ export interface components {
     };
     GenerateReportDto: {
       /** @enum {string} */
-      type: 'users-overview' | 'content-analysis' | 'engagement-metrics';
+      type:
+        | 'users-overview'
+        | 'content-analysis'
+        | 'engagement-metrics'
+        | 'revenue-subscriptions'
+        | 'catalog-usage'
+        | 'teaching-portal'
+        | 'learning-community'
+        | 'newsletter-email'
+        | 'acquisition-retention';
       /**
        * @example 30d
        * @enum {string}
        */
-      period: '7d' | '30d' | '90d' | '1y';
+      period: '7d' | '30d' | '90d' | '180d' | '1y' | 'all';
     };
     ListAuditQueryDto: {
       /** @description Id do último item da página anterior. Com ele, a lista continua de onde parou (rolagem infinita) e `page` é ignorado. */
@@ -15681,6 +16421,27 @@ export interface operations {
       };
     };
   };
+  WorksController_registerScoreDownload: {
+    parameters: {
+      query?: never;
+      header: {
+        'user-agent': string;
+      };
+      path: {
+        scoreId: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      204: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
   WorksController_getScores: {
     parameters: {
       query?: {
@@ -16622,6 +17383,456 @@ export interface operations {
         content: {
           'application/json': components['schemas']['RecentAdditionsResponseDto'];
         };
+      };
+    };
+  };
+  RecommendationsController_forWork: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        id: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': Record<string, unknown>;
+        };
+      };
+    };
+  };
+  RecommendationsController_forMe: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': Record<string, unknown>;
+        };
+      };
+    };
+  };
+  BillingController_getPricing: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['PricingResponseDto'];
+        };
+      };
+    };
+  };
+  BillingController_validateCoupon: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['ValidateCouponDto'];
+      };
+    };
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['CouponValidationResponseDto'];
+        };
+      };
+      201: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['CouponValidationResponseDto'];
+        };
+      };
+      401: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+    };
+  };
+  BillingController_createSubscription: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['CreateSubscriptionDto'];
+      };
+    };
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['SubscriptionActionResponseDto'];
+        };
+      };
+      201: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['SubscriptionActionResponseDto'];
+        };
+      };
+      401: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+    };
+  };
+  BillingController_confirmStripeSuccess: {
+    parameters: {
+      query: {
+        session_id: string;
+      };
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': unknown;
+        };
+      };
+    };
+  };
+  BillingController_openBillingPortal: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': unknown;
+        };
+      };
+      201: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+      401: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+    };
+  };
+  BillingController_getCurrentSubscription: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['CurrentSubscriptionResponseDto'];
+        };
+      };
+      401: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+    };
+  };
+  BillingController_cancelSubscription: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['CancelSubscriptionDto'];
+      };
+    };
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['SubscriptionActionResponseDto'];
+        };
+      };
+      201: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['SubscriptionActionResponseDto'];
+        };
+      };
+      401: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+    };
+  };
+  BillingController_reactivateSubscription: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['SubscriptionActionResponseDto'];
+        };
+      };
+      201: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['SubscriptionActionResponseDto'];
+        };
+      };
+      401: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+    };
+  };
+  BillingController_upgradeSubscription: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['UpgradeSubscriptionDto'];
+      };
+    };
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['SubscriptionActionResponseDto'];
+        };
+      };
+      201: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['SubscriptionActionResponseDto'];
+        };
+      };
+      401: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+    };
+  };
+  BillingController_getPaymentHistory: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['PaymentHistoryResponseDto'];
+        };
+      };
+      401: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+    };
+  };
+  BillingController_getInvoice: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        invoiceId: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['InvoiceDetailResponseDto'];
+        };
+      };
+      401: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      403: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      404: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+    };
+  };
+  BillingController_getInvoiceHtml: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        invoiceId: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
+  CronController_checkSubscriptions: {
+    parameters: {
+      query?: {
+        /** @description Só fora da produção: roda como se fosse esta data (ISO), para acompanhar o relógio de teste do Stripe. */
+        at?: string;
+      };
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': unknown;
+        };
+      };
+      201: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
       };
     };
   };
@@ -19375,6 +20586,7 @@ export interface operations {
           | 'insights'
           | 'comparison'
           | 'recommendations'
+          | 'skills'
         )[];
       };
       header?: never;
@@ -19409,6 +20621,94 @@ export interface operations {
         content: {
           'application/json': components['schemas']['ErrorResponseDto'];
         };
+      };
+      404: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+    };
+  };
+  ReportsController_nextPieces: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        studentId: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description Sugestões com os motivos */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+      403: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+    };
+  };
+  ReportsController_tipsDraft: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        studentId: string;
+      };
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['ProgressReportQueryDto'];
+      };
+    };
+    responses: {
+      /** @description { tips, generatedBy } */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+      403: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+    };
+  };
+  ReportsController_pdf: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        id: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description application/pdf */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
       };
       404: {
         headers: {
@@ -20134,413 +21434,6 @@ export interface operations {
       };
     };
   };
-  BillingController_getPricing: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['PricingResponseDto'];
-        };
-      };
-    };
-  };
-  BillingController_validateCoupon: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody: {
-      content: {
-        'application/json': components['schemas']['ValidateCouponDto'];
-      };
-    };
-    responses: {
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['CouponValidationResponseDto'];
-        };
-      };
-      201: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['CouponValidationResponseDto'];
-        };
-      };
-      401: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['ErrorResponseDto'];
-        };
-      };
-    };
-  };
-  BillingController_createSubscription: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody: {
-      content: {
-        'application/json': components['schemas']['CreateSubscriptionDto'];
-      };
-    };
-    responses: {
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['SubscriptionActionResponseDto'];
-        };
-      };
-      201: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['SubscriptionActionResponseDto'];
-        };
-      };
-      401: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['ErrorResponseDto'];
-        };
-      };
-    };
-  };
-  BillingController_confirmStripeSuccess: {
-    parameters: {
-      query: {
-        session_id: string;
-      };
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': unknown;
-        };
-      };
-    };
-  };
-  BillingController_openBillingPortal: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': unknown;
-        };
-      };
-      201: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content?: never;
-      };
-      401: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['ErrorResponseDto'];
-        };
-      };
-    };
-  };
-  BillingController_getCurrentSubscription: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['CurrentSubscriptionResponseDto'];
-        };
-      };
-      401: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['ErrorResponseDto'];
-        };
-      };
-    };
-  };
-  BillingController_cancelSubscription: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody: {
-      content: {
-        'application/json': components['schemas']['CancelSubscriptionDto'];
-      };
-    };
-    responses: {
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['SubscriptionActionResponseDto'];
-        };
-      };
-      201: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['SubscriptionActionResponseDto'];
-        };
-      };
-      401: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['ErrorResponseDto'];
-        };
-      };
-    };
-  };
-  BillingController_reactivateSubscription: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['SubscriptionActionResponseDto'];
-        };
-      };
-      201: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['SubscriptionActionResponseDto'];
-        };
-      };
-      401: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['ErrorResponseDto'];
-        };
-      };
-    };
-  };
-  BillingController_upgradeSubscription: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody: {
-      content: {
-        'application/json': components['schemas']['UpgradeSubscriptionDto'];
-      };
-    };
-    responses: {
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['SubscriptionActionResponseDto'];
-        };
-      };
-      201: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['SubscriptionActionResponseDto'];
-        };
-      };
-      401: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['ErrorResponseDto'];
-        };
-      };
-    };
-  };
-  BillingController_getPaymentHistory: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['PaymentHistoryResponseDto'];
-        };
-      };
-      401: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['ErrorResponseDto'];
-        };
-      };
-    };
-  };
-  BillingController_getInvoice: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        invoiceId: string;
-      };
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['InvoiceDetailResponseDto'];
-        };
-      };
-      401: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['ErrorResponseDto'];
-        };
-      };
-      403: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['ErrorResponseDto'];
-        };
-      };
-      404: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['ErrorResponseDto'];
-        };
-      };
-    };
-  };
-  BillingController_getInvoiceHtml: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        invoiceId: string;
-      };
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content?: never;
-      };
-    };
-  };
-  CronController_checkSubscriptions: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': unknown;
-        };
-      };
-      201: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content?: never;
-      };
-    };
-  };
   ComposerFavoritesController_find: {
     parameters: {
       query?: {
@@ -21055,6 +21948,86 @@ export interface operations {
         content: {
           'application/json': components['schemas']['ErrorResponseDto'];
         };
+      };
+    };
+  };
+  RetrospectiveController_status: {
+    parameters: {
+      query: {
+        language: string;
+      };
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
+  RetrospectiveController_generate: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['GenerateRetrospectiveDto'];
+      };
+    };
+    responses: {
+      201: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
+  RetrospectiveController_mine: {
+    parameters: {
+      query: {
+        language: string;
+      };
+      header?: never;
+      path: {
+        period: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
+  RetrospectiveController_shared: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        shareId: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
       };
     };
   };
@@ -25744,7 +26717,9 @@ export interface operations {
   NewsletterController_subscribe: {
     parameters: {
       query?: never;
-      header?: never;
+      header: {
+        'accept-language': string;
+      };
       path?: never;
       cookie?: never;
     };
@@ -25901,6 +26876,25 @@ export interface operations {
         };
         content: {
           'application/json': components['schemas']['AchievementListResponseDto'];
+        };
+      };
+    };
+  };
+  AchievementsController_listNew: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['AchievementNewResponseDto'];
         };
       };
     };
@@ -26635,6 +27629,14 @@ export interface operations {
         hasPortrait?: boolean;
         /** @description Tem datas de nascimento e morte. */
         hasDates?: boolean;
+        /** @description Tem nacionalidade preenchida. */
+        hasNationality?: boolean;
+        /** @description Tem o ano de nascimento. */
+        hasBirthYear?: boolean;
+        /** @description Época fora das datas (`true`): com ano de nascimento e a época cai fora do que as datas pedem. É o que o quadro de qualidade conta. */
+        epochMismatch?: boolean;
+        /** @description Suspeito de não ser compositor (`true`): o papel principal no IMSLP não é "Compositor" (libretista, editor, regente…) e não há obra nenhuma. Para revisão, nunca para apagar sozinho. */
+        suspect?: boolean;
         /** @description Cadastrado pela comunidade (true) ou importado (false). */
         isCustom?: boolean;
         /** @description Nacionalidade (contém). */
@@ -27065,6 +28067,14 @@ export interface operations {
         page?: number;
         limit?: number;
         sortOrder?: 'asc' | 'desc';
+        /** @description Tem tonalidade preenchida. */
+        hasTone?: boolean;
+        /** @description Tem ano de composição preenchido. */
+        hasYear?: boolean;
+        /** @description Tem instrumentação preenchida. */
+        hasInstrumentation?: boolean;
+        /** @description Tem gravação ou vídeo: YouTube, Spotify ou áudio enviado. É o que o quadro de qualidade conta. */
+        hasMedia?: boolean;
         search?: string;
         composerId?: string;
         epochId?: string;
@@ -27161,6 +28171,10 @@ export interface operations {
         source?: 'IMSLP' | 'CUSTOM' | 'UPLOAD';
         /** @description Tem arquivo para baixar. */
         hasFile?: boolean;
+        /** @description Já foi baixada pelo botão do site (`siteDownloads` > 0). */
+        downloaded?: boolean;
+        /** @description Ordenação; `siteDownloads` é o ranking das mais baixadas. */
+        sortBy?: 'createdAt' | 'siteDownloads';
         /** @description Entrou a partir de (ISO). */
         createdFrom?: string;
         /** @description Entrou até (ISO). */
@@ -27342,6 +28356,533 @@ export interface operations {
         content?: never;
       };
       /** @description Texto fora de 300–12.000 caracteres ou sem biografia */
+      400: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      404: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+    };
+  };
+  FinanceController_summary: {
+    parameters: {
+      query?: {
+        /** @description AAAA-MM; o mês atual se faltar. */
+        month?: string;
+      };
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description O resumo */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
+  FinanceController_mrr: {
+    parameters: {
+      query?: {
+        months?: number;
+      };
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description Os meses, do mais antigo ao atual */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
+  FinanceController_syncStripeFees: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description Quantos foram vistos, atualizados e quantos faltam */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+      201: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
+  FinanceController_entries: {
+    parameters: {
+      query: {
+        direction: 'COST' | 'INCOME';
+      };
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description Os lançamentos, com estado e próxima data */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
+  FinanceController_createEntry: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['CreateFinanceEntryDto'];
+      };
+    };
+    responses: {
+      /** @description O lançamento criado */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+      201: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
+  FinanceController_removeEntry: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        id: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      204: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
+  FinanceController_updateEntry: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        id: string;
+      };
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['UpdateFinanceEntryDto'];
+      };
+    };
+    responses: {
+      /** @description O lançamento corrigido */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
+  FinanceController_pause: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        id: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description O lançamento pausado */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+      201: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
+  FinanceController_resume: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        id: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description O lançamento retomado */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+      201: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
+  FinanceController_goals: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description As metas */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
+  FinanceController_createGoal: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['CreateFinanceGoalDto'];
+      };
+    };
+    responses: {
+      /** @description A meta criada */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+      201: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
+  FinanceController_removeGoal: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        id: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      204: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
+  FinanceController_export: {
+    parameters: {
+      query: {
+        from: string;
+        to: string;
+      };
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description CSV com ponto e vírgula */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
+  CatalogQualityController_get: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description As contagens e quando foram feitas */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
+  CatalogJobsController_list: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description Rotinas, a execução em andamento e a última */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
+  CatalogJobsController_run: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        runId: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
+  CatalogJobsController_stop: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        runId: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
+  CatalogJobsController_history: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        job: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
+  CatalogJobsController_start: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        job: string;
+      };
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['StartCatalogJobDto'];
+      };
+    };
+    responses: {
+      202: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
+  SupportTicketsController_list: {
+    parameters: {
+      query?: {
+        status?: 'open' | 'answered' | 'closed' | 'all';
+        search?: string;
+        page?: number;
+      };
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
+  SupportTicketsController_update: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        id: string;
+      };
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['UpdateSupportTicketDto'];
+      };
+    };
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
+  AdminContributionsController_list: {
+    parameters: {
+      query?: {
+        /** @description `live`: em vigor (nascem aprovadas). `reverted`: reprovadas ou desfeitas. */
+        status?: 'live' | 'reverted';
+        kind?: 'BIO' | 'VIDEO' | 'CURIOSITY' | 'CORRECTION';
+        /** @description Nome, sobrenome ou usuário de quem contribuiu */
+        search?: string;
+        cursor?: string;
+        limit?: number;
+      };
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description Itens, contagens e o próximo cursor */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
+  AdminContributionsController_reject: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        id: string;
+      };
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['RejectContributionDto'];
+      };
+    };
+    responses: {
+      /** @description Id e o XP devolvido */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+      201: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+      /** @description Motivo curto demais ou contribuição já reprovada */
       400: {
         headers: {
           [name: string]: unknown;
@@ -29142,7 +30683,9 @@ export interface operations {
   };
   AdminReportsController_download: {
     parameters: {
-      query?: never;
+      query?: {
+        format?: 'csv' | 'xlsx';
+      };
       header?: never;
       path: {
         id: string;
@@ -29156,7 +30699,7 @@ export interface operations {
           [name: string]: unknown;
         };
         content: {
-          'text/csv': string;
+          'application/json': Record<string, unknown>;
         };
       };
       404: {
@@ -29164,7 +30707,7 @@ export interface operations {
           [name: string]: unknown;
         };
         content: {
-          'text/csv': components['schemas']['ErrorResponseDto'];
+          'application/json': components['schemas']['ErrorResponseDto'];
         };
       };
     };
@@ -29379,7 +30922,8 @@ export interface operations {
           | 'maintenance'
           | 'scraper'
           | 'notifications'
-          | 'imslp';
+          | 'imslp'
+          | 'catalog';
       };
       cookie?: never;
     };
@@ -29408,7 +30952,8 @@ export interface operations {
           | 'maintenance'
           | 'scraper'
           | 'notifications'
-          | 'imslp';
+          | 'imslp'
+          | 'catalog';
       };
       cookie?: never;
     };
@@ -29433,7 +30978,8 @@ export interface operations {
           | 'maintenance'
           | 'scraper'
           | 'notifications'
-          | 'imslp';
+          | 'imslp'
+          | 'catalog';
       };
       cookie?: never;
     };
@@ -29458,7 +31004,8 @@ export interface operations {
           | 'maintenance'
           | 'scraper'
           | 'notifications'
-          | 'imslp';
+          | 'imslp'
+          | 'catalog';
         jobId: string;
       };
       cookie?: never;
@@ -29491,7 +31038,8 @@ export interface operations {
           | 'maintenance'
           | 'scraper'
           | 'notifications'
-          | 'imslp';
+          | 'imslp'
+          | 'catalog';
         jobId: string;
       };
       cookie?: never;
@@ -29706,6 +31254,7 @@ export interface operations {
           | 'tokens.prune'
           | 'notifications.prune'
           | 'audit.prune'
+          | 'mail.events.prune'
           | 'search.reindex'
           | 'database.backup';
       };
@@ -29764,6 +31313,7 @@ export interface operations {
           | 'tokens.prune'
           | 'notifications.prune'
           | 'audit.prune'
+          | 'mail.events.prune'
           | 'search.reindex'
           | 'database.backup';
       };
@@ -29804,6 +31354,7 @@ export interface operations {
           | 'tokens.prune'
           | 'notifications.prune'
           | 'audit.prune'
+          | 'mail.events.prune'
           | 'search.reindex'
           | 'database.backup';
       };
