@@ -536,7 +536,10 @@ function LateralRecolhida({
         className="mb-1 grid h-10 w-10 place-items-center"
         title="Painel"
       >
-        <span aria-hidden="true" className="marca marca-icone h-7 w-7" />
+        <span
+          aria-hidden="true"
+          className="marca marca-simbolo-simples h-8 w-8"
+        />
         <span className="sr-only">Painel</span>
       </Link>
       <Button

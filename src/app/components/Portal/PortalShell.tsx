@@ -453,7 +453,10 @@ function CollapsedNavigation({
         className="mb-1 grid h-10 w-10 place-items-center"
         title="Portal do Opus Atlas"
       >
-        <span aria-hidden="true" className="marca marca-icone h-7 w-7" />
+        <span
+          aria-hidden="true"
+          className="marca marca-simbolo-simples h-8 w-8"
+        />
         <span className="sr-only">Portal do Opus Atlas</span>
       </Link>
       <Button

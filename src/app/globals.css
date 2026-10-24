@@ -2472,9 +2472,9 @@ html {
   .marca.marca-lema {
     background-color: var(--texto-suave);
   }
-  /* Below 48 px the piano blurs: collapsed rails use the atlas O instead. */
-  .marca-icone {
-    --marca: url('/brand/marca/icone-pequeno.svg');
+  /* The symbol without its fine engraving, for small places (collapsed rails). */
+  .marca-simbolo-simples {
+    --marca: url('/brand/marca/simbolo-simples.svg');
     aspect-ratio: 1;
   }
   /* The gold pulse of the brand (`.gold-shine`, kept by the 26/09 decision)
