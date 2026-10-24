@@ -1,0 +1,32 @@
+diff --git a/node_modules/next/dist/build/templates/app-page.js b/node_modules/next/dist/build/templates/app-page.js
+index e69cf2b..e6b0d3a 100644
+--- a/node_modules/next/dist/build/templates/app-page.js
++++ b/node_modules/next/dist/build/templates/app-page.js
+@@ -175,7 +175,10 @@ async function handler(req, res, ctx) {
+     const pathname = parsedUrl.pathname || '/';
+     const normalizedSrcPage = (0, _apppaths.normalizeAppPath)(srcPage);
+     let { isOnDemandRevalidate } = prepareResult;
+-    const prerenderInfo = routeModule.match(pathname, prerenderManifest);
++    // Opus Atlas (patch-package): com a reescrita do middleware no `next start`,
++    // `pathname` é o endereço original e não casa com a rota dinâmica — a
++    // página saía sem cache. O endereço reescrito casa.
++    const prerenderInfo = routeModule.match(pathname, prerenderManifest) ?? routeModule.match(resolvedPathname, prerenderManifest);
+     const isPrerendered = !!prerenderManifest.routes[resolvedPathname];
+     let isSSG = Boolean(prerenderInfo || isPrerendered || prerenderManifest.routes[normalizedSrcPage]);
+     const userAgent = req.headers['user-agent'] || '';
+diff --git a/node_modules/next/dist/esm/build/templates/app-page.js b/node_modules/next/dist/esm/build/templates/app-page.js
+index 6080806..a027ea3 100644
+--- a/node_modules/next/dist/esm/build/templates/app-page.js
++++ b/node_modules/next/dist/esm/build/templates/app-page.js
+@@ -97,7 +97,10 @@ export async function handler(req, res, ctx) {
+     const pathname = parsedUrl.pathname || '/';
+     const normalizedSrcPage = normalizeAppPath(srcPage);
+     let { isOnDemandRevalidate } = prepareResult;
+-    const prerenderInfo = routeModule.match(pathname, prerenderManifest);
++    // Opus Atlas (patch-package): com a reescrita do middleware no `next start`,
++    // `pathname` é o endereço original e não casa com a rota dinâmica — a
++    // página saía sem cache. O endereço reescrito casa.
++    const prerenderInfo = routeModule.match(pathname, prerenderManifest) ?? routeModule.match(resolvedPathname, prerenderManifest);
+     const isPrerendered = !!prerenderManifest.routes[resolvedPathname];
+     let isSSG = Boolean(prerenderInfo || isPrerendered || prerenderManifest.routes[normalizedSrcPage]);
+     const userAgent = req.headers['user-agent'] || '';
