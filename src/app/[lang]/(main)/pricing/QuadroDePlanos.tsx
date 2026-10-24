@@ -137,13 +137,11 @@ export function QuadroDePlanos({
         </Button>
       );
     }
-    // Descer de plano pago é pela assinatura: um checkout novo por cima
-    // duplicaria a cobrança.
-    if (
-      atual &&
-      atual !== 'FREE' &&
-      ORDEM.indexOf(plano) < ORDEM.indexOf(atual)
-    ) {
+    // Quem já tem plano pago muda pela assinatura, no perfil: subir cobra só
+    // a diferença, descer fica para a renovação, e cancelada ou atrasada tem o
+    // seu caminho lá. Um checkout novo por cima duplicaria a cobrança (o subir
+    // por aqui dava erro, achado B1 de 21/10).
+    if (atual && atual !== 'FREE') {
       return (
         <LocalizedLink
           href="/profile"
