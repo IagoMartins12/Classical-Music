@@ -125,7 +125,7 @@ function Assinatura({
         margin: '30px 0 0',
       }}
     >
-      {comSelo && <img src={selo(tema)} alt="" width={44} height={45} />}
+      {comSelo && <img src={selo(tema)} alt="" width={44} height={44} />}
       <p
         style={{
           margin: 0,
@@ -425,7 +425,7 @@ export function CartaComCanhoto({ e, tema, celular }: Props) {
               gap: 16,
             }}
           >
-            <img src={selo(tema)} alt="Opus Atlas" width={50} height={51} />
+            <img src={selo(tema)} alt="Opus Atlas" width={50} height={50} />
             <span
               style={{
                 fontFamily: SERIFA,
@@ -593,7 +593,7 @@ export function IngressoCeleste({ e, tema, celular }: Props) {
       ) : null}
       {e.dados && <Dados e={e} p={p} />}
       <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-        <img src={selo(tema)} alt="" width={34} height={35} />
+        <img src={selo(tema)} alt="" width={34} height={34} />
         <span
           style={{
             fontFamily: SERIFA,

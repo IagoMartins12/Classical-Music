@@ -269,7 +269,7 @@ function dadosEstruturados(language: 'pt' | 'en') {
       url: baseUrl,
       logo: {
         '@type': 'ImageObject',
-        url: `${baseUrl}/android-chrome-512x512.png`,
+        url: `${baseUrl}/brand/opus-atlas-logo-512.png`,
         width: 512,
         height: 512,
       },

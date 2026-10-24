@@ -20,7 +20,6 @@ import {
   PiSignOut,
   PiTimer,
 } from 'react-icons/pi';
-import { GiGrandPiano } from 'react-icons/gi';
 import { ThemeToggle } from '@/app/components/ThemeToggle';
 import { Button } from '@/app/components/ui/Button';
 import { Icon } from '@/app/components/ui/Icon';
@@ -454,9 +453,9 @@ function CollapsedNavigation({
         className="mb-1 grid h-10 w-10 place-items-center"
         title="Portal do Opus Atlas"
       >
-        <GiGrandPiano
-          className="icon-glow h-7 w-7 text-ouro-texto"
+        <span
           aria-hidden="true"
+          className="marca marca-simbolo-simples h-8 w-8"
         />
         <span className="sr-only">Portal do Opus Atlas</span>
       </Link>

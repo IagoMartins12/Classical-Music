@@ -91,7 +91,7 @@ function Cabecalho({
         }}
       >
         {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img src={SELO} alt="" width={30} height={31} />
+        <img src={SELO} alt="" width={30} height={30} />
       </span>
       <span style={{ minWidth: 0, flex: 1 }}>
         <span

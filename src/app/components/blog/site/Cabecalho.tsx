@@ -3,7 +3,6 @@
 import { useEffect, useRef, useState, type FormEvent } from 'react';
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
-import { GiGrandPiano } from 'react-icons/gi';
 import {
   PiArticle,
   PiBookmarkSimple,
@@ -22,6 +21,7 @@ import { ThemeToggle } from '@/app/components/ThemeToggle';
 import { Button } from '@/app/components/ui/Button';
 import { Icon } from '@/app/components/ui/Icon';
 import { MenuScreen, MenuScreenHeader } from '@/app/components/ui/MenuScreen';
+import { AssinaturaDeArea } from '@/app/components/site/header/AssinaturaDeArea';
 import { Sheet } from '@/app/components/ui/Sheet';
 import { cx } from '@/app/components/ui/cx';
 import { useAuth } from '@/app/hooks/useAuth';
@@ -194,32 +194,19 @@ export function CabecalhoDoBlog({
         <Link
           href={rotasDoBlog.inicio(idioma)}
           aria-label={t.nav.marca}
-          className="group flex min-h-[var(--alvo)] shrink-0 items-center gap-2.5 rounded-controle"
+          className="flex min-h-[var(--alvo)] shrink-0 items-center rounded-controle"
         >
-          <GiGrandPiano
-            aria-hidden="true"
-            className="icon-glow h-7 w-7 shrink-0 text-ouro-texto transition-transform duration-300 group-hover:scale-110 motion-reduce:transition-none sm:h-8 sm:w-8"
+          <AssinaturaDeArea
+            area={idioma === 'pt' ? 'blog-pt' : 'blog-en'}
+            curta
+            className="h-[22px] sm:hidden"
           />
-          <span className="flex flex-col">
-            <span className="font-display text-[1.3125rem] leading-none sm:text-[1.5rem]">
-              {idioma === 'pt' ? (
-                <>
-                  <span className="italic text-texto-suave">
-                    {t.nav.marcaDo}{' '}
-                  </span>
-                  <span className="gold-shine font-semibold">Opus Atlas</span>
-                </>
-              ) : (
-                <>
-                  <span className="gold-shine font-semibold">Opus Atlas</span>
-                  <span className="italic text-texto-suave"> Blog</span>
-                </>
-              )}
-            </span>
-            <span className="mt-1 hidden text-[0.75rem] leading-none text-texto-fraco sm:block">
-              {t.nav.lema}
-            </span>
-          </span>
+          <AssinaturaDeArea
+            area={idioma === 'pt' ? 'blog-pt' : 'blog-en'}
+            // The main header's signature is 22 px tall (24 px from xl): at these
+            // heights the blog's piano and name come out the same size as it.
+            className="hidden h-[35.51px] sm:block xl:h-[38.74px]"
+          />
         </Link>
 
         <nav

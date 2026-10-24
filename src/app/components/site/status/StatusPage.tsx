@@ -45,7 +45,7 @@ export function StatusPage({
     <section className="relative isolate overflow-hidden">
       <NotasAoFundo className="-z-10" />
       <div className="section-wrap flex flex-col items-center gap-7 py-12 text-center md:py-16">
-        <BrandSeal className="entra w-16" priority />
+        <BrandSeal className="entra w-16" />
         <div
           className="entra flex flex-col items-center gap-1"
           aria-hidden="true"

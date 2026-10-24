@@ -2447,9 +2447,49 @@ html {
    Public site (main redesign, Oct 2026)
    ========================================================================== */
 @layer components {
-  /* The Opus Atlas seal is gold on black; on cream the gold darkens for contrast. */
-  [data-theme='light'] .brand-seal {
-    filter: brightness(0.58) saturate(1.35) contrast(1.15);
+  /* The Opus Atlas marks (public/brand/marca) are single-colour SVGs used as
+     masks: the element paints the gold and the mark cuts it out. Plain gold on
+     night; on cream, the darker gold for contrast. */
+  .marca {
+    display: block;
+    background-color: var(--ouro);
+    -webkit-mask: var(--marca) center / contain no-repeat;
+    mask: var(--marca) center / contain no-repeat;
+  }
+  [data-theme='light'] .marca {
+    background-color: var(--ouro-texto);
+  }
+  .marca-simbolo {
+    --marca: url('/brand/marca/simbolo.svg');
+    aspect-ratio: 1;
+  }
+  .marca-assinatura {
+    --marca: url('/brand/marca/assinatura-horizontal.svg');
+    aspect-ratio: 667.75 / 88.75;
+  }
+  /* The motto of an area signature (AssinaturaDeArea) steps back from the gold
+     in the text colour. */
+  .marca.marca-lema {
+    background-color: var(--texto-suave);
+  }
+  /* The symbol without its fine engraving, for small places (collapsed rails). */
+  .marca-simbolo-simples {
+    --marca: url('/brand/marca/simbolo-simples.svg');
+    aspect-ratio: 1;
+  }
+  /* The gold pulse of the brand (`.gold-shine`, kept by the 26/09 decision)
+     running through the signature instead of through live text. */
+  .marca-brilho {
+    background-image: linear-gradient(
+      90deg,
+      #a07c1d 0%,
+      #f7e9a4 25%,
+      #d4af37 50%,
+      #f7e9a4 75%,
+      #a07c1d 100%
+    );
+    background-size: 200% auto;
+    animation: shine 3s linear infinite;
   }
   /* Engraved orbits and lines start drawn (no motion by default). */
   .engraving > :is(circle, ellipse, path)[pathLength] {

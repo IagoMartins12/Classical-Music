@@ -264,8 +264,6 @@ export function WelcomeModal() {
               {step === 'intro' && (
                 <BrandSeal
                   reveal
-                  priority
-                  sizes="176px"
                   className="mb-4 w-28 sm:w-36 lg:w-44"
                 />
               )}
