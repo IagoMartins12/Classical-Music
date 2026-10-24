@@ -12110,6 +12110,18 @@ export interface components {
       total: number;
       /** @description Denúncias que a pessoa abriu e seguem abertas. */
       pendingReports: number;
+      /** @enum {string} */
+      plan: 'FREE' | 'PLUS' | 'MENTOR' | 'MAESTRO';
+      /** @description Teto de envios do plano; nulo é ilimitado. */
+      limit: number | null;
+      /**
+       * @description Vídeos de performance ativos e o teto do plano (nulo é ilimitado).
+       * @example { "used": 2, "limit": 4 }
+       */
+      performanceVideos: {
+        used: number;
+        limit: number | null;
+      };
     };
     ReportUploadDto: {
       /**

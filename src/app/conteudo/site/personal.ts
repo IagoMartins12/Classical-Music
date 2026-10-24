@@ -222,6 +222,8 @@ const pt = {
       `${used} de ${limit} envios no plano Free`,
     unlimited: 'Envios sem limite no seu plano',
     upgrade: 'No Plus, sem limite',
+    full: (limit: number) =>
+      `Você chegou aos ${limit} envios do plano Free. Para enviar mais, apague um envio ou assine o Plus.`,
     tabs: {
       all: 'Tudo',
       composer: 'Compositores',
@@ -524,6 +526,8 @@ const en: typeof pt = {
       `${used} of ${limit} uploads on the Free plan`,
     unlimited: 'Unlimited uploads on your plan',
     upgrade: 'Plus has no limit',
+    full: (limit: number) =>
+      `You reached the ${limit} uploads of the Free plan. To upload more, delete an upload or subscribe to Plus.`,
     tabs: { all: 'All', composer: 'Composers', work: 'Works', score: 'Scores' },
     history: 'History',
     search: 'Search your uploads',

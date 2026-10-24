@@ -2,6 +2,7 @@
 
 import { ESTUDOS } from '@/app/conteudo/textos/estudos';
 import { useTextos } from '@/app/hooks/useTextos';
+import { useQuery } from '@tanstack/react-query';
 import { usePathname } from 'next/navigation';
 import { CaixaDeMarcar } from '@/app/components/ui/CaixaDeMarcar';
 import {
@@ -27,6 +28,7 @@ import {
   PiX,
 } from 'react-icons/pi';
 import ConfirmModal from '@/app/components/ConfirmModal';
+import LocalizedLink from '@/app/components/LocalizedLink';
 import ScoreSelectionModal from '@/app/components/LearningModal/ScoreSelectionModal';
 import { ScorePage } from '@/app/components/site/work/ScorePreview';
 import { Button, classesDeBotao } from '@/app/components/ui/Button';
@@ -38,6 +40,8 @@ import { cx } from '@/app/components/ui/cx';
 import { STUDY } from '@/app/conteudo/site/study';
 import { useAuth } from '@/app/hooks/useAuth';
 import { useLearnedVideo } from '@/app/hooks/useLearnedVideo';
+import { apiFetch } from '@/app/libs/api/client';
+import type { ApiSchema } from '@/app/libs/api/types';
 import { useRouteLanguage } from '@/app/hooks/useRouteLanguage';
 import {
   getLearnedRequest,
@@ -233,6 +237,15 @@ export function StudySheet() {
   } = store;
   const library = useLearningStore();
   const video = useLearnedVideo();
+  // O teto de vídeos do plano (Free: 4), da mesma conta que a API usa:
+  // avisado antes de escolher o arquivo, não depois de enviar.
+  const quota = useQuery({
+    queryKey: ['uploads', 'stats'],
+    queryFn: () =>
+      apiFetch<ApiSchema<'ContributionTotalsDto'>>('/uploads/stats'),
+    staleTime: 30_000,
+    enabled: isOpen && !!user?.id,
+  }).data?.performanceVideos;
   const [saving, setSaving] = useState(false);
   const [touched, setTouched] = useState(false);
   const [confirmLeave, setConfirmLeave] = useState(false);
@@ -473,6 +486,8 @@ export function StudySheet() {
   const learnedItem =
     !isWant && isCurrentlyActive ? library.getLearnedItem(workId) : null;
   const videoUrl = video.videoPreviewUrl || learnedItem?.videoUrl || null;
+  const videoFull =
+    !learnedItem?.videoUrl && quota?.limit != null && quota.used >= quota.limit;
   const videoName =
     video.selectedVideo?.name || learnedItem?.videoFileName || '';
   const videoSize = video.selectedVideo?.size || learnedItem?.videoFileSize;
@@ -824,10 +839,24 @@ export function StudySheet() {
               {copy.videoReplace}
             </label>
           </div>
+        ) : videoFull && quota?.limit != null ? (
+          <p className="t-rotulo rounded-card bg-sup-2 p-4 text-texto-suave">
+            {copy.videoFull(quota.limit)}{' '}
+            <LocalizedLink
+              href="/pricing"
+              className="text-ouro-texto underline underline-offset-4"
+            >
+              {copy.videoUpgrade}
+            </LocalizedLink>
+          </p>
         ) : (
           <AddZone
             title={copy.videoAdd}
-            text={copy.videoHelp}
+            text={
+              quota?.limit != null
+                ? `${copy.videoHelp} ${copy.videoQuota(quota.used, quota.limit)}`
+                : copy.videoHelp
+            }
             htmlFor="study-video"
           />
         )}
