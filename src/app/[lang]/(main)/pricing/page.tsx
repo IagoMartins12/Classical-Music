@@ -204,7 +204,7 @@ export default async function Pagina({ params }: LangPageProps) {
         name: 'Opus Atlas',
         description: c.abertura,
         brand: { '@id': `${SITE_URL}/#organization` },
-        image: `${SITE_URL}/logo-opus-atlas.jpeg`,
+        image: `${SITE_URL}/brand/opus-atlas-logo-512.png`,
         offers: ofertas,
       },
       {

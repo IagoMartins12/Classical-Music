@@ -120,7 +120,7 @@ describe('metadadosDoArtigo', () => {
   it('sem capa, a imagem das redes é o logo', () => {
     const meta = metadadosDoArtigo(artigo(), 'pt');
     const imagens = meta.openGraph?.images as Array<{ url: string }>;
-    expect(imagens[0].url).toContain('logo-opus-atlas');
+    expect(imagens[0].url).toContain('opus-atlas-og');
   });
 
   it('a prévia não é indexada', () => {

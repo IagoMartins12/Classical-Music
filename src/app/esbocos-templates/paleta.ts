@@ -58,11 +58,11 @@ export const NOITE = { fundo: '#12131d', ouro: '#d4af37', texto: '#f3f1ec' };
 export const SERIFA = "'EB Garamond', Georgia, 'Times New Roman', serif";
 export const SANS =
   "-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif";
-export const SELO = '/brand/opus-atlas-seal.webp';
+export const SELO = '/brand/opus-atlas-simbolo.png';
 
 /**
  * Light pages get the darker gold assets (`-claro`): email clients drop CSS
  * filters, so the contrast has to live in the file.
  */
 export const selo = (tema: Tema) =>
-  tema === 'claro' ? '/brand/opus-atlas-seal-claro.webp' : SELO;
+  tema === 'claro' ? '/brand/opus-atlas-simbolo-claro.png' : SELO;

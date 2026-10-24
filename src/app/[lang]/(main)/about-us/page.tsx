@@ -161,7 +161,7 @@ export default async function Pagina({ params }: LangPageProps) {
         '@id': `${SITE_URL}/#organization`,
         name: 'Opus Atlas',
         url: SITE_URL,
-        logo: `${SITE_URL}/logo-opus-atlas.jpeg`,
+        logo: `${SITE_URL}/brand/opus-atlas-logo-512.png`,
         email: CONTATO.contato,
         description: c.meta.descricao,
         knowsAbout: [

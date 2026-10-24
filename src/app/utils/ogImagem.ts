@@ -9,9 +9,9 @@ import { SITE_URL } from './seoAlternates';
  * objeto inteiro do segmento de cima pelo da página, e a imagem do layout
  * sumia (a home ia para o WhatsApp sem imagem nenhuma).
  */
-export const LOGO_DE_COMPARTILHAMENTO = `${SITE_URL}/logo-opus-atlas.jpeg`;
+export const LOGO_DE_COMPARTILHAMENTO = `${SITE_URL}/brand/opus-atlas-og.jpg`;
 
 // O idioma fica na assinatura: o logo é o mesmo nas duas línguas.
 export const imagemPadrao = (_idioma: 'pt' | 'en' = 'pt') => [
-  { url: LOGO_DE_COMPARTILHAMENTO, width: 848, height: 882, alt: 'Opus Atlas' },
+  { url: LOGO_DE_COMPARTILHAMENTO, width: 1200, height: 630, alt: 'Opus Atlas' },
 ];
