@@ -197,7 +197,7 @@ export function CabecalhoDoBlog({
         >
           <span
             aria-hidden="true"
-            className="marca marca-simbolo-simples h-9 w-9 shrink-0 transition-transform duration-300 group-hover:scale-110 motion-reduce:transition-none sm:h-10 sm:w-10"
+            className="marca marca-simbolo-simples h-8 w-8 shrink-0 transition-transform duration-300 group-hover:scale-110 motion-reduce:transition-none sm:h-10 sm:w-10"
           />
           <span className="flex flex-col">
             <span className="font-display text-[1.3125rem] leading-none sm:text-[1.5rem]">
@@ -206,11 +206,17 @@ export function CabecalhoDoBlog({
                   <span className="italic text-texto-suave">
                     {t.nav.marcaDo}{' '}
                   </span>
-                  <span className="gold-shine font-semibold">Opus Atlas</span>
+                  <span
+                    aria-hidden="true"
+                    className="marca marca-nome marca-brilho ml-1 inline-block h-3 align-baseline sm:h-4"
+                  />
                 </>
               ) : (
                 <>
-                  <span className="gold-shine font-semibold">Opus Atlas</span>
+                  <span
+                    aria-hidden="true"
+                    className="marca marca-nome marca-brilho ml-1 inline-block h-3 align-baseline sm:h-4"
+                  />
                   <span className="italic text-texto-suave"> Blog</span>
                 </>
               )}

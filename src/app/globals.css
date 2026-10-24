@@ -2467,6 +2467,12 @@ html {
     --marca: url('/brand/marca/simbolo-simples.svg');
     aspect-ratio: 1;
   }
+  /* The name alone, OPUS ATLAS with the atlas O — set inline in running text
+     ("Blog do OPUS ATLAS"), it sits on the text's baseline. */
+  .marca-nome {
+    --marca: url('/brand/marca/nome.svg');
+    aspect-ratio: 519.5 / 50.5;
+  }
   .marca-assinatura {
     --marca: url('/brand/marca/assinatura-horizontal.svg');
     aspect-ratio: 667.75 / 88.75;
