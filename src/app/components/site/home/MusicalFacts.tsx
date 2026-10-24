@@ -118,8 +118,9 @@ export function MusicalFacts({
   return (
     <div className="flex flex-col gap-6">
       <SectionHeading title={copy.title} />
-      <div className="flex flex-wrap items-center justify-between gap-3">
-        <div className="w-56 max-sm:w-full">
+      {/* No celular, filtro e embaralhar dividem a mesma linha. */}
+      <div className="flex items-center justify-between gap-3 sm:flex-wrap">
+        <div className="w-56 max-sm:min-w-0 max-sm:flex-1">
           <Selecao
             aria-label={copy.filter}
             icone={PiFunnel}
@@ -142,7 +143,7 @@ export function MusicalFacts({
           icone={PiArrowsClockwise}
           disabled={busy}
           onClick={() => void draw(category)}
-          className={cx(pile && '[&_svg]:animate-spin')}
+          className={cx('shrink-0', pile && '[&_svg]:animate-spin')}
         >
           {copy.shuffle}
         </Button>

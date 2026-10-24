@@ -164,8 +164,10 @@ export async function generateMetadata({ params }: WorkDetailsPageProps) {
       images: [
         {
           url: `${SITE_URL}/og/work/${work.id}?l=${language}`,
-          width: 1200,
-          height: 630,
+          // Com foto, a rota devolve o retrato quadrado; sem, o cartão.
+          ...(work.composer.portraitUrl
+            ? { width: 600, height: 600 }
+            : { width: 1200, height: 630 }),
           alt: `${work.title} — ${work.composer.name}`,
         },
       ],

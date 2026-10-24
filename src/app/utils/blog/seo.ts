@@ -30,7 +30,7 @@ import { duracaoIso } from './formatos';
  * que o padrão.
  */
 
-const IMAGEM_PADRAO = `${SITE_URL}/og/site`;
+const IMAGEM_PADRAO = `${SITE_URL}/logo-opus-atlas.jpeg`;
 const LOCALE_OG = { pt: 'pt_BR', en: 'en_US' } as const;
 
 /** Os limites que o Google mostra sem cortar. */

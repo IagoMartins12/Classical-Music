@@ -163,8 +163,10 @@ export async function generateMetadata({ params }: ComposerDetailsPageProps) {
       images: [
         {
           url: `${SITE_URL}/og/composer/${composer.id}?l=${language}`,
-          width: 1200,
-          height: 630,
+          // Com foto, a rota devolve o retrato quadrado; sem, o cartão.
+          ...(composer.portraitUrl
+            ? { width: 600, height: 600 }
+            : { width: 1200, height: 630 }),
           alt: composer.fullName,
         },
       ],

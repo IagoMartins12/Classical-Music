@@ -114,3 +114,71 @@ export function cartaoDeCompartilhamento(input: {
     { ...OG_SIZE }
   );
 }
+
+/** O retrato como imagem de compartilhamento: quadrado, do próprio site. */
+export const RETRATO_SIZE = { width: 600, height: 600 };
+
+/**
+ * O retrato do IMSLP vem em miniatura de 180 px, que estoura no cartão. Tenta
+ * o original (`/images/thumb/3/34/X.jpg/180px-X.jpg` → `/images/3/34/X.jpg`)
+ * e, se ele não vier ou for grande demais, fica a miniatura. Uma miniatura
+ * maior (600 px) não serve: o IMSLP responde 502 para as que não gerou.
+ */
+const candidatos = (url: string) => {
+  const original = url.replace(/\/thumb(\/.+)\/\d+px-[^/]+$/, '$1');
+  return original === url ? [url] : [original, url];
+};
+
+async function baixar(url: string): Promise<string | null> {
+  try {
+    const resposta = await fetch(url, {
+      signal: AbortSignal.timeout(4000),
+      headers: { 'User-Agent': 'OpusAtlas/1.0 (+https://opusatlas.com.br)' },
+      next: { revalidate: 86400 },
+    });
+    const tipo = resposta.headers.get('content-type') ?? '';
+    // O desenho do cartão só lê JPEG e PNG.
+    if (!resposta.ok || !/image\/(jpe?g|png)/.test(tipo)) return null;
+    const bytes = Buffer.from(await resposta.arrayBuffer());
+    if (bytes.length > 4_000_000) return null;
+    return `data:${tipo};base64,${bytes.toString('base64')}`;
+  } catch {
+    return null;
+  }
+}
+
+/**
+ * A foto do compositor como imagem de compartilhamento (compositor e obra).
+ * Baixada aqui, no servidor, e servida do nosso endereço: o robô do WhatsApp
+ * nunca vai ao IMSLP. `null` quando não há foto que se consiga ler — aí quem
+ * chama usa o cartão desenhado.
+ */
+export async function retratoDeCompartilhamento(
+  url: string | null | undefined
+) {
+  if (!url) return null;
+  for (const candidato of candidatos(url)) {
+    const dados = await baixar(candidato);
+    if (!dados) continue;
+    return new ImageResponse(
+      <div
+        style={{
+          width: '100%',
+          height: '100%',
+          display: 'flex',
+          background: FUNDO,
+        }}
+      >
+        {/* eslint-disable-next-line @next/next/no-img-element, jsx-a11y/alt-text */}
+        <img
+          src={dados}
+          width={RETRATO_SIZE.width}
+          height={RETRATO_SIZE.height}
+          style={{ objectFit: 'cover', objectPosition: '50% 25%' }}
+        />
+      </div>,
+      { ...RETRATO_SIZE }
+    );
+  }
+  return null;
+}
