@@ -613,20 +613,38 @@ function Preferences({ role }: { role: Role }) {
     if (prefs.data && !form) setForm(prefs.data);
   }, [prefs.data, form]);
 
+  const phoneChanged =
+    !!form && (form.phone ?? '') !== (prefs.data?.phone ?? '');
   const save = usePortalMutation(
     () =>
       api.updateNotificationPreferences({
         channels: Object.fromEntries(
-          form!.topics.map((t) => [t.key, { email: t.email, sms: t.sms }])
+          form!.topics.map((t) => [
+            t.key,
+            { email: t.email, whatsapp: t.whatsapp },
+          ])
         ),
         quietHoursStart: form!.quietHoursStart || null,
         quietHoursEnd: form!.quietHoursEnd || null,
+        ...(form!.whatsappEligible
+          ? {
+              ...(phoneChanged ? { phone: form!.phone || null } : {}),
+              whatsappOptIn: form!.whatsappOptIn,
+            }
+          : {}),
       }),
     {
       success: 'Preferências de aviso salvas.',
       invalidate: [portalKeys.preferences],
+      // O telefone volta normalizado (e o aceite, zerado se ele mudou).
+      onSuccess: (saved) => setForm(saved),
     }
   );
+  // A coluna do WhatsApp só liga com o canal no ar, aceite e telefone salvos.
+  const whatsappOn =
+    !!form?.whatsappAvailable &&
+    !!prefs.data?.whatsappOptIn &&
+    !!prefs.data?.phone;
 
   return (
     <Section
@@ -653,7 +671,7 @@ function Preferences({ role }: { role: Role }) {
                 <th className="w-24 py-2 pr-4 text-center font-normal">
                   E-mail
                 </th>
-                <th className="w-24 py-2 text-center font-normal">SMS</th>
+                <th className="w-24 py-2 text-center font-normal">WhatsApp</th>
               </tr>
             </thead>
             <tbody>
@@ -681,14 +699,41 @@ function Preferences({ role }: { role: Role }) {
                     />
                   </td>
                   <td className="py-3 text-center">
-                    <span className="t-legenda">
-                      {form.smsAvailable ? '' : 'Em breve'}
-                    </span>
+                    {t.whatsappCapable ? (
+                      <input
+                        type="checkbox"
+                        aria-label={`${t.label} por WhatsApp`}
+                        disabled={!whatsappOn}
+                        checked={whatsappOn && t.whatsapp}
+                        onChange={(e) =>
+                          setForm(
+                            (f) =>
+                              f && {
+                                ...f,
+                                topics: f.topics.map((x, k) =>
+                                  k === i
+                                    ? { ...x, whatsapp: e.target.checked }
+                                    : x
+                                ),
+                              }
+                          )
+                        }
+                        className="h-5 w-5 accent-[var(--ouro)]"
+                      />
+                    ) : (
+                      <span className="t-legenda" aria-hidden="true">
+                        —
+                      </span>
+                    )}
                   </td>
                 </tr>
               ))}
             </tbody>
           </table>
+          <WhatsAppBlock
+            form={form}
+            onChange={(patch) => setForm((f) => f && { ...f, ...patch })}
+          />
           <div className="flex flex-col gap-2">
             <span className="t-rotulo font-medium text-texto">
               Horário de silêncio
@@ -752,5 +797,65 @@ function Preferences({ role }: { role: Role }) {
         </div>
       )}
     </Section>
+  );
+}
+
+/**
+ * WhatsApp (Maestro): o telefone e o aceite explícito, que a Meta exige.
+ * Fora do Maestro, a linha só diz de quem é o recurso.
+ */
+function WhatsAppBlock({
+  form,
+  onChange,
+}: {
+  form: NotificationPreferences;
+  onChange: (patch: Partial<NotificationPreferences>) => void;
+}) {
+  if (!form.whatsappEligible)
+    return (
+      <p className="t-legenda max-w-2xl">
+        Avisos por WhatsApp são do plano Maestro: o professor que assina e os
+        alunos dele.
+      </p>
+    );
+  return (
+    <div className="flex max-w-2xl flex-col gap-3 rounded-controle bg-sup-2 p-4">
+      <span className="t-rotulo font-medium text-texto">WhatsApp</span>
+      {!form.whatsappAvailable && (
+        <p className="t-legenda">
+          O envio por WhatsApp entra no ar em breve. Já dá para deixar o
+          telefone e o aceite prontos.
+        </p>
+      )}
+      <Field
+        label="Telefone com DDD"
+        type="tel"
+        inputMode="tel"
+        autoComplete="tel"
+        placeholder="(11) 91234-5678"
+        value={form.phone ?? ''}
+        maxLength={30}
+        onChange={(e) =>
+          onChange({ phone: e.target.value, whatsappOptIn: false })
+        }
+        className="sm:max-w-xs"
+      />
+      <label className="flex cursor-pointer items-start gap-3">
+        <input
+          type="checkbox"
+          checked={form.whatsappOptIn}
+          disabled={!form.phone}
+          onChange={(e) => onChange({ whatsappOptIn: e.target.checked })}
+          className="mt-0.5 h-5 w-5 shrink-0 accent-[var(--ouro)]"
+        />
+        <span className="text-[0.9375rem] text-texto-suave">
+          Aceito receber avisos do Opus Atlas por WhatsApp neste número. Dá para
+          desmarcar quando quiser.
+        </span>
+      </label>
+      <p className="t-legenda">
+        Salve o telefone e o aceite para marcar os avisos na coluna WhatsApp.
+      </p>
+    </div>
   );
 }

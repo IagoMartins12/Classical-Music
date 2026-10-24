@@ -2,8 +2,8 @@
 
 // Enviar aviso — o professor escolhe para quem e por onde; a preferência de
 // cada aluno decide se o e-mail sai de fato (quem desligou o e-mail daquele
-// tipo de aviso recebe só no portal). SMS ainda não tem envio: aparece como
-// "em breve", sem fingir.
+// tipo de aviso recebe só no portal). Recado não sai por WhatsApp: a Meta só
+// aceita modelo aprovado, e recado é texto livre.
 
 import { useMemo, useState } from 'react';
 import { Chip } from '@/app/components/ui/Badge';
@@ -165,10 +165,6 @@ export default function AnnounceSheet({
                 className="h-5 w-5 accent-[var(--ouro)]"
               />
             </label>
-            <span className="flex items-center justify-between gap-4 text-[0.9375rem] text-texto-fraco">
-              <span>Por SMS</span>
-              <span className="t-legenda">Em breve</span>
-            </span>
           </fieldset>
           <label className="flex cursor-pointer items-center gap-3 text-[0.9375rem] text-texto-suave">
             <input

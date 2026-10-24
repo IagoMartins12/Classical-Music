@@ -28,7 +28,7 @@ const SHELL: Step[] = [
   {
     target: 'avisos',
     title: 'Avisos',
-    text: 'O ponto dourado diz que há aviso não lido. Toque para ver os últimos; por onde eles chegam (e-mail, SMS) você escolhe no Perfil.',
+    text: 'O ponto dourado diz que há aviso não lido. Toque para ver os últimos; por onde eles chegam (e-mail e, no Maestro, WhatsApp) você escolhe no Perfil.',
   },
   {
     target: 'ajuda',
@@ -250,7 +250,7 @@ const TEACHER: Partial<Record<HelpScreen, Step[]>> = {
     {
       target: 'perfil-avisos',
       title: 'Por onde você é avisado',
-      text: 'Cada tipo de aviso, por e-mail ou SMS, e o horário de silêncio.',
+      text: 'Cada tipo de aviso, por e-mail ou WhatsApp (Maestro), e o horário de silêncio.',
     },
   ],
 };
@@ -367,7 +367,7 @@ const STUDENT: Partial<Record<HelpScreen, Step[]>> = {
     {
       target: 'perfil-avisos',
       title: 'Como te avisar',
-      text: 'E-mail, SMS e o horário em que ninguém te avisa fora do portal.',
+      text: 'E-mail, WhatsApp (Maestro) e o horário em que ninguém te avisa fora do portal.',
     },
   ],
   invite: [
