@@ -59,6 +59,7 @@ const T = {
     agendadoPeriodo: (p: string, anual: boolean, d: string) =>
       `Passa para o ${p} ${anual ? 'anual' : 'mensal'} em ${d}.`,
     paraAnual: 'Mudar para o anual',
+    manterPlano: (p: string) => `Manter o ${p}`,
     paraMensal: 'Mudar para o mensal',
     gratis: 'O plano gratuito: ler, ouvir e organizar o estudo.',
     seu: 'Seu plano',
@@ -106,6 +107,7 @@ const T = {
     agendadoPeriodo: (p: string, anual: boolean, d: string) =>
       `Moves to ${p} ${anual ? 'yearly' : 'monthly'} on ${d}.`,
     paraAnual: 'Switch to yearly',
+    manterPlano: (p: string) => `Keep ${p}`,
     paraMensal: 'Switch to monthly',
     gratis: 'The free plan: read, listen and organize your practice.',
     seu: 'Your plan',
@@ -344,8 +346,38 @@ export function GerenciarAssinatura({ idioma }: { idioma: Idioma }) {
   const travada = cancelada || atrasada;
   const periodoAtual = registro?.billingPeriod ?? 'MONTHLY';
 
+  // Desistir da descida agendada: a renovação volta ao plano de hoje.
+  async function manter(p: PlanoPago) {
+    setOcupado('manter');
+    try {
+      const r = await upgradeSubscriptionRequest(
+        p as PlanType,
+        periodoAtual === 'YEARLY' ? BillingPeriod.YEARLY : BillingPeriod.MONTHLY
+      );
+      toast.success(r.message);
+      await carregar();
+    } catch (e) {
+      toast.error((e as Error).message || t.erro);
+    } finally {
+      setOcupado(null);
+    }
+  }
+
   const acao = (p: Plano) => {
     if (p === plano) {
+      if (agendado && p !== 'FREE' && !travada) {
+        return (
+          <Button
+            tamanho="p"
+            variante="secundario"
+            onClick={() => void manter(p)}
+            carregando={ocupado === 'manter'}
+            disabled={ocupado !== null}
+          >
+            {t.manterPlano(nome(p))}
+          </Button>
+        );
+      }
       // O mesmo plano no outro período: mensal → anual vale agora (cobra a
       // diferença), anual → mensal na renovação.
       if (
