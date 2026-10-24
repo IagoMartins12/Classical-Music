@@ -10,6 +10,7 @@ import {
   type ReactNode,
 } from 'react';
 import Link from 'next/link';
+import { AssinaturaDeArea } from '@/app/components/site/header/AssinaturaDeArea';
 import { usePathname, useRouter } from 'next/navigation';
 import {
   PiArrowSquareOut,
@@ -293,16 +294,10 @@ function Lateral({
         <div className="flex items-center gap-2.5 py-4 pl-5 pr-3">
           <Link
             href="/admin"
-            className="flex min-w-0 flex-1 items-center gap-2.5"
+            aria-label="Opus Atlas — Painel administrativo"
+            className="flex min-w-0 flex-1 items-center"
           >
-            <span
-              aria-hidden="true"
-              className="marca marca-simbolo-simples h-9 w-9 shrink-0"
-            />
-            <span className="flex min-w-0 flex-col leading-tight">
-              <span className="font-display text-lg">Opus Atlas</span>
-              <span className="t-legenda truncate">Painel administrativo</span>
-            </span>
+            <AssinaturaDeArea area="admin" className="h-10" />
           </Link>
           {aoRecolher && (
             <Button

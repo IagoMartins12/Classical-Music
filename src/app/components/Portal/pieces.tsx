@@ -23,6 +23,7 @@ import { Erro, Vazio } from '@/app/components/ui/Estados';
 import { Icon } from '@/app/components/ui/Icon';
 import { AreaCarregando, Skeleton } from '@/app/components/ui/Skeleton';
 import { cx } from '@/app/components/ui/cx';
+import { AssinaturaDeArea } from '@/app/components/site/header/AssinaturaDeArea';
 import type {
   Finding,
   LessonStatus,
@@ -41,8 +42,9 @@ import {
 } from './format';
 
 // ---------------------------------------------------------------------------
-// A marca — a família da marca do blog: o símbolo do piano sob o céu, "Opus
-// Atlas" com o clarão dourado e o lema, que entra de novo quando o papel troca.
+// A marca — a família da marca do blog: "Portal do OPUS ATLAS" desenhado como
+// uma peça só (AssinaturaDeArea), com o lema do papel; na barra lateral, a
+// versão curta, sem o lema.
 // ---------------------------------------------------------------------------
 
 const MOTTO: Record<Role, string> = {
@@ -64,31 +66,16 @@ export function Brand({
       href={`/${role}`}
       aria-label={`Portal do Opus Atlas — ${MOTTO[role]}`}
       className={cx(
-        'group/marca flex min-h-[var(--alvo)] shrink-0 items-center gap-2.5 rounded-controle',
+        'flex min-h-[var(--alvo)] min-w-0 shrink-0 items-center rounded-controle',
         className
       )}
     >
-      <span
-        aria-hidden="true"
-        className="marca marca-simbolo-simples h-9 w-9 shrink-0 transition-transform duration-300 group-hover/marca:scale-110 motion-reduce:transition-none sm:h-10 sm:w-10"
+      <AssinaturaDeArea
+        area="portal"
+        variante={role}
+        curta={small}
+        className={small ? 'h-7' : 'h-10 sm:h-[46px]'}
       />
-      <span className="flex flex-col">
-        <span
-          className={cx(
-            'whitespace-nowrap font-display leading-none',
-            small ? 'text-[1.0625rem]' : 'text-[1.125rem] sm:text-[1.3125rem]'
-          )}
-        >
-          <span className="italic text-texto-suave">Portal do </span>
-          <span className="gold-shine font-semibold">Opus Atlas</span>
-        </span>
-        <span
-          key={role}
-          className="entra mt-1 text-[0.75rem] leading-none text-texto-fraco"
-        >
-          {MOTTO[role]}
-        </span>
-      </span>
     </Link>
   );
 }

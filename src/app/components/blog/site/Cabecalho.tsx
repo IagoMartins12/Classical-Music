@@ -21,6 +21,7 @@ import { ThemeToggle } from '@/app/components/ThemeToggle';
 import { Button } from '@/app/components/ui/Button';
 import { Icon } from '@/app/components/ui/Icon';
 import { MenuScreen, MenuScreenHeader } from '@/app/components/ui/MenuScreen';
+import { AssinaturaDeArea } from '@/app/components/site/header/AssinaturaDeArea';
 import { Sheet } from '@/app/components/ui/Sheet';
 import { cx } from '@/app/components/ui/cx';
 import { useAuth } from '@/app/hooks/useAuth';
@@ -193,38 +194,17 @@ export function CabecalhoDoBlog({
         <Link
           href={rotasDoBlog.inicio(idioma)}
           aria-label={t.nav.marca}
-          className="group flex min-h-[var(--alvo)] shrink-0 items-center gap-2.5 rounded-controle"
+          className="flex min-h-[var(--alvo)] shrink-0 items-center rounded-controle"
         >
-          <span
-            aria-hidden="true"
-            className="marca marca-simbolo-simples h-8 w-8 shrink-0 transition-transform duration-300 group-hover:scale-110 motion-reduce:transition-none sm:h-10 sm:w-10"
+          <AssinaturaDeArea
+            area={idioma === 'pt' ? 'blog-pt' : 'blog-en'}
+            curta
+            className="h-9 sm:hidden"
           />
-          <span className="flex flex-col">
-            <span className="font-display text-[1.3125rem] leading-none sm:text-[1.5rem]">
-              {idioma === 'pt' ? (
-                <>
-                  <span className="italic text-texto-suave">
-                    {t.nav.marcaDo}{' '}
-                  </span>
-                  <span
-                    aria-hidden="true"
-                    className="marca marca-nome marca-brilho ml-1 inline-block h-3 align-baseline sm:h-4"
-                  />
-                </>
-              ) : (
-                <>
-                  <span
-                    aria-hidden="true"
-                    className="marca marca-nome marca-brilho ml-1 inline-block h-3 align-baseline sm:h-4"
-                  />
-                  <span className="italic text-texto-suave"> Blog</span>
-                </>
-              )}
-            </span>
-            <span className="mt-1 hidden text-[0.75rem] leading-none text-texto-fraco sm:block">
-              {t.nav.lema}
-            </span>
-          </span>
+          <AssinaturaDeArea
+            area={idioma === 'pt' ? 'blog-pt' : 'blog-en'}
+            className="hidden h-[46px] sm:block"
+          />
         </Link>
 
         <nav
