@@ -7,6 +7,9 @@ import type { Idioma } from '../legal/tipos';
  */
 const pt = {
   action: 'Contribuir',
+  choose: 'Escolher',
+  noMatch: 'Nada encontrado',
+  addInstrument: 'Adicionar instrumento',
   title: (target: string) => `Completar ${target}`,
   intro:
     'Entra no ar na hora, com o seu nome. Se alguém denunciar e a equipe concordar, sai.',
@@ -119,6 +122,9 @@ const pt = {
 
 const en: typeof pt = {
   action: 'Contribute',
+  choose: 'Choose',
+  noMatch: 'Nothing found',
+  addInstrument: 'Add an instrument',
   title: (target) => `Complete ${target}`,
   intro:
     'It goes live right away, with your name. If someone reports it and the team agrees, it comes down.',

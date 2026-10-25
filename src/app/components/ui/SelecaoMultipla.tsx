@@ -24,6 +24,7 @@ export function SelecaoMultipla({
   placeholder,
   excluir = [],
   vazio,
+  rotuloDe = (valor) => valor,
   className,
 }: {
   rotulo: string;
@@ -34,6 +35,8 @@ export function SelecaoMultipla({
   /** Entradas que não podem ser escolhidas (já usadas em outro campo). */
   excluir?: string[];
   vazio?: string;
+  /** O nome na tela de um valor (o valor gravado em português, o rótulo no idioma). */
+  rotuloDe?: (valor: string) => string;
   className?: string;
 }) {
   const id = useId();
@@ -41,8 +44,8 @@ export function SelecaoMultipla({
     const fora = new Set([...valores, ...excluir]);
     return opcoes
       .filter((o) => !fora.has(o))
-      .map((o) => ({ value: o, label: o }));
-  }, [opcoes, valores, excluir]);
+      .map((o) => ({ value: o, label: rotuloDe(o) }));
+  }, [opcoes, valores, excluir, rotuloDe]);
 
   return (
     <div className={cx('flex flex-col gap-2', className)}>
@@ -56,7 +59,7 @@ export function SelecaoMultipla({
               key={valor}
               className="inline-flex min-h-8 items-center gap-1 rounded-full border border-linha-forte bg-sup-2 pl-3 pr-1 text-sm text-texto"
             >
-              {valor}
+              {rotuloDe(valor)}
               <button
                 type="button"
                 onClick={() => aoMudar(valores.filter((v) => v !== valor))}
@@ -64,7 +67,7 @@ export function SelecaoMultipla({
               >
                 <Icon de={PiX} tamanho="pp" />
                 <NomeAcao acao="tirar" />
-                <span className="sr-only"> {valor}</span>
+                <span className="sr-only"> {rotuloDe(valor)}</span>
               </button>
             </li>
           ))}

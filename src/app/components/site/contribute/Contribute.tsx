@@ -8,6 +8,7 @@ import {
   type ReactNode,
   useCallback,
   useContext,
+  useId,
   useMemo,
   useState,
 } from 'react';
@@ -26,9 +27,22 @@ import { CaixaDeMarcar } from '@/app/components/ui/CaixaDeMarcar';
 import { tonalityOptions } from '@/app/utils/tonalities';
 import { Field } from '@/app/components/ui/Field';
 import { Icon } from '@/app/components/ui/Icon';
+import { SelecaoComBusca } from '@/app/components/ui/SelecaoComBusca';
+import { SelecaoMultipla } from '@/app/components/ui/SelecaoMultipla';
+import { SeletorDeData } from '@/app/components/ui/SeletorDeData';
 import { Sheet } from '@/app/components/ui/Sheet';
 import { cx } from '@/app/components/ui/cx';
 import { CONTRIBUTE } from '@/app/conteudo/site/contribute';
+import {
+  canonicalNationality,
+  countryFilters,
+} from '@/app/conteudo/site/countries';
+import {
+  escreverInstrumentacao,
+  lerInstrumentacao,
+  opcoesDeInstrumento,
+  rotuloDoInstrumento,
+} from '@/app/conteudo/site/instrumentacao';
 import { useAuth } from '@/app/hooks/useAuth';
 import { useRouteLanguage } from '@/app/hooks/useRouteLanguage';
 import { useSignInGate } from '@/app/hooks/useSignInGate';
@@ -220,8 +234,16 @@ function ContributeSheet({
   const client = useQueryClient();
   const bioField = language === 'en' ? 'bioEn' : 'bio';
   const fields = DATA_FIELDS[target.type];
+  // The nationality starts as the select's spelling ("Alemão" → "German"),
+  // so opening and saving does not count it as changed. Dates and
+  // instrumentation keep the stored text until someone edits them.
   const initialData = Object.fromEntries(
-    fields.map((f) => [f, target.current[f] ?? ''])
+    fields.map((f) => [
+      f,
+      f === 'nationality'
+        ? canonicalNationality(target.current[f])
+        : (target.current[f] ?? ''),
+    ])
   );
 
   const [bio, setBio] = useState(target.current[bioField] ?? '');
@@ -445,7 +467,51 @@ function ContributeSheet({
             <div className="flex flex-col gap-2">
               <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
                 {fields.map((f) =>
-                  f === 'tone' ? (
+                  f === 'birthDate' || f === 'deathDate' ? (
+                    <Rotulado key={f} label={copy.fields[f]}>
+                      {(id) => (
+                        <SeletorDeData
+                          id={id}
+                          valor={data[f]}
+                          aoMudar={(texto) =>
+                            touch(setData)({ ...data, [f]: texto })
+                          }
+                        />
+                      )}
+                    </Rotulado>
+                  ) : f === 'nationality' ? (
+                    <Rotulado key={f} label={copy.fields[f]}>
+                      {(id) => (
+                        <SelecaoComBusca
+                          id={id}
+                          opcoes={nationalityOptions(language, data[f])}
+                          valor={data[f]}
+                          aoMudar={(valor) =>
+                            touch(setData)({ ...data, [f]: valor })
+                          }
+                          placeholder={copy.choose}
+                          vazio={copy.noMatch}
+                        />
+                      )}
+                    </Rotulado>
+                  ) : f === 'instrumentation' ? (
+                    <SelecaoMultipla
+                      key={f}
+                      rotulo={copy.fields[f]}
+                      opcoes={opcoesDeInstrumento(language)}
+                      valores={lerInstrumentacao(data[f])}
+                      rotuloDe={(v) => rotuloDoInstrumento(v, language)}
+                      aoMudar={(lista) =>
+                        touch(setData)({
+                          ...data,
+                          [f]: escreverInstrumentacao(lista),
+                        })
+                      }
+                      placeholder={copy.addInstrument}
+                      vazio={copy.noMatch}
+                      className="sm:col-span-2"
+                    />
+                  ) : f === 'tone' ? (
                     <Field.Selecao
                       key={f}
                       label={copy.fields[f]}
@@ -468,7 +534,7 @@ function ContributeSheet({
                     <Field
                       key={f}
                       label={copy.fields[f]}
-                      maxLength={f === 'instrumentation' ? 300 : 200}
+                      maxLength={200}
                       value={data[f]}
                       onChange={(e) =>
                         touch(setData)({ ...data, [f]: e.target.value })
@@ -578,4 +644,38 @@ export function WrongOnThisPage({ uploadHref }: { uploadHref: string }) {
       .
     </p>
   );
+}
+
+/** A label for a field that is not a plain input (date, searchable select). */
+function Rotulado({
+  label,
+  children,
+}: {
+  label: string;
+  children: (id: string) => ReactNode;
+}) {
+  const id = useId();
+  return (
+    <div className="flex flex-col gap-2">
+      <label htmlFor={id} className="t-rotulo font-medium text-texto">
+        {label}
+      </label>
+      {children(id)}
+    </div>
+  );
+}
+
+/**
+ * Countries for the nationality select: the stored demonym as value
+ * ("German"), the country in the page's language as label. A stored value
+ * the list does not know stays as an option, so the field never shows empty.
+ */
+function nationalityOptions(language: 'pt' | 'en', current: string) {
+  const options = countryFilters(language).map((c) => ({
+    value: c.value,
+    label: c.label,
+  }));
+  return current && !options.some((o) => o.value === current)
+    ? [{ value: current, label: current }, ...options]
+    : options;
 }

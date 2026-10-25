@@ -26,14 +26,67 @@ const COUNTRIES: Record<string, Record<Idioma, string>> = {
   Swiss: { pt: 'Suíça', en: 'Switzerland' },
   Norwegian: { pt: 'Noruega', en: 'Norway' },
   Finnish: { pt: 'Finlândia', en: 'Finland' },
-  Japonês: { pt: 'Japão', en: 'Japan' },
   Japanese: { pt: 'Japão', en: 'Japan' },
+  Japonês: { pt: 'Japão', en: 'Japan' },
+  Argentine: { pt: 'Argentina', en: 'Argentina' },
+  Australian: { pt: 'Austrália', en: 'Australia' },
+  Bulgarian: { pt: 'Bulgária', en: 'Bulgaria' },
+  Canadian: { pt: 'Canadá', en: 'Canada' },
+  Chilean: { pt: 'Chile', en: 'Chile' },
+  Chinese: { pt: 'China', en: 'China' },
+  Colombian: { pt: 'Colômbia', en: 'Colombia' },
+  Croatian: { pt: 'Croácia', en: 'Croatia' },
+  Cuban: { pt: 'Cuba', en: 'Cuba' },
+  Ecuadorian: { pt: 'Equador', en: 'Ecuador' },
+  Estonian: { pt: 'Estônia', en: 'Estonia' },
+  Filipino: { pt: 'Filipinas', en: 'Philippines' },
+  Greek: { pt: 'Grécia', en: 'Greece' },
+  Haitian: { pt: 'Haiti', en: 'Haiti' },
+  Icelandic: { pt: 'Islândia', en: 'Iceland' },
+  Indian: { pt: 'Índia', en: 'India' },
+  Irish: { pt: 'Irlanda', en: 'Ireland' },
+  Israeli: { pt: 'Israel', en: 'Israel' },
+  Korean: { pt: 'Coreia do Sul', en: 'South Korea' },
+  Latvian: { pt: 'Letônia', en: 'Latvia' },
+  Lithuanian: { pt: 'Lituânia', en: 'Lithuania' },
+  Luxembourgish: { pt: 'Luxemburgo', en: 'Luxembourg' },
+  Mexican: { pt: 'México', en: 'Mexico' },
+  'New Zealander': { pt: 'Nova Zelândia', en: 'New Zealand' },
+  Paraguayan: { pt: 'Paraguai', en: 'Paraguay' },
+  Peruvian: { pt: 'Peru', en: 'Peru' },
+  Portuguese: { pt: 'Portugal', en: 'Portugal' },
+  Romanian: { pt: 'Romênia', en: 'Romania' },
+  Scottish: { pt: 'Escócia', en: 'Scotland' },
+  Serbian: { pt: 'Sérvia', en: 'Serbia' },
+  Slovak: { pt: 'Eslováquia', en: 'Slovakia' },
+  Slovenian: { pt: 'Eslovênia', en: 'Slovenia' },
+  Taiwanese: { pt: 'Taiwan', en: 'Taiwan' },
+  Turkish: { pt: 'Turquia', en: 'Turkey' },
+  Ukrainian: { pt: 'Ucrânia', en: 'Ukraine' },
+  Uruguayan: { pt: 'Uruguai', en: 'Uruguay' },
+  Venezuelan: { pt: 'Venezuela', en: 'Venezuela' },
+  Welsh: { pt: 'País de Gales', en: 'Wales' },
 };
 
 export const countryOf = (
   nationality: string | null | undefined,
   language: Idioma
 ) => (nationality ? (COUNTRIES[nationality]?.[language] ?? nationality) : null);
+
+/**
+ * The stored demonym the select uses for `nationality` ("Alemão" →
+ * "German"): the first spelling of its country. Unknown values come back as
+ * they are, so the select can still show them.
+ */
+export function canonicalNationality(nationality: string | null | undefined) {
+  if (!nationality) return '';
+  const country = COUNTRIES[nationality]?.en;
+  if (!country) return nationality;
+  return (
+    Object.entries(COUNTRIES).find(([, names]) => names.en === country)?.[0] ??
+    nationality
+  );
+}
 
 /**
  * Countries for the list filter: one entry per country, with every stored
