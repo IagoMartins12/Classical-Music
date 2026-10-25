@@ -9,6 +9,7 @@ import { usePulso } from '@/app/components/ui/usePulso';
 import { WORK } from '@/app/conteudo/site/work';
 import { useRouteLanguage } from '@/app/hooks/useRouteLanguage';
 import { useLearningStore } from '@/app/stores/useLearningStore';
+import { useDadosDaConta } from '@/app/libs/session/dadosDaConta';
 import { LearningModalHost } from '../LearningModalHost';
 import { useStudy, type StudyContext } from './useStudy';
 
@@ -24,11 +25,13 @@ export function StudyActions({ context }: { context: StudyContext }) {
   // The learning store fills in the browser; render the neutral state first.
   const [mounted, setMounted] = useState(false);
   useEffect(() => setMounted(true), []);
+  // And only the signed-in account's: the store is kept in the browser.
+  const confirmado = useDadosDaConta();
   const studying = useLearningStore(
-    (s) => mounted && s.isWantToLearn(context.workId)
+    (s) => mounted && confirmado && s.isWantToLearn(context.workId)
   );
   const learned = useLearningStore(
-    (s) => mounted && s.isLearned(context.workId)
+    (s) => mounted && confirmado && s.isLearned(context.workId)
   );
 
   // The new state moves once when the person changes it, not on load.

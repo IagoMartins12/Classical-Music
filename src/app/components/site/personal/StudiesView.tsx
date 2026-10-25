@@ -2,7 +2,7 @@
 
 import { RetrospectiveButton } from './Retrospective';
 import { Recommendations } from '../Recommendations';
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import {
   PiCheckCircle,
   PiFilePdf,
@@ -28,6 +28,7 @@ import {
   type LearnedItem,
   type WantToLearnItem,
 } from '@/app/stores/useLearningStore';
+import { useDadosDaConta } from '@/app/libs/session/dadosDaConta';
 import { LearningModalHost } from '../LearningModalHost';
 import { Portrait } from '../Portrait';
 import { ScorePage } from '../work/ScorePreview';
@@ -64,12 +65,24 @@ export function StudiesView({
   const [tab, setTab] = useState<Tab>('all');
   const [query, setQuery] = useState('');
 
+  // The lists the server sent for the signed-in account win over whatever
+  // the browser kept: they go into the store once the session confirms the
+  // account (`dadosDaConta`), and until then they are what shows.
+  const confirmado = useDadosDaConta();
+  const synced = useRef(false);
   useEffect(() => {
-    if (!initialized) initializeLearning(initial.wantToLearn, initial.learned);
-  }, [initialized, initializeLearning, initial]);
+    if (!confirmado) {
+      synced.current = false;
+      return;
+    }
+    if (synced.current && initialized) return;
+    synced.current = true;
+    initializeLearning(initial.wantToLearn, initial.learned);
+  }, [confirmado, initialized, initializeLearning, initial]);
 
-  const want = initialized ? wantToLearn : initial.wantToLearn;
-  const done = initialized ? learned : initial.learned;
+  const live = confirmado && initialized && synced.current;
+  const want = live ? wantToLearn : initial.wantToLearn;
+  const done = live ? learned : initial.learned;
 
   const entries = useMemo(() => {
     const all: Entry[] = [

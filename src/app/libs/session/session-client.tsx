@@ -18,6 +18,7 @@ import {
 import { ProfileAccount, profileApi } from '../api/profile';
 import { getQueryClient } from '../query-client';
 import { lembrarConta, limparCachesPessoais } from '../pwa/limpar';
+import { esquecerConta, garantirDono } from './dadosDaConta';
 import { SESSION_HINT_COOKIE } from '@/app/utils/authCookies';
 
 /**
@@ -211,6 +212,8 @@ export async function signOut(
   // What the app kept offline for this account goes with the session.
   await lembrarConta(null);
   await limparCachesPessoais();
+  // Studies, favorites and annotations kept in the browser go too.
+  esquecerConta();
 
   const client = getQueryClient();
   client.clear();
@@ -306,6 +309,18 @@ function SessionEffects() {
   useEffect(() => {
     if (account) void lembrarConta(account.id);
   }, [account]);
+
+  // The session answered (an account, or none): data the browser kept for
+  // anyone else is erased before it shows (`dadosDaConta`). While it is
+  // still loading (`undefined`), nothing kept is shown.
+  useEffect(() => {
+    if (account === undefined) return;
+    if (garantirDono(account?.id ?? null))
+      // Another account's answers too (lists, profile), all but the session.
+      queryClient.removeQueries({
+        predicate: (query) => query.queryKey[0] !== SESSION_QUERY_KEY[0],
+      });
+  }, [account, queryClient]);
 
   // A renovação falhou numa chamada qualquer: a sessão acabou.
   useEffect(() => {

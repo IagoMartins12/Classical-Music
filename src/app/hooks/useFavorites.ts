@@ -4,9 +4,13 @@
 import { useEffect } from 'react';
 import { useFavoritesStore } from '../stores/useFavoritesStore';
 import { useAuth } from './useAuth';
+import { useDadosDaConta } from '../libs/session/dadosDaConta';
+import { useLearningStore } from '../stores/useLearningStore';
 import {
   listComposerFavorites,
+  listLearned,
   listScoreFavorites,
+  listWantToLearn,
   listWorkFavorites,
 } from '@/app/requests/library';
 
@@ -21,6 +25,25 @@ export const useFavorites = () => {
     getFavoriteWorksCount,
   } = useFavoritesStore();
 
+  // Studies load here too: the work page shows them, not only "your studies".
+  const confirmado = useDadosDaConta();
+  const learningReady = useLearningStore((s) => s.initialized);
+  const initializeLearning = useLearningStore((s) => s.initializeLearning);
+
+  useEffect(() => {
+    if (!confirmado || learningReady) return;
+    let alive = true;
+    void Promise.all([listWantToLearn(), listLearned()]).then(
+      ([want, done]) => {
+        if (alive && want.ok && done.ok)
+          initializeLearning(want.data.items ?? [], done.data.items ?? []);
+      }
+    );
+    return () => {
+      alive = false;
+    };
+  }, [confirmado, learningReady, initializeLearning]);
+
   useEffect(() => {
     const loadFavorites = async () => {
       if (isLoading) return;
@@ -30,7 +53,8 @@ export const useFavorites = () => {
         return;
       }
 
-      if (initialized) return;
+      // Only once the kept data is known to be this account's.
+      if (!confirmado || initialized) return;
 
       try {
         // Carregar favoritos do servidor
@@ -58,6 +82,7 @@ export const useFavorites = () => {
     user?.id,
     isAuthenticated,
     isLoading,
+    confirmado,
     initialized,
     initializeFavorites,
     reset,

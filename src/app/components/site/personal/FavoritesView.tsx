@@ -17,6 +17,7 @@ import {
   type FavoriteScore,
   type FavoriteWork,
 } from '@/app/stores/useFavoritesStore';
+import { useDadosDaConta } from '@/app/libs/session/dadosDaConta';
 import { FavoriteHeart } from '../FavoriteHeart';
 import { NumeroVivo } from '@/app/components/ui/NumeroVivo';
 import { useSaida } from '@/app/components/ui/useSaida';
@@ -41,13 +42,23 @@ const cardClass =
   'relative flex items-center gap-4 rounded-card bg-sup-2 p-4 pr-14 row:rounded-none row:bg-transparent! row:bg-none! row:px-0 row:py-3';
 
 /** "Your favorites": composers, works and scores, with an "All" overview. */
+/** The same empty list each time, so the store selectors stay stable. */
+const SEM: never[] = [];
+
 export function FavoritesView() {
   const { language } = useRouteLanguage();
   const copy = PERSONAL[language].favorites;
   useFavorites();
-  const composers = useFavoritesStore((s) => s.favoriteComposers);
-  const works = useFavoritesStore((s) => s.favoriteWorks);
-  const scores = useFavoritesStore((s) => s.favoriteScores);
+  // Only the signed-in account's (`dadosDaConta`): the store is kept in the
+  // browser, and another account's must never show.
+  const confirmado = useDadosDaConta();
+  const composers = useFavoritesStore((s) =>
+    confirmado ? s.favoriteComposers : SEM
+  );
+  const works = useFavoritesStore((s) => (confirmado ? s.favoriteWorks : SEM));
+  const scores = useFavoritesStore((s) =>
+    confirmado ? s.favoriteScores : SEM
+  );
   const [tab, setTab] = useState<Tab>('all');
   const [query, setQuery] = useState('');
 
