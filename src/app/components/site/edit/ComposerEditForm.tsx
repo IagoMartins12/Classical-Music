@@ -8,7 +8,14 @@ import { Button } from '@/app/components/ui/Button';
 import { asList } from './asList';
 import { CampoDeFichas } from '@/app/components/ui/CampoDeFichas';
 import { Field } from '@/app/components/ui/Field';
+import { Rotulado } from '@/app/components/ui/Rotulado';
 import { Selecao } from '@/app/components/ui/Selecao';
+import { SelecaoComBusca } from '@/app/components/ui/SelecaoComBusca';
+import { SeletorDeData } from '@/app/components/ui/SeletorDeData';
+import {
+  canonicalNationality,
+  nationalityOptions,
+} from '@/app/conteudo/site/countries';
 import { EDIT } from '@/app/conteudo/site/edit';
 import { useRouteLanguage } from '@/app/hooks/useRouteLanguage';
 import type { ApiSchema } from '@/app/libs/api/types';
@@ -165,9 +172,33 @@ export function ComposerEditForm({
       </EditSection>
 
       <EditSection title={t.life}>
-        {field('birthDate', t.birth, { ajuda: t.dateHelp })}
-        {field('deathDate', t.death, { ajuda: t.dateHelp })}
-        {field('nationality', t.nationality)}
+        {(['birthDate', 'deathDate'] as const).map((key) => (
+          <Rotulado key={key} label={key === 'birthDate' ? t.birth : t.death}>
+            {(id) => (
+              <SeletorDeData
+                id={id}
+                valor={form[key]}
+                aoMudar={(texto) => set({ [key]: texto })}
+              />
+            )}
+          </Rotulado>
+        ))}
+        {/* Shown in the select's spelling ("Alemão" → Germany); the stored
+            text only changes when someone picks another country. */}
+        <Rotulado label={t.nationality}>
+          {(id) => (
+            <SelecaoComBusca
+              id={id}
+              opcoes={nationalityOptions(
+                language,
+                canonicalNationality(form.nationality)
+              )}
+              valor={canonicalNationality(form.nationality)}
+              aoMudar={(nationality) => set({ nationality })}
+              limpavel
+            />
+          )}
+        </Rotulado>
         <label className="flex flex-col gap-2">
           <span className="t-rotulo">{t.epoch}</span>
           <Selecao

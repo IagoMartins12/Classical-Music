@@ -111,3 +111,18 @@ export function countryFilters(language: Idioma) {
     a.label.localeCompare(b.label, language)
   );
 }
+
+/**
+ * Countries for the nationality select: the stored demonym as value
+ * ("German"), the country in the page's language as label. A stored value
+ * the list does not know stays as an option, so the field never shows empty.
+ */
+export function nationalityOptions(language: Idioma, current: string) {
+  const options = countryFilters(language).map((c) => ({
+    value: c.value,
+    label: c.label,
+  }));
+  return current && !options.some((o) => o.value === current)
+    ? [{ value: current, label: current }, ...options]
+    : options;
+}

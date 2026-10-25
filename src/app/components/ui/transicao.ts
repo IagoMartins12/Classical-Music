@@ -166,7 +166,8 @@ export function prepararPagina(
  * dentro da transição, a espera estourava e o card não virava. Enquanto
  * espera, `origem` (o que foi clicado) mostra que está abrindo
  * (`[data-abrindo]`, em `globals.css`): um card escurece com um anel no
- * centro; um link ou uma linha ganha um anel pequeno no fim. Na segunda vez
+ * centro; um link em bloco ganha um anel pequeno preso à direita; um link no
+ * meio do texto, o anel logo depois dele. Na segunda vez
  * a página já está pronta e o sinal nem aparece.
  *
  * **O card vira a página** quando há `cartao`: ele recebe, só agora, o nome
@@ -204,11 +205,20 @@ export function abrirPagina(
   const posicao = origem?.style.position ?? '';
   // O sinal só aparece se a espera for perceptível: abaixo de 150ms, piscaria.
   // No card, ele é desenhado por pseudoelementos posicionados pelo card.
+  // Três desenhos: o card escurece com o anel no centro; um link em bloco
+  // (uma linha de lista, um título em coluna) ganha o anel preso à direita,
+  // sem empurrar nada; um link no meio do texto, o anel logo depois dele.
   const sinal = setTimeout(() => {
     if (vez !== abrindo || !origem) return;
-    if (cartao && getComputedStyle(origem).position === 'static')
+    const estilo = getComputedStyle(origem);
+    const variante = cartao
+      ? 'cartao'
+      : estilo.display === 'inline'
+        ? 'linha'
+        : 'bloco';
+    if (variante !== 'linha' && estilo.position === 'static')
       origem.style.position = 'relative';
-    origem.dataset.abrindo = cartao ? 'cartao' : 'linha';
+    origem.dataset.abrindo = variante;
   }, 150);
   const limite = new Promise((resolver) => setTimeout(resolver, 8000));
   const pronta = prepararPagina(href, preCarregar).catch(() => undefined);

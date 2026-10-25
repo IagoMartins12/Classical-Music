@@ -7,7 +7,14 @@ import { asList } from './asList';
 import { CampoDeFichas } from '@/app/components/ui/CampoDeFichas';
 import { Field } from '@/app/components/ui/Field';
 import { Selecao } from '@/app/components/ui/Selecao';
+import { SelecaoMultipla } from '@/app/components/ui/SelecaoMultipla';
 import { EDIT } from '@/app/conteudo/site/edit';
+import {
+  escreverInstrumentacao,
+  lerInstrumentacao,
+  opcoesDeInstrumento,
+  rotuloDoInstrumento,
+} from '@/app/conteudo/site/instrumentacao';
 import { useRouteLanguage } from '@/app/hooks/useRouteLanguage';
 import type { ApiSchema } from '@/app/libs/api/types';
 import { saveWorkRequest } from '@/app/requests/uploads-client';
@@ -165,7 +172,18 @@ export function WorkEditForm({
             aoMudar={(instrumentId) => set({ instrumentId })}
           />
         </label>
-        {field('instrumentation', t.instrumentation)}
+        {/* The stored text is read into the list (plurals, English); it is
+            rewritten only when someone adds or removes an instrument. */}
+        <SelecaoMultipla
+          rotulo={t.instrumentation}
+          opcoes={opcoesDeInstrumento(language)}
+          valores={lerInstrumentacao(form.instrumentation)}
+          rotuloDe={(v) => rotuloDoInstrumento(v, language)}
+          aoMudar={(lista) =>
+            set({ instrumentation: escreverInstrumentacao(lista) })
+          }
+          className="sm:col-span-2"
+        />
         <label className="flex flex-col gap-2">
           <span className="t-rotulo">{t.epoch}</span>
           <Selecao

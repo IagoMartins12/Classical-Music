@@ -201,7 +201,11 @@ function ComposerFavorite({
   const name = composer?.fullName || composer?.name || '';
   const leaving = useSaida();
   return (
-    <li ref={leaving.ref} className={cardClass}>
+    <li
+      ref={leaving.ref}
+      data-vira={`compositor-${favorite.composerId}`}
+      className={cardClass}
+    >
       <Portrait
         name={name}
         src={composer?.portraitUrl}
@@ -234,7 +238,11 @@ function WorkFavorite({ favorite }: { favorite: FavoriteWork }) {
   const work = favorite.work;
   const leaving = useSaida();
   return (
-    <li ref={leaving.ref} className={cardClass}>
+    <li
+      ref={leaving.ref}
+      data-vira={`obra-${favorite.workId}`}
+      className={cardClass}
+    >
       <Portrait
         name={work?.composer.fullName ?? '?'}
         sizes="48px"

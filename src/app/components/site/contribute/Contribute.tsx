@@ -8,7 +8,6 @@ import {
   type ReactNode,
   useCallback,
   useContext,
-  useId,
   useMemo,
   useState,
 } from 'react';
@@ -27,6 +26,7 @@ import { CaixaDeMarcar } from '@/app/components/ui/CaixaDeMarcar';
 import { tonalityOptions } from '@/app/utils/tonalities';
 import { Field } from '@/app/components/ui/Field';
 import { Icon } from '@/app/components/ui/Icon';
+import { Rotulado } from '@/app/components/ui/Rotulado';
 import { SelecaoComBusca } from '@/app/components/ui/SelecaoComBusca';
 import { SelecaoMultipla } from '@/app/components/ui/SelecaoMultipla';
 import { SeletorDeData } from '@/app/components/ui/SeletorDeData';
@@ -35,7 +35,7 @@ import { cx } from '@/app/components/ui/cx';
 import { CONTRIBUTE } from '@/app/conteudo/site/contribute';
 import {
   canonicalNationality,
-  countryFilters,
+  nationalityOptions,
 } from '@/app/conteudo/site/countries';
 import {
   escreverInstrumentacao,
@@ -644,38 +644,4 @@ export function WrongOnThisPage({ uploadHref }: { uploadHref: string }) {
       .
     </p>
   );
-}
-
-/** A label for a field that is not a plain input (date, searchable select). */
-function Rotulado({
-  label,
-  children,
-}: {
-  label: string;
-  children: (id: string) => ReactNode;
-}) {
-  const id = useId();
-  return (
-    <div className="flex flex-col gap-2">
-      <label htmlFor={id} className="t-rotulo font-medium text-texto">
-        {label}
-      </label>
-      {children(id)}
-    </div>
-  );
-}
-
-/**
- * Countries for the nationality select: the stored demonym as value
- * ("German"), the country in the page's language as label. A stored value
- * the list does not know stays as an option, so the field never shows empty.
- */
-function nationalityOptions(language: 'pt' | 'en', current: string) {
-  const options = countryFilters(language).map((c) => ({
-    value: c.value,
-    label: c.label,
-  }));
-  return current && !options.some((o) => o.value === current)
-    ? [{ value: current, label: current }, ...options]
-    : options;
 }

@@ -38,10 +38,7 @@ describe('lerInstrumentacao', () => {
 
   it('o que não reconhece fica como está', () => {
     expect(lerInstrumentacao('Piano 4-mãos')).toEqual(['Piano 4-mãos']);
-    expect(lerInstrumentacao('Orquestra: flutes, Piano')).toEqual([
-      'Orquestra: flutes',
-      'Piano',
-    ]);
+    expect(lerInstrumentacao('C3, Piano')).toEqual(['C3', 'Piano']);
   });
 
   it('vazio é lista vazia', () => {
@@ -55,5 +52,22 @@ describe('escreverInstrumentacao e rótulos', () => {
     expect(escreverInstrumentacao(['Violino', 'Piano'])).toBe('Violino, Piano');
     expect(rotuloDoInstrumento('Violoncelo', 'en')).toBe('Cello');
     expect(rotuloDoInstrumento('Piano 4-mãos', 'en')).toBe('Piano 4-mãos');
+  });
+});
+
+describe('o que as fontes juntaram', () => {
+  it('separa o que veio num trecho só', () => {
+    expect(lerInstrumentacao('Orquestra: flutes')).toEqual([
+      'Orquestra',
+      'Flauta',
+    ]);
+    expect(lerInstrumentacao('Bassoons + horns')).toEqual(['Fagote', 'Trompa']);
+  });
+
+  it('tira o qualificador da frente', () => {
+    expect(lerInstrumentacao('Contralto Saxofone')).toEqual(['Saxofone']);
+    expect(lerInstrumentacao('Military Banda')).toEqual(['Banda']);
+    expect(lerInstrumentacao('Violino ad lib.')).toEqual(['Violino']);
+    expect(lerInstrumentacao('Vozes sattb')).toEqual(['Voz']);
   });
 });

@@ -116,6 +116,11 @@ const INSTRUMENTOS: [pt: string, en: string, sinonimos: string[]][] = [
   ['Marimba', 'Marimba', []],
   ['Sinos', 'Bells', ['bells', 'tubular bells']],
   ['Bateria', 'Drum kit', ['drum kit', 'drums']],
+  ['Tam-tam', 'Tam-tam', ['gongo', 'gong']],
+  ['Banjo', 'Banjo', []],
+  ['Violone', 'Violone', []],
+  ["Viola d'Amore", "Viola d'amore", ["viola d'amore"]],
+  ['Narrador', 'Narrator', ['narrator', 'speaker']],
 ];
 
 const semAcento = (s: string) =>
@@ -126,7 +131,31 @@ const semAcento = (s: string) =>
  * "solo". "4 mãos" e "mão esquerda" mudam a peça e ficam como estão.
  */
 const QUALIFICADOR =
-  /\s+(b♭|bb|in [a-g](♭|b)?|[a-g](♭|b)?|satb|ssatb|ssaa|ttbb|ssa|sa|tb|solo|arranged)$/;
+  /\s+(b♭|bb|in [a-g](♭|b)?|[a-g](♭|b)?|s{0,2}a{0,2}t{0,2}b{0,2}|solo|arranged|ad lib\.?)$/;
+
+/**
+ * A primeira palavra que só qualifica o instrumento seguinte: "Contralto
+ * Saxofone" é o saxofone alto, "Military Banda" é a banda.
+ */
+const PREFIXO = new Set([
+  'contralto',
+  'alto',
+  'tenor',
+  'soprano',
+  'baixo',
+  'bass',
+  'military',
+  'theatre',
+  'theater',
+  'tubular',
+  'equal',
+  'mixed',
+  'male',
+  'female',
+  'high',
+  'medium',
+  'low',
+]);
 
 const PELO_NOME = new Map<string, string>();
 for (const [pt, en, sinonimos] of INSTRUMENTOS)
@@ -134,17 +163,50 @@ for (const [pt, en, sinonimos] of INSTRUMENTOS)
 
 const ROTULO = new Map(INSTRUMENTOS.map(([pt, en]) => [pt, { pt, en }]));
 
-/** O instrumento da lista que o trecho nomeia, ou `null`. */
-function reconhecer(trecho: string): string | null {
-  let t = semAcento(trecho);
-  for (let i = 0; i < 3; i++) {
+/** O instrumento que o nome nomeia, tirando qualificadores do fim. */
+function pelo(nome: string): string | null {
+  let t = nome.trim().replace(/^\d+-/, '');
+  for (let i = 0; i < 4; i++) {
     const achado = PELO_NOME.get(t);
     if (achado) return achado;
-    const sem = t.replace(QUALIFICADOR, '');
-    if (sem === t) break;
+    const sem = t.replace(QUALIFICADOR, '').trim();
+    if (sem === t || !sem) break;
     t = sem;
   }
-  return PELO_NOME.get(t) ?? null;
+  return null;
+}
+
+/**
+ * Os instrumentos da lista que o trecho nomeia, ou `null`. Além do nome
+ * inteiro, entende o que as fontes juntaram num trecho só: "Orquestra:
+ * flutes" e "Bassoons + horns" são dois; "Orquestra flutes", também; e
+ * "Contralto Saxofone" é o saxofone.
+ */
+function reconhecer(trecho: string): string[] | null {
+  const t = semAcento(trecho);
+  const inteiro = pelo(t);
+  if (inteiro) return [inteiro];
+
+  const pedacos = t
+    .split(/[:+]/)
+    .map((p) => p.trim())
+    .filter(Boolean);
+  if (pedacos.length > 1) {
+    const achados = pedacos.map((p) => pelo(p));
+    if (achados.every(Boolean)) return achados as string[];
+  }
+
+  const palavras = t.split(/\s+/);
+  if (palavras.length > 1) {
+    const resto = pelo(palavras.slice(1).join(' '));
+    if (resto && PREFIXO.has(palavras[0])) return [resto];
+    for (let i = 1; i < palavras.length; i++) {
+      const a = pelo(palavras.slice(0, i).join(' '));
+      const b = pelo(palavras.slice(i).join(' '));
+      if (a && b) return [a, b];
+    }
+  }
+  return null;
 }
 
 /**
@@ -157,7 +219,7 @@ export function lerInstrumentacao(texto: string | null | undefined): string[] {
   for (const parte of (texto ?? '').split(/[,;]|\s+(?:ou|or)\s+/)) {
     const trecho = parte.trim();
     if (!trecho) continue;
-    vistos.add(reconhecer(trecho) ?? trecho);
+    for (const nome of reconhecer(trecho) ?? [trecho]) vistos.add(nome);
   }
   return [...vistos];
 }

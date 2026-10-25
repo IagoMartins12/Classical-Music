@@ -52,8 +52,11 @@ export function StartingPoints({
         {shown.map((work, i) => {
           const level = levelLabel(work.difficulty, copy);
           return (
+            // The whole row is the work's card: it turns into the work's
+            // header, and shows the loading ring while the page is made.
             <li
               key={work.id}
+              data-vira={`obra-${work.id}`}
               className="flex items-center gap-3 rounded-card bg-sup-2 p-4"
             >
               <span className="w-6 shrink-0 font-display text-[1.75rem] leading-none text-texto-fraco">

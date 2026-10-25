@@ -209,7 +209,10 @@ function StudyCard({
   const level = item.difficulty ? copy.levels[item.difficulty] : null;
 
   return (
-    <li className="flex flex-col gap-4 rounded-card bg-sup-2 p-5 row:flex-row row:items-center row:rounded-none row:bg-transparent! row:bg-none! row:px-0 row:py-4">
+    <li
+      data-vira={`obra-${item.workId}`}
+      className="flex flex-col gap-4 rounded-card bg-sup-2 p-5 row:flex-row row:items-center row:rounded-none row:bg-transparent! row:bg-none! row:px-0 row:py-4"
+    >
       <div className="flex min-w-0 flex-1 items-start gap-4 row:items-center">
         <Portrait
           name={work?.composer.fullName ?? '?'}

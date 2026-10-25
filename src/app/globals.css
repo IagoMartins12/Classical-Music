@@ -633,8 +633,9 @@
 
 /* O que foi clicado enquanto a página de destino é gerada (`abrirPagina`).
    O card escurece e um anel gira no centro, o astro dos avisos (`Avisos`);
-   um link ou uma linha (o nome do compositor numa frase, um resultado da
-   busca) ganha o mesmo anel, pequeno, no fim. Some quando a página fica
+   um link em bloco (uma linha de lista, um resultado da busca) ganha o mesmo
+   anel, pequeno, preso à direita e centrado na altura, sem empurrar nada; um
+   link no meio do texto, o anel logo depois dele. Some quando a página fica
    pronta. */
 [data-abrindo] {
   cursor: progress;
@@ -649,6 +650,7 @@
   pointer-events: none;
 }
 [data-abrindo='cartao']::after,
+[data-abrindo='bloco']::after,
 [data-abrindo='linha']::after {
   content: '';
   border-radius: 9999px;
@@ -665,6 +667,15 @@
   width: 2.25rem;
   height: 2.25rem;
   margin: -1.125rem 0 0 -1.125rem;
+}
+[data-abrindo='bloco']::after {
+  position: absolute;
+  top: 50%;
+  right: 0.5rem;
+  z-index: 3;
+  width: 1rem;
+  height: 1rem;
+  margin-top: -0.5rem;
 }
 [data-abrindo='linha']::after {
   display: inline-block;
