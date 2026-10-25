@@ -133,8 +133,12 @@ export function SeletorDeData({
     conteudo: data?.mes,
   });
 
+  // The year first, with the panel at its top: with little room below the
+  // field, focusing could scroll the panel and hide the year.
   useEffect(() => {
-    if (aberta) entradaAno.current?.focus();
+    if (!aberta) return;
+    entradaAno.current?.focus({ preventScroll: true });
+    if (painel.current) painel.current.scrollTop = 0;
   }, [aberta]);
 
   const mudar = (d: DataHistorica | null) => aoMudar(d ? escreverData(d) : '');
@@ -171,7 +175,7 @@ export function SeletorDeData({
 
   const celula = (ativa: boolean) =>
     cx(
-      'grid h-8 place-items-center rounded-lg text-[0.875rem] transition-colors duration-[var(--t-toque)]',
+      'grid h-8 w-full place-items-center rounded-lg text-[0.875rem] transition-colors duration-[var(--t-toque)]',
       'disabled:cursor-not-allowed disabled:opacity-40',
       ativa
         ? 'fill-ouro font-medium text-sobre-ouro'
@@ -187,6 +191,9 @@ export function SeletorDeData({
           aberta && 'selecao-aberta'
         )}
         aria-invalid={invalido || undefined}
+        // The whole field opens the panel, the chevron included; the clear
+        // button stops its own click.
+        onClick={() => setAberta((a) => !a)}
       >
         <PiCalendarBlank
           aria-hidden
@@ -199,8 +206,7 @@ export function SeletorDeData({
           aria-haspopup="dialog"
           aria-expanded={aberta}
           aria-controls={idPainel}
-          onClick={() => setAberta((a) => !a)}
-          // The field around it shows the focus.
+          // The field around it shows the focus, and its click opens.
           className="min-w-0 flex-1 truncate bg-transparent text-left outline-none focus-visible:shadow-none"
           {...aria}
         >
@@ -214,7 +220,8 @@ export function SeletorDeData({
           <button
             type="button"
             aria-label={t.limpar}
-            onClick={() => {
+            onClick={(e) => {
+              e.stopPropagation();
               setAnoTexto('');
               mudar(null);
             }}
@@ -245,10 +252,10 @@ export function SeletorDeData({
         className={cx('selecao-lista p-4', acima && 'selecao-acima')}
       >
         {aberta && (
-          // Largura própria: a lista flutuante mede o conteúdo
-          // (`max-content`), e grades de botões curtos dariam um painel
-          // estreito demais.
-          <div className="flex w-72 max-w-full flex-col gap-4">
+          // A lista flutuante tem ao menos a largura do campo e mede o
+          // conteúdo (`max-content`): o conteúdo pede um mínimo, para as
+          // grades não ficarem estreitas, e ocupa toda a largura do painel.
+          <div className="flex w-full min-w-[17rem] flex-col gap-4">
             <div className="flex flex-col gap-2">
               <label
                 htmlFor={`${base}-ano`}
