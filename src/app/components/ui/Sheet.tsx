@@ -128,6 +128,11 @@ export function Sheet({
 
     if (aberto && !dialogo.open) {
       dialogo.showModal();
+      // O navegador põe o foco no primeiro focável, o X, e no telefone ele
+      // abria com o anel dourado de foco. A folha recebe o foco no lugar dele;
+      // o Tab leva ao X em seguida, e um campo com `autoFocus` fica com o seu.
+      if (document.activeElement === dialogo.querySelector('header button'))
+        dialogo.focus({ preventScroll: true });
       // A rolagem do fundo trava enquanto o diálogo está aberto: sem isto, o
       // conteúdo de trás rola junto no telefone e a pessoa perde o lugar.
       document.body.style.overflow = 'hidden';
@@ -149,6 +154,7 @@ export function Sheet({
   return (
     <dialog
       ref={ref}
+      tabIndex={-1}
       aria-labelledby={idTitulo}
       aria-describedby={descricao ? idDescricao : undefined}
       // Só o próprio fechamento: o `close` de um diálogo aberto por cima
@@ -176,7 +182,7 @@ export function Sheet({
         arrasto !== null ? { transform: `translateY(${arrasto}px)` } : undefined
       }
       className={cx(
-        'folha sup-alta m-0 w-full max-w-none overflow-hidden p-0 text-texto backdrop:bg-[var(--bg-overlay)]',
+        'folha sup-alta m-0 w-full max-w-none overflow-hidden p-0 text-texto outline-none backdrop:bg-[var(--bg-overlay)]',
         'mt-auto rounded-b-none',
         'sm:m-auto sm:rounded-folha',
         telaCheia &&

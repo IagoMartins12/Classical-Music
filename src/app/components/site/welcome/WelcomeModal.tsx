@@ -97,7 +97,14 @@ export function WelcomeModal() {
       if (dialog.open) dialog.close();
       return;
     }
-    if (!dialog.open) dialog.showModal();
+    if (!dialog.open) {
+      dialog.showModal();
+      // The browser focuses the first button (close), which showed the gold
+      // focus ring on phones; the dialog takes the focus instead, and Tab
+      // reaches the button next.
+      if (document.activeElement instanceof HTMLButtonElement)
+        dialog.focus({ preventScroll: true });
+    }
     document.body.style.overflow = 'hidden';
     document.documentElement.style.overflow = 'hidden';
     return () => {
@@ -191,12 +198,13 @@ export function WelcomeModal() {
   return (
     <dialog
       ref={ref}
+      tabIndex={-1}
       aria-label={finished ? copy.done.title(firstName) : titles[step].title}
       // Escape closes the dialog by itself; only that closing is passed on.
       onClose={(event) => {
         if (event.target === ref.current && openRef.current) closeAll();
       }}
-      className="m-0 h-dvh max-h-none w-screen max-w-none bg-fundo p-0 text-texto backdrop:bg-[var(--bg-overlay)]"
+      className="m-0 h-dvh max-h-none w-screen max-w-none bg-fundo p-0 text-texto outline-none backdrop:bg-[var(--bg-overlay)]"
     >
       {finished ? (
         <WelcomeDone
@@ -262,10 +270,7 @@ export function WelcomeModal() {
             >
               {/* The first page opens on Opus Atlas itself: its seal. */}
               {step === 'intro' && (
-                <BrandSeal
-                  reveal
-                  className="mb-4 w-28 sm:w-36 lg:w-44"
-                />
+                <BrandSeal reveal className="mb-4 w-28 sm:w-36 lg:w-44" />
               )}
               <h2
                 ref={heading}
