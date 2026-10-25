@@ -131,7 +131,9 @@ export function Recommendations({
         </ul>
 
         {data.locked && (
-          <div className="col-start-1 row-start-1 grid place-items-center p-4">
+          // `relative`: o desfoque da lista cria uma camada própria, que era
+          // pintada por cima do convite.
+          <div className="relative col-start-1 row-start-1 grid place-items-center p-4">
             <div className="sup-alta flex max-w-md flex-col items-center gap-3 rounded-card p-6 text-center shadow-[var(--sombra-2)]">
               <Icon de={PiLockSimple} className="text-ouro-texto" tamanho="m" />
               <p className="font-display text-[1.25rem]">

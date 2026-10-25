@@ -412,6 +412,24 @@ function CarrosselDePlanos({
     }
   }, [soGrupo]);
 
+  // `/pricing#plus` (o convite de um recurso do Plus) abre já no plano: no
+  // carrossel, centrado; na grade, o cartão dele na tela.
+  useEffect(() => {
+    const plano = window.location.hash.slice(1).toUpperCase() as ChavePlano;
+    const i = nomes.indexOf(plano);
+    if (i < 0) return;
+    const el = faixa.current;
+    const alvo = el?.children[i] as HTMLElement | undefined;
+    if (window.matchMedia('(min-width: 768px)').matches) {
+      document
+        .getElementById(`plano-${plano}-d`)
+        ?.scrollIntoView({ block: 'center' });
+    } else if (el && alvo) {
+      el.scrollLeft = alvo.offsetLeft - (el.clientWidth - alvo.offsetWidth) / 2;
+      el.scrollIntoView({ block: 'center' });
+    }
+  }, [nomes]);
+
   return (
     <Revelar className="mt-8 md:hidden">
       <div className={cx('section-wrap', soGrupo && 'hidden')}>

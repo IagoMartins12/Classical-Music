@@ -52,7 +52,7 @@ export function StudyActions({ context }: { context: StudyContext }) {
     cx(
       // On a phone the two halves share the width: tighter padding, one line,
       // and the label truncates instead of breaking the button in two.
-      'relative inline-flex min-h-[var(--alvo)] min-w-0 flex-1 items-center justify-center gap-1.5 whitespace-nowrap rounded-lg px-3 text-[0.875rem] font-medium sm:flex-none sm:gap-2 sm:px-4 sm:text-[0.9375rem]',
+      'relative inline-flex min-h-[var(--alvo)] min-w-0 flex-1 items-center justify-center gap-1.5 whitespace-nowrap rounded-lg px-3 text-[0.875rem] font-medium min-[728px]:flex-none sm:gap-2 sm:px-4 sm:text-[0.9375rem]',
       'transition-colors duration-[var(--t-toque)] ease-saida',
       ativo
         ? 'tint-ouro text-ouro-na-tinta'
@@ -64,7 +64,7 @@ export function StudyActions({ context }: { context: StudyContext }) {
       <div
         role="group"
         aria-label={copy.label}
-        className="inline-flex w-full gap-1 rounded-xl bg-sup-2 p-1 sm:w-auto sm:self-start"
+        className="inline-flex w-full gap-1 rounded-xl bg-sup-2 p-1 min-[728px]:w-auto min-[728px]:self-start"
       >
         <button
           type="button"

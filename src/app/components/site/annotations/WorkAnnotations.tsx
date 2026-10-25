@@ -326,6 +326,7 @@ export function WorkAnnotations({ workId }: { workId: string }) {
           variante="primario"
           icone={PiNotePencil}
           onClick={() => allowed('annotate') && setWriting(true)}
+          className="max-sm:w-full"
         >
           {copy.write}
         </Button>
@@ -354,8 +355,10 @@ export function WorkAnnotations({ workId }: { workId: string }) {
               </button>
             ))}
           </div>
-          <div className="flex flex-wrap items-center gap-3">
-            <div className="w-48">
+          {/* No celular, os dois filtros dividem a linha: a mesma largura do
+              botão de escrever, em vez de duas caixas soltas à esquerda. */}
+          <div className="grid grid-cols-2 gap-2 sm:flex sm:flex-wrap sm:items-center sm:gap-3">
+            <div className="min-w-0 sm:w-48">
               <Selecao
                 aria-label={copy.where}
                 className="min-h-10! rounded-full! py-0! text-[0.9375rem]"
@@ -369,7 +372,7 @@ export function WorkAnnotations({ workId }: { workId: string }) {
                 aoMudar={(v) => setScope(v as AnnotationScope | 'all')}
               />
             </div>
-            <div className="w-48">
+            <div className="min-w-0 sm:w-48">
               <Selecao
                 aria-label={copy.order}
                 className="min-h-10! rounded-full! py-0! text-[0.9375rem]"

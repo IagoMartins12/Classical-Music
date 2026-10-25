@@ -75,8 +75,8 @@ export function Avisos() {
         containerStyle={{
           pointerEvents: 'none',
           inset: 20,
-          // No app instalado (PWA), os avisos descem o tamanho do entalhe, como
-          // a barra do topo; no navegador `--respiro-topo` é zero.
+          // No app instalado (PWA), os avisos descem o tamanho do entalhe e
+          // uma folga (`globals.css`); no navegador `--respiro-topo` é zero.
           top: 'calc(20px + var(--respiro-topo, 0px))',
         }}
         toastOptions={{ duration: 4000 }}

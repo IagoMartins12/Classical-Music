@@ -24,9 +24,14 @@ import { nomeDeArtigo, ROTAS_DO_BLOG } from '@/app/components/ui/nomeDeArtigo';
  * de link, botão e campo leva à página dele. Os de dentro (favoritar, o
  * gênero, a Wikipedia) continuam fazendo o que fazem, e só isso.
  *
- * Com tecla ou botão do meio, o link abre como sempre (nova aba, etc.). Ao
- * passar o ponteiro, a página de destino é pré-carregada: quanto antes ela
- * chega, mais inteira a transição.
+ * Com tecla ou botão do meio, o link abre como sempre (nova aba, etc.).
+ *
+ * **A página fica pronta antes de o card virar.** Ao passar o mouse, a
+ * página de destino é pré-carregada no navegador. Ao apertar o botão (um
+ * pouco antes do clique) ou no toque, ela é pedida ao servidor, o que a gera e
+ * a põe no cache se ninguém a abriu ainda; o clique espera esse pedido
+ * terminar (`virarCartao`). Só no apertar: pedir a página inteira a cada
+ * card que o mouse cruza geraria dezenas de páginas à toa.
  */
 const ROTA =
   /^(?:\/(?:pt|en))?\/(composer|works|instruments|music-history)\/([^/]+)\/?$/;
@@ -136,11 +141,19 @@ export function CartoesQueViram() {
   const router = useRouter();
 
   useEffect(() => {
-    const previstos = new Set<string>();
-    const prever = (href: string) => {
-      if (previstos.has(href)) return;
-      previstos.add(href);
-      router.prefetch(href);
+    // Um pedido por página: o segundo clique na mesma página não espera nada.
+    const prontas = new Map<string, Promise<unknown>>();
+    const preparar = (href: string) => {
+      let pronta = prontas.get(href);
+      if (!pronta) {
+        pronta = fetch(href, { credentials: 'same-origin' })
+          .then((r) => r.text())
+          .finally(() => router.prefetch(href));
+        // Se falhar, o clique segue sem esperar, e um próximo tenta de novo.
+        pronta.catch(() => prontas.delete(href));
+        prontas.set(href, pronta);
+      }
+      return pronta;
     };
 
     // Captura no `document`: roda antes do `onClick` do `next/link`, que
@@ -150,20 +163,38 @@ export function CartoesQueViram() {
       const destino = destinoDoLink(e.target) ?? destinoDoCartao(e.target);
       if (!destino || destino.href === window.location.pathname) return;
       e.preventDefault();
-      virarCartao(destino.cartao, destino.nome, router.push, destino.href);
+      virarCartao(
+        destino.cartao,
+        destino.nome,
+        router.push,
+        destino.href,
+        preparar(destino.href)
+      );
     };
 
+    const previstos = new Set<string>();
     const aoPassar = (e: PointerEvent) => {
       if (e.pointerType !== 'mouse') return;
       const destino = destinoDoLink(e.target) ?? destinoDoCartao(e.target);
-      if (destino) prever(destino.href);
+      if (!destino || previstos.has(destino.href)) return;
+      previstos.add(destino.href);
+      router.prefetch(destino.href);
+    };
+
+    // Só mouse: no toque, encostar num card é também o começo de rolar a lista.
+    const aoApertar = (e: PointerEvent) => {
+      if (e.pointerType !== 'mouse' || !cliqueSimples(e)) return;
+      const destino = destinoDoLink(e.target) ?? destinoDoCartao(e.target);
+      if (destino) void preparar(destino.href).catch(() => undefined);
     };
 
     document.addEventListener('click', aoClicar, true);
     document.addEventListener('pointerover', aoPassar, true);
+    document.addEventListener('pointerdown', aoApertar, true);
     return () => {
       document.removeEventListener('click', aoClicar, true);
       document.removeEventListener('pointerover', aoPassar, true);
+      document.removeEventListener('pointerdown', aoApertar, true);
     };
   }, [router]);
 

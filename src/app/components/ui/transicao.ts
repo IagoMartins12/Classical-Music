@@ -33,7 +33,7 @@ export function comTransicao(atualizar: () => void | Promise<void>) {
 /**
  * Navega e só dá a transição por encerrada quando a URL já é a da página
  * nova — é o que permite ao card se transformar no cabeçalho dela. Se a
- * página demorar mais de 0,8s, a transição termina assim mesmo (e o
+ * página demorar mais de 1,2s, a transição termina assim mesmo (e o
  * esqueleto de carregamento entra no lugar).
  */
 export function navegarComTransicao(
@@ -52,7 +52,7 @@ export function navegarComTransicao(
         const esperar = () => {
           if (window.location.pathname !== antes) {
             setTimeout(resolver, 0);
-          } else if (performance.now() - inicio > 800) {
+          } else if (performance.now() - inicio > 1200) {
             resolver();
           } else {
             setTimeout(esperar, 16);
@@ -103,6 +103,9 @@ export function trocarVista(atualizar: () => void) {
   t?.finished?.finally(limpar);
 }
 
+/** O clique mais recente: um card clicado depois cancela o anterior. */
+let abrindo = 0;
+
 /**
  * O card vira a página: recebe, só agora, o nome que o cabeçalho da página
  * de destino já tem, e a navegação acontece dentro da transição.
@@ -110,13 +113,48 @@ export function trocarVista(atualizar: () => void) {
  * O nome é dado no clique, e não fixo no card, porque o mesmo compositor
  * pode aparecer duas vezes na tela (na home, em "Últimas adições" e no
  * carrossel). Dois elementos com o mesmo nome anulam a transição inteira.
+ *
+ * **Primeiro a página fica pronta, depois o card vira.** Uma página que
+ * ninguém abriu ainda é gerada no servidor nesse primeiro pedido, e leva
+ * segundos: dentro da transição, a espera estourava e o card não virava.
+ * Agora, enquanto `pronta` não resolve, o card mostra que está abrindo
+ * (`[data-abrindo]`, em `globals.css`); quando resolve, a página já está no
+ * cache e a transição acontece inteira. Na segunda vez, `pronta` resolve na
+ * hora e o sinal nem aparece.
  */
 export function virarCartao(
   cartao: HTMLElement,
   nome: string,
   empurrar: (href: string) => void,
-  href: string
+  href: string,
+  pronta: Promise<unknown> = Promise.resolve()
 ) {
+  const vez = ++abrindo;
+  const antes = window.location.pathname;
+  // O sinal só aparece se a espera for perceptível: abaixo de 150ms, piscaria.
+  // O sinal é desenhado por um `::after` posicionado pelo card.
+  const posicao = cartao.style.position;
+  const sinal = setTimeout(() => {
+    if (vez !== abrindo) return;
+    if (getComputedStyle(cartao).position === 'static')
+      cartao.style.position = 'relative';
+    cartao.dataset.abrindo = '';
+  }, 150);
+  const limite = new Promise((resolver) => setTimeout(resolver, 8000));
+  void Promise.race([pronta.catch(() => undefined), limite]).then(() => {
+    clearTimeout(sinal);
+    if ('abrindo' in cartao.dataset) {
+      delete cartao.dataset.abrindo;
+      cartao.style.position = posicao;
+    }
+    // Outro card foi clicado, ou a pessoa já saiu daqui: este desiste.
+    if (vez !== abrindo || window.location.pathname !== antes) return;
+    nomear(cartao, nome);
+    navegarComTransicao(empurrar, href);
+  });
+}
+
+function nomear(cartao: HTMLElement, nome: string) {
   document
     .querySelectorAll<HTMLElement>('[style*="view-transition-name"]')
     .forEach((el) => {
@@ -126,7 +164,6 @@ export function virarCartao(
     });
   cartao.style.viewTransitionName = nome;
   cartao.style.setProperty('view-transition-class', 'cartao');
-  navegarComTransicao(empurrar, href);
 }
 
 export { nomeDeTransicao } from './nomeDeTransicao';

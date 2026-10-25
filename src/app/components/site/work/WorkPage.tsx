@@ -125,7 +125,7 @@ export function WorkPage({
 
         {/* The card clicked in a list turns into this header (CartoesQueViram). */}
         <header
-          className="grid grid-cols-1 gap-8 lg:grid-cols-[minmax(0,7fr)_minmax(0,5fr)] lg:items-end"
+          className="grid grid-cols-1 gap-8 min-[728px]:grid-cols-[minmax(0,1fr)_auto] min-[728px]:items-end lg:grid-cols-[minmax(0,7fr)_minmax(0,5fr)]"
           style={nomeDeTransicao(`obra-${work.id}`, 'cartao')}
         >
           <div className="flex flex-col gap-5">
@@ -151,14 +151,17 @@ export function WorkPage({
           </div>
           <div className="flex flex-col gap-3">
             <StudyActions context={context} />
+            {/* No celular, esta linha ocupa a mesma largura das abas de estudo. */}
             <div className="flex flex-nowrap items-center gap-2 max-sm:gap-1.5">
               <FavoriteHeart
                 type="work"
                 id={work.id}
                 name={work.title}
                 withLabel
+                className="max-[727px]:flex-1"
               />
               <ShareAction
+                className="max-[727px]:flex-1"
                 title={`${title} — ${composerName}`}
                 url={url}
                 image={work.composer.portraitUrl}

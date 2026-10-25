@@ -13,11 +13,13 @@ export function ShareAction({
   url,
   image,
   imageName,
+  className,
 }: {
   title: string;
   url: string;
   image?: string | null;
   imageName: string;
+  className?: string;
 }) {
   const copy = COMMON[useRouteLanguage().language].share;
   const { share, sheet } = useShare({
@@ -36,7 +38,7 @@ export function ShareAction({
   });
   return (
     <>
-      <Button icone={PiShareNetwork} onClick={share}>
+      <Button icone={PiShareNetwork} onClick={share} className={className}>
         {copy.action}
       </Button>
       {sheet}
