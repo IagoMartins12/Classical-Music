@@ -123,8 +123,11 @@ function destinoDoCartao(alvo: EventTarget | null) {
   // Artigo: o nome não guarda o slug original, só o link sabe o caminho.
   if (!link && tipo === 'artigo') return null;
   const idioma = window.location.pathname.match(/^\/(en)(\/|$)/)?.[1];
+  // The link's own address, anchor included (a score opens at `#scores`).
   const href = link
-    ? new URL(link.href).pathname
+    ? (({ pathname, search, hash }) => pathname + search + hash)(
+        new URL(link.href)
+      )
     : `${idioma ? `/${idioma}` : ''}${caminho}`;
   return { origem: cartao, cartao: true, href };
 }

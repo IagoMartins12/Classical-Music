@@ -502,12 +502,24 @@ function UploadRow({
             item.pageCount && `${item.pageCount} p.`,
             item.fileSize,
           ];
+  // The item is the card of the page it opens (the score's is its work's):
+  // it turns into that page's header and shows the loading ring, as in every
+  // other list (`CartoesQueViram`).
+  const vira =
+    item.type === 'composer'
+      ? `compositor-${item.id}`
+      : item.type === 'work'
+        ? `obra-${item.id}`
+        : item.workId
+          ? `obra-${item.workId}`
+          : undefined;
   const verified = item.verificationStatus === 'verified' || item.isVerified;
   const quality = item.dataQuality ? copy.quality[item.dataQuality] : null;
 
   return (
     <li
       ref={itemRef}
+      data-vira={vira}
       className="flex items-start gap-3 rounded-card bg-sup-2 p-4 row:items-center row:gap-4 row:rounded-none row:bg-transparent! row:bg-none! row:px-0 row:py-3"
     >
       <div className="flex min-w-0 flex-1 items-center gap-4">
