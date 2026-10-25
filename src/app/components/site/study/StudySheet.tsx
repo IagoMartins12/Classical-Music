@@ -876,22 +876,26 @@ export function StudySheet() {
             </label>
           </div>
         ) : videoFull && quota?.limit != null ? (
-          <p className="t-rotulo rounded-card bg-sup-2 p-4 text-texto-suave">
-            {copy.videoFull(quota.limit)}{' '}
-            <button
-              type="button"
-              onClick={() => setPlanOpen(true)}
-              className="text-ouro-texto underline underline-offset-4"
-            >
-              {copy.videoUpgrade}
-            </button>
+          // The plan's sheet sits beside the notice, never inside the <p>:
+          // a dialog inside a paragraph is invalid HTML (hydration errors).
+          <>
+            <p className="t-rotulo rounded-card bg-sup-2 p-4 text-texto-suave">
+              {copy.videoFull(quota.limit)}{' '}
+              <button
+                type="button"
+                onClick={() => setPlanOpen(true)}
+                className="text-ouro-texto underline underline-offset-4"
+              >
+                {copy.videoUpgrade}
+              </button>
+            </p>
             <RecursoDoPlano
               recurso="videos"
               limite={quota.limit}
               aberto={planOpen}
               aoFechar={() => setPlanOpen(false)}
             />
-          </p>
+          </>
         ) : (
           <AddZone
             title={copy.videoAdd}
