@@ -5,6 +5,7 @@
 
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
+import { abrirPagina } from '@/app/components/ui/transicao';
 import { PiArrowRight } from 'react-icons/pi';
 import { Button } from '@/app/components/ui/Button';
 import { Icon } from '@/app/components/ui/Icon';
@@ -37,10 +38,19 @@ export function useLatestNotifications(onNavigate: () => void) {
   const items = list.data?.notifications ?? [];
   const go = (n: api.PortalNotification) => {
     if (n.status === 'UNREAD') read.mutate(n.id);
-    if (n.actionUrl) {
-      onNavigate();
-      router.push(n.actionUrl);
-    }
+    // Obra ou compositor: espera a página ficar pronta (`abrirPagina`).
+    if (n.actionUrl)
+      abrirPagina(
+        n.actionUrl,
+        (href) => {
+          onNavigate();
+          router.push(href);
+        },
+        {
+          origem: document.activeElement as HTMLElement | null,
+          preCarregar: router.prefetch,
+        }
+      );
   };
   return {
     list,

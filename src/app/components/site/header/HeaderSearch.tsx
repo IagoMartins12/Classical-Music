@@ -11,6 +11,7 @@ import {
 } from 'react-icons/pi';
 import Image from '@/app/components/SmartImage';
 import { Button } from '@/app/components/ui/Button';
+import { abrirPagina } from '@/app/components/ui/transicao';
 import { Icon } from '@/app/components/ui/Icon';
 import { cx } from '@/app/components/ui/cx';
 import type { HeaderCopy } from '@/app/conteudo/site/header';
@@ -112,11 +113,18 @@ export function HeaderSearch({
     `${SEARCH_HREF}?q=${encodeURIComponent(term.trim())}`,
     language
   );
-  const go = (href: string) => {
-    close();
-    onNavigate?.();
-    router.push(href);
-  };
+  // Um compositor, obra ou artigo espera a página ficar pronta com o anel no
+  // resultado escolhido (`abrirPagina`); a busca só fecha ao navegar.
+  const go = (href: string, origem?: HTMLElement | null) =>
+    abrirPagina(
+      href,
+      (destino) => {
+        close();
+        onNavigate?.();
+        router.push(destino);
+      },
+      { origem, preCarregar: router.prefetch }
+    );
 
   const onKeyDown = (event: KeyboardEvent<HTMLInputElement>) => {
     if (!items.length) return;
@@ -145,7 +153,12 @@ export function HeaderSearch({
       onSubmit={(event) => {
         event.preventDefault();
         if (term.trim().length < MIN_TERM) return;
-        go(active >= 0 ? items[active].href : resultsHref);
+        if (active >= 0)
+          go(
+            items[active].href,
+            document.getElementById(`${listId}-${active}`)
+          );
+        else go(resultsHref);
       }}
       className="relative w-full"
     >
@@ -259,7 +272,7 @@ export function HeaderSearch({
                       role="option"
                       aria-selected={index === active}
                       onPointerEnter={() => setActive(index)}
-                      onClick={() => go(item.href)}
+                      onClick={(event) => go(item.href, event.currentTarget)}
                       style={{ ['--i' as string]: Math.min(index, 8) }}
                       className={cx(
                         'item-entra flex w-full items-center gap-3 rounded-controle px-3 py-2 text-left',

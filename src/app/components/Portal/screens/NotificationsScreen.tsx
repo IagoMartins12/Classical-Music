@@ -5,6 +5,7 @@
 // ele fala. O professor envia aviso daqui.
 
 import { useRouter } from 'next/navigation';
+import { abrirPagina } from '@/app/components/ui/transicao';
 import { useState } from 'react';
 import { PiBell, PiEnvelopeSimple, PiTrash } from 'react-icons/pi';
 import { Button } from '@/app/components/ui/Button';
@@ -59,7 +60,12 @@ export function NotificationsScreen({ role }: { role: Role }) {
 
   const go = (n: PortalNotification) => {
     if (n.status === 'UNREAD') read.mutate(n.id);
-    if (n.actionUrl) router.push(n.actionUrl);
+    // Obra ou compositor: espera a página ficar pronta (`abrirPagina`).
+    if (n.actionUrl)
+      abrirPagina(n.actionUrl, router.push, {
+        origem: document.activeElement as HTMLElement | null,
+        preCarregar: router.prefetch,
+      });
   };
 
   return (

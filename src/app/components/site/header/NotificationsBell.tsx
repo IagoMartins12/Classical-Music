@@ -3,6 +3,7 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { TentarDeNovo } from '@/app/components/ui/TentarDeNovo';
 import { useRouter } from 'next/navigation';
+import { abrirPagina } from '@/app/components/ui/transicao';
 import { useEffect, useRef, useState } from 'react';
 import { PiBell } from 'react-icons/pi';
 import { Button } from '@/app/components/ui/Button';
@@ -139,10 +140,20 @@ function Latest({
   const hasUnread = items.some((n) => n.status === 'UNREAD');
   const go = (n: api.PortalNotification) => {
     if (n.status === 'UNREAD') read.mutate(n.id);
-    if (n.actionUrl) {
-      onLeave();
-      router.push(n.actionUrl);
-    }
+    // A página de uma obra ou compositor espera ficar pronta com o anel no
+    // aviso clicado (`abrirPagina`); o menu só fecha ao navegar.
+    if (n.actionUrl)
+      abrirPagina(
+        n.actionUrl,
+        (href) => {
+          onLeave();
+          router.push(href);
+        },
+        {
+          origem: document.activeElement as HTMLElement | null,
+          preCarregar: router.prefetch,
+        }
+      );
   };
 
   let body;

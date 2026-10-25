@@ -631,13 +631,15 @@
   cursor: pointer;
 }
 
-/* O card clicado enquanto a página dele é gerada (`virarCartao`): o card
-   escurece e um anel gira no centro, o astro dos avisos (`Avisos`). Some
-   quando a página fica pronta e o card vira. */
+/* O que foi clicado enquanto a página de destino é gerada (`abrirPagina`).
+   O card escurece e um anel gira no centro, o astro dos avisos (`Avisos`);
+   um link ou uma linha (o nome do compositor numa frase, um resultado da
+   busca) ganha o mesmo anel, pequeno, no fim. Some quando a página fica
+   pronta. */
 [data-abrindo] {
   cursor: progress;
 }
-[data-abrindo]::before {
+[data-abrindo='cartao']::before {
   content: '';
   position: absolute;
   inset: 0;
@@ -646,8 +648,16 @@
   background: color-mix(in srgb, var(--fundo) 55%, transparent);
   pointer-events: none;
 }
-[data-abrindo]::after {
+[data-abrindo='cartao']::after,
+[data-abrindo='linha']::after {
   content: '';
+  border-radius: 9999px;
+  border: 2px solid var(--linha-forte);
+  border-top-color: var(--ouro);
+  animation: card-abrindo 0.8s linear infinite;
+  pointer-events: none;
+}
+[data-abrindo='cartao']::after {
   position: absolute;
   top: 50%;
   left: 50%;
@@ -655,11 +665,14 @@
   width: 2.25rem;
   height: 2.25rem;
   margin: -1.125rem 0 0 -1.125rem;
-  border-radius: 9999px;
-  border: 2px solid var(--linha-forte);
-  border-top-color: var(--ouro);
-  animation: card-abrindo 0.8s linear infinite;
-  pointer-events: none;
+}
+[data-abrindo='linha']::after {
+  display: inline-block;
+  flex-shrink: 0;
+  width: 0.875em;
+  height: 0.875em;
+  margin-left: 0.5em;
+  vertical-align: -0.1em;
 }
 @keyframes card-abrindo {
   to {

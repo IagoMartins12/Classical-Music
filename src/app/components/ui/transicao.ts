@@ -1,4 +1,5 @@
 import { flushSync } from 'react-dom';
+import { nomeDeArtigo, ROTAS_DO_BLOG } from './nomeDeArtigo';
 
 /**
  * Movimento entre estados com a View Transitions API — sem biblioteca.
@@ -106,51 +107,125 @@ export function trocarVista(atualizar: () => void) {
 /** O clique mais recente: um card clicado depois cancela o anterior. */
 let abrindo = 0;
 
+const ROTA =
+  /^(?:\/(?:pt|en))?\/(composer|works|instruments|music-history)\/([^/]+)\/?$/;
+const BLOG = /^(?:\/(?:pt|en))?\/blog\/([^/]+)\/?$/;
+/** The transition name's prefix for each kind of page. */
+const PREFIXO: Record<string, string> = {
+  composer: 'compositor',
+  works: 'obra',
+  instruments: 'instrumento',
+  'music-history': 'epoca',
+};
+
 /**
- * O card vira a página: recebe, só agora, o nome que o cabeçalho da página
- * de destino já tem, e a navegação acontece dentro da transição.
- *
- * O nome é dado no clique, e não fixo no card, porque o mesmo compositor
- * pode aparecer duas vezes na tela (na home, em "Últimas adições" e no
- * carrossel). Dois elementos com o mesmo nome anulam a transição inteira.
- *
- * **Primeiro a página fica pronta, depois o card vira.** Uma página que
- * ninguém abriu ainda é gerada no servidor nesse primeiro pedido, e leva
- * segundos: dentro da transição, a espera estourava e o card não virava.
- * Agora, enquanto `pronta` não resolve, o card mostra que está abrindo
- * (`[data-abrindo]`, em `globals.css`); quando resolve, a página já está no
- * cache e a transição acontece inteira. Na segunda vez, `pronta` resolve na
- * hora e o sinal nem aparece.
+ * O nome de transição da página de destino (`compositor-{id}`,
+ * `obra-{id}`, `artigo-{slug}`…), ou `null` se o caminho não é a página de
+ * um compositor, obra, instrumento, época ou artigo.
  */
-export function virarCartao(
-  cartao: HTMLElement,
-  nome: string,
-  empurrar: (href: string) => void,
+export function nomeDoDestino(caminho: string): string | null {
+  const artigo = caminho.match(BLOG);
+  if (artigo)
+    return ROTAS_DO_BLOG.has(artigo[1]) ? null : nomeDeArtigo(artigo[1]);
+  const casou = caminho.match(ROTA);
+  if (!casou || casou[2] === 'filtered') return null;
+  return `${PREFIXO[casou[1]]}-${casou[2]}`;
+}
+
+/** Um pedido por página na sessão: a segunda vez não espera nada. */
+const prontas = new Map<string, Promise<unknown>>();
+
+/**
+ * Pede a página ao servidor, o que a gera e a põe no cache se ninguém a
+ * abriu ainda, e depois a pré-carrega no navegador (`preCarregar`, o
+ * `router.prefetch`). Resolve quando a página está pronta para abrir na hora.
+ */
+export function prepararPagina(
   href: string,
-  pronta: Promise<unknown> = Promise.resolve()
+  preCarregar?: (href: string) => void
+): Promise<unknown> {
+  let pronta = prontas.get(href);
+  if (!pronta) {
+    pronta = fetch(href, { credentials: 'same-origin' })
+      .then((r) => r.text())
+      .finally(() => preCarregar?.(href));
+    // Se falhar, quem espera segue sem esperar, e o próximo tenta de novo.
+    pronta.catch(() => prontas.delete(href));
+    prontas.set(href, pronta);
+  }
+  return pronta;
+}
+
+/**
+ * Abre a página de um compositor, obra, instrumento, época ou artigo: o
+ * caminho único de todo link, card, resultado de busca ou notificação que
+ * leva a uma delas (`CartoesQueViram`, `HeaderSearch`, as notificações).
+ *
+ * **Primeiro a página fica pronta, depois abre.** Uma página que ninguém
+ * abriu ainda é gerada no servidor nesse primeiro pedido, e leva segundos:
+ * dentro da transição, a espera estourava e o card não virava. Enquanto
+ * espera, `origem` (o que foi clicado) mostra que está abrindo
+ * (`[data-abrindo]`, em `globals.css`): um card escurece com um anel no
+ * centro; um link ou uma linha ganha um anel pequeno no fim. Na segunda vez
+ * a página já está pronta e o sinal nem aparece.
+ *
+ * **O card vira a página** quando há `cartao`: ele recebe, só agora, o nome
+ * que o cabeçalho da página de destino já tem, e a navegação acontece dentro
+ * da transição. O nome é dado no clique, e não fixo no card, porque o mesmo
+ * compositor pode aparecer duas vezes na tela (na home, em "Últimas adições"
+ * e no carrossel). Dois elementos com o mesmo nome anulam a transição.
+ *
+ * Outro destino (a busca completa, um aviso que leva ao perfil) navega na
+ * hora, sem nada disso.
+ */
+export function abrirPagina(
+  href: string,
+  empurrar: (href: string) => void,
+  {
+    origem,
+    cartao = false,
+    preCarregar,
+  }: {
+    origem?: HTMLElement | null;
+    /** `origem` é o card que vira a página. */
+    cartao?: boolean;
+    preCarregar?: (href: string) => void;
+  } = {}
 ) {
+  const url = new URL(href, window.location.href);
+  const nome =
+    url.origin === window.location.origin ? nomeDoDestino(url.pathname) : null;
+  if (!nome) {
+    empurrar(href);
+    return;
+  }
   const vez = ++abrindo;
   const antes = window.location.pathname;
+  const posicao = origem?.style.position ?? '';
   // O sinal só aparece se a espera for perceptível: abaixo de 150ms, piscaria.
-  // O sinal é desenhado por um `::after` posicionado pelo card.
-  const posicao = cartao.style.position;
+  // No card, ele é desenhado por pseudoelementos posicionados pelo card.
   const sinal = setTimeout(() => {
-    if (vez !== abrindo) return;
-    if (getComputedStyle(cartao).position === 'static')
-      cartao.style.position = 'relative';
-    cartao.dataset.abrindo = '';
+    if (vez !== abrindo || !origem) return;
+    if (cartao && getComputedStyle(origem).position === 'static')
+      origem.style.position = 'relative';
+    origem.dataset.abrindo = cartao ? 'cartao' : 'linha';
   }, 150);
   const limite = new Promise((resolver) => setTimeout(resolver, 8000));
-  void Promise.race([pronta.catch(() => undefined), limite]).then(() => {
+  const pronta = prepararPagina(href, preCarregar).catch(() => undefined);
+  void Promise.race([pronta, limite]).then(() => {
     clearTimeout(sinal);
-    if ('abrindo' in cartao.dataset) {
-      delete cartao.dataset.abrindo;
-      cartao.style.position = posicao;
+    if (origem && 'abrindo' in origem.dataset) {
+      delete origem.dataset.abrindo;
+      origem.style.position = posicao;
     }
-    // Outro card foi clicado, ou a pessoa já saiu daqui: este desiste.
+    // Outro clique veio depois, ou a pessoa já saiu daqui: este desiste.
     if (vez !== abrindo || window.location.pathname !== antes) return;
-    nomear(cartao, nome);
-    navegarComTransicao(empurrar, href);
+    if (cartao && origem) {
+      nomear(origem, nome);
+      navegarComTransicao(empurrar, href);
+    } else {
+      empurrar(href);
+    }
   });
 }
 

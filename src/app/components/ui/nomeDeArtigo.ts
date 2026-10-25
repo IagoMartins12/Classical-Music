@@ -12,11 +12,13 @@ export function nomeDeArtigo(slug: string) {
 /** Caminhos de `/blog/...` que não são artigo. */
 export const ROTAS_DO_BLOG = new Set([
   'articles',
+  'autor',
   'bookmarks',
   'calendar',
   'category',
   'liked',
   'preview',
   'search',
+  'tag',
   'admin',
 ]);

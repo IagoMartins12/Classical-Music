@@ -2,12 +2,18 @@
 
 import { useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import { cliqueSimples, virarCartao } from '@/app/components/ui/transicao';
-import { nomeDeArtigo, ROTAS_DO_BLOG } from '@/app/components/ui/nomeDeArtigo';
+import {
+  abrirPagina,
+  cliqueSimples,
+  nomeDoDestino as nomeDoCaminho,
+  prepararPagina,
+} from '@/app/components/ui/transicao';
 
 /**
  * Todo card de compositor, de obra ou de artigo do blog vira a página dele — na listagem, na
  * home, nos favoritos, no carrossel — sem que cada card precise cuidar disso.
+ * E todo link para uma dessas páginas, mesmo fora de card, espera a página
+ * ficar pronta mostrando que está abrindo (`abrirPagina`).
  *
  * **Qual é o card.** No clique simples num link para `/composer/{id}` ou
  * `/works/{id}`, procura-se, nesta ordem:
@@ -30,38 +36,21 @@ import { nomeDeArtigo, ROTAS_DO_BLOG } from '@/app/components/ui/nomeDeArtigo';
  * página de destino é pré-carregada no navegador. Ao apertar o botão (um
  * pouco antes do clique) ou no toque, ela é pedida ao servidor, o que a gera e
  * a põe no cache se ninguém a abriu ainda; o clique espera esse pedido
- * terminar (`virarCartao`). Só no apertar: pedir a página inteira a cada
+ * terminar (`abrirPagina`). Só no apertar: pedir a página inteira a cada
  * card que o mouse cruza geraria dezenas de páginas à toa.
  */
-const ROTA =
-  /^(?:\/(?:pt|en))?\/(composer|works|instruments|music-history)\/([^/]+)\/?$/;
-/** The transition name's prefix for each kind of page. */
-const PREFIXO: Record<string, string> = {
-  composer: 'compositor',
-  works: 'obra',
-  instruments: 'instrumento',
-  'music-history': 'epoca',
-};
 const CAMINHO: Record<string, string> = {
   compositor: '/composer',
   obra: '/works',
   instrumento: '/instruments',
   epoca: '/music-history',
 };
-const BLOG = /^\/blog\/([^/]+)\/?$/;
 const CARTAO =
   '.classical-card, .classical-card-simple, .classical-card-2, .sup-1, .sup-2, article';
 const INTERATIVO =
   'a, button, input, select, textarea, label, summary, [role="button"], [role="tab"], [role="menuitem"], [contenteditable="true"]';
 
-function nomeDoDestino(url: URL) {
-  const artigo = url.pathname.match(BLOG);
-  if (artigo)
-    return ROTAS_DO_BLOG.has(artigo[1]) ? null : nomeDeArtigo(artigo[1]);
-  const casou = url.pathname.match(ROTA);
-  if (!casou || casou[2] === 'filtered') return null;
-  return `${PREFIXO[casou[1]]}-${casou[2]}`;
-}
+const nomeDoDestino = (url: URL) => nomeDoCaminho(url.pathname);
 
 function urlDe(link: HTMLAnchorElement) {
   const url = new URL(link.href, window.location.href);
@@ -104,9 +93,12 @@ function destinoDoLink(alvo: EventTarget | null) {
   const url = urlDe(link);
   const nome = url && nomeDoDestino(url);
   if (!url || !nome) return null;
+  const href = url.pathname + url.search + url.hash;
   const cartao = acharCartao(link, nome);
-  if (!cartao) return null;
-  return { cartao, nome, href: url.pathname + url.search + url.hash };
+  // Sem card (o nome do compositor numa frase, a trilha da obra): o próprio
+  // link mostra que está abrindo, e a página abre sem virar nada.
+  if (!cartao) return { origem: link, cartao: false, href };
+  return { origem: cartao, cartao: true, href };
 }
 
 /** O card marcado em volta de um clique fora de link/botão, e o link principal dele. */
@@ -134,42 +126,31 @@ function destinoDoCartao(alvo: EventTarget | null) {
   const href = link
     ? new URL(link.href).pathname
     : `${idioma ? `/${idioma}` : ''}${caminho}`;
-  return { cartao, nome, href };
+  return { origem: cartao, cartao: true, href };
 }
 
 export function CartoesQueViram() {
   const router = useRouter();
 
   useEffect(() => {
-    // Um pedido por página: o segundo clique na mesma página não espera nada.
-    const prontas = new Map<string, Promise<unknown>>();
-    const preparar = (href: string) => {
-      let pronta = prontas.get(href);
-      if (!pronta) {
-        pronta = fetch(href, { credentials: 'same-origin' })
-          .then((r) => r.text())
-          .finally(() => router.prefetch(href));
-        // Se falhar, o clique segue sem esperar, e um próximo tenta de novo.
-        pronta.catch(() => prontas.delete(href));
-        prontas.set(href, pronta);
-      }
-      return pronta;
-    };
-
     // Captura no `document`: roda antes do `onClick` do `next/link`, que
     // desiste da própria navegação ao ver `defaultPrevented`.
     const aoClicar = (e: MouseEvent) => {
       if (e.defaultPrevented || !cliqueSimples(e)) return;
       const destino = destinoDoLink(e.target) ?? destinoDoCartao(e.target);
-      if (!destino || destino.href === window.location.pathname) return;
+      // A própria página (inclusive uma âncora nela) segue o caminho normal.
+      if (
+        !destino ||
+        new URL(destino.href, window.location.href).pathname ===
+          window.location.pathname
+      )
+        return;
       e.preventDefault();
-      virarCartao(
-        destino.cartao,
-        destino.nome,
-        router.push,
-        destino.href,
-        preparar(destino.href)
-      );
+      abrirPagina(destino.href, router.push, {
+        origem: destino.origem,
+        cartao: destino.cartao,
+        preCarregar: router.prefetch,
+      });
     };
 
     const previstos = new Set<string>();
@@ -185,7 +166,10 @@ export function CartoesQueViram() {
     const aoApertar = (e: PointerEvent) => {
       if (e.pointerType !== 'mouse' || !cliqueSimples(e)) return;
       const destino = destinoDoLink(e.target) ?? destinoDoCartao(e.target);
-      if (destino) void preparar(destino.href).catch(() => undefined);
+      if (destino)
+        void prepararPagina(destino.href, router.prefetch).catch(
+          () => undefined
+        );
     };
 
     document.addEventListener('click', aoClicar, true);
