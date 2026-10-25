@@ -35,9 +35,15 @@ export function useSiteSearch(term: string, limit = 4): SiteSearchState {
       return;
     }
 
+    // Os resultados de antes ficam na tela até os novos chegarem, também
+    // quando a busca anterior ainda carregava: digitando rápido, sumir com
+    // eles encolhia o painel a "Buscando…" e o abria de novo a cada letra.
     setState((prev) => ({
       status: 'loading',
-      result: prev.status === 'done' ? prev.result : null,
+      result:
+        prev.status === 'done' || prev.status === 'loading'
+          ? prev.result
+          : null,
     }));
     const controller = new AbortController();
     const timer = setTimeout(() => {

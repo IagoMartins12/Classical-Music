@@ -187,13 +187,18 @@ export function Sheet({
         LARGURA[largura]
       )}
     >
+      {/* Com emblema (login, cadastro), no telefone a folha rola inteira: o
+          emblema e o título sobem junto com o formulário, em vez de ficarem
+          presos no topo comendo metade da tela. */}
       <div
         className={cx(
           'flex flex-col',
           telaCheia
             ? 'max-sm:h-[100dvh] max-sm:pt-[env(safe-area-inset-top)]'
             : 'max-h-[85dvh]',
-          'sm:max-h-[85dvh]'
+          'sm:max-h-[85dvh]',
+          !!emblema &&
+            'classical-scrollbar max-sm:overflow-y-auto max-sm:overflow-x-hidden'
         )}
       >
         {alca && (
@@ -249,7 +254,12 @@ export function Sheet({
 
         {/* Sem rolagem lateral: texto longo sem espaço (URL, JSON, id) quebra
             em qualquer ponto em vez de alargar a folha. */}
-        <div className="classical-scrollbar min-w-0 flex-1 overflow-y-auto overflow-x-hidden px-6 py-5 [overflow-wrap:anywhere] max-sm:px-4">
+        <div
+          className={cx(
+            'classical-scrollbar min-w-0 flex-1 overflow-y-auto overflow-x-hidden px-6 py-5 [overflow-wrap:anywhere] max-sm:px-4',
+            !!emblema && 'max-sm:flex-none max-sm:overflow-visible'
+          )}
+        >
           {children}
         </div>
 
@@ -257,7 +267,13 @@ export function Sheet({
           // No telefone os botões dividem a largura em partes iguais: lado a
           // lado e alinhados à direita, três botões espremiam o texto e
           // quebravam em duas linhas cada um.
-          <footer className="flex flex-wrap items-center justify-end gap-2 border-t border-linha px-6 py-4 max-sm:px-4 max-sm:[&>*]:!mr-0 max-sm:[&>*]:flex-auto max-sm:[&>*]:whitespace-nowrap">
+          <footer
+            className={cx(
+              'flex flex-wrap items-center justify-end gap-2 border-t border-linha px-6 py-4 max-sm:px-4 max-sm:[&>*]:!mr-0 max-sm:[&>*]:flex-auto max-sm:[&>*]:whitespace-nowrap',
+              // A folha que rola inteira mantém os botões presos embaixo.
+              !!emblema && 'sup-alta max-sm:sticky max-sm:bottom-0'
+            )}
+          >
             {rodape}
           </footer>
         )}
