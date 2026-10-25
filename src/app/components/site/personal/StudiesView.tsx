@@ -113,8 +113,9 @@ export function StudiesView({
             </Aba>
           ))}
         </Abas>
-        <div className="flex flex-wrap items-center gap-2">
-          <RetrospectiveButton />
+        {/* No celular, o histórico ocupa a linha inteira. */}
+        <div className="flex flex-wrap items-center gap-2 max-sm:w-full">
+          <RetrospectiveButton className="max-sm:w-full" />
           <ViewToggle />
         </div>
       </div>

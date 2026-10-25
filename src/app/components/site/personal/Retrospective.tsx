@@ -34,7 +34,7 @@ import {
  * obras suficientes diz quantas faltam. Ao abrir, a tela gera (ou reabre a
  * já gerada) e mostra um cartão por vez, como stories.
  */
-export function RetrospectiveButton() {
+export function RetrospectiveButton({ className }: { className?: string }) {
   const { language } = useRouteLanguage();
   const copy = RETROSPECTIVE[language];
   const [status, setStatus] = useState<RetroStatus | null>(null);
@@ -59,7 +59,7 @@ export function RetrospectiveButton() {
         <button
           type="button"
           onClick={() => setOpen(true)}
-          className={classesDeBotao('secundario', 'p')}
+          className={cx(classesDeBotao('secundario', 'p'), className)}
         >
           <Icon de={PiLockSimple} tamanho="pp" /> {copy.button}
           <span className="tint-ouro rounded-full px-2 py-0.5 text-[0.6875rem] font-medium text-ouro-na-tinta">
@@ -85,6 +85,7 @@ export function RetrospectiveButton() {
         disabled={!any}
         title={any ? undefined : copy.missing(status.periods.all.missing)}
         onClick={() => setOpen(true)}
+        className={className}
       >
         {copy.button}
       </Button>
