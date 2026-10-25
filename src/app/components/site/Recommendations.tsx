@@ -1,9 +1,10 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { PiArrowRight, PiLockSimple, PiSparkle } from 'react-icons/pi';
+import { PiLockSimple, PiSparkle } from 'react-icons/pi';
 import Link from '@/app/components/LocalizedLink';
-import { classesDeBotao } from '@/app/components/ui/Button';
+import { Button } from '@/app/components/ui/Button';
+import { RecursoDoPlano } from '@/app/components/site/RecursoDoPlano';
 import { Icon } from '@/app/components/ui/Icon';
 import { cx } from '@/app/components/ui/cx';
 import { RECOMMENDATIONS } from '@/app/conteudo/site/recommendations';
@@ -33,6 +34,7 @@ export function Recommendations({
   const { isAuthenticated } = useAuth();
   const [data, setData] = useState<Data | null>(null);
   const [failed, setFailed] = useState(false);
+  const [planOpen, setPlanOpen] = useState(false);
   const key = source.kind === 'work' ? source.workId : 'me';
 
   useEffect(() => {
@@ -140,14 +142,25 @@ export function Recommendations({
                 {isAuthenticated ? copy.locked.title : copy.locked.signIn}
               </p>
               <p className="t-rotulo text-texto-suave">{copy.locked.text}</p>
-              <Link href="/pricing" className={classesDeBotao('primario', 'p')}>
-                <Icon de={PiSparkle} tamanho="pp" /> {copy.locked.action}
-                <Icon de={PiArrowRight} tamanho="pp" />
-              </Link>
+              <Button
+                variante="primario"
+                tamanho="p"
+                icone={PiSparkle}
+                onClick={() => setPlanOpen(true)}
+              >
+                {copy.locked.action}
+              </Button>
             </div>
           </div>
         )}
       </div>
+      {data.locked && (
+        <RecursoDoPlano
+          recurso="recommendations"
+          aberto={planOpen}
+          aoFechar={() => setPlanOpen(false)}
+        />
+      )}
     </section>
   );
 }

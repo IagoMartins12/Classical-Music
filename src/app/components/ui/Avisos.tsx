@@ -30,6 +30,20 @@ export function Avisos() {
   const { toasts } = useToasterStore();
   const visiveis = toasts.filter((t) => t.visible).length;
 
+  // A camada fica aberta desde o começo, mesmo sem aviso. Fechada, ela é
+  // `display: none`, e o primeiro aviso nascia ali dentro: o react-hot-toast
+  // mede a altura do aviso ao montar, media zero e o deixava invisível
+  // (opacidade 0 até a próxima medida). Era o "o primeiro não aparece".
+  useEffect(() => {
+    const camada = ref.current;
+    if (!camada || !('showPopover' in camada)) return;
+    try {
+      if (!camada.matches(':popover-open')) camada.showPopover();
+    } catch {
+      // Navegador sem popover: fica o z-index.
+    }
+  }, []);
+
   useEffect(() => {
     const camada = ref.current;
     if (!camada || !('showPopover' in camada) || visiveis === 0) return;

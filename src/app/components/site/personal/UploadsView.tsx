@@ -20,6 +20,7 @@ import {
 } from 'react-icons/pi';
 import toast from 'react-hot-toast';
 import Link from 'next/link';
+import { RecursoDoPlano } from '@/app/components/site/RecursoDoPlano';
 import { Aba, Abas } from '@/app/components/ui/Abas';
 import { Button, classesDeBotao } from '@/app/components/ui/Button';
 import { Icon } from '@/app/components/ui/Icon';
@@ -96,6 +97,7 @@ export function UploadsView({
   const router = useRouter();
   const [pending, startTransition] = useTransition();
   const [query, setQuery] = useState(search);
+  const [planOpen, setPlanOpen] = useState(false);
   const [creating, setCreating] = useState<Kind | null>(null);
   const [bulk, setBulk] = useState<UserUpload | null>(null);
   const [removing, setRemoving] = useState<UserUpload | null>(null);
@@ -246,12 +248,13 @@ export function UploadsView({
       {full && limit !== null && (
         <p className="t-rotulo -mt-4 text-texto-suave">
           {copy.full(limit)}{' '}
-          <Link
-            href="/pricing"
+          <button
+            type="button"
+            onClick={() => setPlanOpen(true)}
             className="text-ouro-texto underline decoration-transparent underline-offset-4 hover:decoration-[var(--ouro)]"
           >
             {copy.upgrade}
-          </Link>
+          </button>
         </p>
       )}
 
@@ -291,14 +294,21 @@ export function UploadsView({
           </dd>
         </div>
       </dl>
+      <RecursoDoPlano
+        recurso="uploads"
+        limite={limit}
+        aberto={planOpen}
+        aoFechar={() => setPlanOpen(false)}
+      />
       {plan === 'FREE' && !full && (
         <p className="t-rotulo -mt-4 text-texto-suave">
-          <Link
-            href="/pricing"
+          <button
+            type="button"
+            onClick={() => setPlanOpen(true)}
             className="text-ouro-texto underline decoration-transparent underline-offset-4 hover:decoration-[var(--ouro)]"
           >
             {copy.upgrade}
-          </Link>
+          </button>
         </p>
       )}
 

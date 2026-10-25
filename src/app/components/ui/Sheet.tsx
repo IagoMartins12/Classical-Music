@@ -264,12 +264,13 @@ export function Sheet({
         </div>
 
         {rodape && (
-          // No telefone os botões dividem a largura em partes iguais: lado a
-          // lado e alinhados à direita, três botões espremiam o texto e
-          // quebravam em duas linhas cada um.
+          // Os botões ficam à direita, no tamanho deles, também no telefone.
+          // Esticar cada filho por igual jogava à esquerda os botões que vêm
+          // num grupo (o grupo ocupava a linha e os botões começavam nela).
+          // Sem espaço para todos, a linha quebra, à direita.
           <footer
             className={cx(
-              'flex flex-wrap items-center justify-end gap-2 border-t border-linha px-6 py-4 max-sm:px-4 max-sm:[&>*]:!mr-0 max-sm:[&>*]:flex-auto max-sm:[&>*]:whitespace-nowrap',
+              'flex flex-wrap items-center justify-end gap-2 border-t border-linha px-6 py-4 max-sm:px-4 max-sm:[&>*]:whitespace-nowrap',
               // A folha que rola inteira mantém os botões presos embaixo.
               !!emblema && 'sup-alta max-sm:sticky max-sm:bottom-0'
             )}

@@ -28,7 +28,7 @@ import {
   PiX,
 } from 'react-icons/pi';
 import ConfirmModal from '@/app/components/ConfirmModal';
-import LocalizedLink from '@/app/components/LocalizedLink';
+import { RecursoDoPlano } from '@/app/components/site/RecursoDoPlano';
 import ScoreSelectionModal from '@/app/components/LearningModal/ScoreSelectionModal';
 import { ScorePage } from '@/app/components/site/work/ScorePreview';
 import { Button, classesDeBotao } from '@/app/components/ui/Button';
@@ -125,7 +125,12 @@ function Area({
   );
 }
 
-/** A dashed panel with its own heading, as in the earlier study modal. */
+/**
+ * A dashed panel with its own heading, as in the earlier study modal.
+ * `relative`: the hidden file input inside (the video) is placed against the
+ * panel. Without it, it was placed against the sheet itself, and focusing it
+ * when the panel was tapped scrolled the whole sheet out of place.
+ */
 function Panel({
   icon,
   title,
@@ -140,7 +145,7 @@ function Panel({
   children: ReactNode;
 }) {
   return (
-    <section className="flex flex-col gap-4 rounded-card border border-dashed border-[var(--linha-forte)] p-5">
+    <section className="relative flex flex-col gap-4 rounded-card border border-dashed border-[var(--linha-forte)] p-5">
       <div className="flex items-center justify-between gap-3">
         <span className="flex items-center gap-3">
           <span className="grid h-9 w-9 shrink-0 place-items-center rounded-controle bg-sup-2 text-ouro-texto">
@@ -251,6 +256,7 @@ export function StudySheet() {
   const [confirmLeave, setConfirmLeave] = useState(false);
   const [confirmTransfer, setConfirmTransfer] = useState(false);
   const [pickingScore, setPickingScore] = useState(false);
+  const [planOpen, setPlanOpen] = useState(false);
   const [marking, setMarking] = useState(false);
   const [milestoneList, setMilestoneList] = useState<ProgressMilestone[]>([]);
   const [milestones, setMilestones] = useState<ProgressMilestones>({});
@@ -842,12 +848,19 @@ export function StudySheet() {
         ) : videoFull && quota?.limit != null ? (
           <p className="t-rotulo rounded-card bg-sup-2 p-4 text-texto-suave">
             {copy.videoFull(quota.limit)}{' '}
-            <LocalizedLink
-              href="/pricing"
+            <button
+              type="button"
+              onClick={() => setPlanOpen(true)}
               className="text-ouro-texto underline underline-offset-4"
             >
               {copy.videoUpgrade}
-            </LocalizedLink>
+            </button>
+            <RecursoDoPlano
+              recurso="videos"
+              limite={quota.limit}
+              aberto={planOpen}
+              aoFechar={() => setPlanOpen(false)}
+            />
           </p>
         ) : (
           <AddZone

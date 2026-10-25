@@ -5,20 +5,17 @@ import { createPortal } from 'react-dom';
 import toast from 'react-hot-toast';
 import {
   PiArrowClockwise,
-  PiArrowRight,
   PiCaretLeft,
   PiCaretRight,
-  PiCheck,
   PiDownloadSimple,
   PiLinkSimple,
   PiLockSimple,
   PiSparkle,
   PiX,
 } from 'react-icons/pi';
-import Link from '@/app/components/LocalizedLink';
+import { RecursoDoPlano } from '@/app/components/site/RecursoDoPlano';
 import { Button, classesDeBotao } from '@/app/components/ui/Button';
 import { Icon } from '@/app/components/ui/Icon';
-import { Sheet } from '@/app/components/ui/Sheet';
 import { cx } from '@/app/components/ui/cx';
 import { RETROSPECTIVE } from '@/app/conteudo/site/retrospective';
 import { useRouteLanguage } from '@/app/hooks/useRouteLanguage';
@@ -69,7 +66,11 @@ export function RetrospectiveButton() {
             {copy.plus}
           </span>
         </button>
-        <RetrospectiveUpsell open={open} onClose={() => setOpen(false)} />
+        <RecursoDoPlano
+          recurso="history"
+          aberto={open}
+          aoFechar={() => setOpen(false)}
+        />
       </>
     );
   }
@@ -102,50 +103,6 @@ export function RetrospectiveButton() {
         />
       )}
     </>
-  );
-}
-
-/** Sem o Plus: o que é o histórico, antes de mandar para os planos. */
-function RetrospectiveUpsell({
-  open,
-  onClose,
-}: {
-  open: boolean;
-  onClose: () => void;
-}) {
-  const copy = RETROSPECTIVE[useRouteLanguage().language];
-  return (
-    <Sheet
-      aberto={open}
-      aoFechar={onClose}
-      titulo={copy.upsell.title}
-      descricao={copy.upsell.text}
-      emblema={<Icon de={PiSparkle} tamanho="g" className="text-ouro-texto" />}
-      largura="p"
-      rodape={
-        <div className="ml-auto flex gap-2">
-          <Button variante="fantasma" onClick={onClose}>
-            {copy.upsell.notNow}
-          </Button>
-          <Link
-            href="/pricing#plus"
-            className={classesDeBotao('primario', 'm')}
-          >
-            {copy.upsell.action}
-            <Icon de={PiArrowRight} tamanho="pp" />
-          </Link>
-        </div>
-      }
-    >
-      <ul className="flex flex-col gap-3">
-        {copy.upsell.items.map((item) => (
-          <li key={item} className="flex gap-3 t-corpo">
-            <Icon de={PiCheck} className="mt-1 shrink-0 text-ouro-texto" />
-            {item}
-          </li>
-        ))}
-      </ul>
-    </Sheet>
   );
 }
 

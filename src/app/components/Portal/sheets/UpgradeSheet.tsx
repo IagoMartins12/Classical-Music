@@ -59,7 +59,7 @@ export default function UpgradeSheet({ onClose }: SheetProps) {
       rodape={
         <>
           <Link
-            href="/pricing"
+            href="/pricing?para=ensinar"
             className="mr-auto inline-flex min-h-[var(--alvo)] items-center text-sm font-medium text-ouro-texto"
           >
             Ver todos os planos
@@ -70,7 +70,10 @@ export default function UpgradeSheet({ onClose }: SheetProps) {
               : `Continuar no ${content.planos[current].nome}`}
           </Button>
           {current !== 'MAESTRO' && (
-            <Link href="/pricing" className={classesDeBotao('primario', 'm')}>
+            <Link
+              href="/pricing#maestro"
+              className={classesDeBotao('primario', 'm')}
+            >
               {content.planos.MAESTRO.acao}
             </Link>
           )}

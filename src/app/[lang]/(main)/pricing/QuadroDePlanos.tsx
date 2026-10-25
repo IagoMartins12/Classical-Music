@@ -76,6 +76,13 @@ export function QuadroDePlanos({
   const c = PLANOS[idioma];
   const [anual, setAnual] = useState(false);
   const [escolhido, setEscolhido] = useState<PlanoPago | null>(null);
+  // `/pricing#plus` (o convite de um recurso do plano): o plano já vem
+  // selecionado, com o contorno e o botão em destaque.
+  const [selecionado, setSelecionado] = useState<ChavePlano | null>(null);
+  useEffect(() => {
+    const plano = window.location.hash.slice(1).toUpperCase() as ChavePlano;
+    if (ORDEM.includes(plano) && plano !== 'FREE') setSelecionado(plano);
+  }, []);
   const { status } = useSession();
   const { open: abrirLogin } = useLoginModal();
   const { loading, getCurrentPlan, createStripeCheckout } = useSubscription();
@@ -152,7 +159,11 @@ export function QuadroDePlanos({
       );
     }
     return (
-      <Button className="w-full" onClick={() => escolher(plano)}>
+      <Button
+        className="w-full"
+        variante={selecionado === plano ? 'primario' : undefined}
+        onClick={() => escolher(plano)}
+      >
         {c.planos[plano].acao}
       </Button>
     );
@@ -166,6 +177,7 @@ export function QuadroDePlanos({
       anual={anual}
       precos={precos}
       atual={atual === plano}
+      selecionado={selecionado === plano && atual !== plano}
       sufixo={sufixo}
       ordem={ordem}
       acao={acao(plano)}
@@ -514,6 +526,7 @@ function CartaoDoPlano({
   anual,
   precos,
   atual,
+  selecionado,
   sufixo,
   ordem,
   acao,
@@ -523,6 +536,7 @@ function CartaoDoPlano({
   anual: boolean;
   precos: Precos;
   atual: boolean;
+  selecionado: boolean;
   sufixo: string;
   ordem: number;
   acao: ReactNode;
@@ -536,7 +550,7 @@ function CartaoDoPlano({
       aria-labelledby={id}
       className={cx(
         'relative flex w-full flex-col p-7 md:p-9',
-        atual &&
+        (atual || selecionado) &&
           'shadow-[inset_0_0_0_1.5px_color-mix(in_srgb,var(--ouro)_55%,transparent)] md:rounded-card'
       )}
     >
@@ -547,9 +561,9 @@ function CartaoDoPlano({
         >
           {p.nome}
         </h3>
-        {atual && (
+        {(atual || selecionado) && (
           <span className="rounded-full bg-ouro/15 px-2.5 py-1 text-xs font-semibold text-ouro-texto">
-            {c.estado.seuPlano}
+            {atual ? c.estado.seuPlano : c.estado.selecionado}
           </span>
         )}
       </div>
