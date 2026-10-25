@@ -18,7 +18,7 @@ import {
 import { ProfileAccount, profileApi } from '../api/profile';
 import { getQueryClient } from '../query-client';
 import { lembrarConta, limparCachesPessoais } from '../pwa/limpar';
-import { esquecerConta, garantirDono } from './dadosDaConta';
+import { esquecerConta, garantirDono, ouvirOutrasAbas } from './dadosDaConta';
 import { SESSION_HINT_COOKIE } from '@/app/utils/authCookies';
 
 /**
@@ -321,6 +321,16 @@ function SessionEffects() {
         predicate: (query) => query.queryKey[0] !== SESSION_QUERY_KEY[0],
       });
   }, [account, queryClient]);
+
+  // Another tab changed the account: this one drops what it holds and asks
+  // the session again.
+  useEffect(
+    () =>
+      ouvirOutrasAbas(() => {
+        void queryClient.invalidateQueries({ queryKey: SESSION_QUERY_KEY });
+      }),
+    [queryClient]
+  );
 
   // A renovação falhou numa chamada qualquer: a sessão acabou.
   useEffect(() => {

@@ -32,6 +32,14 @@ const GUARDADOS = [
 
 const useDono = create<{ confirmado: boolean }>(() => ({ confirmado: false }));
 
+/**
+ * Whose data this tab holds in memory. `undefined` until the session first
+ * answers: the stores then hold what `localStorage` had, owned by
+ * `CHAVE_DONO`. Kept apart from `localStorage` because another tab may have
+ * changed the owner there while this one still holds the old account's.
+ */
+let donoDaMemoria: string | null | undefined;
+
 /** True once the stored data is known to be the signed-in account's. */
 export const useDadosDaConta = () => useDono((s) => s.confirmado);
 
@@ -47,7 +55,6 @@ export function limparDadosDaConta() {
     for (const chave of Object.keys(localStorage))
       if (chave.startsWith('onboarding-backup-'))
         localStorage.removeItem(chave);
-    localStorage.removeItem(CHAVE_DONO);
   } catch {
     // No storage (private mode): the stores above are already empty.
   }
@@ -60,16 +67,24 @@ export function limparDadosDaConta() {
  * keeps in memory (the API answers' cache).
  */
 export function garantirDono(id: string | null): boolean {
-  let anterior: string | null = null;
+  let guardado: string | null = null;
   try {
-    anterior = localStorage.getItem(CHAVE_DONO);
+    guardado = localStorage.getItem(CHAVE_DONO);
   } catch {
-    anterior = null;
+    guardado = null;
   }
-  if (anterior !== id) {
-    limparDadosDaConta();
+  // The memory's owner when known, else the stored one (what the stores
+  // loaded from). Either differing from the account signed in clears.
+  const anterior = donoDaMemoria === undefined ? guardado : donoDaMemoria;
+  donoDaMemoria = id;
+  if (anterior !== id || guardado !== id) limparDadosDaConta();
+  // Written only when it changes: other tabs listen to this key
+  // (`ouvirOutrasAbas`), and removing and rewriting the same owner would set
+  // them clearing each other back and forth.
+  if (guardado !== id) {
     try {
       if (id) localStorage.setItem(CHAVE_DONO, id);
+      else localStorage.removeItem(CHAVE_DONO);
     } catch {
       // Without storage nothing persists, so nothing can leak either.
     }
@@ -81,5 +96,34 @@ export function garantirDono(id: string | null): boolean {
 /** Signing out: nothing of the account stays, and nothing shows. */
 export function esquecerConta() {
   useDono.setState({ confirmado: false });
+  donoDaMemoria = null;
   limparDadosDaConta();
+  try {
+    localStorage.removeItem(CHAVE_DONO);
+  } catch {
+    // Without storage there is no owner to forget.
+  }
+}
+
+/**
+ * Another tab signed out or in with another account: this tab drops what it
+ * holds in memory and hides it at once, then `aoMudar` asks the session
+ * again (which calls `garantirDono` for whoever is signed in now). Returns
+ * the cleanup.
+ */
+export function ouvirOutrasAbas(aoMudar: () => void) {
+  const aoGuardar = (evento: StorageEvent) => {
+    // `null` key: the other tab cleared all of `localStorage`.
+    if (evento.key !== CHAVE_DONO && evento.key !== null) return;
+    if (evento.key === CHAVE_DONO && evento.newValue === donoDaMemoria) return;
+    useDono.setState({ confirmado: false });
+    useLearningStore.getState().reset();
+    useFavoritesStore.getState().reset();
+    useAnnotationsStore.getState().reset();
+    useLearningModalStore.getState().reset();
+    donoDaMemoria = null;
+    aoMudar();
+  };
+  window.addEventListener('storage', aoGuardar);
+  return () => window.removeEventListener('storage', aoGuardar);
 }

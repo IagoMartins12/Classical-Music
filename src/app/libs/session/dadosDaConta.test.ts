@@ -113,3 +113,43 @@ describe('dados guardados no navegador', () => {
     expect(localStorage.getItem('opus-atlas:dono-dos-dados')).toBeNull();
   });
 });
+
+describe('outra aba trocou de conta', () => {
+  it('a memória desta aba é apagada mesmo com a marca já da conta nova', () => {
+    mod.garantirDono('conta-a');
+    learning.useLearningStore
+      .getState()
+      .initializeLearning([estudo('conta-a')] as never, []);
+    // A outra aba entrou com a conta B e gravou a marca.
+    localStorage.setItem('opus-atlas:dono-dos-dados', 'conta-b');
+
+    mod.garantirDono('conta-b');
+
+    expect(learning.useLearningStore.getState().wantToLearn).toHaveLength(0);
+  });
+
+  it('o aviso da outra aba esconde e apaga na hora', () => {
+    mod.garantirDono('conta-a');
+    learning.useLearningStore
+      .getState()
+      .initializeLearning([estudo('conta-a')] as never, []);
+    const ouvintes: ((e: StorageEvent) => void)[] = [];
+    (globalThis as unknown as { window: unknown }).window = {
+      addEventListener: (_: string, f: (e: StorageEvent) => void) =>
+        ouvintes.push(f),
+      removeEventListener: () => undefined,
+    };
+    let perguntou = 0;
+    const parar = mod.ouvirOutrasAbas(() => perguntou++);
+
+    ouvintes[0]({
+      key: 'opus-atlas:dono-dos-dados',
+      newValue: 'conta-b',
+    } as StorageEvent);
+
+    expect(learning.useLearningStore.getState().wantToLearn).toHaveLength(0);
+    expect(perguntou).toBe(1);
+    parar();
+    (globalThis as unknown as { window: unknown }).window = globalThis;
+  });
+});
