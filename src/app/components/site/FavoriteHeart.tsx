@@ -11,6 +11,7 @@ import { COMMON } from '@/app/conteudo/site/common';
 import { useAuth } from '@/app/hooks/useAuth';
 import { useRouteLanguage } from '@/app/hooks/useRouteLanguage';
 import { useFavoritesStore } from '@/app/stores/useFavoritesStore';
+import { useHidratado } from '@/app/hooks/useHidratado';
 
 /**
  * The favorite heart, on every composer and work card. Inside a link it only
@@ -62,13 +63,17 @@ export function FavoriteHeart({
   const { user } = useAuth();
   const allowed = useSignInGate();
   const scoreKey = score && `${score.workId}-${id}-${score.source}`;
-  const favorited = useFavoritesStore((s) =>
+  // The favorites come from `localStorage`, which the server does not see:
+  // the first render matches the server's empty heart (`useHidratado`).
+  const hidratado = useHidratado();
+  const salvo = useFavoritesStore((s) =>
     type === 'composer'
       ? s.isComposerFavorited(id)
       : type === 'work'
         ? s.isWorkFavorited(id)
         : !!score && s.isScoreFavorited(score.workId, id, score.source)
   );
+  const favorited = hidratado && salvo;
   const busy = useFavoritesStore((s) =>
     type === 'composer'
       ? s.loading.composers.has(id)
