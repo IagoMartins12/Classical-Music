@@ -20,11 +20,14 @@ import {
   PiCheckCircle,
   PiDownloadSimple,
   PiFileText,
+  PiLockSimple,
   PiPencilLine,
   PiPlus,
+  PiSparkle,
   PiTarget,
   PiTrash,
   PiVideoCamera,
+  PiWarningCircle,
   PiX,
 } from 'react-icons/pi';
 import ConfirmModal from '@/app/components/ConfirmModal';
@@ -198,6 +201,9 @@ function AddZone({
   );
 }
 
+/** From how many videos the Free plan's limit is announced as near. */
+const AVISO_DE_VIDEOS = 3;
+
 const fileSize = (bytes?: number | null) =>
   !bytes
     ? ''
@@ -243,7 +249,7 @@ export function StudySheet() {
   } = store;
   const library = useLearningStore();
   const video = useLearnedVideo();
-  // O teto de vídeos do plano (Free: 4), da mesma conta que a API usa:
+  // O teto de vídeos do plano (Free: 5), da mesma conta que a API usa:
   // avisado antes de escolher o arquivo, não depois de enviar.
   const quota = useQuery({
     queryKey: ['uploads', 'stats'],
@@ -876,45 +882,91 @@ export function StudySheet() {
             </label>
           </div>
         ) : videoFull && quota?.limit != null ? (
-          // The plan's sheet sits beside the notice, never inside the <p>:
-          // a dialog inside a paragraph is invalid HTML (hydration errors).
-          <>
-            <p className="t-rotulo rounded-card bg-sup-2 p-4 text-texto-suave">
-              {copy.videoFull(quota.limit)}{' '}
-              <button
-                type="button"
-                onClick={() => setPlanOpen(true)}
-                className="text-ouro-texto underline underline-offset-4"
-              >
-                {copy.videoUpgrade}
-              </button>
-            </p>
-            <RecursoDoPlano
-              recurso="videos"
-              limite={quota.limit}
-              aberto={planOpen}
-              aoFechar={() => setPlanOpen(false)}
-            />
-          </>
+          // The Free plan's last video is used: the upload is locked like the
+          // piece recommendations, a blurred target and the Plus invite.
+          <div className="grid">
+            {/* `inert`: the blurred target is a picture, out of reach of the
+                keyboard too. */}
+            <div
+              inert
+              aria-hidden="true"
+              className="pointer-events-none col-start-1 row-start-1 select-none blur-[5px]"
+            >
+              <AddZone title={copy.videoAdd} text={copy.videoHelp} />
+            </div>
+            <div className="relative col-start-1 row-start-1 grid place-items-center p-3">
+              <div className="sup-alta flex max-w-sm flex-col items-center gap-2 rounded-card p-5 text-center shadow-[var(--sombra-2)]">
+                <Icon
+                  de={PiLockSimple}
+                  className="text-ouro-texto"
+                  tamanho="m"
+                />
+                <p className="font-display text-[1.125rem]">
+                  {copy.videoLockedTitle}
+                </p>
+                <p className="t-rotulo text-texto-suave">
+                  {copy.videoFull(quota.limit)}
+                </p>
+                <Button
+                  variante="primario"
+                  tamanho="p"
+                  icone={PiSparkle}
+                  onClick={() => setPlanOpen(true)}
+                >
+                  {copy.videoPlus}
+                </Button>
+              </div>
+            </div>
+          </div>
         ) : (
-          <AddZone
-            title={copy.videoAdd}
-            text={
-              quota?.limit != null
-                ? `${copy.videoHelp} ${copy.videoQuota(quota.used, quota.limit)}`
-                : copy.videoHelp
-            }
-            htmlFor="study-video"
+          <div className="flex flex-col gap-2">
+            <AddZone
+              title={copy.videoAdd}
+              text={
+                quota?.limit != null
+                  ? `${copy.videoHelp} ${copy.videoQuota(quota.used, quota.limit)}`
+                  : copy.videoHelp
+              }
+              htmlFor="study-video"
+            />
+            {/* Close to the Free plan's limit: said before it is reached. */}
+            {quota?.limit != null && quota.used >= AVISO_DE_VIDEOS && (
+              <p className="t-legenda flex flex-wrap items-center gap-x-1.5">
+                <Icon
+                  de={PiWarningCircle}
+                  tamanho="pp"
+                  className="text-ouro-texto"
+                />
+                {copy.videoNear(quota.used, quota.limit)}
+                <button
+                  type="button"
+                  onClick={() => setPlanOpen(true)}
+                  className="text-ouro-texto underline underline-offset-4"
+                >
+                  {copy.videoUpgrade}
+                </button>
+              </p>
+            )}
+          </div>
+        )}
+        {quota?.limit != null && (
+          <RecursoDoPlano
+            recurso="videos"
+            limite={quota.limit}
+            aberto={planOpen}
+            aoFechar={() => setPlanOpen(false)}
           />
         )}
-        <CaixaDeMarcar
-          rotulo={copy.videoPublic}
-          marcado={video.isVideoPublic}
-          aoMudar={(on) => {
-            setTouched(true);
-            video.setIsVideoPublic(on);
-          }}
-        />
+        {!videoFull && (
+          <CaixaDeMarcar
+            rotulo={copy.videoPublic}
+            marcado={video.isVideoPublic}
+            aoMudar={(on) => {
+              setTouched(true);
+              video.setIsVideoPublic(on);
+            }}
+          />
+        )}
         {video.uploadError && (
           <p role="alert" className="t-rotulo text-erro">
             {video.uploadError}

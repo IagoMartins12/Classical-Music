@@ -36,7 +36,7 @@ export const LIMITES = {
     /** Compositores, obras e partituras somados. */
     acervo: 20,
     /** Vídeos de performance. */
-    performances: 4,
+    performances: 5,
   },
   MENTOR: {
     alunos: 7,

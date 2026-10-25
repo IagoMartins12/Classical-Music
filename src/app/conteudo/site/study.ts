@@ -125,6 +125,10 @@ const pt = {
   videoFull: (limit: number) =>
     `Você já tem os ${limit} vídeos do plano Free. Para enviar outro, apague um vídeo ou assine o Plus.`,
   videoUpgrade: 'No Plus, sem limite',
+  videoNear: (used: number, limit: number) =>
+    `Você já usou ${used} dos ${limit} vídeos do plano Free.`,
+  videoLockedTitle: 'Vídeos sem limite são do Plus',
+  videoPlus: 'Conhecer o Plus',
   videoReplace: 'Substituir o vídeo',
   videoIsPublic: 'Público',
   videoIsPrivate: 'Privado',
@@ -272,6 +276,10 @@ const en: typeof pt = {
   videoFull: (limit: number) =>
     `You already have the ${limit} videos of the Free plan. To upload another, delete a video or subscribe to Plus.`,
   videoUpgrade: 'Plus has no limit',
+  videoNear: (used: number, limit: number) =>
+    `You have used ${used} of the ${limit} videos on the Free plan.`,
+  videoLockedTitle: 'Unlimited videos come with Plus',
+  videoPlus: 'See the Plus plan',
   videoReplace: 'Replace the video',
   videoIsPublic: 'Public',
   videoIsPrivate: 'Private',
