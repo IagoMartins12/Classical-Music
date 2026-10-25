@@ -113,8 +113,6 @@ export type ConteudoPlanos = {
   };
   estado: {
     seuPlano: string;
-    /** O plano que veio marcado no endereço (`/pricing#plus`). */
-    selecionado: string;
     planoAtual: string;
     gerenciar: string;
     voltarAoFree: string;
@@ -280,7 +278,6 @@ export const PLANOS: Record<Idioma, ConteudoPlanos> = {
     },
     estado: {
       seuPlano: 'Seu plano',
-      selecionado: 'Selecionado',
       planoAtual: 'Seu plano atual',
       gerenciar: 'Gerenciar assinatura',
       voltarAoFree:
@@ -575,7 +572,6 @@ export const PLANOS: Record<Idioma, ConteudoPlanos> = {
     },
     estado: {
       seuPlano: 'Your plan',
-      selecionado: 'Selected',
       planoAtual: 'Your current plan',
       gerenciar: 'Manage subscription',
       voltarAoFree:

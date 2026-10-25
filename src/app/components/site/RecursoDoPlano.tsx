@@ -12,7 +12,7 @@ import { useRouteLanguage } from '@/app/hooks/useRouteLanguage';
 /**
  * Um recurso que o plano da pessoa não inclui, ao ser tocado: o que ele faz,
  * antes de mandar para os planos. "Conhecer o Plus" leva a `/pricing#plus`,
- * que abre a página já no plano e com ele selecionado (`QuadroDePlanos`).
+ * que abre a página já no plano (`QuadroDePlanos`).
  *
  * A folha de sempre, com os botões à direita: nada de emblema nem de
  * cabeçalho próprio, para não parecer outro produto.
