@@ -1,5 +1,11 @@
 import type { Metadata } from 'next';
-import { PiArrowRight, PiCaretDown } from 'react-icons/pi';
+import { GiFlute, GiViolin } from 'react-icons/gi';
+import {
+  PiArrowRight,
+  PiCaretDown,
+  PiGuitar,
+  PiPianoKeys,
+} from 'react-icons/pi';
 import LocalizedLink from '@/app/components/LocalizedLink';
 import { BotaoCriarConta } from '@/app/components/auth/BotaoCriarConta';
 import { TurmaEmOrbita } from '@/app/components/site/orbits/Orbitas';
@@ -9,7 +15,6 @@ import { classesDeBotao } from '@/app/components/ui/Button';
 import { Revelar } from '@/app/components/ui/Revelar';
 import { TextoRico } from '@/app/components/ui/TextoRico';
 import { instrumentChapter } from '@/app/conteudo/instruments';
-import { discCredit } from '@/app/conteudo/instruments/credits';
 import { PROFESSORES } from '@/app/conteudo/professores';
 import { compacto, numerosDoAcervo } from '@/app/requests/catalog-numbers';
 import { alternatesFor } from '@/app/utils/seoAlternates';
@@ -45,8 +50,18 @@ export async function generateMetadata({
  * Mentor and Maestro cards (the /pricing component and prices), questions
  * and contact. Same editorial frame as /about-us and /pricing.
  */
-/** The instruments shown beside the archive line: what teachers teach. */
-const ENSINADOS = ['piano', 'violin', 'cello', 'guitar'] as const;
+/**
+ * The instruments shown beside the archive line: what teachers teach, as
+ * icons. Piano and guitar are Phosphor; violin and flute come from the
+ * musical Game Icons set the design system allows (`ui/Icon`). There is no
+ * cello icon in either, so the flute takes its place.
+ */
+const ENSINADOS = [
+  ['piano', PiPianoKeys],
+  ['violin', GiViolin],
+  ['guitar', PiGuitar],
+  ['flute', GiFlute],
+] as const;
 
 export default async function ParaProfessores({
   params,
@@ -70,12 +85,10 @@ export default async function ParaProfessores({
         extra={
           <FileiraDoAcervo
             rotulo={c.instrumentos}
-            itens={ENSINADOS.map((key) => ({
+            itens={ENSINADOS.map(([key, icone]) => ({
               chave: key,
-              // Square crops where the instrument fills the disc.
-              foto: `/instruments/discs/${key}.webp`,
+              icone,
               nome: instrumentChapter(key, idioma)?.name ?? key,
-              credito: discCredit(key),
             }))}
             legenda={c.acervo(numeros, (n) => `**${compacto(n)}**`)}
           />
