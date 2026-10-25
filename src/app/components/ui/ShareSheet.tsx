@@ -144,9 +144,11 @@ function ShareSheet({
   return (
     <Sheet aberto={open} aoFechar={onClose} titulo={copy.title} largura="p">
       <div className="flex flex-col gap-7">
-        <div className="flex items-center gap-4 rounded-card bg-sup-2 p-3">
+        {/* A prévia como chega no WhatsApp: a imagem grande em cima, o título
+            e o endereço embaixo. */}
+        <div className="overflow-hidden rounded-card bg-sup-2">
           {thumbnail}
-          <div className="min-w-0">
+          <div className="min-w-0 px-4 py-3">
             <p className="line-clamp-2 font-display text-[1.125rem] leading-snug">
               {title}
             </p>

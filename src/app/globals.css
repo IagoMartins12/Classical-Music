@@ -607,6 +607,13 @@
   transition: none !important;
 }
 
+/* Na troca de tema, só a página inteira vira foto. Um elemento com nome
+   próprio (retrato do compositor, cabeçalho da obra) era fotografado à parte
+   e desenhado por cima de tudo, até do menu do celular aberto. */
+.trocando-tema * {
+  view-transition-name: none !important;
+}
+
 /* O círculo é só da troca de tema: sem o `.trocando-tema`, toda navegação
    com View Transition abriria revelando a página num círculo. */
 :root.trocando-tema::view-transition-old(root),

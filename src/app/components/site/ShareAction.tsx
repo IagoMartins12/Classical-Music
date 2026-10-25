@@ -28,8 +28,9 @@ export function ShareAction({
       <Portrait
         name={imageName}
         src={image}
-        sizes="64px"
-        className="aspect-square w-16 shrink-0 rounded-controle"
+        sizes="480px"
+        decorative
+        className="aspect-[1.91/1] w-full"
       />
     ),
   });

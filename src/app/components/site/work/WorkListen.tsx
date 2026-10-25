@@ -222,8 +222,7 @@ export function WorkListen({ work }: { work: WorkDetails }) {
     youtube: PiYoutubeLogo,
   };
   return (
-    // Largura contida: um vídeo sozinho ocupava a coluna inteira e ficava imenso.
-    <div className="flex max-w-3xl flex-col gap-4">
+    <div className="flex flex-col gap-4">
       <div className="flex flex-wrap items-center justify-between gap-3">
         {/* A aba aparece mesmo com uma fonte só: diz de onde vem o som. */}
         <Abas rotulo={copy.tabs.audio}>
@@ -275,12 +274,15 @@ export function WorkListen({ work }: { work: WorkDetails }) {
           </a>
         </div>
       )}
+      {/* Só o vídeo tem largura contida: na coluna inteira ficava imenso. */}
       {current === 'youtube' && media.youtube && (
-        <LiteYouTube
-          id={media.youtube.id}
-          title={media.youtube.title}
-          priority
-        />
+        <div className="max-w-3xl">
+          <LiteYouTube
+            id={media.youtube.id}
+            title={media.youtube.title}
+            priority
+          />
+        </div>
       )}
       {editor}
     </div>

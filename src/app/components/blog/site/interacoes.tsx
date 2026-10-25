@@ -135,8 +135,8 @@ export function AcoesDoArtigo({
         src={capa}
         alt=""
         inicial={titulo}
-        sizes="80px"
-        className="aspect-square w-16 shrink-0 rounded-controle"
+        sizes="480px"
+        className="aspect-[1.91/1] w-full"
       />
     ),
   });

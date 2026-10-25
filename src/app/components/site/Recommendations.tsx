@@ -88,10 +88,12 @@ export function Recommendations({
         <p className="t-rotulo text-texto-suave">{head.text}</p>
       </div>
 
-      <div className="relative">
+      {/* Lista e convite na mesma célula: a seção cresce até caber o maior
+          dos dois, e o convite não invade o que vem depois. */}
+      <div className="grid">
         <ul
           className={cx(
-            'grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-4',
+            'col-start-1 row-start-1 grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-4',
             data.locked && 'pointer-events-none select-none blur-[6px]'
           )}
           aria-hidden={data.locked || undefined}
@@ -129,7 +131,7 @@ export function Recommendations({
         </ul>
 
         {data.locked && (
-          <div className="absolute inset-0 grid place-items-center p-4">
+          <div className="col-start-1 row-start-1 grid place-items-center p-4">
             <div className="sup-alta flex max-w-md flex-col items-center gap-3 rounded-card p-6 text-center shadow-[var(--sombra-2)]">
               <Icon de={PiLockSimple} className="text-ouro-texto" tamanho="m" />
               <p className="font-display text-[1.25rem]">
