@@ -98,7 +98,8 @@ function ShareSheet({
   const { pulsar, pulso } = usePulso();
   const text = encodeURIComponent(title);
   const link = encodeURIComponent(url);
-  const address = url.replace(/^https?:\/\/(www\.)?/, '');
+  // Só o domínio, como na prévia do WhatsApp: o caminho, com o id, é ruído.
+  const address = new URL(url).hostname.replace(/^www\./, '');
 
   const targets = [
     {
@@ -148,13 +149,11 @@ function ShareSheet({
             e o endereço embaixo. */}
         <div className="overflow-hidden rounded-card bg-sup-2">
           {thumbnail}
-          <div className="min-w-0 px-4 py-3">
-            <p className="line-clamp-2 font-display text-[1.125rem] leading-snug">
+          <div className="flex min-w-0 flex-col gap-1 p-4">
+            <p className="line-clamp-2 font-display text-[1.25rem] leading-snug">
               {title}
             </p>
-            <p className="t-dado mt-0.5 truncate text-[0.75rem] text-texto-fraco">
-              {address}
-            </p>
+            <p className="t-rotulo truncate text-texto-fraco">{address}</p>
           </div>
         </div>
 

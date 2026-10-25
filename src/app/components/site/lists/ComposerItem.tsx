@@ -49,7 +49,8 @@ export function ComposerItem({
         />
         <span className="flex min-w-0 flex-col row:flex-1">
           <span className="flex items-center gap-1.5 font-display text-[1.25rem] leading-tight group-hover:text-ouro-texto">
-            <span className="truncate row:hidden">{composer.name}</span>
+            {/* No card, o nome completo cabe em duas linhas; na lista, uma. */}
+            <span className="line-clamp-2 row:hidden">{fullName}</span>
             <span className="hidden truncate row:inline">{fullName}</span>
             {composer.isVerified && (
               <SeloVerificada className="h-4 w-4 shrink-0 text-verificado" />
