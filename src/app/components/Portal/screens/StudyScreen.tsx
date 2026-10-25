@@ -39,6 +39,7 @@ import {
   WorkCited,
 } from '../pieces';
 import { usePortal } from '../PortalProvider';
+import { useConfirmar } from '@/app/components/ui/useConfirmar';
 
 export function StudyScreen() {
   const { open } = usePortal();
@@ -68,6 +69,7 @@ export function StudyScreen() {
 function Practice() {
   const from = useMemo(() => addDays(weekStart(today()), -21), []);
   const practice = usePractice({ from });
+  const { confirmar, modal } = useConfirmar();
   const remove = usePortalMutation((id: string) => api.removePractice(id), {
     success: 'Registro apagado.',
     invalidate: [
@@ -215,13 +217,22 @@ function Practice() {
                   icone={PiTrash}
                   rotulo="Apagar o registro"
                   className="opacity-60 group-hover/diario:opacity-100"
-                  onClick={() => remove.mutate(e.id)}
+                  onClick={() =>
+                    confirmar({
+                      titulo: 'Apagar este registro de estudo?',
+                      texto:
+                        'Os minutos saem da sua semana e do que o professor vê.',
+                      botao: 'Apagar o registro',
+                      acao: () => remove.mutate(e.id),
+                    })
+                  }
                 />
               </li>
             ))}
           </ul>
         </Section>
       </div>
+      {modal}
     </div>
   );
 }

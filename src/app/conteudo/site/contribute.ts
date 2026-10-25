@@ -115,6 +115,8 @@ const pt = {
     report: 'Denunciar esta curiosidade',
     remove: 'Apagar sua curiosidade',
     removed: 'Curiosidade apagada.',
+    removeTitle: 'Apagar sua curiosidade?',
+    removeText: 'Ela sai da página do compositor e não volta.',
     first: (name: string) =>
       `Ninguém contou uma curiosidade sobre ${name} ainda. A primeira vale XP.`,
   },
@@ -230,6 +232,8 @@ const en: typeof pt = {
     report: 'Report this curiosity',
     remove: 'Delete your curiosity',
     removed: 'Curiosity deleted.',
+    removeTitle: 'Delete your curiosity?',
+    removeText: 'It leaves the composer page for good.',
     first: (name) =>
       `Nobody has shared a curiosity about ${name} yet. The first one earns XP.`,
   },

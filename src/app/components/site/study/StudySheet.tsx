@@ -257,6 +257,8 @@ export function StudySheet() {
   const [confirmLeave, setConfirmLeave] = useState(false);
   const [pickingScore, setPickingScore] = useState(false);
   const [planOpen, setPlanOpen] = useState(false);
+  const [confirmVideo, setConfirmVideo] = useState(false);
+  const [confirmRemove, setConfirmRemove] = useState(false);
   const [marking, setMarking] = useState(false);
   const [milestoneList, setMilestoneList] = useState<ProgressMilestone[]>([]);
   const [milestones, setMilestones] = useState<ProgressMilestones>({});
@@ -496,8 +498,9 @@ export function StudySheet() {
     });
 
   const removeVideo = async () => {
-    if (!(await video.deleteVideo(workId)))
-      return toast.error(copy.toasts.failed);
+    const ok = await video.deleteVideo(workId);
+    setConfirmVideo(false);
+    if (!ok) return toast.error(copy.toasts.failed);
     const item = library.getLearnedItem(workId);
     if (item)
       library.addLearned({
@@ -856,7 +859,7 @@ export function StudySheet() {
                   variante="fantasma"
                   icone={PiTrash}
                   rotulo={copy.videoRemove}
-                  onClick={() => void removeVideo()}
+                  onClick={() => setConfirmVideo(true)}
                 />
               )}
             </div>
@@ -972,7 +975,7 @@ export function StudySheet() {
                   variante="fantasma"
                   icone={PiTrash}
                   className="whitespace-nowrap sm:order-1"
-                  onClick={() => void remove()}
+                  onClick={() => setConfirmRemove(true)}
                   disabled={saving}
                 >
                   {copy.remove}
@@ -1076,6 +1079,31 @@ export function StudySheet() {
         </ul>
       </Sheet>
 
+      <ConfirmModal
+        isOpen={confirmVideo}
+        onClose={() => setConfirmVideo(false)}
+        onConfirm={() => void removeVideo()}
+        type="danger"
+        title={copy.videoRemoveTitle}
+        message={copy.videoRemoveText}
+        confirmText={copy.videoRemoveConfirm}
+        cancelText={copy.cancel}
+        isLoading={video.isUploading}
+      />
+      <ConfirmModal
+        isOpen={confirmRemove}
+        onClose={() => setConfirmRemove(false)}
+        onConfirm={async () => {
+          await remove();
+          setConfirmRemove(false);
+        }}
+        type="danger"
+        title={copy.removeTitle}
+        message={copy.removeText}
+        confirmText={copy.remove}
+        cancelText={copy.cancel}
+        isLoading={saving}
+      />
       <ConfirmModal
         isOpen={confirmLeave}
         onClose={() => setConfirmLeave(false)}

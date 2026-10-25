@@ -25,6 +25,7 @@ import {
 } from '@/app/requests/contributions';
 import { ReportSheet } from '../ReportButton';
 import { useContribute } from '../contribute/Contribute';
+import { useConfirmar } from '@/app/components/ui/useConfirmar';
 
 /**
  * The composer's curiosities: the editorial ones and what people shared,
@@ -63,6 +64,7 @@ export function ComposerCuriosities({
   });
   const { open } = useContribute();
   const [reporting, setReporting] = useState<Curiosity | null>(null);
+  const { confirmar, modal } = useConfirmar();
 
   const update = (next: (current: Curiosity[]) => Curiosity[]) =>
     client.setQueryData<Curiosity[]>(key, (current) => next(current ?? list));
@@ -138,7 +140,15 @@ export function ComposerCuriosities({
                     variante="fantasma"
                     icone={PiTrash}
                     rotulo={copy.remove}
-                    onClick={() => void remove(c)}
+                    onClick={() =>
+                      confirmar({
+                        titulo: copy.removeTitle,
+                        texto: copy.removeText,
+                        botao: copy.remove,
+                        cancelar: CONTRIBUTE[language].cancel,
+                        acao: () => remove(c),
+                      })
+                    }
                   />
                 ) : (
                   <Button
@@ -171,6 +181,7 @@ export function ComposerCuriosities({
         open={!!reporting}
         onClose={() => setReporting(null)}
       />
+      {modal}
     </section>
   );
 }

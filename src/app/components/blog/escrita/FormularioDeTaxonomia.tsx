@@ -36,6 +36,7 @@ import {
 } from '@/app/requests/blog/admin-actions';
 import { LIMITES } from '@/app/utils/blog/seo';
 import { paraSlug } from './TelaDeEscrita';
+import { useConfirmar } from '@/app/components/ui/useConfirmar';
 
 /**
  * Criar e editar categoria e tag do blog, na casca do painel.
@@ -71,6 +72,7 @@ export function FormularioDeCategoria({
   const editando = !!categoria;
   const entrada = useRef<HTMLInputElement>(null);
 
+  const { confirmar, modal } = useConfirmar();
   const [nome, setNome] = useState(categoria?.name ?? '');
   const [slug, setSlug] = useState(categoria?.slug ?? '');
   const [slugManual, setSlugManual] = useState(editando);
@@ -327,7 +329,19 @@ export function FormularioDeCategoria({
                 tamanho="p"
                 variante="fantasma"
                 icone={PiX}
-                onClick={tirar}
+                // Uma imagem ainda não enviada sai na hora; a já gravada,
+                // só depois de confirmar.
+                onClick={() =>
+                  pendente || !categoria
+                    ? void tirar()
+                    : confirmar({
+                        titulo: 'Tirar a imagem da categoria?',
+                        texto:
+                          'A imagem é apagada e a categoria fica sem capa até você enviar outra.',
+                        botao: 'Tirar a imagem',
+                        acao: tirar,
+                      })
+                }
               >
                 Tirar
               </Button>
@@ -335,6 +349,8 @@ export function FormularioDeCategoria({
           </div>
         </div>
       </Secao>
+
+      {modal}
 
       <Secao titulo="Em inglês" id="categoria-ingles">
         <EmIngles

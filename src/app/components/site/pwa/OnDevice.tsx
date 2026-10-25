@@ -28,6 +28,7 @@ import {
 import { AppGravado } from './AppGravado';
 import { ABRIR_PASSOS } from './eventos';
 import { SobreATecnologia } from './SobreATecnologia';
+import { useConfirmar } from '@/app/components/ui/useConfirmar';
 
 const tamanho = (bytes: number, language: 'pt' | 'en') => {
   const fmt = new Intl.NumberFormat(language === 'pt' ? 'pt-BR' : 'en-US', {
@@ -46,6 +47,7 @@ const tamanho = (bytes: number, language: 'pt' | 'en') => {
 export function OnDevice() {
   const { language } = useRouteLanguage();
   const copy = PWA[language].aparelho;
+  const { confirmar, modal } = useConfirmar();
   const online = useOnline();
   const [lista, setLista] = useState<PartituraGuardada[]>([]);
   const [uso, setUso] = useState<{ usado: number; total: number } | null>(null);
@@ -230,7 +232,15 @@ export function OnDevice() {
                   variante="fantasma"
                   icone={PiTrash}
                   rotulo={`${copy.remover} ${p.titulo}`}
-                  onClick={() => void remover(p.url)}
+                  onClick={() =>
+                    confirmar({
+                      titulo: copy.removerTitulo,
+                      texto: copy.removerTexto,
+                      botao: copy.remover,
+                      cancelar: copy.cancelar,
+                      acao: () => remover(p.url),
+                    })
+                  }
                 />
               </li>
             ))}
@@ -243,6 +253,7 @@ export function OnDevice() {
         aoInstalar={instalar}
         copy={copy}
       />
+      {modal}
     </div>
   );
 }

@@ -15,6 +15,7 @@ import {
   removerPartitura,
   type PartituraGuardada,
 } from '@/app/libs/pwa/partituras';
+import { useConfirmar } from '@/app/components/ui/useConfirmar';
 
 /**
  * "Guardar no aparelho" beside a score's download: keeps the file for use
@@ -30,6 +31,8 @@ export function SaveScoreButton({
 }) {
   const { language } = useRouteLanguage();
   const copy = PWA[language].guardar;
+  const aparelho = PWA[language].aparelho;
+  const { confirmar, modal } = useConfirmar();
   const [suportado, setSuportado] = useState(false);
   const [guardada, setGuardada] = useState(false);
   const [ocupado, setOcupado] = useState(false);
@@ -65,17 +68,31 @@ export function SaveScoreButton({
   };
 
   return (
-    <Button
-      variante={guardada ? 'fantasma' : 'secundario'}
-      className={className}
-      icone={guardada ? PiCheckCircle : PiDeviceMobile}
-      carregando={ocupado}
-      aria-pressed={guardada}
-      title={guardada ? copy.remover : undefined}
-      onClick={() => void alternar()}
-      {...pulso}
-    >
-      {ocupado ? copy.guardando : guardada ? copy.guardada : copy.guardar}
-    </Button>
+    <>
+      <Button
+        variante={guardada ? 'fantasma' : 'secundario'}
+        className={className}
+        icone={guardada ? PiCheckCircle : PiDeviceMobile}
+        carregando={ocupado}
+        aria-pressed={guardada}
+        title={guardada ? copy.remover : undefined}
+        // Taking it off the device asks first; saving does not.
+        onClick={() =>
+          guardada
+            ? confirmar({
+                titulo: aparelho.removerTitulo,
+                texto: aparelho.removerTexto,
+                botao: copy.remover,
+                cancelar: aparelho.cancelar,
+                acao: alternar,
+              })
+            : void alternar()
+        }
+        {...pulso}
+      >
+        {ocupado ? copy.guardando : guardada ? copy.guardada : copy.guardar}
+      </Button>
+      {modal}
+    </>
   );
 }

@@ -175,30 +175,15 @@ export function useLearnedVideo(): UseLearnedVideoResult {
       // A API tira o vídeo do item e apaga o arquivo do armazenamento.
       const result = await updateLearnedRequest(workId, { removeVideo: true });
 
-      if (result.ok) {
-        toast.success(porIdioma('Vídeo removido.', 'Video removed.'), {
-          icon: '🗑️',
-          duration: 3000,
-        });
-
-        return true;
-      } else {
-        const errorMsg =
-          result.error || porIdioma('Erro desconhecido', 'Unknown error');
-        setUploadError(errorMsg);
-        toast.error(
-          porIdioma(
-            `Não foi possível apagar: ${errorMsg}`,
-            `Could not delete: ${errorMsg}`
-          )
-        );
-        return false;
-      }
+      // The notices are the caller's (the study sheet): one per removal.
+      if (result.ok) return true;
+      setUploadError(
+        result.error || porIdioma('Erro desconhecido', 'Unknown error')
+      );
+      return false;
     } catch (error) {
       console.error('❌ [LEARNED-VIDEO] Erro ao deletar vídeo:', error);
-      const errorMsg = connectionError();
-      setUploadError(errorMsg);
-      toast.error(errorMsg);
+      setUploadError(connectionError());
       return false;
     } finally {
       setIsUploading(false);

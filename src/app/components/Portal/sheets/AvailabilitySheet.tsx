@@ -28,6 +28,7 @@ import {
 } from '../format';
 import { Block, ScreenError, ScreenLoading } from '../pieces';
 import type { SheetProps } from '../PortalProvider';
+import { useConfirmar } from '@/app/components/ui/useConfirmar';
 
 const WEEKDAYS = [
   'Domingo',
@@ -80,6 +81,7 @@ export default function AvailabilitySheet({ onClose, closeAll }: SheetProps) {
       ],
     }
   );
+  const { confirmar, modal } = useConfirmar();
   const removeBlock = usePortalMutation(
     (id: string) => api.removeAvailabilityBlock(id),
     {
@@ -255,7 +257,15 @@ export default function AvailabilitySheet({ onClose, closeAll }: SheetProps) {
                     carregando={
                       removeBlock.isPending && removeBlock.variables === b.id
                     }
-                    onClick={() => removeBlock.mutate(b.id)}
+                    onClick={() =>
+                      confirmar({
+                        titulo: 'Desfazer este bloqueio?',
+                        texto:
+                          'Os dias voltam a aceitar pedidos de aula no seu horário de atendimento.',
+                        botao: 'Desfazer o bloqueio',
+                        acao: () => removeBlock.mutate(b.id),
+                      })
+                    }
                   />
                 }
               />
@@ -299,6 +309,7 @@ export default function AvailabilitySheet({ onClose, closeAll }: SheetProps) {
           </div>
         </Block>
       </div>
+      {modal}
     </Sheet>
   );
 }

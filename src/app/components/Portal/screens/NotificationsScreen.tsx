@@ -27,6 +27,7 @@ import {
   ScreenLoading,
 } from '../pieces';
 import { usePortal } from '../PortalProvider';
+import { useConfirmar } from '@/app/components/ui/useConfirmar';
 
 type Filter = 'all' | 'UNREAD';
 const PAGE = 30;
@@ -49,6 +50,7 @@ export function NotificationsScreen({ role }: { role: Role }) {
     success: 'Todos os avisos marcados como lidos.',
     invalidate,
   });
+  const { confirmar, modal } = useConfirmar();
   const remove = usePortalMutation((id: string) => api.deleteNotification(id), {
     invalidate,
   });
@@ -175,7 +177,14 @@ export function NotificationsScreen({ role }: { role: Role }) {
                     icone={PiTrash}
                     rotulo="Apagar o aviso"
                     className="mt-3 opacity-60 group-hover/aviso:opacity-100"
-                    onClick={() => remove.mutate(n.id)}
+                    onClick={() =>
+                      confirmar({
+                        titulo: 'Apagar este aviso?',
+                        texto: 'Ele sai da sua lista de avisos e não volta.',
+                        botao: 'Apagar o aviso',
+                        acao: () => remove.mutate(n.id),
+                      })
+                    }
                   />
                 </li>
               );
@@ -204,6 +213,7 @@ export function NotificationsScreen({ role }: { role: Role }) {
           </div>
         )}
       </div>
+      {modal}
     </>
   );
 }

@@ -70,6 +70,10 @@ const pt = {
       'Nenhuma partitura guardada ainda. Na página de uma obra, abra a partitura e toque em "Guardar no aparelho".',
     abrir: 'Abrir',
     remover: 'Remover',
+    removerTitulo: 'Tirar esta partitura do aparelho?',
+    removerTexto:
+      'Ela deixa de abrir sem internet. Para ter de novo, é só guardar outra vez na página da obra.',
+    cancelar: 'Cancelar',
     ocupado: (usado: string, total: string) =>
       `${usado} usados de ${total} disponíveis para o site neste aparelho.`,
     voltar: 'Ir para o início',
@@ -248,6 +252,10 @@ const en: typeof pt = {
       'No saved scores yet. On a work’s page, open a score and tap "Save to device".',
     abrir: 'Open',
     remover: 'Remove',
+    removerTitulo: 'Remove this score from the device?',
+    removerTexto:
+      'It will no longer open offline. To have it again, save it once more on the work page.',
+    cancelar: 'Cancel',
     ocupado: (usado: string, total: string) =>
       `${usado} used of ${total} available to the site on this device.`,
     voltar: 'Go to the home page',

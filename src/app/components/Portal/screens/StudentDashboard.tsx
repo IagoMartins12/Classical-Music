@@ -57,6 +57,7 @@ import {
 import { usePortal, type SheetRequest } from '../PortalProvider';
 import { Staff, type StaffDay } from '../schedule/Staff';
 import { PendingInvites } from './StudentGate';
+import { useConfirmar } from '@/app/components/ui/useConfirmar';
 
 export function StudentDashboard() {
   const { data, isPending, error } = useStudentDashboard();
@@ -400,6 +401,7 @@ function Study() {
 }
 
 function Requests({ data }: { data: Dashboard }) {
+  const { confirmar, modal } = useConfirmar();
   const cancel = usePortalMutation(
     (id: string) => api.cancelLessonRequest(id),
     {
@@ -429,13 +431,23 @@ function Requests({ data }: { data: Dashboard }) {
               tamanho="p"
               variante="fantasma"
               carregando={cancel.isPending && cancel.variables === r.id}
-              onClick={() => cancel.mutate(r.id)}
+              onClick={() =>
+                confirmar({
+                  titulo: 'Cancelar este pedido de aula?',
+                  texto:
+                    'O professor deixa de ver o pedido. Para marcar esse horário, é preciso pedir de novo.',
+                  botao: 'Cancelar o pedido',
+                  cancelar: 'Manter o pedido',
+                  acao: () => cancel.mutate(r.id),
+                })
+              }
             >
               Cancelar pedido
             </Button>
           </li>
         ))}
       </ul>
+      {modal}
     </Section>
   );
 }
