@@ -56,6 +56,7 @@ import {
   type SelectedWorkScore,
 } from '@/app/stores/useLearningModalStore';
 import { useLearningStore } from '@/app/stores/useLearningStore';
+import { studyEditParams } from '../personal/studyEdit';
 import {
   calculateProgress,
   createDefaultMilestones,
@@ -254,7 +255,6 @@ export function StudySheet() {
   const [saving, setSaving] = useState(false);
   const [touched, setTouched] = useState(false);
   const [confirmLeave, setConfirmLeave] = useState(false);
-  const [confirmTransfer, setConfirmTransfer] = useState(false);
   const [pickingScore, setPickingScore] = useState(false);
   const [planOpen, setPlanOpen] = useState(false);
   const [marking, setMarking] = useState(false);
@@ -322,6 +322,60 @@ export function StudySheet() {
         setSelectedWorkScore(asSelected(fromItem as SelectedWorkScore));
     }
   }, [isOpen, workId, type]);
+
+  // "Quero aprender" → "Já aprendi": the work moves to "learned" at once,
+  // keeping its notes, difficulty and score, and the sheet stays open on
+  // "learned" to fill in the rest. Runs once per opening, whatever opened it
+  // (the work page, the studies list or the button inside this sheet).
+  const moving = useRef<string | null>(null);
+  useEffect(() => {
+    if (!isOpen) {
+      moving.current = null;
+      return;
+    }
+    if (type !== 'learned' || isCurrentlyActive || !workId || !user?.id) return;
+    const item = library.getWantToLearnItem(workId);
+    if (!item || moving.current === workId) return;
+    moving.current = workId;
+    const userId = user.id;
+    const level = Math.max(1, item.priority || 1);
+    const scoreId = selectedWorkScore?.id ?? item.selectedWorkScoreId;
+    setSaving(true);
+    void (async () => {
+      try {
+        await library.removeWantToLearn(workId);
+        await library.toggleLearned(workId, userId, level, {
+          mastery: level,
+          difficulty: item.difficulty,
+          notes: item.notes,
+          selectedWorkScoreId: scoreId,
+          wouldRecommend: true,
+          publicPerformance: false,
+        });
+        toast.success(copy.toasts.transferred);
+        // Closed while it moved: it stays closed.
+        if (!useLearningModalStore.getState().isOpen) return;
+        // Reopened as an edit of the item now saved in "learned".
+        const saved = useLearningStore.getState().getLearnedItem(workId);
+        const params = saved ? studyEditParams(saved, 'learned') : null;
+        store.openModal({
+          ...(params ?? {}),
+          workId,
+          workTitle: workTitle ?? params?.workTitle ?? '',
+          composerName: composerName ?? params?.composerName ?? '',
+          epochName: store.epochName ?? params?.epochName,
+          instrumentName: instrumentName ?? params?.instrumentName,
+          type: 'learned',
+          isCurrentlyActive: true,
+          initialWorkScore: selectedWorkScore ?? params?.initialWorkScore,
+        });
+      } catch {
+        toast.error(copy.toasts.failed);
+      } finally {
+        setSaving(false);
+      }
+    })();
+  }, [isOpen, type, isCurrentlyActive, workId, user?.id]);
 
   const close = useCallback(() => {
     setConfirmLeave(false);
@@ -440,33 +494,6 @@ export function StudySheet() {
           : library.isWantToLearn(workId),
       initialWorkScore: selectedWorkScore,
     });
-
-  const transfer = async () => {
-    if (!user?.id) return;
-    setSaving(true);
-    try {
-      await library.removeWantToLearn(workId);
-      await library.toggleLearned(
-        workId,
-        user.id,
-        Math.max(1, want.priority || 1),
-        {
-          mastery: Math.max(1, want.priority || 1),
-          difficulty: want.difficulty,
-          notes: want.notes,
-          selectedWorkScoreId: selectedWorkScore?.id,
-          wouldRecommend: true,
-          publicPerformance: false,
-        }
-      );
-      setConfirmTransfer(false);
-      done(copy.toasts.transferred);
-    } catch {
-      toast.error(copy.toasts.failed);
-    } finally {
-      setSaving(false);
-    }
-  };
 
   const removeVideo = async () => {
     if (!(await video.deleteVideo(workId)))
@@ -917,11 +944,7 @@ export function StudySheet() {
                 variante="secundario"
                 icone={PiCheckCircle}
                 className="w-full whitespace-nowrap sm:order-2 sm:w-auto"
-                onClick={() =>
-                  isCurrentlyActive
-                    ? setConfirmTransfer(true)
-                    : switchTo('learned')
-                }
+                onClick={() => switchTo('learned')}
                 disabled={saving}
               >
                 {copy.toLearned}
@@ -1063,16 +1086,6 @@ export function StudySheet() {
         confirmText={copy.leaveConfirm}
         cancelText={copy.keepEditing}
         acaoPerigosa
-      />
-      <ConfirmModal
-        isOpen={confirmTransfer}
-        onClose={() => setConfirmTransfer(false)}
-        onConfirm={transfer}
-        type="question"
-        title={copy.transferTitle}
-        message={copy.transferText}
-        confirmText={copy.transferConfirm}
-        isLoading={saving}
       />
     </>
   );
