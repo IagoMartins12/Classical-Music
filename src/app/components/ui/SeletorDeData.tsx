@@ -171,7 +171,7 @@ export function SeletorDeData({
 
   const celula = (ativa: boolean) =>
     cx(
-      'grid h-9 place-items-center rounded-lg text-[0.875rem] transition-colors duration-[var(--t-toque)]',
+      'grid h-8 place-items-center rounded-lg text-[0.875rem] transition-colors duration-[var(--t-toque)]',
       'disabled:cursor-not-allowed disabled:opacity-40',
       ativa
         ? 'fill-ouro font-medium text-sobre-ouro'
@@ -261,7 +261,7 @@ export function SeletorDeData({
                   type="button"
                   aria-label={t.anoAnterior}
                   onClick={() => passarAno(-1)}
-                  className="grid h-10 w-10 shrink-0 place-items-center rounded-full text-texto-suave hover:bg-[var(--interactive-hover)] hover:text-texto"
+                  className="grid h-9 w-9 shrink-0 place-items-center rounded-full text-texto-suave hover:bg-[var(--interactive-hover)] hover:text-texto"
                 >
                   <PiCaretLeft aria-hidden className="h-4 w-4" />
                 </button>
@@ -273,13 +273,13 @@ export function SeletorDeData({
                   value={anoTexto}
                   onChange={(e) => digitarAno(e.target.value)}
                   placeholder={String(ANO_MAX)}
-                  className="input-classical min-w-0 flex-1 pl-4 text-center font-display text-[1.25rem] tabular-nums"
+                  className="input-classical min-w-0 flex-1 px-3 text-center tabular-nums"
                 />
                 <button
                   type="button"
                   aria-label={t.anoSeguinte}
                   onClick={() => passarAno(1)}
-                  className="grid h-10 w-10 shrink-0 place-items-center rounded-full text-texto-suave hover:bg-[var(--interactive-hover)] hover:text-texto"
+                  className="grid h-9 w-9 shrink-0 place-items-center rounded-full text-texto-suave hover:bg-[var(--interactive-hover)] hover:text-texto"
                 >
                   <PiCaretRight aria-hidden className="h-4 w-4" />
                 </button>

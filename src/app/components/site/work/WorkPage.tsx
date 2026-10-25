@@ -98,12 +98,14 @@ export function WorkPage({
             href={`/composer/${work.composer.id}`}
             className={`flex items-center gap-2 ${textLink}`}
           >
+            {/* The composer's portrait turns into the composer page's. */}
             <Portrait
               name={composerName}
               src={work.composer.portraitUrl}
               sizes="32px"
               decorative
-              className="h-7 w-7 rounded-full text-[0.75rem]"
+              vira={`compositor-${work.composer.id}`}
+              className="h-7 w-7 rounded-full text-[0.4375rem]"
             />
             {composerName}
           </Link>

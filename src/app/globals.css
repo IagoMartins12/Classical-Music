@@ -659,14 +659,16 @@
   animation: card-abrindo 0.8s linear infinite;
   pointer-events: none;
 }
+/* O anel do card cabe em qualquer card: 2,25rem, ou 60% de um card pequeno
+   (o retrato de 28px do compositor na trilha da obra). */
 [data-abrindo='cartao']::after {
   position: absolute;
   top: 50%;
   left: 50%;
   z-index: 3;
-  width: 2.25rem;
-  height: 2.25rem;
-  margin: -1.125rem 0 0 -1.125rem;
+  width: min(2.25rem, 60%);
+  aspect-ratio: 1;
+  translate: -50% -50%;
 }
 [data-abrindo='bloco']::after {
   position: absolute;

@@ -37,6 +37,7 @@ export function Portrait({
   priority = false,
   fromCard = false,
   decorative = false,
+  vira,
   className,
 }: {
   name: string;
@@ -47,11 +48,17 @@ export function Portrait({
   fromCard?: boolean;
   /** O nome já está escrito ao lado (link, legenda): a imagem não repete. */
   decorative?: boolean;
+  /**
+   * The transition name of the page it opens (`compositor-{id}`): the
+   * portrait turns into that page's portrait (`CartoesQueViram`).
+   */
+  vira?: string;
   className?: string;
 }) {
   const photo = src && !PLACEHOLDER.test(src) ? src : null;
   return (
     <span
+      data-vira={vira}
       className={cx('relative block overflow-hidden bg-sup-2', className)}
       style={
         photo && fromCard
@@ -79,7 +86,9 @@ export function Portrait({
       )}
       <span
         aria-hidden="true"
-        className="retrato-inicial absolute inset-0 grid place-items-center font-display text-[2.5em] text-texto-fraco"
+        // `leading-none` and the trimmed text box center the capital itself:
+        // with the line's descender space, the letter sat above the middle.
+        className="retrato-inicial absolute inset-0 grid place-items-center font-display text-[2.5em] leading-none text-texto-fraco [text-box:trim-both_cap_alphabetic]"
       >
         {name.trim().charAt(0)}
       </span>
