@@ -29,6 +29,7 @@ import { Icon } from '@/app/components/ui/Icon';
 import { Rotulado } from '@/app/components/ui/Rotulado';
 import { SelecaoComBusca } from '@/app/components/ui/SelecaoComBusca';
 import { SelecaoMultipla } from '@/app/components/ui/SelecaoMultipla';
+import { SeletorDeAno } from '@/app/components/ui/SeletorDeAno';
 import { SeletorDeData } from '@/app/components/ui/SeletorDeData';
 import { Sheet } from '@/app/components/ui/Sheet';
 import { cx } from '@/app/components/ui/cx';
@@ -471,6 +472,18 @@ function ContributeSheet({
                     <Rotulado key={f} label={copy.fields[f]}>
                       {(id) => (
                         <SeletorDeData
+                          id={id}
+                          valor={data[f]}
+                          aoMudar={(texto) =>
+                            touch(setData)({ ...data, [f]: texto })
+                          }
+                        />
+                      )}
+                    </Rotulado>
+                  ) : f === 'compositionYear' ? (
+                    <Rotulado key={f} label={copy.fields[f]}>
+                      {(id) => (
+                        <SeletorDeAno
                           id={id}
                           valor={data[f]}
                           aoMudar={(texto) =>

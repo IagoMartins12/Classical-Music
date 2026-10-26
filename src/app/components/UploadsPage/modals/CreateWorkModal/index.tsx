@@ -15,6 +15,8 @@ import { useRouter } from 'next/navigation';
 import { PiFloppyDisk, PiLock, PiMagnifyingGlass } from 'react-icons/pi';
 import { Button } from '@/app/components/ui/Button';
 import { CaixaDeMarcar } from '@/app/components/ui/CaixaDeMarcar';
+import { Rotulado } from '@/app/components/ui/Rotulado';
+import { SeletorDeAno } from '@/app/components/ui/SeletorDeAno';
 import { Field } from '@/app/components/ui/Field';
 import { Selecao } from '@/app/components/ui/Selecao';
 import {
@@ -1320,14 +1322,17 @@ const CreateWorkModal = ({
               onChange={(e) => handleInputChange('opOrCatalog', e.target.value)}
               placeholder="K. 550, Op. 67"
             />
-            <Field
-              label={t('modal_work_catalog_composition_year')}
-              value={formData.compositionYear}
-              onChange={(e) =>
-                handleInputChange('compositionYear', e.target.value)
-              }
-              placeholder="1788"
-            />
+            <Rotulado label={t('modal_work_catalog_composition_year')}>
+              {(id) => (
+                <SeletorDeAno
+                  id={id}
+                  valor={formData.compositionYear}
+                  aoMudar={(texto) =>
+                    handleInputChange('compositionYear', texto)
+                  }
+                />
+              )}
+            </Rotulado>
             <Field
               label={t('modal_work_catalog_first_publish')}
               value={formData.firstPublishDate}
