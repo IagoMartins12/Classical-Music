@@ -330,6 +330,10 @@ export const PLANOS: Record<Idioma, ConteudoPlanos> = {
           valores: [false, true, true, true],
         },
         {
+          recurso: 'Suporte prioritário',
+          valores: [false, true, true, true],
+        },
+        {
           recurso: 'Portal do professor: aulas, tarefas, calendário e agenda',
           valores: [false, false, true, true],
         },
@@ -356,10 +360,6 @@ export const PLANOS: Record<Idioma, ConteudoPlanos> = {
         {
           recurso: 'Avisos por WhatsApp e e-mail',
           valores: [false, false, false, BREVE],
-        },
-        {
-          recurso: 'Suporte prioritário',
-          valores: [false, true, true, true],
         },
       ],
     },
@@ -624,6 +624,10 @@ export const PLANOS: Record<Idioma, ConteudoPlanos> = {
           valores: [false, true, true, true],
         },
         {
+          recurso: 'Priority support',
+          valores: [false, true, true, true],
+        },
+        {
           recurso:
             'Teacher portal: lessons, assignments, calendar and schedule',
           valores: [false, false, true, true],
@@ -651,10 +655,6 @@ export const PLANOS: Record<Idioma, ConteudoPlanos> = {
         {
           recurso: 'WhatsApp and e-mail reminders',
           valores: [false, false, false, BREVE],
-        },
-        {
-          recurso: 'Priority support',
-          valores: [false, true, true, true],
         },
       ],
     },
