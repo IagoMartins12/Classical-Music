@@ -50,7 +50,7 @@ export default async function ComposerDetailsServer({
     getComposerOverview(composerId),
     getComposerWorksWithFilters(composerId, 1, FIRST_PAGE),
     getComposerFilterOptions(composerId),
-    getComposerArticles(composerId, 6),
+    getComposerArticles(composerId, 6, language),
     composerCuriosities(composerId, language),
     entityContributions('composer', composerId),
   ]);

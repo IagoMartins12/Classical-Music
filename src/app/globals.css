@@ -2665,6 +2665,10 @@ html {
     stroke-dasharray: 1;
     stroke-dashoffset: 0;
   }
+  /* The score magnifier rests over the sheet without motion. */
+  .lupa-procura {
+    transform: translate(112px, 74px);
+  }
   /* The biography quill rests beside the written sheet without motion. */
   .bio-pen {
     transform: translate(150px, 40px);
@@ -2968,6 +2972,11 @@ html {
   .bio-pen {
     animation: bio-pen 6s ease-in-out infinite both;
   }
+  /* Scores being fetched: the magnifier glides over the sheet and stops
+     here and there, as if reading it. */
+  .lupa-procura {
+    animation: lupa-procura 5.6s ease-in-out infinite both;
+  }
   .bio-blot {
     transform-box: fill-box;
     transform-origin: center;
@@ -3008,6 +3017,27 @@ html {
   from {
     opacity: 0;
     transform: translateY(-4px) scaleY(0.98);
+  }
+}
+@keyframes lupa-procura {
+  0%,
+  12% {
+    transform: translate(78px, 54px) rotate(0deg);
+  }
+  30%,
+  40% {
+    transform: translate(122px, 64px) rotate(6deg);
+  }
+  58%,
+  68% {
+    transform: translate(86px, 104px) rotate(-4deg);
+  }
+  84%,
+  92% {
+    transform: translate(124px, 120px) rotate(4deg);
+  }
+  100% {
+    transform: translate(78px, 54px) rotate(0deg);
   }
 }
 @keyframes bio-l0 {

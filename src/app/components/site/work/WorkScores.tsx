@@ -1,6 +1,6 @@
 'use client';
 
-import { QuillOnPaper } from '../QuillOnPaper';
+import { MagnifierSearching } from '../MagnifierSearching';
 import { useEffect, useMemo, useRef, useState, type ReactNode } from 'react';
 import {
   PiArrowClockwise,
@@ -10,6 +10,7 @@ import {
   PiDownloadSimple,
   PiFiles,
   PiInfo,
+  PiMagnifyingGlass,
   PiUploadSimple,
 } from 'react-icons/pi';
 import Link from '@/app/components/LocalizedLink';
@@ -22,6 +23,7 @@ import { WORK, type WorkCopy } from '@/app/conteudo/site/work';
 import { useRouteLanguage } from '@/app/hooks/useRouteLanguage';
 import {
   awaitWorkScoreLibrary,
+  searchScoresAgain,
   type ScoreEdition,
   type ScoreFile,
   type LibraryStatus,
@@ -190,7 +192,12 @@ export function WorkScores({
         {library.status === 'pending' ? (
           <Searching copy={copy} />
         ) : !shelf ? (
-          <Empty workId={context.workId} status={library.status} copy={copy} />
+          <Empty
+            workId={context.workId}
+            status={library.status}
+            copy={copy}
+            onSearching={() => setLibrary({ status: 'pending', shelves: [] })}
+          />
         ) : (
           <>
             <div className="flex flex-wrap items-center justify-between gap-3">
@@ -503,7 +510,7 @@ function Searching({ copy }: { copy: WorkCopy['scores'] }) {
       role="status"
       className="flex flex-col items-center gap-6 rounded-card bg-sup-2 px-6 py-10 text-center"
     >
-      <QuillOnPaper />
+      <MagnifierSearching />
       <div className="flex max-w-[44ch] flex-col items-center gap-2">
         <p className="font-display text-[1.375rem] leading-snug">
           {copy.searching}
@@ -522,11 +529,33 @@ function Empty({
   workId,
   status,
   copy,
+  onSearching,
 }: {
   workId: string;
   status: LibraryStatus;
   copy: WorkCopy['scores'];
+  /** The work is back in the queue: show the search again. */
+  onSearching: () => void;
 }) {
+  const [asking, setAsking] = useState(false);
+  const [refused, setRefused] = useState(false);
+  // "Unavailable" is usually the queue: the work goes back to it, first in
+  // line. Asked again within the minute (or with IMSLP paused), the answer
+  // stays "unavailable" and the button rests.
+  const rest = () => {
+    setRefused(true);
+    setTimeout(() => setRefused(false), 60_000);
+  };
+  const searchAgain = () => {
+    setAsking(true);
+    searchScoresAgain(workId)
+      .then(({ status: next }) => {
+        if (next === 'pending' || next === 'stored') onSearching();
+        else rest();
+      })
+      .catch(rest)
+      .finally(() => setAsking(false));
+  };
   const failed = status === 'unavailable' || status === 'error';
   const [title, text] =
     status === 'error'
@@ -542,7 +571,18 @@ function Empty({
       <span className="font-medium">{title}</span>
       <span className="t-rotulo text-texto-suave">{text}</span>
       <div className="flex flex-wrap gap-2">
-        {failed && (
+        {status === 'unavailable' && (
+          <Button
+            variante="primario"
+            icone={PiMagnifyingGlass}
+            carregando={asking}
+            disabled={refused}
+            onClick={searchAgain}
+          >
+            {copy.searchAgain}
+          </Button>
+        )}
+        {status === 'error' && (
           <TentarDeNovo variante="primario" icone={PiArrowClockwise}>
             {copy.retry}
           </TentarDeNovo>

@@ -194,7 +194,9 @@ export function metadadosDoArtigo(
       }
     : undefined;
   const imagem = imagemDe(a);
-  const autorUrl = absoluto(rotasDoBlog.autor(a.autor.usuario));
+  const autorUrl = a.autor.desconhecido
+    ? undefined
+    : absoluto(rotasDoBlog.autor(a.autor.usuario));
 
   return {
     title: titulo,
@@ -223,7 +225,7 @@ export function metadadosDoArtigo(
       images: [imagem],
       publishedTime: a.publicadoEm ?? undefined,
       modifiedTime: a.atualizadoEm,
-      authors: [autorUrl],
+      authors: autorUrl ? [autorUrl] : undefined,
       section: a.categoria?.nome,
       tags: a.tags.map((t) => t.nome),
     },
@@ -268,7 +270,9 @@ export function jsonLdDoArtigo(a: ArtigoCompleto) {
     author: {
       '@type': 'Person',
       name: a.autor.nome,
-      url: absoluto(rotasDoBlog.autor(a.autor.usuario)),
+      url: a.autor.desconhecido
+        ? undefined
+        : absoluto(rotasDoBlog.autor(a.autor.usuario)),
       image: a.autor.imagem ?? undefined,
     },
     publisher: ORGANIZACAO,

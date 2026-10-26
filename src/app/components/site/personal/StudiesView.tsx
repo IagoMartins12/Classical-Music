@@ -3,6 +3,7 @@
 import { RetrospectiveButton } from './Retrospective';
 import { Recommendations } from '../Recommendations';
 import { useEffect, useMemo, useRef, useState } from 'react';
+import toast from 'react-hot-toast';
 import {
   PiCheckCircle,
   PiFilePdf,
@@ -10,12 +11,14 @@ import {
   PiPencilSimple,
   PiStar,
   PiStarFill,
+  PiTrash,
   PiVideoCamera,
 } from 'react-icons/pi';
 import Link from '@/app/components/LocalizedLink';
 import { Aba, Abas } from '@/app/components/ui/Abas';
 import { Button, classesDeBotao } from '@/app/components/ui/Button';
 import { Icon } from '@/app/components/ui/Icon';
+import { useConfirmar } from '@/app/components/ui/useConfirmar';
 import { cx } from '@/app/components/ui/cx';
 import { PERSONAL, type PersonalCopy } from '@/app/conteudo/site/personal';
 import { STUDY } from '@/app/conteudo/site/study';
@@ -62,6 +65,9 @@ export function StudiesView({
   const { wantToLearn, learned, initialized, initializeLearning } =
     useLearningStore();
   const openModal = useLearningModalStore((s) => s.openModal);
+  const removeWantToLearn = useLearningStore((s) => s.removeWantToLearn);
+  const removeLearned = useLearningStore((s) => s.removeLearned);
+  const { confirmar, modal } = useConfirmar();
   const [tab, setTab] = useState<Tab>('all');
   const [query, setQuery] = useState('');
 
@@ -170,6 +176,25 @@ export function StudiesView({
                   isCurrentlyActive: false,
                 })
               }
+              onRemove={() => {
+                const { item, kind } = entry;
+                const title = item.work
+                  ? workTitle(item.work.title, item.work.opOrCatalog)
+                  : copy.tabs[kind === 'want' ? 'want' : 'learned'];
+                confirmar({
+                  titulo: copy.removeTitle[kind],
+                  texto: copy.removeText[kind](title),
+                  botao: copy.removeConfirm,
+                  cancelar: copy.cancel,
+                  acao: async () => {
+                    const ok = await (kind === 'want'
+                      ? removeWantToLearn(item.workId)
+                      : removeLearned(item.workId));
+                    if (ok) toast.success(copy.removed);
+                    else toast.error(copy.removeFailed);
+                  },
+                });
+              }}
             />
           ))}
         </ListResults>
@@ -192,6 +217,7 @@ export function StudiesView({
         <Recommendations source={{ kind: 'me' }} className="mt-10" />
       )}
       <LearningModalHost />
+      {modal}
     </div>
   );
 }
@@ -202,12 +228,14 @@ function StudyCard({
   language,
   onEdit,
   onLearned,
+  onRemove,
 }: {
   entry: Entry;
   copy: PersonalCopy['studies'];
   language: 'pt' | 'en';
   onEdit: () => void;
   onLearned: () => void;
+  onRemove: () => void;
 }) {
   const { item } = entry;
   const work = item.work;
@@ -250,16 +278,24 @@ function StudyCard({
               .join(' · ')}
           </span>
         </div>
-        {/* On a card, editing sits in its top-right corner, as on "Seus
-            envios"; in the list it stays with the row's actions. */}
-        <Button
-          tamanho="p"
-          variante="fantasma"
-          icone={PiPencilSimple}
-          rotulo={copy.edit}
-          onClick={onEdit}
-          className="-mr-2 -mt-2 ml-auto shrink-0 row:hidden"
-        />
+        {/* On a card, editing and removing sit in its top-right corner, as
+            on "Seus envios"; in the list they stay with the row's actions. */}
+        <span className="-mr-2 -mt-2 ml-auto flex shrink-0 gap-0.5 row:hidden">
+          <Button
+            tamanho="p"
+            variante="fantasma"
+            icone={PiPencilSimple}
+            rotulo={copy.edit}
+            onClick={onEdit}
+          />
+          <Button
+            tamanho="p"
+            variante="fantasma"
+            icone={PiTrash}
+            rotulo={copy.remove}
+            onClick={onRemove}
+          />
+        </span>
       </div>
 
       <div className="flex flex-col gap-3 row:hidden">
@@ -311,20 +347,22 @@ function StudyCard({
             <span className="row:sr-only">{copy.openScore}</span>
           </a>
         )}
-        {/* The row's edit; on a card only the call to pick a score stays here. */}
+        {/* The row's edit and remove; a card has them in its corner. */}
         <Button
           tamanho="p"
           icone={PiPencilSimple}
+          rotulo={copy.edit}
           onClick={onEdit}
-          className={cx(
-            'row:inline-flex row:aspect-square row:!px-0',
-            (score || entry.kind === 'learned') && 'hidden'
-          )}
-        >
-          <span className="row:sr-only">
-            {score || entry.kind === 'learned' ? copy.edit : copy.chooseScore}
-          </span>
-        </Button>
+          className="hidden row:inline-flex"
+        />
+        <Button
+          tamanho="p"
+          variante="fantasma"
+          icone={PiTrash}
+          rotulo={copy.remove}
+          onClick={onRemove}
+          className="hidden row:inline-flex"
+        />
         {entry.kind === 'want' && (
           <Button
             tamanho="p"

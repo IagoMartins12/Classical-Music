@@ -64,10 +64,24 @@ const pt = {
     progress: (n: number) => `${n}% do caminho`,
     score: 'Partitura',
     noScore: 'Nenhuma partitura escolhida',
-    chooseScore: 'Escolher partitura',
     openScore: 'Abrir partitura',
     edit: 'Editar',
     markLearned: 'Já aprendi',
+    remove: 'Remover da lista',
+    removeTitle: {
+      want: 'Tirar de "Quero aprender"?',
+      learned: 'Tirar de "Já aprendi"?',
+    },
+    removeText: {
+      want: (title: string) =>
+        `${title} sai da sua lista, com a partitura escolhida e as suas anotações de estudo.`,
+      learned: (title: string) =>
+        `${title} sai da sua lista, com a maestria, as anotações e o vídeo da performance, se houver.`,
+    },
+    removeConfirm: 'Remover',
+    cancel: 'Cancelar',
+    removed: 'Obra removida da lista.',
+    removeFailed: 'Não foi possível remover. Tente de novo.',
     learnedOn: (date: string) => `Aprendida em ${date}`,
     studiedFor: (days: number) =>
       days === 1 ? 'em 1 dia de estudo' : `em ${days} dias de estudo`,
@@ -369,10 +383,24 @@ const en: typeof pt = {
     progress: (n: number) => `${n}% of the way`,
     score: 'Score',
     noScore: 'No score chosen',
-    chooseScore: 'Choose a score',
     openScore: 'Open the score',
     edit: 'Edit',
     markLearned: 'I learned it',
+    remove: 'Remove from the list',
+    removeTitle: {
+      want: 'Remove from "Want to learn"?',
+      learned: 'Remove from "Learned"?',
+    },
+    removeText: {
+      want: (title: string) =>
+        `${title} leaves your list, with the chosen score and your study notes.`,
+      learned: (title: string) =>
+        `${title} leaves your list, with the mastery, the notes and the performance video, if any.`,
+    },
+    removeConfirm: 'Remove',
+    cancel: 'Cancel',
+    removed: 'Work removed from the list.',
+    removeFailed: 'Could not remove it. Try again.',
     learnedOn: (date: string) => `Learned on ${date}`,
     studiedFor: (days: number) =>
       days === 1 ? 'in 1 day of study' : `in ${days} days of study`,

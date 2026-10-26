@@ -40,6 +40,7 @@ const artigo = (mudar: Partial<ArtigoCompleto> = {}): ArtigoCompleto => ({
     nome: 'Helena Prado',
     usuario: 'helena',
     imagem: null,
+    desconhecido: false,
     bio: null,
   },
   categoria: { id: 'c1', nome: 'História', slug: 'historia' },

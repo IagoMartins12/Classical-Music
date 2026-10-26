@@ -157,22 +157,33 @@ export function PaginaDoArtigo({
           <div className="flex min-w-0 flex-col gap-8">
             <div className="flex flex-wrap items-center justify-between gap-x-8 gap-y-4 border-b border-linha pb-6">
               <div className="flex items-center gap-3">
-                <Link
-                  href={rotasDoBlog.autor(artigo.autor.usuario, idioma)}
-                  tabIndex={-1}
-                  aria-hidden="true"
-                  className="shrink-0 rounded-full"
-                >
+                {/* Author who deleted their account: the name, no page to open. */}
+                {artigo.autor.desconhecido ? (
                   <Avatar autor={artigo.autor} />
-                </Link>
-                <span className="flex flex-col">
+                ) : (
                   <Link
                     href={rotasDoBlog.autor(artigo.autor.usuario, idioma)}
-                    rel="author"
-                    className="text-[0.9375rem] font-medium underline decoration-transparent underline-offset-4 hover:decoration-ouro"
+                    tabIndex={-1}
+                    aria-hidden="true"
+                    className="shrink-0 rounded-full"
                   >
-                    {artigo.autor.nome}
+                    <Avatar autor={artigo.autor} />
                   </Link>
+                )}
+                <span className="flex flex-col">
+                  {artigo.autor.desconhecido ? (
+                    <span className="text-[0.9375rem] font-medium">
+                      {artigo.autor.nome}
+                    </span>
+                  ) : (
+                    <Link
+                      href={rotasDoBlog.autor(artigo.autor.usuario, idioma)}
+                      rel="author"
+                      className="text-[0.9375rem] font-medium underline decoration-transparent underline-offset-4 hover:decoration-ouro"
+                    >
+                      {artigo.autor.nome}
+                    </Link>
+                  )}
                   <span className="flex flex-wrap gap-x-3 text-[0.8125rem] text-texto-fraco">
                     {artigo.publicadoEm && (
                       <time dateTime={artigo.publicadoEm} className="t-dado">
@@ -292,46 +303,48 @@ export function PaginaDoArtigo({
           </aside>
 
           <div className="flex min-w-0 flex-col gap-12 lg:col-start-1">
-            <section
-              aria-labelledby="sobre-autor"
-              className="flex gap-4 rounded-card bg-sup-2 p-5 sm:p-6"
-            >
-              <Link
-                href={rotasDoBlog.autor(artigo.autor.usuario, idioma)}
-                tabIndex={-1}
-                aria-hidden="true"
-                className="shrink-0 self-start rounded-full"
+            {!artigo.autor.desconhecido && (
+              <section
+                aria-labelledby="sobre-autor"
+                className="flex gap-4 rounded-card bg-sup-2 p-5 sm:p-6"
               >
-                <Avatar autor={artigo.autor} tamanho="g" />
-              </Link>
-              <div className="flex min-w-0 flex-col gap-2">
-                <div>
-                  <p className="t-legenda">{t.artigo.sobreAutor}</p>
-                  <h2
-                    id="sobre-autor"
-                    className="font-display text-2xl leading-tight"
-                  >
-                    <Link
-                      href={rotasDoBlog.autor(artigo.autor.usuario, idioma)}
-                      rel="author"
-                      className="underline decoration-transparent underline-offset-4 hover:decoration-ouro"
-                    >
-                      {artigo.autor.nome}
-                    </Link>
-                  </h2>
-                </div>
-                <p className="t-rotulo max-w-[52ch] text-texto-suave">
-                  {artigo.autor.bio || t.autor.semBio}
-                </p>
                 <Link
                   href={rotasDoBlog.autor(artigo.autor.usuario, idioma)}
-                  className={LINK}
+                  tabIndex={-1}
+                  aria-hidden="true"
+                  className="shrink-0 self-start rounded-full"
                 >
-                  {t.artigo.todosDoAutor(artigo.autor.nome.split(' ')[0])}
-                  <Icon de={PiArrowRight} tamanho="pp" />
+                  <Avatar autor={artigo.autor} tamanho="g" />
                 </Link>
-              </div>
-            </section>
+                <div className="flex min-w-0 flex-col gap-2">
+                  <div>
+                    <p className="t-legenda">{t.artigo.sobreAutor}</p>
+                    <h2
+                      id="sobre-autor"
+                      className="font-display text-2xl leading-tight"
+                    >
+                      <Link
+                        href={rotasDoBlog.autor(artigo.autor.usuario, idioma)}
+                        rel="author"
+                        className="underline decoration-transparent underline-offset-4 hover:decoration-ouro"
+                      >
+                        {artigo.autor.nome}
+                      </Link>
+                    </h2>
+                  </div>
+                  <p className="t-rotulo max-w-[52ch] text-texto-suave">
+                    {artigo.autor.bio || t.autor.semBio}
+                  </p>
+                  <Link
+                    href={rotasDoBlog.autor(artigo.autor.usuario, idioma)}
+                    className={LINK}
+                  >
+                    {t.artigo.todosDoAutor(artigo.autor.nome.split(' ')[0])}
+                    <Icon de={PiArrowRight} tamanho="pp" />
+                  </Link>
+                </div>
+              </section>
+            )}
 
             {!previa && (
               <section

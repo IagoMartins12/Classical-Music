@@ -28,6 +28,8 @@ export interface AutorRef {
   usuario: string;
   imagem: string | null;
   bio: string | null;
+  /** The author deleted their account: the article stays, with no author page. */
+  desconhecido: boolean;
 }
 
 export interface CategoriaRef {
@@ -156,8 +158,24 @@ const nomeDe = (a: any) =>
   a?.username ||
   'Opus Atlas';
 
-export function autorRef(a: any): AutorRef {
+/** "Autor desconhecido": the article whose author deleted their account. */
+export const AUTOR_DESCONHECIDO: Record<Idioma, string> = {
+  pt: 'Autor desconhecido',
+  en: 'Unknown author',
+};
+
+export function autorRef(a: any, idioma?: Idioma): AutorRef {
+  if (!a)
+    return {
+      id: '',
+      nome: AUTOR_DESCONHECIDO[idioma ?? 'pt'],
+      usuario: '',
+      imagem: null,
+      bio: null,
+      desconhecido: true,
+    };
   return {
+    desconhecido: false,
     id: a?.id ?? '',
     nome: nomeDe(a),
     usuario: a?.username || a?.id || '',
@@ -210,7 +228,7 @@ export function resumoDeArtigo(a: any, idioma?: Idioma): ResumoDeArtigo {
     atualizadoEm: iso(a.updatedAt) ?? new Date(0).toISOString(),
     minutos: minutosDe(a),
     visitas: a.viewCount ?? 0,
-    autor: autorRef(a.author),
+    autor: autorRef(a.author, idioma),
     categoria: categorias[0] ?? null,
     categorias,
     tags: (a.tags ?? []).map((t: any) => tagRef(t, idioma)),
@@ -454,7 +472,7 @@ export async function lerAutor(
       opcoes
     );
     return {
-      autor: autorRef(data.author),
+      autor: autorRef(data.author, opcoes.idioma),
       artigos: data.stats.articles,
       visitas: data.stats.views,
       desde: iso(data.stats.firstPublishedAt),

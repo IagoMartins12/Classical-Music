@@ -77,7 +77,7 @@ const autor = (a: ArtigoAdmin) =>
   a.author
     ? [a.author.firstName, a.author.lastName].filter(Boolean).join(' ') ||
       'Sem nome'
-    : 'Conta removida';
+    : 'Autor desconhecido';
 
 function Estado({ a }: { a: ArtigoAdmin }) {
   if (a.status === 'PUBLISHED')

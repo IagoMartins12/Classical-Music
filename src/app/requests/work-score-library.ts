@@ -200,3 +200,13 @@ export async function awaitWorkScoreLibrary(
   }
   return { status: 'unavailable', shelves: [] };
 }
+
+/**
+ * "Procurar novamente": the work goes back to the IMSLP queue ahead of every
+ * other (`POST /works/:id/scores/search-again`); the answer is its status.
+ */
+export const searchScoresAgain = (workId: string) =>
+  apiFetch<{ status: ImslpStatus }>(
+    `/works/${encodeURIComponent(workId)}/scores/search-again`,
+    { method: 'POST' }
+  );

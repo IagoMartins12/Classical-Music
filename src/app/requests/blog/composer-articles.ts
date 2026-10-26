@@ -4,6 +4,7 @@
 // para a página do compositor não depender dele.
 import { apiFetch } from '@/app/libs/api/client';
 import type { ApiSchema } from '@/app/libs/api/types';
+import { AUTOR_DESCONHECIDO } from './leitura';
 
 export interface BlogArticlePreview {
   id: string;
@@ -24,7 +25,8 @@ type ArticleSummary = ApiSchema<'ArticleSummaryDto'>;
  */
 export async function getComposerArticles(
   composerId: string,
-  limit: number = 5
+  limit: number = 5,
+  language: 'pt' | 'en' = 'pt'
 ): Promise<{ articles: BlogArticlePreview[]; totalCount: number }> {
   try {
     const response = await apiFetch<ApiSchema<'ArticleListResponseDto'>>(
@@ -36,7 +38,7 @@ export async function getComposerArticles(
     );
 
     return {
-      articles: response.articles.map(toArticlePreview),
+      articles: response.articles.map((a) => toArticlePreview(a, language)),
       totalCount: response.pagination.total,
     };
   } catch (error) {
@@ -45,10 +47,18 @@ export async function getComposerArticles(
   }
 }
 
-export function toArticlePreview(article: ArticleSummary): BlogArticlePreview {
-  const { firstName, lastName, username, image } = article.author;
-  const authorName =
-    [firstName, lastName].filter(Boolean).join(' ') || username || undefined;
+export function toArticlePreview(
+  article: ArticleSummary,
+  language: 'pt' | 'en' = 'pt'
+): BlogArticlePreview {
+  // No author: the account was deleted and the article stayed.
+  const author = article.author as ArticleSummary['author'] | null;
+  const authorName = author
+    ? [author.firstName, author.lastName].filter(Boolean).join(' ') ||
+      author.username ||
+      undefined
+    : AUTOR_DESCONHECIDO[language];
+  const image = author?.image;
 
   return {
     id: article.id,
