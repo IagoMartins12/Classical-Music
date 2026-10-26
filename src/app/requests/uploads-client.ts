@@ -329,6 +329,29 @@ function formResponse(
   return { ok, json: async () => payload };
 }
 
+/**
+ * A request that never reached the API (no network, CORS, a crash) as a
+ * failed `FormResponse`, keeping what went wrong.
+ */
+export const failedRequest = (error: unknown): FormResponse =>
+  formResponse(false, {
+    error: error instanceof Error ? error.message : String(error),
+  });
+
+/**
+ * What went wrong with a save, in the API's own words ("O título já
+ * existe…"); the fallback only when it said nothing. The forms showed a
+ * generic "could not save" and the reason was lost.
+ */
+export async function errorOf(
+  response: FormResponse,
+  fallback: string
+): Promise<string> {
+  const body = await response.json().catch(() => null);
+  const error = body?.error;
+  return typeof error === 'string' && error.trim() ? error : fallback;
+}
+
 async function submit<T>(
   request: Promise<T>,
   onSuccess: (data: T) => Record<string, unknown>

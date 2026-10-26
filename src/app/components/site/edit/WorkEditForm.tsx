@@ -6,8 +6,10 @@ import toast from 'react-hot-toast';
 import { asList } from './asList';
 import { CampoDeFichas } from '@/app/components/ui/CampoDeFichas';
 import { Field } from '@/app/components/ui/Field';
+import { Rotulado } from '@/app/components/ui/Rotulado';
 import { Selecao } from '@/app/components/ui/Selecao';
 import { SelecaoMultipla } from '@/app/components/ui/SelecaoMultipla';
+import { SeletorDeAno } from '@/app/components/ui/SeletorDeAno';
 import { EDIT } from '@/app/conteudo/site/edit';
 import {
   escreverInstrumentacao,
@@ -17,7 +19,11 @@ import {
 } from '@/app/conteudo/site/instrumentacao';
 import { useRouteLanguage } from '@/app/hooks/useRouteLanguage';
 import type { ApiSchema } from '@/app/libs/api/types';
-import { saveWorkRequest } from '@/app/requests/uploads-client';
+import {
+  errorOf,
+  failedRequest,
+  saveWorkRequest,
+} from '@/app/requests/uploads-client';
 import { ComposerField } from './ComposerField';
 import { EditPage, EditSection, useEditForm } from './EditPage';
 
@@ -91,13 +97,13 @@ export function WorkEditForm({
       ...form,
       title: form.title.trim(),
       movementNumber: form.movementNumber ? Number(form.movementNumber) : null,
-      compositionYear: form.compositionYear
-        ? Number(form.compositionYear)
-        : null,
-    }).catch(() => null);
+      // Text, as the API keeps it ("1830-1835 ca."): sent as a number it
+      // was refused, and every save with a year failed.
+      compositionYear: form.compositionYear.trim() || null,
+    }).catch(failedRequest);
     setSaving(false);
-    if (!response?.ok) {
-      toast.error(copy.failed);
+    if (!response.ok) {
+      toast.error(await errorOf(response, copy.failed));
       return;
     }
     commit();
@@ -200,7 +206,15 @@ export function WorkEditForm({
       </EditSection>
 
       <EditSection title={t.dates}>
-        {field('compositionYear', t.year, { inputMode: 'numeric' })}
+        <Rotulado label={t.year}>
+          {(id) => (
+            <SeletorDeAno
+              id={id}
+              valor={form.compositionYear}
+              aoMudar={(compositionYear) => set({ compositionYear })}
+            />
+          )}
+        </Rotulado>
         {field('firstPublishDate', t.published)}
         <div className="sm:col-span-2">{field('dedicateTo', t.dedication)}</div>
       </EditSection>

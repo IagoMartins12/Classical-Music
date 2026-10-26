@@ -151,11 +151,11 @@ function Panel({
   return (
     <section className="relative flex flex-col gap-4 rounded-card border border-dashed border-[var(--linha-forte)] p-5">
       <div className="flex items-center justify-between gap-3">
-        <span className="flex items-center gap-3">
-          <span className="grid h-9 w-9 shrink-0 place-items-center rounded-controle bg-sup-2 text-ouro-texto">
-            <Icon de={icon} />
+        <span className="flex min-w-0 items-center gap-3">
+          <span className="grid h-8 w-8 shrink-0 place-items-center rounded-controle bg-sup-2 text-ouro-texto sm:h-9 sm:w-9">
+            <Icon de={icon} tamanho="p" />
           </span>
-          <span className="flex flex-col">
+          <span className="flex min-w-0 flex-col">
             <span className="font-medium">{title}</span>
             <span className="t-rotulo text-texto-suave">{status}</span>
           </span>
@@ -707,12 +707,16 @@ export function StudySheet() {
           title={copy.progress}
           status={copy.progressDone(Math.round(progress))}
           action={
+            // On a phone only the pencil: with the label the button wrapped
+            // into a tall block beside the title.
             <Button
               tamanho="p"
               icone={PiPencilLine}
+              rotulo={copy.markProgress}
               onClick={() => setMarking(true)}
+              className="shrink-0 max-sm:aspect-square max-sm:!px-0"
             >
-              {copy.markProgress}
+              <span className="max-sm:hidden">{copy.markProgress}</span>
             </Button>
           }
         >

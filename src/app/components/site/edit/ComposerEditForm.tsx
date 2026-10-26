@@ -21,6 +21,8 @@ import { useRouteLanguage } from '@/app/hooks/useRouteLanguage';
 import type { ApiSchema } from '@/app/libs/api/types';
 import {
   saveComposerRequest,
+  errorOf,
+  failedRequest,
   uploadComposerImage,
 } from '@/app/requests/uploads-client';
 import { Portrait } from '../Portrait';
@@ -80,10 +82,10 @@ export function ComposerEditForm({
     const response = await saveComposerRequest(composer.id, {
       ...form,
       epochName,
-    }).catch(() => null);
+    }).catch(failedRequest);
     setSaving(false);
-    if (!response?.ok) {
-      toast.error(copy.failed);
+    if (!response.ok) {
+      toast.error(await errorOf(response, copy.failed));
       return;
     }
     commit();

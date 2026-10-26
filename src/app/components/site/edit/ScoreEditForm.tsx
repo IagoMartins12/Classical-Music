@@ -11,7 +11,11 @@ import { Icon } from '@/app/components/ui/Icon';
 import { EDIT } from '@/app/conteudo/site/edit';
 import { useRouteLanguage } from '@/app/hooks/useRouteLanguage';
 import type { ApiSchema } from '@/app/libs/api/types';
-import { saveScoreRequest } from '@/app/requests/uploads-client';
+import {
+  errorOf,
+  failedRequest,
+  saveScoreRequest,
+} from '@/app/requests/uploads-client';
 import { EditPage, EditSection, useEditForm } from './EditPage';
 
 type Score = ApiSchema<'ScoreUploadResponseDto'> & {
@@ -52,10 +56,10 @@ export function ScoreEditForm({ score }: { score: Score }) {
       title: form.title.trim(),
       pageCount: form.pageCount ? Number(form.pageCount) : null,
       groupIndex: form.groupIndex ? Number(form.groupIndex) : null,
-    }).catch(() => null);
+    }).catch(failedRequest);
     setSaving(false);
-    if (!response?.ok) {
-      toast.error(copy.failed);
+    if (!response.ok) {
+      toast.error(await errorOf(response, copy.failed));
       return;
     }
     commit();

@@ -1,6 +1,7 @@
 'use client';
 
 import dynamic from 'next/dynamic';
+import { useRouter } from 'next/navigation';
 import { useCallback, useState } from 'react';
 import {
   PiDotsThreeOutline,
@@ -55,6 +56,7 @@ export function MoreActions({
   const contribute = useContribute();
   const [verifying, setVerifying] = useState(false);
   const [isVerified, setIsVerified] = useState(verified);
+  const router = useRouter();
   const close = useCallback(() => setOpen(false), []);
   const ref = useDismiss<HTMLDivElement>(open, close);
   const canEdit = canEditCatalog(session?.user);
@@ -136,7 +138,12 @@ export function MoreActions({
           itemId={id}
           composerName={name}
           currentVerificationStatus={isVerified}
-          onVerificationChange={setIsVerified}
+          onVerificationChange={(v) => {
+            setIsVerified(v);
+            // The seal on the page comes from the server: show the new
+            // status now instead of after a reload.
+            router.refresh();
+          }}
         />
       )}
     </div>

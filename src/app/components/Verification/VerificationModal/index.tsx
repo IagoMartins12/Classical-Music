@@ -70,8 +70,13 @@ export default function VerificationModal({
       onVerificationChange(verified);
       setNotes('');
       onClose();
-    } catch {
-      toast.error(failed);
+    } catch (error) {
+      // Never reached the API: say what happened, not just "failed".
+      toast.error(
+        error instanceof Error && error.message
+          ? `${failed} (${error.message})`
+          : failed
+      );
     } finally {
       setIsSubmitting(false);
     }

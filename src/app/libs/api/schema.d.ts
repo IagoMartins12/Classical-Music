@@ -13311,7 +13311,7 @@ export interface components {
       /** @example 685d591c1e3db0c5aaa893e4 */
       epochId: string;
       /** @example 1839 */
-      compositionYear: number | null;
+      compositionYear: string | null;
       firstPublishDate: string | null;
       tone: string | null;
       mediaDuration: string | null;

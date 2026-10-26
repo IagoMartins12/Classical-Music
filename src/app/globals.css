@@ -1165,6 +1165,34 @@ html.app-pronto .abertura-do-app {
     opacity: 0.5;
   }
 
+  /* Data e hora nativas: no Safari do celular o campo ignorava a largura
+     (crescia até o tamanho do texto do sistema e passava da folha) e ficava
+     mais alto que os outros. Sem a aparência do sistema, ele segue o campo:
+     a largura da coluna, 44px de alvo, o texto à esquerda. */
+  :is(.input-classical, .input-classical-2):is(
+      [type='date'],
+      [type='time'],
+      [type='datetime-local'],
+      [type='month']
+    ) {
+    -webkit-appearance: none;
+    appearance: none;
+    display: block;
+    width: 100%;
+    min-width: 0;
+    max-width: 100%;
+    height: var(--alvo);
+    line-height: 1.5rem;
+  }
+  :is(.input-classical, .input-classical-2)::-webkit-date-and-time-value {
+    text-align: left;
+    margin: 0;
+    min-height: 1.5rem;
+  }
+  :is(.input-classical, .input-classical-2)::-webkit-calendar-picker-indicator {
+    opacity: 0.6;
+  }
+
   /* O select do sistema (`ui/Selecao`). O botão já é um `.input-classical`;
      aberto, fica com a borda de foco enquanto a lista está à mostra. */
   .input-classical.selecao-aberta {

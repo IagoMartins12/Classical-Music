@@ -8,6 +8,7 @@ import ConfirmModal from '@/app/components/ConfirmModal';
 import Link from '@/app/components/LocalizedLink';
 import { Button, classesDeBotao } from '@/app/components/ui/Button';
 import { Icon } from '@/app/components/ui/Icon';
+import { cx } from '@/app/components/ui/cx';
 import { EDIT } from '@/app/conteudo/site/edit';
 import { useRouteLanguage } from '@/app/hooks/useRouteLanguage';
 import { deleteUpload, getCascadeInfo } from '@/app/requests/uploads-client';
@@ -90,10 +91,17 @@ export function EditPage({
   };
   const remove = async () => {
     setBusy(true);
-    const result = await deleteUpload(kind, id).catch(() => null);
+    const result = await deleteUpload(kind, id).catch(
+      (error: unknown) =>
+        ({
+          ok: false,
+          error: error instanceof Error ? error.message : '',
+        }) as const
+    );
     setBusy(false);
-    if (!result?.ok) {
-      toast.error(copy.failed);
+    if (!result.ok) {
+      // The API's reason ("a obra tem partituras de outras pessoas…").
+      toast.error(result.error || copy.failed);
       return;
     }
     toast.success(copy.removed);
@@ -154,11 +162,33 @@ export function EditPage({
           className="flex flex-col"
         >
           {children}
-          <div className="sticky bottom-0 z-elevado -mx-4 mt-4 flex items-center justify-between gap-3 border-t border-[var(--linha)] bg-fundo/95 px-4 py-4 backdrop-blur sm:-mx-6 sm:px-6 lg:-mx-10 lg:px-10">
-            <span className="t-rotulo text-texto-suave" aria-live="polite">
+          {/* The save bar. On a phone it is fixed to the screen's bottom:
+              sticky, it lagged behind the browser's toolbar coming back on
+              a scroll up and seemed to float. With unsaved changes the note
+              goes above and the two buttons share the width, instead of
+              squeezing beside it. */}
+          <div
+            className={cx(
+              'z-elevado flex gap-3 border-t border-[var(--linha)] bg-fundo/95 backdrop-blur',
+              'max-sm:fixed max-sm:inset-x-0 max-sm:bottom-0 max-sm:px-4 max-sm:pb-[max(0.75rem,env(safe-area-inset-bottom))] max-sm:pt-3',
+              'sm:sticky sm:bottom-0 sm:-mx-6 sm:mt-4 sm:items-center sm:justify-between sm:px-6 sm:py-4 lg:-mx-10 lg:px-10',
+              dirty
+                ? 'max-sm:flex-col max-sm:gap-2'
+                : 'items-center justify-between'
+            )}
+          >
+            <span
+              className="t-rotulo text-texto-suave max-sm:text-[0.8125rem]"
+              aria-live="polite"
+            >
               {dirty ? copy.unsaved : copy.upToDate}
             </span>
-            <span className="flex gap-2">
+            <span
+              className={cx(
+                'gap-2 sm:flex',
+                dirty ? 'grid grid-cols-2' : 'flex'
+              )}
+            >
               {dirty && (
                 <Button
                   variante="fantasma"
@@ -178,6 +208,8 @@ export function EditPage({
               </Button>
             </span>
           </div>
+          {/* Room for the fixed bar, so the last field is not under it. */}
+          <div aria-hidden="true" className="h-28 sm:hidden" />
         </form>
       </div>
 
