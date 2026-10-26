@@ -58,13 +58,12 @@ export async function generateMetadata({ params }: ComposerDetailsPageProps) {
   if (!composer) {
     const notFoundContent = {
       pt: {
-        title:
-          'Compositor não encontrado - Opus Atlas | Compositores Clássicos',
+        title: 'Compositor não encontrado',
         description:
           'O compositor solicitado não foi encontrado. Explore outros grandes mestres como Bach, Chopin, Beethoven, Mozart e suas partituras gratuitas.',
       },
       en: {
-        title: 'Composer not found - Opus Atlas | Classical Composers',
+        title: 'Composer not found',
         description:
           'The requested composer was not found. Explore other great masters like Bach, Chopin, Beethoven, Mozart and their free sheet music.',
       },

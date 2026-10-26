@@ -19,8 +19,7 @@ export async function generateMetadata({
 
   const content = {
     pt: {
-      title:
-        'Contato - Opus Atlas | Suporte para Estudantes de Música Clássica',
+      title: 'Contato',
       description:
         'Entre em contato com o Opus Atlas. Suporte especializado para estudantes de música clássica, dúvidas sobre partituras de piano, violino, compositores como Bach, Chopin, Beethoven. Parcerias educacionais e suporte técnico.',
       ogTitle: 'Contato - Suporte Especializado em Música Clássica',
@@ -28,7 +27,7 @@ export async function generateMetadata({
         'Fale conosco! Suporte especializado para estudantes de música clássica, partituras e educação musical.',
     },
     en: {
-      title: 'Contact - Opus Atlas | Support for Classical Music Students',
+      title: 'Contact',
       description:
         'Contact Opus Atlas. Specialized support for classical music students, questions about piano and violin sheet music, composers like Bach, Chopin, Beethoven. Educational partnerships and technical support.',
       ogTitle: 'Contact - Specialized Classical Music Support',

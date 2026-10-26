@@ -50,7 +50,7 @@ const getCachedMetadata = unstable_cache(
 
     const content = {
       pt: {
-        baseTitle: 'Obras de Música Clássica - Partituras Gratuitas',
+        baseTitle: 'Obras e partituras gratuitas de música clássica',
         baseDescription:
           'Explore obras de música clássica organizadas por compositor, instrumento e época. Partituras gratuitas de Bach, Chopin, Beethoven, Mozart. Sonata ao Luar, Valsa das Flores, estudos, sonatas e sinfonias completas.',
         searchTitle: `Buscar Obras: "${search}" - Partituras Clássicas`,
@@ -61,7 +61,7 @@ const getCachedMetadata = unstable_cache(
         composerDescription: `Explore todas as obras de ${composer}. Partituras gratuitas, análises e guias de estudo completos.`,
       },
       en: {
-        baseTitle: 'Classical Music Works - Free Sheet Music',
+        baseTitle: 'Classical works and free sheet music',
         baseDescription:
           'Explore classical music works organized by composer, instrument and era. Free sheet music from Bach, Chopin, Beethoven, Mozart. Moonlight Sonata, Waltz of the Flowers, studies, sonatas and complete symphonies.',
         searchTitle: `Search Works: "${search}" - Classical Scores`,
@@ -90,7 +90,7 @@ const getCachedMetadata = unstable_cache(
     }
 
     if (page > 1) {
-      title += ` - Página ${page}`;
+      title += language === 'pt' ? ` - Página ${page}` : ` - Page ${page}`;
     }
 
     return { title, description };
@@ -108,6 +108,9 @@ export async function worksMetadata(
 ): Promise<Metadata> {
   // The URL carries ids; the title needs names.
   const parsed = parseWorkParams(searchParams);
+  const comParametro = Object.values(searchParams).some((v) =>
+    Array.isArray(v) ? v.length > 0 : !!v
+  );
   const options =
     parsed.instrumentId || parsed.composerId
       ? await getCatalogFilterOptions()
@@ -145,11 +148,14 @@ export async function worksMetadata(
       description,
     },
     alternates: alternatesFor('/works', language),
+    // A search, a filter or page 2 is not a page of its own: it points to
+    // the list (canonical) and stays out of the index, followed for the
+    // links. Internal search results are what Google asks not to index.
     robots: {
-      index: true,
+      index: !comParametro,
       follow: true,
       googleBot: {
-        index: true,
+        index: !comParametro,
         follow: true,
         'max-video-preview': -1,
         'max-image-preview': 'large',

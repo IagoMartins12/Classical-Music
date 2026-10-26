@@ -20,8 +20,7 @@ export async function generateMetadata({
 
   const content = {
     pt: {
-      title:
-        'Instrumentos Clássicos - Opus Atlas | Piano, Violino, Órgão Histórico',
+      title: 'Instrumentos da música clássica: história e repertório',
       description:
         'De onde vieram e como funcionam o piano, o violino, o órgão, a harpa, a flauta e os outros instrumentos da música de concerto, com o que ouvir em cada um.',
       ogTitle: 'Instrumentos Clássicos - História e Evolução Musical',
@@ -29,8 +28,7 @@ export async function generateMetadata({
         'Descubra a fascinante evolução dos instrumentos que deram vida às obras dos grandes mestros da música clássica.',
     },
     en: {
-      title:
-        'Classical Instruments - Opus Atlas | Piano, Violin, Historical Organ',
+      title: 'Instruments of classical music: history and repertoire',
       description:
         'Where the piano, violin, organ, harp, flute and the other instruments of concert music came from, how they work and what to hear on each.',
       ogTitle: 'Classical Instruments - History and Musical Evolution',

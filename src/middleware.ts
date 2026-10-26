@@ -241,7 +241,11 @@ function localize(
 
     const interna = rotaInterna('en', limpo, search);
 
-    return interna === pathname ? null : reescrever(request, interna, false);
+    if (interna !== pathname) return reescrever(request, interna, false);
+    // Served as itself; it still says its language (see `reescrever`).
+    const response = NextResponse.next();
+    response.headers.set('Content-Language', 'en-US');
+    return response;
   }
 
   // Caminho limpo: numa visita de documento, quem prefere inglês vai para o
@@ -267,6 +271,12 @@ function reescrever(
   url.pathname = destino;
 
   const response = NextResponse.rewrite(url);
+
+  // The content's language for engines that read the raw HTML (Bing reads
+  // it): the root layout is the same for both languages and its
+  // `<html lang>` is fixed at build time.
+  const idioma = destino.startsWith('/en') ? 'en-US' : 'pt-BR';
+  response.headers.set('Content-Language', idioma);
 
   /**
    * A mesma URL devolve português ou inglês conforme o cookie e o cabeçalho —

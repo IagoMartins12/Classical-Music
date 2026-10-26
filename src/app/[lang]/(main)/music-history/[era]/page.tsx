@@ -4,6 +4,8 @@ import { EraChapterPage } from '@/app/components/site/history/EraChapterPage';
 import { eraBySlug, eraChapter } from '@/app/conteudo/history';
 import { ERAS } from '@/app/conteudo/site/eras';
 import { LEARN } from '@/app/conteudo/site/learn';
+import { JsonLd } from '@/app/components/site/JsonLd';
+import { capituloJsonLd } from '@/app/utils/seo';
 import { alternatesFor } from '@/app/utils/seoAlternates';
 import {
   routeLanguage,
@@ -38,5 +40,24 @@ export async function generateMetadata({
 export default async function EraRoute({ params }: { params: EraParams }) {
   const era = eraBySlug((await params).era);
   if (!era) notFound();
-  return <EraChapterPage era={era} language={await routeLanguage(params)} />;
+  const language = await routeLanguage(params);
+  return (
+    <>
+      <JsonLd
+        data={capituloJsonLd({
+          caminho: `/music-history/${era.key}`,
+          titulo: LEARN[language].history.metaTitle(era.name[language]),
+          descricao: eraChapter(era.key, language)?.lede,
+          imagem: era.image,
+          assunto: era.name[language],
+          secao: [
+            language === 'pt' ? 'História da música' : 'History of music',
+            '/music-history',
+          ],
+          language,
+        })}
+      />
+      <EraChapterPage era={era} language={language} />
+    </>
+  );
 }

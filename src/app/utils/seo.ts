@@ -85,3 +85,54 @@ export function trilha(
 /** The ids the site's entities share across pages (`@id`). */
 export const ID_DO_SITE = `${SITE_URL}/#website`;
 export const ID_DA_ORGANIZACAO = `${SITE_URL}/#organization`;
+
+/**
+ * A chapter of the site's own writing (an era of the history of music, an
+ * instrument) as an `Article` about its subject, written by the Opus Atlas,
+ * with the breadcrumb. These are the pages that answer "what is the Baroque"
+ * or "how does a harpsichord work", the kind AI answers quote.
+ */
+export function capituloJsonLd({
+  caminho,
+  titulo,
+  descricao,
+  imagem,
+  assunto,
+  secao,
+  language,
+}: {
+  caminho: string;
+  titulo: string;
+  descricao?: string;
+  imagem?: string;
+  assunto: string;
+  secao: [nome: string, caminho: string];
+  language: RouteLanguage;
+}) {
+  const url = urlDe(caminho, language);
+  return {
+    '@context': 'https://schema.org',
+    '@graph': [
+      {
+        '@type': 'Article',
+        '@id': `${url}#article`,
+        headline: titulo,
+        description: descricao,
+        image: imagem ? `${SITE_URL}${imagem}` : undefined,
+        url,
+        mainEntityOfPage: url,
+        inLanguage: language === 'pt' ? 'pt-BR' : 'en-US',
+        about: { '@type': 'Thing', name: assunto },
+        author: { '@id': ID_DA_ORGANIZACAO },
+        publisher: { '@id': ID_DA_ORGANIZACAO },
+        isPartOf: { '@id': ID_DO_SITE },
+        breadcrumb: { '@id': `${url}#breadcrumb` },
+      },
+      trilha(
+        [['Opus Atlas', '/'], secao, [titulo, caminho]],
+        language,
+        `${url}#breadcrumb`
+      ),
+    ],
+  };
+}

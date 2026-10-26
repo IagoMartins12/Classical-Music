@@ -27,7 +27,7 @@ const pt = {
   menuDetail: (name: string, year: number) =>
     `${name} nasceu num dia como hoje, em ${year}`,
   menuFallback: 'Quem nasceu e quem morreu em cada dia',
-  metaTitle: (date: string) => `Compositores nascidos em ${date} · Opus Atlas`,
+  metaTitle: (date: string) => `Compositores nascidos em ${date}`,
   metaDescription: (date: string) =>
     `Os compositores de música erudita que nasceram e que morreram em ${date}, com retratos, épocas e obras.`,
 };
@@ -57,7 +57,7 @@ const en: typeof pt = {
   menuDetail: (name: string, year: number) =>
     `${name} was born on a day like today, in ${year}`,
   menuFallback: 'Who was born and who died on each day',
-  metaTitle: (date: string) => `Composers born on ${date} · Opus Atlas`,
+  metaTitle: (date: string) => `Composers born on ${date}`,
   metaDescription: (date: string) =>
     `Classical composers born and who died on ${date}, with portraits, eras and works.`,
 };

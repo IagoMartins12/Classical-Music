@@ -8,6 +8,8 @@ import {
 } from '@/app/conteudo/instruments';
 import { imageCredit } from '@/app/conteudo/instruments/credits';
 import { LEARN } from '@/app/conteudo/site/learn';
+import { JsonLd } from '@/app/components/site/JsonLd';
+import { capituloJsonLd } from '@/app/utils/seo';
 import { alternatesFor } from '@/app/utils/seoAlternates';
 import {
   routeLanguage,
@@ -47,11 +49,30 @@ export default async function InstrumentRoute({
   const language = await routeLanguage(params);
   const meta = instrumentMeta((await params).instrument);
   if (!meta) notFound();
+  const chapter = instrumentChapter(meta.key, language);
   return (
-    <InstrumentPage
-      meta={meta}
-      language={language}
-      credit={imageCredit(meta.key, language)}
-    />
+    <>
+      {chapter && (
+        <JsonLd
+          data={capituloJsonLd({
+            caminho: `/instruments/${meta.key}`,
+            titulo: LEARN[language].instruments.metaTitle(chapter.name),
+            descricao: chapter.lede,
+            imagem: meta.photo,
+            assunto: chapter.name,
+            secao: [
+              language === 'pt' ? 'Instrumentos' : 'Instruments',
+              '/instruments',
+            ],
+            language,
+          })}
+        />
+      )}
+      <InstrumentPage
+        meta={meta}
+        language={language}
+        credit={imageCredit(meta.key, language)}
+      />
+    </>
   );
 }

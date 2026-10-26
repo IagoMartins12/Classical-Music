@@ -27,7 +27,7 @@ export async function generateMetadata({
   const c = await publicCollection(id);
   if (!c) return {};
   return {
-    title: `${c.title} · Opus Atlas`,
+    title: c.title,
     description: c.description ?? undefined,
     alternates: alternatesFor(`/collections/${id}`, language),
   };

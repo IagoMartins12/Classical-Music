@@ -21,8 +21,7 @@ const pt = {
     composers: 'Compositores desta época',
     works: 'Obras desta época',
     today: 'hoje',
-    metaTitle: (era: string) =>
-      `${era}: história, formas e obras para ouvir · Opus Atlas`,
+    metaTitle: (era: string) => `${era}: história, formas e obras para ouvir`,
   },
   instruments: {
     title: 'Da flauta de osso ao piano de cauda',
@@ -42,7 +41,7 @@ const pt = {
     others: 'Outros instrumentos',
     imageCredit: 'Imagem',
     metaTitle: (name: string) =>
-      `${name}: história, como funciona e obras para ouvir · Opus Atlas`,
+      `${name}: história, como funciona e obras para ouvir`,
   },
   searchListen: 'Procurar no acervo',
   openWork: 'Abrir a obra',
@@ -69,8 +68,7 @@ const en: typeof pt = {
     composers: 'Composers of this era',
     works: 'Works of this era',
     today: 'today',
-    metaTitle: (era: string) =>
-      `${era}: history, forms and works to hear · Opus Atlas`,
+    metaTitle: (era: string) => `${era}: history, forms and works to hear`,
   },
   instruments: {
     title: 'From a bone flute to the grand piano',
@@ -90,7 +88,7 @@ const en: typeof pt = {
     others: 'Other instruments',
     imageCredit: 'Image',
     metaTitle: (name: string) =>
-      `${name}: history, how it works and works to hear · Opus Atlas`,
+      `${name}: history, how it works and works to hear`,
   },
   searchListen: 'Find it in the archive',
   openWork: 'Open the work',

@@ -41,17 +41,20 @@ export function composersMetadata(
     Array.isArray(v) ? v[0] : v;
   const page = Number(first(searchParams.page)) || 1;
   const search = first(searchParams.search) || '';
+  const comParametro = Object.values(searchParams).some((v) =>
+    Array.isArray(v) ? v.length > 0 : !!v
+  );
 
   const content = {
     pt: {
-      baseTitle: 'Compositores Clássicos - Lista Completa',
+      baseTitle: 'Compositores de música clássica: biografias e obras',
       baseDescription:
         'Explore nossa coleção completa de compositores clássicos. Bach, Chopin, Beethoven, Mozart e os mestres da música erudita. Partituras gratuitas, biografias e análises musicais organizadas por época.',
       searchTitle: `Buscar Compositores: "${search}"`,
       searchDescription: `Resultados da busca por "${search}" em nossa enciclopédia de compositores clássicos.`,
     },
     en: {
-      baseTitle: 'Classical Composers - Complete List',
+      baseTitle: 'Classical music composers: biographies and works',
       baseDescription:
         'Explore our complete collection of classical composers. Bach, Chopin, Beethoven, Mozart and the masters of classical music. Free sheet music, biographies and musical analyses organized by era.',
       searchTitle: `Search Composers: "${search}"`,
@@ -65,7 +68,7 @@ export function composersMetadata(
   const description = search ? t.searchDescription : t.baseDescription;
 
   if (page > 1) {
-    title += ` - Página ${page}`;
+    title += language === 'pt' ? ` - Página ${page}` : ` - Page ${page}`;
   }
 
   return {
@@ -88,11 +91,14 @@ export function composersMetadata(
       description,
     },
     alternates: alternatesFor('/composers', language),
+    // A search, a filter or page 2 is not a page of its own: it points to
+    // the list (canonical) and stays out of the index, followed for the
+    // links. Internal search results are what Google asks not to index.
     robots: {
-      index: true,
+      index: !comParametro,
       follow: true,
       googleBot: {
-        index: true,
+        index: !comParametro,
         follow: true,
         'max-video-preview': -1,
         'max-image-preview': 'large',

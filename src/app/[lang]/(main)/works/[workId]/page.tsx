@@ -59,12 +59,12 @@ export async function generateMetadata({ params }: WorkDetailsPageProps) {
   if (!work) {
     const notFoundContent = {
       pt: {
-        title: 'Obra não encontrada - Opus Atlas | Partituras Clássicas',
+        title: 'Obra não encontrada',
         description:
           'A obra solicitada não foi encontrada em nossa enciclopédia de música clássica. Explore outras partituras gratuitas de Bach, Chopin, Beethoven e Mozart.',
       },
       en: {
-        title: 'Work not found - Opus Atlas | Classical Scores',
+        title: 'Work not found',
         description:
           'The requested work was not found in our classical music encyclopedia. Explore other free sheet music from Bach, Chopin, Beethoven and Mozart.',
       },

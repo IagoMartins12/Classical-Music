@@ -19,7 +19,7 @@ export async function generateMetadata({
   const language = await routeLanguage(params);
   const copy = COLLECTIONS[language];
   return {
-    title: `${copy.title} · Opus Atlas`,
+    title: copy.title,
     description: copy.subtitle,
     alternates: alternatesFor('/collections', language),
   };

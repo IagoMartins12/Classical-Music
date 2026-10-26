@@ -8,6 +8,10 @@ import { ClientThemeWrapper } from './components/ClientThemeWrapper';
 import AuthProvider from './providers/AuthProvider';
 import { getBuildLanguage } from './utils/translations/serverTranslations';
 import Script from 'next/script';
+import {
+  LOCALIZED_ROUTES,
+  UNLOCALIZED_SUBROUTES,
+} from './utils/localizedRoutes';
 import { CartoesQueViram } from '@/app/components/ui/CartoesQueViram';
 
 /**
@@ -158,11 +162,26 @@ const themeScript = `(function(){
       return stored?JSON.parse(stored):null;
     }catch{return null;}
   }
+  // The page's language (<html lang>) is the language of its content: on
+  // the public pages that is the address (/en/... English, the rest
+  // Portuguese), not the browser's. Following the browser, Googlebot (which
+  // renders in English) saw every Portuguese page marked English.
+  var PUBLICAS=${JSON.stringify(LOCALIZED_ROUTES)};
+  var FORA=${JSON.stringify(UNLOCALIZED_SUBROUTES)};
+  function langDaUrl(){
+    var p=location.pathname;
+    if(p==='/en'||p.indexOf('/en/')===0)return 'en';
+    var dentro=function(r){return p===r||p.indexOf(r+'/')===0;};
+    if(FORA.some(dentro))return null;
+    if(p==='/'||PUBLICAS.some(dentro))return 'pt';
+    return null;
+  }
   function apply(mode,lang){
     const root=document.documentElement;
     root.setAttribute('data-theme',mode);
     root.setAttribute('data-language',lang);
-    root.lang=lang==='pt'?'pt-BR':'en-US';
+    const conteudo=langDaUrl()||lang;
+    root.lang=conteudo==='pt'?'pt-BR':'en-US';
   }
   // App instalado (tela de início): marca a página antes da primeira pintura.
   // O iPhone diz isso por navigator.standalone; a media query sozinha já

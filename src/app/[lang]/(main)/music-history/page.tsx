@@ -17,8 +17,7 @@ export async function generateMetadata({ params }: LangPageProps) {
 
   const content = {
     pt: {
-      title:
-        'História da Música Clássica - Opus Atlas | Medieval ao Contemporâneo',
+      title: 'História da música clássica: da Idade Média aos dias de hoje',
       description:
         'A história da música erudita em sete épocas, do canto gregoriano a quem compõe hoje: o que mudou em cada uma, como a música soa e por onde começar a ouvir.',
       ogTitle: 'História da Música Clássica - Jornada através dos Séculos',
@@ -26,7 +25,7 @@ export async function generateMetadata({ params }: LangPageProps) {
         'Uma viagem completa pela história da música clássica, dos grandes mestres às revoluções musicais que moldaram nossa cultura.',
     },
     en: {
-      title: 'Classical Music History - Opus Atlas | Medieval to Contemporary',
+      title: 'History of classical music: from the Middle Ages to today',
       description:
         'The history of classical music in seven eras, from Gregorian chant to the composers of today: what changed in each, how the music sounds and where to start listening.',
       ogTitle: 'Classical Music History - Journey through the Centuries',
