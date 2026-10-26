@@ -107,11 +107,15 @@ export function SeletorDeAno({
   const { ano, inexato } = lerAno(valor);
   const [inicioTexto, setInicioTexto] = useState(ano ? String(ano.inicio) : '');
   const [fimTexto, setFimTexto] = useState(ano?.fim ? String(ano.fim) : '');
+  // "Approximate" can be ticked before there is a year: it is kept here and
+  // goes into the text with the first year chosen.
+  const [aproximado, setAproximado] = useState(ano?.aproximado ?? false);
 
   // Outro valor de fora (o formulário reabriu): os anos digitados acompanham.
   useEffect(() => {
     setInicioTexto(ano ? String(ano.inicio) : '');
     setFimTexto(ano?.fim ? String(ano.fim) : '');
+    if (ano) setAproximado(ano.aproximado);
     // Só o texto gravado importa; `ano` é derivado dele.
   }, [valor]);
 
@@ -143,7 +147,7 @@ export function SeletorDeAno({
     inicio,
     // An end before the new start no longer makes a span.
     fim: ano?.fim && ano.fim > inicio ? ano.fim : null,
-    aproximado: ano?.aproximado ?? false,
+    aproximado: ano?.aproximado ?? aproximado,
   });
   const digitarInicio = (texto: string) => {
     const limpo = texto.replace(/\D/g, '').slice(0, 4);
@@ -316,8 +320,11 @@ export function SeletorDeAno({
             {passo(t.ate, `${base}-fim`, fimTexto, digitarFim, passarFim, !ano)}
             <CaixaDeMarcar
               rotulo={t.aproximado}
-              marcado={ano?.aproximado ?? false}
-              aoMudar={(aproximado) => ano && mudar({ ...ano, aproximado })}
+              marcado={ano?.aproximado ?? aproximado}
+              aoMudar={(marcado) => {
+                setAproximado(marcado);
+                if (ano) mudar({ ...ano, aproximado: marcado });
+              }}
             />
             <div className="flex items-center justify-end gap-2 border-t border-linha pt-3">
               {ano && (

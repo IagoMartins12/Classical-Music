@@ -114,10 +114,14 @@ export function SeletorDeData({
 
   const { data, inexata } = lerData(valor);
   const [anoTexto, setAnoTexto] = useState(data ? String(data.ano) : '');
+  // "Approximate" can be ticked before there is a year: it is kept here and
+  // goes into the text with the first year chosen.
+  const [aproximada, setAproximada] = useState(data?.aproximada ?? false);
 
   // Outro valor de fora (o formulário reabriu): o ano digitado acompanha.
   useEffect(() => {
     setAnoTexto(data ? String(data.ano) : '');
+    if (data) setAproximada(data.aproximada);
     // Só o texto gravado importa; `data` é derivada dele.
   }, [valor]);
 
@@ -146,7 +150,7 @@ export function SeletorDeData({
     const mes = data?.mes ?? null;
     const dia =
       data?.dia && mes && data.dia <= diasNoMes(ano, mes) ? data.dia : null;
-    return { ano, mes, dia, aproximada: data?.aproximada ?? false };
+    return { ano, mes, dia, aproximada: data?.aproximada ?? aproximada };
   };
 
   const digitarAno = (texto: string) => {
@@ -354,8 +358,11 @@ export function SeletorDeData({
 
             <CaixaDeMarcar
               rotulo={t.aproximada}
-              marcado={data?.aproximada ?? false}
-              aoMudar={(aproximada) => data && mudar({ ...data, aproximada })}
+              marcado={data?.aproximada ?? aproximada}
+              aoMudar={(marcada) => {
+                setAproximada(marcada);
+                if (data) mudar({ ...data, aproximada: marcada });
+              }}
             />
 
             <div className="flex items-center justify-end gap-2 border-t border-linha pt-3">

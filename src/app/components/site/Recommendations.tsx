@@ -83,7 +83,7 @@ export function Recommendations({
       <div className="flex flex-col gap-1">
         <h2 className="t-titulo flex items-center gap-2 max-sm:!text-[1.75rem]">
           {head.title}
-          <span className="tint-ouro rounded-full px-2 py-0.5 text-[0.6875rem] font-medium text-ouro-na-tinta">
+          <span className="tint-ouro rounded-full px-3 py-1 font-sans text-[0.875rem] font-medium leading-none text-ouro-na-tinta">
             Plus
           </span>
         </h2>

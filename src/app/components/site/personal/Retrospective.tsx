@@ -64,7 +64,7 @@ export function RetrospectiveButton({ className }: { className?: string }) {
           className={cx(classesDeBotao('secundario', 'p'), className)}
         >
           <Icon de={PiLockSimple} tamanho="pp" /> {copy.button}
-          <span className="tint-ouro rounded-full px-2 py-0.5 text-[0.6875rem] font-medium text-ouro-na-tinta">
+          <span className="tint-ouro rounded-full px-2.5 py-0.5 text-[0.8125rem] font-medium text-ouro-na-tinta">
             {copy.plus}
           </span>
         </button>
