@@ -79,6 +79,7 @@ const miniatura = (url: string) =>
 const NOME_DO_TIPO: Record<string, string> = {
   ...NOME_ENTIDADE,
   'sem-dono': 'Sem dono declarado',
+  'video-sem-peca': 'Vídeo fora de peça',
 };
 
 function Previa({ a, grande = false }: { a: ArquivoOrfao; grande?: boolean }) {
@@ -114,7 +115,9 @@ function Previa({ a, grande = false }: { a: ArquivoOrfao; grande?: boolean }) {
 const origem = (a: ArquivoOrfao) =>
   a.motivo === 'sem-dono'
     ? 'Sem dono declarado'
-    : `${NOME_ENTIDADE[a.dono?.tipo ?? ''] ?? a.dono?.tipo ?? 'Registro'} removido${a.dono?.nome ? `: ${a.dono.nome}` : ''}`;
+    : a.motivo === 'video-sem-peca'
+      ? 'Vídeo de performance fora de qualquer peça'
+      : `${NOME_ENTIDADE[a.dono?.tipo ?? ''] ?? a.dono?.tipo ?? 'Registro'} removido${a.dono?.nome ? `: ${a.dono.nome}` : ''}`;
 
 export default function ArquivosOrfaos() {
   const navegar = useNavegar();
@@ -171,7 +174,7 @@ export default function ArquivosOrfaos() {
     <Stack gap={6}>
       <Cabecalho
         titulo="Arquivos órfãos"
-        descricao="O que ficou no armazenamento depois que o dono foi removido"
+        descricao="O que ficou no armazenamento sem uso: dono removido, vídeo fora de peça ou sem dono declarado"
         aoAtualizar={() => lista.refetch()}
         acoes={
           <Link href="/admin/cron" className={classesDeBotao('fantasma', 'p')}>
@@ -186,9 +189,9 @@ export default function ArquivosOrfaos() {
         itens={[
           {
             id: 'orfaos',
-            rotulo: 'Dono removido',
+            rotulo: 'Órfãos de certeza',
             valor: numero(orfaosDeCerteza),
-            nota: 'órfãos de certeza',
+            nota: 'dono removido ou vídeo fora de peça',
             tom: orfaosDeCerteza ? 'atencao' : undefined,
             aoClicar: () => setTipo(''),
           },
@@ -393,7 +396,9 @@ export default function ArquivosOrfaos() {
               <Info rotulo="De onde era">
                 {aberto.motivo === 'sem-dono'
                   ? 'Nunca declarou dono — pode estar em uso por algo antigo'
-                  : `${NOME_ENTIDADE[aberto.dono?.tipo ?? ''] ?? aberto.dono?.tipo}${aberto.dono?.nome ? ` “${aberto.dono.nome}”` : ''}, que não existe mais`}
+                  : aberto.motivo === 'video-sem-peca'
+                    ? 'Vídeo de performance que nenhuma peça em "já aprendi" usa há mais de um dia'
+                    : `${NOME_ENTIDADE[aberto.dono?.tipo ?? ''] ?? aberto.dono?.tipo}${aberto.dono?.nome ? ` “${aberto.dono.nome}”` : ''}, que não existe mais`}
               </Info>
               <Info rotulo="Registro removido em">
                 {aberto.dono?.removidoEm

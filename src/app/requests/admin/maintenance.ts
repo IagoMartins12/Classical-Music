@@ -171,7 +171,7 @@ export const apagarExecucoes = (c: {
 export interface ArquivoOrfao {
   id: string;
   /** `dono-removido`: órfão de certeza. `sem-dono`: nunca declarou dono. */
-  motivo: 'dono-removido' | 'sem-dono';
+  motivo: 'dono-removido' | 'sem-dono' | 'video-sem-peca';
   url: string | null;
   publicId: string;
   tipoDeArquivo: string;

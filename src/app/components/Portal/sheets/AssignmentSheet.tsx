@@ -89,6 +89,8 @@ function Body({
   const state = assignmentState(a);
   const student = api.nameOf(a.student);
   const teacher = api.nameOf(a.lesson.teacher);
+  // Vídeo como entrega só quando o professor da tarefa é Maestro.
+  const video = a.permissions?.canSubmitVideo ?? false;
   const [progress, setProgress] = useState(a.progress ?? 0);
   const [note, setNote] = useState('');
   const [rating, setRating] = useState(4);
@@ -453,16 +455,22 @@ function Body({
                 )}
               >
                 <Icon de={PiMicrophone} tamanho="g" />
-                {file ? file.name : 'Anexar gravação de áudio ou vídeo'}
+                {file
+                  ? file.name
+                  : video
+                    ? 'Anexar gravação de áudio ou vídeo'
+                    : 'Anexar gravação de áudio'}
                 <span className="t-legenda">
-                  Até 500 MB · seu professor ouve aqui mesmo
+                  {video
+                    ? 'Até 500 MB · seu professor ouve aqui mesmo'
+                    : 'Até 500 MB · vídeo nas tarefas é do plano Maestro do professor'}
                 </span>
               </button>
               <input
                 ref={fileInput}
                 type="file"
                 className="sr-only"
-                accept="audio/*,video/*"
+                accept={video ? 'audio/*,video/*' : 'audio/*'}
                 onChange={(e) => setFile(e.target.files?.[0] ?? null)}
               />
               {file && (

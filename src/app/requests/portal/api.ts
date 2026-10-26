@@ -814,6 +814,12 @@ export interface Assignment {
     scheduledAt: string;
     teacher: ApiPerson;
   };
+  /** Only in the detail (`GET /assignments/:id`). */
+  permissions?: {
+    canSubmit: boolean;
+    /** Video as a delivery is the teacher's Maestro plan; audio is for all. */
+    canSubmitVideo: boolean;
+  };
 }
 
 export const getAssignment = (id: string) =>

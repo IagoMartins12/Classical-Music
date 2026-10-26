@@ -343,7 +343,7 @@ function LessonLine({
       onClick={() => onSelect(lesson.id)}
       aria-pressed={selected || undefined}
       className={cx(
-        'group/aula grid w-full grid-cols-[52px_minmax(0,1fr)_auto] items-center gap-4 border-b border-linha py-4 text-left transition-colors sm:grid-cols-[64px_minmax(0,1fr)_minmax(0,1fr)_auto]',
+        'group/aula grid w-full grid-cols-[minmax(52px,auto)_minmax(0,1fr)_auto] items-center gap-4 border-b border-linha py-4 text-left transition-colors sm:grid-cols-[64px_minmax(0,1fr)_minmax(0,1fr)_auto]',
         selected && 'bg-sup-2/70'
       )}
     >
@@ -356,7 +356,9 @@ function LessonLine({
         >
           {String(dayOfMonth(day)).padStart(2, '0')}
         </span>
-        <span className="text-xs text-texto-fraco">
+        {/* One line: on a phone the column is narrow, and "qui · 15:00"
+            broke in two. */}
+        <span className="whitespace-nowrap text-xs text-texto-fraco">
           {dayShort(day)} · {clock(lesson.scheduledAt)}
         </span>
       </span>
