@@ -24,6 +24,12 @@ import {
   FormSheet,
 } from '@/app/components/site/edit/FormSheet';
 import { SelecaoMultipla } from '@/app/components/ui/SelecaoMultipla';
+import {
+  escreverInstrumentacao,
+  lerInstrumentacao,
+  opcoesDeInstrumento,
+  rotuloDoInstrumento,
+} from '@/app/conteudo/site/instrumentacao';
 import ComposerSearchInput from '@/app/components/ComposerSearchInput';
 import { useFormValidation, workModalValidations } from '@/app/utils/formUtils';
 import {
@@ -1367,16 +1373,23 @@ const CreateWorkModal = ({
               onChange={(e) => handleInputChange('moviment', e.target.value)}
               placeholder="I. Allegro molto"
             />
-            <Field
-              label={t('modal_work_musical_instrumentation')}
-              value={formData.instrumentation}
-              onChange={(e) =>
-                handleInputChange('instrumentation', e.target.value)
+            {/* The same list as "Completar" and the edit page: stored in
+                Portuguese ("Violino, Piano"), shown in the page's language. */}
+            <SelecaoMultipla
+              rotulo={t('modal_work_musical_instrumentation')}
+              opcoes={opcoesDeInstrumento(language === 'en' ? 'en' : 'pt')}
+              valores={lerInstrumentacao(formData.instrumentation)}
+              rotuloDe={(v) =>
+                rotuloDoInstrumento(v, language === 'en' ? 'en' : 'pt')
               }
-              placeholder={tx(
-                '2 flautas, 2 oboés, 2 clarinetes...',
-                '2 flutes, 2 oboes, 2 clarinets…'
-              )}
+              aoMudar={(lista) =>
+                handleInputChange(
+                  'instrumentation',
+                  escreverInstrumentacao(lista)
+                )
+              }
+              placeholder={tx('Adicionar instrumento', 'Add an instrument')}
+              vazio={tx('Nada encontrado', 'Nothing found')}
             />
             <Field
               label={t('modal_work_musical_dedicated_to')}

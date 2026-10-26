@@ -23,7 +23,13 @@ import {
   FormSheet,
 } from '@/app/components/site/edit/FormSheet';
 import ComposerImageUpload from '../ComposerImageUpload';
-import NationalitySelect from '@/app/components/NationalitySelect';
+import { Rotulado } from '@/app/components/ui/Rotulado';
+import { SelecaoComBusca } from '@/app/components/ui/SelecaoComBusca';
+import { SeletorDeData } from '@/app/components/ui/SeletorDeData';
+import {
+  canonicalNationality,
+  nationalityOptions,
+} from '@/app/conteudo/site/countries';
 import {
   useFormValidation,
   composerModalValidations,
@@ -98,112 +104,6 @@ export const translateRole = (roleName: string, language: string): string => {
   return roleName;
 };
 
-const extractDateFromExtendedFormat = (dateString: string): string | null => {
-  if (!dateString) return null;
-
-  const monthsMap: Record<string, string> = {
-    janeiro: '01',
-    fevereiro: '02',
-    março: '03',
-    abril: '04',
-    maio: '05',
-    junho: '06',
-    julho: '07',
-    agosto: '08',
-    setembro: '09',
-    outubro: '10',
-    novembro: '11',
-    dezembro: '12',
-    jan: '01',
-    fev: '02',
-    mar: '03',
-    abr: '04',
-    mai: '05',
-    jun: '06',
-    jul: '07',
-    ago: '08',
-    set: '09',
-    out: '10',
-    nov: '11',
-    dez: '12',
-    january: '01',
-    february: '02',
-    march: '03',
-    april: '04',
-    may: '05',
-    june: '06',
-    july: '07',
-    august: '08',
-    september: '09',
-    october: '10',
-    november: '11',
-    december: '12',
-  };
-
-  const patterns = [
-    /(\d{1,2})\s+de\s+(\w+)\s+de\s+(\d{4})/i,
-    /(\d{1,2})\s+(\w+)\s+(\d{4})/i,
-    /(\w+)\s+(\d{1,2}),?\s+(\d{4})/i,
-  ];
-
-  for (const pattern of patterns) {
-    const match = dateString.match(pattern);
-    if (match) {
-      if (pattern.source.includes('de\\s+')) {
-        const day = match[1];
-        const monthName = match[2].toLowerCase();
-        const year = match[3];
-        const month = monthsMap[monthName];
-        if (month) {
-          return `${year}-${month}-${day.padStart(2, '0')}`;
-        }
-      } else {
-        let day, monthName, year;
-        if (/^\d/.test(match[1])) {
-          day = match[1];
-          monthName = match[2].toLowerCase();
-          year = match[3];
-        } else {
-          monthName = match[1].toLowerCase();
-          day = match[2];
-          year = match[3];
-        }
-        const month = monthsMap[monthName];
-        if (month) {
-          return `${year}-${month}-${day.padStart(2, '0')}`;
-        }
-      }
-    }
-  }
-
-  return null;
-};
-
-const formatDateForInput = (dateString: string | null): string => {
-  if (!dateString) return '';
-
-  if (/^\d{4}-\d{2}-\d{2}$/.test(dateString)) {
-    return dateString;
-  }
-
-  if (/^\d{1,2}\/\d{1,2}\/\d{4}$/.test(dateString)) {
-    const [day, month, year] = dateString.split('/');
-    return `${year}-${month.padStart(2, '0')}-${day.padStart(2, '0')}`;
-  }
-
-  const dateFromText = extractDateFromExtendedFormat(dateString);
-  if (dateFromText) {
-    return dateFromText;
-  }
-
-  const yearMatch = dateString.match(/(\d{4})/);
-  if (yearMatch) {
-    return `${yearMatch[1]}-01-01`;
-  }
-
-  return '';
-};
-
 const CreateComposerModal = ({
   isOpen,
   onClose,
@@ -242,8 +142,8 @@ const CreateComposerModal = ({
     fullName: useRef<HTMLInputElement>(null),
     epochId: useRef<HTMLDivElement>(null),
     primaryRoleId: useRef<HTMLDivElement>(null),
-    birthDate: useRef<HTMLInputElement>(null),
-    deathDate: useRef<HTMLInputElement>(null),
+    birthDate: useRef<HTMLDivElement>(null),
+    deathDate: useRef<HTMLDivElement>(null),
     nationality: useRef<HTMLDivElement>(null),
   };
 
@@ -447,8 +347,8 @@ const CreateComposerModal = ({
       name: editingComposer.name || '',
       fullName: editingComposer.fullName || '',
       alternativeNames: editingComposer.alternativeNames || '',
-      birthDate: formatDateForInput(editingComposer.birthDate),
-      deathDate: formatDateForInput(editingComposer.deathDate),
+      birthDate: editingComposer.birthDate || '',
+      deathDate: editingComposer.deathDate || '',
       portraitUrl: editingComposer.portraitUrl || '',
       epochId: editingComposer.epochId || '',
       epochName: editingComposer.epochName || '',
@@ -511,8 +411,8 @@ const CreateComposerModal = ({
         name: editingComposer.name || '',
         fullName: editingComposer.fullName || '',
         alternativeNames: editingComposer.alternativeNames || '',
-        birthDate: formatDateForInput(editingComposer.birthDate),
-        deathDate: formatDateForInput(editingComposer.deathDate),
+        birthDate: editingComposer.birthDate || '',
+        deathDate: editingComposer.deathDate || '',
         portraitUrl: editingComposer.portraitUrl || '',
         epochId: editingComposer.epochId || '',
         epochName: editingComposer.epochName || '',
@@ -549,17 +449,6 @@ const CreateComposerModal = ({
     'primaryRoleId',
     'dataSource',
   ]);
-
-  const formatDateForSave = (dateString: string): string => {
-    if (!dateString) return '';
-
-    if (/^\d{4}-\d{2}-\d{2}$/.test(dateString)) {
-      const [year, month, day] = dateString.split('-');
-      return `${day}/${month}/${year}`;
-    }
-
-    return dateString;
-  };
 
   const cleanName = (name: string): string => {
     return name.replace(/[(),]/g, '').replace(/_/g, ' ').replace(/\s+/g, ' ');
@@ -730,8 +619,8 @@ const CreateComposerModal = ({
     try {
       const dataToSend = {
         ...formData,
-        birthDate: formatDateForSave(formData.birthDate),
-        deathDate: formatDateForSave(formData.deathDate),
+        birthDate: formData.birthDate,
+        deathDate: formData.deathDate,
         roles: formData.roles.join(', '),
         dataSource: formData.dataSource,
         bio: biographies.pt, // 🆕 Salvar bio PT no campo principal
@@ -1112,34 +1001,54 @@ const CreateComposerModal = ({
             >
               {t('modal_composer_basic_nationality')}
             </label>
-            <NationalitySelect
+            {/* The countries of the composer pages, stored as the English
+                demonym ("German"), like the rest of the catalog. */}
+            <SelecaoComBusca
               id={`${idCampo}-1`}
-              value={formData.nationality}
-              onChange={handleNationalityChange}
-              error={errors.nationality}
+              opcoes={nationalityOptions(
+                language === 'en' ? 'en' : 'pt',
+                canonicalNationality(formData.nationality)
+              )}
+              valor={canonicalNationality(formData.nationality)}
+              aoMudar={handleNationalityChange}
               placeholder={t('modal_composer_basic_nationality_placeholder')}
+              invalido={!!errors.nationality}
+              limpavel
             />
           </div>
         </FormBlock>
 
         <FormBlock titulo={t('modal_composer_dates_title')}>
-          <Field
-            ref={fieldRefs.birthDate}
-            label={t('modal_composer_dates_birth')}
-            type="date"
-            value={formData.birthDate}
-            onChange={(e) => handleInputChange('birthDate', e.target.value)}
-            erro={errors.birthDate}
-          />
-          <Field
-            ref={fieldRefs.deathDate}
-            label={t('modal_composer_dates_death')}
-            type="date"
-            value={formData.deathDate}
-            onChange={(e) => handleInputChange('deathDate', e.target.value)}
-            erro={errors.deathDate}
-            ajuda={t('modal_composer_dates_death_note')}
-          />
+          {/* The same picker as "Completar" and the edit page: year typed,
+              month and day optional, approximate dates; it writes the
+              database's format ("15 August 1921", "ca.1845"). */}
+          <div ref={fieldRefs.birthDate}>
+            <Rotulado label={t('modal_composer_dates_birth')}>
+              {(id) => (
+                <SeletorDeData
+                  id={id}
+                  valor={formData.birthDate}
+                  aoMudar={(texto) => handleInputChange('birthDate', texto)}
+                  invalido={!!errors.birthDate}
+                />
+              )}
+            </Rotulado>
+          </div>
+          <div ref={fieldRefs.deathDate} className="flex flex-col gap-1.5">
+            <Rotulado label={t('modal_composer_dates_death')}>
+              {(id) => (
+                <SeletorDeData
+                  id={id}
+                  valor={formData.deathDate}
+                  aoMudar={(texto) => handleInputChange('deathDate', texto)}
+                  invalido={!!errors.deathDate}
+                />
+              )}
+            </Rotulado>
+            <span className="t-legenda">
+              {t('modal_composer_dates_death_note')}
+            </span>
+          </div>
         </FormBlock>
 
         <FormBlock titulo={t('modal_composer_image_title')}>

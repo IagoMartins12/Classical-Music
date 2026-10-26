@@ -17,6 +17,11 @@ describe('lerData', () => {
       dia: null,
     });
     expect(lerData('1830').data).toMatchObject({ ano: 1830, mes: null });
+    expect(lerData('1810-03-01').data).toMatchObject({
+      ano: 1810,
+      mes: 3,
+      dia: 1,
+    });
     expect(lerData('22/11/1913').data).toMatchObject({
       ano: 1913,
       mes: 11,

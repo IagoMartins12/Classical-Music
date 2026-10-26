@@ -88,6 +88,16 @@ export function lerData(texto: string | null | undefined): Leitura {
       },
       inexata: false,
     };
+  m = resto.match(/^(\d{4})-(\d{2})-(\d{2})$/);
+  if (m) {
+    const d = valida({
+      ano: +m[1],
+      mes: +m[2],
+      dia: +m[3],
+      aproximada: incerta,
+    });
+    if (d) return { data: d, inexata: false };
+  }
   m = resto.match(/^(\d{1,2})\/(\d{1,2})\/(\d{4})$/);
   if (m) {
     const d = valida({
