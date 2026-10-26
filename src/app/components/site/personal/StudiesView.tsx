@@ -250,6 +250,16 @@ function StudyCard({
               .join(' · ')}
           </span>
         </div>
+        {/* On a card, editing sits in its top-right corner, as on "Seus
+            envios"; in the list it stays with the row's actions. */}
+        <Button
+          tamanho="p"
+          variante="fantasma"
+          icone={PiPencilSimple}
+          rotulo={copy.edit}
+          onClick={onEdit}
+          className="-mr-2 -mt-2 ml-auto shrink-0 row:hidden"
+        />
       </div>
 
       <div className="flex flex-col gap-3 row:hidden">
@@ -301,11 +311,15 @@ function StudyCard({
             <span className="row:sr-only">{copy.openScore}</span>
           </a>
         )}
+        {/* The row's edit; on a card only the call to pick a score stays here. */}
         <Button
           tamanho="p"
           icone={PiPencilSimple}
           onClick={onEdit}
-          className="row:aspect-square row:!px-0"
+          className={cx(
+            'row:inline-flex row:aspect-square row:!px-0',
+            (score || entry.kind === 'learned') && 'hidden'
+          )}
         >
           <span className="row:sr-only">
             {score || entry.kind === 'learned' ? copy.edit : copy.chooseScore}

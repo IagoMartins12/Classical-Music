@@ -165,7 +165,20 @@ export function CollectionView({ initial }: { initial: CollectionDetail }) {
           return (
             <li
               key={item.refId}
-              className="grid grid-cols-[2.5rem_minmax(0,1fr)_auto] items-start gap-4 py-5"
+              // The row is the card of the page it opens (a score's is its
+              // work's): it turns into that page's header and darkens with
+              // the loading ring in its middle, as in every list
+              // (`CartoesQueViram`).
+              data-vira={
+                c.kind === 'COMPOSER'
+                  ? `compositor-${item.refId}`
+                  : c.kind === 'WORK'
+                    ? `obra-${item.refId}`
+                    : item.workId
+                      ? `obra-${item.workId}`
+                      : undefined
+              }
+              className="relative grid grid-cols-[2.5rem_minmax(0,1fr)_auto] items-start gap-4 rounded-card py-5"
             >
               <span className="font-display text-[1.75rem] leading-none text-texto-fraco">
                 {i + 1}

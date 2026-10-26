@@ -1019,6 +1019,87 @@ html.app-instalado {
   --respiro-topo: calc(env(safe-area-inset-top) + 16px);
 }
 
+/* A abertura do app instalado: enquanto a primeira página não termina de
+   chegar, o símbolo no céu noturno, com uma órbita girando em volta — a
+   mesma cor do fundo da tela de abertura do sistema (`manifest.ts`), para a
+   passagem não piscar. Só no app (`display-mode: standalone` ou o
+   `app-instalado` do iPhone); no navegador não existe. Some quando a página
+   carrega (`aberturaScript`, no `layout.tsx`). Fica no DOM, só escondida:
+   o React hidrata o `<body>` e não pode achar um nó a menos. */
+.abertura-do-app {
+  display: none;
+}
+@media (display-mode: standalone) {
+  .abertura-do-app {
+    display: grid;
+  }
+}
+html.app-instalado .abertura-do-app {
+  display: grid;
+}
+.abertura-do-app {
+  position: fixed;
+  inset: 0;
+  z-index: calc(var(--z-aviso) + 1);
+  place-items: center;
+  align-content: center;
+  gap: 2rem;
+  background: #0c0d12;
+  transition:
+    opacity 360ms var(--saida),
+    visibility 0s linear 360ms;
+}
+html.app-pronto .abertura-do-app {
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+}
+.abertura-do-app .abertura-orbita {
+  position: relative;
+  display: grid;
+  place-items: center;
+  width: 7.5rem;
+  aspect-ratio: 1;
+  border-radius: 9999px;
+  border: 1px solid rgba(212, 175, 55, 0.22);
+}
+/* O corpo que gira na órbita. */
+.abertura-do-app .abertura-orbita::after {
+  content: '';
+  position: absolute;
+  inset: -1px;
+  border-radius: inherit;
+  border: 1.5px solid transparent;
+  border-top-color: #d4af37;
+  animation: card-abrindo 1.1s linear infinite;
+}
+.abertura-do-app .abertura-selo {
+  width: 3.5rem;
+  background-color: #d4af37;
+  animation: abertura-respira 2.2s ease-in-out infinite;
+}
+.abertura-do-app .abertura-nome {
+  --marca: url('/brand/marca/nome.svg');
+  aspect-ratio: 519.5 / 50.5;
+  width: 10rem;
+  background-color: #d4af37;
+  opacity: 0.85;
+}
+@keyframes abertura-respira {
+  50% {
+    opacity: 0.6;
+    transform: scale(0.94);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .abertura-do-app .abertura-selo {
+    animation: none;
+  }
+  .abertura-do-app .abertura-orbita::after {
+    animation-duration: 2.4s;
+  }
+}
+
 /* Inputs e forms */
 /* Campo de formulário: uma aparência só, para os 377 `input-classical` e o
    `Field`. Mais escuro que o card — é onde se escreve, não onde se lê —,

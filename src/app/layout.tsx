@@ -203,6 +203,20 @@ const themeScript = `(function(){
   }
 })();`;
 
+/**
+ * Hides the installed app's opening (`.abertura-do-app`) once the first page
+ * has fully arrived (`load`: the streamed HTML, styles and images), with a
+ * ceiling so a slow image never keeps it up. Runs before React: the opening
+ * must go even if the page's scripts are still on their way.
+ */
+const aberturaScript = `(function(){
+  var h=document.documentElement;
+  var pronto=function(){h.classList.add('app-pronto');};
+  if(document.readyState==='complete'){pronto();return;}
+  addEventListener('load',pronto,{once:true});
+  setTimeout(pronto,8000);
+})();`;
+
 export default function RootLayout({
   children,
 }: {
@@ -275,6 +289,15 @@ export default function RootLayout({
         <meta name="msapplication-TileColor" content="#0c0d12" />
       </head>
       <body className="antialiased">
+        {/* The installed app's opening: the seal while the first page
+            arrives (`.abertura-do-app` in `globals.css`). */}
+        <div className="abertura-do-app" aria-hidden="true">
+          <span className="abertura-orbita">
+            <span className="marca marca-simbolo abertura-selo" />
+          </span>
+          <span className="marca abertura-nome" />
+        </div>
+        <script dangerouslySetInnerHTML={{ __html: aberturaScript }} />
         <ClientThemeWrapper>
           <AuthProvider>{children}</AuthProvider>
           <CartoesQueViram />

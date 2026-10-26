@@ -39,6 +39,11 @@ const nextConfig: NextConfig = withBundleAnalyzer({
     // build worker off: server, client and edge then compile in one process
     // and the heap passed 3 GB. On again, each compiles in its own worker.
     webpackBuildWorker: true,
+    // Dev only: the devtools' segment explorer wraps each page in an extra
+    // node on the server's render but not on the client's, which shifts every
+    // `useId` inside the page and breaks hydration (Sheet's title id on
+    // /learning). Production never renders it.
+    devtoolSegmentExplorer: false,
   },
 
   /**
