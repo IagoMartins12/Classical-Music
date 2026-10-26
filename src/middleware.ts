@@ -191,7 +191,7 @@ function redirecionar(
  * mesma URL, o robô do Google — que chega sem cookie — recebia português e
  * **o inglês não existia para busca nenhuma**. Agora cada idioma tem endereço
  * próprio, declarado por `hreflang`, no mesmo domínio: é uma pasta, não um
- * segundo site, e um terceiro idioma seria mais uma pasta.
+ * segundo site.
  *
  * `/pt/...` nunca é público: redireciona para o caminho limpo, senão a mesma
  * página em português teria dois endereços.

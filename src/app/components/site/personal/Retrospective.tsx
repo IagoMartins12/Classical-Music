@@ -15,9 +15,11 @@ import {
 } from 'react-icons/pi';
 import { RecursoDoPlano } from '@/app/components/site/RecursoDoPlano';
 import { Button, classesDeBotao } from '@/app/components/ui/Button';
+import { Aba, Abas } from '@/app/components/ui/Abas';
 import { Icon } from '@/app/components/ui/Icon';
 import { cx } from '@/app/components/ui/cx';
 import { RETROSPECTIVE } from '@/app/conteudo/site/retrospective';
+import { PranchaDoAno } from './PranchaDoAno';
 import { useRouteLanguage } from '@/app/hooks/useRouteLanguage';
 import {
   generateRetrospective,
@@ -197,23 +199,24 @@ function RetrospectiveStory({
     : '';
 
   return createPortal(
+    // Sempre noturna (`.noite`): o céu do globo da home, em qualquer tema.
     <div
       role="dialog"
       aria-modal="true"
       aria-label={copy.button}
-      className="retro fixed inset-0 z-dialogo flex items-center justify-center bg-[#0c0a07]/95 p-0 sm:p-6"
+      className="noite fixed inset-0 z-dialogo flex items-center justify-center bg-[var(--bg-overlay)] sm:p-6"
     >
-      <div className="relative flex h-full w-full max-w-[28rem] flex-col overflow-hidden bg-[#14110d] text-[#f3ece0] sm:h-[min(52rem,100%)] sm:rounded-[1.5rem]">
-        {/* Barras de progresso, uma por cartão. */}
-        <div className="flex gap-1 px-4 pt-[max(1rem,env(safe-area-inset-top))]">
+      <div className="relative flex h-full w-full max-w-[28rem] flex-col overflow-hidden bg-fundo sm:h-[min(54rem,100%)] sm:rounded-folha sm:border sm:border-linha sm:shadow-[var(--sombra-alta)]">
+        {/* A régua do cartão: um traço por cartão, o atual enchendo em ouro. */}
+        <div className="flex gap-1.5 px-5 pt-[max(1rem,env(safe-area-inset-top))]">
           {(retro?.cards ?? [0, 1, 2]).map((_, i) => (
             <span
               key={i}
-              className="h-1 flex-1 overflow-hidden rounded-full bg-white/15"
+              className="h-[2px] flex-1 overflow-hidden rounded-full bg-linha-forte"
             >
               <span
                 className={cx(
-                  'block h-full bg-[#d4af37]',
+                  'block h-full bg-ouro',
                   i < index
                     ? 'w-full'
                     : i === index && retro
@@ -233,84 +236,87 @@ function RetrospectiveStory({
           ))}
         </div>
 
-        <div className="flex items-center justify-between gap-2 px-4 pt-3">
-          <div className="flex gap-1 rounded-full bg-white/10 p-1">
+        <div className="flex items-center justify-between gap-2 px-3 pt-2">
+          <Abas rotulo={copy.periodLabel}>
             {(['year', 'all'] as RetroPeriod[]).map((p) => (
-              <button
+              <Aba
                 key={p}
-                type="button"
+                ativa={period === p}
                 disabled={busy || (p === 'year' && !yearOk)}
                 onClick={() => setPeriod(p)}
-                className={cx(
-                  'rounded-full px-3 py-1 text-[0.8125rem] transition-colors disabled:opacity-40',
-                  period === p
-                    ? 'bg-[#d4af37] text-[#14110d]'
-                    : 'text-[#f3ece0]/80'
-                )}
               >
                 {p === 'year'
                   ? copy.periods.year(status.year)
                   : copy.periods.all}
-              </button>
+              </Aba>
             ))}
-          </div>
-          <button
+          </Abas>
+          <Button
             ref={closeRef}
-            type="button"
+            variante="fantasma"
+            icone={PiX}
+            rotulo={copy.close}
             onClick={onClose}
-            className="grid h-10 w-10 place-items-center rounded-full text-[#f3ece0]/80 hover:bg-white/10"
-          >
-            <Icon de={PiX} rotulo={copy.close} />
-          </button>
+          />
         </div>
 
         <div
-          className="relative flex flex-1 flex-col justify-center px-7"
+          className="relative flex min-h-0 flex-1 flex-col items-stretch justify-center gap-7 px-7 pb-2"
           onPointerDown={() => setPaused(true)}
           onPointerUp={() => setPaused(false)}
           onPointerLeave={() => setPaused(false)}
         >
           {busy || !card ? (
-            <div role="status" className="flex flex-col items-start gap-5">
-              <span className="retro-pulso h-14 w-14 rounded-full bg-[#d4af37]/80" />
-              <p className="font-display text-[2rem] leading-tight">
-                {copy.generating}
-              </p>
-              <p key={step} className="rise text-[#f3ece0]/70">
-                {copy.generatingSteps[step % copy.generatingSteps.length]}
-              </p>
+            <div role="status" className="flex flex-col gap-7">
+              <PranchaDoAno
+                card={null}
+                chave="gerando"
+                gerando
+                className="w-[min(100%,42dvh)]"
+              />
+              <div className="flex flex-col gap-2">
+                <p className="font-display text-[clamp(1.75rem,7vw,2.125rem)] leading-tight text-balance">
+                  {copy.generating}
+                </p>
+                <p key={step} className="rise t-corpo text-texto-suave">
+                  {copy.generatingSteps[step % copy.generatingSteps.length]}
+                </p>
+              </div>
             </div>
           ) : (
-            <div
-              key={`${period}-${index}`}
-              className="retro-entra flex flex-col gap-5"
-            >
-              <span className="text-[0.8125rem] uppercase tracking-[0.2em] text-[#d4af37]">
-                {card.eyebrow}
-              </span>
-              {card.value && (
-                <span className="font-display text-[clamp(4rem,22vw,6.5rem)] leading-none text-[#d4af37]">
-                  {card.value}
-                </span>
-              )}
-              <h2 className="font-display text-[clamp(1.875rem,8vw,2.5rem)] leading-[1.08]">
-                {card.title}
-              </h2>
-              {card.detail && (
-                <p className="text-[1.0625rem] text-[#f3ece0]/75">
-                  {card.detail}
-                </p>
-              )}
-              {card.list && card.list.length > 0 && (
-                <ol className="flex flex-col gap-2 pt-2">
-                  {card.list.map((item, i) => (
-                    <li key={item} className="flex gap-3 text-[1.0625rem]">
-                      <span className="text-[#d4af37]">{i + 1}</span>
-                      <span>{item}</span>
-                    </li>
-                  ))}
-                </ol>
-              )}
+            <div key={`${period}-${index}`} className="flex flex-col gap-7">
+              <PranchaDoAno
+                card={card}
+                chave={`${period}-${index}`}
+                className="w-[min(100%,42dvh)]"
+              />
+              <div className="retro-entra flex flex-col gap-3">
+                <h2 className="font-display text-[clamp(1.75rem,7vw,2.25rem)] leading-[1.1] text-balance">
+                  {card.title}
+                </h2>
+                {/* O número fica no centro da prancha, que é decorativa:
+                    o leitor de tela ouve aqui, junto do que ele mede. */}
+                {(card.detail || card.value) && (
+                  <p className="t-corpo text-texto-suave">
+                    {card.value && (
+                      <span className="sr-only">{card.value} </span>
+                    )}
+                    {card.detail}
+                  </p>
+                )}
+                {card.list && card.list.length > 0 && (
+                  <ol className="flex flex-col gap-2.5 pt-1">
+                    {card.list.map((item, i) => (
+                      <li key={item} className="flex items-baseline gap-3">
+                        <span className="font-display text-[1.125rem] leading-none text-ouro-texto tabular-nums">
+                          {i + 1}
+                        </span>
+                        <span className="t-corpo">{item}</span>
+                      </li>
+                    ))}
+                  </ol>
+                )}
+              </div>
             </div>
           )}
 
@@ -334,53 +340,52 @@ function RetrospectiveStory({
         </div>
 
         {retro && (
-          <div className="flex flex-col gap-3 px-5 pb-[max(1.25rem,env(safe-area-inset-bottom))]">
-            {info.saved?.stale && (
-              <p className="text-[0.8125rem] text-[#f3ece0]/70">{copy.stale}</p>
-            )}
+          <div className="flex flex-col gap-3 border-t border-linha px-5 pb-[max(1rem,env(safe-area-inset-bottom))] pt-3">
+            {info.saved?.stale && <p className="t-legenda">{copy.stale}</p>}
             <div className="flex flex-wrap items-center gap-2">
               <a
                 href={`/og/retro/${retro.shareId}?card=${index}&download=1`}
-                className="inline-flex min-h-10 items-center gap-2 rounded-full bg-[#d4af37] px-4 text-[0.875rem] font-medium text-[#14110d]"
+                className={classesDeBotao('primario', 'p')}
               >
                 <Icon de={PiDownloadSimple} tamanho="pp" /> {copy.download}
               </a>
-              <button
-                type="button"
+              <Button
+                tamanho="p"
+                icone={PiLinkSimple}
                 onClick={() => {
                   void navigator.clipboard?.writeText(shareUrl);
                   toast.success(copy.copied);
                 }}
-                className="inline-flex min-h-10 items-center gap-2 rounded-full bg-white/10 px-4 text-[0.875rem]"
               >
-                <Icon de={PiLinkSimple} tamanho="pp" /> {copy.copyLink}
-              </button>
+                {copy.copyLink}
+              </Button>
               {info.saved && (
-                <button
-                  type="button"
+                <Button
+                  tamanho="p"
+                  variante="fantasma"
+                  icone={PiArrowClockwise}
                   onClick={() => void load(period, true)}
-                  className="inline-flex min-h-10 items-center gap-2 rounded-full px-3 text-[0.875rem] text-[#f3ece0]/80 hover:bg-white/10"
                 >
-                  <Icon de={PiArrowClockwise} tamanho="pp" /> {copy.regenerate}
-                </button>
+                  {copy.regenerate}
+                </Button>
               )}
               <span className="ml-auto flex gap-1">
-                <button
-                  type="button"
+                <Button
+                  tamanho="p"
+                  variante="fantasma"
+                  icone={PiCaretLeft}
+                  rotulo={copy.previous}
                   onClick={() => go(-1)}
                   disabled={index === 0}
-                  className="grid h-10 w-10 place-items-center rounded-full bg-white/10 disabled:opacity-30"
-                >
-                  <Icon de={PiCaretLeft} rotulo={copy.previous} />
-                </button>
-                <button
-                  type="button"
+                />
+                <Button
+                  tamanho="p"
+                  variante="fantasma"
+                  icone={PiCaretRight}
+                  rotulo={copy.next}
                   onClick={() => go(1)}
                   disabled={index >= total - 1}
-                  className="grid h-10 w-10 place-items-center rounded-full bg-white/10 disabled:opacity-30"
-                >
-                  <Icon de={PiCaretRight} rotulo={copy.next} />
-                </button>
+                />
               </span>
             </div>
           </div>

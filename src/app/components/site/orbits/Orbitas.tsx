@@ -23,7 +23,7 @@ import { BrandSeal } from '../BrandSeal';
  * Decorative (`aria-hidden`): every fact in them is also in the text.
  */
 
-const C = 300;
+export const C = 300;
 const DISPLAY = 'var(--fonte-display)';
 
 const STARS = [
@@ -42,7 +42,7 @@ const STARS = [
 
 /** Rounded so the server and the browser print the same numbers. */
 const r2 = (n: number) => Math.round(n * 100) / 100;
-const at = (r: number, deg: number) => {
+export const at = (r: number, deg: number) => {
   const rad = (deg * Math.PI) / 180;
   return { x: r2(C + r * Math.cos(rad)), y: r2(C + r * Math.sin(rad)) };
 };
@@ -54,14 +54,20 @@ const arc = (r: number, deg: number) => {
   return `M ${a.x} ${a.y} A ${r} ${r} 0 1 1 ${b.x} ${b.y} A ${r} ${r} 0 1 1 ${a.x} ${a.y}`;
 };
 
-function Moldura({
+export function Moldura({
   children,
   seal = true,
+  centro,
+  sempre = false,
   regua,
   className,
 }: {
   children: ReactNode;
   seal?: boolean;
+  /** What sits in the middle instead of the seal (the retrospective's number). */
+  centro?: ReactNode;
+  /** Shown at every size; the editorial pages show it from `lg` up only. */
+  sempre?: boolean;
   /** The graduated rim, turning on its own layer (`CamadaQueGira`). */
   regua?: ReactNode;
   className?: string;
@@ -70,7 +76,8 @@ function Moldura({
     <div
       aria-hidden="true"
       className={cx(
-        'orbitas relative mx-auto hidden aspect-square w-full max-w-[26rem] [container-type:inline-size] lg:block',
+        'orbitas relative mx-auto aspect-square w-full max-w-[26rem] [container-type:inline-size]',
+        !sempre && 'hidden lg:block',
         className
       )}
     >
@@ -92,14 +99,15 @@ function Moldura({
       </svg>
       {regua}
       {Children.toArray(children).filter(foraDoDesenho)}
-      {seal && (
-        <BrandSeal className="absolute left-1/2 top-1/2 w-[20%] -translate-x-1/2 -translate-y-1/2" />
-      )}
+      {centro ??
+        (seal && (
+          <BrandSeal className="absolute left-1/2 top-1/2 w-[20%] -translate-x-1/2 -translate-y-1/2" />
+        ))}
     </div>
   );
 }
 
-function Anel({
+export function Anel({
   r,
   i,
   o = 0.45,
@@ -129,7 +137,7 @@ function Anel({
 }
 
 /** The graduated rim, turning very slowly, as on the home atlas. */
-function Regua({ r = 278, o = 0.4 }: { r?: number; o?: number }) {
+export function Regua({ r = 278, o = 0.4 }: { r?: number; o?: number }) {
   return (
     <CamadaQueGira opacity={o}>
       {Array.from({ length: 72 }, (_, k) => k * 5).map((deg) => (
@@ -149,7 +157,7 @@ function Regua({ r = 278, o = 0.4 }: { r?: number; o?: number }) {
 }
 
 /** Small capitals that follow a ring. */
-function Rotulo({
+export function Rotulo({
   r,
   deg,
   children,
@@ -187,7 +195,7 @@ const pct = (n: number) => `${r2(n / 6)}%`;
  * upright with a composited counter-turn (`orbita-de-pe`) — inside the SVG
  * each frame repainted the whole drawing.
  */
-function Corpo({
+export function Corpo({
   r,
   deg,
   icone: Icone,
@@ -231,7 +239,7 @@ function Corpo({
  * box (the GPU turns it, nothing repaints). Strokes inside it are drawn in a
  * layer `<svg>`; bodies stay upright.
  */
-function Gira({
+export function Gira({
   segundos,
   children,
   reverso = false,

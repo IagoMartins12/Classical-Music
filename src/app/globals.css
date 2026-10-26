@@ -3197,9 +3197,209 @@ html {
   color: var(--ouro-texto);
 }
 
-/* A retrospectiva de estudo (Plus): a barra do cartão enche no tempo dele, o
-   cartão entra subindo, e a bolinha de "gerando" pulsa. Com movimento
-   reduzido, nada se move: a barra aparece cheia. */
+/* A retrospectiva de estudo (Plus) é sempre noturna, o céu do globo da home
+   (decisão do dono, 26/10): `.noite` devolve os tokens do tema escuro dentro
+   dela, mesmo com o site no tema claro. Os tokens compostos (o degradê das
+   superfícies) são calculados onde são declarados, então o bloco escuro
+   inteiro se repete aqui, e não só as cores-base. Gerado a partir do
+   `:root` escuro: mudou lá, muda aqui. */
+.noite {
+  /* --- Superfícies. O degradê é do produto; o ângulo é sempre o mesmo. --- */
+  --angulo: 135deg;
+
+  --fundo: #0c0d12;
+  /* Fundo de campo de formulário: um passo acima do chão, perto do card —
+     a borda é que marca o campo. O chão puro (#0c0d12) ficava um buraco. */
+  /* Um véu claro, não uma cor: sobre o card (#191a24) um cinza fixo
+     sumia; o véu fica mais claro que qualquer superfície em que cair. */
+  --campo: rgba(243, 241, 236, 0.06);
+  --borda-campo: rgba(243, 241, 236, 0.3);
+  --sup-1-a: #191a24;
+  --sup-1-b: #13141c;
+  --sup-2-a: #21222e;
+  --sup-2-b: #1a1b25;
+  --sup-alta-a: #2a2b39;
+  --sup-alta-b: #202130;
+  /* Esqueleto: um passo acima do card, para o bloco se ler sobre ele. */
+  --esqueleto: #23242f;
+  --esqueleto-brilho: #2f303e;
+
+  --sup-1: linear-gradient(var(--angulo), var(--sup-1-a), var(--sup-1-b));
+  --sup-2: linear-gradient(var(--angulo), var(--sup-2-a), var(--sup-2-b));
+  --sup-alta: linear-gradient(
+    var(--angulo),
+    var(--sup-alta-a),
+    var(--sup-alta-b)
+  );
+
+  /* --- Linhas e sombras. Uma espessura só: 1px. --- */
+  --linha: rgba(243, 241, 236, 0.1);
+  --linha-forte: rgba(243, 241, 236, 0.2);
+  --sombra-1: 0 10px 24px rgba(0, 0, 0, 0.32);
+  --sombra-2: 0 16px 36px rgba(0, 0, 0, 0.46);
+  --sombra-alta: 0 24px 60px rgba(0, 0, 0, 0.6);
+
+  /* --- Texto --- */
+  --texto: #f3f1ec;
+  --texto-suave: #b5b1c0;
+  --texto-fraco: #8f8b9c;
+  --sobre-ouro: #0c0d12;
+
+  /* --- Ouro: marca, hierarquia, e nada além. --- */
+  --ouro: #d4af37;
+  /* Fatias da pizza do painel: o ouro em quatro degraus, da maior fatia
+     para a menor, e um cinza para "Outras". Uma cor só, como o resto do
+     painel — validados (skill de dataviz, modo ordinal) contra a superfície
+     escura: degraus monótonos, ΔL >= 0,06, a mais clara >= 2:1. */
+  --grafico-1: #d4af37;
+  --grafico-2: #a38832;
+  --grafico-3: #806c2e;
+  --grafico-4: #64562c;
+  --grafico-outras: #605e6c;
+  --ouro-texto: #e0bc5c;
+  --ouro-fill: linear-gradient(var(--angulo), #debc4c, #c9a32d);
+  --ouro-fill-hover: linear-gradient(var(--angulo), #e8c863, #d4af37);
+  --ouro-tint: linear-gradient(
+    var(--angulo),
+    rgba(212, 175, 55, 0.2),
+    rgba(212, 175, 55, 0.1)
+  );
+  /* Degradê para letra, não para fundo: as duas pontas passam no contraste.
+     Escuro: 11,90 e 10,60:1 sobre o fundo. */
+  --ouro-texto-grad: linear-gradient(var(--angulo), #e8c863, #d4af37);
+  /* Ouro de texto sobre a tinta dourada (selo, ficha ativa). No escuro é o
+     próprio ouro de texto: 6,3:1 sobre a tinta. */
+  --ouro-na-tinta: var(--ouro-texto);
+
+  /* --- Estados: quatro, não onze. --- */
+  --erro: #e8735a;
+  /* Texto sobre o vermelho: o erro do escuro é claro, e branco nele dá 2,9:1. */
+  --sobre-erro: #0c0d12;
+  /* Texto sobre fotografia (legenda de retrato): a foto é a mesma nos dois
+     temas, então a legenda e o véu por baixo também são. */
+  --sobre-foto: #f3f1ec;
+  --veu-foto: rgba(12, 13, 18, 0.78);
+  --ok: #6a9b6e;
+  --atencao: #d9a441;
+  --aviso: #6f8fbf;
+  /* O selo de verificada é azul, por decisão do dono (28/09): a única cor
+     fora do ouro que não é de estado, e só nele. 6,7:1 sobre o fundo e 5,8:1
+     sobre o card. */
+  --verificado: #4c9bf0;
+
+  /* --- Espaço: os seis degraus que o projeto já usava (94,9% dos usos). --- */
+  --e-1: 4px;
+  --e-2: 8px;
+  --e-3: 12px;
+  --e-4: 16px;
+  --e-6: 24px;
+  --e-8: 32px;
+  --e-12: 48px;
+  --e-16: 64px;
+
+  /* --- Forma. Raio interno sempre menor que o externo. --- */
+  --r-controle: 10px;
+  --r-card: 16px;
+  --r-folha: 20px;
+  --r-pilula: 9999px;
+  --alvo: 44px; /* altura mínima de toque, no site também */
+
+  /* --- Tempo. Decoração é lenta e por trás; interface é rápida e à frente. */
+  --saida: cubic-bezier(0.23, 1, 0.32, 1);
+  --t-toque: 120ms;
+  --t-resposta: 180ms;
+  --t-entrada: 240ms;
+  /* A folha anda uma distância maior que um menu: com 240ms, abrir o
+     cadastro por cima do login parecia um corte seco. */
+  --t-folha: 320ms;
+
+  /* --- Camadas: ver o bloco "Camadas" abaixo do `@theme` (10 a 400). --- */
+
+  /* --- Contêineres --- */
+  --largura-texto: 720px;
+  --largura-conteudo: 1120px;
+  --largura-catalogo: 1280px;
+
+  /* --- Foco: um anel só, em tudo que recebe teclado. --- */
+  --foco-anel: 0 0 0 3px rgba(212, 175, 55, 0.3);
+
+  /* =======================================================================
+     A camada anterior, agora apontando para os tokens acima.
+     ======================================================================= */
+  --bg-primary: var(--fundo);
+  --bg-secondary: var(--sup-1-b);
+  --bg-tertiary: var(--sup-2-b);
+  --bg-elevated: var(--sup-2-a);
+  --bg-overlay: rgba(6, 7, 10, 0.72);
+
+  --text-primary: var(--texto);
+  --text-secondary: var(--texto-suave);
+  --text-tertiary: var(--texto-fraco);
+  --text-inverse: var(--sobre-ouro);
+
+  --brand-primary: var(--ouro);
+  --brand-secondary: var(--ouro-texto);
+  --brand-gradient: var(--ouro-fill);
+
+  --accent-gold: var(--ouro);
+  --accent-amber: var(--ouro-texto);
+  /* Roxo e azul decorativos saem da paleta: viram os estados semânticos. */
+  --accent-purple: var(--aviso);
+  --accent-blue: var(--aviso);
+  --accent-green: var(--ok);
+  --accent-red: var(--erro);
+
+  --border-primary: var(--linha);
+  --border-secondary: var(--linha);
+  --border-accent: var(--ouro);
+
+  --interactive-hover: rgba(212, 175, 55, 0.1);
+  --interactive-active: rgba(212, 175, 55, 0.18);
+  --interactive-focus: rgba(212, 175, 55, 0.3);
+  --interactive-disabled: rgba(143, 139, 156, 0.3);
+
+  --shadow-small: var(--sombra-1);
+  --shadow-medium: var(--sombra-1);
+  --shadow-large: var(--sombra-2);
+  --shadow-glow: var(--sombra-2);
+
+  --gradient-primary: linear-gradient(
+    var(--angulo),
+    var(--fundo) 0%,
+    var(--sup-1-b) 100%
+  );
+  --gradient-card: var(--sup-1);
+  --gradient-card-2: var(--sup-2);
+  --gradient-hero: linear-gradient(
+    var(--angulo),
+    var(--fundo) 0%,
+    var(--sup-2-b) 100%
+  );
+  --gradient-overlay: linear-gradient(
+    to bottom,
+    transparent 0%,
+    rgba(6, 7, 10, 0.78) 100%
+  );
+
+  /* As transições nomeadas continuam, sem o `all`. */
+  --transition-theme:
+    background-color var(--t-entrada) var(--saida),
+    color var(--t-entrada) var(--saida),
+    border-color var(--t-entrada) var(--saida);
+  --transition-fast: var(--t-toque) var(--saida);
+  --transition-smooth: var(--t-resposta) var(--saida);
+  --transition-slow: var(--t-entrada) var(--saida);
+  color-scheme: dark;
+  color: var(--texto);
+}
+.noite .orbitas {
+  color: var(--ouro);
+}
+
+/* A barra do cartão enche no tempo dele, o cartão entra subindo, as
+   estrelas acendem depois que os anéis se desenham, e o arco de uma fração
+   cresce até o tamanho dela. Gerando, os anéis se desenham sem parar. Com
+   movimento reduzido, nada se move: tudo aparece pronto. */
 @keyframes retro-barra {
   from {
     width: 0;
@@ -3211,13 +3411,18 @@ html {
 @keyframes retro-entra {
   from {
     opacity: 0;
-    transform: translateY(18px);
+    transform: translateY(14px);
   }
 }
-@keyframes retro-pulso {
-  50% {
-    transform: scale(0.82);
-    opacity: 0.6;
+@keyframes retro-acende {
+  from {
+    opacity: 0;
+    transform: scale(0.2);
+  }
+}
+@keyframes retro-arco {
+  from {
+    stroke-dasharray: 0 9999;
   }
 }
 .retro-barra {
@@ -3228,9 +3433,19 @@ html {
     animation: retro-barra linear both;
   }
   .retro-entra {
-    animation: retro-entra 520ms var(--saida) both;
+    animation: retro-entra 560ms var(--saida) both;
   }
-  .retro-pulso {
-    animation: retro-pulso 1400ms ease-in-out infinite;
+  .retro-estrela {
+    transform-box: fill-box;
+    transform-origin: center;
+    animation: retro-acende 520ms var(--saida) both;
+    animation-delay: calc(var(--i, 0) * 45ms + 900ms);
+  }
+  .retro-arco {
+    animation: retro-arco 1400ms var(--saida) 700ms both;
+  }
+  .retro-gerando .engraving > :is(circle, ellipse, path)[pathLength] {
+    animation: engrave 1600ms var(--saida) infinite alternate;
+    animation-delay: calc(var(--i, 0) * 220ms);
   }
 }

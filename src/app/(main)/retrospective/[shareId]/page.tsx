@@ -1,6 +1,9 @@
 import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import LocalizedLink from '@/app/components/LocalizedLink';
+import { PranchaDoAno } from '@/app/components/site/personal/PranchaDoAno';
+import { classesDeBotao } from '@/app/components/ui/Button';
+import { cx } from '@/app/components/ui/cx';
 import { RETROSPECTIVE } from '@/app/conteudo/site/retrospective';
 import { sharedRetrospective } from '@/app/requests/retrospective';
 import { SITE_URL } from '@/app/utils/seoAlternates';
@@ -45,49 +48,45 @@ export default async function SharedRetrospectivePage({ params }: Props) {
   const copy = RETROSPECTIVE[retro.language];
 
   return (
-    <main className="bg-[#14110d] px-4 py-16 text-[#f3ece0] sm:py-24">
-      <div className="mx-auto flex max-w-[28rem] flex-col gap-6">
-        <h1 className="font-display text-[clamp(2rem,7vw,2.75rem)] leading-tight">
+    // Sempre noturna, como dentro do site (`.noite`).
+    <main className="noite min-h-dvh bg-fundo px-4 py-16 sm:py-24">
+      <div className="mx-auto flex max-w-[28rem] flex-col gap-16">
+        <h1 className="font-display text-[clamp(2rem,7vw,2.75rem)] leading-tight text-balance">
           {copy.share.title(retro.firstName)}
         </h1>
 
         {retro.cards.map((card, i) => (
-          <section
-            key={`${card.kind}-${i}`}
-            className="flex aspect-[9/16] flex-col justify-center gap-5 rounded-[1.5rem] bg-white/[0.04] px-7"
-          >
-            <span className="text-[0.8125rem] uppercase tracking-[0.2em] text-[#d4af37]">
-              {card.eyebrow}
-            </span>
-            {card.value && (
-              <span className="font-display text-[clamp(4rem,22vw,6.5rem)] leading-none text-[#d4af37]">
-                {card.value}
-              </span>
-            )}
-            <h2 className="font-display text-[clamp(1.875rem,8vw,2.5rem)] leading-[1.08]">
-              {card.title}
-            </h2>
-            {card.detail && (
-              <p className="text-[1.0625rem] text-[#f3ece0]/75">
-                {card.detail}
-              </p>
-            )}
-            {card.list && card.list.length > 0 && (
-              <ol className="flex flex-col gap-2 pt-2">
-                {card.list.map((item, n) => (
-                  <li key={item} className="flex gap-3 text-[1.0625rem]">
-                    <span className="text-[#d4af37]">{n + 1}</span>
-                    <span>{item}</span>
-                  </li>
-                ))}
-              </ol>
-            )}
+          <section key={`${card.kind}-${i}`} className="flex flex-col gap-7">
+            <PranchaDoAno card={card} chave={`publica-${i}`} />
+            <div className="flex flex-col gap-3">
+              <h2 className="font-display text-[clamp(1.75rem,7vw,2.25rem)] leading-[1.1] text-balance">
+                {card.title}
+              </h2>
+              {(card.detail || card.value) && (
+                <p className="t-corpo text-texto-suave">
+                  {card.value && <span className="sr-only">{card.value} </span>}
+                  {card.detail}
+                </p>
+              )}
+              {card.list && card.list.length > 0 && (
+                <ol className="flex flex-col gap-2.5 pt-1">
+                  {card.list.map((item, n) => (
+                    <li key={item} className="flex items-baseline gap-3">
+                      <span className="font-display text-[1.125rem] leading-none text-ouro-texto tabular-nums">
+                        {n + 1}
+                      </span>
+                      <span className="t-corpo">{item}</span>
+                    </li>
+                  ))}
+                </ol>
+              )}
+            </div>
           </section>
         ))}
 
         <LocalizedLink
-          href="/pricing"
-          className="mt-4 rounded-full bg-[#d4af37] px-6 py-3.5 text-center font-medium text-[#14110d] hover:bg-[#e0bf4f]"
+          href="/pricing#plus"
+          className={cx(classesDeBotao('primario', 'm'), 'w-full')}
         >
           {copy.share.cta}
         </LocalizedLink>
