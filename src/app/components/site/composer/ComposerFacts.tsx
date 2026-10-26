@@ -6,7 +6,8 @@ import {
   type ComposerCopy,
 } from '@/app/conteudo/site/composer';
 import { countryOf } from '@/app/conteudo/site/countries';
-import { eraName } from '@/app/conteudo/site/eras';
+import { instrumentOf } from '@/app/conteudo/instruments/meta';
+import { eraName, eraOf } from '@/app/conteudo/site/eras';
 import type {
   ComposerDetails,
   ComposerOverview,
@@ -30,6 +31,8 @@ function Fact({
 }
 
 const value = 'font-display text-[1.1875rem] leading-snug';
+const link =
+  'underline decoration-transparent underline-offset-4 hover:decoration-[var(--ouro)]';
 
 /** Birth, death, country, era and instruments: only the facts on record. */
 export function ComposerFacts({
@@ -71,24 +74,43 @@ export function ComposerFacts({
       {era && (
         <Fact term={copy.era}>
           <dd className={value}>
-            <Link
-              href="/history"
-              className="underline decoration-transparent underline-offset-4 hover:decoration-[var(--ouro)]"
-            >
-              {era}
-            </Link>
+            {/* The era's chapter in the history of music. It pointed to
+                `/history`, which does not exist. */}
+            {eraOf(composer.epochName) ? (
+              <Link
+                href={`/music-history/${eraOf(composer.epochName)!.key}`}
+                className={link}
+              >
+                {era}
+              </Link>
+            ) : (
+              era
+            )}
           </dd>
         </Fact>
       )}
       {writtenFor.length > 0 && (
         <Fact term={copy.wroteFor} wide>
           <dd className={value}>
-            {writtenFor.map((item, i) => (
-              <span key={item.instrumentId}>
-                {i > 0 && <span className="text-texto-fraco">{' · '}</span>}
-                {i === 0 ? item.name : item.name.toLowerCase()}
-              </span>
-            ))}
+            {writtenFor.map((item, i) => {
+              const nome = i === 0 ? item.name : item.name.toLowerCase();
+              const instrumento = instrumentOf(item.name);
+              return (
+                <span key={item.instrumentId}>
+                  {i > 0 && <span className="text-texto-fraco">{' · '}</span>}
+                  {instrumento ? (
+                    <Link
+                      href={`/instruments/${instrumento.key}`}
+                      className={link}
+                    >
+                      {nome}
+                    </Link>
+                  ) : (
+                    nome
+                  )}
+                </span>
+              );
+            })}
           </dd>
         </Fact>
       )}

@@ -55,12 +55,14 @@ describe('robots', () => {
       expect(nomeados).not.toContain('Googlebot');
     });
 
-    it('mantém o bloqueio dos robôs de IA', async () => {
+    // O Opus Atlas quer ser citado pelas IAs: nenhum robô delas é barrado.
+    it('libera os robôs de IA (seguem o grupo `*`)', async () => {
       vi.stubEnv('SITE_NOINDEX', '');
-      const ia = regras(await gerar()).find((r) =>
-        lista(r.userAgent).includes('GPTBot')
-      );
-      expect(ia?.disallow).toBe('/');
+      const r = regras(await gerar());
+      const nomeados = r.flatMap((g) => lista(g.userAgent));
+      for (const robo of ['GPTBot', 'ClaudeBot', 'Google-Extended', 'CCBot'])
+        expect(nomeados).not.toContain(robo);
+      expect(r.find((g) => g.userAgent === '*')?.allow).toBe('/');
     });
   });
 

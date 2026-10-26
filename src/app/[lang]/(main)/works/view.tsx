@@ -59,30 +59,6 @@ const getCachedMetadata = unstable_cache(
         instrumentDescription: `Descubra obras clássicas para ${instrument}. Partituras gratuitas organizadas por compositor e dificuldade.`,
         composerTitle: `Obras de ${composer} - Partituras Completas`,
         composerDescription: `Explore todas as obras de ${composer}. Partituras gratuitas, análises e guias de estudo completos.`,
-        keywords: [
-          'obras música clássica',
-          'partituras gratuitas',
-          'Bach obras completas',
-          'Chopin partituras piano',
-          'Beethoven sonatas',
-          'Mozart sinfonias',
-          'sonata ao luar',
-          'moonlight sonata',
-          'valsa das flores',
-          'estudos Chopin',
-          'partituras violino',
-          'partituras piano',
-          'obras barrocas',
-          'obras românticas',
-          'música clássica PDF',
-          'IMSLP partituras',
-          'download partituras',
-          'estudar música clássica',
-          'conservatório partituras',
-          'educação musical',
-          'análise musical',
-          'interpretação clássica',
-        ],
       },
       en: {
         baseTitle: 'Classical Music Works - Free Sheet Music',
@@ -94,29 +70,6 @@ const getCachedMetadata = unstable_cache(
         instrumentDescription: `Discover classical works for ${instrument}. Free sheet music organized by composer and difficulty.`,
         composerTitle: `Works by ${composer} - Complete Scores`,
         composerDescription: `Explore all works by ${composer}. Free sheet music, analyses and complete study guides.`,
-        keywords: [
-          'classical music works',
-          'free sheet music',
-          'Bach complete works',
-          'Chopin piano scores',
-          'Beethoven sonatas',
-          'Mozart symphonies',
-          'moonlight sonata',
-          'waltz of the flowers',
-          'Chopin etudes',
-          'violin sheet music',
-          'piano sheet music',
-          'baroque works',
-          'romantic works',
-          'classical music PDF',
-          'IMSLP scores',
-          'sheet music download',
-          'study classical music',
-          'conservatory scores',
-          'music education',
-          'musical analysis',
-          'classical interpretation',
-        ],
       },
     };
 
@@ -140,7 +93,7 @@ const getCachedMetadata = unstable_cache(
       title += ` - Página ${page}`;
     }
 
-    return { title, description, keywords: t.keywords };
+    return { title, description };
   },
   ['works-metadata'],
   {
@@ -159,7 +112,7 @@ export async function worksMetadata(
     parsed.instrumentId || parsed.composerId
       ? await getCatalogFilterOptions()
       : null;
-  const { title, description, keywords } = await getCachedMetadata(
+  const { title, description } = await getCachedMetadata(
     {
       page: String(parsed.page),
       search: parsed.search,
@@ -175,7 +128,6 @@ export async function worksMetadata(
   return {
     title,
     description,
-    keywords,
     authors: [{ name: 'Opus Atlas' }],
     creator: 'Opus Atlas',
     openGraph: {

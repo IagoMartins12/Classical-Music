@@ -7,6 +7,9 @@ import {
   type LangParams,
 } from '@/app/utils/translations/routeLanguage';
 import { SITE_URL, alternatesFor } from '@/app/utils/seoAlternates';
+import { eraName } from '@/app/conteudo/site/eras';
+import { workTitle } from '@/app/components/site/workTitle';
+import { resumo, urlDe } from '@/app/utils/seo';
 
 interface WorkParams {
   workId: string;
@@ -70,97 +73,53 @@ export async function generateMetadata({ params }: WorkDetailsPageProps) {
     return notFoundContent[language];
   }
 
-  const content = {
-    pt: {
-      titleTemplate: `${work.title} - ${work.composer.name} | Partitura Gratuita`,
-      description: `${work.title} de ${work.composer.fullName}${
-        work.opOrCatalog ? ` (${work.opOrCatalog})` : ''
-      }. ${work.tone ? `Tom: ${work.tone}. ` : ''}${
-        work.compositionYear ? `Composta em ${work.compositionYear}. ` : ''
-      }${work.instrument ? `Para ${work.instrument.name}. ` : ''}${
-        work.epoch ? `Período ${work.epoch.name}. ` : ''
-      }Partitura gratuita, análise musical e guia de estudo completo.`,
-      keywords: [
-        `${work.title} partitura`,
-        `${work.composer.name} ${work.title}`,
-        `${work.composer.fullName} partituras`,
-        `${work.title} ${work.instrument?.name || 'piano'}`,
-        `${work.composer.name} partituras gratuitas`,
-        `${work.title} PDF`,
-        `estudar ${work.title}`,
-        `como tocar ${work.title}`,
-        `análise ${work.title}`,
-        `${work.epoch?.name || 'música clássica'}`,
-        `${work.instrument?.name || 'piano'} clássico`,
-        'partitura IMSLP',
-        'música clássica gratuita',
-        'download partitura',
-        'estudo musical',
-        'conservatório',
-        'educação musical',
-        ...(work.categoryNames || []),
-        ...(work.workGenresArr || []),
-      ].filter(Boolean),
-      ogTitle: `${work.title} - ${work.composer.name} | Partitura Gratuita`,
-      ogDescription: `Estude ${work.title} de ${work.composer.fullName}. Partitura gratuita, análise musical e recursos educacionais completos.`,
-    },
-    en: {
-      titleTemplate: `${work.title} - ${work.composer.name} | Free Sheet Music`,
-      description: `${work.title} by ${work.composer.fullName}${
-        work.opOrCatalog ? ` (${work.opOrCatalog})` : ''
-      }. ${work.tone ? `Key: ${work.tone}. ` : ''}${
-        work.compositionYear ? `Composed in ${work.compositionYear}. ` : ''
-      }${work.instrument ? `For ${work.instrument.name}. ` : ''}${
-        work.epoch ? `${work.epoch.name} period. ` : ''
-      }Free sheet music, musical analysis and complete study guide.`,
-      keywords: [
-        `${work.title} sheet music`,
-        `${work.composer.name} ${work.title}`,
-        `${work.composer.fullName} scores`,
-        `${work.title} ${work.instrument?.name || 'piano'}`,
-        `${work.composer.name} free sheet music`,
-        `${work.title} PDF`,
-        `study ${work.title}`,
-        `how to play ${work.title}`,
-        `${work.title} analysis`,
-        `${work.epoch?.name || 'classical music'}`,
-        `${work.instrument?.name || 'piano'} classical`,
-        'IMSLP sheet music',
-        'free classical music',
-        'sheet music download',
-        'musical study',
-        'conservatory',
-        'music education',
-        ...(work.categoryNames || []),
-        ...(work.workGenresArr || []),
-      ].filter(Boolean),
-      ogTitle: `${work.title} - ${work.composer.name} | Free Sheet Music`,
-      ogDescription: `Study ${work.title} by ${work.composer.fullName}. Free sheet music, musical analysis and complete educational resources.`,
-    },
+  // Title and description aimed at what people search for a piece: its name
+  // and composer, then "sheet music" (the root layout adds " | Opus Atlas").
+  // The description is the work's facts, then what the page offers.
+  const nome = workTitle(work.title, work.opOrCatalog);
+  const era = eraName(work.epoch?.name ?? work.composer.epochName, language);
+  const formacao = work.instrumentation || work.instrument?.name;
+  const fatos =
+    language === 'pt'
+      ? [
+          `${nome}, de ${work.composer.fullName}`,
+          work.compositionYear && `composta em ${work.compositionYear}`,
+          formacao && `para ${formacao.toLowerCase()}`,
+          work.tone && `em ${work.tone}`,
+          era && `período ${era}`,
+        ]
+      : [
+          `${nome} by ${work.composer.fullName}`,
+          work.compositionYear && `composed in ${work.compositionYear}`,
+          formacao && `for ${formacao.toLowerCase()}`,
+          work.tone && `in ${work.tone}`,
+          era && `${era} period`,
+        ];
+  const t = {
+    titleTemplate:
+      language === 'pt'
+        ? `${nome} (${work.composer.name}): partitura e estudo`
+        : `${nome} (${work.composer.name}): sheet music and study`,
+    ogTitle: `${nome} — ${work.composer.fullName}`,
   };
-
-  const t = content[language];
-
-  // Limitar description para SEO
-  const description =
-    t.description.length > 160
-      ? t.description.substring(0, 157) + '...'
-      : t.description;
+  const description = resumo(
+    `${fatos.filter(Boolean).join(', ')}. ${
+      language === 'pt'
+        ? 'Partituras gratuitas, gravações e nível de estudo.'
+        : 'Free sheet music, recordings and study level.'
+    }`
+  );
 
   return {
     title: t.titleTemplate,
     description,
-    keywords: t.keywords,
-    authors: [{ name: 'Opus Atlas' }],
-    creator: 'Opus Atlas',
-    publisher: 'Opus Atlas',
     openGraph: {
       title: t.ogTitle,
-      description: t.ogDescription,
+      description,
       type: 'music.song',
       siteName: 'Opus Atlas',
       locale: language === 'pt' ? 'pt_BR' : 'en_US',
-      url: `${SITE_URL}/works/${work.id}`,
+      url: urlDe(`/works/${work.id}`, language),
       images: [
         {
           url: `${SITE_URL}/og/work/${work.id}?l=${language}`,
@@ -175,7 +134,7 @@ export async function generateMetadata({ params }: WorkDetailsPageProps) {
     twitter: {
       card: 'summary_large_image',
       title: t.titleTemplate,
-      description: description.substring(0, 200),
+      description,
     },
     alternates: alternatesFor(`/works/${work.id}`, language),
     robots: {

@@ -1,11 +1,16 @@
+import type { ReactNode } from 'react';
 import { PiArrowSquareOut } from 'react-icons/pi';
 import Link from '@/app/components/LocalizedLink';
 import { Icon } from '@/app/components/ui/Icon';
 import type { Idioma } from '@/app/conteudo/legal/tipos';
 import { COMPOSER, LEVEL_VALUES } from '@/app/conteudo/site/composer';
-import { eraName } from '@/app/conteudo/site/eras';
+import { instrumentOf } from '@/app/conteudo/instruments/meta';
+import { eraName, eraOf } from '@/app/conteudo/site/eras';
 import type { WorkCopy } from '@/app/conteudo/site/work';
 import type { WorkDetails } from '@/app/requests/work-page-details';
+
+const link =
+  'underline decoration-transparent underline-offset-4 hover:text-ouro-texto hover:decoration-[var(--ouro)]';
 
 /** "Ficha": the facts on record, the movements and the tags. */
 export function WorkDetailsPanel({
@@ -21,20 +26,45 @@ export function WorkDetailsPanel({
   const levelKey = work.difficultyLevel
     ? LEVEL_VALUES[work.difficultyLevel as keyof typeof LEVEL_VALUES]
     : undefined;
+  // The era and the instrument link to their chapters: each work leads to
+  // the story around it (and search engines follow the same path).
+  const epochName = work.epoch?.name ?? work.composer.epochName;
+  const era = eraOf(epochName);
+  const instrument = instrumentOf(work.instrument?.name);
   const rows = (
     [
       [t.composed, work.compositionYear],
       [t.published, work.firstPublishDate],
       [t.dedication, work.dedicateTo],
       [t.instrumentation, work.instrumentation],
-      [t.instrument, !work.instrumentation && work.instrument?.name],
+      [
+        t.instrument,
+        !work.instrumentation &&
+          work.instrument?.name &&
+          (instrument ? (
+            <Link href={`/instruments/${instrument.key}`} className={link}>
+              {work.instrument.name}
+            </Link>
+          ) : (
+            work.instrument.name
+          )),
+      ],
       [t.catalog, work.opOrCatalog],
       [t.key, work.tone],
       [t.duration, work.mediaDuration],
-      [t.era, eraName(work.epoch?.name ?? work.composer.epochName, language)],
+      [
+        t.era,
+        era ? (
+          <Link href={`/music-history/${era.key}`} className={link}>
+            {era.name[language]}
+          </Link>
+        ) : (
+          eraName(epochName, language)
+        ),
+      ],
       [t.level, levelKey && COMPOSER[language].startHere.levels[levelKey]],
     ] as const
-  ).filter(([, value]) => value) as [string, string][];
+  ).filter(([, value]) => value) as [string, ReactNode][];
   const tags = [...new Set([...work.workGenresArr, ...work.categoryNames])];
   const movements = work.childWorks ?? [];
 

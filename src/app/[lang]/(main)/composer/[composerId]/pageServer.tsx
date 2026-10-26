@@ -57,7 +57,7 @@ export default async function ComposerDetailsServer({
 
   return (
     <>
-      <JsonLd data={composerJsonLd(composer)} />
+      <JsonLd data={composerJsonLd(composer, language)} />
       <ComposerPage
         composer={composer}
         overview={overview}

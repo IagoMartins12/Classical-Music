@@ -2,7 +2,8 @@
 import { notFound } from 'next/navigation';
 import ComposerDetailsServer from './pageServer';
 import { getComposerById } from '@/app/requests/composer-details';
-import { translateEpochName } from '@/app/utils/translations/epochTranslations';
+import { eraName } from '@/app/conteudo/site/eras';
+import { anosDeVida, resumo, urlDe } from '@/app/utils/seo';
 import {
   routeLanguage,
   type LangParams,
@@ -72,76 +73,45 @@ export async function generateMetadata({ params }: ComposerDetailsPageProps) {
     return notFoundContent[language];
   }
 
-  // Bio resumida para description
-  const bioSummary = composer.bio ? composer.bio.substring(0, 120) + '...' : '';
-
-  const birthYear = composer.birthDate ? ` (${composer.birthDate}` : '';
-  const deathYear = composer.deathDate
-    ? `-${composer.deathDate})`
-    : birthYear
-      ? ')'
-      : '';
-  const years = birthYear + deathYear;
-
+  // Title and description aimed at what people search for a composer: the
+  // name, then biography, works and scores (the root layout adds
+  // " | Opus Atlas"). The description opens with the dates and the era and
+  // goes on with the biography, cut at a sentence.
+  const era = eraName(composer.epochName, language);
+  const anos = anosDeVida(composer.birth?.year, composer.death?.year, language);
+  const bio = (language === 'en' && composer.bioEn) || composer.bio || '';
+  const abertura = [
+    `${composer.fullName}${anos ? ` (${anos})` : ''}`,
+    era && (language === 'pt' ? `período ${era}` : `${era} period`),
+  ]
+    .filter(Boolean)
+    .join(', ');
+  // Most biographies already open with the name and the dates: then the
+  // biography alone is the description, instead of saying them twice.
+  const bioJaAbre =
+    !!bio &&
+    (bio.startsWith(composer.name) ||
+      bio.startsWith(composer.fullName) ||
+      (!!composer.birth?.year &&
+        bio.slice(0, 120).includes(String(composer.birth.year))));
+  const descricao = (semBio: string) =>
+    resumo(
+      bioJaAbre ? bio : bio ? `${abertura}. ${bio}` : `${abertura}. ${semBio}`
+    );
   const content = {
     pt: {
-      title: `${composer.fullName} - Compositor ${composer.epochName} | Partituras Gratuitas`,
-      description: `${composer.fullName}, grande compositor da época ${composer.epochName}${years}. ${bioSummary} Explore todas suas obras, partituras gratuitas para piano, violino e outros instrumentos. Análises musicais e recursos educacionais completos.`,
-      keywords: [
-        `${composer.name} compositor`,
-        `${composer.fullName} partituras`,
-        `${composer.name} obras completas`,
-        `${composer.name} piano`,
-        `${composer.name} violino`,
-        `${composer.name} partituras gratuitas`,
-        `biografia ${composer.name}`,
-        `${composer.name} IMSLP`,
-        `estudar ${composer.name}`,
-        `análise ${composer.name}`,
-        `${composer.epochName} compositor`,
-        `música ${composer.epochName}`,
-        'compositores clássicos',
-        'partituras domínio público',
-        'música clássica gratuita',
-        'educação musical',
-        'conservatório',
-        'estudantes música',
-        `${composer.name} PDF`,
-        `obras ${composer.name} completas`,
-      ].filter(Boolean),
-      ogTitle: `${composer.fullName} - Partituras e Obras Completas`,
-      ogDescription: `Conheça a vida e obra de ${composer.fullName}. Acesse partituras gratuitas e recursos educacionais completos.`,
+      title: `${composer.fullName}: biografia, obras e partituras`,
+      description: descricao(
+        'Biografia, lista de obras e partituras gratuitas para estudar, com o nível de cada peça.'
+      ),
+      ogTitle: `${composer.fullName}: biografia, obras e partituras`,
     },
     en: {
-      title: `${composer.fullName} - ${translateEpochName(
-        composer.epochName,
-        language
-      )} Composer | Free Sheet Music`,
-      description: `${composer.fullName}, great composer of the ${composer.epochName} era${years}. ${bioSummary} Explore all his works, free sheet music for piano, violin and other instruments. Musical analyses and complete educational resources.`,
-      keywords: [
-        `${composer.name} composer`,
-        `${composer.fullName} sheet music`,
-        `${composer.name} complete works`,
-        `${composer.name} piano`,
-        `${composer.name} violin`,
-        `${composer.name} free scores`,
-        `${composer.name} biography`,
-        `${composer.name} IMSLP`,
-        `study ${composer.name}`,
-        `${composer.name} analysis`,
-        `${composer.epochName} composer`,
-        `${composer.epochName} music`,
-        'classical composers',
-        'public domain scores',
-        'free classical music',
-        'music education',
-        'conservatory',
-        'music students',
-        `${composer.name} PDF`,
-        `${composer.name} complete works`,
-      ].filter(Boolean),
-      ogTitle: `${composer.fullName} - Sheet Music and Complete Works`,
-      ogDescription: `Discover the life and work of ${composer.fullName}. Access free sheet music and complete educational resources.`,
+      title: `${composer.fullName}: biography, works and sheet music`,
+      description: descricao(
+        'Biography, list of works and free sheet music to study, with the level of each piece.'
+      ),
+      ogTitle: `${composer.fullName}: biography, works and sheet music`,
     },
   };
 
@@ -150,15 +120,12 @@ export async function generateMetadata({ params }: ComposerDetailsPageProps) {
   return {
     title: t.title,
     description: t.description,
-    keywords: t.keywords,
-    authors: [{ name: 'Opus Atlas' }],
-    creator: 'Opus Atlas',
     openGraph: {
       title: t.ogTitle,
-      description: t.ogDescription,
+      description: t.description,
       type: 'profile',
       locale: language === 'pt' ? 'pt_BR' : 'en_US',
-      url: `${SITE_URL}/composer/${composer.id}`,
+      url: urlDe(`/composer/${composer.id}`, language),
       siteName: 'Opus Atlas',
       images: [
         {
@@ -174,7 +141,7 @@ export async function generateMetadata({ params }: ComposerDetailsPageProps) {
     twitter: {
       card: 'summary_large_image',
       title: t.ogTitle,
-      description: t.description.substring(0, 200),
+      description: t.description,
     },
     alternates: alternatesFor(`/composer/${composer.id}`, language),
     robots: {

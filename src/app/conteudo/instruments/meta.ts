@@ -156,3 +156,16 @@ export const FAMILIES: FamilyNames = {
 
 export const instrumentMeta = (key: string) =>
   INSTRUMENTS.find((i) => i.key === key);
+
+const BY_DB_NAME = new Map(
+  INSTRUMENTS.flatMap((i) =>
+    i.dbNames.map((name) => [name.toLowerCase(), i] as const)
+  )
+);
+
+/**
+ * The instrument page for a catalog instrument name ("Piano", "Violino"), so
+ * a work or a composer links to the story of its instrument.
+ */
+export const instrumentOf = (name: string | null | undefined) =>
+  name ? BY_DB_NAME.get(name.trim().toLowerCase()) : undefined;

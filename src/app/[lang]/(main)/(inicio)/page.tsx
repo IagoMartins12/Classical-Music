@@ -8,348 +8,94 @@ import {
   routeLanguage,
   type LangParams,
 } from '@/app/utils/translations/routeLanguage';
-import { alternatesFor } from '@/app/utils/seoAlternates';
+import { SITE_URL, alternatesFor } from '@/app/utils/seoAlternates';
+import { ID_DA_ORGANIZACAO, ID_DO_SITE, urlDe } from '@/app/utils/seo';
 
 /** `[lang]` é quem decide o idioma desta página — ver `routeLanguage`. */
 interface LangPageProps {
   params: LangParams;
 }
 
+/**
+ * What the home says to search engines and AI answers. Short and true: no
+ * keyword list (Google ignores the tag and Bing reads a long one as spam), no
+ * "largest" claim nor counts (the brand never quotes catalog numbers), and
+ * structured data only for what the site is — a website with search and the
+ * organization behind it. The old "Course" and "Library" types described
+ * things the site is not.
+ */
 const CONTENT = {
   pt: {
-    title:
-      'Opus Atlas - Enciclopédia de Música Clássica | Partituras Gratuitas de Bach, Chopin, Beethoven',
+    title: 'Opus Atlas: música clássica, compositores e partituras',
     description:
-      'A maior enciclopédia de música clássica online. Milhares de partituras gratuitas de Bach, Chopin, Beethoven, Mozart. Sonata ao Luar, Valsa das Flores, estudos de piano, obras para violino. Plataforma educacional completa para estudantes e professores de conservatório.',
-    keywords: [
-      // Termos principais de marca
-      'Opus Atlas',
-      'enciclopédia música clássica',
-      'partituras gratuitas',
-      'música clássica online',
-
-      // Compositores principais (os que mais geram tráfego)
-      'Bach partituras',
-      'Chopin partituras piano',
-      'Beethoven sonatas',
-      'Mozart sinfonias',
-      'Liszt estudos',
-      'Debussy partituras',
-      'Brahms obras completas',
-      'Schubert lieder',
-      'Rachmaninoff piano',
-      'Tchaikovsky balé',
-
-      // Obras famosas específicas
-      'Sonata ao Luar',
-      'Valsa das Flores',
-      'Ave Maria Schubert',
-      'Für Elise',
-      'Canon Pachelbel',
-      'Gymnopédie Satie',
-      'Prelúdio Chopin',
-      'Tocata e Fuga Bach',
-      'Primavera Vivaldi',
-      'Marcha Nupcial Mendelssohn',
-
-      // Instrumentos principais
-      'partituras piano clássico',
-      'partituras violino',
-      'partituras violoncelo',
-      'partituras flauta',
-      'partituras guitarra clássica',
-      'partituras órgão',
-      'partituras orquestra',
-      'música câmara',
-
-      // Gêneros e formas musicais
-      'sonatas clássicas',
-      'concertos piano',
-      'sinfonias',
-      'quartetos cordas',
-      'estudos técnicos',
-      'noturnos',
-      'valsas',
-      'mazurcas',
-      'improvisos',
-      'baladas piano',
-
-      // Épocas musicais
-      'música barroca',
-      'música clássica período',
-      'música romântica',
-      'impressionismo musical',
-      'música contemporânea',
-
-      // Termos educacionais
-      'educação musical',
-      'estudar piano',
-      'conservatório online',
-      'técnica pianística',
-      'interpretação musical',
-      'análise musical',
-      'teoria musical',
-      'história música clássica',
-      'biografias compositores',
-
-      // Termos técnicos/busca
-      'IMSLP partituras',
-      'partituras PDF',
-      'download partituras',
-      'partituras domínio público',
-      'música clássica gratuita',
-      'partituras legais',
-      'biblioteca musical',
-
-      // Long tail keywords
-      'como tocar Chopin',
-      'aprender piano clássico',
-      'partituras para iniciantes',
-      'repertório conservatório',
-      'concursos piano clássico',
-      'masterclass online',
-      'curso música clássica',
-    ],
-    ogTitle: 'Opus Atlas - Sua Enciclopédia de Música Clássica',
-    ogDescription:
-      'Descubra milhares de partituras gratuitas dos grandes mestres. Bach, Chopin, Beethoven, Mozart e muito mais. A plataforma educacional completa para amantes da música clássica.',
-    twitterDescription:
-      'Enciclopédia musical com partituras gratuitas de Bach, Chopin, Beethoven. Sonata ao Luar, Valsa das Flores e milhares de obras clássicas.',
+      'Biografias de compositores, obras e partituras gratuitas de música clássica, com o nível de cada peça, guias de estudo e um portal para professores e alunos.',
+    ogTitle: 'Opus Atlas: o atlas da música clássica',
   },
   en: {
-    title:
-      'Opus Atlas - Classical Music Encyclopedia | Free Sheet Music from Bach, Chopin, Beethoven',
+    title: 'Opus Atlas: classical music, composers and sheet music',
     description:
-      'The largest online classical music encyclopedia. Thousands of free sheet music from Bach, Chopin, Beethoven, Mozart. Moonlight Sonata, Waltz of the Flowers, piano studies, violin works. Complete educational platform for students and conservatory teachers.',
-    keywords: [
-      // Main brand terms
-      'Opus Atlas',
-      'classical music encyclopedia',
-      'free sheet music',
-      'classical music online',
-
-      // Main composers (highest traffic generators)
-      'Bach sheet music',
-      'Chopin piano scores',
-      'Beethoven sonatas',
-      'Mozart symphonies',
-      'Liszt etudes',
-      'Debussy sheet music',
-      'Brahms complete works',
-      'Schubert lieder',
-      'Rachmaninoff piano',
-      'Tchaikovsky ballet',
-
-      // Famous specific works
-      'Moonlight Sonata',
-      'Waltz of the Flowers',
-      'Ave Maria Schubert',
-      'Für Elise',
-      'Canon Pachelbel',
-      'Gymnopédie Satie',
-      'Chopin Prelude',
-      'Bach Toccata and Fugue',
-      'Vivaldi Spring',
-      'Mendelssohn Wedding March',
-
-      // Main instruments
-      'classical piano sheet music',
-      'violin sheet music',
-      'cello sheet music',
-      'flute sheet music',
-      'classical guitar sheet music',
-      'organ sheet music',
-      'orchestra sheet music',
-      'chamber music',
-
-      // Genres and musical forms
-      'classical sonatas',
-      'piano concertos',
-      'symphonies',
-      'string quartets',
-      'technical studies',
-      'nocturnes',
-      'waltzes',
-      'mazurkas',
-      'impromptus',
-      'piano ballads',
-
-      // Musical periods
-      'baroque music',
-      'classical period music',
-      'romantic music',
-      'musical impressionism',
-      'contemporary music',
-
-      // Educational terms
-      'music education',
-      'learn piano',
-      'online conservatory',
-      'piano technique',
-      'musical interpretation',
-      'musical analysis',
-      'music theory',
-      'classical music history',
-      'composer biographies',
-
-      // Technical/search terms
-      'IMSLP sheet music',
-      'PDF sheet music',
-      'sheet music download',
-      'public domain scores',
-      'free classical music',
-      'legal sheet music',
-      'music library',
-
-      // Long tail keywords
-      'how to play Chopin',
-      'learn classical piano',
-      'sheet music for beginners',
-      'conservatory repertoire',
-      'classical piano competitions',
-      'online masterclass',
-      'classical music course',
-    ],
-    ogTitle: 'Opus Atlas - Your Classical Music Encyclopedia',
-    ogDescription:
-      'Discover thousands of free sheet music from the great masters. Bach, Chopin, Beethoven, Mozart and much more. The complete educational platform for classical music lovers.',
-    twitterDescription:
-      'Musical encyclopedia with free sheet music from Bach, Chopin, Beethoven. Moonlight Sonata, Waltz of the Flowers and thousands of classical works.',
+      'Composer biographies, works and free classical sheet music, with the level of each piece, study guides and a portal for teachers and students.',
+    ogTitle: 'Opus Atlas: the atlas of classical music',
   },
 };
 
 /** Dados estruturados da home, no corpo da página (ver `JsonLd`). */
 function dadosEstruturados(language: 'pt' | 'en') {
   const t = CONTENT[language];
-  const baseUrl = 'https://opusatlas.com.br';
-  return [
-    // Website principal
-    {
-      '@context': 'https://schema.org',
-      '@type': 'WebSite',
-      '@id': `${baseUrl}/#website`,
-      name: 'Opus Atlas',
-      alternateName:
-        language === 'pt'
-          ? 'Enciclopédia de Música Clássica'
-          : 'Classical Music Encyclopedia',
-      description: t.description,
-      url: baseUrl,
-      inLanguage: language === 'pt' ? 'pt-BR' : 'en-US',
-      isAccessibleForFree: true,
-      creator: {
-        '@type': 'Organization',
+  return {
+    '@context': 'https://schema.org',
+    '@graph': [
+      {
+        '@type': 'WebSite',
+        '@id': ID_DO_SITE,
         name: 'Opus Atlas',
-        url: baseUrl,
-      },
-      potentialAction: {
-        '@type': 'SearchAction',
-        target: {
-          '@type': 'EntryPoint',
-          urlTemplate: `${baseUrl}/search?q={search_term_string}`,
-        },
-        'query-input': 'required name=search_term_string',
-      },
-      mainEntity: {
-        '@type': 'ItemList',
-        name:
-          language === 'pt' ? 'Compositores Clássicos' : 'Classical Composers',
-        description:
+        alternateName:
           language === 'pt'
-            ? 'Lista completa de compositores de música clássica'
-            : 'Complete list of classical music composers',
-      },
-    },
-    // Organização
-    {
-      '@context': 'https://schema.org',
-      '@type': 'Organization',
-      '@id': `${baseUrl}/#organization`,
-      name: 'Opus Atlas',
-      url: baseUrl,
-      logo: {
-        '@type': 'ImageObject',
-        url: `${baseUrl}/brand/opus-atlas-logo-512.png`,
-        width: 512,
-        height: 512,
-      },
-      description: t.description,
-      sameAs: Object.values(REDES),
-      contactPoint: {
-        '@type': 'ContactPoint',
-        contactType: 'Customer Service',
-        email: CONTATO.contato,
-        availableLanguage: ['Portuguese', 'English'],
-      },
-    },
-    // Biblioteca Musical
-    {
-      '@context': 'https://schema.org',
-      '@type': 'Library',
-      '@id': `${baseUrl}/#library`,
-      name:
-        language === 'pt'
-          ? 'Biblioteca Digital Opus Atlas'
-          : 'Opus Atlas Digital Library',
-      description:
-        language === 'pt'
-          ? 'Biblioteca digital com milhares de partituras gratuitas de música clássica'
-          : 'Digital library with thousands of free classical music sheet music',
-      url: baseUrl,
-      isAccessibleForFree: true,
-      hasDigitalDocumentPermission: {
-        '@type': 'DigitalDocumentPermission',
-        permissionType: 'http://schema.org/ReadPermission',
-        grantee: {
-          '@type': 'Audience',
-          audienceType: 'public',
+            ? 'Atlas da Música Clássica'
+            : 'The Atlas of Classical Music',
+        description: t.description,
+        url: SITE_URL,
+        inLanguage: ['pt-BR', 'en-US'],
+        publisher: { '@id': ID_DA_ORGANIZACAO },
+        potentialAction: {
+          '@type': 'SearchAction',
+          target: {
+            '@type': 'EntryPoint',
+            urlTemplate: `${urlDe('/search', language)}?q={search_term_string}`,
+          },
+          'query-input': 'required name=search_term_string',
         },
       },
-      mainEntityOfPage: {
-        '@type': 'WebPage',
-        '@id': `${baseUrl}/#webpage`,
-      },
-    },
-    // Curso/Plataforma Educacional
-    {
-      '@context': 'https://schema.org',
-      '@type': 'Course',
-      '@id': `${baseUrl}/#course`,
-      name:
-        language === 'pt'
-          ? 'Educação Musical Clássica - Opus Atlas'
-          : 'Classical Music Education - Opus Atlas',
-      description:
-        language === 'pt'
-          ? 'Plataforma educacional completa para aprender e estudar música clássica'
-          : 'Complete educational platform to learn and study classical music',
-      provider: {
-        '@type': 'Organization',
+      {
+        '@type': 'EducationalOrganization',
+        '@id': ID_DA_ORGANIZACAO,
         name: 'Opus Atlas',
-        url: baseUrl,
+        url: SITE_URL,
+        logo: {
+          '@type': 'ImageObject',
+          url: `${SITE_URL}/brand/opus-atlas-logo-512.png`,
+          width: 512,
+          height: 512,
+        },
+        description: t.description,
+        knowsAbout: [
+          'Classical music',
+          'Music history',
+          'Composers',
+          'Sheet music',
+          'Music education',
+        ],
+        sameAs: Object.values(REDES),
+        email: CONTATO.contato,
+        address: {
+          '@type': 'PostalAddress',
+          addressLocality: 'São Paulo',
+          addressRegion: 'SP',
+          addressCountry: 'BR',
+        },
       },
-      educationalLevel: 'All Levels',
-      courseMode: 'online',
-      isAccessibleForFree: true,
-      teaches:
-        language === 'pt'
-          ? [
-              'Música Clássica',
-              'Piano',
-              'Violino',
-              'Teoria Musical',
-              'História da Música',
-            ]
-          : [
-              'Classical Music',
-              'Piano',
-              'Violin',
-              'Music Theory',
-              'Music History',
-            ],
-      availableLanguage: language === 'pt' ? 'pt-BR' : 'en-US',
-    },
-  ];
+    ],
+  };
 }
 
 // 🏆 METADATA HOMEPAGE ULTRA OTIMIZADO
@@ -359,45 +105,33 @@ export async function generateMetadata({
   const language = await routeLanguage(params);
 
   const t = CONTENT[language];
-  // Um domínio para os dois idiomas — ver `utils/defaultMetadata.ts`.
-  const baseUrl = 'https://opusatlas.com.br';
 
   return {
-    title: {
-      default: t.title,
-      template: '%s | Opus Atlas',
-    },
+    // Already carries the brand: without `absolute` the root template made it
+    // "Opus Atlas: … | Opus Atlas".
+    title: { absolute: t.title },
     description: t.description,
-    keywords: t.keywords,
-    authors: [
-      { name: 'Opus Atlas Team' },
-      { name: 'Classical Music Educators' },
-    ],
-    creator: 'Opus Atlas',
-    publisher: 'Opus Atlas Education',
     applicationName: 'Opus Atlas',
-    referrer: 'origin-when-cross-origin',
-    classification: 'Education',
-    category: 'Music Education',
+    category: 'education',
 
     // OpenGraph otimizado
     openGraph: {
       type: 'website',
       siteName: 'Opus Atlas',
       title: t.ogTitle,
-      description: t.ogDescription,
+      description: t.description,
       locale: language === 'pt' ? 'pt_BR' : 'en_US',
-      url: baseUrl,
+      url: urlDe('/', language),
       images: imagemPadrao(language),
     },
 
     // Twitter Cards otimizado
     twitter: {
       card: 'summary_large_image',
-      site: '@OpusAtlas',
-      creator: '@OpusAtlas',
+      site: '@Opus_Atlas',
+      creator: '@Opus_Atlas',
       title: t.ogTitle,
-      description: t.twitterDescription,
+      description: t.description,
       images: imagemPadrao(language),
     },
 

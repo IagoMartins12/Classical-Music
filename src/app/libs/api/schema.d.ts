@@ -8251,6 +8251,20 @@ export interface components {
       /** Format: date-time */
       lastModified: string;
     };
+    SitemapCatalogIndexDto: {
+      /** @example 40000 */
+      pageSize: number;
+      /** @description Páginas de compositores */
+      composers: number;
+      /** @description Páginas de obras */
+      works: number;
+    };
+    SitemapCatalogEntryDto: {
+      /** @example 685d591c1e3db0c5aaa893e4 */
+      id: string;
+      /** Format: date-time */
+      lastModified: string;
+    };
     SitemapEntriesDto: {
       /** @example 2026-09-19T12:00:00.000Z */
       generatedAt: string;

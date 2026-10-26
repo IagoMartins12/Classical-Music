@@ -77,14 +77,6 @@ export async function generateMetadata(): Promise<Metadata> {
       title: 'Opus Atlas - Enciclopédia de Música Clássica',
       description:
         'Explore, aprenda e pratique música clássica com nossa enciclopédia interativa. Descubra compositores, obras e desenvolva suas habilidades musicais.',
-      keywords: [
-        'música clássica',
-        'compositores',
-        'partituras',
-        'educação musical',
-        'piano',
-        'estudo musical',
-      ],
       ogTitle: 'Opus Atlas - Enciclopédia Musical Gratuita',
       ogDescription:
         'Democratizando o acesso à música clássica com partituras gratuitas de grandes mestres como Chopin, Bach, Beethoven e Mozart.',
@@ -93,14 +85,6 @@ export async function generateMetadata(): Promise<Metadata> {
       title: 'Opus Atlas - Classical Music Encyclopedia',
       description:
         'Explore, learn, and practice classical music with our interactive encyclopedia. Discover composers, works, and improve your musical skills.',
-      keywords: [
-        'classical music',
-        'composers',
-        'sheet music',
-        'music education',
-        'piano',
-        'music study',
-      ],
       ogTitle: 'Opus Atlas - Free Musical Encyclopedia',
       ogDescription:
         'Democratizing access to classical music with free sheet music from great masters like Chopin, Bach, Beethoven and Mozart.',
@@ -118,7 +102,6 @@ export async function generateMetadata(): Promise<Metadata> {
       default: t.title,
     },
     description: t.description,
-    keywords: t.keywords,
     authors: [{ name: 'Opus Atlas Team' }],
     creator: 'Opus Atlas',
     openGraph: {
