@@ -13,7 +13,10 @@ export default function manifest(): MetadataRoute.Manifest {
     description:
       'Compositores, obras e partituras de música clássica, o seu estudo e o portal do professor.',
     lang: 'pt-BR',
-    start_url: '/?source=pwa',
+    // The opening first (`public/abertura.html`, saved on the device): it
+    // shows at once and asks for the home, instead of a black screen while
+    // the home is made.
+    start_url: '/abertura.html?source=pwa',
     scope: '/',
     display: 'standalone',
     orientation: 'portrait',

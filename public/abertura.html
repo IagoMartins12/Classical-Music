@@ -1,0 +1,117 @@
+<!doctype html>
+<!--
+  A abertura do app instalado (o `start_url` do `manifest.ts`).
+
+  Página estática, guardada no aparelho pelo service worker: aparece assim
+  que o app abre, sem esperar o servidor. Pede logo a página de verdade, e o
+  navegador continua mostrando esta até a outra começar a chegar; lá, a
+  mesma abertura (`.abertura-do-app`, no `layout.tsx`) segue do ponto em
+  que esta parou e some quando a página carrega. Sem esta, o app ficava numa
+  tela preta enquanto a primeira página era gerada.
+
+  As cores e as medidas são as de `.abertura-do-app` em `globals.css`:
+  mudar uma, mudar a outra.
+-->
+<html lang="pt-BR">
+  <head>
+    <meta charset="utf-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, viewport-fit=cover"
+    />
+    <meta name="theme-color" content="#0c0d12" />
+    <meta name="robots" content="noindex" />
+    <title>Opus Atlas</title>
+    <style>
+      html,
+      body {
+        margin: 0;
+        height: 100%;
+        background: #0c0d12;
+      }
+      body {
+        display: grid;
+        place-items: center;
+        align-content: center;
+        gap: 2rem;
+      }
+      .orbita {
+        position: relative;
+        display: grid;
+        place-items: center;
+        width: 7.5rem;
+        aspect-ratio: 1;
+        border-radius: 9999px;
+        border: 1px solid rgba(212, 175, 55, 0.22);
+      }
+      .orbita::after {
+        content: '';
+        position: absolute;
+        inset: -1px;
+        border-radius: inherit;
+        border: 1.5px solid transparent;
+        border-top-color: #d4af37;
+        animation: gira 1.1s linear infinite;
+      }
+      .marca {
+        display: block;
+        background-color: #d4af37;
+        -webkit-mask: var(--marca) center / contain no-repeat;
+        mask: var(--marca) center / contain no-repeat;
+      }
+      .selo {
+        --marca: url('/brand/marca/simbolo.svg');
+        width: 3.5rem;
+        aspect-ratio: 1;
+        animation: respira 2.2s ease-in-out infinite;
+      }
+      .nome {
+        --marca: url('/brand/marca/nome.svg');
+        width: 10rem;
+        aspect-ratio: 519.5 / 50.5;
+        opacity: 0.85;
+      }
+      @keyframes gira {
+        to {
+          transform: rotate(1turn);
+        }
+      }
+      @keyframes respira {
+        50% {
+          opacity: 0.6;
+          transform: scale(0.94);
+        }
+      }
+      @media (prefers-reduced-motion: reduce) {
+        .selo {
+          animation: none;
+        }
+        .orbita::after {
+          animation-duration: 2.4s;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <span class="orbita" aria-hidden="true">
+      <span class="marca selo"></span>
+    </span>
+    <span class="marca nome" role="img" aria-label="Opus Atlas"></span>
+    <script>
+      (function () {
+        // When the opening started: the page that comes next keeps the
+        // animation running from here and shows it for a minimum time.
+        try {
+          sessionStorage.setItem('opus-atlas:abertura', String(Date.now()));
+        } catch (e) {}
+        var destino = '/' + location.search + location.hash;
+        // After the first paint, so the opening shows before the request.
+        requestAnimationFrame(function () {
+          setTimeout(function () {
+            location.replace(destino);
+          }, 0);
+        });
+      })();
+    </script>
+  </body>
+</html>

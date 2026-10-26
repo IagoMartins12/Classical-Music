@@ -180,7 +180,14 @@ const withSerwist = withSerwistInit({
   // `public/` went into the precache: installing the app downloaded the era
   // pictures and sketch assets, megabytes nobody asked for. Pictures are
   // cached when a page shows them.
-  globPublicPatterns: ['icons/**/*'],
+  // The opening (`abertura.html`, the `start_url`) and the marks it draws:
+  // ready on the device from the first launch after installing.
+  globPublicPatterns: [
+    'icons/**/*',
+    'abertura.html',
+    'brand/marca/simbolo.svg',
+    'brand/marca/nome.svg',
+  ],
   // The offline page is ready before the first time it is needed.
   additionalPrecacheEntries: [
     { url: '/offline', revision: process.env.VERCEL_GIT_COMMIT_SHA ?? null },

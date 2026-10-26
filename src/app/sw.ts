@@ -29,6 +29,8 @@ declare global {
 
 declare const self: ServiceWorkerGlobalScope;
 
+const CACHE_ABERTURA = 'opus-atlas-abertura';
+
 /** Same-origin Next routes that must never be cached. */
 const ROTAS_DO_NEXT = ['/api/', '/_next/webpack-hmr'];
 
@@ -64,6 +66,13 @@ const serwist = new Serwist({
         sameOrigin && ROTAS_DO_NEXT.some((r) => url.pathname.startsWith(r)),
       handler: new NetworkOnly(),
       method: 'GET',
+    },
+    {
+      // The app's opening (`public/abertura.html`) comes from the device at
+      // once, and is refreshed behind for the next time.
+      matcher: ({ url, sameOrigin }) =>
+        sameOrigin && url.pathname === '/abertura.html',
+      handler: new StaleWhileRevalidate({ cacheName: CACHE_ABERTURA }),
     },
     {
       matcher: ({ url, sameOrigin }) =>

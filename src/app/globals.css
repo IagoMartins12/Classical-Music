@@ -1022,7 +1022,8 @@ html.app-instalado {
 /* A abertura do app instalado: enquanto a primeira página não termina de
    chegar, o símbolo no céu noturno, com uma órbita girando em volta — a
    mesma cor do fundo da tela de abertura do sistema (`manifest.ts`), para a
-   passagem não piscar. Só no app (`display-mode: standalone` ou o
+   passagem não piscar. O app abre em `public/abertura.html`, a mesma abertura
+   guardada no aparelho, e esta continua de onde aquela parou. Só no app (`display-mode: standalone` ou o
    `app-instalado` do iPhone); no navegador não existe. Some quando a página
    carrega (`aberturaScript`, no `layout.tsx`). Fica no DOM, só escondida:
    o React hidrata o `<body>` e não pode achar um nó a menos. */
@@ -1072,11 +1073,14 @@ html.app-pronto .abertura-do-app {
   border: 1.5px solid transparent;
   border-top-color: #d4af37;
   animation: card-abrindo 1.1s linear infinite;
+  /* Goes on from where `public/abertura.html` was (`aberturaScript`). */
+  animation-delay: var(--abertura-atraso, 0ms);
 }
 .abertura-do-app .abertura-selo {
   width: 3.5rem;
   background-color: #d4af37;
   animation: abertura-respira 2.2s ease-in-out infinite;
+  animation-delay: var(--abertura-atraso, 0ms);
 }
 .abertura-do-app .abertura-nome {
   --marca: url('/brand/marca/nome.svg');

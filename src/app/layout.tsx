@@ -208,13 +208,28 @@ const themeScript = `(function(){
  * has fully arrived (`load`: the streamed HTML, styles and images), with a
  * ceiling so a slow image never keeps it up. Runs before React: the opening
  * must go even if the page's scripts are still on their way.
+ *
+ * The app opens on `public/abertura.html`, which shows the same opening at
+ * once and notes when it started: here the animation goes on from that
+ * point (`--abertura-atraso`) and stays up for a minimum time, so it is seen
+ * instead of flashing. A reload without it keeps a shorter minimum.
  */
 const aberturaScript = `(function(){
-  var h=document.documentElement;
-  var pronto=function(){h.classList.add('app-pronto');};
-  if(document.readyState==='complete'){pronto();return;}
-  addEventListener('load',pronto,{once:true});
-  setTimeout(pronto,8000);
+  var h=document.documentElement,inicio=0;
+  try{
+    var v=Number(sessionStorage.getItem('opus-atlas:abertura'));
+    sessionStorage.removeItem('opus-atlas:abertura');
+    if(v&&Date.now()-v<20000)inicio=v;
+  }catch(e){}
+  if(inicio)h.style.setProperty('--abertura-atraso',(inicio-Date.now())+'ms');
+  var some=function(){h.classList.add('app-pronto');};
+  var pronto=function(){
+    var falta=inicio?1600-(Date.now()-inicio):900-performance.now();
+    setTimeout(some,Math.max(0,falta));
+  };
+  if(document.readyState==='complete')pronto();
+  else addEventListener('load',pronto,{once:true});
+  setTimeout(some,8000);
 })();`;
 
 export default function RootLayout({
