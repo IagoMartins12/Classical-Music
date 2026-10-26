@@ -1,9 +1,20 @@
 import { ImageResponse } from 'next/og';
+import type { ReactElement, ReactNode } from 'react';
+import type { IconType } from 'react-icons';
 import {
   sharedRetrospective,
   type RetroCard,
+  type RetroFace,
 } from '@/app/requests/retrospective';
-import { CORPOS_DO_PROXIMO, ponto, pranchaSvg } from '@/app/utils/pranchaRetro';
+import {
+  LADO_DO_CORPO,
+  RAIO_DO_RETRATO,
+  desenhoDo,
+  ponto,
+  pranchaSvg,
+  textoDo,
+  type Desenho,
+} from '@/app/utils/pranchaRetro';
 
 export const revalidate = 300;
 
@@ -12,8 +23,9 @@ export const revalidate = 300;
  * tamanho dos stories. Com `download=1` o navegador baixa em vez de abrir.
  * `card` ausente é a capa, usada também como imagem de compartilhamento.
  *
- * É a mesma prancha da tela (`utils/pranchaRetro`): as órbitas do globo, as
- * estrelas ou o arco do número, e o número no centro, nas cores do tema
+ * É a mesma prancha da tela (`utils/pranchaRetro`): as órbitas do globo, o
+ * desenho de cada cartão, e no centro o número, o retrato, o instrumento, a
+ * época ou o mês, nas cores do tema
  * escuro do Opus (a retrospectiva é sempre noturna). O renderizador não lê o
  * CSS do site, então as cores vêm escritas aqui, iguais às de `globals.css`.
  */
@@ -23,6 +35,7 @@ const OURO_TEXTO = '#e0bc5c';
 const TEXTO = '#f3f1ec';
 const SUAVE = '#b5b1c0';
 const LINHA = 'rgba(243, 241, 236, 0.1)';
+const SUPERFICIE = '#1e1f29';
 /** O lado da prancha na imagem, em pixels. */
 const LADO = 888;
 
@@ -60,9 +73,198 @@ function tamanhoDoTitulo(texto: string) {
   return 96;
 }
 
-function desenhar(card: RetroCard, nome: string) {
-  const prancha = `data:image/svg+xml;base64,${Buffer.from(pranchaSvg(card, OURO)).toString('base64')}`;
-  const valor = card.value;
+/**
+ * O ícone do react-icons como SVG em texto, na cor pedida: o renderizador
+ * não roda componentes de terceiros, mas lê uma imagem SVG.
+ */
+type No = ReactElement<Record<string, unknown> & { children?: ReactNode }>;
+const kebab = (k: string) =>
+  k === 'viewBox' ? k : k.replace(/[A-Z]/g, (m) => `-${m.toLowerCase()}`);
+function svgDoIcone(Icone: IconType, cor: string) {
+  const raiz = Icone({}) as No;
+  const attrs = (o: Record<string, unknown>) =>
+    Object.entries(o)
+      .filter(([k, v]) => k !== 'children' && typeof v !== 'object')
+      .map(([k, v]) => `${kebab(k)}="${String(v)}"`)
+      .join(' ');
+  const filhos = (n: ReactNode): string =>
+    (Array.isArray(n) ? n : n ? [n] : [])
+      .map((f: No) =>
+        typeof f.type === 'string'
+          ? `<${f.type} ${attrs(f.props)}>${filhos(f.props.children)}</${f.type}>`
+          : ''
+      )
+      .join('');
+  // The icon's own attributes win over the defaults (a repeated one breaks the SVG).
+  const svg = `<svg ${attrs({
+    xmlns: 'http://www.w3.org/2000/svg',
+    width: 256,
+    height: 256,
+    fill: 'currentColor',
+    stroke: 'currentColor',
+    strokeWidth: 0,
+    ...(raiz.props.attr as Record<string, unknown>),
+  })}>${filhos(raiz.props.children)}</svg>`;
+  return `data:image/svg+xml;base64,${Buffer.from(svg.replaceAll('currentColor', cor)).toString('base64')}`;
+}
+
+/**
+ * Os retratos, baixados antes de desenhar: uma foto que demora ou falha vira
+ * a inicial, em vez de derrubar a imagem inteira.
+ */
+async function retrato(rosto: RetroFace): Promise<string | null> {
+  if (!rosto.url || /nocomposerphotoavailable/i.test(rosto.url)) return null;
+  try {
+    const r = await fetch(rosto.url, {
+      signal: AbortSignal.timeout(4000),
+      headers: { 'User-Agent': 'OpusAtlas/1.0 (https://opusatlas.com)' },
+    });
+    const tipo = r.headers.get('content-type') ?? '';
+    if (!r.ok || !/^image\/(jpeg|png|webp|gif)/.test(tipo)) return null;
+    const dados = Buffer.from(await r.arrayBuffer());
+    return `data:${tipo.split(';')[0]};base64,${dados.toString('base64')}`;
+  } catch {
+    return null;
+  }
+}
+
+/** Um rosto num círculo: a foto, ou a inicial em Garamond. */
+function Rosto({
+  foto,
+  nome,
+  lado,
+}: {
+  foto: string | null;
+  nome: string;
+  lado: number;
+}) {
+  return foto ? (
+    // eslint-disable-next-line @next/next/no-img-element -- imagem do renderizador
+    <img
+      src={foto}
+      width={lado}
+      height={lado}
+      alt=""
+      style={{ borderRadius: lado, objectFit: 'cover', objectPosition: 'top' }}
+    />
+  ) : (
+    <div
+      style={{
+        width: lado,
+        height: lado,
+        borderRadius: lado,
+        background: SUPERFICIE,
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        color: SUAVE,
+        fontFamily: 'EB Garamond',
+        fontSize: lado * 0.42,
+      }}
+    >
+      {nome.trim().charAt(0)}
+    </div>
+  );
+}
+
+/** Uma medida do desenho (caixa de 600) em pixels da imagem. */
+const px = (n: number) => (n / 600) * LADO;
+
+function Centro({
+  d,
+  fotos,
+}: {
+  d: Desenho;
+  fotos: Map<string, string | null>;
+}) {
+  const caixa = {
+    position: 'absolute' as const,
+    top: 0,
+    left: 0,
+    width: LADO,
+    height: LADO,
+    display: 'flex',
+    flexDirection: 'column' as const,
+    alignItems: 'center',
+    justifyContent: 'center',
+  };
+  const c = d.centro;
+  if (c.tipo === 'numero')
+    return (
+      <div
+        style={{
+          ...caixa,
+          color: TEXTO,
+          fontFamily: 'EB Garamond',
+          fontSize: c.valor.length > 5 ? 96 : 136,
+          lineHeight: 1,
+        }}
+      >
+        {c.valor}
+      </div>
+    );
+  if (c.tipo === 'retrato')
+    return (
+      <div style={caixa}>
+        <Rosto
+          foto={fotos.get(c.rosto.url ?? '') ?? null}
+          nome={c.rosto.name}
+          lado={px(RAIO_DO_RETRATO * 2)}
+        />
+      </div>
+    );
+  if (c.tipo === 'icone')
+    return (
+      <div style={caixa}>
+        {/* eslint-disable-next-line @next/next/no-img-element -- imagem do renderizador */}
+        <img
+          src={svgDoIcone(c.icone, OURO_TEXTO)}
+          width={px(156)}
+          height={px(156)}
+          alt=""
+        />
+      </div>
+    );
+  if (c.tipo === 'palavra')
+    return (
+      <div style={{ ...caixa, gap: 14 }}>
+        <div
+          style={{
+            display: 'flex',
+            color: TEXTO,
+            fontFamily: 'EB Garamond',
+            fontSize: c.texto.length > 10 ? 50 : 66,
+            lineHeight: 1,
+          }}
+        >
+          {c.texto}
+        </div>
+        {c.legenda && (
+          <div
+            style={{
+              display: 'flex',
+              color: OURO_TEXTO,
+              fontSize: 26,
+              letterSpacing: 3,
+            }}
+          >
+            {c.legenda}
+          </div>
+        )}
+      </div>
+    );
+  return null;
+}
+
+function desenhar(
+  card: RetroCard,
+  nome: string,
+  idioma: 'pt' | 'en',
+  fotos: Map<string, string | null>
+) {
+  const d = desenhoDo(card, idioma);
+  const t = textoDo(card, d);
+  const prancha = `data:image/svg+xml;base64,${Buffer.from(pranchaSvg(d, OURO)).toString('base64')}`;
   return (
     <div
       style={{
@@ -86,55 +288,51 @@ function desenhar(card: RetroCard, nome: string) {
       >
         {/* eslint-disable-next-line @next/next/no-img-element -- imagem do renderizador */}
         <img src={prancha} width={LADO} height={LADO} alt="" />
-        {valor && (
-          <div
-            style={{
-              position: 'absolute',
-              top: 0,
-              left: 0,
-              width: LADO,
-              height: LADO,
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              color: TEXTO,
-              fontFamily: 'EB Garamond',
-              fontSize: valor.length > 5 ? 96 : 136,
-              lineHeight: 1,
-            }}
-          >
-            {valor}
-          </div>
-        )}
-        {/* "Próximo capítulo": o número de cada obra no seu corpo. */}
-        {card.kind === 'next' &&
-          (card.list ?? []).slice(0, 3).map((_, i) => {
-            const { x, y } = ponto(
-              CORPOS_DO_PROXIMO[i].r,
-              CORPOS_DO_PROXIMO[i].deg
-            );
-            const lado = 64;
-            return (
-              <div
-                key={i}
-                style={{
-                  position: 'absolute',
-                  left: (x / 600) * LADO - lado / 2,
-                  top: (y / 600) * LADO - lado / 2,
-                  width: lado,
-                  height: lado,
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  color: OURO_TEXTO,
-                  fontFamily: 'EB Garamond',
-                  fontSize: 40,
-                }}
-              >
-                {i + 1}
-              </div>
-            );
-          })}
+        <Centro d={d} fotos={fotos} />
+        {d.corpos.map((c, i) => {
+          const { x, y } = ponto(c.r, c.deg);
+          const lado = px(c.texto && c.texto.length > 2 ? 76 : LADO_DO_CORPO);
+          return (
+            <div
+              key={i}
+              style={{
+                position: 'absolute',
+                left: px(x) - lado / 2,
+                top: px(y) - lado / 2,
+                width: lado,
+                height: lado,
+                borderRadius: lado,
+                border: `1.5px solid ${OURO}`,
+                background: FUNDO,
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                overflow: 'hidden',
+                color: OURO_TEXTO,
+                fontFamily: 'EB Garamond',
+                fontSize: lado * 0.42,
+              }}
+            >
+              {c.rosto ? (
+                <Rosto
+                  foto={fotos.get(c.rosto.url ?? '') ?? null}
+                  nome={c.rosto.name}
+                  lado={lado - 3}
+                />
+              ) : c.icone ? (
+                // eslint-disable-next-line @next/next/no-img-element -- imagem do renderizador
+                <img
+                  src={svgDoIcone(c.icone, OURO_TEXTO)}
+                  width={lado / 2}
+                  height={lado / 2}
+                  alt=""
+                />
+              ) : (
+                c.texto
+              )}
+            </div>
+          );
+        })}
       </div>
 
       <div
@@ -151,13 +349,13 @@ function desenhar(card: RetroCard, nome: string) {
             display: 'flex',
             color: TEXTO,
             fontFamily: 'EB Garamond',
-            fontSize: tamanhoDoTitulo(card.title),
+            fontSize: tamanhoDoTitulo(t.titulo),
             lineHeight: 1.08,
           }}
         >
-          {card.title}
+          {t.titulo}
         </div>
-        {card.detail && (
+        {t.detalhe && (
           <div
             style={{
               display: 'flex',
@@ -166,7 +364,7 @@ function desenhar(card: RetroCard, nome: string) {
               lineHeight: 1.35,
             }}
           >
-            {card.detail}
+            {t.detalhe}
           </div>
         )}
         {card.list && card.list.length > 0 && (
@@ -243,12 +441,19 @@ export async function GET(
     Math.max(Number.parseInt(query.get('card') ?? '0', 10) || 0, 0),
     retro.cards.length - 1
   );
-  const [garamond, geist] = await Promise.all([
+  const card = retro.cards[index];
+  const rostos = [
+    ...(card.art?.portrait ? [card.art.portrait] : []),
+    ...(card.art?.faces ?? []),
+  ];
+  const [garamond, geist, ...baixadas] = await Promise.all([
     fonte('EB Garamond', 400),
     fonte('Geist', 400),
+    ...rostos.map(retrato),
   ]);
+  const fotos = new Map(rostos.map((r, i) => [r.url ?? '', baixadas[i]]));
   const image = new ImageResponse(
-    desenhar(retro.cards[index], retro.firstName),
+    desenhar(card, retro.firstName, retro.language, fotos),
     {
       width: 1080,
       height: 1920,

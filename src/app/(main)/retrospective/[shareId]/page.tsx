@@ -1,7 +1,10 @@
 import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import LocalizedLink from '@/app/components/LocalizedLink';
-import { PranchaDoAno } from '@/app/components/site/personal/PranchaDoAno';
+import {
+  PranchaDoAno,
+  TextoDoCartao,
+} from '@/app/components/site/personal/PranchaDoAno';
 import { classesDeBotao } from '@/app/components/ui/Button';
 import { cx } from '@/app/components/ui/cx';
 import { RETROSPECTIVE } from '@/app/conteudo/site/retrospective';
@@ -57,30 +60,12 @@ export default async function SharedRetrospectivePage({ params }: Props) {
 
         {retro.cards.map((card, i) => (
           <section key={`${card.kind}-${i}`} className="flex flex-col gap-7">
-            <PranchaDoAno card={card} chave={`publica-${i}`} />
-            <div className="flex flex-col gap-3">
-              <h2 className="font-display text-[clamp(1.75rem,7vw,2.25rem)] leading-[1.1] text-balance">
-                {card.title}
-              </h2>
-              {(card.detail || card.value) && (
-                <p className="t-corpo text-texto-suave">
-                  {card.value && <span className="sr-only">{card.value} </span>}
-                  {card.detail}
-                </p>
-              )}
-              {card.list && card.list.length > 0 && (
-                <ol className="flex flex-col gap-2.5 pt-1">
-                  {card.list.map((item, n) => (
-                    <li key={item} className="flex items-baseline gap-3">
-                      <span className="font-display text-[1.125rem] leading-none text-ouro-texto tabular-nums">
-                        {n + 1}
-                      </span>
-                      <span className="t-corpo">{item}</span>
-                    </li>
-                  ))}
-                </ol>
-              )}
-            </div>
+            <PranchaDoAno
+              card={card}
+              chave={`publica-${i}`}
+              idioma={retro.language}
+            />
+            <TextoDoCartao card={card} idioma={retro.language} />
           </section>
         ))}
 

@@ -19,7 +19,7 @@ import { Aba, Abas } from '@/app/components/ui/Abas';
 import { Icon } from '@/app/components/ui/Icon';
 import { cx } from '@/app/components/ui/cx';
 import { RETROSPECTIVE } from '@/app/conteudo/site/retrospective';
-import { PranchaDoAno } from './PranchaDoAno';
+import { PranchaDoAno, TextoDoCartao } from './PranchaDoAno';
 import { useRouteLanguage } from '@/app/hooks/useRouteLanguage';
 import {
   generateRetrospective,
@@ -266,61 +266,8 @@ function RetrospectiveStory({
           onPointerUp={() => setPaused(false)}
           onPointerLeave={() => setPaused(false)}
         >
-          {busy || !card ? (
-            <div role="status" className="flex flex-col gap-7">
-              <PranchaDoAno
-                card={null}
-                chave="gerando"
-                gerando
-                className="w-[min(100%,42dvh)]"
-              />
-              <div className="flex flex-col gap-2">
-                <p className="font-display text-[clamp(1.75rem,7vw,2.125rem)] leading-tight text-balance">
-                  {copy.generating}
-                </p>
-                <p key={step} className="rise t-corpo text-texto-suave">
-                  {copy.generatingSteps[step % copy.generatingSteps.length]}
-                </p>
-              </div>
-            </div>
-          ) : (
-            <div key={`${period}-${index}`} className="flex flex-col gap-7">
-              <PranchaDoAno
-                card={card}
-                chave={`${period}-${index}`}
-                className="w-[min(100%,42dvh)]"
-              />
-              <div className="retro-entra flex flex-col gap-3">
-                <h2 className="font-display text-[clamp(1.75rem,7vw,2.25rem)] leading-[1.1] text-balance">
-                  {card.title}
-                </h2>
-                {/* O número fica no centro da prancha, que é decorativa:
-                    o leitor de tela ouve aqui, junto do que ele mede. */}
-                {(card.detail || card.value) && (
-                  <p className="t-corpo text-texto-suave">
-                    {card.value && (
-                      <span className="sr-only">{card.value} </span>
-                    )}
-                    {card.detail}
-                  </p>
-                )}
-                {card.list && card.list.length > 0 && (
-                  <ol className="flex flex-col gap-2.5 pt-1">
-                    {card.list.map((item, i) => (
-                      <li key={item} className="flex items-baseline gap-3">
-                        <span className="font-display text-[1.125rem] leading-none text-ouro-texto tabular-nums">
-                          {i + 1}
-                        </span>
-                        <span className="t-corpo">{item}</span>
-                      </li>
-                    ))}
-                  </ol>
-                )}
-              </div>
-            </div>
-          )}
-
-          {/* Toque à esquerda volta, à direita avança. */}
+          {/* Toque à esquerda volta, à direita avança. O cartão passa por cima
+              sem pegar o toque, menos nos links das próximas obras. */}
           {retro && (
             <>
               <button
@@ -337,21 +284,59 @@ function RetrospectiveStory({
               />
             </>
           )}
+
+          {busy || !card ? (
+            <div role="status" className="flex flex-col gap-7">
+              <PranchaDoAno
+                card={null}
+                chave="gerando"
+                idioma={language}
+                gerando
+                className="w-[min(100%,42dvh)]"
+              />
+              <div className="flex flex-col gap-2">
+                <p className="font-display text-[clamp(1.75rem,7vw,2.125rem)] leading-tight text-balance">
+                  {copy.generating}
+                </p>
+                <p key={step} className="rise t-corpo text-texto-suave">
+                  {copy.generatingSteps[step % copy.generatingSteps.length]}
+                </p>
+              </div>
+            </div>
+          ) : (
+            <div
+              key={`${period}-${index}`}
+              className="pointer-events-none relative flex flex-col gap-7 [&_a]:pointer-events-auto"
+            >
+              <PranchaDoAno
+                card={card}
+                chave={`${period}-${index}`}
+                idioma={retro?.language ?? language}
+                className="w-[min(100%,42dvh)]"
+              />
+              <TextoDoCartao
+                card={card}
+                idioma={retro?.language ?? language}
+                className="retro-entra"
+              />
+            </div>
+          )}
         </div>
 
         {retro && (
-          <div className="flex flex-col gap-3 border-t border-linha px-5 pb-[max(1rem,env(safe-area-inset-bottom))] pt-3">
+          <div className="flex flex-col gap-2 border-t border-linha px-5 pb-[max(1rem,env(safe-area-inset-bottom))] pt-3">
             {info.saved?.stale && <p className="t-legenda">{copy.stale}</p>}
-            <div className="flex flex-wrap items-center gap-2">
+            <div className="grid grid-cols-2 gap-2">
               <a
                 href={`/og/retro/${retro.shareId}?card=${index}&download=1`}
-                className={classesDeBotao('primario', 'p')}
+                className={cx(classesDeBotao('primario', 'p'), 'w-full')}
               >
                 <Icon de={PiDownloadSimple} tamanho="pp" /> {copy.download}
               </a>
               <Button
                 tamanho="p"
                 icone={PiLinkSimple}
+                className="w-full"
                 onClick={() => {
                   void navigator.clipboard?.writeText(shareUrl);
                   toast.success(copy.copied);
@@ -359,17 +344,23 @@ function RetrospectiveStory({
               >
                 {copy.copyLink}
               </Button>
-              {info.saved && (
+            </div>
+            {/* Gerar de novo à esquerda; a paginação (‹ 3 / 11 ›) à direita. */}
+            <div className="flex min-h-11 items-center justify-between gap-2">
+              {info.saved ? (
                 <Button
                   tamanho="p"
                   variante="fantasma"
                   icone={PiArrowClockwise}
+                  className="-ml-3"
                   onClick={() => void load(period, true)}
                 >
                   {copy.regenerate}
                 </Button>
+              ) : (
+                <span />
               )}
-              <span className="ml-auto flex gap-1">
+              <span className="flex items-center gap-1">
                 <Button
                   tamanho="p"
                   variante="fantasma"
@@ -378,6 +369,9 @@ function RetrospectiveStory({
                   onClick={() => go(-1)}
                   disabled={index === 0}
                 />
+                <span className="t-dado min-w-[3.5rem] text-center text-[0.8125rem] text-texto-suave tabular-nums">
+                  {index + 1} / {total}
+                </span>
                 <Button
                   tamanho="p"
                   variante="fantasma"
@@ -385,6 +379,7 @@ function RetrospectiveStory({
                   rotulo={copy.next}
                   onClick={() => go(1)}
                   disabled={index >= total - 1}
+                  className="-mr-3"
                 />
               </span>
             </div>

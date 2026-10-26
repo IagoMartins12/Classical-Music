@@ -96,7 +96,7 @@ export function NextPiecesPicker({
                     <span className="t-legenda">
                       {work.composer.name}
                       {work.reasons.length > 0 &&
-                        ` · ${work.reasons.map((r) => reasons[r]).join(', ')}`}
+                        ` · ${work.reasons.map((r) => reasons[r]).join(' · ')}`}
                     </span>
                   </span>
                 </label>

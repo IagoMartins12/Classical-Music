@@ -14,6 +14,7 @@ import {
 } from 'react-icons/pi';
 import { cx } from '@/app/components/ui/cx';
 import { BrandSeal } from '../BrandSeal';
+import { Portrait } from '../Portrait';
 
 /**
  * Engraved orbits in the hand of the home atlas (`home/CelestialAtlas`):
@@ -190,7 +191,7 @@ export function Rotulo({
 const pct = (n: number) => `${r2(n / 6)}%`;
 
 /**
- * A body on an orbit: a disc with an icon or a letter. HTML laid over the
+ * A body on an orbit: a disc with an icon, a letter or a composer's face. HTML laid over the
  * drawing, not SVG inside it, so a turning orbit (`Gira`) can keep it
  * upright with a composited counter-turn (`orbita-de-pe`) — inside the SVG
  * each frame repainted the whole drawing.
@@ -201,25 +202,40 @@ export function Corpo({
   icone: Icone,
   tamanho = 46,
   texto,
+  rosto,
 }: {
   r: number;
   deg: number;
   icone?: IconType;
   tamanho?: number;
   texto?: string;
+  /** The portrait fills the disc; without one, the initial (`Portrait`). */
+  rosto?: { name: string; url: string | null };
 }) {
   const { x, y } = at(r, deg);
   return (
     <span
-      className="orbita-de-pe absolute grid place-items-center rounded-full border border-current bg-[var(--fundo)]"
+      className="orbita-de-pe absolute grid place-items-center overflow-hidden rounded-full border border-current bg-[var(--fundo)]"
       style={{
         left: pct(x),
         top: pct(y),
         width: pct(tamanho),
         height: pct(tamanho),
         translate: '-50% -50%',
+        // A face's initial (`Portrait`, 2.5em) keeps its size against the
+        // drawing (container units).
+        ...(rosto && { fontSize: `${r2((tamanho * 0.16) / 6)}cqw` }),
       }}
     >
+      {rosto && (
+        <Portrait
+          name={rosto.name}
+          src={rosto.url}
+          sizes="96px"
+          decorative
+          className="h-full w-full rounded-full"
+        />
+      )}
       {Icone && <Icone aria-hidden className="h-1/2 w-1/2 text-ouro-texto" />}
       {texto && (
         <span

@@ -3,6 +3,24 @@ import { apiFetch } from '@/app/libs/api/client';
 
 export type RetroPeriod = 'year' | 'all';
 
+/** A composer's face on a card: the portrait, or the initials when none. */
+export interface RetroFace {
+  name: string;
+  url: string | null;
+}
+
+/**
+ * What a card draws besides its number (`utils/pranchaRetro`). Cards saved
+ * before it existed have none and draw only the number.
+ */
+export interface RetroArt {
+  portrait?: RetroFace;
+  faces?: RetroFace[];
+  instrument?: string;
+  epoch?: string;
+  month?: number;
+}
+
 export interface RetroCard {
   kind: string;
   eyebrow: string;
@@ -10,6 +28,9 @@ export interface RetroCard {
   value: string | null;
   detail: string | null;
   list?: string[];
+  /** The page of each item of `list`, in the same order. */
+  links?: string[];
+  art?: RetroArt;
 }
 
 export interface Retrospective {
