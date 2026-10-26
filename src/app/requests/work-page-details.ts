@@ -15,6 +15,12 @@ export interface WorkDetails {
   id: string;
   title: string;
   subtitle?: string | null;
+  /** The name people know it by ("Sonata ao Luar"), when it is not the title. */
+  popularName: string | null;
+  popularNameEn: string | null;
+  /** Its famous parts, by the name people search ("Clair de Lune"). */
+  famousParts: string[];
+  famousPartsEn: string[];
   opOrCatalog?: string;
   compositionYear?: string;
   firstPublishDate?: string;
@@ -144,6 +150,10 @@ function toWorkDetails(work: WorkDetailDto): WorkDetails {
     id: work.id,
     title: work.title,
     subtitle: work.subtitle,
+    popularName: work.popularName ?? null,
+    popularNameEn: work.popularNameEn ?? null,
+    famousParts: work.famousParts ?? [],
+    famousPartsEn: work.famousPartsEn ?? [],
     opOrCatalog: work.opOrCatalog || undefined,
     compositionYear: work.compositionYear || undefined,
     firstPublishDate: work.firstPublishDate || undefined,

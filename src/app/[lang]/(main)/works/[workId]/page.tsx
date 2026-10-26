@@ -8,7 +8,11 @@ import {
 } from '@/app/utils/translations/routeLanguage';
 import { SITE_URL, alternatesFor } from '@/app/utils/seoAlternates';
 import { eraName } from '@/app/conteudo/site/eras';
-import { workTitle } from '@/app/components/site/workTitle';
+import {
+  listaDeNomes,
+  popularNames,
+  workTitle,
+} from '@/app/components/site/workTitle';
 import { resumo, urlDe } from '@/app/utils/seo';
 
 interface WorkParams {
@@ -77,6 +81,13 @@ export async function generateMetadata({ params }: WorkDetailsPageProps) {
   // and composer, then "sheet music" (the root layout adds " | Opus Atlas").
   // The description is the work's facts, then what the page offers.
   const nome = workTitle(work.title, work.opOrCatalog);
+  // The name people type comes first: "Sonata ao Luar: Piano Sonata
+  // No.14, Op.27 No.2 (Beethoven)"; a collection leads with its famous parts
+  // ("Études, Op.10 (Chopin): Estudo Revolucionário, Tristesse").
+  const popular = popularNames(work, language);
+  const partes = popular.parts
+    .map((p) => p.replace(/\s*\([^)]*\)\s*$/, ''))
+    .slice(0, 2);
   const era = eraName(work.epoch?.name ?? work.composer.epochName, language);
   const formacao = work.instrumentation || work.instrument?.name;
   const fatos =
@@ -96,14 +107,21 @@ export async function generateMetadata({ params }: WorkDetailsPageProps) {
           era && `${era} period`,
         ];
   const t = {
-    titleTemplate:
-      language === 'pt'
-        ? `${nome} (${work.composer.name}): partitura e estudo`
-        : `${nome} (${work.composer.name}): sheet music and study`,
-    ogTitle: `${nome} — ${work.composer.fullName}`,
+    titleTemplate: popular.name
+      ? `${popular.name}: ${nome} (${work.composer.name})`
+      : partes.length
+        ? `${nome} (${work.composer.name}): ${partes.join(', ')}`
+        : language === 'pt'
+          ? `${nome} (${work.composer.name}): partitura e estudo`
+          : `${nome} (${work.composer.name}): sheet music and study`,
+    ogTitle: `${popular.name ? `${popular.name} — ` : ''}${nome} — ${work.composer.fullName}`,
   };
   const description = resumo(
-    `${fatos.filter(Boolean).join(', ')}. ${
+    `${popular.name ? `${popular.name}. ` : ''}${fatos.filter(Boolean).join(', ')}. ${
+      popular.parts.length
+        ? `${language === 'pt' ? 'Inclui' : 'Includes'} ${listaDeNomes(popular.parts, language)}. `
+        : ''
+    }${
       language === 'pt'
         ? 'Partituras gratuitas, gravações e nível de estudo.'
         : 'Free sheet music, recordings and study level.'

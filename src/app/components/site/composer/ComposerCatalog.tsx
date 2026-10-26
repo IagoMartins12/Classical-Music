@@ -22,7 +22,7 @@ import {
   type ComposerWorksResponse,
 } from '@/app/requests/composer-details';
 import { FavoriteHeart } from '../FavoriteHeart';
-import { workTitle } from '../workTitle';
+import { nomePopularCurto, workTitle } from '../workTitle';
 import { chip } from '../choice';
 
 const PAGE_SIZE = 30;
@@ -65,7 +65,8 @@ export function ComposerCatalog({
   initial: ComposerWorksResponse;
   options: ComposerFilterOptions;
 }) {
-  const copy = COMPOSER[useRouteLanguage().language];
+  const { language } = useRouteLanguage();
+  const copy = COMPOSER[language];
   const t = copy.catalog;
   const [genre, setGenre] = useState('');
   const [category, setCategory] = useState('');
@@ -254,7 +255,12 @@ export function ComposerCatalog({
               </li>
             ))
           : result.works.map((work) => (
-              <WorkRow key={work.id} work={work} copy={copy} />
+              <WorkRow
+                key={work.id}
+                work={work}
+                copy={copy}
+                language={language}
+              />
             ))}
         {!loadingFirst && status !== 'error' && !result.works.length && (
           <li className="py-6 t-rotulo text-texto-suave">{t.empty}</li>
@@ -279,11 +285,20 @@ export function ComposerCatalog({
   );
 }
 
-function WorkRow({ work, copy }: { work: ComposerWork; copy: ComposerCopy }) {
+function WorkRow({
+  work,
+  copy,
+  language,
+}: {
+  work: ComposerWork;
+  copy: ComposerCopy;
+  language: 'pt' | 'en';
+}) {
   const levelKey = work.difficultyLevel
     ? LEVEL_VALUES[work.difficultyLevel as keyof typeof LEVEL_VALUES]
     : undefined;
   const detail = [
+    nomePopularCurto(work, language),
     work.instrument?.name,
     work.compositionYear,
     levelKey && copy.startHere.levels[levelKey],

@@ -11,7 +11,7 @@ import {
 import type { WorkListItem } from '@/app/requests/catalog-lists';
 import { FavoriteHeart } from '../FavoriteHeart';
 import { Portrait } from '../Portrait';
-import { workTitle } from '../workTitle';
+import { nomePopularCurto, workTitle } from '../workTitle';
 
 /** "BEGINNER" or an IMSLP number ("7") as the site's three levels. */
 function workLevel(value: string | null | undefined, language: Idioma) {
@@ -56,7 +56,9 @@ export function WorkItem({
             )}
           </span>
           <span className="t-rotulo truncate text-texto-suave">
-            {[composer, work.instrument?.name].filter(Boolean).join(' · ')}
+            {[nomePopularCurto(work, language), composer, work.instrument?.name]
+              .filter(Boolean)
+              .join(' · ')}
           </span>
         </span>
         {(meta || work.hasRecording) && (

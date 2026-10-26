@@ -63,6 +63,10 @@ export function WorkEditForm({
   const { form, set, dirty, discard, commit } = useEditForm({
     title: work.title,
     subtitle: s(work.subtitle),
+    popularName: s(work.popularName),
+    popularNameEn: s(work.popularNameEn),
+    famousParts: asList(work.famousParts),
+    famousPartsEn: asList(work.famousPartsEn),
     composerId: work.composerId,
     opOrCatalog: s(work.opOrCatalog),
     workType: work.workType || 'INDIVIDUAL',
@@ -142,6 +146,28 @@ export function WorkEditForm({
           {field('title', t.title, { erro: titleError, maxLength: 300 })}
         </div>
         <div className="sm:col-span-2">{field('subtitle', t.subtitle)}</div>
+        {/* How people know it ("Sonata ao Luar") and its famous parts
+            ("Clair de Lune"): shown on the page and searched. */}
+        {field('popularName', t.popularName, {
+          placeholder: t.popularNamePlaceholder,
+          maxLength: 150,
+        })}
+        {field('popularNameEn', t.popularNameEn, {
+          placeholder: t.popularNameEnPlaceholder,
+          maxLength: 150,
+        })}
+        <CampoDeFichas
+          className="sm:col-span-2"
+          rotulo={t.famousParts}
+          valores={form.famousParts}
+          aoMudar={(famousParts) => set({ famousParts })}
+        />
+        <CampoDeFichas
+          className="sm:col-span-2"
+          rotulo={t.famousPartsEn}
+          valores={form.famousPartsEn}
+          aoMudar={(famousPartsEn) => set({ famousPartsEn })}
+        />
         <ComposerField
           label={t.composer}
           placeholder={t.composerSearch}

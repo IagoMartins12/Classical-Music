@@ -19,7 +19,7 @@ import { SITE_URL } from '@/app/utils/seoAlternates';
 import { FavoriteHeart } from '../FavoriteHeart';
 import { Portrait } from '../Portrait';
 import { ShareAction } from '../ShareAction';
-import { workTitle } from '../workTitle';
+import { listaDeNomes, popularNames, workTitle } from '../workTitle';
 import { MoreFromComposer } from './MoreFromComposer';
 import { Recommendations } from '../Recommendations';
 import { StudyActions } from './StudyActions';
@@ -51,6 +51,7 @@ export function WorkPage({
   const copy = WORK[language];
   const title = workTitle(work.title, work.opOrCatalog);
   const composerName = work.composer.fullName || work.composer.name;
+  const popular = popularNames(work, language);
   const subtitle = [
     work.instrumentation || work.instrument?.name,
     work.compositionYear,
@@ -131,6 +132,16 @@ export function WorkPage({
           style={nomeDeTransicao(`obra-${work.id}`, 'cartao')}
         >
           <div className="flex flex-col gap-5">
+            {/* The official title stays the heading; the name people know
+                it by sits above it, where the eye starts. */}
+            {popular.name && (
+              <p className="t-rotulo -mb-2 text-ouro-texto">
+                {copy.knownAs}{' '}
+                <span className="font-display text-[1.25rem] text-texto">
+                  {popular.name}
+                </span>
+              </p>
+            )}
             <h1 className="font-display text-[clamp(2.5rem,6.5vw,5.25rem)] leading-[0.98] tracking-[-0.02em] [overflow-wrap:anywhere]">
               {title}
               {work.isVerified && (
@@ -148,6 +159,14 @@ export function WorkPage({
             {subtitle && (
               <p className="t-corpo max-w-[60ch] text-texto-suave">
                 {subtitle}
+              </p>
+            )}
+            {popular.parts.length > 0 && (
+              <p className="t-corpo max-w-[60ch] text-texto-suave">
+                {copy.includes}{' '}
+                <span className="text-texto">
+                  {listaDeNomes(popular.parts, language)}
+                </span>
               </p>
             )}
           </div>

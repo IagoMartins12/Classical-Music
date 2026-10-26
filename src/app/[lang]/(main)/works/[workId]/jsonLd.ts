@@ -47,7 +47,22 @@ export function workJsonLd(work: Work, language: 'pt' | 'en') {
         '@type': 'MusicComposition',
         '@id': `${url}#work`,
         name: work.title,
-        alternateName: nome !== work.title ? nome : undefined,
+        // Every name it is known by: the catalog's, and the popular ones in
+        // both languages ("Sonata ao Luar", "Moonlight Sonata").
+        alternateName: [
+          ...new Set(
+            [nome, work.popularName, work.popularNameEn].filter(
+              (n): n is string => !!n && n !== work.title
+            )
+          ),
+        ],
+        // Its famous parts, by the name people search them.
+        hasPart: (language === 'pt' ? work.famousParts : work.famousPartsEn)
+          .length
+          ? (language === 'pt' ? work.famousParts : work.famousPartsEn).map(
+              (name) => ({ '@type': 'MusicComposition', name })
+            )
+          : undefined,
         url,
         composer: {
           '@type': 'Person',

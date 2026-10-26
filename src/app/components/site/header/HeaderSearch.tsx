@@ -20,7 +20,7 @@ import { useSiteSearch } from '@/app/hooks/useSiteSearch';
 import { rotasDoBlog } from '@/app/utils/blog/rotas';
 import { localizeHref, type RouteLanguage } from '@/app/utils/localizedRoutes';
 import { composerYears } from '../composerYears';
-import { workTitle } from '../workTitle';
+import { nomePopularCurto, workTitle } from '../workTitle';
 import { PWA } from '@/app/conteudo/site/pwa';
 import { useOnline } from '@/app/hooks/useOnline';
 import { SEARCH_HREF } from './navigation';
@@ -95,7 +95,10 @@ export function HeaderSearch({
         id: w.id,
         group: 'works' as const,
         title: workTitle(w.title, w.opOrCatalog),
-        detail: w.composer.name,
+        // "Sonata ao Luar · Beethoven": why the result matched what was typed.
+        detail: [nomePopularCurto(w, language), w.composer.name]
+          .filter(Boolean)
+          .join(' · '),
         href: localizeHref(`/works/${w.id}`, language),
       })),
       ...result.articles.map((a) => ({

@@ -24,6 +24,46 @@ export interface paths {
     patch?: never;
     trace?: never;
   };
+  '/api/seo/sitemap/catalog': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /**
+     * Índice do sitemap do acervo
+     * @description Quantas páginas de sitemap têm os compositores (com obra) e as obras principais, e quantas URLs cabem em cada uma. Cache de 1 dia.
+     */
+    get: operations['SeoController_catalogIndex'];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/api/seo/sitemap/catalog/{kind}/{page}': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /**
+     * Uma página do sitemap do acervo
+     * @description Os ids e a data de mudança de uma página de compositores ou de obras, em ordem de id. Cache de 1 dia.
+     */
+    get: operations['SeoController_catalogPage'];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
   '/api/ads': {
     parameters: {
       query?: never;
@@ -537,6 +577,26 @@ export interface paths {
     get: operations['WorksController_getImslpStatus'];
     put?: never;
     post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/api/works/{id}/scores/search-again': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    /**
+     * Procura de novo as partituras da obra no IMSLP, na frente da fila
+     * @description O botão "Procurar novamente" da página da obra, quando a busca ficou sem resposta (fila cheia, espera longa). Só para obra com página válida no IMSLP e sem leitura no dia; uma vez por minuto por obra; respeita a pausa do IMSLP fora do ar.
+     */
+    post: operations['WorksController_searchScoresAgain'];
     delete?: never;
     options?: never;
     head?: never;
@@ -8251,20 +8311,6 @@ export interface components {
       /** Format: date-time */
       lastModified: string;
     };
-    SitemapCatalogIndexDto: {
-      /** @example 40000 */
-      pageSize: number;
-      /** @description Páginas de compositores */
-      composers: number;
-      /** @description Páginas de obras */
-      works: number;
-    };
-    SitemapCatalogEntryDto: {
-      /** @example 685d591c1e3db0c5aaa893e4 */
-      id: string;
-      /** Format: date-time */
-      lastModified: string;
-    };
     SitemapEntriesDto: {
       /** @example 2026-09-19T12:00:00.000Z */
       generatedAt: string;
@@ -8278,6 +8324,26 @@ export interface components {
       /** @description Autores com artigo publicado */
       blogAuthors: components['schemas']['SitemapAuthorDto'][];
       teachers: components['schemas']['SitemapTeacherDto'][];
+    };
+    SitemapCatalogIndexDto: {
+      /** @example 40000 */
+      pageSize: number;
+      /**
+       * @description Páginas de compositores
+       * @example 1
+       */
+      composers: number;
+      /**
+       * @description Páginas de obras
+       * @example 6
+       */
+      works: number;
+    };
+    SitemapCatalogEntryDto: {
+      /** @example 685d591c1e3db0c5aaa893e4 */
+      id: string;
+      /** Format: date-time */
+      lastModified: string;
     };
     PublicAdInstrumentDto: {
       /** @example 685d591c1e3db0c5aaa893e4 */
@@ -8566,6 +8632,23 @@ export interface components {
       id: string;
       /** @example Sonata No. 2 em Si bemol menor */
       title: string;
+      /** @example Sonata ao Luar */
+      popularName: string | null;
+      /** @example Moonlight Sonata */
+      popularNameEn: string | null;
+      /**
+       * @description As partes famosas da obra, pelo nome que se procura.
+       * @example [
+       *       "Estudo Revolucionário (nº 12)"
+       *     ]
+       */
+      famousParts?: string[];
+      /**
+       * @example [
+       *       "Revolutionary Étude (No.12)"
+       *     ]
+       */
+      famousPartsEn?: string[];
       /** @example Op. 35 */
       opOrCatalog: string | null;
       composer: components['schemas']['ComposerSummaryDto'];
@@ -8605,6 +8688,26 @@ export interface components {
       title: string;
       /** @example Marche funèbre */
       subtitle?: string | null;
+      /**
+       * @description O nome por que a obra é conhecida, quando não é o título.
+       * @example Sonata ao Luar
+       */
+      popularName?: string | null;
+      /** @example Moonlight Sonata */
+      popularNameEn?: string | null;
+      /**
+       * @description As partes famosas da obra, pelo nome que se procura.
+       * @example [
+       *       "Estudo Revolucionário (nº 12)"
+       *     ]
+       */
+      famousParts?: string[];
+      /**
+       * @example [
+       *       "Revolutionary Étude (No.12)"
+       *     ]
+       */
+      famousPartsEn?: string[];
       /** @example Op. 35 */
       opOrCatalog?: string | null;
       /** @example 1839 */
@@ -8870,6 +8973,26 @@ export interface components {
       /** @example Sonata No. 2 em Si bemol menor */
       title: string;
       subtitle?: string | null;
+      /**
+       * @description O nome por que a obra é conhecida, quando não é o título.
+       * @example Sonata ao Luar
+       */
+      popularName?: string | null;
+      /** @example Moonlight Sonata */
+      popularNameEn?: string | null;
+      /**
+       * @description As partes famosas da obra, pelo nome que se procura.
+       * @example [
+       *       "Estudo Revolucionário (nº 12)"
+       *     ]
+       */
+      famousParts?: string[];
+      /**
+       * @example [
+       *       "Revolutionary Étude (No.12)"
+       *     ]
+       */
+      famousPartsEn?: string[];
       opOrCatalog?: string | null;
       compositionYear?: string | null;
       firstPublishDate?: string | null;
@@ -9076,6 +9199,23 @@ export interface components {
       title: string;
       /** @example Quasi una fantasia */
       subtitle?: string | null;
+      /** @example Sonata ao Luar */
+      popularName?: string | null;
+      /** @example Moonlight Sonata */
+      popularNameEn?: string | null;
+      /**
+       * @description As partes famosas da obra, pelo nome que se procura.
+       * @example [
+       *       "Estudo Revolucionário (nº 12)"
+       *     ]
+       */
+      famousParts?: string[];
+      /**
+       * @example [
+       *       "Revolutionary Étude (No.12)"
+       *     ]
+       */
+      famousPartsEn?: string[];
       /** @example Op. 27 No. 2 */
       opOrCatalog?: string | null;
       /** @example 1801 */
@@ -11841,7 +11981,7 @@ export interface components {
         | 'CONCERT_GUIDE'
         | 'GENERAL'
       )[];
-      author: components['schemas']['AuthorRefDto'];
+      author: components['schemas']['AuthorRefDto'] | null;
       /** Format: date-time */
       publishedAt?: string | null;
       /** Format: date-time */
@@ -11977,7 +12117,7 @@ export interface components {
         | 'CONCERT_GUIDE'
         | 'GENERAL'
       )[];
-      author: components['schemas']['AuthorRefWithBioDto'];
+      author: components['schemas']['AuthorRefWithBioDto'] | null;
       /** Format: date-time */
       publishedAt?: string | null;
       /** Format: date-time */
@@ -13221,6 +13361,26 @@ export interface components {
       epochId: string;
       /** @example Ao Luar */
       subtitle?: string;
+      /**
+       * @description O nome por que a obra é conhecida em português, quando não é o título.
+       * @example Sonata ao Luar
+       */
+      popularName?: string;
+      /** @example Moonlight Sonata */
+      popularNameEn?: string;
+      /**
+       * @description As partes famosas, pelo nome que se procura (português).
+       * @example [
+       *       "Estudo Revolucionário (nº 12)"
+       *     ]
+       */
+      famousParts?: string[];
+      /**
+       * @example [
+       *       "Revolutionary Étude (No.12)"
+       *     ]
+       */
+      famousPartsEn?: string[];
       /** @example Op. 27 No. 2 */
       opOrCatalog?: string;
       /** @example 1801 */
@@ -13316,6 +13476,12 @@ export interface components {
       /** @example Sonata No. 2 em Si bemol menor */
       title: string;
       subtitle: string | null;
+      /** @example Sonata ao Luar */
+      popularName: string | null;
+      /** @example Moonlight Sonata */
+      popularNameEn: string | null;
+      famousParts: string[];
+      famousPartsEn: string[];
       /** @example Op. 35 */
       opOrCatalog: string | null;
       /** @example 685d591c1e3db0c5aaa893e4 */
@@ -13414,6 +13580,26 @@ export interface components {
       epochId?: string;
       /** @example Ao Luar */
       subtitle?: string;
+      /**
+       * @description O nome por que a obra é conhecida em português, quando não é o título.
+       * @example Sonata ao Luar
+       */
+      popularName?: string;
+      /** @example Moonlight Sonata */
+      popularNameEn?: string;
+      /**
+       * @description As partes famosas, pelo nome que se procura (português).
+       * @example [
+       *       "Estudo Revolucionário (nº 12)"
+       *     ]
+       */
+      famousParts?: string[];
+      /**
+       * @example [
+       *       "Revolutionary Étude (No.12)"
+       *     ]
+       */
+      famousPartsEn?: string[];
       /** @example Op. 27 No. 2 */
       opOrCatalog?: string;
       /** @example 1801 */
@@ -15398,6 +15584,47 @@ export interface operations {
       };
     };
   };
+  SeoController_catalogIndex: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['SitemapCatalogIndexDto'];
+        };
+      };
+    };
+  };
+  SeoController_catalogPage: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        kind: string;
+        page: number;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['SitemapCatalogEntryDto'][];
+        };
+      };
+    };
+  };
   PublicAdsController_ads: {
     parameters: {
       query?: {
@@ -16500,6 +16727,37 @@ export interface operations {
     requestBody?: never;
     responses: {
       200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ImslpScoresStatusDto'];
+        };
+      };
+    };
+  };
+  WorksController_searchScoresAgain: {
+    parameters: {
+      query?: never;
+      header: {
+        'user-agent': string;
+      };
+      path: {
+        id: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ImslpScoresStatusDto'];
+        };
+      };
+      201: {
         headers: {
           [name: string]: unknown;
         };
@@ -31093,7 +31351,8 @@ export interface operations {
           | 'blogArticle'
           | 'blogCategory'
           | 'advertisement'
-          | 'sem-dono';
+          | 'sem-dono'
+          | 'video-sem-peca';
         page?: number;
         limit?: number;
       };

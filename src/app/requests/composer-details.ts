@@ -59,6 +59,10 @@ export interface ComposerWork {
   id: string;
   title: string;
   subtitle?: string;
+  popularName?: string;
+  popularNameEn?: string;
+  famousParts?: string[];
+  famousPartsEn?: string[];
   opOrCatalog?: string;
   compositionYear?: string;
   tone?: string;
@@ -288,6 +292,10 @@ function toComposerWork(work: ApiSchema<'ComposerWorkItemDto'>): ComposerWork {
     id: work.id,
     title: work.title,
     subtitle: work.subtitle || undefined,
+    popularName: work.popularName || undefined,
+    popularNameEn: work.popularNameEn || undefined,
+    famousParts: work.famousParts ?? [],
+    famousPartsEn: work.famousPartsEn ?? [],
     opOrCatalog: work.opOrCatalog || undefined,
     compositionYear: work.compositionYear || undefined,
     tone: work.tone || undefined,
