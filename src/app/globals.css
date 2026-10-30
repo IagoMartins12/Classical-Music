@@ -1400,6 +1400,17 @@ img[data-retrato][data-falhou] {
   }
 }
 
+/* The home below the fold (`.abaixo-da-dobra`): each section skips layout
+   and paint until it nears the viewport. Measured 29/10 (Lighthouse, phone,
+   local build): the document's own work — HTML, style, layout and paint of
+   ~1,700 elements — was 2 s of the 4 s main thread before the hero's text
+   counted as painted. `contain-intrinsic-size: auto` keeps the scrollbar
+   honest: the space is reserved and remembered once the section is seen. */
+.abaixo-da-dobra > * {
+  content-visibility: auto;
+  contain-intrinsic-size: auto 720px;
+}
+
 /* Entrada do topo da página (`.entra`, em cascata por `--i`). Só CSS: roda na
    primeira pintura, sem esperar o JavaScript — o título não fica invisível
    até a hidratação, como ficaria com o `Revelar`. */

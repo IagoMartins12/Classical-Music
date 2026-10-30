@@ -65,59 +65,64 @@ export default async function HomePage({ language }: { language: Language }) {
   return (
     <div className="classical-theme">
       <HomeHero copy={copy.hero} language={language} />
-      <PopularComposers
-        copy={copy.popular}
-        language={language}
-        composers={popular}
-      />
-      {featured && (
-        <FeaturedComposer
-          copy={copy.featured}
+      {/* Below the fold: each section is laid out and painted only when it
+          nears the screen (`.abaixo-da-dobra`), so a phone spends its first
+          second on the hero, not on twenty portraits nobody sees yet. */}
+      <div className="abaixo-da-dobra">
+        <PopularComposers
+          copy={copy.popular}
           language={language}
-          composer={featured}
+          composers={popular}
         />
-      )}
-      <ErasCarousel copy={copy.eras} language={language} />
-      <HomeCollections language={language} collections={picks.collections} />
-      <Revelar
-        as="section"
-        className={cx(
-          'section-wrap grid grid-cols-1 gap-12 py-12',
-          concerts.length > 0 && 'lg:grid-cols-[minmax(0,1fr)_24rem]'
-        )}
-      >
-        <MusicalFacts copy={copy.facts} language={language} initial={facts} />
-        {concerts.length > 0 && (
-          <UpcomingConcerts
-            copy={copy.concerts}
+        {featured && (
+          <FeaturedComposer
+            copy={copy.featured}
             language={language}
-            events={concerts}
+            composer={featured}
           />
         )}
-      </Revelar>
-      <DiscoverSection
-        copy={copy.discover}
-        language={language}
-        random={{
-          composers: discoveries.composers,
-          works: discoveries.works.map((w) => ({
-            id: w.id,
-            title: workTitle(w.title, w.opOrCatalog),
-            composerName: w.composerName,
-            detail: w.instrumentName,
-          })),
-        }}
-        recent={{
-          composers: recent.composers,
-          works: recent.works.map((w) => ({
-            id: w.id,
-            title: w.title,
-            composerName: w.composer.fullName,
-            detail: w.instrument.name,
-          })),
-        }}
-      />
-      <PlansCallout copy={copy.plans} />
+        <ErasCarousel copy={copy.eras} language={language} />
+        <HomeCollections language={language} collections={picks.collections} />
+        <Revelar
+          as="section"
+          className={cx(
+            'section-wrap grid grid-cols-1 gap-12 py-12',
+            concerts.length > 0 && 'lg:grid-cols-[minmax(0,1fr)_24rem]'
+          )}
+        >
+          <MusicalFacts copy={copy.facts} language={language} initial={facts} />
+          {concerts.length > 0 && (
+            <UpcomingConcerts
+              copy={copy.concerts}
+              language={language}
+              events={concerts}
+            />
+          )}
+        </Revelar>
+        <DiscoverSection
+          copy={copy.discover}
+          language={language}
+          random={{
+            composers: discoveries.composers,
+            works: discoveries.works.map((w) => ({
+              id: w.id,
+              title: workTitle(w.title, w.opOrCatalog),
+              composerName: w.composerName,
+              detail: w.instrumentName,
+            })),
+          }}
+          recent={{
+            composers: recent.composers,
+            works: recent.works.map((w) => ({
+              id: w.id,
+              title: w.title,
+              composerName: w.composer.fullName,
+              detail: w.instrument.name,
+            })),
+          }}
+        />
+        <PlansCallout copy={copy.plans} />
+      </div>
     </div>
   );
 }
