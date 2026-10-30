@@ -11,8 +11,15 @@ import {
   type KeyboardEvent as ReactKeyboardEvent,
   type SVGProps,
 } from 'react';
-import { PiCaretDown, PiCheck, PiSpinnerGap, PiX } from 'react-icons/pi';
+import {
+  PiCaretDown,
+  PiCheck,
+  PiMagnifyingGlass,
+  PiSpinnerGap,
+  PiX,
+} from 'react-icons/pi';
 import Image from '@/app/components/SmartImage';
+import { useMediaQuery } from '@/app/hooks/useMediaQuery';
 import type { OpcaoSelecao } from './Selecao';
 import { cx } from './cx';
 import { useListaFlutuante } from './useListaFlutuante';
@@ -33,6 +40,13 @@ const norm = (s: string) =>
  * Keyboard: ↓ ↑ move, Enter picks, Esc closes and restores the chosen
  * label; leaving the field restores it too, so the text always says what is
  * chosen.
+ *
+ * **On a phone, a full-screen panel.** The floating list is placed against
+ * the window, and when the keyboard comes up the visible area shrinks and the
+ * page scrolls to the field: the list ended up beside it or under the
+ * keyboard (the composer search, country and state in the installed app).
+ * There, touching the field opens a panel over the screen with the search at
+ * the top and the list under it, as apps do.
  */
 export function SelecaoComBusca({
   opcoes,
@@ -44,6 +58,7 @@ export function SelecaoComBusca({
   vazio = 'Nada encontrado',
   limpavel = false,
   rotuloLimpar = 'Limpar',
+  rotuloFechar = 'Fechar',
   disabled = false,
   invalido = false,
   icone: Icone,
@@ -63,6 +78,8 @@ export function SelecaoComBusca({
   /** Shows a button that clears the choice. */
   limpavel?: boolean;
   rotuloLimpar?: string;
+  /** The close button of the phone panel. */
+  rotuloFechar?: string;
   disabled?: boolean;
   invalido?: boolean;
   icone?: ComponentType<SVGProps<SVGSVGElement>>;
@@ -87,6 +104,9 @@ export function SelecaoComBusca({
   const [ativa, setAtiva] = useState(-1);
   const [remotas, setRemotas] = useState<OpcaoSelecao[]>([]);
   const [buscando, setBuscando] = useState(false);
+  const celular = useMediaQuery('(max-width: 639px)');
+  const painel = useRef<HTMLDivElement>(null);
+  const entradaDoPainel = useRef<HTMLInputElement>(null);
 
   const escolhida =
     opcoes?.find((o) => o.value === valor) ??
@@ -133,10 +153,25 @@ export function SelecaoComBusca({
   const { acima } = useListaFlutuante({
     ancora: campo,
     lista,
-    aberta,
+    aberta: aberta && !celular,
     aoClicarFora: fechar,
     conteudo: visiveis.length,
   });
+
+  // The phone panel lives in the top layer too: over any dialog.
+  useEffect(() => {
+    const p = painel.current as
+      | (HTMLDivElement & {
+          showPopover?: () => void;
+          hidePopover?: () => void;
+        })
+      | null;
+    if (!p || !celular) return;
+    if (aberta) {
+      if (p.showPopover && !p.matches(':popover-open')) p.showPopover();
+      entradaDoPainel.current?.focus({ preventScroll: true });
+    } else if (p.hidePopover && p.matches(':popover-open')) p.hidePopover();
+  }, [aberta, celular]);
 
   useEffect(() => {
     if (!aberta || ativa < 0) return;
@@ -151,7 +186,51 @@ export function SelecaoComBusca({
     if (o.value !== valor) aoMudar(o.value, o);
     fechar();
     entrada.current?.blur();
+    entradaDoPainel.current?.blur();
   };
+
+  const opcoesDaLista = (
+    <>
+      {aberta &&
+        (visiveis.length ? (
+          visiveis.map((o, i) => (
+            <li
+              key={`${o.value}-${i}`}
+              id={idOpcao(i)}
+              role="option"
+              aria-selected={o.value === valor}
+              aria-disabled={o.disabled || undefined}
+              data-ativa={i === ativa || undefined}
+              className="selecao-opcao"
+              onPointerMove={() => !o.disabled && ativa !== i && setAtiva(i)}
+              onClick={(e) => {
+                // Inside a <label>, the click would also reach the label,
+                // which clicks the field again and reopens the list.
+                e.preventDefault();
+                escolher(i);
+              }}
+            >
+              {o.retrato && <Retrato {...o.retrato} />}
+              <span className="flex min-w-0 flex-1 flex-col">
+                <span className="truncate">{o.label}</span>
+                {o.detalhe && (
+                  <span className="t-dado truncate text-[0.75rem] text-texto-fraco">
+                    {o.detalhe}
+                  </span>
+                )}
+              </span>
+              {o.value === valor && (
+                <PiCheck className="h-4 w-4 shrink-0 text-ouro-texto" />
+              )}
+            </li>
+          ))
+        ) : (
+          <li className="px-3 py-2 text-[0.9375rem] text-texto-fraco">
+            {buscando ? '…' : vazio}
+          </li>
+        ))}
+    </>
+  );
 
   const aoTeclar = (e: ReactKeyboardEvent<HTMLInputElement>) => {
     if (disabled) return;
@@ -215,12 +294,16 @@ export function SelecaoComBusca({
           autoComplete="off"
           spellCheck={false}
           disabled={disabled}
-          value={texto ?? rotuloAtual}
+          value={celular ? rotuloAtual : (texto ?? rotuloAtual)}
           placeholder={placeholder}
+          // Phone: the field only opens the panel; typing happens there.
+          readOnly={celular}
           onFocus={(e) => {
+            if (celular) return;
             e.currentTarget.select();
             setAberta(true);
           }}
+          onClick={() => celular && !disabled && setAberta(true)}
           onChange={(e) => {
             setTexto(e.target.value);
             setAberta(true);
@@ -260,59 +343,84 @@ export function SelecaoComBusca({
         />
       </div>
 
-      <ul
-        ref={lista}
-        id={idLista}
-        role="listbox"
-        popover="manual"
-        tabIndex={-1}
-        aria-labelledby={aria['aria-labelledby'] ?? idCampo}
-        className={cx(
-          'selecao-lista classical-scrollbar-mini',
-          acima && 'selecao-acima'
-        )}
-        // Picking an option must not take the focus off the field.
-        onPointerDown={(e) => e.preventDefault()}
-      >
-        {aberta &&
-          (visiveis.length ? (
-            visiveis.map((o, i) => (
-              <li
-                key={`${o.value}-${i}`}
-                id={idOpcao(i)}
-                role="option"
-                aria-selected={o.value === valor}
-                aria-disabled={o.disabled || undefined}
-                data-ativa={i === ativa || undefined}
-                className="selecao-opcao"
-                onPointerMove={() => !o.disabled && ativa !== i && setAtiva(i)}
-                onClick={(e) => {
-                  // Inside a <label>, the click would also reach the label,
-                  // which clicks the field again and reopens the list.
-                  e.preventDefault();
-                  escolher(i);
-                }}
-              >
-                {o.retrato && <Retrato {...o.retrato} />}
-                <span className="flex min-w-0 flex-1 flex-col">
-                  <span className="truncate">{o.label}</span>
-                  {o.detalhe && (
-                    <span className="t-dado truncate text-[0.75rem] text-texto-fraco">
-                      {o.detalhe}
-                    </span>
-                  )}
-                </span>
-                {o.value === valor && (
-                  <PiCheck className="h-4 w-4 shrink-0 text-ouro-texto" />
-                )}
-              </li>
-            ))
-          ) : (
-            <li className="px-3 py-2 text-[0.9375rem] text-texto-fraco">
-              {buscando ? '…' : vazio}
-            </li>
-          ))}
-      </ul>
+      {celular ? (
+        <div
+          ref={painel}
+          popover="manual"
+          className="selecao-tela-cheia"
+          onKeyDown={(e) => e.key === 'Escape' && fechar()}
+        >
+          <div className="flex items-center gap-2 border-b border-[var(--linha)] p-3">
+            <label className="input-classical flex min-w-0 flex-1 items-center gap-2 pl-3 pr-3">
+              <PiMagnifyingGlass
+                aria-hidden
+                className="h-5 w-5 shrink-0 text-texto-fraco"
+              />
+              <input
+                ref={entradaDoPainel}
+                role="combobox"
+                aria-autocomplete="list"
+                aria-expanded={aberta}
+                aria-controls={idLista}
+                aria-activedescendant={
+                  aberta && ativa >= 0 ? idOpcao(ativa) : undefined
+                }
+                autoComplete="off"
+                spellCheck={false}
+                value={texto ?? ''}
+                placeholder={placeholder}
+                onChange={(e) => setTexto(e.target.value)}
+                onKeyDown={aoTeclar}
+                className="min-w-0 flex-1 bg-transparent outline-none placeholder:text-texto-fraco"
+                aria-label={aria['aria-label']}
+                aria-labelledby={aria['aria-labelledby']}
+              />
+              {buscando && aberta && (
+                <PiSpinnerGap
+                  aria-hidden
+                  className="h-4 w-4 shrink-0 animate-spin text-texto-fraco"
+                />
+              )}
+            </label>
+            <button
+              type="button"
+              aria-label={rotuloFechar}
+              onClick={fechar}
+              className="grid h-11 w-11 shrink-0 place-items-center rounded-full text-texto-suave hover:bg-sup-2 hover:text-texto"
+            >
+              <PiX aria-hidden className="h-5 w-5" />
+            </button>
+          </div>
+          <ul
+            ref={lista}
+            id={idLista}
+            role="listbox"
+            tabIndex={-1}
+            aria-labelledby={aria['aria-labelledby'] ?? idCampo}
+            className="classical-scrollbar-mini flex min-h-0 flex-1 flex-col gap-0.5 overflow-y-auto overscroll-contain p-2"
+            onPointerDown={(e) => e.preventDefault()}
+          >
+            {opcoesDaLista}
+          </ul>
+        </div>
+      ) : (
+        <ul
+          ref={lista}
+          id={idLista}
+          role="listbox"
+          popover="manual"
+          tabIndex={-1}
+          aria-labelledby={aria['aria-labelledby'] ?? idCampo}
+          className={cx(
+            'selecao-lista classical-scrollbar-mini',
+            acima && 'selecao-acima'
+          )}
+          // Picking an option must not take the focus off the field.
+          onPointerDown={(e) => e.preventDefault()}
+        >
+          {opcoesDaLista}
+        </ul>
+      )}
     </>
   );
 }

@@ -200,14 +200,21 @@ export function ListControls({
         </Button>
       </form>
 
-      <div className="flex flex-wrap items-center gap-2">
+      {/* On a phone, a two-column grid: the pills pair up in equal widths
+          and the composer search takes its own full row, last (owner's
+          decision, 29/10: symmetric, as on the composers page). */}
+      <div className="flex flex-wrap items-center gap-2 max-sm:grid max-sm:grid-cols-2">
         {filters
           .filter((f) => f.primary)
           .map((f) => (
-            <div key={f.key}>
+            <div key={f.key} className="max-sm:min-w-0">
               <Selecao
                 aria-label={f.label}
-                className={cx(pill, query[f.key] && 'border-[var(--ouro)]!')}
+                className={cx(
+                  pill,
+                  'max-sm:w-full!',
+                  query[f.key] && 'border-[var(--ouro)]!'
+                )}
                 opcoes={[{ value: '', label: f.anyLabel }, ...f.options]}
                 valor={query[f.key] ?? ''}
                 aoMudar={(value) => go({ [f.key]: value || undefined })}
@@ -215,7 +222,7 @@ export function ListControls({
             </div>
           ))}
         {composer && (
-          <div className="w-64 max-w-full">
+          <div className="w-64 max-w-full max-sm:order-last max-sm:col-span-2 max-sm:w-full">
             <SelecaoComBusca
               aria-label={composer.label}
               placeholder={composer.placeholder}
@@ -238,7 +245,11 @@ export function ListControls({
           tamanho="p"
           icone={PiFunnelSimple}
           onClick={() => setSheet(true)}
-          className="rounded-full"
+          className={cx(
+            'rounded-full max-sm:w-full',
+            filters.filter((f) => f.primary).length % 2 === 0 &&
+              'max-sm:col-span-2'
+          )}
         >
           {copy.moreFilters}
           {secondary > 0 && ` · ${secondary}`}

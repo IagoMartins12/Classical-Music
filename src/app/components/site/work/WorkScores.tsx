@@ -17,6 +17,7 @@ import Link from '@/app/components/LocalizedLink';
 import { Abas, Aba } from '@/app/components/ui/Abas';
 import { Button, classesDeBotao } from '@/app/components/ui/Button';
 import { Icon } from '@/app/components/ui/Icon';
+import { Sheet } from '@/app/components/ui/Sheet';
 import { TentarDeNovo } from '@/app/components/ui/TentarDeNovo';
 import { cx } from '@/app/components/ui/cx';
 import { WORK, type WorkCopy } from '@/app/conteudo/site/work';
@@ -224,16 +225,39 @@ export function WorkScores({
                   variante="fantasma"
                   icone={PiInfo}
                   rotulo={copy.groupingLabel}
-                  aria-expanded={showInfo}
-                  onClick={() => setShowInfo(!showInfo)}
+                  aria-haspopup="dialog"
+                  onClick={() => setShowInfo(true)}
                 />
               </span>
             </div>
-            {showInfo && (
-              <p className="t-rotulo rounded-card bg-sup-2 p-4 text-texto-suave">
-                {copy.grouping}
-              </p>
-            )}
+            {/* How the shelves are organized: a modal, not a section that
+                pushes the list down (owner's decision, 29/10). */}
+            <Sheet
+              aberto={showInfo}
+              aoFechar={() => setShowInfo(false)}
+              titulo={copy.groupingLabel}
+              descricao={copy.grouping}
+              largura="p"
+              rodape={
+                <Button variante="primario" onClick={() => setShowInfo(false)}>
+                  {copy.groupingClose}
+                </Button>
+              }
+            >
+              <ol className="flex flex-col gap-4">
+                {copy.groupingSteps.map(([termo, texto], i) => (
+                  <li key={termo} className="flex gap-3">
+                    <span className="t-dado w-5 shrink-0 pt-0.5 text-ouro-texto">
+                      {i + 1}
+                    </span>
+                    <span className="flex flex-col gap-0.5">
+                      <span className="font-medium text-texto">{termo}</span>
+                      <span className="t-rotulo text-texto-suave">{texto}</span>
+                    </span>
+                  </li>
+                ))}
+              </ol>
+            </Sheet>
             <div key={shelf.kind} className="flex flex-col gap-8">
               {shelf.sections.map((section, i) => (
                 <Section

@@ -280,7 +280,7 @@ export default function CoverCropper({
             onPointerUp={soltar}
             onPointerCancel={soltar}
             onKeyDown={tecla}
-            className="aspect-[16/10] h-auto w-full cursor-move touch-none rounded-card bg-sup-2 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ouro"
+            className="aspect-[16/10] h-auto w-full cursor-move touch-none rounded-card bg-sup-2"
           />
 
           <div className="flex flex-wrap items-center gap-x-4 gap-y-3">

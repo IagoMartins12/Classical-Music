@@ -26,15 +26,15 @@ const pt = {
     action: 'Reportar',
     title: (name: string) => `Reportar ${name}`,
     intro:
-      'A equipe lê cada report. Se você estiver certo, a página é corrigida e você recebe um aviso.',
+      'A equipe lê cada denúncia. Se você estiver certo, a página é corrigida e você recebe um aviso.',
     question: 'O que está errado?',
     details: 'Detalhes',
     required: '(obrigatório)',
     optional: '(opcional)',
     placeholder: 'Ex.: a data de nascimento certa é 22 de fevereiro.',
-    warning: 'Report falso de propósito pode suspender a conta.',
+    warning: 'Denúncia falsa de propósito pode suspender a conta.',
     cancel: 'Cancelar',
-    send: 'Enviar report',
+    send: 'Enviar denúncia',
     sent: 'Recebemos sua denúncia. Vamos analisar, e o resultado chega nas suas notificações.',
     /** The API already explains in Portuguese; this is the fallback. */
     duplicate: 'Você já denunciou este item.',

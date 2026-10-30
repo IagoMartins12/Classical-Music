@@ -258,7 +258,7 @@ export default function Cupons() {
         ]}
       />
 
-      <div className="flex flex-wrap gap-2">
+      <div className="faixa-de-chips flex flex-wrap gap-2">
         <Chip
           selecionado={recorte === 'todos'}
           onClick={() => setRecorte('todos')}

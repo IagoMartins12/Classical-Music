@@ -80,7 +80,7 @@ export function OnDevice() {
   return (
     <div className="section-wrap flex flex-col gap-16 py-12 md:gap-20 md:py-16">
       {online ? (
-        <header className="grid items-center gap-10 lg:grid-cols-[minmax(0,7fr)_minmax(0,5fr)] lg:gap-16">
+        <header className="grid items-center gap-6 sm:gap-10 lg:grid-cols-[minmax(0,7fr)_minmax(0,5fr)] lg:gap-16">
           <div className="flex flex-col gap-5">
             <h1 className="entra classical-title text-[2.375rem] leading-[1.06] text-texto sm:text-5xl lg:text-[3.5rem]">
               {a.titulo}
@@ -102,29 +102,37 @@ export function OnDevice() {
               >
                 {copy.instalar}
               </Button>
-              <Link href="/" className={classesDeBotao('fantasma')}>
-                {copy.voltar}
-              </Link>
-              {/* Nobody needs the technology's name to use it: a quiet sign
+              {/* "Ir para o início" and the sign stay together on one line:
+                  wrapped alone, the sign wandered to the middle of the
+                  screen on a phone. */}
+              <span className="flex items-center gap-1">
+                <Link href="/" className={classesDeBotao('fantasma')}>
+                  {copy.voltar}
+                </Link>
+                {/* Nobody needs the technology's name to use it: a quiet sign
                   beside the actions, the explanation one click away. */}
-              <button
-                type="button"
-                onClick={() => setSobre(true)}
-                aria-haspopup="dialog"
-                aria-label={a.tecnologia}
-                className="group relative grid h-[var(--alvo)] w-[var(--alvo)] place-items-center rounded-full text-texto-suave transition-colors hover:bg-sup-2 hover:text-ouro-texto focus-visible:text-ouro-texto"
-              >
-                <Icon de={PiQuestion} tamanho="m" />
-                <span
-                  role="tooltip"
-                  className="pointer-events-none absolute bottom-full left-1/2 z-elevado mb-2 w-max max-w-[16rem] -translate-x-1/2 sup-alta !rounded-controle px-3 py-2 text-left text-[0.8125rem] leading-snug text-texto opacity-0 shadow-[var(--sombra-2)] transition-opacity duration-[var(--t-resposta)] group-hover:opacity-100 group-focus-visible:opacity-100"
+                <button
+                  type="button"
+                  onClick={() => setSobre(true)}
+                  aria-haspopup="dialog"
+                  aria-label={a.tecnologia}
+                  className="group relative grid h-[var(--alvo)] w-[var(--alvo)] place-items-center rounded-full text-texto-suave transition-colors hover:bg-sup-2 hover:text-ouro-texto focus-visible:text-ouro-texto"
                 >
-                  {a.tecnologia}
-                </span>
-              </button>
+                  <Icon de={PiQuestion} tamanho="m" />
+                  <span
+                    role="tooltip"
+                    className="pointer-events-none absolute bottom-full left-1/2 z-elevado mb-2 w-max max-w-[16rem] -translate-x-1/2 sup-alta !rounded-controle px-3 py-2 text-left text-[0.8125rem] leading-snug text-texto opacity-0 shadow-[var(--sombra-2)] transition-opacity duration-[var(--t-resposta)] group-hover:opacity-100 group-focus-visible:opacity-100"
+                  >
+                    {a.tecnologia}
+                  </span>
+                </button>
+              </span>
             </div>
           </div>
-          <AppGravado />
+          {/* On a phone the drawing comes first, above the title. */}
+          <div className="max-lg:order-first max-lg:mx-auto max-lg:w-full max-lg:max-w-[15rem]">
+            <AppGravado />
+          </div>
         </header>
       ) : (
         <header className="flex max-w-[60ch] flex-col gap-4">

@@ -8,6 +8,7 @@ import {
   PiMagnifyingGlass,
   PiMusicNotes,
   PiNewspaper,
+  PiSpinnerGap,
 } from 'react-icons/pi';
 import Image from '@/app/components/SmartImage';
 import { Button } from '@/app/components/ui/Button';
@@ -141,8 +142,27 @@ export function HeaderSearch({
     }
   };
 
-  const showPanel =
-    (variant === 'sheet' || open) && term.trim().length >= MIN_TERM;
+  const longEnough = term.trim().length >= MIN_TERM;
+  const showPanel = (variant === 'sheet' || open) && longEnough;
+  const loading = longEnough && state.status === 'loading';
+  // No accordion (owner's decision, 29/10): nothing in the panel swaps for a
+  // "searching" line while results come. What is on screen stays (the
+  // highlights in the sheet, the previous results) under one loading veil,
+  // and only the answer replaces it.
+  const showHighlights =
+    variant === 'sheet' && (!longEnough || (loading && !items.length));
+  const veil = loading && (
+    <div
+      aria-hidden="true"
+      className="absolute inset-0 z-elevado grid place-items-center rounded-[inherit] bg-[color-mix(in_srgb,var(--fundo)_55%,transparent)]"
+    >
+      <Icon
+        de={PiSpinnerGap}
+        tamanho="m"
+        className="animate-spin text-ouro-texto"
+      />
+    </div>
+  );
   const groups: { key: ResultItem['group']; label: string }[] = [
     { key: 'composers', label: copy.composers },
     { key: 'works', label: copy.works },
@@ -227,11 +247,18 @@ export function HeaderSearch({
         )}
       </div>
 
-      {variant === 'sheet' && term.trim().length < MIN_TERM && (
-        <SearchHighlights copy={copy} onNavigate={onNavigate} />
+      <p className="sr-only" aria-live="polite">
+        {loading ? copy.searching : ''}
+      </p>
+
+      {showHighlights && (
+        <div className="relative">
+          <SearchHighlights copy={copy} onNavigate={onNavigate} />
+          {veil}
+        </div>
       )}
 
-      {showPanel && (
+      {showPanel && !showHighlights && (
         <div
           id={listId}
           role="listbox"
@@ -240,20 +267,14 @@ export function HeaderSearch({
             'flex flex-col gap-1 p-2 text-left',
             dropdown
               ? 'popover-open sup-alta absolute inset-x-0 top-full z-menu mt-2 max-h-[70vh] overflow-y-auto !rounded-card'
-              : 'mt-4'
+              : 'relative mt-4',
+            dropdown && loading && !items.length && 'min-h-32'
           )}
         >
+          {veil}
           {state.status === 'error' && (
             <p className="px-3 py-4 t-rotulo text-texto-suave">
               {online ? copy.error : PWA[language].offline.busca}
-            </p>
-          )}
-          {state.status === 'loading' && !items.length && (
-            <p
-              className="px-3 py-4 t-rotulo text-texto-suave"
-              aria-live="polite"
-            >
-              {copy.searching}
             </p>
           )}
           {state.status === 'done' && !items.length && (

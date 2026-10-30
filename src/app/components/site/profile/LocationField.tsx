@@ -1,7 +1,6 @@
 'use client';
 
 import { useEffect, useId, useMemo, useState } from 'react';
-import { Selecao } from '@/app/components/ui/Selecao';
 import { SelecaoComBusca } from '@/app/components/ui/SelecaoComBusca';
 import { translateCountryName } from '@/app/utils/phones_and_location/countryTranslations';
 
@@ -28,8 +27,8 @@ const norm = (s: string) =>
  * The profile keeps names, not codes (`country: "Brasil"`), so a value read
  * from the database arrives without `isoCode`; once the place library loads
  * (lazily, it is large) the names are matched to codes, in Portuguese or
- * English. Country and state filter as the person types
- * (`SelecaoComBusca`); in the city list, typing letters jumps to the option.
+ * English. The three filter as the person types (`SelecaoComBusca`); on a
+ * phone, each opens a full-screen search.
  */
 export function LocationField({
   value,
@@ -228,27 +227,17 @@ export function LocationField({
           >
             {f.label}
           </label>
-          {f.key === 'city' ? (
-            <Selecao
-              aria-labelledby={`${id}-${f.key}`}
-              opcoes={f.opts}
-              valor={f.valor}
-              placeholder={f.placeholder}
-              disabled={f.off}
-              aoMudar={f.change}
-            />
-          ) : (
-            // Long lists: country and state filter as the person types.
-            <SelecaoComBusca
-              aria-labelledby={`${id}-${f.key}`}
-              opcoes={f.opts}
-              valor={f.valor}
-              placeholder={f.placeholder}
-              disabled={f.off}
-              vazio={language === 'pt' ? 'Nada encontrado' : 'No match'}
-              aoMudar={(v) => f.change(v)}
-            />
-          )}
+          {/* Long lists: each one filters as the person types. */}
+          <SelecaoComBusca
+            aria-labelledby={`${id}-${f.key}`}
+            opcoes={f.opts}
+            valor={f.valor}
+            placeholder={f.placeholder}
+            disabled={f.off}
+            vazio={language === 'pt' ? 'Nada encontrado' : 'No match'}
+            rotuloFechar={language === 'pt' ? 'Fechar' : 'Close'}
+            aoMudar={(v) => f.change(v)}
+          />
         </div>
       ))}
     </div>

@@ -246,7 +246,9 @@
   --largura-catalogo: 1280px;
 
   /* --- Foco: um anel só, em tudo que recebe teclado. --- */
-  --foco-anel: 0 0 0 3px rgba(212, 175, 55, 0.3);
+  /* No ring anywhere (owner's decision, 29/10): focus shows as the gold
+     border of the field or control, never a halo around it. */
+  --foco-anel: 0 0 0 0 transparent;
 
   /* =======================================================================
      A camada anterior, agora apontando para os tokens acima.
@@ -1008,15 +1010,17 @@ html.app-instalado .barra-do-topo {
 }
 
 /* O que é posicionado pelo topo fora das barras (os avisos) soma este respiro:
-   o tamanho do entalhe no app instalado, mais 16px, zero no navegador. Sem a
-   folga, no app o aviso ficava colado na barra de status do celular. */
+   o tamanho do entalhe no app instalado, mais 40px, zero no navegador. Sem a
+   folga, no app o aviso ficava colado na barra de status do celular; com 16px
+   ainda saía rente ao topo e cortado (29/10): agora desce para a altura do
+   meio da barra do site. */
 @media (display-mode: standalone) {
   :root {
-    --respiro-topo: calc(env(safe-area-inset-top) + 16px);
+    --respiro-topo: calc(env(safe-area-inset-top) + 40px);
   }
 }
 html.app-instalado {
-  --respiro-topo: calc(env(safe-area-inset-top) + 16px);
+  --respiro-topo: calc(env(safe-area-inset-top) + 40px);
 }
 
 /* A abertura do app instalado: enquanto a primeira página não termina de
@@ -1229,6 +1233,27 @@ html.app-pronto .abertura-do-app {
 
   .selecao-lista.selecao-acima:popover-open {
     animation-name: selecao-entra-acima;
+  }
+
+  /* The phone version of the searchable select (`SelecaoComBusca`): the
+     whole screen, search on top, list below, over any dialog. */
+  .selecao-tela-cheia {
+    position: fixed;
+    inset: 0;
+    width: 100%;
+    max-width: none;
+    height: 100dvh;
+    max-height: none;
+    margin: 0;
+    padding: env(safe-area-inset-top) 0 env(safe-area-inset-bottom);
+    border: 0;
+    background: var(--fundo);
+    color: var(--texto);
+  }
+  .selecao-tela-cheia:popover-open {
+    display: flex;
+    flex-direction: column;
+    animation: selecao-entra var(--t-toque) var(--saida);
   }
 
   .selecao-opcao {
@@ -2771,6 +2796,23 @@ html {
   .scroll-strip::-webkit-scrollbar {
     display: none;
   }
+  /* The admin's chip rows on a phone: one line that scrolls sideways, to the
+     screen's edges, instead of chips wrapping in ragged rows (29/10). */
+  @media (max-width: 639px) {
+    .faixa-de-chips {
+      flex-wrap: nowrap;
+      overflow-x: auto;
+      scrollbar-width: none;
+      margin-inline: -1rem;
+      padding-inline: 1rem;
+    }
+    .faixa-de-chips::-webkit-scrollbar {
+      display: none;
+    }
+    .faixa-de-chips > * {
+      flex-shrink: 0;
+    }
+  }
 }
 
 @media (prefers-reduced-motion: no-preference) {
@@ -3475,7 +3517,9 @@ html {
   --largura-catalogo: 1280px;
 
   /* --- Foco: um anel só, em tudo que recebe teclado. --- */
-  --foco-anel: 0 0 0 3px rgba(212, 175, 55, 0.3);
+  /* No ring anywhere (owner's decision, 29/10): focus shows as the gold
+     border of the field or control, never a halo around it. */
+  --foco-anel: 0 0 0 0 transparent;
 
   /* =======================================================================
      A camada anterior, agora apontando para os tokens acima.

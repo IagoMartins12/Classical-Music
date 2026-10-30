@@ -47,6 +47,12 @@ interface SheetProps {
   largura?: 'p' | 'm' | 'g' | 'gg';
   /** A alça de arrastar no telefone (padrão: sim). */
   alca?: boolean;
+  /**
+   * A folha fica na altura máxima desde que abre, em vez de seguir o
+   * conteúdo: a busca, cujo conteúdo troca a cada letra, crescia e encolhia
+   * (a "sanfona", 29/10).
+   */
+  alturaFixa?: boolean;
   children: ReactNode;
 }
 
@@ -66,6 +72,7 @@ export function Sheet({
   rodape,
   largura = 'm',
   alca = true,
+  alturaFixa = false,
   children,
 }: SheetProps) {
   const ref = useRef<HTMLDialogElement>(null);
@@ -201,8 +208,10 @@ export function Sheet({
           'flex flex-col',
           telaCheia
             ? 'max-sm:h-[100dvh] max-sm:pt-[env(safe-area-inset-top)]'
-            : 'max-h-[85dvh]',
-          'sm:max-h-[85dvh]',
+            : alturaFixa
+              ? 'h-[85dvh]'
+              : 'max-h-[85dvh]',
+          alturaFixa ? 'sm:h-[min(85dvh,46rem)]' : 'sm:max-h-[85dvh]',
           !!emblema &&
             'classical-scrollbar max-sm:overflow-y-auto max-sm:overflow-x-hidden'
         )}

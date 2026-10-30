@@ -13,6 +13,7 @@ import {
   UNLOCALIZED_SUBROUTES,
 } from './utils/localizedRoutes';
 import { CartoesQueViram } from '@/app/components/ui/CartoesQueViram';
+import { TopoAoNavegar } from '@/app/components/ui/TopoAoNavegar';
 
 /**
  * As três famílias do sistema, e por que são três.
@@ -218,6 +219,16 @@ const themeScript = `(function(){
  */
 const aberturaScript = `(function(){
   var h=document.documentElement,inicio=0;
+  // The opening's pass mark (\`aberto=1\`, for the service worker) leaves the
+  // address before anyone reads it.
+  try{
+    var q=new URLSearchParams(location.search);
+    if(q.has('aberto')){
+      q.delete('aberto');
+      var r=q.toString();
+      history.replaceState(history.state,'',location.pathname+(r?'?'+r:'')+location.hash);
+    }
+  }catch(e){}
   try{
     var v=Number(sessionStorage.getItem('opus-atlas:abertura'));
     sessionStorage.removeItem('opus-atlas:abertura');
@@ -318,6 +329,7 @@ export default function RootLayout({
         <ClientThemeWrapper>
           <AuthProvider>{children}</AuthProvider>
           <CartoesQueViram />
+          <TopoAoNavegar />
         </ClientThemeWrapper>
 
         {/* Analytics wait for the page to finish loading (`lazyOnload`):

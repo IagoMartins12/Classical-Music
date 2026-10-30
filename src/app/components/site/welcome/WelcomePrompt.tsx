@@ -1,6 +1,6 @@
 'use client';
 
-import { PiX } from 'react-icons/pi';
+import { PiSparkle, PiX } from 'react-icons/pi';
 import { Button } from '@/app/components/ui/Button';
 import { Icon } from '@/app/components/ui/Icon';
 import { WELCOME } from '@/app/conteudo/site/welcome';
@@ -8,14 +8,31 @@ import { useUser } from '@/app/hooks/userStore';
 import { useOverlayLanguage } from '@/app/hooks/useRouteLanguage';
 import { useOnboardingModal, usePromptModal } from '@/app/stores/authStore';
 
-/** A quiet reminder in the corner for whoever left the welcome questions halfway. */
+/**
+ * A reminder in the corner for whoever has not finished the welcome
+ * questions. The card opens once a session; closed, it folds into a small
+ * pill that stays until the questions are done (owner's decision, 29/10:
+ * "always show it while the welcome is missing").
+ */
 export function WelcomePrompt() {
   const copy = WELCOME[useOverlayLanguage()].prompt;
   const user = useUser();
   const { isOpen, close } = usePromptModal();
   const { open, isOpen: modalOpen } = useOnboardingModal();
 
-  if (!user || user.onboardingCompleted || !isOpen || modalOpen) return null;
+  if (!user || user.onboardingCompleted || modalOpen) return null;
+
+  if (!isOpen)
+    return (
+      <button
+        type="button"
+        onClick={open}
+        className="entra sup-alta fixed bottom-[max(1rem,env(safe-area-inset-bottom))] left-4 z-aviso flex h-11 items-center gap-2 !rounded-full pl-3.5 pr-4 text-[0.875rem] font-medium text-texto shadow-[var(--sombra-2)] hover:text-ouro-texto sm:bottom-6 sm:left-6"
+      >
+        <Icon de={PiSparkle} className="text-ouro-texto" />
+        {copy.title}
+      </button>
+    );
 
   return (
     <aside

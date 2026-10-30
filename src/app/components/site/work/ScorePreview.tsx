@@ -77,18 +77,39 @@ export function ScorePage({
   priority?: boolean;
 }) {
   const [broken, setBroken] = useState(false);
-  return file.thumbnailUrl && !broken ? (
-    <Image
-      src={file.thumbnailUrl}
-      alt=""
-      fill
-      sizes={sizes}
-      priority={priority}
-      onError={() => setBroken(true)}
-      className="object-contain"
-    />
-  ) : (
-    <BlankSheet title={file.title} pages={file.pageCount} small={small} />
+  const [loaded, setLoaded] = useState(false);
+  useEffect(() => {
+    setBroken(false);
+    setLoaded(false);
+  }, [file.thumbnailUrl]);
+  if (!file.thumbnailUrl || broken)
+    return (
+      <BlankSheet title={file.title} pages={file.pageCount} small={small} />
+    );
+  // The page image takes a while (IMSLP's large thumbnails): until it
+  // arrives, the typographic sheet stands in its place, breathing, and the
+  // image fades in over it.
+  return (
+    <>
+      {!loaded && (
+        <span className="absolute inset-0 animate-pulse">
+          <BlankSheet title={file.title} pages={file.pageCount} small={small} />
+        </span>
+      )}
+      <Image
+        src={file.thumbnailUrl}
+        alt=""
+        fill
+        sizes={sizes}
+        priority={priority}
+        onLoad={() => setLoaded(true)}
+        onError={() => setBroken(true)}
+        className={cx(
+          'object-contain transition-opacity duration-[var(--t-resposta)]',
+          loaded ? 'opacity-100' : 'opacity-0'
+        )}
+      />
+    </>
   );
 }
 

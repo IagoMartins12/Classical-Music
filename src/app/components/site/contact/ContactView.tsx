@@ -175,7 +175,7 @@ export function ContactView({ idioma }: { idioma: Idioma }) {
                       key={a}
                       className={cx(
                         'group relative flex cursor-pointer items-start gap-3 rounded-card p-4 transition-colors duration-[var(--t-toque)]',
-                        'has-[:focus-visible]:outline has-[:focus-visible]:outline-2 has-[:focus-visible]:outline-offset-2 has-[:focus-visible]:outline-[var(--ouro)]',
+                        'has-[:focus-visible]:border-[var(--ouro)]',
                         ativo
                           ? 'tint-ouro shadow-[inset_0_0_0_1px_var(--ouro)]'
                           : 'bg-sup-2 hover:bg-[var(--interactive-hover)]'

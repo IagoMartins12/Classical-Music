@@ -358,26 +358,28 @@ export default function Compositores() {
           rotulo="Buscar compositor"
           placeholder="Nome do compositor"
         />
-        <div className="flex flex-wrap items-center gap-2">
-          <Chip
-            selecionado={recorte === 'todos'}
-            onClick={() => setRecorte('todos')}
-          >
-            Todos
-          </Chip>
-          <Chip
-            selecionado={recorte === 'nao-verificados'}
-            onClick={() => setRecorte('nao-verificados')}
-          >
-            Não verificados
-          </Chip>
-          <Chip
-            selecionado={recorte === 'verificados'}
-            onClick={() => setRecorte('verificados')}
-          >
-            Verificados
-          </Chip>
-          <div className="flex w-full flex-wrap gap-2 sm:ml-auto sm:w-auto">
+        <div className="flex flex-col gap-3 sm:flex-row sm:flex-wrap sm:items-center sm:gap-2">
+          <div className="faixa-de-chips flex flex-wrap items-center gap-2">
+            <Chip
+              selecionado={recorte === 'todos'}
+              onClick={() => setRecorte('todos')}
+            >
+              Todos
+            </Chip>
+            <Chip
+              selecionado={recorte === 'nao-verificados'}
+              onClick={() => setRecorte('nao-verificados')}
+            >
+              Não verificados
+            </Chip>
+            <Chip
+              selecionado={recorte === 'verificados'}
+              onClick={() => setRecorte('verificados')}
+            >
+              Verificados
+            </Chip>
+          </div>
+          <div className="grid w-full grid-cols-2 gap-2 sm:ml-auto sm:flex sm:w-auto sm:flex-wrap max-sm:[&>*:last-child:nth-child(odd)]:col-span-2">
             <div className="min-w-0 flex-1 sm:w-44 sm:flex-none">
               <label htmlFor="cmp-qualidade" className="sr-only">
                 Qualidade dos dados

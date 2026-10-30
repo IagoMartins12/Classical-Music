@@ -82,10 +82,17 @@ export default function ConfirmModal({
       largura="p"
       alca={false}
       rodape={
-        // Straight into the sheet's footer, which lays the buttons out
-        // (side by side, equal halves on the phone); a wrapper here broke it.
+        // Straight into the sheet's footer, which lays the buttons out; a
+        // wrapper here broke it. On the phone each one grows: side by side
+        // in equal halves when both fit, else one per line at full width
+        // ("Continuar editando" / "Sair sem salvar" broke in a ragged pair).
         <>
-          <Button variante="fantasma" onClick={onClose} disabled={ocupado}>
+          <Button
+            variante="fantasma"
+            onClick={onClose}
+            disabled={ocupado}
+            className="max-sm:flex-auto"
+          >
             {cancelText}
           </Button>
           {!semConfirmar && (
@@ -94,6 +101,7 @@ export default function ConfirmModal({
               onClick={confirmar}
               carregando={ocupado}
               disabled={confirmarBloqueado}
+              className="max-sm:flex-auto"
             >
               {confirmText || acao}
             </Button>

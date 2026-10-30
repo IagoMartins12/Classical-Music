@@ -17,6 +17,7 @@ import { RecursoDoPlano } from '@/app/components/site/RecursoDoPlano';
 import { Button, classesDeBotao } from '@/app/components/ui/Button';
 import { Aba, Abas } from '@/app/components/ui/Abas';
 import { Icon } from '@/app/components/ui/Icon';
+import { Skeleton } from '@/app/components/ui/Skeleton';
 import { cx } from '@/app/components/ui/cx';
 import { RETROSPECTIVE } from '@/app/conteudo/site/retrospective';
 import { PranchaDoAno, TextoDoCartao } from './PranchaDoAno';
@@ -39,7 +40,8 @@ import {
 export function RetrospectiveButton({ className }: { className?: string }) {
   const { language } = useRouteLanguage();
   const copy = RETROSPECTIVE[language];
-  const [status, setStatus] = useState<RetroStatus | null>(null);
+  // `undefined` while asking; `null` when the answer failed (no button).
+  const [status, setStatus] = useState<RetroStatus | null | undefined>();
   const [open, setOpen] = useState(false);
 
   const refresh = useCallback(
@@ -53,6 +55,18 @@ export function RetrospectiveButton({ className }: { className?: string }) {
     void refresh();
   }, [refresh]);
 
+  // The button's place, held while the status comes: it no longer pops in
+  // and pushes the row (owner's report, 29/10).
+  if (status === undefined)
+    return (
+      <Skeleton
+        forma="bloco"
+        className={cx(
+          'h-9 w-44 !rounded-full [@media(pointer:coarse)]:h-[var(--alvo)]',
+          className
+        )}
+      />
+    );
   if (!status) return null;
 
   if (!status.unlocked) {

@@ -54,7 +54,7 @@ export function MoreFromComposer({
                 href={`/works/${work.id}`}
                 className="group flex h-full flex-col gap-1 rounded-card bg-sup-2 p-5 pr-12"
               >
-                <span className="font-display text-[1.1875rem] leading-snug group-hover:text-ouro-texto">
+                <span className="line-clamp-2 break-words font-display text-[1.1875rem] leading-snug group-hover:text-ouro-texto">
                   {workTitle(work.title, work.opOrCatalog)}
                 </span>
                 <span className="t-rotulo text-texto-suave">

@@ -1,6 +1,8 @@
 'use client';
 
-import { usePathname, useSearchParams } from 'next/navigation';
+import { usePathname, useRouter, useSearchParams } from 'next/navigation';
+import { useSession } from '@/app/libs/session';
+import { useEffect } from 'react';
 import { TentarDeNovo } from '@/app/components/ui/TentarDeNovo';
 import type { ReactNode } from 'react';
 import {
@@ -149,6 +151,18 @@ export function SignInView() {
   const copy = STATUS[language];
   const t = copy.signIn;
   const login = `/login?callbackUrl=${encodeURIComponent(next)}`;
+  // Signed in elsewhere (another tab) or back here through history: the page
+  // has nothing to say, so the person goes back where they were. The server
+  // already sends a signed-in visit on (`not-authenticated/page.tsx`).
+  const { status } = useSession();
+  const router = useRouter();
+  useEffect(() => {
+    if (status !== 'authenticated') return;
+    const temDestino =
+      next !== '/' && next.startsWith('/') && !next.startsWith('//');
+    if (!temDestino && window.history.length > 1) router.back();
+    else router.replace(temDestino ? next : '/');
+  }, [status, next, router]);
   return (
     <Chrome area="site">
       <StatusPage
