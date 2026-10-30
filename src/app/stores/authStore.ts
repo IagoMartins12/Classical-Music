@@ -5,7 +5,7 @@ import {
   persist,
   createJSONStorage,
 } from 'zustand/middleware';
-import { debounce } from 'lodash';
+import { debounce } from '../utils/debounce';
 
 // 🆕 Interface CORRIGIDA com objetos completos de localização
 export interface OnboardingData {
@@ -177,7 +177,7 @@ const initialOnboardingState: OnboardingState = {
 
 // Função debounced para auto-save
 const createDebouncedSave = (saveFunction: () => void) =>
-  debounce(saveFunction, 1000, { leading: false, trailing: true });
+  debounce(saveFunction, 1000);
 
 export const useAuthStore = create<AuthState>()(
   subscribeWithSelector(

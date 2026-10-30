@@ -4,7 +4,7 @@
 import { useEffect, useCallback, useRef } from 'react';
 import { useOnboardingModal } from '@/app/stores/authStore';
 import { useAuth } from './useAuth';
-import { debounce } from 'lodash';
+import { debounce } from '../utils/debounce';
 
 interface OnboardingPersistenceOptions {
   autoSaveDelay?: number;
@@ -210,13 +210,10 @@ export function useOnboardingPersistence(
   ]);
 
   // Função de save com debounce
-  const debouncedSave = useCallback(
-    debounce(forceSave, config.autoSaveDelay, {
-      leading: false,
-      trailing: true,
-    }),
-    [forceSave, config.autoSaveDelay]
-  );
+  const debouncedSave = useCallback(debounce(forceSave, config.autoSaveDelay), [
+    forceSave,
+    config.autoSaveDelay,
+  ]);
 
   // Auto-save quando dados mudam
   useEffect(() => {
