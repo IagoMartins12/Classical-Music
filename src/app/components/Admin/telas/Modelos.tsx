@@ -172,7 +172,7 @@ export default function Modelos() {
           rotulo="Buscar modelo"
           placeholder="Nome ou assunto"
         />
-        <div className="flex flex-wrap gap-2">
+        <div className="faixa-de-chips flex flex-wrap gap-2">
           <Chip
             selecionado={recorte === 'todos'}
             onClick={() => setRecorte('todos')}

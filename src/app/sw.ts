@@ -29,7 +29,30 @@ declare global {
 
 declare const self: ServiceWorkerGlobalScope;
 
-const CACHE_ABERTURA = 'opus-atlas-abertura';
+// v2: the opening that marks `aberto=1` (an old copy, served for an app
+// entry, would ask for the same entry again and loop).
+const CACHE_ABERTURA = 'opus-atlas-abertura-v2';
+
+/**
+ * An app entry (`?source=pwa`: the start address, a shortcut) not yet past
+ * the opening. Answered with the opening from the device, at once; the
+ * opening asks for the same page again with `aberto=1`. Without this, an app
+ * installed before `start_url` pointed at the opening stayed on a black
+ * screen until the server answered.
+ */
+const ehEntradaDoApp = (url: URL) =>
+  url.searchParams.get('source') === 'pwa' &&
+  !url.searchParams.has('aberto') &&
+  url.pathname !== '/abertura.html';
+
+async function abertura(): Promise<Response> {
+  const cache = await caches.open(CACHE_ABERTURA);
+  const salva = await cache.match('/abertura.html', { ignoreSearch: true });
+  if (salva) return salva;
+  const nova = await fetch('/abertura.html');
+  if (nova.ok) await cache.put('/abertura.html', nova.clone());
+  return nova;
+}
 
 /** Same-origin Next routes that must never be cached. */
 const ROTAS_DO_NEXT = ['/api/', '/_next/webpack-hmr'];
@@ -66,6 +89,11 @@ const serwist = new Serwist({
         sameOrigin && ROTAS_DO_NEXT.some((r) => url.pathname.startsWith(r)),
       handler: new NetworkOnly(),
       method: 'GET',
+    },
+    {
+      matcher: ({ request, url, sameOrigin }) =>
+        sameOrigin && request.mode === 'navigate' && ehEntradaDoApp(url),
+      handler: () => abertura(),
     },
     {
       // The app's opening (`public/abertura.html`) comes from the device at

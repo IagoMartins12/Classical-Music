@@ -270,7 +270,7 @@ export default function Partituras() {
           rotulo="Buscar partitura pelo título"
           placeholder="Título da partitura"
         />
-        <div className="flex flex-wrap gap-2">
+        <div className="faixa-de-chips flex flex-wrap gap-2">
           <Chip
             selecionado={recorte === 'todas'}
             onClick={() => setRecorte('todas')}

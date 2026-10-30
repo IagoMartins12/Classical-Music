@@ -91,33 +91,35 @@ export function FavoriteHeart({
     null
   );
 
+  // Optimistic (owner's decision, 29/10): the motion and the toast come at
+  // the tap, and the store flips the heart before the request; a failure
+  // turns the same toast into the error and the store puts the heart back.
   const onClick = async (event: React.MouseEvent) => {
     event.preventDefault();
     event.stopPropagation();
     if (!allowed('favorite') || !user?.id || busy) return;
-    const removing = favorited && leaving;
-    if (removing) {
-      setGesture((g) => ({ n: (g?.n ?? 0) + 1, on: false }));
-      await leaving.sair();
-    }
+    const next = !favorited;
+    const removing = !next && leaving;
+    const aviso = toast.success(next ? copy.added(name) : copy.removed(name));
+    setGesture((g) => ({ n: (g?.n ?? 0) + 1, on: next }));
     try {
-      const now =
-        type === 'composer'
-          ? await toggleComposer(id, user.id)
-          : type === 'work'
-            ? await toggleWork(id, user.id)
-            : await toggleScore(
-                score!.workId,
-                id,
-                score!.source,
-                user.id,
-                score!.data
-              );
-      if (!removing) setGesture((g) => ({ n: (g?.n ?? 0) + 1, on: now }));
-      toast.success(now ? copy.added(name) : copy.removed(name));
+      // A card leaving the list plays its exit before the store drops it.
+      if (removing) await leaving.sair();
+      await (type === 'composer'
+        ? toggleComposer(id, user.id)
+        : type === 'work'
+          ? toggleWork(id, user.id)
+          : toggleScore(
+              score!.workId,
+              id,
+              score!.source,
+              user.id,
+              score!.data
+            ));
     } catch {
       leaving?.voltar();
-      toast.error(copy.failed);
+      setGesture(null);
+      toast.error(copy.failed, { id: aviso });
     }
   };
 

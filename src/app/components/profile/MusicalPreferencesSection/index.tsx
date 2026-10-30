@@ -174,8 +174,8 @@ const MusicalPreferencesSection: React.FC<MusicalPreferencesSectionProps> = ({
   return (
     <Stack gap={6}>
       {/* Header */}
-      <div className="flex flex-wrap items-start justify-between gap-4 sm:flex-nowrap sm:[&>*:not(:first-child)]:shrink-0">
-        <div className="sm:min-w-0 sm:flex-1">
+      <div className="flex flex-wrap items-start justify-between gap-x-4 gap-y-3 sm:flex-nowrap [&>*:not(:first-child)]:shrink-0">
+        <div className="min-w-0 flex-1 basis-48">
           <h3 className="font-display text-[1.5rem] leading-tight text-texto">
             {t('preferences_title')}
           </h3>

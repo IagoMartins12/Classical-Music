@@ -502,7 +502,7 @@ export default function Envios() {
       </Recolhivel>
 
       <Secao titulo="Histórico" id="env-lista" detalhe={nomePeriodo}>
-        <div className="flex flex-wrap gap-2">
+        <div className="faixa-de-chips flex flex-wrap gap-2">
           <Chip selecionado={tipo === ''} onClick={() => setTipo('')}>
             Tudo
           </Chip>

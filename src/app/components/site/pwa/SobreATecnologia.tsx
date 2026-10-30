@@ -1,12 +1,7 @@
 'use client';
 
 import type { IconType } from 'react-icons';
-import {
-  PiArrowsClockwise,
-  PiDeviceMobile,
-  PiMusicNotesSimple,
-  PiPenNib,
-} from 'react-icons/pi';
+import { PiArrowsClockwise, PiDeviceMobile, PiPenNib } from 'react-icons/pi';
 import { Button } from '@/app/components/ui/Button';
 import { Icon } from '@/app/components/ui/Icon';
 import { Sheet } from '@/app/components/ui/Sheet';
@@ -16,8 +11,8 @@ const ICONES: IconType[] = [PiDeviceMobile, PiPenNib, PiArrowsClockwise];
 
 /**
  * What the installed app is, for someone who never heard the word: how it
- * works in three parts, each with a comparison from classical music, and
- * where it helps on the site. The technical name comes last, for the
+ * works in three parts and where it helps on the site (the comparisons
+ * with copyists and bindings left on the owner's call, 29/10). The technical name comes last, for the
  * curious.
  */
 export function SobreATecnologia({
@@ -71,15 +66,6 @@ export function SobreATecnologia({
                   </span>
                   <span className="t-rotulo text-texto-suave">
                     {parte.texto}
-                  </span>
-                  {/* The comparison from the music the person already knows. */}
-                  <span className="mt-1 flex items-start gap-2 font-display text-[1.0625rem] italic leading-snug text-texto">
-                    <Icon
-                      de={PiMusicNotesSimple}
-                      tamanho="p"
-                      className="mt-1 shrink-0 text-ouro-texto"
-                    />
-                    {parte.analogia}
                   </span>
                 </span>
               </li>

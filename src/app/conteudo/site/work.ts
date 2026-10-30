@@ -106,8 +106,20 @@ const pt = {
     kindLabel: 'Tipo de partitura',
     note: 'PDF · grátis',
     groupingLabel: 'Como as partituras estão organizadas',
-    grouping:
-      'Seguimos a organização do IMSLP. Cada aba é um tipo de partitura. Dentro dela, os títulos separam as versões (a partitura completa, um arranjo para outro instrumento…). Cada caixa é uma edição: os arquivos que saíram juntos, como o livro inteiro e, em seguida, cada peça dele. As enviadas pela comunidade ficam à parte.',
+    grouping: 'Seguimos a organização do IMSLP.',
+    groupingSteps: [
+      ['Abas', 'Cada aba é um tipo de partitura.'],
+      [
+        'Títulos',
+        'Dentro da aba, os títulos separam as versões: a partitura completa, um arranjo para outro instrumento…',
+      ],
+      [
+        'Caixas',
+        'Cada caixa é uma edição: os arquivos que saíram juntos, como o livro inteiro e, em seguida, cada peça dele.',
+      ],
+      ['Comunidade', 'As partituras enviadas pela comunidade ficam à parte.'],
+    ] as [string, string][],
+    groupingClose: 'Entendi',
     community: 'Enviadas pela comunidade',
     general: 'Edições',
     editions: (n: number) => (n === 1 ? '1 edição' : `${n} edições`),
@@ -256,8 +268,20 @@ const en: typeof pt = {
     kindLabel: 'Score type',
     note: 'PDF · free',
     groupingLabel: 'How the scores are organized',
-    grouping:
-      'We follow IMSLP’s organization. Each tab is a kind of score. Inside it, the headings separate versions (the complete score, an arrangement for another instrument…). Each box is an edition: the files that came out together, such as the whole book and then each piece in it. Community uploads are kept apart.',
+    grouping: 'We follow IMSLP’s organization.',
+    groupingSteps: [
+      ['Tabs', 'Each tab is a kind of score.'],
+      [
+        'Headings',
+        'Inside a tab, the headings separate versions: the complete score, an arrangement for another instrument…',
+      ],
+      [
+        'Boxes',
+        'Each box is an edition: the files that came out together, such as the whole book and then each piece in it.',
+      ],
+      ['Community', 'Scores uploaded by the community are kept apart.'],
+    ],
+    groupingClose: 'Got it',
     community: 'Uploaded by the community',
     general: 'Editions',
     editions: (n: number) => (n === 1 ? '1 edition' : `${n} editions`),

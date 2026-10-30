@@ -144,37 +144,36 @@ export function Confirmar({
           </p>
         )}
 
-        {/* Campo e botão empilhados: lado a lado, a ajuda e o erro embaixo
-            do campo desalinham o botão. */}
+        {/* O botão na linha do campo; a ajuda e o erro embaixo dos dois. */}
         <form
-          className="flex flex-col items-start gap-3"
           onSubmit={(e) => {
             e.preventDefault();
             aplicar();
           }}
         >
-          <div className="w-full">
-            <Field
-              label={c.cupom}
-              ajuda={cupom ? undefined : c.cupomAjuda}
-              erro={erro ?? undefined}
-              value={codigo}
-              autoComplete="off"
-              onChange={(e) => {
-                setCodigo(e.target.value.toUpperCase());
-                setCupom(null);
-                setErro(null);
-              }}
-            />
-          </div>
-          <Button
-            type="submit"
-            tamanho="p"
-            carregando={conferindo}
-            disabled={!codigo.trim()}
-          >
-            {c.aplicar}
-          </Button>
+          <Field
+            label={c.cupom}
+            ajuda={cupom ? undefined : c.cupomAjuda}
+            erro={erro ?? undefined}
+            value={codigo}
+            autoComplete="off"
+            onChange={(e) => {
+              setCodigo(e.target.value.toUpperCase());
+              setCupom(null);
+              setErro(null);
+            }}
+            junto={
+              <Button
+                type="submit"
+                variante="secundario"
+                carregando={conferindo}
+                disabled={!codigo.trim()}
+                className="shrink-0"
+              >
+                {c.aplicar}
+              </Button>
+            }
+          />
         </form>
 
         <p className="text-sm leading-relaxed text-texto-fraco">{c.nota}</p>

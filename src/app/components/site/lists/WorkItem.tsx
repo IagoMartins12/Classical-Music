@@ -40,7 +40,7 @@ export function WorkItem({
       <Link
         href={`/works/${work.id}`}
         data-vira={`obra-${work.id}`}
-        className="group flex h-full flex-col gap-1.5 rounded-card bg-sup-2 p-5 pr-12 row:flex-row row:items-center row:gap-4 row:rounded-none row:bg-transparent! row:bg-none! row:px-0 row:py-4"
+        className="group flex h-full flex-col gap-1.5 rounded-card bg-sup-2 p-5 pr-12 row:flex-row row:items-center row:gap-4 row:rounded-none row:bg-transparent! row:bg-none! row:py-4 row:pl-0 row:pr-12"
       >
         <Portrait
           name={composer}
@@ -49,10 +49,14 @@ export function WorkItem({
           className="hidden h-12 w-12 shrink-0 rounded-full text-[0.875rem] row:block"
         />
         <span className="flex min-w-0 flex-1 flex-col gap-0.5">
-          <span className="font-display text-[1.3125rem] leading-snug group-hover:text-ouro-texto row:truncate">
-            {workTitle(work.title, work.opOrCatalog)}
+          {/* Ellipsis, never under the heart: two lines on the card, one
+              in the row. The seal stays outside the cut. */}
+          <span className="flex min-w-0 items-center gap-1.5 font-display text-[1.3125rem] leading-snug group-hover:text-ouro-texto">
+            <span className="line-clamp-2 min-w-0 break-words row:line-clamp-none row:truncate">
+              {workTitle(work.title, work.opOrCatalog)}
+            </span>
             {work.isVerified && (
-              <SeloVerificada className="ml-1.5 inline-block h-4 w-4 align-[-0.1em] text-verificado" />
+              <SeloVerificada className="h-4 w-4 shrink-0 text-verificado" />
             )}
           </span>
           <span className="t-rotulo truncate text-texto-suave">
@@ -62,7 +66,7 @@ export function WorkItem({
           </span>
         </span>
         {(meta || work.hasRecording) && (
-          <span className="t-legenda mt-auto flex items-center gap-2 pt-2 row:mt-0 row:shrink-0 row:pr-10 row:pt-0 max-sm:row:hidden">
+          <span className="t-legenda mt-auto flex items-center gap-2 pt-2 row:mt-0 row:shrink-0 row:pt-0 max-sm:row:hidden">
             {meta}
             {work.hasRecording && (
               <Icon

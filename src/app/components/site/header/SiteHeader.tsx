@@ -178,6 +178,7 @@ export function SiteHeader() {
         aoFechar={() => setSearchOpen(false)}
         titulo={copy.search.title}
         largura="m"
+        alturaFixa
       >
         {searchOpen && (
           <HeaderSearch

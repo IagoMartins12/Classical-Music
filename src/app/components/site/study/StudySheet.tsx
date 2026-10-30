@@ -558,7 +558,9 @@ export function StudySheet() {
     >
       {selectedWorkScore ? (
         <div className="flex flex-col gap-2 rounded-card bg-sup-2 p-4">
-          <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
+          {/* The actions, small, in the card's top-right corner (owner's
+              decision, 29/10): on a phone they no longer take a row. */}
+          <div className="flex items-start gap-3">
             <div className="flex min-w-0 flex-1 items-center gap-3">
               <span className="relative block aspect-[1/1.3] w-10 shrink-0 overflow-hidden rounded-[4px] bg-sobre-foto shadow-[var(--sombra-1)]">
                 <ScorePage file={selectedWorkScore} sizes="40px" small />
@@ -579,7 +581,7 @@ export function StudySheet() {
                 </span>
               </span>
             </div>
-            <div className="flex items-center gap-1 sm:shrink-0">
+            <div className="-mr-2 -mt-2 flex shrink-0 items-center">
               {selectedWorkScore.downloadUrl && (
                 <a
                   href={selectedWorkScore.downloadUrl}
@@ -587,20 +589,26 @@ export function StudySheet() {
                   rel="noopener noreferrer"
                   aria-label={copy.score.open}
                   title={copy.score.open}
-                  className={classesDeBotao('secundario', 'p', true)}
+                  className={cx(
+                    classesDeBotao('fantasma', 'p', true),
+                    '!h-9 !w-9'
+                  )}
                 >
                   <Icon de={PiDownloadSimple} tamanho="pp" />
                 </a>
               )}
               <Button
                 tamanho="p"
+                variante="fantasma"
                 icone={PiPencilLine}
                 rotulo={copy.score.change}
                 onClick={chooseScore}
+                className="!h-9 !w-9"
               />
               <Button
                 tamanho="p"
                 variante="fantasma"
+                className="!h-9 !w-9"
                 icone={PiX}
                 rotulo={copy.score.remove}
                 onClick={() => {
@@ -989,10 +997,10 @@ export function StudySheet() {
         descricao={`${workTitle} · ${composerName}`}
         largura="g"
         rodape={
-          // No celular, um botão por linha onde o texto é longo: salvar em cima,
-          // trocar de lista embaixo, e cancelar com remover lado a lado. No
-          // computador, a linha de sempre (remover e trocar à esquerda,
-          // cancelar e salvar à direita).
+          // No celular, duas linhas: salvar em cima, na largura toda; embaixo,
+          // cancelar à esquerda e trocar de lista à direita (remover, quando
+          // há, só o ícone, antes de cancelar). No computador, a linha de
+          // sempre (remover e trocar à esquerda, cancelar e salvar à direita).
           <div className="flex w-full flex-col gap-2 sm:flex-row sm:items-center">
             <Button
               variante="primario"
@@ -1002,53 +1010,48 @@ export function StudySheet() {
             >
               {isCurrentlyActive ? copy.update : copy.save}
             </Button>
-            {isWant ? (
-              <Button
-                variante="secundario"
-                icone={PiCheckCircle}
-                className="w-full whitespace-nowrap sm:order-2 sm:w-auto"
-                onClick={() => switchTo('learned')}
-                disabled={saving}
-              >
-                {copy.toLearned}
-              </Button>
-            ) : (
-              <Button
-                variante="secundario"
-                icone={PiBookmarkSimple}
-                className="w-full whitespace-nowrap sm:order-2 sm:w-auto"
-                onClick={() => switchTo('want-to-learn')}
-                disabled={saving}
-              >
-                {isCurrentlyActive ? copy.studyAgain : copy.toWant}
-              </Button>
-            )}
-            <span className="hidden sm:order-3 sm:block sm:flex-1" />
-            <div
-              className={cx(
-                'grid gap-2 sm:contents',
-                isCurrentlyActive ? 'grid-cols-2' : 'grid-cols-1'
-              )}
-            >
+            <div className="flex items-center gap-2 sm:contents">
               {isCurrentlyActive && (
                 <Button
                   variante="fantasma"
                   icone={PiTrash}
-                  className="whitespace-nowrap sm:order-1"
+                  className="shrink-0 whitespace-nowrap max-sm:!px-3 sm:order-1"
                   onClick={() => setConfirmRemove(true)}
                   disabled={saving}
                 >
-                  {copy.remove}
+                  <span className="max-sm:sr-only">{copy.remove}</span>
                 </Button>
               )}
               <Button
                 variante="fantasma"
-                className="whitespace-nowrap sm:order-4"
+                className="shrink-0 whitespace-nowrap sm:order-4"
                 onClick={requestClose}
                 disabled={saving}
               >
                 {copy.cancel}
               </Button>
+              <span className="flex-1 sm:order-3" />
+              {isWant ? (
+                <Button
+                  variante="secundario"
+                  icone={PiCheckCircle}
+                  className="min-w-0 whitespace-nowrap sm:order-2"
+                  onClick={() => switchTo('learned')}
+                  disabled={saving}
+                >
+                  {copy.toLearned}
+                </Button>
+              ) : (
+                <Button
+                  variante="secundario"
+                  icone={PiBookmarkSimple}
+                  className="min-w-0 whitespace-nowrap sm:order-2"
+                  onClick={() => switchTo('want-to-learn')}
+                  disabled={saving}
+                >
+                  {isCurrentlyActive ? copy.studyAgain : copy.toWant}
+                </Button>
+              )}
             </div>
           </div>
         }

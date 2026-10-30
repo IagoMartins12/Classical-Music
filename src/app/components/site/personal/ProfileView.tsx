@@ -109,11 +109,25 @@ export function ProfileView() {
   const [atual, escolher] = useSecaoAtual(pronto);
   const lista = useRef<HTMLElement>(null);
 
-  // On phones the list is a strip: keep the current one in sight.
+  // On phones the list is a strip: keep the current one in sight. Only the
+  // strip scrolls, sideways: `scrollIntoView` also moved the page back up to
+  // the strip at every section passed, so scrolling down kept jumping up.
   useEffect(() => {
-    lista.current
-      ?.querySelector<HTMLElement>('[aria-current="true"]')
-      ?.scrollIntoView({ block: 'nearest', inline: 'nearest' });
+    const faixa = lista.current;
+    const item = faixa?.querySelector<HTMLElement>('[aria-current="true"]');
+    if (!faixa || !item || faixa.scrollWidth <= faixa.clientWidth) return;
+    const esquerda =
+      item.getBoundingClientRect().left -
+      faixa.getBoundingClientRect().left +
+      faixa.scrollLeft;
+    const direita = esquerda + item.offsetWidth;
+    if (esquerda < faixa.scrollLeft)
+      faixa.scrollTo({ left: esquerda, behavior: 'smooth' });
+    else if (direita > faixa.scrollLeft + faixa.clientWidth)
+      faixa.scrollTo({
+        left: direita - faixa.clientWidth,
+        behavior: 'smooth',
+      });
   }, [atual]);
 
   // A link straight to a section (pricing's "Ver minha assinatura"): the

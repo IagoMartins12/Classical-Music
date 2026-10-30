@@ -91,22 +91,16 @@ const pt = {
             titulo: 'Um ícone na tela de início',
             texto:
               'Ao instalar, o navegador cria um atalho com cara de aplicativo. Um toque e o Opus Atlas abre em tela cheia, sem a barra de endereço.',
-            analogia:
-              'Como encadernar as sonatas que você mais toca: o conteúdo é o mesmo, mas agora tem capa e lugar fixo na estante.',
           },
           {
             titulo: 'Um copista trabalhando por você',
             texto:
               'Por trás, o navegador guarda uma cópia das páginas que você visitou e das partituras que você escolheu. Sem internet, são essas cópias que aparecem.',
-            analogia:
-              'Como os copistas do tempo de Bach, que passavam as partes a limpo para cada músico levar para casa.',
           },
           {
             titulo: 'Edições novas chegam sozinhas',
             texto:
               'Quando você abre o app com internet, ele busca a versão mais recente do site. Não há loja, nem atualização para baixar.',
-            analogia:
-              'Como uma edição revisada que aparece na sua estante sem você precisar voltar à loja de partituras.',
           },
         ],
         exemplos: 'No dia a dia',
@@ -273,22 +267,16 @@ const en: typeof pt = {
             titulo: 'An icon on your home screen',
             texto:
               'When you install it, the browser creates a shortcut that looks like an app. One tap and Opus Atlas opens full screen, without the address bar.',
-            analogia:
-              'Like binding the sonatas you play the most: the music is the same, but now it has a cover and its own place on the shelf.',
           },
           {
             titulo: 'A copyist working for you',
             texto:
               'Behind the scenes, the browser keeps a copy of the pages you visited and the scores you chose. Without internet, those copies are what you see.',
-            analogia:
-              'Like the copyists of Bach’s time, who wrote out the parts for each musician to take home.',
           },
           {
             titulo: 'New editions arrive on their own',
             texto:
               'When you open the app with internet, it fetches the latest version of the site. No store, no update to download.',
-            analogia:
-              'Like a revised edition that shows up on your shelf without a trip back to the music shop.',
           },
         ],
         exemplos: 'Day to day',

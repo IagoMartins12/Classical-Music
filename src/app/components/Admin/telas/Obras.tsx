@@ -361,38 +361,40 @@ export default function Obras() {
           rotulo="Buscar obra pelo título"
           placeholder="Título da obra"
         />
-        <div className="flex flex-wrap items-center gap-2">
-          <Chip
-            selecionado={recorte === 'todas'}
-            onClick={() => setRecorte('todas')}
-          >
-            Todas
-          </Chip>
-          <Chip
-            selecionado={recorte === 'nao-verificadas'}
-            onClick={() => setRecorte('nao-verificadas')}
-          >
-            Não verificadas
-          </Chip>
-          <Chip
-            selecionado={recorte === 'verificadas'}
-            onClick={() => setRecorte('verificadas')}
-          >
-            Verificadas
-          </Chip>
-          <Chip
-            selecionado={recorte === 'com-partitura'}
-            onClick={() => setRecorte('com-partitura')}
-          >
-            Com partitura
-          </Chip>
-          <Chip
-            selecionado={recorte === 'sem-partitura'}
-            onClick={() => setRecorte('sem-partitura')}
-          >
-            Sem partitura
-          </Chip>
-          <div className="flex w-full flex-wrap gap-2 sm:ml-auto sm:w-auto">
+        <div className="flex flex-col gap-3 sm:flex-row sm:flex-wrap sm:items-center sm:gap-2">
+          <div className="faixa-de-chips flex flex-wrap items-center gap-2">
+            <Chip
+              selecionado={recorte === 'todas'}
+              onClick={() => setRecorte('todas')}
+            >
+              Todas
+            </Chip>
+            <Chip
+              selecionado={recorte === 'nao-verificadas'}
+              onClick={() => setRecorte('nao-verificadas')}
+            >
+              Não verificadas
+            </Chip>
+            <Chip
+              selecionado={recorte === 'verificadas'}
+              onClick={() => setRecorte('verificadas')}
+            >
+              Verificadas
+            </Chip>
+            <Chip
+              selecionado={recorte === 'com-partitura'}
+              onClick={() => setRecorte('com-partitura')}
+            >
+              Com partitura
+            </Chip>
+            <Chip
+              selecionado={recorte === 'sem-partitura'}
+              onClick={() => setRecorte('sem-partitura')}
+            >
+              Sem partitura
+            </Chip>
+          </div>
+          <div className="grid w-full grid-cols-2 gap-2 sm:ml-auto sm:flex sm:w-auto sm:flex-wrap max-sm:[&>*:last-child:nth-child(odd)]:col-span-2">
             <div className="min-w-0 flex-1 sm:w-44 sm:flex-none">
               <label htmlFor="obr-epoca" className="sr-only">
                 Época

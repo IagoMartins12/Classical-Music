@@ -142,7 +142,7 @@ export function ScoreModal({ editor, onClose }: ScoreModalProps) {
                     <label
                       className={cx(
                         'flex cursor-pointer items-center gap-4 rounded-controle p-2 pr-4 transition-colors',
-                        'has-focus-visible:outline-2 has-focus-visible:outline-ouro',
+                        'has-[:focus-visible]:border-[var(--ouro)]',
                         marcada ? 'bg-sup-2' : 'hover:bg-(--interactive-hover)'
                       )}
                     >

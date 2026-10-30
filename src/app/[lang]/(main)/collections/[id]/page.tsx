@@ -2,7 +2,8 @@ import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import { CollectionView } from '@/app/components/site/collections/CollectionView';
 import { publicCollection } from '@/app/requests/collections';
-import { alternatesFor } from '@/app/utils/seoAlternates';
+import { urlDe } from '@/app/utils/seo';
+import { SITE_URL, alternatesFor } from '@/app/utils/seoAlternates';
 import {
   routeLanguage,
   type LangParams,
@@ -29,6 +30,22 @@ export async function generateMetadata({
   return {
     title: c.title,
     description: c.description ?? undefined,
+    // The card with the portraits of who is in it (`og/collection`).
+    openGraph: {
+      title: c.title,
+      description: c.description ?? undefined,
+      url: urlDe(`/collections/${id}`, language),
+      siteName: 'Opus Atlas',
+      images: [
+        {
+          url: `${SITE_URL}/og/collection/${id}?l=${language}`,
+          width: 1200,
+          height: 630,
+          alt: c.title,
+        },
+      ],
+    },
+    twitter: { card: 'summary_large_image', title: c.title },
     alternates: alternatesFor(`/collections/${id}`, language),
   };
 }

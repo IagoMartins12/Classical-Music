@@ -252,27 +252,29 @@ export default function Usuarios() {
           rotulo="Buscar por nome, e-mail ou usuário"
           placeholder="Nome, e-mail ou usuário"
         />
-        <div className="flex flex-wrap items-center gap-2">
-          <Chip
-            selecionado={recorte === 'todos'}
-            onClick={() => setRecorte('todos')}
-          >
-            Todas as contas
-          </Chip>
-          <Chip
-            selecionado={recorte === 'professores'}
-            onClick={() => setRecorte('professores')}
-          >
-            Professores
-          </Chip>
-          <Chip
-            selecionado={recorte === 'admins'}
-            onClick={() => setRecorte('admins')}
-          >
-            Administradores
-          </Chip>
-          <div className="ml-auto flex flex-wrap gap-2">
-            <div className="w-52">
+        <div className="flex flex-col gap-3 sm:flex-row sm:flex-wrap sm:items-center sm:gap-2">
+          <div className="faixa-de-chips flex flex-wrap items-center gap-2">
+            <Chip
+              selecionado={recorte === 'todos'}
+              onClick={() => setRecorte('todos')}
+            >
+              Todas as contas
+            </Chip>
+            <Chip
+              selecionado={recorte === 'professores'}
+              onClick={() => setRecorte('professores')}
+            >
+              Professores
+            </Chip>
+            <Chip
+              selecionado={recorte === 'admins'}
+              onClick={() => setRecorte('admins')}
+            >
+              Administradores
+            </Chip>
+          </div>
+          <div className="grid w-full grid-cols-2 gap-2 sm:ml-auto sm:flex sm:w-auto sm:flex-wrap">
+            <div className="min-w-0 sm:w-52">
               <label htmlFor="usu-perfil" className="sr-only">
                 Perfil
               </label>
@@ -289,7 +291,7 @@ export default function Usuarios() {
                 ]}
               />
             </div>
-            <div className="w-52">
+            <div className="min-w-0 sm:w-52">
               <label htmlFor="usu-ordem" className="sr-only">
                 Ordenar por
               </label>

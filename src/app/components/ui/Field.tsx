@@ -101,6 +101,11 @@ type FieldProps = BaseProps &
   Omit<InputHTMLAttributes<HTMLInputElement>, 'className'> & {
     /** Reaches the `<input>` (React 19 passes `ref` as a prop). */
     ref?: Ref<HTMLInputElement>;
+    /**
+     * Beside the field, on its line (the coupon's "Aplicar"): help and error
+     * stay under both, so the button lines up with the field, not with them.
+     */
+    junto?: ReactNode;
   };
 
 export function Field({
@@ -110,6 +115,7 @@ export function Field({
   rotuloOculto,
   className,
   classeCampo,
+  junto,
   ...resto
 }: FieldProps) {
   const id = useId();
@@ -130,13 +136,26 @@ export function Field({
       idErro={idErro}
       className={className}
     >
-      <input
-        id={idCampo}
-        aria-invalid={erro ? true : undefined}
-        aria-describedby={erro ? idErro : ajuda ? idAjuda : undefined}
-        className={cx(BASE_CONTROLE, classeCampo)}
-        {...resto}
-      />
+      {junto ? (
+        <div className="flex items-center gap-2">
+          <input
+            id={idCampo}
+            aria-invalid={erro ? true : undefined}
+            aria-describedby={erro ? idErro : ajuda ? idAjuda : undefined}
+            className={cx(BASE_CONTROLE, 'min-w-0 flex-1', classeCampo)}
+            {...resto}
+          />
+          {junto}
+        </div>
+      ) : (
+        <input
+          id={idCampo}
+          aria-invalid={erro ? true : undefined}
+          aria-describedby={erro ? idErro : ajuda ? idAjuda : undefined}
+          className={cx(BASE_CONTROLE, classeCampo)}
+          {...resto}
+        />
+      )}
     </Moldura>
   );
 }

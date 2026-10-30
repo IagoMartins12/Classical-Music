@@ -70,9 +70,14 @@ export function Cabecalho({
       quebra
       gap={4}
       alinhar="fim"
-      className={cx('pb-2', className)}
+      className={cx('relative pb-2', className)}
     >
-      <Stack gap={1} className="min-w-0">
+      {/* On a phone "Atualizar" is the icon in the top-right corner; the
+          title keeps clear of it. */}
+      <Stack
+        gap={1}
+        className={cx('min-w-0', aoAtualizar !== false && 'max-sm:pr-12')}
+      >
         <Text papel="subtitulo" as="h1">
           {titulo}
         </Text>
@@ -95,8 +100,10 @@ export function Cabecalho({
               icone={PiArrowsClockwise}
               onClick={atualizar}
               carregando={atualizando || relendo}
+              title="Atualizar"
+              className="max-sm:absolute max-sm:right-0 max-sm:top-0 max-sm:!px-2.5"
             >
-              Atualizar
+              <span className="max-sm:sr-only">Atualizar</span>
             </Button>
           )}
           {acoes}

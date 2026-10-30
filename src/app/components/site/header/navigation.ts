@@ -50,6 +50,7 @@ export const isActivePath = (path: string, href: string) =>
 
 export interface HeaderUser {
   role?: number | null;
+  isTeacher?: boolean | null;
   isStudent?: boolean | null;
   studentInviteStatus?: string | null;
 }
@@ -76,7 +77,11 @@ export function accountLinks(user: HeaderUser): AccountLink[] {
     { key: 'collections', href: '/my-collections', icon: PiBooks },
     { key: 'device', href: '/offline', icon: PiDeviceMobile },
   ];
-  if (role === ROLE_TEACHER) {
+  // Who teaches is `isTeacher`, not the role: a teacher invited from the
+  // admin keeps `role: 0`, and an admin who teaches has `role: 2` (the
+  // portal's own gate, `(teacher)/layout.tsx`). The role alone left the
+  // invited teachers without the portal in the menu.
+  if (user.isTeacher || role === ROLE_TEACHER) {
     links.push({ key: 'teacher', href: '/teacher', icon: PiChalkboardTeacher });
   }
   if (user.isStudent || user.studentInviteStatus) {

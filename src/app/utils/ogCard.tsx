@@ -147,6 +147,138 @@ async function baixar(url: string): Promise<string | null> {
   }
 }
 
+/** A foto do IMSLP como dados, já no tamanho que se consegue ler; ou nada. */
+export async function retratoComoDados(url: string | null | undefined) {
+  if (!url) return null;
+  for (const candidato of candidatos(url)) {
+    const dados = await baixar(candidato);
+    if (dados) return dados;
+  }
+  return null;
+}
+
+/**
+ * O cartão de uma coleção: o título e o que ela reúne à esquerda, e à
+ * direita os retratos de quem está nela, em leque (até quatro), cada um
+ * num aro de ouro fino. Sem retrato nenhum, o cartão desenhado de sempre.
+ */
+export function cartaoDeColecao(input: {
+  rotulo: string;
+  titulo: string;
+  linhas: string[];
+  retratos: string[];
+}) {
+  if (!input.retratos.length) return cartaoDeCompartilhamento(input);
+  const retratos = input.retratos.slice(0, 4);
+  const LADO = 200;
+  const PASSO = 104;
+  const largura = LADO + PASSO * (retratos.length - 1);
+  return new ImageResponse(
+    <div
+      style={{
+        width: '100%',
+        height: '100%',
+        display: 'flex',
+        alignItems: 'center',
+        gap: 56,
+        background: FUNDO,
+        padding: '72px 80px',
+        fontFamily: 'serif',
+      }}
+    >
+      <div
+        style={{
+          display: 'flex',
+          flexDirection: 'column',
+          justifyContent: 'space-between',
+          height: '100%',
+          flex: 1,
+          minWidth: 0,
+        }}
+      >
+        <div
+          style={{
+            display: 'flex',
+            alignItems: 'center',
+            gap: 16,
+            color: OURO,
+            fontSize: 26,
+            letterSpacing: 6,
+            textTransform: 'uppercase',
+            fontFamily: 'sans-serif',
+          }}
+        >
+          <div
+            style={{ width: 48, height: 2, background: OURO, display: 'flex' }}
+          />
+          {input.rotulo}
+        </div>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 24 }}>
+          <div
+            style={{
+              color: TEXTO,
+              fontSize: Math.min(tamanhoDoTitulo(input.titulo), 64),
+              lineHeight: 1.05,
+              display: 'flex',
+            }}
+          >
+            {input.titulo}
+          </div>
+          <div
+            style={{
+              display: 'flex',
+              flexDirection: 'column',
+              gap: 6,
+              color: SUAVE,
+              fontSize: 30,
+              fontFamily: 'sans-serif',
+            }}
+          >
+            {input.linhas.filter(Boolean).map((linha) => (
+              <div key={linha} style={{ display: 'flex' }}>
+                {linha}
+              </div>
+            ))}
+          </div>
+        </div>
+        <div style={{ display: 'flex', color: OURO, fontSize: 32 }}>
+          Opus Atlas
+        </div>
+      </div>
+      <div
+        style={{
+          display: 'flex',
+          position: 'relative',
+          width: largura,
+          height: LADO,
+          flexShrink: 0,
+        }}
+      >
+        {retratos.map((dados, i) => (
+          // eslint-disable-next-line @next/next/no-img-element, jsx-a11y/alt-text
+          <img
+            key={i}
+            src={dados}
+            width={LADO}
+            height={LADO}
+            style={{
+              position: 'absolute',
+              left: i * PASSO,
+              top: 0,
+              borderRadius: 9999,
+              border: `3px solid ${OURO}`,
+              boxShadow: `0 0 0 8px ${FUNDO}`,
+              objectFit: 'cover',
+              objectPosition: '50% 25%',
+            }}
+          />
+        ))}
+      </div>
+    </div>,
+    { ...OG_SIZE }
+  );
+}
+
 /**
  * A foto do compositor como imagem de compartilhamento (compositor e obra).
  * Baixada aqui, no servidor, e servida do nosso endereço: o robô do WhatsApp

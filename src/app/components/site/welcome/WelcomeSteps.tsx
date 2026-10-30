@@ -87,6 +87,18 @@ function Group({
   );
 }
 
+/** The mark of a chosen era or composer: a gold seal in the corner. */
+function Selo() {
+  return (
+    <span
+      aria-hidden="true"
+      className="absolute right-1 top-1 grid h-6 w-6 place-items-center rounded-full fill-ouro text-sobre-ouro shadow-[var(--sombra-1)]"
+    >
+      <Icon de={PiCheck} tamanho="pp" />
+    </span>
+  );
+}
+
 function Pills<T extends string | number>({
   options,
   value,
@@ -287,9 +299,11 @@ export function InstrumentsStep({
       {chosen.length ? (
         <ul className="flex flex-col divide-y divide-[var(--linha)]">
           {chosen.map((i) => (
+            // Phone: star, name and remove on the first line, the level and
+            // "learning" on the second; from sm up, one line.
             <li
               key={i.id}
-              className="flex flex-wrap items-center gap-x-4 gap-y-2 py-3"
+              className="grid grid-cols-[auto_minmax(0,1fr)_auto] items-center gap-x-3 gap-y-2 py-3 sm:flex sm:gap-x-4"
             >
               <button
                 type="button"
@@ -309,33 +323,36 @@ export function InstrumentsStep({
               >
                 <Icon de={i.isPrimary ? PiStarFill : PiStar} />
               </button>
-              <span className="min-w-0 flex-1 font-display text-[1.25rem]">
+              <span className="min-w-0 truncate font-display text-[1.25rem] sm:flex-1">
                 {i.name}
               </span>
-              <div className="w-40">
-                <Selecao
-                  aria-label={`${i.name}: ${copy.study.level}`}
-                  className="min-h-10! rounded-full! py-0! text-[0.9375rem]"
-                  opcoes={LEVELS.map((l) => ({
-                    value: l,
-                    label: copy.levels[l],
-                  }))}
-                  valor={i.level}
-                  aoMudar={(level) => patch(i.id, { level: level as Level })}
+              <div className="col-span-3 row-start-2 flex items-center gap-4 sm:contents">
+                <div className="min-w-0 flex-1 sm:w-40 sm:flex-none">
+                  <Selecao
+                    aria-label={`${i.name}: ${copy.study.level}`}
+                    className="min-h-10! rounded-full! py-0! text-[0.9375rem]"
+                    opcoes={LEVELS.map((l) => ({
+                      value: l,
+                      label: copy.levels[l],
+                    }))}
+                    valor={i.level}
+                    aoMudar={(level) => patch(i.id, { level: level as Level })}
+                  />
+                </div>
+                <CaixaDeMarcar
+                  rotulo={copy.instruments.learning}
+                  marcado={i.isLearning}
+                  aoMudar={(on) => patch(i.id, { isLearning: on })}
+                  className="shrink-0"
                 />
               </div>
-              <CaixaDeMarcar
-                rotulo={copy.instruments.learning}
-                marcado={i.isLearning}
-                aoMudar={(on) => patch(i.id, { isLearning: on })}
-              />
               <button
                 type="button"
                 aria-label={copy.instruments.remove(i.name)}
                 onClick={() =>
                   toggle({ id: i.id, name: i.name, category: null })
                 }
-                className="grid h-10 w-10 place-items-center rounded-full text-texto-fraco hover:bg-sup-2 hover:text-texto"
+                className="col-start-3 row-start-1 grid h-10 w-10 place-items-center rounded-full text-texto-fraco hover:bg-sup-2 hover:text-texto sm:order-last"
               >
                 <Icon de={PiX} />
               </button>
@@ -446,11 +463,7 @@ export function TasteStep({
                 onClick={() =>
                   update({ favoriteEpochId: active ? undefined : epoch.id })
                 }
-                className={cx(
-                  'group relative flex aspect-[4/5] items-end overflow-hidden rounded-card p-2.5 text-left',
-                  active &&
-                    'ring-2 ring-[var(--ouro)] ring-offset-2 ring-offset-[var(--fundo)]'
-                )}
+                className="group relative flex aspect-[4/5] items-end overflow-hidden rounded-card p-2.5 text-left"
               >
                 <Image
                   src={era.image}
@@ -463,11 +476,20 @@ export function TasteStep({
                   aria-hidden="true"
                   className="absolute inset-0 bg-gradient-to-t from-veu-foto via-veu-foto/45 to-transparent"
                 />
-                <span className="relative flex w-full items-end justify-between gap-2 text-sobre-foto">
+                {/* Chosen: a gold veil and a seal, no ring around it. */}
+                {active && (
+                  <>
+                    <span
+                      aria-hidden="true"
+                      className="absolute inset-0 bg-[var(--ouro)]/25"
+                    />
+                    <Selo />
+                  </>
+                )}
+                <span className="relative flex w-full items-end gap-2 text-sobre-foto">
                   <span className="min-w-0 truncate font-display text-[0.9375rem] leading-tight">
                     {era.name[language]}
                   </span>
-                  {active && <Icon de={PiCheck} tamanho="pp" />}
                 </span>
               </button>
             );
@@ -519,16 +541,15 @@ export function TasteStep({
                 }
                 className="group flex flex-col items-center gap-2 text-center"
               >
-                <Portrait
-                  name={c.fullName}
-                  src={c.portraitUrl}
-                  sizes="72px"
-                  className={cx(
-                    'h-[4.5rem] w-[4.5rem] rounded-full text-[1.125rem]',
-                    active &&
-                      'ring-2 ring-[var(--ouro)] ring-offset-2 ring-offset-[var(--fundo)]'
-                  )}
-                />
+                <span className="relative">
+                  <Portrait
+                    name={c.fullName}
+                    src={c.portraitUrl}
+                    sizes="72px"
+                    className="h-[4.5rem] w-[4.5rem] rounded-full text-[1.125rem]"
+                  />
+                  {active && <Selo />}
+                </span>
                 <span
                   className={cx(
                     't-rotulo leading-tight',
@@ -573,16 +594,26 @@ export function ProfileStep({
   return (
     <div className="flex flex-col gap-6">
       <div className="flex flex-col items-center gap-3 rounded-card bg-sup-2 p-6 text-center">
-        <WelcomeAvatar
-          name={name}
-          image={data.image ?? image}
-          className="h-28 w-28 bg-[var(--fundo)] text-[2.5rem]"
-        />
-        {name && (
-          <span className="font-display text-[1.5rem] leading-tight text-ouro-texto">
-            {name}
-          </span>
-        )}
+        {/* The picture and the name open the photo picker too, not only the
+            button under them. */}
+        <button
+          type="button"
+          onClick={() => fileRef.current?.click()}
+          disabled={uploading}
+          aria-label={t.photo}
+          className="group flex flex-col items-center gap-3"
+        >
+          <WelcomeAvatar
+            name={name}
+            image={data.image ?? image}
+            className="h-28 w-28 bg-[var(--fundo)] text-[2.5rem] transition-transform duration-[var(--t-toque)] group-hover:scale-[1.03]"
+          />
+          {name && (
+            <span className="font-display text-[1.5rem] leading-tight text-ouro-texto">
+              {name}
+            </span>
+          )}
+        </button>
         <button
           type="button"
           onClick={() => fileRef.current?.click()}
