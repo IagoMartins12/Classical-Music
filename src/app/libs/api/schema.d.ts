@@ -8727,6 +8727,8 @@ export interface components {
       epoch?: components['schemas']['WorkCatalogEpochDto'] | null;
       composer: components['schemas']['WorkCatalogComposerDto'];
       instrument: components['schemas']['WorkCatalogInstrumentDto'] | null;
+      /** @description Todos os instrumentos da obra, o principal primeiro. */
+      instrumentNames: string[];
     };
     WorksCatalogResponseDto: {
       works: components['schemas']['WorkCatalogItemDto'][];
@@ -31529,6 +31531,7 @@ export interface operations {
           | 'audit.prune'
           | 'mail.events.prune'
           | 'search.reindex'
+          | 'catalog.rank-works'
           | 'database.backup';
       };
       cookie?: never;
@@ -31588,6 +31591,7 @@ export interface operations {
           | 'audit.prune'
           | 'mail.events.prune'
           | 'search.reindex'
+          | 'catalog.rank-works'
           | 'database.backup';
       };
       cookie?: never;
@@ -31629,6 +31633,7 @@ export interface operations {
           | 'audit.prune'
           | 'mail.events.prune'
           | 'search.reindex'
+          | 'catalog.rank-works'
           | 'database.backup';
       };
       cookie?: never;

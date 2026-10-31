@@ -1,4 +1,5 @@
 import { PiHeadphones } from 'react-icons/pi';
+import { translateInstrument } from '@/app/utils/translations/instrumentsGenresTranslation';
 import Link from '@/app/components/LocalizedLink';
 import { Icon } from '@/app/components/ui/Icon';
 import { SeloVerificada } from '@/app/components/ui/SeloVerificada';
@@ -60,7 +61,17 @@ export function WorkItem({
             )}
           </span>
           <span className="t-rotulo truncate text-texto-suave">
-            {[nomePopularCurto(work, language), composer, work.instrument?.name]
+            {[
+              nomePopularCurto(work, language),
+              composer,
+              (work.instrumentNames?.length
+                ? work.instrumentNames
+                : [work.instrument?.name]
+              )
+                .filter((nome): nome is string => !!nome)
+                .map((nome) => translateInstrument(nome, language))
+                .join(', '),
+            ]
               .filter(Boolean)
               .join(' · ')}
           </span>
