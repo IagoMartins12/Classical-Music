@@ -9762,6 +9762,11 @@ export interface components {
       isTrialActive: boolean;
       /** @example 0 */
       trialDaysRemaining: number;
+      /**
+       * @description Já usou o teste grátis, que é um por pessoa.
+       * @example false
+       */
+      trialUsed: boolean;
       /** Format: date-time */
       expiresAt?: string | null;
       /** @description Quando o Plus vem do professor Maestro (aluno sem assinatura): o nome dele. */

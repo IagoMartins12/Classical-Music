@@ -18,6 +18,7 @@ export function Confirmar({
   plano,
   anual,
   precos,
+  testeUsado = 0,
   pagarNoStripe,
   aoFechar,
 }: {
@@ -25,6 +26,8 @@ export function Confirmar({
   plano: PlanoPago;
   anual: boolean;
   precos: Precos;
+  /** Os dias do teste que a pessoa já usou; 0 quando ainda pode usar. */
+  testeUsado?: number;
   pagarNoStripe: (
     plano: PlanType,
     periodo: BillingPeriod,
@@ -35,6 +38,7 @@ export function Confirmar({
   const c = PLANOS[idioma].confirmar;
   const nome = PLANOS[idioma].planos[plano].nome;
   const p = precos[plano]!;
+  const teste = testeUsado > 0 ? 0 : p.teste;
   const periodo = anual ? BillingPeriod.YEARLY : BillingPeriod.MONTHLY;
   const cheio = anual && p.anual ? p.anual.total : p.mensal;
 
@@ -130,7 +134,7 @@ export function Confirmar({
           ))}
           <div className="flex items-baseline justify-between gap-4 pt-4">
             <dt className="font-semibold text-texto">
-              {p.teste > 0 ? c.totalDepois : c.total}
+              {teste > 0 ? c.totalDepois : c.total}
             </dt>
             <dd className="classical-title text-3xl tabular-nums text-texto">
               {formatarPreco(cupom ? cupom.finalPrice : cheio, idioma)}
@@ -138,9 +142,9 @@ export function Confirmar({
           </div>
         </dl>
 
-        {p.teste > 0 && (
+        {(teste > 0 || testeUsado > 0) && (
           <p className="rounded-card bg-sup-2 p-4 text-sm leading-relaxed text-texto">
-            {c.teste(p.teste)}
+            {teste > 0 ? c.teste(teste) : c.testeUsado(testeUsado)}
           </p>
         )}
 

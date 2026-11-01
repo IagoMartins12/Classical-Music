@@ -547,6 +547,11 @@ export function GerenciarAssinatura({ idioma }: { idioma: Idioma }) {
           plano={pedido.plano}
           anual={anual}
           precos={precos}
+          testeUsado={
+            atual?.plan.trialUsed
+              ? Math.max(...Object.values(precos).map((p) => p?.teste ?? 0))
+              : 0
+          }
           pagarNoStripe={assinar}
           aoFechar={() => setPedido(null)}
         />

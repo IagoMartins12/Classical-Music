@@ -143,6 +143,8 @@ export type ConteudoPlanos = {
     nota: string;
     /** O que o teste grátis significa na hora de assinar. */
     teste: (dias: number) => string;
+    /** Quem já usou o teste grátis: ele é um por pessoa. */
+    testeUsado: (dias: number) => string;
     /** O rótulo do total quando há teste: ele só é cobrado no fim. */
     totalDepois: string;
     entrar: string;
@@ -439,6 +441,8 @@ export const PLANOS: Record<Idioma, ConteudoPlanos> = {
       nota: 'O pagamento é feito no Stripe, com cartão de crédito. O Opus Atlas não recebe o número do cartão.',
       teste: (dias) =>
         `Teste grátis de ${dias} dias, na sua primeira assinatura. O cartão é pedido agora e a primeira cobrança só acontece quando o teste acaba: cancele antes e nada é cobrado.`,
+      testeUsado: (dias) =>
+        `Você já usou o teste grátis de ${dias} dias em um plano e não é possível usá-lo novamente. A cobrança começa ao assinar.`,
       totalDepois: 'Cobrado depois do teste',
       entrar: 'Entre na sua conta para assinar.',
       erroCupom: 'Não foi possível conferir o cupom.',
@@ -734,6 +738,8 @@ export const PLANOS: Record<Idioma, ConteudoPlanos> = {
       nota: 'Payment is made on Stripe, by credit card. Opus Atlas never receives the card number.',
       teste: (dias) =>
         `Free ${dias}-day trial, on your first subscription. We ask for the card now and the first charge only happens when the trial ends: cancel before and you are not charged.`,
+      testeUsado: (dias) =>
+        `You have already used the ${dias}-day free trial on a plan and it cannot be used again. Billing starts when you subscribe.`,
       totalDepois: 'Charged after the trial',
       entrar: 'Sign in to subscribe.',
       erroCupom: 'We could not check the coupon.',
