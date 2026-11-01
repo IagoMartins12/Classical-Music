@@ -103,6 +103,7 @@ export function CollectionView({ initial }: { initial: CollectionDetail }) {
                 url={url}
                 image={c.faces[0]?.portraitUrl}
                 imageName={c.title}
+                preview={`/og/collection/${c.id}${language === 'en' ? '?l=en' : ''}`}
               />
             )}
             {mine && (

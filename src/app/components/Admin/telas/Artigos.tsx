@@ -226,14 +226,14 @@ export default function Artigos() {
             { valor: 'ARCHIVED', rotulo: 'Arquivados' },
           ]}
         />
-        <div className="flex flex-wrap items-end gap-2">
+        <div className="grid grid-cols-2 items-end gap-2 sm:flex sm:flex-wrap [&>*]:min-w-0 max-sm:[&>*:last-child:nth-child(odd)]:col-span-2">
           <Busca
             valor={busca}
             aoMudar={setBusca}
             rotulo="Buscar artigo"
             placeholder="Título ou descrição"
           />
-          <div className="w-48">
+          <div className="sm:w-48">
             <label htmlFor="art-cat" className="sr-only">
               Categoria
             </label>
@@ -250,7 +250,7 @@ export default function Artigos() {
               ]}
             />
           </div>
-          <div className="w-48">
+          <div className="sm:w-48">
             <label htmlFor="art-tipo" className="sr-only">
               Tipo
             </label>
@@ -267,7 +267,7 @@ export default function Artigos() {
               ]}
             />
           </div>
-          <div className="w-48">
+          <div className="sm:w-48">
             <label htmlFor="art-autor" className="sr-only">
               Autor
             </label>

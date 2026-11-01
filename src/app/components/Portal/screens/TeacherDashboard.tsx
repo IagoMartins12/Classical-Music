@@ -133,7 +133,9 @@ function Board({ data }: { data: Dashboard }) {
               icone={PiClock}
               onClick={() => open({ type: 'availability' })}
             >
-              Horário de atendimento
+              {/* Short on the phone: the two buttons share one line. */}
+              <span className="sm:hidden">Horários</span>
+              <span className="max-sm:hidden">Horário de atendimento</span>
             </Button>
           </>
         }
@@ -698,7 +700,13 @@ function Students({ data }: { data: Dashboard }) {
   const { open } = usePortal();
   const plan = data.plan;
   const add = (
-    <AddButton href="/teacher/students?invite=1">Convidar aluno</AddButton>
+    <AddButton
+      onClick={() =>
+        open({ type: plan.maxStudents === 0 ? 'upgrade' : 'invite' })
+      }
+    >
+      Convidar aluno
+    </AddButton>
   );
   return (
     <Section

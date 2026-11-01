@@ -155,7 +155,7 @@ export default function MidiaDoBlog() {
         ]}
       />
 
-      <div className="flex flex-wrap items-center gap-2">
+      <div className="faixa-de-chips flex flex-wrap items-center gap-2">
         {CATEGORIAS.map((c) => (
           <Chip
             key={c.valor}

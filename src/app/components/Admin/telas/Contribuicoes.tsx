@@ -134,7 +134,7 @@ export default function Contribuicoes() {
             },
           ]}
         />
-        <div className="flex w-full flex-wrap items-center gap-3 sm:w-auto">
+        <div className="grid w-full grid-cols-2 items-center gap-3 sm:flex sm:w-auto sm:flex-wrap [&>*]:min-w-0">
           <Field.Selecao
             label="Tipo"
             rotuloOculto
@@ -142,7 +142,7 @@ export default function Contribuicoes() {
             onChange={(e) =>
               setTipo((e.target.value || undefined) as TipoDeContribuicao)
             }
-            className="w-full sm:w-44"
+            className="sm:w-44"
           >
             <option value="">Todos os tipos</option>
             {Object.entries(TIPOS).map(([valor, nome]) => (
@@ -156,7 +156,7 @@ export default function Contribuicoes() {
             aoMudar={setBusca}
             placeholder="Buscar por autor"
             rotulo="Buscar contribuições por autor"
-            className="w-full sm:w-64"
+            className="sm:w-64"
           />
         </div>
       </div>

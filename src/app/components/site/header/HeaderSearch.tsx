@@ -147,14 +147,15 @@ export function HeaderSearch({
   const loading = longEnough && state.status === 'loading';
   // No accordion (owner's decision, 29/10): nothing in the panel swaps for a
   // "searching" line while results come. What is on screen stays (the
-  // highlights in the sheet, the previous results) under one loading veil,
+  // highlights in the sheet, the previous results) under one spinner, with
+  // no tint over it (a dark veil read as another colour of sheet, 31/10),
   // and only the answer replaces it.
   const showHighlights =
     variant === 'sheet' && (!longEnough || (loading && !items.length));
   const veil = loading && (
     <div
       aria-hidden="true"
-      className="absolute inset-0 z-elevado grid place-items-center rounded-[inherit] bg-[color-mix(in_srgb,var(--fundo)_55%,transparent)]"
+      className="pointer-events-none absolute inset-0 z-elevado grid place-items-center"
     >
       <Icon
         de={PiSpinnerGap}

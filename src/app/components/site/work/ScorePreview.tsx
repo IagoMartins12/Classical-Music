@@ -6,11 +6,13 @@ import {
   PiCaretLeft,
   PiCaretRight,
   PiDownloadSimple,
+  PiSpinnerGap,
 } from 'react-icons/pi';
 import Image from '@/app/components/SmartImage';
 import { Button, classesDeBotao } from '@/app/components/ui/Button';
 import { Icon } from '@/app/components/ui/Icon';
 import { Sheet } from '@/app/components/ui/Sheet';
+import { Skeleton } from '@/app/components/ui/Skeleton';
 import { cx } from '@/app/components/ui/cx';
 import type { WorkCopy } from '@/app/conteudo/site/work';
 import type {
@@ -87,13 +89,18 @@ export function ScorePage({
       <BlankSheet title={file.title} pages={file.pageCount} small={small} />
     );
   // The page image takes a while (IMSLP's large thumbnails): until it
-  // arrives, the typographic sheet stands in its place, breathing, and the
-  // image fades in over it.
+  // arrives, a skeleton with a spinner says it is loading, and the image
+  // fades in over it.
   return (
     <>
       {!loaded && (
-        <span className="absolute inset-0 animate-pulse">
-          <BlankSheet title={file.title} pages={file.pageCount} small={small} />
+        <span className="absolute inset-0 grid place-items-center">
+          <Skeleton className="!absolute inset-0 !h-full !w-full !rounded-none" />
+          <Icon
+            de={PiSpinnerGap}
+            tamanho={small ? 'p' : 'm'}
+            className="relative animate-spin text-ouro-texto"
+          />
         </span>
       )}
       <Image

@@ -997,10 +997,10 @@ export function StudySheet() {
         descricao={`${workTitle} · ${composerName}`}
         largura="g"
         rodape={
-          // No celular, duas linhas: salvar em cima, na largura toda; embaixo,
-          // cancelar à esquerda e trocar de lista à direita (remover, quando
-          // há, só o ícone, antes de cancelar). No computador, a linha de
-          // sempre (remover e trocar à esquerda, cancelar e salvar à direita).
+          // Sem "cancelar" (decisão do dono, 31/10): fecha-se pelo X. No
+          // celular, duas linhas: salvar em cima, na largura toda; embaixo,
+          // remover (só o ícone) à esquerda e trocar de lista à direita. No
+          // computador, remover e trocar à esquerda, salvar à direita.
           <div className="flex w-full flex-col gap-2 sm:flex-row sm:items-center">
             <Button
               variante="primario"
@@ -1022,14 +1022,6 @@ export function StudySheet() {
                   <span className="max-sm:sr-only">{copy.remove}</span>
                 </Button>
               )}
-              <Button
-                variante="fantasma"
-                className="shrink-0 whitespace-nowrap sm:order-4"
-                onClick={requestClose}
-                disabled={saving}
-              >
-                {copy.cancel}
-              </Button>
               <span className="flex-1 sm:order-3" />
               {isWant ? (
                 <Button

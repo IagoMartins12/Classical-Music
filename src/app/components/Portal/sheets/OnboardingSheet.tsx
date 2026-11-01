@@ -30,6 +30,7 @@ import {
 import { useSession } from '@/app/libs/session';
 import * as api from '@/app/requests/portal/api';
 import { duration } from '../format';
+import { useConfirmar } from '@/app/components/ui/useConfirmar';
 import { TOUR_EVENT } from '../help/HelpButton';
 import { SCREENS, type ScreenId } from '../navigation';
 import { Options } from '../pieces';
@@ -238,6 +239,8 @@ export default function OnboardingSheet({ role, onClose, open }: SheetProps) {
   );
   const [goal, setGoal] = useState(240);
 
+  const { confirmar, modal } = useConfirmar();
+
   // A primeira visita fica marcada mesmo se a pessoa fechar sem terminar.
   const marked = useRef(false);
   const mark = () => {
@@ -246,6 +249,18 @@ export default function OnboardingSheet({ role, onClose, open }: SheetProps) {
     void api.finishOnboarding(role).catch(() => undefined);
   };
   const close = () => (mark(), onClose());
+  // Leaving halfway loses the setup: ask first. The last step is the end.
+  const askToClose = () =>
+    step === total - 1
+      ? close()
+      : confirmar({
+          titulo: 'Fechar as boas-vindas?',
+          texto:
+            'O que você ainda não salvou se perde. Dá para configurar depois, pelo Perfil do portal.',
+          botao: 'Fechar',
+          cancelar: 'Continuar aqui',
+          acao: close,
+        });
 
   const weekly = weekMinutes(days);
   const invalidDays = Object.values(days).some((d) => d.on && d.to <= d.from);
@@ -296,11 +311,11 @@ export default function OnboardingSheet({ role, onClose, open }: SheetProps) {
   const footer =
     step === 0 ? (
       <>
-        <Button variante="fantasma" onClick={close}>
+        <Button variante="fantasma" onClick={askToClose}>
           Explorar sozinho
         </Button>
         <Button variante="primario" onClick={() => setStep(1)}>
-          {teacher ? 'Configurar minhas aulas' : 'Começar'}
+          {teacher ? 'Configurar aulas' : 'Começar'}
         </Button>
       </>
     ) : step < total - 1 ? (
@@ -339,7 +354,7 @@ export default function OnboardingSheet({ role, onClose, open }: SheetProps) {
             )
           )}
         >
-          Fazer o tour desta tela
+          Fazer o tour
         </Button>
         <Button
           variante="primario"
@@ -351,9 +366,7 @@ export default function OnboardingSheet({ role, onClose, open }: SheetProps) {
             )
           )}
         >
-          {teacher
-            ? 'Convidar o primeiro aluno'
-            : 'Registrar a primeira prática'}
+          {teacher ? 'Convidar aluno' : 'Registrar prática'}
         </Button>
       </>
     );
@@ -361,7 +374,7 @@ export default function OnboardingSheet({ role, onClose, open }: SheetProps) {
   return (
     <Sheet
       aberto
-      aoFechar={close}
+      aoFechar={askToClose}
       titulo={titles[step]}
       largura="g"
       rodape={footer}
@@ -681,6 +694,7 @@ export default function OnboardingSheet({ role, onClose, open }: SheetProps) {
           </Step>
         )}
       </div>
+      {modal}
     </Sheet>
   );
 }

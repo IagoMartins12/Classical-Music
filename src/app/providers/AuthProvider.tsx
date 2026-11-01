@@ -1,7 +1,13 @@
 // providers/AuthProvider.tsx - ATUALIZADO com Online Status
 'use client';
 
-import React, { useEffect, useState, useCallback, Suspense } from 'react';
+import React, {
+  useEffect,
+  useRef,
+  useState,
+  useCallback,
+  Suspense,
+} from 'react';
 import { ApiSessionProvider } from '../libs/session';
 import dynamic from 'next/dynamic';
 
@@ -94,6 +100,7 @@ const OnboardingManager: React.FC<{ shouldRender: boolean }> = ({
   const { open: openPromptModal, isOpen: isPromptModalOpen } = usePromptModal();
   const { isHydrated } = useHydration();
   const [hasCheckedProgress, setHasCheckedProgress] = useState(false);
+  const lembreteAberto = useRef(false);
 
   // Hook de persistência só se necessário
   useOnboardingPersistence({
@@ -135,10 +142,16 @@ const OnboardingManager: React.FC<{ shouldRender: boolean }> = ({
     if (!shouldRender) return;
 
     const checkAndOpenOnboarding = () => {
-      if (hasProgress) {
-        if (!isPromptModalOpen && !isLoading) {
-          openPromptModal();
-        }
+      // On every load until the welcome is done, whether it was started or not
+      // (owner's decision, 31/10); once a load: closed, it stays closed.
+      if (
+        (hasProgress || shouldShowOnboarding()) &&
+        !lembreteAberto.current &&
+        !isPromptModalOpen &&
+        !isLoading
+      ) {
+        lembreteAberto.current = true;
+        openPromptModal();
       }
       setHasCheckedProgress(true);
     };
