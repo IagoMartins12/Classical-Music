@@ -182,7 +182,9 @@ export function Tabela<T>({
                   onClick={aoClicar ? () => aoClicar(linha) : undefined}
                   className={cx(
                     'border-t border-linha transition-colors duration-[var(--t-resposta)] ease-saida motion-reduce:transition-none',
-                    'max-md:flex max-md:flex-wrap max-md:items-center max-md:gap-x-4 max-md:gap-y-1 max-md:px-4 max-md:py-3',
+                    // On a phone a row is a card: the main cell and the
+                    // actions on the first line, the rest below.
+                    'max-md:flex max-md:flex-wrap max-md:items-start max-md:gap-x-4 max-md:gap-y-1 max-md:px-4 max-md:py-3',
                     aoClicar && 'cursor-pointer',
                     marcada
                       ? 'bg-[var(--interactive-hover)]'
@@ -191,7 +193,7 @@ export function Tabela<T>({
                 >
                   {selecionaveis && (
                     <td
-                      className="py-3 pl-4 align-middle max-md:order-first max-md:p-0"
+                      className="py-3 pl-4 align-middle max-md:order-[-4] max-md:p-0"
                       onClick={(e) => e.stopPropagation()}
                     >
                       <input
@@ -213,7 +215,7 @@ export function Tabela<T>({
                         c.alinhar === 'fim' && 't-dado text-right',
                         'max-md:p-0 max-md:text-left',
                         c.principal
-                          ? 'max-md:order-first max-md:w-[calc(100%-2.5rem)] max-md:flex-1'
+                          ? 'max-md:order-[-3] max-md:min-w-0 max-md:flex-1 max-md:basis-0'
                           : 'max-md:text-sm',
                         c.soNoComputador && 'max-md:hidden',
                         c.className
@@ -229,7 +231,7 @@ export function Tabela<T>({
                   ))}
                   {acoes && (
                     <td
-                      className="whitespace-nowrap px-2 py-1 text-right align-middle max-md:order-last max-md:-mr-2 max-md:ml-auto max-md:p-0"
+                      className="whitespace-nowrap px-2 py-1 text-right align-middle max-md:order-[-2] max-md:-mr-2 max-md:-mt-1 max-md:shrink-0 max-md:p-0"
                       onClick={(e) => e.stopPropagation()}
                     >
                       <span className="inline-flex items-center gap-0.5">
@@ -237,6 +239,10 @@ export function Tabela<T>({
                       </span>
                     </td>
                   )}
+                  <td
+                    aria-hidden="true"
+                    className="hidden max-md:order-[-1] max-md:block max-md:basis-full max-md:p-0"
+                  />
                 </tr>
               );
             })}

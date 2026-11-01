@@ -26,7 +26,7 @@ export function ErasCarousel({
   const cards: EraCard[] = [
     {
       key: 'all',
-      href: '/composers',
+      href: '/music-history',
       image: '/eras/all-tchaikovsky.webp',
       years: eraYears(
         { ...ERAS[0], span: { from: ERAS[0].span.from, to: null } },

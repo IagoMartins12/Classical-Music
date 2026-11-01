@@ -70,7 +70,10 @@ export function Cabecalho({
       quebra
       gap={4}
       alinhar="fim"
-      className={cx('relative pb-2', className)}
+      className={cx(
+        'relative pb-2 max-sm:flex-col max-sm:items-start',
+        className
+      )}
     >
       {/* On a phone "Atualizar" is the icon in the top-right corner; the
           title keeps clear of it. */}

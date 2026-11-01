@@ -1044,6 +1044,26 @@ export interface paths {
     patch?: never;
     trace?: never;
   };
+  '/api/instruments/starting/{key}': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /**
+     * Por onde começar a tocar um instrumento
+     * @description A curadoria da casa, por nível. `key` é a chave do site (`piano`, `violin`). Instrumento sem lista devolve vazio.
+     */
+    get: operations['InstrumentsController_getStarting'];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
   '/api/instruments/{id}/stats': {
     parameters: {
       query?: never;
@@ -8727,6 +8747,8 @@ export interface components {
       epoch?: components['schemas']['WorkCatalogEpochDto'] | null;
       composer: components['schemas']['WorkCatalogComposerDto'];
       instrument: components['schemas']['WorkCatalogInstrumentDto'] | null;
+      /** @description Todos os instrumentos da obra, o principal primeiro. */
+      instrumentNames: string[];
     };
     WorksCatalogResponseDto: {
       works: components['schemas']['WorkCatalogItemDto'][];
@@ -8944,6 +8966,16 @@ export interface components {
       title: string;
       subtitle?: string | null;
     };
+    WorkDetailRatingDto: {
+      /** @example Piano */
+      instrument: string;
+      /** @description 1 a 15, equivalente ao RCM. */
+      level: number;
+      /** @enum {string} */
+      tier: 'BEGINNER' | 'INTERMEDIATE' | 'ADVANCED';
+      /** @description O trecho avaliado; vazio é a obra inteira. */
+      excerpt?: string | null;
+    };
     WorkDetailComposerDto: {
       /** @example 685d591c1e3db0c5aaa893e4 */
       id: string;
@@ -9054,6 +9086,8 @@ export interface components {
       lastMediaSearch?: string | null;
       mediaSearchError?: string | null;
       difficultyLevel?: string | null;
+      /** @description As avaliações do Difficulty Project do IMSLP. */
+      ratings: components['schemas']['WorkDetailRatingDto'][];
       composer: components['schemas']['WorkDetailComposerDto'];
       instrument?: components['schemas']['WorkDetailInstrumentDto'] | null;
       epoch?: components['schemas']['WorkDetailEpochDto'] | null;
@@ -9517,6 +9551,20 @@ export interface components {
       /** @description O compositor em destaque do instrumento, se houver; senão os 5 com mais obras */
       topComposers: components['schemas']['ShowcaseTopComposerDto'][];
     };
+    StartingPieceDto: {
+      id: string;
+      title: string;
+      popularName?: string | null;
+      popularNameEn?: string | null;
+      composer: string;
+      why: string;
+      whyEn: string;
+    };
+    StartingLevelDto: {
+      /** @enum {string} */
+      tier: 'BEGINNER' | 'INTERMEDIATE' | 'ADVANCED';
+      pieces: components['schemas']['StartingPieceDto'][];
+    };
     InstrumentTopComposerDto: {
       /** @example 685d591c1e3db0c5aaa893e4 */
       id: string;
@@ -9714,6 +9762,11 @@ export interface components {
       isTrialActive: boolean;
       /** @example 0 */
       trialDaysRemaining: number;
+      /**
+       * @description Já usou o teste grátis, que é um por pessoa.
+       * @example false
+       */
+      trialUsed: boolean;
       /** Format: date-time */
       expiresAt?: string | null;
       /** @description Quando o Plus vem do professor Maestro (aluno sem assinatura): o nome dele. */
@@ -17586,6 +17639,27 @@ export interface operations {
         };
         content: {
           'application/json': components['schemas']['InstrumentShowcaseItemDto'][];
+        };
+      };
+    };
+  };
+  InstrumentsController_getStarting: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        key: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['StartingLevelDto'][];
         };
       };
     };
@@ -31529,6 +31603,7 @@ export interface operations {
           | 'audit.prune'
           | 'mail.events.prune'
           | 'search.reindex'
+          | 'catalog.rank-works'
           | 'database.backup';
       };
       cookie?: never;
@@ -31588,6 +31663,7 @@ export interface operations {
           | 'audit.prune'
           | 'mail.events.prune'
           | 'search.reindex'
+          | 'catalog.rank-works'
           | 'database.backup';
       };
       cookie?: never;
@@ -31629,6 +31705,7 @@ export interface operations {
           | 'audit.prune'
           | 'mail.events.prune'
           | 'search.reindex'
+          | 'catalog.rank-works'
           | 'database.backup';
       };
       cookie?: never;

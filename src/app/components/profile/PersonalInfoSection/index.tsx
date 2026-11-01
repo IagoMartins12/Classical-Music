@@ -258,8 +258,8 @@ const PersonalInfoSection: React.FC<PersonalInfoSectionProps> = ({
 
   return (
     <Stack gap={6}>
-      <div className="flex flex-wrap items-start justify-between gap-x-4 gap-y-3 sm:flex-nowrap [&>*:not(:first-child)]:shrink-0">
-        <div className="min-w-0 flex-1 basis-48">
+      <div className="flex items-start justify-between gap-3 [&>*:not(:first-child)]:shrink-0">
+        <div className="min-w-0 flex-1">
           <h3 className="font-display text-[1.5rem] leading-tight text-texto">
             {t('personal_info_title')}
           </h3>
@@ -284,8 +284,11 @@ const PersonalInfoSection: React.FC<PersonalInfoSectionProps> = ({
               icone={PiX}
               onClick={handleCancel}
               disabled={isLoading}
+              className="max-sm:!px-2.5"
             >
-              {t('personal_info_cancel')}
+              <span className="max-sm:sr-only">
+                {t('personal_info_cancel')}
+              </span>
             </Button>
             <Button
               tamanho="p"
@@ -294,8 +297,9 @@ const PersonalInfoSection: React.FC<PersonalInfoSectionProps> = ({
               onClick={handleSave}
               carregando={isLoading}
               disabled={!canProceedWithPhone(formData.phone)}
+              className="max-sm:!px-2.5"
             >
-              {t('personal_info_save')}
+              <span className="max-sm:sr-only">{t('personal_info_save')}</span>
             </Button>
           </div>
         )}

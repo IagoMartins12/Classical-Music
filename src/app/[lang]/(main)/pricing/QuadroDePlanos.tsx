@@ -78,7 +78,8 @@ export function QuadroDePlanos({
   const [escolhido, setEscolhido] = useState<PlanoPago | null>(null);
   const { status } = useSession();
   const { open: abrirLogin } = useLoginModal();
-  const { loading, getCurrentPlan, createStripeCheckout } = useSubscription();
+  const { loading, plan, getCurrentPlan, createStripeCheckout } =
+    useSubscription();
 
   // Enquanto o navegador não sabe, vale o que o servidor disse.
   const logado =
@@ -90,6 +91,18 @@ export function QuadroDePlanos({
       ? (getCurrentPlan() as ChavePlano)
       : planoInicial;
   const desconto = maiorDesconto(precos);
+  // O teste é um por pessoa: quem já usou não vê "dias grátis" em nenhum plano.
+  const testeUsado =
+    status === 'authenticated' && plan?.trialUsed
+      ? Math.max(...Object.values(precos).map((p) => p?.teste ?? 0))
+      : 0;
+  const precosDaConta = (
+    testeUsado
+      ? Object.fromEntries(
+          Object.entries(precos).map(([k, p]) => [k, p && { ...p, teste: 0 }])
+        )
+      : precos
+  ) as Precos;
   const soUm = !!grupo;
 
   function escolher(plano: PlanoPago) {
@@ -164,7 +177,7 @@ export function QuadroDePlanos({
       plano={plano}
       idioma={idioma}
       anual={anual}
-      precos={precos}
+      precos={precosDaConta}
       atual={atual === plano}
       sufixo={sufixo}
       ordem={ordem}
@@ -182,6 +195,14 @@ export function QuadroDePlanos({
           desconto={desconto}
         />
       </div>
+
+      {testeUsado > 0 && (
+        <div className="section-wrap mt-6">
+          <p className="rounded-card bg-sup-2 p-4 text-center text-sm leading-relaxed text-texto">
+            {c.confirmar.testeUsado(testeUsado)}
+          </p>
+        </div>
+      )}
 
       <CarrosselDePlanos idioma={idioma} grupo={grupo}>
         {(grupo ? DO_GRUPO[grupo] : ORDEM).map((p, i) => cartao(p, 'm', i))}
@@ -259,6 +280,7 @@ export function QuadroDePlanos({
           plano={escolhido}
           anual={anual && Boolean(precos[escolhido]?.anual)}
           precos={precos}
+          testeUsado={testeUsado}
           pagarNoStripe={createStripeCheckout}
           aoFechar={() => setEscolhido(null)}
         />

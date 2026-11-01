@@ -6,7 +6,9 @@ import type { Idioma } from '@/app/conteudo/legal/tipos';
 import { COMPOSER, LEVEL_VALUES } from '@/app/conteudo/site/composer';
 import { instrumentOf } from '@/app/conteudo/instruments/meta';
 import { eraName, eraOf } from '@/app/conteudo/site/eras';
+import { LEARN } from '@/app/conteudo/site/learn';
 import type { WorkCopy } from '@/app/conteudo/site/work';
+import { translateInstrument } from '@/app/utils/translations/instrumentsGenresTranslation';
 import type { WorkDetails } from '@/app/requests/work-page-details';
 
 const link =
@@ -67,6 +69,13 @@ export function WorkDetailsPanel({
   ).filter(([, value]) => value) as [string, ReactNode][];
   const tags = [...new Set([...work.workGenresArr, ...work.categoryNames])];
   const movements = work.childWorks ?? [];
+  // The work's own instrument first; the other lists are arrangements or the
+  // other parts.
+  const lists = [...new Set(work.ratings.map((r) => r.instrument))].sort(
+    (a, b) =>
+      Number(b === work.instrument?.name) - Number(a === work.instrument?.name)
+  );
+  const levels = LEARN[language].instruments.levels;
 
   return (
     <>
@@ -116,6 +125,38 @@ export function WorkDetailsPanel({
             <p className="t-rotulo text-texto-suave">{work.moviment}</p>
           </div>
         )
+      )}
+      {lists.length > 0 && (
+        <div className="flex flex-col gap-2">
+          <span className="t-legenda">{t.ratings}</span>
+          <p className="t-rotulo text-texto-suave">{t.ratingsText}</p>
+          {lists.map((list) => (
+            <div key={list} className="flex flex-col">
+              {(lists.length > 1 || list !== work.instrument?.name) && (
+                <span className="t-rotulo pt-2 text-texto-suave">
+                  {translateInstrument(list, language)}
+                </span>
+              )}
+              <ul className="flex flex-col divide-y divide-[var(--linha)]">
+                {work.ratings
+                  .filter((rating) => rating.instrument === list)
+                  .map((rating) => (
+                    <li
+                      key={rating.excerpt ?? ''}
+                      className="flex items-baseline justify-between gap-4 py-2"
+                    >
+                      <span className="t-rotulo min-w-0 break-words">
+                        {rating.excerpt ?? t.wholeWork}
+                      </span>
+                      <span className="t-rotulo shrink-0 text-texto-suave">
+                        {levels[rating.tier]} · {t.levelNumber(rating.level)}
+                      </span>
+                    </li>
+                  ))}
+              </ul>
+            </div>
+          ))}
+        </div>
       )}
       {tags.length > 0 && (
         <div className="flex flex-col gap-2">

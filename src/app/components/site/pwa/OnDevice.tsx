@@ -92,7 +92,7 @@ export function OnDevice() {
               {a.abertura}
             </p>
             <div
-              className="entra flex flex-wrap gap-3 pt-2"
+              className="entra flex items-center gap-3 pt-2"
               style={{ ['--i' as string]: 3 }}
             >
               <Button
@@ -102,11 +102,12 @@ export function OnDevice() {
               >
                 {copy.instalar}
               </Button>
-              {/* "Ir para o início" and the sign stay together on one line:
-                  wrapped alone, the sign wandered to the middle of the
-                  screen on a phone. */}
+              {/* On a phone only "Instalar" and the sign, side by side. */}
               <span className="flex items-center gap-1">
-                <Link href="/" className={classesDeBotao('fantasma')}>
+                <Link
+                  href="/"
+                  className={cx(classesDeBotao('fantasma'), 'max-sm:hidden')}
+                >
                   {copy.voltar}
                 </Link>
                 {/* Nobody needs the technology's name to use it: a quiet sign

@@ -34,6 +34,14 @@ const pt = {
     timeline: 'Como chegou até aqui',
     repertoire: 'O que se escreveu para ele',
     listen: 'Por onde começar a ouvir',
+    play: 'Por onde começar a tocar',
+    playText:
+      'Peças escolhidas pela casa, com o nível avaliado pelos músicos do IMSLP.',
+    levels: {
+      BEGINNER: 'Iniciante',
+      INTERMEDIATE: 'Intermediário',
+      ADVANCED: 'Avançado',
+    } as Record<string, string>,
     didYouKnow: 'Você sabia?',
     worksFor: (name: string) => `Obras para ${name.toLowerCase()}`,
     family: 'Família',
@@ -81,6 +89,14 @@ const en: typeof pt = {
     timeline: 'How it got here',
     repertoire: 'What was written for it',
     listen: 'Where to start listening',
+    play: 'Where to start playing',
+    playText:
+      'Pieces chosen by the house, at the level rated by the musicians of IMSLP.',
+    levels: {
+      BEGINNER: 'Beginner',
+      INTERMEDIATE: 'Intermediate',
+      ADVANCED: 'Advanced',
+    },
     didYouKnow: 'Did you know?',
     worksFor: (name: string) => `Works for ${name.toLowerCase()}`,
     family: 'Family',

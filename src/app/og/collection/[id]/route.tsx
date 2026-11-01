@@ -66,6 +66,10 @@ export async function GET(
         `${lingua === 'en' ? 'by' : 'por'} ${c.owner.name}`,
       ],
       retratos,
+      // Composers beyond the faces shown (a work collection repeats composers,
+      // so its count says nothing about faces).
+      mais:
+        c.kind === 'COMPOSER' ? Math.max(0, c.itemCount - retratos.length) : 0,
     });
   }
 

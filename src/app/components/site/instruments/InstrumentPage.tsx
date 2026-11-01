@@ -17,6 +17,7 @@ import {
   type InstrumentMeta,
 } from '@/app/conteudo/instruments';
 import { LEARN } from '@/app/conteudo/site/learn';
+import { StartingPieces } from '@/app/components/site/StartingPieces';
 import { getCatalogFilterOptions } from '@/app/requests/catalog-lists';
 
 /**
@@ -213,6 +214,8 @@ export async function InstrumentPage({
           })}
         </ol>
       </section>
+
+      <StartingPieces listKey={meta.key} language={language} />
 
       <section className="flex flex-col gap-6">
         <h2 className="t-titulo max-sm:!text-[1.75rem]">{t.didYouKnow}</h2>

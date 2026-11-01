@@ -2799,8 +2799,10 @@ html {
   /* The admin's chip rows on a phone: one line that scrolls sideways, to the
      screen's edges, instead of chips wrapping in ragged rows (29/10). */
   @media (max-width: 639px) {
+    /* `!important`: the screens also carry `flex-wrap` for the desktop, and
+       the utility wins over this layer. */
     .faixa-de-chips {
-      flex-wrap: nowrap;
+      flex-wrap: nowrap !important;
       overflow-x: auto;
       scrollbar-width: none;
       margin-inline: -1rem;

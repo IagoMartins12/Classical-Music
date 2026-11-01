@@ -167,12 +167,15 @@ export function cartaoDeColecao(input: {
   titulo: string;
   linhas: string[];
   retratos: string[];
+  /** Quantos ficaram de fora: viram uma quinta bolinha, "+2". */
+  mais?: number;
 }) {
   if (!input.retratos.length) return cartaoDeCompartilhamento(input);
   const retratos = input.retratos.slice(0, 4);
+  const mais = input.mais ?? 0;
   const LADO = 200;
-  const PASSO = 104;
-  const largura = LADO + PASSO * (retratos.length - 1);
+  const PASSO = mais > 0 ? 88 : 104;
+  const largura = LADO + PASSO * (retratos.length + (mais > 0 ? 1 : 0) - 1);
   return new ImageResponse(
     <div
       style={{
@@ -273,6 +276,28 @@ export function cartaoDeColecao(input: {
             }}
           />
         ))}
+        {mais > 0 && (
+          <div
+            style={{
+              position: 'absolute',
+              left: retratos.length * PASSO,
+              top: 0,
+              width: LADO,
+              height: LADO,
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              borderRadius: 9999,
+              border: `3px solid ${OURO}`,
+              boxShadow: `0 0 0 8px ${FUNDO}`,
+              background: FUNDO,
+              color: OURO,
+              fontSize: 64,
+            }}
+          >
+            {`+${mais}`}
+          </div>
+        )}
       </div>
     </div>,
     { ...OG_SIZE }

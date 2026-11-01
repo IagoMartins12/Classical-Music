@@ -61,19 +61,21 @@ export function Recolhivel({
         onClick={alternar}
         aria-expanded={aberto}
         aria-controls={id}
-        className="-mx-2 flex min-h-11 items-center gap-2 rounded-controle px-2 text-left transition-colors hover:bg-[var(--interactive-hover)]"
+        className="-mx-2 flex min-h-11 min-w-0 items-center gap-2 rounded-controle px-2 text-left transition-colors hover:bg-[var(--interactive-hover)]"
       >
         <Icon
           de={PiCaretDown}
           tamanho="p"
           className={cx(
-            'text-texto-suave transition-transform duration-[var(--t-toque)] ease-saida',
+            'shrink-0 text-texto-suave transition-transform duration-[var(--t-toque)] ease-saida',
             !aberto && '-rotate-90'
           )}
         />
-        <span className="t-secao">{titulo}</span>
+        <span className="t-secao shrink-0 whitespace-nowrap">{titulo}</span>
         {!aberto && resumo && (
-          <span className="t-legenda ml-2 truncate">{resumo}</span>
+          <span className="t-legenda ml-2 min-w-0 flex-1 truncate">
+            {resumo}
+          </span>
         )}
       </button>
       {aberto && (

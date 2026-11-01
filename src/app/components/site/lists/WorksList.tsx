@@ -120,6 +120,7 @@ export async function WorksList({
               value,
               label: levels[key],
             })),
+            primary: true,
           },
         ]}
       />

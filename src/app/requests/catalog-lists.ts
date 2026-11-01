@@ -74,6 +74,14 @@ export async function getCatalogFilterOptions(): Promise<CatalogFilterOptions> {
   });
 }
 
+/** "Where to start playing": the house's pieces for an instrument, by level. */
+export async function getStartingPieces(key: string) {
+  return apiFetch<ApiSchema<'StartingLevelDto'>[]>(
+    `/instruments/starting/${encodeURIComponent(key)}`,
+    { next: { revalidate: 3600, tags: ['works'] }, buildFallback: [] }
+  );
+}
+
 export async function listComposers(params: ComposerListParams) {
   const filters = {
     search: params.search,

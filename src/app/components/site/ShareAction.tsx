@@ -1,5 +1,6 @@
 'use client';
 
+import Image from 'next/image';
 import { PiShareNetwork } from 'react-icons/pi';
 import { Button } from '@/app/components/ui/Button';
 import { useShare } from '@/app/components/ui/ShareSheet';
@@ -13,12 +14,15 @@ export function ShareAction({
   url,
   image,
   imageName,
+  preview,
   className,
 }: {
   title: string;
   url: string;
   image?: string | null;
   imageName: string;
+  /** The page's share image, when it has its own (`/og/...`): the same thumb the networks show. */
+  preview?: string;
   className?: string;
 }) {
   const copy = COMMON[useRouteLanguage().language].share;
@@ -26,7 +30,11 @@ export function ShareAction({
     title,
     url,
     copy,
-    thumbnail: (
+    thumbnail: preview ? (
+      <span className="relative block aspect-[1.91/1] w-full">
+        <Image src={preview} alt="" fill unoptimized sizes="480px" />
+      </span>
+    ) : (
       <Portrait
         name={imageName}
         src={image}

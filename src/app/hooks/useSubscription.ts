@@ -20,6 +20,7 @@ interface SubscriptionData {
     isValid: boolean;
     isTrialActive: boolean;
     trialDaysRemaining: number;
+    trialUsed: boolean;
     expiresAt: Date | null;
     features: any;
   };
