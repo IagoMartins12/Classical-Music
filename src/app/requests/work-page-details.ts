@@ -86,6 +86,7 @@ export interface WorkDetails {
   mediaSearchError?: string | null;
 
   difficultyLevel?: string | null;
+  ratings: ApiSchema<'WorkDetailRatingDto'>[];
 
   composer: {
     id: string;
@@ -204,6 +205,7 @@ function toWorkDetails(work: WorkDetailDto): WorkDetails {
     lastMediaSearch: toDate(work.lastMediaSearch),
     mediaSearchError: work.mediaSearchError,
     difficultyLevel: work.difficultyLevel,
+    ratings: work.ratings ?? [],
 
     composer: {
       id: work.composer.id,

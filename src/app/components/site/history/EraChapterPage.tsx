@@ -8,6 +8,7 @@ import { eraChapter } from '@/app/conteudo/history';
 import { instrumentKeyForName } from '@/app/conteudo/instruments';
 import { ERAS, eraOf, eraYears, type Era } from '@/app/conteudo/site/eras';
 import { LEARN } from '@/app/conteudo/site/learn';
+import { StartingPieces } from '@/app/components/site/StartingPieces';
 import {
   getCatalogFilterOptions,
   listComposers,
@@ -276,6 +277,8 @@ export async function EraChapterPage({
             })}
           </ol>
         </section>
+
+        <StartingPieces listKey={era.key} language={language} />
 
         <section className="flex flex-col gap-6">
           <h2 className="t-titulo max-sm:!text-[1.75rem]">{t.didYouKnow}</h2>

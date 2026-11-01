@@ -8966,6 +8966,16 @@ export interface components {
       title: string;
       subtitle?: string | null;
     };
+    WorkDetailRatingDto: {
+      /** @example Piano */
+      instrument: string;
+      /** @description 1 a 15, equivalente ao RCM. */
+      level: number;
+      /** @enum {string} */
+      tier: 'BEGINNER' | 'INTERMEDIATE' | 'ADVANCED';
+      /** @description O trecho avaliado; vazio é a obra inteira. */
+      excerpt?: string | null;
+    };
     WorkDetailComposerDto: {
       /** @example 685d591c1e3db0c5aaa893e4 */
       id: string;
@@ -9076,6 +9086,8 @@ export interface components {
       lastMediaSearch?: string | null;
       mediaSearchError?: string | null;
       difficultyLevel?: string | null;
+      /** @description As avaliações do Difficulty Project do IMSLP. */
+      ratings: components['schemas']['WorkDetailRatingDto'][];
       composer: components['schemas']['WorkDetailComposerDto'];
       instrument?: components['schemas']['WorkDetailInstrumentDto'] | null;
       epoch?: components['schemas']['WorkDetailEpochDto'] | null;
