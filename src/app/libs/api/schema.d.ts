@@ -31604,6 +31604,7 @@ export interface operations {
           | 'mail.events.prune'
           | 'search.reindex'
           | 'catalog.rank-works'
+          | 'catalog.recheck-imslp-scores'
           | 'database.backup';
       };
       cookie?: never;
@@ -31664,6 +31665,7 @@ export interface operations {
           | 'mail.events.prune'
           | 'search.reindex'
           | 'catalog.rank-works'
+          | 'catalog.recheck-imslp-scores'
           | 'database.backup';
       };
       cookie?: never;
@@ -31706,6 +31708,7 @@ export interface operations {
           | 'mail.events.prune'
           | 'search.reindex'
           | 'catalog.rank-works'
+          | 'catalog.recheck-imslp-scores'
           | 'database.backup';
       };
       cookie?: never;

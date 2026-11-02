@@ -441,7 +441,10 @@ function EditionBox({
               type="button"
               onClick={() => onOpen(0)}
               aria-pressed={chosenFile === 0}
-              className="text-left font-display text-[1.125rem] leading-snug hover:text-ouro-texto"
+              title={card.title}
+              // Two lines at most: an edition heading is a publisher, and a
+              // long one (an IMSLP notice read as one) cannot take the page.
+              className="line-clamp-2 text-left font-display text-[1.125rem] leading-snug hover:text-ouro-texto"
             >
               {card.title}
             </button>

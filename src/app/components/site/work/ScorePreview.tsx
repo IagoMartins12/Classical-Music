@@ -352,7 +352,10 @@ export function SidePreview({
       <div className="flex items-start gap-3">
         <span className="flex min-w-0 flex-1 flex-col gap-0.5">
           <span className="t-legenda">{target.section}</span>
-          <span className="font-display text-[1.375rem] leading-snug">
+          <span
+            title={card.title}
+            className="line-clamp-3 font-display text-[1.375rem] leading-snug"
+          >
             {card.title}
           </span>
           <span className="t-rotulo text-texto-suave">{card.detail}</span>
