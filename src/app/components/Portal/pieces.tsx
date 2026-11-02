@@ -178,7 +178,8 @@ export function PageHeader({
         {actions && (
           <div
             data-ajuda="acao"
-            className="entra flex flex-wrap gap-2"
+            // Phone: the actions split the full width, like the tabs below.
+            className="entra flex flex-wrap gap-2 max-sm:w-full max-sm:[&>*]:flex-1"
             style={{ '--i': 2 } as CSSProperties}
           >
             {actions}

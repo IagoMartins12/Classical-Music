@@ -83,13 +83,16 @@ function Board({ data }: { data: Dashboard }) {
               icone={PiTimer}
               onClick={() => open({ type: 'practice' })}
             >
-              Registrar prática
+              {/* Short on the phone: the two buttons share one line. */}
+              <span className="sm:hidden">Prática</span>
+              <span className="max-sm:hidden">Registrar prática</span>
             </Button>
             <Button
               icone={PiCalendarPlus}
               onClick={() => open({ type: 'request' })}
             >
-              Pedir uma aula
+              <span className="sm:hidden">Pedir aula</span>
+              <span className="max-sm:hidden">Pedir uma aula</span>
             </Button>
           </>
         }

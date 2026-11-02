@@ -69,7 +69,8 @@ export async function SearchPage({
     ? await Promise.all([
         Promise.all(
           pagesOf('works').map((page) =>
-            listWorks({ page, sort: 'title', search: q })
+            // In a search, "featured" is relevance: what was asked for first.
+            listWorks({ page, sort: 'featured', search: q })
           )
         ),
         Promise.all(

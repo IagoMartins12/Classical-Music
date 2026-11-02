@@ -262,16 +262,21 @@ export function CalendarScreen({ role }: { role: Role }) {
         />
 
         <div className="flex flex-wrap items-center gap-3">
-          <span data-ajuda="modos">
+          <span data-ajuda="modos" className="max-sm:w-full">
             <Abas rotulo="Ver por">
               {(['week', 'month', 'list'] as Mode[]).map((m) => (
-                <Aba key={m} ativa={mode === m} onClick={() => setMode(m)}>
+                <Aba
+                  key={m}
+                  ativa={mode === m}
+                  onClick={() => setMode(m)}
+                  className="max-sm:flex-1"
+                >
                   {MODE_LABEL[m]}
                 </Aba>
               ))}
             </Abas>
           </span>
-          <span className="flex items-center gap-1">
+          <span className="flex items-center gap-1 max-sm:w-full max-sm:[&>*]:flex-1">
             <Button
               variante="fantasma"
               icone={PiCaretLeft}
