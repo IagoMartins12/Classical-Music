@@ -210,3 +210,25 @@ export const searchScoresAgain = (workId: string) =>
     `/works/${encodeURIComponent(workId)}/scores/search-again`,
     { method: 'POST' }
   );
+
+/**
+ * "Atualizar do IMSLP", for whoever curates the catalog (admin or approved
+ * teacher): reads the work's IMSLP page now, past the queue and the "already
+ * read today" mark, and writes what is missing
+ * (`POST /works/:id/scores/refresh`). Then the list, fresh.
+ */
+export async function refreshFromImslp(workId: string): Promise<{
+  created: number;
+  updated: number;
+  library: ScoreLibrary;
+}> {
+  const { created, updated } = await apiFetch<{
+    created: number;
+    updated: number;
+    total: number;
+  }>(`/works/${encodeURIComponent(workId)}/scores/refresh`, {
+    method: 'POST',
+  });
+  const library = organizeScores(await list(workId, { cache: 'no-store' }));
+  return { created, updated, library };
+}

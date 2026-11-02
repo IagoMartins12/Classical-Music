@@ -20,10 +20,14 @@ import { Icon } from '@/app/components/ui/Icon';
 import { Sheet } from '@/app/components/ui/Sheet';
 import { TentarDeNovo } from '@/app/components/ui/TentarDeNovo';
 import { cx } from '@/app/components/ui/cx';
+import { useSession } from '@/app/libs/session';
+import { ApiError } from '@/app/libs/api/client';
+import { canEditCatalog } from '@/app/utils/permissions';
 import { WORK, type WorkCopy } from '@/app/conteudo/site/work';
 import { useRouteLanguage } from '@/app/hooks/useRouteLanguage';
 import {
   awaitWorkScoreLibrary,
+  refreshFromImslp,
   searchScoresAgain,
   type ScoreEdition,
   type ScoreFile,
@@ -104,6 +108,11 @@ export function WorkScores({
         block: 'start',
       });
   }, [selecting]);
+
+  const replaceLibrary = (next: ScoreLibrary) => {
+    setLibrary(next);
+    setKind(next.shelves[0]?.kind);
+  };
 
   const shelf = useMemo(
     () => library.shelves.find((s) => s.kind === kind) ?? library.shelves[0],
@@ -198,6 +207,7 @@ export function WorkScores({
             status={library.status}
             copy={copy}
             onSearching={() => setLibrary({ status: 'pending', shelves: [] })}
+            onRefreshed={replaceLibrary}
           />
         ) : (
           <>
@@ -274,7 +284,15 @@ export function WorkScores({
                 />
               ))}
             </div>
-            <UploadLink workId={context.workId} copy={copy} />
+            <div className="flex flex-wrap items-center gap-x-6 gap-y-3">
+              <UploadLink workId={context.workId} copy={copy} />
+              <RefreshFromImslp
+                workId={context.workId}
+                copy={copy}
+                onDone={replaceLibrary}
+                discreet
+              />
+            </div>
           </>
         )}
       </section>
@@ -557,12 +575,15 @@ function Empty({
   status,
   copy,
   onSearching,
+  onRefreshed,
 }: {
   workId: string;
   status: LibraryStatus;
   copy: WorkCopy['scores'];
   /** The work is back in the queue: show the search again. */
   onSearching: () => void;
+  /** A curator read IMSLP now: the fresh list. */
+  onRefreshed: (library: ScoreLibrary) => void;
 }) {
   const [asking, setAsking] = useState(false);
   const [refused, setRefused] = useState(false);
@@ -623,6 +644,92 @@ function Empty({
           </Link>
         )}
       </div>
+      <RefreshFromImslp workId={workId} copy={copy} onDone={onRefreshed} />
+    </div>
+  );
+}
+
+/**
+ * "Atualizar do IMSLP" — only for catalog curators (admin or approved
+ * teacher, the same rule as the API's `CuratorGuard`). A read that failed in
+ * silence left a work "without scores" for a day; this reads the page now,
+ * past the queue and the mark, and shows what came.
+ */
+function RefreshFromImslp({
+  workId,
+  copy,
+  onDone,
+  discreet = false,
+}: {
+  workId: string;
+  copy: WorkCopy['scores'];
+  onDone: (library: ScoreLibrary) => void;
+  /** Beside the list: a text link, not a button in the way. */
+  discreet?: boolean;
+}) {
+  const { data: session } = useSession();
+  const [busy, setBusy] = useState(false);
+  const [result, setResult] = useState<{ ok: boolean; text: string } | null>(
+    null
+  );
+  if (!canEditCatalog(session?.user)) return null;
+
+  const run = () => {
+    setBusy(true);
+    setResult(null);
+    refreshFromImslp(workId)
+      .then(({ created, updated, library }) => {
+        setResult({ ok: true, text: copy.refreshDone(created, updated) });
+        if (library.shelves.length > 0) onDone(library);
+      })
+      .catch((error: unknown) =>
+        setResult({
+          ok: false,
+          text:
+            error instanceof ApiError ? error.message : copy.unavailableText,
+        })
+      )
+      .finally(() => setBusy(false));
+  };
+
+  return (
+    <div className="flex flex-col items-start gap-1.5">
+      {discreet ? (
+        <button
+          type="button"
+          onClick={run}
+          disabled={busy}
+          title={copy.refreshHint}
+          className={cx(
+            'inline-flex items-center gap-2 t-rotulo text-texto-suave disabled:opacity-60',
+            textLink
+          )}
+        >
+          <Icon
+            de={PiArrowClockwise}
+            className={cx(busy && 'animate-spin motion-reduce:animate-none')}
+          />{' '}
+          {copy.refresh}
+        </button>
+      ) : (
+        <>
+          <Button icone={PiArrowClockwise} carregando={busy} onClick={run}>
+            {copy.refresh}
+          </Button>
+          <span className="t-legenda">{copy.refreshHint}</span>
+        </>
+      )}
+      {result && (
+        <span
+          role={result.ok ? 'status' : 'alert'}
+          className={cx(
+            't-legenda',
+            result.ok ? 'text-texto-suave' : 'text-erro'
+          )}
+        >
+          {result.text}
+        </span>
+      )}
     </div>
   );
 }
