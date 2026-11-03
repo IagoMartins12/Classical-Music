@@ -1,6 +1,7 @@
 // app/requests/work-page-details.ts — página da obra, pela API (Etapa 3)
 import { ApiError, apiFetch } from '@/app/libs/api/client';
 import type { ApiSchema } from '@/app/libs/api/types';
+import { workTag } from './work-tag';
 
 /** O mesmo formato do `JsonValue` do Prisma, sem depender dele. */
 type JsonValue =
@@ -119,12 +120,17 @@ type WorkDetailDto = ApiSchema<'WorkDetailDto'>;
  */
 const WORK_CACHE = { revalidate: 7200, tags: ['works'] };
 
+const workCache = (workId: string) => ({
+  ...WORK_CACHE,
+  tags: [...WORK_CACHE.tags, workTag(workId)],
+});
+
 /** A obra, ou `null` se ela não existe (a página responde "não encontrada"). */
 export async function getWorkById(workId: string): Promise<WorkDetails | null> {
   try {
     const work = await apiFetch<WorkDetailDto>(
       `/works/${encodeURIComponent(workId)}`,
-      { next: WORK_CACHE }
+      { next: workCache(workId) }
     );
     return toWorkDetails(work);
   } catch (error) {

@@ -11,6 +11,7 @@
 import { apiFetch } from '@/app/libs/api/client';
 import type { ApiSchema } from '@/app/libs/api/types';
 import { scoreSource } from '@/app/conteudo/site/scoreSources';
+import { workTag } from './work-tag';
 
 export type ScoreFile = ApiSchema<'WorkScoreItemDto'>;
 export type ImslpStatus = ApiSchema<'ImslpScoresStatusDto'>['status'];
@@ -163,7 +164,9 @@ export async function getWorkScoreLibrary(
 ): Promise<ScoreLibrary> {
   try {
     return organizeScores(
-      await list(workId, { next: { revalidate: 300, tags: ['works'] } })
+      await list(workId, {
+        next: { revalidate: 300, tags: ['works', workTag(workId)] },
+      })
     );
   } catch {
     return { status: 'error', shelves: [] };
@@ -212,10 +215,10 @@ export const searchScoresAgain = (workId: string) =>
   );
 
 /**
- * "Atualizar do IMSLP", for whoever curates the catalog (admin or approved
- * teacher): reads the work's IMSLP page now, past the queue and the "already
- * read today" mark, and writes what is missing
- * (`POST /works/:id/scores/refresh`). Then the list, fresh.
+ * "Atualizar do IMSLP", open to every visitor: reads the work's IMSLP page
+ * now, past the queue and the "already read today" mark, writes what is
+ * missing and clears this work's cache (`POST /works/:id/scores/refresh`).
+ * Then the list, fresh.
  */
 export async function refreshFromImslp(workId: string): Promise<{
   created: number;

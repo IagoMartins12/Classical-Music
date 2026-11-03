@@ -20,9 +20,7 @@ import { Icon } from '@/app/components/ui/Icon';
 import { Sheet } from '@/app/components/ui/Sheet';
 import { TentarDeNovo } from '@/app/components/ui/TentarDeNovo';
 import { cx } from '@/app/components/ui/cx';
-import { useSession } from '@/app/libs/session';
 import { ApiError } from '@/app/libs/api/client';
-import { canEditCatalog } from '@/app/utils/permissions';
 import { WORK, type WorkCopy } from '@/app/conteudo/site/work';
 import { useRouteLanguage } from '@/app/hooks/useRouteLanguage';
 import {
@@ -650,10 +648,10 @@ function Empty({
 }
 
 /**
- * "Atualizar do IMSLP" — only for catalog curators (admin or approved
- * teacher, the same rule as the API's `CuratorGuard`). A read that failed in
- * silence left a work "without scores" for a day; this reads the page now,
- * past the queue and the mark, and shows what came.
+ * "Atualizar do IMSLP", for every visitor (owner's call, 02/11). A read that
+ * failed in silence left a work "without scores" for a day; this reads the
+ * page now, past the queue and the mark, clears this work's cache and shows
+ * what came. The API holds it to once per work every two minutes.
  */
 function RefreshFromImslp({
   workId,
@@ -667,12 +665,10 @@ function RefreshFromImslp({
   /** Beside the list: a text link, not a button in the way. */
   discreet?: boolean;
 }) {
-  const { data: session } = useSession();
   const [busy, setBusy] = useState(false);
   const [result, setResult] = useState<{ ok: boolean; text: string } | null>(
     null
   );
-  if (!canEditCatalog(session?.user)) return null;
 
   const run = () => {
     setBusy(true);

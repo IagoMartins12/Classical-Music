@@ -338,7 +338,7 @@ const en: typeof pt = {
     retry: 'Try again',
     searchAgain: 'Search again',
     refresh: 'Update from IMSLP',
-    refreshHint: 'Only catalog curators see this: reads the work on IMSLP now.',
+    refreshHint: 'Reads this work on IMSLP now and brings what is missing.',
     refreshDone: (created: number, updated: number) =>
       created > 0
         ? `${created} new ${created === 1 ? 'score' : 'scores'}; ${updated} checked.`
