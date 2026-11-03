@@ -1,10 +1,16 @@
 'use client';
 
 import { useEffect, useState } from 'react';
+import dynamic from 'next/dynamic';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import toast from 'react-hot-toast';
-import { PiArrowSquareOut, PiPencilSimple, PiTrash } from 'react-icons/pi';
+import {
+  PiArrowSquareOut,
+  PiCloudArrowDown,
+  PiPencilSimple,
+  PiTrash,
+} from 'react-icons/pi';
 import ConfirmModal from '@/app/components/ConfirmModal';
 import { Button } from '@/app/components/ui/Button';
 import { Field } from '@/app/components/ui/Field';
@@ -23,13 +29,21 @@ import {
 import { Numeros, rolarAte } from '@/app/components/Admin/painel/Numeros';
 import { HistoricoDoRegistro } from '@/app/components/Admin/painel/Trilha';
 import { dataCurta, numero } from '@/app/components/Admin/painel/formatos';
+import { useInvalidateAdmin } from '@/app/hooks/admin/query';
 import {
   useApagarCompositor,
   useAtualizarCompositor,
   useDetalheCompositor,
+  useListasDeCadastro,
 } from '@/app/hooks/admin/useCatalogo';
 import { QUALIDADES, type Compositor } from '@/app/requests/admin/catalogo';
 import { PorOndeComecar } from './PorOndeComecar';
+
+/** The same batch import as "Meus envios": it only loads when opened. */
+const ImportarObras = dynamic(
+  () => import('@/app/components/UploadsPage/modals/BulkInsertWorksModal'),
+  { ssr: false }
+);
 
 export function FichaCompositor({
   compositor: c,
@@ -44,6 +58,9 @@ export function FichaCompositor({
   const [notas, setNotas] = useState('');
   const [qualidade, setQualidade] = useState('');
   const [apagando, setApagando] = useState(false);
+  const [importando, setImportando] = useState(false);
+  const listas = useListasDeCadastro();
+  const invalidar = useInvalidateAdmin();
   const atualizar = useAtualizarCompositor();
   const apagar = useApagarCompositor();
   const detalhe = useDetalheCompositor(c?.id ?? null);
@@ -297,6 +314,32 @@ export function FichaCompositor({
                   </a>
                 )}
               </Inline>
+
+              {/* O compositor com página no IMSLP: a lista de obras de lá,
+                  marcando as que já estão no acervo, e a importação das que
+                  faltam — a mesma de "Meus envios", sem teto para o admin. */}
+              {d.permLinkImslp && (
+                <Stack gap={3} className="rounded-card bg-sup-2 p-4">
+                  <Stack gap={1}>
+                    <Text papel="subtitulo" as="h3">
+                      Obras no IMSLP
+                    </Text>
+                    <Text papel="rotulo" tom="suave" as="p">
+                      Lê a lista de obras de {c.name} no IMSLP, mostra as que já
+                      estão no acervo e importa as que você escolher.
+                    </Text>
+                  </Stack>
+                  <Button
+                    tamanho="p"
+                    icone={PiCloudArrowDown}
+                    onClick={() => setImportando(true)}
+                    disabled={!listas.data}
+                    className="self-start"
+                  >
+                    Importar obras do IMSLP
+                  </Button>
+                </Stack>
+              )}
             </>
           )}
 
@@ -365,6 +408,23 @@ export function FichaCompositor({
           confirmText="Remover"
           cancelText="Voltar"
           isLoading={apagar.isPending}
+        />
+      )}
+      {importando && c && d?.permLinkImslp && listas.data && (
+        <ImportarObras
+          isOpen
+          onClose={() => {
+            setImportando(false);
+            void invalidar('catalogo');
+          }}
+          composer={{
+            id: c.id,
+            name: c.name,
+            fullName: c.fullName ?? c.name,
+            permLinkImslp: d.permLinkImslp,
+          }}
+          instruments={listas.data.instruments}
+          epochs={listas.data.epochs}
         />
       )}
     </Sheet>
