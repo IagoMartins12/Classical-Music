@@ -201,7 +201,7 @@ export function UploadsView({
             )}
           </div>
         )}
-        <ListResults className="cascata grid grid-cols-1 gap-3 divide-[var(--linha)] xl:grid-cols-2 max-sm:gap-0 max-sm:divide-y data-[view=list]:grid-cols-1! data-[view=list]:gap-0 data-[view=list]:divide-y">
+        <ListResults className="cascata grid grid-cols-1 gap-3 divide-[var(--linha)] xl:grid-cols-2 data-[view=list]:grid-cols-1! data-[view=list]:gap-0 data-[view=list]:divide-y">
           {visible.map((item) => (
             <UploadRow
               key={item.id}
@@ -221,7 +221,9 @@ export function UploadsView({
 
   return (
     <div className="flex flex-col gap-8">
-      <div className="flex flex-wrap gap-2">
+      {/* Phone: the score upload takes the line, the other two share the
+          next one — three buttons wrapping into a column read as a list. */}
+      <div className="flex flex-wrap gap-2 max-sm:grid max-sm:grid-cols-2 max-sm:[&>*:first-child]:col-span-2">
         <Button
           variante="primario"
           icone={PiUploadSimple}
@@ -258,8 +260,11 @@ export function UploadsView({
         </p>
       )}
 
-      <dl className="grid grid-cols-1 gap-3 sm:grid-cols-3">
-        <div className="flex flex-col gap-2 rounded-card bg-sup-2 p-4">
+      {/* Phone: the plan across, "live" and "reports" side by side — each a
+          number first, the way the plan reads, instead of three stacked
+          boxes and a line of text. */}
+      <dl className="grid grid-cols-2 gap-3 sm:grid-cols-3">
+        <div className="col-span-2 flex flex-col gap-2 rounded-card bg-sup-2 p-4 sm:col-span-1">
           <dt className="t-legenda">
             {limit !== null ? copy.plan(used, limit) : copy.unlimited}
           </dt>
@@ -274,17 +279,35 @@ export function UploadsView({
               />
             </span>
           )}
+          {plan === 'FREE' && (
+            <button
+              type="button"
+              onClick={() => setPlanOpen(true)}
+              className="self-start t-rotulo text-ouro-texto underline decoration-transparent underline-offset-4 hover:decoration-[var(--ouro)]"
+            >
+              {copy.upgrade}
+            </button>
+          )}
         </div>
         <div className="flex flex-col gap-2 rounded-card bg-sup-2 p-4">
           <dt className="t-legenda">{copy.live}</dt>
-          <dd className="t-rotulo">
-            {[
-              [copy.tabs.composer, totals.data?.composers],
-              [copy.tabs.work, totals.data?.works],
-              [copy.tabs.score, totals.data?.scores],
-            ]
-              .map(([label, n]) => `${n ?? '·'} ${String(label).toLowerCase()}`)
-              .join(' · ')}
+          <dd className="font-display text-[1.75rem] leading-none">
+            {totals.data
+              ? totals.data.composers + totals.data.works + totals.data.scores
+              : '·'}
+          </dd>
+          <dd className="t-legenda flex flex-wrap gap-x-2">
+            {(
+              [
+                [copy.tabs.composer, totals.data?.composers],
+                [copy.tabs.work, totals.data?.works],
+                [copy.tabs.score, totals.data?.scores],
+              ] as const
+            ).map(([label, n]) => (
+              <span key={label}>
+                {n ?? '·'} {label.toLowerCase()}
+              </span>
+            ))}
           </dd>
         </div>
         <div className="flex flex-col gap-2 rounded-card bg-sup-2 p-4">
@@ -300,17 +323,6 @@ export function UploadsView({
         aberto={planOpen}
         aoFechar={() => setPlanOpen(false)}
       />
-      {plan === 'FREE' && !full && (
-        <p className="t-rotulo -mt-4 text-texto-suave">
-          <button
-            type="button"
-            onClick={() => setPlanOpen(true)}
-            className="text-ouro-texto underline decoration-transparent underline-offset-4 hover:decoration-[var(--ouro)]"
-          >
-            {copy.upgrade}
-          </button>
-        </p>
-      )}
 
       <div className="flex flex-wrap items-center justify-between gap-3">
         <Abas rotulo={copy.title}>
@@ -520,108 +532,111 @@ function UploadRow({
     <li
       ref={itemRef}
       data-vira={vira}
-      className="flex items-start gap-3 rounded-card bg-sup-2 p-4 row:items-center row:gap-4 row:rounded-none row:bg-transparent! row:bg-none! row:px-0 row:py-3"
+      // The card takes the whole width: picture on the left, the title and
+      // the actions on the first line (actions in the top-right corner), and
+      // the details below using all the room the actions no longer take.
+      className="grid grid-cols-[auto_minmax(0,1fr)] items-start gap-x-4 gap-y-1 rounded-card bg-sup-2 p-4 row:items-center row:rounded-none row:bg-transparent! row:bg-none! row:px-0 row:py-3"
     >
-      <div className="flex min-w-0 flex-1 items-center gap-4">
-        {item.type === 'composer' ? (
-          <Portrait
-            name={item.title}
-            src={item.portraitUrl}
-            sizes="48px"
-            className="h-12 w-12 shrink-0 rounded-full text-[0.875rem]"
+      {item.type === 'composer' ? (
+        <Portrait
+          name={item.title}
+          src={item.portraitUrl}
+          sizes="48px"
+          className="row-span-2 h-12 w-12 shrink-0 rounded-full text-[0.875rem]"
+        />
+      ) : (
+        <span className="row-span-2 grid h-12 w-12 shrink-0 place-items-center rounded-controle bg-[var(--fundo)] text-texto-fraco row:bg-sup-2">
+          <Icon
+            de={item.type === 'work' ? PiMusicNotes : PiFilePdf}
+            tamanho="m"
           />
-        ) : (
-          <span className="grid h-12 w-12 shrink-0 place-items-center rounded-controle bg-[var(--fundo)] text-texto-fraco row:bg-sup-2">
-            <Icon
-              de={item.type === 'work' ? PiMusicNotes : PiFilePdf}
-              tamanho="m"
-            />
-          </span>
-        )}
-        <span className="flex min-w-0 flex-col gap-0.5">
-          {href ? (
-            <Link
-              href={href}
-              className="truncate font-display text-[1.1875rem] hover:text-ouro-texto"
-            >
-              {item.title}
-            </Link>
-          ) : (
-            <span className="truncate font-display text-[1.1875rem]">
-              {item.title}
-            </span>
-          )}
-          <span className="t-rotulo truncate text-texto-suave">
-            {detail.filter(Boolean).join(' · ')}
-          </span>
-          <span className="flex flex-wrap items-center gap-x-2 gap-y-1 t-legenda">
-            <span>{item.isIMSLP ? copy.imslp : copy.yours}</span>
-            <span aria-hidden="true">·</span>
-            <span
-              className={cx(
-                'inline-flex items-center gap-1',
-                verified && 'text-verificado'
-              )}
-            >
-              {verified && <Icon de={PiSealCheck} tamanho="pp" />}
-              {verified ? copy.verified : copy.pending}
-            </span>
-            {quality && (
-              <>
-                <span aria-hidden="true">·</span>
-                <span>{quality}</span>
-              </>
-            )}
-            <span aria-hidden="true">·</span>
-            <span>{date}</span>
-          </span>
         </span>
-      </div>
-      {/* On a card, the actions sit in its top-right corner. */}
-      <div className="-mr-2 -mt-2 flex shrink-0 gap-0.5 row:m-0 row:gap-1">
-        {item.type === 'composer' && item.imslpPermlink && (
-          <Button
-            tamanho="p"
-            variante="fantasma"
-            icone={PiCloudArrowDown}
-            rotulo={copy.importWorks}
-            onClick={onBulk}
-          />
+      )}
+      <div className="flex min-w-0 items-start gap-2">
+        {href ? (
+          <Link
+            href={href}
+            className="min-w-0 flex-1 truncate font-display text-[1.1875rem] hover:text-ouro-texto"
+          >
+            {item.title}
+          </Link>
+        ) : (
+          <span className="min-w-0 flex-1 truncate font-display text-[1.1875rem]">
+            {item.title}
+          </span>
         )}
-        {item.type === 'work' && (
-          <Button
-            tamanho="p"
-            variante="fantasma"
-            icone={PiUploadSimple}
-            rotulo={copy.addScore}
-            onClick={onScore}
-          />
-        )}
-        {item.type === 'score' && item.downloadUrl && (
-          <a
-            href={item.downloadUrl}
-            target="_blank"
-            rel="noopener noreferrer"
-            aria-label={copy.download}
+        {/* On a card, the actions sit in its top-right corner. */}
+        <div className="-mr-2 -mt-2 flex shrink-0 gap-0.5 row:m-0 row:gap-1">
+          {item.type === 'composer' && item.imslpPermlink && (
+            <Button
+              tamanho="p"
+              variante="fantasma"
+              icone={PiCloudArrowDown}
+              rotulo={copy.importWorks}
+              onClick={onBulk}
+            />
+          )}
+          {item.type === 'work' && (
+            <Button
+              tamanho="p"
+              variante="fantasma"
+              icone={PiUploadSimple}
+              rotulo={copy.addScore}
+              onClick={onScore}
+            />
+          )}
+          {item.type === 'score' && item.downloadUrl && (
+            <a
+              href={item.downloadUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label={copy.download}
+              className={classesDeBotao('fantasma', 'p', true)}
+            >
+              <Icon de={PiDownloadSimple} tamanho="pp" />
+            </a>
+          )}
+          <Link
+            href={`/upload/${item.type}/${item.id}/edit`}
+            aria-label={copy.edit}
             className={classesDeBotao('fantasma', 'p', true)}
           >
-            <Icon de={PiDownloadSimple} tamanho="pp" />
-          </a>
-        )}
-        <Link
-          href={`/upload/${item.type}/${item.id}/edit`}
-          aria-label={copy.edit}
-          className={classesDeBotao('fantasma', 'p', true)}
-        >
-          <Icon de={PiPencilSimple} tamanho="pp" />
-        </Link>
-        <Button
-          tamanho="p"
-          variante="fantasma"
-          icone={PiTrash}
-          rotulo={copy.remove}
-          onClick={onRemove}
-        />
+            <Icon de={PiPencilSimple} tamanho="pp" />
+          </Link>
+          <Button
+            tamanho="p"
+            variante="fantasma"
+            icone={PiTrash}
+            rotulo={copy.remove}
+            onClick={onRemove}
+          />
+        </div>
+      </div>
+      <div className="col-start-2 flex min-w-0 flex-col gap-0.5">
+        <span className="t-rotulo truncate text-texto-suave">
+          {detail.filter(Boolean).join(' · ')}
+        </span>
+        <span className="flex flex-wrap items-center gap-x-2 gap-y-1 t-legenda">
+          <span>{item.isIMSLP ? copy.imslp : copy.yours}</span>
+          <span aria-hidden="true">·</span>
+          <span
+            className={cx(
+              'inline-flex items-center gap-1',
+              verified && 'text-verificado'
+            )}
+          >
+            {verified && <Icon de={PiSealCheck} tamanho="pp" />}
+            {verified ? copy.verified : copy.pending}
+          </span>
+          {quality && (
+            <>
+              <span aria-hidden="true">·</span>
+              <span>{quality}</span>
+            </>
+          )}
+          <span aria-hidden="true">·</span>
+          <span>{date}</span>
+        </span>
       </div>
     </li>
   );
