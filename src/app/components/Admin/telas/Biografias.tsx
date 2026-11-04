@@ -347,6 +347,7 @@ function Editor({
 
       <div className="flex flex-wrap items-center gap-3 border-t border-[var(--linha)] pt-5">
         <Button
+          className="w-full"
           variante="primario"
           carregando={ocupado}
           disabled={Boolean(erroPt || erroEn)}
@@ -361,7 +362,12 @@ function Editor({
               : 'Aprovar como está'}
         </Button>
         {temProxima && (
-          <Button variante="fantasma" disabled={ocupado} onClick={aoPular}>
+          <Button
+            variante="fantasma"
+            className="w-full"
+            disabled={ocupado}
+            onClick={aoPular}
+          >
             Pular
           </Button>
         )}
