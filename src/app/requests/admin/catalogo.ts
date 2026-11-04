@@ -63,6 +63,8 @@ export interface FiltrosObras {
   maxLearned?: number;
   hasScore?: boolean;
   hasVideo?: boolean;
+  /** Como foi a leitura das partituras no IMSLP. */
+  imslpScores?: 'failed' | 'none' | 'found' | 'never';
   isCustom?: boolean;
   hasTone?: boolean;
   hasYear?: boolean;
@@ -99,6 +101,7 @@ export const getObras = (f: FiltrosObras, page: number) =>
       maxLearned: f.maxLearned,
       hasScore: f.hasScore,
       hasVideo: f.hasVideo,
+      imslpScores: f.imslpScores,
       isCustom: f.isCustom,
       hasTone: f.hasTone,
       hasYear: f.hasYear,
@@ -153,6 +156,9 @@ export const getResumoObras = () =>
 export interface DetalheObra {
   id: string;
   imslpPermlink: string | null;
+  /** A última leitura das partituras no IMSLP; vazio, nunca tentada. */
+  imslpScoresStatus?: 'found' | 'none' | 'failed' | null;
+  imslpScoresCheckedAt?: string | null;
   youtubeVideoUrl: string | null;
   instrumentation: string | null;
   compositionYear: string | null;
