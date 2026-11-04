@@ -1,6 +1,8 @@
 'use client';
 
 import { useId } from 'react';
+import { PiCalendarBlank } from 'react-icons/pi';
+import { cx } from '@/app/components/ui/cx';
 import { Selecao } from '@/app/components/ui/Selecao';
 import { Segmentos } from './Controles';
 
@@ -102,15 +104,22 @@ export function SeletorDePeriodo({
         valor={noAtalho ? k : ''}
         aoMudar={escolher}
       />
-      <div className="w-40">
+      <div className="w-44 max-sm:w-full">
         <label htmlFor={`${id}-outro`} className="sr-only">
           Outro período
         </label>
+        {/* Same surface as the tab strip beside it (no outline); once one of
+            its periods is chosen it looks like the active tab. */}
         <Selecao
           id={`${id}-outro`}
           valor={noAtalho ? '' : k}
           aoMudar={escolher}
-          opcoes={[{ value: '', label: 'Outro período' }, ...OUTROS]}
+          icone={PiCalendarBlank}
+          opcoes={[{ value: '', label: 'Mais períodos' }, ...OUTROS]}
+          className={cx(
+            'min-h-11! rounded-xl! border-transparent! bg-theme-secondary! pl-3.5! text-sm font-medium',
+            !noAtalho && 'bg-theme-tertiary! shadow-md'
+          )}
         />
       </div>
       {valor.tipo === 'intervalo' && (
