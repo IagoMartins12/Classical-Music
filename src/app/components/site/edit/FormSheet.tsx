@@ -1,6 +1,13 @@
 'use client';
 
-import { useId, useRef, useState, type ReactNode } from 'react';
+import {
+  useCallback,
+  useEffect,
+  useId,
+  useRef,
+  useState,
+  type ReactNode,
+} from 'react';
 import {
   PiPaperclip,
   PiCheckCircle,
@@ -17,10 +24,26 @@ import { EDIT } from '@/app/conteudo/site/edit';
 import { useRouteLanguage } from '@/app/hooks/useRouteLanguage';
 
 /**
+ * What marks an error in these forms: the field itself (`Field`, `Selecao`
+ * set `aria-invalid`), the red caption under a hand-built field, or an error
+ * notice (`Aviso tom="erro"`, `Erro`).
+ */
+const ERRO =
+  '[aria-invalid="true"], .t-legenda.text-erro:not(:empty), [role="alert"]';
+
+/** How long after a submit an error can still show up (the API answering). */
+const VIGIA_MS = 8000;
+
+/**
  * The sheet of the upload creation flows (composer, work, score, bulk
  * works). The system `Sheet`, plus what the legacy modal did that the
  * sheet does not: closing with unsaved changes asks first, and nothing
  * closes while a save is running.
+ *
+ * **An error is never out of sight (04/11).** On a submit the sheet watches
+ * its content for a few seconds; the first error to appear — the form's own
+ * check or the API's answer — is scrolled to the middle of the sheet and
+ * its field gets the focus. Each form keeps validating as it did.
  */
 export function FormSheet({
   aberto,
@@ -46,6 +69,62 @@ export function FormSheet({
   const { language } = useRouteLanguage();
   const copy = EDIT[language];
   const [saindo, setSaindo] = useState(false);
+  const corpo = useRef<HTMLDivElement>(null);
+  const vigia = useRef<(() => void) | null>(null);
+
+  const levarAoErro = useCallback((erro: Element) => {
+    const suave = !window.matchMedia('(prefers-reduced-motion: reduce)')
+      .matches;
+    erro.scrollIntoView({
+      block: 'center',
+      behavior: suave ? 'smooth' : 'auto',
+    });
+    // The field to fix: the invalid control itself, or the one the red
+    // caption sits under.
+    const campo = erro.matches('input, select, textarea, button')
+      ? erro
+      : erro
+          .closest('div, section')
+          ?.querySelector<HTMLElement>(
+            'input:not([type=hidden]):not([type=file]), select, textarea, [role=combobox]'
+          );
+    (campo as HTMLElement | null | undefined)?.focus({ preventScroll: true });
+  }, []);
+
+  const vigiar = useCallback(() => {
+    vigia.current?.();
+    const raiz = corpo.current;
+    if (!raiz) return;
+    let feito = false;
+    const procurar = () => {
+      if (feito) return;
+      const erro = raiz.querySelector(ERRO);
+      if (!erro) return;
+      feito = true;
+      parar();
+      levarAoErro(erro);
+    };
+    const observador = new MutationObserver(procurar);
+    observador.observe(raiz, {
+      subtree: true,
+      childList: true,
+      characterData: true,
+      attributes: true,
+      attributeFilter: ['aria-invalid', 'role'],
+    });
+    const prazo = window.setTimeout(() => parar(), VIGIA_MS);
+    // An error already on screen (submitting again without fixing it).
+    const quadro = requestAnimationFrame(() => requestAnimationFrame(procurar));
+    function parar() {
+      observador.disconnect();
+      window.clearTimeout(prazo);
+      cancelAnimationFrame(quadro);
+      vigia.current = null;
+    }
+    vigia.current = parar;
+  }, [levarAoErro]);
+
+  useEffect(() => () => vigia.current?.(), []);
 
   const pedirFechar = () => {
     if (ocupado) return;
@@ -63,7 +142,9 @@ export function FormSheet({
         largura="g"
         rodape={rodape}
       >
-        <div className="flex flex-col">{children}</div>
+        <div ref={corpo} className="flex flex-col" onSubmitCapture={vigiar}>
+          {children}
+        </div>
       </Sheet>
       <ConfirmModal
         isOpen={saindo}
