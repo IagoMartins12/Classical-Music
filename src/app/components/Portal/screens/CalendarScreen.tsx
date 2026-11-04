@@ -323,10 +323,20 @@ export function CalendarScreen({ role }: { role: Role }) {
           <div
             data-ajuda="grade"
             className={cx(
-              'transition-opacity',
+              'relative transition-opacity',
               calendar.isFetching && !calendar.isPending && 'opacity-70'
             )}
+            aria-busy={calendar.isFetching}
           >
+            {/* Changing the week keeps the old one on screen until the new one
+                arrives: the strip says it is coming, so it does not jump. */}
+            {calendar.isFetching && !calendar.isPending && (
+              <span
+                role="progressbar"
+                aria-label="Carregando os horários"
+                className="progresso-busca"
+              />
+            )}
             {mode === 'week' && (
               <>
                 <div className="max-md:hidden">
