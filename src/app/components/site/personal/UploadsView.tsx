@@ -553,7 +553,7 @@ function UploadRow({
           />
         </span>
       )}
-      <div className="flex min-w-0 items-start gap-2">
+      <div className="flex min-w-0 items-center gap-2">
         {href ? (
           <Link
             href={href}
@@ -567,7 +567,7 @@ function UploadRow({
           </span>
         )}
         {/* On a card, the actions sit in its top-right corner. */}
-        <div className="-mr-2 -mt-2 flex shrink-0 gap-0.5 row:m-0 row:gap-1">
+        <div className="-my-2 -mr-2 flex shrink-0 gap-0.5 row:m-0 row:gap-1">
           {item.type === 'composer' && item.imslpPermlink && (
             <Button
               tamanho="p"
@@ -635,8 +635,12 @@ function UploadRow({
               <span>{quality}</span>
             </>
           )}
-          <span aria-hidden="true">·</span>
-          <span>{date}</span>
+          {/* On a phone the date takes its own line: a wrapped line must not
+              end (or start) on a stray "·". */}
+          <span aria-hidden="true" className="max-sm:hidden">
+            ·
+          </span>
+          <span className="max-sm:basis-full">{date}</span>
         </span>
       </div>
     </li>
