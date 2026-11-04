@@ -222,8 +222,9 @@ export function UploadsView({
   return (
     <div className="flex flex-col gap-8">
       {/* Phone: the score upload takes the line, the other two share the
-          next one — three buttons wrapping into a column read as a list. */}
-      <div className="flex flex-wrap gap-2 max-sm:grid max-sm:grid-cols-2 max-sm:[&>*:first-child]:col-span-2">
+          next one — three buttons wrapping into a column read as a list —
+          and the labels go without their icons. */}
+      <div className="flex flex-wrap gap-2 max-sm:grid max-sm:grid-cols-2 max-sm:[&>*:first-child]:col-span-2 max-sm:[&_svg]:hidden">
         <Button
           variante="primario"
           icone={PiUploadSimple}
