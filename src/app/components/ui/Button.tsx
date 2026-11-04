@@ -131,6 +131,8 @@ export function Button({
       aria-label={rotulo}
       aria-busy={carregando || undefined}
       disabled={disabled || carregando}
+      // `ErroAVista` watches for an error after a primary action.
+      data-variante={variante}
       className={cx(classesDeBotao(variante, tamanho, soIcone), className)}
       {...resto}
     >

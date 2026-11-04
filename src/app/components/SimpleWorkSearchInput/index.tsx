@@ -351,6 +351,7 @@ const SimpleWorkSearchInput: React.FC<SimpleWorkSearchInputProps> = ({
                 tx('Digite para buscar uma obra…', 'Type to search a work…')
               }
               disabled={disabled}
+              aria-invalid={error ? true : undefined}
               className={`input-classical-2 w-full !pl-10 pr-10 ${
                 error ? 'border-[var(--erro)]' : ''
               } ${disabled ? 'opacity-50 cursor-not-allowed' : ''}`}

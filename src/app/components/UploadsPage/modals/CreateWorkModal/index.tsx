@@ -1193,6 +1193,7 @@ const CreateWorkModal = ({
                 selectedComposer={formData.composerId}
                 onComposerSelect={handleComposerSelect}
                 popularComposers={composers}
+                invalido={!!errors.composerId}
               />
               {errors.composerId && (
                 <span className="t-legenda text-erro">{errors.composerId}</span>

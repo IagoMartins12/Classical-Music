@@ -29,6 +29,8 @@ interface ComposerSearchInputProps {
   onComposerSelect: (composerId: string) => void;
   popularComposers?: Composer[];
   isDisabled?: boolean;
+  /** A required field left empty: the system's error border. */
+  invalido?: boolean;
 }
 
 export default function ComposerSearchInput({
@@ -37,6 +39,7 @@ export default function ComposerSearchInput({
   onComposerSelect,
   popularComposers = [],
   isDisabled = false,
+  invalido = false,
 }: ComposerSearchInputProps) {
   const { t } = useTextos(FILTRO_COMPOSITOR);
 
@@ -255,6 +258,7 @@ export default function ComposerSearchInput({
             isDisabled ? 'cursor-not-allowed opacity-50' : ''
           } ${selectedComposer ? 'text-texto font-medium' : ''}`}
           disabled={isDisabled}
+          aria-invalid={invalido || undefined}
         />
 
         {(selectedComposer || searchTerm) && (

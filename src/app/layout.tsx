@@ -14,6 +14,7 @@ import {
 } from './utils/localizedRoutes';
 import { CartoesQueViram } from '@/app/components/ui/CartoesQueViram';
 import { TopoAoNavegar } from '@/app/components/ui/TopoAoNavegar';
+import { ErroAVista } from '@/app/components/ui/ErroAVista';
 
 /**
  * As três famílias do sistema, e por que são três.
@@ -330,6 +331,7 @@ export default function RootLayout({
           <AuthProvider>{children}</AuthProvider>
           <CartoesQueViram />
           <TopoAoNavegar />
+          <ErroAVista />
         </ClientThemeWrapper>
 
         {/* Analytics wait for the page to finish loading (`lazyOnload`):
