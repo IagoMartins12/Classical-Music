@@ -29,6 +29,12 @@ interface RowProps {
   /** Ações no fim da linha. */
   depois?: ReactNode;
   clicavel?: boolean;
+  /**
+   * On a phone, what comes after goes to a line of its own and the detail
+   * wraps instead of being cut: for rows whose end is wide (badges and an
+   * amount), where one line left the name no room.
+   */
+  empilhar?: boolean;
   as?: ElementType;
   className?: string;
   onClick?: () => void;
@@ -41,6 +47,7 @@ export function Row({
   valor,
   depois,
   clicavel = false,
+  empilhar = false,
   as,
   className,
   ...resto
@@ -54,6 +61,7 @@ export function Row({
         // One line at every size: picture, name, and what comes after at the
         // far end (stacked on a phone, the badge fell a whole picture away).
         'flex w-full min-h-[var(--alvo)] items-center gap-3 rounded-controle px-3.5 py-3 text-left sm:gap-3.5',
+        empilhar && 'max-sm:flex-wrap max-sm:gap-y-2',
         clicavel &&
           'cursor-pointer transition-colors duration-[var(--t-resposta)] ease-saida hover:bg-[var(--interactive-hover)] motion-reduce:transition-none',
         className
@@ -62,9 +70,23 @@ export function Row({
     >
       {antes && <span className="shrink-0">{antes}</span>}
 
-      <span className="flex min-w-0 flex-1 flex-col gap-0.5">
+      <span
+        className={cx(
+          'flex min-w-0 flex-1 flex-col gap-0.5',
+          empilhar && 'max-sm:basis-full'
+        )}
+      >
         <span className="truncate text-[0.9375rem] text-texto">{titulo}</span>
-        {detalhe && <span className="truncate t-legenda">{detalhe}</span>}
+        {detalhe && (
+          <span
+            className={cx(
+              'truncate t-legenda',
+              empilhar && 'max-sm:whitespace-normal'
+            )}
+          >
+            {detalhe}
+          </span>
+        )}
       </span>
 
       {valor && (
@@ -73,7 +95,16 @@ export function Row({
         </span>
       )}
 
-      {depois && <span className="flex shrink-0 justify-end">{depois}</span>}
+      {depois && (
+        <span
+          className={cx(
+            'flex shrink-0 justify-end',
+            empilhar && 'max-sm:basis-full max-sm:justify-start'
+          )}
+        >
+          {depois}
+        </span>
+      )}
     </Tag>
   );
 }
