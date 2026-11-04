@@ -304,11 +304,17 @@ export function CalendarScreen({ role }: { role: Role }) {
               <Icon de={PiCaretRight} tamanho="pp" />
             </Button>
           </span>
-          <span data-ajuda="livres" className="sm:ml-auto">
-            <Chip selecionado={showFree} onClick={() => setShowFree((v) => !v)}>
-              {freeLabel}
-            </Chip>
-          </span>
+          {/* Free hours are the teacher's tool: a student has no use for them. */}
+          {role === 'teacher' && (
+            <span data-ajuda="livres" className="sm:ml-auto">
+              <Chip
+                selecionado={showFree}
+                onClick={() => setShowFree((v) => !v)}
+              >
+                {freeLabel}
+              </Chip>
+            </span>
+          )}
         </div>
 
         {calendar.error ? (
@@ -559,7 +565,7 @@ function Month({
   }, [lessons]);
   const weeks = monthWeeks(anchor);
   return (
-    <div className="max-w-3xl">
+    <div>
       <div className="grid grid-cols-7 pb-2 text-center text-xs text-texto-fraco">
         {weeks[0].map((d) => (
           <span key={d}>{dayShort(d)}</span>
@@ -583,7 +589,7 @@ function Month({
               }
               onClick={() => onDay(d)}
               className={cx(
-                'flex aspect-square flex-col items-center justify-center gap-1.5 bg-fundo text-sm transition-colors hover:bg-sup-2 sm:aspect-[4/3]',
+                'flex aspect-square flex-col items-center justify-center gap-1.5 bg-fundo text-sm transition-colors hover:bg-sup-2 sm:aspect-[4/3] lg:aspect-[16/9]',
                 !sameMonth(d, anchor) && 'text-texto-fraco/60',
                 blocked(d) && 'portal-hachura'
               )}
@@ -652,7 +658,11 @@ function ByDay({
     return (
       <Empty
         titulo="Nada nestas duas semanas"
-        descricao="Ande com as setas, ou ligue as horas livres."
+        descricao={
+          role === 'teacher'
+            ? 'Ande pelas semanas, ou ligue as horas livres.'
+            : 'Ande pelas semanas.'
+        }
       />
     );
   return (
