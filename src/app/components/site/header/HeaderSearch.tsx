@@ -288,19 +288,31 @@ export function HeaderSearch({
         >
           {veil}
           {state.status === 'error' && (
-            <p className="px-3 py-4 t-rotulo text-texto-suave">
+            <p className="item-entra px-3 py-4 t-rotulo text-texto-suave">
               {online ? copy.error : PWA[language].offline.busca}
             </p>
           )}
           {state.status === 'done' && !items.length && (
-            <p className="px-3 py-4 t-rotulo text-texto-suave">{copy.empty}</p>
+            <p className="item-entra px-3 py-4 t-rotulo text-texto-suave">
+              {copy.empty}
+            </p>
           )}
           {groups.map((group) => {
             const groupItems = items.filter((i) => i.group === group.key);
             if (!groupItems.length) return null;
             return (
               <div key={group.key} role="group" aria-label={group.label}>
-                <p className="px-3 pb-1 pt-2 t-legenda">{group.label}</p>
+                <p
+                  className="item-entra px-3 pb-1 pt-2 t-legenda"
+                  style={{
+                    ['--i' as string]: Math.min(
+                      items.indexOf(groupItems[0]),
+                      8
+                    ),
+                  }}
+                >
+                  {group.label}
+                </p>
                 {groupItems.map((item) => {
                   const index = items.indexOf(item);
                   return (
@@ -339,7 +351,8 @@ export function HeaderSearch({
             <button
               type="button"
               onClick={() => go(resultsHref)}
-              className="mx-3 my-2 inline-flex min-h-10 items-center gap-1.5 self-start t-rotulo text-ouro-texto hover:underline"
+              style={{ ['--i' as string]: Math.min(items.length, 8) }}
+              className="item-entra mx-3 my-2 inline-flex min-h-10 items-center gap-1.5 self-start t-rotulo text-ouro-texto hover:underline"
             >
               {copy.seeAll} <Icon de={PiArrowRight} tamanho="pp" />
             </button>
