@@ -20,6 +20,7 @@ import { useDismiss } from '@/app/hooks/useDismiss';
 import { useSiteSearch } from '@/app/hooks/useSiteSearch';
 import { rotasDoBlog } from '@/app/utils/blog/rotas';
 import { localizeHref, type RouteLanguage } from '@/app/utils/localizedRoutes';
+import { findSections } from '@/app/conteudo/site/secoesDaBusca';
 import { composerYears } from '../composerYears';
 import { nomePopularCurto, workTitle } from '../workTitle';
 import { PWA } from '@/app/conteudo/site/pwa';
@@ -31,7 +32,7 @@ const MIN_TERM = 2;
 
 interface ResultItem {
   id: string;
-  group: 'composers' | 'works' | 'articles';
+  group: 'instruments' | 'eras' | 'composers' | 'works' | 'articles';
   title: string;
   detail: string;
   href: string;
@@ -76,8 +77,19 @@ export function HeaderSearch({
   const result =
     state.status === 'done' || state.status === 'loading' ? state.result : null;
   const items = useMemo<ResultItem[]>(() => {
-    if (!result) return [];
+    // Instruments and eras are answered here, in both languages, before the
+    // catalog replies: "piano" and "barroco" open their story pages.
+    const sections = findSections(term, language).map((s) => ({
+      id: s.key,
+      group: s.kind,
+      title: s.name,
+      detail: s.detail,
+      href: localizeHref(s.href, language),
+      image: s.image,
+    }));
+    if (!result) return sections;
     return [
+      ...sections,
       ...result.composers.map((c) => ({
         id: c.id,
         group: 'composers' as const,
@@ -110,7 +122,7 @@ export function HeaderSearch({
         href: rotasDoBlog.artigo(a.slug, language),
       })),
     ];
-  }, [result, language]);
+  }, [result, term, language]);
 
   const online = useOnline();
   const resultsHref = localizeHref(
@@ -165,6 +177,8 @@ export function HeaderSearch({
     </div>
   );
   const groups: { key: ResultItem['group']; label: string }[] = [
+    { key: 'instruments', label: copy.instruments },
+    { key: 'eras', label: copy.eras },
     { key: 'composers', label: copy.composers },
     { key: 'works', label: copy.works },
     { key: 'articles', label: copy.articles },
@@ -337,6 +351,21 @@ export function HeaderSearch({
 }
 
 function ResultThumb({ item }: { item: ResultItem }) {
+  if ((item.group === 'instruments' || item.group === 'eras') && item.image) {
+    return (
+      <span className="relative block h-10 w-10 shrink-0 overflow-hidden rounded-full bg-sup-2">
+        <Image
+          src={item.image}
+          alt=""
+          fill
+          sizes="40px"
+          className={
+            item.group === 'eras' ? 'object-cover' : 'object-contain p-1'
+          }
+        />
+      </span>
+    );
+  }
   if (item.group === 'composers' && item.image) {
     return (
       <Image

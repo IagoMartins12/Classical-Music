@@ -6,6 +6,8 @@ import { Icon } from '@/app/components/ui/Icon';
 import { cx } from '@/app/components/ui/cx';
 import type { Idioma } from '@/app/conteudo/legal/tipos';
 import { SEARCH } from '@/app/conteudo/site/search';
+import { findSections } from '@/app/conteudo/site/secoesDaBusca';
+import Image from '@/app/components/SmartImage';
 import type { BlogArticlePreview } from '@/app/requests/blog/composer-articles';
 import {
   buscarArtigos,
@@ -17,8 +19,17 @@ import { ArticleCards } from '../composer/FurtherReading';
 import { ComposerItem } from '../lists/ComposerItem';
 import { WorkItem } from '../lists/WorkItem';
 
-export const SEARCH_TABS = ['all', 'works', 'composers', 'articles'] as const;
+export const SEARCH_TABS = [
+  'all',
+  'works',
+  'composers',
+  'instruments',
+  'eras',
+  'articles',
+] as const;
 export type SearchTab = (typeof SEARCH_TABS)[number];
+/** The tabs that list catalog results, with their own paging. */
+type Listed = 'works' | 'composers' | 'articles';
 
 const WORKS_SHOWN = 8;
 const COMPOSERS_SHOWN = 4;
@@ -101,7 +112,16 @@ export async function SearchPage({
     composers: composers?.[0]?.pages ?? 1,
     articles: articles?.[0]?.paginacao.paginas ?? 1,
   };
-  const empty = ready && !totals.works && !totals.composers && !totals.articles;
+  // Instruments and eras come from the site itself, in both languages.
+  const sections = ready ? findSections(q, language) : [];
+  const instruments = sections.filter((s) => s.kind === 'instruments');
+  const eras = sections.filter((s) => s.kind === 'eras');
+  const empty =
+    ready &&
+    !totals.works &&
+    !totals.composers &&
+    !totals.articles &&
+    !sections.length;
 
   const href = (next: SearchTab, more?: number) => {
     const params = new URLSearchParams({ q });
@@ -113,10 +133,22 @@ export async function SearchPage({
     { key: 'all', label: copy.tabs.all },
     { key: 'works', label: copy.tabs.works, n: totals.works },
     { key: 'composers', label: copy.tabs.composers, n: totals.composers },
+    ...(instruments.length
+      ? [
+          {
+            key: 'instruments' as const,
+            label: copy.tabs.instruments,
+            n: instruments.length,
+          },
+        ]
+      : []),
+    ...(eras.length
+      ? [{ key: 'eras' as const, label: copy.tabs.eras, n: eras.length }]
+      : []),
     { key: 'articles', label: copy.tabs.articles, n: totals.articles },
   ];
 
-  const seeAll = (kind: Exclude<SearchTab, 'all'>, label: string) => (
+  const seeAll = (kind: Listed, label: string) => (
     <Link
       href={href(kind)}
       scroll={false}
@@ -130,7 +162,7 @@ export async function SearchPage({
   );
 
   /** The open tab's foot: how many are shown, and the way to more. */
-  const more = (kind: Exclude<SearchTab, 'all'>, count: number) => {
+  const more = (kind: Listed, count: number) => {
     const total = totals[kind];
     const hasMore = count < total && shown < lastPage[kind];
     const all = Math.min(lastPage[kind], MAX_PAGES);
@@ -165,6 +197,41 @@ export async function SearchPage({
       </div>
     );
   };
+
+  /** Instruments and eras: a row each, into the page that tells the story. */
+  const sectionRows = (hits: typeof sections, heading: string) =>
+    list(
+      hits.map((hit) => (
+        <li key={`${hit.kind}-${hit.key}`}>
+          <Link
+            href={hit.href}
+            aria-label={`${heading}: ${hit.name}`}
+            className="group flex items-center gap-4 py-3"
+          >
+            <span className="relative block h-12 w-12 shrink-0 overflow-hidden rounded-full bg-sup-2">
+              <Image
+                src={hit.image}
+                alt=""
+                fill
+                sizes="48px"
+                className={
+                  hit.kind === 'eras' ? 'object-cover' : 'object-contain p-1.5'
+                }
+              />
+            </span>
+            <span className="flex min-w-0 flex-1 flex-col">
+              <span className="truncate font-display text-[1.1875rem] group-hover:text-ouro-texto">
+                {hit.name}
+              </span>
+              <span className="truncate t-rotulo text-texto-suave">
+                {hit.detail}
+              </span>
+            </span>
+            <Icon de={PiArrowRight} tamanho="pp" className="text-texto-fraco" />
+          </Link>
+        </li>
+      ))
+    );
 
   const list = (children: ReactNode) => (
     <ul
@@ -317,6 +384,18 @@ export async function SearchPage({
                   )}
               </section>
             )}
+            {instruments.length > 0 && (
+              <section className="flex flex-col gap-3">
+                <h2 className="t-legenda">{copy.instruments}</h2>
+                {sectionRows(instruments, copy.instruments)}
+              </section>
+            )}
+            {eras.length > 0 && (
+              <section className="flex flex-col gap-3">
+                <h2 className="t-legenda">{copy.eras}</h2>
+                {sectionRows(eras, copy.eras)}
+              </section>
+            )}
             {totals.articles > 0 && (
               <section className="flex flex-col gap-3 [&_ul]:grid-cols-1!">
                 <h2 className="t-legenda">{copy.articles}</h2>
@@ -356,6 +435,20 @@ export async function SearchPage({
             ))
           )}
           {more('composers', found.composers.length)}
+        </section>
+      )}
+
+      {ready && !empty && tab === 'instruments' && (
+        <section className="flex flex-col gap-3">
+          <h2 className="sr-only">{copy.instruments}</h2>
+          {sectionRows(instruments, copy.instruments)}
+        </section>
+      )}
+
+      {ready && !empty && tab === 'eras' && (
+        <section className="flex flex-col gap-3">
+          <h2 className="sr-only">{copy.eras}</h2>
+          {sectionRows(eras, copy.eras)}
         </section>
       )}
 

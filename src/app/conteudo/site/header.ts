@@ -89,6 +89,8 @@ const pt = {
     composers: 'Compositores',
     works: 'Obras',
     articles: 'Artigos',
+    instruments: 'Instrumentos',
+    eras: 'Épocas',
     seeAll: 'Ver todos os resultados',
   },
 };
@@ -169,6 +171,8 @@ const en: typeof pt = {
     composers: 'Composers',
     works: 'Works',
     articles: 'Articles',
+    instruments: 'Instruments',
+    eras: 'Eras',
     seeAll: 'See all results',
   },
 };
