@@ -1081,13 +1081,16 @@ html.app-pronto .abertura-do-app {
   animation-delay: var(--abertura-atraso, 0ms);
 }
 .abertura-do-app .abertura-selo {
+  /* `--abertura-selo` is set by `aberturaScript` with the mark already
+     decoded; the file is only the fallback (a reload, no opening before). */
+  --marca: var(--abertura-selo, url('/brand/marca/simbolo.svg'));
   width: 3.5rem;
   background-color: #d4af37;
   animation: abertura-respira 2.2s ease-in-out infinite;
   animation-delay: var(--abertura-atraso, 0ms);
 }
 .abertura-do-app .abertura-nome {
-  --marca: url('/brand/marca/nome.svg');
+  --marca: var(--abertura-nome, url('/brand/marca/nome.svg'));
   aspect-ratio: 519.5 / 50.5;
   width: 10rem;
   background-color: #d4af37;
@@ -1447,6 +1450,19 @@ img[data-retrato][data-falhou] {
 .abaixo-da-dobra > * {
   content-visibility: auto;
   contain-intrinsic-size: auto 720px;
+}
+
+/* No app instalado o topo não anima: a abertura já é a entrada. Com ela
+   saindo enquanto o título ainda subia, aparecia só o "Compositores populares"
+   de baixo, um vazio e então a tela (relato do dono). A abertura sai e
+   revela a página pronta. */
+@media (display-mode: standalone) {
+  html .entra {
+    animation: none;
+  }
+}
+html.app-instalado .entra {
+  animation: none;
 }
 
 /* Entrada do topo da página (`.entra`, em cascata por `--i`). Só CSS: roda na

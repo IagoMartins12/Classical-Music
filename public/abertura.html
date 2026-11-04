@@ -112,6 +112,19 @@
         // animation running from here and shows it for a minimum time.
         try {
           sessionStorage.setItem('opus-atlas:abertura', String(Date.now()));
+          // The two marks, as drawn here (data URI): the next page puts them
+          // on its own opening at once, instead of fetching the files and
+          // showing the orbit alone until they arrive (`aberturaScript`).
+          ['selo', 'nome'].forEach(function (nome) {
+            var marca = getComputedStyle(
+              document.querySelector('.' + nome)
+            )
+              .getPropertyValue('--marca')
+              .trim();
+            if (marca) {
+              sessionStorage.setItem('opus-atlas:abertura-' + nome, marca);
+            }
+          });
         } catch (e) {}
         // The page asked for (`/` from the start address, else the one the
         // worker answered with this opening), marked `aberto=1` so the
