@@ -361,16 +361,27 @@ function Editor({
               ? 'Aprovar como está e ir para a próxima'
               : 'Aprovar como está'}
         </Button>
-        {temProxima && (
-          <Button
-            variante="fantasma"
-            className="w-full"
-            disabled={ocupado}
-            onClick={aoPular}
+        {/* "Pular" and "Abrir no site" share one line, each taking half. */}
+        <div className="flex w-full gap-3">
+          {temProxima && (
+            <Button
+              variante="fantasma"
+              className="flex-1"
+              disabled={ocupado}
+              onClick={aoPular}
+            >
+              Pular
+            </Button>
+          )}
+          <Link
+            href={`/composer/${item.id}`}
+            target="_blank"
+            rel="noopener noreferrer"
+            className={cx(classesDeBotao('fantasma', 'm'), 'flex-1')}
           >
-            Pular
-          </Button>
-        )}
+            Abrir no site <PiArrowSquareOut aria-hidden="true" />
+          </Link>
+        </div>
         <ConfirmModal
           isOpen={substituir !== null}
           onClose={() => setSubstituir(null)}
@@ -391,14 +402,6 @@ function Editor({
           confirmText="Traduzir e substituir"
           cancelText="Voltar"
         />
-        <Link
-          href={`/composer/${item.id}`}
-          target="_blank"
-          rel="noopener noreferrer"
-          className={cx(classesDeBotao('fantasma', 'm'), 'sm:ml-auto')}
-        >
-          Abrir no site <PiArrowSquareOut aria-hidden="true" />
-        </Link>
       </div>
     </Stack>
   );
