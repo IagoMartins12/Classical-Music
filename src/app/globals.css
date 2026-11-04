@@ -1224,6 +1224,15 @@ html.app-pronto .abertura-do-app {
     box-shadow: var(--sombra-alta);
   }
 
+  /* The same top layer for the older search fields' result lists
+     (`ListaFlutuante`): their own look, only the popover's place reset.
+     Inside a sheet, an `absolute` list was cut by the scroller. */
+  .lista-flutuante {
+    position: fixed;
+    inset: auto;
+    margin: 0;
+  }
+
   .selecao-lista:popover-open {
     display: flex;
     flex-direction: column;

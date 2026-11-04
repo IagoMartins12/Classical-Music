@@ -4,6 +4,7 @@ import { useEffect, useId, useRef, useState } from 'react';
 import { PiX } from 'react-icons/pi';
 import { Button } from '@/app/components/ui/Button';
 import { cx } from '@/app/components/ui/cx';
+import { ListaFlutuante } from '@/app/components/ui/ListaFlutuante';
 
 /**
  * Escolher um registro por busca: "por compositor", "por peça". O catálogo
@@ -40,6 +41,7 @@ export function Escolher({
   const [ativa, setAtiva] = useState(0);
   const [buscando, setBuscando] = useState(false);
   const ultimaBusca = useRef(0);
+  const ancora = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
     if (!aberto || termo.trim().length < 2) {
@@ -102,6 +104,7 @@ export function Escolher({
         {rotulo}
       </label>
       <input
+        ref={ancora}
         id={id}
         role="combobox"
         aria-expanded={mostrar}
@@ -135,13 +138,16 @@ export function Escolher({
         }}
         className="input-classical w-full pl-4"
       />
-      {mostrar && (
-        <ul
-          id={listaId}
-          role="listbox"
-          aria-label={rotulo}
-          className="sup-alta absolute left-0 right-0 top-full z-menu mt-1 max-h-72 overflow-y-auto rounded-controle !p-1 shadow-[var(--sombra-2)] rolagem-discreta"
-        >
+      {/* In the top layer: inside a sheet (a record's ficha) an
+          `absolute` list was cut by the scroller. */}
+      <ListaFlutuante
+        ancora={ancora}
+        aberta={mostrar}
+        aoFechar={() => setAberto(false)}
+        conteudo={opcoes.length}
+        className="sup-alta max-h-72 overflow-y-auto rounded-controle !p-1 shadow-[var(--sombra-2)] rolagem-discreta"
+      >
+        <ul id={listaId} role="listbox" aria-label={rotulo}>
           {buscando && opcoes.length === 0 && (
             <li className="t-legenda px-3 py-2">Buscando…</li>
           )}
@@ -169,7 +175,7 @@ export function Escolher({
             </li>
           ))}
         </ul>
-      )}
+      </ListaFlutuante>
     </div>
   );
 }

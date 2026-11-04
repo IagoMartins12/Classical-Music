@@ -7,6 +7,7 @@ import { useState, useEffect, useRef, useCallback } from 'react';
 import { PiMagnifyingGlass, PiTrendUp, PiUser, PiX } from 'react-icons/pi';
 import { findComposerById, findComposers } from '@/app/requests/catalog-search';
 import { Inline } from '@/app/components/ui/Layout';
+import { ListaFlutuante } from '@/app/components/ui/ListaFlutuante';
 import { Text } from '@/app/components/ui/Text';
 import { NomeAcao } from '@/app/components/ui/NomeAcao';
 
@@ -43,6 +44,8 @@ export default function ComposerSearchInput({
 
   const inputRef = useRef<HTMLInputElement>(null);
   const dropdownRef = useRef<HTMLDivElement>(null);
+  // The field the result list floats under (`ListaFlutuante`).
+  const ancoraRef = useRef<HTMLDivElement>(null);
   const debounceRef = useRef<NodeJS.Timeout>(null);
 
   // Função para buscar dados do compositor por ID
@@ -215,7 +218,7 @@ export default function ComposerSearchInput({
 
   return (
     <div className={`relative ${isOpen ? 'z-menu' : 'z-elevado'}`}>
-      <div className="relative">
+      <div ref={ancoraRef} className="relative">
         <PiUser className="absolute left-4 top-1/2 transform -translate-y-1/2 w-4 h-4 text-texto-fraco z-10" />
 
         <input
@@ -251,45 +254,44 @@ export default function ComposerSearchInput({
       </div>
 
       {/* Dropdown */}
-      {isOpen && (
-        <div
-          ref={dropdownRef}
-          className="absolute top-full left-0 right-0 mt-2 rounded-controle border border-[var(--linha-forte)] bg-[var(--sup-alta)] shadow-[var(--sombra-alta)] z-menu max-h-80 overflow-hidden"
-          style={{
-            boxShadow:
-              '0 25px 50px -12px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(212, 175, 55, 0.3)',
-          }}
-        >
-          {/* Header com label */}
-          {showPopularLabel && (
-            <div className="flex items-center gap-2 px-4 py-3 border-b border-[var(--linha)]">
-              <PiTrendUp className="w-4 h-4 text-ouro-texto" />
-              <Text papel="rotulo" tom="suave" className="font-medium">
-                {t('composer_search_jsx_popular_label')}
-              </Text>
-            </div>
-          )}
+      <ListaFlutuante
+        ancora={ancoraRef}
+        aberta={isOpen}
+        aoFechar={() => setIsOpen(false)}
+        conteudo={searchTerm}
+        listaRef={dropdownRef}
+        className="rounded-controle border border-[var(--linha-forte)] bg-[var(--sup-alta)] shadow-[var(--sombra-alta)] max-h-80 overflow-y-auto"
+      >
+        {/* Header com label */}
+        {showPopularLabel && (
+          <div className="flex items-center gap-2 px-4 py-3 border-b border-[var(--linha)]">
+            <PiTrendUp className="w-4 h-4 text-ouro-texto" />
+            <Text papel="rotulo" tom="suave" className="font-medium">
+              {t('composer_search_jsx_popular_label')}
+            </Text>
+          </div>
+        )}
 
-          {/* Loading */}
-          {isLoading && (
-            <div className="flex items-center justify-center py-8">
-              <Inline gap={2} className="text-texto-suave">
-                <div className="w-4 h-4 border-2 border-t-transparent rounded-full animate-spin"></div>
-                <span className="text-sm">
-                  {t('composer_search_jsx_loading')}
-                </span>
-              </Inline>
-            </div>
-          )}
+        {/* Loading */}
+        {isLoading && (
+          <div className="flex items-center justify-center py-8">
+            <Inline gap={2} className="text-texto-suave">
+              <div className="w-4 h-4 border-2 border-t-transparent rounded-full animate-spin"></div>
+              <span className="text-sm">
+                {t('composer_search_jsx_loading')}
+              </span>
+            </Inline>
+          </div>
+        )}
 
-          {/* Results */}
-          {!isLoading && displayComposers && displayComposers.length > 0 && (
-            <div className="max-h-64 overflow-y-auto">
-              {displayComposers.map((composer, index) => (
-                <button
-                  key={composer.id}
-                  onClick={() => handleComposerSelect(composer)}
-                  className={`
+        {/* Results */}
+        {!isLoading && displayComposers && displayComposers.length > 0 && (
+          <div className="max-h-64 overflow-y-auto">
+            {displayComposers.map((composer, index) => (
+              <button
+                key={composer.id}
+                onClick={() => handleComposerSelect(composer)}
+                className={`
                     w-full text-left px-4 py-3 transition-colors duration-200 border-b last:border-b-0 border-[var(--linha)]
                     ${
                       selectedComposer === composer.id
@@ -298,71 +300,67 @@ export default function ComposerSearchInput({
                     }
                     ${index === 0 && !showPopularLabel ? 'border-t-0' : ''}
                   `}
-                >
-                  <div className="flex items-center justify-between">
-                    <div className="min-w-0 flex-1">
-                      <Text
-                        papel="rotulo"
-                        tom="forte"
-                        as="div"
-                        className="font-medium truncate"
-                      >
-                        {composer.name}
-                      </Text>
-                      {composer.fullName &&
-                        composer.fullName !== composer.name && (
-                          <Text
-                            papel="legenda"
-                            tom="suave"
-                            as="div"
-                            className="truncate mt-0.5"
-                          >
-                            {composer.fullName}
-                          </Text>
-                        )}
-                    </div>
-
-                    {composer.worksCount && Number(composer.worksCount) > 1 && (
-                      <div className="ml-3 flex-shrink-0">
+              >
+                <div className="flex items-center justify-between">
+                  <div className="min-w-0 flex-1">
+                    <Text
+                      papel="rotulo"
+                      tom="forte"
+                      as="div"
+                      className="font-medium truncate"
+                    >
+                      {composer.name}
+                    </Text>
+                    {composer.fullName &&
+                      composer.fullName !== composer.name && (
                         <Text
                           papel="legenda"
                           tom="suave"
-                          className="inline-flex items-center px-2 py-1 rounded-full"
+                          as="div"
+                          className="truncate mt-0.5"
                         >
-                          {composer.worksCount}{' '}
-                          {composer.worksCount === 1
-                            ? t('composer_search_jsx_work_singular')
-                            : t('composer_search_jsx_work_plural')}
+                          {composer.fullName}
                         </Text>
-                      </div>
-                    )}
+                      )}
                   </div>
-                </button>
-              ))}
-            </div>
-          )}
 
-          {/* Empty state */}
-          {!isLoading &&
-            (!displayComposers || displayComposers.length === 0) && (
-              <div className="px-4 py-8 text-center">
-                <PiUser className="w-8 h-8 text-texto-fraco mx-auto mb-2" />
-                <Text papel="rotulo" tom="suave" as="p">
-                  {searchTerm
-                    ? `${t(
-                        'composer_search_jsx_no_results_for'
-                      )} "${searchTerm}"`
-                    : t('composer_search_jsx_no_composers')}
-                </Text>
-                {searchTerm && (
-                  <Text papel="legenda" tom="fraco" as="p" className="mt-1">
-                    {t('composer_search_jsx_try_broader')}
-                  </Text>
-                )}
-              </div>
+                  {composer.worksCount && Number(composer.worksCount) > 1 && (
+                    <div className="ml-3 flex-shrink-0">
+                      <Text
+                        papel="legenda"
+                        tom="suave"
+                        className="inline-flex items-center px-2 py-1 rounded-full"
+                      >
+                        {composer.worksCount}{' '}
+                        {composer.worksCount === 1
+                          ? t('composer_search_jsx_work_singular')
+                          : t('composer_search_jsx_work_plural')}
+                      </Text>
+                    </div>
+                  )}
+                </div>
+              </button>
+            ))}
+          </div>
+        )}
+
+        {/* Empty state */}
+        {!isLoading && (!displayComposers || displayComposers.length === 0) && (
+          <div className="px-4 py-8 text-center">
+            <PiUser className="w-8 h-8 text-texto-fraco mx-auto mb-2" />
+            <Text papel="rotulo" tom="suave" as="p">
+              {searchTerm
+                ? `${t('composer_search_jsx_no_results_for')} "${searchTerm}"`
+                : t('composer_search_jsx_no_composers')}
+            </Text>
+            {searchTerm && (
+              <Text papel="legenda" tom="fraco" as="p" className="mt-1">
+                {t('composer_search_jsx_try_broader')}
+              </Text>
             )}
-        </div>
-      )}
+          </div>
+        )}
+      </ListaFlutuante>
     </div>
   );
 }

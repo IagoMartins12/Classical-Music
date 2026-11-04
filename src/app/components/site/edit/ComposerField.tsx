@@ -4,6 +4,7 @@ import { useEffect, useId, useRef, useState } from 'react';
 import { PiMagnifyingGlass, PiX } from 'react-icons/pi';
 import { Icon } from '@/app/components/ui/Icon';
 import { cx } from '@/app/components/ui/cx';
+import { ListaFlutuante } from '@/app/components/ui/ListaFlutuante';
 import { useDismiss } from '@/app/hooks/useDismiss';
 import { searchComposers } from '@/app/requests/uploads-client';
 import { Portrait } from '../Portrait';
@@ -46,6 +47,7 @@ export function ComposerField({
   const [options, setOptions] = useState<Option[]>([]);
   const ref = useDismiss<HTMLDivElement>(open, () => setOpen(false));
   const typed = useRef(false);
+  const ancora = useRef<HTMLSpanElement>(null);
 
   useEffect(() => {
     if (!typed.current || term.trim().length < 2) return;
@@ -71,7 +73,10 @@ export function ComposerField({
       <label htmlFor={id} className="t-rotulo">
         {label}
       </label>
-      <span className="search-field input-classical flex items-center gap-3 !pl-4">
+      <span
+        ref={ancora}
+        className="search-field input-classical flex items-center gap-3 !pl-4"
+      >
         {value ? (
           <Portrait
             name={value.fullName || value.name}
@@ -113,12 +118,15 @@ export function ComposerField({
         )}
       </span>
       {hint && <span className="t-legenda">{hint}</span>}
-      {open && options.length > 0 && (
-        <ul
-          id={`${id}-list`}
-          role="listbox"
-          className="popover-open sup-alta absolute inset-x-0 top-full z-menu mt-2 flex max-h-72 flex-col gap-1 overflow-y-auto !rounded-card p-2"
-        >
+      {/* In the top layer: inside a sheet an `absolute` list was cut. */}
+      <ListaFlutuante
+        ancora={ancora}
+        aberta={open && options.length > 0}
+        aoFechar={() => setOpen(false)}
+        conteudo={options.length}
+        className="popover-open sup-alta max-h-72 overflow-y-auto !rounded-card p-2"
+      >
+        <ul id={`${id}-list`} role="listbox" className="flex flex-col gap-1">
           {options.map((o) => (
             <li key={o.id}>
               <button
@@ -148,7 +156,7 @@ export function ComposerField({
             </li>
           ))}
         </ul>
-      )}
+      </ListaFlutuante>
     </div>
   );
 }

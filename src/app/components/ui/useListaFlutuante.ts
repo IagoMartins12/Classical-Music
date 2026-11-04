@@ -33,6 +33,7 @@ export function useListaFlutuante({
   aberta,
   aoClicarFora,
   conteudo,
+  larguraDaAncora = false,
 }: {
   ancora: RefObject<HTMLElement | null>;
   lista: RefObject<HTMLElement | null>;
@@ -40,6 +41,11 @@ export function useListaFlutuante({
   aoClicarFora: () => void;
   /** Anything that changes the list's height (filtered options). */
   conteudo?: unknown;
+  /**
+   * Exactly as wide as the anchor — search results under a field, which
+   * must not grow with a long title. By default, at least as wide.
+   */
+  larguraDaAncora?: boolean;
 }) {
   const [acima, setAcima] = useState(false);
 
@@ -55,7 +61,9 @@ export function useListaFlutuante({
     // At least as wide as the anchor, wider when an option needs it (a
     // short label like "A–Z" must not cut "Chegaram agora"), and never past
     // the edge of the screen.
-    l.style.width = 'max-content';
+    l.style.width = larguraDaAncora
+      ? `${Math.round(r.width)}px`
+      : 'max-content';
     l.style.minWidth = `${Math.round(r.width)}px`;
     l.style.maxWidth = `${window.innerWidth - MARGEM * 2}px`;
     const largura = l.offsetWidth;
@@ -68,7 +76,7 @@ export function useListaFlutuante({
     l.style.maxHeight = `${Math.round(
       Math.min(ALTURA_MAX, paraCima ? r.top - MARGEM * 2 : abaixo - MARGEM)
     )}px`;
-  }, [ancora, lista]);
+  }, [ancora, lista, larguraDaAncora]);
 
   useLayoutEffect(() => {
     const l = lista.current as ComPopover | null;
