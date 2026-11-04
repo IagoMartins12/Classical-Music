@@ -276,24 +276,32 @@ export function CalendarScreen({ role }: { role: Role }) {
               ))}
             </Abas>
           </span>
-          <span className="flex items-center gap-1 max-sm:w-full max-sm:[&>*]:flex-1">
+          {/* Named by what they move (a week or a month): bare arrows said
+              nothing about the step. */}
+          <span className="grid grid-cols-[1fr_auto_1fr] items-center gap-2 max-sm:w-full sm:flex sm:gap-1">
             <Button
               variante="fantasma"
+              tamanho="p"
               icone={PiCaretLeft}
-              rotulo="Anterior"
               onClick={() => move(-1)}
-            />
-            <Button
-              variante="fantasma"
-              icone={PiCaretRight}
-              rotulo="Seguinte"
-              onClick={() => move(1)}
-            />
+              className="max-sm:justify-start"
+            >
+              {mode === 'month' ? 'Mês anterior' : 'Semana anterior'}
+            </Button>
             <Button
               variante="texto"
               onClick={() => (setAnchor(today()), setPhoneDay(today()))}
             >
               Hoje
+            </Button>
+            <Button
+              variante="fantasma"
+              tamanho="p"
+              onClick={() => move(1)}
+              className="max-sm:justify-end"
+            >
+              {mode === 'month' ? 'Próximo mês' : 'Próxima semana'}
+              <Icon de={PiCaretRight} tamanho="pp" />
             </Button>
           </span>
           <span data-ajuda="livres" className="sm:ml-auto">
