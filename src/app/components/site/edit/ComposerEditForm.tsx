@@ -6,6 +6,7 @@ import toast from 'react-hot-toast';
 import { PiCamera } from 'react-icons/pi';
 import { Button } from '@/app/components/ui/Button';
 import { asList } from './asList';
+import { SelecaoMultipla } from '@/app/components/ui/SelecaoMultipla';
 import { CampoDeFichas } from '@/app/components/ui/CampoDeFichas';
 import { Field } from '@/app/components/ui/Field';
 import { Rotulado } from '@/app/components/ui/Rotulado';
@@ -38,10 +39,13 @@ export function ComposerEditForm({
   composer,
   epochs,
   roles,
+  instruments,
 }: {
   composer: Composer;
   epochs: Named[];
   roles: Named[];
+  /** The catalog's instruments: what "Instruments" offers to pick. */
+  instruments: Named[];
 }) {
   const { language } = useRouteLanguage();
   const router = useRouter();
@@ -79,8 +83,15 @@ export function ComposerEditForm({
     if (!form.name.trim() || !form.fullName.trim()) return;
     setSaving(true);
     const epochName = epochs.find((e) => e.id === form.epochId)?.name;
+    // The record keeps these as "A, B" text, as the creation writes them:
+    // sent as lists, the API refused the whole save ("must be a string").
+    const texto = (lista: string[]) => lista.join(', ');
     const response = await saveComposerRequest(composer.id, {
       ...form,
+      alternativeNames: texto(form.alternativeNames),
+      roles: texto(form.roles.filter((id) => id !== form.primaryRoleId)),
+      instruments: texto(form.instruments),
+      imslpCategories: texto(form.imslpCategories),
       epochName,
     }).catch(failedRequest);
     setSaving(false);
@@ -219,14 +230,22 @@ export function ComposerEditForm({
             aoMudar={(primaryRoleId) => set({ primaryRoleId })}
           />
         </label>
-        <CampoDeFichas
+        {/* The record keeps role ids: the list shows their names. The main
+            role is not offered again here. */}
+        <SelecaoMultipla
           rotulo={t.roles}
+          opcoes={roles.map((r) => r.id)}
           valores={form.roles}
           aoMudar={(roles) => set({ roles })}
+          excluir={form.primaryRoleId ? [form.primaryRoleId] : []}
+          rotuloDe={(id) => roles.find((r) => r.id === id)?.name ?? id}
         />
-        <CampoDeFichas
+        {/* The catalog's instruments; a name already on the record that is
+            not in the list (read from IMSLP) stays as it is. */}
+        <SelecaoMultipla
           className="sm:col-span-2"
           rotulo={t.instruments}
+          opcoes={instruments.map((i) => i.name)}
           valores={form.instruments}
           aoMudar={(instruments) => set({ instruments })}
         />
