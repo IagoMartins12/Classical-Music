@@ -51,10 +51,9 @@ export function Row({
     <Tag
       type={Tag === 'button' ? 'button' : undefined}
       className={cx(
-        // Phone: picture and name side by side, the rest on the line below,
-        // close to them (stacked, the badge fell a whole picture away).
-        'flex w-full min-h-[var(--alvo)] flex-wrap items-center gap-x-3 gap-y-1.5 rounded-controle px-3.5 py-3 text-left',
-        'sm:flex-nowrap sm:gap-3.5',
+        // One line at every size: picture, name, and what comes after at the
+        // far end (stacked on a phone, the badge fell a whole picture away).
+        'flex w-full min-h-[var(--alvo)] items-center gap-3 rounded-controle px-3.5 py-3 text-left sm:gap-3.5',
         clicavel &&
           'cursor-pointer transition-colors duration-[var(--t-resposta)] ease-saida hover:bg-[var(--interactive-hover)] motion-reduce:transition-none',
         className
@@ -63,22 +62,18 @@ export function Row({
     >
       {antes && <span className="shrink-0">{antes}</span>}
 
-      <span className="flex min-w-0 flex-1 basis-0 flex-col gap-0.5 max-sm:min-w-[8rem] sm:basis-auto">
+      <span className="flex min-w-0 flex-1 flex-col gap-0.5">
         <span className="truncate text-[0.9375rem] text-texto">{titulo}</span>
         {detalhe && <span className="truncate t-legenda">{detalhe}</span>}
       </span>
 
       {valor && (
-        <span className="t-dado text-[0.8125rem] text-texto-suave max-sm:basis-full">
+        <span className="t-dado text-[0.8125rem] text-texto-suave">
           {valor}
         </span>
       )}
 
-      {depois && (
-        <span className="max-sm:flex max-sm:basis-full max-sm:justify-end">
-          {depois}
-        </span>
-      )}
+      {depois && <span className="flex shrink-0 justify-end">{depois}</span>}
     </Tag>
   );
 }
