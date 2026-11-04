@@ -35,7 +35,7 @@ export default function PracticeSheet({ onClose, closeAll }: SheetProps) {
   const [note, setNote] = useState('');
   const [day, setDay] = useState(today());
   // One way to say how long: the stopwatch or the typed time, never both.
-  const [mode, setMode] = useState<Mode>('timer');
+  const [mode, setMode] = useState<Mode>('manual');
   const [searching, setSearching] = useState(false);
   // Works picked by search: they join the chips and stay chosen.
   const [picked, setPicked] = useState<{ id: string; title: string }[]>([]);

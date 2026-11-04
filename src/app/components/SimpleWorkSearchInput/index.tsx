@@ -432,12 +432,12 @@ const SimpleWorkSearchInput: React.FC<SimpleWorkSearchInputProps> = ({
                               papel="rotulo"
                               tom="forte"
                               as="p"
-                              className="font-medium truncate"
+                              className="min-w-0 truncate font-medium"
                             >
                               {work.title}
                             </Text>
                             {isUserWork && (
-                              <span className="text-xs px-1.5 py-0.5 rounded">
+                              <span className="shrink-0 whitespace-nowrap rounded px-1.5 py-0.5 text-xs">
                                 {tx('Sugerida', 'Suggested')}
                               </span>
                             )}
