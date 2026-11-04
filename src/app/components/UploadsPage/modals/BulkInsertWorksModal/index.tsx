@@ -34,7 +34,7 @@ import {
 } from '@/app/requests/external-sources';
 import { useTx } from '@/app/hooks/useTx';
 import { ApiError } from '@/app/libs/api/client';
-import { QuillOnPaper } from '@/app/components/site/QuillOnPaper';
+import { MagnifierSearching } from '@/app/components/site/MagnifierSearching';
 
 /**
  * Obras por chamada de importação. A API aceita até 100 e limita a 5 chamadas
@@ -459,12 +459,14 @@ const BulkInsertWorksModal = ({
           >
             {isDiscovering ? (
               // Reading the composer's works takes a few seconds: the same
-              // quill as the scores being fetched on a work page.
+              // magnifier as the scores being searched on a work page, across
+              // the whole sheet (`col-span-full`: the block is a two-column
+              // grid from the tablet up).
               <div
                 role="status"
-                className="flex flex-col items-center gap-5 rounded-card bg-sup-2 px-6 py-8 text-center"
+                className="col-span-full flex w-full flex-col items-center gap-5 rounded-card bg-sup-2 px-6 py-8 text-center"
               >
-                <QuillOnPaper />
+                <MagnifierSearching />
                 <div className="flex max-w-[40ch] flex-col items-center gap-1.5">
                   <p className="font-display text-[1.375rem] leading-snug">
                     {tx(
@@ -483,15 +485,16 @@ const BulkInsertWorksModal = ({
             ) : nothingFound ? (
               <div
                 role="status"
-                className="flex flex-col items-start gap-2 rounded-card bg-sup-2 p-6"
+                className="col-span-full flex w-full flex-col items-center gap-5 rounded-card bg-sup-2 px-6 py-8 text-center"
               >
-                <p className="font-display text-[1.375rem] leading-snug">
+                <MagnifierSearching />
+                <p className="max-w-[40ch] font-display text-[1.375rem] leading-snug">
                   {tx(
                     `Não encontramos obras de ${composer.name} para importar`,
                     `We found no works by ${composer.name} to import`
                   )}
                 </p>
-                <p className="t-rotulo text-texto-suave">
+                <p className="-mt-3 max-w-[48ch] t-rotulo text-texto-suave">
                   {tx(
                     'Ainda não temos obras deste compositor. Você pode cadastrar uma a uma pelo envio de obra.',
                     'We have no works by this composer yet. You can add them one by one through the work upload.'
