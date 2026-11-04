@@ -69,7 +69,6 @@ export function ComposerEditForm({
     permLinkImslp: s(composer.permLinkImslp),
     wikipediaLink: s(composer.wikipediaLink),
     videoUrl: s(composer.videoUrl),
-    imslpCategories: asList(composer.imslpCategories),
   });
   const [saving, setSaving] = useState(false);
   const [uploading, setUploading] = useState(false);
@@ -91,7 +90,6 @@ export function ComposerEditForm({
       alternativeNames: texto(form.alternativeNames),
       roles: texto(form.roles.filter((id) => id !== form.primaryRoleId)),
       instruments: texto(form.instruments),
-      imslpCategories: texto(form.imslpCategories),
       epochName,
     }).catch(failedRequest);
     setSaving(false);
@@ -273,12 +271,6 @@ export function ComposerEditForm({
         {field('permLinkImslp', t.imslpLink, { type: 'url', inputMode: 'url' })}
         {field('wikipediaLink', t.wikipedia, { type: 'url', inputMode: 'url' })}
         {field('videoUrl', t.video, { type: 'url', inputMode: 'url' })}
-        <CampoDeFichas
-          className="sm:col-span-2"
-          rotulo={t.categories}
-          valores={form.imslpCategories}
-          aoMudar={(imslpCategories) => set({ imslpCategories })}
-        />
       </EditSection>
     </EditPage>
   );

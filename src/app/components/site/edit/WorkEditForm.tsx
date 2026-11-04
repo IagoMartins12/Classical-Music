@@ -84,7 +84,6 @@ export function WorkEditForm({
     dedicateTo: s(work.dedicateTo),
     categoryNames: asList(work.categoryNames),
     workGenresArr: asList(work.workGenresArr),
-    imslpTags: asList(work.imslpTags),
     imslpId: s(work.imslpId),
     imslpPermlink: s(work.imslpPermlink),
     videoUrl: s(work.videoUrl),
@@ -257,12 +256,6 @@ export function WorkEditForm({
           rotulo={t.genres}
           valores={form.workGenresArr}
           aoMudar={(workGenresArr) => set({ workGenresArr })}
-        />
-        <CampoDeFichas
-          className="sm:col-span-2"
-          rotulo={t.tags}
-          valores={form.imslpTags}
-          aoMudar={(imslpTags) => set({ imslpTags })}
         />
       </EditSection>
 
