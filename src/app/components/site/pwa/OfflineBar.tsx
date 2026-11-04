@@ -19,7 +19,7 @@ export function OfflineBar() {
       role="status"
       className="fixed inset-x-0 bottom-4 z-aviso flex justify-center px-4 pointer-events-none"
     >
-      <p className="pointer-events-auto flex max-w-full flex-wrap items-center gap-x-3 gap-y-1 rounded-full border border-[var(--linha-forte)] bg-[var(--sup-alta)] px-4 py-2 text-[0.875rem] text-texto shadow-[var(--sombra-alta)]">
+      <p className="pointer-events-auto flex max-w-full flex-wrap items-center gap-x-3 gap-y-1 rounded-full border border-[var(--linha-forte)] [background:var(--sup-alta)] px-4 py-2 text-[0.875rem] text-texto shadow-[var(--sombra-alta)]">
         <PiWifiSlash aria-hidden className="h-4 w-4 shrink-0 text-ouro-texto" />
         <span>{copy.faixa}</span>
         <Link

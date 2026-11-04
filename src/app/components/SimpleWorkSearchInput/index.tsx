@@ -367,7 +367,7 @@ const SimpleWorkSearchInput: React.FC<SimpleWorkSearchInputProps> = ({
             aoFechar={() => setIsOpen(false)}
             conteudo={query}
             listaRef={dropdownRef}
-            className="rounded-controle border border-[var(--linha-forte)] bg-[var(--sup-alta)] shadow-[var(--sombra-alta)] max-h-80 overflow-y-auto"
+            className="rounded-controle border border-[var(--linha-forte)] [background:var(--sup-alta)] shadow-[var(--sombra-alta)] max-h-80 overflow-y-auto"
           >
             {/* Loading */}
             {(isLoading || loadingUserSuggestions) && (

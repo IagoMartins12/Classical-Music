@@ -260,7 +260,7 @@ export default function ComposerSearchInput({
         aoFechar={() => setIsOpen(false)}
         conteudo={searchTerm}
         listaRef={dropdownRef}
-        className="rounded-controle border border-[var(--linha-forte)] bg-[var(--sup-alta)] shadow-[var(--sombra-alta)] max-h-80 overflow-y-auto"
+        className="rounded-controle border border-[var(--linha-forte)] [background:var(--sup-alta)] shadow-[var(--sombra-alta)] overflow-hidden"
       >
         {/* Header com label */}
         {showPopularLabel && (
@@ -286,7 +286,7 @@ export default function ComposerSearchInput({
 
         {/* Results */}
         {!isLoading && displayComposers && displayComposers.length > 0 && (
-          <div className="max-h-64 overflow-y-auto">
+          <div className="max-h-56 overflow-y-auto">
             {displayComposers.map((composer, index) => (
               <button
                 key={composer.id}

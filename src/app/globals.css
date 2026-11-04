@@ -1232,6 +1232,10 @@ html.app-pronto .abertura-do-app {
     inset: auto;
     margin: 0;
   }
+  /* Closed is hidden, whatever display class the list carries. */
+  .lista-flutuante:not(:popover-open) {
+    display: none;
+  }
 
   .selecao-lista:popover-open {
     display: flex;
