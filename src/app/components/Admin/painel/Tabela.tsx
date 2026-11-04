@@ -184,7 +184,7 @@ export function Tabela<T>({
                     'border-t border-linha transition-colors duration-[var(--t-resposta)] ease-saida motion-reduce:transition-none',
                     // On a phone a row is a card: the main cell and the
                     // actions on the first line, the rest below.
-                    'max-md:flex max-md:flex-wrap max-md:items-start max-md:gap-x-4 max-md:gap-y-1 max-md:px-4 max-md:py-3',
+                    'max-md:flex max-md:flex-wrap max-md:items-start max-md:gap-x-5 max-md:gap-y-2 max-md:px-4 max-md:py-3',
                     aoClicar && 'cursor-pointer',
                     marcada
                       ? 'bg-[var(--interactive-hover)]'
@@ -216,13 +216,13 @@ export function Tabela<T>({
                         'max-md:p-0 max-md:text-left',
                         c.principal
                           ? 'max-md:order-[-3] max-md:min-w-0 max-md:flex-1 max-md:basis-0'
-                          : 'max-md:text-sm',
+                          : 'max-md:flex max-md:items-center max-md:gap-1.5 max-md:text-sm',
                         c.soNoComputador && 'max-md:hidden',
                         c.className
                       )}
                     >
                       {!c.principal && (
-                        <span className="t-legenda mr-1.5 md:hidden">
+                        <span className="t-legenda shrink-0 md:hidden">
                           {c.titulo}:
                         </span>
                       )}
