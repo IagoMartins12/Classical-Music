@@ -13,7 +13,7 @@ import {
 } from 'react-icons/pi';
 import ConfirmModal from '@/app/components/ConfirmModal';
 import { Button } from '@/app/components/ui/Button';
-import { refreshFromImslp } from '@/app/requests/work-score-library';
+import { ImportarPartiturasModal } from './ImportarPartiturasModal';
 import { Field } from '@/app/components/ui/Field';
 import { Icon } from '@/app/components/ui/Icon';
 import { Inline, Stack } from '@/app/components/ui/Layout';
@@ -53,7 +53,7 @@ export function FichaObra({
 }) {
   const [form, setForm] = useState<EdicaoObra>({});
   const [apagando, setApagando] = useState(false);
-  const [lendo, setLendo] = useState(false);
+  const [importando, setImportando] = useState(false);
   const atualizar = useAtualizarObra();
   const apagar = useApagarObra();
   const detalhe = useDetalheObra(obra?.id ?? null);
@@ -101,28 +101,6 @@ export function FichaObra({
       aoFechar();
     } catch (e) {
       toast.error(e instanceof Error ? e.message : 'Não foi possível salvar.');
-    }
-  };
-
-  // O mesmo "Atualizar do IMSLP" da página da obra: lê a página do IMSLP,
-  // grava o que falta e limpa o cache só desta obra.
-  const importarDoImslp = async () => {
-    setLendo(true);
-    try {
-      const { created, updated } = await refreshFromImslp(obra.id);
-      toast.success(
-        created + updated === 0
-          ? 'Lido: não havia partitura nova no IMSLP.'
-          : `${created} partitura(s) nova(s) e ${updated} atualizada(s).`
-      );
-      void detalhe.refetch();
-    } catch (e) {
-      toast.error(
-        e instanceof Error ? e.message : 'O IMSLP não respondeu agora.'
-      );
-      void detalhe.refetch();
-    } finally {
-      setLendo(false);
     }
   };
 
@@ -329,8 +307,7 @@ export function FichaObra({
                   <Button
                     tamanho="p"
                     icone={PiCloudArrowDown}
-                    carregando={lendo}
-                    onClick={() => void importarDoImslp()}
+                    onClick={() => setImportando(true)}
                     className="self-start"
                   >
                     Importar partituras do IMSLP
@@ -439,6 +416,14 @@ export function FichaObra({
           </Stack>
         </Stack>
       </Sheet>
+
+      <ImportarPartiturasModal
+        aberto={importando}
+        aoFechar={() => setImportando(false)}
+        workId={obra.id}
+        titulo={obra.title}
+        aoConcluir={() => void detalhe.refetch()}
+      />
 
       <ConfirmModal
         isOpen={apagando}

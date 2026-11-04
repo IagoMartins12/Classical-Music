@@ -235,3 +235,26 @@ export async function refreshFromImslp(workId: string): Promise<{
   const library = organizeScores(await list(workId, { cache: 'no-store' }));
   return { created, updated, library };
 }
+
+/** What the IMSLP reading would do to a work, without doing it (admin). */
+export interface ImslpScoresPreview {
+  permlink: string;
+  /** IMSLP scores the work has today. */
+  stored: number;
+  /** Files read on the page now. */
+  onPage: number;
+  pageTotals: Record<string, number>;
+  toCreate: { title: string; type: string; publisher: string | null }[];
+  toUpdate: { title: string; type: string; changed: string[] }[];
+  unchanged: number;
+  /** Kept here but no longer listed by the page (never deleted). */
+  notOnPage: number;
+  status: 'found' | 'none' | 'failed' | null;
+}
+
+/** `GET /works/:id/scores/imslp-preview`: reads the page, writes nothing. */
+export const previewImslpScores = (workId: string, signal?: AbortSignal) =>
+  apiFetch<ImslpScoresPreview>(
+    `/works/${encodeURIComponent(workId)}/scores/imslp-preview`,
+    { signal }
+  );
