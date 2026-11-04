@@ -216,7 +216,7 @@ export function Tabela<T>({
                         'max-md:p-0 max-md:text-left',
                         c.principal
                           ? 'max-md:order-[-3] max-md:min-w-0 max-md:flex-1 max-md:basis-0'
-                          : 'max-md:flex max-md:items-center max-md:gap-1.5 max-md:text-sm',
+                          : 'max-md:flex max-md:items-center max-md:gap-1.5 max-md:self-center max-md:text-sm',
                         c.soNoComputador && 'max-md:hidden',
                         c.className
                       )}
