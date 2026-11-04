@@ -498,9 +498,12 @@ export default function Denuncias() {
         largura="g"
         rodape={
           aberta?.status === 'pending' ? (
-            <>
+            // The three decisions, stacked and full width: the sheet is narrow
+            // even on a desktop, and three labels do not fit in one line.
+            <div className="flex w-full flex-col gap-2">
               <Button
                 tamanho="p"
+                className="w-full"
                 variante="perigo"
                 onClick={() => setRemovendo(aberta)}
               >
@@ -508,6 +511,7 @@ export default function Denuncias() {
               </Button>
               <Button
                 tamanho="p"
+                className="w-full"
                 onClick={() => decidir(aberta, 'approve')}
                 carregando={resolver.isPending}
               >
@@ -515,13 +519,14 @@ export default function Denuncias() {
               </Button>
               <Button
                 tamanho="p"
+                className="w-full"
                 variante="primario"
                 onClick={() => decidir(aberta, 'reject')}
                 carregando={resolver.isPending}
               >
                 Improcedente, manter
               </Button>
-            </>
+            </div>
           ) : undefined
         }
       >
