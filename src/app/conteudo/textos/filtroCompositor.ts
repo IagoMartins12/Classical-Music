@@ -5,7 +5,8 @@ export const FILTRO_COMPOSITOR: Textos = {
   pt: {
     composer_search_jsx_placeholder: 'Buscar compositor...',
     composer_search_jsx_loading: 'Buscando compositores...',
-    composer_search_jsx_popular_label: 'Compositores Populares',
+    composer_search_jsx_popular_label: 'Compositores populares',
+    composer_search_jsx_mine_label: 'Seus compositores',
     composer_search_jsx_no_results_for: 'Nenhum compositor encontrado para',
     composer_search_jsx_try_broader: 'Tente uma busca mais geral',
     composer_search_jsx_no_composers: 'Nenhum compositor disponível',
@@ -16,6 +17,7 @@ export const FILTRO_COMPOSITOR: Textos = {
     composer_search_jsx_placeholder: 'Search composer...',
     composer_search_jsx_loading: 'Searching composers...',
     composer_search_jsx_popular_label: 'Popular Composers',
+    composer_search_jsx_mine_label: 'Your composers',
     composer_search_jsx_no_results_for: 'No composers found for',
     composer_search_jsx_try_broader: 'Try a broader search',
     composer_search_jsx_no_composers: 'No composers available',

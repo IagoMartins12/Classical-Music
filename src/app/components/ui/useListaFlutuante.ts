@@ -100,10 +100,18 @@ export function useListaFlutuante({
     window.addEventListener('scroll', aoRolar, true);
     window.addEventListener('resize', aoRolar);
     document.addEventListener('pointerdown', aoClicar);
+    // The list's own size changes while open — "loading" turns into the
+    // results — and a short list placed below may now need to open above.
+    const cresceu =
+      typeof ResizeObserver === 'undefined' || !lista.current
+        ? null
+        : new ResizeObserver(() => posicionar());
+    if (cresceu && lista.current) cresceu.observe(lista.current);
     return () => {
       window.removeEventListener('scroll', aoRolar, true);
       window.removeEventListener('resize', aoRolar);
       document.removeEventListener('pointerdown', aoClicar);
+      cresceu?.disconnect();
     };
   }, [aberta, posicionar, aoClicarFora, ancora, lista]);
 
