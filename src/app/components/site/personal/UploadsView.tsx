@@ -536,7 +536,7 @@ function UploadRow({
       // The card takes the whole width: picture on the left, the title and
       // the actions on the first line (actions in the top-right corner), and
       // the details below using all the room the actions no longer take.
-      className="grid grid-cols-[auto_minmax(0,1fr)] items-start gap-x-4 gap-y-1 rounded-card bg-sup-2 p-4 row:items-center row:rounded-none row:bg-transparent! row:bg-none! row:px-0 row:py-3"
+      className="grid grid-cols-[auto_minmax(0,1fr)] items-start gap-x-3 gap-y-0 rounded-card bg-sup-2 p-3.5 row:items-center row:rounded-none row:bg-transparent! row:bg-none! row:px-0 row:py-3"
     >
       {item.type === 'composer' ? (
         <Portrait
@@ -567,7 +567,7 @@ function UploadRow({
           </span>
         )}
         {/* On a card, the actions sit in its top-right corner. */}
-        <div className="-my-2 -mr-2 flex shrink-0 gap-0.5 row:m-0 row:gap-1">
+        <div className="-my-1.5 -mr-2 flex shrink-0 gap-0 max-sm:[&>*]:!min-h-9 row:m-0 row:gap-1">
           {item.type === 'composer' && item.imslpPermlink && (
             <Button
               tamanho="p"
@@ -613,11 +613,11 @@ function UploadRow({
           />
         </div>
       </div>
-      <div className="col-start-2 flex min-w-0 flex-col gap-0.5">
+      <div className="col-start-2 flex min-w-0 flex-col gap-0">
         <span className="t-rotulo truncate text-texto-suave">
           {detail.filter(Boolean).join(' · ')}
         </span>
-        <span className="flex flex-wrap items-center gap-x-2 gap-y-1 t-legenda">
+        <span className="flex flex-wrap items-center gap-x-1.5 gap-y-0 t-legenda">
           <span>{item.isIMSLP ? copy.imslp : copy.yours}</span>
           <span aria-hidden="true">·</span>
           <span
