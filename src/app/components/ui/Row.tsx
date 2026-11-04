@@ -51,28 +51,34 @@ export function Row({
     <Tag
       type={Tag === 'button' ? 'button' : undefined}
       className={cx(
-        'flex w-full min-h-[var(--alvo)] flex-col gap-2 rounded-controle px-3.5 py-3 text-left',
-        'sm:flex-row sm:items-center sm:gap-3.5',
+        // Phone: picture and name side by side, the rest on the line below,
+        // close to them (stacked, the badge fell a whole picture away).
+        'flex w-full min-h-[var(--alvo)] flex-wrap items-center gap-x-3 gap-y-1.5 rounded-controle px-3.5 py-3 text-left',
+        'sm:flex-nowrap sm:gap-3.5',
         clicavel &&
           'cursor-pointer transition-colors duration-[var(--t-resposta)] ease-saida hover:bg-[var(--interactive-hover)] motion-reduce:transition-none',
         className
       )}
       {...resto}
     >
-      {antes}
+      {antes && <span className="shrink-0">{antes}</span>}
 
-      <span className="flex min-w-0 flex-1 flex-col gap-0.5">
+      <span className="flex min-w-0 flex-1 basis-0 flex-col gap-0.5 max-sm:min-w-[8rem] sm:basis-auto">
         <span className="truncate text-[0.9375rem] text-texto">{titulo}</span>
         {detalhe && <span className="truncate t-legenda">{detalhe}</span>}
       </span>
 
       {valor && (
-        <span className="t-dado text-[0.8125rem] text-texto-suave">
+        <span className="t-dado text-[0.8125rem] text-texto-suave max-sm:basis-full">
           {valor}
         </span>
       )}
 
-      {depois}
+      {depois && (
+        <span className="max-sm:flex max-sm:basis-full max-sm:justify-end">
+          {depois}
+        </span>
+      )}
     </Tag>
   );
 }
