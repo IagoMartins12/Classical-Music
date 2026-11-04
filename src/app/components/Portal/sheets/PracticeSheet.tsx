@@ -4,6 +4,7 @@
 // quê: uma obra do próprio repertório ou um assunto. Os professores veem a
 // semana antes da aula.
 
+import { useQuery } from '@tanstack/react-query';
 import { useEffect, useMemo, useState } from 'react';
 import { PiPause, PiPlay } from 'react-icons/pi';
 import { Button } from '@/app/components/ui/Button';
@@ -15,6 +16,7 @@ import {
   usePortalMutation,
   useRepertoire,
 } from '@/app/hooks/portal/query';
+import { listWorks } from '@/app/requests/catalog-lists';
 import * as api from '@/app/requests/portal/api';
 import { addDays, duration, today, toInstant } from '../format';
 import { Options } from '../pieces';
@@ -33,7 +35,7 @@ export default function PracticeSheet({ onClose, closeAll }: SheetProps) {
   const [note, setNote] = useState('');
   const [day, setDay] = useState(today());
   // One way to say how long: the stopwatch or the typed time, never both.
-  const [mode, setMode] = useState<Mode>('manual');
+  const [mode, setMode] = useState<Mode>('timer');
   const [searching, setSearching] = useState(false);
   // Works picked by search: they join the chips and stay chosen.
   const [picked, setPicked] = useState<{ id: string; title: string }[]>([]);
@@ -63,6 +65,52 @@ export default function PracticeSheet({ onClose, closeAll }: SheetProps) {
   useEffect(() => {
     if (!what) setWhat(works[0] ? `work:${works[0].id}` : `topic:${TOPICS[0]}`);
   }, [what, works]);
+
+  // The search box opens on suggestions: the works the teacher put in the
+  // lessons, then the ones the student wants to learn; with neither, the
+  // most popular works of the catalog.
+  const own = useMemo(() => {
+    const r = repertoire.data;
+    if (!r) return [];
+    const seen = new Set<string>();
+    return [
+      ...r.studying
+        .filter((s) => s.lessonId || s.assignmentId)
+        .map((s) => s.work),
+      ...r.wantToLearn.map((w) => w.work),
+    ]
+      .filter((w) => !seen.has(w.id) && seen.add(w.id))
+      .map((w) => ({
+        id: w.id,
+        title: w.title,
+        composer: {
+          id: w.composer?.id,
+          name: w.composer?.name ?? '',
+          fullName: w.composer?.fullName ?? w.composer?.name ?? '',
+        },
+      }));
+  }, [repertoire.data]);
+  const popular = useQuery({
+    queryKey: ['practice', 'popular-works'],
+    queryFn: () => listWorks({ page: 1, sort: 'featured' }),
+    enabled: searching && !repertoire.isLoading && own.length === 0,
+    staleTime: 60 * 60_000,
+  });
+  const suggestions = useMemo(
+    () =>
+      own.length
+        ? own
+        : (popular.data?.works ?? []).slice(0, 8).map((w) => ({
+            id: w.id,
+            title: w.title,
+            composer: {
+              id: w.composer.id,
+              name: w.composer.name,
+              fullName: w.composer.fullName ?? w.composer.name,
+            },
+          })),
+    [own, popular.data]
+  );
 
   const total =
     mode === 'timer' ? Math.max(1, Math.round(seconds / 60)) : minutes;
@@ -168,6 +216,8 @@ export default function PracticeSheet({ onClose, closeAll }: SheetProps) {
           {searching && (
             <SimpleWorkSearchInput
               selectedWork=""
+              userSuggestions={suggestions}
+              loadingUserSuggestions={popular.isLoading}
               placeholder="Buscar obra ou compositor"
               onWorkSelect={(id, data) => {
                 if (!id) return;
