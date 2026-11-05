@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { toast } from 'react-hot-toast';
 import { PiCheck, PiDownloadSimple } from 'react-icons/pi';
 import { ScorePage } from '@/app/components/site/work/ScorePreview';
@@ -69,6 +69,9 @@ const ScoreSelectionModal = ({
   const copy = study.picker;
   const [activeTab, setActiveTab] = useState<ScoreType>('scores');
   const [selected, setSelected] = useState<WorkScore | null>(null);
+  // On a phone the preview sits below the list: choosing a score scrolls to it.
+  const preview = useRef<HTMLElement>(null);
+  const scrollToPreview = useRef(false);
 
   const { workScores, loading, error, loadMoreForType, refetch, pagination } =
     useWorkScores({ workId, limitPerType: 20, enabled: isOpen && !!workId });
@@ -82,7 +85,10 @@ const ScoreSelectionModal = ({
   }, [workScores]);
 
   const stat = (type: ScoreType) => {
-    const loaded = pagination?.loadedByType?.[type] ?? 0;
+    // What is in the list, not what the last request brought: after "load
+    // more" the API counts only the new round, and "2 of 22" stayed with a
+    // button to load 20 that did not exist.
+    const loaded = byType[type].length;
     const total = pagination?.totalByType?.[type] ?? 0;
     return { loaded, total, remaining: Math.max(0, total - loaded) };
   };
@@ -110,6 +116,15 @@ const ScoreSelectionModal = ({
   useEffect(() => {
     if (!isOpen) setSelected(null);
   }, [isOpen]);
+
+  useEffect(() => {
+    if (!scrollToPreview.current || !selected) return;
+    scrollToPreview.current = false;
+    // One frame later: the preview has just been drawn.
+    requestAnimationFrame(() =>
+      preview.current?.scrollIntoView({ behavior: 'smooth', block: 'start' })
+    );
+  }, [selected]);
 
   const confirm = () => {
     try {
@@ -222,7 +237,12 @@ const ScoreSelectionModal = ({
                       <button
                         type="button"
                         aria-pressed={chosen}
-                        onClick={() => setSelected(chosen ? null : score)}
+                        onClick={() => {
+                          scrollToPreview.current =
+                            !chosen &&
+                            window.matchMedia('(max-width: 1023px)').matches;
+                          setSelected(chosen ? null : score);
+                        }}
                         className={cx(
                           'flex w-full items-center gap-4 rounded-card p-3 text-left transition-colors duration-[var(--t-toque)]',
                           chosen
@@ -285,6 +305,7 @@ const ScoreSelectionModal = ({
           </div>
 
           <aside
+            ref={preview}
             aria-label={copy.preview}
             className="flex flex-col gap-3 lg:sticky lg:top-0 lg:self-start"
           >
