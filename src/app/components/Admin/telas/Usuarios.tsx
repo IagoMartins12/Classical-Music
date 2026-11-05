@@ -352,7 +352,7 @@ export default function Usuarios() {
             opcoes={SIM_NAO}
           />
           <FiltroSelecao
-            rotulo="Cadastro inicial concluído"
+            rotulo="Cadastro concluído"
             valor={cadastro}
             aoMudar={setCadastro}
             opcoes={SIM_NAO}

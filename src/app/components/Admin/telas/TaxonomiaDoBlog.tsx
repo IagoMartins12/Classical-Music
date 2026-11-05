@@ -574,7 +574,7 @@ function InicioDoBlog() {
                 ).then(() => setAcrescentar(''))
               }
             >
-              Acrescentar ao início
+              Acrescentar
             </Button>
           </div>
         )}

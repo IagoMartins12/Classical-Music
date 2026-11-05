@@ -149,7 +149,7 @@ export function PageHeader({
   className?: string;
 }) {
   return (
-    <header className={cx('flex flex-col gap-5 pb-10 sm:pb-12', className)}>
+    <header className={cx('flex flex-col gap-5 pb-6 sm:pb-12', className)}>
       {back && (
         <Link
           href={back.href}
