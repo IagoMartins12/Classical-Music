@@ -8,7 +8,7 @@
 
 import Link from 'next/link';
 import { useMemo, useState } from 'react';
-import { PiPlus, PiTimer, PiTrash } from 'react-icons/pi';
+import { PiArrowSquareOut, PiPlus, PiTimer, PiTrash } from 'react-icons/pi';
 import { Button } from '@/app/components/ui/Button';
 import { Sheet } from '@/app/components/ui/Sheet';
 import {
@@ -272,19 +272,34 @@ function Repertoire() {
       title="Repertório"
       help="repertorio"
       action={
-        <span className="flex flex-col-reverse items-stretch gap-3 max-sm:w-full sm:flex-row sm:items-center sm:gap-4">
+        <span className="flex items-center gap-4">
           <Link
             href="/learning"
-            className="text-center text-sm font-medium text-ouro-texto sm:text-left"
+            className="inline-flex items-center gap-1.5 text-sm font-medium text-ouro-texto"
           >
             Abrir a biblioteca
+            <PiArrowSquareOut aria-hidden="true" className="h-4 w-4" />
           </Link>
-          <Button icone={PiPlus} onClick={() => setAdding(true)}>
+          <Button
+            icone={PiPlus}
+            onClick={() => setAdding(true)}
+            className="max-sm:hidden"
+          >
             Acrescentar obra
           </Button>
         </span>
       }
     >
+      {/* On a phone the library link takes the title's line and the add
+          button gets a line of its own, full width. */}
+      <Button
+        icone={PiPlus}
+        onClick={() => setAdding(true)}
+        className="w-full sm:hidden"
+      >
+        Acrescentar obra
+      </Button>
+
       {/* A sheet, not a panel pushed into the page: on a phone the panel
           moved the whole repertoire down and the choice got lost. */}
       <Sheet
