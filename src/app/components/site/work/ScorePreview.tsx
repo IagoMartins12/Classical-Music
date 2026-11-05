@@ -6,6 +6,7 @@ import {
   PiCaretLeft,
   PiCaretRight,
   PiDownloadSimple,
+  PiMusicNotes,
   PiSpinnerGap,
 } from 'react-icons/pi';
 import Image from '@/app/components/SmartImage';
@@ -32,7 +33,12 @@ export interface PreviewTarget {
   file: number;
 }
 
-/** A page with no thumbnail: a typographic sheet in its place. */
+/**
+ * A page with no thumbnail (none stored, or it failed to load): an engraved
+ * sheet of paper in its place — two staves, a note between them and, on the
+ * larger ones, the title — so the gap reads as a score and not as a broken
+ * image.
+ */
 function BlankSheet({
   title,
   pages,
@@ -42,24 +48,37 @@ function BlankSheet({
   pages?: string | null;
   small?: boolean;
 }) {
+  const staff = (
+    <span aria-hidden="true" className="flex w-full flex-col gap-[3px]">
+      {[0, 1, 2, 3, 4].map((l) => (
+        <span key={l} className="h-px bg-sobre-ouro/35" />
+      ))}
+    </span>
+  );
   return (
     <span
       aria-hidden="true"
-      className="absolute inset-0 flex flex-col items-center justify-center gap-2 bg-sobre-foto p-3 text-center text-sobre-ouro"
+      className="absolute inset-0 flex flex-col items-center justify-between bg-sobre-foto px-[14%] py-[12%] text-center text-sobre-ouro"
     >
-      <span className="flex w-3/4 flex-col gap-[3px]">
-        {[0, 1, 2, 3, 4].map((l) => (
-          <span key={l} className="h-px bg-sobre-ouro/30" />
-        ))}
+      {staff}
+      <span className="flex flex-col items-center gap-1.5">
+        <Icon
+          de={PiMusicNotes}
+          tamanho={small ? 'p' : 'm'}
+          className="text-sobre-ouro/55"
+        />
+        {!small && (
+          <span className="line-clamp-2 font-display text-[0.9375rem] leading-tight">
+            {title}
+          </span>
+        )}
       </span>
+      {staff}
       {!small && (
-        <span className="line-clamp-2 font-display text-[0.9375rem] leading-tight">
-          {title}
+        <span className="t-dado text-[0.6875rem] opacity-70">
+          {pages ? `${pages} p.` : 'PDF'}
         </span>
       )}
-      <span className="t-dado text-[0.6875rem] opacity-70">
-        {pages ? `${pages} p.` : 'PDF'}
-      </span>
     </span>
   );
 }
