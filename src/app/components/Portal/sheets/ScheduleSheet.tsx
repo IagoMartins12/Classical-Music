@@ -181,17 +181,24 @@ function ScheduleForm({
       }
       largura="m"
       rodape={
-        <>
+        // Phone: the main action first and full width, then Cancelar, then
+        // the link to the full form (reversed: it comes first in the markup
+        // so it sits at the left of the row from the tablet up).
+        <div className="flex w-full flex-col-reverse gap-2 sm:flex-row sm:items-center sm:justify-end">
           {!original && (
             <Link
               href={fullHref}
               onClick={closeAll}
-              className="mr-auto inline-flex min-h-[var(--alvo)] items-center gap-1.5 text-sm font-medium text-ouro-texto max-sm:w-full max-sm:justify-center"
+              className="inline-flex min-h-[var(--alvo)] items-center justify-center gap-1.5 text-sm font-medium text-ouro-texto sm:mr-auto"
             >
               Criação completa <Icon de={PiArrowRight} tamanho="p" />
             </Link>
           )}
-          <Button variante="fantasma" onClick={onClose}>
+          <Button
+            variante="fantasma"
+            onClick={onClose}
+            className="w-full sm:w-auto"
+          >
             Cancelar
           </Button>
           <Button
@@ -200,10 +207,11 @@ function ScheduleForm({
             carregando={save.isPending}
             disabled={!canSave(check.data, acknowledged) || check.isFetching}
             onClick={() => save.mutate(undefined)}
+            className="w-full sm:w-auto"
           >
             {original ? 'Remarcar' : 'Marcar'}
           </Button>
-        </>
+        </div>
       }
     >
       <div className="flex flex-col gap-6">
