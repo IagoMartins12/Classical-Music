@@ -11,6 +11,7 @@ import { PiArrowLeft, PiCheck } from 'react-icons/pi';
 import { Icon } from '@/app/components/ui/Icon';
 import { cx } from '@/app/components/ui/cx';
 import { errorText } from '@/app/hooks/portal/query';
+import { searchWorks } from '@/app/requests/catalog-search';
 import * as api from '@/app/requests/portal/api';
 import { Avatar, SearchBox } from '../pieces';
 import { useDebounced } from '../useDebounced';
@@ -66,6 +67,46 @@ export function WorkPicker({
     enabled: withScore && Boolean(work),
     staleTime: 5 * 60_000,
   });
+
+  // The first step also searches works directly: a work typed by name (or
+  // catalog number) is found without knowing the composer first.
+  const worksFound = useQuery({
+    queryKey: ['catalog', 'works-search', q],
+    queryFn: () => searchWorks({ q, limit: 8 }),
+    enabled: !composer && q.length >= 2,
+    staleTime: 5 * 60_000,
+  });
+  const pickDirect = (w: {
+    id: string;
+    title: string;
+    opOrCatalog?: string;
+    composer: { id: string; name: string; fullName: string };
+  }) => {
+    const c: api.CatalogComposer = {
+      id: w.composer.id,
+      name: w.composer.name,
+      fullName: w.composer.fullName,
+    };
+    const item: api.CatalogWork = {
+      id: w.id,
+      title: w.title,
+      opOrCatalog: w.opOrCatalog,
+    };
+    if (withScore) {
+      setComposer(c);
+      setWork(item);
+    } else {
+      onPick({
+        work: {
+          id: w.id,
+          title: w.title,
+          composer: { id: c.id, name: composerName(c) },
+        },
+        score: null,
+      });
+    }
+    setTerm('');
+  };
 
   const finish = (w: api.CatalogWork, score: api.CatalogScore | null) => {
     onPick({
@@ -217,40 +258,104 @@ export function WorkPicker({
       </div>
     );
 
-  // Passo 1: o compositor.
+  // Passo 1: a busca — compositor ou obra.
+  const directWorks = worksFound.data?.works ?? [];
+  const composersFound = composers.data ?? [];
   return (
     <div className="flex flex-col gap-3">
-      <SearchBox value={term} onChange={setTerm} label="Compositor" />
-      {q.length > 0 && q.length < 2 ? null : composers.error ? (
+      <SearchBox
+        value={term}
+        onChange={setTerm}
+        label="Buscar compositor ou obra"
+      />
+      {q.length === 0 ? (
+        <p className="t-legenda">
+          Digite o nome de uma obra, ou do compositor para ver as obras dele.
+        </p>
+      ) : q.length < 2 ? null : composers.error ? (
         <p className="text-sm text-erro">{errorText(composers.error)}</p>
       ) : (
-        <ul
-          className="flex max-h-72 flex-col overflow-y-auto rolagem-discreta"
-          aria-busy={composers.isFetching}
+        <div
+          className="flex max-h-80 flex-col gap-4 overflow-y-auto rolagem-discreta"
+          aria-busy={composers.isFetching || worksFound.isFetching}
         >
-          {(composers.data ?? []).map((c) => (
-            <li key={c.id}>
-              <button
-                type="button"
-                onClick={() => (setComposer(c), setTerm(''))}
-                className="flex w-full items-center gap-3 border-b border-linha py-2 text-left hover:text-ouro-texto"
-              >
-                <Avatar name={c.name} image={c.portraitUrl} size="p" />
-                <span className="flex min-w-0 flex-col">
-                  <span className="truncate text-[0.9375rem]">
-                    {composerName(c)}
-                  </span>
-                  <span className="t-legenda">{years(c)}</span>
-                </span>
-              </button>
-            </li>
-          ))}
-          {composers.data && composers.data.length === 0 && (
-            <li className="py-3 text-sm text-texto-suave">
-              Nenhum compositor com esse nome.
-            </li>
+          {composersFound.length > 0 && (
+            <section className="flex flex-col">
+              <h4 className="t-legenda pb-1">Compositores</h4>
+              <ul className="flex flex-col">
+                {composersFound.map((c) => (
+                  <li key={c.id}>
+                    <button
+                      type="button"
+                      onClick={() => (setComposer(c), setTerm(''))}
+                      className="flex w-full items-center gap-3 border-b border-linha py-2 text-left hover:text-ouro-texto"
+                    >
+                      <Avatar name={c.name} image={c.portraitUrl} size="p" />
+                      <span className="flex min-w-0 flex-col">
+                        <span className="truncate text-[0.9375rem]">
+                          {composerName(c)}
+                        </span>
+                        <span className="t-legenda">{years(c)}</span>
+                      </span>
+                    </button>
+                  </li>
+                ))}
+              </ul>
+            </section>
           )}
-        </ul>
+          {directWorks.length > 0 && (
+            <section className="flex flex-col">
+              <h4 className="t-legenda pb-1">Obras</h4>
+              <ul className="flex flex-col">
+                {directWorks.map((w) => {
+                  const picked = selectedIds.includes(w.id);
+                  return (
+                    <li key={w.id}>
+                      <button
+                        type="button"
+                        disabled={picked}
+                        onClick={() => pickDirect(w)}
+                        className={cx(
+                          'flex w-full items-center justify-between gap-3 border-b border-linha py-2.5 text-left',
+                          picked ? 'text-texto-fraco' : 'hover:text-ouro-texto'
+                        )}
+                      >
+                        <span className="flex min-w-0 flex-col">
+                          <span className="truncate text-[0.9375rem]">
+                            {w.title}
+                          </span>
+                          <span className="t-legenda truncate">
+                            {[
+                              w.composer.fullName || w.composer.name,
+                              w.opOrCatalog,
+                            ]
+                              .filter(Boolean)
+                              .join(' · ')}
+                          </span>
+                        </span>
+                        {picked && (
+                          <Icon
+                            de={PiCheck}
+                            tamanho="p"
+                            rotulo="Já escolhida"
+                          />
+                        )}
+                      </button>
+                    </li>
+                  );
+                })}
+              </ul>
+            </section>
+          )}
+          {!composers.isFetching &&
+            !worksFound.isFetching &&
+            composersFound.length === 0 &&
+            directWorks.length === 0 && (
+              <p className="py-3 text-sm text-texto-suave">
+                Nada com esse nome. Tente o sobrenome do compositor.
+              </p>
+            )}
+        </div>
       )}
     </div>
   );

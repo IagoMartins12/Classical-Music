@@ -8,7 +8,12 @@
 
 import Link from 'next/link';
 import { useMemo, useState } from 'react';
-import { PiArrowSquareOut, PiPlus, PiTimer, PiTrash } from 'react-icons/pi';
+import {
+  PiArrowSquareOut,
+  PiMagnifyingGlass,
+  PiTimer,
+  PiTrash,
+} from 'react-icons/pi';
 import { Button } from '@/app/components/ui/Button';
 import { Sheet } from '@/app/components/ui/Sheet';
 import {
@@ -281,11 +286,11 @@ function Repertoire() {
             <PiArrowSquareOut aria-hidden="true" className="h-4 w-4" />
           </Link>
           <Button
-            icone={PiPlus}
+            icone={PiMagnifyingGlass}
             onClick={() => setAdding(true)}
             className="max-sm:hidden"
           >
-            Acrescentar obra
+            Buscar obra
           </Button>
         </span>
       }
@@ -293,11 +298,11 @@ function Repertoire() {
       {/* On a phone the library link takes the title's line and the add
           button gets a line of its own, full width. */}
       <Button
-        icone={PiPlus}
+        icone={PiMagnifyingGlass}
         onClick={() => setAdding(true)}
         className="w-full sm:hidden"
       >
-        Acrescentar obra
+        Buscar obra
       </Button>
 
       {/* A sheet, not a panel pushed into the page: on a phone the panel
@@ -305,11 +310,11 @@ function Repertoire() {
       <Sheet
         aberto={adding}
         aoFechar={() => (setAdding(false), setPicked(null))}
-        titulo="Acrescentar obra"
+        titulo="Buscar obra"
         descricao={
           picked
             ? 'Como ela entra no seu repertório?'
-            : 'Procure o compositor, depois a obra.'
+            : 'Digite a obra, ou o compositor para filtrar as obras dele.'
         }
         largura="p"
         rodape={
