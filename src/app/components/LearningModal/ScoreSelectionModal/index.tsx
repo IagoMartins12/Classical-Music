@@ -143,12 +143,12 @@ const ScoreSelectionModal = ({
       largura="gg"
       rodape={
         <div className="flex w-full flex-wrap items-center gap-3">
-          <span className="t-rotulo min-w-0 flex-1 truncate text-texto-suave">
+          <span className="t-rotulo min-w-0 flex-1 truncate text-texto-suave max-sm:hidden">
             {currentSelectedScore
               ? copy.current(currentSelectedScore.title)
               : copy.noCurrent}
           </span>
-          <div className="ml-auto flex gap-2">
+          <div className="ml-auto flex gap-2 max-sm:w-full max-sm:[&>*]:flex-1">
             <Button variante="fantasma" onClick={onClose}>
               {isEditing ? copy.keep : copy.cancel}
             </Button>
