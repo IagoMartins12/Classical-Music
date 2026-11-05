@@ -10,6 +10,7 @@ import Link from 'next/link';
 import { useMemo, useState } from 'react';
 import { PiPlus, PiTimer, PiTrash } from 'react-icons/pi';
 import { Button } from '@/app/components/ui/Button';
+import { Sheet } from '@/app/components/ui/Sheet';
 import {
   errorText,
   usePortalMutation,
@@ -271,66 +272,72 @@ function Repertoire() {
       title="Repertório"
       help="repertorio"
       action={
-        <span className="flex items-center gap-4">
+        <span className="flex flex-col-reverse items-stretch gap-3 max-sm:w-full sm:flex-row sm:items-center sm:gap-4">
           <Link
             href="/learning"
-            className="text-sm font-medium text-ouro-texto"
+            className="text-center text-sm font-medium text-ouro-texto sm:text-left"
           >
             Abrir a biblioteca
           </Link>
-          {!adding && (
-            <Button icone={PiPlus} onClick={() => setAdding(true)}>
-              Acrescentar obra
-            </Button>
-          )}
+          <Button icone={PiPlus} onClick={() => setAdding(true)}>
+            Acrescentar obra
+          </Button>
         </span>
       }
     >
-      {adding && (
-        <div className="flex flex-col gap-4 rounded-card bg-sup-2 p-5">
-          {picked ? (
-            <div className="flex flex-col gap-4">
-              <WorkCited work={picked.work} />
-              <span className="flex flex-wrap gap-2">
-                <Button
-                  variante="primario"
-                  onClick={() => (
-                    learn(picked.work, 'want-to-learn'),
-                    setPicked(null),
-                    setAdding(false)
-                  )}
-                >
-                  Quero aprender
-                </Button>
-                <Button
-                  onClick={() => (
-                    learn(picked.work, 'learned'),
-                    setPicked(null),
-                    setAdding(false)
-                  )}
-                >
-                  Já aprendi
-                </Button>
-                <Button variante="fantasma" onClick={() => setPicked(null)}>
-                  Outra obra
-                </Button>
-              </span>
+      {/* A sheet, not a panel pushed into the page: on a phone the panel
+          moved the whole repertoire down and the choice got lost. */}
+      <Sheet
+        aberto={adding}
+        aoFechar={() => (setAdding(false), setPicked(null))}
+        titulo="Acrescentar obra"
+        descricao={
+          picked
+            ? 'Como ela entra no seu repertório?'
+            : 'Procure o compositor, depois a obra.'
+        }
+        largura="p"
+        rodape={
+          picked ? (
+            <div className="flex w-full flex-col gap-2">
+              <Button
+                variante="primario"
+                className="w-full"
+                onClick={() => (
+                  learn(picked.work, 'want-to-learn'),
+                  setPicked(null),
+                  setAdding(false)
+                )}
+              >
+                Quero aprender
+              </Button>
+              <Button
+                className="w-full"
+                onClick={() => (
+                  learn(picked.work, 'learned'),
+                  setPicked(null),
+                  setAdding(false)
+                )}
+              >
+                Já aprendi
+              </Button>
+              <Button
+                variante="fantasma"
+                className="w-full"
+                onClick={() => setPicked(null)}
+              >
+                Escolher outra obra
+              </Button>
             </div>
-          ) : (
-            <>
-              <span className="flex items-center justify-between">
-                <span className="t-rotulo font-medium text-texto">
-                  Procure o compositor, depois a obra
-                </span>
-                <Button variante="texto" onClick={() => setAdding(false)}>
-                  Fechar
-                </Button>
-              </span>
-              <WorkPicker onPick={setPicked} selectedIds={known} />
-            </>
-          )}
-        </div>
-      )}
+          ) : undefined
+        }
+      >
+        {picked ? (
+          <WorkCited work={picked.work} />
+        ) : (
+          <WorkPicker onPick={setPicked} selectedIds={known} />
+        )}
+      </Sheet>
 
       <div className="grid gap-12 lg:grid-cols-3">
         <Column
