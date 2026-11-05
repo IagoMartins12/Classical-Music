@@ -8,12 +8,19 @@
 
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useEffect, useMemo, useState, type ReactNode } from 'react';
-import { PiCalendarPlus, PiCheck, PiTrash, PiWarning } from 'react-icons/pi';
+import {
+  PiCalendarPlus,
+  PiCheck,
+  PiMagnifyingGlass,
+  PiTrash,
+  PiWarning,
+} from 'react-icons/pi';
 import { Chip } from '@/app/components/ui/Badge';
 import { Button } from '@/app/components/ui/Button';
 import { CampoDeFichas } from '@/app/components/ui/CampoDeFichas';
 import { Field } from '@/app/components/ui/Field';
 import { Icon } from '@/app/components/ui/Icon';
+import { Sheet } from '@/app/components/ui/Sheet';
 import { cx } from '@/app/components/ui/cx';
 import {
   useAvailability,
@@ -277,6 +284,7 @@ function Form({
     }
   );
 
+  const [searching, setSearching] = useState(false);
   const pickWork = (p: PickedWork) =>
     setWorks((list) =>
       list.some((w) => w.work.id === p.work.id) ? list : [...list, p]
@@ -645,15 +653,31 @@ function Form({
               picked={works.map((w) => w.work.id)}
               onPick={pickWork}
             />
-            <WorkPicker
-              onPick={pickWork}
-              onPickComposer={(c) =>
-                setComposers((l) =>
-                  l.some((x) => x.id === c.id) ? l : [...l, c]
-                )
-              }
-              selectedIds={works.map((w) => w.work.id)}
-            />
+            <Button
+              icone={PiMagnifyingGlass}
+              onClick={() => setSearching(true)}
+              className="w-full sm:w-fit"
+            >
+              Buscar obra
+            </Button>
+            <Sheet
+              aberto={searching}
+              aoFechar={() => setSearching(false)}
+              titulo="Buscar obra"
+              descricao="Digite a obra, ou o compositor para filtrar as obras dele."
+              largura="p"
+            >
+              <WorkPicker
+                onPick={(p) => (pickWork(p), setSearching(false))}
+                onPickComposer={(c) => {
+                  setComposers((l) =>
+                    l.some((x) => x.id === c.id) ? l : [...l, c]
+                  );
+                  setSearching(false);
+                }}
+                selectedIds={works.map((w) => w.work.id)}
+              />
+            </Sheet>
             {composers.length > 0 && (
               <div className="flex flex-wrap items-center gap-2">
                 <span className="t-legenda">Compositores da aula</span>
