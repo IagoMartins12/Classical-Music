@@ -730,8 +730,10 @@ export function Rating({
   return (
     <fieldset className="flex flex-col gap-2">
       <legend className="t-rotulo mb-2 font-medium text-texto">{label}</legend>
-      <div className="flex w-fit flex-col gap-1">
-        <div className="flex gap-1">
+      {/* Phone: the five points spread over the whole width, the ends under
+          the first and the last (narrow, they sat in a corner). */}
+      <div className="flex w-fit flex-col gap-1 max-sm:w-full">
+        <div className="flex gap-1 max-sm:justify-between">
           {[1, 2, 3, 4, 5].map((n) => (
             <button
               key={n}
