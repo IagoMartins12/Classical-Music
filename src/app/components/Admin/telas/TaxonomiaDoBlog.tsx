@@ -168,7 +168,7 @@ function Categorias() {
       >
         {(c) => (
           <>
-            <span className="flex min-w-0 flex-1 flex-col">
+            <span className="flex min-w-[10rem] flex-1 flex-col">
               <span className="flex flex-wrap items-center gap-2">
                 <span className="text-[0.9375rem] font-medium text-texto">
                   {c.name}
@@ -183,10 +183,10 @@ function Categorias() {
                   : ''}
               </span>
             </span>
-            <span className="t-dado w-20 text-right text-sm text-texto-suave">
+            <span className="t-dado whitespace-nowrap text-right text-sm text-texto-suave sm:w-20">
               {numero(contagem(c))} artigos
             </span>
-            <span className="flex gap-1">
+            <span className="ml-auto flex gap-1">
               <Button
                 tamanho="p"
                 variante="fantasma"
@@ -574,7 +574,7 @@ function InicioDoBlog() {
                 ).then(() => setAcrescentar(''))
               }
             >
-              Acrescentar ao início
+              Acrescentar
             </Button>
           </div>
         )}

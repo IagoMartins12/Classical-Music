@@ -189,7 +189,7 @@ export default function RequestLessonSheet({
                 Horários livres de {name}
               </legend>
               {rules && (
-                <p className="t-legenda -mt-2">
+                <p className="t-legenda">
                   {name} aceita pedidos com {rules.leadHours} h de antecedência
                   e até {rules.horizonDays} dias à frente. Os horários que
                   chocam com suas outras aulas não aparecem.

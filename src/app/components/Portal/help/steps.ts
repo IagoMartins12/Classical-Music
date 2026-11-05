@@ -291,11 +291,6 @@ const STUDENT: Partial<Record<HelpScreen, Step[]>> = {
   ],
   calendar: [
     {
-      target: 'livres',
-      title: 'Horários livres',
-      text: 'Os horários livres do seu professor. Toque em um para pedir aula.',
-    },
-    {
       target: 'grade',
       title: 'Sua agenda',
       text: 'As aulas com todos os seus professores juntas.',

@@ -43,7 +43,9 @@ export function Badge({
     <span
       className={cx(
         // 13px, o degrau de legenda: nada no sistema fica abaixo disso.
-        'inline-flex items-center gap-1.5 rounded-controle border px-2.5 py-1 text-[0.8125rem] font-medium',
+        // Um selo não quebra nem encolhe: ao lado de um título longo, "Só
+        // seu" virava "Só / seu" numa caixa estreita.
+        'inline-flex shrink-0 items-center gap-1.5 whitespace-nowrap rounded-controle border px-2.5 py-1 text-[0.8125rem] font-medium',
         ESTADO[estado],
         className
       )}

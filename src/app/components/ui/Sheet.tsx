@@ -271,7 +271,12 @@ export function Sheet({
             em qualquer ponto em vez de alargar a folha. */}
         <div
           className={cx(
-            'classical-scrollbar min-w-0 flex-1 overflow-y-auto overflow-x-hidden px-6 py-5 [overflow-wrap:anywhere] max-sm:px-4',
+            // `relative`: the scroller is the containing block of what sits
+            // absolute inside it — the `sr-only` inputs of checkboxes and file
+            // fields. Without it they were placed against the dialog itself,
+            // far below its edge, and focusing one scrolled the whole dialog
+            // (overflow hidden, still scrollable): the sheet went blank.
+            'classical-scrollbar relative min-w-0 flex-1 overflow-y-auto overflow-x-hidden px-6 py-5 [overflow-wrap:anywhere] max-sm:px-4',
             !!emblema && 'max-sm:flex-none max-sm:overflow-visible'
           )}
         >

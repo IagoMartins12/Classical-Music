@@ -97,6 +97,10 @@ export const useWorkScores = (
 
   // 🔥 USAR REFS PARA CONTROLE DE CHAMADAS E EVITAR LOOPS
   const loadingRef = useRef(false);
+  // `limitPerType` pages by rounds (the API slices each category by
+  // `round * limitPerType`): the next round is asked by its number, not by how
+  // many scores came so far — that sum skipped rounds.
+  const roundRef = useRef(1);
   const lastWorkIdRef = useRef<string>('');
   const hasInitializedRef = useRef(false);
   const autoRefetchIntervalRef = useRef<NodeJS.Timeout | null>(null);
@@ -137,7 +141,11 @@ export const useWorkScores = (
       setError(null);
 
       try {
-        const currentOffset = resetOffset ? 0 : offset;
+        const currentOffset = resetOffset
+          ? 0
+          : stableOptions.limitPerType
+            ? roundRef.current * stableOptions.limitPerType
+            : offset;
         const params = new URLSearchParams({
           workId: stableOptions.workId,
           offset: currentOffset.toString(),
@@ -169,6 +177,7 @@ export const useWorkScores = (
         if (result.success) {
           const newWorkScores = result.workScores || [];
 
+          roundRef.current = resetOffset ? 1 : roundRef.current + 1;
           if (resetOffset) {
             setWorkScores(newWorkScores);
             setOffset(newWorkScores.length);

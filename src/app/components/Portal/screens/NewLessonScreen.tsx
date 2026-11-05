@@ -8,12 +8,19 @@
 
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useEffect, useMemo, useState, type ReactNode } from 'react';
-import { PiCalendarPlus, PiCheck, PiTrash, PiWarning } from 'react-icons/pi';
+import {
+  PiCalendarPlus,
+  PiCheck,
+  PiMagnifyingGlass,
+  PiTrash,
+  PiWarning,
+} from 'react-icons/pi';
 import { Chip } from '@/app/components/ui/Badge';
 import { Button } from '@/app/components/ui/Button';
 import { CampoDeFichas } from '@/app/components/ui/CampoDeFichas';
 import { Field } from '@/app/components/ui/Field';
 import { Icon } from '@/app/components/ui/Icon';
+import { Sheet } from '@/app/components/ui/Sheet';
 import { cx } from '@/app/components/ui/cx';
 import {
   useAvailability,
@@ -277,6 +284,7 @@ function Form({
     }
   );
 
+  const [searching, setSearching] = useState(false);
   const pickWork = (p: PickedWork) =>
     setWorks((list) =>
       list.some((w) => w.work.id === p.work.id) ? list : [...list, p]
@@ -645,15 +653,31 @@ function Form({
               picked={works.map((w) => w.work.id)}
               onPick={pickWork}
             />
-            <WorkPicker
-              onPick={pickWork}
-              onPickComposer={(c) =>
-                setComposers((l) =>
-                  l.some((x) => x.id === c.id) ? l : [...l, c]
-                )
-              }
-              selectedIds={works.map((w) => w.work.id)}
-            />
+            <Button
+              icone={PiMagnifyingGlass}
+              onClick={() => setSearching(true)}
+              className="w-full sm:w-fit"
+            >
+              Buscar obra
+            </Button>
+            <Sheet
+              aberto={searching}
+              aoFechar={() => setSearching(false)}
+              titulo="Buscar obra"
+              descricao="Digite a obra, ou o compositor para filtrar as obras dele."
+              largura="p"
+            >
+              <WorkPicker
+                onPick={(p) => (pickWork(p), setSearching(false))}
+                onPickComposer={(c) => {
+                  setComposers((l) =>
+                    l.some((x) => x.id === c.id) ? l : [...l, c]
+                  );
+                  setSearching(false);
+                }}
+                selectedIds={works.map((w) => w.work.id)}
+              />
+            </Sheet>
             {composers.length > 0 && (
               <div className="flex flex-wrap items-center gap-2">
                 <span className="t-legenda">Compositores da aula</span>
@@ -1059,17 +1083,32 @@ function DayDrawing({
 
   return (
     <figure className="flex flex-col gap-2">
-      <figcaption className="t-legenda first-letter:uppercase">
-        {longDate(day)} · {lessons.length} aula{lessons.length === 1 ? '' : 's'}{' '}
-        sua{lessons.length === 1 ? '' : 's'}
-        {hasSchedule && !windows.length ? ' · você não atende neste dia' : ''}
+      <figcaption className="flex flex-col gap-0.5">
+        <span className="t-rotulo font-medium text-texto first-letter:uppercase">
+          {longDate(day)}
+        </span>
+        <span className="t-legenda">
+          {lessons.length === 0
+            ? 'Nenhuma aula sua neste dia'
+            : `${lessons.length} ${lessons.length === 1 ? 'aula sua' : 'aulas suas'} neste dia`}
+          {hasSchedule && !windows.length ? ' · você não atende neste dia' : ''}
+        </span>
       </figcaption>
       <div
         className={cx(
-          'relative h-20 overflow-hidden rounded-controle',
+          'relative h-24 overflow-hidden rounded-controle sm:h-20',
           hasSchedule ? 'portal-hachura' : 'bg-sup-2'
         )}
       >
+        {/* A faint line at each hour of the axis below. */}
+        {[9, 12, 15, 18, 21].map((h) => (
+          <span
+            key={h}
+            aria-hidden="true"
+            className="absolute inset-y-0 z-[1] w-px bg-[var(--linha)]"
+            style={{ left: `${x(h * 60)}%` }}
+          />
+        ))}
         {windows.map((w) => {
           const a =
             Number(w.startTime.slice(0, 2)) * 60 + Number(w.startTime.slice(3));
@@ -1091,7 +1130,7 @@ function DayDrawing({
             <span
               key={e.id}
               title={`${clock(e.start)} ${e.counterpart.name}`}
-              className="absolute top-2 flex h-7 items-center overflow-hidden rounded-[6px] bg-sup-2 px-1.5 text-[0.6875rem] text-texto-suave ring-1 ring-linha-forte"
+              className="absolute top-2 z-[2] flex h-7 items-center overflow-hidden rounded-[6px] bg-sup-2 px-1.5 text-[0.6875rem] text-texto-suave ring-1 ring-linha-forte"
               style={{ left: `${x(a)}%`, width: `${x(a + len) - x(a)}%` }}
             >
               <span className="truncate">{firstName(e.counterpart.name)}</span>
@@ -1100,7 +1139,7 @@ function DayDrawing({
         })}
         <span
           className={cx(
-            'absolute bottom-2 flex h-7 items-center overflow-hidden rounded-[6px] px-1.5 text-[0.6875rem] font-medium transition-[left,width] duration-[var(--t-entrada)] ease-saida',
+            'absolute bottom-2 z-[2] flex h-7 items-center overflow-hidden rounded-[6px] px-1.5 text-[0.6875rem] font-medium transition-[left,width] duration-[var(--t-entrada)] ease-saida',
             conflict
               ? 'border border-dashed border-atencao bg-fundo text-atencao'
               : 'fill-ouro text-sobre-ouro'
@@ -1117,13 +1156,47 @@ function DayDrawing({
         {[9, 12, 15, 18, 21].map((h) => (
           <span
             key={h}
-            className="t-dado absolute -translate-x-1/2 text-[0.6875rem] text-texto-fraco"
+            className={cx(
+              't-dado absolute text-[0.6875rem] text-texto-fraco',
+              // The last label sits on the edge: centered it was cut off.
+              h === 21 ? '-translate-x-full' : '-translate-x-1/2'
+            )}
             style={{ left: `${x(h * 60)}%` }}
           >
             {h}h
           </span>
         ))}
       </div>
+      {/* What the strip shows, in words: the new lesson's hours (the block is
+          too small to carry them on a phone) and what the hatching means. */}
+      <p className="flex flex-wrap items-center gap-x-4 gap-y-1 t-legenda">
+        <span className="inline-flex items-center gap-1.5">
+          <span
+            aria-hidden="true"
+            className={cx(
+              'h-2.5 w-2.5 rounded-[3px]',
+              conflict ? 'border border-dashed border-atencao' : 'fill-ouro'
+            )}
+          />
+          <span className="t-dado text-texto">
+            Nova · {hhmm(begin)} – {hhmm(begin + minutes)}
+          </span>
+        </span>
+        {hasSchedule && (
+          <span className="inline-flex items-center gap-1.5">
+            <span
+              aria-hidden="true"
+              className="portal-hachura h-2.5 w-2.5 rounded-[3px]"
+            />
+            Fora do seu atendimento
+          </span>
+        )}
+      </p>
     </figure>
   );
 }
+
+const hhmm = (minutes: number) => {
+  const m = ((minutes % 1440) + 1440) % 1440;
+  return `${String(Math.floor(m / 60)).padStart(2, '0')}:${String(m % 60).padStart(2, '0')}`;
+};

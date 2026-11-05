@@ -117,7 +117,7 @@ export function ListaReordenavel<T>({
               transform: `translateY(${arrastada ? arrasto.dy : deslocamento(i)}px)`,
             }}
             className={cx(
-              'relative flex flex-wrap items-center gap-3 border-t border-linha px-4 py-3 first:border-0',
+              'relative flex items-center gap-3 border-t border-linha px-4 py-3 first:border-0',
               arrastada
                 ? 'z-10 rounded-controle bg-sup-2 shadow-[var(--sombra-2)]'
                 : 'transition-transform duration-[var(--t-resposta)] ease-saida motion-reduce:transition-none'
@@ -135,7 +135,7 @@ export function ListaReordenavel<T>({
             >
               <Icon de={PiDotsSixVertical} />
             </button>
-            <span className="flex flex-col gap-0.5">
+            <span className="flex shrink-0 flex-col gap-0.5">
               <Button
                 tamanho="p"
                 variante="fantasma"
@@ -155,7 +155,12 @@ export function ListaReordenavel<T>({
                 className="!min-h-7"
               />
             </span>
-            {children(item, i)}
+            {/* The rest of the row wraps inside its own area: name first, the
+                count and the buttons drop to the next line when they do not
+                fit, instead of squeezing the name into a column. */}
+            <div className="flex min-w-0 flex-1 flex-wrap items-center gap-x-3 gap-y-1">
+              {children(item, i)}
+            </div>
           </li>
         );
       })}

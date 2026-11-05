@@ -239,6 +239,9 @@ export const ENVIOS: Textos = {
     modal_composer_scraping_success: 'Dados extraídos com sucesso!',
     modal_composer_scraping_quality:
       'Fonte: {source} | Qualidade: {quality} | Completude: {completeness}%',
+    scraping_quality_high: 'alta',
+    scraping_quality_medium: 'média',
+    scraping_quality_low: 'baixa',
     modal_composer_scraping_external_edit:
       'Este compositor foi originalmente criado a partir de uma fonte externa ({source}). Você pode editar os dados diretamente nos campos abaixo.',
     modal_composer_basic_title: 'Informações Básicas',
@@ -1060,6 +1063,9 @@ export const ENVIOS: Textos = {
     modal_composer_scraping_success: 'Data extracted successfully!',
     modal_composer_scraping_quality:
       'Source: {source} | Quality: {quality} | Completeness: {completeness}%',
+    scraping_quality_high: 'high',
+    scraping_quality_medium: 'medium',
+    scraping_quality_low: 'low',
     modal_composer_scraping_external_edit:
       'This composer was originally created from an external source ({source}). You can edit the data directly in the fields below.',
     modal_composer_basic_title: 'Basic Information',

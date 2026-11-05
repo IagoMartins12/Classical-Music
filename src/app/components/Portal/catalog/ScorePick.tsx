@@ -7,9 +7,8 @@
 
 import dynamic from 'next/dynamic';
 import { useState } from 'react';
-import { PiFilePdf } from 'react-icons/pi';
 import { Button } from '@/app/components/ui/Button';
-import { Icon } from '@/app/components/ui/Icon';
+import { ScorePage } from '@/app/components/site/work/ScorePreview';
 
 const ScoreSelectionModal = dynamic(
   () => import('@/app/components/LearningModal/ScoreSelectionModal'),
@@ -51,19 +50,19 @@ export function ScorePick({
     <div className="flex items-center gap-3">
       {score ? (
         <>
-          {score.thumbnailUrl ? (
-            // eslint-disable-next-line @next/next/no-img-element -- miniatura da partitura, de qualquer domínio
-            <img
-              src={score.thumbnailUrl}
-              alt=""
-              loading="lazy"
-              className="h-16 w-12 shrink-0 rounded-[4px] border border-linha object-cover"
+          {/* The same page as the picker's: a skeleton while it loads and a
+              blank sheet when there is no picture or it fails to load. */}
+          <span className="relative block h-16 w-12 shrink-0 overflow-hidden rounded-[4px] border border-linha bg-sobre-foto">
+            <ScorePage
+              file={{
+                title: score.title,
+                thumbnailUrl: score.thumbnailUrl,
+                pageCount: score.pageCount,
+              }}
+              sizes="48px"
+              small
             />
-          ) : (
-            <span className="grid h-16 w-12 shrink-0 place-items-center rounded-[4px] border border-linha text-texto-fraco">
-              <Icon de={PiFilePdf} tamanho="m" />
-            </span>
-          )}
+          </span>
           <span className="flex min-w-0 flex-1 flex-col">
             <span className="truncate text-sm text-texto">{score.title}</span>
             {facts && <span className="t-legenda">{facts}</span>}

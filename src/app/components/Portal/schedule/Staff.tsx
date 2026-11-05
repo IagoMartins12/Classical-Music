@@ -102,12 +102,33 @@ export function Staff({
   }, [days]);
   const y = (minutes: number) => ((minutes - from) / (to - from)) * 100;
 
-  // No telefone, a pauta abre no dia de hoje.
+  // No telefone, a pauta abre no dia de hoje. A posição é medida contra a
+  // própria faixa (o `offsetLeft` contava a partir de outro ancestral), e só
+  // quando ela tem largura: escondida (a aba "Hoje" do painel), a faixa media
+  // zero e nunca mais tentava. Rola uma vez por semana mostrada.
+  const centered = useRef<string | null>(null);
   useEffect(() => {
     const el = scroller.current;
-    if (!el || el.scrollWidth <= el.clientWidth) return;
-    const col = el.querySelector<HTMLElement>(`[data-dia="${todayIso}"]`);
-    if (col) el.scrollLeft = Math.max(0, col.offsetLeft - 56);
+    if (!el) return;
+    const key = days.map((d) => d.day).join();
+    const place = () => {
+      if (centered.current === key) return;
+      if (!el.clientWidth || el.scrollWidth <= el.clientWidth) return;
+      const col = el.querySelector<HTMLElement>(`[data-dia="${todayIso}"]`);
+      if (!col) return;
+      const left =
+        col.getBoundingClientRect().left -
+        el.getBoundingClientRect().left +
+        el.scrollLeft;
+      // A coluna de hoje encosta à esquerda, com a anterior aparecendo um
+      // pouco: dá para ver que há dias antes.
+      el.scrollLeft = Math.max(0, left - 56);
+      centered.current = key;
+    };
+    place();
+    const watch = new ResizeObserver(place);
+    watch.observe(el);
+    return () => watch.disconnect();
   }, [todayIso, days]);
 
   const nowMinute = minuteOfDay(new Date());

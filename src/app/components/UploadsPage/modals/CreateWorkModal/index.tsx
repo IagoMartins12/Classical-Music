@@ -830,7 +830,9 @@ const CreateWorkModal = ({
     try {
       const page = await scrapeWorkPage(cleanedUrl);
 
-      setScrapingResult({ success: true, data: page });
+      // `source` is what the notice shows ("Fonte: IMSLP"); without it the
+      // text printed the raw `{source}` placeholder.
+      setScrapingResult({ success: true, data: page, source: 'IMSLP' });
       await fillFromScrapingResult(page);
       toast.success(t('toast_success'), t('toast_work_scraping_success'));
     } catch (error) {
@@ -1146,7 +1148,9 @@ const CreateWorkModal = ({
               <Aviso tom="ok" titulo={t('modal_work_scraping_success')}>
                 {t('modal_work_scraping_source', {
                   source: scrapingResult.source,
-                  quality: scrapingResult.data.pageQuality,
+                  quality: t(
+                    `scraping_quality_${scrapingResult.data.pageQuality ?? 'medium'}`
+                  ),
                   completeness: scrapingResult.data.dataCompleteness,
                 })}
               </Aviso>
@@ -1189,6 +1193,7 @@ const CreateWorkModal = ({
                 selectedComposer={formData.composerId}
                 onComposerSelect={handleComposerSelect}
                 popularComposers={composers}
+                invalido={!!errors.composerId}
               />
               {errors.composerId && (
                 <span className="t-legenda text-erro">{errors.composerId}</span>

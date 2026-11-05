@@ -262,40 +262,59 @@ export function CalendarScreen({ role }: { role: Role }) {
         />
 
         <div className="flex flex-wrap items-center gap-3">
-          <span data-ajuda="modos">
+          <span data-ajuda="modos" className="max-sm:w-full">
             <Abas rotulo="Ver por">
               {(['week', 'month', 'list'] as Mode[]).map((m) => (
-                <Aba key={m} ativa={mode === m} onClick={() => setMode(m)}>
+                <Aba
+                  key={m}
+                  ativa={mode === m}
+                  onClick={() => setMode(m)}
+                  className="max-sm:flex-1"
+                >
                   {MODE_LABEL[m]}
                 </Aba>
               ))}
             </Abas>
           </span>
-          <span className="flex items-center gap-1">
+          {/* Named by what they move (a week or a month): bare arrows said
+              nothing about the step. */}
+          <span className="grid grid-cols-[1fr_auto_1fr] items-center gap-2 max-sm:w-full sm:flex sm:gap-1">
             <Button
               variante="fantasma"
+              tamanho="p"
               icone={PiCaretLeft}
-              rotulo="Anterior"
               onClick={() => move(-1)}
-            />
-            <Button
-              variante="fantasma"
-              icone={PiCaretRight}
-              rotulo="Seguinte"
-              onClick={() => move(1)}
-            />
+              className="max-sm:justify-start"
+            >
+              {mode === 'month' ? 'Mês anterior' : 'Semana anterior'}
+            </Button>
             <Button
               variante="texto"
               onClick={() => (setAnchor(today()), setPhoneDay(today()))}
             >
               Hoje
             </Button>
+            <Button
+              variante="fantasma"
+              tamanho="p"
+              onClick={() => move(1)}
+              className="max-sm:justify-end"
+            >
+              {mode === 'month' ? 'Próximo mês' : 'Próxima semana'}
+              <Icon de={PiCaretRight} tamanho="pp" />
+            </Button>
           </span>
-          <span data-ajuda="livres" className="sm:ml-auto">
-            <Chip selecionado={showFree} onClick={() => setShowFree((v) => !v)}>
-              {freeLabel}
-            </Chip>
-          </span>
+          {/* Free hours are the teacher's tool: a student has no use for them. */}
+          {role === 'teacher' && (
+            <span data-ajuda="livres" className="sm:ml-auto">
+              <Chip
+                selecionado={showFree}
+                onClick={() => setShowFree((v) => !v)}
+              >
+                {freeLabel}
+              </Chip>
+            </span>
+          )}
         </div>
 
         {calendar.error ? (
@@ -304,10 +323,20 @@ export function CalendarScreen({ role }: { role: Role }) {
           <div
             data-ajuda="grade"
             className={cx(
-              'transition-opacity',
+              'relative transition-opacity',
               calendar.isFetching && !calendar.isPending && 'opacity-70'
             )}
+            aria-busy={calendar.isFetching}
           >
+            {/* Changing the week keeps the old one on screen until the new one
+                arrives: the strip says it is coming, so it does not jump. */}
+            {calendar.isFetching && !calendar.isPending && (
+              <span
+                role="progressbar"
+                aria-label="Carregando os horários"
+                className="progresso-busca"
+              />
+            )}
             {mode === 'week' && (
               <>
                 <div className="max-md:hidden">
@@ -546,7 +575,7 @@ function Month({
   }, [lessons]);
   const weeks = monthWeeks(anchor);
   return (
-    <div className="max-w-3xl">
+    <div>
       <div className="grid grid-cols-7 pb-2 text-center text-xs text-texto-fraco">
         {weeks[0].map((d) => (
           <span key={d}>{dayShort(d)}</span>
@@ -570,7 +599,7 @@ function Month({
               }
               onClick={() => onDay(d)}
               className={cx(
-                'flex aspect-square flex-col items-center justify-center gap-1.5 bg-fundo text-sm transition-colors hover:bg-sup-2 sm:aspect-[4/3]',
+                'flex aspect-square flex-col items-center justify-center gap-1.5 bg-fundo text-sm transition-colors hover:bg-sup-2 sm:aspect-[4/3] lg:aspect-[16/9]',
                 !sameMonth(d, anchor) && 'text-texto-fraco/60',
                 blocked(d) && 'portal-hachura'
               )}
@@ -639,7 +668,11 @@ function ByDay({
     return (
       <Empty
         titulo="Nada nestas duas semanas"
-        descricao="Ande com as setas, ou ligue as horas livres."
+        descricao={
+          role === 'teacher'
+            ? 'Ande pelas semanas, ou ligue as horas livres.'
+            : 'Ande pelas semanas.'
+        }
       />
     );
   return (

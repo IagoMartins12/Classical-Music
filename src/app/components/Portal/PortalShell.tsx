@@ -43,6 +43,7 @@ import {
 } from './navigation';
 import { Avatar, Brand, ProgressBar } from './pieces';
 import { PortalProvider, usePortal } from './PortalProvider';
+import { PlanLapsed } from './PlanLapsed';
 import { PLAN_NAME } from './plans';
 
 const COLLAPSED_KEY = 'portal:lateral-recolhida';
@@ -95,17 +96,20 @@ function Shell({ role, children }: { role: Role; children: ReactNode }) {
   const teacherBoard = useTeacherDashboard(role === 'teacher');
   const studentBoard = useStudentDashboard(role === 'student');
   const board = role === 'teacher' ? teacherBoard.data : studentBoard.data;
+  // Plano de professor vencido sem renovação: o painel fica trancado.
+  const lapsed = role === 'teacher' ? teacherBoard.data?.plan.lapsed : null;
   const welcomed = useRef(false);
   useEffect(() => {
-    if (!board || board.onboardedAt || welcomed.current) return;
+    if (!board || board.onboardedAt || lapsed || welcomed.current) return;
     welcomed.current = true;
     const t = setTimeout(() => open({ type: 'onboarding' }), 500);
     return () => clearTimeout(t);
-  }, [board, open]);
+  }, [board, lapsed, open]);
 
   // A ação do dia mora na barra só nas três telas do dia; nas outras, a ação
   // é da própria tela.
   const daily =
+    !lapsed &&
     screen &&
     (['dashboard', 'calendar', 'lessons'] as ScreenId[]).includes(screen.id);
   const action =
@@ -214,7 +218,7 @@ function Shell({ role, children }: { role: Role; children: ReactNode }) {
             collapsed ? 'max-w-[1680px]' : 'max-w-[1440px]'
           )}
         >
-          {children}
+          {lapsed ? <PlanLapsed lapsed={lapsed} /> : children}
         </main>
       </div>
 

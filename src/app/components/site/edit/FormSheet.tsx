@@ -21,6 +21,9 @@ import { useRouteLanguage } from '@/app/hooks/useRouteLanguage';
  * works). The system `Sheet`, plus what the legacy modal did that the
  * sheet does not: closing with unsaved changes asks first, and nothing
  * closes while a save is running.
+ *
+ * An error is brought into view by `ErroAVista` (root layout), here as on
+ * every other form.
  */
 export function FormSheet({
   aberto,

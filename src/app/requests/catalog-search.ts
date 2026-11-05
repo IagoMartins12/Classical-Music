@@ -49,6 +49,41 @@ export async function findComposers(term: string, limit = 20) {
   return composers.map((composer) => withEpochId(composer));
 }
 
+/**
+ * What a composer field offers before anything is typed: the composers the
+ * person uploaded first, then the curated famous ones (`/composers/famous`:
+ * Beethoven, Mozart, Bach…), never repeated. Without a session, only the
+ * famous. Before this, the "popular" list was the catalog's first 20 in A–Z
+ * order (Aadler, Aarons, Abadie).
+ */
+export async function composerSuggestions(): Promise<{
+  mine: ReturnType<typeof withEpochId<ComposerListItem>>[];
+  famous: ReturnType<typeof withEpochId<ComposerListItem>>[];
+}> {
+  const [famous, mine] = await Promise.all([
+    apiFetch<ComposerListItem[]>('/composers/famous').catch(
+      () => [] as ComposerListItem[]
+    ),
+    apiFetch<{ items: Array<{ id: string; title: string }> }>('/uploads/mine', {
+      query: { type: 'composer', limit: 20 },
+      cache: 'no-store',
+    })
+      .then((r) => r.items)
+      .catch(() => [] as Array<{ id: string; title: string }>),
+  ]);
+  const own = new Set(mine.map((c) => c.id));
+  return {
+    mine: mine.map((c) =>
+      withEpochId({
+        id: c.id,
+        name: c.title,
+        fullName: c.title,
+      } as ComposerListItem)
+    ),
+    famous: famous.filter((c) => !own.has(c.id)).map((c) => withEpochId(c)),
+  };
+}
+
 export async function findComposerById(id: string) {
   try {
     return withEpochId(await apiFetch<ComposerDetail>(`/composers/${id}`));

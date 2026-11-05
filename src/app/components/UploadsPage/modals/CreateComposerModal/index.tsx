@@ -703,7 +703,13 @@ const CreateComposerModal = ({
     try {
       const page = await scrapeComposerPage(urlToScrape, dataSource);
 
-      setScrapingResult({ success: true, data: page });
+      // `source` is what the notice shows ("Fonte: IMSLP"); without it the
+      // text printed the raw `{source}` placeholder.
+      setScrapingResult({
+        success: true,
+        data: page,
+        source: dataSource === 'wikipedia' ? 'Wikipédia' : 'IMSLP',
+      });
       fillFromScrapingResult(page);
       toast.success(
         t('toast_composer_data_extracted'),
@@ -952,7 +958,9 @@ const CreateComposerModal = ({
                 <Aviso tom="ok" titulo={t('modal_composer_scraping_success')}>
                   {t('modal_composer_scraping_quality', {
                     source: scrapingResult.source,
-                    quality: scrapingResult.data.pageQuality,
+                    quality: t(
+                      `scraping_quality_${scrapingResult.data.pageQuality ?? 'medium'}`
+                    ),
                     completeness: scrapingResult.data.dataCompleteness,
                   })}
                 </Aviso>

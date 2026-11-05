@@ -149,7 +149,7 @@ export function PageHeader({
   className?: string;
 }) {
   return (
-    <header className={cx('flex flex-col gap-5 pb-10 sm:pb-12', className)}>
+    <header className={cx('flex flex-col gap-5 pb-6 sm:pb-12', className)}>
       {back && (
         <Link
           href={back.href}
@@ -178,7 +178,8 @@ export function PageHeader({
         {actions && (
           <div
             data-ajuda="acao"
-            className="entra flex flex-wrap gap-2"
+            // Phone: the actions split the full width, like the tabs below.
+            className="entra flex flex-wrap gap-2 max-sm:w-full max-sm:[&>*]:flex-1"
             style={{ '--i': 2 } as CSSProperties}
           >
             {actions}
@@ -729,8 +730,10 @@ export function Rating({
   return (
     <fieldset className="flex flex-col gap-2">
       <legend className="t-rotulo mb-2 font-medium text-texto">{label}</legend>
-      <div className="flex w-fit flex-col gap-1">
-        <div className="flex gap-1">
+      {/* Phone: the five points spread over the whole width, the ends under
+          the first and the last (narrow, they sat in a corner). */}
+      <div className="flex w-fit flex-col gap-1 max-sm:w-full">
+        <div className="flex gap-1 max-sm:justify-between">
           {[1, 2, 3, 4, 5].map((n) => (
             <button
               key={n}

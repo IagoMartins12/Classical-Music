@@ -126,6 +126,7 @@ export default async function EditComposerPage({
       composer={composer.data as ApiSchema<'ComposerUploadResponseDto'>}
       epochs={formData.epochs}
       roles={formData.roles}
+      instruments={formData.instruments}
     />
   );
 }

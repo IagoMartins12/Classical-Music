@@ -11,6 +11,7 @@
 import { apiFetch } from '@/app/libs/api/client';
 import type { ApiSchema } from '@/app/libs/api/types';
 import { scoreSource } from '@/app/conteudo/site/scoreSources';
+import { workTag } from './work-tag';
 
 export type ScoreFile = ApiSchema<'WorkScoreItemDto'>;
 export type ImslpStatus = ApiSchema<'ImslpScoresStatusDto'>['status'];
@@ -163,7 +164,9 @@ export async function getWorkScoreLibrary(
 ): Promise<ScoreLibrary> {
   try {
     return organizeScores(
-      await list(workId, { next: { revalidate: 300, tags: ['works'] } })
+      await list(workId, {
+        next: { revalidate: 300, tags: ['works', workTag(workId)] },
+      })
     );
   } catch {
     return { status: 'error', shelves: [] };
@@ -209,4 +212,49 @@ export const searchScoresAgain = (workId: string) =>
   apiFetch<{ status: ImslpStatus }>(
     `/works/${encodeURIComponent(workId)}/scores/search-again`,
     { method: 'POST' }
+  );
+
+/**
+ * "Atualizar do IMSLP", open to every visitor: reads the work's IMSLP page
+ * now, past the queue and the "already read today" mark, writes what is
+ * missing and clears this work's cache (`POST /works/:id/scores/refresh`).
+ * Then the list, fresh.
+ */
+export async function refreshFromImslp(workId: string): Promise<{
+  created: number;
+  updated: number;
+  library: ScoreLibrary;
+}> {
+  const { created, updated } = await apiFetch<{
+    created: number;
+    updated: number;
+    total: number;
+  }>(`/works/${encodeURIComponent(workId)}/scores/refresh`, {
+    method: 'POST',
+  });
+  const library = organizeScores(await list(workId, { cache: 'no-store' }));
+  return { created, updated, library };
+}
+
+/** What the IMSLP reading would do to a work, without doing it (admin). */
+export interface ImslpScoresPreview {
+  permlink: string;
+  /** IMSLP scores the work has today. */
+  stored: number;
+  /** Files read on the page now. */
+  onPage: number;
+  pageTotals: Record<string, number>;
+  toCreate: { title: string; type: string; publisher: string | null }[];
+  toUpdate: { title: string; type: string; changed: string[] }[];
+  unchanged: number;
+  /** Kept here but no longer listed by the page (never deleted). */
+  notOnPage: number;
+  status: 'found' | 'none' | 'failed' | null;
+}
+
+/** `GET /works/:id/scores/imslp-preview`: reads the page, writes nothing. */
+export const previewImslpScores = (workId: string, signal?: AbortSignal) =>
+  apiFetch<ImslpScoresPreview>(
+    `/works/${encodeURIComponent(workId)}/scores/imslp-preview`,
+    { signal }
   );

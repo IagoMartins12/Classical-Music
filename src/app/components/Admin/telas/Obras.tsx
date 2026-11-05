@@ -106,6 +106,7 @@ export default function Obras() {
   const [minPartituras, setMinPartituras] = useState('');
   const [video, setVideo] = useState('');
   const [origem, setOrigem] = useState('');
+  const [leituraImslp, setLeituraImslp] = useState('');
   const [desde, setDesde] = useState('');
   const [ate, setAte] = useState('');
   // Preenchimento do cadastro: o quadro de Qualidade chega aqui já filtrado.
@@ -153,6 +154,7 @@ export default function Obras() {
     minPartituras,
     video,
     origem,
+    leituraImslp,
     desde,
     ate,
   ];
@@ -174,6 +176,7 @@ export default function Obras() {
       setMinPartituras,
       setVideo,
       setOrigem,
+      setLeituraImslp,
       setDesde,
       setAte,
     ].forEach((f) => f(''));
@@ -205,6 +208,7 @@ export default function Obras() {
     maxLearned: numeroOuNada(maxAprenderam),
     minScores: numeroOuNada(minPartituras),
     hasVideo: simNao(video),
+    imslpScores: (leituraImslp || undefined) as FiltrosObras['imslpScores'],
     hasTone: simNao(tom),
     hasYear: simNao(ano),
     hasInstrumentation: simNao(instrumentacao),
@@ -521,6 +525,18 @@ export default function Obras() {
             opcoes={[
               { value: 'sim', label: 'Com vídeo' },
               { value: 'nao', label: 'Sem vídeo' },
+            ]}
+          />
+          <FiltroSelecao
+            rotulo="Leitura das partituras no IMSLP"
+            valor={leituraImslp}
+            aoMudar={setLeituraImslp}
+            todos="Qualquer"
+            opcoes={[
+              { value: 'failed', label: 'Com erro na leitura' },
+              { value: 'none', label: 'Lida, sem nada no IMSLP' },
+              { value: 'found', label: 'Lida, com partituras' },
+              { value: 'never', label: 'Nunca lida' },
             ]}
           />
           <FiltroSelecao

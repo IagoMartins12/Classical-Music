@@ -182,6 +182,16 @@ export interface TeacherDashboard {
     name: 'FREE' | 'PLUS' | 'MENTOR' | 'MAESTRO';
     maxStudents: number | null;
     activeStudents: number;
+    /**
+     * O plano de professor (ou o teste dele) que venceu sem renovação, sem
+     * outro valendo: o portal tranca o painel. `null` em todo outro caso —
+     * inclusive quem nunca assinou.
+     */
+    lapsed?: {
+      plan: 'PLUS' | 'MENTOR' | 'MAESTRO';
+      endedAt: string;
+      trial: boolean;
+    } | null;
   };
 }
 

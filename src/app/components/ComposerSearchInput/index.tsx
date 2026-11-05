@@ -5,8 +5,13 @@ import { FILTRO_COMPOSITOR } from '@/app/conteudo/textos/filtroCompositor';
 import { useTextos } from '@/app/hooks/useTextos';
 import { useState, useEffect, useRef, useCallback } from 'react';
 import { PiMagnifyingGlass, PiTrendUp, PiUser, PiX } from 'react-icons/pi';
-import { findComposerById, findComposers } from '@/app/requests/catalog-search';
+import {
+  composerSuggestions,
+  findComposerById,
+  findComposers,
+} from '@/app/requests/catalog-search';
 import { Inline } from '@/app/components/ui/Layout';
+import { ListaFlutuante } from '@/app/components/ui/ListaFlutuante';
 import { Text } from '@/app/components/ui/Text';
 import { NomeAcao } from '@/app/components/ui/NomeAcao';
 
@@ -24,6 +29,8 @@ interface ComposerSearchInputProps {
   onComposerSelect: (composerId: string) => void;
   popularComposers?: Composer[];
   isDisabled?: boolean;
+  /** A required field left empty: the system's error border. */
+  invalido?: boolean;
 }
 
 export default function ComposerSearchInput({
@@ -32,17 +39,28 @@ export default function ComposerSearchInput({
   onComposerSelect,
   popularComposers = [],
   isDisabled = false,
+  invalido = false,
 }: ComposerSearchInputProps) {
   const { t } = useTextos(FILTRO_COMPOSITOR);
 
   const [isOpen, setIsOpen] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
-  const [composers, setComposers] = useState<Composer[]>(popularComposers);
+  // Typed: the search results. Nothing typed: the suggestions below.
+  const [composers, setComposers] = useState<Composer[]>([]);
+  // The person's own composers first, then the famous ones — loaded once,
+  // on the first open. `popularComposers` only resolves the chosen name.
+  const [suggestions, setSuggestions] = useState<{
+    mine: Composer[];
+    famous: Composer[];
+  } | null>(null);
+  const [loadingSuggestions, setLoadingSuggestions] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [selectedComposerName, setSelectedComposerName] = useState('');
 
   const inputRef = useRef<HTMLInputElement>(null);
   const dropdownRef = useRef<HTMLDivElement>(null);
+  // The field the result list floats under (`ListaFlutuante`).
+  const ancoraRef = useRef<HTMLDivElement>(null);
   const debounceRef = useRef<NodeJS.Timeout>(null);
 
   // Função para buscar dados do compositor por ID
@@ -109,37 +127,34 @@ export default function ComposerSearchInput({
   }, [selectedComposer, popularComposers, composers, fetchComposerById]);
 
   // Busca de compositores com debounce usando POST
-  const searchComposersDebounced = useCallback(
-    async (term: string) => {
-      if (debounceRef.current) {
-        clearTimeout(debounceRef.current);
-      }
+  const searchComposersDebounced = useCallback(async (term: string) => {
+    if (debounceRef.current) {
+      clearTimeout(debounceRef.current);
+    }
 
-      debounceRef.current = setTimeout(async () => {
-        setIsLoading(true);
-        try {
-          const results = await findComposers(term, 20);
-          setComposers(results);
-        } catch (error) {
-          console.error('❌ Erro ao buscar compositores:', error);
-          setComposers(popularComposers || []); // Fallback para compositores populares
-        } finally {
-          setIsLoading(false);
-        }
-      }, 300);
-    },
-    [popularComposers]
-  );
+    debounceRef.current = setTimeout(async () => {
+      setIsLoading(true);
+      try {
+        const results = await findComposers(term, 20);
+        setComposers(results);
+      } catch (error) {
+        console.error('❌ Erro ao buscar compositores:', error);
+        setComposers([]);
+      } finally {
+        setIsLoading(false);
+      }
+    }, 300);
+  }, []);
 
   // Effect para busca
   useEffect(() => {
     if (searchTerm.trim()) {
       searchComposersDebounced(searchTerm);
     } else {
-      setComposers(popularComposers || []);
+      setComposers([]);
       setIsLoading(false);
     }
-  }, [searchTerm, searchComposersDebounced, popularComposers]);
+  }, [searchTerm, searchComposersDebounced]);
 
   // Fechar dropdown ao clicar fora
   useEffect(() => {
@@ -172,17 +187,15 @@ export default function ComposerSearchInput({
 
   const handleInputFocus = async () => {
     setIsOpen(true);
-    if (!searchTerm && (!composers || composers.length === 0)) {
-      // Carregar compositores populares se não tiver dados
-      setIsLoading(true);
-      try {
-        const results = await findComposers('', 20);
-        setComposers(results);
-      } catch (error) {
-        console.error('❌ Erro ao carregar compositores populares:', error);
-      } finally {
-        setIsLoading(false);
-      }
+    if (suggestions || loadingSuggestions) return;
+    setLoadingSuggestions(true);
+    try {
+      setSuggestions(await composerSuggestions());
+    } catch (error) {
+      console.error('❌ Erro ao carregar as sugestões de compositor:', error);
+      setSuggestions({ mine: [], famous: [] });
+    } finally {
+      setLoadingSuggestions(false);
     }
   };
 
@@ -209,13 +222,26 @@ export default function ComposerSearchInput({
     }
   };
 
-  const displayComposers = composers;
-  const showPopularLabel =
-    !searchTerm && popularComposers && popularComposers.length > 0;
+  const searching = searchTerm.trim().length > 0;
+  // Nothing typed: two labelled groups; typed: the results alone.
+  const sections: { label: string | null; items: Composer[] }[] = searching
+    ? [{ label: null, items: composers }]
+    : [
+        {
+          label: t('composer_search_jsx_mine_label'),
+          items: suggestions?.mine ?? [],
+        },
+        {
+          label: t('composer_search_jsx_popular_label'),
+          items: suggestions?.famous ?? [],
+        },
+      ].filter((section) => section.items.length > 0);
+  const displayComposers = sections.flatMap((section) => section.items);
+  const loading = searching ? isLoading : loadingSuggestions;
 
   return (
     <div className={`relative ${isOpen ? 'z-menu' : 'z-elevado'}`}>
-      <div className="relative">
+      <div ref={ancoraRef} className="relative">
         <PiUser className="absolute left-4 top-1/2 transform -translate-y-1/2 w-4 h-4 text-texto-fraco z-10" />
 
         <input
@@ -232,10 +258,12 @@ export default function ComposerSearchInput({
             isDisabled ? 'cursor-not-allowed opacity-50' : ''
           } ${selectedComposer ? 'text-texto font-medium' : ''}`}
           disabled={isDisabled}
+          aria-invalid={invalido || undefined}
         />
 
         {(selectedComposer || searchTerm) && (
           <button
+            type="button"
             onClick={handleClear}
             className="absolute right-4 top-1/2 transform -translate-y-1/2 text-texto-fraco transition-colors z-10"
             disabled={isDisabled}
@@ -251,118 +279,118 @@ export default function ComposerSearchInput({
       </div>
 
       {/* Dropdown */}
-      {isOpen && (
-        <div
-          ref={dropdownRef}
-          className="absolute top-full left-0 right-0 mt-2 rounded-controle border border-[var(--linha-forte)] bg-[var(--sup-alta)] shadow-[var(--sombra-alta)] z-menu max-h-80 overflow-hidden"
-          style={{
-            boxShadow:
-              '0 25px 50px -12px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(212, 175, 55, 0.3)',
-          }}
-        >
-          {/* Header com label */}
-          {showPopularLabel && (
-            <div className="flex items-center gap-2 px-4 py-3 border-b border-[var(--linha)]">
-              <PiTrendUp className="w-4 h-4 text-ouro-texto" />
-              <Text papel="rotulo" tom="suave" className="font-medium">
-                {t('composer_search_jsx_popular_label')}
-              </Text>
-            </div>
-          )}
+      <ListaFlutuante
+        ancora={ancoraRef}
+        aberta={isOpen}
+        aoFechar={() => setIsOpen(false)}
+        conteudo={searchTerm}
+        listaRef={dropdownRef}
+        className="rounded-controle border border-[var(--linha-forte)] [background:var(--sup-alta)] shadow-[var(--sombra-alta)] overflow-hidden"
+      >
+        {/* Loading */}
+        {loading && (
+          <div className="flex items-center justify-center py-8">
+            <Inline gap={2} className="text-texto-suave">
+              <div className="w-4 h-4 border-2 border-t-transparent rounded-full animate-spin"></div>
+              <span className="text-sm">
+                {t('composer_search_jsx_loading')}
+              </span>
+            </Inline>
+          </div>
+        )}
 
-          {/* Loading */}
-          {isLoading && (
-            <div className="flex items-center justify-center py-8">
-              <Inline gap={2} className="text-texto-suave">
-                <div className="w-4 h-4 border-2 border-t-transparent rounded-full animate-spin"></div>
-                <span className="text-sm">
-                  {t('composer_search_jsx_loading')}
-                </span>
-              </Inline>
-            </div>
-          )}
+        {/* Results: one list, or "your composers" then "popular" */}
+        {!loading && displayComposers.length > 0 && (
+          <div className="max-h-64 overflow-y-auto">
+            {sections.map((section) => (
+              <div key={section.label ?? 'results'}>
+                {section.label && (
+                  <div className="flex items-center gap-2 border-b border-[var(--linha)] px-4 py-2.5">
+                    {section.items === suggestions?.famous && (
+                      <PiTrendUp className="h-4 w-4 text-ouro-texto" />
+                    )}
+                    <Text papel="legenda" tom="suave" className="font-medium">
+                      {section.label}
+                    </Text>
+                  </div>
+                )}
+                {section.items.map((composer) => (
+                  <button
+                    type="button"
+                    key={composer.id}
+                    onClick={() => handleComposerSelect(composer)}
+                    className={`
+                      w-full text-left px-4 py-3 transition-colors duration-200 border-b last:border-b-0 border-[var(--linha)]
+                      ${
+                        selectedComposer === composer.id
+                          ? 'text-ouro-texto font-medium'
+                          : ''
+                      }
+                    `}
+                  >
+                    <div className="flex items-center justify-between">
+                      <div className="min-w-0 flex-1">
+                        <Text
+                          papel="rotulo"
+                          tom="forte"
+                          as="div"
+                          className="font-medium truncate"
+                        >
+                          {composer.name}
+                        </Text>
+                        {composer.fullName &&
+                          composer.fullName !== composer.name && (
+                            <Text
+                              papel="legenda"
+                              tom="suave"
+                              as="div"
+                              className="truncate mt-0.5"
+                            >
+                              {composer.fullName}
+                            </Text>
+                          )}
+                      </div>
 
-          {/* Results */}
-          {!isLoading && displayComposers && displayComposers.length > 0 && (
-            <div className="max-h-64 overflow-y-auto">
-              {displayComposers.map((composer, index) => (
-                <button
-                  key={composer.id}
-                  onClick={() => handleComposerSelect(composer)}
-                  className={`
-                    w-full text-left px-4 py-3 transition-colors duration-200 border-b last:border-b-0 border-[var(--linha)]
-                    ${
-                      selectedComposer === composer.id
-                        ? 'text-ouro-texto font-medium'
-                        : ''
-                    }
-                    ${index === 0 && !showPopularLabel ? 'border-t-0' : ''}
-                  `}
-                >
-                  <div className="flex items-center justify-between">
-                    <div className="min-w-0 flex-1">
-                      <Text
-                        papel="rotulo"
-                        tom="forte"
-                        as="div"
-                        className="font-medium truncate"
-                      >
-                        {composer.name}
-                      </Text>
-                      {composer.fullName &&
-                        composer.fullName !== composer.name && (
-                          <Text
-                            papel="legenda"
-                            tom="suave"
-                            as="div"
-                            className="truncate mt-0.5"
-                          >
-                            {composer.fullName}
-                          </Text>
+                      {composer.worksCount &&
+                        Number(composer.worksCount) > 1 && (
+                          <div className="ml-3 flex-shrink-0">
+                            <Text
+                              papel="legenda"
+                              tom="suave"
+                              className="inline-flex items-center px-2 py-1 rounded-full"
+                            >
+                              {composer.worksCount}{' '}
+                              {composer.worksCount === 1
+                                ? t('composer_search_jsx_work_singular')
+                                : t('composer_search_jsx_work_plural')}
+                            </Text>
+                          </div>
                         )}
                     </div>
-
-                    {composer.worksCount && Number(composer.worksCount) > 1 && (
-                      <div className="ml-3 flex-shrink-0">
-                        <Text
-                          papel="legenda"
-                          tom="suave"
-                          className="inline-flex items-center px-2 py-1 rounded-full"
-                        >
-                          {composer.worksCount}{' '}
-                          {composer.worksCount === 1
-                            ? t('composer_search_jsx_work_singular')
-                            : t('composer_search_jsx_work_plural')}
-                        </Text>
-                      </div>
-                    )}
-                  </div>
-                </button>
-              ))}
-            </div>
-          )}
-
-          {/* Empty state */}
-          {!isLoading &&
-            (!displayComposers || displayComposers.length === 0) && (
-              <div className="px-4 py-8 text-center">
-                <PiUser className="w-8 h-8 text-texto-fraco mx-auto mb-2" />
-                <Text papel="rotulo" tom="suave" as="p">
-                  {searchTerm
-                    ? `${t(
-                        'composer_search_jsx_no_results_for'
-                      )} "${searchTerm}"`
-                    : t('composer_search_jsx_no_composers')}
-                </Text>
-                {searchTerm && (
-                  <Text papel="legenda" tom="fraco" as="p" className="mt-1">
-                    {t('composer_search_jsx_try_broader')}
-                  </Text>
-                )}
+                  </button>
+                ))}
               </div>
+            ))}
+          </div>
+        )}
+
+        {/* Empty state */}
+        {!loading && displayComposers.length === 0 && (
+          <div className="px-4 py-8 text-center">
+            <PiUser className="w-8 h-8 text-texto-fraco mx-auto mb-2" />
+            <Text papel="rotulo" tom="suave" as="p">
+              {searchTerm
+                ? `${t('composer_search_jsx_no_results_for')} "${searchTerm}"`
+                : t('composer_search_jsx_no_composers')}
+            </Text>
+            {searchTerm && (
+              <Text papel="legenda" tom="fraco" as="p" className="mt-1">
+                {t('composer_search_jsx_try_broader')}
+              </Text>
             )}
-        </div>
-      )}
+          </div>
+        )}
+      </ListaFlutuante>
     </div>
   );
 }

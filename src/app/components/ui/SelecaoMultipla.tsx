@@ -13,8 +13,9 @@ import { cx } from './cx';
  * Feito com o que já existe: o `SelecaoComBusca` escolhe uma entrada de cada
  * vez, e as escolhidas ficam como fichas com o seu botão de tirar, no mesmo
  * desenho do `CampoDeFichas`. Entradas já escolhidas ou em `excluir` não
- * aparecem na lista. Substitui o `MultiSelect` legado, que tinha lista,
- * busca e fichas próprios.
+ * aparecem na lista. As fichas ficam depois do campo, para ele alinhar com
+ * os vizinhos da grade (um seletor ao lado, com ou sem escolhas). Substitui o
+ * `MultiSelect` legado, que tinha lista, busca e fichas próprios.
  */
 export function SelecaoMultipla({
   rotulo,
@@ -52,6 +53,16 @@ export function SelecaoMultipla({
       <label htmlFor={`${id}-campo`} className="text-sm font-medium text-texto">
         {rotulo}
       </label>
+      <SelecaoComBusca
+        id={`${id}-campo`}
+        opcoes={disponiveis}
+        valor=""
+        aoMudar={(valor) => {
+          if (valor && !valores.includes(valor)) aoMudar([...valores, valor]);
+        }}
+        placeholder={placeholder}
+        vazio={vazio}
+      />
       {valores.length > 0 && (
         <ul aria-label={rotulo} className="flex flex-wrap gap-1.5">
           {valores.map((valor) => (
@@ -73,16 +84,6 @@ export function SelecaoMultipla({
           ))}
         </ul>
       )}
-      <SelecaoComBusca
-        id={`${id}-campo`}
-        opcoes={disponiveis}
-        valor=""
-        aoMudar={(valor) => {
-          if (valor && !valores.includes(valor)) aoMudar([...valores, valor]);
-        }}
-        placeholder={placeholder}
-        vazio={vazio}
-      />
     </div>
   );
 }

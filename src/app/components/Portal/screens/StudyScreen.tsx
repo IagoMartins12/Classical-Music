@@ -8,8 +8,14 @@
 
 import Link from 'next/link';
 import { useMemo, useState } from 'react';
-import { PiPlus, PiTimer, PiTrash } from 'react-icons/pi';
+import {
+  PiArrowSquareOut,
+  PiMagnifyingGlass,
+  PiTimer,
+  PiTrash,
+} from 'react-icons/pi';
 import { Button } from '@/app/components/ui/Button';
+import { Sheet } from '@/app/components/ui/Sheet';
 import {
   errorText,
   usePortalMutation,
@@ -274,63 +280,84 @@ function Repertoire() {
         <span className="flex items-center gap-4">
           <Link
             href="/learning"
-            className="text-sm font-medium text-ouro-texto"
+            className="inline-flex items-center gap-1.5 text-sm font-medium text-ouro-texto"
           >
             Abrir a biblioteca
+            <PiArrowSquareOut aria-hidden="true" className="h-4 w-4" />
           </Link>
-          {!adding && (
-            <Button icone={PiPlus} onClick={() => setAdding(true)}>
-              Acrescentar obra
-            </Button>
-          )}
+          <Button
+            icone={PiMagnifyingGlass}
+            onClick={() => setAdding(true)}
+            className="max-sm:hidden"
+          >
+            Buscar obra
+          </Button>
         </span>
       }
     >
-      {adding && (
-        <div className="flex flex-col gap-4 rounded-card bg-sup-2 p-5">
-          {picked ? (
-            <div className="flex flex-col gap-4">
-              <WorkCited work={picked.work} />
-              <span className="flex flex-wrap gap-2">
-                <Button
-                  variante="primario"
-                  onClick={() => (
-                    learn(picked.work, 'want-to-learn'),
-                    setPicked(null),
-                    setAdding(false)
-                  )}
-                >
-                  Quero aprender
-                </Button>
-                <Button
-                  onClick={() => (
-                    learn(picked.work, 'learned'),
-                    setPicked(null),
-                    setAdding(false)
-                  )}
-                >
-                  Já aprendi
-                </Button>
-                <Button variante="fantasma" onClick={() => setPicked(null)}>
-                  Outra obra
-                </Button>
-              </span>
+      {/* On a phone the library link takes the title's line and the add
+          button gets a line of its own, full width. */}
+      <Button
+        icone={PiMagnifyingGlass}
+        onClick={() => setAdding(true)}
+        className="w-full sm:hidden"
+      >
+        Buscar obra
+      </Button>
+
+      {/* A sheet, not a panel pushed into the page: on a phone the panel
+          moved the whole repertoire down and the choice got lost. */}
+      <Sheet
+        aberto={adding}
+        aoFechar={() => (setAdding(false), setPicked(null))}
+        titulo="Buscar obra"
+        descricao={
+          picked
+            ? 'Como ela entra no seu repertório?'
+            : 'Digite a obra, ou o compositor para filtrar as obras dele.'
+        }
+        largura="p"
+        rodape={
+          picked ? (
+            <div className="flex w-full flex-col gap-2">
+              <Button
+                variante="primario"
+                className="w-full"
+                onClick={() => (
+                  learn(picked.work, 'want-to-learn'),
+                  setPicked(null),
+                  setAdding(false)
+                )}
+              >
+                Quero aprender
+              </Button>
+              <Button
+                className="w-full"
+                onClick={() => (
+                  learn(picked.work, 'learned'),
+                  setPicked(null),
+                  setAdding(false)
+                )}
+              >
+                Já aprendi
+              </Button>
+              <Button
+                variante="fantasma"
+                className="w-full"
+                onClick={() => setPicked(null)}
+              >
+                Escolher outra obra
+              </Button>
             </div>
-          ) : (
-            <>
-              <span className="flex items-center justify-between">
-                <span className="t-rotulo font-medium text-texto">
-                  Procure o compositor, depois a obra
-                </span>
-                <Button variante="texto" onClick={() => setAdding(false)}>
-                  Fechar
-                </Button>
-              </span>
-              <WorkPicker onPick={setPicked} selectedIds={known} />
-            </>
-          )}
-        </div>
-      )}
+          ) : undefined
+        }
+      >
+        {picked ? (
+          <WorkCited work={picked.work} />
+        ) : (
+          <WorkPicker onPick={setPicked} selectedIds={known} />
+        )}
+      </Sheet>
 
       <div className="grid gap-12 lg:grid-cols-3">
         <Column

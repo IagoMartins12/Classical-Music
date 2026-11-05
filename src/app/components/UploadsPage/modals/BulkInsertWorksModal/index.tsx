@@ -6,6 +6,7 @@ import { useTextos } from '@/app/hooks/useTextos';
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import {
+  PiArrowClockwise,
   PiArrowSquareOut,
   PiCheck,
   PiMagnifyingGlass,
@@ -19,6 +20,7 @@ import { Button } from '@/app/components/ui/Button';
 import { CaixaDeMarcar } from '@/app/components/ui/CaixaDeMarcar';
 import { Icon } from '@/app/components/ui/Icon';
 import { cx } from '@/app/components/ui/cx';
+import { Erro } from '@/app/components/ui/Estados';
 import {
   Aviso,
   FormBlock,
@@ -34,7 +36,7 @@ import {
 } from '@/app/requests/external-sources';
 import { useTx } from '@/app/hooks/useTx';
 import { ApiError } from '@/app/libs/api/client';
-import { QuillOnPaper } from '@/app/components/site/QuillOnPaper';
+import { MagnifierSearching } from '@/app/components/site/MagnifierSearching';
 
 /**
  * Obras por chamada de importação. A API aceita até 100 e limita a 5 chamadas
@@ -112,7 +114,11 @@ const BulkInsertWorksModal = ({
   // Estados de loading
   const [isDiscovering, setIsDiscovering] = useState(false);
   // The search found nothing to import (no works, or no source to read).
-  const [nothingFound, setNothingFound] = useState(false);
+  // How the last search ended, when it did not lead to the list: no works on
+  // the composer's IMSLP page, no IMSLP page at all, or our request failed.
+  const [discoverEnd, setDiscoverEnd] = useState<
+    { kind: 'empty' | 'no-page' } | { kind: 'error'; message: string } | null
+  >(null);
 
   // Estados de edição
   const [editingWork, setEditingWork] = useState<DiscoveredWork | null>(null);
@@ -131,11 +137,11 @@ const BulkInsertWorksModal = ({
   // Descobrir obras do compositor
   const handleDiscoverWorks = async () => {
     setIsDiscovering(true);
-    setNothingFound(false);
+    setDiscoverEnd(null);
     try {
       const data = await discoverComposerWorks(composer.id);
       if (!data.works.length) {
-        setNothingFound(true);
+        setDiscoverEnd({ kind: 'empty' });
         return;
       }
       const works: DiscoveredWork[] = data.works.map((work) => ({
@@ -151,16 +157,18 @@ const BulkInsertWorksModal = ({
       updateStats(works);
       setCurrentStep('select');
     } catch (error) {
-      // No page to read for this composer: to the person, simply no works.
+      // The composer has no IMSLP page we can read: a fact, not a failure.
       if (error instanceof ApiError && error.status === 404) {
-        setNothingFound(true);
+        setDiscoverEnd({ kind: 'no-page' });
         return;
       }
-      console.error('❌ Erro ao descobrir obras:', error);
-      toast.error(
-        t('toast_error'),
-        error instanceof Error ? error.message : t('toast_bulk_discover_error')
-      );
+      setDiscoverEnd({
+        kind: 'error',
+        message:
+          error instanceof Error && error.message
+            ? error.message
+            : t('toast_bulk_discover_error'),
+      });
     } finally {
       setIsDiscovering(false);
     }
@@ -459,12 +467,14 @@ const BulkInsertWorksModal = ({
           >
             {isDiscovering ? (
               // Reading the composer's works takes a few seconds: the same
-              // quill as the scores being fetched on a work page.
+              // magnifier as the scores being searched on a work page, across
+              // the whole sheet (`col-span-full`: the block is a two-column
+              // grid from the tablet up).
               <div
                 role="status"
-                className="flex flex-col items-center gap-5 rounded-card bg-sup-2 px-6 py-8 text-center"
+                className="col-span-full flex w-full flex-col items-center gap-5 rounded-card bg-sup-2 px-6 py-8 text-center"
               >
-                <QuillOnPaper />
+                <MagnifierSearching />
                 <div className="flex max-w-[40ch] flex-col items-center gap-1.5">
                   <p className="font-display text-[1.375rem] leading-snug">
                     {tx(
@@ -480,22 +490,54 @@ const BulkInsertWorksModal = ({
                   </p>
                 </div>
               </div>
-            ) : nothingFound ? (
+            ) : discoverEnd?.kind === 'error' ? (
+              // Our request failed: say so, keep what the person can do.
+              <Erro
+                className="col-span-full w-full"
+                titulo={tx(
+                  `Não foi possível buscar as obras de ${composer.name}`,
+                  `We could not fetch ${composer.name}'s works`
+                )}
+                descricao={discoverEnd.message}
+                acao={
+                  <Button
+                    tamanho="p"
+                    icone={PiArrowClockwise}
+                    onClick={handleDiscoverWorks}
+                  >
+                    {tx('Tentar de novo', 'Try again')}
+                  </Button>
+                }
+              />
+            ) : discoverEnd ? (
+              // The search is over: the lens rests, and the text says why
+              // there is nothing to list.
               <div
                 role="status"
-                className="flex flex-col items-start gap-2 rounded-card bg-sup-2 p-6"
+                className="col-span-full flex w-full flex-col items-center gap-5 rounded-card bg-sup-2 px-6 py-8 text-center"
               >
-                <p className="font-display text-[1.375rem] leading-snug">
-                  {tx(
-                    `Não encontramos obras de ${composer.name} para importar`,
-                    `We found no works by ${composer.name} to import`
-                  )}
+                <MagnifierSearching stopped />
+                <p className="max-w-[40ch] font-display text-[1.375rem] leading-snug">
+                  {discoverEnd.kind === 'no-page'
+                    ? tx(
+                        `${composer.name} não tem página no IMSLP para ler`,
+                        `${composer.name} has no IMSLP page to read`
+                      )
+                    : tx(
+                        `Não encontramos obras de ${composer.name} para importar`,
+                        `We found no works by ${composer.name} to import`
+                      )}
                 </p>
-                <p className="t-rotulo text-texto-suave">
-                  {tx(
-                    'Ainda não temos obras deste compositor. Você pode cadastrar uma a uma pelo envio de obra.',
-                    'We have no works by this composer yet. You can add them one by one through the work upload.'
-                  )}
+                <p className="-mt-3 max-w-[48ch] t-rotulo text-texto-suave">
+                  {discoverEnd.kind === 'no-page'
+                    ? tx(
+                        'Confira o link do IMSLP no cadastro do compositor, ou envie as obras uma a uma pelo envio de obra.',
+                        "Check the IMSLP link in the composer's record, or add the works one by one through the work upload."
+                      )
+                    : tx(
+                        'A página do compositor no IMSLP não lista obras. Compositores do século XX costumam ter poucas em domínio público; dá para enviar as obras uma a uma pelo envio de obra.',
+                        "The composer's IMSLP page lists no works. 20th-century composers often have few in the public domain; you can add them one by one through the work upload."
+                      )}
                 </p>
               </div>
             ) : (

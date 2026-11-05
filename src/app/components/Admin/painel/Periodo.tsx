@@ -1,6 +1,8 @@
 'use client';
 
 import { useId } from 'react';
+import { PiCalendarBlank } from 'react-icons/pi';
+import { cx } from '@/app/components/ui/cx';
 import { Selecao } from '@/app/components/ui/Selecao';
 import { Segmentos } from './Controles';
 
@@ -96,22 +98,34 @@ export function SeletorDePeriodo({
 
   return (
     <div className="flex flex-wrap items-center gap-2">
-      <Segmentos
-        rotulo="Período"
-        opcoes={ATALHOS}
-        valor={noAtalho ? k : ''}
-        aoMudar={escolher}
-      />
-      <div className="w-40">
-        <label htmlFor={`${id}-outro`} className="sr-only">
-          Outro período
-        </label>
-        <Selecao
-          id={`${id}-outro`}
-          valor={noAtalho ? '' : k}
+      {/* The tabs and the "more" selector always share one line: on a phone
+          the tabs tighten and the selector shows only its icon. */}
+      <div className="flex min-w-0 max-w-full items-center gap-2">
+        <Segmentos
+          rotulo="Período"
+          opcoes={ATALHOS}
+          valor={noAtalho ? k : ''}
           aoMudar={escolher}
-          opcoes={[{ value: '', label: 'Outro período' }, ...OUTROS]}
+          className="min-w-0 max-sm:[&_.aba]:px-2.5"
         />
+        <div className="shrink-0 sm:w-44">
+          <label htmlFor={`${id}-outro`} className="sr-only">
+            Outro período
+          </label>
+          {/* Same surface as the tab strip beside it (no outline); once one of
+            its periods is chosen it looks like the active tab. */}
+          <Selecao
+            id={`${id}-outro`}
+            valor={noAtalho ? '' : k}
+            aoMudar={escolher}
+            icone={PiCalendarBlank}
+            opcoes={[{ value: '', label: 'Mais períodos' }, ...OUTROS]}
+            className={cx(
+              'min-h-11! rounded-xl! border-transparent! bg-theme-secondary! pl-3.5! text-sm font-medium max-sm:[&>span]:sr-only',
+              !noAtalho && 'bg-theme-tertiary! shadow-md'
+            )}
+          />
+        </div>
       </div>
       {valor.tipo === 'intervalo' && (
         <div className="flex flex-wrap items-center gap-2">

@@ -11,6 +11,7 @@ import {
 } from 'react-icons/pi';
 import { getWorkById, searchWorks } from '@/app/requests/catalog-search';
 import { Inline } from '@/app/components/ui/Layout';
+import { ListaFlutuante } from '@/app/components/ui/ListaFlutuante';
 import { Text } from '@/app/components/ui/Text';
 import { NomeAcao } from '@/app/components/ui/NomeAcao';
 import { useTx } from '@/app/hooks/useTx';
@@ -61,6 +62,8 @@ const SimpleWorkSearchInput: React.FC<SimpleWorkSearchInputProps> = ({
   const searchTimeoutRef = useRef<NodeJS.Timeout>(null);
   const inputRef = useRef<HTMLInputElement>(null);
   const dropdownRef = useRef<HTMLDivElement>(null);
+  // The field the result list floats under (`ListaFlutuante`).
+  const ancoraRef = useRef<HTMLDivElement>(null);
 
   // 🆕 BUSCA COMBINADA - API + USER SUGGESTIONS
   const performSearch = useCallback(
@@ -328,7 +331,7 @@ const SimpleWorkSearchInput: React.FC<SimpleWorkSearchInputProps> = ({
       ) : (
         <div className="relative">
           {/* Campo de busca */}
-          <div className="relative">
+          <div ref={ancoraRef} className="relative">
             <PiMagnifyingGlass className="absolute left-3 top-1/2 transform -translate-y-1/2 text-texto-fraco w-4 h-4 z-10" />
             <input
               id={id}
@@ -348,6 +351,7 @@ const SimpleWorkSearchInput: React.FC<SimpleWorkSearchInputProps> = ({
                 tx('Digite para buscar uma obra…', 'Type to search a work…')
               }
               disabled={disabled}
+              aria-invalid={error ? true : undefined}
               className={`input-classical-2 w-full !pl-10 pr-10 ${
                 error ? 'border-[var(--erro)]' : ''
               } ${disabled ? 'opacity-50 cursor-not-allowed' : ''}`}
@@ -358,125 +362,127 @@ const SimpleWorkSearchInput: React.FC<SimpleWorkSearchInputProps> = ({
           </div>
 
           {/* Dropdown de resultados */}
-          {isOpen && !disabled && (
-            <div
-              ref={dropdownRef}
-              className="absolute top-full left-0 right-0 mt-2 rounded-controle border border-[var(--linha-forte)] bg-[var(--sup-alta)] shadow-[var(--sombra-alta)] max-h-80 overflow-y-auto z-menu"
-            >
-              {/* Loading */}
-              {(isLoading || loadingUserSuggestions) && (
-                <div className="p-4 text-center">
-                  <PiSpinnerGap className="w-5 h-5 mx-auto animate-spin text-ouro-texto mb-2" />
-                  <Text papel="rotulo" tom="fraco" as="p">
-                    {loadingUserSuggestions
-                      ? tx('Carregando sugestões...', 'Loading suggestions…')
-                      : tx('Buscando obras...', 'Searching works…')}
-                  </Text>
-                </div>
-              )}
+          <ListaFlutuante
+            ancora={ancoraRef}
+            aberta={isOpen && !disabled}
+            aoFechar={() => setIsOpen(false)}
+            conteudo={query}
+            listaRef={dropdownRef}
+            className="rounded-controle border border-[var(--linha-forte)] [background:var(--sup-alta)] shadow-[var(--sombra-alta)] max-h-80 overflow-y-auto"
+          >
+            {/* Loading */}
+            {(isLoading || loadingUserSuggestions) && (
+              <div className="p-4 text-center">
+                <PiSpinnerGap className="w-5 h-5 mx-auto animate-spin text-ouro-texto mb-2" />
+                <Text papel="rotulo" tom="fraco" as="p">
+                  {loadingUserSuggestions
+                    ? tx('Carregando sugestões...', 'Loading suggestions…')
+                    : tx('Buscando obras...', 'Searching works…')}
+                </Text>
+              </div>
+            )}
 
-              {/* Results */}
-              {!isLoading && !loadingUserSuggestions && works.length > 0 && (
-                <div className="p-2">
-                  {/* 🆕 Header inteligente */}
-                  <Text
-                    papel="legenda"
-                    tom="fraco"
-                    as="div"
-                    className="px-3 py-2 font-medium uppercase tracking-wide border-b border-[var(--linha)] mb-2"
-                  >
-                    <div className="flex items-center gap-2">
-                      {query.length >= 2 ? (
-                        <PiMagnifyingGlass className="w-4 h-4" />
-                      ) : userSuggestions.length > 0 ? (
-                        <PiStar className="w-4 h-4" />
-                      ) : (
-                        <PiMusicNotes className="w-4 h-4" />
-                      )}
-                      {getHeaderLabel()}
-                    </div>
-                  </Text>
+            {/* Results */}
+            {!isLoading && !loadingUserSuggestions && works.length > 0 && (
+              <div className="p-2">
+                {/* 🆕 Header inteligente */}
+                <Text
+                  papel="legenda"
+                  tom="fraco"
+                  as="div"
+                  className="px-3 py-2 font-medium uppercase tracking-wide border-b border-[var(--linha)] mb-2"
+                >
+                  <div className="flex items-center gap-2">
+                    {query.length >= 2 ? (
+                      <PiMagnifyingGlass className="w-4 h-4" />
+                    ) : userSuggestions.length > 0 ? (
+                      <PiStar className="w-4 h-4" />
+                    ) : (
+                      <PiMusicNotes className="w-4 h-4" />
+                    )}
+                    {getHeaderLabel()}
+                  </div>
+                </Text>
 
-                  {works.map((work, i) => {
-                    const isUserWork = isUserSuggestion(work);
+                {works.map((work, i) => {
+                  const isUserWork = isUserSuggestion(work);
 
-                    return (
-                      <button
-                        key={`${work.id}-${i}`}
-                        type="button"
-                        onClick={() => handleWorkSelect(work)}
-                        className="w-full text-left p-3 rounded-lg transition-colors group"
-                      >
-                        <Inline gap={3}>
-                          <div
-                            className={`w-8 h-8 rounded-lg flex items-center justify-center group-hover:scale-105 transition-transform ${
-                              isUserWork ? '' : ''
-                            }`}
-                          >
-                            {isUserWork ? (
-                              <PiStar className="w-4 h-4" />
-                            ) : (
-                              <PiMusicNotes className="w-4 h-4" />
-                            )}
-                          </div>
-                          <div className="flex-1 min-w-0">
-                            <Inline gap={2}>
-                              <Text
-                                papel="rotulo"
-                                tom="forte"
-                                as="p"
-                                className="font-medium truncate"
-                              >
-                                {work.title}
-                              </Text>
-                              {isUserWork && (
-                                <span className="text-xs px-1.5 py-0.5 rounded">
-                                  {tx('Sugerida', 'Suggested')}
-                                </span>
-                              )}
-                            </Inline>
-                            <Text
-                              papel="legenda"
-                              tom="fraco"
-                              as="p"
-                              className="truncate"
-                            >
-                              {work.composer.fullName || work.composer.name}
-                            </Text>
-                          </div>
-                        </Inline>
-                      </button>
-                    );
-                  })}
-                </div>
-              )}
-
-              {/* Empty state */}
-              {!isLoading && !loadingUserSuggestions && works.length === 0 && (
-                <div className="p-4 text-center text-texto-fraco">
-                  <PiMagnifyingGlass className="w-8 h-8 mx-auto mb-2 opacity-50" />
-                  <p className="text-sm">
-                    {query.length >= 2
-                      ? `Nenhuma obra encontrada para "${query}"`
-                      : userSuggestions.length === 0
-                        ? tx(
-                            'Nenhuma sugestão disponível',
-                            'No suggestions available'
-                          )
-                        : tx(
-                            'Digite pelo menos 2 caracteres para buscar',
-                            'Type at least 2 characters to search'
+                  return (
+                    <button
+                      key={`${work.id}-${i}`}
+                      type="button"
+                      onClick={() => handleWorkSelect(work)}
+                      className="w-full text-left p-3 rounded-lg transition-colors group"
+                    >
+                      <Inline gap={3}>
+                        <div
+                          className={`w-8 h-8 rounded-lg flex items-center justify-center group-hover:scale-105 transition-transform ${
+                            isUserWork ? '' : ''
+                          }`}
+                        >
+                          {isUserWork ? (
+                            <PiStar className="w-4 h-4" />
+                          ) : (
+                            <PiMusicNotes className="w-4 h-4" />
                           )}
+                        </div>
+                        <div className="flex-1 min-w-0">
+                          <Inline gap={2}>
+                            <Text
+                              papel="rotulo"
+                              tom="forte"
+                              as="p"
+                              className="min-w-0 truncate font-medium"
+                            >
+                              {work.title}
+                            </Text>
+                            {isUserWork && (
+                              <span className="shrink-0 whitespace-nowrap rounded px-1.5 py-0.5 text-xs">
+                                {tx('Sugerida', 'Suggested')}
+                              </span>
+                            )}
+                          </Inline>
+                          <Text
+                            papel="legenda"
+                            tom="fraco"
+                            as="p"
+                            className="truncate"
+                          >
+                            {work.composer.fullName || work.composer.name}
+                          </Text>
+                        </div>
+                      </Inline>
+                    </button>
+                  );
+                })}
+              </div>
+            )}
+
+            {/* Empty state */}
+            {!isLoading && !loadingUserSuggestions && works.length === 0 && (
+              <div className="p-4 text-center text-texto-fraco">
+                <PiMagnifyingGlass className="w-8 h-8 mx-auto mb-2 opacity-50" />
+                <p className="text-sm">
+                  {query.length >= 2
+                    ? `Nenhuma obra encontrada para "${query}"`
+                    : userSuggestions.length === 0
+                      ? tx(
+                          'Nenhuma sugestão disponível',
+                          'No suggestions available'
+                        )
+                      : tx(
+                          'Digite pelo menos 2 caracteres para buscar',
+                          'Type at least 2 characters to search'
+                        )}
+                </p>
+                {query.length >= 2 && (
+                  <p className="text-xs mt-1">
+                    {tx('Tente termos diferentes', 'Try different terms')}
                   </p>
-                  {query.length >= 2 && (
-                    <p className="text-xs mt-1">
-                      {tx('Tente termos diferentes', 'Try different terms')}
-                    </p>
-                  )}
-                </div>
-              )}
-            </div>
-          )}
+                )}
+              </div>
+            )}
+          </ListaFlutuante>
 
           {/* 🆕 Dica dinâmica */}
           {!isOpen && query.length === 0 && !selectedWorkData && (

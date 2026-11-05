@@ -236,7 +236,9 @@ function ReportCard({
       className="flex h-full w-full flex-col gap-4 rounded-card bg-sup-2 p-6 text-left transition-[box-shadow] hover:shadow-[var(--sombra-2)]"
     >
       <span className="flex items-start justify-between gap-3">
-        <span className="font-display text-2xl leading-tight">{r.title}</span>
+        <span className="min-w-0 font-display text-2xl leading-tight">
+          {r.title}
+        </span>
         {role === 'teacher' &&
           (r.visibility === 'TEACHER_ONLY' ? (
             <Badge estado="ouro">Só seu</Badge>

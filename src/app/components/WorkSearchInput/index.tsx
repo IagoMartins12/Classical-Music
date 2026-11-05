@@ -19,6 +19,7 @@ import {
 } from 'react-icons/pi';
 import { searchWorks } from '@/app/requests/catalog-search';
 import { Inline } from '@/app/components/ui/Layout';
+import { ListaFlutuante } from '@/app/components/ui/ListaFlutuante';
 import { Text } from '@/app/components/ui/Text';
 import { useTx } from '@/app/hooks/useTx';
 
@@ -85,6 +86,8 @@ const WorkSearchInput: React.FC<WorkSearchInputProps> = ({
   const searchTimeoutRef = useRef<NodeJS.Timeout>(null);
   const inputRef = useRef<HTMLInputElement>(null);
   const dropdownRef = useRef<HTMLDivElement>(null);
+  // The field the result list floats under (`ListaFlutuante`).
+  const ancoraRef = useRef<HTMLDivElement>(null);
   const lastComposerRef = useRef<string>('');
   const lastQueryRef = useRef<string>('');
 
@@ -499,7 +502,7 @@ const WorkSearchInput: React.FC<WorkSearchInputProps> = ({
       ) : (
         <div className="relative">
           {/* Campo de busca */}
-          <div className="relative">
+          <div ref={ancoraRef} className="relative">
             <PiMagnifyingGlass className="absolute left-3 top-1/2 transform -translate-y-1/2 text-texto-fraco w-4 h-4 z-10" />
             <input
               ref={inputRef}
@@ -512,6 +515,7 @@ const WorkSearchInput: React.FC<WorkSearchInputProps> = ({
                 tx('Digite para buscar uma obra…', 'Type to search a work…')
               }
               disabled={disabled}
+              aria-invalid={error ? true : undefined}
               className={`input-classical-2 w-full !pl-10 pr-10 ${
                 error ? 'border-[var(--erro)]' : ''
               } ${disabled ? 'opacity-50 cursor-not-allowed' : ''}`}
@@ -522,126 +526,128 @@ const WorkSearchInput: React.FC<WorkSearchInputProps> = ({
           </div>
 
           {/* Dropdown de resultados */}
-          {isOpen && !disabled && (
-            <div
-              ref={dropdownRef}
-              className="absolute top-full left-0 right-0 mt-2 rounded-controle border border-[var(--linha-forte)] bg-[var(--sup-alta)] shadow-[var(--sombra-alta)] max-h-80 overflow-y-auto z-menu"
-            >
-              {/* Loading */}
-              {(isLoading || loadingUserSuggestions) && (
-                <div className="p-4 text-center">
-                  <PiSpinnerGap className="w-5 h-5 mx-auto animate-spin text-ouro-texto mb-2" />
-                  <Text papel="rotulo" tom="fraco" as="p">
-                    {loadingUserSuggestions
-                      ? tx('Carregando suas obras...', 'Loading your works…')
-                      : tx('Buscando obras...', 'Searching works…')}
+          <ListaFlutuante
+            ancora={ancoraRef}
+            aberta={isOpen && !disabled}
+            aoFechar={() => setIsOpen(false)}
+            conteudo={query}
+            listaRef={dropdownRef}
+            className="rounded-controle border border-[var(--linha-forte)] [background:var(--sup-alta)] shadow-[var(--sombra-alta)] max-h-80 overflow-y-auto"
+          >
+            {/* Loading */}
+            {(isLoading || loadingUserSuggestions) && (
+              <div className="p-4 text-center">
+                <PiSpinnerGap className="w-5 h-5 mx-auto animate-spin text-ouro-texto mb-2" />
+                <Text papel="rotulo" tom="fraco" as="p">
+                  {loadingUserSuggestions
+                    ? tx('Carregando suas obras...', 'Loading your works…')
+                    : tx('Buscando obras...', 'Searching works…')}
+                </Text>
+              </div>
+            )}
+
+            {/* Results */}
+            {!isLoading && !loadingUserSuggestions && works.length > 0 && (
+              <div className="p-2">
+                {/* Header com label inteligente */}
+                {suggestionsLabel && (
+                  <Text
+                    papel="legenda"
+                    tom="fraco"
+                    as="div"
+                    className="px-3 py-2 flex items-center gap-2 font-medium uppercase tracking-wide"
+                  >
+                    <SuggestionIcon className={`w-4 h-4 ${iconColor}`} />
+                    {suggestionsLabel}
                   </Text>
-                </div>
-              )}
+                )}
 
-              {/* Results */}
-              {!isLoading && !loadingUserSuggestions && works.length > 0 && (
-                <div className="p-2">
-                  {/* Header com label inteligente */}
-                  {suggestionsLabel && (
-                    <Text
-                      papel="legenda"
-                      tom="fraco"
-                      as="div"
-                      className="px-3 py-2 flex items-center gap-2 font-medium uppercase tracking-wide"
+                {works.map((work, i) => {
+                  const isUserWork = stableUserSuggestions.some(
+                    (uw) => uw.id === work.id
+                  );
+
+                  return (
+                    <button
+                      key={`${work.id}-${i}`}
+                      type="button"
+                      onClick={() => handleWorkSelect(work)}
+                      className="w-full text-left p-3 rounded-lg transition-colors group"
                     >
-                      <SuggestionIcon className={`w-4 h-4 ${iconColor}`} />
-                      {suggestionsLabel}
-                    </Text>
-                  )}
-
-                  {works.map((work, i) => {
-                    const isUserWork = stableUserSuggestions.some(
-                      (uw) => uw.id === work.id
-                    );
-
-                    return (
-                      <button
-                        key={`${work.id}-${i}`}
-                        type="button"
-                        onClick={() => handleWorkSelect(work)}
-                        className="w-full text-left p-3 rounded-lg transition-colors group"
-                      >
-                        <Inline gap={3}>
-                          <div
-                            className={`w-8 h-8 rounded-lg flex items-center justify-center group-hover:scale-105 transition-transform ${
-                              isUserWork ? '' : ''
-                            }`}
-                          >
-                            {isUserWork ? (
-                              <PiStar className="w-4 h-4" />
-                            ) : (
-                              <PiMusicNotes className="w-4 h-4" />
-                            )}
-                          </div>
-                          <div className="flex-1 min-w-0">
-                            <Inline gap={2}>
-                              <Text
-                                papel="rotulo"
-                                tom="forte"
-                                as="p"
-                                className="font-medium truncate"
-                              >
-                                {work.title}
-                              </Text>
-                              {isUserWork && (
-                                <span className="text-xs px-1.5 py-0.5 rounded">
-                                  {tx('Sua', 'Yours')}
-                                </span>
-                              )}
-                            </Inline>
+                      <Inline gap={3}>
+                        <div
+                          className={`w-8 h-8 rounded-lg flex items-center justify-center group-hover:scale-105 transition-transform ${
+                            isUserWork ? '' : ''
+                          }`}
+                        >
+                          {isUserWork ? (
+                            <PiStar className="w-4 h-4" />
+                          ) : (
+                            <PiMusicNotes className="w-4 h-4" />
+                          )}
+                        </div>
+                        <div className="flex-1 min-w-0">
+                          <Inline gap={2}>
                             <Text
-                              papel="legenda"
-                              tom="fraco"
+                              papel="rotulo"
+                              tom="forte"
                               as="p"
-                              className="truncate"
+                              className="font-medium truncate"
                             >
-                              {work.composer.fullName || work.composer.name}
+                              {work.title}
                             </Text>
-                          </div>
-                        </Inline>
-                      </button>
-                    );
-                  })}
-                </div>
-              )}
+                            {isUserWork && (
+                              <span className="text-xs px-1.5 py-0.5 rounded">
+                                {tx('Sua', 'Yours')}
+                              </span>
+                            )}
+                          </Inline>
+                          <Text
+                            papel="legenda"
+                            tom="fraco"
+                            as="p"
+                            className="truncate"
+                          >
+                            {work.composer.fullName || work.composer.name}
+                          </Text>
+                        </div>
+                      </Inline>
+                    </button>
+                  );
+                })}
+              </div>
+            )}
 
-              {/* Empty state */}
-              {!isLoading && !loadingUserSuggestions && works.length === 0 && (
-                <div className="p-4 text-center text-texto-fraco">
-                  <PiMagnifyingGlass className="w-8 h-8 mx-auto mb-2 opacity-50" />
-                  <p className="text-sm">
-                    {query.length >= 2
-                      ? `Nenhuma obra encontrada para "${query}"`
-                      : stableFilterByComposer &&
-                          stableFilterByComposer.trim() !== ''
-                        ? tx(
-                            'Nenhuma obra encontrada para este compositor',
-                            'No works found for this composer'
-                          )
-                        : tx('Nenhuma obra disponível', 'No works available')}
+            {/* Empty state */}
+            {!isLoading && !loadingUserSuggestions && works.length === 0 && (
+              <div className="p-4 text-center text-texto-fraco">
+                <PiMagnifyingGlass className="w-8 h-8 mx-auto mb-2 opacity-50" />
+                <p className="text-sm">
+                  {query.length >= 2
+                    ? `Nenhuma obra encontrada para "${query}"`
+                    : stableFilterByComposer &&
+                        stableFilterByComposer.trim() !== ''
+                      ? tx(
+                          'Nenhuma obra encontrada para este compositor',
+                          'No works found for this composer'
+                        )
+                      : tx('Nenhuma obra disponível', 'No works available')}
+                </p>
+                {query.length >= 2 && (
+                  <p className="text-xs mt-1">
+                    {tx('Tente termos diferentes', 'Try different terms')}
+                    {stableFilterByComposer &&
+                    stableFilterByComposer.trim() !== ''
+                      ? tx(
+                          ' ou remova o filtro de compositor',
+                          ' or remove the composer filter'
+                        )
+                      : ''}
                   </p>
-                  {query.length >= 2 && (
-                    <p className="text-xs mt-1">
-                      {tx('Tente termos diferentes', 'Try different terms')}
-                      {stableFilterByComposer &&
-                      stableFilterByComposer.trim() !== ''
-                        ? tx(
-                            ' ou remova o filtro de compositor',
-                            ' or remove the composer filter'
-                          )
-                        : ''}
-                    </p>
-                  )}
-                </div>
-              )}
-            </div>
-          )}
+                )}
+              </div>
+            )}
+          </ListaFlutuante>
         </div>
       )}
 

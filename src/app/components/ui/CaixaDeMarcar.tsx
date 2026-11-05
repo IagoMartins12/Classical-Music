@@ -32,7 +32,9 @@ export function CaixaDeMarcar({
     <label
       htmlFor={id}
       className={cx(
-        'group flex min-h-[var(--alvo)] cursor-pointer items-start gap-3 py-2',
+        // `relative`: the hidden input sits inside the label, so focusing it
+        // never scrolls anything far away (see `Sheet`).
+        'group relative flex min-h-[var(--alvo)] cursor-pointer items-start gap-3 py-2',
         disabled && 'cursor-not-allowed opacity-60',
         className
       )}

@@ -14,6 +14,7 @@ import {
 } from './utils/localizedRoutes';
 import { CartoesQueViram } from '@/app/components/ui/CartoesQueViram';
 import { TopoAoNavegar } from '@/app/components/ui/TopoAoNavegar';
+import { ErroAVista } from '@/app/components/ui/ErroAVista';
 
 /**
  * As três famílias do sistema, e por que são três.
@@ -235,6 +236,15 @@ const aberturaScript = `(function(){
     if(v&&Date.now()-v<20000)inicio=v;
   }catch(e){}
   if(inicio)h.style.setProperty('--abertura-atraso',(inicio-Date.now())+'ms');
+  // The marks come already decoded from the opening (\`public/abertura.html\`):
+  // fetched as files, the first frame left only the orbit, the logo late.
+  ['selo','nome'].forEach(function(n){
+    try{
+      var k='opus-atlas:abertura-'+n,m=sessionStorage.getItem(k);
+      sessionStorage.removeItem(k);
+      if(m&&inicio)h.style.setProperty('--abertura-'+n,m);
+    }catch(e){}
+  });
   var some=function(){h.classList.add('app-pronto');};
   var pronto=function(){
     var falta=inicio?1600-(Date.now()-inicio):900-performance.now();
@@ -330,6 +340,7 @@ export default function RootLayout({
           <AuthProvider>{children}</AuthProvider>
           <CartoesQueViram />
           <TopoAoNavegar />
+          <ErroAVista />
         </ClientThemeWrapper>
 
         {/* Analytics wait for the page to finish loading (`lazyOnload`):

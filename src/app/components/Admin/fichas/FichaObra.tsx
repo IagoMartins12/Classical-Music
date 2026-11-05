@@ -5,9 +5,15 @@ import { Elo, useNavegar } from '@/app/components/Admin/painel/Navegador';
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import toast from 'react-hot-toast';
-import { PiArrowSquareOut, PiPencilSimple, PiTrash } from 'react-icons/pi';
+import {
+  PiArrowSquareOut,
+  PiCloudArrowDown,
+  PiPencilSimple,
+  PiTrash,
+} from 'react-icons/pi';
 import ConfirmModal from '@/app/components/ConfirmModal';
 import { Button } from '@/app/components/ui/Button';
+import { ImportarPartiturasModal } from './ImportarPartiturasModal';
 import { Field } from '@/app/components/ui/Field';
 import { Icon } from '@/app/components/ui/Icon';
 import { Inline, Stack } from '@/app/components/ui/Layout';
@@ -47,6 +53,7 @@ export function FichaObra({
 }) {
   const [form, setForm] = useState<EdicaoObra>({});
   const [apagando, setApagando] = useState(false);
+  const [importando, setImportando] = useState(false);
   const atualizar = useAtualizarObra();
   const apagar = useApagarObra();
   const detalhe = useDetalheObra(obra?.id ?? null);
@@ -277,6 +284,36 @@ export function FichaObra({
                   </ul>
                 </Stack>
               )}
+              {/* A obra com página no IMSLP: a mesma leitura de partituras que
+                  roda na primeira visita, a pedido. Diz como foi a última. */}
+              {d.imslpPermlink && (
+                <Stack gap={3} className="rounded-card bg-sup-2 p-4">
+                  <Stack gap={1}>
+                    <Text papel="subtitulo" as="h3">
+                      Partituras no IMSLP
+                    </Text>
+                    <Text papel="rotulo" tom="suave" as="p">
+                      {d.imslpScoresStatus === 'failed'
+                        ? 'A última leitura deu erro.'
+                        : d.imslpScoresStatus === 'none'
+                          ? 'Lida, e o IMSLP não tinha nada.'
+                          : d.imslpScoresStatus === 'found'
+                            ? 'Lida, com partituras gravadas.'
+                            : 'Ainda não lida.'}
+                      {d.imslpScoresCheckedAt &&
+                        ` Em ${dataCurta(d.imslpScoresCheckedAt)}.`}
+                    </Text>
+                  </Stack>
+                  <Button
+                    tamanho="p"
+                    icone={PiCloudArrowDown}
+                    onClick={() => setImportando(true)}
+                    className="self-start"
+                  >
+                    Importar partituras do IMSLP
+                  </Button>
+                </Stack>
+              )}
               <Inline gap={4} quebra>
                 <Link
                   href={`/works/${obra.id}`}
@@ -379,6 +416,14 @@ export function FichaObra({
           </Stack>
         </Stack>
       </Sheet>
+
+      <ImportarPartiturasModal
+        aberto={importando}
+        aoFechar={() => setImportando(false)}
+        workId={obra.id}
+        titulo={obra.title}
+        aoConcluir={() => void detalhe.refetch()}
+      />
 
       <ConfirmModal
         isOpen={apagando}

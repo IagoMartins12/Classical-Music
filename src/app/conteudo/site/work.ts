@@ -162,6 +162,15 @@ const pt = {
       'Algo deu errado do nosso lado ao buscar as partituras desta obra.',
     retry: 'Tentar de novo',
     searchAgain: 'Procurar novamente',
+    refresh: 'Atualizar do IMSLP',
+    refreshHint:
+      'Só quem cuida do acervo vê: lê a página da obra no IMSLP agora.',
+    refreshDone: (created: number, updated: number) =>
+      created > 0
+        ? `${created} ${created === 1 ? 'partitura nova' : 'partituras novas'}; ${updated} conferida${updated === 1 ? '' : 's'}.`
+        : updated > 0
+          ? `Nada faltava: ${updated} partitura${updated === 1 ? '' : 's'} conferida${updated === 1 ? '' : 's'}.`
+          : 'O IMSLP não tem arquivo para esta obra.',
     upload: 'Enviar uma partitura desta obra',
     selecting: 'Escolha a partitura que você vai estudar',
     selectingText:
@@ -328,6 +337,14 @@ const en: typeof pt = {
       'Something went wrong on our side while fetching the scores for this work.',
     retry: 'Try again',
     searchAgain: 'Search again',
+    refresh: 'Update from IMSLP',
+    refreshHint: 'Reads this work on IMSLP now and brings what is missing.',
+    refreshDone: (created: number, updated: number) =>
+      created > 0
+        ? `${created} new ${created === 1 ? 'score' : 'scores'}; ${updated} checked.`
+        : updated > 0
+          ? `Nothing was missing: ${updated} ${updated === 1 ? 'score' : 'scores'} checked.`
+          : 'IMSLP has no file for this work.',
     upload: 'Upload a score for this work',
     selecting: 'Choose the score you will study',
     selectingText:

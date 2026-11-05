@@ -211,7 +211,7 @@ export default function Financeiro() {
         }
       />
 
-      <div className="flex flex-wrap items-center gap-3">
+      <div className="flex items-center gap-2 sm:gap-3">
         <Button
           tamanho="p"
           variante="fantasma"
@@ -222,7 +222,7 @@ export default function Financeiro() {
         <Text
           papel="subtitulo"
           as="h2"
-          className="min-w-40 text-center capitalize"
+          className="min-w-0 flex-1 text-center capitalize sm:min-w-40 sm:flex-none"
         >
           {NOME_DO_MES.format(dataDoMes(mes))}
         </Text>
@@ -238,11 +238,22 @@ export default function Financeiro() {
             tamanho="p"
             variante="fantasma"
             onClick={() => setMes(chaveDoMes(new Date()))}
+            className="max-sm:hidden"
           >
             Voltar a este mês
           </Button>
         )}
       </div>
+      {!ehMesAtual && (
+        <Button
+          tamanho="p"
+          variante="fantasma"
+          onClick={() => setMes(chaveDoMes(new Date()))}
+          className="-mt-5 w-full sm:hidden"
+        >
+          Voltar a este mês
+        </Button>
+      )}
 
       {resumo.error ? (
         <Erro
@@ -372,6 +383,7 @@ export default function Financeiro() {
               <Row
                 key={item.id}
                 clicavel
+                empilhar
                 onClick={() => setFormulario({ lancamento: item })}
                 titulo={item.name}
                 detalhe={descreve(item)}
@@ -635,7 +647,47 @@ function Mrr() {
             }))}
           />
 
-          <div className="overflow-x-auto rounded-card border border-linha">
+          {/* Phone: a card per month (seven columns do not fit a phone). */}
+          <ul className="flex flex-col divide-y divide-[var(--linha)] rounded-card border border-linha md:hidden">
+            {[...comNumero].reverse().map((m) => (
+              <li key={m.month} className="flex flex-col gap-3 p-4">
+                <span className="flex items-baseline justify-between gap-3">
+                  <span className="font-display text-[1.125rem] capitalize">
+                    {MES_CURTO.format(dataDoMes(m.month))}
+                  </span>
+                  <span className="t-dado text-sm">{reais(m.mrrCents)}</span>
+                </span>
+                <dl className="grid grid-cols-2 gap-x-4 gap-y-2">
+                  {(
+                    [
+                      ['Novo', m.newCents],
+                      ['Expansão', m.expansionCents],
+                      ['Contração', m.contractionCents],
+                      ['Cancelou', m.churnCents],
+                    ] as const
+                  ).map(([rotulo, valor]) => (
+                    <div key={rotulo} className="flex flex-col gap-0.5">
+                      <dt className="t-legenda">{rotulo}</dt>
+                      <dd className="t-dado text-sm">{reais(valor)}</dd>
+                    </div>
+                  ))}
+                  <div className="col-span-2 flex flex-col gap-0.5">
+                    <dt className="t-legenda">Líquido</dt>
+                    <dd
+                      className={cx(
+                        't-dado text-sm',
+                        m.netNewCents < 0 && 'text-erro'
+                      )}
+                    >
+                      {reais(m.netNewCents)}
+                    </dd>
+                  </div>
+                </dl>
+              </li>
+            ))}
+          </ul>
+
+          <div className="hidden overflow-x-auto rounded-card border border-linha md:block">
             <table className="w-full min-w-[38rem] text-left text-sm">
               <thead className="t-legenda">
                 <tr>
@@ -730,7 +782,7 @@ function Metas({
           {metas.map((meta) => (
             <li key={meta.id} className="flex flex-col gap-1.5">
               <span className="flex flex-wrap items-baseline gap-x-3 gap-y-1">
-                <span className="t-rotulo flex-1 text-texto">
+                <span className="t-rotulo flex-1 text-texto max-sm:basis-full">
                   {METRICAS[meta.metric]}
                   {meta.note ? ` · ${meta.note}` : ''}
                 </span>
@@ -786,7 +838,39 @@ function Projecao({
         lançadas e o MRR de hoje, sem crescimento. É o que acontece se nada
         mudar.
       </Text>
-      <div className="overflow-x-auto rounded-card border border-linha">
+      <ul className="flex flex-col divide-y divide-[var(--linha)] rounded-card border border-linha md:hidden">
+        {resumo.projection.map((p) => (
+          <li key={p.month} className="flex flex-col gap-2 p-4">
+            <span className="flex items-baseline justify-between gap-3">
+              <span className="font-display text-[1.125rem] capitalize">
+                {MES_CURTO.format(dataDoMes(p.month))}
+              </span>
+              <span
+                className={cx(
+                  't-dado text-sm',
+                  p.resultCents < 0 && 'text-erro'
+                )}
+              >
+                {reais(p.resultCents)}
+              </span>
+            </span>
+            <dl className="grid grid-cols-2 gap-x-4">
+              <div className="flex flex-col gap-0.5">
+                <dt className="t-legenda">Custos</dt>
+                <dd className="t-dado text-sm">{reais(p.costCents)}</dd>
+              </div>
+              <div className="flex flex-col gap-0.5">
+                <dt className="t-legenda">Entradas</dt>
+                <dd className="t-dado text-sm">
+                  {reais(p.manualIncomeCents + p.subscriptionCents)}
+                </dd>
+              </div>
+            </dl>
+          </li>
+        ))}
+      </ul>
+
+      <div className="hidden overflow-x-auto rounded-card border border-linha md:block">
         <table className="w-full min-w-[34rem] text-left text-sm">
           <thead className="t-legenda">
             <tr>
@@ -1055,7 +1139,7 @@ function FormularioDeLancamento({
         maxLength={500}
       />
 
-      <div className="flex flex-wrap items-center gap-3 border-t border-[var(--linha)] pt-5">
+      <div className="flex flex-col gap-3 border-t border-[var(--linha)] pt-5 sm:flex-row sm:flex-wrap sm:items-center">
         <Button
           variante="primario"
           carregando={ocupado}

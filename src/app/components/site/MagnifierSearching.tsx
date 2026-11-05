@@ -16,7 +16,13 @@ const NOTES = [
  * `QuillOnPaper`, which writes biographies. With reduced motion the lens
  * rests over the sheet.
  */
-export function MagnifierSearching() {
+/**
+ * `stopped`: the search is over and found nothing — the lens rests over the
+ * sheet (where reduced motion leaves it) instead of searching forever.
+ */
+export function MagnifierSearching({
+  stopped = false,
+}: { stopped?: boolean } = {}) {
   return (
     <svg
       viewBox="0 -36 200 196"
@@ -61,7 +67,10 @@ export function MagnifierSearching() {
         </g>
       ))}
       {/* The lens' center sits at the group's origin: moving it searches. */}
-      <g className="lupa-procura">
+      <g
+        className={stopped ? undefined : 'lupa-procura'}
+        transform={stopped ? 'translate(112 74)' : undefined}
+      >
         <circle r="19" fill="var(--fundo)" opacity="0.35" />
         <circle r="19" fill="none" stroke="currentColor" strokeWidth="3" />
         <path
